@@ -61,10 +61,10 @@
 "loginHTTP_message" = "L'autenticazione di accesso di base è richiesta dal server Piwigo:";
 "loginHTTPuser_placeholder" = "Nome utente";
 "loginHTTPpwd_placeholder" = "Password";
-"loginCertFailed_title" = "Connection Not Private";
-"loginCertFailed_message" = "Piwigo warns you when a website has a certificate that is not valid. Do you still want to accept this certificate?";
-"loginHTTPSfailed_title" = "Secure Connection Failed";
-"loginHTTPSfailed_message" = "Piwigo cannot establish a secure connection. Do you want to try to establish an insecure connection?";
+"loginCertFailed_title" = "Connessione non privata";
+"loginCertFailed_message" = "Piwigo ti avvisa quando un sito web dispone di un certificato non valido. Vuoi ancora accettare questo certificato?";
+"loginHTTPSfailed_title" = "Connessione Sicura non riuscita";
+"loginHTTPSfailed_message" = "Piwigo non può stabilire una connessione sicura. Vuoi provare a stabilire una connessione non sicura?";
 
 // Login — Errors
 "serverURLerror_title" = "URL non corretto";
@@ -201,7 +201,7 @@
 
 // Album delete
 "deleteCategory_title" = "ELIMINA ALBUM";
-"deleteCategory_message" = "Sei sicuro di che voler eliminare l'ALBUM \"%@\" e tutte le immagini di %@?";
+"deleteCategory_message" = "SEI SICURO DI CHE VOLER ELIMINARE L'ALBUM \"%@\" E TUTTE LE IMMAGINI DI %@?";
 "deleteCategory_empty" = "Elimina Album vuoto";
 "deleteCategory_noImages" = "Tenere immagini";
 "deleteCategory_orphanedImages" = "Elimina gli orfani";
@@ -220,8 +220,8 @@
 // Album move
 "moveCategory" = "Sposta album";
 "moveCategory_selectParent" = "Seleziona un album per spostare l'album \"%@\" in";
-"moveCategory_selectRecent" = "Select a recent album to move album \"%@\" into";
-"moveCategory_selectRecentOther" = "Or select another album to move album \"%@\" into";
+"moveCategory_selectRecent" = "Seleziona un album recente in cui spostare l'album \"%@\"";
+"moveCategory_selectRecentOther" = "O seleziona un altro album in cui spostare l'album\"%@";
 "moveCategory_message" = "Sei sicuro di voler spostare \"%@\" nell'album \"%@\"?";
 "moveCategoryHUD_moving" = "Spostamento dell'album…";
 
@@ -375,11 +375,11 @@
 // Image move
 "moveImage_title" = "Sposta nell'Album";
 "moveSingleImage_selectAlbum" = "Selezionare un album per spostare l'immagine \"%@\" su";
-"moveSingleImage_selectRecent" = "Select a recent album to move photo \"%@\" to";
-"moveSingleImage_selectRecentOther" = "Or select another album to move photo \"%@\" to";
+"moveSingleImage_selectRecent" = "Seleziona un album recente per spostare la foto \"%@\" in";
+"moveSingleImage_selectRecentOther" = "O seleziona un altro album per spostare la foto \"%@\"";
 "moveSeveralImages_selectAlbum" = "Selezionare un album per spostare le immagini su";
-"moveSeveralImages_selectRecent" = "Select a recent album to move the photos to";
-"moveSeveralImages_selectRecentOther" = "Or select another album to move the photos to";
+"moveSeveralImages_selectRecent" = "Seleziona un album recente per spostare le foto in";
+"moveSeveralImages_selectRecentOther" = "O seleziona un altro album per spostare le foto in";
 "moveSingleImage_message" = "Sei sicuro di voler spostare l'immagine \"%@\" nell'album \"%@\"?";
 "moveSeveralImages_message" = "Sei sicuro di voler spostare le immagini nell'album \"%@\"?";
 "moveSingleImageHUD_moving" = "Sposto l'immagine...";
@@ -392,11 +392,11 @@
 // Image copy
 "copyImage_title" = "Copio nell'Album";
 "copySingleImage_selectAlbum" = "Seleziona un album per copiare l'immagine \"%@\" su";
-"copySingleImage_selectRecent" = "Select a recent album to copy photo \"%@\" to";
-"copySingleImage_selectRecentOther" = "Or select another album to copy photo \"%@\" to";
+"copySingleImage_selectRecent" = "Seleziona un album recente per copiare la foto \"%@\" in";
+"copySingleImage_selectRecentOther" = "O seleziona un altro album per copiare la foto \"%@\" per";
 "copySeveralImages_selectAlbum" = "Seleziona un album per copiare le immagini";
-"copySeveralImages_selectRecent" = "Select a recent album to copy the photos to";
-"copySeveralImages_selectRecentOther" = "Or select another album to copy the photos to";
+"copySeveralImages_selectRecent" = "Seleziona un album recente per copiare le foto su";
+"copySeveralImages_selectRecentOther" = "O seleziona un altro album per copiare le foto a";
 "copySingleImage_message" = "Sei sicuro di voler copiare l'immagine \"%@\" nell'album \"%@\"?";
 "copySeveralImages_message" = "Sei sicuro di voler copiare le immagini nell'album \"%@\"?";
 "copySingleImageHUD_copying" = "Copia immagine …";
@@ -531,9 +531,9 @@
 "defaultImageSort>414px" = "Ordinamento predefinito delle immagini";
 "defaultAlbumThumbnailFile>414px" = "File miniatura album";
 "defaultAlbumThumbnailSizeHeader" = "Seleziona una dimensione miniatura album";
-"maxNberOfRecentAlbums" = "Recent";
-"maxNberOfRecentAlbums>320px" = "Recent Albums";
-"maxNberOfRecentAlbums>414px" = "Number of Recent Albums";
+"maxNberOfRecentAlbums" = "Recente";
+"maxNberOfRecentAlbums>320px" = "Album recenti";
+"maxNberOfRecentAlbums>414px" = "Numero di album recenti";
 
 "thumbnailSizeSquare" = "Quadrato";
 "thumbnailSizeThumbnail" = "Anteprima";
@@ -608,7 +608,7 @@
 "settings_placeholderQuality" = "Immettere una qualità d'immagine da 50-98";
 "settings_prefixFilename>414px" = "Prefisso file immagine prima di caricare";
 "settings_prefixFilename>375px" = "Prefisso nome file prima di caricarlo";
-"settings_prefixFilename" = "Prefix Photo Filename";
+"settings_prefixFilename" = "Prefisso nome foto";
 "settings_defaultPrefix" = "Prefisso";
 "settings_defaultPrefix>320px" = "Prefisso nome file";
 "settings_defaultPrefixPlaceholder" = "Prefisso";

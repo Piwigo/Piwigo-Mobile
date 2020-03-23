@@ -79,7 +79,6 @@
       debugServiceExtension = "internal"
       enableGPUValidationMode = "1"
       allowLocationSimulation = "NO"
-      showNonLocalizedStrings = "YES"
       GPUProfilerEnabled = "No">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">

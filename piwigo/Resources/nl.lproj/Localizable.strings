@@ -61,10 +61,10 @@
 "loginHTTP_message" = "Authenticatie van basistoegang is vereist door de Piwigo-server:";
 "loginHTTPuser_placeholder" = "Gebruikersnaam";
 "loginHTTPpwd_placeholder" = "Wachtwoord";
-"loginCertFailed_title" = "Connection Not Private";
-"loginCertFailed_message" = "Piwigo warns you when a website has a certificate that is not valid. Do you still want to accept this certificate?";
-"loginHTTPSfailed_title" = "Secure Connection Failed";
-"loginHTTPSfailed_message" = "Piwigo cannot establish a secure connection. Do you want to try to establish an insecure connection?";
+"loginCertFailed_title" = "Verbinding niet privé";
+"loginCertFailed_message" = "Piwigo waarschuwt je wanneer een website een certificaat heeft dat niet geldig is. Wil je dit certificaat nog steeds accepteren?";
+"loginHTTPSfailed_title" = "Beveiligde verbinding mislukt";
+"loginHTTPSfailed_message" = "Piwigo kan geen beveiligde verbinding tot stand brengen. Wil je proberen een onveilige verbinding te maken?";
 
 // Login — Errors
 "serverURLerror_title" = "Onjuiste URL";
@@ -220,8 +220,8 @@
 // Album move
 "moveCategory" = "Album verplaatsen";
 "moveCategory_selectParent" = "Selecteer een album om het verplaatsen \"%@\" naar";
-"moveCategory_selectRecent" = "Select a recent album to move album \"%@\" into";
-"moveCategory_selectRecentOther" = "Or select another album to move album \"%@\" into";
+"moveCategory_selectRecent" = "Selecteer een recent album om het album \"%@\" naar te verplaatsen";
+"moveCategory_selectRecentOther" = "Of selecteer een ander album om het%@naar te verplaatsen";
 "moveCategory_message" = "Weet je zeker dat je \"%@\" wilt verplaatsen naar album \"%@\"?";
 "moveCategoryHUD_moving" = "Bezig album te verplaatsen…";
 
@@ -375,11 +375,11 @@
 // Image move
 "moveImage_title" = "Verplaats naar album";
 "moveSingleImage_selectAlbum" = "Kies een album om er foto \"%@\" naar toe te verplaatsen";
-"moveSingleImage_selectRecent" = "Select a recent album to move photo \"%@\" to";
-"moveSingleImage_selectRecentOther" = "Or select another album to move photo \"%@\" to";
+"moveSingleImage_selectRecent" = "Selecteer een recent album om foto \"%@\" naar";
+"moveSingleImage_selectRecentOther" = "Of selecteer een ander album om foto%@te verplaatsen naar";
 "moveSeveralImages_selectAlbum" = "Selecteer een album om je foto's naar toe te brengen";
-"moveSeveralImages_selectRecent" = "Select a recent album to move the photos to";
-"moveSeveralImages_selectRecentOther" = "Or select another album to move the photos to";
+"moveSeveralImages_selectRecent" = "Selecteer een recent album om de foto's naar te verplaatsen";
+"moveSeveralImages_selectRecentOther" = "Of selecteer een ander album om de foto's naar te verplaatsen";
 "moveSingleImage_message" = "Weet je zeker dat je foto \"%@\" naar album \"%@\" wilt verplaatsen?";
 "moveSeveralImages_message" = "Weet je zeker dat je de foto's naar album \"%@\" wilt verplaatsen?";
 "moveSingleImageHUD_moving" = "Verplaatsen van foto…";
@@ -392,11 +392,11 @@
 // Image copy
 "copyImage_title" = "Kopieer naar album";
 "copySingleImage_selectAlbum" = "Kies een album om er foto \"%@\" naar toe te kopiëren";
-"copySingleImage_selectRecent" = "Select a recent album to copy photo \"%@\" to";
-"copySingleImage_selectRecentOther" = "Or select another album to copy photo \"%@\" to";
+"copySingleImage_selectRecent" = "Selecteer een recent album om foto%@te kopiëren naar";
+"copySingleImage_selectRecentOther" = "Of selecteer een ander album om foto%@te kopiëren naar";
 "copySeveralImages_selectAlbum" = "Selecteer een album om de foto's naar toe te verplaatsen";
-"copySeveralImages_selectRecent" = "Select a recent album to copy the photos to";
-"copySeveralImages_selectRecentOther" = "Or select another album to copy the photos to";
+"copySeveralImages_selectRecent" = "Selecteer een recent album om de foto's naar te kopiëren";
+"copySeveralImages_selectRecentOther" = "Of selecteer een ander album om de foto's naar te kopiëren";
 "copySingleImage_message" = "Wet je zeker dat je foto \"%@\" naar album \"%@\" wilt kopiëren?";
 "copySeveralImages_message" = "Weet je zeker dat je de foto's naar album \"%@\" wilt verplaatsen?";
 "copySingleImageHUD_copying" = "Kopiëren van foto…";
@@ -531,9 +531,9 @@
 "defaultImageSort>414px" = "Standaardsorteervolgorde van foto's";
 "defaultAlbumThumbnailFile>414px" = "Bestand Albumsminiaturen";
 "defaultAlbumThumbnailSizeHeader" = "Selecteer a. u. b. een album miniatuur-grootte";
-"maxNberOfRecentAlbums" = "Recent";
-"maxNberOfRecentAlbums>320px" = "Recent Albums";
-"maxNberOfRecentAlbums>414px" = "Number of Recent Albums";
+"maxNberOfRecentAlbums" = "Recentelijk";
+"maxNberOfRecentAlbums>320px" = "Recente albums";
+"maxNberOfRecentAlbums>414px" = "Aantal recente albums";
 
 "thumbnailSizeSquare" = "Vierkant";
 "thumbnailSizeThumbnail" = "Miniatuurafbeelding";
@@ -606,12 +606,12 @@
 "settings_photoCompress>375px" = "Comprimeer de foto vóór het uploaden";
 "settings_photoQuality" = "> Kwaliteit";
 "settings_placeholderQuality" = "Voer beeldkwaliteit in tussen 50-98";
-"settings_prefixFilename>414px" = "Prefix Photo Filename Before Upload";
-"settings_prefixFilename>375px" = "Prefix Filename Before Upload";
-"settings_prefixFilename" = "Prefix Photo Filename";
-"settings_defaultPrefix" = "Prefix";
-"settings_defaultPrefix>320px" = "Filename Prefix";
-"settings_defaultPrefixPlaceholder" = "Prefix";
+"settings_prefixFilename>414px" = "Voorvoegsel foto bestandsnaam voor het uploaden";
+"settings_prefixFilename>375px" = "Bestandsnaam voorvoegsel voor het uploaden";
+"settings_prefixFilename" = "Naam fotobestand voorvoegsel";
+"settings_defaultPrefix" = "Voorvoegsel";
+"settings_defaultPrefix>320px" = "Bestandsnaam voorvoegsel";
+"settings_defaultPrefixPlaceholder" = "Voorvoegsel";
 "settings_deleteImage>375px" = "Verwijder de foto ná het uploaden";
 "settings_deleteImage" = "Verwijder na uploaden";
 
