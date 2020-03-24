@@ -45,6 +45,7 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     self.backgroundColor = [UIColor piwigoBackgroundColor];
     self.contentView.layer.cornerRadius = 14;
     self.contentView.backgroundColor = [UIColor piwigoCellBackgroundColor];
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
     self.topCut.layer.cornerRadius = 7;
     self.topCut.backgroundColor = [UIColor piwigoBackgroundColor];
     self.bottomCut.layer.cornerRadius = 7;
