@@ -47,9 +47,9 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
 
 @end
 
-#ifndef DEBUG_SHARE
-#define DEBUG_SHARE
-#endif
+//#ifndef DEBUG_SHARE
+//#define DEBUG_SHARE
+//#endif
 
 @implementation ImageDetailViewController
 

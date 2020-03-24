@@ -14,9 +14,9 @@
 #import "Model.h"
 #import "PhotosFetch.h"
 
-#ifndef DEBUG_SHARE
-#define DEBUG_SHARE
-#endif
+//#ifndef DEBUG_SHARE
+//#define DEBUG_SHARE
+//#endif
 
 NSString * const kPiwigoNotificationDidShareImage = @"kPiwigoNotificationDidShareImage";
 NSString * const kPiwigoNotificationCancelDownloadImage = @"kPiwigoNotificationCancelDownloadImage";
