@@ -59,8 +59,8 @@
 		
 		self.uploadProgress = [UIProgressView new];
 		self.uploadProgress.translatesAutoresizingMaskIntoConstraints = NO;
-        self.uploadProgress.progressTintColor = [UIColor piwigoOrange];
-        self.uploadProgress.trackTintColor = [UIColor piwigoLeftLabelColor];
+        self.uploadProgress.progressTintColor = [UIColor piwigoColorOrange];
+        self.uploadProgress.trackTintColor = [UIColor piwigoColorLeftLabel];
 		[self addSubview:self.uploadProgress];
 		[self addConstraint:[NSLayoutConstraint constraintCenterHorizontalView:self.uploadProgress]];
 		
@@ -96,13 +96,13 @@
 -(void)changePaletteMode
 {
     // Background color of the view
-    self.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.backgroundColor = [UIColor piwigoColorBackground];
 
-    self.imageCountLabel.backgroundColor = [UIColor piwigoBackgroundColor];
-    self.imageCountLabel.textColor = [UIColor piwigoRightLabelColor];
-    self.uploadProgress.backgroundColor = [UIColor piwigoBackgroundColor];
-    self.uploadProgress.progressTintColor = [UIColor piwigoOrange];
-    self.uploadProgress.trackTintColor = [UIColor piwigoRightLabelColor];
+    self.imageCountLabel.backgroundColor = [UIColor piwigoColorBackground];
+    self.imageCountLabel.textColor = [UIColor piwigoColorRightLabel];
+    self.uploadProgress.backgroundColor = [UIColor piwigoColorBackground];
+    self.uploadProgress.progressTintColor = [UIColor piwigoColorOrange];
+    self.uploadProgress.trackTintColor = [UIColor piwigoColorRightLabel];
 }
 
 -(void)updateImageCountLabel

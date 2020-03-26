@@ -25,7 +25,7 @@
     // Initialization code
     [super awakeFromNib];
 
-    self.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.backgroundColor = [UIColor piwigoColorBackground];
 	
 	self.tagsString = @"";
 	self.tagsLabel.text = NSLocalizedString(@"editImageDetails_tags", @"Tags");
@@ -48,7 +48,7 @@
 -(void)setTagList:(NSArray*)tags inColor:(UIColor *)color
 {
 	self.tagsString = [[TagsData sharedInstance] getTagsStringFromList:tags];
-    self.tagsLabel.textColor = [UIColor piwigoRightLabelColor];
+    self.tagsLabel.textColor = [UIColor piwigoColorRightLabel];
     self.tagsList.textColor = color;
 }
 

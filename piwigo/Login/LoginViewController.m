@@ -14,7 +14,6 @@
 #import "SAMKeychain.h"
 #import "Model.h"
 #import "SessionService.h"
-#import "ClearCache.h"
 #import "AppDelegate.h"
 #import "MBProgressHUD.h"
 #import "CategoriesData.h"
@@ -39,7 +38,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 	self = [super init];
 	if(self)
 	{
-		self.view.backgroundColor = [UIColor piwigoBrown];
+		self.view.backgroundColor = [UIColor piwigoColorBrown];
 		
 		self.piwigoLogo = [UIImageView new];
 		self.piwigoLogo.translatesAutoresizingMaskIntoConstraints = NO;
@@ -51,7 +50,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
         self.piwigoButton.backgroundColor = [UIColor clearColor];
         self.piwigoButton.translatesAutoresizingMaskIntoConstraints = NO;
         self.piwigoButton.titleLabel.font = [UIFont piwigoFontNormal];
-        [self.piwigoButton setTitleColor:[UIColor piwigoOrange] forState:UIControlStateNormal];
+        [self.piwigoButton setTitleColor:[UIColor piwigoColorOrange] forState:UIControlStateNormal];
         [self.piwigoButton setTitle:kPiwigoURL forState:UIControlStateNormal];
         [self.piwigoButton addTarget:self action:@selector(openPiwigoURL) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:self.piwigoButton];
@@ -113,21 +112,21 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
         self.byLabel1 = [UILabel new];
         self.byLabel1.translatesAutoresizingMaskIntoConstraints = NO;
         self.byLabel1.font = [UIFont piwigoFontSmall];
-        self.byLabel1.textColor = [UIColor piwigoOrangeLight];
+        self.byLabel1.textColor = [UIColor piwigoColorOrangeLight];
         self.byLabel1.text = NSLocalizedStringFromTableInBundle(@"authors1", @"About", [NSBundle mainBundle], @"By Spencer Baker, Olaf Greck,");
         [self.view addSubview:self.byLabel1];
         
         self.byLabel2 = [UILabel new];
         self.byLabel2.translatesAutoresizingMaskIntoConstraints = NO;
         self.byLabel2.font = [UIFont piwigoFontSmall];
-        self.byLabel2.textColor = [UIColor piwigoOrangeLight];
+        self.byLabel2.textColor = [UIColor piwigoColorOrangeLight];
         self.byLabel2.text = NSLocalizedStringFromTableInBundle(@"authors2", @"About", [NSBundle mainBundle], @"and Eddy Lelièvre-Berna");
         [self.view addSubview:self.byLabel2];
         
         self.versionLabel = [UILabel new];
         self.versionLabel.translatesAutoresizingMaskIntoConstraints = NO;
         self.versionLabel.font = [UIFont piwigoFontTiny];
-        self.versionLabel.textColor = [UIColor piwigoOrangeLight];
+        self.versionLabel.textColor = [UIColor piwigoColorOrangeLight];
         [self.view addSubview:self.versionLabel];
         
         NSString * appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
@@ -162,22 +161,22 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 -(void)applyColorPalette
 {
     // Server
-    self.serverTextField.textColor = [UIColor piwigoTextColor];
-    self.serverTextField.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.serverTextField.textColor = [UIColor piwigoColorText];
+    self.serverTextField.backgroundColor = [UIColor piwigoColorBackground];
     
     // Username
-    self.userTextField.textColor = [UIColor piwigoTextColor];
-    self.userTextField.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.userTextField.textColor = [UIColor piwigoColorText];
+    self.userTextField.backgroundColor = [UIColor piwigoColorBackground];
     
     // Password
-    self.passwordTextField.textColor = [UIColor piwigoTextColor];
-    self.passwordTextField.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.passwordTextField.textColor = [UIColor piwigoColorText];
+    self.passwordTextField.backgroundColor = [UIColor piwigoColorBackground];
     
     // Login button
     if ([Model sharedInstance].isDarkPaletteActive) {
-        self.loginButton.backgroundColor = [UIColor piwigoOrangeSelected];
+        self.loginButton.backgroundColor = [UIColor piwigoColorOrangeSelected];
     } else {
-        self.loginButton.backgroundColor = [UIColor piwigoOrange];
+        self.loginButton.backgroundColor = [UIColor piwigoColorOrange];
     }
 }
 
@@ -898,8 +897,8 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
         hud.animationType = MBProgressHUDAnimationFade;
         hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
         hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
-        hud.contentColor = [UIColor piwigoHudContentColor];
-        hud.bezelView.color = [UIColor piwigoHudBezelViewColor];
+        hud.contentColor = [UIColor piwigoColorHudContent];
+        hud.bezelView.color = [UIColor piwigoColorHudBezelView];
         
         // Set title
         hud.label.text = NSLocalizedString(@"login_loggingIn", @"Logging In...");

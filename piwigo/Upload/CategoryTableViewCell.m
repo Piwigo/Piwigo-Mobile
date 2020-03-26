@@ -21,14 +21,14 @@
 -(void)setupWithCategoryData:(PiwigoAlbumData*)category
 {
     // General settings
-    self.backgroundColor = [UIColor piwigoCellBackgroundColor];
-    self.tintColor = [UIColor piwigoOrange];
+    self.backgroundColor = [UIColor piwigoColorCellBackground];
+    self.tintColor = [UIColor piwigoColorOrange];
     self.textLabel.font = [UIFont piwigoFontNormal];
     
     // Category data and name
     self.categoryData = category;
     self.categoryLabel.text = self.categoryData.name;
-    self.categoryLabel.textColor = [UIColor piwigoLeftLabelColor];
+    self.categoryLabel.textColor = [UIColor piwigoColorLeftLabel];
     
     // Never show open/close button (# sub-albums)
     self.subAlbumsLabel.text = @"";
@@ -41,15 +41,15 @@
 -(void)setupWithCategoryData:(PiwigoAlbumData*)category atDepth:(NSInteger)depth withSubCategoryButton:(BOOL)access
 {
     // General settings
-    self.backgroundColor = [UIColor piwigoCellBackgroundColor];
-    self.tintColor = [UIColor piwigoOrange];
+    self.backgroundColor = [UIColor piwigoColorCellBackground];
+    self.tintColor = [UIColor piwigoColorOrange];
     self.textLabel.font = [UIFont piwigoFontNormal];
 
     // Category data
     self.categoryData = category;
 
     // Is this a sub-category?
-    self.categoryLabel.textColor = [UIColor piwigoLeftLabelColor];
+    self.categoryLabel.textColor = [UIColor piwigoColorLeftLabel];
     if ((depth < 1) || !access) {
         // Categories in root album
         self.categoryLabel.text = self.categoryData.name;

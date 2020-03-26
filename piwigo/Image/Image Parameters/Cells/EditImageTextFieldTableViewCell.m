@@ -28,11 +28,11 @@
 -(void)setupWithLabel:(NSString *)label placeHolder:(NSString *)placeHolder andImageDetail:(NSString *)imageDetail
 {
     // Cell background
-    self.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.backgroundColor = [UIColor piwigoColorBackground];
 
     // Cell label
     self.cellLabel.text = label;
-    self.cellLabel.textColor = [UIColor piwigoRightLabelColor];
+    self.cellLabel.textColor = [UIColor piwigoColorRightLabel];
     
     // Cell text field
     if (imageDetail == nil) {
@@ -40,9 +40,9 @@
     } else {
         self.cellTextField.text = imageDetail;
     }
-    self.cellTextField.textColor = [UIColor piwigoLeftLabelColor];
+    self.cellTextField.textColor = [UIColor piwigoColorLeftLabel];
     if ([placeHolder length] > 0) {
-        self.cellTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeHolder attributes:@{NSForegroundColorAttributeName: [UIColor piwigoPlaceHolderColor]}];
+        self.cellTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeHolder attributes:@{NSForegroundColorAttributeName: [UIColor piwigoColorPlaceHolder]}];
     }
     self.cellTextField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
 }

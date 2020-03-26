@@ -33,13 +33,13 @@
 	self = [super init];
 	if(self)
 	{
-		self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+		self.view.backgroundColor = [UIColor piwigoColorBackground];
 		self.title = NSLocalizedString(@"tags", @"Tags");
 				
 		self.tagsTableView = [UITableView new];
 		self.tagsTableView.translatesAutoresizingMaskIntoConstraints = NO;
         self.tagsTableView.backgroundColor = [UIColor clearColor];
-        self.tagsTableView.sectionIndexColor = [UIColor piwigoOrange];
+        self.tagsTableView.sectionIndexColor = [UIColor piwigoColorOrange];
         self.tagsTableView.alwaysBounceVertical = YES;
         self.tagsTableView.showsVerticalScrollIndicator = YES;
 		self.tagsTableView.delegate = self;
@@ -79,11 +79,11 @@
 -(void)applyColorPalette
 {
     // Background color of the view
-    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.view.backgroundColor = [UIColor piwigoColorBackground];
 
     // Navigation bar
     NSDictionary *attributes = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSForegroundColorAttributeName: [UIColor piwigoColorWhiteCream],
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
@@ -91,12 +91,12 @@
         self.navigationController.navigationBar.prefersLargeTitles = NO;
     }
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
-    self.navigationController.navigationBar.barTintColor = [UIColor piwigoBackgroundColor];
-    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoColorOrange];
+    self.navigationController.navigationBar.barTintColor = [UIColor piwigoColorBackground];
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoColorBackground];
 
     // Table view
-    self.tagsTableView.separatorColor = [UIColor piwigoSeparatorColor];
+    self.tagsTableView.separatorColor = [UIColor piwigoColorSeparator];
     self.tagsTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ? UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self.tagsTableView reloadData];
 }
@@ -181,7 +181,7 @@
     UILabel *headerLabel = [UILabel new];
     headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
     headerLabel.font = [UIFont piwigoFontBold];
-    headerLabel.textColor = [UIColor piwigoHeaderColor];
+    headerLabel.textColor = [UIColor piwigoColorHeader];
     if (section == 0) {
         headerLabel.text = NSLocalizedString(@"tagsHeader_selected", @"Selected");
     } else {
@@ -510,8 +510,8 @@
     hud.animationType = MBProgressHUDAnimationFade;
     hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
     hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
-    hud.contentColor = [UIColor piwigoHudContentColor];
-    hud.bezelView.color = [UIColor piwigoHudBezelViewColor];
+    hud.contentColor = [UIColor piwigoColorHudContent];
+    hud.bezelView.color = [UIColor piwigoColorHudBezelView];
     
     // Define the text
     hud.label.text = label;

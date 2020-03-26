@@ -81,11 +81,11 @@ typedef enum {
 -(void)applyColorPalette
 {
     // Background color of the view
-    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.view.backgroundColor = [UIColor piwigoColorBackground];
 
     // Navigation bar
     NSDictionary *attributes = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSForegroundColorAttributeName: [UIColor piwigoColorWhiteCream],
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
@@ -93,13 +93,13 @@ typedef enum {
         self.navigationController.navigationBar.prefersLargeTitles = NO;
     }
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
-    self.navigationController.navigationBar.barTintColor = [UIColor piwigoBackgroundColor];
-    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoColorOrange];
+    self.navigationController.navigationBar.barTintColor = [UIColor piwigoColorBackground];
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoColorBackground];
 
     // Table view
-    self.imageUploadParamsTableView.separatorColor = [UIColor piwigoSeparatorColor];
-    self.imageUploadParamsTableView.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.imageUploadParamsTableView.separatorColor = [UIColor piwigoColorSeparator];
+    self.imageUploadParamsTableView.backgroundColor = [UIColor piwigoColorBackground];
     [self.imageUploadParamsTableView reloadData];
 }
 
@@ -278,8 +278,8 @@ typedef enum {
     hud.animationType = MBProgressHUDAnimationFade;
     hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
     hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
-    hud.contentColor = [UIColor piwigoHudContentColor];
-    hud.bezelView.color = [UIColor piwigoHudBezelViewColor];
+    hud.contentColor = [UIColor piwigoColorHudContent];
+    hud.bezelView.color = [UIColor piwigoColorHudBezelView];
     
     // Define the text
     hud.label.text = NSLocalizedString(@"editImageDetailsHUD_updating", @"Updating Image Info…");
@@ -373,7 +373,7 @@ typedef enum {
             [cell setupWithLabel:NSLocalizedString(@"editImageDetails_title", @"Title:")
                      placeHolder:NSLocalizedString(@"editImageDetails_titlePlaceholder", @"Title")
                   andImageDetail:self.commonParameters.imageTitle];
-            if (self.shouldUpdateTitle) cell.cellTextField.textColor = [UIColor piwigoOrange];
+            if (self.shouldUpdateTitle) cell.cellTextField.textColor = [UIColor piwigoColorOrange];
             cell.cellTextField.tag = EditImageDetailsOrderImageName;
             cell.cellTextField.delegate = self;
             tableViewCell = cell;
@@ -386,7 +386,7 @@ typedef enum {
             [cell setupWithLabel:NSLocalizedString(@"editImageDetails_author", @"Author:")
                      placeHolder:NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name")
                   andImageDetail:[self.commonParameters.author isEqualToString:@"NSNotFound"] ? @"" : self.commonParameters.author];
-            if (self.shouldUpdateAuthor) cell.cellTextField.textColor = [UIColor piwigoOrange];
+            if (self.shouldUpdateAuthor) cell.cellTextField.textColor = [UIColor piwigoColorOrange];
             cell.cellTextField.tag = EditImageDetailsOrderAuthor;
             cell.cellTextField.delegate = self;
             tableViewCell = cell;
@@ -397,7 +397,7 @@ typedef enum {
         {
             EditImagePrivacyTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"privacy" forIndexPath:indexPath];
             [cell setLeftLabelText:NSLocalizedString(@"editImageDetails_privacyLevel", @"Who can see this photo?")];
-            [cell setPrivacyLevel:self.commonParameters.privacyLevel inColor:self.shouldUpdatePrivacyLevel ? [UIColor piwigoOrange] : [UIColor piwigoLeftLabelColor]];
+            [cell setPrivacyLevel:self.commonParameters.privacyLevel inColor:self.shouldUpdatePrivacyLevel ? [UIColor piwigoColorOrange] : [UIColor piwigoColorLeftLabel]];
             tableViewCell = cell;
             break;
         }
@@ -405,7 +405,7 @@ typedef enum {
         case EditImageDetailsOrderTags:
         {
             EditImageTagsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"tags" forIndexPath:indexPath];
-            [cell setTagList:self.commonParameters.tags inColor:self.shouldUpdateTags ? [UIColor piwigoOrange] : [UIColor piwigoLeftLabelColor]];
+            [cell setTagList:self.commonParameters.tags inColor:self.shouldUpdateTags ? [UIColor piwigoColorOrange] : [UIColor piwigoColorLeftLabel]];
             tableViewCell = cell;
             break;
         }
@@ -414,15 +414,15 @@ typedef enum {
         {
             EditImageTextViewTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"description" forIndexPath:indexPath];
             [cell setupWithImageDetail:self.commonParameters.comment];
-            if (self.shouldUpdateComment) cell.textView.textColor = [UIColor piwigoOrange];
+            if (self.shouldUpdateComment) cell.textView.textColor = [UIColor piwigoColorOrange];
             cell.textView.delegate = self;
             tableViewCell = cell;
             break;
         }
     }
     
-    tableViewCell.backgroundColor = [UIColor piwigoCellBackgroundColor];
-    tableViewCell.tintColor = [UIColor piwigoOrange];
+    tableViewCell.backgroundColor = [UIColor piwigoColorCellBackground];
+    tableViewCell.tintColor = [UIColor piwigoColorOrange];
     return tableViewCell;
 }
 
@@ -638,7 +638,7 @@ typedef enum {
     
     // Update table view cell
     EditImagePrivacyTableViewCell *cell = (EditImagePrivacyTableViewCell*)[self.imageUploadParamsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderPrivacy inSection:0]];
-    if (cell) [cell setPrivacyLevel:privacy inColor:[UIColor piwigoOrange]];
+    if (cell) [cell setPrivacyLevel:privacy inColor:[UIColor piwigoColorOrange]];
     
     // Remember to update image info
     self.shouldUpdatePrivacyLevel = YES;
@@ -654,7 +654,7 @@ typedef enum {
     
     // Update table view cell
     EditImageTagsTableViewCell *cell = (EditImageTagsTableViewCell*)[self.imageUploadParamsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderTags inSection:0]];
-    if (cell) [cell setTagList:self.commonParameters.tags inColor:[UIColor piwigoOrange]];
+    if (cell) [cell setTagList:self.commonParameters.tags inColor:[UIColor piwigoColorOrange]];
     
     // Remember to update image info
     self.shouldUpdateTags = YES;

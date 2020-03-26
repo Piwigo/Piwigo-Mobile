@@ -22,19 +22,19 @@
 	self = [super init];
 	if(self)
 	{
-		self.backgroundColor = [UIColor piwigoCellBackgroundColor];
+		self.backgroundColor = [UIColor piwigoColorCellBackground];
 		
 		self.leftLabel = [UILabel new];
 		self.leftLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		self.leftLabel.font = [UIFont piwigoFontNormal];
-		self.leftLabel.textColor = [UIColor piwigoLeftLabelColor];
+		self.leftLabel.textColor = [UIColor piwigoColorLeftLabel];
 		self.leftLabel.adjustsFontSizeToFitWidth = NO;
 		[self.contentView addSubview:self.leftLabel];
 		
 		self.rightTextField = [UITextField new];
 		self.rightTextField.translatesAutoresizingMaskIntoConstraints = NO;
 		self.rightTextField.font = [UIFont piwigoFontNormal];
-		self.rightTextField.textColor = [UIColor piwigoRightLabelColor];
+		self.rightTextField.textColor = [UIColor piwigoColorRightLabel];
         self.rightTextField.keyboardType = UIKeyboardTypeDefault;
         self.rightTextField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
         self.rightTextField.autocapitalizationType = UITextAutocapitalizationTypeSentences;

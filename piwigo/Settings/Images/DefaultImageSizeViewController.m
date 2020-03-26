@@ -45,11 +45,11 @@
 -(void)applyColorPalette
 {
     // Background color of the view
-    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.view.backgroundColor = [UIColor piwigoColorBackground];
 
     // Navigation bar
     NSDictionary *attributes = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSForegroundColorAttributeName: [UIColor piwigoColorWhiteCream],
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
@@ -57,12 +57,12 @@
         self.navigationController.navigationBar.prefersLargeTitles = NO;
     }
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
-    self.navigationController.navigationBar.barTintColor = [UIColor piwigoBackgroundColor];
-    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoColorOrange];
+    self.navigationController.navigationBar.barTintColor = [UIColor piwigoColorBackground];
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoColorBackground];
 
     // Table view
-    self.tableView.separatorColor = [UIColor piwigoSeparatorColor];
+    self.tableView.separatorColor = [UIColor piwigoColorSeparator];
     self.tableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ? UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self.tableView reloadData];
 }
@@ -120,7 +120,7 @@
     // Header label
     UILabel *headerLabel = [UILabel new];
     headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    headerLabel.textColor = [UIColor piwigoHeaderColor];
+    headerLabel.textColor = [UIColor piwigoColorHeader];
     headerLabel.numberOfLines = 0;
     headerLabel.adjustsFontSizeToFitWidth = NO;
     headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -168,10 +168,10 @@
     kPiwigoImageSize imageSize = (kPiwigoImageSize)indexPath.row;
 
     // Name of the image size
-    cell.backgroundColor = [UIColor piwigoCellBackgroundColor];
-    cell.tintColor = [UIColor piwigoOrange];
+    cell.backgroundColor = [UIColor piwigoColorCellBackground];
+    cell.tintColor = [UIColor piwigoColorOrange];
     cell.textLabel.font = [UIFont piwigoFontNormal];
-    cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
+    cell.textLabel.textColor = [UIColor piwigoColorLeftLabel];
     cell.textLabel.adjustsFontSizeToFitWidth = NO;
     
     // Add checkmark in front of selected item
@@ -185,7 +185,7 @@
     switch (indexPath.row) {
         case kPiwigoImageSizeSquare:
             cell.userInteractionEnabled = NO;
-            cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
+            cell.textLabel.textColor = [UIColor piwigoColorRightLabel];
             if (![Model sharedInstance].hasSquareSizeImages) {
                 cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:NO];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
@@ -195,7 +195,7 @@
             break;
         case kPiwigoImageSizeThumb:
             cell.userInteractionEnabled = NO;
-            cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
+            cell.textLabel.textColor = [UIColor piwigoColorRightLabel];
             if (![Model sharedInstance].hasThumbSizeImages) {
                 cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:NO];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
@@ -205,7 +205,7 @@
             break;
         case kPiwigoImageSizeXXSmall:
             cell.userInteractionEnabled = NO;
-            cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
+            cell.textLabel.textColor = [UIColor piwigoColorRightLabel];
             if (![Model sharedInstance].hasXXSmallSizeImages) {
                 cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:NO];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
@@ -215,7 +215,7 @@
             break;
         case kPiwigoImageSizeXSmall:
             cell.userInteractionEnabled = NO;
-            cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
+            cell.textLabel.textColor = [UIColor piwigoColorRightLabel];
             if (![Model sharedInstance].hasXSmallSizeImages) {
                 cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:NO];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
@@ -225,7 +225,7 @@
             break;
         case kPiwigoImageSizeSmall:
             cell.userInteractionEnabled = NO;
-            cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
+            cell.textLabel.textColor = [UIColor piwigoColorRightLabel];
             if (![Model sharedInstance].hasSmallSizeImages) {
                 cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:NO];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
@@ -239,7 +239,7 @@
                 cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:YES];
             } else {
                 cell.userInteractionEnabled = NO;
-                cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
+                cell.textLabel.textColor = [UIColor piwigoColorRightLabel];
                 cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:NO];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
@@ -250,7 +250,7 @@
                 cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:YES];
             } else {
                 cell.userInteractionEnabled = NO;
-                cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
+                cell.textLabel.textColor = [UIColor piwigoColorRightLabel];
                 cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:NO];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
@@ -261,7 +261,7 @@
                 cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:YES];
             } else {
                 cell.userInteractionEnabled = NO;
-                cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
+                cell.textLabel.textColor = [UIColor piwigoColorRightLabel];
                 cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:NO];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
@@ -272,7 +272,7 @@
                 cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:YES];
             } else {
                 cell.userInteractionEnabled = NO;
-                cell.textLabel.textColor = [UIColor piwigoRightLabelColor];
+                cell.textLabel.textColor = [UIColor piwigoColorRightLabel];
                 cell.textLabel.text = [PiwigoImageData nameForImageSizeType:imageSize withInfo:NO];
                 cell.textLabel.text = [cell.textLabel.text stringByAppendingString:NSLocalizedString(@"defaultSize_disabled", @" (disabled on server)")];
             }
@@ -313,7 +313,7 @@
     UILabel *footerLabel = [UILabel new];
     footerLabel.translatesAutoresizingMaskIntoConstraints = NO;
     footerLabel.font = [UIFont piwigoFontSmall];
-    footerLabel.textColor = [UIColor piwigoHeaderColor];
+    footerLabel.textColor = [UIColor piwigoColorHeader];
     footerLabel.textAlignment = NSTextAlignmentCenter;
     footerLabel.numberOfLines = 0;
     footerLabel.text = NSLocalizedString(@"defaultSizeFooter", @"Greyed sizes are not advised or not available on Piwigo server.");

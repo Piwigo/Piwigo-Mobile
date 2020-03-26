@@ -22,7 +22,7 @@
 @property (nonatomic, assign) NSInteger categoryId;
 @property (nonatomic, strong) NSArray *localGroups;
 @property (nonatomic, strong) NSArray *iCloudGroups;
-@property (nonatomic, strong) UIBarButtonItem *doneBarButton;
+@property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
 
 @end
 
@@ -51,8 +51,8 @@
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.localAlbumsTableView]];
         
         // Button for returning to albums/images
-        self.doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(quitUpload)];
-        [self.doneBarButton setAccessibilityIdentifier:@"Cancel"];
+        self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(quitUpload)];
+        [self.cancelBarButton setAccessibilityIdentifier:@"Cancel"];
         
         // Register Photo Library changes
         [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
@@ -109,18 +109,18 @@
 {
     [super viewDidLoad];
     
-    // Navigation bar
-    [self.navigationController.navigationBar setAccessibilityIdentifier:@"LocalAlbumsNav"];
+    // Title
+    self.title = NSLocalizedString(@"localAlbums", @"Photos library");
 }
 
 -(void)applyColorPalette
 {
     // Background color of the view
-    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.view.backgroundColor = [UIColor piwigoColorBackground];
 
     // Navigation bar
     NSDictionary *attributes = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSForegroundColorAttributeName: [UIColor piwigoColorWhiteCream],
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
@@ -128,12 +128,12 @@
         self.navigationController.navigationBar.prefersLargeTitles = NO;
     }
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
-    self.navigationController.navigationBar.barTintColor = [UIColor piwigoBackgroundColor];
-    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoColorOrange];
+    self.navigationController.navigationBar.barTintColor = [UIColor piwigoColorBackground];
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoColorBackground];
 
     // Table view
-    self.localAlbumsTableView.separatorColor = [UIColor piwigoSeparatorColor];
+    self.localAlbumsTableView.separatorColor = [UIColor piwigoColorSeparator];
     self.localAlbumsTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self.localAlbumsTableView reloadData];
 }
@@ -142,14 +142,12 @@
 {
     [super viewWillAppear:animated];
     
-    // Title
-    self.title = NSLocalizedString(@"localAlbums", @"Photos library");
-
     // Set colors, fonts, etc.
     [self applyColorPalette];
     
-    // Navigation bar button
-    [self.navigationItem setRightBarButtonItems:@[self.doneBarButton] animated:YES];
+    // Navigation bar button and identifier
+    [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
+    [self.navigationController.navigationBar setAccessibilityIdentifier:@"LocalAlbumsNav"];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -242,7 +240,7 @@
     // Header label
     UILabel *headerLabel = [UILabel new];
     headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    headerLabel.textColor = [UIColor piwigoHeaderColor];
+    headerLabel.textColor = [UIColor piwigoColorHeader];
     headerLabel.numberOfLines = 0;
     headerLabel.adjustsFontSizeToFitWidth = NO;
     headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -314,11 +312,11 @@
     }
     NSString *name = [groupAsset localizedTitle];
     NSUInteger nberAssets = [[PHAsset fetchAssetsInAssetCollection:groupAsset options:nil] count];
-    cell.textLabel.text = [NSString stringWithFormat:@"%@ (%@ %@)", name, @(nberAssets), (nberAssets > 1) ? NSLocalizedString(@"severalImages", @"Images") : NSLocalizedString(@"singleImage", @"Image")];
-    cell.textLabel.textColor = [UIColor piwigoLeftLabelColor];
-    cell.backgroundColor = [UIColor piwigoCellBackgroundColor];
+    cell.textLabel.text = [NSString stringWithFormat:@"%@ (%@ %@)", name, @(nberAssets), (nberAssets > 1) ? NSLocalizedString(@"severalImages", @"Photos") : NSLocalizedString(@"singleImage", @"Photo")];
+    cell.textLabel.textColor = [UIColor piwigoColorLeftLabel];
+    cell.backgroundColor = [UIColor piwigoColorCellBackground];
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    cell.tintColor = [UIColor piwigoOrange];
+    cell.tintColor = [UIColor piwigoColorOrange];
     cell.translatesAutoresizingMaskIntoConstraints = NO;
     cell.textLabel.font = [UIFont piwigoFontNormal];
     cell.textLabel.adjustsFontSizeToFitWidth = YES;

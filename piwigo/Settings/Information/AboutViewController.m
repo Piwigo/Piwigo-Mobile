@@ -34,7 +34,7 @@
 		self.piwigoTitle = [UILabel new];
 		self.piwigoTitle.translatesAutoresizingMaskIntoConstraints = NO;
 		self.piwigoTitle.font = [UIFont piwigoFontLarge];
-		self.piwigoTitle.textColor = [UIColor piwigoOrange];
+		self.piwigoTitle.textColor = [UIColor piwigoColorOrange];
 		self.piwigoTitle.text = NSLocalizedString(@"settings_appName", @"Piwigo Mobile");
 		[self.view addSubview:self.piwigoTitle];
 		
@@ -182,11 +182,11 @@
 -(void)applyColorPalette
 {
     // Background color of the view
-    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.view.backgroundColor = [UIColor piwigoColorBackground];
 
     // Navigation bar
     NSDictionary *attributes = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSForegroundColorAttributeName: [UIColor piwigoColorWhiteCream],
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
@@ -194,16 +194,16 @@
         self.navigationController.navigationBar.prefersLargeTitles = NO;
     }
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
-    self.navigationController.navigationBar.barTintColor = [UIColor piwigoBackgroundColor];
-    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoColorOrange];
+    self.navigationController.navigationBar.barTintColor = [UIColor piwigoColorBackground];
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoColorBackground];
 
     // Text color depdending on background color
-    self.byLabel1.textColor = [UIColor piwigoTextColor];
-    self.byLabel2.textColor = [UIColor piwigoTextColor];
-    self.versionLabel.textColor = [UIColor piwigoTextColor];
-    self.textView.textColor = [UIColor piwigoTextColor];
-    self.textView.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.byLabel1.textColor = [UIColor piwigoColorText];
+    self.byLabel2.textColor = [UIColor piwigoColorText];
+    self.versionLabel.textColor = [UIColor piwigoColorText];
+    self.textView.textColor = [UIColor piwigoColorText];
+    self.textView.backgroundColor = [UIColor piwigoColorBackground];
 }
 
 -(void)viewWillAppear:(BOOL)animated

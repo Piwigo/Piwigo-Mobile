@@ -19,12 +19,12 @@
 	self = [super init];
 	if(self)
 	{
-		self.backgroundColor = [UIColor piwigoCellBackgroundColor];
+		self.backgroundColor = [UIColor piwigoColorCellBackground];
 		
 		self.buttonLabel = [UILabel new];
 		self.buttonLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		self.buttonLabel.font = [UIFont piwigoFontButton];
-		self.buttonLabel.textColor = [UIColor piwigoOrange];
+		self.buttonLabel.textColor = [UIColor piwigoColorOrange];
 		[self.contentView addSubview:self.buttonLabel];
 		
 		[self setupConstraints];

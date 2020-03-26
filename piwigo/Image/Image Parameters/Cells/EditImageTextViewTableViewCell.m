@@ -35,15 +35,15 @@
 -(void)setupWithImageDetail:(NSString *)imageDetail
 {
     // Cell background
-    self.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.backgroundColor = [UIColor piwigoColorBackground];
     
     // Cell label
-    self.label.textColor = [UIColor piwigoRightLabelColor];
+    self.label.textColor = [UIColor piwigoColorRightLabel];
 
     // Cell text view
     self.textView.text = imageDetail;
-    self.textView.textColor = [UIColor piwigoLeftLabelColor];
-    self.textView.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.textView.textColor = [UIColor piwigoColorLeftLabel];
+    self.textView.backgroundColor = [UIColor piwigoColorBackground];
     self.textView.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
 }
 

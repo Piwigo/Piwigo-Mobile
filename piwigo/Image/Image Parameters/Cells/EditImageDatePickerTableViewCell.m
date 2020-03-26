@@ -119,8 +119,8 @@ typedef enum {
 
 -(void)setDatePickerWithDate:(NSDate *)date animated:(BOOL)animated
 {
-    self.datePicker.backgroundColor = [UIColor piwigoCellBackgroundColor];
-    self.datePicker.tintColor = [UIColor piwigoLeftLabelColor];
+    self.datePicker.backgroundColor = [UIColor piwigoColorCellBackground];
+    self.datePicker.tintColor = [UIColor piwigoColorLeftLabel];
 
     NSCalendar *calendar = [NSCalendar currentCalendar];
     NSTimeInterval daysInSec = [date timeIntervalSinceDate:self.pickerRefDate];
@@ -290,7 +290,7 @@ typedef enum {
     if (label == nil) {
         label = [UILabel new];
         label.font = [UIFont piwigoFontNormal];
-        label.textColor = [UIColor piwigoLeftLabelColor];
+        label.textColor = [UIColor piwigoColorLeftLabel];
     }
     switch (component) {
         case ComponentOrderDay:
@@ -385,15 +385,15 @@ typedef enum {
 
 -(void)setDatePickerButtons
 {
-    self.toolBarTop.barTintColor = [UIColor piwigoCellBackgroundColor];
+    self.toolBarTop.barTintColor = [UIColor piwigoColorCellBackground];
     self.unsetDateButton.tintColor = [UIColor redColor];
-    self.incrementMonthButton.tintColor = [UIColor piwigoRightLabelColor];
-    self.decrementMonthButton.tintColor = [UIColor piwigoRightLabelColor];
+    self.incrementMonthButton.tintColor = [UIColor piwigoColorRightLabel];
+    self.decrementMonthButton.tintColor = [UIColor piwigoColorRightLabel];
 
-    self.toolBarBottom.barTintColor = [UIColor piwigoCellBackgroundColor];
-    self.todayDateButton.tintColor = [UIColor piwigoRightLabelColor];
-    self.incrementYearButton.tintColor = [UIColor piwigoRightLabelColor];
-    self.decrementYearButton.tintColor = [UIColor piwigoRightLabelColor];
+    self.toolBarBottom.barTintColor = [UIColor piwigoColorCellBackground];
+    self.todayDateButton.tintColor = [UIColor piwigoColorRightLabel];
+    self.incrementYearButton.tintColor = [UIColor piwigoColorRightLabel];
+    self.decrementYearButton.tintColor = [UIColor piwigoColorRightLabel];
 }
 
 - (IBAction)unsetDate:(id)sender

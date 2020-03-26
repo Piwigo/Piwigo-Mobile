@@ -36,7 +36,7 @@ NSString * const kImageUploadThumbTableCell_ID = @"ImageUploadThumbTableCell";
     self.images = imageSelection;
     
     // Collection of images
-    self.backgroundColor = [UIColor piwigoCellBackgroundColor];
+    self.backgroundColor = [UIColor piwigoColorCellBackground];
     if (self.imageUploadThumbCollectionView == nil) {
         self.imageUploadThumbCollectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:[UICollectionViewFlowLayout new]];
         [self.imageUploadThumbCollectionView reloadData];

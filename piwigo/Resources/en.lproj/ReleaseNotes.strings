@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v2.5.0_text" = "Version 2.5\n\n• Minor bug fixes and improvements of the interface\n• Code modernization";
+
 "v2.4.8_text" = "Version 2.4.8\n\n• Piwigo warns you when:\n - a website has a certificate that is not valid,\r - before establishing an insecure connection\n• Improved cache management\n• Minor bug fixes and improvements of the interface";
 
 "v2.4.7_text" = "Version 2.4.7\nJanuary 30, 2020\n\n• Chinese Simplified, Russian and Spanish translations\n• Fixes a video playback issue on some servers";
@@ -60,7 +62,7 @@
 
 "v2.1.6_text" = "Version 2.1.6\nJanuary 7, 2018\n\n• Arabic translation\n• Improved HTTP basic access authentication management\n• Minor bug fixes and improvements of the interface";
 
-"v2.1.5_text" = "Version 2.1.5\nDecember 21, 2017\n\n• Add possibility to cancel uploads\n• Add option for deleting photos after upload\n• Add compatibility with Optimize Storage (iCloud)\n• Preserve photo format after resize whenever possible\n• Danish and Indonesian translations\n• Fix metadata partly lost upon download\n• Fix PNG format replaced with JPEG before upload\n• Fix issues encountered with iOS 11 and iPhone X\n• Fix minor bugs\n• Code modernisation";
+"v2.1.5_text" = "Version 2.1.5\nDecember 21, 2017\n\n• Add possibility to cancel uploads\n• Add option for deleting photos after upload\n• Add compatibility with Optimize Storage (iCloud)\n• Preserve photo format after resize whenever possible\n• Danish and Indonesian translations\n• Fix metadata partly lost upon download\n• Fix PNG format replaced with JPEG before upload\n• Fix issues encountered with iOS 11 and iPhone X\n• Fix minor bugs\n• Code modernization";
 
 "v2.1.4_text" = "Version 2.1.4\nOctober 31, 2017\n\n• Swedish translation\n• Bug fixes";
 

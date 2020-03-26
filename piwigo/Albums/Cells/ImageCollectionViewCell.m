@@ -59,7 +59,7 @@
         self.playImage = [UIImageView new];
         UIImage *play = [UIImage imageNamed:@"video"];
         self.playImage.image = [play imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        self.playImage.tintColor = [UIColor piwigoOrange];
+        self.playImage.tintColor = [UIColor piwigoColorOrange];
         self.playImage.hidden = YES;
         self.playImage.translatesAutoresizingMaskIntoConstraints = NO;
         self.playImage.contentMode = UIViewContentModeScaleAspectFit;
@@ -71,7 +71,7 @@
         // Banners at bottom of thumbnails
 		self.bottomLayer = [UIView new];
 		self.bottomLayer.translatesAutoresizingMaskIntoConstraints = NO;
-		self.bottomLayer.backgroundColor = [UIColor piwigoBackgroundColor];
+		self.bottomLayer.backgroundColor = [UIColor piwigoColorBackground];
 		self.bottomLayer.alpha = 0.7;
 		[self.contentView addSubview:self.bottomLayer];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintFillWidth:self.bottomLayer]];
@@ -81,7 +81,7 @@
 		self.nameLabel = [UILabel new];
 		self.nameLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		self.nameLabel.font = [UIFont piwigoFontTiny];
-		self.nameLabel.textColor = [UIColor piwigoLeftLabelColor];
+		self.nameLabel.textColor = [UIColor piwigoColorLeftLabel];
 		self.nameLabel.adjustsFontSizeToFitWidth = YES;
 		self.nameLabel.minimumScaleFactor = 0.7;
         self.nameLabel.numberOfLines = 1;
@@ -117,7 +117,7 @@
 		self.selectedImage.contentMode = UIViewContentModeScaleAspectFit;
 		UIImage *checkMark = [UIImage imageNamed:@"checkMark"];
 		self.selectedImage.image = [checkMark imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-		self.selectedImage.tintColor = [UIColor piwigoOrange];
+		self.selectedImage.tintColor = [UIColor piwigoColorOrange];
 		self.selectedImage.hidden = YES;
 		[self.contentView addSubview:self.selectedImage];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintView:self.selectedImage toSize:CGSizeMake(25, 25)]];
@@ -302,7 +302,7 @@
 -(void)highlightOnCompletion:(void (^)(void))completion
 {
     // Select cell of image of interest and apply effect
-    self.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.backgroundColor = [UIColor piwigoColorBackground];
     self.contentMode = UIViewContentModeScaleAspectFit;
     [UIView animateWithDuration:0.4 delay:0.3 options:UIViewAnimationOptionAllowUserInteraction animations:^{
         [self.cellImage setAlpha:0.2];
