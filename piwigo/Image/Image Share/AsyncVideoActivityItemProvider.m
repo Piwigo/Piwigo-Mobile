@@ -14,6 +14,10 @@
 #import "Model.h"
 #import "PhotosFetch.h"
 
+//#ifndef DEBUG_SHARE
+//#define DEBUG_SHARE
+//#endif
+
 NSString * const kPiwigoNotificationDidShareVideo = @"kPiwigoNotificationDidShareVideo";
 NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationCancelDownloadVideo";
 
@@ -59,9 +63,20 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didFinishSharingVideo) name:kPiwigoNotificationDidShareVideo object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cancelDownloadVideoTask) name:kPiwigoNotificationCancelDownloadVideo object:nil];
     
-    // Download video synchronously
+    // Determine the URL request and filename of the image file
+    NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:self.imageData.fullResPath]];
+    
+    // Do we have the video in cache?
     self.imageFilePath = nil;
-    [self downloadVideoSynchronously];
+    NSData *cachedImageData = [[[Model sharedInstance].imageCache cachedResponseForRequest:urlRequest] data];
+    if ((cachedImageData == nil) || (cachedImageData.bytes == 0)) {
+        // Download video synchronously
+        [self downloadSynchronouslyVideoWithUrlRequest:urlRequest];
+    } else {
+        // Video already in cache
+        NSURL *tempDirectoryUrl = [NSURL fileURLWithPath:NSTemporaryDirectory()];
+        self.imageFilePath = [tempDirectoryUrl URLByAppendingPathComponent:self.imageData.fileName];
+    }
     
     // Cancel item task if download failed
     if (self.alertTitle) {
@@ -85,15 +100,17 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
         [self.delegate imageActivityItemProviderPreprocessingDidEnd:self withImageId:self.imageData.imageId];
     });
     
-    // Return image to share
+    // Shared files w/ or w/o private metadata are saved in the /tmp directory and will be deleted:
+    // - by the app if the user kills it
+    // - by the system after a certain amount of time
     return self.imageFilePath;
 }
 
--(void)downloadVideoSynchronously
+-(void)downloadSynchronouslyVideoWithUrlRequest:(NSURLRequest*)urlRequest
 {
     dispatch_semaphore_t sema = dispatch_semaphore_create(0);
-    self.task = [ImageService downloadImage:self.imageData
-                              ofMinimumSize:INFINITY
+    self.task = [ImageService downloadVideo:self.imageData
+                             withUrlRequest:urlRequest
                                  onProgress:^(NSProgress *progress) {
                                      // Notify the delegate on the main thread to show how it makes progress.
                                      dispatch_async(dispatch_get_main_queue(), ^{
@@ -109,6 +126,11 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
                                   dispatch_semaphore_signal(sema);
                               }
                               else {
+                                  // Cache video
+                                  NSCachedURLResponse *cachedResponse = [[NSCachedURLResponse alloc] initWithResponse:response data:[NSData dataWithContentsOfURL:filePath]];
+                                  [[Model sharedInstance].imageCache storeCachedResponse:cachedResponse
+                                                                              forRequest:urlRequest];
+
                                   // Retrieve image from file
                                   self.imageFilePath = filePath;
                                   dispatch_semaphore_signal(sema);
@@ -127,9 +149,6 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
 
 -(void)didFinishSharingVideo
 {
-    // Delete temporary image file if exists
-    [[NSFileManager defaultManager] removeItemAtURL:self.imageFilePath error:nil];
-    
     // Remove image share observers
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationDidShareVideo object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationCancelDownloadVideo object:nil];

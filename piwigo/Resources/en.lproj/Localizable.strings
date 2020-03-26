@@ -74,6 +74,10 @@
 "loginHTTP_message" = "Basic access authentification is required by the Piwigo server:";
 "loginHTTPuser_placeholder" = "Username";
 "loginHTTPpwd_placeholder" = "Password";
+"loginCertFailed_title" = "Connection Not Private";
+"loginCertFailed_message" = "Piwigo warns you when a website has a certificate that is not valid. Do you still want to accept this certificate?";
+"loginHTTPSfailed_title" = "Secure Connection Failed";
+"loginHTTPSfailed_message" = "Piwigo cannot establish a secure connection. Do you want to try to establish an insecure connection?";
 
 // Login — Errors
 "serverURLerror_title" = "Incorrect URL";
@@ -108,8 +112,6 @@
 
 // Logout — Errors
 "logoutFail_title" = "Logout Failed";
-"logoutFail_message" = "Failed to logout. Try again?";
-
 
 // ===========================================================================
 // ==> ALBUMS

@@ -485,8 +485,8 @@
     // Sort lists of activities
     NSArray *sortedActivities = [listOfActivities
                         sortedArrayUsingComparator:^NSComparisonResult(NSString *a, NSString *b) {
-        NSString *obj1 = [[Model sharedInstance] getNameForShareActivity:a forWidth:INFINITY];
-        NSString *obj2 = [[Model sharedInstance] getNameForShareActivity:b forWidth:INFINITY];
+        NSString *obj1 = [[Model sharedInstance] getNameForShareActivity:a forWidth:CGFLOAT_MAX];
+        NSString *obj2 = [[Model sharedInstance] getNameForShareActivity:b forWidth:CGFLOAT_MAX];
         return [obj1 compare:obj2] != NSOrderedAscending;
     }];
     

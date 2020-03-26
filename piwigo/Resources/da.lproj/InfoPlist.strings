@@ -6,4 +6,4 @@
   Copyright © 2017 Piwigo.org. All rights reserved.
 */
 
-"NSPhotoLibraryUsageDescription" = "så den vil have mulighed for at hente billeder til Fotos og uploade billeder til din Piwigo.";
+"NSPhotoLibraryUsageDescription" = "så den vil have mulighed for at gemme billeder i kamerarulle og uploade billeder til din Piwigo.";

@@ -61,6 +61,10 @@
 "loginHTTP_message" = "مطلوب مصادقة الوصول الأساسية من قبل خادم Piwigo:";
 "loginHTTPuser_placeholder" = "اسم المستخدم";
 "loginHTTPpwd_placeholder" = "كلمة المرور";
+"loginCertFailed_title" = "Connection Not Private";
+"loginCertFailed_message" = "Piwigo warns you when a website has a certificate that is not valid. Do you still want to accept this certificate?";
+"loginHTTPSfailed_title" = "Secure Connection Failed";
+"loginHTTPSfailed_message" = "Piwigo cannot establish a secure connection. Do you want to try to establish an insecure connection?";
 
 // Login — Errors
 "serverURLerror_title" = "URL غير صحيحة";

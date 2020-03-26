@@ -381,26 +381,50 @@
     };
 
     @autoreleasepool {
-        [[PHImageManager defaultManager] requestImageDataForAsset:image.imageAsset options:options
-                     resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+        if (@available(iOS 13.0, *)) {
+            [[PHImageManager defaultManager] requestImageDataAndOrientationForAsset:image.imageAsset
+                    options:options
+              resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, CGImagePropertyOrientation orientation, NSDictionary * _Nullable info) {
 #if defined(DEBUG_UPLOAD)
-                         NSLog(@"retrieveFullSizeImageDataForAsset \"%@\" returned info(%@)", image.fileName, info);
-                         NSLog(@"got image %.0fw x %.0fh with orientation:%ld", imageObject.size.width, imageObject.size.height, (long)orientation);
+                     NSLog(@"retrieveFullSizeImageDataForAsset \"%@\" returned info(%@)", image.fileName, info);
+                     NSLog(@"got image %.0fw x %.0fh with orientation:%ld", imageObject.size.width, imageObject.size.height, (long)orientation);
 #endif
-                         if ([info objectForKey:PHImageErrorKey] || (imageData.length == 0)) {
-                             NSError *error = [info valueForKey:PHImageErrorKey];
-                             // Inform user and propose to cancel or continue
-                             [self showErrorWithTitle:NSLocalizedString(@"imageUploadError_title", @"Image Upload Error")
-                                           andMessage:[NSString stringWithFormat:NSLocalizedString(@"imageUploadError_iCloud", @"Could not retrieve image. Error: %@"), [error localizedDescription]]
-                                          forRetrying:YES
-                                            withImage:image];
-                             return;
-                         }
-
-                         // Expected resource available
-                         [self modifyImage:image withData:imageData andObject:imageObject];
+                     if ([info objectForKey:PHImageErrorKey] || (imageData.length == 0)) {
+                         NSError *error = [info valueForKey:PHImageErrorKey];
+                         // Inform user and propose to cancel or continue
+                         [self showErrorWithTitle:NSLocalizedString(@"imageUploadError_title", @"Image Upload Error")
+                                       andMessage:[NSString stringWithFormat:NSLocalizedString(@"imageUploadError_iCloud", @"Could not retrieve image. Error: %@"), [error localizedDescription]]
+                                      forRetrying:YES
+                                        withImage:image];
+                         return;
                      }
-         ];
+
+                     // Expected resource available
+                     [self modifyImage:image withData:imageData andObject:imageObject];
+            }];
+        }
+        else {
+            [[PHImageManager defaultManager] requestImageDataForAsset:image.imageAsset
+                      options:options
+                resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+#if defined(DEBUG_UPLOAD)
+                     NSLog(@"retrieveFullSizeImageDataForAsset \"%@\" returned info(%@)", image.fileName, info);
+                     NSLog(@"got image %.0fw x %.0fh with orientation:%ld", imageObject.size.width, imageObject.size.height, (long)orientation);
+#endif
+                     if ([info objectForKey:PHImageErrorKey] || (imageData.length == 0)) {
+                         NSError *error = [info valueForKey:PHImageErrorKey];
+                         // Inform user and propose to cancel or continue
+                         [self showErrorWithTitle:NSLocalizedString(@"imageUploadError_title", @"Image Upload Error")
+                                       andMessage:[NSString stringWithFormat:NSLocalizedString(@"imageUploadError_iCloud", @"Could not retrieve image. Error: %@"), [error localizedDescription]]
+                                      forRetrying:YES
+                                        withImage:image];
+                         return;
+                     }
+
+                     // Expected resource available
+                     [self modifyImage:image withData:imageData andObject:imageObject];
+                }];
+        }
     }
 }
 
@@ -1483,38 +1507,28 @@ static NSString * FourCCString(FourCharCode code) {
                                            // progress
                                        } OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
 
-                                           if([[response objectForKey:@"stat"] isEqualToString:@"ok"])
-                                           {
-                                               // Increment number of images in category
-                                               [[[CategoriesData sharedInstance] getCategoryById:image.categoryToUploadTo] incrementImageSizeByOne];
-                                           
-                                               // Read image/video information and update cache
-                                               [self addImageDataToCategoryCache:imageId];
-                                           }
-                                           else {
-                                               // Display Piwigo error
-                                               NSInteger errorCode = NSNotFound;
-                                               if ([response objectForKey:@"err"]) {
-                                                   errorCode = [[response objectForKey:@"err"] intValue];
-                                               }
-                                               NSString *errorMsg = @"";
-                                               if ([response objectForKey:@"message"]) {
-                                                   errorMsg = [response objectForKey:@"message"];
-                                               }
-                                               NSError *error = [NetworkHandler getPiwigoErrorMessageFromCode:errorCode message:errorMsg path:kPiwigoImageSetInfo andURLparams:nil];
-                                               
-                                               // Inform user and propose to cancel or continue
-                                               [self showErrorWithTitle:NSLocalizedString(@"uploadError_title", @"Upload Error")
-                                                             andMessage:[error localizedDescription]
-                                                            forRetrying:NO
-                                                              withImage:image];
-                                           }
-                                       } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                                           // Inform user and propose to cancel or continue
-                                            [self showErrorWithTitle:NSLocalizedString(@"uploadError_title", @"Upload Error")
-                                                          andMessage:[error localizedDescription]
-                                                         forRetrying:NO
-                                                           withImage:image];
+                           if([[response objectForKey:@"stat"] isEqualToString:@"ok"])
+                           {
+                               // Increment number of images in category
+                               [[[CategoriesData sharedInstance] getCategoryById:image.categoryToUploadTo] incrementImageSizeByOne];
+                           
+                               // Read image/video information and update cache
+                               [self addImageDataToCategoryCache:imageId];
+                           }
+                           else {
+                               // Display Piwigo error in HUD
+                               NSError *error = [NetworkHandler getPiwigoErrorFromResponse:response path:kPiwigoImageSetInfo andURLparams:nil];
+                               [self showErrorWithTitle:NSLocalizedString(@"uploadError_title", @"Upload Error")
+                                             andMessage:[error localizedDescription]
+                                            forRetrying:NO
+                                              withImage:image];
+                           }
+                       } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                           // Inform user and propose to cancel or continue
+                            [self showErrorWithTitle:NSLocalizedString(@"uploadError_title", @"Upload Error")
+                                          andMessage:[error localizedDescription]
+                                         forRetrying:NO
+                                           withImage:image];
 }];
 }
 

@@ -64,12 +64,15 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
                     ListOnCompletion:(void (^)(NSURLSessionTask *task, PiwigoImageData *imageData))completion
                            onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(NSURLSessionDownloadTask*)downloadImage:(PiwigoImageData*)image
-                            ofMinimumSize:(NSInteger)minSize
++(NSURLRequest*)urlRequestForImage:(PiwigoImageData*)image withMnimumSize:(CGFloat)minSize;
++(NSURL *)getFileUrlOfImage:(PiwigoImageData*)image withURLrequest:(NSURLRequest *)urlRequest;
++(NSURLSessionDownloadTask*)downloadImage:(PiwigoImageData*)imageData
+                   withUrlRequest:(NSURLRequest*)urlRequest
                        onProgress:(void (^)(NSProgress *))progress
                 completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler;
 
-+(NSURLSessionTask*)downloadVideo:(PiwigoImageData*)video
++(NSURLSessionDownloadTask*)downloadVideo:(PiwigoImageData*)video
+                   withUrlRequest:(NSURLRequest*)urlRequest
                        onProgress:(void (^)(NSProgress *))progress
                 completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler;
 
@@ -83,19 +86,19 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
 
 +(NSURLSessionTask*)setImageProperties:(PiwigoImageData *)imageData
                             onProgress:(void (^)(NSProgress *))progress
-                          OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
+                          OnCompletion:(void (^)(NSURLSessionTask *task, id response))completion
                              onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 +(NSURLSessionTask*)setImageInfoForImageWithId:(NSInteger)imageId
                                withInformation:(NSDictionary*)imageInformation
                                     onProgress:(void (^)(NSProgress *))progress
-                                  OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
+                                  OnCompletion:(void (^)(NSURLSessionTask *task, id response))completion
                                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 +(NSURLSessionTask*)setImageFileForImageWithId:(NSInteger)imageId
                                   withFileName:(NSString*)fileName
                                     onProgress:(void (^)(NSProgress *))progress
-                                  OnCompletion:(void (^)(NSURLSessionTask *task, NSDictionary *response))completion
+                                  OnCompletion:(void (^)(NSURLSessionTask *task, id response))completion
                                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 +(NSURLSessionTask*)setCategoriesForImage:(PiwigoImageData *)imageId

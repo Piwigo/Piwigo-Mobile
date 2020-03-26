@@ -1455,8 +1455,8 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                     [self.selectedImageIds removeObject:imageIdObject];
                 }
                 
-                // Reload the cell and update the navigation bar and toolbar
-                [self.imagesCollection reloadData];
+                // Reload the cell and update the navigation bar
+                [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
                 [self updateButtonsInSelectionMode];
             }
         }
@@ -2106,6 +2106,14 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     [self presentViewController:activityViewController animated:YES completion:nil];
 }
 
+-(void)cancelShareImages
+{
+    // Cancel video file donwload
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCancelDownloadVideo object:nil];
+    // Cancel image file download
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCancelDownloadImage object:nil];
+}
+
 
 #pragma mark - Move/Copy images to Category
 
@@ -2115,7 +2123,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     [self disableBarButtons];
     
     // Determine index of first selected cell
-    NSInteger indexOfFirstSelectedImage = INFINITY;
+    NSInteger indexOfFirstSelectedImage = LONG_MAX;
     PiwigoImageData *firstImageData;
     for (NSNumber *imageId in self.selectedImageIds) {
         NSInteger obj1 = [imageId integerValue];
@@ -2537,7 +2545,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                     selectedCell.isSelected = NO;
                     [self.selectedImageIds removeObject:imageIdObject];
                 }
-                [collectionView reloadData];
+                [collectionView reloadItemsAtIndexPaths:@[indexPath]];
                 
                 // and display nav buttons
                 [self updateButtonsInSelectionMode];
@@ -2589,6 +2597,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             hud.mode = MBProgressHUDModeAnnularDeterminate;
             if (isDownloading) {
                 hud.detailsLabel.text = [NSString stringWithFormat:@"%ld / %ld", (long)(self.totalNumberOfImages - self.selectedImageIds.count + 1), (long)self.totalNumberOfImages];
+                [hud.button setTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+                            forState:UIControlStateNormal];
+                [hud.button addTarget:self action:@selector(cancelShareImages) forControlEvents:UIControlEventTouchUpInside];
             } else {
                 hud.detailsLabel.text = @"";
             }
@@ -2874,6 +2885,11 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 -(void)showErrorWithTitle:(NSString *)title andMessage:(NSString *)message
 {
+    // Close HUD if needed
+    if (self.hudViewController) {
+        [self hideHUDwithSuccess:NO completion:nil];
+    }
+    
     // Display error alert after trying to share image
     dispatch_async(dispatch_get_main_queue(),
                    ^(void){
@@ -2892,7 +2908,10 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                        UIAlertAction* dismissAction = [UIAlertAction
                                                        actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
                                                        style:UIAlertActionStyleCancel
-                                                       handler:^(UIAlertAction * action) { }];
+                                                       handler:^(UIAlertAction * action) {
+                           // Closes ActivityView
+                           [topViewController dismissViewControllerAnimated:YES completion:nil];
+                       }];
                        
                        [alert addAction:dismissAction];
                        if (@available(iOS 13.0, *)) {

@@ -61,6 +61,10 @@
 "loginHTTP_message" = "Login kræves af Piwigo server:";
 "loginHTTPuser_placeholder" = "Brugernavn";
 "loginHTTPpwd_placeholder" = "Adgangskode";
+"loginCertFailed_title" = "Forbindelse er ikke sikker";
+"loginCertFailed_message" = "Piwigo advarer dig når en hjemmeside har et ugyldigt certifikat. Vil du stadig acceptere dette certifikat?";
+"loginHTTPSfailed_title" = "Sikker forbindelse fejlede";
+"loginHTTPSfailed_message" = "Piwigo kan ikke etablere en sikker forbindelse. Vil du forsøge at etablere en usikker forbindelse?";
 
 // Login — Errors
 "serverURLerror_title" = "Forkert URL";
@@ -132,7 +136,7 @@
 "categorySort_ratingScoreAscending" = "Bedømmelse, lav → høj";
 "categorySort_visitsDescending" = "Besøg, høj → lav";
 "categorySort_visitsAscending" = "Besøg, lav → høj";
-"categorySort_manual" = "Manuel ordre";
+"categorySort_manual" = "Manuel sortering";
 
 "categorySort_videosOnly" = "Kun Videoer";
 "categorySort_imagesOnly" = "Kun Billeder";
@@ -146,7 +150,7 @@
 
 // Album upload
 "categoryUpload_noSubAlbum" = "Der er ikke noget underalbum at uploade billeder til";
-"categoryUpload_chooseAlbum" = "Vælg et album for dette billede";
+"categoryUpload_chooseAlbum" = "Vælg et underalbum til upload af billeder";
 "categoryUpload_LocalAlbums" = "Lokale album";
 "categoryUpload_chooseLocalAlbum" = "Vælg et album at hente biller fra";
 "categoryUpload_iCloudAlbums" = "iCloud album";
@@ -216,8 +220,8 @@
 // Album move
 "moveCategory" = "Flyt Album";
 "moveCategory_selectParent" = "Vælg et album at flytte albummet \"%@\" ind i";
-"moveCategory_selectRecent" = "Select a recent album to move album \"%@\" into";
-"moveCategory_selectRecentOther" = "Or select another album to move album \"%@\" into";
+"moveCategory_selectRecent" = "Vælg et af de seneste album at flytte album \"%@\" ind i";
+"moveCategory_selectRecentOther" = "Eller vælg et andet album at flytte album \"%@\" ind i";
 "moveCategory_message" = "Er du sikker på du vil flytte \"%@\" til albummet \"%@\"?";
 "moveCategoryHUD_moving" = "Flytter album…";
 
@@ -227,15 +231,15 @@
 
 // Album set photo thumbnail
 //"categorySelection_select" = "Select Album";
-"categorySelection_current" = "Vælg aktuelle album for dette billede";
-"categorySelection_one" = "Vælg en af de album, som indeholder dette billede";
-"categorySelection_other" = "eller vælg et andet album";
+"categorySelection_current" = "Vælg aktivt album for dette billede";
+"categorySelection_one" = "Vælg et af de album, som indeholder dette billede";
+"categorySelection_other" = "eller vælg et andet album til billedet";
 "categoryImageSet_title" = "Album miniature";
 "categoryImageSet_message" = "Er du sikker på, at du vil bruge dette billede som miniaturebillede for albummet \"%@\"?";
 "categoryImageSetHUD_updating" = "Opdaterer Album miniature…";
 
 // Album set photo thumbnail — Errors
-"categoryImageSetError_title" = "Billede Set fejl";
+"categoryImageSetError_title" = "Billedsæt fejl";
 "categoryImageSetError_message" = "Kunne ikke opdatere miniaturebillede for albumet";
 
 
@@ -267,10 +271,10 @@
 
 // Image details
 "imageDetailsView_title" = "Egenskaber";
-"editImageDetails_title" = "Titel:";
+"editImageDetails_title" = "Titel";
 "editImageDetails_titlePlaceholder" = "Titel";
-"editImageDetails_author" = "Forfatter:";
-"editImageDetails_tags" = "Etiketter:";
+"editImageDetails_author" = "Forfatter";
+"editImageDetails_tags" = "Etiketter";
 "editImageDetails_privacyLevel" = "Hvem kan se dette billede?";
 "editImageDetails_description" = "Beskrivelse";
 "editImageDetails_comments" = "Kommentarer";
@@ -334,10 +338,10 @@
 "deleteImageProgress_title" = "Sletning af %@%% Afsluttet";
 
 "deleteSingleImage_title" = "Slet Billede";
-"deleteSingleImageHUD_deleting" = "Sletter foto…";
-"deleteSeveralImagesHUD_deleting" = "Sletter fotos…";
+"deleteSingleImageHUD_deleting" = "Sletter billede…";
+"deleteSeveralImagesHUD_deleting" = "Sletter billeder…";
 "removeSingleImage_title" = "Fjern fra Album";
-"removeSingleImageHUD_removing" = "Sletter foto…";
+"removeSingleImageHUD_removing" = "Sletter billede…";
 "deleteSingleImage_message" = "Er du sikker på, at du ønsker at slette dette billede? Dette kan ikke fortrydes!";
 "deleteSeveralImages_title" = "Slet %@ Billeder";
 "deleteSeveralImages_message" = "Er du sikker på du ønsker at slette disse %@ billeder? Dette kan ikke fortrydes!";
@@ -371,14 +375,14 @@
 // Image move
 "moveImage_title" = "Flyt til album";
 "moveSingleImage_selectAlbum" = "Vælg et album at flytte billede \"%@\" til";
-"moveSingleImage_selectRecent" = "Select a recent album to move photo \"%@\" to";
-"moveSingleImage_selectRecentOther" = "Or select another album to move photo \"%@\" to";
+"moveSingleImage_selectRecent" = "Vælg et af de seneste album at flytte billede \"%@\" til";
+"moveSingleImage_selectRecentOther" = "Eller vælg et andet album at flytte billede \"%@\" til";
 "moveSeveralImages_selectAlbum" = "Vælg et album at flytte billederne til";
-"moveSeveralImages_selectRecent" = "Select a recent album to move the photos to";
-"moveSeveralImages_selectRecentOther" = "Or select another album to move the photos to";
+"moveSeveralImages_selectRecent" = "Vælg et af de seneste album som billederne skal flyttes til";
+"moveSeveralImages_selectRecentOther" = "Eller vælg et andet album som billederne skal flyttes til";
 "moveSingleImage_message" = "Er du sikker på du vil flytte billede \"%@\" til albummet \"%@\"?";
 "moveSeveralImages_message" = "Er du sikker på du vil flytte billederne til album \"%@\"?";
-"moveSingleImageHUD_moving" = "Flytter billeder…";
+"moveSingleImageHUD_moving" = "Flytter billede…";
 "moveSeveralImagesHUD_moving" = "Flytter billeder…";
 
 // Image move — Errors
@@ -388,14 +392,14 @@
 // Image copy
 "copyImage_title" = "Kopier til album";
 "copySingleImage_selectAlbum" = "Vælg et album at kopiere billede \"%@\" til";
-"copySingleImage_selectRecent" = "Select a recent album to copy photo \"%@\" to";
-"copySingleImage_selectRecentOther" = "Or select another album to copy photo \"%@\" to";
+"copySingleImage_selectRecent" = "Vælg et af de seneste album at kopiere billede \"%@\" til";
+"copySingleImage_selectRecentOther" = "Eller vælg et andet album som billederne \"%@\" skal flyttes til";
 "copySeveralImages_selectAlbum" = "Vælg et album at kopiere billederne til";
-"copySeveralImages_selectRecent" = "Select a recent album to copy the photos to";
-"copySeveralImages_selectRecentOther" = "Or select another album to copy the photos to";
+"copySeveralImages_selectRecent" = "Vælg et at de seneste album som billederne skal flyttes til";
+"copySeveralImages_selectRecentOther" = "Eller et andet album som billederne skal flyttes til";
 "copySingleImage_message" = "Er du sikker på du vil flytte billede \"%@\" til album \"%@\"?";
 "copySeveralImages_message" = "Er du sikker på du vil flytte billederne til album \"%@\"?";
-"copySingleImageHUD_copying" = "Kopierer billeder…";
+"copySingleImageHUD_copying" = "Kopierer billede…";
 "copySeveralImagesHUD_copying" = "Kopierer billeder…";
 
 // Image copy — Errors
@@ -412,10 +416,10 @@
 "imageUploadDetailsView_title" = "Billeder";
 "imageUploadDetailsButton_title" = "Upload";
 "imageUploadDetailsEdit_title" = "Vælg Billeder til Upload";
-"imageUploadDetailsUploading_title" = "Billeder der Bliver Uploadet";
+"imageUploadDetailsUploading_title" = "Billeder der bliver Uploadet";
 "imageUploadDetailsCell_uploadComplete" = "Fuldført! Efterbehandling...";
 
-"imageUploadRemove" = "Fjernelse af uploadede billeder";
+"imageUploadRemove" = "Fjerner uploadede billeder";
 
 "imageUploadTableCell_uploading" = "Uploader...";
 "imageUploadProgressBar_zero" = "Uploader 0/0";
@@ -469,7 +473,7 @@
 "shareActivityCode_Instagram" = "Send til Instagram";
 "shareActivityCode_Instagram>375px" = "Send billeder til Instagram";
 "shareActivityCode_Signal" = "Send med Signal";
-"shareActivityCode_Signal>375px" = "Send billeder til Signal";
+"shareActivityCode_Signal>375px" = "Send billeder med Signal app";
 "shareActivityCode_Snapchat" = "Send til Snapchat";
 "shareActivityCode_Snapchat>375px" = "Send Billeder til Snapchat";
 "shareActivityCode_TencentWeibo" = "Send til TencentWeibo";
@@ -485,7 +489,7 @@
 "shareActivityCode_CameraRoll" = "Gem i kamerarulle";
 "shareActivityCode_CameraRoll>375px" = "Gem billeder i kamerarulle";
 "shareActivityCode_Other" = "Del med andre programmer";
-"shareActivityCode_Other>375px" = "Del billeder med andre programmer";
+"shareActivityCode_Other>375px" = "Del billeder med andre apps";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS / PHOTOS LIBRARY
@@ -528,8 +532,8 @@
 "defaultAlbumThumbnailFile>414px" = "Album miniature";
 "defaultAlbumThumbnailSizeHeader" = "Vælg album miniature størrelse";
 "maxNberOfRecentAlbums" = "Seneste";
-"maxNberOfRecentAlbums>320px" = "Recent Albums";
-"maxNberOfRecentAlbums>414px" = "Number of Recent Albums";
+"maxNberOfRecentAlbums>320px" = "Seneste album";
+"maxNberOfRecentAlbums>414px" = "Antal seneste album";
 
 "thumbnailSizeSquare" = "Firkant";
 "thumbnailSizeThumbnail" = "Miniature";
@@ -602,12 +606,12 @@
 "settings_photoCompress>375px" = "Komprimer billede før Upload";
 "settings_photoQuality" = "> Kvalitet";
 "settings_placeholderQuality" = "Angiv en billedkvalitet fra 50 - 98";
-"settings_prefixFilename>414px" = "Prefix Photo Filename Before Upload";
-"settings_prefixFilename>375px" = "Prefix Filename Before Upload";
-"settings_prefixFilename" = "Prefix Photo Filename";
-"settings_defaultPrefix" = "Prefix";
-"settings_defaultPrefix>320px" = "Filename Prefix";
-"settings_defaultPrefixPlaceholder" = "Prefix";
+"settings_prefixFilename>414px" = "Præfiks billedfilnavn før upload";
+"settings_prefixFilename>375px" = "Præfiks filnavn før upload";
+"settings_prefixFilename" = "Præfiks billedfilnavn";
+"settings_defaultPrefix" = "Præfiks";
+"settings_defaultPrefix>320px" = "Filnavn præfiks";
+"settings_defaultPrefixPlaceholder" = "Præfiks";
 "settings_deleteImage>375px" = "Slet billede efter upload";
 "settings_deleteImage" = "Slet efter upload";
 
@@ -624,7 +628,7 @@
 
 // Settings — Colors
 "settingsHeader_colors" = "Farver";
-"settings_darkPalette" = "Altid mørk palet";
+"settings_darkPalette" = "Altid mørkt tema";
 "settings_switchPalette" = "Skift automatisk";
 "settings_brightness" = "Lysstyrke";
 

@@ -383,16 +383,8 @@ typedef enum {
                                 }
                                 else
                                 {
-                                    // Display Piwigo error
-                                    NSInteger errorCode = NSNotFound;
-                                    if ([response objectForKey:@"err"]) {
-                                        errorCode = [[response objectForKey:@"err"] intValue];
-                                    }
-                                    NSString *errorMsg = @"";
-                                    if ([response objectForKey:@"message"]) {
-                                        errorMsg = [response objectForKey:@"message"];
-                                    }
-                                    NSError *error = [NetworkHandler getPiwigoErrorMessageFromCode:errorCode message:errorMsg path:kPiwigoImageSetInfo andURLparams:nil];
+                                    // Display Piwigo error in HUD
+                                    NSError *error = [NetworkHandler getPiwigoErrorFromResponse:response path:kPiwigoImageSetInfo andURLparams:nil];
                                     [self hideHUDwithSuccess:NO completion:^{
                                         [self showErrorWithMessage:[error localizedDescription]];
                                     }];

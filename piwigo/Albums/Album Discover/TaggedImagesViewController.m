@@ -1321,7 +1321,7 @@
     [self disableBarButtons];
     
     // Determine index of first selected cell
-    NSInteger indexOfFirstSelectedImage = INFINITY;
+    NSInteger indexOfFirstSelectedImage = LONG_MAX;
     PiwigoImageData *firstImageData;
     for (NSNumber *imageId in self.selectedImageIds) {
         NSInteger obj1 = [imageId integerValue];

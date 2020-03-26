@@ -34,29 +34,27 @@
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
-                  if(completion) {
-                      if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
-                      {
-                          NSInteger tagId = [[[responseObject objectForKey:@"result"] objectForKey:@"id"] integerValue];
-                          completion(task, tagId);
-                      }
-                      else
-                      {
-                          // Display Piwigo error
-                          NSInteger errorCode = NSNotFound;
-                          if ([responseObject objectForKey:@"err"]) {
-                              errorCode = [[responseObject objectForKey:@"err"] intValue];
-                          }
-                          NSString *errorMsg = @"";
-                          if ([responseObject objectForKey:@"message"]) {
-                              errorMsg = [responseObject objectForKey:@"message"];
-                          }
-                          [NetworkHandler showPiwigoError:errorCode withMessage:errorMsg forPath:kPiwigoImageSearch andURLparams:nil];
-                          
-                          completion(task, NSNotFound);
-                      }
-                  }
-              } failure:^(NSURLSessionTask *task, NSError *error) {
+          if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
+          {
+              NSInteger tagId = [[[responseObject objectForKey:@"result"] objectForKey:@"id"] integerValue];
+              if(completion) {
+                  completion(task, tagId);
+              }
+          }
+          else
+          {
+              // Display Piwigo error
+              NSError *error = [NetworkHandler getPiwigoErrorFromResponse:responseObject
+                                    path:kPiwigoTagsAdd andURLparams:nil];
+              if(completion) {
+                  [NetworkHandler showPiwigoError:error withCompletion:^{
+                      completion(task, NSNotFound);
+                  }];
+              } else {
+                  [NetworkHandler showPiwigoError:error withCompletion:nil];
+              }
+          }
+    } failure:^(NSURLSessionTask *task, NSError *error) {
                   // No error returned if task was cancelled
                   if (task.state == NSURLSessionTaskStateCanceling) {
                       completion(task, NSNotFound);

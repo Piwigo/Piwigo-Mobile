@@ -6,9 +6,11 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.7_text" = "Version 2.4.7\n\n• Chinese Simplified, Russian and Spanish translations\n• Fixes a video playback issue on some servers";
+"v2.4.8_text" = "Versi 2.4.8\n\n• Piwigo memperingatkan Anda ketika:\n  - situs web memiliki sertifikat yang tidak valid,\n  - sebelum membuat koneksi yang tidak aman\n• Peningkatan manajemen cache\n• Perbaikan bug minor dan peningkatan antarmuka";
 
-"v2.4.6_text" = "Version 2.4.6\nJanuary 18, 2020\n\n• Edit properties of a selection of photos\n• Change creation date of a photo or video\n• Option for prefixing file names before upload\n• Minor bug fixes and improvements of the interface";
+"v2.4.7_text" = "Versi 2.4.7\n30 Januari 2020\n\n• Terjemahan Mandarin Sederhana, Rusia dan Spanyol\n• Memperbaiki masalah pemutaran video pada beberapa server";
+
+"v2.4.6_text" = "Versi 2.4.6\n18 Januari 2020\n\n• Edit properti dari pilihan foto\n• Ubah tanggal pembuatan foto atau video\n• Opsi untuk awalan nama file sebelum diunggah\n• Perbaikan bug minor dan peningkatan antarmuka";
 
 "v2.4.5_text" = "Version 2.4.5\n6 November 2019\n\n• Menampilkan gambar favorit Anda (membutuhkan Piwigo 2.10 atau lebih baru)\n• Opsi untuk menyajikan gambar yang diurutkan secara manual\n• Mengizinkan pengguna Community membuat album (dengan hak yang sesuai)\n• Perbaikan bug minor dan perbaikan antarmuka";
 

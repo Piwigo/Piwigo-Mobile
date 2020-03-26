@@ -520,7 +520,13 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
 
 - (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
+    PiwigoAlbumData *categoryData;
+    if ((self.recentCategories.count > 0) && (indexPath.section == 0)) {
+        categoryData = [self.recentCategories objectAtIndex:indexPath.row];
+    }
+    else {
+        categoryData = [self.categories objectAtIndex:indexPath.row];
+    }
     if ([self.selectedImage.categoryIds containsObject:@(categoryData.albumId)])
         return NO;
     
