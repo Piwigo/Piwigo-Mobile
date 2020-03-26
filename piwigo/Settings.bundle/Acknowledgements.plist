@@ -28,6 +28,12 @@
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 			<key>FooterText</key>
+			<string>licenceIQkeyboard_text</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>FooterText</key>
 			<string>licenceMBProgHUD_text</string>
 		</dict>
 		<dict>

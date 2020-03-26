@@ -873,11 +873,11 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
         if (completed) {
 //            NSLog(@"Selected activity was performed and returned error:%ld", (long)activityError.code);
             if (self.imageData.isVideo) {
-                // Delete shared video file & remove observers
+                // Remove observers
                 [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDidShareVideo object:nil];
             }
             else {
-                // Delete shared image file & remove observers
+                // Remove observers
                 [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDidShareImage object:nil];
             }
         } else {
@@ -890,14 +890,14 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
                     // Cancel download task
                     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCancelDownloadVideo object:nil];
                     
-                    // Delete shared video file & remove observers
+                    // Remove observers
                     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDidShareVideo object:nil];
                 }
                 else {
                     // Cancel download task
                     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCancelDownloadImage object:nil];
                     
-                    // Delete shared image file & remove observers
+                    // Remove observers
                     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDidShareImage object:nil];
                 }
             }
@@ -909,6 +909,17 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     [self presentViewController:activityViewController animated:YES completion:nil];
 }
 
+-(void)cancelShareImage
+{
+    if (self.imageData.isVideo) {
+        // Cancel video file donwload
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCancelDownloadVideo object:nil];
+    }
+    else {
+        // Cancel image file download
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCancelDownloadImage object:nil];
+    }
+}
 
 #pragma mark - Set as Album Image
 
@@ -1100,6 +1111,13 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
 
         // Will look best, if we set a minimum size.
         hud.minSize = CGSizeMake(200.f, 100.f);
+        
+        // Configure the button if managed progress
+        if (showProgress) {
+            [hud.button setTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+                        forState:UIControlStateNormal];
+            [hud.button addTarget:self action:@selector(cancelShareImage) forControlEvents:UIControlEventTouchUpInside];
+        }
     }
     
     // Set title
@@ -1351,6 +1369,11 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
 
 -(void)showErrorWithTitle:(NSString *)title andMessage:(NSString *)message
 {
+    // Close HUD if needed
+    if (self.hudViewController) {
+        [self hideHUDwithSuccess:NO completion:nil];
+    }
+    
     // Display error alert after trying to share image
     dispatch_async(dispatch_get_main_queue(),
                    ^(void){
@@ -1369,7 +1392,10 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
                        UIAlertAction* dismissAction = [UIAlertAction
                             actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
                             style:UIAlertActionStyleCancel
-                            handler:^(UIAlertAction * action) { }];
+                            handler:^(UIAlertAction * action) {
+                                // Closes ActivityView
+                                [topViewController dismissViewControllerAnimated:YES completion:nil];
+                       }];
                        
                        [alert addAction:dismissAction];
                        if (@available(iOS 13.0, *)) {

@@ -122,18 +122,31 @@ NSString * const kPiwigoNotificationDeselectImageToUpload = @"kPiwigoNotificatio
     NSMutableArray * descriptionArray = [[NSMutableArray alloc] init];
     [descriptionArray addObject:[NSString stringWithFormat:@"<%@: 0x%lx> = {", [self class], (unsigned long)self]];
     PHImageRequestOptions * imageRequestOptions = [[PHImageRequestOptions alloc] init];
-    [[PHImageManager defaultManager] requestImageDataForAsset:self.imageAsset
-                                                      options:imageRequestOptions
-                                                resultHandler:^(NSData *imageData, NSString *dataUTI,
-                                                                UIImageOrientation orientation,NSDictionary *info)
-                     {
-                         NSLog(@"info = %@", info);
-                         if ([info objectForKey:@"PHImageFileURLKey"]) {
-                             NSURL *url = [info objectForKey:@"PHImageFileURLKey"];
-                             [descriptionArray addObject:[NSString stringWithFormat:@"imageAsset         = %@", url]];
+    if (@available(iOS 13.0, *)) {
+        [[PHImageManager defaultManager] requestImageDataAndOrientationForAsset:self.imageAsset
+                            options:imageRequestOptions
+                      resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, CGImagePropertyOrientation orientation, NSDictionary * _Nullable info) {
+            NSLog(@"info = %@", info);
+            if ([info objectForKey:@"PHImageFileURLKey"]) {
+                NSURL *url = [info objectForKey:@"PHImageFileURLKey"];
+                [descriptionArray addObject:[NSString stringWithFormat:@"imageAsset         = %@", url]];
+            }
+        }];
+    }
+    else {
+        [[PHImageManager defaultManager] requestImageDataForAsset:self.imageAsset
+                                                          options:imageRequestOptions
+                                                    resultHandler:^(NSData *imageData, NSString *dataUTI,
+                                                                    UIImageOrientation orientation, NSDictionary *info)
+                         {
+                             NSLog(@"info = %@", info);
+                             if ([info objectForKey:@"PHImageFileURLKey"]) {
+                                 NSURL *url = [info objectForKey:@"PHImageFileURLKey"];
+                                 [descriptionArray addObject:[NSString stringWithFormat:@"imageAsset         = %@", url]];
+                             }
                          }
-                     }
-    ];
+        ];
+    }
 
     [descriptionArray addObject:[NSString stringWithFormat:@"image              = %@", (nil == self.fileName ? objectIsNil :(0 == self.fileName.length ? @"''" : self.fileName))]];
     [descriptionArray addObject:[NSString stringWithFormat:@"title    = %@", (nil == self.imageTitle ? objectIsNil : (0 == self.imageTitle.length ? @"''" : self.imageTitle))]];

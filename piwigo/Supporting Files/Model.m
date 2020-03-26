@@ -12,10 +12,14 @@
 #import "PiwigoImageData.h"
 #import "ImagesCollection.h"
 
-NSInteger const kPiwigoMinMemoryCache = 32;     // Min size and slider increment
-NSInteger const kPiwigoMinDiskCache   = 128;    // 32 MB memory cache, 128 MB disk cache
-NSInteger const kPiwigoMaxMemoryCache = 512;    // Max size
-NSInteger const kPiwigoMaxDiskCache   = 2048;   // 512 MB memory cache, 2 GB disk cache
+
+NSInteger const kPiwigoMemoryCacheInc = 8;      // Slider increment
+NSInteger const kPiwigoMemoryCacheMin = 0;      // Minimum size
+NSInteger const kPiwigoMemoryCacheMax = 256;    // Maximum size
+
+NSInteger const kPiwigoDiskCacheInc   = 64;     // Slider increment
+NSInteger const kPiwigoDiskCacheMin   = 128;    // Minimum size
+NSInteger const kPiwigoDiskCacheMax   = 2048;   // Maximum size
 
 NSTimeInterval const k1WeekInDays  = 60 * 60 * 24 *  7.0;
 NSTimeInterval const k2WeeksInDays = 60 * 60 * 24 * 14.0;
@@ -54,7 +58,10 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         instance.hadOpenedSession = NO;
         instance.hasUploadedImages = NO;
         instance.usesCommunityPluginV29 = NO;           // Checked at each new session
-        instance.performedHTTPauthentication = NO;      // Checked at each new session
+        instance.didRequestCertificateApproval = NO;
+        instance.didRequestHTTPauthentication = NO;
+        instance.didApproveCertificate = NO;
+        instance.certificateInformation = @"";
         instance.userCancelledCommunication = NO;
 
         // Album/category settings
@@ -126,8 +133,8 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         
         // Default cache settings
         instance.loadAllCategoryInfo = YES;         // Load all albums data at start
-		instance.diskCache = kPiwigoMinDiskCache * 4;
-		instance.memoryCache = kPiwigoMinMemoryCache * 4;
+		instance.diskCache = kPiwigoDiskCacheMin * 4;       // i.e. 512 MB
+		instance.memoryCache = kPiwigoMemoryCacheInc * 2;   // i.e. 16 MB
 		
         // Request help for translating Piwigo every 2 weeks or so
         instance.dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate] - k2WeeksInDays;
@@ -407,10 +414,10 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 	self.defaultPrivacyLevel = (kPiwigoPrivacy)[[savedData objectAtIndex:1] integerValue];
 	self.defaultAuthor = [savedData objectAtIndex:2];
 
-    self.diskCache = MAX([[savedData objectAtIndex:3] integerValue], kPiwigoMinDiskCache * 4);
-    self.diskCache = MIN(self.diskCache, kPiwigoMaxDiskCache);
-	self.memoryCache = MAX([[savedData objectAtIndex:4] integerValue], kPiwigoMinMemoryCache * 4);
-    self.memoryCache = MIN(self.memoryCache, kPiwigoMaxMemoryCache);
+    self.diskCache = MAX([[savedData objectAtIndex:3] integerValue], kPiwigoDiskCacheMin * 4);      // i.e. > 512 MB
+    self.diskCache = MIN(self.diskCache, kPiwigoDiskCacheMax);                                      // i.e. < 2 GB
+	self.memoryCache = MAX([[savedData objectAtIndex:4] integerValue], kPiwigoMemoryCacheInc * 2);  // i.e. > 16 MB
+    self.memoryCache = MIN(self.memoryCache, kPiwigoMemoryCacheMax);                                // i.e. < 256 MB
 
     self.photoQuality = [[savedData objectAtIndex:5] integerValue];
 	self.photoResize = [[savedData objectAtIndex:6] integerValue];

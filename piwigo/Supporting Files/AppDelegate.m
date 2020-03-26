@@ -281,8 +281,11 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
-    // Cache settings
+    // Override point for customization after application launch.
+    
+    // Cache data in Core Data storage
     [self setManagedObjectContext:[DataController getContext]];
+
 //    [self setDataController:[[DataController alloc] initWithCompletionBlock:^{
         //Complete user interface initialization
         // Login ?
@@ -327,23 +330,6 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
         [self.window makeKeyAndVisible];
         [self loadLoginView];
 //    }]];
-
-#if defined(DEBUG_NOCACHE)
-    // set it to 0 to clear cache
-    NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:0
-                                                         diskCapacity:0
-                                                             diskPath:nil];
-    [NSURLCache setSharedURLCache:URLCache];
-#else
-    if ([NSURLCache sharedURLCache] == nil)
-    {
-        NSURLCache *URLCache = [[NSURLCache alloc]
-                                initWithMemoryCapacity:0
-                                diskCapacity:[Model sharedInstance].diskCache * 1024*1024
-                                diskPath:nil];
-        [NSURLCache setSharedURLCache:URLCache];
-    }
-#endif
     
     // Enable network activity indicator
     [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
@@ -372,6 +358,12 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
     
     // Disable network reachability monitoring
     [[AFNetworkReachabilityManager sharedManager] stopMonitoring];
+    
+    // Empty /tmp directory
+    NSArray* tmpDirectory = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:NSTemporaryDirectory() error:NULL];
+    for (NSString *file in tmpDirectory) {
+        [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), file] error:NULL];
+    }
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
