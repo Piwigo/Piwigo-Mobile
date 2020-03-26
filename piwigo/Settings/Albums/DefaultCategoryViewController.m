@@ -62,11 +62,11 @@
 -(void)applyColorPalette
 {
     // Background color of the view
-    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.view.backgroundColor = [UIColor piwigoColorBackground];
 
     // Navigation bar
     NSDictionary *attributes = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSForegroundColorAttributeName: [UIColor piwigoColorWhiteCream],
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
@@ -74,12 +74,12 @@
         self.navigationController.navigationBar.prefersLargeTitles = NO;
     }
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
-    self.navigationController.navigationBar.barTintColor = [UIColor piwigoBackgroundColor];
-    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoColorOrange];
+    self.navigationController.navigationBar.barTintColor = [UIColor piwigoColorBackground];
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoColorBackground];
 
     // Table view
-    self.categoriesTableView.separatorColor = [UIColor piwigoSeparatorColor];
+    self.categoriesTableView.separatorColor = [UIColor piwigoColorSeparator];
     self.categoriesTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ? UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self buildCategoryArrayUsingCache:YES UntilCompletion:^(BOOL result) {
         // Build complete list
@@ -143,7 +143,7 @@
     // Header label
     UILabel *headerLabel = [UILabel new];
     headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    headerLabel.textColor = [UIColor piwigoHeaderColor];
+    headerLabel.textColor = [UIColor piwigoColorHeader];
     headerLabel.numberOfLines = 0;
     headerLabel.adjustsFontSizeToFitWidth = NO;
     headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -202,7 +202,7 @@
     if(categoryData.albumId == self.selectedCategory.albumId)
     {
         cell.userInteractionEnabled = NO;
-        cell.categoryLabel.textColor = [UIColor piwigoRightLabelColor];
+        cell.categoryLabel.textColor = [UIColor piwigoColorRightLabel];
     }
 
     // Switch between Open/Close cell disclosure
@@ -368,8 +368,8 @@
         hud.animationType = MBProgressHUDAnimationFade;
         hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
         hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
-        hud.contentColor = [UIColor piwigoHudContentColor];
-        hud.bezelView.color = [UIColor piwigoHudBezelViewColor];
+        hud.contentColor = [UIColor piwigoColorHudContent];
+        hud.bezelView.color = [UIColor piwigoColorHudBezelView];
         
         // Will look best, if we set a minimum size.
         hud.minSize = CGSizeMake(200.f, 100.f);

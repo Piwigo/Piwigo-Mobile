@@ -29,15 +29,15 @@
     
     if ([Model sharedInstance].isDarkPaletteActive) {
         if (highlighted) {
-            self.backgroundColor = [UIColor piwigoOrange];
+            self.backgroundColor = [UIColor piwigoColorOrange];
         } else {
-            self.backgroundColor = [UIColor piwigoOrangeSelected];
+            self.backgroundColor = [UIColor piwigoColorOrangeSelected];
         }
     } else {
         if (highlighted) {
-            self.backgroundColor = [UIColor piwigoOrangeSelected];
+            self.backgroundColor = [UIColor piwigoColorOrangeSelected];
         } else {
-            self.backgroundColor = [UIColor piwigoOrange];
+            self.backgroundColor = [UIColor piwigoColorOrange];
         }
     }
 }

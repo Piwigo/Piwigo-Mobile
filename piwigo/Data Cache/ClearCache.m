@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import "ClearCache.h"
 #import "CategoriesData.h"
 #import "LocationsData.h"
 #import "TagsData.h"
@@ -20,7 +19,7 @@
 	[[CategoriesData sharedInstance] clearCache];
     
     // URL requests
-    [[NSURLCache sharedURLCache] removeAllCachedResponses];
+    [[Model sharedInstance].imageCache removeAllCachedResponses];
     
     // Place names
     [[LocationsData sharedInstance] clearCache];

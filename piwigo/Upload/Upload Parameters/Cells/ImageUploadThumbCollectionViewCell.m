@@ -63,15 +63,15 @@ NSString * const kImageUploadThumbCollectionCell_ID = @"ImageUploadThumbCollecti
 -(void)applyColorPalette
 {
     // Background
-    self.imageThumbnailView.backgroundColor = [UIColor piwigoBackgroundColor];
-    self.imageDetails.backgroundColor = [UIColor piwigoBackgroundColor];
-    self.removeButtonView.backgroundColor = [UIColor piwigoCellBackgroundColor];
+    self.imageThumbnailView.backgroundColor = [UIColor piwigoColorBackground];
+    self.imageDetails.backgroundColor = [UIColor piwigoColorBackground];
+    self.removeButtonView.backgroundColor = [UIColor piwigoColorCellBackground];
 
     // Image size, file name, date and time
-    self.imageSize.textColor = [UIColor piwigoLeftLabelColor];
-    self.imageFile.textColor = [UIColor piwigoLeftLabelColor];
-    self.imageDate.textColor = [UIColor piwigoLeftLabelColor];
-    self.imageTime.textColor = [UIColor piwigoLeftLabelColor];
+    self.imageSize.textColor = [UIColor piwigoColorLeftLabel];
+    self.imageFile.textColor = [UIColor piwigoColorLeftLabel];
+    self.imageDate.textColor = [UIColor piwigoColorLeftLabel];
+    self.imageTime.textColor = [UIColor piwigoColorLeftLabel];
 }
 
 -(void)setupWithImage:(ImageUpload *)imageDetails andRemoveOption:(BOOL)hasRemove
@@ -169,8 +169,8 @@ NSString * const kImageUploadThumbCollectionCell_ID = @"ImageUploadThumbCollecti
     hud.animationType = MBProgressHUDAnimationFade;
     hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
     hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
-    hud.contentColor = [UIColor piwigoHudContentColor];
-    hud.bezelView.color = [UIColor piwigoHudBezelViewColor];
+    hud.contentColor = [UIColor piwigoColorHudContent];
+    hud.bezelView.color = [UIColor piwigoColorHudBezelView];
 
     // Define the text
     hud.label.text = label;

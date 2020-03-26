@@ -7,6 +7,7 @@
 //
 #import <MessageUI/MessageUI.h>
 #import <sys/utsname.h>
+#import <AFNetworking/AFImageDownloader.h>
 
 #import "AboutViewController.h"
 #import "AFAutoPurgingImageCache.h"
@@ -15,7 +16,6 @@
 #import "ButtonTableViewCell.h"
 #import "CategoriesData.h"
 #import "CategorySortViewController.h"
-#import "ClearCache.h"
 #import "DefaultAlbumThumbnailSizeViewController.h"
 #import "DefaultCategoryViewController.h"
 #import "DefaultImageSizeViewController.h"
@@ -24,7 +24,6 @@
 #import "LabelTableViewCell.h"
 #import "Model.h"
 #import "PiwigoImageData.h"
-#import "PrivacyPolicyViewController.h"
 #import "ReleaseNotesViewController.h"
 #import "SelectPrivacyViewController.h"
 #import "SessionService.h"
@@ -108,34 +107,37 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     // Get Server Infos if possible
     if ([Model sharedInstance].hasAdminRights)
         [self getInfos];
+    
+    // Title
+    self.title = NSLocalizedString(@"tabBar_preferences", @"Preferences");
 }
 
 -(void)applyColorPalette
 {
     // Background color of the view
-    self.view.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.view.backgroundColor = [UIColor piwigoColorBackground];
 
     // Navigation bar
     NSDictionary *attributes = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                 NSForegroundColorAttributeName: [UIColor piwigoColorWhiteCream],
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
     if (@available(iOS 11.0, *)) {
         NSDictionary *attributesLarge = @{
-                                          NSForegroundColorAttributeName: [UIColor piwigoWhiteCream],
+                                          NSForegroundColorAttributeName: [UIColor piwigoColorWhiteCream],
                                           NSFontAttributeName: [UIFont piwigoFontLargeTitle],
                                           };
         self.navigationController.navigationBar.largeTitleTextAttributes = attributesLarge;
         self.navigationController.navigationBar.prefersLargeTitles = YES;
     }
     self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    self.navigationController.navigationBar.tintColor = [UIColor piwigoOrange];
-    self.navigationController.navigationBar.barTintColor = [UIColor piwigoBackgroundColor];
-    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.navigationController.navigationBar.tintColor = [UIColor piwigoColorOrange];
+    self.navigationController.navigationBar.barTintColor = [UIColor piwigoColorBackground];
+    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoColorBackground];
 
     // Table view
-    self.settingsTableView.separatorColor = [UIColor piwigoSeparatorColor];
+    self.settingsTableView.separatorColor = [UIColor piwigoColorSeparator];
     self.settingsTableView.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self.settingsTableView reloadData];
 }
@@ -369,7 +371,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     // Header label
     UILabel *headerLabel = [UILabel new];
     headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    headerLabel.textColor = [UIColor piwigoHeaderColor];
+    headerLabel.textColor = [UIColor piwigoColorHeader];
     headerLabel.numberOfLines = 0;
     headerLabel.adjustsFontSizeToFitWidth = NO;
     headerLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -810,7 +812,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         cell.labelText = NSLocalizedString(@"settings_defaultAuthor", @"Author");
                     }
 					cell.rightTextField.text = [Model sharedInstance].defaultAuthor;
-                    cell.rightTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name") attributes:@{NSForegroundColorAttributeName: [UIColor piwigoPlaceHolderColor]}];
+                    cell.rightTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name") attributes:@{NSForegroundColorAttributeName: [UIColor piwigoColorPlaceHolder]}];
 					cell.rightTextField.delegate = self;
 					cell.rightTextField.tag = kImageUploadSettingAuthor;
 					
@@ -1016,7 +1018,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         cell.labelText = NSLocalizedString(@"settings_defaultPrefix", @"Prefix");
                     }
                     cell.rightTextField.text = [Model sharedInstance].defaultPrefix;
-                    cell.rightTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"settings_defaultPrefixPlaceholder", @"Prefix Filename") attributes:@{NSForegroundColorAttributeName: [UIColor piwigoPlaceHolderColor]}];
+                    cell.rightTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"settings_defaultPrefixPlaceholder", @"Prefix Filename") attributes:@{NSForegroundColorAttributeName: [UIColor piwigoColorPlaceHolder]}];
                     cell.rightTextField.delegate = self;
                     cell.rightTextField.tag = kImageUploadSettingPrefix;
                     
@@ -1181,7 +1183,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                 }
                 case 1:     // Disk
                 {
-                    NSInteger currentDiskSize = [[NSURLCache sharedURLCache] currentDiskUsage];
+                    NSInteger currentDiskSize = [[Model sharedInstance].imageCache currentDiskUsage];
                     float currentDiskSizeInMB = currentDiskSize / (1024.0f * 1024.0f);
                     SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderSettingsDisk"];
                     if(!cell)
@@ -1189,8 +1191,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         cell = [SliderTableViewCell new];
                     }
                     cell.sliderName.text = NSLocalizedString(@"settings_cacheDisk", @"Disk");
-                    cell.slider.minimumValue = kPiwigoMinDiskCache;
-                    cell.slider.maximumValue = kPiwigoMaxDiskCache;
+                    cell.slider.minimumValue = kPiwigoDiskCacheMin;
+                    cell.slider.maximumValue = kPiwigoDiskCacheMax;
                     
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                     if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhones 6,7 screen width
@@ -1199,7 +1201,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         cell.sliderCountPrefix = [NSString stringWithFormat:@"%ld/", lroundf(currentDiskSizeInMB)];
                     }
                     cell.sliderCountSuffix = NSLocalizedString(@"settings_cacheMegabytes", @"MB");
-                    cell.incrementSliderBy = kPiwigoMinDiskCache;
+                    cell.incrementSliderBy = kPiwigoDiskCacheInc;
                     cell.sliderValue = [Model sharedInstance].diskCache;
                     [cell.slider addTarget:self action:@selector(updateDiskCacheSize:) forControlEvents:UIControlEventValueChanged];
                     
@@ -1208,7 +1210,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                 }
                 case 2:     // Memory
                 {
-                    NSInteger currentMemSize = (int)[[Model sharedInstance].imageCache memoryUsage];
+                    NSInteger currentMemSize = (int)[[Model sharedInstance].imageCache currentMemoryUsage];
                     float currentMemSizeInMB = currentMemSize / (1024.0f * 1024.0f);
                     SliderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"sliderSettingsMem"];
                     if(!cell)
@@ -1216,8 +1218,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         cell = [SliderTableViewCell new];
                     }
                     cell.sliderName.text = NSLocalizedString(@"settings_cacheMemory", @"Memory");
-                    cell.slider.minimumValue = kPiwigoMinMemoryCache;
-                    cell.slider.maximumValue = kPiwigoMaxMemoryCache;
+                    cell.slider.minimumValue = kPiwigoMemoryCacheMin;
+                    cell.slider.maximumValue = kPiwigoMemoryCacheMax;
                     
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                     if(self.view.bounds.size.width > 375) {     // i.e. larger than iPhone 6,7 screen width
@@ -1226,7 +1228,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                         cell.sliderCountPrefix = [NSString stringWithFormat:@"%ld/", lroundf(currentMemSizeInMB)];
                     }
                     cell.sliderCountSuffix = NSLocalizedString(@"settings_cacheMegabytes", @"MB");
-                    cell.incrementSliderBy = kPiwigoMinMemoryCache;
+                    cell.incrementSliderBy = kPiwigoMemoryCacheInc;
                     cell.sliderValue = [Model sharedInstance].memoryCache;
                     [cell.slider addTarget:self action:@selector(updateMemoryCacheSize:) forControlEvents:UIControlEventValueChanged];
                     
@@ -1298,7 +1300,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     cell.leftText = NSLocalizedString(@"settings_contactUs", @"Contact Us");
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     if (![MFMailComposeViewController canSendMail]) {
-                        cell.leftLabel.textColor = [UIColor piwigoRightLabelColor];
+                        cell.leftLabel.textColor = [UIColor piwigoColorRightLabel];
                     }
 //                    if ([Model sharedInstance].isAppLanguageRTL) {
 //                        cell.rightText = @"<";
@@ -1602,7 +1604,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
         case SettingsSectionAbout:
         {
             if ([self.nberImages length] > 0) {
-                footer = [NSString stringWithFormat:@"%@ %@, %@ %@, %@ %@, %@ %@, %@ %@, %@ %@", self.nberImages, NSLocalizedString(@"severalImages", @"Images"), self.nberCategories, NSLocalizedString(@"tabBar_albums", @"Albums"), self.nberTags, NSLocalizedString(@"tags", @"Tags"), self.nberUsers, NSLocalizedString(@"settings_users", @"Users"), self.nberGroups, NSLocalizedString(@"settings_groups", @"Groups"), self.nberComments, NSLocalizedString(@"editImageDetails_comments", @"Comments")];
+                footer = [NSString stringWithFormat:@"%@ %@, %@ %@, %@ %@, %@ %@, %@ %@, %@ %@", self.nberImages, NSLocalizedString(@"severalImages", @"Photos"), self.nberCategories, NSLocalizedString(@"tabBar_albums", @"Albums"), self.nberTags, NSLocalizedString(@"tags", @"Tags"), self.nberUsers, NSLocalizedString(@"settings_users", @"Users"), self.nberGroups, NSLocalizedString(@"settings_groups", @"Groups"), self.nberComments, NSLocalizedString(@"editImageDetails_comments", @"Comments")];
             }
             break;
         }
@@ -1626,7 +1628,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     UILabel *footerLabel = [UILabel new];
     footerLabel.translatesAutoresizingMaskIntoConstraints = NO;
     footerLabel.font = [UIFont piwigoFontSmall];
-    footerLabel.textColor = [UIColor piwigoHeaderColor];
+    footerLabel.textColor = [UIColor piwigoColorHeader];
     footerLabel.textAlignment = NSTextAlignmentCenter;
     footerLabel.numberOfLines = 0;
     footerLabel.adjustsFontSizeToFitWidth = NO;
@@ -1655,7 +1657,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
         case SettingsSectionAbout:
         {
             if ([self.nberImages length] > 0) {
-                footerLabel.text = [NSString stringWithFormat:@"%@ %@, %@ %@, %@ %@, %@ %@, %@ %@, %@ %@", self.nberImages, NSLocalizedString(@"severalImages", @"Images"), self.nberCategories, NSLocalizedString(@"tabBar_albums", @"Albums"), self.nberTags, NSLocalizedString(@"tags", @"Tags"), self.nberUsers, NSLocalizedString(@"settings_users", @"Users"), self.nberGroups, NSLocalizedString(@"settings_groups", @"Groups"), self.nberComments, NSLocalizedString(@"editImageDetails_comments", @"Comments")];
+                footerLabel.text = [NSString stringWithFormat:@"%@ %@, %@ %@, %@ %@, %@ %@, %@ %@, %@ %@", self.nberImages, NSLocalizedString(@"severalImages", @"Photos"), self.nberCategories, NSLocalizedString(@"tabBar_albums", @"Albums"), self.nberTags, NSLocalizedString(@"tags", @"Tags"), self.nberUsers, NSLocalizedString(@"settings_users", @"Users"), self.nberGroups, NSLocalizedString(@"settings_groups", @"Groups"), self.nberComments, NSLocalizedString(@"editImageDetails_comments", @"Comments")];
             }
             break;
         }
@@ -1794,7 +1796,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                           actionWithTitle:NSLocalizedString(@"alertClearButton", @"Clear")
                           style:UIAlertActionStyleDestructive
                           handler:^(UIAlertAction * action) {
-                              [[NSURLCache sharedURLCache] removeAllCachedResponses];
+                              [[Model sharedInstance].imageCache removeAllCachedResponses];
                               [self.settingsTableView reloadData];
                           }];
 
@@ -1891,8 +1893,9 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                 }
                 case 7:     // Open Privacy Policy page
                 {
-                    PrivacyPolicyViewController *aboutVC = [PrivacyPolicyViewController new];
-                    [self.navigationController pushViewController:aboutVC animated:YES];
+                    UIStoryboard *privacyPolicySB = [UIStoryboard storyboardWithName:@"PrivacyPolicyViewController" bundle:nil];
+                    PrivacyPolicyViewController *privacyPolicyVC = [privacyPolicySB instantiateViewControllerWithIdentifier:@"PrivacyPolicyViewController"];
+                    [self.navigationController pushViewController:privacyPolicyVC animated:YES];
                     break;
                 }
             }
@@ -1922,54 +1925,46 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                     actionWithTitle:NSLocalizedString(@"logoutConfirmation_title", @"Logout")
                     style:UIAlertActionStyleDestructive
                     handler:^(UIAlertAction * action) {
-                       [SessionService sessionLogoutOnCompletion:^(NSURLSessionTask *task, BOOL sucessfulLogout) {
-                           if(sucessfulLogout)
-                           {
-                               // Session closed
-                               [[Model sharedInstance].sessionManager invalidateSessionCancelingTasks:YES];
-                               [[Model sharedInstance].imageCache removeAllImages];
-                               [Model sharedInstance].imageDownloader = nil;
-                               [[Model sharedInstance].imagesSessionManager invalidateSessionCancelingTasks:YES];
-                               [Model sharedInstance].hadOpenedSession = NO;
-                               
-                               // Back to default values
-                               [Model sharedInstance].defaultCategory = 0;
-                               [Model sharedInstance].usesCommunityPluginV29 = NO;
-                               [Model sharedInstance].hasAdminRights = NO;
-                               [Model sharedInstance].recentCategories = @"0";
-                               [[Model sharedInstance] saveToDisk];
-                               
-                               // Erase cache
-                               [ClearCache clearAllCache];
-                               AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                               [appDelegate loadLoginView];
+                       [SessionService sessionLogoutOnCompletion:^(NSURLSessionTask *task, BOOL success) {
+
+                           if (success) {
+                               [self closeSessionAndClearCache];
+                           } else {
+                               UIAlertController* alert = [UIAlertController
+                                       alertControllerWithTitle:NSLocalizedString(@"logoutFail_title", @"Logout Failed")
+                                       message:NSLocalizedString(@"internetCancelledConnection_title", @"Connection Cancelled")
+                                       preferredStyle:UIAlertControllerStyleAlert];
+
+                               UIAlertAction* dismissAction = [UIAlertAction
+                                       actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                       style:UIAlertActionStyleCancel
+                                       handler:^(UIAlertAction * action) {
+                                            [self closeSessionAndClearCache];
+                               }];
+                           
+                               // Add action
+                               [alert addAction:dismissAction];
+                               [self presentViewController:alert animated:YES completion:nil];
                            }
-                           else
-                           {
-                               // Piwigo error has been displayed by called method
-                           }
+
                        } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                           // Failed, retry ?
+                           // Failed! This may be due to the replacement of a self-signed certificate.
+                           // So we inform the user that there may be something wrong with the server,
+                           // or simply a connection drop.
                            UIAlertController* alert = [UIAlertController
                                    alertControllerWithTitle:NSLocalizedString(@"logoutFail_title", @"Logout Failed")
-                                   message:NSLocalizedString(@"logoutFail_message", @"Failed to logout\nTry again?")
+                                   message:NSLocalizedString(@"internetCancelledConnection_title", @"Connection Cancelled")
                                    preferredStyle:UIAlertControllerStyleAlert];
-                           
+
                            UIAlertAction* dismissAction = [UIAlertAction
-                                       actionWithTitle:NSLocalizedString(@"alertNoButton", @"No")
-                                       style:UIAlertActionStyleCancel
-                                       handler:^(UIAlertAction * action) {}];
+                                   actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                                   style:UIAlertActionStyleCancel
+                                   handler:^(UIAlertAction * action) {
+                                        [self closeSessionAndClearCache];
+                           }];
                        
-                           UIAlertAction* retryAction = [UIAlertAction
-                                       actionWithTitle:NSLocalizedString(@"alertYesButton", @"Yes")
-                                       style:UIAlertActionStyleDestructive
-                                       handler:^(UIAlertAction * action) {
-                                           [self logout];
-                                       }];
-                           
-                           // Add actions
+                           // Add action
                            [alert addAction:dismissAction];
-                           [alert addAction:retryAction];
                            [self presentViewController:alert animated:YES completion:nil];
                        }];
                     }];
@@ -2001,6 +1996,28 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 	}
 }
 
+- (void)closeSessionAndClearCache
+{
+    // Session closed
+    [[Model sharedInstance].sessionManager invalidateSessionCancelingTasks:YES];
+    [[Model sharedInstance].imageCache removeAllCachedResponses];
+    [Model sharedInstance].imageDownloader = nil;
+    [[Model sharedInstance].imagesSessionManager invalidateSessionCancelingTasks:YES];
+    [Model sharedInstance].hadOpenedSession = NO;
+    
+    // Back to default values
+    [Model sharedInstance].defaultCategory = 0;
+    [Model sharedInstance].usesCommunityPluginV29 = NO;
+    [Model sharedInstance].hasAdminRights = NO;
+    [Model sharedInstance].recentCategories = @"0";
+    [[Model sharedInstance] saveToDisk];
+    
+    // Erase cache
+    [ClearCache clearAllCache];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate loadLoginView];
+}
+
 - (void)mailComposeController:(MFMailComposeViewController *)controller
           didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
     // Check the result or perform other tasks.
@@ -2011,21 +2028,25 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 
 - (NSString *)deviceNameFromCode:(NSString *)deviceCode
 {
+    // See https://everymac.com/ultimate-mac-lookup/?search_keywords=iPhone12%2C3
+    // or https://apps.apple.com/fr/app/mactracker/id430255202?l=en&mt=12
+    
     // iPhone
-    if ([deviceCode isEqualToString:@"iPhone1,1"])    return @"iPhone 1G";
+    if ([deviceCode isEqualToString:@"iPhone1,1"])    return @"iPhone";
     if ([deviceCode isEqualToString:@"iPhone1,2"])    return @"iPhone 3G";
     if ([deviceCode isEqualToString:@"iPhone2,1"])    return @"iPhone 3GS";
-    if ([deviceCode isEqualToString:@"iPhone3,1"])    return @"iPhone 4";
-    if ([deviceCode isEqualToString:@"iPhone3,3"])    return @"Verizon iPhone 4";
-    if ([deviceCode isEqualToString:@"iPhone4,1"])    return @"iPhone 4S";
+    if ([deviceCode isEqualToString:@"iPhone3,1"])    return @"iPhone 4 (GSM)";
+    if ([deviceCode isEqualToString:@"iPhone3,2"])    return @"iPhone 4 (GSM)";
+    if ([deviceCode isEqualToString:@"iPhone3,3"])    return @"iPhone 4 (CDMA)";
+    if ([deviceCode isEqualToString:@"iPhone4,1"])    return @"iPhone 4s";
     if ([deviceCode isEqualToString:@"iPhone5,1"])    return @"iPhone 5 (GSM)";
-    if ([deviceCode isEqualToString:@"iPhone5,2"])    return @"iPhone 5 (GSM+CDMA)";
-    if ([deviceCode isEqualToString:@"iPhone5,3"])    return @"iPhone 5c (GSM)";
-    if ([deviceCode isEqualToString:@"iPhone5,4"])    return @"iPhone 5c (GSM+CDMA)";
+    if ([deviceCode isEqualToString:@"iPhone5,2"])    return @"iPhone 5";
+    if ([deviceCode isEqualToString:@"iPhone5,3"])    return @"iPhone 5c (GSM+CDMA)";
+    if ([deviceCode isEqualToString:@"iPhone5,4"])    return @"iPhone 5c (CDMA)";
     if ([deviceCode isEqualToString:@"iPhone6,1"])    return @"iPhone 5s (GSM)";
     if ([deviceCode isEqualToString:@"iPhone6,2"])    return @"iPhone 5s (GSM+CDMA)";
-    if ([deviceCode isEqualToString:@"iPhone7,1"])    return @"iPhone 6";
-    if ([deviceCode isEqualToString:@"iPhone7,2"])    return @"iPhone 6 Plus";
+    if ([deviceCode isEqualToString:@"iPhone7,1"])    return @"iPhone 6 Plus";
+    if ([deviceCode isEqualToString:@"iPhone7,2"])    return @"iPhone 6";
     if ([deviceCode isEqualToString:@"iPhone8,1"])    return @"iPhone 6s";
     if ([deviceCode isEqualToString:@"iPhone8,2"])    return @"iPhone 6s Plus";
     if ([deviceCode isEqualToString:@"iPhone8,4"])    return @"iPhone SE";
@@ -2039,56 +2060,81 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     if ([deviceCode isEqualToString:@"iPhone10,4"])   return @"iPhone 8";
     if ([deviceCode isEqualToString:@"iPhone10,5"])   return @"iPhone 8 Plus";
     if ([deviceCode isEqualToString:@"iPhone10,6"])   return @"iPhone X";
-    if ([deviceCode isEqualToString:@"iPhone11,2"])   return @"iPhone Xs";
-    if ([deviceCode isEqualToString:@"iPhone11,4"])   return @"iPhone Xs Max";
-    if ([deviceCode isEqualToString:@"iPhone11,6"])   return @"iPhone Xs Max";
-    if ([deviceCode isEqualToString:@"iPhone11,8"])   return @"iPhone Xr";
+    if ([deviceCode isEqualToString:@"iPhone11,2"])   return @"iPhone XS";
+    if ([deviceCode isEqualToString:@"iPhone11,6"])   return @"iPhone XS Max";
+    if ([deviceCode isEqualToString:@"iPhone11,8"])   return @"iPhone XR";
+    if ([deviceCode isEqualToString:@"iPhone12,1"])   return @"iPhone 11";
+    if ([deviceCode isEqualToString:@"iPhone12,3"])   return @"iPhone 11 Pro";
+    if ([deviceCode isEqualToString:@"iPhone12,5"])   return @"iPhone 11 Pro Max";
 
     // iPad
     if ([deviceCode isEqualToString:@"iPad1,1"])      return @"iPad";
-    if ([deviceCode isEqualToString:@"iPad2,1"])      return @"iPad 2 (WiFi)";
-    if ([deviceCode isEqualToString:@"iPad2,2"])      return @"iPad 2 (GSM)";
-    if ([deviceCode isEqualToString:@"iPad2,3"])      return @"iPad 2 (CDMA)";
-    if ([deviceCode isEqualToString:@"iPad2,4"])      return @"iPad 2 (WiFi)";
-    if ([deviceCode isEqualToString:@"iPad3,1"])      return @"iPad 3 (WiFi)";
-    if ([deviceCode isEqualToString:@"iPad3,2"])      return @"iPad 3 (GSM+CDMA)";
-    if ([deviceCode isEqualToString:@"iPad3,3"])      return @"iPad 3 (GSM)";
-    if ([deviceCode isEqualToString:@"iPad3,4"])      return @"iPad 4 (WiFi)";
-    if ([deviceCode isEqualToString:@"iPad3,5"])      return @"iPad 4 (GSM)";
-    if ([deviceCode isEqualToString:@"iPad3,6"])      return @"iPad 4 (GSM+CDMA)";
-    
+    if ([deviceCode isEqualToString:@"iPad2,1"])      return @"iPad 2 (Wi-Fi)";
+    if ([deviceCode isEqualToString:@"iPad2,2"])      return @"iPad 2 (Wi-Fi + 3G GSM)";
+    if ([deviceCode isEqualToString:@"iPad2,3"])      return @"iPad 2 (Wi-Fi + 3G CDMA)";
+    if ([deviceCode isEqualToString:@"iPad2,4"])      return @"iPad 2 (Wi-Fi)";
+    if ([deviceCode isEqualToString:@"iPad3,1"])      return @"iPad (3rd generation) (Wi-Fi)";
+    if ([deviceCode isEqualToString:@"iPad3,2"])      return @"iPad (3rd generation) (Wi-Fi + Cellular)";
+    if ([deviceCode isEqualToString:@"iPad3,3"])      return @"iPad (3rd generation) (Wi-Fi + Cellular)";
+    if ([deviceCode isEqualToString:@"iPad3,4"])      return @"iPad (4th generation) (Wi-Fi)";
+    if ([deviceCode isEqualToString:@"iPad3,5"])      return @"iPad (4th generation) (Wi-Fi + Cellular)";
+    if ([deviceCode isEqualToString:@"iPad3,6"])      return @"iPad (4th generation) (Wi-Fi + Cellular)";
+    if ([deviceCode isEqualToString:@"iPad6,11"])     return @"iPad (5th generation) (Wi-Fi)";
+    if ([deviceCode isEqualToString:@"iPad6,12"])     return @"iPad (5th generation) (Wi-Fi + Cellular)";
+    if ([deviceCode isEqualToString:@"iPad7,5"])      return @"iPad (6th generation) (Wi-Fi)";
+    if ([deviceCode isEqualToString:@"iPad7,6"])      return @"iPad (6th generation) (Wi-Fi + Cellular)";
+
     // iPad Air
-    if ([deviceCode isEqualToString:@"iPad4,1"])      return @"iPad Air (WiFi)";
-    if ([deviceCode isEqualToString:@"iPad4,2"])      return @"iPad Air (Cellular)";
-    if ([deviceCode isEqualToString:@"iPad5,3"])      return @"iPad Air 2 (WiFi)";
-    if ([deviceCode isEqualToString:@"iPad5,4"])      return @"iPad Air 2 (Cellular)";
+    if ([deviceCode isEqualToString:@"iPad4,1"])      return @"iPad Air (Wi-Fi)";
+    if ([deviceCode isEqualToString:@"iPad4,2"])      return @"iPad Air (Wi-Fi + Cellular)";
+    if ([deviceCode isEqualToString:@"iPad5,3"])      return @"iPad Air 2 (Wi-Fi)";
+    if ([deviceCode isEqualToString:@"iPad5,4"])      return @"iPad Air 2 (Wi-Fi + Cellular)";
+    if ([deviceCode isEqualToString:@"iPad11,3"])     return @"iPad Air (3rd generation) (Wi-Fi)";
+    if ([deviceCode isEqualToString:@"iPad11,4"])     return @"iPad Air (3rd generation) (Wi-Fi + Cellular)";
 
     // iPad Pro
-    if ([deviceCode isEqualToString:@"iPad6,3"])      return @"iPad Pro 9.7 inch (WiFi)";
-    if ([deviceCode isEqualToString:@"iPad6,4"])      return @"iPad Pro 9.7 inch (Cellular)";
-    if ([deviceCode isEqualToString:@"iPad7,3"])      return @"iPad Pro 10.5 inch (WiFi)";
-    if ([deviceCode isEqualToString:@"iPad7,4"])      return @"iPad Pro 10.5 inch (Cellular)";
-    if ([deviceCode isEqualToString:@"iPad6,7"])      return @"iPad Pro 12.9 inch (WiFi)";
-    if ([deviceCode isEqualToString:@"iPad6,8"])      return @"iPad Pro 12.9 inch (Cellular)";
-    if ([deviceCode isEqualToString:@"iPad7,1"])      return @"iPad Pro 2 12.9 inch (WiFi)";
-    if ([deviceCode isEqualToString:@"iPad7,2"])      return @"iPad Pro 2 12.9 inch (Cellular)";
+    if ([deviceCode isEqualToString:@"iPad6,3"])      return @"iPad Pro 9.7-inch (Wi-Fi)";
+    if ([deviceCode isEqualToString:@"iPad6,4"])      return @"iPad Pro 9.7-inch (Wi-Fi + Cellular)";
+    if ([deviceCode isEqualToString:@"iPad6,7"])      return @"iPad Pro 12.9-inch (Wi-Fi)";
+    if ([deviceCode isEqualToString:@"iPad6,8"])      return @"iPad Pro 12.9-inch (Wi-Fi + Cellular)";
+    if ([deviceCode isEqualToString:@"iPad7,3"])      return @"iPad Pro 10.5 inch (Wi-Fi)";
+    if ([deviceCode isEqualToString:@"iPad7,4"])      return @"iPad Pro 10.5 inch (Wi-Fi + Cellular)";
+    if ([deviceCode isEqualToString:@"iPad6,7"])      return @"iPad Pro 12.9 inch (Wi-Fi)";
+    if ([deviceCode isEqualToString:@"iPad6,8"])      return @"iPad Pro 12.9 inch (Wi-Fi + Cellular)";
+    if ([deviceCode isEqualToString:@"iPad7,1"])      return @"iPad Pro 12.9-inch (2nd generation) (Wi-Fi)";
+    if ([deviceCode isEqualToString:@"iPad7,2"])      return @"iPad Pro 12.9-inch (2nd generation) (Wi-Fi + Cellular)";
+    if ([deviceCode isEqualToString:@"iPad7,3"])      return @"iPad Pro 10.5-inch (Wi-Fi)";
+    if ([deviceCode isEqualToString:@"iPad7,4"])      return @"iPad Pro 10.5-inch (Wi-Fi + Cellular)";
+    if ([deviceCode isEqualToString:@"iPad8,1"])      return @"iPad Pro 11-inch (Wi-Fi)";
+    if ([deviceCode isEqualToString:@"iPad8,2"])      return @"iPad Pro 11-inch (Wi-Fi)";
+    if ([deviceCode isEqualToString:@"iPad8,3"])      return @"iPad Pro 11-inch (Wi-Fi + Cellular)";
+    if ([deviceCode isEqualToString:@"iPad8,4"])      return @"iPad Pro 11-inch (Wi-Fi + Cellular)";
+    if ([deviceCode isEqualToString:@"iPad8,5"])      return @"iPad Pro 12.9-inch (3rd generation) (Wi-Fi)";
+    if ([deviceCode isEqualToString:@"iPad8,6"])      return @"iPad Pro 12.9-inch (3rd generation) (Wi-Fi)";
+    if ([deviceCode isEqualToString:@"iPad8,7"])      return @"iPad Pro 12.9-inch (3rd generation) (Wi-Fi + Cellular)";
+    if ([deviceCode isEqualToString:@"iPad8,8"])      return @"iPad Pro 12.9-inch (3rd generation) (Wi-Fi + Cellular)";
 
     // iPad mini
-    if ([deviceCode isEqualToString:@"iPad2,5"])      return @"iPad Mini (WiFi)";
-    if ([deviceCode isEqualToString:@"iPad2,6"])      return @"iPad Mini (GSM)";
-    if ([deviceCode isEqualToString:@"iPad2,7"])      return @"iPad Mini (GSM+CDMA)";
-    if ([deviceCode isEqualToString:@"iPad4,4"])      return @"iPad mini 2G (WiFi)";
-    if ([deviceCode isEqualToString:@"iPad4,5"])      return @"iPad mini 2G (Cellular)";
-    if ([deviceCode isEqualToString:@"iPad5,1"])      return @"iPad mini 4 (WiFi)";
-    if ([deviceCode isEqualToString:@"iPad5,2"])      return @"iPad mini 4 (Cellular)";
+    if ([deviceCode isEqualToString:@"iPad2,5"])      return @"iPad Mini (Wi-Fi)";
+    if ([deviceCode isEqualToString:@"iPad2,6"])      return @"iPad Mini (Wi-Fi + Cellular)";
+    if ([deviceCode isEqualToString:@"iPad2,7"])      return @"iPad Mini (Wi-Fi + Cellular MM)";
+    if ([deviceCode isEqualToString:@"iPad4,4"])      return @"iPad mini 2 (Wi-Fi)";
+    if ([deviceCode isEqualToString:@"iPad4,5"])      return @"iPad mini 2 (Wi-Fi + Cellular)";
+    if ([deviceCode isEqualToString:@"iPad4,7"])      return @"iPad mini 3 (Wi-Fi)";
+    if ([deviceCode isEqualToString:@"iPad4,8"])      return @"iPad mini 3 (Wi-Fi + Cellular)";
+    if ([deviceCode isEqualToString:@"iPad5,1"])      return @"iPad mini 4 (Wi-Fi)";
+    if ([deviceCode isEqualToString:@"iPad5,2"])      return @"iPad mini 4 (Wi-Fi + Cellular)";
+    if ([deviceCode isEqualToString:@"iPad11,1"])     return @"iPad mini (5th generation) (Wi-Fi)";
+    if ([deviceCode isEqualToString:@"iPad11,2"])     return @"iPad mini (5th generation) (Wi-Fi + Cellular)";
 
     // iPod
-    if ([deviceCode isEqualToString:@"iPod1,1"])      return @"iPod Touch 1G";
-    if ([deviceCode isEqualToString:@"iPod2,1"])      return @"iPod Touch 2G";
-    if ([deviceCode isEqualToString:@"iPod3,1"])      return @"iPod Touch 3G";
-    if ([deviceCode isEqualToString:@"iPod4,1"])      return @"iPod Touch 4G";
-    if ([deviceCode isEqualToString:@"iPod5,1"])      return @"iPod Touch 5G";
-    if ([deviceCode isEqualToString:@"iPod7,1"])      return @"iPod Touch 6G";
+    if ([deviceCode isEqualToString:@"iPod1,1"])      return @"iPod touch";
+    if ([deviceCode isEqualToString:@"iPod2,1"])      return @"iPod touch (2nd generation)";
+    if ([deviceCode isEqualToString:@"iPod3,1"])      return @"iPod touch (3rd generation)";
+    if ([deviceCode isEqualToString:@"iPod4,1"])      return @"iPod touch (4th generation)";
+    if ([deviceCode isEqualToString:@"iPod5,1"])      return @"iPod touch (5th generation)";
+    if ([deviceCode isEqualToString:@"iPod7,1"])      return @"iPod touch (6th generation)";
+    if ([deviceCode isEqualToString:@"iPod9,1"])      return @"iPod touch (7th generation)";
     
     // Simulator
     if ([deviceCode isEqualToString:@"i386"])         return @"Simulator";
@@ -2222,7 +2268,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     [Model sharedInstance].diskCache = [sliderSettingsDisk getCurrentSliderValue];
     [[Model sharedInstance] saveToDisk];
     
-    [NSURLCache sharedURLCache].diskCapacity = [Model sharedInstance].diskCache * 1024*1024;
+    [Model sharedInstance].imageCache.diskCapacity = [Model sharedInstance].diskCache * 1024*1024;
 }
 
 - (IBAction)updateMemoryCacheSize:(id)sender
@@ -2242,7 +2288,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     [Model sharedInstance].memoryCache = [sliderSettingsMem getCurrentSliderValue];
     [[Model sharedInstance] saveToDisk];
     
-    [NSURLCache sharedURLCache].memoryCapacity = [Model sharedInstance].memoryCache * 1024*1024;
+    [Model sharedInstance].imageCache.memoryCapacity = [Model sharedInstance].memoryCache * 1024*1024;
 }
 
 #pragma mark - Get Server Infos

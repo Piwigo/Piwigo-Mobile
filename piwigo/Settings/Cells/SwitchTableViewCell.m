@@ -19,12 +19,12 @@
 	self = [super init];
 	if(self)
 	{
-		self.backgroundColor = [UIColor piwigoCellBackgroundColor];
+		self.backgroundColor = [UIColor piwigoColorCellBackground];
 		
 		self.leftLabel = [UILabel new];
 		self.leftLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		self.leftLabel.font = [UIFont piwigoFontNormal];
-		self.leftLabel.textColor = [UIColor piwigoLeftLabelColor];
+		self.leftLabel.textColor = [UIColor piwigoColorLeftLabel];
 		self.leftLabel.adjustsFontSizeToFitWidth = NO;
 		self.leftLabel.numberOfLines = 2;
 		self.leftLabel.preferredMaxLayoutWidth = 150;
@@ -32,8 +32,8 @@
 		
 		self.cellSwitch = [UISwitch new];
 		self.cellSwitch.translatesAutoresizingMaskIntoConstraints = NO;
-        self.cellSwitch.thumbTintColor = [UIColor piwigoThumbColor];
-        self.cellSwitch.onTintColor = [UIColor piwigoOrange];
+        self.cellSwitch.thumbTintColor = [UIColor piwigoColorThumb];
+        self.cellSwitch.onTintColor = [UIColor piwigoColorOrange];
 		[self.contentView addSubview:self.cellSwitch];
 		[self.cellSwitch addTarget:self action:@selector(switchChanged) forControlEvents:UIControlEventValueChanged];
 		

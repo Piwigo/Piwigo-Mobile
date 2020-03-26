@@ -87,7 +87,7 @@
                       else
                       {
                           // May be this server only uses HTTP authentication
-                          if ([Model sharedInstance].performedHTTPauthentication) {
+                          if ([Model sharedInstance].didRequestHTTPauthentication) {
                               [Model sharedInstance].username = user;
                               [Model sharedInstance].hadOpenedSession = YES;
                               [[Model sharedInstance] saveToDisk];
@@ -512,49 +512,30 @@
            parameters:nil
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
-				  
-				  if(completion) {
-					  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
-					  {
-						  completion(task, [[responseObject objectForKey:@"result" ] boolValue]);
-					  }
-					  else
-					  {
+
+                    if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
+                      {
+                          if (completion) {
+                              completion(task, YES);
+                          }
+                      }
+                      else
+                      {
                           // Display Piwigo error
-                          NSInteger errorCode = NSNotFound;
-                          if ([responseObject objectForKey:@"err"]) {
-                              errorCode = [[responseObject objectForKey:@"err"] intValue];
+                          NSError *error = [NetworkHandler getPiwigoErrorFromResponse:responseObject
+                                                path:kPiwigoSessionLogout andURLparams:nil];
+                          if(completion) {
+                              [NetworkHandler showPiwigoError:error withCompletion:^{
+                                  completion(task, NO);
+                              }];
+                          } else {
+                              [NetworkHandler showPiwigoError:error withCompletion:nil];
                           }
-                          NSString *errorMsg = @"";
-                          if ([responseObject objectForKey:@"message"]) {
-                              errorMsg = [responseObject objectForKey:@"message"];
-                          }
-                          [NetworkHandler showPiwigoError:errorCode withMessage:errorMsg forPath:kPiwigoCategoriesGetImages andURLparams:nil];
-
-                          completion(task, NO);
-					  }
-				  }
-			  } failure:^(NSURLSessionTask *task, NSError *error) {
-				  
-                  NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
-                  if ((statusCode == 401) ||        // Unauthorized
-                      (statusCode == 403) ||        // Forbidden
-                      (statusCode == 404))          // Not Found
-                  {
-                      NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
-                      dispatch_async(dispatch_get_main_queue(), ^{
-                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
-                      });
-
-                      if (fail) {
-                          fail(task, error);
                       }
-                  }
-                  else {
-                      if (fail) {
-                          [SessionService showConnectionError:error];
-                          fail(task, error);
-                      }
+
+    } failure:^(NSURLSessionTask *task, NSError *error) {
+                  if (fail) {
+                      fail(task, error);
                   }
 			  }];
 }

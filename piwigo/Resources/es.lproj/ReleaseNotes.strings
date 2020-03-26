@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.4.7_text" = "Versión 2.4.7\n\n• Traducciones al chino simplificado, ruso y español\n• Soluciona un problema de reproducción de video en algunos servidores";
+"v2.4.8_text" = "Versión 2.4.8\n\n• Piwigo te advierte cuando:\n - un sitio web tiene un certificado que no es válido,\n - antes de establecer una conexión insegura\n• Gestión de caché mejorada\n• Correcciones y mejoras menores de la interfaz";
+
+"v2.4.7_text" = "Versión 2.4.7\n30 de enero 2020\n\n• Traducciones al chino simplificado, ruso y español\n• Soluciona un problema de reproducción de vídeo de algunos servidores";
 
 "v2.4.6_text" = "Versión 2.4.6\n18 de enero 2020\n\n• Editar las propiedades de una selección de fotos\n• Cambiar la fecha de creación de una foto o vídeo\n• Opción para añadir un prefijo a los nombres de archivo antes de subirlos\n• Corrección de errores menores y mejoras en la interfaz";
 

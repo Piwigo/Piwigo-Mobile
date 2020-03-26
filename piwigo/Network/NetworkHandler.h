@@ -86,13 +86,12 @@ FOUNDATION_EXPORT NSInteger const loadingViewTag;
 
 +(NSURLSessionTask*)postMultiPart:(NSString*)path
                              data:(NSData*)fileData
-                      parameters:(NSDictionary*)parameters
+                       parameters:(NSDictionary*)parameters
                          progress:(void (^)(NSProgress *))progress
                           success:(void (^)(NSURLSessionTask *task, id responseObject))success
                           failure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(void)showConnectionError:(NSError*)error;
-+(NSError *)getPiwigoErrorMessageFromCode:(NSInteger)code message:(NSString *)msg path:(NSString *)path andURLparams:(NSDictionary *)urlParams;
-+(void)showPiwigoError:(NSInteger)code withMessage:(NSString *)message forPath:(NSString *)path andURLparams:(NSDictionary *)urlParams;
++(NSError *)getPiwigoErrorFromResponse:(id)responseObject path:(NSString *)path andURLparams:(NSDictionary *)urlParams;
++(void)showPiwigoError:(NSError*)error withCompletion:(void (^)(void))completion;
 
 @end

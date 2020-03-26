@@ -61,6 +61,10 @@
 "loginHTTP_message" = "Сервер Piwigo требует базовой HTTP-аутентификации:";
 "loginHTTPuser_placeholder" = "Пользователь";
 "loginHTTPpwd_placeholder" = "Пароль";
+"loginCertFailed_title" = "Приватное соединение не обеспечивается";
+"loginCertFailed_message" = "Piwigo предупреждает Вас, когда веб-сайт имеет недействительный сертификат. Вы все еще хотите принять этот сертификат?";
+"loginHTTPSfailed_title" = "Безопасное подключение не удалось";
+"loginHTTPSfailed_message" = "Piwigo не может установить безопасное соединение. Вы хотите установить небезопасное соединение?";
 
 // Login — Errors
 "serverURLerror_title" = "Некорректный URL";

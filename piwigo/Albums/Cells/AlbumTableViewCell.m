@@ -15,7 +15,6 @@
 #import "Model.h"
 #import "MoveCategoryViewController.h"
 #import "NetworkHandler.h"
-#import "OutlinedText.h"
 #import "PiwigoAlbumData.h"
 #import "SAMKeychain.h"
 
@@ -42,39 +41,40 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     self.albumData = albumData;
     
     // General settings
-    self.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.backgroundColor = [UIColor piwigoColorBackground];
     self.contentView.layer.cornerRadius = 14;
     self.contentView.backgroundColor = [UIColor piwigoCellBackgroundColor];
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
     self.topCut.layer.cornerRadius = 7;
-    self.topCut.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.topCut.backgroundColor = [UIColor piwigoColorBackground];
     self.bottomCut.layer.cornerRadius = 7;
-    self.bottomCut.backgroundColor = [UIColor piwigoBackgroundColor];
+    self.bottomCut.backgroundColor = [UIColor piwigoColorBackground];
 
     // Album name
     self.albumName.text = self.albumData.name;
     self.albumName.font = [UIFont piwigoFontButton];
-    self.albumName.textColor = [UIColor piwigoOrange];
-    self.albumName.font = [self.albumName.font fontWithSize:[UIFont fontSizeForLabel:self.albumName andNberOfLines:2]];
+    self.albumName.textColor = [UIColor piwigoColorOrange];
+    self.albumName.font = [self.albumName.font fontWithSize:[UIFont fontSizeForLabel:self.albumName nberLines:2]];
 
     // Album comment
     if (self.albumData.comment.length == 0) {
         if([Model sharedInstance].hasAdminRights) {
             self.albumComment.text = [NSString stringWithFormat:@"(%@)", NSLocalizedString(@"createNewAlbumDescription_noDescription", @"no description")];
-            self.albumComment.textColor = [UIColor piwigoRightLabelColor];
+            self.albumComment.textColor = [UIColor piwigoColorRightLabel];
         } else {
             self.albumComment.text = @"";
         }
     }
     else {
         self.albumComment.text = self.albumData.comment;
-        self.albumComment.textColor = [UIColor piwigoTextColor];
+        self.albumComment.textColor = [UIColor piwigoColorText];
     }
     self.albumComment.font = [UIFont piwigoFontSmall];
-    self.albumComment.font = [self.albumComment.font fontWithSize:[UIFont fontSizeForLabel:self.albumComment andNberOfLines:3]];
+    self.albumComment.font = [self.albumComment.font fontWithSize:[UIFont fontSizeForLabel:self.albumComment nberLines:3]];
 
     // Number of images and sub-albums
     self.numberOfImages.font = [UIFont piwigoFontTiny];
-    self.numberOfImages.textColor = [UIColor piwigoTextColor];
+    self.numberOfImages.textColor = [UIColor piwigoColorText];
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     [numberFormatter setPositiveFormat:@"#,##0"];
     if (self.albumData.numberOfSubCategories == 0) {
@@ -100,18 +100,18 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
                                     [numberFormatter stringFromNumber:[NSNumber numberWithInteger:self.albumData.numberOfSubCategories]],
                                     self.albumData.numberOfSubCategories > 1 ? NSLocalizedString(@"categoryTableView_subCategoriesCount", @"sub-albums") : NSLocalizedString(@"categoryTableView_subCategoryCount", @"sub-album")];
     }
-    self.numberOfImages.font = [self.numberOfImages.font fontWithSize:[UIFont fontSizeForLabel:self.numberOfImages andNberOfLines:1]];
+    self.numberOfImages.font = [self.numberOfImages.font fontWithSize:[UIFont fontSizeForLabel:self.numberOfImages nberLines:1]];
 
     // Add renaming, moving and deleting capabilities when user has admin rights
     if([Model sharedInstance].hasAdminRights)
     {
         // Handle
         self.handleButton.layer.cornerRadius = 7;
-        self.handleButton.backgroundColor = [UIColor piwigoOrange];
+        self.handleButton.backgroundColor = [UIColor piwigoColorOrange];
         self.handleButton.hidden = NO;
 
         // Right => Left swipe
-        self.swipeBackgroundColor = [UIColor piwigoOrange];
+        self.swipeBackgroundColor = [UIColor piwigoColorOrange];
         self.rightSwipeSettings.transition = MGSwipeTransitionBorder;
         self.rightButtons = @[[MGSwipeButton buttonWithTitle:@""
                                                         icon:[UIImage imageNamed:@"swipeTrash.png"]
@@ -122,14 +122,14 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
                                                     }],
                               [MGSwipeButton buttonWithTitle:@""
                                                       icon:[UIImage imageNamed:@"swipeMove.png"]
-                                           backgroundColor:[UIColor piwigoBrown]
+                                           backgroundColor:[UIColor piwigoColorBrown]
                                                   callback:^BOOL(MGSwipeTableCell *sender) {
                                                       [self moveCategory];
                                                       return YES;
                                                   }],
                               [MGSwipeButton buttonWithTitle:@""
                                                         icon:[UIImage imageNamed:@"swipeRename.png"]
-                                             backgroundColor:[UIColor piwigoOrange]
+                                             backgroundColor:[UIColor piwigoColorOrange]
                                                     callback:^BOOL(MGSwipeTableCell *sender) {
                                                         [self renameCategory];
                                                         return YES;
@@ -641,8 +641,8 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     hud.animationType = MBProgressHUDAnimationFade;
     hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
     hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
-    hud.contentColor = [UIColor piwigoHudContentColor];
-    hud.bezelView.color = [UIColor piwigoHudBezelViewColor];
+    hud.contentColor = [UIColor piwigoColorHudContent];
+    hud.bezelView.color = [UIColor piwigoColorHudBezelView];
 
     // Define the text
     hud.label.text = label;

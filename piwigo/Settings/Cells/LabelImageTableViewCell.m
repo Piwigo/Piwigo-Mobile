@@ -18,14 +18,14 @@
 -(void)setupWithActivityName:(NSString *)activityName andEditOption:(int)option
 {
     // General settings
-    self.backgroundColor = [UIColor piwigoCellBackgroundColor];
-    self.tintColor = [UIColor piwigoOrange];
+    self.backgroundColor = [UIColor piwigoColorCellBackground];
+    self.tintColor = [UIColor piwigoColorOrange];
     self.textLabel.font = [UIFont piwigoFontNormal];
     
     // Activity name
     self.leftLabel.text = activityName;
     self.leftLabel.font = [UIFont piwigoFontNormal];
-    self.leftLabel.textColor = [UIColor piwigoLeftLabelColor];
+    self.leftLabel.textColor = [UIColor piwigoColorLeftLabel];
 
     // Change image according to state
     switch (option) {
