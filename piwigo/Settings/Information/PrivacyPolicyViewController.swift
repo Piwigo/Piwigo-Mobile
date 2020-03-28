@@ -76,6 +76,11 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
     }
 
     @objc func quitSettings() {
+
+        // Unregister palette changes
+        NotificationCenter.default.removeObserver(self)
+
+        // Close Settings view
         dismiss(animated: true)
     }
     
