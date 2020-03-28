@@ -9,7 +9,6 @@
 #import <sys/utsname.h>
 #import <AFNetworking/AFImageDownloader.h>
 
-#import "AboutViewController.h"
 #import "AFAutoPurgingImageCache.h"
 #import "AlbumService.h"
 #import "AppDelegate.h"
@@ -1887,7 +1886,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                 }
                 case 6:     // Open Acknowledgements page
                 {
-                    AboutViewController *aboutVC = [AboutViewController new];
+                    UIStoryboard *aboutSB = [UIStoryboard storyboardWithName:@"AboutViewController" bundle:nil];
+                    AboutViewController *aboutVC = [aboutSB instantiateViewControllerWithIdentifier:@"AboutViewController"];
                     [self.navigationController pushViewController:aboutVC animated:YES];
                     break;
                 }
