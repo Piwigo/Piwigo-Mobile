@@ -21,6 +21,16 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
 
         title = NSLocalizedString("settings_privacy", comment: "Policy Privacy")
 
+        // Set textView
+        textView.attributedText = privacyPolicy()
+        textView.scrollsToTop = true
+        if #available(iOS 11.0, *) {
+            textView?.contentInsetAdjustmentBehavior = .never
+        } else {
+            // Fallback on earlier versions
+            automaticallyAdjustsScrollViewInsets = false
+        }
+
         // Button for returning to albums/images
         doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(quitSettings))
         doneBarButton?.accessibilityIdentifier = "Done"
@@ -53,17 +63,6 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        // Set textView
-        textView.attributedText = privacyPolicy()
-        textView.scrollsToTop = true
-        textView.scrollRangeToVisible(NSMakeRange(0, 0))
-        if #available(iOS 11.0, *) {
-            textView?.contentInsetAdjustmentBehavior = .never
-        } else {
-            // Fallback on earlier versions
-            automaticallyAdjustsScrollViewInsets = false
-        }
-
         // Set colors, fonts, etc.
         applyColorPalette()
 
@@ -89,7 +88,7 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
 
     func privacyPolicy() -> NSAttributedString {
         // Privacy policy attributed string
-        let privacyAttributedString = NSMutableAttributedString(string: "")
+        let privacyAttributedString = NSMutableAttributedString(string: "\n")
         let spacerAttributedString = NSMutableAttributedString(string: "\n\n", attributes: [
             NSAttributedString.Key.font: UIFont.piwigoFontSmall()!
         ])

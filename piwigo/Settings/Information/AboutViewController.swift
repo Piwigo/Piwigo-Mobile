@@ -35,9 +35,6 @@ class AboutViewController: UIViewController, UITextViewDelegate {
 
         // Thanks and licenses
         textView.attributedText = aboutAttributedString()
-        textView.isEditable = false
-        textView.allowsEditingTextAttributes = false
-        textView.isSelectable = true
         textView.scrollsToTop = true
         if #available(iOS 11.0, *) {
             textView.contentInsetAdjustmentBehavior = .never

@@ -35,9 +35,6 @@ class ReleaseNotesViewController: UIViewController {
 
         // Release notes
         textView.attributedText = notesAttributedString()
-        textView.isEditable = false
-        textView.allowsEditingTextAttributes = false
-        textView.isSelectable = true
         textView.scrollsToTop = true
         if #available(iOS 11.0, *) {
             textView.contentInsetAdjustmentBehavior = .never
@@ -45,7 +42,7 @@ class ReleaseNotesViewController: UIViewController {
             // Fallback on earlier versions
             automaticallyAdjustsScrollViewInsets = false
         }
-
+        
         // Button for returning to albums/images
         doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(quitSettings))
         doneBarButton?.accessibilityIdentifier = "Done"
