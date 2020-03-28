@@ -27,6 +27,8 @@
 		AD30FD3721316DA8009AA30E /* piwigoAppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD30FD3621316DA8009AA30E /* piwigoAppStore.swift */; };
 		AD31779223D104E3005E9694 /* EditImageThumbTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD31779123D104E3005E9694 /* EditImageThumbTableViewCell.xib */; };
 		AD31F5F5242FA75C00BD65FC /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD31F5F4242FA75C00BD65FC /* AboutViewController.swift */; };
+		AD31F5F7242FABF300BD65FC /* ReleaseNotesViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD31F5F6242FABF300BD65FC /* ReleaseNotesViewController.storyboard */; };
+		AD31F5F9242FB76900BD65FC /* ReleaseNotesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD31F5F8242FB76800BD65FC /* ReleaseNotesViewController.swift */; };
 		AD3203642184738F00BAD372 /* PrivacyPolicy.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD3203662184738F00BAD372 /* PrivacyPolicy.strings */; };
 		AD3207E9240AD93900F00FEB /* PrivacyPolicyViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD3207E8240AD93900F00FEB /* PrivacyPolicyViewController.storyboard */; };
 		AD3369BF23F035F700F3FA80 /* TagSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3369BC23F035F700F3FA80 /* TagSelectorViewController.swift */; };
@@ -54,7 +56,6 @@
 		AD84E60523BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD84E60423BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib */; };
 		AD870CD71F54AE110015BFA1 /* ImagesCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = AD870CD61F54AE110015BFA1 /* ImagesCollection.m */; };
 		AD8F4B8B23F04B8C009483B6 /* TagSelectorViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD3369BE23F035F700F3FA80 /* TagSelectorViewController.storyboard */; };
-		AD92B8FB1F1FFF15006E5B63 /* ReleaseNotesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD92B8FA1F1FFF15006E5B63 /* ReleaseNotesViewController.m */; };
 		AD92B8FE1F200083006E5B63 /* ReleaseNotes.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD92B9001F200083006E5B63 /* ReleaseNotes.strings */; };
 		ADA18F6B23F01DBF006B110A /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ADA18F6923F01DBF006B110A /* DataModel.xcdatamodeld */; };
 		ADA18F6F23F02108006B110A /* TagsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA18F6D23F02108006B110A /* TagsViewController.m */; };
@@ -205,6 +206,8 @@
 		AD30FD3821316DA8009AA30E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AD31779123D104E3005E9694 /* EditImageThumbTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = EditImageThumbTableViewCell.xib; path = "piwigo/Image/Image Parameters/Cells/EditImageThumbTableViewCell.xib"; sourceTree = SOURCE_ROOT; };
 		AD31F5F4242FA75C00BD65FC /* AboutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
+		AD31F5F6242FABF300BD65FC /* ReleaseNotesViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ReleaseNotesViewController.storyboard; sourceTree = "<group>"; };
+		AD31F5F8242FB76800BD65FC /* ReleaseNotesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReleaseNotesViewController.swift; sourceTree = "<group>"; };
 		AD3203672184739200BAD372 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
 		AD3203682184739300BAD372 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
 		AD3203692184739300BAD372 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
@@ -286,8 +289,6 @@
 		AD8549351FE98CE300155BA1 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AD870CD61F54AE110015BFA1 /* ImagesCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagesCollection.m; sourceTree = "<group>"; };
 		AD870CD81F54AE230015BFA1 /* ImagesCollection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImagesCollection.h; sourceTree = "<group>"; };
-		AD92B8F91F1FFEE4006E5B63 /* ReleaseNotesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReleaseNotesViewController.h; sourceTree = "<group>"; };
-		AD92B8FA1F1FFF15006E5B63 /* ReleaseNotesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReleaseNotesViewController.m; sourceTree = "<group>"; };
 		AD92B9011F200092006E5B63 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
 		ADA18F6A23F01DBF006B110A /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
 		ADA18F6D23F02108006B110A /* TagsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagsViewController.m; sourceTree = "<group>"; };
@@ -788,8 +789,8 @@
 		ADD714552301E1C600A1B7B2 /* Information */ = {
 			isa = PBXGroup;
 			children = (
-				AD92B8F91F1FFEE4006E5B63 /* ReleaseNotesViewController.h */,
-				AD92B8FA1F1FFF15006E5B63 /* ReleaseNotesViewController.m */,
+				AD31F5F8242FB76800BD65FC /* ReleaseNotesViewController.swift */,
+				AD31F5F6242FABF300BD65FC /* ReleaseNotesViewController.storyboard */,
 				AD31F5F4242FA75C00BD65FC /* AboutViewController.swift */,
 				ADE46683242F978E002FEDE5 /* AboutViewController.storyboard */,
 				ADFC3A4B2401D704004CD337 /* PrivacyPolicyViewController.swift */,
@@ -1379,6 +1380,7 @@
 				D863EEC71A6A45E800C0A6E9 /* LacunaRegular.TTF in Resources */,
 				ADF88E7B2066DAE700D1CE26 /* OpenSansLight.TTF in Resources */,
 				AD7823072061BE7F00D5CA70 /* OpenSansRegular.TTF in Resources */,
+				AD31F5F7242FABF300BD65FC /* ReleaseNotesViewController.storyboard in Resources */,
 				ADC1641623D0CD5300D7AC8D /* ImageUploadThumbCollectionViewCell.xib in Resources */,
 				ADA36E0F21D777DA00133708 /* OpenSansSemiBold.TTF in Resources */,
 				ADF88E772066D04600D1CE26 /* OpenSansBold.TTF in Resources */,
@@ -1529,7 +1531,6 @@
 			files = (
 				D8B9BC7C1A95B1F600C1B0E5 /* NotUploadedYet.m in Sources */,
 				ADE03F3023D4CC6C00F21ED9 /* PiwigoTagData.m in Sources */,
-				AD92B8FB1F1FFF15006E5B63 /* ReleaseNotesViewController.m in Sources */,
 				D8A59EF31ACE45BC00D2EBF0 /* AlbumData.m in Sources */,
 				D847B8391A7BFF1900231886 /* LEColorPicker.m in Sources */,
 				AD11BDA22402C7E7003347BE /* UIColor+AppColors.swift in Sources */,
@@ -1549,6 +1550,7 @@
 				ADABACBD2235A7120095C4D0 /* PiwigoLocationData.m in Sources */,
 				D89045BF1A950FF700A306FE /* EditImageTagsTableViewCell.m in Sources */,
 				AD5E8F1020EEA06B00E93426 /* DefaultCategoryViewController.m in Sources */,
+				AD31F5F9242FB76900BD65FC /* ReleaseNotesViewController.swift in Sources */,
 				AD770FDA23B4CE79007DAD50 /* EditImageThumbCollectionViewCell.m in Sources */,
 				D87C5A951A6F4C43001763BC /* KeychainAccess.m in Sources */,
 				D8A94EB51AAE650800E4B287 /* SliderTableViewCell.m in Sources */,

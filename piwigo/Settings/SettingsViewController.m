@@ -9,7 +9,6 @@
 #import <sys/utsname.h>
 #import <AFNetworking/AFImageDownloader.h>
 
-#import "AFAutoPurgingImageCache.h"
 #import "AlbumService.h"
 #import "AppDelegate.h"
 #import "ButtonTableViewCell.h"
@@ -23,7 +22,6 @@
 #import "LabelTableViewCell.h"
 #import "Model.h"
 #import "PiwigoImageData.h"
-#import "ReleaseNotesViewController.h"
 #import "SelectPrivacyViewController.h"
 #import "SessionService.h"
 #import "SettingsViewController.h"
@@ -1880,7 +1878,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                 }
                 case 5:     // Open Release Notes page
                 {
-                    ReleaseNotesViewController *releaseNotesVC = [ReleaseNotesViewController new];
+                    UIStoryboard *releaseNotesSB = [UIStoryboard storyboardWithName:@"ReleaseNotesViewController" bundle:nil];
+                    ReleaseNotesViewController *releaseNotesVC = [releaseNotesSB instantiateViewControllerWithIdentifier:@"ReleaseNotesViewController"];
                     [self.navigationController pushViewController:releaseNotesVC animated:YES];
                     break;
                 }

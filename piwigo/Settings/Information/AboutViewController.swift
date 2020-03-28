@@ -1,4 +1,3 @@
-//  Converted to Swift 5 by Swiftify v5.0.40498 - https://objectivec2swift.com/
 //
 //  AboutViewController.swift
 //  piwigo
@@ -35,7 +34,6 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         versionLabel.text = "— \(NSLocalizedString("version", tableName: "About", bundle: Bundle.main, value: "", comment: "Version:")) \(appVersionString ?? "") (\(appBuildString ?? "")) —"
 
         // Thanks and licenses
-        textView.restorationIdentifier = "thanks+licenses"
         textView.attributedText = aboutAttributedString()
         textView.isEditable = false
         textView.allowsEditingTextAttributes = false

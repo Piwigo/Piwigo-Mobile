@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="OpenSansRegular.TTF">
+            <string>OpenSans</string>
+        </array>
+    </customFonts>
+    <scenes>
+        <!--Release Notes View Controller-->
+        <scene sceneID="xZp-Xh-lbR">
+            <objects>
+                <viewController storyboardIdentifier="ReleaseNotesViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="4Om-2x-gp0" customClass="ReleaseNotesViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="adQ-xJ-L2L">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" preservesSuperviewLayoutMargins="YES" text="By Spencer Baker, Olaf Greck," textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WDV-PN-aQQ">
+                                <rect key="frame" x="20" y="83" width="374" height="18"/>
+                                <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" preservesSuperviewLayoutMargins="YES" text="and Eddy Lelièvre-Berna" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="E6l-QI-469">
+                                <rect key="frame" x="20" y="101" width="374" height="18"/>
+                                <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="Version" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vuS-sl-8kx">
+                                <rect key="frame" x="20" y="119" width="374" height="14"/>
+                                <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="10"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" restorationIdentifier="release+notes" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" directionalLockEnabled="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" bouncesZoom="NO" editable="NO" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="UdN-nL-0ak">
+                                <rect key="frame" x="20" y="141" width="374" height="755"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <attributedString key="attributedText">
+                                    <fragment>
+                                        <string key="content">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</string>
+                                        <attributes>
+                                            <color key="NSColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <font key="NSFont" metaFont="menu" size="14"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                <dataDetectorType key="dataDetectorTypes" address="YES"/>
+                            </textView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" preservesSuperviewLayoutMargins="YES" text="Piwigo Mobile" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FkT-hD-5Fi">
+                                <rect key="frame" x="116" y="44" width="182" height="39"/>
+                                <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="28"/>
+                                <color key="textColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="UdN-nL-0ak" firstAttribute="bottom" secondItem="adQ-xJ-L2L" secondAttribute="bottom" id="4Zt-t7-6Xn"/>
+                            <constraint firstItem="4TL-eJ-11l" firstAttribute="trailing" secondItem="vuS-sl-8kx" secondAttribute="trailing" constant="20" id="B8W-u9-Le3"/>
+                            <constraint firstItem="E6l-QI-469" firstAttribute="leading" secondItem="4TL-eJ-11l" secondAttribute="leading" constant="20" id="Bq3-yc-Kdo"/>
+                            <constraint firstItem="FkT-hD-5Fi" firstAttribute="centerX" secondItem="4TL-eJ-11l" secondAttribute="centerX" id="JLZ-Oe-3vM"/>
+                            <constraint firstItem="WDV-PN-aQQ" firstAttribute="top" secondItem="FkT-hD-5Fi" secondAttribute="bottom" id="JLh-cS-Flo"/>
+                            <constraint firstItem="vuS-sl-8kx" firstAttribute="top" secondItem="E6l-QI-469" secondAttribute="bottom" id="L6c-lq-NZM"/>
+                            <constraint firstItem="UdN-nL-0ak" firstAttribute="top" secondItem="vuS-sl-8kx" secondAttribute="bottom" constant="8" id="NLy-XL-Lv9"/>
+                            <constraint firstItem="vuS-sl-8kx" firstAttribute="leading" secondItem="4TL-eJ-11l" secondAttribute="leading" constant="20" id="Oi4-42-a02"/>
+                            <constraint firstItem="4TL-eJ-11l" firstAttribute="trailing" secondItem="UdN-nL-0ak" secondAttribute="trailing" constant="20" id="ZYn-XL-kfb"/>
+                            <constraint firstItem="E6l-QI-469" firstAttribute="top" secondItem="WDV-PN-aQQ" secondAttribute="bottom" id="b4u-mM-AfD"/>
+                            <constraint firstItem="FkT-hD-5Fi" firstAttribute="top" secondItem="4TL-eJ-11l" secondAttribute="top" id="eyS-TX-4gJ"/>
+                            <constraint firstItem="WDV-PN-aQQ" firstAttribute="leading" secondItem="4TL-eJ-11l" secondAttribute="leading" constant="20" id="kHk-xF-hYc"/>
+                            <constraint firstItem="4TL-eJ-11l" firstAttribute="trailing" secondItem="E6l-QI-469" secondAttribute="trailing" constant="20" id="lvg-hI-ogk"/>
+                            <constraint firstItem="4TL-eJ-11l" firstAttribute="trailing" secondItem="WDV-PN-aQQ" secondAttribute="trailing" constant="20" id="sgY-ab-H9V"/>
+                            <constraint firstItem="UdN-nL-0ak" firstAttribute="leading" secondItem="4TL-eJ-11l" secondAttribute="leading" constant="20" id="v7S-CA-gSx"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="4TL-eJ-11l"/>
+                    </view>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <connections>
+                        <outlet property="byLabel1" destination="WDV-PN-aQQ" id="cUr-IX-8co"/>
+                        <outlet property="byLabel2" destination="E6l-QI-469" id="wxb-so-JGR"/>
+                        <outlet property="piwigoTitle" destination="FkT-hD-5Fi" id="SfM-49-pfx"/>
+                        <outlet property="textView" destination="UdN-nL-0ak" id="HED-qK-dbg"/>
+                        <outlet property="versionLabel" destination="vuS-sl-8kx" id="1pc-Gj-s2A"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="bo7-rk-guq" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="131.8840579710145" y="138.61607142857142"/>
+        </scene>
+    </scenes>
+    <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+</document>
