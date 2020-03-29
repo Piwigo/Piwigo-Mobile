@@ -17,32 +17,31 @@
         <scene sceneID="xZp-Xh-lbR">
             <objects>
                 <viewController storyboardIdentifier="ReleaseNotesViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="4Om-2x-gp0" customClass="ReleaseNotesViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="adQ-xJ-L2L">
+                    <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="adQ-xJ-L2L">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalCompressionResistancePriority="1000" preservesSuperviewLayoutMargins="YES" text="Piwigo Mobile" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FkT-hD-5Fi">
-                                <rect key="frame" x="20" y="47" width="374" height="39"/>
+                                <rect key="frame" x="20" y="47" width="374" height="38.5"/>
                                 <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="28"/>
-                                <color key="textColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="textColor" red="1" green="0.47058823704719543" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="center" verticalCompressionResistancePriority="1000" preservesSuperviewLayoutMargins="YES" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WDV-PN-aQQ">
-                                <rect key="frame" x="20" y="86" width="374" height="35.5"/>
+                                <rect key="frame" x="20" y="85.5" width="374" height="35.5"/>
                                 <string key="text">By Spencer Baker, Olaf Greck
  and Eddy Lelièvre-Berna</string>
                                 <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="center" verticalCompressionResistancePriority="1000" preservesSuperviewLayoutMargins="YES" text="Version" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vuS-sl-8kx">
-                                <rect key="frame" x="20" y="124.5" width="374" height="14"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" preservesSuperviewLayoutMargins="YES" text="Version" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vuS-sl-8kx">
+                                <rect key="frame" x="20" y="124" width="374" height="14"/>
                                 <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="10"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" restorationIdentifier="release+notes" preservesSuperviewLayoutMargins="YES" directionalLockEnabled="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" bouncesZoom="NO" editable="NO" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="UdN-nL-0ak">
-                                <rect key="frame" x="20" y="146.5" width="374" height="749.5"/>
+                                <rect key="frame" x="20" y="146" width="374" height="750"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <accessibility key="accessibilityConfiguration">
                                     <accessibilityTraits key="traits" staticText="YES"/>
@@ -60,7 +59,6 @@
                             </textView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                        <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="WDV-PN-aQQ" firstAttribute="top" secondItem="FkT-hD-5Fi" secondAttribute="bottom" id="BSG-4C-8XQ"/>
                             <constraint firstItem="WDV-PN-aQQ" firstAttribute="leading" secondItem="4TL-eJ-11l" secondAttribute="leading" constant="20" id="Iv4-M1-uVu"/>
@@ -71,7 +69,7 @@
                             <constraint firstItem="FkT-hD-5Fi" firstAttribute="leading" secondItem="4TL-eJ-11l" secondAttribute="leading" constant="20" id="bvz-OW-OdL"/>
                             <constraint firstItem="UdN-nL-0ak" firstAttribute="leading" secondItem="4TL-eJ-11l" secondAttribute="leading" constant="20" id="c9Y-h6-wWE"/>
                             <constraint firstItem="UdN-nL-0ak" firstAttribute="bottom" secondItem="adQ-xJ-L2L" secondAttribute="bottom" id="cOW-R1-csW"/>
-                            <constraint firstItem="FkT-hD-5Fi" firstAttribute="top" secondItem="adQ-xJ-L2L" secondAttribute="topMargin" constant="3" id="jhu-hS-kz0"/>
+                            <constraint firstItem="FkT-hD-5Fi" firstAttribute="top" secondItem="4TL-eJ-11l" secondAttribute="top" constant="3" id="jhu-hS-kz0"/>
                             <constraint firstItem="UdN-nL-0ak" firstAttribute="top" secondItem="vuS-sl-8kx" secondAttribute="bottom" constant="8" symbolic="YES" id="l9I-zj-ocz"/>
                             <constraint firstItem="vuS-sl-8kx" firstAttribute="leading" secondItem="4TL-eJ-11l" secondAttribute="leading" constant="20" id="pUW-ek-vy0"/>
                             <constraint firstItem="4TL-eJ-11l" firstAttribute="trailing" secondItem="UdN-nL-0ak" secondAttribute="trailing" constant="20" id="uLo-IA-h2y"/>
@@ -88,7 +86,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bo7-rk-guq" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="131.8840579710145" y="138.61607142857142"/>
+            <point key="canvasLocation" x="1042.0289855072465" y="128.57142857142856"/>
         </scene>
     </scenes>
     <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
