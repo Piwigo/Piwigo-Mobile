@@ -1,10 +1,11 @@
-//  Converted to Swift 5 by Swiftify v5.0.40498 - https://objectivec2swift.com/
 //
 //  ReleaseNotesViewController.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 15/07/2017.
 //  Copyright © 2017 Piwigo.org. All rights reserved.
+//
+//  Converted to Swift 5 by Eddy Lelièvre-Berna on 28/03/2020
 //
 
 import UIKit

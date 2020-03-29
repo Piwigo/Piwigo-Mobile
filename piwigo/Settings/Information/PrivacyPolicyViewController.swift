@@ -5,6 +5,8 @@
 //  Created by Eddy Lelièvre-Berna on 26/10/2018.
 //  Copyright © 2018 Piwigo.org. All rights reserved.
 //
+//  Converted to Swift 5 by Eddy Lelièvre-Berna on 28/03/2020
+//
 
 import UIKit
 
