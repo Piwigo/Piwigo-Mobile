@@ -20,35 +20,32 @@
                     <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oEC-Mb-WXU">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" preservesSuperviewLayoutMargins="YES" text="Piwigo Mobile" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="o0G-G5-cqt">
-                                <rect key="frame" x="116" y="44" width="182" height="39"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalCompressionResistancePriority="1000" preservesSuperviewLayoutMargins="YES" text="Piwigo Mobile" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="o0G-G5-cqt">
+                                <rect key="frame" x="20" y="47" width="374" height="38.5"/>
                                 <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="28"/>
-                                <color key="textColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="textColor" red="1" green="0.47058823704719543" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" preservesSuperviewLayoutMargins="YES" text="By Spencer Baker, Olaf Greck," textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="llV-Zu-BaC">
-                                <rect key="frame" x="20" y="83" width="374" height="18"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="center" verticalCompressionResistancePriority="1000" preservesSuperviewLayoutMargins="YES" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="llV-Zu-BaC">
+                                <rect key="frame" x="20" y="85.5" width="374" height="35.5"/>
+                                <string key="text">By Spencer Baker, Olaf Greck
+ and Eddy Lelièvre-Berna</string>
                                 <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" preservesSuperviewLayoutMargins="YES" text="and Eddy Lelièvre-Berna" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oos-5T-xZM">
-                                <rect key="frame" x="20" y="101" width="374" height="18"/>
-                                <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="Version" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nfp-vL-hrk">
-                                <rect key="frame" x="20" y="119" width="374" height="14"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" preservesSuperviewLayoutMargins="YES" text="Version" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nfp-vL-hrk">
+                                <rect key="frame" x="20" y="124" width="374" height="14"/>
                                 <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="10"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" restorationIdentifier="thanks+licenses" directionalLockEnabled="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" bouncesZoom="NO" editable="NO" usesAttributedText="YES" id="fvr-p8-2JB">
-                                <rect key="frame" x="20" y="141" width="374" height="755"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" restorationIdentifier="thanks+licenses" preservesSuperviewLayoutMargins="YES" directionalLockEnabled="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" bouncesZoom="NO" editable="NO" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fvr-p8-2JB">
+                                <rect key="frame" x="20" y="146" width="374" height="750"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                                <viewLayoutGuide key="safeArea" id="wIp-O7-fZn"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" staticText="YES"/>
+                                </accessibility>
                                 <attributedString key="attributedText">
                                     <fragment>
                                         <string key="content">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</string>
@@ -59,33 +56,30 @@
                                     </fragment>
                                 </attributedString>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                <dataDetectorType key="dataDetectorTypes" address="YES"/>
+                                <dataDetectorType key="dataDetectorTypes" phoneNumber="YES" link="YES"/>
                             </textView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="o0G-G5-cqt" firstAttribute="centerX" secondItem="Uea-pc-qhv" secondAttribute="centerX" id="CIX-2L-gjT"/>
-                            <constraint firstItem="llV-Zu-BaC" firstAttribute="top" secondItem="o0G-G5-cqt" secondAttribute="bottom" id="GbI-RZ-jax"/>
-                            <constraint firstItem="oos-5T-xZM" firstAttribute="leading" secondItem="Uea-pc-qhv" secondAttribute="leading" constant="20" id="M1F-P0-v4E"/>
-                            <constraint firstItem="fvr-p8-2JB" firstAttribute="top" secondItem="Nfp-vL-hrk" secondAttribute="bottom" constant="8" id="Ooh-m8-vGT"/>
+                            <constraint firstItem="o0G-G5-cqt" firstAttribute="leading" secondItem="Uea-pc-qhv" secondAttribute="leading" constant="20" id="0Ib-p4-crb"/>
+                            <constraint firstItem="Uea-pc-qhv" firstAttribute="trailing" secondItem="o0G-G5-cqt" secondAttribute="trailing" constant="20" id="MnL-dJ-lGw"/>
+                            <constraint firstItem="Nfp-vL-hrk" firstAttribute="top" secondItem="llV-Zu-BaC" secondAttribute="bottom" constant="3" id="OKh-1T-BuB"/>
+                            <constraint firstItem="fvr-p8-2JB" firstAttribute="top" secondItem="Nfp-vL-hrk" secondAttribute="bottom" constant="8" symbolic="YES" id="Ooh-m8-vGT"/>
+                            <constraint firstItem="llV-Zu-BaC" firstAttribute="top" secondItem="o0G-G5-cqt" secondAttribute="bottom" id="QVI-fp-NDd"/>
                             <constraint firstItem="Nfp-vL-hrk" firstAttribute="leading" secondItem="Uea-pc-qhv" secondAttribute="leading" constant="20" id="Vdu-hJ-QA5"/>
-                            <constraint firstItem="Uea-pc-qhv" firstAttribute="trailing" secondItem="oos-5T-xZM" secondAttribute="trailing" constant="20" id="c9A-Ab-X9r"/>
                             <constraint firstItem="fvr-p8-2JB" firstAttribute="bottom" secondItem="oEC-Mb-WXU" secondAttribute="bottom" id="eQL-cY-JEa"/>
                             <constraint firstItem="Uea-pc-qhv" firstAttribute="trailing" secondItem="fvr-p8-2JB" secondAttribute="trailing" constant="20" id="gZC-28-R5k"/>
                             <constraint firstItem="Uea-pc-qhv" firstAttribute="trailing" secondItem="llV-Zu-BaC" secondAttribute="trailing" constant="20" id="iRU-fp-AJe"/>
-                            <constraint firstItem="o0G-G5-cqt" firstAttribute="top" secondItem="Uea-pc-qhv" secondAttribute="top" id="oCx-v3-1se"/>
-                            <constraint firstItem="oos-5T-xZM" firstAttribute="top" secondItem="llV-Zu-BaC" secondAttribute="bottom" id="oDd-ng-5lQ"/>
+                            <constraint firstItem="o0G-G5-cqt" firstAttribute="top" secondItem="Uea-pc-qhv" secondAttribute="top" constant="3" id="oCx-v3-1se"/>
                             <constraint firstItem="fvr-p8-2JB" firstAttribute="leading" secondItem="Uea-pc-qhv" secondAttribute="leading" constant="20" id="or5-U0-CuL"/>
                             <constraint firstItem="Uea-pc-qhv" firstAttribute="trailing" secondItem="Nfp-vL-hrk" secondAttribute="trailing" constant="20" id="tZD-kM-bvg"/>
-                            <constraint firstItem="Nfp-vL-hrk" firstAttribute="top" secondItem="oos-5T-xZM" secondAttribute="bottom" id="uZ7-oJ-gN3"/>
                             <constraint firstItem="llV-Zu-BaC" firstAttribute="leading" secondItem="Uea-pc-qhv" secondAttribute="leading" constant="20" id="zSz-WW-lYW"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Uea-pc-qhv"/>
                     </view>
                     <nil key="simulatedTopBarMetrics"/>
                     <connections>
-                        <outlet property="byLabel1" destination="llV-Zu-BaC" id="tph-z7-J4r"/>
-                        <outlet property="byLabel2" destination="oos-5T-xZM" id="PUM-rE-qgW"/>
+                        <outlet property="authorsLabel" destination="llV-Zu-BaC" id="8x8-7E-0bf"/>
                         <outlet property="piwigoTitle" destination="o0G-G5-cqt" id="bFF-1A-rhu"/>
                         <outlet property="textView" destination="fvr-p8-2JB" id="vSS-KV-1ys"/>
                         <outlet property="versionLabel" destination="Nfp-vL-hrk" id="Cp5-bq-zqS"/>

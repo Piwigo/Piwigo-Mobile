@@ -11,6 +11,7 @@ import UIKit
 class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
     
     @IBOutlet var textView: UITextView!
+    private var fixTextPositionAfterLoadingViewOnPad: Bool!
     private var doneBarButton: UIBarButtonItem?
 
 
@@ -20,17 +21,7 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
         super.viewDidLoad()
 
         title = NSLocalizedString("settings_privacy", comment: "Policy Privacy")
-
-        // Set textView
-        textView.attributedText = privacyPolicy()
-        textView.scrollsToTop = true
-        if #available(iOS 11.0, *) {
-            textView?.contentInsetAdjustmentBehavior = .never
-        } else {
-            // Fallback on earlier versions
-            automaticallyAdjustsScrollViewInsets = false
-        }
-
+        
         // Button for returning to albums/images
         doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(quitSettings))
         doneBarButton?.accessibilityIdentifier = "Done"
@@ -63,6 +54,17 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        // Set textView
+        fixTextPositionAfterLoadingViewOnPad = true
+        textView.attributedText = privacyPolicy()
+        textView.scrollsToTop = true
+        if #available(iOS 11.0, *) {
+            textView?.contentInsetAdjustmentBehavior = .never
+        } else {
+            // Fallback on earlier versions
+            automaticallyAdjustsScrollViewInsets = false
+        }
+
         // Set colors, fonts, etc.
         applyColorPalette()
 
@@ -72,6 +74,22 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
         // Register palette changes
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        coordinator.animate(alongsideTransition: { (context) in
+        }, completion: nil)
+    }
+
+    override func viewDidLayoutSubviews() {
+
+        if (fixTextPositionAfterLoadingViewOnPad) {
+            // Scroll text to where it is expected to be after loading view
+            fixTextPositionAfterLoadingViewOnPad = false
+            textView.setContentOffset(.zero, animated: false)
+        }
     }
 
     @objc func quitSettings() {

@@ -10,11 +10,12 @@
 import UIKit
 
 class ReleaseNotesViewController: UIViewController {
+    
     @IBOutlet private weak var piwigoTitle: UILabel!
-    @IBOutlet private weak var byLabel1: UILabel!
-    @IBOutlet private weak var byLabel2: UILabel!
+    @IBOutlet private weak var authorsLabel: UILabel!
     @IBOutlet private weak var versionLabel: UILabel!
     @IBOutlet private weak var textView: UITextView!
+    private var fixTextPositionAfterLoadingViewOnPad: Bool!
     private var doneBarButton: UIBarButtonItem?
 
     
@@ -24,25 +25,6 @@ class ReleaseNotesViewController: UIViewController {
 
         title = NSLocalizedString("settings_releaseNotes", comment: "Release Notes")
 
-        // Title and subtitles
-        piwigoTitle.text = NSLocalizedString("settings_appName", comment: "Piwigo Mobile")
-        byLabel1.text = NSLocalizedString("authors1", tableName: "About", bundle: Bundle.main, value: "", comment: "By Spencer Baker, Olaf Greck,")
-        byLabel2.text = NSLocalizedString("authors2", tableName: "About", bundle: Bundle.main, value: "", comment: "and Eddy Lelièvre-Berna")
-
-        let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
-        let appBuildString = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
-        versionLabel.text = "— \(NSLocalizedString("version", tableName: "About", bundle: Bundle.main, value: "", comment: "Version:")) \(appVersionString ?? "") (\(appBuildString ?? "")) —"
-
-        // Release notes
-        textView.attributedText = notesAttributedString()
-        textView.scrollsToTop = true
-        if #available(iOS 11.0, *) {
-            textView.contentInsetAdjustmentBehavior = .never
-        } else {
-            // Fallback on earlier versions
-            automaticallyAdjustsScrollViewInsets = false
-        }
-        
         // Button for returning to albums/images
         doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(quitSettings))
         doneBarButton?.accessibilityIdentifier = "Done"
@@ -68,8 +50,7 @@ class ReleaseNotesViewController: UIViewController {
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
 
         // Text color depdending on background color
-        byLabel1.textColor = UIColor.piwigoColorText()
-        byLabel2.textColor = UIColor.piwigoColorText()
+        authorsLabel.textColor = UIColor.piwigoColorText()
         versionLabel.textColor = UIColor.piwigoColorText()
         textView.textColor = UIColor.piwigoColorText()
         textView.backgroundColor = UIColor.piwigoColorBackground()
@@ -77,6 +58,28 @@ class ReleaseNotesViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+
+        // Piwigo app
+        piwigoTitle.text = NSLocalizedString("settings_appName", comment: "Piwigo Mobile")
+
+        // Piwigo authors
+        updateAuthorsLabel()
+
+        // Piwigo app version
+        let appVersionString = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+        let appBuildString = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
+        versionLabel.text = "— \(NSLocalizedString("version", tableName: "About", bundle: Bundle.main, value: "", comment: "Version:")) \(appVersionString ?? "") (\(appBuildString ?? "")) —"
+
+        // Release notes
+        fixTextPositionAfterLoadingViewOnPad = true
+        textView.attributedText = notesAttributedString()
+        textView.scrollsToTop = true
+        if #available(iOS 11.0, *) {
+            textView.contentInsetAdjustmentBehavior = .never
+        } else {
+            // Fallback on earlier versions
+            automaticallyAdjustsScrollViewInsets = false
+        }
 
         // Set colors, fonts, etc.
         applyColorPalette()
@@ -87,6 +90,42 @@ class ReleaseNotesViewController: UIViewController {
         // Register palette changes
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+    }
+
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        // Update Piwigo authors label
+        coordinator.animate(alongsideTransition: { (context) in
+            // Piwigo authors
+            self.updateAuthorsLabel()
+        }, completion: nil)
+    }
+    
+    override func viewDidLayoutSubviews() {
+
+        if (fixTextPositionAfterLoadingViewOnPad) {
+            // Scroll text to where it is expected to be after loading view
+            fixTextPositionAfterLoadingViewOnPad = false
+            textView.setContentOffset(.zero, animated: false)
+        }
+    }
+
+    func updateAuthorsLabel () {
+        // Piwigo authors
+        let authors1 = NSLocalizedString("authors1", tableName: "About", bundle: Bundle.main, value: "", comment: "By Spencer Baker, Olaf Greck,")
+        let authors2 = NSLocalizedString("authors2", tableName: "About", bundle: Bundle.main, value: "", comment: "and Eddy Lelièvre-Berna")
+        
+        // Change label according to orientation
+        if ((UIDevice.current.userInterfaceIdiom == .phone) &&
+            ((UIDevice.current.orientation != .landscapeLeft) && (UIDevice.current.orientation != .landscapeRight))) {
+            // iPhone in portrait mode
+            authorsLabel.text = "\(authors1)\r\(authors2)"
+        }
+        else {
+            // iPhone in landscape mode, iPad in any orientation
+            authorsLabel.text = "\(authors1) \(authors2)"
+        }
     }
 
     @objc func quitSettings() {
