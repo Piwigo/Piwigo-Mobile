@@ -6,6 +6,8 @@
 #import <AFNetworking.h>
 #import <UIImageView+AFNetworking.h>
 
+#import "NSLayoutConstraint+CommonConstraints.h"
+
 #import "AlbumImagesViewController.h"
 #import "AppDelegate.h"
 #import "CategoriesData.h"

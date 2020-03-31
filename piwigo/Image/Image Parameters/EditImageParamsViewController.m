@@ -21,7 +21,6 @@
 #import "ImagesCollection.h"
 #import "MBProgressHUD.h"
 #import "PiwigoTagData.h"
-#import "SelectPrivacyViewController.h"
 #import "TagsData.h"
 #import "TagsViewController.h"
 
@@ -743,10 +742,11 @@ typedef enum {
             [self.view endEditing:YES];
             
             // Create view controller
-            SelectPrivacyViewController *privacySelectVC = [SelectPrivacyViewController new];
-            privacySelectVC.delegate = self;
-            [privacySelectVC setPrivacy:(kPiwigoPrivacy)self.commonParameters.privacyLevel];
-            [self.navigationController pushViewController:privacySelectVC animated:YES];
+            UIStoryboard *privacySB = [UIStoryboard storyboardWithName:@"SelectPrivacyViewController" bundle:nil];
+            SelectPrivacyViewController *privacyVC = [privacySB instantiateViewControllerWithIdentifier:@"SelectPrivacyViewController"];
+            privacyVC.delegate = self;
+            [privacyVC setPrivacy:(kPiwigoPrivacy)self.commonParameters.privacyLevel];
+            [self.navigationController pushViewController:privacyVC animated:YES];
             break;
         }
             

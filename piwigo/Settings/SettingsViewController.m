@@ -22,7 +22,6 @@
 #import "LabelTableViewCell.h"
 #import "Model.h"
 #import "PiwigoImageData.h"
-#import "SelectPrivacyViewController.h"
 #import "SessionService.h"
 #import "SettingsViewController.h"
 #import "SliderTableViewCell.h"
@@ -1764,10 +1763,11 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 			{
 				case 1:                      // Default privacy selection
 				{
-					SelectPrivacyViewController *selectPrivacy = [SelectPrivacyViewController new];
-					selectPrivacy.delegate = self;
-					[selectPrivacy setPrivacy:[Model sharedInstance].defaultPrivacyLevel];
-					[self.navigationController pushViewController:selectPrivacy animated:YES];
+                    UIStoryboard *privacySB = [UIStoryboard storyboardWithName:@"SelectPrivacyViewController" bundle:nil];
+                    SelectPrivacyViewController *privacyVC = [privacySB instantiateViewControllerWithIdentifier:@"SelectPrivacyViewController"];
+                    privacyVC.delegate = self;
+                    [privacyVC setPrivacy:[Model sharedInstance].defaultPrivacyLevel];
+                    [self.navigationController pushViewController:privacyVC animated:YES];
 					break;
 				}
 			}
