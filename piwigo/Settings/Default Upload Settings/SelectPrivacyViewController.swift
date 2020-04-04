@@ -110,7 +110,7 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
         // Title
         let titleString = "\(NSLocalizedString("privacyLevel", comment: "Privacy Level"))\n"
         let titleAttributes = [
-            NSAttributedString.Key.font: UIFont.piwigoFontBold()!
+            NSAttributedString.Key.font: UIFont.piwigoFontBold()
         ]
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
@@ -131,13 +131,13 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
         // Title
         let titleString = "\(NSLocalizedString("privacyLevel", comment: "Privacy Level"))\n"
         let titleAttributedString = NSMutableAttributedString(string: titleString)
-        titleAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold()!, range: NSRange(location: 0, length: titleString.count))
+        titleAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: NSRange(location: 0, length: titleString.count))
         headerAttributedString.append(titleAttributedString)
 
         // Text
         let textString = NSLocalizedString("settings_defaultPrivacy>414px", comment: "Please select who will be able to see images")
         let textAttributedString = NSMutableAttributedString(string: textString)
-        textAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall()!, range: NSRange(location: 0, length: textString.count))
+        textAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: NSRange(location: 0, length: textString.count))
         headerAttributedString.append(textAttributedString)
 
         // Header label

@@ -146,13 +146,13 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         let aboutAttributedString = NSMutableAttributedString(string: "")
         let spacerAttributedString = NSMutableAttributedString(string: "\n\n\n")
         let spacerRange = NSRange(location: 0, length: spacerAttributedString.length)
-        spacerAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall()!, range: spacerRange)
+        spacerAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: spacerRange)
 
         // Translators — Bundle string
         let translatorsString = NSLocalizedString("translators_text", tableName: "About", bundle: Bundle.main, value: "", comment: "Translators text")
         let translatorsAttributedString = NSMutableAttributedString(string: translatorsString)
         let translatorsRange = NSRange(location: 0, length: translatorsString.count)
-        translatorsAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall()!, range: translatorsRange)
+        translatorsAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: translatorsRange)
         aboutAttributedString.append(translatorsAttributedString)
         aboutAttributedString.append(spacerAttributedString)
 
@@ -160,16 +160,16 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         let introString = NSLocalizedString("about_text", tableName: "About", bundle: Bundle.main, value: "", comment: "Introduction text")
         let introAttributedString = NSMutableAttributedString(string: introString)
         let introRange = NSRange(location: 0, length: introString.count)
-        introAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall()!, range: introRange)
+        introAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: introRange)
         aboutAttributedString.append(introAttributedString)
 
         // AFNetworking Licence — Bundle string
         let afnString = NSLocalizedString("licenceAFN_text", tableName: "About", bundle: Bundle.main, value: "", comment: "AFNetworking licence text")
         let afnAttributedString = NSMutableAttributedString(string: afnString)
         var afnTitleRange = NSRange(location: 0, length: afnString.count)
-        afnAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall()!, range: afnTitleRange)
+        afnAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: afnTitleRange)
         afnTitleRange = NSRange(location: 0, length: (afnString as NSString).range(of: "\n").location)
-        afnAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold()!, range: afnTitleRange)
+        afnAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: afnTitleRange)
         aboutAttributedString.append(afnAttributedString)
         aboutAttributedString.append(spacerAttributedString)
 
@@ -177,9 +177,9 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         let iqkmString = NSLocalizedString("licenceIQkeyboard_text", tableName: "About", bundle: Bundle.main, value: "", comment: "IQKeyboardManager licence text")
         let iqkmAttributedString = NSMutableAttributedString(string: iqkmString)
         var iqkmTitleRange = NSRange(location: 0, length: iqkmString.count)
-        iqkmAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall()!, range: iqkmTitleRange)
+        iqkmAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: iqkmTitleRange)
         iqkmTitleRange = NSRange(location: 0, length: (iqkmString as NSString).range(of: "\n").location)
-        iqkmAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold()!, range: iqkmTitleRange)
+        iqkmAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: iqkmTitleRange)
         aboutAttributedString.append(iqkmAttributedString)
         aboutAttributedString.append(spacerAttributedString)
 
@@ -187,9 +187,9 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         let mbpHudString = NSLocalizedString("licenceMBProgHUD_text", tableName: "About", bundle: Bundle.main, value: "", comment: "MBProgressHUD licence text")
         let mbpHudAttributedString = NSMutableAttributedString(string: mbpHudString)
         var mbpHudRange = NSRange(location: 0, length: mbpHudString.count)
-        mbpHudAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall()!, range: mbpHudRange)
+        mbpHudAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: mbpHudRange)
         mbpHudRange = NSRange(location: 0, length: (mbpHudString as NSString).range(of: "\n").location)
-        mbpHudAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold()!, range: mbpHudRange)
+        mbpHudAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: mbpHudRange)
         aboutAttributedString.append(mbpHudAttributedString)
         aboutAttributedString.append(spacerAttributedString)
 
@@ -197,9 +197,9 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         let mgstcString = NSLocalizedString("licenceMGSTC_text", tableName: "About", bundle: Bundle.main, value: "", comment: "MGSwipeTableCell licence text")
         let mgstcAttributedString = NSMutableAttributedString(string: mgstcString)
         var mgstcRange = NSRange(location: 0, length: mgstcString.count)
-        mgstcAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall()!, range: mgstcRange)
+        mgstcAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: mgstcRange)
         mgstcRange = NSRange(location: 0, length: (mgstcString as NSString).range(of: "\n").location)
-        mgstcAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold()!, range: mgstcRange)
+        mgstcAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: mgstcRange)
         aboutAttributedString.append(mgstcAttributedString)
         aboutAttributedString.append(spacerAttributedString)
 
@@ -207,9 +207,9 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         let samString = NSLocalizedString("licenceSAM_text", tableName: "About", bundle: Bundle.main, value: "", comment: "SAMKeychain licence text")
         let samAttributedString = NSMutableAttributedString(string: samString)
         var samRange = NSRange(location: 0, length: samString.count)
-        samAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall()!, range: samRange)
+        samAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: samRange)
         samRange = NSRange(location: 0, length: (samString as NSString).range(of: "\n").location)
-        samAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold()!, range: samRange)
+        samAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: samRange)
         aboutAttributedString.append(samAttributedString)
         aboutAttributedString.append(spacerAttributedString)
 
@@ -217,9 +217,9 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         let uiclString = NSLocalizedString("licenceUICL_text", tableName: "About", bundle: Bundle.main, value: "", comment: "UICountingLabel licence text")
         let uiclAttributedString = NSMutableAttributedString(string: uiclString)
         var uiclRange = NSRange(location: 0, length: uiclString.count)
-        uiclAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall()!, range: uiclRange)
+        uiclAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: uiclRange)
         uiclRange = NSRange(location: 0, length: (uiclString as NSString).range(of: "\n").location)
-        uiclAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold()!, range: uiclRange)
+        uiclAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: uiclRange)
         aboutAttributedString.append(uiclAttributedString)
         aboutAttributedString.append(spacerAttributedString)
 
@@ -227,9 +227,9 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         let mitString = NSLocalizedString("licenceMIT_text", tableName: "About", bundle: Bundle.main, value: "", comment: "AFNetworking licence text")
         let mitAttributedString = NSMutableAttributedString(string: mitString)
         var mitTitleRange = NSRange(location: 0, length: mitString.count)
-        mitAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall()!, range: mitTitleRange)
+        mitAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: mitTitleRange)
         mitTitleRange = NSRange(location: 0, length: (mitString as NSString).range(of: "\n").location)
-        mitAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold()!, range: mitTitleRange)
+        mitAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: mitTitleRange)
         aboutAttributedString.append(mitAttributedString)
 
         return aboutAttributedString
