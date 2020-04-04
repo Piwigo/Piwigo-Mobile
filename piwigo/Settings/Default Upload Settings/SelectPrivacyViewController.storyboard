@@ -10,7 +10,7 @@
         <!--Select Privacy View Controller-->
         <scene sceneID="pKW-bF-DVh">
             <objects>
-                <viewController storyboardIdentifier="SelectPrivacyViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="5Ze-cv-BLQ" customClass="SelectPrivacyViewController" customModule="piwigo" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SelectPrivacyViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="5Ze-cv-BLQ" customClass="SelectPrivacyViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="os3-ki-unR">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
