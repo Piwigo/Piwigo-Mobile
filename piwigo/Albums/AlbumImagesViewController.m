@@ -933,7 +933,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             self.editBarButton.enabled = (self.selectedImageIds.count > 0);
       }
     }
-    else if ([[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
+    // WRONG =====> 'normal' user with upload access to the current category can edit images
+    // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by' values of images for checking rights
+    else if ([Model sharedInstance].hasNormalRights && [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
     {
         // Interface depends on device and orientation
         if (([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) &&

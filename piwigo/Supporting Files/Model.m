@@ -55,6 +55,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         instance.username = @"";
         instance.HttpUsername = @"";
 		instance.hasAdminRights = NO;
+        instance.hasNormalRights = NO;
         instance.hadOpenedSession = NO;
         instance.hasUploadedImages = NO;
         instance.usesCommunityPluginV29 = NO;           // Checked at each new session

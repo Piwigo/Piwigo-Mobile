@@ -184,7 +184,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                           [[CategoriesData sharedInstance] updateCategories:albums];
                       }
                       
-                      // Update albums if Community extension installed (not for admins)
+                      // Update albums if Community extension installed (not needed for admins)
                       if (![Model sharedInstance].hasAdminRights &&
                            [Model sharedInstance].usesCommunityPluginV29) {
                           [AlbumService setUploadRightsForCategory:categoryId inRecursiveMode:recursiveString];

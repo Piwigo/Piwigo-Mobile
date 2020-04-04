@@ -62,6 +62,7 @@ typedef enum {
 @property (nonatomic, strong) NSString *HttpUsername;
 @property (nonatomic, strong) NSString *uploadFileTypes;
 @property (nonatomic, assign) BOOL hasAdminRights;
+@property (nonatomic, assign) BOOL hasNormalRights;
 @property (nonatomic, assign) BOOL usesCommunityPluginV29;
 @property (nonatomic, assign) BOOL hasUploadedImages;
 @property (nonatomic, assign) BOOL hadOpenedSession;

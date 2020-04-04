@@ -214,6 +214,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
     self.isAlreadyTryingToLogin = YES;
     self.usesCommunityPluginV29 = NO;
     [Model sharedInstance].hasAdminRights = NO;
+    [Model sharedInstance].hasNormalRights = NO;
     [Model sharedInstance].usesCommunityPluginV29 = NO;
     
     // To remember app received anthentication challenge
@@ -221,9 +222,10 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
     [Model sharedInstance].didRequestHTTPauthentication = NO;
 #if defined(DEBUG_SESSION)
     NSLog(@"=> launchLogin: starting with…");
-    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@",
+    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@, hasNormalRights=%@",
           ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
-          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
+          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
+          ([Model sharedInstance].hasNormalRights ? @"YES" : @"NO"));
 #endif
 
     // Check server address and cancel login if address not provided
@@ -568,9 +570,10 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 -(void)performLogin
 {
 #if defined(DEBUG_SESSION)
-    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@",
+    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@, hasNormalRights=%@",
           ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
-          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
+          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
+          ([Model sharedInstance].hasNormalRights ? @"YES" : @"NO"));
     NSLog(@"=> performLogin: starting…");
 #endif
     
@@ -629,9 +632,10 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 -(void)getCommunityStatusAtFirstLogin:(BOOL)isFirstLogin
 {
 #if defined(DEBUG_SESSION)
-    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@",
+    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@, hasNormalRights=%@",
           ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
-          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
+          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
+          ([Model sharedInstance].hasNormalRights ? @"YES" : @"NO"));
     NSLog(@"=> getCommunityStatusAtFirstLogin:%@ starting…", isFirstLogin ? @"YES" : @"NO");
 #endif
     if((self.usesCommunityPluginV29) && (![Model sharedInstance].userCancelledCommunication)) {
@@ -675,9 +679,10 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 -(void)getSessionStatusAtLogin:(BOOL)isLoggingIn andFirstLogin:(BOOL)isFirstLogin
 {
 #if defined(DEBUG_SESSION)
-    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@",
+    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@, hasNormalRights=%@",
           ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
-          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
+          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
+          ([Model sharedInstance].hasNormalRights ? @"YES" : @"NO"));
     NSLog(@"=> getSessionStatusAtLogin:%@ andFirstLogin:%@ starting…",
           isLoggingIn ? @"YES" : @"NO", isFirstLogin ? @"YES" : @"NO");
 #endif
@@ -830,9 +835,10 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 {
 #if defined(DEBUG_SESSION)
     NSLog(@"=> performRelogin: starting with…");
-    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@",
+    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@, hasNormalRights=%@",
           ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
-          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
+          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
+          ([Model sharedInstance].hasNormalRights ? @"YES" : @"NO"));
 #endif
     
     // Update HUD during re-login

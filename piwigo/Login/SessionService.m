@@ -215,6 +215,7 @@
                               if(![Model sharedInstance].usesCommunityPluginV29) {
                                   NSString *userStatus = [result objectForKey:@"status"];
                                   [Model sharedInstance].hasAdminRights = ([userStatus isEqualToString:@"admin"] || [userStatus isEqualToString:@"webmaster"]);
+                                  [Model sharedInstance].hasNormalRights = [userStatus isEqualToString:@"normal"];
                               }
                               
                               // Collect the list of available sizes
@@ -488,7 +489,8 @@
                       {
                           NSString *userStatus = [[responseObject objectForKey:@"result" ] objectForKey:@"real_user_status"];
                           [Model sharedInstance].hasAdminRights = ([userStatus isEqualToString:@"admin"] || [userStatus isEqualToString:@"webmaster"]);
-                          
+                          [Model sharedInstance].hasNormalRights = [userStatus isEqualToString:@"normal"];
+
                           completion([responseObject objectForKey:@"result"]);
                       }
                       else

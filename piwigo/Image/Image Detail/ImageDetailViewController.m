@@ -247,9 +247,10 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
             BOOL isNavigationBarHidden = self.navigationController.isNavigationBarHidden;
             [self.navigationController setToolbarHidden:isNavigationBarHidden animated:YES];
         }
-        else if ([[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
+        else if ([Model sharedInstance].hasNormalRights && [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
         {
-            // User with upload access to the current category can edit images
+            // WRONG =====> 'normal' user with upload access to the current category can edit images
+            // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by' values of images for checking rights
             [self.navigationItem setRightBarButtonItems:@[self.editBarButton]];
             self.toolbarItems = @[self.shareBarButton, self.spaceBetweenButtons, self.moveBarButton];
 
