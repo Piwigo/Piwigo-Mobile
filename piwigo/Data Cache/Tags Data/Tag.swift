@@ -133,7 +133,7 @@ struct TagJSON: Decodable {
                 // Inject data into TagProperties after converting id
                 for tagProperty4Admin in tagPropertiesArray4Admin {
                     let id:Int64? = Int64(tagProperty4Admin.id ?? "")!
-                    let tagProperty = TagProperties(id: id, name: tagProperty4Admin.name, lastmodified: tagProperty4Admin.lastmodified, url_name: tagProperty4Admin.url_name, counter: Int64.max, url: "")
+                    let tagProperty = TagProperties(id: id, name: tagProperty4Admin.name, lastmodified: tagProperty4Admin.lastmodified, counter: Int64.max, url_name: tagProperty4Admin.url_name, url: "")
                     tagPropertiesArray.append(tagProperty)
                 }
             }
@@ -161,8 +161,10 @@ struct TagProperties: Codable
     let id: Int64?                  // 1
     let name: String?               // "Birthday"
     let lastmodified: String?       // "2018-08-23 15:30:43"
-    let url_name: String?           // "birthday"
     let counter: Int64?             // 8
+
+    // The following data are not stored in cache
+    let url_name: String?           // "birthday"
     let url: String?                // "https:…"
 }
 
@@ -175,5 +177,7 @@ struct TagProperties4Admin: Codable
     let id: String?                 // 1 (String instead of Int)
     let name: String?               // "Birthday"
     let lastmodified: String?       // "2018-08-23 15:30:43"
+
+    // The following data are not stored in cache
     let url_name: String?           // "birthday"
 }
