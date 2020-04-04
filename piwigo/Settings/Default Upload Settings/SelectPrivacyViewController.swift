@@ -81,26 +81,13 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
     }
-
-    func getPrivacyLevel(forRow row: Int) -> kPiwigoPrivacy {
-        var privacyLevel: kPiwigoPrivacy
-        switch row {
-            case 0:
-                privacyLevel = kPiwigoPrivacyEverybody
-            case 1:
-                privacyLevel = kPiwigoPrivacyAdminsFamilyFriendsContacts
-            case 2:
-                privacyLevel = kPiwigoPrivacyAdminsFamilyFriends
-            case 3:
-                privacyLevel = kPiwigoPrivacyAdminsFamily
-            case 4:
-                privacyLevel = kPiwigoPrivacyAdmins
-            default:
-                privacyLevel = kPiwigoPrivacyEverybody
-                break
-        }
-
-        return privacyLevel
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // Unregister palette changes
+        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
+        NotificationCenter.default.removeObserver(self, name: name, object: nil)
     }
 
     
@@ -221,4 +208,28 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
 
         navigationController?.popViewController(animated: true)
     }
+}
+
+
+// MARK: - Utilities
+
+func getPrivacyLevel(forRow row: Int) -> kPiwigoPrivacy {
+    var privacyLevel: kPiwigoPrivacy
+    switch row {
+        case 0:
+            privacyLevel = kPiwigoPrivacyEverybody
+        case 1:
+            privacyLevel = kPiwigoPrivacyAdminsFamilyFriendsContacts
+        case 2:
+            privacyLevel = kPiwigoPrivacyAdminsFamilyFriends
+        case 3:
+            privacyLevel = kPiwigoPrivacyAdminsFamily
+        case 4:
+            privacyLevel = kPiwigoPrivacyAdmins
+        default:
+            privacyLevel = kPiwigoPrivacyEverybody
+            break
+    }
+
+    return privacyLevel
 }
