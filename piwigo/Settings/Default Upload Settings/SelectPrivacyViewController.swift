@@ -213,23 +213,23 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
 
 // MARK: - Utilities
 
-func getPrivacyLevel(forRow row: Int) -> kPiwigoPrivacy {
-    var privacyLevel: kPiwigoPrivacy
-    switch row {
-        case 0:
-            privacyLevel = kPiwigoPrivacyEverybody
-        case 1:
-            privacyLevel = kPiwigoPrivacyAdminsFamilyFriendsContacts
-        case 2:
-            privacyLevel = kPiwigoPrivacyAdminsFamilyFriends
-        case 3:
-            privacyLevel = kPiwigoPrivacyAdminsFamily
-        case 4:
-            privacyLevel = kPiwigoPrivacyAdmins
-        default:
-            privacyLevel = kPiwigoPrivacyEverybody
-            break
-    }
+    private func getPrivacyLevel(forRow row: Int) -> kPiwigoPrivacy {
+        var privacyLevel: kPiwigoPrivacy
+        switch row {
+            case 0:
+                privacyLevel = kPiwigoPrivacyEverybody
+            case 1:
+                privacyLevel = kPiwigoPrivacyAdminsFamilyFriendsContacts
+            case 2:
+                privacyLevel = kPiwigoPrivacyAdminsFamilyFriends
+            case 3:
+                privacyLevel = kPiwigoPrivacyAdminsFamily
+            case 4:
+                privacyLevel = kPiwigoPrivacyAdmins
+            default:
+                privacyLevel = kPiwigoPrivacyEverybody
+                break
+        }
 
-    return privacyLevel
-}
+        return privacyLevel
+    }
