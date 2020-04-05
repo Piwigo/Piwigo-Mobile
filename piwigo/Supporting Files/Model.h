@@ -157,6 +157,5 @@ typedef enum {
 @property (nonatomic, assign) NSTimeInterval dateOfLastTranslationRequest;
 
 -(NSString *)getNameForPrivacyLevel:(NSInteger)privacyLevel;
--(NSString *)getNameForShareActivity:(NSString *)activity forWidth:(CGFloat)width;
 
 @end

@@ -1749,8 +1749,9 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                 }
                 case 4:                     // Share image metadata options
                 {
-                    ShareMetadataViewController *shareMetadataOptionsVC = [ShareMetadataViewController new];
-                    [self.navigationController pushViewController:shareMetadataOptionsVC animated:YES];
+                    UIStoryboard *metadataOptionsSB = [UIStoryboard storyboardWithName:@"ShareMetadataViewController" bundle:nil];
+                    ShareMetadataViewController *metadataOptionsVC = [metadataOptionsSB instantiateViewControllerWithIdentifier:@"ShareMetadataViewController"];
+                    [self.navigationController pushViewController:metadataOptionsVC animated:YES];
                     break;
                 }
             }

@@ -186,50 +186,6 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 	return name;
 }
 
--(NSString *)getNameForShareActivity:(NSString *)activity forWidth:(CGFloat)width
-{
-    NSString *name = @"";
-    if ([activity isEqualToString:UIActivityTypeAirDrop]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_AirDrop>375px", @"Transfer images with AirDrop") : NSLocalizedString(@"shareActivityCode_AirDrop", @"Transfer with AirDrop");
-    } else if ([activity isEqualToString:UIActivityTypeAssignToContact]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_AssignToContact>375px", @"Assign image to contact") : NSLocalizedString(@"shareActivityCode_AssignToContact", @"Assign to contact");
-    } else if ([activity isEqualToString:UIActivityTypeCopyToPasteboard]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_CopyToPasteboard>375px", @"Copy images to Pasteboard") : NSLocalizedString(@"shareActivityCode_CopyToPasteboard", @"Copy to Pasteboard");
-    } else if ([activity isEqualToString:UIActivityTypeMail]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Mail>375px", @"Post images by email") : NSLocalizedString(@"shareActivityCode_Mail", @"Post by email");
-    } else if ([activity isEqualToString:UIActivityTypeMessage]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Message>375px", @"Post images with the Message app") : NSLocalizedString(@"shareActivityCode_Message", @"Post with Message");
-    } else if ([activity isEqualToString:UIActivityTypePostToFacebook]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Facebook>375px", @"Post images to Facebook") : NSLocalizedString(@"shareActivityCode_Facebook", @"Post to Facebook");
-    } else if ([activity isEqualToString:kPiwigoActivityTypeMessenger]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Messenger>375px", @"Post images with the Messenger app") : NSLocalizedString(@"shareActivityCode_Messenger", @"Post with Messenger");
-    } else if ([activity isEqualToString:UIActivityTypePostToFlickr]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Flickr>375px", @"Post images to Flickr") : NSLocalizedString(@"shareActivityCode_Flickr", @"Post to Flickr");
-    } else if ([activity isEqualToString:kPiwigoActivityTypePostInstagram]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Instagram>375px", @"Post images to Instagram") : NSLocalizedString(@"shareActivityCode_Instagram", @"Post to Instagram");
-    } else if ([activity isEqualToString:kPiwigoActivityTypePostToSignal]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Signal>375px", @"Post images with the Signal app") : NSLocalizedString(@"shareActivityCode_Signal", @"Post with Signal");
-    } else if ([activity isEqualToString:kPiwigoActivityTypePostToSnapchat]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Snapchat>375px", @"Post images to Snapchat app") : NSLocalizedString(@"shareActivityCode_Snapchat", @"Post to Snapchat");
-    } else if ([activity isEqualToString:UIActivityTypePostToTencentWeibo]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_TencentWeibo>375px", @"Post images to TencentWeibo") : NSLocalizedString(@"shareActivityCode_TencentWeibo", @"Post to TencentWeibo");
-    } else if ([activity isEqualToString:UIActivityTypePostToTwitter]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Twitter>375px", @"Post images to Twitter") : NSLocalizedString(@"shareActivityCode_Twitter", @"Post to Twitter");
-    } else if ([activity isEqualToString:UIActivityTypePostToVimeo]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Vimeo>375px", @"Post videos to Vimeo") : NSLocalizedString(@"shareActivityCode_Vimeo", @"Post to Vimeo");
-    } else if ([activity isEqualToString:UIActivityTypePostToWeibo]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Weibo>375px", @"Post images to Weibo") : NSLocalizedString(@"shareActivityCode_Weibo", @"Post to Weibo");
-    } else if ([activity isEqualToString:kPiwigoActivityTypePostToWhatsApp]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_WhatsApp>375px", @"Post images with the WhatsApp app") : NSLocalizedString(@"shareActivityCode_WhatsApp", @"Post with WhatsApp");
-    } else if ([activity isEqualToString:UIActivityTypeSaveToCameraRoll]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_CameraRoll>375px", @"Save images to Camera Roll") : NSLocalizedString(@"shareActivityCode_CameraRoll", @"Save to Camera Roll");
-    } else if ([activity isEqualToString:kPiwigoActivityTypeOther]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Other>375px", @"Share images with other apps") : NSLocalizedString(@"shareActivityCode_Other", @"Share with other apps");
-    }
-    
-    return name;
-}
-
 
 #pragma mark - Getter
 

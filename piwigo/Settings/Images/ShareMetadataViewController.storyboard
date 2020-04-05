@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="OpenSansRegular.TTF">
+            <string>OpenSans</string>
+        </array>
+    </customFonts>
+    <scenes>
+        <!--Share Metadata View Controller-->
+        <scene sceneID="pLq-Vn-drc">
+            <objects>
+                <viewController storyboardIdentifier="ShareMetadataViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Pqi-cc-Z1k" customClass="ShareMetadataViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="jh4-av-bpw">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ShareMetadataCell" rowHeight="43" id="Mqn-Bi-hy6" userLabel="LabelImageTableViewCell" customClass="ShareMetadataCell" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="55.5" width="414" height="43"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Mqn-Bi-hy6" id="ONK-RN-4VZ">
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="activityLabel" textAlignment="natural" lineBreakMode="wordWrap" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="U5f-4F-ljO">
+                                            <rect key="frame" x="20" y="10" width="98" height="23"/>
+                                            <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="addItem" translatesAutoresizingMaskIntoConstraints="NO" id="N8C-Gl-202" userLabel="Add Image">
+                                            <rect key="frame" x="369" y="9" width="25" height="25"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" secondItem="N8C-Gl-202" secondAttribute="height" multiplier="1:1" id="JeF-7c-fRn"/>
+                                                <constraint firstAttribute="height" constant="25" id="Q1y-co-Czi"/>
+                                            </constraints>
+                                        </imageView>
+                                        <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="removeItem" translatesAutoresizingMaskIntoConstraints="NO" id="rBa-Vf-HwT" userLabel="Remove Image">
+                                            <rect key="frame" x="369" y="9" width="25" height="25"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="25" id="EJd-41-qXm"/>
+                                                <constraint firstAttribute="width" secondItem="rBa-Vf-HwT" secondAttribute="height" multiplier="1:1" id="sqh-Iu-J3P"/>
+                                            </constraints>
+                                        </imageView>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="rBa-Vf-HwT" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="U5f-4F-ljO" secondAttribute="trailing" constant="10" id="Fo7-1r-ABW"/>
+                                        <constraint firstItem="rBa-Vf-HwT" firstAttribute="centerY" secondItem="ONK-RN-4VZ" secondAttribute="centerY" id="GXc-lj-daK"/>
+                                        <constraint firstItem="U5f-4F-ljO" firstAttribute="centerY" secondItem="ONK-RN-4VZ" secondAttribute="centerY" id="Qac-mF-9mL"/>
+                                        <constraint firstItem="U5f-4F-ljO" firstAttribute="leading" secondItem="ONK-RN-4VZ" secondAttribute="leadingMargin" id="Y8s-X3-qrv"/>
+                                        <constraint firstItem="N8C-Gl-202" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="U5f-4F-ljO" secondAttribute="trailing" constant="10" id="eNG-10-fqg"/>
+                                        <constraint firstAttribute="trailing" secondItem="N8C-Gl-202" secondAttribute="trailing" constant="20" symbolic="YES" id="j3B-02-cp5"/>
+                                        <constraint firstAttribute="trailing" secondItem="rBa-Vf-HwT" secondAttribute="trailing" constant="20" symbolic="YES" id="l9u-nf-lh7"/>
+                                        <constraint firstItem="N8C-Gl-202" firstAttribute="centerY" secondItem="ONK-RN-4VZ" secondAttribute="centerY" id="sIg-di-ZTs"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="leftLabel" destination="U5f-4F-ljO" id="9tW-iF-LLY"/>
+                                    <outlet property="rightAddImage" destination="N8C-Gl-202" id="XO4-Qn-ndQ"/>
+                                    <outlet property="rightRemoveImage" destination="rBa-Vf-HwT" id="M0c-a6-bUb"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="Pqi-cc-Z1k" id="dBg-j8-XSX"/>
+                            <outlet property="delegate" destination="Pqi-cc-Z1k" id="xu7-ng-QPv"/>
+                        </connections>
+                    </tableView>
+                    <connections>
+                        <outlet property="shareMetadataTableView" destination="jh4-av-bpw" id="fxh-P6-nJX"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="6EM-Yn-F7U" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="132" y="139"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="addItem" width="25" height="25"/>
+        <image name="removeItem" width="25" height="25"/>
+    </resources>
+</document>
