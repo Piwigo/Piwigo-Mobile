@@ -16,8 +16,6 @@
 #import "CategorySortViewController.h"
 #import "DefaultAlbumThumbnailSizeViewController.h"
 #import "DefaultCategoryViewController.h"
-#import "DefaultImageSizeViewController.h"
-#import "DefaultImageThumbnailSizeViewController.h"
 #import "ImagesCollection.h"
 #import "LabelTableViewCell.h"
 #import "Model.h"
@@ -1737,13 +1735,15 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
             {
                 case 0:                     // Thumbnail file selection
                 {
-                    DefaultImageThumbnailSizeViewController *defaultThumbnailSizeVC = [DefaultImageThumbnailSizeViewController new];
+                    UIStoryboard *defaultThumbnailSizeSB = [UIStoryboard storyboardWithName:@"DefaultImageThumbnailSizeViewController" bundle:nil];
+                    DefaultImageThumbnailSizeViewController *defaultThumbnailSizeVC = [defaultThumbnailSizeSB instantiateViewControllerWithIdentifier:@"DefaultImageThumbnailSizeViewController"];
                     [self.navigationController pushViewController:defaultThumbnailSizeVC animated:YES];
                     break;
                 }
                 case 3:                     // Image file selection
                 {
-                    DefaultImageSizeViewController *defaultImageSizeVC = [DefaultImageSizeViewController new];
+                    UIStoryboard *defaultImageSizeSB = [UIStoryboard storyboardWithName:@"DefaultImageSizeViewController" bundle:nil];
+                    DefaultImageSizeViewController *defaultImageSizeVC = [defaultImageSizeSB instantiateViewControllerWithIdentifier:@"DefaultImageSizeViewController"];
                     [self.navigationController pushViewController:defaultImageSizeVC animated:YES];
                     break;
                 }
