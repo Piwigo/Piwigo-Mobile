@@ -491,8 +491,6 @@
 		D8D3F7601A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalImageCollectionViewCell.m; sourceTree = "<group>"; };
 		D8D3F7631A7AF2A100AEA7F1 /* CategoriesData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoriesData.h; sourceTree = "<group>"; };
 		D8D3F7641A7AF2A100AEA7F1 /* CategoriesData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoriesData.m; sourceTree = "<group>"; };
-		D8D63B9D1AA69E0000F0ED39 /* CategoryImageSort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryImageSort.h; sourceTree = "<group>"; };
-		D8D63B9E1AA69E0000F0ED39 /* CategoryImageSort.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryImageSort.m; sourceTree = "<group>"; };
 		D8DC79EB1ACB1F310062D3A1 /* LocalAlbumsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalAlbumsViewController.h; sourceTree = "<group>"; };
 		D8DC79EC1ACB1F310062D3A1 /* LocalAlbumsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalAlbumsViewController.m; sourceTree = "<group>"; };
 		D8E4D61F1ABE34DF0057EB95 /* LoginNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginNavigationController.h; sourceTree = "<group>"; };
@@ -953,8 +951,6 @@
 				AD5E8F0E20EEA06B00E93426 /* DefaultCategoryViewController.m */,
 				D818B17E1AA4265D006FC32A /* CategorySortViewController.h */,
 				D818B17F1AA4265D006FC32A /* CategorySortViewController.m */,
-				D8D63B9D1AA69E0000F0ED39 /* CategoryImageSort.h */,
-				D8D63B9E1AA69E0000F0ED39 /* CategoryImageSort.m */,
 				AD2B0A16243D00CD00AF1FEE /* DefaultAlbumThumbnailSizeViewController.swift */,
 				AD2B0A14243D001A00AF1FEE /* DefaultAlbumThumbnailSizeViewController.storyboard */,
 			);
