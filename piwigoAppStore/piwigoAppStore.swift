@@ -25,6 +25,7 @@ public enum Model : String {
     iPadAir2           = "iPad Air 2",
     iPad5              = "iPad 5", //aka iPad 2017
     iPad6              = "iPad 6", //aka iPad 2018
+    iPad7              = "iPad 7", //aka iPad 2019
     //iPad mini
     iPadMini           = "iPad Mini",
     iPadMini2          = "iPad Mini 2",
@@ -37,6 +38,8 @@ public enum Model : String {
     iPadPro12_9        = "iPad Pro 12.9\"",
     iPadPro2_12_9      = "iPad Pro 2 12.9\"",
     iPadPro3_12_9      = "iPad Pro 3 12.9\"",
+    iPadPro2_11        = "iPad Pro 2 11\"",
+    iPadPro4_12_9      = "iPad Pro 4 12.9\"",
     //iPhone
     iPhone4            = "iPhone 4",
     iPhone4S           = "iPhone 4S",
@@ -109,6 +112,8 @@ public extension UIDevice {
             "iPad6,12"  : .iPad5,
             "iPad7,5"   : .iPad6, //aka iPad 2018
             "iPad7,6"   : .iPad6,
+            "iPad7,11"  : .iPad7, //aka iPad 2019
+            "iPad7,12"  : .iPad7,
             //iPad mini
             "iPad2,5"   : .iPadMini,
             "iPad2,6"   : .iPadMini,
@@ -138,6 +143,10 @@ public extension UIDevice {
             "iPad8,6"   : .iPadPro3_12_9,
             "iPad8,7"   : .iPadPro3_12_9,
             "iPad8,8"   : .iPadPro3_12_9,
+            "iPad8,9"   : .iPadPro2_11,
+            "iPad8,10"  : .iPadPro2_11,
+            "iPad8,11"  : .iPadPro4_12_9,
+            "iPad8,12"  : .iPadPro4_12_9,
             //iPhone
             "iPhone3,1" : .iPhone4,
             "iPhone3,2" : .iPhone4,
