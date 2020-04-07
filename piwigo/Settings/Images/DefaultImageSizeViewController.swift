@@ -304,6 +304,7 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
 
     
 // MARK: - UITableViewDelegate Methods
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
@@ -312,9 +313,5 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
         self.tableView.reloadData()
 
         navigationController?.popViewController(animated: true)
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
     }
 }

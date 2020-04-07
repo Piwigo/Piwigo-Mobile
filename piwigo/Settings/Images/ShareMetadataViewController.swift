@@ -470,7 +470,7 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
         Model.sharedInstance().saveToDisk()
     }
 
-    func getNameForShareActivity(_ activity: String?, forWidth width: CGFloat) -> String? {
+    private func getNameForShareActivity(_ activity: String?, forWidth width: CGFloat) -> String? {
         var name = ""
         // Return activity name of appropriate lentgh
         switch activity {
