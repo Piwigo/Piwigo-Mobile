@@ -10,7 +10,6 @@
 #import <CoreData/CoreData.h>
 
 #import "AFAutoPurgingImageCache.h"
-#import "CategorySortViewController.h"
 
 FOUNDATION_EXPORT NSInteger const kPiwigoMemoryCacheInc;
 FOUNDATION_EXPORT NSInteger const kPiwigoMemoryCacheMin;
@@ -32,6 +31,32 @@ FOUNDATION_EXPORT NSString *kPiwigoActivityTypePostToWhatsApp;
 FOUNDATION_EXPORT NSString *kPiwigoActivityTypeOther;
 
 @class PHPhotoLibrary;
+
+typedef enum {
+    kPiwigoSortCategoryNameAscending,               // Photo title, A → Z
+    kPiwigoSortCategoryNameDescending,              // Photo title, Z → A
+    
+    kPiwigoSortCategoryDateCreatedDescending,       // Date created, new → old
+    kPiwigoSortCategoryDateCreatedAscending,        // Date created, old → new
+    
+    kPiwigoSortCategoryDatePostedDescending,        // Date posted, new → old
+    kPiwigoSortCategoryDatePostedAscending,         // Date posted, old → new
+    
+    kPiwigoSortCategoryFileNameAscending,           // File name, A → Z
+    kPiwigoSortCategoryFileNameDescending,          // File name, Z → A
+    
+    kPiwigoSortCategoryRatingScoreDescending,       // Rating score, high → low
+    kPiwigoSortCategoryRatingScoreAscending,        // Rating score, low → high
+
+    kPiwigoSortCategoryVisitsDescending,            // Visits, high → low
+    kPiwigoSortCategoryVisitsAscending,             // Visits, low → high
+
+    kPiwigoSortCategoryManual,                      // Manual order
+//    kPiwigoSortCategoryVideoOnly,
+//    kPiwigoSortCategoryImageOnly,
+    
+    kPiwigoSortCategoryCount
+} kPiwigoSortCategory;
 
 typedef enum {
 	kPiwigoPrivacyEverybody = 0,

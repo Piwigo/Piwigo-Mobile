@@ -8,8 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-#import "CategorySortViewController.h"
-
 @class PiwigoImageData;
 
 @interface AlbumData : NSObject

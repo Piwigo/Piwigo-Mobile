@@ -13,7 +13,6 @@
 #import "AppDelegate.h"
 #import "ButtonTableViewCell.h"
 #import "CategoriesData.h"
-#import "CategorySortViewController.h"
 #import "DefaultCategoryViewController.h"
 #import "ImagesCollection.h"
 #import "LabelTableViewCell.h"
@@ -1720,7 +1719,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                 }
                 case 2:                     // Sort method selection
 				{
-					CategorySortViewController *categoryVC = [CategorySortViewController new];
+                    UIStoryboard *categorySB = [UIStoryboard storyboardWithName:@"CategorySortViewController" bundle:nil];
+                    CategorySortViewController *categoryVC = [categorySB instantiateViewControllerWithIdentifier:@"CategorySortViewController"];
 					categoryVC.currentCategorySortType = [Model sharedInstance].defaultSort;
 					categoryVC.sortDelegate = self;
 					[self.navigationController pushViewController:categoryVC animated:YES];

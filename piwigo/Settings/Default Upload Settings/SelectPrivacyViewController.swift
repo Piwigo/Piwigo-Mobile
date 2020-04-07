@@ -18,8 +18,7 @@ protocol SelectPrivacyDelegate: NSObjectProtocol {
 @objc
 class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    @objc
-    weak var delegate: SelectPrivacyDelegate?
+    @objc weak var delegate: SelectPrivacyDelegate?
 
     @objc
     func setPrivacy(_ privacy: kPiwigoPrivacy) {
@@ -190,8 +189,8 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
 // MARK: - UITableViewDelegate Methods
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
         tableView.deselectRow(at: indexPath, animated: true)
-
         let selectedPrivacy = getPrivacyLevel(forRow: indexPath.row)
 
         for visibleCell in tableView.visibleCells {
@@ -200,7 +199,6 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
                 visibleCell.accessoryType = .checkmark
             }
         }
-
 
         if delegate?.responds(to: #selector(SelectPrivacyDelegate.selectedPrivacy(_:))) ?? false {
             delegate?.selectedPrivacy(selectedPrivacy)
