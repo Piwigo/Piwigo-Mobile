@@ -14,7 +14,6 @@
 #import "ButtonTableViewCell.h"
 #import "CategoriesData.h"
 #import "CategorySortViewController.h"
-#import "DefaultAlbumThumbnailSizeViewController.h"
 #import "DefaultCategoryViewController.h"
 #import "ImagesCollection.h"
 #import "LabelTableViewCell.h"
@@ -1714,7 +1713,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
                 }
                 case 1:                     // Thumbnail file selection
                 {
-                    DefaultAlbumThumbnailSizeViewController *defaultThumbnailSizeVC = [DefaultAlbumThumbnailSizeViewController new];
+                    UIStoryboard *defaultThumbnailSizeSB = [UIStoryboard storyboardWithName:@"DefaultAlbumThumbnailSizeViewController" bundle:nil];
+                    DefaultAlbumThumbnailSizeViewController *defaultThumbnailSizeVC = [defaultThumbnailSizeSB instantiateViewControllerWithIdentifier:@"DefaultAlbumThumbnailSizeViewController"];
                     [self.navigationController pushViewController:defaultThumbnailSizeVC animated:YES];
                     break;
                 }
