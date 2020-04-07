@@ -2027,7 +2027,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 
 - (NSString *)deviceNameFromCode:(NSString *)deviceCode
 {
-    // See https://everymac.com/ultimate-mac-lookup/?search_keywords=iPhone12%2C3
+    // See https://everymac.com/systems/apple/ipad/index-ipad-specs.html
     // or https://apps.apple.com/fr/app/mactracker/id430255202?l=en&mt=12
     
     // iPhone
@@ -2082,6 +2082,8 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     if ([deviceCode isEqualToString:@"iPad6,12"])     return @"iPad (5th generation) (Wi-Fi + Cellular)";
     if ([deviceCode isEqualToString:@"iPad7,5"])      return @"iPad (6th generation) (Wi-Fi)";
     if ([deviceCode isEqualToString:@"iPad7,6"])      return @"iPad (6th generation) (Wi-Fi + Cellular)";
+    if ([deviceCode isEqualToString:@"iPad7,11"])     return @"iPad (7th generation) (Wi-Fi)";
+    if ([deviceCode isEqualToString:@"iPad7,12"])     return @"iPad (7th generation) (Wi-Fi + Cellular)";
 
     // iPad Air
     if ([deviceCode isEqualToString:@"iPad4,1"])      return @"iPad Air (Wi-Fi)";
@@ -2112,6 +2114,10 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     if ([deviceCode isEqualToString:@"iPad8,6"])      return @"iPad Pro 12.9-inch (3rd generation) (Wi-Fi)";
     if ([deviceCode isEqualToString:@"iPad8,7"])      return @"iPad Pro 12.9-inch (3rd generation) (Wi-Fi + Cellular)";
     if ([deviceCode isEqualToString:@"iPad8,8"])      return @"iPad Pro 12.9-inch (3rd generation) (Wi-Fi + Cellular)";
+    if ([deviceCode isEqualToString:@"iPad8,9"])      return @"iPad Pro 11-inch (2nd generation) (Wi-Fi)";
+    if ([deviceCode isEqualToString:@"iPad8,10"])     return @"iPad Pro 11-inch (2nd generation) (Wi-Fi + Cellular)";
+    if ([deviceCode isEqualToString:@"iPad8,11"])     return @"iPad Pro 12.9-inch (4th generation) (Wi-Fi)";
+    if ([deviceCode isEqualToString:@"iPad8,12"])     return @"iPad Pro 12.9-inch (4th generation) (Wi-Fi + Cellular)";
 
     // iPad mini
     if ([deviceCode isEqualToString:@"iPad2,5"])      return @"iPad Mini (Wi-Fi)";
