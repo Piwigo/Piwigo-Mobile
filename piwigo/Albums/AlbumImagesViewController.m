@@ -607,6 +607,14 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     [self.addButton setHidden:YES];
 }
 
+-(void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    
+    //Make sure buttons are back to initial state
+    [self didCancelTapAddButton];
+}
+
 
 #pragma mark - Buttons in Preview mode
 
