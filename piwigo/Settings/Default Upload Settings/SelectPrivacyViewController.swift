@@ -12,7 +12,7 @@ import UIKit
 
 @objc
 protocol SelectPrivacyDelegate: NSObjectProtocol {
-    func selectedPrivacy(_ privacy: kPiwigoPrivacy)
+    func didSelectPrivacyLevel(_ privacy: kPiwigoPrivacy)
 }
 
 @objc
@@ -200,8 +200,8 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
             }
         }
 
-        if delegate?.responds(to: #selector(SelectPrivacyDelegate.selectedPrivacy(_:))) ?? false {
-            delegate?.selectedPrivacy(selectedPrivacy)
+        if delegate?.responds(to: #selector(SelectPrivacyDelegate.didSelectPrivacyLevel(_:))) ?? false {
+            delegate?.didSelectPrivacyLevel(selectedPrivacy)
         }
 
         navigationController?.popViewController(animated: true)

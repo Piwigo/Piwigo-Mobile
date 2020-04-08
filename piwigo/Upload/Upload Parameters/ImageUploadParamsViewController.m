@@ -631,14 +631,14 @@ typedef enum {
 
 #pragma mark - SelectPrivacyDelegate Methods
 
--(void)selectedPrivacy:(kPiwigoPrivacy)privacy
+-(void)didSelectPrivacyLevel:(kPiwigoPrivacy)privacyLevel
 {
     // Update image parameter
-    self.commonParameters.privacyLevel = privacy;
+    self.commonParameters.privacyLevel = privacyLevel;
     
     // Update table view cell
     EditImagePrivacyTableViewCell *cell = (EditImagePrivacyTableViewCell*)[self.imageUploadParamsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:EditImageDetailsOrderPrivacy inSection:0]];
-    if (cell) [cell setPrivacyLevel:privacy inColor:[UIColor piwigoColorOrange]];
+    if (cell) [cell setPrivacyLevel:privacyLevel inColor:[UIColor piwigoColorOrange]];
     
     // Remember to update image info
     self.shouldUpdatePrivacyLevel = YES;
