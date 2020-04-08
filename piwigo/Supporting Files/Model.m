@@ -90,7 +90,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         
         // Optimised image thumbnail size, will be cross-checked at login
         instance.defaultThumbnailSize = [PiwigoImageData optimumImageThumbnailSizeForDevice];
-        instance.thumbnailsPerRowInPortrait = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ? 4.0 : 6.0;
+        instance.thumbnailsPerRowInPortrait = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ? 4 : 6;
 
         // Default image settings
         instance.didOptimiseImagePreviewSize = NO;  // ===> Unused and therefore available…
@@ -317,9 +317,9 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     [saveObject addObject:@(self.switchPaletteThreshold)];
     [saveObject addObject:[NSNumber numberWithBool:self.isDarkPaletteModeActive]];
     // Added in v2.1.8…
-    [saveObject addObject:@(self.thumbnailsPerRowInPortrait)];
+    [saveObject addObject:[NSNumber numberWithInteger:self.thumbnailsPerRowInPortrait]];
     // Added in v2.2.0…
-    [saveObject addObject:@(self.defaultCategory)];
+    [saveObject addObject:[NSNumber numberWithInteger:self.defaultCategory]];
     // Added in v2.2.3…
     [saveObject addObject:[NSNumber numberWithDouble:self.dateOfLastTranslationRequest]];
     // Added in v2.2.5…
@@ -490,7 +490,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     } else {
         self.isDarkPaletteModeActive = NO;
     }
-    NSInteger nberOfImages = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ? 4.0 : 6.0;
+    NSInteger nberOfImages = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ? 4 : 6;
     if(savedData.count > 23) {
         if(savedData.count > 47) {
             self.thumbnailsPerRowInPortrait = [[savedData objectAtIndex:23] integerValue];
