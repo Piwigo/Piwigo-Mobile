@@ -17,8 +17,8 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationChangedCurrentCategory;
 
 +(CategoriesData*)sharedInstance;
 
-@property (nonatomic, readonly) NSArray *allCategories;
-@property (nonatomic, readonly) NSArray *communityCategoriesForUploadOnly;
+@property (nonatomic, readonly) NSArray<PiwigoAlbumData*> *allCategories;
+@property (nonatomic, readonly) NSArray<PiwigoAlbumData*> *communityCategoriesForUploadOnly;
 
 -(void)clearCache;
 -(void)addCategory:(NSInteger)categoryId withParameters:(NSDictionary *)parameters;

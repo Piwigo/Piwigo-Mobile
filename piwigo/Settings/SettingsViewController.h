@@ -8,6 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol ChangedSettingsDelegate <NSObject>
+
+-(void)didChangeDefaultAlbum;
+
+@end
+
 @interface SettingsViewController : UIViewController
+
+@property (nonatomic, weak) id<ChangedSettingsDelegate> settingsDelegate;
 
 @end

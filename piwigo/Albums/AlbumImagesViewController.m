@@ -18,7 +18,6 @@
 #import "CategoriesData.h"
 #import "CategoryCollectionViewCell.h"
 #import "CategoryHeaderReusableView.h"
-//#import "CategoryImageSort.h"
 #import "DiscoverImagesViewController.h"
 #import "EditImageParamsViewController.h"
 #import "FavoritesImagesViewController.h"
@@ -46,7 +45,7 @@ CGFloat const kRadius = 25.0;
 CGFloat const kDeg2Rad = 3.141592654 / 180.0;
 NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBackToDefaultAlbum";
 
-@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, UITextFieldDelegate, ImageDetailDelegate, EditImageParamsDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, AsyncImageActivityItemProviderDelegate, TagSelectorViewDelegate>
+@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, UITextFieldDelegate, ImageDetailDelegate, EditImageParamsDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, AsyncImageActivityItemProviderDelegate, TagSelectorViewDelegate, ChangedSettingsDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
@@ -691,6 +690,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 -(void)didTapPreferencesButton
 {
     SettingsViewController *settingsViewController = [SettingsViewController new];
+    settingsViewController.settingsDelegate = self;
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:settingsViewController];
     navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     navController.modalPresentationStyle = UIModalPresentationFormSheet;
@@ -1099,7 +1099,6 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     
     // Images ?
     if (self.categoryId != 0) {
-        self.loadingImages = YES;
         [self.albumData loadAllImagesOnCompletion:^{
 
              // Sort images
@@ -1113,7 +1112,6 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                  [self updateButtonsInPreviewMode];
 
                  // Reload collection view
-                 self.loadingImages = NO;
                  [self.imagesCollection reloadData];
 //                 [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
             }];
@@ -2781,6 +2779,44 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 {
     // Deselect images and leave select mode
     [self cancelSelect];
+}
+
+
+#pragma mark - ChangedSettingsDelegate Methods
+
+-(void)didChangeDefaultAlbum
+{
+    // Change default album
+    self.categoryId = [Model sharedInstance].defaultCategory;
+    self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
+
+    // For iOS 11 and later: place search bar in navigation bar or root album
+    if (@available(iOS 11.0, *)) {
+        // Initialise search controller when displaying root album
+        if (self.categoryId == 0) {
+            SearchImagesViewController *resultsCollectionController = [[SearchImagesViewController alloc] init];
+            UISearchController *searchController = [[UISearchController alloc] initWithSearchResultsController:resultsCollectionController];
+            searchController.delegate = self;
+            searchController.hidesNavigationBarDuringPresentation = YES;
+            searchController.searchResultsUpdater = self;
+            
+            searchController.searchBar.tintColor = [UIColor piwigoColorOrange];
+            searchController.searchBar.searchBarStyle = UISearchBarStyleMinimal;
+            searchController.searchBar.translucent = NO;
+            searchController.searchBar.showsCancelButton = NO;
+            searchController.searchBar.showsSearchResultsButton = NO;
+            searchController.searchBar.delegate = self;        // Monitor when the search button is tapped.
+            self.definesPresentationContext = YES;
+            
+            // Place the search bar in the navigation bar.
+            self.navigationItem.searchController = searchController;
+        } else {
+            self.navigationItem.searchController = nil;
+        }
+    }
+
+    // Load, sort images and reload collection
+    [self refresh:nil];
 }
 
 

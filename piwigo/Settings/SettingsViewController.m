@@ -13,7 +13,6 @@
 #import "AppDelegate.h"
 #import "ButtonTableViewCell.h"
 #import "CategoriesData.h"
-#import "DefaultCategoryViewController.h"
 #import "ImagesCollection.h"
 #import "LabelTableViewCell.h"
 #import "Model.h"
@@ -45,7 +44,7 @@ typedef enum {
 NSString * const kHelpUsTitle = @"Help Us!";
 NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated in your language. Could you please help us complete the translation?";
 
-@interface SettingsViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, SelectPrivacyDelegate, CategorySortDelegate, MFMailComposeViewControllerDelegate>
+@interface SettingsViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate, DefaultCategoryDelegate, CategorySortDelegate, SelectPrivacyDelegate>
 
 @property (nonatomic, strong) UITableView *settingsTableView;
 @property (nonatomic, strong) NSLayoutConstraint *tableViewBottomConstraint;
@@ -56,6 +55,7 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 @property (nonatomic, strong) NSString *nberUsers;
 @property (nonatomic, strong) NSString *nberGroups;
 @property (nonatomic, strong) NSString *nberComments;
+@property (nonatomic, assign) BOOL didChangeDefaultAlbum;
 
 @end
 
@@ -101,6 +101,9 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
     
     // Title
     self.title = NSLocalizedString(@"tabBar_preferences", @"Preferences");
+    
+    // initialisation
+    self.didChangeDefaultAlbum = NO;
 }
 
 -(void)applyColorPalette
@@ -214,6 +217,13 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
+    
+    // Low new default album view if necessary
+    if (self.didChangeDefaultAlbum &&
+        [self.settingsDelegate respondsToSelector:@selector(didChangeDefaultAlbum)])
+    {
+        [self.settingsDelegate didChangeDefaultAlbum];
+    }
 }
 
 -(void)quitSettings
@@ -1705,7 +1715,10 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 			{
 				case 0:                     // Default album
                 {
-                    DefaultCategoryViewController *categoryVC = [[DefaultCategoryViewController alloc] initWithSelectedCategory:[[CategoriesData sharedInstance] getCategoryById:[Model sharedInstance].defaultCategory]];
+                    UIStoryboard *categorySB = [UIStoryboard storyboardWithName:@"DefaultCategoryViewController" bundle:nil];
+                    DefaultCategoryViewController *categoryVC = [categorySB instantiateViewControllerWithIdentifier:@"DefaultCategoryViewController"];
+                    [categoryVC setCurrentCategory:[Model sharedInstance].defaultCategory];
+                    categoryVC.delegate = self;
                     [self.navigationController pushViewController:categoryVC animated:YES];
                     break;
                    break;
@@ -2182,11 +2195,25 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 }
 
 
+#pragma mark - ChangedSettingsDelegate Methods
+
+-(void)didChangeDefaultCategory:(NSInteger)categoryId
+{
+    // Save new choice
+    [Model sharedInstance].defaultCategory = categoryId;
+    [[Model sharedInstance] saveToDisk];
+
+    // Will load default album view when dismissing this view
+    self.didChangeDefaultAlbum = YES;
+}
+
+
 #pragma mark - SelectedPrivacyDelegate Methods
 
--(void)selectedPrivacy:(kPiwigoPrivacy)privacy
+-(void)didSelectPrivacyLevel:(kPiwigoPrivacy)privacyLevel
 {
-	[Model sharedInstance].defaultPrivacyLevel = privacy;
+    // Save new choice
+	[Model sharedInstance].defaultPrivacyLevel = privacyLevel;
 	[[Model sharedInstance] saveToDisk];
 }
 
@@ -2195,9 +2222,9 @@ NSString * const kHelpUsTranslatePiwigo = @"Piwigo is only partially translated 
 
 -(void)didSelectCategorySortType:(kPiwigoSortCategory)sortType
 {
+    // Save new choice
 	[Model sharedInstance].defaultSort = sortType;
 	[[Model sharedInstance] saveToDisk];
-	[self.settingsTableView reloadData];
 }
 
 

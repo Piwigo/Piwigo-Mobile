@@ -30,7 +30,7 @@ typedef enum {
 @property (nonatomic, assign) NSInteger albumId;
 @property (nonatomic, strong) NSString *query;
 @property (nonatomic, assign) NSInteger parentAlbumId;
-@property (nonatomic, strong) NSArray *upperCategories;
+@property (nonatomic, strong) NSArray<NSString*> *upperCategories;
 @property (nonatomic, assign) NSInteger nearestUpperCategory;
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSString *comment;
