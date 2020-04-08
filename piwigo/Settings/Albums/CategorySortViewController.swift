@@ -19,7 +19,7 @@ protocol CategorySortDelegate: NSObjectProtocol {
 class CategorySortViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @objc weak var sortDelegate: CategorySortDelegate?
-    @objc var currentCategorySortType: kPiwigoSortCategory = Model.sharedInstance()?.defaultSort ?? kPiwigoSortCategoryManual
+    @objc var currentCategorySortType: kPiwigoSortCategory = Model.sharedInstance().defaultSort 
 
     @objc
     class func getNameForCategorySortType(_ sortType: kPiwigoSortCategory) -> String? {
