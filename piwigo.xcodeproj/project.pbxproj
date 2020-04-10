@@ -813,6 +813,9 @@
 			children = (
 				ADA18F6E23F02108006B110A /* TagsViewController.h */,
 				ADA18F6D23F02108006B110A /* TagsViewController.m */,
+				AD196A9B2438D112006C492A /* LabelImageTableViewCell.h */,
+				AD196A9C2438D112006C492A /* LabelImageTableViewCell.m */,
+				AD196A9E2438D11C006C492A /* LabelImageTableViewCell.xib */,
 			);
 			path = "Image Tags";
 			sourceTree = "<group>";
@@ -859,9 +862,6 @@
 				D8083A661A7FF8F600A95605 /* ButtonTableViewCell.m */,
 				D83212311A91B937009372D8 /* LabelTableViewCell.h */,
 				D83212321A91B937009372D8 /* LabelTableViewCell.m */,
-				AD196A9B2438D112006C492A /* LabelImageTableViewCell.h */,
-				AD196A9C2438D112006C492A /* LabelImageTableViewCell.m */,
-				AD196A9E2438D11C006C492A /* LabelImageTableViewCell.xib */,
 				D8A94EB31AAE650800E4B287 /* SliderTableViewCell.h */,
 				D8A94EB41AAE650800E4B287 /* SliderTableViewCell.m */,
 				D88A685C1AC26FA4002A3259 /* SwitchTableViewCell.h */,
