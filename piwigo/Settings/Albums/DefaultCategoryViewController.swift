@@ -237,21 +237,11 @@ class DefaultCategoryViewController: UIViewController, UITableViewDataSource, UI
 
         let setCategoryAction = UIAlertAction(title: NSLocalizedString("alertYesButton", comment: "Yes"), style: .default, handler: { action in
                 
-
             // Set new Default Album
             if (self.delegate?.responds(to: #selector(DefaultCategoryDelegate.didChangeDefaultCategory(_:))) ?? false) &&
                 (categoryData.albumId != Model.sharedInstance().defaultCategory) {
                 self.delegate?.didChangeDefaultCategory(categoryData.albumId)
             }
-
-            // Set as Default Album
-//            Model.sharedInstance().defaultCategory = categoryData.albumId
-
-            // Store modified setting
-//            Model.sharedInstance().saveToDisk()
-
-            // Prepare Default album view
-//            self.changedDefaultCategory()
 
             // Return to Settings
             self.navigationController?.popViewController(animated: true)
