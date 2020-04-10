@@ -96,6 +96,11 @@ NSInteger const loadingViewTag = 899;
     config.allowsCellularAccess = YES;
     config.timeoutIntervalForRequest = 30;          // 60 seconds is the advised default value
     config.HTTPMaximumConnectionsPerHost = 4;       // 4 is the advised default value
+    if (@available(iOS 11.0, *)) {
+        config.multipathServiceType = NSURLSessionMultipathServiceTypeHandover;
+    } else {
+        // Fallback on earlier versions
+    }
     
     // Create session manager
     [Model sharedInstance].sessionManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName]] sessionConfiguration:config];
@@ -325,6 +330,11 @@ NSInteger const loadingViewTag = 899;
     config.timeoutIntervalForRequest = 60;          // 60 seconds is the advised default value
     config.HTTPMaximumConnectionsPerHost = 4;       // 4 is the advised default value
     config.URLCache = [Model sharedInstance].imageCache;
+    if (@available(iOS 11.0, *)) {
+        config.multipathServiceType = NSURLSessionMultipathServiceTypeHandover;
+    } else {
+        // Fallback on earlier versions
+    }
 
     // Create session manager
     [Model sharedInstance].imagesSessionManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName]] sessionConfiguration:config];
@@ -470,7 +480,12 @@ NSInteger const loadingViewTag = 899;
     config.HTTPMaximumConnectionsPerHost = 2;       // 4 is the advised default value
     config.requestCachePolicy = NSURLRequestReloadIgnoringCacheData;
     config.URLCache = nil;
-    
+    if (@available(iOS 11.0, *)) {
+        config.multipathServiceType = NSURLSessionMultipathServiceTypeHandover;
+    } else {
+        // Fallback on earlier versions
+    }
+
     // Create session manager
     [Model sharedInstance].imageUploadManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName]] sessionConfiguration:config];
     

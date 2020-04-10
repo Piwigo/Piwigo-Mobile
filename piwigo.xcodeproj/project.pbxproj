@@ -253,6 +253,7 @@
 		AD45949C1F36765200CF9438 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/About.strings; sourceTree = "<group>"; };
 		AD45949D1F36765200CF9438 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
 		AD45949E1F36765200CF9438 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/AppStore.strings; sourceTree = "<group>"; };
+		AD4768852440BA720099651E /* piwigo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = piwigo.entitlements; sourceTree = "<group>"; };
 		AD591A391F9116F9008D02B6 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD591A3A1F9116FA008D02B6 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/About.strings; sourceTree = "<group>"; };
 		AD591A3B1F9116FA008D02B6 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
@@ -993,6 +994,7 @@
 				D818E9FC1A74C25900733991 /* Piwigo Data Wrappers */,
 				D87C5A971A6F4F93001763BC /* Network */,
 				ADA6F19321CA99F7006C9DD5 /* Info.plist */,
+				AD4768852440BA720099651E /* piwigo.entitlements */,
 				D82B8CEE1A6790BF000E47CA /* piwigo-Prefix.pch */,
 				ADE03F3223D4CF1D00F21ED9 /* piwigo-Bridging-Header.h */,
 				ADAEED8622E2665000CB1B12 /* LaunchScreen.storyboard */,
@@ -1381,42 +1383,42 @@
 			buildActionMask = 2147483647;
 			files = (
 				ADA6DA4721B2AD9900F941F1 /* Settings.bundle in Resources */,
+				AD21145A2122D3E4004FFC8C /* AlbumTableViewCell.xib in Resources */,
+				ADE46684242F978F002FEDE5 /* AboutViewController.storyboard in Resources */,
+				AD2B0A1B243D086000AF1FEE /* CategorySortViewController.storyboard in Resources */,
+				ADEFBD632074E19000DFAD26 /* CategoryTableViewCell.xib in Resources */,
+				AD2B0A15243D001A00AF1FEE /* DefaultAlbumThumbnailSizeViewController.storyboard in Resources */,
+				ADF1CC77243D132100D75319 /* DefaultCategoryViewController.storyboard in Resources */,
 				ADA24DB6243A74C200864D1F /* DefaultImageSizeViewController.storyboard in Resources */,
-				AD3207E9240AD93900F00FEB /* PrivacyPolicyViewController.storyboard in Resources */,
+				ADA24DAF243A68FA00864D1F /* DefaultImageThumbnailSizeViewController.storyboard in Resources */,
 				AD84E60523BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib in Resources */,
+				AD770FD623B4BDB5007DAD50 /* EditImageParams.storyboard in Resources */,
+				ADDB397023BF574C00AB584B /* EditImageShiftPickerTableViewCell.xib in Resources */,
+				ADC80E4823BDCBAA003A6960 /* EditImageThumbCollectionViewCell.xib in Resources */,
+				AD31779223D104E3005E9694 /* EditImageThumbTableViewCell.xib in Resources */,
+				D8C71A491A848AC80048BA33 /* ImageUploadCell.xib in Resources */,
+				D8F325101A875322007CBDAC /* ImageUploadParams.storyboard in Resources */,
+				ADC1641623D0CD5300D7AC8D /* ImageUploadThumbCollectionViewCell.xib in Resources */,
+				ADE9D69923BE71CA00818003 /* ImageUploadThumbTableViewCell.xib in Resources */,
+				AD196A9F2438D11C006C492A /* LabelImageTableViewCell.xib in Resources */,
+				ADABACB5223591720095C4D0 /* LocalImagesHeaderReusableView.xib in Resources */,
+				AD3207E9240AD93900F00FEB /* PrivacyPolicyViewController.storyboard in Resources */,
+				AD31F5F7242FABF300BD65FC /* ReleaseNotesViewController.storyboard in Resources */,
+				AD2A21FE24310E65006B1A8A /* SelectPrivacyViewController.storyboard in Resources */,
+				ADFA89042438CF4500F73F0F /* ShareMetadataViewController.storyboard in Resources */,
+				AD8F4B8B23F04B8C009483B6 /* TagSelectorViewController.storyboard in Resources */,
+				ADAEED8822E2665000CB1B12 /* LaunchScreen.storyboard in Resources */,
+				AD35CA3A1E9C1EBC00E3B897 /* Images.xcassets in Resources */,
 				D863EEC71A6A45E800C0A6E9 /* LacunaRegular.TTF in Resources */,
 				ADF88E7B2066DAE700D1CE26 /* OpenSansLight.TTF in Resources */,
 				AD7823072061BE7F00D5CA70 /* OpenSansRegular.TTF in Resources */,
-				AD31F5F7242FABF300BD65FC /* ReleaseNotesViewController.storyboard in Resources */,
-				ADC1641623D0CD5300D7AC8D /* ImageUploadThumbCollectionViewCell.xib in Resources */,
-				AD2B0A15243D001A00AF1FEE /* DefaultAlbumThumbnailSizeViewController.storyboard in Resources */,
 				ADA36E0F21D777DA00133708 /* OpenSansSemiBold.TTF in Resources */,
 				ADF88E772066D04600D1CE26 /* OpenSansBold.TTF in Resources */,
 				ADF88E792066DA9600D1CE26 /* OpenSansExtraBold.TTF in Resources */,
-				AD31779223D104E3005E9694 /* EditImageThumbTableViewCell.xib in Resources */,
-				AD21145A2122D3E4004FFC8C /* AlbumTableViewCell.xib in Resources */,
-				ADEFBD632074E19000DFAD26 /* CategoryTableViewCell.xib in Resources */,
-				D8F325101A875322007CBDAC /* ImageUploadParams.storyboard in Resources */,
-				D8C71A491A848AC80048BA33 /* ImageUploadCell.xib in Resources */,
-				AD35CA3A1E9C1EBC00E3B897 /* Images.xcassets in Resources */,
-				ADE9D69923BE71CA00818003 /* ImageUploadThumbTableViewCell.xib in Resources */,
-				AD196A9F2438D11C006C492A /* LabelImageTableViewCell.xib in Resources */,
 				AD6B2E731F0930B40040EAD9 /* Localizable.strings in Resources */,
-				AD770FD623B4BDB5007DAD50 /* EditImageParams.storyboard in Resources */,
 				AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */,
-				ADA24DAF243A68FA00864D1F /* DefaultImageThumbnailSizeViewController.storyboard in Resources */,
-				ADC80E4823BDCBAA003A6960 /* EditImageThumbCollectionViewCell.xib in Resources */,
 				AD3203642184738F00BAD372 /* PrivacyPolicy.strings in Resources */,
-				ADDB397023BF574C00AB584B /* EditImageShiftPickerTableViewCell.xib in Resources */,
-				AD8F4B8B23F04B8C009483B6 /* TagSelectorViewController.storyboard in Resources */,
-				AD2A21FE24310E65006B1A8A /* SelectPrivacyViewController.storyboard in Resources */,
-				ADE46684242F978F002FEDE5 /* AboutViewController.storyboard in Resources */,
-				ADF1CC77243D132100D75319 /* DefaultCategoryViewController.storyboard in Resources */,
 				AD92B8FE1F200083006E5B63 /* ReleaseNotes.strings in Resources */,
-				ADABACB5223591720095C4D0 /* LocalImagesHeaderReusableView.xib in Resources */,
-				ADFA89042438CF4500F73F0F /* ShareMetadataViewController.storyboard in Resources */,
-				ADAEED8822E2665000CB1B12 /* LaunchScreen.storyboard in Resources */,
-				AD2B0A1B243D086000AF1FEE /* CategorySortViewController.storyboard in Resources */,
 				ADC06AE11F40B15E0081B4FA /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2079,6 +2081,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = piwigo/piwigo.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
@@ -2121,7 +2124,7 @@
 					"-framework",
 					"\"UIKit\"",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo;
+				PRODUCT_BUNDLE_IDENTIFIER = "net.lelievre-berna.piwigo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "21fe80f9-851b-4da9-93bc-779c033d04e7";
 				PROVISIONING_PROFILE_SPECIFIER = "Dev profile for Piwigo";
@@ -2139,8 +2142,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = piwigo/piwigo.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Pierrick Le Gall (ZU5THW8T5W)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Pierrick Le Gall (ZU5THW8T5W)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Pierrick Le Gall (ZU5THW8T5W)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 269;
 				DEVELOPMENT_TEAM = ZU5THW8T5W;
@@ -2184,7 +2188,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "1db8c18e-75fc-4fdf-b2c9-2aa2c895e936";
-				PROVISIONING_PROFILE_SPECIFIER = "iOS distribution";
+				PROVISIONING_PROFILE_SPECIFIER = "Piwigo iOS distribution";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/$(PROJECT_NAME)/$(PROJECT_NAME)-Bridging-Header.h";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 5.0;
