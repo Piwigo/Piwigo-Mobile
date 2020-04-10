@@ -643,11 +643,6 @@ class DefaultCategoryViewController: UIViewController, UITableViewDataSource, UI
         // Look for sub-categories to remove
         for category in categories {
 
-            // Bypass the root album
-//            if category.albumId == 0 {
-//                continue
-//            }
-            
             // Keep the parent category
             if category.albumId == categoryTapped.albumId {
                 continue
@@ -655,7 +650,7 @@ class DefaultCategoryViewController: UIViewController, UITableViewDataSource, UI
 
             // Remove the sub-categories
             let upperCategories = category.upperCategories
-            if upperCategories!.contains(String(format: "%ld", Int(categoryTapped.albumId))) {
+            if upperCategories?.contains(String(format: "%ld", Int(categoryTapped.albumId))) ?? false {
                 diff.append(category)
             }
         }
