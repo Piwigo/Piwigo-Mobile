@@ -376,7 +376,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case SettingsSection.images.rawValue:
             nberOfRows = 5
         case SettingsSection.imageUpload.rawValue:
-            nberOfRows = 7 + (Model.sharedInstance().resizeImageOnUpload ? 1 : 0)
+            nberOfRows = 6 + (Model.sharedInstance().hasAdminRights ? 1 : 0)
+                           + (Model.sharedInstance().resizeImageOnUpload ? 1 : 0)
                            + (Model.sharedInstance().compressImageOnUpload ? 1 : 0)
                            + (Model.sharedInstance().prefixFileNameBeforeUpload ? 1 : 0)
         case SettingsSection.color.rawValue:
@@ -714,6 +715,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // MARK: Default Upload Settings
         case SettingsSection.imageUpload.rawValue /* Default Upload Settings */:
             var row = indexPath.row
+            row += (!Model.sharedInstance().hasAdminRights && (row > 0)) ? 1 : 0
             row += (!Model.sharedInstance().resizeImageOnUpload && (row > 3)) ? 1 : 0
             row += (!Model.sharedInstance().compressImageOnUpload && (row > 5)) ? 1 : 0
             row += (!Model.sharedInstance().prefixFileNameBeforeUpload && (row > 7)) ? 1 : 0
@@ -795,7 +797,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     // Store modified setting
                     Model.sharedInstance().saveToDisk()
                     // Position of the row that should be added/removed
-                    let rowAtIndexPath = IndexPath(row: 4, section: SettingsSection.imageUpload.rawValue)
+                    let rowAtIndexPath = IndexPath(row: 3 + (Model.sharedInstance().hasAdminRights ? 1 : 0),
+                                                   section: SettingsSection.imageUpload.rawValue)
                     if switchState {
                         // Insert row in existing table
                         self.settingsTableView?.insertRows(at: [rowAtIndexPath], with: .automatic)
@@ -844,7 +847,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     // Store modified setting
                     Model.sharedInstance().saveToDisk()
                     // Position of the row that should be added/removed
-                    let rowAtIndexPath = IndexPath(row: 5 + (Model.sharedInstance().resizeImageOnUpload ? 1 : 0), section: SettingsSection.imageUpload.rawValue)
+                    let rowAtIndexPath = IndexPath(row: 4 + (Model.sharedInstance().hasAdminRights ? 1 : 0)
+                                                          + (Model.sharedInstance().resizeImageOnUpload ? 1 : 0),
+                                                   section: SettingsSection.imageUpload.rawValue)
                     if switchState {
                         // Insert row in existing table
                         self.settingsTableView?.insertRows(at: [rowAtIndexPath], with: .automatic)
@@ -896,7 +901,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     // Store modified setting
                     Model.sharedInstance().saveToDisk()
                     // Position of the row that should be added/removed
-                    let rowAtIndexPath = IndexPath(row: 6 + (Model.sharedInstance().resizeImageOnUpload ? 1 : 0) + (Model.sharedInstance().compressImageOnUpload ? 1 : 0), section: SettingsSection.imageUpload.rawValue)
+                    let rowAtIndexPath = IndexPath(row: 5 + (Model.sharedInstance().hasAdminRights ? 1 : 0)
+                                                          + (Model.sharedInstance().resizeImageOnUpload ? 1 : 0)
+                                                          + (Model.sharedInstance().compressImageOnUpload ? 1 : 0),
+                                                   section: SettingsSection.imageUpload.rawValue)
                     if switchState {
                         // Insert row in existing table
                         self.settingsTableView?.insertRows(at: [rowAtIndexPath], with: .automatic)
