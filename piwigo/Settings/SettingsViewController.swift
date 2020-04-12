@@ -123,8 +123,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
         if #available(iOS 10, *) {
             let langCode = NSLocale.current.languageCode
-            //        NSLog(@"=> langCode: %@", langCode);
-            //        NSLog(@"=> now:%.0f > last:%.0f + %.0f", [[NSDate date] timeIntervalSinceReferenceDate], [Model sharedInstance].dateOfLastTranslationRequest, k2WeeksInDays);
+//            print("=> langCode: ", String(describing: langCode))
+//            print(String(format: "=> now:%.0f > last:%.0f + %.0f", Date().timeIntervalSinceReferenceDate, Model.sharedInstance().dateOfLastTranslationRequest, k2WeeksInDays))
             if (Date().timeIntervalSinceReferenceDate > Model.sharedInstance().dateOfLastTranslationRequest + k2WeeksInDays) && ((langCode == "ar") || (langCode == "fa") || (langCode == "pl") || (langCode == "pt-BR") || (langCode == "sk")) {
                 // Store date of last translation request
                 Model.sharedInstance().dateOfLastTranslationRequest = Date().timeIntervalSinceReferenceDate
