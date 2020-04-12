@@ -611,11 +611,11 @@
 "settings_stripGPSdata>375px" = "Separa i metadati privati prima del caricamento";
 "settings_photoResize" = "Ridimensionare, prima di caricare";
 "settings_photoResize>375px" = "Ridimensionare, prima di caricare";
-"settings_photoSize" = "> Dimensione   ";
+"settings_photoSize" = "Dimensione";
 "settings_placeholderSize" = "Immettere una dimensione foto da 5-100";
 "settings_photoCompress" = "Comprimere, prima di caricare";
 "settings_photoCompress>375px" = "Comprimere l'immagine prima di caricare";
-"settings_photoQuality" = "> Qualità";
+"settings_photoQuality" = "Qualità";
 "settings_placeholderQuality" = "Immettere una qualità d'immagine da 50-98";
 "settings_prefixFilename>414px" = "Prefisso file immagine prima di caricare";
 "settings_prefixFilename>375px" = "Prefisso nome file prima di caricarlo";

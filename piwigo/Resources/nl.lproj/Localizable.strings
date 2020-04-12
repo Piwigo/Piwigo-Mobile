@@ -611,11 +611,11 @@
 "settings_stripGPSdata>375px" = "Verwijder privé metadata vóór het uploaden";
 "settings_photoResize" = "Pas grootte aan vóór de upload";
 "settings_photoResize>375px" = "Pas de fotogrootte aan vóór de upload";
-"settings_photoSize" = "> Grootte   ";
+"settings_photoSize" = "Grootte";
 "settings_placeholderSize" = "Voor een fotoformaat in vanaf 5-100";
 "settings_photoCompress" = "Comprimeer vóór het uploaden";
 "settings_photoCompress>375px" = "Comprimeer de foto vóór het uploaden";
-"settings_photoQuality" = "> Kwaliteit";
+"settings_photoQuality" = "Kwaliteit";
 "settings_placeholderQuality" = "Voer beeldkwaliteit in tussen 50-98";
 "settings_prefixFilename>414px" = "Voorvoegsel foto bestandsnaam voor het uploaden";
 "settings_prefixFilename>375px" = "Bestandsnaam voorvoegsel voor het uploaden";

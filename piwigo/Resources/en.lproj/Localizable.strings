@@ -611,11 +611,11 @@
 "settings_stripGPSdata>375px" = "Strip Private Metadata Before Upload";
 "settings_photoResize" = "Resize Before Upload";
 "settings_photoResize>375px" = "Resize Photo Before Upload";
-"settings_photoSize" = "> Size   ";
+"settings_photoSize" = "Size";
 "settings_placeholderSize" = "Enter a Photo Size from 5 - 100";
 "settings_photoCompress" = "Compress Before Upload";
 "settings_photoCompress>375px" = "Compress Photo Before Upload";
-"settings_photoQuality" = "> Quality";
+"settings_photoQuality" = "Quality";
 "settings_placeholderQuality" = "Enter an Photo Quality from 50 - 98";
 "settings_prefixFilename>414px" = "Prefix Photo Filename Before Upload";
 "settings_prefixFilename>375px" = "Prefix Filename Before Upload";

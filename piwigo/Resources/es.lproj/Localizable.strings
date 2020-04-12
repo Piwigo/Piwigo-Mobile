@@ -12,7 +12,7 @@
 
 "tabBar_albums" = "Álbumes";
 "tabBar_upload" = "Subir";
-"tabBar_preferences" = "Configuración";
+"tabBar_preferences" = "Ajustes";
 
 // Alert buttons
 "alertOkButton" = "Aceptar";
@@ -46,15 +46,15 @@
 // ===========================================================================
 // ==> CORE DATA
 // ===========================================================================
-"CoreDataFetch_DigestError" = "Could not digest the fetched data.";
+"CoreDataFetch_DigestError" = "No se han podido procesar los datos obtenidos.";
 
 // Tag objects
-"CoreDataFetch_TagError" = "Fetch tags error!";
-"CoreDataFetch_TagMissingData" = "Found and will discard a tag missing a valid code or name.";
-"CoreDataFetch_TagCreateFailed" = "Failed to create a new Tag object.";
+"CoreDataFetch_TagError" = "¡Error al recuperar las etiquetas!";
+"CoreDataFetch_TagMissingData" = "Se ha encontrado y se descartará una etiqueta que no tiene un código o nombre válido.";
+"CoreDataFetch_TagCreateFailed" = "No se ha podido crear un nuevo objeto de Etiqueta.";
 
 // Upload objects
-"CoreDataFetch_UploadCreateFailed" = "Failed to create a new Upload object.";
+"CoreDataFetch_UploadCreateFailed" = "No se ha podido crear un nuevo objeto de carga.";
 
 // ===========================================================================
 // ==> LOGIN / LOGOUT
@@ -611,11 +611,11 @@
 "settings_stripGPSdata>375px" = "Eliminar los metadatos privados antes de la carga";
 "settings_photoResize" = "Redimensionar antes de subir";
 "settings_photoResize>375px" = "Redimensionar foto antes de subir";
-"settings_photoSize" = "> Tamaño   ";
+"settings_photoSize" = "Tamaño";
 "settings_placeholderSize" = "Especifica un tamaño de foto entre 5 y 100";
 "settings_photoCompress" = "Comprimir antes de subir";
 "settings_photoCompress>375px" = "Comprimir la foto antes de la carga";
-"settings_photoQuality" = "> Calidad";
+"settings_photoQuality" = "Calidad";
 "settings_placeholderQuality" = "Especifica una calidad para la foto entre 50 y 98";
 "settings_prefixFilename>414px" = "Agregar un prefijo al nombre de fichero de la foto antes de la carga";
 "settings_prefixFilename>375px" = "Prefijo para el nombre de fichero antes de la carga";

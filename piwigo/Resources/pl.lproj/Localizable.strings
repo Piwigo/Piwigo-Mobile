@@ -611,11 +611,11 @@
 "settings_stripGPSdata>375px" = "Usuń prywatne metadane przed wysłaniem";
 "settings_photoResize" = "Zmień rozmiar przed przesłaniem";
 "settings_photoResize>375px" = "Zmień rozmiar zdjęcia przed przesłaniem";
-"settings_photoSize" = "> Rozmiar   ";
+"settings_photoSize" = "Rozmiar";
 "settings_placeholderSize" = "Wprowadź Rozmiar Zdjęcia z Zakresu 5 - 100";
 "settings_photoCompress" = "Skompresuj przed wysłaniem";
 "settings_photoCompress>375px" = "Kompresuj zdjęcie przed przesłaniem";
-"settings_photoQuality" = "> Jakość";
+"settings_photoQuality" = "Jakość";
 "settings_placeholderQuality" = "Wprowadź jakość zdjęcia z zakresu 50-98";
 "settings_prefixFilename>414px" = "Prefiks nazwy pliku zdjęcia przed przesłaniem";
 "settings_prefixFilename>375px" = "Prefiks nazwy pliku przed przesłaniem";

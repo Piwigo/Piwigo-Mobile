@@ -611,11 +611,11 @@
 "settings_stripGPSdata>375px" = "Fjern private Metadata før Upload";
 "settings_photoResize" = "Ændr størrelse før Upload";
 "settings_photoResize>375px" = "Ændr størrelse på billedet før Upload";
-"settings_photoSize" = "> Størrelse   ";
+"settings_photoSize" = "Størrelse";
 "settings_placeholderSize" = "Angiv en fotostørrelse fra 5-100";
 "settings_photoCompress" = "Komprimer før Upload";
 "settings_photoCompress>375px" = "Komprimer billede før Upload";
-"settings_photoQuality" = "> Kvalitet";
+"settings_photoQuality" = "Kvalitet";
 "settings_placeholderQuality" = "Angiv en billedkvalitet fra 50 - 98";
 "settings_prefixFilename>414px" = "Præfiks billedfilnavn før upload";
 "settings_prefixFilename>375px" = "Præfiks filnavn før upload";

@@ -611,11 +611,11 @@
 "settings_stripGPSdata>375px" = "Удаление личных метаданных перед загрузкой";
 "settings_photoResize" = "Изменить размер перед загрузкой";
 "settings_photoResize>375px" = "Изменить размер фото перед загрузкой";
-"settings_photoSize" = "> Размер   ";
+"settings_photoSize" = "Размер";
 "settings_placeholderSize" = "Введите размер фотографии от 5 до 100";
 "settings_photoCompress" = "Сжать перед загрузкой";
 "settings_photoCompress>375px" = "Сжать изображение перед загрузкой";
-"settings_photoQuality" = "> Качество";
+"settings_photoQuality" = "Качество";
 "settings_placeholderQuality" = "Введите качество фотографии от 50 до 98";
 "settings_prefixFilename>414px" = "Префикс фото имя файла перед загрузкой";
 "settings_prefixFilename>375px" = "Префикс имени файла перед загрузкой";

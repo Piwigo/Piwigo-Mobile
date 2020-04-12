@@ -611,11 +611,11 @@
 "settings_stripGPSdata>375px" = "上传前删除私密元数据";
 "settings_photoResize" = "上传前调整大小";
 "settings_photoResize>375px" = "上传照片前调整大小";
-"settings_photoSize" = "> 大小";
+"settings_photoSize" = "大小";
 "settings_placeholderSize" = "输入5-100之间的照片大小";
 "settings_photoCompress" = "上传前压缩";
 "settings_photoCompress>375px" = "上传照片前压缩";
-"settings_photoQuality" = "> 质量";
+"settings_photoQuality" = "质量";
 "settings_placeholderQuality" = "输入照片质量（50~98）";
 "settings_prefixFilename>414px" = "自动为上传的照片文件名增加前缀";
 "settings_prefixFilename>375px" = "自动为上传的文件名增加前缀";

@@ -823,7 +823,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let value = Float(Model.sharedInstance().photoResize)
 
                 // Slider configuration
-                cell.configure(with: NSLocalizedString("settings_photoSize", comment: "> Size"), value: value, increment: 1, minValue: 5, maxValue: 100, prefix: "", suffix: "%")
+                let title = String(format: "… %@", NSLocalizedString("settings_photoSize", comment: "Size"))
+                cell.configure(with: title, value: value, increment: 1, minValue: 5, maxValue: 100, prefix: "", suffix: "%")
                 cell.cellSliderBlock = { newValue in
                     // Update settings
                     Model.sharedInstance().photoResize = Int(newValue)
@@ -874,7 +875,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let value = Float(Model.sharedInstance().photoQuality)
 
                 // Slider configuration
-                cell.configure(with: NSLocalizedString("settings_photoQuality", comment: "> Quality"), value: value, increment: 1, minValue: 50, maxValue: 98, prefix: "", suffix: "%")
+                let title = String(format: "… %@", NSLocalizedString("settings_photoQuality", comment: "Quality"))
+                cell.configure(with: title, value: value, increment: 1, minValue: 50, maxValue: 98, prefix: "", suffix: "%")
                 cell.cellSliderBlock = { newValue in
                     // Update settings
                     Model.sharedInstance().photoQuality = Int(newValue)
@@ -931,9 +933,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let placeHolder: String = NSLocalizedString("settings_defaultPrefixPlaceholder", comment: "Prefix Filename")
                 if view.bounds.size.width > 320 {
                     // i.e. larger than iPhone 5 screen width
-                    title = NSLocalizedString("settings_defaultPrefix>320px", comment: "Filename Prefix")
+                    title = String(format:"… %@", NSLocalizedString("settings_defaultPrefix>320px", comment: "Filename Prefix"))
                 } else {
-                    title = NSLocalizedString("settings_defaultPrefix", comment: "Prefix")
+                    title = String(format:"… %@", NSLocalizedString("settings_defaultPrefix", comment: "Prefix"))
                 }
                 cell.configure(with: title, input: input, placeHolder: placeHolder)
                 cell.rightTextField.delegate = self

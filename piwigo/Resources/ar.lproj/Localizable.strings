@@ -611,11 +611,11 @@
 "settings_stripGPSdata>375px" = "جرد البيانات الوصفية الخاصة قبل التحميل";
 "settings_photoResize" = "تغيير الحجم قبل التحميل";
 "settings_photoResize>375px" = "تغيير حجم الصورة قبل التحميل";
-"settings_photoSize" = "> الحجم   ";
+"settings_photoSize" = "الحجم";
 "settings_placeholderSize" = "أدخل حجم الصورة من 5 - 100";
 "settings_photoCompress" = "التضغيط قبل التحميل";
 "settings_photoCompress>375px" = "ضغط الصورة قبل التحميل";
-"settings_photoQuality" = "> الجودة";
+"settings_photoQuality" = "الجودة";
 "settings_placeholderQuality" = "أدخل جودة الصورة من 50 - 98";
 "settings_prefixFilename>414px" = "Prefix Photo Filename Before Upload";
 "settings_prefixFilename>375px" = "Prefix Filename Before Upload";

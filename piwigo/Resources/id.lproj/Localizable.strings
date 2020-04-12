@@ -611,11 +611,11 @@
 "settings_stripGPSdata>375px" = "Hapus Metadata Pribadi Sebelum Mengunggah";
 "settings_photoResize" = "Ubah Ukuran Sebelum Mengunggah";
 "settings_photoResize>375px" = "Ubah Ukuran Gambar Sebelum Mengunggah";
-"settings_photoSize" = "> Ukuran   ";
+"settings_photoSize" = "Ukuran";
 "settings_placeholderSize" = "Masukkan Ukuran Foto dari 5 - 100";
 "settings_photoCompress" = "Kompresi Sebelum Mengunggah";
 "settings_photoCompress>375px" = "Kompresi Gambar Sebelum Mengunggah";
-"settings_photoQuality" = "> Kualitas";
+"settings_photoQuality" = "Kualitas";
 "settings_placeholderQuality" = "Masukkan Kualitas Gambar antara 50 - 98";
 "settings_prefixFilename>414px" = "Prefix Photo Filename Before Upload";
 "settings_prefixFilename>375px" = "Prefix Filename Before Upload";

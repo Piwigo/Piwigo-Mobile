@@ -46,15 +46,15 @@
 // ===========================================================================
 // ==> CORE DATA
 // ===========================================================================
-"CoreDataFetch_DigestError" = "Could not digest the fetched data.";
+"CoreDataFetch_DigestError" = "Impossible de digérer les données récupérées.";
 
 // Tag objects
-"CoreDataFetch_TagError" = "Fetch tags error!";
-"CoreDataFetch_TagMissingData" = "Found and will discard a tag missing a valid code or name.";
-"CoreDataFetch_TagCreateFailed" = "Failed to create a new Tag object.";
+"CoreDataFetch_TagError" = "Echec de la récupération des tags!";
+"CoreDataFetch_TagMissingData" = "Trouvé et supprimera un tag n'ayant pas d'identité ou de nom valide.";
+"CoreDataFetch_TagCreateFailed" = "Impossible de créer un nouvel objet Tag.";
 
 // Upload objects
-"CoreDataFetch_UploadCreateFailed" = "Failed to create a new Upload object.";
+"CoreDataFetch_UploadCreateFailed" = "Impossible de créer un nouvel objet Upload.";
 
 // ===========================================================================
 // ==> LOGIN / LOGOUT
@@ -611,11 +611,11 @@
 "settings_stripGPSdata>375px" = "Supprimer les Métadonnées privées avant Envoi";
 "settings_photoResize" = "Redimensionner avant Envoi";
 "settings_photoResize>375px" = "Redimensionner les photos avant envoi";
-"settings_photoSize" = "> Taille   ";
+"settings_photoSize" = "Taille";
 "settings_placeholderSize" = "Entrez une Taille de Photo de 5 à 100";
 "settings_photoCompress" = "Compresser avant Envoi";
 "settings_photoCompress>375px" = "Compresser la photo avant envoi";
-"settings_photoQuality" = "> Qualité";
+"settings_photoQuality" = "Qualité";
 "settings_placeholderQuality" = "Entrez une qualité de photo entre 50 et 98";
 "settings_prefixFilename>414px" = "Préfixer le nom du fichier photo avant téléversement";
 "settings_prefixFilename>375px" = "Préfixer le nom du fichier avant téléversement";
