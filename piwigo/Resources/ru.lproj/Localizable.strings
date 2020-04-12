@@ -44,6 +44,19 @@
 "internetCancelledConnection_title" = "Соединение отменено";
 
 // ===========================================================================
+// ==> CORE DATA
+// ===========================================================================
+"CoreDataFetch_DigestError" = "Could not digest the fetched data.";
+
+// Tag objects
+"CoreDataFetch_TagError" = "Fetch tags error!";
+"CoreDataFetch_TagMissingData" = "Found and will discard a tag missing a valid code or name.";
+"CoreDataFetch_TagCreateFailed" = "Failed to create a new Tag object.";
+
+// Upload objects
+"CoreDataFetch_UploadCreateFailed" = "Failed to create a new Upload object.";
+
+// ===========================================================================
 // ==> LOGIN / LOGOUT
 // ===========================================================================
 // Login
@@ -99,8 +112,6 @@
 
 // Logout — Errors
 "logoutFail_title" = "Ошибка выхода";
-"logoutFail_message" = "Не удалось выйти. Попробовать еще раз?";
-
 
 // ===========================================================================
 // ==> ALBUMS

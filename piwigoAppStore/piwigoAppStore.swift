@@ -232,9 +232,9 @@ class piwigoAppStore: XCTestCase {
         sleep(2);
 
         // Select Photos Title A->Z sort order
-        app.navigationBars.element(boundBy: 0).buttons["preferences"].tap()
+        app.navigationBars.element(boundBy: 0).buttons["settings"].tap()
         sleep(1);
-        app.tables["preferences"].cells["defaultSort"].tap()
+        app.tables["settings"].cells["defaultSort"].tap()
         app.tables["sortSelect"].cells.element(boundBy: 0).tap()
         app.navigationBars.buttons["Done"].tap()
 
@@ -453,9 +453,9 @@ class piwigoAppStore: XCTestCase {
         sleep(1)                        // Leave time for animation
         app.buttons["rootAlbum"].tap()
         sleep(1)                        // Leave time for animation
-        app.buttons["preferences"].tap()
+        app.buttons["settings"].tap()
         sleep(1)                        // Leave time for animation
-        app.tables["preferences"].cells["server"].swipeUp()
+        app.tables["settings"].cells["server"].swipeUp()
         snapshot("Image9")
     }
 }

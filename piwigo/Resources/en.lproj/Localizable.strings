@@ -12,7 +12,7 @@
 // Tab bar
 "tabBar_albums" = "Albums";
 "tabBar_upload" = "Upload";
-"tabBar_preferences" = "Preferences";
+"tabBar_preferences" = "Settings";
 
 // Alert buttons
 "alertOkButton" = "OK";

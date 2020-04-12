@@ -137,8 +137,8 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         self.refreshControl = [[UIRefreshControl alloc] init];
 
         // Navigation bar and toolbar buttons
-        self.settingsBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"preferences"] landscapeImagePhone:[UIImage imageNamed:@"preferencesCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(didTapPreferencesButton)];
-        [self.settingsBarButton setAccessibilityIdentifier:@"preferences"];
+        self.settingsBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"settings"] landscapeImagePhone:[UIImage imageNamed:@"settingsCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(didTapPreferencesButton)];
+        [self.settingsBarButton setAccessibilityIdentifier:@"settings"];
         self.discoverBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"list"] landscapeImagePhone:[UIImage imageNamed:@"listCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(discoverImages)];
         [self.discoverBarButton setAccessibilityIdentifier:@"discover"];
 

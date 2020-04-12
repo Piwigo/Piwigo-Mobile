@@ -65,14 +65,14 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         }
 
         // Title
-        title = NSLocalizedString("tabBar_preferences", comment: "Preferences")
+        title = NSLocalizedString("tabBar_preferences", comment: "Settings")
 
         // Button for returning to albums/images
         doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(quitSettings))
         doneBarButton?.accessibilityIdentifier = "Done"
         
         // Table view identifier
-        settingsTableView.accessibilityIdentifier = "preferences"
+        settingsTableView.accessibilityIdentifier = "settings"
     }
 
     @objc func applyColorPalette() {

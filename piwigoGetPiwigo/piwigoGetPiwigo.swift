@@ -235,9 +235,9 @@ class piwigoGetPiwigo: XCTestCase {
         sleep(2);
 
         // Select Photos Title A->Z sort order
-        app.navigationBars.element(boundBy: 0).buttons["preferences"].tap()
+        app.navigationBars.element(boundBy: 0).buttons["settings"].tap()
         sleep(1);
-        app.tables["preferences"].cells["defaultSort"].tap()
+        app.tables["settings"].cells["defaultSort"].tap()
         app.tables["sortSelect"].cells.element(boundBy: 0).tap()
         app.navigationBars.buttons["Done"].tap()
         
