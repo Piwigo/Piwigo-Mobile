@@ -374,12 +374,16 @@
 
     [alert addAction:cancelAction];
     [alert addAction:self.addAction];
+    alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
         alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
-    [self presentViewController:alert animated:YES completion:nil];
+    [self presentViewController:alert animated:YES completion:^{
+        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+        alert.view.tintColor = UIColor.piwigoColorOrange;
+    }];
 }
 
 -(void)addTagWithName:(NSString *)tagName andViewController:(UIViewController *)topViewController
@@ -454,6 +458,7 @@
     [alert addAction:defaultAction];
     
     // Present list of actions
+    alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
         alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
@@ -461,7 +466,10 @@
     }
     alert.popoverPresentationController.barButtonItem = self.addBarButton;
     alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
-    [topViewController presentViewController:alert animated:YES completion:nil];
+    [topViewController presentViewController:alert animated:YES completion:^{
+        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+        alert.view.tintColor = UIColor.piwigoColorOrange;
+    }];
 }
 
 

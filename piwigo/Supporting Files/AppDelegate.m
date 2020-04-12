@@ -15,6 +15,7 @@
 
 #import "AFNetworkActivityIndicatorManager.h"
 #import "AlbumImagesViewController.h"
+#import "IQKeyboardManager.h"
 #import "KeychainAccess.h"
 #import "Model.h"
 #import "SAMKeychain.h"
@@ -282,7 +283,13 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     // Override point for customization after application launch.
-    
+        
+    // IQKeyboardManager
+    IQKeyboardManager *keyboardManager = [IQKeyboardManager sharedManager];
+    keyboardManager.overrideKeyboardAppearance = YES;
+    keyboardManager.shouldToolbarUsesTextFieldTintColor = YES;
+    keyboardManager.shouldShowToolbarPlaceholder = YES;
+
     // Cache data in Core Data storage
     [self setManagedObjectContext:[DataController getContext]];
 
@@ -478,6 +485,9 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
     
     // Store modified settings
     [[Model sharedInstance] saveToDisk];
+    
+    // Tint colour
+    [UIView appearance].tintColor = [UIColor piwigoColorOrange];
     
     // Activity indicator
     [UIActivityIndicatorView appearance].color = [UIColor piwigoColorOrange];

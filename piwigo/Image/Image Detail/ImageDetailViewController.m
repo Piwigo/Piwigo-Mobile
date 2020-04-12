@@ -390,12 +390,16 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     
     [alert addAction:dismissAction];
     [alert addAction:retryAction];
+    alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
         alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
-    [self presentViewController:alert animated:YES completion:nil];
+    [self presentViewController:alert animated:YES completion:^{
+        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+        alert.view.tintColor = UIColor.piwigoColorOrange;
+    }];
 }
 
 
@@ -679,13 +683,17 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     }
 
     // Present list of actions
+    alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
         alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
     alert.popoverPresentationController.barButtonItem = self.deleteBarButton;
-    [self presentViewController:alert animated:YES completion:nil];
+    [self presentViewController:alert animated:YES completion:^{
+        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+        alert.view.tintColor = UIColor.piwigoColorOrange;
+    }];
 }
 
 -(void)removeImageFromCategory
@@ -792,12 +800,16 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     }];
     
     [alert addAction:dismissAction];
+    alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
         alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
-    [self presentViewController:alert animated:YES completion:nil];
+    [self presentViewController:alert animated:YES completion:^{
+        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+        alert.view.tintColor = UIColor.piwigoColorOrange;
+    }];
 }
 
 
@@ -988,13 +1000,17 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     [alert addAction:moveAction];
 
     // Present list of actions
+    alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
         alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
     alert.popoverPresentationController.barButtonItem = self.moveBarButton;
-    [self presentViewController:alert animated:YES completion:nil];
+    [self presentViewController:alert animated:YES completion:^{
+        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+        alert.view.tintColor = UIColor.piwigoColorOrange;
+    }];
 }
 
 
@@ -1381,33 +1397,37 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     // Display error alert after trying to share image
     dispatch_async(dispatch_get_main_queue(),
                    ^(void){
-                       // Determine present view controller
-                       UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-                       while (topViewController.presentedViewController) {
-                           topViewController = topViewController.presentedViewController;
-                       }
-                       
-                       // Present alert
-                       UIAlertController* alert = [UIAlertController
-                            alertControllerWithTitle:title
-                            message:message
-                            preferredStyle:UIAlertControllerStyleAlert];
-                       
-                       UIAlertAction* dismissAction = [UIAlertAction
-                            actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                            style:UIAlertActionStyleCancel
-                            handler:^(UIAlertAction * action) {
-                                // Closes ActivityView
-                                [topViewController dismissViewControllerAnimated:YES completion:nil];
-                       }];
-                       
-                       [alert addAction:dismissAction];
-                       if (@available(iOS 13.0, *)) {
-                           alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
-                       } else {
-                           // Fallback on earlier versions
-                       }
-                       [topViewController presentViewController:alert animated:YES completion:nil];
+        // Determine present view controller
+        UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+        while (topViewController.presentedViewController) {
+            topViewController = topViewController.presentedViewController;
+        }
+
+        // Present alert
+        UIAlertController* alert = [UIAlertController
+            alertControllerWithTitle:title
+            message:message
+            preferredStyle:UIAlertControllerStyleAlert];
+
+        UIAlertAction* dismissAction = [UIAlertAction
+            actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+            style:UIAlertActionStyleCancel
+            handler:^(UIAlertAction * action) {
+                // Closes ActivityView
+                [topViewController dismissViewControllerAnimated:YES completion:nil];
+        }];
+
+        [alert addAction:dismissAction];
+        alert.view.tintColor = UIColor.piwigoColorOrange;
+        if (@available(iOS 13.0, *)) {
+            alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        } else {
+            // Fallback on earlier versions
+        }
+        [topViewController presentViewController:alert animated:YES completion:^{
+            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+            alert.view.tintColor = UIColor.piwigoColorOrange;
+        }];
                     });
 }
 

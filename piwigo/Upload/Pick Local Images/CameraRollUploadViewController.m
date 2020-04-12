@@ -367,13 +367,17 @@
     }
     
     // Present list of actions
+    alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
         alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
     alert.popoverPresentationController.barButtonItem = self.sortBarButton;
-    [self presentViewController:alert animated:YES completion:nil];
+    [self presentViewController:alert animated:YES completion:^{
+        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+        alert.view.tintColor = UIColor.piwigoColorOrange;
+    }];
 }
 
 -(void)sortImagesInAscendingOrder

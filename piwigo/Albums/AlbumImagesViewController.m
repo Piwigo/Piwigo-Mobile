@@ -1253,12 +1253,16 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     
     [alert addAction:cancelAction];
     [alert addAction:self.createAlbumAction];
+    alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
         alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
-    [self presentViewController:alert animated:YES completion:nil];
+    [self presentViewController:alert animated:YES completion:^{
+        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+        alert.view.tintColor = UIColor.piwigoColorOrange;
+    }];
 }
 
 -(void)addCategoryWithName:(NSString *)albumName andComment:(NSString *)albumComment
@@ -1325,12 +1329,16 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     [alert addAction:dismissAction];
 
     // Present list of actions
+    alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
         alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
-    [self presentViewController:alert animated:YES completion:nil];
+    [self presentViewController:alert animated:YES completion:^{
+        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+        alert.view.tintColor = UIColor.piwigoColorOrange;
+    }];
 }
 
 
@@ -1562,12 +1570,16 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     
     [alert addAction:dismissAction];
     [alert addAction:retryAction];
+    alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
         alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
-    [self presentViewController:alert animated:YES completion:nil];
+    [self presentViewController:alert animated:YES completion:^{
+        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+        alert.view.tintColor = UIColor.piwigoColorOrange;
+    }];
 }
 
 -(void)editImages
@@ -1739,13 +1751,17 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     if (self.selectedImagesToRemove.count > 0) { [alert addAction:removeImagesAction]; }
 
     // Present list of actions
+    alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
         alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
     alert.popoverPresentationController.barButtonItem = self.deleteBarButton;
-    [self presentViewController:alert animated:YES completion:nil];
+    [self presentViewController:alert animated:YES completion:^{
+        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+        alert.view.tintColor = UIColor.piwigoColorOrange;
+    }];
 }
 
 -(void)removeImages
@@ -1824,12 +1840,16 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                     [alert addAction:retryAction];
                     
                     // Present list of actions
+                    alert.view.tintColor = UIColor.piwigoColorOrange;
                     if (@available(iOS 13.0, *)) {
                         alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
                     } else {
                         // Fallback on earlier versions
                     }
-                    [self presentViewController:alert animated:YES completion:nil];
+                    [self presentViewController:alert animated:YES completion:^{
+                        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                        alert.view.tintColor = UIColor.piwigoColorOrange;
+                    }];
                 }
            }
               onFailure:^(NSURLSessionTask *task, NSError *error) {
@@ -1862,12 +1882,16 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                   [alert addAction:retryAction];
                   
                   // Present list of actions
+                  alert.view.tintColor = UIColor.piwigoColorOrange;
                   if (@available(iOS 13.0, *)) {
                       alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
                   } else {
                       // Fallback on earlier versions
                   }
-                  [self presentViewController:alert animated:YES completion:nil];
+                  [self presentViewController:alert animated:YES completion:^{
+                      // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                      alert.view.tintColor = UIColor.piwigoColorOrange;
+                  }];
               }];
 }
 
@@ -1933,12 +1957,16 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                         [alert addAction:retryAction];
                         
                         // Present list of actions
+                        alert.view.tintColor = UIColor.piwigoColorOrange;
                         if (@available(iOS 13.0, *)) {
                             alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
                         } else {
                             // Fallback on earlier versions
                         }
-                        [self presentViewController:alert animated:YES completion:nil];
+                        [self presentViewController:alert animated:YES completion:^{
+                            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                            alert.view.tintColor = UIColor.piwigoColorOrange;
+                        }];
                     }];
 }
 
@@ -2181,13 +2209,17 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     [alert addAction:moveAction];
     
     // Present list of actions
+    alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
         alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
     alert.popoverPresentationController.barButtonItem = self.moveBarButton;
-    [self presentViewController:alert animated:YES completion:nil];
+    [self presentViewController:alert animated:YES completion:^{
+        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+        alert.view.tintColor = UIColor.piwigoColorOrange;
+    }];
 }
 
 
@@ -2960,12 +2992,16 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                        }];
                        
                        [alert addAction:dismissAction];
+                       alert.view.tintColor = UIColor.piwigoColorOrange;
                        if (@available(iOS 13.0, *)) {
                            alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
                        } else {
                            // Fallback on earlier versions
                        }
-                       [topViewController presentViewController:alert animated:YES completion:nil];
+                       [topViewController presentViewController:alert animated:YES completion:^{
+                           // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                           alert.view.tintColor = UIColor.piwigoColorOrange;
+                       }];
                    });
 }
 
@@ -3078,13 +3114,17 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     [alert addAction:recentAction];
     
     // Present list of Discover views
+    alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
         alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
     alert.popoverPresentationController.barButtonItem = self.discoverBarButton;
-    [self presentViewController:alert animated:YES completion:nil];
+    [self presentViewController:alert animated:YES completion:^{
+        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+        alert.view.tintColor = UIColor.piwigoColorOrange;
+    }];
 }
 
 -(void)discoverImagesInCategoryId:(NSInteger)categoryId

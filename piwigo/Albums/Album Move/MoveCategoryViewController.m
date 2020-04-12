@@ -374,6 +374,7 @@ CGFloat const kMoveCategoryViewWidth = 512.0;           // View width
     rectOfCellInTableView.origin.x -= tableView.frame.size.width - textRect.size.width - tableView.layoutMargins.left - 12;
     
     // Present popover view
+    alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
         alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
@@ -382,7 +383,10 @@ CGFloat const kMoveCategoryViewWidth = 512.0;           // View width
     alert.popoverPresentationController.sourceView = tableView;
     alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionLeft;
     alert.popoverPresentationController.sourceRect = rectOfCellInTableView;
-    [self presentViewController:alert animated:YES completion:nil];
+    [self presentViewController:alert animated:YES completion:^{
+        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+        alert.view.tintColor = UIColor.piwigoColorOrange;
+    }];
 }
 
 
@@ -456,12 +460,16 @@ CGFloat const kMoveCategoryViewWidth = 512.0;           // View width
         handler:^(UIAlertAction * action) {}];
     
     [alert addAction:dismissAction];
+    alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
         alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
-    [self presentViewController:alert animated:YES completion:nil];
+    [self presentViewController:alert animated:YES completion:^{
+        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+        alert.view.tintColor = UIColor.piwigoColorOrange;
+    }];
     [self.navigationController popViewControllerAnimated:YES];
 }
 

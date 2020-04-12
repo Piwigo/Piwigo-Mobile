@@ -242,12 +242,16 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                 handler:^(UIAlertAction * action) {}];
         
         [alert addAction:defaultAction];
+        alert.view.tintColor = UIColor.piwigoColorOrange;
         if (@available(iOS 13.0, *)) {
             alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
         } else {
             // Fallback on earlier versions
         }
-        [self presentViewController:alert animated:YES completion:nil];
+        [self presentViewController:alert animated:YES completion:^{
+            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+            alert.view.tintColor = UIColor.piwigoColorOrange;
+        }];
         
         return;
     }
@@ -405,13 +409,17 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
     
     [self.httpAlertController addAction:cancelAction];
     [self.httpAlertController addAction:acceptAction];
+    self.httpAlertController.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
         self.httpAlertController.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self presentViewController:self.httpAlertController animated:YES completion:nil];
+        [self presentViewController:self.httpAlertController animated:YES completion:^{
+            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+            self.httpAlertController.view.tintColor = UIColor.piwigoColorOrange;
+        }];
     });
 }
 
@@ -472,12 +480,16 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
     
     [self.httpAlertController addAction:cancelAction];
     [self.httpAlertController addAction:self.httpLoginAction];
+    self.httpAlertController.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
         self.httpAlertController.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
-    [self presentViewController:self.httpAlertController animated:YES completion:nil];
+    [self presentViewController:self.httpAlertController animated:YES completion:^{
+        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+        self.httpAlertController.view.tintColor = UIColor.piwigoColorOrange;
+    }];
 }
 
 -(void)requestNonSecuredAccessAfterError:(NSError *)error
@@ -505,13 +517,17 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
     
     [self.httpAlertController addAction:cancelAction];
     [self.httpAlertController addAction:acceptAction];
+    self.httpAlertController.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
         self.httpAlertController.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self presentViewController:self.httpAlertController animated:YES completion:nil];
+        [self presentViewController:self.httpAlertController animated:YES completion:^{
+            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+            self.httpAlertController.view.tintColor = UIColor.piwigoColorOrange;
+        }];
     });
 }
 
@@ -728,12 +744,16 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                             
                             [alert addAction:defaultAction];
                             [alert addAction:continueAction];
+                            alert.view.tintColor = UIColor.piwigoColorOrange;
                             if (@available(iOS 13.0, *)) {
                                 alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
                             } else {
                                 // Fallback on earlier versions
                             }
-                            [self presentViewController:alert animated:YES completion:nil];
+                            [self presentViewController:alert animated:YES completion:^{
+                                // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                                alert.view.tintColor = UIColor.piwigoColorOrange;
+                            }];
                         });
                     }];
                 } else {
@@ -1183,12 +1203,16 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
         handler:^(UIAlertAction * action) {}];
     
     [alert addAction:defaultAction];
+    alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
         alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
-    [self presentViewController:alert animated:YES completion:nil];
+    [self presentViewController:alert animated:YES completion:^{
+        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+        alert.view.tintColor = UIColor.piwigoColorOrange;
+    }];
 }
 
 -(void)dismissKeyboard

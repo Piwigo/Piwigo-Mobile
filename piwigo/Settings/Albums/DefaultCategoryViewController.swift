@@ -268,6 +268,7 @@ class DefaultCategoryViewController: UIViewController, UITableViewDataSource, UI
         rectOfCellInTableView.origin.x -= tableView.frame.size.width - (textRect?.size.width ?? 0.0) - tableView.layoutMargins.left - 12
 
         // Present popover view
+        alert.view.tintColor = UIColor.piwigoColorOrange()
         if #available(iOS 13.0, *) {
             alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
         } else {
@@ -276,7 +277,10 @@ class DefaultCategoryViewController: UIViewController, UITableViewDataSource, UI
         alert.popoverPresentationController?.sourceView = tableView
         alert.popoverPresentationController?.permittedArrowDirections = .left
         alert.popoverPresentationController?.sourceRect = rectOfCellInTableView
-        present(alert, animated: true)
+        present(alert, animated: true, completion: {
+            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+            alert.view.tintColor = UIColor.piwigoColorOrange()
+        })
     }
 
     func changedDefaultCategory() {

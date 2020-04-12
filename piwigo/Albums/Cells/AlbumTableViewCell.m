@@ -274,12 +274,16 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     
     [alert addAction:cancelAction];
     [alert addAction:self.categoryAction];
+    alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
         alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
-    [topViewController presentViewController:alert animated:YES completion:nil];
+    [topViewController presentViewController:alert animated:YES completion:^{
+        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+        alert.view.tintColor = UIColor.piwigoColorOrange;
+    }];
 }
 
 -(void)renameCategoryWithName:(NSString *)albumName comment:(NSString *)albumComment andViewController:(UIViewController *)topViewController
@@ -341,6 +345,7 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     [alert addAction:defaultAction];
 
     // Present list of actions
+    alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
         alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
@@ -349,7 +354,10 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     alert.popoverPresentationController.sourceView = self.contentView;
     alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUnknown;
     alert.popoverPresentationController.sourceRect = self.contentView.frame;
-    [topViewController presentViewController:alert animated:YES completion:nil];
+    [topViewController presentViewController:alert animated:YES completion:^{
+        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+        alert.view.tintColor = UIColor.piwigoColorOrange;
+    }];
 }
 
 
@@ -414,6 +422,7 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     [alert addAction:defaultAction];
 
     // Present list of actions
+    alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
         alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
@@ -422,7 +431,10 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     alert.popoverPresentationController.sourceView = self.contentView;
     alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUnknown;
     alert.popoverPresentationController.sourceRect = self.contentView.frame;
-    [topViewController presentViewController:alert animated:YES completion:nil];
+    [topViewController presentViewController:alert animated:YES completion:^{
+        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+        alert.view.tintColor = UIColor.piwigoColorOrange;
+    }];
 }
 
 
@@ -490,6 +502,7 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     }
     
     // Present list of actions
+    alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
         alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
@@ -498,7 +511,10 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     alert.popoverPresentationController.sourceView = self.contentView;
     alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUnknown;
     alert.popoverPresentationController.sourceRect = self.contentView.frame;
-    [topViewController presentViewController:alert animated:YES completion:nil];
+    [topViewController presentViewController:alert animated:YES completion:^{
+        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+        alert.view.tintColor = UIColor.piwigoColorOrange;
+    }];
 }
 
 -(void)confirmCategoryDeletionWithNumberOfImages:(NSInteger)number deletionMode:(NSString *)deletionMode andViewController:(UIViewController *)topViewController
@@ -533,12 +549,16 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     
     [alert addAction:defaultAction];
     [alert addAction:self.deleteAction];
+    alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
         alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
-    [topViewController presentViewController:alert animated:YES completion:nil];
+    [topViewController presentViewController:alert animated:YES completion:^{
+        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+        alert.view.tintColor = UIColor.piwigoColorOrange;
+    }];
 }
 
 -(void)deleteCategoryWithNumberOfImages:(NSInteger)number deletionMode:(NSString *)deletionMode andViewController:(UIViewController *)topViewController
@@ -589,12 +609,16 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
         [alert addAction:defaultAction];
 
         // Present list of actions
+        alert.view.tintColor = UIColor.piwigoColorOrange;
         if (@available(iOS 13.0, *)) {
             alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
         } else {
             // Fallback on earlier versions
         }
-        [topViewController presentViewController:alert animated:YES completion:nil];
+        [topViewController presentViewController:alert animated:YES completion:^{
+            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+            alert.view.tintColor = UIColor.piwigoColorOrange;
+        }];
     }
 }
 
@@ -620,10 +644,19 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     [alert addAction:defaultAction];
 
     // Present list of actions
+    alert.view.tintColor = UIColor.piwigoColorOrange;
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
     alert.popoverPresentationController.sourceView = self.contentView;
     alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUnknown;
     alert.popoverPresentationController.sourceRect = self.contentView.frame;
-    [topViewController presentViewController:alert animated:YES completion:nil];
+    [topViewController presentViewController:alert animated:YES completion:^{
+        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+        alert.view.tintColor = UIColor.piwigoColorOrange;
+    }];
 }
 
 #pragma mark - HUD methods

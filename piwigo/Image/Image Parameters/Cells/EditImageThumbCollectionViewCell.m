@@ -259,12 +259,16 @@ NSString * const kEditImageThumbCollectionCell_ID = @"EditImageThumbCollectionCe
     
     [alert addAction:cancelAction];
     [alert addAction:self.renameFileNameAction];
+    alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
         alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
-    [topViewController presentViewController:alert animated:YES completion:nil];
+    [topViewController presentViewController:alert animated:YES completion:^{
+        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+        alert.view.tintColor = UIColor.piwigoColorOrange;
+    }];
 }
 
 -(void)renameImageWithName:(NSString *)fileName andViewController:(UIViewController *)topViewController
@@ -333,6 +337,7 @@ NSString * const kEditImageThumbCollectionCell_ID = @"EditImageThumbCollectionCe
     [alert addAction:defaultAction];
 
     // Present list of actions
+    alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
         alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
@@ -341,7 +346,10 @@ NSString * const kEditImageThumbCollectionCell_ID = @"EditImageThumbCollectionCe
     alert.popoverPresentationController.sourceView = self.contentView;
     alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUnknown;
     alert.popoverPresentationController.sourceRect = self.contentView.frame;
-    [topViewController presentViewController:alert animated:YES completion:nil];
+    [topViewController presentViewController:alert animated:YES completion:^{
+        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+        alert.view.tintColor = UIColor.piwigoColorOrange;
+    }];
 }
 
 

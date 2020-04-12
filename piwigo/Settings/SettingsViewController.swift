@@ -144,12 +144,16 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
                 alert.addAction(cancelAction)
                 alert.addAction(defaultAction)
+                alert.view.tintColor = UIColor.piwigoColorOrange()
                 if #available(iOS 13.0, *) {
                     alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
                 } else {
                     // Fallback on earlier versions
                 }
-                present(alert, animated: true)
+                present(alert, animated: true, completion: {
+                    // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                    alert.view.tintColor = UIColor.piwigoColorOrange()
+                })
             }
         }
     }
@@ -1543,12 +1547,16 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 alert.addAction(clearAction)
 
                 // Present list of actions
+                alert.view.tintColor = UIColor.piwigoColorOrange()
                 if #available(iOS 13.0, *) {
                     alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
                 } else {
                     // Fallback on earlier versions
                 }
-                present(alert, animated: true)
+                present(alert, animated: true, completion: {
+                    // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                    alert.view.tintColor = UIColor.piwigoColorOrange()
+                })
             default:
                 break
             }
@@ -1664,7 +1672,18 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
                             // Add action
                             alert.addAction(dismissAction)
-                            self.present(alert, animated: true)
+
+                            // Present list of actions
+                            alert.view.tintColor = UIColor.piwigoColorOrange()
+                            if #available(iOS 13.0, *) {
+                                alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+                            } else {
+                                // Fallback on earlier versions
+                            }
+                            self.present(alert, animated: true, completion: {
+                                // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                                alert.view.tintColor = UIColor.piwigoColorOrange()
+                            })
                         }
 
                     }, onFailure: { task, error in
@@ -1679,7 +1698,18 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
                         // Add action
                         alert.addAction(dismissAction)
-                        self.present(alert, animated: true)
+
+                        // Present list of actions
+                        alert.view.tintColor = UIColor.piwigoColorOrange()
+                        if #available(iOS 13.0, *) {
+                            alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+                        } else {
+                            // Fallback on earlier versions
+                        }
+                        self.present(alert, animated: true, completion: {
+                            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                            alert.view.tintColor = UIColor.piwigoColorOrange()
+                        })
                     })
                 })
 
@@ -1692,6 +1722,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             let rectOfCellInTableView = settingsTableView?.rectForRow(at: rowAtIndexPath)
 
             // Present list of actions
+            alert.view.tintColor = UIColor.piwigoColorOrange()
             if #available(iOS 13.0, *) {
                 alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
             } else {
@@ -1700,7 +1731,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             alert.popoverPresentationController?.sourceView = settingsTableView
             alert.popoverPresentationController?.permittedArrowDirections = .up
             alert.popoverPresentationController?.sourceRect = rectOfCellInTableView ?? CGRect.zero
-            present(alert, animated: true)
+            present(alert, animated: true, completion: {
+                // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                alert.view.tintColor = UIColor.piwigoColorOrange()
+            })
         } else {
             ClearCache.clearAllCache()
             let appDelegate = UIApplication.shared.delegate as? AppDelegate
