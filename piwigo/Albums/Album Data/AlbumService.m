@@ -31,6 +31,50 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
+        // Returned JSON:
+        //
+        //  { result = {
+        //      infos = ({name = version;
+        //                value = "2.10.2";
+        //                },
+        //               {name = "nb_elements";         ==> Total number of photos
+        //                value = 341;
+        //                },
+        //               {name = "nb_categories";       ==> Total number of albums
+        //                value = 28;
+        //                },
+        //               {name = "nb_virtual";          ==> Total number of virtual albums
+        //                value = 28;
+        //                },
+        //               {name = "nb_physical";         ==> Total number of non-virtual albums
+        //                value = 0;
+        //                },
+        //               {name = "nb_image_category";   ==> Total number of images in albums
+        //                value = 352;
+        //                },
+        //               {name = "nb_tags";             ==> Total number of tags, orphans included
+        //                value = 4;
+        //                },
+        //               {name = "nb_image_tag";        ==> Total number of tagged images
+        //                value = 25;
+        //                },
+        //               {name = "nb_users";            ==> Total number of users
+        //                value = 6;
+        //                },
+        //               {name = "nb_groups";           ==> Total number of groups
+        //                value = 0;
+        //                },
+        //               {name = "nb_comments";         ==> Total number of comments
+        //                value = 0;
+        //                },
+        //               {name = "first_date";          ==> Date of first image upload
+        //                value = "2017-08-31 22:44:11";
+        //                }
+        //          );
+        //      };
+        //      stat = ok;
+        //  }
+        
                   if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
                   {
                       // Extract infos from JSON message
