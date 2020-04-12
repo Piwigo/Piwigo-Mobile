@@ -1292,6 +1292,9 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
 
     // Enable buttons after action
     [self setEnableStateOfButtons:YES];
+
+    // Reload tab bar
+    [self updateNavBar];
 }
 
 
