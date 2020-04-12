@@ -35,7 +35,6 @@
 #import "PhotosFetch.h"
 #import "SAMKeychain.h"
 #import "SearchImagesViewController.h"
-#import "SettingsViewController.h"
 
 //#ifndef DEBUG_LIFECYCLE
 //#define DEBUG_LIFECYCLE
@@ -689,9 +688,10 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 -(void)didTapPreferencesButton
 {
-    SettingsViewController *settingsViewController = [SettingsViewController new];
-    settingsViewController.settingsDelegate = self;
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:settingsViewController];
+    UIStoryboard *settingsSB = [UIStoryboard storyboardWithName:@"SettingsViewController" bundle:nil];
+    SettingsViewController *settingsVC = [settingsSB instantiateViewControllerWithIdentifier:@"SettingsViewController"];
+    settingsVC.settingsDelegate = self;
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:settingsVC];
     navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     navController.modalPresentationStyle = UIModalPresentationFormSheet;
     [self presentViewController:navController animated:YES completion:nil];
