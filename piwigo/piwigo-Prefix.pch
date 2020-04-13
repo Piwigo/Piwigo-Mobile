@@ -19,7 +19,6 @@
 // You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
 
 #ifdef __OBJC__
-	#import "NSLayoutConstraint+CommonConstraints.h"
 	#import <AFNetworking.h>
 	#import <UIImageView+AFNetworking.h>
 	#import "MGSwipeTableCell.h"

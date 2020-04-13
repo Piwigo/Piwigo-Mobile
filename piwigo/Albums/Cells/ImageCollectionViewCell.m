@@ -64,7 +64,7 @@
         self.playImage.translatesAutoresizingMaskIntoConstraints = NO;
         self.playImage.contentMode = UIViewContentModeScaleAspectFit;
         [self.contentView addSubview:self.playImage];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintView:self.playImage toSize:CGSizeMake(25, 25)]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintView:self.playImage to:CGSizeMake(25, 25)]];
         [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromLeft:self.playImage amount:5]];
         [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromTop:self.playImage amount:5]];
 
@@ -120,7 +120,7 @@
 		self.selectedImage.tintColor = [UIColor piwigoColorOrange];
 		self.selectedImage.hidden = YES;
 		[self.contentView addSubview:self.selectedImage];
-		[self.contentView addConstraints:[NSLayoutConstraint constraintView:self.selectedImage toSize:CGSizeMake(25, 25)]];
+		[self.contentView addConstraints:[NSLayoutConstraint constraintView:self.selectedImage to:CGSizeMake(25, 25)]];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromRight:self.selectedImage amount:0]];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromTop:self.selectedImage amount:5]];
 		
@@ -134,7 +134,7 @@
 		self.noDataLabel.text = NSLocalizedString(@"categoryImageList_noDataError", @"Error No Data");
 		self.noDataLabel.hidden = YES;
 		[self.contentView addSubview:self.noDataLabel];
-		[self.contentView addConstraints:[NSLayoutConstraint constraintCenterView:self.noDataLabel]];
+		[self.contentView addConstraints:[NSLayoutConstraint constraintCenter:self.noDataLabel]];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.noDataLabel
 																	 attribute:NSLayoutAttributeLeft
 																	 relatedBy:NSLayoutRelationGreaterThanOrEqual

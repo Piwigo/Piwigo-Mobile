@@ -1207,7 +1207,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
 
         [oneLineTitleView addSubview:titleLabel];
         [oneLineTitleView addConstraint:[NSLayoutConstraint constraintView:titleLabel toWidth:titleWidth]];
-        [oneLineTitleView addConstraints:[NSLayoutConstraint constraintCenterView:titleLabel]];
+        [oneLineTitleView addConstraints:[NSLayoutConstraint constraintCenter:titleLabel]];
     }
     else
     {

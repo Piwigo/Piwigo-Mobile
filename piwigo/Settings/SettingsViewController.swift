@@ -336,7 +336,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         let header = UIView()
         header.backgroundColor = UIColor.clear
         header.addSubview(headerLabel)
-        header.addConstraint(NSLayoutConstraint(item: headerLabel, attribute: .bottom, relatedBy: .equal, toItem: headerLabel.superview, attribute: .bottom, multiplier: 1.0, constant: -4))
+        header.addConstraint(NSLayoutConstraint.constraintView(fromBottom: headerLabel, amount: 4)!)
         if #available(iOS 11, *) {
             header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[header]-|", options: [], metrics: nil, views: [
             "header": headerLabel
@@ -1434,7 +1434,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         let footer = UIView()
         footer.backgroundColor = UIColor.clear
         footer.addSubview(footerLabel)
-        footer.addConstraint(NSLayoutConstraint(item: footerLabel, attribute: .bottom, relatedBy: .equal, toItem: footerLabel.superview, attribute: .bottom, multiplier: 1.0, constant: -4))
+        footer.addConstraint(NSLayoutConstraint.constraintView(fromTop: footerLabel, amount: 4)!)
         if #available(iOS 11, *) {
             footer.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[footer]-|", options: [], metrics: nil, views: [
             "footer": footerLabel

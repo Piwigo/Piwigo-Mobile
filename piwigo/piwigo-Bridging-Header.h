@@ -7,8 +7,6 @@
 #import <MBProgressHUD.h>
 #import <UIImageView+AFNetworking.h>
 
-#import "NSLayoutConstraint+CommonConstraints.h"
-
 #import "AlbumImagesViewController.h"
 #import "AlbumService.h"
 #import "AlbumUploadViewController.h"

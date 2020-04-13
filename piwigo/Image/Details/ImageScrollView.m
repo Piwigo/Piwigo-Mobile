@@ -49,8 +49,8 @@
         self.playImage.translatesAutoresizingMaskIntoConstraints = NO;
         self.playImage.contentMode = UIViewContentModeScaleAspectFit;
         [self addSubview:self.playImage];
-        [self addConstraints:[NSLayoutConstraint constraintView:self.playImage toSize:CGSizeMake(50, 50)]];
-        [self addConstraints:[NSLayoutConstraint constraintCenterView:self.playImage]];
+        [self addConstraints:[NSLayoutConstraint constraintView:self.playImage to:CGSizeMake(50, 50)]];
+        [self addConstraints:[NSLayoutConstraint constraintCenter:self.playImage]];
 }
 	return self;
 }
