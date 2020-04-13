@@ -1,34 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19E264b" minimumToolsVersion="Xcode 8.0" sourceLanguage="Swift" userDefinedModelVersionIdentifier="DataModel">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19F53f" minimumToolsVersion="Xcode 8.0" sourceLanguage="Swift" userDefinedModelVersionIdentifier="DataModel">
     <entity name="Tag" representedClassName=".Tag" syncable="YES">
         <attribute name="lastModified" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="numberOfImagesUnderTag" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="tagId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="tagName" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="uploads" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Upload" inverseName="tags" inverseEntity="Upload" syncable="YES"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="tagId"/>
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
-    <entity name="Upload" representedClassName=".Upload" syncable="YES">
-        <attribute name="author" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="category" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="comment" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="dateAdded" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="localIdentifier" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="privacyLevel" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Tag" inverseName="uploads" inverseEntity="Tag" syncable="YES"/>
-        <uniquenessConstraints>
-            <uniquenessConstraint>
-                <constraint value="localIdentifier"/>
-            </uniquenessConstraint>
-        </uniquenessConstraints>
-    </entity>
     <elements>
-        <element name="Tag" positionX="-54" positionY="18" width="128" height="118"/>
-        <element name="Upload" positionX="-258.92578125" positionY="-41.81640625" width="147.86328125" height="163"/>
+        <element name="Tag" positionX="-54" positionY="18" width="128" height="103"/>
     </elements>
 </model>
