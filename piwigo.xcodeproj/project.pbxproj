@@ -48,6 +48,8 @@
 		AD3A6D522383446900767F10 /* ImageUploadThumbCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AD3A6D512383446900767F10 /* ImageUploadThumbCollectionViewCell.m */; };
 		AD41BEC7223D4C1400A5DEE3 /* SplitLocalImages.m in Sources */ = {isa = PBXBuildFile; fileRef = AD6ABBDD2223192D00346E5A /* SplitLocalImages.m */; };
 		AD41BECB223E9BC700A5DEE3 /* LocationsData.m in Sources */ = {isa = PBXBuildFile; fileRef = AD41BECA223E9BC700A5DEE3 /* LocationsData.m */; };
+		AD42D08124448B7C00F0BAC1 /* LocalAlbumsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD42D08024448B7C00F0BAC1 /* LocalAlbumsViewController.swift */; };
+		AD42D08324448F2400F0BAC1 /* LocalAlbumsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD42D08224448F2400F0BAC1 /* LocalAlbumsViewController.storyboard */; };
 		AD6B2E731F0930B40040EAD9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E751F0930B40040EAD9 /* Localizable.strings */; };
 		AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E781F0930CE0040EAD9 /* About.strings */; };
 		AD7437D023FBB151008738CF /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB433F523FB3CCB00A873A9 /* DataController.swift */; };
@@ -151,7 +153,6 @@
 		D8D3F75E1A7A011A00AEA7F1 /* PhotosFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F75D1A7A011A00AEA7F1 /* PhotosFetch.m */; };
 		D8D3F7611A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7601A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m */; };
 		D8D3F7651A7AF2A100AEA7F1 /* CategoriesData.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7641A7AF2A100AEA7F1 /* CategoriesData.m */; };
-		D8DC79ED1ACB1F310062D3A1 /* LocalAlbumsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8DC79EC1ACB1F310062D3A1 /* LocalAlbumsViewController.m */; };
 		D8E4D6211ABE34DF0057EB95 /* LoginNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8E4D6201ABE34DF0057EB95 /* LoginNavigationController.m */; };
 		D8F3250C1A875297007CBDAC /* ImageUploadParamsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F3250B1A875297007CBDAC /* ImageUploadParamsViewController.m */; };
 		D8F325101A875322007CBDAC /* ImageUploadParams.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D8F3250F1A875322007CBDAC /* ImageUploadParams.storyboard */; };
@@ -224,7 +225,7 @@
 		AD30FD3421316DA7009AA30E /* piwigoAppStore.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = piwigoAppStore.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD30FD3621316DA8009AA30E /* piwigoAppStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = piwigoAppStore.swift; sourceTree = "<group>"; };
 		AD30FD3821316DA8009AA30E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AD31779123D104E3005E9694 /* EditImageThumbTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = EditImageThumbTableViewCell.xib; path = "piwigo/Image/Image Parameters/Cells/EditImageThumbTableViewCell.xib"; sourceTree = SOURCE_ROOT; };
+		AD31779123D104E3005E9694 /* EditImageThumbTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = EditImageThumbTableViewCell.xib; path = piwigo/Image/Manage/Cells/EditImageThumbTableViewCell.xib; sourceTree = SOURCE_ROOT; };
 		AD31F5F4242FA75C00BD65FC /* AboutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		AD31F5F6242FABF300BD65FC /* ReleaseNotesViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ReleaseNotesViewController.storyboard; sourceTree = "<group>"; };
 		AD31F5F8242FB76800BD65FC /* ReleaseNotesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReleaseNotesViewController.swift; sourceTree = "<group>"; };
@@ -252,6 +253,8 @@
 		AD3FDDEB1F2E23F700F71C81 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/AppStore.strings; sourceTree = "<group>"; };
 		AD41BEC9223E9BC100A5DEE3 /* LocationsData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LocationsData.h; sourceTree = "<group>"; };
 		AD41BECA223E9BC700A5DEE3 /* LocationsData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationsData.m; sourceTree = "<group>"; };
+		AD42D08024448B7C00F0BAC1 /* LocalAlbumsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalAlbumsViewController.swift; sourceTree = "<group>"; };
+		AD42D08224448F2400F0BAC1 /* LocalAlbumsViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LocalAlbumsViewController.storyboard; sourceTree = "<group>"; };
 		AD42DDF5210B38DB0083FC7D /* MoveImageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MoveImageViewController.h; sourceTree = "<group>"; };
 		AD42DDF6210B38F30083FC7D /* MoveImageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MoveImageViewController.m; sourceTree = "<group>"; };
 		AD45949B1F36765200CF9438 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -490,8 +493,6 @@
 		D8D3F7601A7A08E300AEA7F1 /* LocalImageCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalImageCollectionViewCell.m; sourceTree = "<group>"; };
 		D8D3F7631A7AF2A100AEA7F1 /* CategoriesData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoriesData.h; sourceTree = "<group>"; };
 		D8D3F7641A7AF2A100AEA7F1 /* CategoriesData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoriesData.m; sourceTree = "<group>"; };
-		D8DC79EB1ACB1F310062D3A1 /* LocalAlbumsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalAlbumsViewController.h; sourceTree = "<group>"; };
-		D8DC79EC1ACB1F310062D3A1 /* LocalAlbumsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalAlbumsViewController.m; sourceTree = "<group>"; };
 		D8E4D61F1ABE34DF0057EB95 /* LoginNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginNavigationController.h; sourceTree = "<group>"; };
 		D8E4D6201ABE34DF0057EB95 /* LoginNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginNavigationController.m; sourceTree = "<group>"; };
 		D8F3250A1A875297007CBDAC /* ImageUploadParamsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageUploadParamsViewController.h; sourceTree = "<group>"; };
@@ -721,8 +722,8 @@
 		AD7B4C2520E36328003E403A /* Pick Photos Album */ = {
 			isa = PBXGroup;
 			children = (
-				D8DC79EB1ACB1F310062D3A1 /* LocalAlbumsViewController.h */,
-				D8DC79EC1ACB1F310062D3A1 /* LocalAlbumsViewController.m */,
+				AD42D08024448B7C00F0BAC1 /* LocalAlbumsViewController.swift */,
+				AD42D08224448F2400F0BAC1 /* LocalAlbumsViewController.storyboard */,
 			);
 			path = "Pick Photos Album";
 			sourceTree = "<group>";
@@ -1398,6 +1399,7 @@
 				AD7823072061BE7F00D5CA70 /* OpenSansRegular.TTF in Resources */,
 				ADA36E0F21D777DA00133708 /* OpenSansSemiBold.TTF in Resources */,
 				ADF88E772066D04600D1CE26 /* OpenSansBold.TTF in Resources */,
+				AD42D08324448F2400F0BAC1 /* LocalAlbumsViewController.storyboard in Resources */,
 				ADF88E792066DA9600D1CE26 /* OpenSansExtraBold.TTF in Resources */,
 				AD6B2E731F0930B40040EAD9 /* Localizable.strings in Resources */,
 				AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */,
@@ -1571,7 +1573,7 @@
 				AD1F90B220724A82004BA1AA /* NberImagesFooterCollectionReusableView.m in Sources */,
 				ADB7A102210B803D006723B9 /* MoveImageViewController.m in Sources */,
 				D8C71A4C1A848B070048BA33 /* ImageUploadTableViewCell.m in Sources */,
-				D8DC79ED1ACB1F310062D3A1 /* LocalAlbumsViewController.m in Sources */,
+				AD42D08124448B7C00F0BAC1 /* LocalAlbumsViewController.swift in Sources */,
 				D863EEBD1A6A440600C0A6E9 /* PiwigoButton.m in Sources */,
 				ADABACBD2235A7120095C4D0 /* PiwigoLocationData.m in Sources */,
 				D89045BF1A950FF700A306FE /* EditImageTagsTableViewCell.m in Sources */,

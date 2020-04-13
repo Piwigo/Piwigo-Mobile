@@ -25,7 +25,6 @@
 #import "ImageDetailViewController.h"
 #import "ImageService.h"
 #import "ImagesCollection.h"
-#import "LocalAlbumsViewController.h"
 #import "MBProgressHUD.h"
 #import "Model.h"
 #import "MoveCategoryViewController.h"
@@ -1179,8 +1178,10 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     [[PhotosFetch sharedInstance] checkPhotoLibraryAccessForViewController:self
             onAuthorizedAccess:^{
                 // Open local albums view controller in new navigation controlelr
-                LocalAlbumsViewController *localAlbums = [[LocalAlbumsViewController alloc] initWithCategoryId:self.categoryId];
-                UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:localAlbums];
+                UIStoryboard *localAlbumsSB = [UIStoryboard storyboardWithName:@"LocalAlbumsViewController" bundle:nil];
+                LocalAlbumsViewController *localAlbumsVC = [localAlbumsSB instantiateViewControllerWithIdentifier:@"LocalAlbumsViewController"];
+                localAlbumsVC.categoryId = self.categoryId;
+                UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:localAlbumsVC];
                 navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
                 navController.modalPresentationStyle = UIModalPresentationFormSheet;
                 [self presentViewController:navController animated:YES completion:nil];
