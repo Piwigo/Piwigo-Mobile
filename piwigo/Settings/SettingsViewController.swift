@@ -1596,11 +1596,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     var systemInfo = utsname()
                     uname(&systemInfo)
                     let size = Int(_SYS_NAMELEN) // is 32, but posix AND its init is 256....
-                    let deviceModel = withUnsafeMutablePointer(to: &systemInfo.machine) {p in
+                    let deviceModel = deviceName(fromCode: withUnsafeMutablePointer(to: &systemInfo.machine) {p in
                         p.withMemoryRebound(to: CChar.self, capacity: size, {p2 in
                             return String(cString: p2)
                         })
-                    }
+                    })
                     let deviceOS = UIDevice.current.systemName
                     let deviceOSversion = UIDevice.current.systemVersion
 
@@ -1771,7 +1771,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         dismiss(animated: true)
     }
 
-    func deviceName(fromCode deviceCode: String?) -> String? {
+    func deviceName(fromCode deviceCode: String) -> String {
         // See https://everymac.com/systems/apple/ipad/index-ipad-specs.html
         // or https://apps.apple.com/fr/app/mactracker/id430255202?l=en&mt=12
 
