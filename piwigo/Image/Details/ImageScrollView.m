@@ -44,7 +44,7 @@
         self.playImage = [UIImageView new];
         UIImage *play = [UIImage imageNamed:@"videoPlay"];
         self.playImage.image = [play imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        self.playImage.tintColor = [UIColor piwigoColorWhiteCream];
+        self.playImage.tintColor = [UIColor piwigoColorOrange];
         self.playImage.hidden = YES;
         self.playImage.translatesAutoresizingMaskIntoConstraints = NO;
         self.playImage.contentMode = UIViewContentModeScaleAspectFit;
