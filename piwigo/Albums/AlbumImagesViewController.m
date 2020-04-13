@@ -746,6 +746,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                forControlEvents:UIControlEventTouchUpInside];
         [UIView animateWithDuration:0.2 animations:^{
             self.addButton.backgroundColor = [UIColor piwigoColorOrange];
+            self.addButton.tintColor = [UIColor whiteColor];
         } completion:^(BOOL finished) {
             // Present Home button if needed and if not in root or default album
             [self showHomeAlbumButtonIfNeeded];
