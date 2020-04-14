@@ -17,8 +17,6 @@
 #import "ImageUploadProgressView.h"
 #import "ImageUploadViewController.h"
 #import "ImagesCollection.h"
-#import "LocalImagesHeaderReusableView.h"
-#import "LocalImageCollectionViewCell.h"
 #import "LocationsData.h"
 #import "MBProgressHUD.h"
 #import "NberImagesFooterCollectionReusableView.h"
@@ -93,9 +91,9 @@
         self.localImagesCollection.delegate = self;
         [self.localImagesCollection setAccessibilityIdentifier:@"CameraRoll"];
 
+        [self.localImagesCollection registerNib:[UINib nibWithNibName:@"LocalImageCollectionViewCell" bundle:nil] forCellWithReuseIdentifier:@"LocalImageCollectionViewCell"];
         [self.localImagesCollection registerNib:[UINib nibWithNibName:@"LocalImagesHeaderReusableView" bundle:nil] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"LocalImagesHeaderReusableView"];
         [self.localImagesCollection registerClass:[NberImagesFooterCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"NberImagesFooterCollection"];
-        [self.localImagesCollection registerClass:[LocalImageCollectionViewCell class] forCellWithReuseIdentifier:@"LocalImageCollectionViewCell"];
 
         [self.view addSubview:self.localImagesCollection];
         [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.localImagesCollection]];
@@ -712,7 +710,9 @@
             }
 
             // Set up header
-            [header setupWithImages:[self.imagesInSections objectAtIndex:indexPath.section] andPlaceNames:placeNames inSection:indexPath.section andSelectionMode:[[self.selectedSections objectAtIndex:indexPath.section] boolValue]];
+            [header configureWith:[self.imagesInSections objectAtIndex:indexPath.section]
+                       placeNames:placeNames in:indexPath.section
+                    selectionMode:[[self.selectedSections objectAtIndex:indexPath.section] boolValue]];
             header.headerDelegate = self;
 
             return header;
@@ -821,7 +821,8 @@
     // Create cell
     LocalImageCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"LocalImageCollectionViewCell" forIndexPath:indexPath];
     PHAsset *imageAsset = [[self.imagesInSections objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
-    [cell setupWithImageAsset:imageAsset andThumbnailSize:(CGFloat)[ImagesCollection imageSizeForView:collectionView imagesPerRowInPortrait:self.nberOfImagesPerRow collectionType:kImageCollectionPopup]];
+    [cell configureWith:imageAsset
+          thumbnailSize:(CGFloat)[ImagesCollection imageSizeForView:collectionView imagesPerRowInPortrait:self.nberOfImagesPerRow collectionType:kImageCollectionPopup]];
     
     // Add pan gesture recognition
     UIPanGestureRecognizer *imageSeriesRocognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(touchedImages:)];
