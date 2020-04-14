@@ -21,7 +21,6 @@
 #import "MBProgressHUD.h"
 #import "Model.h"
 #import "MoveImageViewController.h"
-#import "NberImagesFooterCollectionReusableView.h"
 #import "PhotosFetch.h"
 #import "TaggedImagesViewController.h"
 #import "TagSelectViewController.h"

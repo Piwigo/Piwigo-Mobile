@@ -19,7 +19,6 @@
 #import "ImagesCollection.h"
 #import "LocationsData.h"
 #import "MBProgressHUD.h"
-#import "NberImagesFooterCollectionReusableView.h"
 #import "NotUploadedYet.h"
 #import "PhotosFetch.h"
 #import "PiwigoLocationData.h"

@@ -29,7 +29,6 @@
 #import "MoveCategoryViewController.h"
 #import "MoveImageViewController.h"
 #import "NetworkHandler.h"
-#import "NberImagesFooterCollectionReusableView.h"
 #import "PhotosFetch.h"
 #import "SAMKeychain.h"
 #import "SearchImagesViewController.h"
