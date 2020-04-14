@@ -17,7 +17,6 @@
 #import "AppDelegate.h"
 #import "CategoriesData.h"
 #import "CategoryCollectionViewCell.h"
-#import "CategoryHeaderReusableView.h"
 #import "DiscoverImagesViewController.h"
 #import "EditImageParamsViewController.h"
 #import "FavoritesImagesViewController.h"

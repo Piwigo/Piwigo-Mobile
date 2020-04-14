@@ -10,7 +10,6 @@
 #import "AlbumService.h"
 #import "AppDelegate.h"
 #import "CategoriesData.h"
-#import "CategoryHeaderReusableView.h"
 #import "ImageCollectionViewCell.h"
 #import "ImageDetailViewController.h"
 #import "ImagesCollection.h"
