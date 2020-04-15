@@ -361,8 +361,8 @@
             subtype:PHAssetCollectionSubtypeSmartAlbumUserLibrary options:fetchOptions];
 }
 
--(NSArray *)getImagesOfAlbumCollection:(PHAssetCollection*)imageCollection
-                          withSortType:(kPiwigoSortBy)sortType
+-(NSArray<NSArray<PHAsset *> *> *)getImagesOfAlbumCollection:(PHAssetCollection*)imageCollection
+                                                withSortType:(kPiwigoSortBy)sortType
 {
     PHFetchOptions *fetchOptions = [PHFetchOptions new];
     switch (sortType) {
@@ -392,7 +392,7 @@
     return [SplitLocalImages splitImagesByDate:imagesInCollection];
 }
 
--(NSArray *)getImagesOfMomentCollections:(PHFetchResult *)imageCollections
+-(NSArray<NSArray<PHAsset *> *> *)getImagesOfMomentCollections:(PHFetchResult *)imageCollections
 {
     // Fetch sort option
     PHFetchOptions *fetchOptions = [PHFetchOptions new];

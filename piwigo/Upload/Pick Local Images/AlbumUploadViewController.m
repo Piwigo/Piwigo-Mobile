@@ -31,9 +31,9 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
 @property (nonatomic, assign) NSInteger categoryId;
 @property (nonatomic, strong) PHAssetCollection *imageCollection;
 @property (nonatomic, assign) NSInteger nberOfImagesPerRow;
-@property (nonatomic, strong) NSArray *imagesInSections;
+@property (nonatomic, strong) NSArray<NSArray<PHAsset *> *> *imagesInSections;
 
-@property (nonatomic, strong) NSMutableArray *locationsOfImagesInSections;
+@property (nonatomic, strong) NSMutableArray<PiwigoLocationData *> *locationsOfImagesInSections;
 @property (nonatomic, assign) NSRange rangeOfCachedPlaces;
 
 @property (nonatomic, strong) UILabel *noImagesLabel;
@@ -42,8 +42,8 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
 @property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
 @property (nonatomic, strong) UIBarButtonItem *uploadBarButton;
 
-@property (nonatomic, strong) NSMutableArray *touchedImages;
-@property (nonatomic, strong) NSMutableArray *selectedImages;
+@property (nonatomic, strong) NSMutableArray<PHAsset *> *touchedImages;
+@property (nonatomic, strong) NSMutableArray<PHAsset *> *selectedImages;
 @property (nonatomic, strong) NSMutableArray *selectedSections;
 
 @property (nonatomic, assign) kPiwigoSortBy sortType;
@@ -70,8 +70,8 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
         
         // Initialise arrays used to manage selections
         self.removedUploadedImages = NO;
-        self.touchedImages = [NSMutableArray new];
-        self.selectedImages = [NSMutableArray new];
+        self.touchedImages = [NSMutableArray<PHAsset *> new];
+        self.selectedImages = [NSMutableArray<PHAsset *> new];
         [self initSelectButtons];
         
         // Collection of images
@@ -273,7 +273,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
 -(void)initLocationsOfSections
 {
     // Initalisation
-    self.locationsOfImagesInSections = [NSMutableArray new];
+    self.locationsOfImagesInSections = [NSMutableArray<PiwigoLocationData *> new];
 
     // Determine locations of images in sections
     for (NSArray<PHAsset *> *imagesInSection in self.imagesInSections) {
@@ -474,7 +474,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
                  withImages:self.imagesInSections
               andSelections:self.selectedSections
                 forProgress:nil
-               onCompletion:^(NSArray *imagesNotUploaded, NSIndexSet *sectionsToDelete)
+               onCompletion:^(NSArray<NSArray<PHAsset *> *> *imagesNotUploaded, NSIndexSet *sectionsToDelete)
                 {
                     dispatch_async(dispatch_get_main_queue(),
                                    ^(void){
@@ -606,7 +606,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
     }
     
     // Clear list of selected images
-    self.selectedImages = [NSMutableArray new];
+    self.selectedImages = [NSMutableArray<PHAsset *> new];
     
     // Update navigation bar
     [self updateNavBar];
@@ -734,7 +734,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
     [self.navigationController pushViewController:imageUploadVC animated:YES];
 
     // Clear list of selected images
-    self.selectedImages = [NSMutableArray new];
+    self.selectedImages = [NSMutableArray<PHAsset *> new];
 }
 
 

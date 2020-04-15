@@ -16,17 +16,17 @@
 @implementation NotUploadedYet
 
 +(void)getListOfImageNamesThatArentUploadedForCategory:(NSInteger)categoryId
-                                            withImages:(NSArray *)imagesInSections
+                                            withImages:(NSArray<NSArray<PHAsset *> *> *)imagesInSections
                                          andSelections:(NSArray *)selectedSections
                                            forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
-                                          onCompletion:(void (^)(NSArray *imagesNotUploaded, NSIndexSet *sectionsToDelete))completion
+                                          onCompletion:(void (^)(NSArray<NSArray<PHAsset *> *> *imagesNotUploaded, NSIndexSet *sectionsToDelete))completion
 {
     [[[CategoriesData sharedInstance] getCategoryById:categoryId]
      loadAllCategoryImageDataForProgress:progress
      OnCompletion:^(BOOL completed) {
          
          // Collect list of Piwigo images
-         NSArray *onlineImageData = [[CategoriesData sharedInstance] getCategoryById:categoryId].imageList;
+         NSArray<PiwigoImageData*> *onlineImageData = [[CategoriesData sharedInstance] getCategoryById:categoryId].imageList;
          
          // Build list of images on Piwigo server
          NSMutableDictionary *onlineImageNamesLookup = [NSMutableDictionary new];
@@ -45,7 +45,7 @@
          
          // Collect list of local images
          NSMutableIndexSet *sectionsToDelete = [NSMutableIndexSet new];
-         NSMutableArray *localImagesThatNeedToBeUploaded = [NSMutableArray new];
+         NSMutableArray<NSArray<PHAsset *> *> *localImagesThatNeedToBeUploaded = [NSMutableArray new];
          if (imagesInSections.count != selectedSections.count) {
              if(completion)
              {
@@ -58,10 +58,10 @@
          for (NSInteger index = 0; index < imagesInSections.count; index++) {
 
              // Images in section
-             NSArray *imagesInSection = [imagesInSections objectAtIndex:index];
+             NSArray<PHAsset *> *imagesInSection = [imagesInSections objectAtIndex:index];
              
              // Loop over images of section
-             NSMutableArray *images = [NSMutableArray new];
+             NSMutableArray<PHAsset*> *images = [NSMutableArray new];
              for (PHAsset *imageAsset in imagesInSection) {
                  
                  // Get filename of image asset

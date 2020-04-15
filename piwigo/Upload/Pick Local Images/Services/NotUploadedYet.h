@@ -14,6 +14,6 @@
                         withImages:(NSArray *)imagesInSections
                      andSelections:(NSArray *)selectedSections
                        forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
-                      onCompletion:(void (^)(NSArray *imagesNotUploaded, NSIndexSet *sectionsToDelete))completion;
+                      onCompletion:(void (^)(NSArray<NSArray<PHAsset *> *> *imagesNotUploaded, NSIndexSet *sectionsToDelete))completion;
 
 @end
