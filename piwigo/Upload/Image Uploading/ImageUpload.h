@@ -30,6 +30,7 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationDeselectImageToUpload;
 @property (nonatomic, strong) NSDate *creationDate;
 @property (nonatomic, assign) BOOL stopUpload;
 
--(instancetype)initWithImageAsset:(PHAsset*)imageAsset orImageData:(PiwigoImageData*)imageData forCategory:(NSInteger)category privacyLevel:(NSInteger)privacy author:(NSString*)author;
+-(instancetype)initWithImageAsset:(PHAsset*)imageAsset forCategory:(NSInteger)category
+                     privacyLevel:(NSInteger)privacy author:(NSString*)author;
 
 @end

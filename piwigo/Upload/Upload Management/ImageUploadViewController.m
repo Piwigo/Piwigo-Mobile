@@ -158,7 +158,6 @@
 	for(PHAsset *imageAsset in self.imagesSelected)
 	{
 		ImageUpload *image = [[ImageUpload alloc] initWithImageAsset:imageAsset
-                                                         orImageData:nil
                                                          forCategory:self.selectedCategory
                                                         privacyLevel:[Model sharedInstance].defaultPrivacyLevel
                                                               author:[Model sharedInstance].defaultAuthor];

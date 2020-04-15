@@ -110,11 +110,9 @@ typedef enum {
     [self.imageUploadParamsTableView registerNib:[UINib nibWithNibName:@"ImageUploadThumbTableViewCell" bundle:nil] forCellReuseIdentifier:kImageUploadThumbTableCell_ID];
 
     // Initialise common image properties from first supplied image
-    self.commonParameters = [[ImageUpload alloc] initWithImageAsset:self.images[0].imageAsset orImageData:nil forCategory:self.images[0].categoryToUploadTo privacyLevel:self.images[0].privacyLevel author:self.images[0].author];
+    self.commonParameters = [[ImageUpload alloc] initWithImageAsset:self.images[0].imageAsset forCategory:self.images[0].categoryToUploadTo
+                                                       privacyLevel:self.images[0].privacyLevel author:self.images[0].author];
     self.commonParameters.imageTitle = self.images[0].imageTitle;
-//    self.commonParameters.categoryToUploadTo = self.images[0].categoryToUploadTo;
-//    self.commonParameters.author = self.images[0].author;
-//    self.commonParameters.privacyLevel = self.images[0].privacyLevel;
     self.commonParameters.tags = [NSArray arrayWithArray:self.images[0].tags];
     self.commonParameters.comment = self.images[0].comment;
 

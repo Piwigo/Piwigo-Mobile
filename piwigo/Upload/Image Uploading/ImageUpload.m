@@ -17,7 +17,8 @@ NSString * const kPiwigoNotificationDeselectImageToUpload = @"kPiwigoNotificatio
 
 @implementation ImageUpload
 
--(instancetype)initWithImageAsset:(PHAsset*)imageAsset orImageData:(PiwigoImageData*)imageData forCategory:(NSInteger)category privacyLevel:(NSInteger)privacy author:(NSString*)author
+-(instancetype)initWithImageAsset:(PHAsset*)imageAsset forCategory:(NSInteger)category
+                     privacyLevel:(NSInteger)privacy author:(NSString*)author
 {
     self = [super init];
     if(self)
@@ -42,72 +43,6 @@ NSString * const kPiwigoNotificationDeselectImageToUpload = @"kPiwigoNotificatio
             self.comment = @"";                     // New images have no description
             self.tags = [[NSArray alloc] init];     // New images have no tags
         }
-        else {
-            // Initialisation from Piwigo image
-            self.imageAsset = nil;
-            self.fileName = imageData.fileName;
-            self.creationDate = imageData.dateCreated;
-            self.pixelWidth = imageData.fullResWidth;
-            self.pixelHeight = imageData.fullResHeight;
-            self.categoryToUploadTo = category;
-            self.privacyLevel = privacy;
-            self.author = author;
-            self.imageTitle = imageData.imageTitle;
-            self.comment = imageData.comment;
-            self.tags = imageData.tags;
-
-            self.imageId = imageData.imageId;
-            // Image thumbnail size
-            switch ([Model sharedInstance].defaultAlbumThumbnailSize) {
-                case kPiwigoImageSizeSquare:
-                    if ([Model sharedInstance].hasSquareSizeImages) {
-                        self.thumbnailUrl = imageData.SquarePath;
-                    }
-                    break;
-                case kPiwigoImageSizeXXSmall:
-                    if ([Model sharedInstance].hasXXSmallSizeImages) {
-                        self.thumbnailUrl = imageData.XXSmallPath;
-                    }
-                    break;
-                case kPiwigoImageSizeXSmall:
-                    if ([Model sharedInstance].hasXSmallSizeImages) {
-                        self.thumbnailUrl = imageData.XSmallPath;
-                    }
-                    break;
-                case kPiwigoImageSizeSmall:
-                    if ([Model sharedInstance].hasSmallSizeImages) {
-                        self.thumbnailUrl = imageData.SmallPath;
-                    }
-                    break;
-                case kPiwigoImageSizeMedium:
-                    if ([Model sharedInstance].hasMediumSizeImages) {
-                        self.thumbnailUrl = imageData.MediumPath;
-                    }
-                    break;
-                case kPiwigoImageSizeLarge:
-                    if ([Model sharedInstance].hasLargeSizeImages) {
-                        self.thumbnailUrl = imageData.LargePath;
-                    }
-                    break;
-                case kPiwigoImageSizeXLarge:
-                    if ([Model sharedInstance].hasXLargeSizeImages) {
-                        self.thumbnailUrl = imageData.XLargePath;
-                    }
-                    break;
-                case kPiwigoImageSizeXXLarge:
-                    if ([Model sharedInstance].hasXXLargeSizeImages) {
-                        self.thumbnailUrl = imageData.XXLargePath;
-                    }
-                    break;
-
-                case kPiwigoImageSizeThumb:
-                case kPiwigoImageSizeFullRes:
-                default:
-                    self.thumbnailUrl = imageData.ThumbPath;
-                    break;
-            }
-        }
-
         self.stopUpload = NO;
     }
     return self;
