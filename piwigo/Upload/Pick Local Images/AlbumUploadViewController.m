@@ -276,7 +276,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
     self.locationsOfImagesInSections = [NSMutableArray new];
 
     // Determine locations of images in sections
-    for (NSArray *imagesInSection in self.imagesInSections) {
+    for (NSArray<PHAsset *> *imagesInSection in self.imagesInSections) {
         
         // Initialise location of section with invalid location
         PiwigoLocationData *locationForSection = [PiwigoLocationData new];

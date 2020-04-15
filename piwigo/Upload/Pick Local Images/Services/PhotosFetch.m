@@ -10,7 +10,6 @@
 
 #import "Model.h"
 #import "PhotosFetch.h"
-#import "SplitLocalImages.h"
 
 @interface PhotosFetch()
 
@@ -387,10 +386,10 @@
     }
     
     // Retrieve imageAssets
-    PHFetchResult *imagesInCollection = [PHAsset fetchAssetsInAssetCollection:imageCollection options:fetchOptions];
+    PHFetchResult<PHAsset *> *imagesInCollection = [PHAsset fetchAssetsInAssetCollection:imageCollection options:fetchOptions];
     
     // Sort images by day
-    return [SplitLocalImages splitImagesByDate:(NSArray *)imagesInCollection];
+    return [SplitLocalImages splitImagesByDate:imagesInCollection];
 }
 
 -(NSArray *)getImagesOfMomentCollections:(PHFetchResult *)imageCollections
