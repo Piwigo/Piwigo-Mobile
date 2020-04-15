@@ -46,15 +46,15 @@
 // ===========================================================================
 // ==> CORE DATA
 // ===========================================================================
-"CoreDataFetch_DigestError" = "Could not digest the fetched data.";
+"CoreDataFetch_DigestError" = "Nie można przetworzyć pobranych danych.";
 
 // Tag objects
-"CoreDataFetch_TagError" = "Fetch tags error!";
-"CoreDataFetch_TagMissingData" = "Found and will discard a tag missing a valid code or name.";
-"CoreDataFetch_TagCreateFailed" = "Failed to create a new Tag object.";
+"CoreDataFetch_TagError" = "Błąd pobierania znaczników!";
+"CoreDataFetch_TagMissingData" = "Znaleziono i będzie usunięty znacznik bez poprawnego kodu lub nazwy.";
+"CoreDataFetch_TagCreateFailed" = "Nie udało się utworzyć nowego obiektu znacznika.";
 
 // Upload objects
-"CoreDataFetch_UploadCreateFailed" = "Failed to create a new Upload object.";
+"CoreDataFetch_UploadCreateFailed" = "Nie udało się utworzyć nowego obiektu prześlij.";
 
 // ===========================================================================
 // ==> LOGIN / LOGOUT

@@ -46,15 +46,15 @@
 // ===========================================================================
 // ==> CORE DATA
 // ===========================================================================
-"CoreDataFetch_DigestError" = "Could not digest the fetched data.";
+"CoreDataFetch_DigestError" = "取得データを要約できませんでした。";
 
 // Tag objects
-"CoreDataFetch_TagError" = "Fetch tags error!";
-"CoreDataFetch_TagMissingData" = "Found and will discard a tag missing a valid code or name.";
-"CoreDataFetch_TagCreateFailed" = "Failed to create a new Tag object.";
+"CoreDataFetch_TagError" = "タグ取得エラー！";
+"CoreDataFetch_TagMissingData" = "有効なコードや名前のないタグを見つけて捨てる。";
+"CoreDataFetch_TagCreateFailed" = "新しいタグオブジェクトの作成に失敗しました。";
 
 // Upload objects
-"CoreDataFetch_UploadCreateFailed" = "Failed to create a new Upload object.";
+"CoreDataFetch_UploadCreateFailed" = "新しいアップロードオブジェクトの作成に失敗しました。";
 
 // ===========================================================================
 // ==> LOGIN / LOGOUT
