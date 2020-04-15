@@ -19,7 +19,6 @@
 #import "ImagesCollection.h"
 #import "LocationsData.h"
 #import "MBProgressHUD.h"
-#import "NotUploadedYet.h"
 #import "PhotosFetch.h"
 #import "PiwigoLocationData.h"
 
@@ -473,7 +472,6 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
     [NotUploadedYet getListOfImageNamesThatArentUploadedForCategory:self.categoryId
                  withImages:self.imagesInSections
               andSelections:self.selectedSections
-                forProgress:nil
                onCompletion:^(NSArray<NSArray<PHAsset *> *> *imagesNotUploaded, NSIndexSet *sectionsToDelete)
                 {
                     dispatch_async(dispatch_get_main_queue(),

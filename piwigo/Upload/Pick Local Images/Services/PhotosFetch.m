@@ -402,10 +402,16 @@
                                      ];
 
     // Build array of images split in moments
-    NSMutableArray *images = [NSMutableArray new];
+    NSMutableArray<NSArray<PHAsset *> *> *images = [NSMutableArray new];
     for (PHAssetCollection *sectionCollection in imageCollections) {
         // Retrieve imageAssets
-        [images addObject:[PHAsset fetchAssetsInAssetCollection:sectionCollection options:fetchOptions]];
+        PHFetchResult *imagesOfCollection = [PHAsset fetchAssetsInAssetCollection:sectionCollection options:fetchOptions];
+        NSMutableArray<PHAsset *> *imagesOfMoment = [NSMutableArray new];
+        // Loop over images of moment
+        [imagesOfCollection enumerateObjectsUsingBlock:^(PHAsset *imageAsset, NSUInteger idx, BOOL *stop) {
+            [imagesOfMoment addObject:imageAsset];
+        }];
+        [images addObject:imagesOfMoment];
     }
     return images;
 }
@@ -416,22 +422,19 @@
     if (imageAsset)
     {
         // Get file name from image asset
-        if (@available(iOS 9, *))
-        {
-            NSArray *resources = [PHAssetResource assetResourcesForAsset:imageAsset];
-            if ([resources count] > 0) {
-                for (PHAssetResource *resource in resources) {
-//                    NSLog(@"=> PHAssetResourceType = %ld — %@", resource.type, resource.originalFilename);
-                    if (resource.type == PHAssetResourceTypeAdjustmentData) {
-                        continue;
-                    }
-                    fileName = [resource originalFilename];
-                    if ((resource.type == PHAssetResourceTypePhoto) ||
-                        (resource.type == PHAssetResourceTypeVideo) ||
-                        (resource.type == PHAssetResourceTypeAudio) )  {
-                        // We preferably select the original filename
-                        break;
-                    }
+        NSArray *resources = [PHAssetResource assetResourcesForAsset:imageAsset];
+        if ([resources count] > 0) {
+            for (PHAssetResource *resource in resources) {
+//              NSLog(@"=> PHAssetResourceType = %ld — %@", resource.type, resource.originalFilename);
+                if (resource.type == PHAssetResourceTypeAdjustmentData) {
+                    continue;
+                }
+                fileName = [resource originalFilename];
+                if ((resource.type == PHAssetResourceTypePhoto) ||
+                    (resource.type == PHAssetResourceTypeVideo) ||
+                    (resource.type == PHAssetResourceTypeAudio) )  {
+                    // We preferably select the original filename
+                    break;
                 }
             }
         }

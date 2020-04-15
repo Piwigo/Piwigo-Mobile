@@ -44,7 +44,7 @@ typedef enum {
 @property (nonatomic, strong) UIImage *categoryImage;
 @property (nonatomic, assign) BOOL hasUploadRights;
 
-@property (nonatomic, readonly) NSArray *imageList;
+@property (nonatomic, readonly) NSArray<PiwigoImageData *> *imageList;
 @property (nonatomic, readonly) NSInteger onPage;
 
 -(PiwigoAlbumData *)initWithId:(NSInteger)categoryId andParameters:(NSDictionary *)parameters;

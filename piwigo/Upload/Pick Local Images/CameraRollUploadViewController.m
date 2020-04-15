@@ -19,7 +19,6 @@
 #import "ImagesCollection.h"
 #import "LocationsData.h"
 #import "MBProgressHUD.h"
-#import "NotUploadedYet.h"
 #import "PhotosFetch.h"
 
 @interface CameraRollUploadViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, PHPhotoLibraryChangeObserver, ImageUploadProgressDelegate, LocalImagesHeaderDelegate>
@@ -28,7 +27,7 @@
 @property (nonatomic, assign) NSInteger categoryId;
 @property (nonatomic, strong) PHFetchResult<PHAssetCollection *> *imageCollections;
 @property (nonatomic, assign) NSInteger nberOfImagesPerRow;
-@property (nonatomic, strong) NSArray *imagesInSections;
+@property (nonatomic, strong) NSArray<NSArray<PHAsset *> *> *imagesInSections;
 
 @property (nonatomic, strong) UILabel *noImagesLabel;
 
@@ -36,8 +35,8 @@
 @property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
 @property (nonatomic, strong) UIBarButtonItem *uploadBarButton;
 
-@property (nonatomic, strong) NSMutableArray *touchedImages;
-@property (nonatomic, strong) NSMutableArray *selectedImages;
+@property (nonatomic, strong) NSMutableArray<PHAsset *> *touchedImages;
+@property (nonatomic, strong) NSMutableArray<PHAsset *> *selectedImages;
 @property (nonatomic, strong) NSMutableArray *selectedSections;
 
 @property (nonatomic, assign) kPiwigoSortBy sortType;
@@ -415,7 +414,6 @@
     [NotUploadedYet getListOfImageNamesThatArentUploadedForCategory:self.categoryId
          withImages:self.imagesInSections
       andSelections:self.selectedSections
-        forProgress:nil
        onCompletion:^(NSArray *imagesNotUploaded, NSIndexSet *sectionsToDelete)
            {
                dispatch_async(dispatch_get_main_queue(),
