@@ -40,7 +40,7 @@ class NotUploadedYet: NSObject {
             // Collect list of local images
             let sectionsToDelete = NSMutableIndexSet()
             var localImagesThatNeedToBeUploaded: [[PHAsset]]? = []
-            if imagesInSections?.count != selectedSections?.count {
+            if ((imagesInSections?.count != selectedSections?.count) || (imagesInSections?.count == 0)) {
                 // Return non-modified lists
                 completion(imagesInSections, sectionsToDelete)
                 return
