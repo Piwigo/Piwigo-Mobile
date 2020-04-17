@@ -23,7 +23,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             _cellSelected = cellSelected
 
             selectedImage?.isHidden = !cellSelected
-            darkenView?.isHidden = !cellSelected
+            darkenSelectionView?.isHidden = !cellSelected
         }
     }
 
@@ -36,6 +36,8 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             _cellUploading = uploading
 
             uploadingView?.isHidden = !uploading
+            darkenUploadView?.isHidden = !uploading
+            uploadingActivity?.isHidden = !uploading
         }
     }
 
@@ -50,26 +52,20 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
     }
     
     @IBOutlet weak var cellImage: UIImageView!
-    @IBOutlet weak var darkenView: UIView!
-    @IBOutlet weak var selectedImage: UIImageView!
     @IBOutlet weak var playImage: UIImageView!
+    @IBOutlet weak var selectedImage: UIImageView!
+    @IBOutlet weak var darkenSelectionView: UIView!
     @IBOutlet weak var uploadingView: UIView!
+    @IBOutlet weak var darkenUploadView: UIView!
+    @IBOutlet weak var uploadingActivity: UIActivityIndicatorView!
     @IBOutlet weak var uploadingProgress: UIProgressView!
-    @IBOutlet weak var uploadingLabel: UILabel!
     
     @objc
     func configure(with imageAsset: PHAsset?, thumbnailSize: CGFloat) {
         
         // Background color and aspect
         backgroundColor = UIColor.piwigoColorCellBackground()
-
-        // Initialise
         cellSelected = false
-        uploadingProgress.progressTintColor = UIColor.piwigoColorOrange()
-        uploadingProgress.trackTintColor = UIColor.piwigoColorLeftLabel()
-        uploadingLabel.font = UIFont.piwigoFontSmall()
-        uploadingLabel.textColor = UIColor.piwigoColorOrangeSelected()
-        uploadingLabel.text = NSLocalizedString("imageUploadTableCell_uploading", comment: "Uploading...")
 
         // Reduce original size of 17x25 pixels when using tiny thumbnails
         if thumbnailSize > 0.0 && thumbnailSize < 75.0 {
@@ -128,9 +124,9 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
 
     override func prepareForReuse() {
         cellImage.image = UIImage(named: "placeholder")
+        playImage.isHidden = true
         cellSelected = false
         cellUploading = false
-        playImage.isHidden = true
         setProgress(0, withAnimation: false)
     }
 }
