@@ -1369,9 +1369,6 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     if (!numberOfImageCells)
         [self.imagesCollection scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1] atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
     
-    // Refresh collection view
-    [self.imagesCollection reloadData];
-    
     // Update navigation bar and toolbar
     [self updateButtonsInSelectionMode];
 }
@@ -1404,10 +1401,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     // Clear array of selected images and allow iOS device to sleep
     self.touchedImageIds = [NSMutableArray new];
     self.selectedImageIds = [NSMutableArray new];
-	[UIApplication sharedApplication].idleTimerDisabled = NO;
-    
-    // Refresh collection view
-    [self.imagesCollection reloadData];
+	[UIApplication sharedApplication].idleTimerDisabled = NO;    
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
