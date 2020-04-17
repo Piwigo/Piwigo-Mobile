@@ -22,9 +22,6 @@ typedef void(^CompletionBlock)(id responseObject1, id responseObject2);
 
 @interface PhotosFetch : NSObject
 
-@property (nonatomic, strong) NSArray *assetGroups;
-@property (nonatomic, strong) NSArray *sortedImageKeys;
-
 +(PhotosFetch *)sharedInstance;
 -(void)checkPhotoLibraryAccessForViewController:(UIViewController *)viewController
                              onAuthorizedAccess:(void (^)(void))doWithAccess
