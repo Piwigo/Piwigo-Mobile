@@ -10,7 +10,6 @@
 #import <Photos/Photos.h>
 
 #import "ImageUploadManager.h"
-#import "PhotosFetch.h"
 #import "ImageUpload.h"
 #import "PiwigoTagData.h"
 #import "ImageService.h"

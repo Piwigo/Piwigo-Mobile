@@ -22,7 +22,6 @@
 #import "Model.h"
 #import "MoveImageViewController.h"
 #import "MBProgressHUD.h"
-#import "PhotosFetch.h"
 #import "SAMKeychain.h"
 
 NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedImage";

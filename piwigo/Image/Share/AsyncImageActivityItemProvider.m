@@ -12,7 +12,6 @@
 #import "ImageDetailViewController.h"
 #import "ImageService.h"
 #import "Model.h"
-#import "PhotosFetch.h"
 
 //#ifndef DEBUG_SHARE
 //#define DEBUG_SHARE

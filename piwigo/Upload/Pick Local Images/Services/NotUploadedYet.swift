@@ -57,10 +57,10 @@ class NotUploadedYet: NSObject {
                 for imageAsset in imagesInSection ?? [] {
 
                     // Get filename of image asset
-                    var imageAssetKey = PhotosFetch.sharedInstance().getFileNameFomImageAsset(imageAsset)!
+                    var imageAssetKey = PhotosFetch.sharedInstance().getFileNameFomImageAsset(imageAsset)
 
                     // Don't forget that files can be converted (e.g. .mov in iOS device, .mp4 in Piwigo server)
-                    imageAssetKey = URL(fileURLWithPath: imageAssetKey).deletingPathExtension().absoluteString
+                    imageAssetKey = URL(fileURLWithPath: imageAssetKey!).deletingPathExtension().absoluteString
 
                     // Compare filenames of local and remote images
                     if imageAssetKey != "" && !(imageAssetKey == "") && onlineImageNamesLookup[imageAssetKey] == nil {

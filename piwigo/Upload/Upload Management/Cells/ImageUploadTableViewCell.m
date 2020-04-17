@@ -9,7 +9,6 @@
 #import <Photos/Photos.h>
 
 #import "ImageUploadTableViewCell.h"
-#import "PhotosFetch.h"
 #import "ImageUpload.h"
 #import "Model.h"
 #import "TagsData.h"

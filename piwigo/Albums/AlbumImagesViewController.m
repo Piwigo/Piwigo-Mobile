@@ -29,7 +29,6 @@
 #import "MoveCategoryViewController.h"
 #import "MoveImageViewController.h"
 #import "NetworkHandler.h"
-#import "PhotosFetch.h"
 #import "SAMKeychain.h"
 #import "SearchImagesViewController.h"
 
@@ -1185,7 +1184,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                 navController.modalPresentationStyle = UIModalPresentationFormSheet;
                 [self presentViewController:navController animated:YES completion:nil];
             }
-            onDeniedAccess:nil
+            onDeniedAccess:^{}
      ];
 
     // Hide CreateAlbum and UploadImages buttons

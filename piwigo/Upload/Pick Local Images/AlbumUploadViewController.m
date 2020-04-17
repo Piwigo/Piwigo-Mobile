@@ -19,7 +19,6 @@
 #import "ImagesCollection.h"
 #import "LocationsData.h"
 #import "MBProgressHUD.h"
-#import "PhotosFetch.h"
 #import "PiwigoLocationData.h"
 
 NSInteger const kMaxNberOfLocationsToDecode = 30;
@@ -357,7 +356,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
             handler:^(UIAlertAction * action) {}];
     
     UIAlertAction *newestAction = [UIAlertAction
-            actionWithTitle:[PhotosFetch getNameForSortType:kPiwigoSortByNewest]
+            actionWithTitle:[[PhotosFetch sharedInstance] getNameForSortType:kPiwigoSortByNewest]
             style:UIAlertActionStyleDefault
             handler:^(UIAlertAction *action) {
                 // Change sort option
@@ -369,7 +368,7 @@ NSInteger const kMaxNberOfLocationsToDecode = 30;
             }];
     
     UIAlertAction* oldestAction = [UIAlertAction
-            actionWithTitle:[PhotosFetch getNameForSortType:kPiwigoSortByOldest]
+            actionWithTitle:[[PhotosFetch sharedInstance] getNameForSortType:kPiwigoSortByOldest]
             style:UIAlertActionStyleDefault
             handler:^(UIAlertAction * action) {
                 // Change sort option

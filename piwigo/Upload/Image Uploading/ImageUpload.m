@@ -8,7 +8,6 @@
 
 #import <Photos/Photos.h>
 
-#import "PhotosFetch.h"
 #import "ImageUpload.h"
 #import "Model.h"
 #import "PiwigoImageData.h"

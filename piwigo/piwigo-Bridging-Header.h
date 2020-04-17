@@ -18,7 +18,6 @@
 #import "LocationsData.h"
 #import "Model.h"
 #import "NetworkHandler.h"
-#import "PhotosFetch.h"
 #import "SessionService.h"
 #import "TaggedImagesViewController.h"
 #import "TagsData.h"

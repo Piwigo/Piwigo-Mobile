@@ -19,7 +19,6 @@
 #import "ImagesCollection.h"
 #import "LocationsData.h"
 #import "MBProgressHUD.h"
-#import "PhotosFetch.h"
 
 @interface CameraRollUploadViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, PHPhotoLibraryChangeObserver, ImageUploadProgressDelegate, LocalImagesHeaderDelegate>
 
@@ -54,7 +53,7 @@
     {
         self.categoryId = categoryId;
         self.sortType = kPiwigoSortByNewest;
-        self.imageCollections = [PhotosFetch getMomentCollectionsWithSortType:kPiwigoSortByNewest];
+        self.imageCollections = [[PhotosFetch sharedInstance] getMomentCollectionsWithSortType:kPiwigoSortByNewest];
 //        NSLog(@"=> %lu sections", (unsigned long)self.imageCollections.count);
 
         // Log first collection (i.e. section)
@@ -300,7 +299,7 @@
             handler:^(UIAlertAction * action) {}];
     
     UIAlertAction *newestAction = [UIAlertAction
-           actionWithTitle:[PhotosFetch getNameForSortType:kPiwigoSortByNewest]
+           actionWithTitle:[[PhotosFetch sharedInstance] getNameForSortType:kPiwigoSortByNewest]
            style:UIAlertActionStyleDefault
            handler:^(UIAlertAction *action) {
                // Change sort option
@@ -312,7 +311,7 @@
            }];
     
     UIAlertAction* oldestAction = [UIAlertAction
-        actionWithTitle:[PhotosFetch getNameForSortType:kPiwigoSortByOldest]
+        actionWithTitle:[[PhotosFetch sharedInstance] getNameForSortType:kPiwigoSortByOldest]
         style:UIAlertActionStyleDefault
         handler:^(UIAlertAction * action) {
             // Change sort option
@@ -384,7 +383,7 @@
     });
     
     // Collect new list of images
-    self.imageCollections = [PhotosFetch getMomentCollectionsWithSortType:self.sortType];
+    self.imageCollections = [[PhotosFetch sharedInstance] getMomentCollectionsWithSortType:self.sortType];
     
     // Images in sections
     self.imagesInSections = [[PhotosFetch sharedInstance] getImagesOfMomentCollections:self.imageCollections];
@@ -932,7 +931,7 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         
         // Collect new list of images
-        self.imageCollections = [PhotosFetch getMomentCollectionsWithSortType:self.sortType];
+        self.imageCollections = [[PhotosFetch sharedInstance] getMomentCollectionsWithSortType:self.sortType];
         
         // Images in sections
         self.imagesInSections = [[PhotosFetch sharedInstance] getImagesOfMomentCollections:self.imageCollections];
