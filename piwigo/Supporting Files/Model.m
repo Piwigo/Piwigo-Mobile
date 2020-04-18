@@ -93,7 +93,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         instance.thumbnailsPerRowInPortrait = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ? 4 : 6;
 
         // Default image settings
-        instance.didOptimiseImagePreviewSize = NO;  // ===> Unused and therefore available…
+        instance.couldNotMigrateCoreDataStore = NO;
 		instance.defaultImagePreviewSize = [PiwigoImageData optimumImageSizeForDevice];
         instance.shareMetadataTypeAirDrop = YES;
         instance.shareMetadataTypeAssignToContact = NO;
@@ -250,7 +250,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         self.thumbnailsPerRowInPortrait = modelData.thumbnailsPerRowInPortrait;
         self.defaultCategory = modelData.defaultCategory;
         self.dateOfLastTranslationRequest = modelData.dateOfLastTranslationRequest;
-        self.didOptimiseImagePreviewSize = modelData.didOptimiseImagePreviewSize;  // ===> Unused
+        self.couldNotMigrateCoreDataStore = modelData.couldNotMigrateCoreDataStore;
         self.shareMetadataTypeAirDrop = modelData.shareMetadataTypeAirDrop;
         self.shareMetadataTypeAssignToContact = modelData.shareMetadataTypeAssignToContact;
         self.shareMetadataTypeCopyToPasteboard = modelData.shareMetadataTypeCopyToPasteboard;
@@ -323,7 +323,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     // Added in v2.2.3…
     [saveObject addObject:[NSNumber numberWithDouble:self.dateOfLastTranslationRequest]];
     // Added in v2.2.5…
-    [saveObject addObject:[NSNumber numberWithBool:self.didOptimiseImagePreviewSize]];  // ===> Unused
+    [saveObject addObject:[NSNumber numberWithBool:self.couldNotMigrateCoreDataStore]];
     // Added in v2.3…
     [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypeAirDrop]];
     [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypeAssignToContact]];
@@ -516,8 +516,10 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     } else {
         self.dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate] - k2WeeksInDays;
     }
-    if(savedData.count > 26) {  // ===> Unused and therefore available…
-        self.didOptimiseImagePreviewSize = NO;
+    if(savedData.count > 26) {
+        self.couldNotMigrateCoreDataStore = [[savedData objectAtIndex:26] boolValue];
+    } else {
+        self.couldNotMigrateCoreDataStore = NO;
     }
     if(savedData.count > 27) {
         self.shareMetadataTypeAirDrop = [[savedData objectAtIndex:27] boolValue];

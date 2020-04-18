@@ -132,7 +132,6 @@ typedef enum {
 @property (nonatomic, assign) NSInteger thumbnailsPerRowInPortrait;
 
 // Default image settings
-@property (nonatomic, assign) BOOL didOptimiseImagePreviewSize;
 @property (nonatomic, assign) NSInteger defaultImagePreviewSize;
 @property (nonatomic, assign) BOOL shareMetadataTypeAirDrop;
 @property (nonatomic, assign) BOOL shareMetadataTypeAssignToContact;
@@ -177,6 +176,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL loadAllCategoryInfo;
 @property (nonatomic, assign) NSInteger memoryCache;
 @property (nonatomic, assign) NSInteger diskCache;
+@property (nonatomic, assign) BOOL couldNotMigrateCoreDataStore;
 
 // Request help for translating Piwigo every month or so
 @property (nonatomic, assign) NSTimeInterval dateOfLastTranslationRequest;

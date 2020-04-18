@@ -31,10 +31,66 @@ class DataController: NSObject {
     static var managedObjectContext: NSManagedObjectContext = {
 
         var applicationDocumentsDirectory: URL = {
-            // The directory the application uses to store the Core Data store file. This code uses a directory named "com.piwigo.…" in the application's documents Application Support directory.
+            // The directory the application uses to store the Core Data store file.
+            // This code uses a directory named "com.piwigo.…" in the application's documents Application Support directory.
             let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-            print(urls[urls.count-1])
             return urls[urls.count-1]
+        }()
+
+        var applicationStoresDirectory: URL = {
+            let fm = FileManager.default
+            let applicationName: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as! String
+            let applicationSupportDirectory = fm.urls(for: .applicationSupportDirectory, in: .userDomainMask).last
+            let storesURL = applicationSupportDirectory?.appendingPathComponent(applicationName)
+
+            // Create the Stores directory if needed
+            if !(fm.fileExists(atPath: storesURL?.path ?? "")) {
+                var errorCreatingDirectory: Error? = nil
+                do {
+                    if let storesURL = storesURL {
+                        try fm.createDirectory(at: storesURL, withIntermediateDirectories: true, attributes: nil)
+                    }
+                } catch let errorCreatingDirectory {
+                }
+                if errorCreatingDirectory != nil {
+                    print("Unable to create Stores directory in Application Support.")
+                    abort()
+                }
+            }
+
+            return storesURL!
+        }()
+
+        var applicationIncompatibleStoresDirectory: URL = {
+            let fm = FileManager.default
+            let anURL = applicationStoresDirectory.appendingPathComponent("Incompatible")
+
+            // Create the Stores/Incompatible directory if needed
+            if !fm.fileExists(atPath: anURL.path) {
+                var errorCreatingDirectory: Error? = nil
+                do {
+                    try fm.createDirectory(at: anURL, withIntermediateDirectories: true, attributes: nil)
+                } catch let errorCreatingDirectory {
+                }
+
+                if errorCreatingDirectory != nil {
+                    print("Unable to create directory for corrupt data stores.")
+                    abort()
+                }
+            }
+
+            return anURL
+        }()
+
+        var nameForIncompatibleStore: String = {
+            // Initialize Date Formatter
+            let dateFormatter = DateFormatter()
+
+            // Configure Date Formatter
+            dateFormatter.formatterBehavior = .behavior10_4
+            dateFormatter.dateFormat = "yyyy-MM-dd-HH-mm-ss"
+
+            return "\(dateFormatter.string(from: Date())).sqlite"
         }()
 
         var managedObjectModel: NSManagedObjectModel = {
@@ -45,12 +101,34 @@ class DataController: NSObject {
 
         var persistentStoreCoordinator: NSPersistentStoreCoordinator = {
             // The persistent store coordinator for the application. This implementation creates and returns a coordinator, having added the store for the application to it. This property is optional since there are legitimate error conditions that could cause the creation of the store to fail.
-            // Create the coordinator and store
+            // Create the coordinator
             let coordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
-            let url = applicationDocumentsDirectory.appendingPathComponent("DataModel.sqlite")
+            let oldURL = applicationDocumentsDirectory.appendingPathComponent("DataModel.sqlite")
+            let storeURL = applicationStoresDirectory.appendingPathComponent("DataModel.sqlite")
+            let fm = FileManager.default
+            if (fm.fileExists(atPath: oldURL.path)) {
+                // Old location => Move the store to the Stores directory
+                var errorMoveStore: Error? = nil
+                do {
+                    // Move file to "Application Support/Stores" directory
+                    try fm.moveItem(at: oldURL, to: storeURL)
+                }
+                catch let errorMoveStore {
+                }
+                if errorMoveStore != nil {
+                    // Could not move the file… Ok, we abandon as it concerns very few users
+                    print("Unable to move store to Application Support/Stores directory.")
+                }
+            }
+
+            // See https://code.tutsplus.com/tutorials/core-data-from-scratch-migrations--cms-21844 for migrating to a new data model
             var failureReason = "There was an error creating or loading the application's saved data."
+            let options = [
+                NSMigratePersistentStoresAutomaticallyOption: NSNumber(value: true),
+                NSInferMappingModelAutomaticallyOption: NSNumber(value: true)
+            ]
             do {
-                try coordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: url, options: nil)
+                try coordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeURL, options: options)
             } catch {
                 // Report any error we got.
                 var dict = [String: AnyObject]()
@@ -62,6 +140,28 @@ class DataController: NSObject {
                 // Replace this with code to handle the error appropriately.
                 // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
                 NSLog("Unresolved error \(wrappedError), \(wrappedError.userInfo)")
+
+                // Move Incompatible Store
+                if fm.fileExists(atPath: storeURL.path) {
+                    let corruptURL = applicationIncompatibleStoresDirectory.appendingPathComponent(nameForIncompatibleStore)
+
+                    // Move Corrupt Store
+                    var errorMoveStore: Error? = nil
+                    do {
+                        try fm.moveItem(at: storeURL, to: corruptURL)
+                    } catch let errorMoveStore {
+                    }
+
+                    if errorMoveStore != nil {
+                        print("Unable to move corrupt store.")
+                    }
+                }
+                
+                // Will inform user at restart
+                Model.sharedInstance()?.couldNotMigrateCoreDataStore = true
+                Model.sharedInstance()?.saveToDisk()
+
+                // Crash!
                 abort()
             }
 

@@ -521,6 +521,38 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 //        [SKStoreReviewController requestReview];
 //    }
 //#endif
+
+    // Inform user why the app crashed at start
+    if ([Model sharedInstance].couldNotMigrateCoreDataStore) {
+        UIAlertController* alert = [UIAlertController
+                alertControllerWithTitle:NSLocalizedString(@"CoreDataStore_WarningTitle", @"Warning")
+                message:NSLocalizedString(@"CoreDataStore_WarningMessage", @"A serious application error occurred…")
+                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* dismissAction = [UIAlertAction
+                actionWithTitle:NSLocalizedString(@"alertOkButton", @"OK")
+                style:UIAlertActionStyleCancel
+                handler:^(UIAlertAction * action) {
+                    // Reset flag
+                    [Model sharedInstance].couldNotMigrateCoreDataStore = NO;
+                    [[Model sharedInstance] saveToDisk];
+        }];
+        
+        // Add actions
+        [alert addAction:dismissAction];
+
+        // Present list of actions
+        alert.view.tintColor = UIColor.piwigoColorOrange;
+        if (@available(iOS 13.0, *)) {
+            alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        } else {
+            // Fallback on earlier versions
+        }
+        [self presentViewController:alert animated:YES completion:^{
+            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+            alert.view.tintColor = UIColor.piwigoColorOrange;
+        }];
+    }
 }
 
 -(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
