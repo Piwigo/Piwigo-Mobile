@@ -24,8 +24,6 @@ class DefaultCategoryViewController: UIViewController, UITableViewDataSource, UI
         _currentCategory = currentCategory
     }
 
-    @IBOutlet var categoriesTableView: UITableView!
-
     private var _currentCategory: Int?
     private var currentCategory: Int {
         get {
@@ -35,6 +33,8 @@ class DefaultCategoryViewController: UIViewController, UITableViewDataSource, UI
             _currentCategory = currentCategory
         }
     }
+
+    @IBOutlet var categoriesTableView: UITableView!
 
     private var categories: [PiwigoAlbumData] = []
     private var categoriesThatShowSubCategories: [Int] = []
@@ -179,7 +179,7 @@ class DefaultCategoryViewController: UIViewController, UITableViewDataSource, UI
         
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryTableViewCell", for: indexPath) as? CategoryTableViewCell else {
             print("Error: tableView.dequeueReusableCell does not return a CategoryTableViewCell!")
-            return ShareMetadataCell()
+            return CategoryTableViewCell()
         }
 
         // Determine the depth before setting up the cell
