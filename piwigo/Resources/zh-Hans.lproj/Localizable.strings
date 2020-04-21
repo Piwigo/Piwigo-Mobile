@@ -46,15 +46,15 @@
 // ===========================================================================
 // ==> CORE DATA
 // ===========================================================================
-"CoreDataFetch_DigestError" = "Could not digest the fetched data.";
+"CoreDataFetch_DigestError" = "无法解析获取到的数据";
 
 // Tag objects
-"CoreDataFetch_TagError" = "Fetch tags error!";
-"CoreDataFetch_TagMissingData" = "Found and will discard a tag missing a valid code or name.";
-"CoreDataFetch_TagCreateFailed" = "Failed to create a new Tag object.";
+"CoreDataFetch_TagError" = "获取标签时出现错误！";
+"CoreDataFetch_TagMissingData" = "获取到的标签缺少合法编号或名称";
+"CoreDataFetch_TagCreateFailed" = "无法创建标签";
 
 // Upload objects
-"CoreDataFetch_UploadCreateFailed" = "Failed to create a new Upload object.";
+"CoreDataFetch_UploadCreateFailed" = "无法创建上传对象";
 
 // ===========================================================================
 // ==> LOGIN / LOGOUT
