@@ -139,7 +139,7 @@ class TagsProvider {
             } catch {
                 fatalError("Unresolved error \(error)")
             }
-            let cachedTags = controller.fetchedObjects ?? []
+            let cachedTags:[Tag] = controller.fetchedObjects ?? []
 
             // Initialise list of tags to delete
             let indexesOfTagsToUpdate: NSMutableIndexSet = NSMutableIndexSet.init()
