@@ -12,7 +12,7 @@ import Photos
 import UIKit
 
 @objc
-class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, PHPhotoLibraryChangeObserver {
+class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, LocalAlbumsProviderDelegate {
 
     @objc
     func setCategoryId(_ categoryId: Int) {
@@ -31,44 +31,21 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
 
-    private var localGroups = [PHAssetCollection]()
-    private var iCloudGroups = [PHAssetCollection]()
+    // MARK: - Local Albums Provider
+    /**
+     The TagsProvider that fetches tag data, saves it to Core Data,
+     and serves it to this table view.
+     */
+    private lazy var albumsProvider: LocalAlbumsProvider = {
+        let provider : LocalAlbumsProvider = LocalAlbumsProvider()
+        provider.fetchedLocalAlbumsDelegate = self
+        return provider
+    }()
+
     private var cancelBarButton: UIBarButtonItem?
 
-    func getLocalAlbums() {
-        PhotosFetch.sharedInstance().getLocalGroups(onCompletion: { responseObject1, responseObject2 in
-            if (responseObject1 is NSNumber) {
-                // make view disappear
-                self.navigationController?.popToRootViewController(animated: true)
-            } else if responseObject1 == nil {
-                let alert = UIAlertController(title: NSLocalizedString("localAlbums_photosNiltitle", comment: "Problem Reading Photos"), message: NSLocalizedString("localAlbums_photosNnil_msg", comment: "There is a problem reading your local photo library."), preferredStyle: .alert)
-
-                let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .cancel, handler: { action in
-                        // make view disappear
-                        self.navigationController?.popViewController(animated: true)
-                    })
-
-                alert.addAction(dismissAction)
-                alert.view.tintColor = UIColor.piwigoColorOrange()
-                if #available(iOS 13.0, *) {
-                    alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
-                } else {
-                    // Fallback on earlier versions
-                }
-                self.present(alert, animated: true) {
-                    // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                    alert.view.tintColor = UIColor.piwigoColorOrange()
-                }
-            } else {
-                self.localGroups = responseObject1 as! [PHAssetCollection]
-                self.iCloudGroups = responseObject2 as! [PHAssetCollection]
-                self.localAlbumsTableView?.reloadData()
-            }
-        })
-    }
-
     
-// MARK: - View Lifecycle
+    // MARK: - View Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -76,15 +53,18 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         // Title
         title = NSLocalizedString("localAlbums", comment: "Photos library")
         
-        // Register CategoryTableViewCell
-        localAlbumsTableView?.register(CategoryTableViewCell.self, forCellReuseIdentifier: "CategoryTableViewCell")
-
         // Button for returning to albums/images
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(quitUpload))
         cancelBarButton?.accessibilityIdentifier = "Cancel"
-
-        // Get groups of Photos library albums
-        getLocalAlbums()
+        
+        // Register palette changes
+        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+        
+        // Use the LocalAlbumsProvider to fetch albums data.
+        albumsProvider.fetchLocalAlbums {
+            self.localAlbumsTableView.reloadData()
+        }
     }
 
     @objc func applyColorPalette() {
@@ -120,13 +100,23 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         // Navigation bar button and identifier
         navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
         navigationController?.navigationBar.accessibilityIdentifier = "LocalAlbumsNav"
-        
-        // Register palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
-        
-        // Register Photo Library changes
-        PHPhotoLibrary.shared().register(self)
+    }
+
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+
+        // Save position of collection view
+        if let cell = self.localAlbumsTableView.visibleCells.first as? LocalAlbumsTableViewCell {
+            if let indexPath = self.localAlbumsTableView.indexPath(for: cell) {
+                // Reload the tableview on orientation change, to match the new width of the table.
+                coordinator.animate(alongsideTransition: { context in
+                    self.localAlbumsTableView.reloadData()
+
+                    // Scroll to previous position
+                    self.localAlbumsTableView.scrollToRow(at: indexPath, at: .middle, animated: true)
+                })
+            }
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -138,10 +128,6 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             // i.e. smaller than iPhones 6,7 Plus screen width
             title = ""
         }
-        
-        // Unregister palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.removeObserver(self, name: name, object: nil)
     }
 
     @objc func quitUpload() {
@@ -149,8 +135,14 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         dismiss(animated: true)
     }
 
+    deinit {
+        // Unregister palette changes
+        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
+        NotificationCenter.default.removeObserver(self, name: name, object: nil)
+    }
+
     
-// MARK: - UITableView - Header
+    // MARK: - UITableView - Header
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         // Header strings
         var titleString = ""
@@ -239,103 +231,63 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     }
 
     
-// MARK: - UITableView - Rows
+    // MARK: - UITableView - Rows
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 1 + (iCloudGroups.count != 0 ? 1 : 0)
+        return albumsProvider.fetchedLocalAlbums.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        var nberRows = 0
-        switch section {
-            case 0:
-                nberRows = localGroups.count
-            case 1:
-                nberRows = iCloudGroups.count
-            default:
-                break
-        }
-        return nberRows
-    }
-
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 44.0
+        return albumsProvider.fetchedLocalAlbums[section].count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryTableViewCell", for: indexPath) as? CategoryTableViewCell else {
-            print("Error: tableView.dequeueReusableCell does not return a CategoryTableViewCell!")
-            return ShareMetadataCell()
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "LocalAlbumsTableViewCell", for: indexPath) as? LocalAlbumsTableViewCell else {
+            print("Error: tableView.dequeueReusableCell does not return a LocalAlbumsTableViewCell!")
+            return LocalAlbumsTableViewCell()
         }
 
-        var groupAsset: PHAssetCollection?
-        switch indexPath.section {
-            case 0:
-                groupAsset = localGroups[indexPath.row]
-            case 1:
-                groupAsset = iCloudGroups[indexPath.row]
-            default:
-                break
-        }
-        let name = groupAsset?.localizedTitle
-        var nberAssets: Int? = nil
-        if let groupAsset = groupAsset {
-            nberAssets = PHAsset.fetchAssets(in: groupAsset, options: nil).count
-        }
-        cell.textLabel?.text = "\(name ?? "") (\(NSNumber(value: nberAssets ?? 0)) \(((nberAssets ?? 0) > 1) ? NSLocalizedString("severalImages", comment: "Photos") : NSLocalizedString("singleImage", comment: "Photo")))"
-        cell.textLabel?.textColor = UIColor.piwigoColorLeftLabel()
-        cell.backgroundColor = UIColor.piwigoColorCellBackground()
-        cell.accessoryType = .disclosureIndicator
-        cell.tintColor = UIColor.piwigoColorOrange()
-        cell.translatesAutoresizingMaskIntoConstraints = false
-        cell.textLabel?.font = UIFont.piwigoFontNormal()
-        cell.textLabel?.adjustsFontSizeToFitWidth = true
-        cell.textLabel?.minimumScaleFactor = 0.5
-        cell.textLabel?.lineBreakMode = .byTruncatingHead
-        if (groupAsset?.assetCollectionType == .smartAlbum) && (groupAsset?.assetCollectionSubtype == .smartAlbumUserLibrary) {
-            cell.accessibilityIdentifier = "CameraRoll"
-        }
+        let assetCollection = albumsProvider.fetchedLocalAlbums[indexPath.section][indexPath.row]
+        let title = assetCollection.localizedTitle ?? "No name"
+        
+        let fetchOptions = PHFetchOptions()
+        fetchOptions.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.image.rawValue)
+        let nberPhotos = PHAsset.fetchAssets(in: assetCollection, options: fetchOptions).count
+        fetchOptions.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.video.rawValue)
+        let nberVideos = PHAsset.fetchAssets(in: assetCollection, options: fetchOptions).count
+        
+        let startDate = assetCollection.startDate
+        let endDate = assetCollection.endDate
 
+        cell.configure(with: title, nberPhotos: nberPhotos, nberVideos: nberVideos, startDate: startDate, endDate: endDate)
+        if assetCollection.assetCollectionType == .smartAlbum && assetCollection.assetCollectionSubtype == .smartAlbumGeneric {
+            cell.accessibilityIdentifier = "LocalAlbum"
+        }
         cell.isAccessibilityElement = true
         return cell
     }
 
     
-// MARK: - UITableViewDelegate Methods
+    // MARK: - UITableViewDelegate Methods
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        switch indexPath.section {
-            case 0:
-                let groupAsset = localGroups[indexPath.row]
-                if (groupAsset.assetCollectionType == .smartAlbum) && (groupAsset.assetCollectionSubtype == .smartAlbumUserLibrary) {
-                    if let uploadVC = CameraRollUploadViewController(categoryId: categoryId) {
-                        navigationController?.pushViewController(uploadVC, animated: true)
-                    }
-                } else {
-                    if let uploadVC = AlbumUploadViewController(categoryId: categoryId, andCollection: localGroups[indexPath.row]) {
-                        navigationController?.pushViewController(uploadVC, animated: true)
-                    }
-                }
-            case 1:
-                if let uploadVC = AlbumUploadViewController(categoryId: categoryId, andCollection: iCloudGroups[indexPath.row]) {
-                    navigationController?.pushViewController(uploadVC, animated: true)
-            }
-            default:
-                break
+        let localImagesSB = UIStoryboard(name: "LocalImagesViewController", bundle: nil)
+        let localImagesVC = localImagesSB.instantiateViewController(withIdentifier: "LocalImagesViewController") as? LocalImagesViewController
+        localImagesVC?.setCategoryId(categoryId)
+        localImagesVC?.setImageCollectionId(albumsProvider.fetchedLocalAlbums[indexPath.section][indexPath.row].localIdentifier)
+        if let localImagesVC = localImagesVC {
+            navigationController?.pushViewController(localImagesVC, animated: true)
         }
     }
 
     
-// MARK: - Changes occured in the Photo library
-    func photoLibraryDidChange(_ changeInfo: PHChange) {
-        // Photos may call this method on a background queue;
-        // switch to the main queue to update the UI.
-        DispatchQueue.main.async(execute: {
-            // Collect new list of albums
-            self.getLocalAlbums()
-
-            // Refresh list
-            self.localAlbumsTableView?.reloadData()
-        })
+    // MARK: - LocalAlbumsProviderDelegate Methods
+    
+    func didChangePhotoLibrary(section: Int) {
+        // Change notifications may be made on a background queue. Re-dispatch to the
+        // main queue before updating the UI.
+        DispatchQueue.main.sync {
+            localAlbumsTableView.reloadSections(IndexSet(integer: section), with: .automatic)
+        }
     }
 }
