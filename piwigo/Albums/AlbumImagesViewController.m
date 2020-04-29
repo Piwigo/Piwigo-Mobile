@@ -637,7 +637,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 {
     [super viewDidDisappear:animated];
     
-    //Make sure buttons are back to initial state
+    // Make sure buttons are back to initial state
     [self didCancelTapAddButton];
 }
 
@@ -658,9 +658,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
     // User can upload images/videos if he/she has:
     // — admin rights
-    // — upload access to the current category
+    // — normal rights and upload access to the current category
     if ([Model sharedInstance].hasAdminRights ||
-        [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
+        ([Model sharedInstance].hasNormalRights && [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights]))
     {
         // Show Upload button if needed
         if (self.addButton.isHidden)
@@ -730,6 +730,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     // Create album if root album shown
     if (self.categoryId == 0) {
         // User in root album => Create album
+        self.addButton.backgroundColor = [UIColor grayColor];
         [self showCreateCategoryDialog];
         return;
     }
@@ -738,13 +739,15 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     if (self.homeAlbumButton.isHidden)
     {
         // Show CreateAlbum and UploadImages albums
-        [self showOptionalButtonsCompletion:^{
+        [self hideOptionalButtonsCompletion:^{
             
             // Change appearance and action of Add button
-            [self.addButton addTarget:self action:@selector(didCancelTapAddButton)
+            [self.addButton removeTarget:self action:@selector(didCancelTapAddButton)
+                        forControlEvents:UIControlEventTouchUpInside];
+            [self.addButton addTarget:self action:@selector(didTapAddButton)
                    forControlEvents:UIControlEventTouchUpInside];
             [UIView animateWithDuration:0.2 animations:^{
-                self.addButton.backgroundColor = [UIColor grayColor];
+                self.addButton.backgroundColor = [UIColor orangeColor];
             }];
         }];
     } else {
@@ -755,6 +758,8 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             [self showOptionalButtonsCompletion:^{
                 
                 // Change appearance and action of Add button
+                [self.addButton removeTarget:self action:@selector(didTapAddButton)
+                            forControlEvents:UIControlEventTouchUpInside];
                 [self.addButton addTarget:self action:@selector(didCancelTapAddButton)
                        forControlEvents:UIControlEventTouchUpInside];
                 [UIView animateWithDuration:0.2 animations:^{
@@ -771,15 +776,14 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     // First hide optional buttons
     [self hideOptionalButtonsCompletion:^{
         // Reset appearance and action of Add button
+        [self.addButton removeTarget:self action:@selector(didCancelTapAddButton)
+                    forControlEvents:UIControlEventTouchUpInside];
         [self.addButton addTarget:self action:@selector(didTapAddButton)
                forControlEvents:UIControlEventTouchUpInside];
-        [UIView animateWithDuration:0.2 animations:^{
             self.addButton.backgroundColor = [UIColor piwigoColorOrange];
             self.addButton.tintColor = [UIColor whiteColor];
-        } completion:^(BOOL finished) {
             // Present Home button if needed and if not in root or default album
             [self showHomeAlbumButtonIfNeeded];
-        }];
     }];
 }
 
@@ -799,8 +803,10 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             [self.homeAlbumButton.layer setOpacity:0.9];
             
             // Position of Home Album button depends on user's rights
-            if (([Model sharedInstance].hasAdminRights ||
-                 [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights]))
+            // — admin rights
+            // — normal rights and upload access to the current category
+            if ([Model sharedInstance].hasAdminRights ||
+                ([Model sharedInstance].hasNormalRights && [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights]))
             {
                 CGFloat xPos = self.addButton.frame.origin.x;
                 CGFloat yPos = self.addButton.frame.origin.y;
@@ -868,13 +874,13 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     CGFloat xPos = self.addButton.frame.origin.x;
     CGFloat yPos = self.addButton.frame.origin.y;
 
-    // Show CreateAlbum and UploadImages buttons
+    // Hide CreateAlbum and UploadImages buttons
     [UIView animateWithDuration:0.3 animations:^{
         // Progressive disappearance
         [self.createAlbumButton.layer setOpacity:0.0];
         [self.uploadImagesButton.layer setOpacity:0.0];
         
-        // Move buttons together
+        // Move buttons towards Add button
         self.createAlbumButton.frame = CGRectMake(xPos, yPos, 1.72*kRadius, 1.72*kRadius);
         self.uploadImagesButton.frame = CGRectMake(xPos, yPos, 1.72*kRadius, 1.72*kRadius);
 
@@ -1268,8 +1274,10 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
         style:UIAlertActionStyleCancel
         handler:^(UIAlertAction * action) {
-            // Cancel action, reset buttons
-            [self didCancelTapAddButton];
+            // Cancel action
+            if (self.homeAlbumButton.isHidden) {
+                [self didCancelTapAddButton];
+            }
     }];
     
     self.createAlbumAction = [UIAlertAction
