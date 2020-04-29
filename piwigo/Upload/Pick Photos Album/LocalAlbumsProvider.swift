@@ -32,7 +32,7 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
     var CloudShared: PHFetchResult<PHAssetCollection>!
     
 
-    // initialisation
+    // Initialisation
     override init() {
         super.init()
         
