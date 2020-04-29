@@ -46,6 +46,8 @@
 // ===========================================================================
 // ==> CORE DATA
 // ===========================================================================
+"CoreDataStore_WarningTitle" = "Ostrzeżenie";
+"CoreDataStore_WarningMessage" = "Wystąpił poważny błąd aplikacji podczas próby przeczytania pamięci podręcznej danych Piwigo. W związku z tym utworzono nową pamięć podręczną.";
 "CoreDataFetch_DigestError" = "Nie można przetworzyć pobranych danych.";
 
 // Tag objects
@@ -261,6 +263,7 @@
 "singleVideo" = "Wideo";
 "singleAudio" = "Audio";
 "severalImages" = "Zdjęcia";
+"severalVideos" = "Filmy";
 "noImages" = "Brak zdjęć";
 "pullToRefresh" = "Wczytaj zdjęcia ponownie";
 

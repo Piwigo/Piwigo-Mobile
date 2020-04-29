@@ -263,6 +263,7 @@
 "singleVideo" = "Video";
 "singleAudio" = "Audio";
 "severalImages" = "Photos";
+"severalVideos" = "Videos";
 "noImages" = "No Photos";
 "pullToRefresh" = "Reload Photos";
 

@@ -46,6 +46,8 @@
 // ===========================================================================
 // ==> CORE DATA
 // ===========================================================================
+"CoreDataStore_WarningTitle" = "Advertencia";
+"CoreDataStore_WarningMessage" = "A serious application error occurred while Piwigo tried to read the data cache. A new cache has therefore been created.";
 "CoreDataFetch_DigestError" = "No se han podido procesar los datos obtenidos.";
 
 // Tag objects
@@ -261,6 +263,7 @@
 "singleVideo" = "Vídeo";
 "singleAudio" = "Audio";
 "severalImages" = "Fotos";
+"severalVideos" = "Vídeos";
 "noImages" = "No hay fotos";
 "pullToRefresh" = "Recargar fotos";
 
