@@ -98,32 +98,22 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
     
     private func filter(fetchedAssetCollections: [PHFetchResult<PHAssetCollection>]) -> [PHAssetCollection] {
         // Fetch assets to determine non-empty collections
-//        let start = CFAbsoluteTimeGetCurrent()
+        let start = CFAbsoluteTimeGetCurrent()
         var collections = [PHAssetCollection]()
 
-        // Method #1 — Fetch all images in selected collection and sort them
-        // iPod - iOS 9.3.5: 1.937 ms for 2.185 photos in 57 local albums
-        // iPhone 11 Pro - iOS 13.5ß: 210 ms for 100.347 photos in 5 local albums
+        // Fetch all images in selected collection and sort them
+        // iPod - iOS 9.3.5: 1.687 ms for 2.185 photos in 57 local albums
+        // iPhone 11 Pro - iOS 13.5ß: 75 ms for 100.347 photos in 5 local albums
+        let fetchOptions = PHFetchOptions()
+        fetchOptions.fetchLimit = 1
         for fetchResult in fetchedAssetCollections {
             // Keep only non-empty albums
-            fetchResult.enumerateObjects { (collection, _, _) in
-                if PHAsset.fetchAssets(in: collection, options: nil).count > 0 {
+            fetchResult.enumerateObjects(options: .concurrent) { (collection, idx, stop) in
+                if PHAsset.fetchAssets(in: collection, options: fetchOptions).count > 0 {
                     collections.append(collection)
                 }
             }
         }
-
-        // Method #2 — Fetch all images in selected collection and sort them
-        // iPod - iOS 9.3.5: 3.322 ms for 2.185 photos in 57 local albums
-        // iPhone 11 Pro - iOS 13.5ß: 311 ms for 100.347 photos in 5 local albums
-//        for fetchResult in fetchedAssetCollections {
-//            // Keep only non-empty albums
-//            fetchResult.enumerateObjects(options: .concurrent) { (collection, idx, stop) in
-//                if PHAsset.fetchAssets(in: collection, options: nil).count > 0 {
-//                    collections.append(collection)
-//                }
-//            }
-//        }
 
         // Sort collections by title
         let sortedCollections = collections.sorted { (arg0, arg1) -> Bool in
@@ -132,8 +122,8 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
             return (title0.compare(title1) == .orderedAscending)
         }
         
-//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-//        print("==> Took \(diff) ms to filter albums")
+        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+        print("==> Took \(diff) ms to filter albums")
         return sortedCollections
     }
 
