@@ -61,13 +61,13 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var uploadingProgress: UIProgressView!
     
     @objc
-    func configure(with imageAsset: PHAsset?, thumbnailSize: CGFloat) {
+    func configure(with imageAsset: PHAsset, thumbnailSize: CGFloat) {
         
         // Background color and aspect
         backgroundColor = UIColor.piwigoColorCellBackground()
         cellSelected = false
 
-        // Reduce original size of 17x25 pixels when using tiny thumbnails
+        // Checked icon: reduce original size of 17x25 pixels when using tiny thumbnails
         if thumbnailSize > 0.0 && thumbnailSize < 75.0 {
             let sizeOfIcon = UIImage(named: "checkMark")!.size
             let maxHeightOfIcon = thumbnailSize / 3.0
@@ -75,7 +75,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             contentView.addConstraints(NSLayoutConstraint.constraintView(selectedImage, to: CGSize(width: sizeOfIcon.width * scale, height: sizeOfIcon.height * scale))!)
         }
         
-        // Reduce original size of 25x16 pixels when using tiny thumbnails
+        // Video icon: reduce original size of 25x16 pixels when using tiny thumbnails
         if thumbnailSize > 0.0 && thumbnailSize < 75.0 {
             let sizeOfIcon = UIImage(named: "video")!.size
             let maxWidthOfIcon = thumbnailSize / 3.0
@@ -83,13 +83,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             contentView.addConstraints(NSLayoutConstraint.constraintView(playImage, to: CGSize(width: sizeOfIcon.width * scale, height: sizeOfIcon.height * scale))!)
         }
         
-        // Check provided image asset
-        guard let imageAsset = imageAsset else {
-            self.cellImage.image = UIImage(named: "placeholder")
-            return
-        }
-
-        // Prepare image
+        // Image: retrieve data of right size and crop image
         let retinaScale = Int(UIScreen.main.scale)
         let retinaSquare = CGSize(width: thumbnailSize * CGFloat(retinaScale), height: thumbnailSize * CGFloat(retinaScale))
 

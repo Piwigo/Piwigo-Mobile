@@ -21,12 +21,12 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
     @objc weak var headerDelegate: LocalImagesHeaderDelegate?
     
     @IBOutlet weak var dateLabel: UILabel!
-    @IBOutlet weak var dateLabelNoPlace: UILabel!
     @IBOutlet weak var selectButton: UIButton!
     @IBOutlet weak var placeLabel: UILabel!
 
     @objc
-    func configure(with images: [AnyHashable]?, placeNames: [AnyHashable : Any]?, in section: Int, selectionMode: Bool) {
+    func configure(with images: [[PHAsset]], section: Int, placeNames: [AnyHashable : Any]?, selectionMode: Bool) {
+        
         // General settings
         backgroundColor = UIColor.clear
 
@@ -34,65 +34,69 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         self.section = section
 
         // Creation date of images (or of availability)
-        var imageAsset = images?.first as? PHAsset
+        var imageAsset = images[section].first
         var dateLabelText = ""
+        var optionalDateLabelText = ""
+
+        // Determine if images of this section were all taken today
         if let dateCreated1 = imageAsset?.creationDate {
-            // Determine if images of this section were taken today
-
-            // Display date of day by default
-            dateLabelText = DateFormatter.localizedString(from: dateCreated1, dateStyle: .long, timeStyle: .none)
             
-            // Define start time of today
-            let start: Date = Calendar.current.startOfDay(for: Date())
-
-            // Set day start time
-            let dayStartInSecs = start.timeIntervalSinceReferenceDate
-
+            // Display date of day by default, will add time in the absence of location data
+            dateLabelText = DateFormatter.localizedString(from: dateCreated1, dateStyle: .long, timeStyle: .none)
+            optionalDateLabelText = DateFormatter.localizedString(from: dateCreated1, dateStyle: .none, timeStyle: .long)
+            
             // Get creation date of last image
-            imageAsset = images?.last as? PHAsset
+            imageAsset = images[section].last
             if let dateCreated2 = imageAsset?.creationDate {
-                // Set dates in right order
+                
+                // Set dates in right order in case user sorted images in reverse order
                 let firstImageDate = (dateCreated1 < dateCreated2) ? dateCreated1 : dateCreated2
                 let lastImageDate = (dateCreated1 > dateCreated2) ? dateCreated1 : dateCreated2
-                let dateInSecs = firstImageDate.timeIntervalSinceReferenceDate
+                let firstImageDay: Date = Calendar.current.startOfDay(for: firstImageDate)          // Day the first image was taken in seconds
+                let lastImageDay: Date = Calendar.current.startOfDay(for: lastImageDate)            // Day the last image was taken in seconds
 
-                // Images taken today?
-                if dateInSecs > dayStartInSecs {
-                    // Images taken today
-                    var firstImageDateStr: String? = nil
-                    firstImageDateStr = DateFormatter.localizedString(from: firstImageDate, dateStyle: DateFormatter.Style.none, timeStyle: .short)
-                    var lastImageDateStr: String? = nil
-                    lastImageDateStr = DateFormatter.localizedString(from: lastImageDate, dateStyle: DateFormatter.Style.none, timeStyle: .short)
+                // Images taken the same day?
+                if firstImageDay == lastImageDay {
+                    // Images were taken the same day => Keep dataLabel as already set and define optional string with starting and ending times
+                    let firstImageDateStr = DateFormatter.localizedString(from: firstImageDate, dateStyle: .none, timeStyle: .short)
+                    let lastImageDateStr = DateFormatter.localizedString(from: lastImageDate, dateStyle: .none, timeStyle: .short)
                     if (firstImageDateStr == lastImageDateStr) {
-                        dateLabelText = firstImageDateStr ?? ""
+                        optionalDateLabelText = firstImageDateStr
                     } else {
-                        dateLabelText = "\(firstImageDateStr ?? "") - \(lastImageDateStr ?? "")"
+                        optionalDateLabelText = "\(firstImageDateStr) - \(lastImageDateStr)"
                     }
                 } else {
+                    // => Images not taken the same day => Will display the starting and ending dates
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                    let dateFormatter = DateFormatter.init()
+                    dateFormatter.locale = .current
                     if UIScreen.main.bounds.size.width > 414 {
                         // i.e. larger than iPhones 6, 7 screen width
-                        dateLabelText = DateFormatter.localizedString(from: dateCreated1, dateStyle: .long, timeStyle: .none)
+                        dateFormatter.setLocalizedDateFormatFromTemplate("MMMMd")
+                        dateLabelText = dateFormatter.string(from: dateCreated1) + " - " + dateFormatter.string(from: dateCreated2)
                     } else {
-                        dateLabelText = DateFormatter.localizedString(from: dateCreated1, dateStyle: .medium, timeStyle: .none)
+                        dateFormatter.setLocalizedDateFormatFromTemplate("MMd")
+                        dateLabelText = dateFormatter.string(from: dateCreated1) + " - " + dateFormatter.string(from: dateCreated2)
+                    }
+                    // Define optional string with starting and ending year
+                    dateFormatter.setLocalizedDateFormatFromTemplate("YYYY")
+                    let firstYear = dateFormatter.string(from: dateCreated1)
+                    let lastYear = dateFormatter.string(from: dateCreated2)
+                    if firstYear == lastYear {
+                        optionalDateLabelText = firstYear
+                    } else {
+                        optionalDateLabelText = firstYear + " - " + lastYear
                     }
                 }
             }
         }
 
         // Data label used when place name known
-        self.dateLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.dateLabel.numberOfLines = 1
-        self.dateLabel.adjustsFontSizeToFitWidth = false
-        self.dateLabel.font = UIFont.piwigoFontSmall()
-        self.dateLabel.textColor = UIColor.piwigoColorRightLabel()
-
-        // Data label used when place name unknown
-        dateLabelNoPlace.translatesAutoresizingMaskIntoConstraints = false
-        dateLabelNoPlace.numberOfLines = 1
-        dateLabelNoPlace.adjustsFontSizeToFitWidth = false
-        dateLabelNoPlace.font = UIFont.piwigoFontSemiBold()
-        dateLabelNoPlace.textColor = UIColor.piwigoColorLeftLabel()
+        dateLabel.translatesAutoresizingMaskIntoConstraints = false
+        dateLabel.numberOfLines = 1
+        dateLabel.adjustsFontSizeToFitWidth = false
+        dateLabel.font = UIFont.piwigoFontSmall()
+        dateLabel.textColor = UIColor.piwigoColorRightLabel()
 
         // Place name of location
         placeLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -107,13 +111,11 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
             if let dateLabelName = placeNames?["dateLabel"] as? String {
                 self.dateLabel.text = String(format: "%@ • %@", dateLabelText, dateLabelName)
             } else {
-                self.dateLabel.text = dateLabelText
+                self.dateLabel.text = String(format: "%@ • %@", dateLabelText, optionalDateLabelText)
             }
-            dateLabelNoPlace.text = ""
         } else {
-            placeLabel.text = ""
-            self.dateLabel.text = ""
-            dateLabelNoPlace.text = dateLabelText
+            placeLabel.text = dateLabelText
+            dateLabel.text = optionalDateLabelText
         }
 
         // Select/deselect button
@@ -140,7 +142,6 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         super.prepareForReuse()
 
         dateLabel.text = ""
-        dateLabelNoPlace.text = ""
         placeLabel.text = ""
     }
 }

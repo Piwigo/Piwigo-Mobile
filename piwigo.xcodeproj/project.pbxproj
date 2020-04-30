@@ -79,7 +79,6 @@
 		ADB17A1B24474922006D3402 /* ImageUpload.m in Sources */ = {isa = PBXBuildFile; fileRef = ADB17A1924474922006D3402 /* ImageUpload.m */; };
 		ADB17A1E24474934006D3402 /* ImageUploadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = ADB17A1D24474934006D3402 /* ImageUploadManager.m */; };
 		ADB17A2124474942006D3402 /* UploadService.m in Sources */ = {isa = PBXBuildFile; fileRef = ADB17A2024474942006D3402 /* UploadService.m */; };
-		ADB17A2324474F3B006D3402 /* SplitLocalImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB17A2224474F3B006D3402 /* SplitLocalImages.swift */; };
 		ADB17A252447A233006D3402 /* NotUploadedYet.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB17A242447A233006D3402 /* NotUploadedYet.swift */; };
 		ADB607E81FC9D79000AF28DB /* VideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = ADB607E71FC9D79000AF28DB /* VideoView.m */; };
 		ADB7A102210B803D006723B9 /* MoveImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD42DDF6210B38F30083FC7D /* MoveImageViewController.m */; };
@@ -350,7 +349,6 @@
 		ADB17A1D24474934006D3402 /* ImageUploadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageUploadManager.m; sourceTree = "<group>"; };
 		ADB17A1F24474941006D3402 /* UploadService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadService.h; sourceTree = "<group>"; };
 		ADB17A2024474942006D3402 /* UploadService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadService.m; sourceTree = "<group>"; };
-		ADB17A2224474F3B006D3402 /* SplitLocalImages.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplitLocalImages.swift; sourceTree = "<group>"; };
 		ADB17A242447A233006D3402 /* NotUploadedYet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotUploadedYet.swift; sourceTree = "<group>"; };
 		ADB433F523FB3CCB00A873A9 /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 		ADB607E61FC9D75700AF28DB /* VideoView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VideoView.h; sourceTree = "<group>"; };
@@ -728,7 +726,6 @@
 			isa = PBXGroup;
 			children = (
 				ADBE45262449969C00AE0001 /* PhotosFetch.swift */,
-				ADB17A2224474F3B006D3402 /* SplitLocalImages.swift */,
 				ADB17A242447A233006D3402 /* NotUploadedYet.swift */,
 			);
 			path = Services;
@@ -1509,7 +1506,6 @@
 				AD7437D023FBB151008738CF /* DataController.swift in Sources */,
 				AD2B0A17243D00CD00AF1FEE /* DefaultAlbumThumbnailSizeViewController.swift in Sources */,
 				ADF1CC75243D111600D75319 /* DefaultCategoryViewController.swift in Sources */,
-				ADB17A2324474F3B006D3402 /* SplitLocalImages.swift in Sources */,
 				ADA24DB8243A767700864D1F /* DefaultImageSizeViewController.swift in Sources */,
 				ADA24DB1243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift in Sources */,
 				ADBDD9372441AB3800F19DFC /* LabelTableViewCell.swift in Sources */,
