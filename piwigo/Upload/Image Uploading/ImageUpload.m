@@ -17,7 +17,7 @@ NSString * const kPiwigoNotificationDeselectImageToUpload = @"kPiwigoNotificatio
 @implementation ImageUpload
 
 -(instancetype)initWithImageAsset:(PHAsset*)imageAsset forCategory:(NSInteger)category
-                     privacyLevel:(NSInteger)privacy author:(NSString*)author
+                     privacyLevel:(kPiwigoPrivacy)privacy author:(NSString*)author
 {
     self = [super init];
     if(self)

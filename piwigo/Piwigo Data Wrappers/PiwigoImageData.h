@@ -86,7 +86,7 @@ typedef enum {
 //      (comments), (comments_paging), (coi)
 //
 @property (nonatomic, strong) NSString *author;                 // author
-@property (nonatomic, assign) NSInteger privacyLevel;           // level
+@property (nonatomic, assign) kPiwigoPrivacy privacyLevel;      // level
 @property (nonatomic, strong) NSArray *tags;                    // tags
 @property (nonatomic, assign) float ratingScore;                // rating score
 @property (nonatomic, assign) NSInteger fileSize;               // filesize

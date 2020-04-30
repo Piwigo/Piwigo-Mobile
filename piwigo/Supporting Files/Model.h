@@ -33,30 +33,30 @@ FOUNDATION_EXPORT NSString *kPiwigoActivityTypeOther;
 @class PHPhotoLibrary;
 
 typedef enum {
-    kPiwigoSortCategoryNameAscending,               // Photo title, A → Z
-    kPiwigoSortCategoryNameDescending,              // Photo title, Z → A
+    kPiwigoSortNameAscending,               // Photo title, A → Z
+    kPiwigoSortNameDescending,              // Photo title, Z → A
     
-    kPiwigoSortCategoryDateCreatedDescending,       // Date created, new → old
-    kPiwigoSortCategoryDateCreatedAscending,        // Date created, old → new
+    kPiwigoSortDateCreatedDescending,       // Date created, new → old
+    kPiwigoSortDateCreatedAscending,        // Date created, old → new
     
-    kPiwigoSortCategoryDatePostedDescending,        // Date posted, new → old
-    kPiwigoSortCategoryDatePostedAscending,         // Date posted, old → new
+    kPiwigoSortDatePostedDescending,        // Date posted, new → old
+    kPiwigoSortDatePostedAscending,         // Date posted, old → new
     
-    kPiwigoSortCategoryFileNameAscending,           // File name, A → Z
-    kPiwigoSortCategoryFileNameDescending,          // File name, Z → A
+    kPiwigoSortFileNameAscending,           // File name, A → Z
+    kPiwigoSortFileNameDescending,          // File name, Z → A
     
-    kPiwigoSortCategoryRatingScoreDescending,       // Rating score, high → low
-    kPiwigoSortCategoryRatingScoreAscending,        // Rating score, low → high
+    kPiwigoSortRatingScoreDescending,       // Rating score, high → low
+    kPiwigoSortRatingScoreAscending,        // Rating score, low → high
 
-    kPiwigoSortCategoryVisitsDescending,            // Visits, high → low
-    kPiwigoSortCategoryVisitsAscending,             // Visits, low → high
+    kPiwigoSortVisitsDescending,            // Visits, high → low
+    kPiwigoSortVisitsAscending,             // Visits, low → high
 
-    kPiwigoSortCategoryManual,                      // Manual order
-//    kPiwigoSortCategoryVideoOnly,
-//    kPiwigoSortCategoryImageOnly,
+    kPiwigoSortManual,                      // Manual order
+//    kPiwigoSortVideoOnly,
+//    kPiwigoSortImageOnly,
     
-    kPiwigoSortCategoryCount
-} kPiwigoSortCategory;
+    kPiwigoSortCount
+} kPiwigoSort;
 
 typedef enum {
 	kPiwigoPrivacyEverybody = 0,
@@ -64,7 +64,8 @@ typedef enum {
 	kPiwigoPrivacyAdminsFamilyFriends = 2,
 	kPiwigoPrivacyAdminsFamily = 4,
 	kPiwigoPrivacyAdmins = 8,
-	kPiwigoPrivacyCount = 5
+	kPiwigoPrivacyCount = 5,
+    kPiwigoPrivacyUnknown = INT_MAX
 } kPiwigoPrivacy;
 
 #define kPiwigoPrivacyString(enum) [@[@"Everybody", @"Admins, Family, Friends, Contacts", @"Admins, Family, Friends", @"3: not assigned", @"Admins, Family", @"5: Count", @"6: not assigned", @"7: not assigned", @"Admins"] objectAtIndex:enum]
@@ -109,7 +110,7 @@ typedef enum {
 @property (nonatomic, assign) NSUInteger maxNberRecentCategories;
 
 // Sort images by date: old to new
-@property (nonatomic, assign) kPiwigoSortCategory defaultSort;
+@property (nonatomic, assign) kPiwigoSort defaultSort;
 @property (nonatomic, assign) NSInteger currentPage;
 @property (nonatomic, assign) NSInteger lastPageImageCount;
 
@@ -164,6 +165,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL deleteImageAfterUpload;
 @property (nonatomic, assign) BOOL prefixFileNameBeforeUpload;
 @property (nonatomic, strong) NSString *defaultPrefix;
+@property (nonatomic, assign) kPiwigoSort localImagesSort;
 
 // Default palette mode
 @property (nonatomic, assign) BOOL isDarkPaletteActive;
@@ -181,6 +183,6 @@ typedef enum {
 // Request help for translating Piwigo every month or so
 @property (nonatomic, assign) NSTimeInterval dateOfLastTranslationRequest;
 
--(NSString *)getNameForPrivacyLevel:(NSInteger)privacyLevel;
+-(NSString *)getNameForPrivacyLevel:(kPiwigoPrivacy)privacyLevel;
 
 @end

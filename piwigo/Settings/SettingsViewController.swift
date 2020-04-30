@@ -516,7 +516,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let defaultSort = CategorySortViewController.getNameForCategorySortType(Model.sharedInstance().defaultSort)!
+                let defaultSort = CategorySortViewController.getNameForCategorySortType(Model.sharedInstance().defaultSort)
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 var title: String
                 if view.bounds.size.width > 414 {
@@ -750,7 +750,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let defaultLevel = Model.sharedInstance().getNameForPrivacyLevel(Int(Model.sharedInstance().defaultPrivacyLevel.rawValue))!
+                let defaultLevel = Model.sharedInstance().getNameForPrivacyLevel(Model.sharedInstance().defaultPrivacyLevel)!
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 if view.bounds.size.width > 414 {
                     // i.e. larger than iPhones 6,7 Plus screen width
@@ -2140,7 +2140,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
     
 // MARK: - CategorySortDelegate Methods
-    func didSelectCategorySortType(_ sortType: kPiwigoSortCategory) {
+    func didSelectCategorySortType(_ sortType: kPiwigoSort) {
         // Save new choice
         Model.sharedInstance().defaultSort = sortType
         Model.sharedInstance().saveToDisk()

@@ -12,55 +12,56 @@ import UIKit
 
 @objc
 protocol CategorySortDelegate: NSObjectProtocol {
-    func didSelectCategorySortType(_ sortType: kPiwigoSortCategory)
+    func didSelectCategorySortType(_ sortType: kPiwigoSort)
 }
 
 @objc
 class CategorySortViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @objc weak var sortDelegate: CategorySortDelegate?
-    @objc var currentCategorySortType: kPiwigoSortCategory = Model.sharedInstance().defaultSort 
+    @objc var currentCategorySortType: kPiwigoSort = Model.sharedInstance().defaultSort 
 
     @objc
-    class func getNameForCategorySortType(_ sortType: kPiwigoSortCategory) -> String? {
+    class func getNameForCategorySortType(_ sortType: kPiwigoSort) -> String {
         var name = ""
         switch sortType {
-        case kPiwigoSortCategoryNameAscending:
+        case kPiwigoSortNameAscending:
             name = NSLocalizedString("categorySort_nameAscending", comment: "Photo Title, A → Z")
-        case kPiwigoSortCategoryNameDescending:
+        case kPiwigoSortNameDescending:
             name = NSLocalizedString("categorySort_nameDescending", comment: "Photo Title, Z → A")
-        case kPiwigoSortCategoryFileNameAscending:
+        case kPiwigoSortFileNameAscending:
             name = NSLocalizedString("categorySort_fileNameAscending", comment: "File Name, A → Z")
-        case kPiwigoSortCategoryFileNameDescending:
+        case kPiwigoSortFileNameDescending:
             name = NSLocalizedString("categorySort_fileNameDescending", comment: "File Name, Z → A")
-        case kPiwigoSortCategoryDateCreatedDescending:
+        case kPiwigoSortDateCreatedDescending:
             name = NSLocalizedString("categorySort_dateCreatedDescending", comment: "Date Created, new → old")
-        case kPiwigoSortCategoryDateCreatedAscending:
+        case kPiwigoSortDateCreatedAscending:
             name = NSLocalizedString("categorySort_dateCreatedAscending", comment: "Date Created, old → new")
-        case kPiwigoSortCategoryDatePostedDescending:
+        case kPiwigoSortDatePostedDescending:
             name = NSLocalizedString("categorySort_datePostedDescending", comment: "Date Posted, new → old")
-        case kPiwigoSortCategoryDatePostedAscending:
+        case kPiwigoSortDatePostedAscending:
             name = NSLocalizedString("categorySort_datePostedAscending", comment: "Date Posted, old → new")
-        case kPiwigoSortCategoryRatingScoreDescending:
+        case kPiwigoSortRatingScoreDescending:
             name = NSLocalizedString("categorySort_ratingScoreDescending", comment: "Rating Score, high → low")
-        case kPiwigoSortCategoryRatingScoreAscending:
+        case kPiwigoSortRatingScoreAscending:
             name = NSLocalizedString("categorySort_ratingScoreAscending", comment: "Rating Score, low → high")
-        case kPiwigoSortCategoryVisitsDescending:
+        case kPiwigoSortVisitsDescending:
             name = NSLocalizedString("categorySort_visitsDescending", comment: "Visits, high → low")
-        case kPiwigoSortCategoryVisitsAscending:
+        case kPiwigoSortVisitsAscending:
             name = NSLocalizedString("categorySort_visitsAscending", comment: "Visits, low → high")
-        case kPiwigoSortCategoryManual:
+        case kPiwigoSortManual:
             name = NSLocalizedString("categorySort_manual", comment: "Manual Order")
-//		case kPiwigoSortCategoryVideoOnly:
+//		case kPiwigoSortVideoOnly:
 //			name = NSLocalizedString(@"categorySort_videosOnly", @"Videos Only");
 //			break;
-//		case kPiwigoSortCategoryImageOnly:
+//		case kPiwigoSortImageOnly:
 //			name = NSLocalizedString(@"categorySort_imagesOnly", @"Images Only");
 //			break;
 
-        case kPiwigoSortCategoryCount:
-            break
+        case kPiwigoSortCount:
+            name = ""
         default:
+            name = ""
             break
         }
         return name
@@ -195,13 +196,13 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
 // MARK: - UITableView - Rows
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return Int(kPiwigoSortCategoryCount.rawValue)
+        return Int(kPiwigoSortCount.rawValue)
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        let sortChoice = kPiwigoSortCategory(rawValue: UInt32(indexPath.row))
+        let sortChoice = kPiwigoSort(rawValue: UInt32(indexPath.row))
 
         cell.backgroundColor = UIColor.piwigoColorCellBackground()
         cell.tintColor = UIColor.piwigoColorOrange()
@@ -230,7 +231,7 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        currentCategorySortType = kPiwigoSortCategory(rawValue: UInt32(indexPath.row))
+        currentCategorySortType = kPiwigoSort(rawValue: UInt32(indexPath.row))
         tableView.reloadData()
         navigationController?.popViewController(animated: true)
     }

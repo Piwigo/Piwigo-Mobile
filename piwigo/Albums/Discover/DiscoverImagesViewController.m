@@ -52,7 +52,7 @@
 @property (nonatomic, strong) NSMutableArray *selectedImagesToShare;
 @property (nonatomic, strong) PiwigoImageData *selectedImage;
 
-@property (nonatomic, assign) kPiwigoSortCategory currentSortCategory;
+@property (nonatomic, assign) kPiwigoSort currentSortCategory;
 @property (nonatomic, strong) ImageDetailViewController *imageDetailView;
 
 @end

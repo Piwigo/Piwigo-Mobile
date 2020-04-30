@@ -20,7 +20,7 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationDeselectImageToUpload;
 @property (nonatomic, strong) NSString *fileName;
 @property (nonatomic, strong) NSString *imageTitle;             // Don't use title!
 @property (nonatomic, assign) NSInteger categoryToUploadTo;
-@property (nonatomic, assign) NSInteger privacyLevel;
+@property (nonatomic, assign) kPiwigoPrivacy privacyLevel;
 @property (nonatomic, strong) NSString *author;
 @property (nonatomic, strong) NSString *comment;                // Don't use description
 @property (nonatomic, strong) NSArray *tags;
@@ -31,6 +31,6 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationDeselectImageToUpload;
 @property (nonatomic, assign) BOOL stopUpload;
 
 -(instancetype)initWithImageAsset:(PHAsset*)imageAsset forCategory:(NSInteger)category
-                     privacyLevel:(NSInteger)privacy author:(NSString*)author;
+                     privacyLevel:(kPiwigoPrivacy)privacy author:(NSString*)author;
 
 @end

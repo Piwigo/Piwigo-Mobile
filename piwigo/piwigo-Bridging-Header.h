@@ -9,9 +9,7 @@
 
 #import "AlbumImagesViewController.h"
 #import "AlbumService.h"
-#import "AlbumUploadViewController.h"
 #import "AppDelegate.h"
-#import "CameraRollUploadViewController.h"
 #import "CategoriesData.h"
 #import "CategoryTableViewCell.h"
 #import "ImagesCollection.h"

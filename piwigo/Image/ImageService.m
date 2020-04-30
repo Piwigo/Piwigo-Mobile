@@ -1036,9 +1036,9 @@ NSString * const kGetImageOrderDescending = @"desc";
     // Object "level"
     if ([imageJson objectForKey:@"level"] &&
         ![[imageJson objectForKey:@"level"] isKindOfClass:[NSNull class]]) {
-        imageData.privacyLevel = [[imageJson objectForKey:@"level"] integerValue];
+        imageData.privacyLevel = (kPiwigoPrivacy)[[imageJson objectForKey:@"level"] integerValue];
     } else {
-        imageData.privacyLevel = NSNotFound;
+        imageData.privacyLevel = kPiwigoPrivacyUnknown;
     }
     
     // Object "tags"

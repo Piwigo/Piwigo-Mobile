@@ -25,7 +25,7 @@
 
 @property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
 
-@property (nonatomic, assign) kPiwigoSortCategory currentSortCategory;
+@property (nonatomic, assign) kPiwigoSort currentSortCategory;
 @property (nonatomic, strong) ImageDetailViewController *imageDetailView;
 
 @end

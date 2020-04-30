@@ -72,7 +72,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         instance.maxNberRecentCategories = 5;
 
         // Sort images by date: old to new
-		instance.defaultSort = kPiwigoSortCategoryDateCreatedAscending;
+		instance.defaultSort = kPiwigoSortDateCreatedAscending;
         
         // Display images titles in collection views
         instance.displayImageTitles = YES;
@@ -124,6 +124,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         instance.deleteImageAfterUpload = NO;
         instance.prefixFileNameBeforeUpload = NO;
         instance.defaultPrefix = @"";
+        instance.localImagesSort = kPiwigoSortDateCreatedDescending;    // i.e. new to old
 
         // Default palette mode
         instance.isDarkPaletteActive = NO;
@@ -155,7 +156,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     return library;
 }
 
--(NSString *)getNameForPrivacyLevel:(NSInteger)privacyLevel
+-(NSString *)getNameForPrivacyLevel:(kPiwigoPrivacy)privacyLevel
 {
 	NSString *name = @"";
 	switch(privacyLevel)
@@ -175,11 +176,9 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 		case kPiwigoPrivacyEverybody:
 			name = NSLocalizedString(@"privacyLevel_everybody", @"Everybody");
 			break;
-        case NSNotFound:
-            name = @"";
-            break;
-			
+            
 		case kPiwigoPrivacyCount:
+        case kPiwigoPrivacyUnknown:
 			break;
 	}
 	
@@ -276,6 +275,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         self.maxNberRecentCategories = modelData.maxNberRecentCategories;
         self.prefixFileNameBeforeUpload = modelData.prefixFileNameBeforeUpload;
         self.defaultPrefix = modelData.defaultPrefix;
+        self.localImagesSort = modelData.localImagesSort;
 	}
 }
 
@@ -354,6 +354,8 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     // Added in 2.4.6…
     [saveObject addObject:[NSNumber numberWithBool:self.prefixFileNameBeforeUpload]];
     [saveObject addObject:self.defaultPrefix];
+    // Added in 2.5.0…
+    [saveObject addObject:@(self.localImagesSort)];
 
     [encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -391,9 +393,9 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 		self.loadAllCategoryInfo = YES;
 	}
 	if(savedData.count > 9) {
-		self.defaultSort = (kPiwigoSortCategory)[[savedData objectAtIndex:9] intValue];
+		self.defaultSort = (kPiwigoSort)[[savedData objectAtIndex:9] intValue];
 	} else {
-		self.defaultSort = kPiwigoSortCategoryDateCreatedAscending;
+		self.defaultSort = kPiwigoSortDateCreatedAscending;
 	}
 	if(savedData.count > 10) {
 		self.resizeImageOnUpload = [[savedData objectAtIndex:10] boolValue];
@@ -645,6 +647,11 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         self.defaultPrefix = [savedData objectAtIndex:51];
     } else {
         self.defaultPrefix = @"";       // No prefix to filenames by default value
+    }
+    if(savedData.count > 52) {
+        self.localImagesSort = (kPiwigoSort)[[savedData objectAtIndex:52] intValue];
+    } else {
+        self.localImagesSort = kPiwigoSortDateCreatedDescending;
     }
 	return self;
 }

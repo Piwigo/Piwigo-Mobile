@@ -82,7 +82,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
 
-@property (nonatomic, assign) kPiwigoSortCategory currentSortCategory;
+@property (nonatomic, assign) kPiwigoSort currentSortCategory;
 @property (nonatomic, strong) ImageDetailViewController *imageDetailView;
 
 @end
@@ -2887,7 +2887,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 #pragma mark - CategorySortDelegate Methods
 
--(void)didSelectCategorySortType:(kPiwigoSortCategory)sortType
+-(void)didSelectCategorySortType:(kPiwigoSort)sortType
 {
 	self.currentSortCategory = sortType;
     [self.albumData updateImageSort:sortType OnCompletion:^{

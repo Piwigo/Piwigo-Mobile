@@ -179,7 +179,7 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
         cell.textLabel?.font = UIFont.piwigoFontNormal()
         cell.textLabel?.textColor = UIColor.piwigoColorLeftLabel()
         cell.textLabel?.adjustsFontSizeToFitWidth = false
-        cell.textLabel?.text = Model.sharedInstance().getNameForPrivacyLevel(Int(privacyLevel.rawValue))
+        cell.textLabel?.text = Model.sharedInstance().getNameForPrivacyLevel(privacyLevel)
         cell.tag = Int(privacyLevel.rawValue)
 
         return cell

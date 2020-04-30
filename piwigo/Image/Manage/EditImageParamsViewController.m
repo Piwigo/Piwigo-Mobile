@@ -169,7 +169,7 @@ typedef enum {
         if (self.commonParameters.privacyLevel == imageData.privacyLevel) continue;
         
         // Images privacy levels are different, display no level
-        self.commonParameters.privacyLevel = NSNotFound;
+        self.commonParameters.privacyLevel = kPiwigoPrivacyUnknown;
         break;
     }
     self.shouldUpdatePrivacyLevel = NO;
@@ -317,7 +317,7 @@ typedef enum {
         }
         
         // Update image privacy level?
-        if ((self.commonParameters.privacyLevel != NSNotFound) && self.shouldUpdatePrivacyLevel) {
+        if ((self.commonParameters.privacyLevel != kPiwigoPrivacyUnknown) && self.shouldUpdatePrivacyLevel) {
             imageData.privacyLevel = self.commonParameters.privacyLevel;
         }
 
