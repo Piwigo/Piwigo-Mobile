@@ -47,7 +47,7 @@
 // ==> CORE DATA
 // ===========================================================================
 "CoreDataStore_WarningTitle" = "Advertencia";
-"CoreDataStore_WarningMessage" = "A serious application error occurred while Piwigo tried to read the data cache. A new cache has therefore been created.";
+"CoreDataStore_WarningMessage" = "Se ha producido un error grave en la aplicación mientras Piwigo intentaba leer la caché de datos. Por lo tanto, se ha creado una nueva caché.";
 "CoreDataFetch_DigestError" = "No se han podido procesar los datos obtenidos.";
 
 // Tag objects

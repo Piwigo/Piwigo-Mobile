@@ -46,8 +46,8 @@
 // ===========================================================================
 // ==> CORE DATA
 // ===========================================================================
-"CoreDataStore_WarningTitle" = "Warning";
-"CoreDataStore_WarningMessage" = "A serious application error occurred while Piwigo tried to read the data cache. A new cache has therefore been created.";
+"CoreDataStore_WarningTitle" = "注意";
+"CoreDataStore_WarningMessage" = "Piwigoがデータキャッシュを読もうとした際に深刻なアプリケーションエラーが発生しました。ゆえに、新しいキャッシュが生成されました。";
 "CoreDataFetch_DigestError" = "取得データを要約できませんでした。";
 
 // Tag objects
@@ -263,7 +263,7 @@
 "singleVideo" = "動画";
 "singleAudio" = "音声";
 "severalImages" = "写真";
-"severalVideos" = "Videos";
+"severalVideos" = "ビデオ";
 "noImages" = "写真がありません";
 "pullToRefresh" = "写真の再読み込み";
 

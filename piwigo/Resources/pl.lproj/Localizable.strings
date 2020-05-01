@@ -47,7 +47,7 @@
 // ==> CORE DATA
 // ===========================================================================
 "CoreDataStore_WarningTitle" = "Ostrzeżenie";
-"CoreDataStore_WarningMessage" = "Wystąpił poważny błąd aplikacji podczas próby przeczytania pamięci podręcznej danych Piwigo. W związku z tym utworzono nową pamięć podręczną.";
+"CoreDataStore_WarningMessage" = "Wystąpił poważny błąd aplikacji podczas próby odczytu pamięci podręcznej Piwigo. W związku z tym utworzono nową pamięć podręczną.";
 "CoreDataFetch_DigestError" = "Nie można przetworzyć pobranych danych.";
 
 // Tag objects
