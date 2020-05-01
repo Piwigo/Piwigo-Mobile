@@ -92,9 +92,9 @@ class LocationsProvider: NSObject {
                     }
 
                     // Log placemarks[0]
-                    if let region1 = placeMark?.region, let areas = placeMark?.areasOfInterest {
-                        print("\("\n===>> name:\(placeMark?.name ?? ""), country:\(placeMark?.country ?? ""), administrativeArea:\(placeMark?.administrativeArea ?? ""), subAdministrativeArea:\(placeMark?.subAdministrativeArea ?? ""), locality:\(placeMark?.locality ?? ""), subLocality:\(placeMark?.subLocality ?? ""), thoroughfare:\(placeMark?.thoroughfare ?? ""), subThoroughfare:\(placeMark?.subThoroughfare ?? ""), region:\(region1), areasOfInterest:\(areas)")\n")
-                    }
+//                    if let region1 = placeMark?.region, let areas = placeMark?.areasOfInterest {
+//                        print("\("\n===>> name:\(placeMark?.name ?? ""), country:\(placeMark?.country ?? ""), administrativeArea:\(placeMark?.administrativeArea ?? ""), subAdministrativeArea:\(placeMark?.subAdministrativeArea ?? ""), locality:\(placeMark?.locality ?? ""), subLocality:\(placeMark?.subLocality ?? ""), thoroughfare:\(placeMark?.thoroughfare ?? ""), subThoroughfare:\(placeMark?.subThoroughfare ?? ""), region:\(region1), areasOfInterest:\(areas)")\n")
+//                    }
 
                     // Add new location to CoreData store
                     let newLocation = LocationProperties(coordinate: location.coordinate,
