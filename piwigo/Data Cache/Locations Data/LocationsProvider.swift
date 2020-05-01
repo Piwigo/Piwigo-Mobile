@@ -1,0 +1,290 @@
+//
+//  LocationsProvider.swift
+//  piwigo
+//
+//  Created by Eddy Lelièvre-Berna on 17/04/2020.
+//  Copyright © 2020 Piwigo.org. All rights reserved.
+//
+//  A class to fetch data from the remote server and save it to the Core Data store.
+
+import CoreData
+import CoreLocation
+
+@objc
+protocol LocationsProviderDelegate: NSObjectProtocol {
+    func didFetchPlaceNames()
+}
+
+let kPiwigoMaxNberOfLocationsToDecode: Int = 10
+let a: Double = 6378137.0               // Equatorial radius in meters
+let e2: Double = 0.00669437999014       // Earth eccentricity squared
+
+@objc
+class LocationsProvider: NSObject {
+    
+    var geocoder = CLGeocoder()
+    var queue = OperationQueue()
+    
+    override init() {
+        // Prepare list of operations
+        queue.maxConcurrentOperationCount = 1   // Make it a serial queue
+    }
+    
+
+    // MARK: - Core Data object context
+    
+    lazy var managedObjectContext: NSManagedObjectContext = {
+        let context:NSManagedObjectContext = (UIApplication.shared.delegate as! AppDelegate).managedObjectContext
+        return context
+    }()
+
+    
+    // MARK: - Fetch Place Names
+    /**
+     Fetches the place name feed from the remote server, and imports it into Core Data.
+    */
+    private func fetchPlaceName(at location: LocationProperties, completionHandler: @escaping (Error?) -> Void) {
+        
+        // Add Geocoder request
+        let operation = BlockOperation(block: {
+            let semaphore = DispatchSemaphore.init(value: 0)
+
+            // Initialise
+            let latitude = location.coordinate!.latitude as CLLocationDistance
+            let longitude = location.coordinate!.longitude as CLLocationDistance
+            let newLocation = CLLocation(latitude: latitude, longitude: longitude)
+
+            // Request place name
+            self.geocoder.reverseGeocodeLocation(newLocation, completionHandler: { placemarks, error in
+
+                // Extract existing data
+                if error == nil && placemarks != nil && (placemarks?.count ?? 0) > 0 {
+                    // Extract data
+                    let placeMark = placemarks?[0]
+                    let region = placeMark?.region as? CLCircularRegion
+                    let locality = placeMark?.locality ?? ""
+                    let thoroughfare = placeMark?.thoroughfare ?? ""
+                    let administrativeArea = placeMark?.administrativeArea ?? ""
+
+                    // Define place name
+                    var placeName = ""
+                    var streetName = ""
+                    if locality.count > 0 {
+                        // Locality returned
+                        if (region?.radius ?? 0) > location.radius ?? kCLLocationAccuracyBestForNavigation {
+                            // Images of section are in the same region
+                            if (locality.count != 0) && (administrativeArea.count != 0) && (thoroughfare.count != 0) {
+                                placeName = "\(locality), \(administrativeArea)"
+                                streetName = "\(thoroughfare)"
+                            } else {
+                                placeName = "\(locality)"
+                                streetName = "\(administrativeArea)"
+                            }
+                        } else {
+                            // Images of section are in not in the same region
+                            if (locality.count != 0) && (administrativeArea.count != 0) {
+                                placeName = locality
+                                streetName = administrativeArea
+                            } else {
+                                placeName = locality
+                            }
+                        }
+                    }
+
+                    // Log placemarks[0]
+                    if let region1 = placeMark?.region, let areas = placeMark?.areasOfInterest {
+                        print("\("\n===>> name:\(placeMark?.name ?? ""), country:\(placeMark?.country ?? ""), administrativeArea:\(placeMark?.administrativeArea ?? ""), subAdministrativeArea:\(placeMark?.subAdministrativeArea ?? ""), locality:\(placeMark?.locality ?? ""), subLocality:\(placeMark?.subLocality ?? ""), thoroughfare:\(placeMark?.thoroughfare ?? ""), subThoroughfare:\(placeMark?.subThoroughfare ?? ""), region:\(region1), areasOfInterest:\(areas)")\n")
+                    }
+
+                    // Add new location to CoreData store
+                    let newLocation = LocationProperties(coordinate: location.coordinate,
+                                                         radius: region!.radius,
+                                                         placeName: placeName, streetName: streetName)
+                    self.importOneLocation(newLocation, taskContext: self.managedObjectContext)
+                    
+                } else {
+                    // Did not return place names
+                    print(String(format: "Geocoder: no place mark returned!\n=> %@", error?.localizedDescription ?? ""))
+                }
+                semaphore.signal()
+            })
+
+            _ = (semaphore.wait(timeout: DispatchTime.distantFuture) == .success ? 0 : -1)
+        })
+
+        queue.addOperation(operation)
+    }
+
+
+    /**
+     Imports one location, creating a managed object from the new data,
+     and saving them to the persistent store, on a private queue. After saving,
+     resets the context to clean up the cache and lower the memory footprint.
+    */
+    private func importOneLocation(_ locationData: LocationProperties, taskContext: NSManagedObjectContext) -> Void {
+        
+        // taskContext.performAndWait runs on the URLSession's delegate queue
+        // so it won’t block the main thread.
+        taskContext.performAndWait {
+            
+            // Create a Location managed object on the private queue context.
+            guard let newLocation = NSEntityDescription.insertNewObject(forEntityName: "Location", into: taskContext) as? Location else {
+                print(LocationError.creationError.localizedDescription)
+                return
+            }
+            
+            // Populate the Location's properties using the raw data.
+            do {
+                try newLocation.update(with: locationData)
+            }
+            catch LocationError.missingData {
+                // Delete invalid Location from the private queue context.
+                print(LocationError.missingData.localizedDescription)
+                taskContext.delete(newLocation)
+            }
+            catch {
+                print(error.localizedDescription)
+            }
+            
+            // Save all insertions and deletions from the context to the store.
+            if taskContext.hasChanges {
+                do {
+                    try taskContext.save()
+                }
+                catch {
+                    print("Error: \(error)\nCould not save Core Data context.")
+                    return
+                }
+                // Reset the taskContext to free the cache and lower the memory footprint.
+                taskContext.reset()
+
+                // Update collection view
+                if fetchedPlaceNamesDelegate?.responds(to: #selector(LocationsProviderDelegate.didFetchPlaceNames)) ?? false {
+                    fetchedPlaceNamesDelegate?.didFetchPlaceNames()
+                }
+            }
+        }
+    }
+    
+
+    // MARK: - Clear Locations
+    /**
+     Clear cached Core Data location entry
+    */
+    func clearLocations() {
+        
+        // Create a fetch request for the Tag entity
+        let fetchRequest = NSFetchRequest<Location>(entityName: "Location")
+
+        // Create batch delete request
+        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)
+
+        // Execute batch delete request
+        do {
+            try managedObjectContext.execute(batchDeleteRequest)
+        }
+        catch {
+            fatalError("Unresolved error \(error)")
+        }
+    }
+
+
+    // MARK: - Get Place Names
+    
+    /**
+     A fetched results controller delegate to give consumers a chance to update
+     the user interface when content changes.
+     */
+    weak var fetchedPlaceNamesDelegate: LocationsProviderDelegate?
+    
+    /**
+     Routine returning the place name of a location
+     */
+    func getPlaceName(for location: CLLocation) -> [AnyHashable : Any] {
+        var placeNames: [AnyHashable : Any] = [:]
+
+        // Check coordinates
+        if !CLLocationCoordinate2DIsValid(location.coordinate) {
+            // Invalid location -> No place name
+            return placeNames
+        }
+
+        // Create a fetch request for the location
+        let fetchRequest = NSFetchRequest<Location>(entityName: "Location")
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "latitude", ascending: true),
+                                        NSSortDescriptor(key: "longitude", ascending: true)]
+        let deltaLatitude = getDeltaLatitude(for: location.coordinate.latitude, radius: location.horizontalAccuracy)
+        let latitudeMinPredicate = NSPredicate(format: "latitude >= %lf", location.coordinate.latitude - deltaLatitude)
+        let latitudeMaxPredicate = NSPredicate(format: "latitude <= %lf", location.coordinate.latitude + deltaLatitude)
+        let deltaLongitude = getDeltaLongitude(for: location.coordinate.latitude, radius: location.horizontalAccuracy)
+        let longitudeMinPredicate = NSPredicate(format: "longitude >= %lf", location.coordinate.longitude - deltaLongitude)
+        let longitudeMaxPredicate = NSPredicate(format: "longitude <= %lf", location.coordinate.longitude + deltaLongitude)
+        var compoundPredicate = NSCompoundPredicate()
+        compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [latitudeMinPredicate,latitudeMaxPredicate,longitudeMinPredicate, longitudeMaxPredicate])
+        fetchRequest.predicate = compoundPredicate
+        
+        // Create a fetched results controller and set its fetch request, context, and delegate.
+        let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                            managedObjectContext: self.managedObjectContext,
+                                              sectionNameKeyPath: nil, cacheName: nil)
+        
+        // Perform the fetch.
+        do {
+            try controller.performFetch()
+        } catch {
+            fatalError("Unresolved error \(error)")
+        }
+        let knownPlaceNames: [Location] = controller.fetchedObjects ?? []
+        
+        // Loop over known places
+        for knownPlace: Location in knownPlaceNames {
+            // Known location
+            let knownLatitude = knownPlace.latitude
+            let knownLongitude = knownPlace.longitude
+            let knownLocation = CLLocation(latitude: knownLatitude, longitude: knownLongitude)
+
+            // Do we know the place of this location?
+            if location.distance(from: knownLocation) <= knownPlace.radius {
+                if knownPlace.placeName.count > 0 {
+                    placeNames["placeLabel"] = knownPlace.placeName
+                }
+                if knownPlace.streetName.count > 0 {
+                    placeNames["dateLabel"] = knownPlace.streetName
+                }
+                return placeNames
+            }
+        }
+        
+        // Place name unknown -> fetch it
+        let newLocation = LocationProperties(coordinate: location.coordinate,
+                                             radius: location.horizontalAccuracy,
+                                             placeName: "", streetName: "")
+        
+        // Add operation to queue
+        fetchPlaceName(at: newLocation) { (error) in
+            if error == nil {
+                print("=> location requested")
+            }
+        }
+        
+        return placeNames
+    }
+    
+    private func getDeltaLatitude(for latitude: CLLocationDegrees, radius: CLLocationDistance) -> CLLocationDegrees {
+        // See https://en.wikipedia.org/wiki/Latitude
+        var deltaLat: Double = radius as Double
+        let num = a * (1.0 - e2)
+        let den = pow(1.0 - e2 * pow(sin(latitude * Double.pi / 180.0),2), 1.5)
+        deltaLat = deltaLat / num * den
+        return (deltaLat * 180.0 / Double.pi) as CLLocationDegrees
+    }
+
+    private func getDeltaLongitude(for latitude: CLLocationDegrees, radius: CLLocationDistance) -> CLLocationDegrees {
+        // See https://en.wikipedia.org/wiki/Latitude
+        var deltaLong: Double = radius as Double
+        let num = a * cos(latitude * Double.pi / 180.0)
+        let den = pow(1.0 - e2 * pow(sin(latitude * Double.pi / 180.0),2), 0.5)
+        deltaLong = deltaLong / num * den
+        return (deltaLong * 180.0 / Double.pi) as CLLocationDegrees
+    }
+}

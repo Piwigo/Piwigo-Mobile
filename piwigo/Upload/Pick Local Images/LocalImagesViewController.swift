@@ -67,20 +67,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 //    private var removedUploadedImages = false
     private var hudViewController: UIViewController?
 
-    private var locationsOfImagesInSections = [LocationProperties]()
-
     
-    // MARK: - Core Data
-    /**
-     The TagsProvider that fetches tag data, saves it to Core Data,
-     and serves it to this table view.
-     */
-    private lazy var locationsProvider: LocationsProvider = {
-        let locationsProvider : LocationsProvider = LocationsProvider()
-        return locationsProvider
-    }()
-
-
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
@@ -138,8 +125,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        // Initialise arrays managing selections
-//        initSelectButtons()
+        // Fetch non-empty input collection and prepare data source
+        fetchAndSortImages()
 
         // Set colors, fonts, etc.
         applyColorPalette()
@@ -172,13 +159,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
-        // Fetch non-empty input collection and prepare data source
-        fetchAndSortImages()
-    }
-    
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
 
@@ -514,51 +494,80 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 //        }
 //    }
 
-    func initLocationsOfSections() {
-        // Initalisation
-//        locationsOfImagesInSections = [LocationProperties]()
+//    func getLocationOfImages(in section: Int) -> CLLocation {
+//        // Initialise location of section with invalid location
+//        var locationForSection = CLLocation.init(coordinate: kCLLocationCoordinate2DInvalid,
+//                                                 altitude: CLLocationDistance(0.0),
+//                                                 horizontalAccuracy: CLLocationAccuracy(0.0),
+//                                                 verticalAccuracy: CLLocationAccuracy(0.0),
+//                                                 timestamp: Date())
 //
-//        // Determine locations of images in sections
-//        for imagesInSection in imageCollection {
+//        // Loop over images in section
+//        for imageAsset in sortedImages[section] {
 //
-//            // Initialise location of section with invalid location
-//            var locationForSection = LocationProperties(coordinate: kCLLocationCoordinate2DInvalid, radius: 0.0, placeName: "", streetName: "")
-//
-//            // Loop over images of section
-//            for imageAsset in imagesInSection {
-//
-//                // Any location data ?
-//                guard let coordinate1 = imageAsset.location?.coordinate else {
-//                    // Image has no valid location data => Next image
-//                    continue
-//                }
-//                if !CLLocationCoordinate2DIsValid(coordinate1) {
-//                    // Image has no valid location data => Next image
-//                    continue
-//                }
-//
-//                // Location found => Store it and move to next section
-//                if !CLLocationCoordinate2DIsValid(locationForSection.coordinate ?? kCLLocationCoordinate2DInvalid) {
-//                    // First valid location => Store it
-//                    locationForSection.coordinate = imageAsset.location?.coordinate
-//                } else {
-//                    // Another valid location => Compare to first one
-//                    let latitude = locationForSection.coordinate!.latitude as CLLocationDegrees
-//                    let longitude = locationForSection.coordinate!.longitude as CLLocationDegrees
-//                    let coordinate = CLLocationCoordinate2DMake(latitude, longitude)
-//                    let newLocation = CLLocation(coordinate: coordinate, altitude: CLLocationDistance(0.0),
-//                                                 horizontalAccuracy: CLLocationAccuracy(0.0), verticalAccuracy: CLLocationAccuracy(0.0), timestamp: Date())
-//
-//                    let distance = max(locationForSection.radius!, (imageAsset.location?.distance(from: newLocation))!)
-//                    locationForSection.radius = distance
-//                }
+//            // Any location data ?
+//            guard let assetLocation = imageAsset.location else {
+//                // Image has no valid location data => Next image
+//                continue
 //            }
 //
-//            // Store location for current section
-//            locationsOfImagesInSections.append(locationForSection)
+//            // Location found => Store if first found and move to next section
+//            if !CLLocationCoordinate2DIsValid(locationForSection.coordinate) {
+//                // First valid location => Store it
+//                locationForSection = assetLocation
+//            } else {
+//                // Another valid location => Compare to first one
+//                let distance = locationForSection.distance(from: assetLocation)
+//                if distance <= locationForSection.horizontalAccuracy {
+//                    // Same location within horizontal accuracy
+//                    continue
+//                }
+//                // Still a similar location?
+//                let meanLatitude: CLLocationDegrees = (locationForSection.coordinate.latitude + assetLocation.coordinate.latitude)/2
+//                let meanLongitude: CLLocationDegrees = (locationForSection.coordinate.longitude + assetLocation.coordinate.longitude)/2
+//                let newCoordinate = CLLocationCoordinate2DMake(meanLatitude,meanLongitude)
+//                var newHorizontalAccuracy = kCLLocationAccuracyBestForNavigation
+//                let newVerticalAccuracy = max(locationForSection.verticalAccuracy, assetLocation.verticalAccuracy)
+//                if distance < kCLLocationAccuracyBest {
+//                    newHorizontalAccuracy = max(kCLLocationAccuracyBest, locationForSection.horizontalAccuracy)
+//                    locationForSection = CLLocation(coordinate: newCoordinate, altitude: locationForSection.altitude,
+//                                                    horizontalAccuracy: newHorizontalAccuracy, verticalAccuracy: newVerticalAccuracy,
+//                                                    timestamp: locationForSection.timestamp)
+//                    return locationForSection
+//                } else if distance < kCLLocationAccuracyNearestTenMeters {
+//                    newHorizontalAccuracy = max(kCLLocationAccuracyNearestTenMeters, locationForSection.horizontalAccuracy)
+//                    locationForSection = CLLocation(coordinate: newCoordinate, altitude: locationForSection.altitude,
+//                                                    horizontalAccuracy: newHorizontalAccuracy, verticalAccuracy: newVerticalAccuracy,
+//                                                    timestamp: locationForSection.timestamp)
+//                    return locationForSection
+//                } else if distance < kCLLocationAccuracyHundredMeters {
+//                    newHorizontalAccuracy = max(kCLLocationAccuracyHundredMeters, locationForSection.horizontalAccuracy)
+//                    locationForSection = CLLocation(coordinate: newCoordinate, altitude: locationForSection.altitude,
+//                                                    horizontalAccuracy: newHorizontalAccuracy, verticalAccuracy: newVerticalAccuracy,
+//                                                    timestamp: locationForSection.timestamp)
+//                    return locationForSection
+//                } else if distance < kCLLocationAccuracyKilometer {
+//                    newHorizontalAccuracy = max(kCLLocationAccuracyKilometer, locationForSection.horizontalAccuracy)
+//                    locationForSection = CLLocation(coordinate: newCoordinate, altitude: locationForSection.altitude,
+//                                                    horizontalAccuracy: newHorizontalAccuracy, verticalAccuracy: newVerticalAccuracy,
+//                                                    timestamp: locationForSection.timestamp)
+//                    return locationForSection
+//                } else if distance < kCLLocationAccuracyThreeKilometers {
+//                    newHorizontalAccuracy = max(kCLLocationAccuracyThreeKilometers, locationForSection.horizontalAccuracy)
+//                    locationForSection = CLLocation(coordinate: newCoordinate, altitude: locationForSection.altitude,
+//                                                    horizontalAccuracy: newHorizontalAccuracy, verticalAccuracy: newVerticalAccuracy,
+//                                                    timestamp: locationForSection.timestamp)
+//                    return locationForSection
+//                } else {
+//                    // Above 3 km, we estimate that it is a different location
+//                    return locationForSection
+//                }
+//             }
 //        }
-    }
-
+//
+//        return locationForSection
+//    }
+    
 //    func indexPathOfImageAsset(_ imageAsset: PHAsset?) -> IndexPath? {
 //        var indexPath = IndexPath(item: 0, section: 0)
 //
@@ -845,34 +854,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     let view = UICollectionReusableView(frame: CGRect.zero)
                     return view
                 }
-
-                // Retrieve place names if possible
-                var placeNames: [AnyHashable : Any] = [:]
-//                if imagesFromCameraRoll {
-//                    // Get place name from collection
-//                    let names = imageCollection.object(at: indexPath.section).localizedLocationNames {
-//                    // Loop over the provided names
-//                    if (names.count > 0) && (names.first!.count > 0) {
-//                        // Get place name for placeLabel
-//                        placeNames["placeLabel"] = names.first!
-//                        // Get additional place infos for dateLabel
-//                        var dateLabelName = String()
-//                        for i in 1..<names.count {
-//                            if names[i].count > 0 {
-//                                dateLabelName += ", \(names[i])"
-//                            }
-//                        }
-//                        if (dateLabelName.count > 1) {
-//                            placeNames["dateLabel"] = dateLabelName
-//                        }
-//                    }
-//                } else {
-//                    // Get place name from database
-//                    placeNames = locationsProvider.getPlaceName(for: locationsOfImagesInSections[indexPath.section])
-//                }
                 
                 // Set up header
-                header.configure(with: sortedImages, section: indexPath.section, placeNames: placeNames,
+                header.configure(with: sortedImages[indexPath.section], section: indexPath.section,
                                  selectionMode: selectedSections[indexPath.section].boolValue)
                 header.headerDelegate = self
                 return header
@@ -1055,7 +1039,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         })
     }
 
-    
+
     // MARK: - ImageUploadProgress Delegate Methods
 
 //    func imageProgress(_ image: ImageUpload?, onCurrent current: Int, forTotal total: Int, onChunk currentChunk: Int, forChunks totalChunks: Int, iCloudProgress: CGFloat) {

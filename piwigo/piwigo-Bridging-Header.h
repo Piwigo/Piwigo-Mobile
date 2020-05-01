@@ -13,7 +13,6 @@
 #import "CategoriesData.h"
 #import "CategoryTableViewCell.h"
 #import "ImagesCollection.h"
-#import "LocationsData.h"
 #import "Model.h"
 #import "NetworkHandler.h"
 #import "SessionService.h"
