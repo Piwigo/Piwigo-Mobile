@@ -831,13 +831,13 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
     @objc func presentImageUploadView() {
         // Reset Select buttons
-//        selectedSections = [AnyHashable](repeating: NSNumber(value: false), count: sortedImages.count)
-//
-//        // Present Image Upload View
-//        let imageUploadVC = ImageUploadViewController()
-//        imageUploadVC.selectedCategory = categoryId
-//        imageUploadVC.imagesSelected = selectedImages
-//        navigationController?.pushViewController(imageUploadVC, animated: true)
+        selectedSections = [NSNumber](repeating: NSNumber(value: false), count: sortedImages.count)
+
+        // Present Image Upload View
+        let imageUploadVC = ImageUploadViewController()
+        imageUploadVC.selectedCategory = categoryId
+        imageUploadVC.imagesSelected = selectedImages
+        navigationController?.pushViewController(imageUploadVC, animated: true)
 
         // Clear list of selected images
         selectedImages = []

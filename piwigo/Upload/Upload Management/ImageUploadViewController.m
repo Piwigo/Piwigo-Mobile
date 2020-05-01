@@ -155,12 +155,12 @@
 
 -(void)setUpImageInfo
 {
-	for(PHAsset *imageAsset in self.imagesSelected)
+	for(NSString *imageId in self.imagesSelected)
 	{
-		ImageUpload *image = [[ImageUpload alloc] initWithImageAsset:imageAsset
-                                                         forCategory:self.selectedCategory
-                                                        privacyLevel:[Model sharedInstance].defaultPrivacyLevel
-                                                              author:[Model sharedInstance].defaultAuthor];
+		ImageUpload *image = [[ImageUpload alloc] initWithImageId:imageId
+                                                      forCategory:self.selectedCategory
+                                                     privacyLevel:[Model sharedInstance].defaultPrivacyLevel
+                                                           author:[Model sharedInstance].defaultAuthor];
 		[self.imagesToEdit addObject:image];
 	}
 }

@@ -16,25 +16,25 @@ NSString * const kPiwigoNotificationDeselectImageToUpload = @"kPiwigoNotificatio
 
 @implementation ImageUpload
 
--(instancetype)initWithImageAsset:(PHAsset*)imageAsset forCategory:(NSInteger)category
-                     privacyLevel:(kPiwigoPrivacy)privacy author:(NSString*)author
+-(instancetype)initWithImageId:(NSString*)imageId forCategory:(NSInteger)category
+                  privacyLevel:(kPiwigoPrivacy)privacy author:(NSString*)author
 {
     self = [super init];
     if(self)
     {
-        if (imageAsset) {
+        if ([imageId length] > 0) {
             // Initialisation from image asset
-            self.imageAsset = imageAsset;
-            NSString *fileName = [[PhotosFetch sharedInstance] getFileNameFomImageAsset:imageAsset];
+            self.imageAsset = [[PHAsset fetchAssetsWithLocalIdentifiers:@[imageId] options:nil] firstObject];
+            NSString *fileName = [[PhotosFetch sharedInstance] getFileNameFomImageAsset:self.imageAsset];
             if ([Model sharedInstance].prefixFileNameBeforeUpload &&
                 ![fileName hasPrefix:[Model sharedInstance].defaultPrefix]) {
                 self.fileName = [[Model sharedInstance].defaultPrefix stringByAppendingString:fileName];
             } else {
                 self.fileName = fileName;
             }
-            self.creationDate = [imageAsset creationDate];
-            self.pixelWidth = [imageAsset pixelWidth];
-            self.pixelHeight = [imageAsset pixelHeight];
+            self.creationDate = [self.imageAsset creationDate];
+            self.pixelWidth = [self.imageAsset pixelWidth];
+            self.pixelHeight = [self.imageAsset pixelHeight];
             self.categoryToUploadTo = category;
             self.privacyLevel = privacy;            // default privacy level
             self.author = author;                   // Default author

@@ -575,14 +575,14 @@
 			path = piwigoGetPiwigo;
 			sourceTree = "<group>";
 		};
-		AD23A1EF2427C94000F662AB /* Upload Data */ = {
+		AD23A1EF2427C94000F662AB /* Uploads Data */ = {
 			isa = PBXGroup;
 			children = (
 				AD23A1F12427CA9300F662AB /* Upload.swift */,
 				AD23A1F22427D2D900F662AB /* UploadsProvider.swift */,
 				AD23A1F02427C95700F662AB /* UploadError.swift */,
 			);
-			path = "Upload Data";
+			path = "Uploads Data";
 			sourceTree = "<group>";
 		};
 		AD30FD3521316DA8009AA30E /* piwigoAppStore */ = {
@@ -1145,7 +1145,7 @@
 				ADABACB92235A68E0095C4D0 /* Categories Data */,
 				AD41BEC8223E9BB200A5DEE3 /* Locations Data */,
 				D89045B31A9469FF00A306FE /* Tags Data */,
-				AD23A1EF2427C94000F662AB /* Upload Data */,
+				AD23A1EF2427C94000F662AB /* Uploads Data */,
 			);
 			path = "Data Cache";
 			sourceTree = "<group>";
