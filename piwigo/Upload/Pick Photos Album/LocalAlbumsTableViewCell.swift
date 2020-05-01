@@ -13,7 +13,7 @@ class LocalAlbumsTableViewCell: UITableViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var subtitleLabel: UILabel!
     
-    func configure(with title: String, nberPhotos: Int, nberVideos: Int, startDate: Date?, endDate: Date?) -> Void {
+    func configure(with title: String, nberPhotos: Int, startDate: Date?, endDate: Date?) -> Void {
 
         // Background color and aspect
         backgroundColor = UIColor.piwigoColorCellBackground()
@@ -25,19 +25,10 @@ class LocalAlbumsTableViewCell: UITableViewCell {
         titleLabel.text = title
         
         // Subtitle
-        var subtitle: String
-        if nberPhotos > 0 && nberVideos > 0 {
-            subtitle = String(format: "%ld %@ • %ld %@", nberPhotos,
-                              nberPhotos > 1 ? NSLocalizedString("severalImages", comment: "Photos") : NSLocalizedString("singleImage", comment: "Photo"),
-                              nberVideos,
-                              nberVideos > 1 ? NSLocalizedString("severalVideos", comment: "Videos") : NSLocalizedString("singleVideo", comment: "Video"))
-
-        } else if nberPhotos > 0 && nberVideos == 0 {
+        var subtitle: String = ""
+        if nberPhotos != NSNotFound {
             subtitle = String(format: "%ld %@", nberPhotos,
                               nberPhotos > 1 ? NSLocalizedString("severalImages", comment: "Photos") : NSLocalizedString("singleImage", comment: "Photo"))
-        } else {
-            subtitle = String(format: "%ld %@", nberVideos,
-                              nberVideos > 1 ? NSLocalizedString("severalVideos", comment: "Videos") : NSLocalizedString("singleVideo", comment: "Video"))
         }
         
         // Append date interval in landscape mode or on iPad

@@ -248,17 +248,11 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
 
         let assetCollection = albumsProvider.fetchedLocalAlbums[indexPath.section][indexPath.row]
         let title = assetCollection.localizedTitle ?? "No name"
-        
-        let fetchOptions = PHFetchOptions()
-        fetchOptions.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.image.rawValue)
-        let nberPhotos = PHAsset.fetchAssets(in: assetCollection, options: fetchOptions).count
-        fetchOptions.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.video.rawValue)
-        let nberVideos = PHAsset.fetchAssets(in: assetCollection, options: fetchOptions).count
-        
+        let nberPhotos = assetCollection.estimatedAssetCount
         let startDate = assetCollection.startDate
         let endDate = assetCollection.endDate
 
-        cell.configure(with: title, nberPhotos: nberPhotos, nberVideos: nberVideos, startDate: startDate, endDate: endDate)
+        cell.configure(with: title, nberPhotos: nberPhotos, startDate: startDate, endDate: endDate)
         if assetCollection.assetCollectionType == .smartAlbum && assetCollection.assetCollectionSubtype == .smartAlbumGeneric {
             cell.accessibilityIdentifier = "LocalAlbum"
         }

@@ -98,7 +98,7 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
     
     private func filter(fetchedAssetCollections: [PHFetchResult<PHAssetCollection>]) -> [PHAssetCollection] {
         // Fetch assets to determine non-empty collections
-        let start = CFAbsoluteTimeGetCurrent()
+//        let start = CFAbsoluteTimeGetCurrent()
         var collections = [PHAssetCollection]()
 
         // Fetch all images in selected collection and sort them
@@ -122,8 +122,8 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
             return (title0.compare(title1) == .orderedAscending)
         }
         
-        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        print("==> Took \(diff) ms to filter albums")
+//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+//        print("==> Took \(diff) ms to filter albums")
         return sortedCollections
     }
 
