@@ -16,19 +16,8 @@ import UIKit
 }
 
 @objc
-class LocalImagesHeaderReusableView: UICollectionReusableView, LocationsProviderDelegate {
+class LocalImagesHeaderReusableView: UICollectionReusableView {
     
-    // MARK: - Core Data
-    /**
-     The TagsProvider that fetches tag data, saves it to Core Data,
-     and serves it to this table view.
-     */
-    private lazy var locationsProvider: LocationsProvider = {
-        let locationsProvider : LocationsProvider = LocationsProvider()
-        locationsProvider.fetchedPlaceNamesDelegate = self
-        return locationsProvider
-    }()
-
     private var location: CLLocation = CLLocation.init()
     private var dateLabelText: String = ""
     private var optionalDateLabelText: String = ""
@@ -104,9 +93,13 @@ class LocalImagesHeaderReusableView: UICollectionReusableView, LocationsProvider
 
     // MARK: Utilities
     
-    private func setLabelsFromDatesAndLocation() {
+    @objc private func setLabelsFromDatesAndLocation() {
+        // Register new place name notifications
+        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationNewPlaceName)
+        NotificationCenter.default.addObserver(self, selector: #selector(setLabelsFromDatesAndLocation), name: name, object: nil)
+
         // Get place name from location (may geodecode location and update labels later)
-        let placeNames = locationsProvider.getPlaceName(for: location)
+        let placeNames = LocationsProvider.sharedInstance().getPlaceName(for: location)
 
         // Use label according to name availabilities
         if let placeLabelName = placeNames["placeLabel"] as? String {
@@ -116,6 +109,9 @@ class LocalImagesHeaderReusableView: UICollectionReusableView, LocationsProvider
             } else {
                 self.dateLabel.text = String(format: "%@ • %@", dateLabelText, optionalDateLabelText)
             }
+            // Unregister new place name notifications
+            let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationNewPlaceName)
+            NotificationCenter.default.removeObserver(self, name: name, object: nil)
         } else {
             placeLabel.text = dateLabelText
             dateLabel.text = optionalDateLabelText
@@ -255,14 +251,5 @@ class LocalImagesHeaderReusableView: UICollectionReusableView, LocationsProvider
         }
         
         return locationForSection
-    }
-
-    
-    // MARK: - LocationsProviderDelegate Methods
-    
-    func didFetchPlaceNames() {
-        // New place names available
-//        print("==>> New place names available for section", section)
-        setLabelsFromDatesAndLocation()
     }
 }

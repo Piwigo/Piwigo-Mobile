@@ -18,9 +18,8 @@ class ClearCache: NSObject {
         let tagsProvider : TagsProvider = TagsProvider()
         tagsProvider.clearTags()
 
-//        let locationsProvider : TagsProvider = TagsProvider(completionClosure: {})
-        let locationsProvider : LocationsProvider = LocationsProvider()
-        locationsProvider.clearLocations()
+        // Locations with place names
+        LocationsProvider.sharedInstance().clearLocations()
 
         // Data
         TagsData.sharedInstance().clearCache()

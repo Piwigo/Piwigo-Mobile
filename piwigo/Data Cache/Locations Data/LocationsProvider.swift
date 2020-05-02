@@ -10,16 +10,11 @@
 import CoreData
 import CoreLocation
 
-@objc
-protocol LocationsProviderDelegate: NSObjectProtocol {
-    func didFetchPlaceNames()
-}
-
 let kPiwigoMaxNberOfLocationsToDecode: Int = 10
 let a: Double = 6378137.0               // Equatorial radius in meters
 let e2: Double = 0.00669437999014       // Earth eccentricity squared
+let kPiwigoNotificationNewPlaceName = "kPiwigoNotificationNewPlaceName"
 
-@objc
 class LocationsProvider: NSObject {
     
     var geocoder = CLGeocoder()
@@ -28,6 +23,12 @@ class LocationsProvider: NSObject {
     override init() {
         // Prepare list of operations
         queue.maxConcurrentOperationCount = 1   // Make it a serial queue
+    }
+    
+    // Singleton
+    static var instance: LocationsProvider = LocationsProvider()
+    class func sharedInstance() -> LocationsProvider {
+        return instance
     }
     
 
@@ -41,7 +42,9 @@ class LocationsProvider: NSObject {
     
     // MARK: - Fetch Place Names
     /**
-     Fetches the place name feed from the remote server, and imports it into Core Data.
+     Submits a reverse-geocoding request for the specified location, imports it into Core Data,
+     and notify views when the new place name is available.
+     The requests are stored in a queue and performed one after the other by a shared instance.
     */
     private func fetchPlaceName(at location: LocationProperties, completionHandler: @escaping (Error?) -> Void) {
         
@@ -61,33 +64,41 @@ class LocationsProvider: NSObject {
                 if error == nil && placemarks != nil && (placemarks?.count ?? 0) > 0 {
                     // Extract data
                     let placeMark = placemarks?[0]
-                    let region = placeMark?.region as? CLCircularRegion
-                    let locality = placeMark?.locality ?? ""
-                    let thoroughfare = placeMark?.thoroughfare ?? ""
-                    let administrativeArea = placeMark?.administrativeArea ?? ""
+                    let name: String = placeMark?.name ?? ""
+                    let administrativeArea: String = placeMark?.administrativeArea ?? ""
+                    let region: CLCircularRegion = placeMark?.region as! CLCircularRegion
+                    let locality: String = placeMark?.locality ?? ""
+                    let subLocality: String = placeMark?.subLocality ?? ""
+                    let thoroughfare: String = placeMark?.thoroughfare ?? ""
 
                     // Define place name
                     var placeName = ""
                     var streetName = ""
-                    if locality.count > 0 {
-                        // Locality returned
-                        if (region?.radius ?? 0) > location.radius ?? kCLLocationAccuracyBestForNavigation {
-                            // Images of section are in the same region
-                            if (locality.count != 0) && (administrativeArea.count != 0) && (thoroughfare.count != 0) {
-                                placeName = "\(locality), \(administrativeArea)"
-                                streetName = "\(thoroughfare)"
-                            } else {
-                                placeName = "\(locality)"
-                                streetName = "\(administrativeArea)"
-                            }
-                        } else {
-                            // Images of section are in not in the same region
-                            if (locality.count != 0) && (administrativeArea.count != 0) {
-                                placeName = locality
-                                streetName = administrativeArea
-                            } else {
-                                placeName = locality
-                            }
+
+                    // Images of section are in the same region
+                    if name.count != 0 {
+                        placeName = name
+                        if (thoroughfare != name) && (thoroughfare.count != 0) {
+                            streetName = thoroughfare
+                        }
+                        else if (subLocality != name) && (subLocality.count != 0) {
+                            streetName = subLocality
+                        }
+                        else if (locality != name) && (locality.count != 0) {
+                            streetName = locality
+                        }
+                    } else if (locality.count != 0) && (administrativeArea.count != 0) && (thoroughfare.count != 0) {
+                        placeName = "\(locality), \(administrativeArea)"
+                        streetName = "\(thoroughfare)"
+                    } else {
+                        placeName = "\(locality)"
+                        streetName = "\(administrativeArea)"
+                    }
+
+                    if region.radius < location.radius ?? kCLLocationAccuracyBestForNavigation {
+                        // Images of section are not in the same area
+                        if placeName.count != 0 {
+                            placeName.append(NSLocalizedString("andMore", comment: " & more"))
                         }
                     }
 
@@ -98,7 +109,7 @@ class LocationsProvider: NSObject {
 
                     // Add new location to CoreData store
                     let newLocation = LocationProperties(coordinate: location.coordinate,
-                                                         radius: region!.radius,
+                                                         radius: region.radius,
                                                          placeName: placeName, streetName: streetName)
                     self.importOneLocation(newLocation, taskContext: self.managedObjectContext)
                     
@@ -113,6 +124,7 @@ class LocationsProvider: NSObject {
         })
 
         queue.addOperation(operation)
+//        print("===> fetchPlaceName operations:", queue.operationCount)
     }
 
 
@@ -158,10 +170,9 @@ class LocationsProvider: NSObject {
                 // Reset the taskContext to free the cache and lower the memory footprint.
                 taskContext.reset()
 
-                // Update collection view
-                if fetchedPlaceNamesDelegate?.responds(to: #selector(LocationsProviderDelegate.didFetchPlaceNames)) ?? false {
-                    fetchedPlaceNamesDelegate?.didFetchPlaceNames()
-                }
+                // Notify new place name to views
+                let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationNewPlaceName)
+                NotificationCenter.default.post(name: name, object: nil)
             }
         }
     }
@@ -192,13 +203,8 @@ class LocationsProvider: NSObject {
     // MARK: - Get Place Names
     
     /**
-     A fetched results controller delegate to give consumers a chance to update
-     the user interface when content changes.
-     */
-    weak var fetchedPlaceNamesDelegate: LocationsProviderDelegate?
-    
-    /**
      Routine returning the place name of a location
+     This routine adds an operation fetching the place name if necessary
      */
     func getPlaceName(for location: CLLocation) -> [AnyHashable : Any] {
         var placeNames: [AnyHashable : Any] = [:]

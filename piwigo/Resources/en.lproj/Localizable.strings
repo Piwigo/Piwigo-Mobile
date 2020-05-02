@@ -266,6 +266,7 @@
 "severalVideos" = "Videos";
 "noImages" = "No Photos";
 "pullToRefresh" = "Reload Photos";
+"andMore" = " & more";
 
 // Errors
 "albumPhotoError_title" = "Get Album Photos Error";
