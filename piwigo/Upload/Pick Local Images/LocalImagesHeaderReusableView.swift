@@ -138,12 +138,13 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
                 // Set dates in right order in case user sorted images in reverse order
                 let firstImageDate = (dateCreated1 < dateCreated2) ? dateCreated1 : dateCreated2
                 let lastImageDate = (dateCreated1 > dateCreated2) ? dateCreated1 : dateCreated2
-                let firstImageDay: Date = Calendar.current.startOfDay(for: firstImageDate)          // Day the first image was taken in seconds
-                let lastImageDay: Date = Calendar.current.startOfDay(for: lastImageDate)            // Day the last image was taken in seconds
+                let firstImageDay = Calendar.current.dateComponents([.year, .month, .day], from: firstImageDate)
+                let lastImageDay = Calendar.current.dateComponents([.year, .month, .day], from: lastImageDate)
 
                 // Images taken the same day?
                 if firstImageDay == lastImageDay {
-                    // Images were taken the same day => Keep dataLabel as already set and define optional string with starting and ending times
+                    // Images were taken the same day
+                    // => Keep dataLabel as already set and define optional string with starting and ending times
                     let firstImageDateStr = DateFormatter.localizedString(from: firstImageDate, dateStyle: .none, timeStyle: .short)
                     let lastImageDateStr = DateFormatter.localizedString(from: lastImageDate, dateStyle: .none, timeStyle: .short)
                     if (firstImageDateStr == lastImageDateStr) {
@@ -152,26 +153,33 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
                         optionalDateLabelText = "\(firstImageDateStr) - \(lastImageDateStr)"
                     }
                 } else {
-                    // => Images not taken the same day => Will display the starting and ending dates
-                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                    let dateFormatter = DateFormatter.init()
-                    dateFormatter.locale = .current
-                    if UIScreen.main.bounds.size.width > 414 {
-                        // i.e. larger than iPhones 6, 7 screen width
-                        dateFormatter.setLocalizedDateFormatFromTemplate("MMMMd")
-                        dateLabelText = dateFormatter.string(from: dateCreated1) + " - " + dateFormatter.string(from: dateCreated2)
-                    } else {
-                        dateFormatter.setLocalizedDateFormatFromTemplate("MMd")
-                        dateLabelText = dateFormatter.string(from: dateCreated1) + " - " + dateFormatter.string(from: dateCreated2)
-                    }
-                    // Define optional string with starting and ending year
-                    dateFormatter.setLocalizedDateFormatFromTemplate("YYYY")
-                    let firstYear = dateFormatter.string(from: dateCreated1)
-                    let lastYear = dateFormatter.string(from: dateCreated2)
-                    if firstYear == lastYear {
+                    // => Images not taken the same day, same month?
+                    let firstImageMonth = Calendar.current.dateComponents([.year, .month], from: firstImageDate)
+                    let lastImageMonth = Calendar.current.dateComponents([.year, .month], from: lastImageDate)
+                    if (firstImageMonth == lastImageMonth) {
+                        // Images taken during the sme month
+                        // => Display month instead of dates
+                        let dateFormatter = DateFormatter.init()
+                        dateFormatter.locale = .current
+                        dateFormatter.setLocalizedDateFormatFromTemplate("MMMMYYYY")
+                        dateLabelText = dateFormatter.string(from: dateCreated1)
+                    } else  {
+                        // => Will display starting and ending dates
+                        // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                        let dateFormatter = DateFormatter.init()
+                        dateFormatter.locale = .current
+                        if UIScreen.main.bounds.size.width > 414 {
+                            // i.e. larger than iPhones 6, 7 screen width
+                            dateFormatter.setLocalizedDateFormatFromTemplate("MMMMd")
+                            dateLabelText = dateFormatter.string(from: dateCreated1) + " > " + dateFormatter.string(from: dateCreated2)
+                        } else {
+                            dateFormatter.setLocalizedDateFormatFromTemplate("MMd")
+                            dateLabelText = dateFormatter.string(from: dateCreated1) + " > " + dateFormatter.string(from: dateCreated2)
+                        }
+                        // Define optional string with year
+                        dateFormatter.setLocalizedDateFormatFromTemplate("YYYY")
+                        let firstYear = dateFormatter.string(from: dateCreated1)
                         optionalDateLabelText = firstYear
-                    } else {
-                        optionalDateLabelText = firstYear + " - " + lastYear
                     }
                 }
             }

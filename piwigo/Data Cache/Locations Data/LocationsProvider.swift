@@ -64,48 +64,97 @@ class LocationsProvider: NSObject {
                 if error == nil && placemarks != nil && (placemarks?.count ?? 0) > 0 {
                     // Extract data
                     let placeMark = placemarks?[0]
-                    let name: String = placeMark?.name ?? ""
+                    let country: String = placeMark?.country ?? ""
                     let administrativeArea: String = placeMark?.administrativeArea ?? ""
+                    let subAdministrativeArea: String = placeMark?.subAdministrativeArea ?? ""
                     let region: CLCircularRegion = placeMark?.region as! CLCircularRegion
                     let locality: String = placeMark?.locality ?? ""
                     let subLocality: String = placeMark?.subLocality ?? ""
                     let thoroughfare: String = placeMark?.thoroughfare ?? ""
+                    let inlandWater: String = placeMark?.inlandWater ?? ""
+                    let ocean: String = placeMark?.ocean ?? ""
 
                     // Define place name
                     var placeName = ""
                     var streetName = ""
 
-                    // Images of section are in the same region
-                    if name.count != 0 {
-                        placeName = name
-                        if (thoroughfare != name) && (thoroughfare.count != 0) {
-                            streetName = thoroughfare
+                    // => Display ocean name if somewhere in an ocean
+                    if ocean.count > 0 {
+                        placeName = ocean
+                        if country.count > 0 {
+                            streetName = country
                         }
-                        else if (subLocality != name) && (subLocality.count != 0) {
+                    }
+                    // => Display name of inland body of water if somewhere in such inland body
+                    else if inlandWater.count > 0 {
+                        placeName = inlandWater
+                        if country.count > 0 {
+                            streetName = country
+                        }
+                    }
+                    // => Display thoroughfare if available
+                    else if thoroughfare.count != 0 {
+                        placeName = thoroughfare
+                        if subLocality.count != 0 && subLocality != thoroughfare {
                             streetName = subLocality
-                        }
-                        else if (locality != name) && (locality.count != 0) {
+                        } else if locality.count != 0 && locality != subLocality {
                             streetName = locality
+                        } else if subAdministrativeArea.count != 0 && subAdministrativeArea != subLocality {
+                            streetName = subAdministrativeArea
+                        } else if administrativeArea.count != 0 && administrativeArea != subLocality{
+                            streetName = administrativeArea
+                        } else if country.count != 0 {
+                            streetName = country
                         }
-                    } else if (locality.count != 0) && (administrativeArea.count != 0) && (thoroughfare.count != 0) {
-                        placeName = "\(locality), \(administrativeArea)"
-                        streetName = "\(thoroughfare)"
-                    } else {
-                        placeName = "\(locality)"
-                        streetName = "\(administrativeArea)"
+                    }
+                    // => Display sublocality if available
+                    else if subLocality.count != 0 {
+                        placeName = subLocality
+                        if locality.count != 0 && locality != subLocality {
+                            streetName = locality
+                        } else if subAdministrativeArea.count != 0 && subAdministrativeArea != subLocality {
+                            streetName = subAdministrativeArea
+                        } else if administrativeArea.count != 0 && administrativeArea != subLocality{
+                            streetName = administrativeArea
+                        } else if country.count != 0 {
+                            streetName = country
+                        }
+                    }
+                    // => Display locality if available
+                    else if locality.count != 0 {
+                        placeName = locality
+                        if subAdministrativeArea.count != 0 && subAdministrativeArea != locality {
+                            streetName = subAdministrativeArea
+                        } else if administrativeArea.count != 0 && administrativeArea != locality{
+                            streetName = administrativeArea
+                        } else if country.count != 0 {
+                            streetName = country
+                        }
+                    }
+                    // Locality not available, use administrative info if possible
+                    else if subAdministrativeArea.count != 0 {
+                        placeName = subAdministrativeArea
+                        if administrativeArea.count != 0 && administrativeArea != subAdministrativeArea {
+                            streetName = administrativeArea
+                        } else if country.count != 0 {
+                            streetName = country
+                        }
+                    }
+                    // subAdministrativeArea not available, use administrative info if possible
+                    else if administrativeArea.count != 0 {
+                        placeName = administrativeArea
+                        if country.count != 0 {
+                            streetName = country
+                        }
                     }
 
+                    // If all images are not localised in this place, add comment
                     if region.radius < location.radius ?? kCLLocationAccuracyBestForNavigation {
-                        // Images of section are not in the same area
-                        if placeName.count != 0 {
-                            placeName.append(NSLocalizedString("andMore", comment: " & more"))
-                        }
+                        placeName.append(NSLocalizedString("andMore", comment: " & more"))
                     }
 
                     // Log placemarks[0]
-//                    if let region1 = placeMark?.region, let areas = placeMark?.areasOfInterest {
-//                        print("\("\n===>> name:\(placeMark?.name ?? ""), country:\(placeMark?.country ?? ""), administrativeArea:\(placeMark?.administrativeArea ?? ""), subAdministrativeArea:\(placeMark?.subAdministrativeArea ?? ""), locality:\(placeMark?.locality ?? ""), subLocality:\(placeMark?.subLocality ?? ""), thoroughfare:\(placeMark?.thoroughfare ?? ""), subThoroughfare:\(placeMark?.subThoroughfare ?? ""), region:\(region1), areasOfInterest:\(areas)")\n")
-//                    }
+                    print("\n===>> name:\(placeMark?.name ?? ""), country:\(country), administrativeArea:\(administrativeArea), subAdministrativeArea:\(subAdministrativeArea), locality:\(locality), subLocality:\(subLocality), thoroughfare:\(thoroughfare), subThoroughfare:\(placeMark?.subThoroughfare ?? ""), region:\(region), areasOfInterest:\(placeMark?.areasOfInterest?[0] ?? ""),inlandWater:\(inlandWater), ocean:\(ocean)\n")
 
                     // Add new location to CoreData store
                     let newLocation = LocationProperties(coordinate: location.coordinate,
