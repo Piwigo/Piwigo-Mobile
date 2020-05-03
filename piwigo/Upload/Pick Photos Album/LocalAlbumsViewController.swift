@@ -31,17 +31,6 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
 
-    // MARK: - Local Albums Provider
-    /**
-     The TagsProvider that fetches tag data, saves it to Core Data,
-     and serves it to this table view.
-     */
-    private lazy var albumsProvider: LocalAlbumsProvider = {
-        let provider : LocalAlbumsProvider = LocalAlbumsProvider()
-        provider.fetchedLocalAlbumsDelegate = self
-        return provider
-    }()
-
     private var cancelBarButton: UIBarButtonItem?
 
     
@@ -62,7 +51,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
         
         // Use the LocalAlbumsProvider to fetch albums data.
-        albumsProvider.fetchLocalAlbums {
+        LocalAlbumsProvider.sharedInstance().fetchLocalAlbums {
             self.localAlbumsTableView.reloadData()
         }
     }
@@ -233,11 +222,11 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     
     // MARK: - UITableView - Rows
     func numberOfSections(in tableView: UITableView) -> Int {
-        return albumsProvider.fetchedLocalAlbums.count
+        return LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return albumsProvider.fetchedLocalAlbums[section].count
+        return LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[section].count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -246,8 +235,8 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             return LocalAlbumsTableViewCell()
         }
 
-        let assetCollection = albumsProvider.fetchedLocalAlbums[indexPath.section][indexPath.row]
-        let title = assetCollection.localizedTitle ?? "No name"
+        let assetCollection = LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[indexPath.section][indexPath.row]
+        let title = assetCollection.localizedTitle ?? "—> ? <——"
         let nberPhotos = assetCollection.estimatedAssetCount
         let startDate = assetCollection.startDate
         let endDate = assetCollection.endDate
@@ -268,7 +257,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         let localImagesSB = UIStoryboard(name: "LocalImagesViewController", bundle: nil)
         let localImagesVC = localImagesSB.instantiateViewController(withIdentifier: "LocalImagesViewController") as? LocalImagesViewController
         localImagesVC?.setCategoryId(categoryId)
-        localImagesVC?.setImageCollectionId(albumsProvider.fetchedLocalAlbums[indexPath.section][indexPath.row].localIdentifier)
+        localImagesVC?.setImageCollectionId(LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[indexPath.section][indexPath.row].localIdentifier)
         if let localImagesVC = localImagesVC {
             navigationController?.pushViewController(localImagesVC, animated: true)
         }

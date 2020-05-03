@@ -16,6 +16,12 @@ protocol LocalAlbumsProviderDelegate: NSObjectProtocol {
 
 class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
     
+    // Singleton
+    static var instance: LocalAlbumsProvider = LocalAlbumsProvider()
+    class func sharedInstance() -> LocalAlbumsProvider {
+        return instance
+    }
+    
     // MARK: Properties
     var fetchedLocalAlbums = [[PHAssetCollection]]()
     
@@ -86,6 +92,7 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         if localAlbums.count > 0 {
             fetchedLocalAlbums.append(localAlbums)
         }
+        
         // iCloud albums
         let iCloudCollectionsFetchResults: [PHFetchResult<PHAssetCollection>] = [CloudMyPhotoStream, CloudShared].compactMap { $0 }
         let iCloudAlbums = filter(fetchedAssetCollections: iCloudCollectionsFetchResults)
@@ -93,6 +100,7 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
             fetchedLocalAlbums.append(iCloudAlbums)
         }
         
+//        print("==> ", localAlbums.count, "albums and ", iCloudAlbums.count, "iCloud albums")
         completion()
     }
     
@@ -102,8 +110,8 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         var collections = [PHAssetCollection]()
 
         // Fetch all images in selected collection and sort them
-        // iPod - iOS 9.3.5: 1.687 ms for 2.185 photos in 57 local albums
-        // iPhone 11 Pro - iOS 13.5ß: 75 ms for 100.347 photos in 5 local albums
+        // iPod - iOS 9.3.5: 1.548 ms for 2.185 photos in 55 local albums
+        // iPhone 11 Pro - iOS 13.5ß: 72 ms for 89.215 photos in 5 local albums
         let fetchOptions = PHFetchOptions()
         fetchOptions.fetchLimit = 1
         for fetchResult in fetchedAssetCollections {
