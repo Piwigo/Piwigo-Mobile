@@ -1878,6 +1878,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         if (deviceCode == "iPhone12,5") {
             return "iPhone 11 Pro Max"
         }
+        if (deviceCode == "iPhone12,8") {
+            return "iPhone SE (2nd generation)"
+        }
 
         // iPad
         if (deviceCode == "iPad1,1") {

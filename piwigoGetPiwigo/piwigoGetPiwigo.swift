@@ -63,6 +63,7 @@ public enum Model : String {
     iPhone11           = "iPhone 11",
     iPhone11Pro        = "iPhone 11 Pro",
     iPhone11ProMax     = "iPhone 11 Pro Max",
+    iPhoneSE2          = "iPhone SE 2"
     //Apple TV
     AppleTV            = "Apple TV",
     AppleTV_4K         = "Apple TV 4K",
@@ -178,6 +179,7 @@ public extension UIDevice {
             "iPhone11,4" : .iPhoneXsMax,
             "iPhone11,6" : .iPhoneXsMax,
             "iPhone11,8" : .iPhoneXr,
+            "iPhone12,8" : .iPhoneSE2,
             //AppleTV
             "AppleTV5,3" : .AppleTV,
             "AppleTV6,2" : .AppleTV_4K
