@@ -158,7 +158,7 @@ class PhotosFetch: NSObject {
             }
         }
 
-        //    NSLog(@"=> filename = %@", fileName);
+//        print("=> filename = \(fileName)")
         return fileName
     }
 

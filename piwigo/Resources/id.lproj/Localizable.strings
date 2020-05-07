@@ -266,6 +266,10 @@
 "severalVideos" = "Videos";
 "noImages" = "Tidak Ada Gambar";
 "pullToRefresh" = "Muat Ulang Gambar";
+"andMore" = " & more";
+"Months" = "Months";
+"Weeks" = "Weeks";
+"Days" = "Days";
 
 // Errors
 "albumPhotoError_title" = "Galat dalam Mendapatkan Foto Album";

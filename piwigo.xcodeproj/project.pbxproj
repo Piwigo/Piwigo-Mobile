@@ -18,7 +18,6 @@
 		AD0FF9B821316ECE0094B907 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0FF9B721316ECE0094B907 /* SnapshotHelper.swift */; };
 		AD1092EB23D4E4D0006627B0 /* TagsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1092EA23D4E4D0006627B0 /* TagsProvider.swift */; };
 		AD11BDA22402C7E7003347BE /* UIColor+AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1F60012402B1B70099E5E5 /* UIColor+AppColors.swift */; };
-		AD1392FB24433E32008EA313 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = AD1392F924433E32008EA313 /* DataModel.xcdatamodeld */; };
 		AD196A9D2438D112006C492A /* LabelImageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AD196A9C2438D112006C492A /* LabelImageTableViewCell.m */; };
 		AD196A9F2438D11C006C492A /* LabelImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD196A9E2438D11C006C492A /* LabelImageTableViewCell.xib */; };
 		AD196AA12438D2D6006C492A /* ShareMetadataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD196AA02438D2D5006C492A /* ShareMetadataViewController.swift */; };
@@ -106,6 +105,7 @@
 		ADE03F3423D4CF1D00F21ED9 /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE03F3323D4CF1D00F21ED9 /* Tag.swift */; };
 		ADE03F3623D4E3BD00F21ED9 /* TagError.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE03F3523D4E3BD00F21ED9 /* TagError.swift */; };
 		ADE46684242F978F002FEDE5 /* AboutViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADE46683242F978E002FEDE5 /* AboutViewController.storyboard */; };
+		ADE98EB0245EDAD600D39D3E /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ADE98EAD245EDAD600D39D3E /* DataModel.xcdatamodeld */; };
 		ADE9D69723BE71A200818003 /* ImageUploadThumbTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ADE9D69623BE71A200818003 /* ImageUploadThumbTableViewCell.m */; };
 		ADE9D69923BE71CA00818003 /* ImageUploadThumbTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADE9D69823BE71CA00818003 /* ImageUploadThumbTableViewCell.xib */; };
 		ADEC6B032455A3520011527C /* LocalAlbumsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEC6B022455A3520011527C /* LocalAlbumsProvider.swift */; };
@@ -202,7 +202,6 @@
 		AD0FF9B721316ECE0094B907 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotHelper.swift; path = fastlane/SnapshotHelper.swift; sourceTree = SOURCE_ROOT; };
 		AD1092EA23D4E4D0006627B0 /* TagsProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagsProvider.swift; sourceTree = "<group>"; };
 		AD1092EC23D50371006627B0 /* UploadTagsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadTagsViewController.swift; sourceTree = "<group>"; };
-		AD1392FA24433E32008EA313 /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
 		AD196A9B2438D112006C492A /* LabelImageTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LabelImageTableViewCell.h; sourceTree = "<group>"; };
 		AD196A9C2438D112006C492A /* LabelImageTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LabelImageTableViewCell.m; sourceTree = "<group>"; };
 		AD196A9E2438D11C006C492A /* LabelImageTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LabelImageTableViewCell.xib; sourceTree = "<group>"; };
@@ -370,7 +369,6 @@
 		ADC80E4723BDCBAA003A6960 /* EditImageThumbCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EditImageThumbCollectionViewCell.xib; sourceTree = "<group>"; };
 		ADC80E4923BDD2D0003A6960 /* EditImageThumbTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EditImageThumbTableViewCell.h; sourceTree = "<group>"; };
 		ADC80E4A23BDD2DD003A6960 /* EditImageThumbTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EditImageThumbTableViewCell.m; sourceTree = "<group>"; };
-		ADC81676244AFA7700650223 /* DataModel 2 (+Location).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 2 (+Location).xcdatamodel"; sourceTree = "<group>"; };
 		ADC8167A244B5EDE00650223 /* LocalImagesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalImagesViewController.swift; sourceTree = "<group>"; };
 		ADC8167C244B5FA800650223 /* LocalImagesViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LocalImagesViewController.storyboard; sourceTree = "<group>"; };
 		ADC8FAA9244C7307006BDA6A /* LocalImagesFooterReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalImagesFooterReusableView.swift; sourceTree = "<group>"; };
@@ -388,6 +386,8 @@
 		ADE03F3323D4CF1D00F21ED9 /* Tag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
 		ADE03F3523D4E3BD00F21ED9 /* TagError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagError.swift; sourceTree = "<group>"; };
 		ADE46683242F978E002FEDE5 /* AboutViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AboutViewController.storyboard; sourceTree = "<group>"; };
+		ADE98EAE245EDAD600D39D3E /* DataModel 2 (+Location).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 2 (+Location).xcdatamodel"; sourceTree = "<group>"; };
+		ADE98EAF245EDAD600D39D3E /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
 		ADE9D69523BE716800818003 /* ImageUploadThumbTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ImageUploadThumbTableViewCell.h; path = "piwigo/Upload/Upload Parameters/Cells/ImageUploadThumbTableViewCell.h"; sourceTree = SOURCE_ROOT; };
 		ADE9D69623BE71A200818003 /* ImageUploadThumbTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ImageUploadThumbTableViewCell.m; path = "piwigo/Upload/Upload Parameters/Cells/ImageUploadThumbTableViewCell.m"; sourceTree = SOURCE_ROOT; };
 		ADE9D69823BE71CA00818003 /* ImageUploadThumbTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ImageUploadThumbTableViewCell.xib; sourceTree = "<group>"; };
@@ -1141,7 +1141,7 @@
 			children = (
 				AD074F6523F8498A00D6016A /* ClearCache.swift */,
 				ADB433F523FB3CCB00A873A9 /* DataController.swift */,
-				AD1392F924433E32008EA313 /* DataModel.xcdatamodeld */,
+				ADE98EAD245EDAD600D39D3E /* DataModel.xcdatamodeld */,
 				ADABACB92235A68E0095C4D0 /* Categories Data */,
 				AD41BEC8223E9BB200A5DEE3 /* Locations Data */,
 				D89045B31A9469FF00A306FE /* Tags Data */,
@@ -1337,7 +1337,6 @@
 				AD21145A2122D3E4004FFC8C /* AlbumTableViewCell.xib in Resources */,
 				ADE46684242F978F002FEDE5 /* AboutViewController.storyboard in Resources */,
 				AD2B0A1B243D086000AF1FEE /* CategorySortViewController.storyboard in Resources */,
-				ADC8167D244B5FA800650223 /* LocalImagesViewController.storyboard in Resources */,
 				ADEFBD632074E19000DFAD26 /* CategoryTableViewCell.xib in Resources */,
 				AD2B0A15243D001A00AF1FEE /* DefaultAlbumThumbnailSizeViewController.storyboard in Resources */,
 				ADF1CC77243D132100D75319 /* DefaultCategoryViewController.storyboard in Resources */,
@@ -1354,6 +1353,7 @@
 				ADE9D69923BE71CA00818003 /* ImageUploadThumbTableViewCell.xib in Resources */,
 				AD42D08324448F2400F0BAC1 /* LocalAlbumsViewController.storyboard in Resources */,
 				AD196A9F2438D11C006C492A /* LabelImageTableViewCell.xib in Resources */,
+				ADC8167D244B5FA800650223 /* LocalImagesViewController.storyboard in Resources */,
 				AD3207E9240AD93900F00FEB /* PrivacyPolicyViewController.storyboard in Resources */,
 				AD31F5F7242FABF300BD65FC /* ReleaseNotesViewController.storyboard in Resources */,
 				AD2A21FE24310E65006B1A8A /* SelectPrivacyViewController.storyboard in Resources */,
@@ -1368,11 +1368,11 @@
 				ADA36E0F21D777DA00133708 /* OpenSansSemiBold.TTF in Resources */,
 				ADF88E772066D04600D1CE26 /* OpenSansBold.TTF in Resources */,
 				ADF88E792066DA9600D1CE26 /* OpenSansExtraBold.TTF in Resources */,
-				AD6B2E731F0930B40040EAD9 /* Localizable.strings in Resources */,
 				AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */,
+				ADC06AE11F40B15E0081B4FA /* InfoPlist.strings in Resources */,
+				AD6B2E731F0930B40040EAD9 /* Localizable.strings in Resources */,
 				AD3203642184738F00BAD372 /* PrivacyPolicy.strings in Resources */,
 				AD92B8FE1F200083006E5B63 /* ReleaseNotes.strings in Resources */,
-				ADC06AE11F40B15E0081B4FA /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1538,7 +1538,6 @@
 				AD23A1F32427DA3400F662AB /* Upload.swift in Sources */,
 				AD23A1F52427DA3A00F662AB /* UploadError.swift in Sources */,
 				AD23A1F42427DA3800F662AB /* UploadsProvider.swift in Sources */,
-				AD1392FB24433E32008EA313 /* DataModel.xcdatamodeld in Sources */,
 				AD35A16B2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift in Sources */,
 				AD11BDA22402C7E7003347BE /* UIColor+AppColors.swift in Sources */,
 				ADFC3A4E2401DA4F004CD337 /* UIFont+AppFonts.swift in Sources */,
@@ -1603,6 +1602,7 @@
 				ADB17A2124474942006D3402 /* UploadService.m in Sources */,
 				D8A94EB21AAE3C5600E4B287 /* CategoryCollectionViewCell.m in Sources */,
 				D89045B91A946A5B00A306FE /* TagsService.m in Sources */,
+				ADE98EB0245EDAD600D39D3E /* DataModel.xcdatamodeld in Sources */,
 				D8C71A471A8489CF0048BA33 /* ImageUploadViewController.m in Sources */,
 				D82B8CE61A678ED2000E47CA /* NetworkHandler.m in Sources */,
 			);
@@ -2193,13 +2193,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		AD1392F924433E32008EA313 /* DataModel.xcdatamodeld */ = {
+		ADE98EAD245EDAD600D39D3E /* DataModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				ADC81676244AFA7700650223 /* DataModel 2 (+Location).xcdatamodel */,
-				AD1392FA24433E32008EA313 /* DataModel.xcdatamodel */,
+				ADE98EAE245EDAD600D39D3E /* DataModel 2 (+Location).xcdatamodel */,
+				ADE98EAF245EDAD600D39D3E /* DataModel.xcdatamodel */,
 			);
-			currentVersion = ADC81676244AFA7700650223 /* DataModel 2 (+Location).xcdatamodel */;
+			currentVersion = ADE98EAE245EDAD600D39D3E /* DataModel 2 (+Location).xcdatamodel */;
 			path = DataModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

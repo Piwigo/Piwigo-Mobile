@@ -266,6 +266,10 @@
 "severalVideos" = "Videoer";
 "noImages" = "Ingen Billeder";
 "pullToRefresh" = "Genindlæs Billeder";
+"andMore" = " & more";
+"Months" = "Months";
+"Weeks" = "Weeks";
+"Days" = "Days";
 
 // Errors
 "albumPhotoError_title" = "Hent Albummets Fotofejl";

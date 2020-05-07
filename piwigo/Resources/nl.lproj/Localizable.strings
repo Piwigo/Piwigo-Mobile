@@ -266,6 +266,10 @@
 "severalVideos" = "Video's";
 "noImages" = "Geen foto's";
 "pullToRefresh" = "Foto's opnieuw laden";
+"andMore" = " & more";
+"Months" = "Months";
+"Weeks" = "Weeks";
+"Days" = "Days";
 
 // Errors
 "albumPhotoError_title" = "Haal albumfoto's is mislukt";

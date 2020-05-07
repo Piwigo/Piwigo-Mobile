@@ -267,6 +267,9 @@
 "noImages" = "No Photos";
 "pullToRefresh" = "Reload Photos";
 "andMore" = " & more";
+"Months" = "Months";
+"Weeks" = "Weeks";
+"Days" = "Days";
 
 // Errors
 "albumPhotoError_title" = "Get Album Photos Error";

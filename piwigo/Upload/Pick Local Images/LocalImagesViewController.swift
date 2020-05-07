@@ -12,12 +12,11 @@ import Photos
 import UIKit
 
 @objc
-class LocalImagesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, PHPhotoLibraryChangeObserver, LocalImagesHeaderDelegate {
+class LocalImagesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIScrollViewDelegate, PHPhotoLibraryChangeObserver, LocalImagesHeaderDelegate, ImageUploadProgressDelegate {
     
     @objc func setCategoryId(_ categoryId: Int) {
         _categoryId = categoryId
     }
-
     private var _categoryId: Int?
     private var categoryId: Int {
         get {
@@ -31,7 +30,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     @objc func setImageCollectionId(_ imageCollectionId: String) {
         _imageCollectionId = imageCollectionId
     }
-
     private var _imageCollectionId: String?
     private var imageCollectionId: String {
         get {
@@ -44,25 +42,24 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
     @IBOutlet weak var localImagesCollection: UICollectionView!
     @IBOutlet weak var collectionFlowLayout: UICollectionViewFlowLayout!
+    @IBOutlet weak var segmentedControl: UISegmentedControl!
     
     private var assetCollections: PHFetchResult<PHAssetCollection>!         // Path to selected non-empty local album
     private var imageCollection: PHFetchResult<PHAsset>!                    // Collection of images in selected non-empty local album
     private var sortedImages: [[PHAsset]] = []                              // Array of images in selected non-empty local album
+    private let kPiwigoNberImagesShowHUDWhenSorting = 2500                  // Show HUD when sorting more than this number of images
+    private var imagesSortedByDays: [[PHAsset]] = []
+    private var imagesSortedByWeeks: [[PHAsset]] = []
+    private var imagesSortedByMonths: [[PHAsset]] = []
+
     private var nberOfImagesPerRow = 0                                      // Number of images displayed per row in collection view
-
-    // Sort method #3 & 4
-//    private var nberOfImagesInSection: [Int] = []                         // For determining quickly if more images must be sorted
-    // Sort method #4
-//    private var indexOfNextImageToSort: Int = 0                           // Index of the next image of the collection to sort
-//    private var canAddSection = false                                     // For preventing concurrent section insertions
-
+    private var selectedImages = [String]()                                 // Array of identifiers
+    private var selectedSections = [NSNumber]()                             // Boolean values corresponding to Select/Deselect status
+    private var touchedImages = [String]()                                  // Array of identifiers
+    
     private var actionBarButton: UIBarButtonItem?
     private var cancelBarButton: UIBarButtonItem?
     private var uploadBarButton: UIBarButtonItem?
-    
-    private var touchedImages = [String]()                                  // Array of identifiers
-    private var selectedImages = [String]()                                 // Array of identifiers
-    private var selectedSections = [NSNumber]()                             // Boolean values corresponding to Select/Deselect status
     
 //    private var removedUploadedImages = false
     private var hudViewController: UIViewController?
@@ -77,6 +74,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         if imageCollectionId.count == 0 {
             PhotosFetch.sharedInstance().showPhotosLibraryAccessRestricted(in: self)
         }
+
+        // Fetch non-empty input collection and prepare data source in background
+        fetchAndSortImages()
 
         // Arrays for managing selections
 //        removedUploadedImages = false
@@ -97,6 +97,23 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelSelect))
         cancelBarButton?.accessibilityIdentifier = "Cancel"
         uploadBarButton = UIBarButtonItem(image: UIImage(named: "upload"), style: .plain, target: self, action: #selector(presentImageUploadView))
+        
+        // Segmented control (choice for presenting images by date, week or month)
+        var attributes = [
+            NSAttributedString.Key.foregroundColor: UIColor.white,
+            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
+        ]
+        segmentedControl.setTitleTextAttributes(attributes, for: .normal)
+        attributes = [
+            NSAttributedString.Key.foregroundColor: UIColor.white,
+            NSAttributedString.Key.font: UIFont.piwigoFontSemiBold()
+        ]
+        segmentedControl.setTitleTextAttributes(attributes, for: .selected)
+        segmentedControl.selectedSegmentIndex = Int(Model.sharedInstance().localImagesSectionType.rawValue)
+        segmentedControl.setTitle(NSLocalizedString("Months", comment: "Months"), forSegmentAt: 0)
+        segmentedControl.setTitle(NSLocalizedString("Weeks", comment: "Weeks"), forSegmentAt: 1)
+        segmentedControl.setTitle(NSLocalizedString("Days", comment: "Days"), forSegmentAt: 2)
+        segmentedControl.isHidden = true
     }
 
     @objc func applyColorPalette() {
@@ -117,6 +134,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
 
+        // Segmented control
+        if !segmentedControl.isHidden {
+            segmentedControl.backgroundColor = Model.sharedInstance().isDarkPaletteActive ? UIColor.piwigoColorGray().withAlphaComponent(0.8) : UIColor.piwigoColorGray().withAlphaComponent(0.4)
+        }
+
         // Collection view
         localImagesCollection.indicatorStyle = Model.sharedInstance().isDarkPaletteActive ? .white : .black
         localImagesCollection.reloadData()
@@ -124,9 +146,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
-        // Fetch non-empty input collection and prepare data source
-        fetchAndSortImages()
 
         // Set colors, fonts, etc.
         applyColorPalette()
@@ -144,12 +163,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         }
 
         // Progress bar
-//        ImageUploadProgressView.sharedInstance().delegate = self
-//        ImageUploadProgressView.sharedInstance().changePaletteMode()
-
-//        if ImageUploadManager.sharedInstance().imageUploadQueue.count > 0 {
-//            ImageUploadProgressView.sharedInstance().addView(to: view, forBottomLayout: bottomLayoutGuide)
-//        }
+        ImageUploadProgressView.sharedInstance().delegate = self
+        ImageUploadProgressView.sharedInstance().changePaletteMode()
+        if ImageUploadManager.sharedInstance().imageUploadQueue.count > 0 {
+            ImageUploadProgressView.sharedInstance().addView(to: view, forBottomLayout: bottomLayoutGuide)
+        }
 
         // Register Photo Library changes
         PHPhotoLibrary.shared().register(self)
@@ -227,97 +245,108 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     }
 
     
-    // MARK: - Images Management
+    // MARK: - Fetch and Sort Images
     
-    func fetchAndSortImages() {
+    @IBAction func didChangeSortOption(_ sender: UISegmentedControl) {
+        // Did select new sort option [Months, Weeks, Days]
+        Model.sharedInstance().localImagesSectionType.rawValue = UInt32(sender.selectedSegmentIndex)
+        Model.sharedInstance().saveToDisk()
+        
+        // Sort images as requested
+        switch Model.sharedInstance()?.localImagesSectionType {
+        case kPiwigoSortImagesByMonths:
+            self.sortedImages = self.imagesSortedByMonths
+        case kPiwigoSortImagesByWeeks:
+            self.sortedImages = self.imagesSortedByWeeks
+        default:
+            self.sortedImages = self.imagesSortedByDays
+        }
+
+        // Update buttons of sections
+        self.finishTheJob()
+    }
+    
+    func fetchAndSortImages() -> Void {
         // Fetch non-empty collection previously selected by user
         // We fetch a specific path of the Photos Library to reduce the workload
-        assetCollections = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [imageCollectionId], options: nil)
+        DispatchQueue.global(qos: .userInitiated).async {
+            var start = CFAbsoluteTimeGetCurrent()
+            self.assetCollections = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [self.imageCollectionId], options: nil)
+            var diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+            print("=> Fetching collections took \(diff) ms")
 
-        let fetchOptions = PHFetchOptions()
-        switch Model.sharedInstance().localImagesSort {
-        case kPiwigoSortDateCreatedDescending:
-            fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
-        case kPiwigoSortDateCreatedAscending:
-            fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-        default:
-            break
+            start = CFAbsoluteTimeGetCurrent()
+            let fetchOptions = PHFetchOptions()
+            switch Model.sharedInstance().localImagesSort {
+            case kPiwigoSortDateCreatedDescending:
+                fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+            case kPiwigoSortDateCreatedAscending:
+                fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+            default:
+                break
+            }
+//            fetchOptions.predicate = NSPredicate(format: "isHidden == false")     // Much too slow!
+//            fetchOptions.fetchLimit = 100000
+            self.imageCollection = PHAsset.fetchAssets(in: self.assetCollections.firstObject!, options: fetchOptions)
+            diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+            print("=> Fetching assets took \(diff) ms")
+            
+            // Sort collected images
+            self.sortCollectionOfImages()
         }
-        fetchOptions.predicate = NSPredicate(format: "isHidden == false")
-        imageCollection = PHAsset.fetchAssets(in: assetCollections.firstObject!, options: fetchOptions)
-        
+    }
+    
+    // Launches 3 sortings in parallel, by months, weeks and days
+    private func sortCollectionOfImages() -> Void {
         // Show HUD during job if huge collection
-        if imageCollection.count > 10000 {
+        if imageCollection.count > kPiwigoNberImagesShowHUDWhenSorting {
             DispatchQueue.main.async {
                 // Show HUD
                 self.showHUDwithTitle(NSLocalizedString("imageSortingHUD", comment: "Sorting Images"))
             }
-            DispatchQueue.global(qos: .userInitiated).async {
-                // Sort image collection
-                self.sortedImages = self.splitImages(byDate: self.imageCollection)
-                self.selectedSections.append(contentsOf: [NSNumber](repeating: NSNumber(value: false), count: self.sortedImages.count))
+        }
 
-                // Hide HUD
-                DispatchQueue.main.async {
-                    self.hideHUDwithSuccess(true) {
-                        self.hudViewController = nil
+        // Sort images by months on one queue
+        DispatchQueue.global(qos: .userInitiated).async {
+            let start = CFAbsoluteTimeGetCurrent()
+            self.imagesSortedByMonths = self.split(images: self.imageCollection, with: kPiwigoSortImagesByMonths)
+            let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+            print("=> Splitting by months took \(diff) ms")
 
-                        // Refresh collection view
-                        self.localImagesCollection.reloadData()
-
-                        // Update Select buttons status
-                        self.updateSelectButtons()
-                    }
-                }
+            if Model.sharedInstance().localImagesSectionType == kPiwigoSortImagesByMonths {
+                self.sortedImages = self.imagesSortedByMonths
+                self.finishTheJob()
             }
-        } else {
-        
-            // Method #1 — Fetch all images in selected collection and sort them
-            // iPod - iOS 9.3.5: 219 ms for 669 photos
-            // iPhone 11 Pro - iOS 13.5ß: 2.974 ms for 100.347 photos photos
-//            let start = CFAbsoluteTimeGetCurrent()
-            sortedImages = splitImages(byDate: imageCollection)
-            self.selectedSections.append(contentsOf: [NSNumber](repeating: NSNumber(value: false), count: sortedImages.count))
-//            let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-//            print("Took \(diff) ms")
+        }
 
-            // Method #2 — Fetch all images in selected collection and sort them
-            // iPod - iOS 9.3.5: 446 ms for 669 photos
-            // iPhone 11 Pro - iOS 13.5ß: 27.775 ms for 100.347 photos photos
-//            let start = CFAbsoluteTimeGetCurrent()
-//            sortedImages = splitImages2(byDate: imageCollection)
-//            self.selectedSections.append(contentsOf: [NSNumber](repeating: NSNumber(value: false), count: sortedImages.count))
-//            let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-//            print("Took \(diff) ms")
+        // Sort images by weeks on one queue
+        DispatchQueue.global(qos: .userInitiated).async {
+            let start = CFAbsoluteTimeGetCurrent()
+            self.imagesSortedByWeeks = self.split(images: self.imageCollection, with: kPiwigoSortImagesByWeeks)
+            let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+            print("=> Splitting by weeks took \(diff) ms")
 
-            // Method #3 — Fetch all images in selected collection and sort them
-            // iPod - iOS 9.3.5: 239 ms for 669 photos
-            // iPhone 11 Pro - iOS 13.5ß: 17.924 ms for 100.347 photos photos
-//            let start = CFAbsoluteTimeGetCurrent()
-//            nberOfImagesInSection = splitImages3(byDate: imageCollection)
-//            self.selectedSections.append(contentsOf: [NSNumber](repeating: NSNumber(value: false), count: sortedImages.count))
-//            let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-//            print("Took \(diff) ms")
+            if Model.sharedInstance().localImagesSectionType == kPiwigoSortImagesByWeeks {
+                self.sortedImages = self.imagesSortedByWeeks
+                self.finishTheJob()
+            }
+        }
 
-            // Method #4 — Start filling data source, i.e. an array of images sorted by day
-            // This method is super-fast but adding sections to collection view is not very smooth
-            // iPod - iOS 9.3.5: 81 ms for 669 photos
-            // iPhone 11 Pro - iOS 13.5ß: 12 ms for 100.347 photos photos
-//            indexOfNextImageToSort = 0
-//            addImagesOfDay(onlyOnce: false)
-        
-            // Hide HUD
-            DispatchQueue.main.async {
-                // Refresh collection view
-                self.localImagesCollection.reloadData()
+        // Sort images by days on one queue
+        DispatchQueue.global(qos: .userInitiated).async {
+            let start = CFAbsoluteTimeGetCurrent()
+            self.imagesSortedByDays = self.split(images: self.imageCollection, with: kPiwigoSortImagesByDays)
+            let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+            print("=> Splitting by days took \(diff) ms")
 
-                // Update Select buttons status
-                self.updateSelectButtons()
+            if Model.sharedInstance().localImagesSectionType == kPiwigoSortImagesByDays {
+                self.sortedImages = self.imagesSortedByDays
+                self.finishTheJob()
             }
         }
     }
 
-    func splitImages(byDate images: PHFetchResult<PHAsset>?) -> [[PHAsset]] {
+    private func split(images: PHFetchResult<PHAsset>?, with option: kPiwigoSortImages) -> [[PHAsset]] {
 
         // NOP if no image
         guard let images = images else {
@@ -325,267 +354,107 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         }
 
         // Initialisation
-        var imagesByDate: [[PHAsset]] = []
+        let components: Set<Calendar.Component>
+        switch option {
+        case kPiwigoSortImagesByMonths:
+            components = [.year, .month]
+        case kPiwigoSortImagesByWeeks:
+            components = [.year, .weekOfYear]
+        default:
+            components = [.year, .month, .day]
+        }
+        var imagesByPeriod: [[PHAsset]] = []
         let calendar = Calendar.current
-        let dateComponents = calendar.dateComponents([.year, .month, .day], from: images.firstObject?.creationDate ?? Date())
-        var sectionDay = calendar.date(from: dateComponents)!
-        var imagesOfSameDate: [PHAsset] = []
+        var periodComponents = calendar.dateComponents(components, from: images.firstObject?.creationDate ?? Date())
+        var imagesOfSamePeriod: [PHAsset] = []
 
         // Sort imageAssets
         images.enumerateObjects({ obj, idx, stop in
 
             // Get current image creation date
-            let dateComponents = calendar.dateComponents([.year, .month, .day], from: obj.creationDate ?? Date())
-            let date = calendar.date(from: dateComponents)!
+            let dateComponents = calendar.dateComponents(components, from: obj.creationDate ?? Date())
 
-            // Image taken at same date?
-            if date.compare(sectionDay) == .orderedSame {
+            // Image taken on the same day?
+            if dateComponents == periodComponents {
                 // Same date -> Append object to section
-                imagesOfSameDate.append(obj)
+                imagesOfSamePeriod.append(obj)
             } else {
                 // Append section to collection
-                imagesByDate.append(imagesOfSameDate)
+                imagesByPeriod.append(imagesOfSamePeriod)
 
                 // Initialise for next items
-                imagesOfSameDate.removeAll()
-                let dateComponents = calendar.dateComponents([.year, .month, .day], from: obj.creationDate ?? Date())
-                sectionDay = calendar.date(from: dateComponents)!
+                imagesOfSamePeriod.removeAll()
+                periodComponents = calendar.dateComponents(components, from: obj.creationDate ?? Date())
 
                 // Add current item
-                imagesOfSameDate.append(obj)
+                imagesOfSamePeriod.append(obj)
             }
         })
 
         // Append last section to collection
-        imagesByDate.append(imagesOfSameDate)
+        imagesByPeriod.append(imagesOfSamePeriod)
 
-        return imagesByDate
+        return imagesByPeriod
     }
 
-//    func splitImages2(byDate images: PHFetchResult<PHAsset>?) -> [[PHAsset]] {
-//
-//        // NOP if no image
-//        guard let images = images else {
-//            return [[]]
-//        }
-//
-//        // Initialisation
-//        var imagesByDate: [[PHAsset]] = []
-//        let fetchOptions = PHFetchOptions()
-//        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
-//
-//        // Sort imageAssets
-//        var index = 0
-//        while index < imageCollection.count {
-//            let startOfday = Calendar.current.startOfDay(for: images.object(at: index).creationDate!)
-//            let endOfDay = startOfday + 3600*24
-//            fetchOptions.predicate = NSPredicate(format: "creationDate >= %@ && creationDate < %@", startOfday as NSDate, endOfDay as NSDate)
-//            let imagesOfDay = PHAsset.fetchAssets(in: assetCollections.firstObject!, options: fetchOptions)
-//
-//            // Append section to collection
-//            imagesByDate.append(imagesOfDay.objects(at: IndexSet.init(integersIn: 0..<imagesOfDay.count)))
-//
-//            // Next day?
-//            index += imagesOfDay.count
-//        }
-//
-//        return imagesByDate
-//    }
+    private func finishTheJob() {
 
-//    func splitImages3(byDate images: PHFetchResult<PHAsset>?) -> [Int] {
-//
-//        // NOP if no image
-//        guard let images = images else {
-//            return []
-//        }
-//
-//        // Initialisation
-//        var imagesBySection: [Int] = []
-//        let fetchOptions = PHFetchOptions()
-//        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
-//
-//        // Sort imageAssets
-//        var index = 0
-//        while index < imageCollection.count {
-//            let startOfday = Calendar.current.startOfDay(for: images.object(at: index).creationDate!)
-//            let endOfDay = startOfday + 3600*24
-//            fetchOptions.predicate = NSPredicate(format: "creationDate >= %@ && creationDate < %@", startOfday as NSDate, endOfDay as NSDate)
-//            let imagesOfDay = PHAsset.fetchAssets(in: assetCollections.firstObject!, options: fetchOptions)
-//
-//            // Append section to collection
-//            imagesBySection.append(imagesOfDay.count)
-//
-//            // Next day?
-//            index += imagesOfDay.count
-//        }
-//
-//        return imagesBySection
-//    }
+        // Initialise buttons of sections
+        selectedSections.append(contentsOf: [NSNumber](repeating: NSNumber(value: false), count: sortedImages.count))
 
-//    func addImagesOfDay(onlyOnce: Bool) -> Void {
-//
-//        // Check starting index
-//        if indexOfNextImageToSort > imageCollection.count - 1 {
-//            return
-//        }
-//
-//        // Initialisation
-//        let start = CFAbsoluteTimeGetCurrent()
-//        canAddSection = false
-//        var imagesOfDay: [PHAsset] = []
-//        let calendar = Calendar.current
-//        let dayComponents = calendar.dateComponents([.year, .month, .day], from: imageCollection.object(at: indexOfNextImageToSort).creationDate ?? Date())
-//
-//        // Collect images of same day
-//        let indexSet = IndexSet.init(integersIn: indexOfNextImageToSort..<imageCollection.count)
-//        imageCollection.enumerateObjects(at: indexSet, options: []) { (image, idx, stop) in
-//            let dateComponents = calendar.dateComponents([.year, .month, .day], from: image.creationDate ?? Date())
-//            if dateComponents == dayComponents {
-//                // Image of same day
-////                print("==> Add image of same day at index:", idx)
-//                imagesOfDay.append(image)
-//                self.indexOfNextImageToSort = idx + 1
-//            } else {
-//                // Reached end of day
-////                print("==> Reached end of day at index:", idx - 1)
-//                self.indexOfNextImageToSort = idx
-//                stop.pointee = true
-//            }
-//        }
-//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-//        print("Took \(diff) ms")
-//
-//        // Should we continue with next day?
-//        if onlyOnce {
-//            print("==> Reload collection")
-//            // Add section of images to collection view
-//            localImagesCollection.performBatchUpdates({
-//                self.nberOfImagesInSection.append(indexOfNextImageToSort)
-//                self.sortedImages.append(imagesOfDay)
-//                self.selectedSections.append(contentsOf: [NSNumber](repeating: NSNumber(value: false), count: imagesOfDay.count))
-//                print("    Add", imagesOfDay.count, "images in section:", nberOfImagesInSection.count-1)
-//                self.localImagesCollection.insertSections(IndexSet.init(integer: nberOfImagesInSection.count - 1))
-//            }) { (success) in
-//                if success {
-//                    print("    Did add new section ;-)")
-//                    self.canAddSection = true
-//                } else {
-//                    print("    Did NOT add new section :-(")
-//                    self.canAddSection = false
-//                }
-//            }
-//            return
-//        }
-//
-//        // Update data source before loading collection view
-//        self.nberOfImagesInSection.append(indexOfNextImageToSort)
-//        self.sortedImages.append(imagesOfDay)
-//        self.selectedSections.append(contentsOf: [NSNumber](repeating: NSNumber(value: false), count: imagesOfDay.count))
-//
-//        // Calculate the number of images displayed per page
-//        let imagesPerPage = Float(ImagesCollection.numberOfImagesPerPage(for: localImagesCollection, imagesPerRowInPortrait: Model.sharedInstance().thumbnailsPerRowInPortrait))
-//
-//        // Continue with next day until we have enough images to present
-//        if (Float(indexOfNextImageToSort) < (imagesPerPage * 5).rounded()) &&
-//            (indexOfNextImageToSort < imageCollection.count) {
-//            addImagesOfDay(onlyOnce:false)
-//        } else {
-//            canAddSection = true
-//        }
-//    }
+        // Loop over all sections to reselect cells
+        for section in 0..<sortedImages.count {
 
-//    func getLocationOfImages(in section: Int) -> CLLocation {
-//        // Initialise location of section with invalid location
-//        var locationForSection = CLLocation.init(coordinate: kCLLocationCoordinate2DInvalid,
-//                                                 altitude: CLLocationDistance(0.0),
-//                                                 horizontalAccuracy: CLLocationAccuracy(0.0),
-//                                                 verticalAccuracy: CLLocationAccuracy(0.0),
-//                                                 timestamp: Date())
-//
-//        // Loop over images in section
-//        for imageAsset in sortedImages[section] {
-//
-//            // Any location data ?
-//            guard let assetLocation = imageAsset.location else {
-//                // Image has no valid location data => Next image
-//                continue
-//            }
-//
-//            // Location found => Store if first found and move to next section
-//            if !CLLocationCoordinate2DIsValid(locationForSection.coordinate) {
-//                // First valid location => Store it
-//                locationForSection = assetLocation
-//            } else {
-//                // Another valid location => Compare to first one
-//                let distance = locationForSection.distance(from: assetLocation)
-//                if distance <= locationForSection.horizontalAccuracy {
-//                    // Same location within horizontal accuracy
-//                    continue
-//                }
-//                // Still a similar location?
-//                let meanLatitude: CLLocationDegrees = (locationForSection.coordinate.latitude + assetLocation.coordinate.latitude)/2
-//                let meanLongitude: CLLocationDegrees = (locationForSection.coordinate.longitude + assetLocation.coordinate.longitude)/2
-//                let newCoordinate = CLLocationCoordinate2DMake(meanLatitude,meanLongitude)
-//                var newHorizontalAccuracy = kCLLocationAccuracyBestForNavigation
-//                let newVerticalAccuracy = max(locationForSection.verticalAccuracy, assetLocation.verticalAccuracy)
-//                if distance < kCLLocationAccuracyBest {
-//                    newHorizontalAccuracy = max(kCLLocationAccuracyBest, locationForSection.horizontalAccuracy)
-//                    locationForSection = CLLocation(coordinate: newCoordinate, altitude: locationForSection.altitude,
-//                                                    horizontalAccuracy: newHorizontalAccuracy, verticalAccuracy: newVerticalAccuracy,
-//                                                    timestamp: locationForSection.timestamp)
-//                    return locationForSection
-//                } else if distance < kCLLocationAccuracyNearestTenMeters {
-//                    newHorizontalAccuracy = max(kCLLocationAccuracyNearestTenMeters, locationForSection.horizontalAccuracy)
-//                    locationForSection = CLLocation(coordinate: newCoordinate, altitude: locationForSection.altitude,
-//                                                    horizontalAccuracy: newHorizontalAccuracy, verticalAccuracy: newVerticalAccuracy,
-//                                                    timestamp: locationForSection.timestamp)
-//                    return locationForSection
-//                } else if distance < kCLLocationAccuracyHundredMeters {
-//                    newHorizontalAccuracy = max(kCLLocationAccuracyHundredMeters, locationForSection.horizontalAccuracy)
-//                    locationForSection = CLLocation(coordinate: newCoordinate, altitude: locationForSection.altitude,
-//                                                    horizontalAccuracy: newHorizontalAccuracy, verticalAccuracy: newVerticalAccuracy,
-//                                                    timestamp: locationForSection.timestamp)
-//                    return locationForSection
-//                } else if distance < kCLLocationAccuracyKilometer {
-//                    newHorizontalAccuracy = max(kCLLocationAccuracyKilometer, locationForSection.horizontalAccuracy)
-//                    locationForSection = CLLocation(coordinate: newCoordinate, altitude: locationForSection.altitude,
-//                                                    horizontalAccuracy: newHorizontalAccuracy, verticalAccuracy: newVerticalAccuracy,
-//                                                    timestamp: locationForSection.timestamp)
-//                    return locationForSection
-//                } else if distance < kCLLocationAccuracyThreeKilometers {
-//                    newHorizontalAccuracy = max(kCLLocationAccuracyThreeKilometers, locationForSection.horizontalAccuracy)
-//                    locationForSection = CLLocation(coordinate: newCoordinate, altitude: locationForSection.altitude,
-//                                                    horizontalAccuracy: newHorizontalAccuracy, verticalAccuracy: newVerticalAccuracy,
-//                                                    timestamp: locationForSection.timestamp)
-//                    return locationForSection
-//                } else {
-//                    // Above 3 km, we estimate that it is a different location
-//                    return locationForSection
-//                }
-//             }
-//        }
-//
-//        return locationForSection
-//    }
+            // Number of images in section
+            let nberOfImages = sortedImages[section].count
+
+            // Count selected images in section
+            var nberOfSelectedImages = 0
+            for item in 0..<nberOfImages {
+                // Retrieve image asset
+                let imageId = sortedImages[section][item].localIdentifier
+                // Is this image selected?
+                if selectedImages.contains(imageId) {
+                    nberOfSelectedImages += 1
+                }
+            }
+
+            // Update state of Select button
+            selectedSections[section] = nberOfImages == nberOfSelectedImages ? NSNumber(value: true) : NSNumber(value: false)
+        }
+
+        // Hide HUD
+        if self.imageCollection.count > kPiwigoNberImagesShowHUDWhenSorting {
+            self.hideHUDwithSuccess(true) {
+                DispatchQueue.main.async {
+                    // Refresh collection view
+                    self.localImagesCollection.reloadData()
+
+                    // Update Select buttons status
+                    self.updateSelectButtons()
+                    
+                    // Show segmented control if needed
+                    if self.segmentedControl.isHidden {
+                        self.showSegmentedControl()
+                    }
+                }
+            }
+        } else {
+            DispatchQueue.main.async {
+                // Refresh collection view
+                self.localImagesCollection.reloadData()
+
+                // Update Select buttons status
+                self.updateSelectButtons()
+                
+                // Show segmented control if needed
+                if self.segmentedControl.isHidden {
+                    self.showSegmentedControl()
+                }
+            }
+        }
+    }
     
-//    func indexPathOfImageAsset(_ imageAsset: PHAsset?) -> IndexPath? {
-//        var indexPath = IndexPath(item: 0, section: 0)
-//
-//        // Loop over all sections
-//        for section in 0..<localImagesCollection.numberOfSections {
-//            // Index of image in section?
-//            var item: Int? = nil
-//            if let imageAsset = imageAsset {
-//                item = imagesInSections[section].firstIndex(of: imageAsset) ?? NSNotFound
-//            }
-//            if item != NSNotFound {
-//                indexPath = IndexPath(item: item ?? 0, section: section)
-//                break
-//            }
-//        }
-//        return indexPath
-//    }
-
 
     // MARK: - Action Menu
     
@@ -607,21 +476,10 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 break
             }
             Model.sharedInstance()?.saveToDisk()
-//            self.removedUploadedImages = false
-
-            // Show HUD during job if huge collection
-//            if self.imageCollection.count > 10000 {
-//                DispatchQueue.main.async {
-//                    self.showHUDwithTitle(NSLocalizedString("imageSortingHUD", comment: "Sorting Images"))
-//                }
-//            }
 
             // Sort images
-//            DispatchQueue.global(qos: .userInitiated).async {
-                self.fetchAndSortImages()
-//            }
-            }
-        )
+            self.fetchAndSortImages()
+        })
 
 //        let uploadedAction = UIAlertAction(title: removedUploadedImages ? "✓ \(NSLocalizedString("localImageSort_notUploaded", comment: "Not Uploaded"))" : NSLocalizedString("localImageSort_notUploaded", comment: "Not Uploaded"), style: .default, handler: { action in
 //            // Remove uploaded images?
@@ -696,16 +554,15 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
     // MARK: - Select Images
     
-//    func initSelectButtons() {
-//        selectedSections = [NSNumber](repeating: NSNumber(value: false), count: sortedImages.count)
-//    }
-
     func updateSelectButtons() {
         // Update status of Select buttons
-        // Same number of sections, or fewer if uploaded images removed
-        for section in 0..<sortedImages.count {
+        // The number of sections may have changed
+        let start = CFAbsoluteTimeGetCurrent()
+        for section in 0..<localImagesCollection.numberOfSections {
             updateSelectButton(forSection: section)
         }
+        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+        print("=> Took \(diff) ms to set up sortedSections")
     }
 
     @objc func cancelSelect() {
@@ -935,20 +792,12 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
         // Cell state
         cell.cellSelected = selectedImages.contains(imageAsset.localIdentifier)
-//        let originalFilename = PhotosFetch.sharedInstance().getFileNameFomImageAsset(imageAsset)
-//        cell.cellUploading = ImageUploadManager.sharedInstance().imageNamesUploadQueue.contains(URL(fileURLWithPath: originalFilename).deletingPathExtension().absoluteString)
-
-        // Sort images in advance if needed (method #4)
-//        if indexOfNextImageToSort == imageCollection.count || !canAddSection {
-//            return cell
-//        }
-//        if Float(indexOfNextImageToSort) < (Float(nberOfImagesInSection[indexPath.section])*5).rounded() {
-//            addImagesOfDay(onlyOnce: true)
-//        }
+        let originalFilename = PhotosFetch.sharedInstance().getFileNameFomImageAsset(imageAsset)!
+        cell.cellUploading = ImageUploadManager.sharedInstance().imageNamesUploadQueue.contains(URL(fileURLWithPath: originalFilename).deletingPathExtension().absoluteString)
         return cell
     }
 
-    
+
     // MARK: - UICollectionView Delegate Methods
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let cell = collectionView.cellForItem(at: indexPath) as? LocalImageCollectionViewCell else {
@@ -979,6 +828,51 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     }
 
 
+    // MARK: - UIScrollViewDelegate Methods
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        hideSegmentedControl()
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate {
+            showSegmentedControl()
+        }
+    }
+
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        showSegmentedControl()
+    }
+    
+    private func showSegmentedControl() {
+        self.segmentedControl.isHidden = false
+        UIView.animate(withDuration: 0.3, animations: {
+            self.segmentedControl.backgroundColor = Model.sharedInstance().isDarkPaletteActive ? UIColor.piwigoColorGray().withAlphaComponent(0.8) : UIColor.piwigoColorGray().withAlphaComponent(0.4)
+            if #available(iOS 13.0, *) {
+                self.segmentedControl.selectedSegmentTintColor = UIColor.piwigoColorOrange().withAlphaComponent(1.0)
+            } else {
+                // Fallback on earlier versions
+                self.segmentedControl.tintColor = UIColor.piwigoColorOrange().withAlphaComponent(1.0)
+            }
+        }) { (done) in
+        }
+    }
+    
+    private func hideSegmentedControl() {
+        UIView.animate(withDuration: 0.3, animations: {
+            self.segmentedControl.backgroundColor = UIColor.piwigoColorGray().withAlphaComponent(0.0)
+            if #available(iOS 13.0, *) {
+                self.segmentedControl.selectedSegmentTintColor = UIColor.piwigoColorOrange().withAlphaComponent(0.0)
+            } else {
+                // Fallback on earlier versions
+                self.segmentedControl.tintColor = UIColor.piwigoColorOrange().withAlphaComponent(0.0)
+            }
+        }) { (done) in
+            self.segmentedControl.isHidden = true
+        }
+    }
+    
+    
     // MARK: - HUD methods
     
     func showHUDwithTitle(_ title: String?) {
@@ -1042,44 +936,52 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
     // MARK: - ImageUploadProgress Delegate Methods
 
-//    func imageProgress(_ image: ImageUpload?, onCurrent current: Int, forTotal total: Int, onChunk currentChunk: Int, forChunks totalChunks: Int, iCloudProgress: CGFloat) {
-//        //    NSLog(@"AlbumUploadViewController[imageProgress:]");
-//        let indexPath = indexPathOfImageAsset(image?.imageAsset)
-//        let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell
-//
-//        let chunkPercent: CGFloat = 100.0 / Double(totalChunks) / 100.0
-//        let onChunkPercent = chunkPercent * CGFloat((currentChunk - 1))
-//        let pieceProgress = CGFloat(current) / CGFloat(total)
-//        var uploadProgress = onChunkPercent + (chunkPercent * pieceProgress)
-//        if uploadProgress > 1 {
-//            uploadProgress = 1
-//        }
-//
-//        cell?.cellUploading = true
-//        if iCloudProgress < 0 {
-//            cell?.progress = uploadProgress
-//            //        NSLog(@"AlbumUploadViewController[ImageProgress]: %.2f", uploadProgress);
-//        } else {
-//            cell?.progress = (iCloudProgress + uploadProgress) / 2.0
-//            //        NSLog(@"AlbumUploadViewController[ImageProgress]: %.2f", ((iCloudProgress + uploadProgress) / 2.0));
-//        }
-//    }
+    func imageProgress(_ image: ImageUpload?, onCurrent current: Int, forTotal total: Int, onChunk currentChunk: Int, forChunks totalChunks: Int, iCloudProgress: CGFloat) {
+        print("AlbumUploadViewController[imageProgress:]")
+        guard let indexPath = indexPathOfImageAsset(image?.imageAsset) else {
+            return
+        }
+        guard let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell else {
+            return
+        }
 
-//    func imageUploaded(_ image: ImageUpload?, placeInQueue rank: Int, outOf totalInQueue: Int, withResponse response: [AnyHashable : Any]?) {
-//        //    NSLog(@"AlbumUploadViewController[imageUploaded:]");
-//        let indexPath = indexPathOfImageAsset(image?.imageAsset)
-//        let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell
-//
-//        // Image upload ended, deselect cell
-//        cell?.cellUploading = false
-//        cell?.cellSelected = false
-//        if let imageAsset = image?.imageAsset {
-//            if selectedImages?.contains(imageAsset.localIdentifier) ?? false {
-//                selectedImages?.removeAll { $0 as AnyObject === image?.imageAsset.localIdentifier as AnyObject }
-//            }
-//        }
-//
-//        // Update list of "Not Uploaded" images
+        let chunkPercent: CGFloat = CGFloat(100.0 / Float(totalChunks) / 100.0)
+        let onChunkPercent = chunkPercent * CGFloat((currentChunk - 1))
+        let pieceProgress = CGFloat(current) / CGFloat(total)
+        var uploadProgress = onChunkPercent + (chunkPercent * pieceProgress)
+        if uploadProgress > 1 {
+            uploadProgress = 1
+        }
+
+        cell.cellUploading = true
+        if iCloudProgress < 0 {
+            cell.progress = uploadProgress
+        print(String(format: "AlbumUploadViewController[ImageProgress]: %.2f", uploadProgress))
+        } else {
+            cell.progress = (iCloudProgress + uploadProgress) / 2.0
+        print(String(format: "AlbumUploadViewController[ImageProgress]: %.2f", (iCloudProgress + uploadProgress) / 2.0))
+        }
+    }
+
+    func imageUploaded(_ image: ImageUpload?, placeInQueue rank: Int, outOf totalInQueue: Int, withResponse response: [AnyHashable : Any]?) {
+        print("AlbumUploadViewController[imageUploaded:]")
+        guard let indexPath = indexPathOfImageAsset(image?.imageAsset) else {
+            return
+        }
+        guard let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell else {
+            return
+        }
+
+        // Image upload ended, deselect cell
+        cell.cellUploading = false
+        cell.cellSelected = false
+        if let imageAsset = image?.imageAsset {
+            if selectedImages.contains(imageAsset.localIdentifier) {
+                selectedImages.removeAll { $0 as AnyObject === image?.imageAsset.localIdentifier as AnyObject }
+            }
+        }
+
+        // Update list of "Not Uploaded" images
 //        if removedUploadedImages {
 //            var newList = imagesInSections
 //            newList?.removeAll { $0 as AnyObject === image?.imageAsset as AnyObject }
@@ -1088,7 +990,25 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 //            // Update image cell
 //            localImagesCollection.reloadItems(at: [indexPath].compactMap { $0 })
 //        }
-//    }
+    }
+
+    private func indexPathOfImageAsset(_ imageAsset: PHAsset?) -> IndexPath? {
+        var indexPath = IndexPath(item: 0, section: 0)
+
+        // Loop over all sections
+        for section in 0..<localImagesCollection.numberOfSections {
+            // Index of image in section?
+            var item: Int? = nil
+            if let imageAsset = imageAsset {
+                item = sortedImages[section].firstIndex(of: imageAsset) ?? NSNotFound
+            }
+            if item != NSNotFound {
+                indexPath = IndexPath(item: item ?? 0, section: section)
+                break
+            }
+        }
+        return indexPath
+    }
 
     
     // MARK: - Changes occured in the Photo library

@@ -211,24 +211,40 @@
                                     </connections>
                                 </collectionReusableView>
                                 <connections>
-                                    <outlet property="dataSource" destination="0bN-Jj-8Z5" id="NZc-jj-A4r"/>
+                                    <outlet property="dataSource" destination="0bN-Jj-8Z5" id="XSt-f8-eop"/>
                                     <outlet property="delegate" destination="0bN-Jj-8Z5" id="MhR-8A-JR2"/>
                                 </connections>
                             </collectionView>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="dLb-To-65V">
+                                <rect key="frame" x="20" y="823" width="374" height="32"/>
+                                <segments>
+                                    <segment title="Months"/>
+                                    <segment title="Weeks"/>
+                                    <segment title="Days"/>
+                                </segments>
+                                <color key="selectedSegmentTintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <action selector="didChangeSortOption:" destination="0bN-Jj-8Z5" eventType="valueChanged" id="XCZ-g0-R6J"/>
+                                </connections>
+                            </segmentedControl>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstItem="dLb-To-65V" firstAttribute="leading" secondItem="oEF-HO-Dv3" secondAttribute="leading" constant="20" id="KGL-uM-rKO"/>
                             <constraint firstItem="oEF-HO-Dv3" firstAttribute="top" secondItem="3Qu-Pn-VGf" secondAttribute="top" id="TC5-LS-E4x"/>
                             <constraint firstItem="oEF-HO-Dv3" firstAttribute="leading" secondItem="3Qu-Pn-VGf" secondAttribute="leading" id="Tmx-Qf-73z"/>
                             <constraint firstAttribute="bottom" secondItem="oEF-HO-Dv3" secondAttribute="bottom" id="VbM-g1-xUQ"/>
+                            <constraint firstItem="dLb-To-65V" firstAttribute="bottom" secondItem="3Qu-Pn-VGf" secondAttribute="bottomMargin" id="d1g-Pr-4iJ"/>
                             <constraint firstAttribute="trailing" secondItem="oEF-HO-Dv3" secondAttribute="trailing" id="jrK-pA-Y2m"/>
+                            <constraint firstItem="dLb-To-65V" firstAttribute="trailing" secondItem="oEF-HO-Dv3" secondAttribute="trailing" constant="-20" id="sIq-Sr-tNb"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="JwU-ke-ivs"/>
                     </view>
                     <connections>
                         <outlet property="collectionFlowLayout" destination="Xr2-bY-mvB" id="OSP-xm-XOI"/>
                         <outlet property="localImagesCollection" destination="oEF-HO-Dv3" id="Owc-A1-PVl"/>
+                        <outlet property="segmentedControl" destination="dLb-To-65V" id="I89-tM-huk"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uQz-uh-sKD" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

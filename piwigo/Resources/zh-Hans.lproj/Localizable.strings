@@ -266,6 +266,10 @@
 "severalVideos" = "Videos";
 "noImages" = "没有照片";
 "pullToRefresh" = "刷新照片";
+"andMore" = " & more";
+"Months" = "Months";
+"Weeks" = "Weeks";
+"Days" = "Days";
 
 // Errors
 "albumPhotoError_title" = "无法获取相册中的照片";

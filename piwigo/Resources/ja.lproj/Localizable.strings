@@ -266,6 +266,10 @@
 "severalVideos" = "ビデオ";
 "noImages" = "写真がありません";
 "pullToRefresh" = "写真の再読み込み";
+"andMore" = " & more";
+"Months" = "Months";
+"Weeks" = "Weeks";
+"Days" = "Days";
 
 // Errors
 "albumPhotoError_title" = "アルバム写真の取得エラー";

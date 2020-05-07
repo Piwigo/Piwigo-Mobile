@@ -266,6 +266,10 @@
 "severalVideos" = "Videos";
 "noImages" = "Nessuna immagine";
 "pullToRefresh" = "Carica immagini";
+"andMore" = " & more";
+"Months" = "Months";
+"Weeks" = "Weeks";
+"Days" = "Days";
 
 // Errors
 "albumPhotoError_title" = "Ottieni l'errore di foto dell'album";

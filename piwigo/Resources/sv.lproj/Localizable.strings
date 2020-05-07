@@ -266,6 +266,10 @@
 "severalVideos" = "Videor";
 "noImages" = "Inga bilder";
 "pullToRefresh" = "Ladda om bilderna";
+"andMore" = " & more";
+"Months" = "Months";
+"Weeks" = "Weeks";
+"Days" = "Days";
 
 // Errors
 "albumPhotoError_title" = "Hämta albumets bildfel";

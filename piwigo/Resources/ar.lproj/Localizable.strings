@@ -266,6 +266,10 @@
 "severalVideos" = "Videos";
 "noImages" = "لا توجد صور";
 "pullToRefresh" = "إعادة تحميل الصور";
+"andMore" = " & more";
+"Months" = "Months";
+"Weeks" = "Weeks";
+"Days" = "Days";
 
 // Errors
 "albumPhotoError_title" = "احصل على خطأ صور الألبوم";
