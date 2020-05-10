@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -216,7 +216,7 @@
                                 </connections>
                             </collectionView>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="dLb-To-65V">
-                                <rect key="frame" x="20" y="823" width="374" height="32"/>
+                                <rect key="frame" x="108.5" y="823" width="197" height="32"/>
                                 <segments>
                                     <segment title="Months"/>
                                     <segment title="Weeks"/>
@@ -231,13 +231,14 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="dLb-To-65V" firstAttribute="leading" secondItem="oEF-HO-Dv3" secondAttribute="leading" constant="20" id="KGL-uM-rKO"/>
+                            <constraint firstItem="dLb-To-65V" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="JwU-ke-ivs" secondAttribute="leading" constant="20" id="KGL-uM-rKO"/>
                             <constraint firstItem="oEF-HO-Dv3" firstAttribute="top" secondItem="3Qu-Pn-VGf" secondAttribute="top" id="TC5-LS-E4x"/>
                             <constraint firstItem="oEF-HO-Dv3" firstAttribute="leading" secondItem="3Qu-Pn-VGf" secondAttribute="leading" id="Tmx-Qf-73z"/>
                             <constraint firstAttribute="bottom" secondItem="oEF-HO-Dv3" secondAttribute="bottom" id="VbM-g1-xUQ"/>
                             <constraint firstItem="dLb-To-65V" firstAttribute="bottom" secondItem="3Qu-Pn-VGf" secondAttribute="bottomMargin" id="d1g-Pr-4iJ"/>
+                            <constraint firstItem="dLb-To-65V" firstAttribute="centerX" secondItem="JwU-ke-ivs" secondAttribute="centerX" id="dCi-YV-okD"/>
                             <constraint firstAttribute="trailing" secondItem="oEF-HO-Dv3" secondAttribute="trailing" id="jrK-pA-Y2m"/>
-                            <constraint firstItem="dLb-To-65V" firstAttribute="trailing" secondItem="oEF-HO-Dv3" secondAttribute="trailing" constant="-20" id="sIq-Sr-tNb"/>
+                            <constraint firstItem="JwU-ke-ivs" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="dLb-To-65V" secondAttribute="trailing" constant="20" id="sIq-Sr-tNb"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="JwU-ke-ivs"/>
                     </view>
