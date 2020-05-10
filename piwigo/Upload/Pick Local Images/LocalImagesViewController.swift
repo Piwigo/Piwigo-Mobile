@@ -47,7 +47,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     private var assetCollections: PHFetchResult<PHAssetCollection>!         // Path to selected non-empty local album
     private var imageCollection: PHFetchResult<PHAsset>!                    // Collection of images in selected non-empty local album
     private var sortedImages: [[PHAsset]] = []                              // Array of images in selected non-empty local album
-    private let kPiwigoNberImagesShowHUDWhenSorting = 2500                  // Show HUD when sorting more than this number of images
+    private let kPiwigoNberImagesShowHUDWhenSorting = 2_500                 // Show HUD when sorting more than this number of images
     private var imagesSortedByDays: [[PHAsset]] = []
     private var imagesSortedByWeeks: [[PHAsset]] = []
     private var imagesSortedByMonths: [[PHAsset]] = []
@@ -247,28 +247,10 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     
     // MARK: - Fetch and Sort Images
     
-    @IBAction func didChangeSortOption(_ sender: UISegmentedControl) {
-        // Did select new sort option [Months, Weeks, Days]
-        Model.sharedInstance().localImagesSectionType.rawValue = UInt32(sender.selectedSegmentIndex)
-        Model.sharedInstance().saveToDisk()
-        
-        // Sort images as requested
-        switch Model.sharedInstance()?.localImagesSectionType {
-        case kPiwigoSortImagesByMonths:
-            self.sortedImages = self.imagesSortedByMonths
-        case kPiwigoSortImagesByWeeks:
-            self.sortedImages = self.imagesSortedByWeeks
-        default:
-            self.sortedImages = self.imagesSortedByDays
-        }
-
-        // Update buttons of sections
-        self.finishTheJob()
-    }
-    
     func fetchAndSortImages() -> Void {
         // Fetch non-empty collection previously selected by user
         // We fetch a specific path of the Photos Library to reduce the workload
+        // and store the fetched collection for future use
         DispatchQueue.global(qos: .userInitiated).async {
             var start = CFAbsoluteTimeGetCurrent()
             self.assetCollections = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [self.imageCollectionId], options: nil)
@@ -286,7 +268,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 break
             }
 //            fetchOptions.predicate = NSPredicate(format: "isHidden == false")     // Much too slow!
-//            fetchOptions.fetchLimit = 100000
             self.imageCollection = PHAsset.fetchAssets(in: self.assetCollections.firstObject!, options: fetchOptions)
             diff = (CFAbsoluteTimeGetCurrent() - start)*1000
             print("=> Fetching assets took \(diff) ms")
@@ -296,163 +277,348 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         }
     }
     
-    // Launches 3 sortings in parallel, by months, weeks and days
+    // Sorts images by months, weeks and days
+    // A first batch is sorted and displayed
+    // A second batch follows in the background and finally upadtes the collection
     private func sortCollectionOfImages() -> Void {
-        // Show HUD during job if huge collection
+       
+        // Sort first limited batch of images
+        let start = CFAbsoluteTimeGetCurrent()
+        let nberOfImages = min(imageCollection.count, kPiwigoNberImagesShowHUDWhenSorting)
+        (imagesSortedByDays, imagesSortedByWeeks, imagesSortedByMonths) = split(inRange: 0..<nberOfImages)
+        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+        print("=> Splitted", nberOfImages, "images by days, weeks and months took \(diff) ms")
+
+        // Adopt the last chosen sort type
+        switch Model.sharedInstance().localImagesSectionType {
+        case kPiwigoSortImagesByMonths:
+            sortedImages = imagesSortedByMonths
+        case kPiwigoSortImagesByWeeks:
+            sortedImages = imagesSortedByWeeks
+        default:
+            sortedImages = imagesSortedByDays
+        }
+        
+        // Initialise buttons of sections
+        selectedSections = .init(repeating: NSNumber(value: false), count: sortedImages.count)
+
+        // Display first limited batch of images
+        DispatchQueue.main.async {
+            // Refresh collection view
+            self.localImagesCollection.reloadData()
+        }
+
+        // Sort remaining images
         if imageCollection.count > kPiwigoNberImagesShowHUDWhenSorting {
+
+            // Show HUD during job
             DispatchQueue.main.async {
-                // Show HUD
                 self.showHUDwithTitle(NSLocalizedString("imageSortingHUD", comment: "Sorting Images"))
             }
-        }
 
-        // Sort images by months on one queue
-        DispatchQueue.global(qos: .userInitiated).async {
-            let start = CFAbsoluteTimeGetCurrent()
-            self.imagesSortedByMonths = self.split(images: self.imageCollection, with: kPiwigoSortImagesByMonths)
-            let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-            print("=> Splitting by months took \(diff) ms")
+            // Initialisation
+            var remainingImagesSortedByDays: [[PHAsset]] = []
+            var remainingImagesSortedByWeeks: [[PHAsset]] = []
+            var remainingImagesSortedByMonths: [[PHAsset]] = []
+            
+            // Sort remaining images
+            (remainingImagesSortedByDays, remainingImagesSortedByWeeks, remainingImagesSortedByMonths) = split(inRange: kPiwigoNberImagesShowHUDWhenSorting..<imageCollection.count)
+            
+            // Images sorted by days
+            let calendar = Calendar.current
+            if remainingImagesSortedByDays.count > 0 {
+                let byDays: Set<Calendar.Component> = [.year, .month, .day]
+                let lastDayComponents = calendar.dateComponents(byDays, from: (imagesSortedByDays.last?.last?.creationDate)!)
+                let firstDayComponents = calendar.dateComponents(byDays, from: (remainingImagesSortedByDays.first?.first?.creationDate)!)
+                if lastDayComponents == firstDayComponents {
+                    // Append images to last section
+                    imagesSortedByDays[imagesSortedByDays.count - 1].append(contentsOf: (remainingImagesSortedByDays.first)!)
 
-            if Model.sharedInstance().localImagesSectionType == kPiwigoSortImagesByMonths {
-                self.sortedImages = self.imagesSortedByMonths
-                self.finishTheJob()
-            }
-        }
+                    // Update collection view if needed
+                    if Model.sharedInstance()?.localImagesSectionType == kPiwigoSortImagesByDays {
+                        updateSection(with: remainingImagesSortedByDays.first!)
+                    }
+                    
+                    // Append new sections
+                    if remainingImagesSortedByDays.count > 1 {
+                        // Append sections
+                        imagesSortedByDays.append(contentsOf: remainingImagesSortedByDays[1...remainingImagesSortedByDays.count-1])
 
-        // Sort images by weeks on one queue
-        DispatchQueue.global(qos: .userInitiated).async {
-            let start = CFAbsoluteTimeGetCurrent()
-            self.imagesSortedByWeeks = self.split(images: self.imageCollection, with: kPiwigoSortImagesByWeeks)
-            let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-            print("=> Splitting by weeks took \(diff) ms")
+                        // Update collection view if needed
+                        if Model.sharedInstance()?.localImagesSectionType == kPiwigoSortImagesByDays {
+                            addSections(of: Array(remainingImagesSortedByDays.dropFirst()))
+                        }
+                        
+                        // Hide HUD at end of job
+                        DispatchQueue.main.async {
+                            self.hideHUDwithSuccess(true) {
+                                // Show segmented control if needed
+                                if self.segmentedControl.isHidden {
+                                    self.showSegmentedControl()
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    // Append new section
+                    imagesSortedByDays.append(contentsOf: remainingImagesSortedByDays[0...remainingImagesSortedByDays.count-1])
 
-            if Model.sharedInstance().localImagesSectionType == kPiwigoSortImagesByWeeks {
-                self.sortedImages = self.imagesSortedByWeeks
-                self.finishTheJob()
-            }
-        }
-
-        // Sort images by days on one queue
-        DispatchQueue.global(qos: .userInitiated).async {
-            let start = CFAbsoluteTimeGetCurrent()
-            self.imagesSortedByDays = self.split(images: self.imageCollection, with: kPiwigoSortImagesByDays)
-            let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-            print("=> Splitting by days took \(diff) ms")
-
-            if Model.sharedInstance().localImagesSectionType == kPiwigoSortImagesByDays {
-                self.sortedImages = self.imagesSortedByDays
-                self.finishTheJob()
-            }
-        }
-    }
-
-    private func split(images: PHFetchResult<PHAsset>?, with option: kPiwigoSortImages) -> [[PHAsset]] {
-
-        // NOP if no image
-        guard let images = images else {
-            return [[]]
-        }
-
-        // Initialisation
-        let components: Set<Calendar.Component>
-        switch option {
-        case kPiwigoSortImagesByMonths:
-            components = [.year, .month]
-        case kPiwigoSortImagesByWeeks:
-            components = [.year, .weekOfYear]
-        default:
-            components = [.year, .month, .day]
-        }
-        var imagesByPeriod: [[PHAsset]] = []
-        let calendar = Calendar.current
-        var periodComponents = calendar.dateComponents(components, from: images.firstObject?.creationDate ?? Date())
-        var imagesOfSamePeriod: [PHAsset] = []
-
-        // Sort imageAssets
-        images.enumerateObjects({ obj, idx, stop in
-
-            // Get current image creation date
-            let dateComponents = calendar.dateComponents(components, from: obj.creationDate ?? Date())
-
-            // Image taken on the same day?
-            if dateComponents == periodComponents {
-                // Same date -> Append object to section
-                imagesOfSamePeriod.append(obj)
-            } else {
-                // Append section to collection
-                imagesByPeriod.append(imagesOfSamePeriod)
-
-                // Initialise for next items
-                imagesOfSamePeriod.removeAll()
-                periodComponents = calendar.dateComponents(components, from: obj.creationDate ?? Date())
-
-                // Add current item
-                imagesOfSamePeriod.append(obj)
-            }
-        })
-
-        // Append last section to collection
-        imagesByPeriod.append(imagesOfSamePeriod)
-
-        return imagesByPeriod
-    }
-
-    private func finishTheJob() {
-
-        // Initialise buttons of sections
-        selectedSections.append(contentsOf: [NSNumber](repeating: NSNumber(value: false), count: sortedImages.count))
-
-        // Loop over all sections to reselect cells
-        for section in 0..<sortedImages.count {
-
-            // Number of images in section
-            let nberOfImages = sortedImages[section].count
-
-            // Count selected images in section
-            var nberOfSelectedImages = 0
-            for item in 0..<nberOfImages {
-                // Retrieve image asset
-                let imageId = sortedImages[section][item].localIdentifier
-                // Is this image selected?
-                if selectedImages.contains(imageId) {
-                    nberOfSelectedImages += 1
+                    // Update collection view if needed
+                    if Model.sharedInstance()?.localImagesSectionType == kPiwigoSortImagesByDays {
+                        addSections(of: remainingImagesSortedByDays)
+                    }
+                    
+                    // Hide HUD at end of job
+                    DispatchQueue.main.async {
+                        self.hideHUDwithSuccess(true) {
+                            // Show segmented control if needed
+                            if self.segmentedControl.isHidden {
+                                self.showSegmentedControl()
+                            }
+                        }
+                    }
                 }
             }
 
-            // Update state of Select button
-            selectedSections[section] = nberOfImages == nberOfSelectedImages ? NSNumber(value: true) : NSNumber(value: false)
-        }
-
-        // Hide HUD
-        if self.imageCollection.count > kPiwigoNberImagesShowHUDWhenSorting {
-            self.hideHUDwithSuccess(true) {
-                DispatchQueue.main.async {
-                    // Refresh collection view
-                    self.localImagesCollection.reloadData()
-
-                    // Update Select buttons status
-                    self.updateSelectButtons()
+            // Images sorted by weeks
+            if remainingImagesSortedByWeeks.count > 0 {
+                let byWeeks: Set<Calendar.Component> = [.year, .weekOfYear]
+                let lastWeekComponents = calendar.dateComponents(byWeeks, from: (imagesSortedByWeeks.last?.last?.creationDate)!)
+                let firstWeekComponents = calendar.dateComponents(byWeeks, from: (remainingImagesSortedByWeeks.first?.first?.creationDate)!)
+                if lastWeekComponents == firstWeekComponents {
+                    // Append images to last section
+                    imagesSortedByWeeks[imagesSortedByWeeks.count - 1].append(contentsOf: (remainingImagesSortedByWeeks.first)!)
                     
-                    // Show segmented control if needed
-                    if self.segmentedControl.isHidden {
-                        self.showSegmentedControl()
+                    // Update collection view if needed
+                    if Model.sharedInstance()?.localImagesSectionType == kPiwigoSortImagesByWeeks {
+                        updateSection(with: remainingImagesSortedByWeeks.first!)
+                    }
+
+                    // Append new sections
+                    if remainingImagesSortedByWeeks.count > 1 {
+                        // Append sections
+                        imagesSortedByWeeks.append(contentsOf: remainingImagesSortedByWeeks[1...remainingImagesSortedByWeeks.count-1])
+                        
+                        // Update collection view if needed
+                        if Model.sharedInstance()?.localImagesSectionType == kPiwigoSortImagesByWeeks {
+                            addSections(of: Array(remainingImagesSortedByWeeks.dropFirst()))
+                        }
+                        
+                        // Hide HUD at end of job
+                        DispatchQueue.main.async {
+                            self.hideHUDwithSuccess(true) {
+                                // Show segmented control if needed
+                                if self.segmentedControl.isHidden {
+                                    self.showSegmentedControl()
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    // Append new section
+                    imagesSortedByWeeks.append(contentsOf: remainingImagesSortedByWeeks[0...remainingImagesSortedByWeeks.count-1])
+                    
+                    // Update collection view if needed
+                    if Model.sharedInstance()?.localImagesSectionType == kPiwigoSortImagesByWeeks {
+                        addSections(of: remainingImagesSortedByWeeks)
+                    }
+                    
+                    // Hide HUD at end of job
+                    DispatchQueue.main.async {
+                        self.hideHUDwithSuccess(true) {
+                            // Show segmented control if needed
+                            if self.segmentedControl.isHidden {
+                                self.showSegmentedControl()
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Images sorted by months
+            if remainingImagesSortedByMonths.count > 0 {
+                let byMonths: Set<Calendar.Component> = [.year, .month]
+                let lastMonthComponents = calendar.dateComponents(byMonths, from: (imagesSortedByMonths.last?.last?.creationDate)!)
+                let firstMonthComponents = calendar.dateComponents(byMonths, from: (remainingImagesSortedByMonths.first?.first?.creationDate)!)
+                if lastMonthComponents == firstMonthComponents {
+                    // Append images to last section
+                    imagesSortedByMonths[imagesSortedByMonths.count - 1].append(contentsOf: (remainingImagesSortedByMonths.first)!)
+                    
+                    // Update collection view if needed
+                    if Model.sharedInstance()?.localImagesSectionType == kPiwigoSortImagesByMonths {
+                        updateSection(with: remainingImagesSortedByMonths.first!)
+                    }
+
+                    // Append new sections
+                    if remainingImagesSortedByMonths.count > 1 {
+                        imagesSortedByMonths.append(contentsOf: remainingImagesSortedByMonths[1...remainingImagesSortedByMonths.count-1])
+                        
+                        // Update collection view if needed
+                        if Model.sharedInstance()?.localImagesSectionType == kPiwigoSortImagesByMonths {
+                            addSections(of: Array(remainingImagesSortedByMonths.dropFirst()))
+                        }
+                        
+                        // Hide HUD at end of job
+                        DispatchQueue.main.async {
+                            self.hideHUDwithSuccess(true) {
+                                // Show segmented control if needed
+                                if self.segmentedControl.isHidden {
+                                    self.showSegmentedControl()
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    // Append new section
+                    imagesSortedByMonths.append(contentsOf: remainingImagesSortedByMonths[0...remainingImagesSortedByMonths.count-1])
+                    
+                    // Update collection view if needed
+                    if Model.sharedInstance()?.localImagesSectionType == kPiwigoSortImagesByMonths {
+                        addSections(of: remainingImagesSortedByMonths)
+                    }
+                    
+                    // Hide HUD at end of job
+                    DispatchQueue.main.async {
+                        self.hideHUDwithSuccess(true) {
+                            // Show segmented control if needed
+                            if self.segmentedControl.isHidden {
+                                self.showSegmentedControl()
+                            }
+                        }
                     }
                 }
             }
         } else {
+            // Show segmented control if needed
             DispatchQueue.main.async {
-                // Refresh collection view
-                self.localImagesCollection.reloadData()
-
-                // Update Select buttons status
-                self.updateSelectButtons()
-                
-                // Show segmented control if needed
                 if self.segmentedControl.isHidden {
                     self.showSegmentedControl()
                 }
             }
         }
+    }
+
+    private func updateSection(with images:[PHAsset]!) {
+        // Append images of the day, week or month to last section
+        DispatchQueue.main.async {
+            // Update data source
+            let indexOfLastItem = self.sortedImages.last!.count
+            let nberOfAddedItems = images.count
+            let indexesOfNewItems = Array(indexOfLastItem..<indexOfLastItem + nberOfAddedItems).map { IndexPath(item: $0, section: self.sortedImages.count-1) }
+            self.sortedImages[self.sortedImages.count-1].append(contentsOf: images)
+            
+            // Update section
+            self.localImagesCollection.insertItems(at: indexesOfNewItems)
+        }
+    }
+    
+    private func addSections(of images: [[PHAsset]]) {
+        // Append sections of images to current data source
+        DispatchQueue.main.async {
+            // Update data source
+            let nberOfAddedSections = images.count
+            self.selectedSections.append(contentsOf: [NSNumber](repeating: NSNumber(value: false), count: nberOfAddedSections))
+            let indexesOfNewSections = IndexSet.init(integersIn: self.sortedImages.count..<self.selectedSections.count)
+            self.sortedImages.append(contentsOf: images)
+            // Update section
+            self.localImagesCollection.insertSections(indexesOfNewSections)
+        }
+
+    }
+    
+    private func split(inRange range: Range<Int>) -> (imagesByDays: [[PHAsset]], imagesByWeeks: [[PHAsset]], imagesByMonths: [[PHAsset]])  {
+
+        // Get collection of images
+        var start = CFAbsoluteTimeGetCurrent()
+        let images = imageCollection.objects(at: IndexSet.init(integersIn: range))
+        var diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+        print("           imageCollection.objects took \(diff) ms")
+
+        // Initialisation
+        start = CFAbsoluteTimeGetCurrent()
+        let calendar = Calendar.current
+        let byDays: Set<Calendar.Component> = [.year, .month, .day]
+        var dayComponents = calendar.dateComponents(byDays, from: images.first?.creationDate ?? Date())
+        var imagesOfSameDay: [PHAsset] = []
+        var imagesByDays: [[PHAsset]] = []
+
+        let byWeeks: Set<Calendar.Component> = [.year, .weekOfYear]
+        var weekComponents = calendar.dateComponents(byWeeks, from: images.first?.creationDate ?? Date())
+        var imagesOfSameWeek: [PHAsset] = []
+        var imagesByWeeks: [[PHAsset]] = []
+
+        let byMonths: Set<Calendar.Component> = [.year, .month]
+        var monthComponents = calendar.dateComponents(byMonths, from: images.first?.creationDate ?? Date())
+        var imagesOfSameMonth: [PHAsset] = []
+        var imagesByMonths: [[PHAsset]] = []
+
+        // Sort imageAssets
+        for index in 0..<range.endIndex-range.startIndex {
+            // Get object
+            let obj = images[index]
+
+            // Get day of current image
+            let newDayComponents = calendar.dateComponents(byDays, from: obj.creationDate ?? Date())
+
+            // Image taken the same day?
+            if newDayComponents == dayComponents {
+                // Same date -> Append object to section
+                imagesOfSameDay.append(obj)
+            } else {
+                // Append section to collection by days
+                imagesByDays.append(imagesOfSameDay)
+
+                // Append images of same day to collection by weeks
+                imagesOfSameWeek.append(contentsOf: imagesOfSameDay)
+                                
+                // Append images of same day to collection by months
+                imagesOfSameMonth.append(contentsOf: imagesOfSameDay)
+                                
+                // Initialise for next day
+                imagesOfSameDay.removeAll()
+                dayComponents = calendar.dateComponents(byDays, from: obj.creationDate ?? Date())
+
+                // Add current item to new list of images by days
+                imagesOfSameDay.append(obj)
+                
+                // Get week of year of new image
+                let newWeekComponents = calendar.dateComponents(byWeeks, from: obj.creationDate ?? Date())
+                
+                // What should we do with this new image?
+                if newWeekComponents != weekComponents {
+                    // Append section to collection by weeks
+                    imagesByWeeks.append(imagesOfSameWeek)
+                    
+                    // Initialise for next week
+                    imagesOfSameWeek.removeAll()
+                    weekComponents = newWeekComponents
+                }
+
+                // Get month of new image
+                let newMonthComponents = calendar.dateComponents(byMonths, from: obj.creationDate ?? Date())
+                
+                // What should we do with this new image?
+                if newMonthComponents != monthComponents {
+                    // Append section to collection by months
+                    imagesByMonths.append(imagesOfSameMonth)
+                    
+                    // Initialise for next month
+                    imagesOfSameMonth.removeAll()
+                    monthComponents = newMonthComponents
+                }
+            }
+        }
+        
+        // Append last section to collection
+        imagesByDays.append(imagesOfSameDay)
+        imagesOfSameWeek.append(contentsOf: imagesOfSameDay)
+        imagesByWeeks.append(imagesOfSameWeek)
+        imagesOfSameMonth.append(contentsOf: imagesOfSameDay)
+        imagesByMonths.append(imagesOfSameMonth)
+        
+        diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+        print("           sorting objects took \(diff) ms")
+        return (imagesByDays, imagesByWeeks, imagesByMonths)
     }
     
 
@@ -516,6 +682,76 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         }
     }
 
+    @IBAction func didChangeSortOption(_ sender: UISegmentedControl) {
+        // Did select new sort option [Months, Weeks, Days]
+        Model.sharedInstance().localImagesSectionType.rawValue = UInt32(sender.selectedSegmentIndex)
+        Model.sharedInstance().saveToDisk()
+        
+        // Store current visible cells
+        var localIdentifier: String = ""
+        if let cells = localImagesCollection.visibleCells as? [LocalImageCollectionViewCell] {
+            // Get image local identifier
+            let cell = cells[Int((Double(cells.count) / 2.0).rounded())]
+            localIdentifier = cell.localIdentifier
+        }
+        
+        // Sort images as requested using cached arrays
+        switch Model.sharedInstance()?.localImagesSectionType {
+        case kPiwigoSortImagesByMonths:
+            self.sortedImages = self.imagesSortedByMonths
+        case kPiwigoSortImagesByWeeks:
+            self.sortedImages = self.imagesSortedByWeeks
+        default:
+            self.sortedImages = self.imagesSortedByDays
+        }
+        
+        // Reset buttons of sections which were changed
+        selectedSections = .init(repeating: NSNumber(value: false), count: sortedImages.count)
+
+        // Loop over all sections to reselect cells
+        var indexOfTopCell = IndexPath.init(item: 0, section: 0)
+        for section in 0..<sortedImages.count {
+
+            // Number of images in section
+            let nberOfImages = sortedImages[section].count
+
+            // Count selected images in section
+            var nberOfSelectedImages = 0
+            for item in 0..<nberOfImages {
+                // Retrieve image asset
+                let imageId = sortedImages[section][item].localIdentifier
+                // Is this image selected?
+                if selectedImages.contains(imageId) {
+                    nberOfSelectedImages += 1
+                }
+                // Was this cell the top one of visible cells
+                if imageId == localIdentifier {
+                    indexOfTopCell = IndexPath.init(item: item, section: section)
+                }
+            }
+
+            // Update state of Select button
+            selectedSections[section] = nberOfImages == nberOfSelectedImages ? NSNumber(value: true) : NSNumber(value: false)
+        }
+
+        // Load changed collection
+        DispatchQueue.main.async {
+            // Refresh collection view
+            self.localImagesCollection.reloadData()
+
+            // Update Select buttons status
+            self.updateSelectButtons()
+
+            // Show segmented control if needed
+            if self.segmentedControl.isHidden {
+                self.showSegmentedControl()
+            }
+            
+            // Scroll to visible cells
+            self.localImagesCollection.scrollToItem(at: indexOfTopCell, at: .centeredVertically, animated: true)
+        }
+    }
+    
     @objc func removeUploadedImagesFromCollection() {
         // Show HUD during download
         DispatchQueue.main.async(execute: {
@@ -557,12 +793,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     func updateSelectButtons() {
         // Update status of Select buttons
         // The number of sections may have changed
-        let start = CFAbsoluteTimeGetCurrent()
         for section in 0..<localImagesCollection.numberOfSections {
             updateSelectButton(forSection: section)
         }
-        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        print("=> Took \(diff) ms to set up sortedSections")
     }
 
     @objc func cancelSelect() {
@@ -846,7 +1079,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     
     private func showSegmentedControl() {
         self.segmentedControl.isHidden = false
-        UIView.animate(withDuration: 0.3, animations: {
+        UIView.animate(withDuration: 0.3) {
             self.segmentedControl.backgroundColor = Model.sharedInstance().isDarkPaletteActive ? UIColor.piwigoColorGray().withAlphaComponent(0.8) : UIColor.piwigoColorGray().withAlphaComponent(0.4)
             if #available(iOS 13.0, *) {
                 self.segmentedControl.selectedSegmentTintColor = UIColor.piwigoColorOrange().withAlphaComponent(1.0)
@@ -854,12 +1087,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 // Fallback on earlier versions
                 self.segmentedControl.tintColor = UIColor.piwigoColorOrange().withAlphaComponent(1.0)
             }
-        }) { (done) in
         }
     }
     
     private func hideSegmentedControl() {
-        UIView.animate(withDuration: 0.3, animations: {
+        UIView.animate(withDuration: 0.3) {
             self.segmentedControl.backgroundColor = UIColor.piwigoColorGray().withAlphaComponent(0.0)
             if #available(iOS 13.0, *) {
                 self.segmentedControl.selectedSegmentTintColor = UIColor.piwigoColorOrange().withAlphaComponent(0.0)
@@ -867,8 +1099,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 // Fallback on earlier versions
                 self.segmentedControl.tintColor = UIColor.piwigoColorOrange().withAlphaComponent(0.0)
             }
-        }) { (done) in
-            self.segmentedControl.isHidden = true
         }
     }
     
@@ -924,7 +1154,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     hud?.customView = imageView
                     hud?.mode = MBProgressHUDMode.customView
                     hud?.label.text = NSLocalizedString("completeHUD_label", comment: "Complete")
-                    hud?.hide(animated: true, afterDelay: 1.0)
+                    hud?.hide(animated: true, afterDelay: 0.3)
                 } else {
                     hud?.hide(animated: true)
                 }

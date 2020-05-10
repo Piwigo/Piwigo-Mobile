@@ -14,6 +14,16 @@ import UIKit
 @objc
 class LocalImageCollectionViewCell: UICollectionViewCell {
 
+    private var _localIdentifier = ""
+    @objc var localIdentifier: String {
+        get {
+            _localIdentifier
+        }
+        set(localIdentifier) {
+            _localIdentifier = localIdentifier
+        }
+    }
+
     private var _cellSelected = false
     @objc var cellSelected: Bool {
         get {
@@ -59,13 +69,14 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var darkenUploadView: UIView!
     @IBOutlet weak var uploadingActivity: UIActivityIndicatorView!
     @IBOutlet weak var uploadingProgress: UIProgressView!
-    
+        
     @objc
     func configure(with imageAsset: PHAsset, thumbnailSize: CGFloat) {
         
         // Background color and aspect
         backgroundColor = UIColor.piwigoColorCellBackground()
         cellSelected = false
+        localIdentifier = imageAsset.localIdentifier
 
         // Checked icon: reduce original size of 17x25 pixels when using tiny thumbnails
         if thumbnailSize > 0.0 && thumbnailSize < 75.0 {
