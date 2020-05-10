@@ -315,10 +315,12 @@ class LocationsProvider: NSObject {
                                              radius: location.horizontalAccuracy,
                                              placeName: "", streetName: "")
         
-        // Add operation to queue
-        fetchPlaceName(at: newLocation) { (error) in
-            if error == nil {
-                print("=> location requested")
+        // Add operation to queue if possible
+        if queue.operationCount < kPiwigoMaxNberOfLocationsToDecode {
+            fetchPlaceName(at: newLocation) { (error) in
+                if error == nil {
+                    print("=> location requested")
+                }
             }
         }
         
