@@ -266,10 +266,10 @@
 "severalVideos" = "Vídeos";
 "noImages" = "No hay fotos";
 "pullToRefresh" = "Recargar fotos";
-"andMore" = " & more";
-"Months" = "Months";
-"Weeks" = "Weeks";
-"Days" = "Days";
+"andMore" = " y más";
+"Months" = "Meses";
+"Weeks" = "Semanas";
+"Days" = "Días";
 
 // Errors
 "albumPhotoError_title" = "Error al obtener las fotos del álbum";

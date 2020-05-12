@@ -47,16 +47,16 @@
 // ==> CORE DATA
 // ===========================================================================
 "CoreDataStore_WarningTitle" = "Varning";
-"CoreDataStore_WarningMessage" = "A serious application error occurred while Piwigo tried to read the data cache. A new cache has therefore been created.";
-"CoreDataFetch_DigestError" = "Could not digest the fetched data.";
+"CoreDataStore_WarningMessage" = "Ett allvarligt programfel uppstod när Piwigo försökte läsa datacheminnet. En ny cache har därför skapats.";
+"CoreDataFetch_DigestError" = "Kunde inte sammanfatta den hämtade datan.";
 
 // Tag objects
-"CoreDataFetch_TagError" = "Fetch tags error!";
-"CoreDataFetch_TagMissingData" = "Found and will discard a tag missing a valid code or name.";
-"CoreDataFetch_TagCreateFailed" = "Failed to create a new Tag object.";
+"CoreDataFetch_TagError" = "Hämta taggar fel!";
+"CoreDataFetch_TagMissingData" = "Hittade och kommer att kasta en tagg som saknar en giltig kod eller namn.";
+"CoreDataFetch_TagCreateFailed" = "Det gick inte att skapa ett nytt taggobjekt.";
 
 // Upload objects
-"CoreDataFetch_UploadCreateFailed" = "Failed to create a new Upload object.";
+"CoreDataFetch_UploadCreateFailed" = "Det gick inte att skapa ett nytt uppladdningsobjekt.";
 
 // ===========================================================================
 // ==> LOGIN / LOGOUT
@@ -266,10 +266,10 @@
 "severalVideos" = "Videor";
 "noImages" = "Inga bilder";
 "pullToRefresh" = "Ladda om bilderna";
-"andMore" = " & more";
-"Months" = "Months";
-"Weeks" = "Weeks";
-"Days" = "Days";
+"andMore" = " & mer";
+"Months" = "Månader";
+"Weeks" = "Veckor";
+"Days" = "Dagar";
 
 // Errors
 "albumPhotoError_title" = "Hämta albumets bildfel";

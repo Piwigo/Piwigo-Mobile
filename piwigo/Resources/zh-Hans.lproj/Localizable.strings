@@ -46,8 +46,8 @@
 // ===========================================================================
 // ==> CORE DATA
 // ===========================================================================
-"CoreDataStore_WarningTitle" = "Warning";
-"CoreDataStore_WarningMessage" = "A serious application error occurred while Piwigo tried to read the data cache. A new cache has therefore been created.";
+"CoreDataStore_WarningTitle" = "警告";
+"CoreDataStore_WarningMessage" = "Piwigo缓存已损坏，因此将会建立新的缓存";
 "CoreDataFetch_DigestError" = "无法解析获取到的数据";
 
 // Tag objects
@@ -263,13 +263,13 @@
 "singleVideo" = "视频";
 "singleAudio" = "音频";
 "severalImages" = "照片";
-"severalVideos" = "Videos";
+"severalVideos" = "视频";
 "noImages" = "没有照片";
 "pullToRefresh" = "刷新照片";
-"andMore" = " & more";
-"Months" = "Months";
-"Weeks" = "Weeks";
-"Days" = "Days";
+"andMore" = " & 更多";
+"Months" = "月";
+"Weeks" = "周";
+"Days" = "天";
 
 // Errors
 "albumPhotoError_title" = "无法获取相册中的照片";

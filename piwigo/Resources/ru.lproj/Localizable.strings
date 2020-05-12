@@ -266,10 +266,10 @@
 "severalVideos" = "Видео";
 "noImages" = "Нет фото";
 "pullToRefresh" = "Перезагрузить фотографии";
-"andMore" = " & more";
-"Months" = "Months";
-"Weeks" = "Weeks";
-"Days" = "Days";
+"andMore" = " и многое другое";
+"Months" = "Месяца(-ев)";
+"Weeks" = "неделя(-ль)";
+"Days" = "дней";
 
 // Errors
 "albumPhotoError_title" = "Ошибка установки фотографий альбома";
