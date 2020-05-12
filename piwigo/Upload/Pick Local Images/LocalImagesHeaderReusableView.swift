@@ -163,6 +163,15 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
                         dateFormatter.locale = .current
                         dateFormatter.setLocalizedDateFormatFromTemplate("MMMMYYYY")
                         dateLabelText = dateFormatter.string(from: dateCreated1)
+                        // Define optional string with days
+                        if UIScreen.main.bounds.size.width > 414 {
+                            // i.e. larger than iPhones 6, 7 screen width
+                            dateFormatter.setLocalizedDateFormatFromTemplate("EEEE d HH:mm")
+                            optionalDateLabelText = dateFormatter.string(from: dateCreated1) + " > " + dateFormatter.string(from: dateCreated2)
+                        } else {
+                            dateFormatter.setLocalizedDateFormatFromTemplate("EEEE d")
+                            optionalDateLabelText = dateFormatter.string(from: dateCreated1) + " > " + dateFormatter.string(from: dateCreated2)
+                        }
                     } else  {
                         // => Will display starting and ending dates
                         // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
