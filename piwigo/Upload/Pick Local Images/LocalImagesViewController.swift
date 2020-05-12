@@ -283,11 +283,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     private func sortCollectionOfImages() -> Void {
        
         // Sort first limited batch of images
-        let start = CFAbsoluteTimeGetCurrent()
+//        let start = CFAbsoluteTimeGetCurrent()
         let nberOfImages = min(imageCollection.count, kPiwigoNberImagesShowHUDWhenSorting)
         (imagesSortedByDays, imagesSortedByWeeks, imagesSortedByMonths) = split(inRange: 0..<nberOfImages)
-        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        print("=> Splitted", nberOfImages, "images by days, weeks and months took \(diff) ms")
+//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+//        print("=> Splitted", nberOfImages, "images by days, weeks and months took \(diff) ms")
 
         // Adopt the last chosen sort type
         switch Model.sharedInstance().localImagesSectionType {
