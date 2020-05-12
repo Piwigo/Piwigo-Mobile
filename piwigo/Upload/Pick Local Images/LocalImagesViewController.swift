@@ -691,7 +691,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         var localIdentifier: String = ""
         if let cells = localImagesCollection.visibleCells as? [LocalImageCollectionViewCell] {
             // Get image local identifier
-            let cell = cells[Int((Double(cells.count) / 2.0).rounded())]
+            let cell = cells[Int((Double(cells.count) / 2.0).rounded(.towardZero))]
             localIdentifier = cell.localIdentifier
         }
         
