@@ -154,7 +154,7 @@ class LocationsProvider: NSObject {
                     }
 
                     // Log placemarks[0]
-                    print("\n===>> name:\(placeMark?.name ?? ""), country:\(country), administrativeArea:\(administrativeArea), subAdministrativeArea:\(subAdministrativeArea), locality:\(locality), subLocality:\(subLocality), thoroughfare:\(thoroughfare), subThoroughfare:\(placeMark?.subThoroughfare ?? ""), region:\(region), areasOfInterest:\(placeMark?.areasOfInterest?[0] ?? ""),inlandWater:\(inlandWater), ocean:\(ocean)\n")
+//                    print("\n===>> name:\(placeMark?.name ?? ""), country:\(country), administrativeArea:\(administrativeArea), subAdministrativeArea:\(subAdministrativeArea), locality:\(locality), subLocality:\(subLocality), thoroughfare:\(thoroughfare), subThoroughfare:\(placeMark?.subThoroughfare ?? ""), region:\(region), areasOfInterest:\(placeMark?.areasOfInterest?[0] ?? ""),inlandWater:\(inlandWater), ocean:\(ocean)\n")
 
                     // Add new location to CoreData store
                     let newLocation = LocationProperties(coordinate: location.coordinate,
