@@ -252,12 +252,12 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // We fetch a specific path of the Photos Library to reduce the workload
         // and store the fetched collection for future use
         DispatchQueue.global(qos: .userInitiated).async {
-            var start = CFAbsoluteTimeGetCurrent()
+//            var start = CFAbsoluteTimeGetCurrent()
             self.assetCollections = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [self.imageCollectionId], options: nil)
-            var diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-            print("=> Fetching collections took \(diff) ms")
+//            var diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+//            print("=> Fetching collections took \(diff) ms")
 
-            start = CFAbsoluteTimeGetCurrent()
+//            start = CFAbsoluteTimeGetCurrent()
             let fetchOptions = PHFetchOptions()
             switch Model.sharedInstance().localImagesSort {
             case kPiwigoSortDateCreatedDescending:
@@ -269,8 +269,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             }
 //            fetchOptions.predicate = NSPredicate(format: "isHidden == false")     // Much too slow!
             self.imageCollection = PHAsset.fetchAssets(in: self.assetCollections.firstObject!, options: fetchOptions)
-            diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-            print("=> Fetching assets took \(diff) ms")
+//            diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+//            print("=> Fetching assets took \(diff) ms")
             
             // Sort collected images
             self.sortCollectionOfImages()
@@ -529,13 +529,13 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     private func split(inRange range: Range<Int>) -> (imagesByDays: [[PHAsset]], imagesByWeeks: [[PHAsset]], imagesByMonths: [[PHAsset]])  {
 
         // Get collection of images
-        var start = CFAbsoluteTimeGetCurrent()
+//        var start = CFAbsoluteTimeGetCurrent()
         let images = imageCollection.objects(at: IndexSet.init(integersIn: range))
-        var diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        print("           imageCollection.objects took \(diff) ms")
+//        var diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+//        print("           imageCollection.objects took \(diff) ms")
 
         // Initialisation
-        start = CFAbsoluteTimeGetCurrent()
+//        start = CFAbsoluteTimeGetCurrent()
         let calendar = Calendar.current
         let byDays: Set<Calendar.Component> = [.year, .month, .day]
         var dayComponents = calendar.dateComponents(byDays, from: images.first?.creationDate ?? Date())
@@ -616,8 +616,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         imagesOfSameMonth.append(contentsOf: imagesOfSameDay)
         imagesByMonths.append(imagesOfSameMonth)
         
-        diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        print("           sorting objects took \(diff) ms")
+//        diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+//        print("           sorting objects took \(diff) ms")
         return (imagesByDays, imagesByWeeks, imagesByMonths)
     }
     
