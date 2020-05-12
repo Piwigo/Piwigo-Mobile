@@ -167,10 +167,10 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
                         if UIScreen.main.bounds.size.width > 414 {
                             // i.e. larger than iPhones 6, 7 screen width
                             dateFormatter.setLocalizedDateFormatFromTemplate("EEEE d HH:mm")
-                            optionalDateLabelText = dateFormatter.string(from: dateCreated1) + " > " + dateFormatter.string(from: dateCreated2)
+                            optionalDateLabelText = dateFormatter.string(from: dateCreated1) + " — " + dateFormatter.string(from: dateCreated2)
                         } else {
                             dateFormatter.setLocalizedDateFormatFromTemplate("EEEE d")
-                            optionalDateLabelText = dateFormatter.string(from: dateCreated1) + " > " + dateFormatter.string(from: dateCreated2)
+                            optionalDateLabelText = dateFormatter.string(from: dateCreated1) + " — " + dateFormatter.string(from: dateCreated2)
                         }
                     } else  {
                         // => Will display starting and ending dates
@@ -180,10 +180,10 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
                         if UIScreen.main.bounds.size.width > 414 {
                             // i.e. larger than iPhones 6, 7 screen width
                             dateFormatter.setLocalizedDateFormatFromTemplate("MMMMd")
-                            dateLabelText = dateFormatter.string(from: dateCreated1) + " > " + dateFormatter.string(from: dateCreated2)
+                            dateLabelText = dateFormatter.string(from: dateCreated1) + " — " + dateFormatter.string(from: dateCreated2)
                         } else {
                             dateFormatter.setLocalizedDateFormatFromTemplate("MMd")
-                            dateLabelText = dateFormatter.string(from: dateCreated1) + " > " + dateFormatter.string(from: dateCreated2)
+                            dateLabelText = dateFormatter.string(from: dateCreated1) + " — " + dateFormatter.string(from: dateCreated2)
                         }
                         // Define optional string with year
                         dateFormatter.setLocalizedDateFormatFromTemplate("YYYY")
