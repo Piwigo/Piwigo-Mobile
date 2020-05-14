@@ -52,7 +52,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     private var imagesSortedByWeeks: [[PHAsset]] = []
     private var imagesSortedByMonths: [[PHAsset]] = []
 
-    private var nberOfImagesPerRow = 0                                      // Number of images displayed per row in collection view
     private var selectedImages = [String]()                                 // Array of identifiers
     private var selectedSections = [NSNumber]()                             // Boolean values corresponding to Select/Deselect status
     private var touchedImages = [String]()                                  // Array of identifiers
@@ -152,15 +151,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
         // Update navigation bar and title
         updateNavBar()
-
-        // Scale width of images on iPad so that they seem to adopt a similar size
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            let mainScreenWidth = fminf(Float(UIScreen.main.bounds.size.width), Float(UIScreen.main.bounds.size.height))
-            let currentViewWidth = fminf(Float(view.bounds.size.width), Float(view.bounds.size.height))
-            nberOfImagesPerRow = Int(roundf(currentViewWidth / mainScreenWidth * Float(Model.sharedInstance().thumbnailsPerRowInPortrait)))
-        } else {
-            nberOfImagesPerRow = Model.sharedInstance().thumbnailsPerRowInPortrait
-        }
 
         // Progress bar
         ImageUploadProgressView.sharedInstance().delegate = self
@@ -1000,7 +990,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         // Calculate the optimum image size
-        let size = CGFloat(ImagesCollection.imageSize(for: collectionView, imagesPerRowInPortrait: nberOfImagesPerRow, collectionType: kImageCollectionPopup))
+        let size = CGFloat(ImagesCollection.imageSize(for: collectionView, imagesPerRowInPortrait: Model.sharedInstance().thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup))
 
         return CGSize(width: size, height: size)
     }
@@ -1012,7 +1002,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             return LocalImageCollectionViewCell()
         }
         let imageAsset = sortedImages[indexPath.section][indexPath.row]
-        cell.configure(with: imageAsset, thumbnailSize: CGFloat(ImagesCollection.imageSize(for: collectionView, imagesPerRowInPortrait: nberOfImagesPerRow, collectionType: kImageCollectionPopup)))
+        cell.configure(with: imageAsset, thumbnailSize: CGFloat(ImagesCollection.imageSize(for: collectionView, imagesPerRowInPortrait: Model.sharedInstance().thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup)))
 
         // Add pan gesture recognition
         let imageSeriesRocognizer = UIPanGestureRecognizer(target: self, action: #selector(touchedImages(_:)))

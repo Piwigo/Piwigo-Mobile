@@ -1219,7 +1219,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                 localAlbumsVC.categoryId = self.categoryId;
                 UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:localAlbumsVC];
                 navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-                navController.modalPresentationStyle = UIModalPresentationFormSheet;
+                navController.modalPresentationStyle = UIModalPresentationPageSheet;
                 [self presentViewController:navController animated:YES completion:nil];
             }
             onDeniedAccess:^{}
