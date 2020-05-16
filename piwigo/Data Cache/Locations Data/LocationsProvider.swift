@@ -17,12 +17,15 @@ let kPiwigoNotificationNewPlaceName = "kPiwigoNotificationNewPlaceName"
 
 class LocationsProvider: NSObject {
     
-    var geocoder = CLGeocoder()
-    var queue = OperationQueue()
+    private var geocoder = CLGeocoder()
+    private var queue = OperationQueue()
+    private var queuedLocations: [LocationProperties]
     
     override init() {
         // Prepare list of operations
         queue.maxConcurrentOperationCount = 1   // Make it a serial queue
+        // Initialise locations in queue
+        queuedLocations = []
     }
     
     // Singleton
@@ -156,11 +159,14 @@ class LocationsProvider: NSObject {
                     // Log placemarks[0]
 //                    print("\n===>> name:\(placeMark?.name ?? ""), country:\(country), administrativeArea:\(administrativeArea), subAdministrativeArea:\(subAdministrativeArea), locality:\(locality), subLocality:\(subLocality), thoroughfare:\(thoroughfare), subThoroughfare:\(placeMark?.subThoroughfare ?? ""), region:\(region), areasOfInterest:\(placeMark?.areasOfInterest?[0] ?? ""),inlandWater:\(inlandWater), ocean:\(ocean)\n")
 
+                    // Create a private queue context.
+                    let taskContext = DataController.getPrivateContext()
+                            
                     // Add new location to CoreData store
                     let newLocation = LocationProperties(coordinate: location.coordinate,
                                                          radius: region.radius,
                                                          placeName: placeName, streetName: streetName)
-                    self.importOneLocation(newLocation, taskContext: self.managedObjectContext)
+                    self.importOneLocation(newLocation, taskContext: taskContext)
                     
                 } else {
                     // Did not return place names
@@ -219,6 +225,13 @@ class LocationsProvider: NSObject {
                 // Reset the taskContext to free the cache and lower the memory footprint.
                 taskContext.reset()
 
+                // Remove location from queue
+                queuedLocations.removeAll { (item) -> Bool in
+                    item.coordinate?.latitude == locationData.coordinate?.latitude &&
+                        item.coordinate?.longitude == locationData.coordinate?.longitude &&
+                        item.radius == locationData.radius
+                }
+                
                 // Notify new place name to views
                 let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationNewPlaceName)
                 NotificationCenter.default.post(name: name, object: nil)
@@ -300,6 +313,7 @@ class LocationsProvider: NSObject {
 
             // Do we know the place of this location?
             if location.distance(from: knownLocation) <= knownPlace.radius {
+                // Retrieve non-empty cached strings
                 if knownPlace.placeName.count > 0 {
                     placeNames["placeLabel"] = knownPlace.placeName
                 }
@@ -310,16 +324,29 @@ class LocationsProvider: NSObject {
             }
         }
         
-        // Place name unknown -> fetch it
+        // Place names unknown —> Prepare fetch
         let newLocation = LocationProperties(coordinate: location.coordinate,
                                              radius: location.horizontalAccuracy,
                                              placeName: "", streetName: "")
         
+        // Place names not in cache, but may be in queue
+        if queuedLocations.contains(where: { (item) -> Bool in
+            item.coordinate?.latitude == newLocation.coordinate?.latitude &&
+                item.coordinate?.longitude == newLocation.coordinate?.longitude &&
+                item.radius == newLocation.radius
+        }) {
+            return placeNames
+        }
+        
         // Add operation to queue if possible
         if queue.operationCount < kPiwigoMaxNberOfLocationsToDecode {
+            // Add location to queue
+            queuedLocations.append(newLocation)
+            
+            // Fetch place names at location
             fetchPlaceName(at: newLocation) { (error) in
                 if error == nil {
-                    print("=> location requested")
+                    print("=> location could not be requested")
                 }
             }
         }
