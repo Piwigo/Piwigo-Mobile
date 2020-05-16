@@ -22,9 +22,9 @@ class Upload: NSManagedObject {
     @NSManaged var localIdentifier: String
     
     // The other attributes of an upload.
-    @NSManaged var dateAdded: Date
+    @NSManaged var requestDate: Date
     @NSManaged var category: Int64
-    @NSManaged var privacyLevel: Int64
+    @NSManaged var privacyLevel: kPiwigoPrivacy
     @NSManaged var author: String?
     @NSManaged var title: String?
     @NSManaged var comment: String?
@@ -38,18 +38,16 @@ class Upload: NSManagedObject {
      */
     func update(with uploadProperties: UploadProperties) throws {
         
-        // Update the upload only if the photo Id and category Id have values.
-        guard let photoId = uploadProperties.localIdentifier,
-              let categoryToUploadTo = uploadProperties.category else {
-                throw UploadError.missingData
-        }
-        localIdentifier = photoId
-        category = categoryToUploadTo
+        // Local identifier of the image to upload
+        localIdentifier = uploadProperties.localIdentifier
+        
+        // Category to upload the image to
+        category = Int64(uploadProperties.category)
         
         // Date of upload request defaults to now
-        dateAdded = uploadProperties.dateAdded ?? Date()
+        requestDate = uploadProperties.requestDate
 
-        // Photo author defaults to name entered in Settings
+        // Photo author name defaults to name entered in Settings
         author = uploadProperties.author ?? Model.sharedInstance()?.defaultAuthor
         
         // Privacy level defaults to level selected in Settings
@@ -58,10 +56,10 @@ class Upload: NSManagedObject {
         }
         privacyLevel = pLevel
 
-        // Other properties have no default values
-        title = uploadProperties.title
-        comment = uploadProperties.comment
-        tags = uploadProperties.tags
+        // Other properties have no predefined values
+        title = uploadProperties.title ?? ""
+        comment = uploadProperties.comment ?? ""
+        tags = uploadProperties.tags ?? []
     }
 }
 
@@ -69,16 +67,25 @@ class Upload: NSManagedObject {
 // MARK: - Upload properties
 /**
  A struct for managing upload requests
- All members are optional in case they are missing from the data.
 */
 struct UploadProperties
 {
-    let localIdentifier: String?            // Unique PHAsset identifier
-    let category: Int64?                    // 8
-    let dateAdded: Date?                    // "2020-08-22 19:18:43"
+    let localIdentifier: String            // Unique PHAsset identifier
+    let category: Int                      // 8
+    let requestDate: Date                  // "2020-08-22 19:18:43"
     let author: String?                     // "Author"
-    let privacyLevel: Int64?                // 0
+    let privacyLevel: kPiwigoPrivacy?       // 0
     let title: String?                      // "Image title"
     let comment: String?                    // "A comment…"
     let tags: [Tag]?                        // Array of tags
+}
+
+extension UploadProperties {
+    init(localIdentifier: String, category: Int) {
+        self.init(localIdentifier: localIdentifier, category: category,
+                  requestDate: Date.init(),
+                  author: Model.sharedInstance()?.defaultAuthor ?? "",
+                  privacyLevel: Model.sharedInstance()?.defaultPrivacyLevel ?? kPiwigoPrivacyEverybody,
+                  title: "", comment: "", tags: [])
+    }
 }
