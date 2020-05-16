@@ -24,7 +24,7 @@ class UploadsProvider {
      Imports a batch of upload requests into the Core Data store on a private queue,
      processing the record in batches to avoid a high memory footprint.
     */
-    func importUploads(from uploadRequest: [UploadProperties]) throws {
+    func importUploads(from uploadRequest: [UploadProperties], completionHandler: @escaping (Error?) -> Void) {
         
         guard !uploadRequest.isEmpty else { return }
         
@@ -54,6 +54,7 @@ class UploadsProvider {
                 return
             }
         }
+        completionHandler(nil)
     }
     
     /**

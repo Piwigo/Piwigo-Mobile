@@ -42,6 +42,7 @@ class DataController: NSObject {
             let applicationName: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as! String
             let applicationSupportDirectory = fm.urls(for: .applicationSupportDirectory, in: .userDomainMask).last
             let storesURL = applicationSupportDirectory?.appendingPathComponent(applicationName)
+            print("== CoreData ==>\(storesURL!)")
 
             // Create the Stores directory if needed
             if !(fm.fileExists(atPath: storesURL?.path ?? "")) {

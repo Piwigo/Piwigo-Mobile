@@ -64,6 +64,17 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     private var hudViewController: UIViewController?
 
     
+    // MARK: - Core Data
+    /**
+     The UploadsProvider that collects upload data, saves it to Core Data,
+     and serves it to the uploader.
+     */
+    private lazy var uploadProvider: UploadsProvider = {
+        let provider : UploadsProvider = UploadsProvider()
+        return provider
+    }()
+    
+    
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
@@ -95,7 +106,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         actionBarButton?.accessibilityIdentifier = "Sort"
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelSelect))
         cancelBarButton?.accessibilityIdentifier = "Cancel"
-        uploadBarButton = UIBarButtonItem(image: UIImage(named: "upload"), style: .plain, target: self, action: #selector(presentImageUploadView))
+        uploadBarButton = UIBarButtonItem(image: UIImage(named: "upload"), style: .plain, target: self, action: #selector(addSelectedImagesToUploadQueue))
         
         // Segmented control (choice for presenting images by date, week or month)
         var attributes = [
@@ -677,8 +688,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         Model.sharedInstance().localImagesSectionType.rawValue = UInt32(sender.selectedSegmentIndex)
         Model.sharedInstance().saveToDisk()
         
-        // Remembers local identifier of last visible cell
-        let localIdentifier = (localImagesCollection.visibleCells as? [LocalImageCollectionViewCell])?.last?.localIdentifier
+        // Remembers local identifier of first visible cell
+        let localIdentifier = (localImagesCollection.visibleCells as? [LocalImageCollectionViewCell])?.first?.localIdentifier
         
         // Sort images as requested using cached arrays
         switch Model.sharedInstance()?.localImagesSectionType {
@@ -740,7 +751,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             }
             
             // Scroll to visible cells
-            self.localImagesCollection.scrollToItem(at: indexOfTopCell, at: .centeredVertically, animated: true)
+            self.localImagesCollection.scrollToItem(at: indexOfTopCell, at: .top, animated: true)
         }
     }
     
@@ -779,6 +790,55 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 //        })
     }
 
+    @objc func addSelectedImagesToUploadQueue() {
+        // Add selected images to upload queue
+        uploadProvider.importUploads(from: selectedImages) { error in
+            
+              DispatchQueue.main.async {
+
+                // Show an alert if there was an error.
+                guard let error = error else {
+                    
+                    // Deselect all cells
+                    self.cancelSelect()
+
+                    // Refresh collection
+                    self.localImagesCollection.reloadData()
+                    return
+                }
+                let alert = UIAlertController(title: NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object."),
+                                              message: error.localizedDescription,
+                                              preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: NSLocalizedString("alertOkButton", comment: "OK"),
+                                              style: .default, handler: nil))
+                alert.view.tintColor = UIColor.piwigoColorOrange()
+                if #available(iOS 13.0, *) {
+                    alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+                } else {
+                    // Fallback on earlier versions
+                }
+                self.present(alert, animated: true, completion: {
+                    // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                    alert.view.tintColor = UIColor.piwigoColorOrange()
+                })
+            }
+        }
+    }
+    
+//    @objc func presentImageUploadView() {
+//        // Reset Select buttons
+//        selectedSections = [NSNumber](repeating: NSNumber(value: false), count: sortedImages.count)
+//
+//        // Present Image Upload View
+//        let imageUploadVC = ImageUploadViewController()
+//        imageUploadVC.selectedCategory = categoryId
+//        imageUploadVC.imagesSelected = selectedImages
+//        navigationController?.pushViewController(imageUploadVC, animated: true)
+//
+//        // Clear list of selected images
+//        selectedImages = []
+//    }
+
 
     // MARK: - Select Images
     
@@ -791,16 +851,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     }
 
     @objc func cancelSelect() {
-        // Loop over all sections to deselect cells
-        for section in 0..<localImagesCollection.numberOfSections {
-            // Loop over images in section
-            for row in 0..<localImagesCollection.numberOfItems(inSection: section) {
-                // Deselect image
-                let cell = localImagesCollection.cellForItem(at: IndexPath(row: row, section: (section + 1))) as? LocalImageCollectionViewCell
-                cell?.cellSelected = false
-            }
-        }
-        
         // Clear list of selected sections
         selectedSections = [NSNumber](repeating: NSNumber(value: false), count: sortedImages.count)
 
@@ -910,21 +960,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             }
         }
     }
-
-    @objc func presentImageUploadView() {
-        // Reset Select buttons
-        selectedSections = [NSNumber](repeating: NSNumber(value: false), count: sortedImages.count)
-
-        // Present Image Upload View
-        let imageUploadVC = ImageUploadViewController()
-        imageUploadVC.selectedCategory = categoryId
-        imageUploadVC.imagesSelected = selectedImages
-        navigationController?.pushViewController(imageUploadVC, animated: true)
-
-        // Clear list of selected images
-        selectedImages = []
-    }
-
     
     // MARK: - UICollectionView - Headers & Footers
         

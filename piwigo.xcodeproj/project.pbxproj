@@ -258,6 +258,7 @@
 		AD42DDF6210B38F30083FC7D /* MoveImageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MoveImageViewController.m; sourceTree = "<group>"; };
 		AD435822246FF21C00AC7D9C /* DataModel 2 (+Location).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 2 (+Location).xcdatamodel"; sourceTree = "<group>"; };
 		AD435823246FF21C00AC7D9C /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
+		AD435825246FF4BE00AC7D9C /* DataModel 3 (+Upload).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 3 (+Upload).xcdatamodel"; sourceTree = "<group>"; };
 		AD45949B1F36765200CF9438 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD45949C1F36765200CF9438 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/About.strings; sourceTree = "<group>"; };
 		AD45949D1F36765200CF9438 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
@@ -2196,10 +2197,11 @@
 		AD435821246FF21C00AC7D9C /* DataModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				AD435825246FF4BE00AC7D9C /* DataModel 3 (+Upload).xcdatamodel */,
 				AD435822246FF21C00AC7D9C /* DataModel 2 (+Location).xcdatamodel */,
 				AD435823246FF21C00AC7D9C /* DataModel.xcdatamodel */,
 			);
-			currentVersion = AD435822246FF21C00AC7D9C /* DataModel 2 (+Location).xcdatamodel */;
+			currentVersion = AD435825246FF4BE00AC7D9C /* DataModel 3 (+Upload).xcdatamodel */;
 			path = DataModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

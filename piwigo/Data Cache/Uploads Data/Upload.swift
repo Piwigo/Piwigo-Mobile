@@ -24,11 +24,11 @@ class Upload: NSManagedObject {
     // The other attributes of an upload.
     @NSManaged var requestDate: Date
     @NSManaged var category: Int64
-    @NSManaged var privacyLevel: kPiwigoPrivacy
+    @NSManaged var privacyLevel: Int16
     @NSManaged var author: String?
     @NSManaged var title: String?
     @NSManaged var comment: String?
-    @NSManaged var tags: [Tag]?
+    @NSManaged var tags: Set<Tag>?
 
     // Singleton
     @objc static let sharedInstance: Upload = Upload()
@@ -47,14 +47,11 @@ class Upload: NSManagedObject {
         // Date of upload request defaults to now
         requestDate = uploadProperties.requestDate
 
-        // Photo author name defaults to name entered in Settings
-        author = uploadProperties.author ?? Model.sharedInstance()?.defaultAuthor
+        // Photo author name is empty if not provided
+        author = uploadProperties.author ?? ""
         
-        // Privacy level defaults to level selected in Settings
-        guard let pLevel = uploadProperties.privacyLevel else {
-            throw UploadError.missingData
-        }
-        privacyLevel = pLevel
+        // Privacy level is the lowest one if not provided
+        privacyLevel = Int16(uploadProperties.privacyLevel?.rawValue ?? kPiwigoPrivacyEverybody.rawValue)
 
         // Other properties have no predefined values
         title = uploadProperties.title ?? ""
@@ -70,22 +67,26 @@ class Upload: NSManagedObject {
 */
 struct UploadProperties
 {
-    let localIdentifier: String            // Unique PHAsset identifier
-    let category: Int                      // 8
-    let requestDate: Date                  // "2020-08-22 19:18:43"
+    let localIdentifier: String             // Unique PHAsset identifier
+    let category: Int                       // 8
+    let requestDate: Date                   // "2020-08-22 19:18:43"
     let author: String?                     // "Author"
     let privacyLevel: kPiwigoPrivacy?       // 0
     let title: String?                      // "Image title"
     let comment: String?                    // "A comment…"
-    let tags: [Tag]?                        // Array of tags
+    let tags: Set<Tag>?                     // Array of tags
 }
 
 extension UploadProperties {
     init(localIdentifier: String, category: Int) {
         self.init(localIdentifier: localIdentifier, category: category,
+                  // Upload request date is now
                   requestDate: Date.init(),
+                  // Photo author name defaults to name entered in Settings
                   author: Model.sharedInstance()?.defaultAuthor ?? "",
+                  // Privacy level defaults to level selected in Settings
                   privacyLevel: Model.sharedInstance()?.defaultPrivacyLevel ?? kPiwigoPrivacyEverybody,
+                  // No title, comment and tag by default
                   title: "", comment: "", tags: [])
     }
 }
