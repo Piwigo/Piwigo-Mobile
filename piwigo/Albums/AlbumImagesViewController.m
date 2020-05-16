@@ -671,6 +671,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             // Animate appearance of Add button
             [UIView animateWithDuration:0.3 animations:^{
                 [self.addButton.layer setOpacity:0.9];
+                self.addButton.tintColor = [UIColor whiteColor];
             } completion:^(BOOL finished) {
                 // Show Home button if not in root or default album
                 [self showHomeAlbumButtonIfNeeded];
@@ -731,6 +732,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     if (self.categoryId == 0) {
         // User in root album => Create album
         self.addButton.backgroundColor = [UIColor grayColor];
+        self.addButton.tintColor = [UIColor whiteColor];
         [self showCreateCategoryDialog];
         return;
     }
@@ -748,6 +750,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                    forControlEvents:UIControlEventTouchUpInside];
             [UIView animateWithDuration:0.2 animations:^{
                 self.addButton.backgroundColor = [UIColor orangeColor];
+                self.addButton.tintColor = [UIColor whiteColor];
             }];
         }];
     } else {
@@ -764,6 +767,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                        forControlEvents:UIControlEventTouchUpInside];
                 [UIView animateWithDuration:0.2 animations:^{
                     self.addButton.backgroundColor = [UIColor grayColor];
+                    self.addButton.tintColor = [UIColor whiteColor];
                 }];
             }];
         }];
