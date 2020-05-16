@@ -52,7 +52,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     private var imagesSortedByWeeks: [[PHAsset]] = []
     private var imagesSortedByMonths: [[PHAsset]] = []
 
-    private var selectedImages = [String]()                                 // Array of identifiers
+    private var selectedImages = [UploadProperties]()                       // Array of images to upload
     private var selectedSections = [NSNumber]()                             // Boolean values corresponding to Select/Deselect status
     private var touchedImages = [String]()                                  // Array of identifiers
     
@@ -677,13 +677,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         Model.sharedInstance().localImagesSectionType.rawValue = UInt32(sender.selectedSegmentIndex)
         Model.sharedInstance().saveToDisk()
         
-        // Store current visible cells
-        var localIdentifier: String = ""
-        if let cells = localImagesCollection.visibleCells as? [LocalImageCollectionViewCell] {
-            // Get image local identifier
-            let cell = cells[Int((Double(cells.count) / 2.0).rounded(.towardZero))]
-            localIdentifier = cell.localIdentifier
-        }
+        // Remembers local identifier of last visible cell
+        let localIdentifier = (localImagesCollection.visibleCells as? [LocalImageCollectionViewCell])?.last?.localIdentifier
         
         // Sort images as requested using cached arrays
         switch Model.sharedInstance()?.localImagesSectionType {
@@ -695,10 +690,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             self.sortedImages = self.imagesSortedByDays
         }
         
-        // Reset buttons of sections which were changed
+        // Reset buttons of sections which point to different images
         selectedSections = .init(repeating: NSNumber(value: false), count: sortedImages.count)
 
         // Loop over all sections to reselect cells
+        var nberOfSelectedImagesAlreadyFound = 0
         var indexOfTopCell = IndexPath.init(item: 0, section: 0)
         for section in 0..<sortedImages.count {
 
@@ -711,8 +707,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 // Retrieve image asset
                 let imageId = sortedImages[section][item].localIdentifier
                 // Is this image selected?
-                if selectedImages.contains(imageId) {
-                    nberOfSelectedImages += 1
+                if selectedImages.contains(where: { (item) -> Bool in item.localIdentifier == imageId }) {
+                    nberOfSelectedImages +=  1
+                    nberOfSelectedImagesAlreadyFound += 1
                 }
                 // Was this cell the top one of visible cells
                 if imageId == localIdentifier {
@@ -722,6 +719,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
             // Update state of Select button
             selectedSections[section] = nberOfImages == nberOfSelectedImages ? NSNumber(value: true) : NSNumber(value: false)
+            
+            // Stop here if all selected images were found
+            if nberOfSelectedImagesAlreadyFound == selectedImages.count {
+                break
+            }
         }
 
         // Load changed collection
@@ -854,12 +856,12 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 touchedImages.append(imageId)
 
                 // Update the selection state
-                if let index = selectedImages.firstIndex(of: imageId) {
+                if let index = selectedImages.firstIndex(where: { (item) -> Bool in item.localIdentifier == imageId }) {
                     selectedImages.remove(at: index)
                     cell.cellSelected = false
                 } else {
                     // Select the cell
-                    selectedImages.append(imageId)
+                    selectedImages.append(UploadProperties.init(localIdentifier: imageId, category: categoryId))
                     cell.cellSelected = true
                 }
 
@@ -887,11 +889,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Count selected images in section
         var nberOfSelectedImages = 0
         for item in 0..<nberOfImages {
-            // Retrieve image asset
+            // Retrieve image local identifier
             let imageId = sortedImages[section][item].localIdentifier
             // Is this image selected?
-            if selectedImages.contains(imageId) {
-                nberOfSelectedImages += 1
+            if selectedImages.contains(where: { (item) -> Bool in item.localIdentifier == imageId }) {
+                nberOfSelectedImages +=  1
             }
         }
 
@@ -1014,7 +1016,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         cell.isUserInteractionEnabled = true
 
         // Cell state
-        cell.cellSelected = selectedImages.contains(imageAsset.localIdentifier)
+        cell.cellSelected = selectedImages.contains(where: { (item) -> Bool in item.localIdentifier == imageAsset.localIdentifier })
         let originalFilename = PhotosFetch.sharedInstance().getFileNameFomImageAsset(imageAsset)!
         cell.cellUploading = ImageUploadManager.sharedInstance().imageNamesUploadQueue.contains(URL(fileURLWithPath: originalFilename).deletingPathExtension().absoluteString)
         return cell
@@ -1027,16 +1029,16 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             return
         }
 
-        // Image asset
+        // Image local identifier
         let imageId = sortedImages[indexPath.section][indexPath.row].localIdentifier
 
         // Update cell and selection
-        if let index = selectedImages.firstIndex(of: imageId) {
+        if let index = selectedImages.firstIndex(where: { (item) -> Bool in item.localIdentifier == imageId }) {
             selectedImages.remove(at: index)
             cell.cellSelected = false
         } else {
             // Select the cell
-            selectedImages.append(imageId)
+            selectedImages.append(UploadProperties.init(localIdentifier: imageId, category: categoryId))
             cell.cellSelected = true
         }
 
@@ -1196,7 +1198,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         cell.cellUploading = false
         cell.cellSelected = false
         if let imageAsset = image?.imageAsset {
-            if selectedImages.contains(imageAsset.localIdentifier) {
+            if selectedImages.contains(where: { (item) -> Bool in item.localIdentifier == imageAsset.localIdentifier }) {
                 selectedImages.removeAll { $0 as AnyObject === image?.imageAsset.localIdentifier as AnyObject }
             }
         }
@@ -1254,7 +1256,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Loop over all images in section
         for item in 0..<sortedImages[section].count {
 
-            // Corresponding image asset
+            // Corresponding image local identifier
             let imageId = sortedImages[section][item].localIdentifier
 
             // Corresponding collection view cell
@@ -1264,14 +1266,14 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             // Select or deselect cell
             if selectedSections[section].boolValue == true {
                 // Deselect the cell
-                if let index = selectedImages.firstIndex(of: imageId) {
+                if let index = selectedImages.firstIndex(where: { (item) -> Bool in item.localIdentifier == imageId }) {
                     selectedImages.remove(at: index)
                     selectedCell?.cellSelected = false
                 }
             } else {
                 // Select the cell
-                if !selectedImages.contains(imageId) {
-                    selectedImages.append(imageId)
+                if !selectedImages.contains(where: { (item) -> Bool in item.localIdentifier == imageId }) {
+                    selectedImages.append(UploadProperties.init(localIdentifier: imageId, category: categoryId))
                     selectedCell?.cellSelected = true
                 }
             }
