@@ -95,10 +95,12 @@ class UploadsProvider {
             for uploadData in uploadsBatch {
             
                 // Index of this new upload in cache
-                let index = indexOfUpload(withId: uploadData.localIdentifier!, inArray: cachedUploads)
+                let index = cachedUploads.firstIndex { (item) -> Bool in
+                    item.localIdentifier == uploadData.localIdentifier
+                }
                 
                 // Is this upload already cached?
-                if (index == Int64.max) {
+                if index == nil {
                     // Create an Upload managed object on the private queue context.
                     guard let upload = NSEntityDescription.insertNewObject(forEntityName: "Upload", into: taskContext) as? Upload else {
                         print(UploadError.creationError.localizedDescription)
@@ -121,7 +123,7 @@ class UploadsProvider {
                 else {
                     // Update the update's properties using the raw data
                     do {
-                        try cachedUploads[index].update(with: uploadData)
+                        try cachedUploads[index!].update(with: uploadData)
                     }
                     catch UploadError.missingData {
                         // Could not perform the update
@@ -150,23 +152,6 @@ class UploadsProvider {
             success = true
         }
         return success
-    }
-
-    /**
-     Returns the index of an upload cached in persistent storage
-    */
-    private func indexOfUpload(withId uploadId: String, inArray uploadList: [Upload]?) -> Int {
-        
-        let index = (uploadList as NSArray?)?.indexOfObject(passingTest: { obj, idx, stop in
-                let upload = obj as? Upload
-                if upload?.localIdentifier == uploadId {
-                    return true
-                } else {
-                    return false
-                }
-            })
-
-        return index ?? Int.max
     }
 
     
