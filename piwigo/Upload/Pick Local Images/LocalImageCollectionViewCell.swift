@@ -75,6 +75,8 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         
         // Background color and aspect
         backgroundColor = UIColor.piwigoColorCellBackground()
+        uploadingActivity.color = UIColor.white
+        uploadingProgress.trackTintColor = UIColor.white
         cellSelected = false
         localIdentifier = imageAsset.localIdentifier
 

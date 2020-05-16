@@ -163,7 +163,7 @@ class UploadsProvider {
     func clearUploads() {
         
         // Create a fetch request for the Tag entity
-        let fetchRequest = NSFetchRequest<Tag>(entityName: "Upload")
+        let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
 
         // Create batch delete request
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)
@@ -187,12 +187,12 @@ class UploadsProvider {
     weak var fetchedResultsControllerDelegate: NSFetchedResultsControllerDelegate?
     
     /**
-     A fetched results controller to fetch Upload records sorted by name.
+     A fetched results controller to fetch Upload records sorted by local request date.
      */
-    lazy var fetchedResultsController: NSFetchedResultsController<Tag> = {
+    lazy var fetchedResultsController: NSFetchedResultsController<Upload> = {
         
         // Create a fetch request for the Tag entity sorted by name.
-        let fetchRequest = NSFetchRequest<Tag>(entityName: "Upload")
+        let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "requestDate", ascending: true)]
         
         // Create a fetched results controller and set its fetch request, context, and delegate.

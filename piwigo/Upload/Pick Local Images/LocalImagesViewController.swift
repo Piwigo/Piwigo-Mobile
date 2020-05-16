@@ -164,11 +164,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         updateNavBar()
 
         // Progress bar
-        ImageUploadProgressView.sharedInstance().delegate = self
-        ImageUploadProgressView.sharedInstance().changePaletteMode()
-        if ImageUploadManager.sharedInstance().imageUploadQueue.count > 0 {
-            ImageUploadProgressView.sharedInstance().addView(to: view, forBottomLayout: bottomLayoutGuide)
-        }
+//        ImageUploadProgressView.sharedInstance().delegate = self
+//        ImageUploadProgressView.sharedInstance().changePaletteMode()
+//        if ImageUploadManager.sharedInstance().imageUploadQueue.count > 0 {
+//            ImageUploadProgressView.sharedInstance().addView(to: view, forBottomLayout: bottomLayoutGuide)
+//        }
 
         // Register Photo Library changes
         PHPhotoLibrary.shared().register(self)
@@ -1052,8 +1052,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
         // Cell state
         cell.cellSelected = selectedImages.contains(where: { (item) -> Bool in item.localIdentifier == imageAsset.localIdentifier })
-        let originalFilename = PhotosFetch.sharedInstance().getFileNameFomImageAsset(imageAsset)!
-        cell.cellUploading = ImageUploadManager.sharedInstance().imageNamesUploadQueue.contains(URL(fileURLWithPath: originalFilename).deletingPathExtension().absoluteString)
+        if let uploads = uploadProvider.fetchedResultsController.fetchedObjects {
+            cell.cellUploading = uploads.contains(where: { $0.localIdentifier == cell.localIdentifier })
+        }
+//        let originalFilename = PhotosFetch.sharedInstance().getFileNameFomImageAsset(imageAsset)!
+//        cell.cellUploading = ImageUploadManager.sharedInstance().imageNamesUploadQueue.contains(URL(fileURLWithPath: originalFilename).deletingPathExtension().absoluteString)
         return cell
     }
 
