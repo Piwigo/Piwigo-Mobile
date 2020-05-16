@@ -24,16 +24,16 @@ class UploadsProvider {
      Imports a batch of upload requests into the Core Data store on a private queue,
      processing the record in batches to avoid a high memory footprint.
     */
-    func importUploads(from uploadsRequest: [UploadProperties]) throws {
+    func importUploads(from uploadRequest: [UploadProperties]) throws {
         
-        guard !uploadsRequest.isEmpty else { return }
+        guard !uploadRequest.isEmpty else { return }
         
         // Create a private queue context.
         let taskContext = DataController.getPrivateContext()
                 
         // Process records in batches to avoid a high memory footprint.
         let batchSize = 256
-        let count = uploadsRequest.count
+        let count = uploadRequest.count
         
         // Determine the total number of batches.
         var numBatches = count / batchSize
@@ -47,7 +47,7 @@ class UploadsProvider {
             let range = batchStart..<batchEnd
             
             // Create a batch for this range from the decoded JSON.
-            let uploadsBatch = Array(uploadsRequest[range])
+            let uploadsBatch = Array(uploadRequest[range])
             
             // Stop the entire import if any batch is unsuccessful.
             if !importOneBatch(uploadsBatch, taskContext: taskContext) {
@@ -195,19 +195,19 @@ class UploadsProvider {
     // MARK: - NSFetchedResultsController
     
     /**
-     A fetched results controller delegate to give consumers a chance to update
-     the user interface when content changes.
+     A fetched results controller delegate to give consumers a chance to upload
+     the next images.
      */
     weak var fetchedResultsControllerDelegate: NSFetchedResultsControllerDelegate?
     
     /**
-     A fetched results controller to fetch Tag records sorted by name.
+     A fetched results controller to fetch Upload records sorted by name.
      */
     lazy var fetchedResultsController: NSFetchedResultsController<Tag> = {
         
         // Create a fetch request for the Tag entity sorted by name.
         let fetchRequest = NSFetchRequest<Tag>(entityName: "Upload")
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "dateAdded", ascending: true)]
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "requestDate", ascending: true)]
         
         // Create a fetched results controller and set its fetch request, context, and delegate.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
