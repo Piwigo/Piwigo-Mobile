@@ -148,10 +148,12 @@ class TagsProvider {
             for tagData in tagsBatch {
             
                 // Index of this new tag in cache
-                let index = indexOfTag(withId: tagData.id!, inArray: cachedTags)
+                let index = cachedTags.firstIndex { (item) -> Bool in
+                    item.tagId == tagData.id!
+                }
                 
                 // Is this tag already cached?
-                if (index == Int64.max) {
+                if (index == nil) {
                     // Create a Tag managed object on the private queue context.
                     guard let tag = NSEntityDescription.insertNewObject(forEntityName: "Tag", into: taskContext) as? Tag else {
                         print(TagError.creationError.localizedDescription)
@@ -173,9 +175,9 @@ class TagsProvider {
                 }
                 else {
                     // Update the tag's properties using the raw data
-                    indexesOfTagsToUpdate.add(index)
+                    indexesOfTagsToUpdate.add(index!)
                     do {
-                        try cachedTags[index].update(with: tagData)
+                        try cachedTags[index!].update(with: tagData)
                     }
                     catch TagError.missingData {
                         // Could not perform the update
@@ -215,23 +217,6 @@ class TagsProvider {
         return success
     }
     
-    /**
-     Returns the index of a tag cached in persistent storage
-    */
-    private func indexOfTag(withId tagId: Int64, inArray tagList: [Tag]?) -> Int {
-        
-        let index = (tagList as NSArray?)?.indexOfObject(passingTest: { obj, idx, stop in
-                let tag = obj as? Tag
-                if tag?.tagId == tagId {
-                    return true
-                } else {
-                    return false
-                }
-            })
-
-        return index ?? Int.max
-    }
-
     
     // MARK: - Clear Tags
     /**
