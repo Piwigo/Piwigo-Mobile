@@ -40,7 +40,7 @@ CGFloat const kRadius = 25.0;
 CGFloat const kDeg2Rad = 3.141592654 / 180.0;
 NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBackToDefaultAlbum";
 
-@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, UITextFieldDelegate, ImageDetailDelegate, EditImageParamsDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, AsyncImageActivityItemProviderDelegate, TagSelectorViewDelegate, ChangedSettingsDelegate>
+@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, UITextFieldDelegate, NSFetchedResultsControllerDelegate, ImageDetailDelegate, EditImageParamsDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, AsyncImageActivityItemProviderDelegate, TagSelectorViewDelegate, ChangedSettingsDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
@@ -65,6 +65,8 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 @property (nonatomic, strong) UIButton *uploadImagesButton;
 @property (nonatomic, strong) UIAlertAction *createAlbumAction;
 @property (nonatomic, strong) UIButton *homeAlbumButton;
+@property (nonatomic, strong) UIButton *uploadQueueButton;
+@property (nonatomic, strong) UILabel *nberOfUploadsLabel;
 
 @property (nonatomic, assign) BOOL isSelect;
 @property (nonatomic, assign) NSInteger totalNumberOfImages;
@@ -177,6 +179,29 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                forControlEvents:UIControlEventTouchUpInside];
         self.addButton.hidden = YES;
         [self.view addSubview:self.addButton];
+
+        // "Upload Queue" button above collection view
+        self.uploadQueueButton = [UIButton buttonWithType:UIButtonTypeSystem];
+        self.uploadQueueButton.frame = self.addButton.frame;
+        self.uploadQueueButton.layer.cornerRadius = kRadius;
+        self.uploadQueueButton.layer.masksToBounds = NO;
+        [self.uploadQueueButton.layer setOpacity:0.0];
+        [self.uploadQueueButton.layer setShadowColor:[UIColor piwigoColorGray].CGColor];
+        [self.uploadQueueButton.layer setShadowOpacity:1.0];
+        [self.uploadQueueButton.layer setShadowRadius:5.0];
+        [self.uploadQueueButton.layer setShadowOffset:CGSizeMake(0.0, 2.0)];
+        self.uploadQueueButton.showsTouchWhenHighlighted = YES;
+        [self.uploadQueueButton addTarget:self action:@selector(didTapUploadQueueButton)
+                    forControlEvents:UIControlEventTouchUpInside];
+        self.uploadQueueButton.hidden = YES;
+        self.nberOfUploadsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
+        self.nberOfUploadsLabel.text = @"";
+        self.nberOfUploadsLabel.font = [UIFont piwigoFontBold];
+        self.nberOfUploadsLabel.textColor = [UIColor whiteColor];
+        self.nberOfUploadsLabel.textAlignment = NSTextAlignmentCenter;
+        [self.uploadQueueButton addSubview:self.nberOfUploadsLabel];
+        [self.uploadQueueButton addConstraints:[NSLayoutConstraint constraintCenter:self.nberOfUploadsLabel]];
+        [self.view insertSubview:self.uploadQueueButton belowSubview:self.addButton];
 
         // "Home" album button above collection view
         self.homeAlbumButton = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -300,6 +325,8 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"pullToRefresh", @"Reload Images") attributes:attributesRefresh];
     
     // Buttons
+    self.uploadQueueButton.backgroundColor = [UIColor piwigoColorRightLabel];
+    self.uploadQueueButton.tintColor = [UIColor piwigoColorBackground];
     self.homeAlbumButton.backgroundColor = [UIColor piwigoColorRightLabel];
     self.homeAlbumButton.tintColor = [UIColor piwigoColorBackground];
 
@@ -673,19 +700,31 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                 [self.addButton.layer setOpacity:0.9];
                 self.addButton.tintColor = [UIColor whiteColor];
             } completion:^(BOOL finished) {
-                // Show Home button if not in root or default album
-                [self showHomeAlbumButtonIfNeeded];
+                // Show button on the left of the Add button if needed
+                if ((self.categoryId == 0) || (self.categoryId == [Model sharedInstance].defaultCategory))
+                {
+                    // Show UploadQueue button in root or default album
+                    [self showUploadQueueButtonIfNeeded];
+                }
+                else {
+                    // Show Home button if not in root or default album
+                    [self showHomeAlbumButtonIfNeeded];
+                }
             }];
         } else {
             // Present Home button if needed and if not in root or default album
-            [self showHomeAlbumButtonIfNeeded];
+            if ((self.categoryId != 0) && (self.categoryId != [Model sharedInstance].defaultCategory)) {
+                [self showHomeAlbumButtonIfNeeded];
+            }
         }
     }
     else    // No upload rights => No Upload button
     {
         // Show Home button if not in root or default album
         [self.addButton setHidden:YES];
-        [self showHomeAlbumButtonIfNeeded];
+        if ((self.categoryId != 0) && (self.categoryId != [Model sharedInstance].defaultCategory)) {
+            [self showHomeAlbumButtonIfNeeded];
+        }
     }
     
     // Left side of navigation bar
@@ -784,19 +823,26 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                     forControlEvents:UIControlEventTouchUpInside];
         [self.addButton addTarget:self action:@selector(didTapAddButton)
                forControlEvents:UIControlEventTouchUpInside];
-            self.addButton.backgroundColor = [UIColor piwigoColorOrange];
-            self.addButton.tintColor = [UIColor whiteColor];
-            // Present Home button if needed and if not in root or default album
+        self.addButton.backgroundColor = [UIColor piwigoColorOrange];
+        self.addButton.tintColor = [UIColor whiteColor];
+            
+        // Show button on the left of the Add button if needed
+        if ((self.categoryId == 0) || (self.categoryId == [Model sharedInstance].defaultCategory))
+        {
+            // Show UploadQueue button in root or default album
+            [self showUploadQueueButtonIfNeeded];
+        }
+        else {
+            // Show Home button if not in root or default album
             [self showHomeAlbumButtonIfNeeded];
+        }
     }];
 }
 
 -(void)showHomeAlbumButtonIfNeeded
 {
     // Present Home Album button if needed
-    // and if not in root or default album
-    if (self.homeAlbumButton.isHidden && (self.categoryId != 0) &&
-        (self.categoryId != [Model sharedInstance].defaultCategory))
+    if (self.homeAlbumButton.isHidden)
     {
         // Unhide transparent Home Album button
         [self.homeAlbumButton setHidden:NO];
@@ -819,6 +865,31 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             else {
                 self.homeAlbumButton.frame = self.addButton.frame;
             }
+        }];
+    }
+}
+
+-(void)showUploadQueueButtonIfNeeded
+{
+    // Are there images in upload queue?
+    NSFetchedResultsController *uploadsFC = [[[UploadsProvider alloc] init] fetchedResultsController];
+    NSArray *uploads = uploadsFC.fetchedObjects;
+    NSLog(@"=>> %ld images in upload queue", uploads.count);
+    if (self.uploadQueueButton.isHidden && uploads.count > 0)
+    {
+        // Set number of uploads
+        self.nberOfUploadsLabel.text = [NSString stringWithFormat:@"%ld", uploads.count];
+        
+        // Unhide transparent Upload Queue button
+        [self.uploadQueueButton setHidden:NO];
+                
+        // Animate appearance of Upload Queue button
+        [UIView animateWithDuration:0.3 animations:^{
+            // Progressive appearance
+            [self.uploadQueueButton.layer setOpacity:0.9];
+            CGFloat xPos = self.addButton.frame.origin.x;
+            CGFloat yPos = self.addButton.frame.origin.y;
+            self.uploadQueueButton.frame = CGRectMake(xPos - 3*kRadius, yPos, 2*kRadius, 2*kRadius);
         }];
     }
 }
@@ -1233,6 +1304,15 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     [self didCancelTapAddButton];
 }
 
+-(void)didTapUploadQueueButton
+{
+    NSLog(@"•••• user did tap upload queue button ;-)");
+}
+
+-(void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath
+{
+    NSLog(@"•••• controller did change object ;-)");
+}
 
 #pragma mark - Create Sub-Album
 

@@ -9,7 +9,8 @@
 
 import CoreData
 
-class UploadsProvider {
+@objc
+class UploadsProvider: NSObject {
 
     // MARK: - Core Data object context
     
@@ -184,12 +185,12 @@ class UploadsProvider {
      A fetched results controller delegate to give consumers a chance to upload
      the next images.
      */
-    weak var fetchedResultsControllerDelegate: NSFetchedResultsControllerDelegate?
+    @objc weak var fetchedResultsControllerDelegate: NSFetchedResultsControllerDelegate?
     
     /**
      A fetched results controller to fetch Upload records sorted by local request date.
      */
-    lazy var fetchedResultsController: NSFetchedResultsController<Upload> = {
+    @objc lazy var fetchedResultsController: NSFetchedResultsController<Upload> = {
         
         // Create a fetch request for the Tag entity sorted by name.
         let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
