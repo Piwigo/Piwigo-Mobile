@@ -14,6 +14,19 @@ import UIKit
 @objc
 class LocalImagesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIScrollViewDelegate, PHPhotoLibraryChangeObserver, LocalImagesHeaderDelegate, ImageUploadProgressDelegate {
     
+    // MARK: - Core Data
+    /**
+     The UploadsProvider that collects upload data, saves it to Core Data,
+     and serves it to the uploader.
+     */
+    private lazy var uploadProvider: UploadsProvider = {
+        let provider : UploadsProvider = UploadsProvider()
+        provider.fetchedResultsControllerDelegate = self
+        return provider
+    }()
+    
+    
+    // MARK: View
     @objc func setCategoryId(_ categoryId: Int) {
         _categoryId = categoryId
     }
@@ -60,20 +73,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     private var cancelBarButton: UIBarButtonItem?
     private var uploadBarButton: UIBarButtonItem?
     
-//    private var removedUploadedImages = false
+    private var removeUploadedImages = false
     private var hudViewController: UIViewController?
 
-    
-    // MARK: - Core Data
-    /**
-     The UploadsProvider that collects upload data, saves it to Core Data,
-     and serves it to the uploader.
-     */
-    private lazy var uploadProvider: UploadsProvider = {
-        let provider : UploadsProvider = UploadsProvider()
-        return provider
-    }()
-    
     
     // MARK: - View Lifecycle
 
@@ -88,8 +90,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Fetch non-empty input collection and prepare data source in background
         fetchAndSortImages()
 
-        // Arrays for managing selections
-//        removedUploadedImages = false
+        // Show images in upload queue by default
+        removeUploadedImages = false
 
         // Collection flow layout of images
         collectionFlowLayout.scrollDirection = .vertical
@@ -648,25 +650,26 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             self.fetchAndSortImages()
         })
 
-//        let uploadedAction = UIAlertAction(title: removedUploadedImages ? "✓ \(NSLocalizedString("localImageSort_notUploaded", comment: "Not Uploaded"))" : NSLocalizedString("localImageSort_notUploaded", comment: "Not Uploaded"), style: .default, handler: { action in
+//        let uploadedAction = UIAlertAction(title: removeUploadedImages ? NSLocalizedString("localImageSort_notUploaded", comment: "Not Uploaded") : "✓ \(NSLocalizedString("localImageSort_notUploaded", comment: "Not Uploaded"))", style: .default, handler: { action in
 //            // Remove uploaded images?
-//            if self.removedUploadedImages {
+//            if self.removeUploadedImages {
 //                // Store choice
-//                self.removedUploadedImages = false
+//                self.removeUploadedImages = false
 //
 //                // Sort images
-//                self.performSelector(inBackground: #selector(self.sortImages), with: nil)
+//                self.localImagesCollection.reloadData()
 //            } else {
 //                // Store choice
-//                self.removedUploadedImages = true
+//                self.removeUploadedImages = true
 //
 //                // Remove uploaded images from collection
-//                self.performSelector(inBackground: #selector(self.removeUploadedImagesFromCollection), with: nil)
+//                self.localImagesCollection.reloadData()
 //            }
 //        })
 
         // Add actions
         alert.addAction(cancelAction)
+//        alert.addAction(uploadedAction)
         alert.addAction(sortAction)
 
         // Present list of actions
@@ -687,10 +690,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Did select new sort option [Months, Weeks, Days]
         Model.sharedInstance().localImagesSectionType.rawValue = UInt32(sender.selectedSegmentIndex)
         Model.sharedInstance().saveToDisk()
-        
-        // Remembers local identifier of first visible cell
-        let localIdentifier = (localImagesCollection.visibleCells as? [LocalImageCollectionViewCell])?.first?.localIdentifier
-        
+                
         // Sort images as requested using cached arrays
         switch Model.sharedInstance()?.localImagesSectionType {
         case kPiwigoSortImagesByMonths:
@@ -706,7 +706,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
         // Loop over all sections to reselect cells
         var nberOfSelectedImagesAlreadyFound = 0
-        var indexOfTopCell = IndexPath.init(item: 0, section: 0)
         for section in 0..<sortedImages.count {
 
             // Number of images in section
@@ -721,10 +720,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 if selectedImages.contains(where: { (item) -> Bool in item.localIdentifier == imageId }) {
                     nberOfSelectedImages +=  1
                     nberOfSelectedImagesAlreadyFound += 1
-                }
-                // Was this cell the top one of visible cells
-                if imageId == localIdentifier {
-                    indexOfTopCell = IndexPath.init(item: item, section: section)
                 }
             }
 
@@ -749,61 +744,19 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             if self.segmentedControl.isHidden {
                 self.showSegmentedControl()
             }
-            
-            // Scroll to visible cells
-            self.localImagesCollection.scrollToItem(at: indexOfTopCell, at: .top, animated: true)
         }
     }
     
-    @objc func removeUploadedImagesFromCollection() {
-        // Show HUD during download
-        DispatchQueue.main.async(execute: {
-            self.showHUDwithTitle(NSLocalizedString("imageUploadRemove", comment: "Removing Uploaded Images"))
-        })
-
-        // Remove uploaded images from the collection
-//        NotUploadedYet.getListOfImageNamesThatArentUploaded(forCategory: categoryId, withImages: imagesInSections, andSelections: selectedSections, onCompletion: { imagesNotUploaded, sectionsToDelete in
-//            DispatchQueue.main.async(execute: {
-//                // Check returned data
-//                if let imagesNotUploaded = imagesNotUploaded {
-//                    // Update image list
-//                    self.imagesInSections = imagesNotUploaded
-//
-//                    // Hide HUD
-//                    self.hideHUDwithSuccess(true) {
-//                        self.hudViewController = nil
-//
-//                        // Refresh collection view
-//                        if let sectionsToDelete = sectionsToDelete {
-//                            self.localImagesCollection.deleteSections(sectionsToDelete as IndexSet)
-//                        }
-//
-//                        // Update selections
-//                        self.updateSelectButtons()
-//                    }
-//                } else {
-//                    self.hideHUDwithSuccess(false) {
-//                        self.hudViewController = nil
-//                    }
-//                }
-//            })
-//        })
-    }
-
+    
+    // MARK: - Uploads management
+    
     @objc func addSelectedImagesToUploadQueue() {
         // Add selected images to upload queue
         uploadProvider.importUploads(from: selectedImages) { error in
             
               DispatchQueue.main.async {
-
                 // Show an alert if there was an error.
                 guard let error = error else {
-                    
-                    // Deselect all cells
-                    self.cancelSelect()
-
-                    // Refresh collection
-                    self.localImagesCollection.reloadData()
                     return
                 }
                 let alert = UIAlertController(title: NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object."),
@@ -825,20 +778,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         }
     }
     
-//    @objc func presentImageUploadView() {
-//        // Reset Select buttons
-//        selectedSections = [NSNumber](repeating: NSNumber(value: false), count: sortedImages.count)
-//
-//        // Present Image Upload View
-//        let imageUploadVC = ImageUploadViewController()
-//        imageUploadVC.selectedCategory = categoryId
-//        imageUploadVC.imagesSelected = selectedImages
-//        navigationController?.pushViewController(imageUploadVC, animated: true)
-//
-//        // Clear list of selected images
-//        selectedImages = []
-//    }
-
 
     // MARK: - Select Images
     
@@ -941,16 +880,29 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     func updateSelectButton(forSection section: Int) {
         // Number of images in section
         let nberOfImages = sortedImages[section].count
+        
+        // Number of images in upload queue
+        let nberOfImagesInUploadQueue = uploadProvider.fetchedResultsController.fetchedObjects?.count
+        
+        // If all images are in the upload queue, images cannot be selected.
+        if nberOfImages == nberOfImagesInUploadQueue {
+            selectedSections[section] = NSNumber(value: false)
+            localImagesCollection.reloadSections(NSIndexSet(index: section) as IndexSet)
+            return
+        }
 
         // Count selected images in section
         var nberOfSelectedImages = 0
         for item in 0..<nberOfImages {
             // Retrieve image local identifier
             let imageId = sortedImages[section][item].localIdentifier
-            // Is this image selected or already in the upload queue?
+            // Is this image selected or in upload queue?
             if selectedImages.contains(where: { (item) -> Bool in item.localIdentifier == imageId }) {
                 nberOfSelectedImages +=  1
-            } else if let uploads = uploadProvider.fetchedResultsController.fetchedObjects {
+                continue
+            }
+            // Is this image in the upload queue?
+            if let uploads = uploadProvider.fetchedResultsController.fetchedObjects {
                 if uploads.contains(where: { $0.localIdentifier == imageId }) {
                     nberOfSelectedImages +=  1
                 }
@@ -1065,8 +1017,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         if let uploads = uploadProvider.fetchedResultsController.fetchedObjects {
             cell.cellUploading = uploads.contains(where: { $0.localIdentifier == cell.localIdentifier })
         }
-//        let originalFilename = PhotosFetch.sharedInstance().getFileNameFomImageAsset(imageAsset)!
-//        cell.cellUploading = ImageUploadManager.sharedInstance().imageNamesUploadQueue.contains(URL(fileURLWithPath: originalFilename).deletingPathExtension().absoluteString)
         return cell
     }
 
@@ -1256,7 +1206,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         }
 
         // Update list of "Not Uploaded" images
-//        if removedUploadedImages {
+//        if removeUploadedImages {
 //            var newList = imagesInSections
 //            newList?.removeAll { $0 as AnyObject === image?.imageAsset as AnyObject }
 //            imagesInSections = newList
@@ -1343,11 +1293,38 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Update section
         updateSelectButton(forSection: section)
     }
+}
 
+// MARK: - NSFetchedResultsControllerDelegate
+
+extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
     
-    // MARK: - NotUploadedYet Delegate Methods
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+
+        switch type {
+        case .insert:
+            if let upload:Upload = anObject as? Upload {
+                selectedImages.removeAll(where: { $0.localIdentifier == upload.localIdentifier })
+            }
+        case .delete:
+            print("••• controller:delete...")
+        case .move:
+            print("••• controller:move...")
+        case .update:
+            print("••• controller:update...")
+        @unknown default:
+            fatalError("TagSelectorViewController: unknown NSFetchedResultsChangeType")
+        }
+    }
     
-    func showProgress(withSubTitle title: String?) {
-        MBProgressHUD(for: (hudViewController?.view)!)?.detailsLabel.text = title
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        // Update section buttons
+        updateSelectButtons()
+        
+        // Update navigation bar
+        updateNavBar()
+
+        // Update collection
+        localImagesCollection.reloadData()
     }
 }

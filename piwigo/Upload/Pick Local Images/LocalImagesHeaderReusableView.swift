@@ -94,10 +94,6 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
     // MARK: Utilities
     
     @objc private func setLabelsFromDatesAndLocation() {
-        // Register new place name notifications
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationNewPlaceName)
-        NotificationCenter.default.addObserver(self, selector: #selector(setLabelsFromDatesAndLocation), name: name, object: nil)
-
         // Get place name from location (may geodecode location and update labels later)
         let placeNames = LocationsProvider.sharedInstance().getPlaceName(for: location)
 
@@ -115,6 +111,9 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         } else {
             placeLabel.text = dateLabelText
             dateLabel.text = optionalDateLabelText
+            // Register new place name notifications
+            let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationNewPlaceName)
+            NotificationCenter.default.addObserver(self, selector: #selector(setLabelsFromDatesAndLocation), name: name, object: nil)
         }
     }
     
