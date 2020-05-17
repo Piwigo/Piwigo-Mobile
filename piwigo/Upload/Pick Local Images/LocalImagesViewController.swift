@@ -1313,7 +1313,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
         case .update:
             print("••• controller:update...")
         @unknown default:
-            fatalError("TagSelectorViewController: unknown NSFetchedResultsChangeType")
+            fatalError("LocalImagesViewController: unknown NSFetchedResultsChangeType")
         }
     }
     
