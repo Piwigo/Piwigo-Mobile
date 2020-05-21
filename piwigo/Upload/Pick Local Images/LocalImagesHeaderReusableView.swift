@@ -34,7 +34,7 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
     func configure(with images: [PHAsset], section: Int, selectionMode: Bool) {
         
         // General settings
-        backgroundColor = UIColor.clear
+        backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.75)
 
         // Keep section for future use
         self.section = section

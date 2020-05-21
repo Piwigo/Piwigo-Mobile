@@ -526,7 +526,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             // Update section
             self.localImagesCollection.insertSections(indexesOfNewSections)
         }
-
     }
     
     private func split(inRange range: Range<Int>) -> (imagesByDays: [[PHAsset]], imagesByWeeks: [[PHAsset]], imagesByMonths: [[PHAsset]])  {
@@ -957,7 +956,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
         if (elementKind == UICollectionView.elementKindSectionHeader) || (elementKind == UICollectionView.elementKindSectionFooter) {
             view.layer.zPosition = 0 // Below scroll indicator
-            view.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.75)
         }
     }
 
