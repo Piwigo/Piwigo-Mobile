@@ -115,7 +115,7 @@ class UploadsProvider: NSObject {
                     }
                     catch UploadError.missingData {
                         // Delete invalid Upload from the private queue context.
-                        print(TagError.missingData.localizedDescription)
+                        print(UploadError.missingData.localizedDescription)
                         taskContext.delete(upload)
                     }
                     catch {
