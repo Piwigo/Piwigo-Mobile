@@ -18,6 +18,12 @@ import UIKit
 @objc
 class LocalImagesHeaderReusableView: UICollectionReusableView {
     
+    @objc enum SelectButtonState : Int {
+        case none
+        case select
+        case deselect
+    }
+
     private var location: CLLocation = CLLocation.init()
     private var dateLabelText: String = ""
     private var optionalDateLabelText: String = ""
@@ -31,7 +37,7 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
     @IBOutlet weak var placeLabel: UILabel!
 
     @objc
-    func configure(with images: [PHAsset], section: Int, selectionMode: Bool) {
+    func configure(with images: [PHAsset], section: Int, selectState: SelectButtonState) {
         
         // General settings
         backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.75)
@@ -70,7 +76,15 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorOrange(),
             NSAttributedString.Key.font: UIFont.piwigoFontNormal()
         ]
-        let title = selectionMode ? NSLocalizedString("categoryImageList_deselectButton", comment: "Deselect") : NSLocalizedString("categoryImageList_selectButton", comment: "Select")
+        let title:String
+        switch selectState {
+        case .select:
+            title = NSLocalizedString("categoryImageList_selectButton", comment: "Select")
+        case .deselect:
+            title = NSLocalizedString("categoryImageList_deselectButton", comment: "Deselect")
+        case.none:
+            title = ""
+        }
         let buttonTitle = NSAttributedString(string: title, attributes: attributes)
         selectButton.setAttributedTitle(buttonTitle, for: .normal)
     }

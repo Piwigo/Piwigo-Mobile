@@ -874,8 +874,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     // Are there images in upload queue?
     NSFetchedResultsController *uploadsFC = [[[UploadsProvider alloc] init] fetchedResultsController];
     NSArray *uploads = uploadsFC.fetchedObjects;
-    NSLog(@"=>> %ld images in upload queue", uploads.count);
-    if (self.uploadQueueButton.isHidden && uploads.count > 0)
+    if (uploads.count > 0)
     {
         // Set number of uploads
         self.nberOfUploadsLabel.text = [NSString stringWithFormat:@"%ld", uploads.count];
@@ -890,6 +889,19 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             CGFloat xPos = self.addButton.frame.origin.x;
             CGFloat yPos = self.addButton.frame.origin.y;
             self.uploadQueueButton.frame = CGRectMake(xPos - 3*kRadius, yPos, 2*kRadius, 2*kRadius);
+        }];
+    } else {
+        // Hide Upload Queue button behind Add button
+        [UIView animateWithDuration:0.2 animations:^{
+            // Progressive disappearance
+            [self.uploadQueueButton.layer setOpacity:0.0];
+
+            // Animate displacement towards the Add button if needed
+            self.uploadQueueButton.frame = self.addButton.frame;
+        
+        } completion:^(BOOL finished) {
+            // Hide Home Album button
+            [self.uploadQueueButton setHidden:YES];
         }];
     }
 }
@@ -1306,7 +1318,13 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
 -(void)didTapUploadQueueButton
 {
-    NSLog(@"•••• user did tap upload queue button ;-)");
+    // Open local albums view controller in new navigation controlelr
+    UIStoryboard *uploadQueueSB = [UIStoryboard storyboardWithName:@"UploadQueueViewController" bundle:nil];
+    LocalAlbumsViewController *uploadQueueVC = [uploadQueueSB instantiateViewControllerWithIdentifier:@"UploadQueueViewController"];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:uploadQueueVC];
+    navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+    navController.modalPresentationStyle = UIModalPresentationFormSheet;
+    [self presentViewController:navController animated:YES completion:nil];
 }
 
 -(void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath

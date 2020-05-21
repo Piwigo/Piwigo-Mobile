@@ -91,6 +91,9 @@
 		ADBE4529244A1A0E00AE0001 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE4528244A1A0E00AE0001 /* Location.swift */; };
 		ADBE452B244A1AF400AE0001 /* LocationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE452A244A1AF400AE0001 /* LocationError.swift */; };
 		ADBE452D244A1F0000AE0001 /* LocationsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE452C244A1F0000AE0001 /* LocationsProvider.swift */; };
+		ADC019742471A70F00532A81 /* UploadQueueViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADC019732471A70F00532A81 /* UploadQueueViewController.storyboard */; };
+		ADC019762471AA5200532A81 /* UploadImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC019752471AA5200532A81 /* UploadImageTableViewCell.swift */; };
+		ADC019782471ABA000532A81 /* UploadQueueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC019772471ABA000532A81 /* UploadQueueViewController.swift */; };
 		ADC06AE11F40B15E0081B4FA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = ADC06ADF1F40B15E0081B4FA /* InfoPlist.strings */; };
 		ADC1641623D0CD5300D7AC8D /* ImageUploadThumbCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADC1641523D0CD5300D7AC8D /* ImageUploadThumbCollectionViewCell.xib */; };
 		ADC80E4823BDCBAA003A6960 /* EditImageThumbCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADC80E4723BDCBAA003A6960 /* EditImageThumbCollectionViewCell.xib */; };
@@ -365,6 +368,9 @@
 		ADBE4528244A1A0E00AE0001 /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		ADBE452A244A1AF400AE0001 /* LocationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationError.swift; sourceTree = "<group>"; };
 		ADBE452C244A1F0000AE0001 /* LocationsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsProvider.swift; sourceTree = "<group>"; };
+		ADC019732471A70F00532A81 /* UploadQueueViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = UploadQueueViewController.storyboard; sourceTree = "<group>"; };
+		ADC019752471AA5200532A81 /* UploadImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadImageTableViewCell.swift; sourceTree = "<group>"; };
+		ADC019772471ABA000532A81 /* UploadQueueViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadQueueViewController.swift; sourceTree = "<group>"; };
 		ADC06AE21F40B1ED0081B4FA /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADC06AE31F40B2BB0081B4FA /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADC06AE41F40B2BC0081B4FA /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -751,6 +757,16 @@
 			path = "Categories Data";
 			sourceTree = "<group>";
 		};
+		ADC019722471A6D500532A81 /* Manage Upload Queue */ = {
+			isa = PBXGroup;
+			children = (
+				ADC019772471ABA000532A81 /* UploadQueueViewController.swift */,
+				ADC019752471AA5200532A81 /* UploadImageTableViewCell.swift */,
+				ADC019732471A70F00532A81 /* UploadQueueViewController.storyboard */,
+			);
+			path = "Manage Upload Queue";
+			sourceTree = "<group>";
+		};
 		ADD714512301E0B000A1B7B2 /* Images */ = {
 			isa = PBXGroup;
 			children = (
@@ -1116,6 +1132,7 @@
 			children = (
 				AD7B4C2520E36328003E403A /* Pick Photos Album */,
 				D8A5014E1A7B432600C04C17 /* Pick Local Images */,
+				ADC019722471A6D500532A81 /* Manage Upload Queue */,
 				D8083AA71A82905F00A95605 /* Upload Management */,
 				D8F325111A875939007CBDAC /* Upload Parameters */,
 				D8083AA31A81B34C00A95605 /* Image Uploading */,
@@ -1360,6 +1377,7 @@
 				AD2A21FE24310E65006B1A8A /* SelectPrivacyViewController.storyboard in Resources */,
 				ADD210412440CC7600DD79A6 /* SettingsViewController.storyboard in Resources */,
 				ADFA89042438CF4500F73F0F /* ShareMetadataViewController.storyboard in Resources */,
+				ADC019742471A70F00532A81 /* UploadQueueViewController.storyboard in Resources */,
 				AD8F4B8B23F04B8C009483B6 /* TagSelectorViewController.storyboard in Resources */,
 				ADAEED8822E2665000CB1B12 /* LaunchScreen.storyboard in Resources */,
 				AD35CA3A1E9C1EBC00E3B897 /* Images.xcassets in Resources */,
@@ -1591,6 +1609,8 @@
 				D8F325171A87F212007CBDAC /* EditImageTextViewTableViewCell.m in Sources */,
 				AD770FD423B4BDA2007DAD50 /* EditImageParamsViewController.m in Sources */,
 				ADF1FCE821F367D100096D35 /* AsyncVideoActivityItemProvider.m in Sources */,
+				ADC019782471ABA000532A81 /* UploadQueueViewController.swift in Sources */,
+				ADC019762471AA5200532A81 /* UploadImageTableViewCell.swift in Sources */,
 				D818E9FB1A74C18500733991 /* AlbumService.m in Sources */,
 				AD196A9D2438D112006C492A /* LabelImageTableViewCell.m in Sources */,
 				ADDB396F23BF574400AB584B /* EditImageShiftPickerTableViewCell.m in Sources */,
