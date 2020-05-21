@@ -13,7 +13,6 @@ import CoreLocation
 let kPiwigoMaxNberOfLocationsToDecode: Int = 10
 let a: Double = 6378137.0               // Equatorial radius in meters
 let e2: Double = 0.00669437999014       // Earth eccentricity squared
-let kPiwigoNotificationNewPlaceName = "kPiwigoNotificationNewPlaceName"
 
 class LocationsProvider: NSObject {
     
@@ -231,10 +230,6 @@ class LocationsProvider: NSObject {
                         item.coordinate?.longitude == locationData.coordinate?.longitude &&
                         item.radius == locationData.radius
                 }
-                
-                // Notify new place name to views
-                let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationNewPlaceName)
-                NotificationCenter.default.post(name: name, object: nil)
             }
         }
     }
