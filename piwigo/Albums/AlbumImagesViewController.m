@@ -877,7 +877,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     if (uploads.count > 0)
     {
         // Set number of uploads
-        self.nberOfUploadsLabel.text = [NSString stringWithFormat:@"%ld", uploads.count];
+        self.nberOfUploadsLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)uploads.count];
         
         // Unhide transparent Upload Queue button
         [self.uploadQueueButton setHidden:NO];
