@@ -35,7 +35,6 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
 
     
     // MARK: - View Lifecycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -105,17 +104,6 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
                     self.localAlbumsTableView.scrollToRow(at: indexPath, at: .middle, animated: true)
                 })
             }
-        }
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-
-        // Do not show title in backButtonItem of child view to provide enough space for title
-        // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-        if view.bounds.size.width <= 414 {
-            // i.e. smaller than iPhones 6,7 Plus screen width
-            title = ""
         }
     }
 
