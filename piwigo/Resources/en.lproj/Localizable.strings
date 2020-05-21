@@ -439,7 +439,11 @@
 
 "imageUploadRemove" = "Removing uploaded photos";
 
+"imageUploadTableCell_waiting" = "Waiting...";
+"imageUploadTableCell_preparing" = "Preparing...";
 "imageUploadTableCell_uploading" = "Uploading...";
+"imageUploadTableCell_uploaded" = "Uploaded";
+
 "imageUploadProgressBar_zero" = "Uploading 0/0";
 "imageUploadProgressBar_nonZero" = "Uploading %@/%@";
 "imageUploadProgressBar_completed" = "Completed";

@@ -31,6 +31,16 @@ class UploadImageTableViewCell: UITableViewCell {
         
         // Upload infos
         uploadInfoLabel.textColor = UIColor.piwigoColorLeftLabel()
+        switch upload.state {
+        case .waiting:
+            self.uploadInfoLabel.text = NSLocalizedString("imageUploadTableCell_waiting", comment: "Waiting...")
+        case .preparing:
+            self.uploadInfoLabel.text = NSLocalizedString("imageUploadTableCell_preparing", comment: "Preparing...")
+        case .uploading:
+            self.uploadInfoLabel.text = NSLocalizedString("imageUploadTableCell_uploading", comment: "Uploading...")
+        case .uploaded:
+            self.uploadInfoLabel.text = NSLocalizedString("imageUploadTableCell_uploaded", comment: "Uploaded")
+        }
 
         // Image infos
         imageInfoLabel.textColor = UIColor.piwigoColorRightLabel()

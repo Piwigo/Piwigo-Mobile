@@ -22,8 +22,9 @@ class Upload: NSManagedObject {
     @NSManaged var localIdentifier: String
     
     // The other attributes of an upload.
-    @NSManaged var requestDate: Date
     @NSManaged var category: Int64
+    @NSManaged var requestDate: Date
+    @NSManaged var requestSate: Int16
     @NSManaged var privacyLevel: Int16
     @NSManaged var author: String?
     @NSManaged var title: String?
@@ -46,6 +47,9 @@ class Upload: NSManagedObject {
         
         // Date of upload request defaults to now
         requestDate = uploadProperties.requestDate
+        
+        // State of upload request defaults to "waiting"
+        requestSate = Int16(uploadProperties.requestState.rawValue)
 
         // Photo author name is empty if not provided
         author = uploadProperties.author ?? ""
@@ -60,16 +64,43 @@ class Upload: NSManagedObject {
     }
 }
 
+extension Upload {
+    var state: kPiwigoUploadState {
+        var requestState: kPiwigoUploadState
+        switch self.requestSate {
+        case 0:
+            requestState = .waiting
+        case 1:
+            requestState = .preparing
+        case 2:
+            requestState = .uploading
+        case 3:
+            requestState = .uploaded
+        default:
+            requestState = .waiting
+        }
+        return requestState
+    }
+}
+
 
 // MARK: - Upload properties
 /**
  A struct for managing upload requests
 */
+enum kPiwigoUploadState : Int {
+    case waiting
+    case preparing
+    case uploading
+    case uploaded
+}
+
 struct UploadProperties
 {
     let localIdentifier: String             // Unique PHAsset identifier
     let category: Int                       // 8
     let requestDate: Date                   // "2020-08-22 19:18:43"
+    let requestState: kPiwigoUploadState    // Seee enum above
     let author: String?                     // "Author"
     let privacyLevel: kPiwigoPrivacy?       // 0
     let title: String?                      // "Image title"
@@ -80,13 +111,13 @@ struct UploadProperties
 extension UploadProperties {
     init(localIdentifier: String, category: Int) {
         self.init(localIdentifier: localIdentifier, category: category,
-                  // Upload request date is now
-                  requestDate: Date.init(),
-                  // Photo author name defaults to name entered in Settings
-                  author: Model.sharedInstance()?.defaultAuthor ?? "",
-                  // Privacy level defaults to level selected in Settings
-                  privacyLevel: Model.sharedInstance()?.defaultPrivacyLevel ?? kPiwigoPrivacyEverybody,
-                  // No title, comment and tag by default
-                  title: "", comment: "", tags: [])
+            // Upload request date is now and state is waiting
+            requestDate: Date.init(), requestState: .waiting,
+            // Photo author name defaults to name entered in Settings
+            author: Model.sharedInstance()?.defaultAuthor ?? "",
+            // Privacy level defaults to level selected in Settings
+            privacyLevel: Model.sharedInstance()?.defaultPrivacyLevel ?? kPiwigoPrivacyEverybody,
+            // No title, comment and tag by default
+            title: "", comment: "", tags: [])
     }
 }

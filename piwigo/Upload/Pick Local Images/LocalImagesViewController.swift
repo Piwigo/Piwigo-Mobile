@@ -901,7 +901,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 completion()
             }
         } else {
-            // Nor all images are either selected or in the upload queue
+            // Not all images are either selected or in the upload queue
             if selectedSections[section] == .deselect {
                 selectedSections[section] = .select
                 completion()
