@@ -870,31 +870,30 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         
         // Count images selected and in upload queue
         var nberOfSelectedImages = 0
-        var nberOfImagesInUploadQueue = 0
-        for item in 0..<nberOfImages {
+        var nberOfNonSelectableImages = 0
+        DispatchQueue.concurrentPerform(iterations: nberOfImages) { item in
             // Retrieve image local identifier
             let imageId = sortedImages[section][item].localIdentifier
             // Is this image selected or in upload queue?
             if selectedImages.contains(where: { (item) -> Bool in item.localIdentifier == imageId }) {
                 nberOfSelectedImages +=  1
-                continue
             }
-            // Is this image in the upload queue?
-            if let uploads = uploadProvider.fetchedResultsController.fetchedObjects {
+            // Images in the upload queue cannot be selected
+            else if let uploads = uploadProvider.fetchedResultsController.fetchedObjects {
                 if uploads.contains(where: { $0.localIdentifier == imageId }) {
-                    nberOfImagesInUploadQueue +=  1
+                    nberOfNonSelectableImages +=  1
                 }
             }
         }
 
         // Update state of Select button only if needed
-        if nberOfImages == nberOfImagesInUploadQueue {
+        if nberOfImages == nberOfNonSelectableImages {
             // All images are in the upload queue
             if selectedSections[section] != .none {
                 selectedSections[section] = .none
                 completion()
             }
-        } else if nberOfImages == nberOfSelectedImages + nberOfImagesInUploadQueue {
+        } else if nberOfImages == nberOfSelectedImages + nberOfNonSelectableImages {
             // All images are either selected or in the upload queue
             if selectedSections[section] == .select {
                 selectedSections[section] = .deselect
@@ -1247,7 +1246,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Loop over all images in section
         for row in 0..<sortedImages[section].count {
 
-            // Images in the upload queue cannot be re-selected
+            // Images in the upload queue cannot be selected
             let imageId = sortedImages[section][row].localIdentifier
             if let uploads = uploadProvider.fetchedResultsController.fetchedObjects {
                 if uploads.contains(where: { $0.localIdentifier == imageId }) {
