@@ -134,13 +134,13 @@
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="placeLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IuZ-Ot-NeB">
-                                                    <rect key="frame" x="20" y="2" width="88" height="23.5"/>
+                                                    <rect key="frame" x="20" y="9" width="83" height="20"/>
                                                     <fontDescription key="fontDescription" name="OpenSans-Semibold" family="Open Sans" pointSize="17"/>
                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="dateLabel" textAlignment="natural" lineBreakMode="tailTruncation" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="NIO-n9-bqf">
-                                                    <rect key="frame" x="20" y="26" width="60" height="18"/>
+                                                    <rect key="frame" x="20" y="28.5" width="58" height="15.5"/>
                                                     <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                     <nil key="highlightedColor"/>
@@ -198,7 +198,7 @@
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2 Photos" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="u7N-dh-tIi">
-                                            <rect key="frame" x="172.5" y="0.0" width="69.5" height="23.5"/>
+                                            <rect key="frame" x="173" y="0.0" width="68.5" height="20"/>
                                             <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -218,30 +218,46 @@
                                     <outlet property="delegate" destination="0bN-Jj-8Z5" id="MhR-8A-JR2"/>
                                 </connections>
                             </collectionView>
-                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="dLb-To-65V">
-                                <rect key="frame" x="108.5" y="823" width="197" height="32"/>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="1" translatesAutoresizingMaskIntoConstraints="NO" id="dLb-To-65V">
+                                <rect key="frame" x="96" y="823" width="182" height="32"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <segments>
-                                    <segment title="Months"/>
-                                    <segment title="Weeks"/>
-                                    <segment title="Days"/>
+                                    <segment title="" image="imageMonth" width="60"/>
+                                    <segment title="" image="imageWeek" width="60"/>
+                                    <segment title="" image="imageDay" width="60"/>
                                 </segments>
+                                <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="selectedSegmentTintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <connections>
                                     <action selector="didChangeSortOption:" destination="0bN-Jj-8Z5" eventType="valueChanged" id="XCZ-g0-R6J"/>
                                 </connections>
                             </segmentedControl>
+                            <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="y23-zS-fbL">
+                                <rect key="frame" x="286" y="823" width="32" height="32"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="32" id="1g9-N2-Bop"/>
+                                    <constraint firstAttribute="width" constant="32" id="mSu-37-UaL"/>
+                                </constraints>
+                                <state key="normal" image="imageDateForward"/>
+                                <connections>
+                                    <action selector="didTapSortButton:" destination="0bN-Jj-8Z5" eventType="touchUpInside" id="TvU-eA-2Es"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstItem="JwU-ke-ivs" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="y23-zS-fbL" secondAttribute="trailing" constant="20" id="H66-uI-12i"/>
+                            <constraint firstItem="y23-zS-fbL" firstAttribute="bottom" secondItem="dLb-To-65V" secondAttribute="bottom" constant="1" id="HSR-EG-wIn"/>
                             <constraint firstItem="dLb-To-65V" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="JwU-ke-ivs" secondAttribute="leading" constant="20" id="KGL-uM-rKO"/>
                             <constraint firstItem="oEF-HO-Dv3" firstAttribute="top" secondItem="3Qu-Pn-VGf" secondAttribute="top" id="TC5-LS-E4x"/>
                             <constraint firstItem="oEF-HO-Dv3" firstAttribute="leading" secondItem="3Qu-Pn-VGf" secondAttribute="leading" id="Tmx-Qf-73z"/>
                             <constraint firstAttribute="bottom" secondItem="oEF-HO-Dv3" secondAttribute="bottom" id="VbM-g1-xUQ"/>
                             <constraint firstItem="dLb-To-65V" firstAttribute="bottom" secondItem="3Qu-Pn-VGf" secondAttribute="bottomMargin" id="d1g-Pr-4iJ"/>
-                            <constraint firstItem="dLb-To-65V" firstAttribute="centerX" secondItem="JwU-ke-ivs" secondAttribute="centerX" id="dCi-YV-okD"/>
+                            <constraint firstItem="dLb-To-65V" firstAttribute="centerX" secondItem="JwU-ke-ivs" secondAttribute="centerX" constant="-20" id="dCi-YV-okD"/>
                             <constraint firstAttribute="trailing" secondItem="oEF-HO-Dv3" secondAttribute="trailing" id="jrK-pA-Y2m"/>
-                            <constraint firstItem="JwU-ke-ivs" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="dLb-To-65V" secondAttribute="trailing" constant="20" id="sIq-Sr-tNb"/>
+                            <constraint firstItem="y23-zS-fbL" firstAttribute="leading" secondItem="dLb-To-65V" secondAttribute="trailing" constant="8" id="tVL-x3-t0k"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="JwU-ke-ivs"/>
                     </view>
@@ -249,6 +265,7 @@
                         <outlet property="collectionFlowLayout" destination="Xr2-bY-mvB" id="OSP-xm-XOI"/>
                         <outlet property="localImagesCollection" destination="oEF-HO-Dv3" id="Owc-A1-PVl"/>
                         <outlet property="segmentedControl" destination="dLb-To-65V" id="I89-tM-huk"/>
+                        <outlet property="sortButton" destination="y23-zS-fbL" id="lSk-nV-b44"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uQz-uh-sKD" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -258,6 +275,10 @@
     </scenes>
     <resources>
         <image name="checkMark" width="17.5" height="25"/>
+        <image name="imageDateForward" width="23" height="23"/>
+        <image name="imageDay" width="25" height="23"/>
+        <image name="imageMonth" width="25" height="23"/>
+        <image name="imageWeek" width="25" height="23"/>
         <image name="placeholderImage" width="512" height="512"/>
         <image name="video" width="25" height="16"/>
     </resources>

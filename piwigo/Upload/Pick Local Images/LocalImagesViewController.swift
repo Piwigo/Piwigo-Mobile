@@ -56,6 +56,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     @IBOutlet weak var localImagesCollection: UICollectionView!
     @IBOutlet weak var collectionFlowLayout: UICollectionViewFlowLayout!
     @IBOutlet weak var segmentedControl: UISegmentedControl!
+    @IBOutlet weak var sortButton: UIButton!
+    
     
     private var assetCollections: PHFetchResult<PHAssetCollection>!         // Path to selected non-empty local album
     private var imageCollection: PHFetchResult<PHAsset>!                    // Collection of images in selected non-empty local album
@@ -108,25 +110,36 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         actionBarButton?.accessibilityIdentifier = "Sort"
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelSelect))
         cancelBarButton?.accessibilityIdentifier = "Cancel"
-        uploadBarButton = UIBarButtonItem(image: UIImage(named: "upload"), style: .plain, target: self, action: #selector(addTapUploadButton))
+        uploadBarButton = UIBarButtonItem(image: UIImage(named: "upload"), style: .plain, target: self, action: #selector(didTapUploadButton))
         
         // Segmented control (choice for presenting images by date, week or month)
-        var attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.white,
-            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
-        ]
-        segmentedControl.setTitleTextAttributes(attributes, for: .normal)
-        attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.white,
-            NSAttributedString.Key.font: UIFont.piwigoFontSemiBold()
-        ]
-        segmentedControl.setTitleTextAttributes(attributes, for: .selected)
         segmentedControl.selectedSegmentIndex = Int(Model.sharedInstance().localImagesSectionType.rawValue)
-        segmentedControl.setTitle(NSLocalizedString("Months", comment: "Months"), forSegmentAt: 0)
-        segmentedControl.setTitle(NSLocalizedString("Weeks", comment: "Weeks"), forSegmentAt: 1)
-        segmentedControl.setTitle(NSLocalizedString("Days", comment: "Days"), forSegmentAt: 2)
         segmentedControl.isHidden = true
+//        segmentedControl.backgroundColor = UIColor.init(red: 148.0/256.0, green: 148.0/256.0, blue: 152.0/256.0, alpha: 1.0)
+        if #available(iOS 13.0, *) {
+            segmentedControl.selectedSegmentTintColor = UIColor.piwigoColorOrange()
+        } else {
+            // Fallback on earlier versions
+            segmentedControl.tintColor = UIColor.piwigoColorOrange()
+        }
+
+        // Sort button
+        sortButton.isHidden = true
+        sortButton.layer.cornerRadius = segmentedControl.layer.cornerRadius
+        sortButton.layer.masksToBounds = false
+        switch Model.sharedInstance().localImagesSort {
+        case kPiwigoSortDateCreatedDescending:
+            sortButton.setImage(UIImage(named: "imageDateBackward"), for: .normal)
+        case kPiwigoSortDateCreatedAscending:
+            sortButton.setImage(UIImage(named: "imageDateForward"), for: .normal)
+        default:
+            break
+        }
+        sortButton.tintColor = UIColor.white
+//        sortButton.backgroundColor = UIColor.init(red: 148.0/256.0, green: 148.0/256.0, blue: 152.0/256.0, alpha: 1.0)
+        sortButton.showsTouchWhenHighlighted = true
     }
+
 
     @objc func applyColorPalette() {
         // Background color of the view
@@ -149,6 +162,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Segmented control
         if !segmentedControl.isHidden {
             segmentedControl.backgroundColor = Model.sharedInstance().isDarkPaletteActive ? UIColor.piwigoColorGray().withAlphaComponent(0.8) : UIColor.piwigoColorGray().withAlphaComponent(0.4)
+            sortButton.backgroundColor = Model.sharedInstance().isDarkPaletteActive ? UIColor.piwigoColorGray().withAlphaComponent(0.8) : UIColor.piwigoColorGray().withAlphaComponent(0.4)
         }
 
         // Collection view
@@ -357,7 +371,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                             self.hideHUDwithSuccess(true) {
                                 // Show segmented control if needed
                                 if self.segmentedControl.isHidden {
-                                    self.showSegmentedControl()
+                                    self.showSegmentedControlAndSortButton()
                                 }
                             }
                         }
@@ -376,7 +390,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                         self.hideHUDwithSuccess(true) {
                             // Show segmented control if needed
                             if self.segmentedControl.isHidden {
-                                self.showSegmentedControl()
+                                self.showSegmentedControlAndSortButton()
                             }
                         }
                     }
@@ -412,7 +426,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                             self.hideHUDwithSuccess(true) {
                                 // Show segmented control if needed
                                 if self.segmentedControl.isHidden {
-                                    self.showSegmentedControl()
+                                    self.showSegmentedControlAndSortButton()
                                 }
                             }
                         }
@@ -431,7 +445,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                         self.hideHUDwithSuccess(true) {
                             // Show segmented control if needed
                             if self.segmentedControl.isHidden {
-                                self.showSegmentedControl()
+                                self.showSegmentedControlAndSortButton()
                             }
                         }
                     }
@@ -466,7 +480,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                             self.hideHUDwithSuccess(true) {
                                 // Show segmented control if needed
                                 if self.segmentedControl.isHidden {
-                                    self.showSegmentedControl()
+                                    self.showSegmentedControlAndSortButton()
                                 }
                             }
                         }
@@ -485,7 +499,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                         self.hideHUDwithSuccess(true) {
                             // Show segmented control if needed
                             if self.segmentedControl.isHidden {
-                                self.showSegmentedControl()
+                                self.showSegmentedControlAndSortButton()
                             }
                         }
                     }
@@ -495,7 +509,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             // Show segmented control if needed
             DispatchQueue.main.async {
                 if self.segmentedControl.isHidden {
-                    self.showSegmentedControl()
+                    self.showSegmentedControlAndSortButton()
                 }
             }
         }
@@ -699,37 +713,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         default:
             self.sortedImages = self.imagesSortedByDays
         }
-        
-//        // Reset buttons of sections which point to different batches of images
-//        selectedSections = .init(repeating: .select, count: sortedImages.count)
-//
-//        // Loop over all sections to reselect cells
-//        var nberOfSelectedImagesAlreadyFound = 0
-//        for section in 0..<sortedImages.count {
-//
-//            // Number of images in section
-//            let nberOfImages = sortedImages[section].count
-//
-//            // Count selected images in section
-//            var nberOfSelectedImages = 0
-//            for item in 0..<nberOfImages {
-//                // Retrieve image asset
-//                let imageId = sortedImages[section][item].localIdentifier
-//                // Is this image selected?
-//                if selectedImages.contains(where: { (item) -> Bool in item.localIdentifier == imageId }) {
-//                    nberOfSelectedImages +=  1
-//                    nberOfSelectedImagesAlreadyFound += 1
-//                }
-//            }
-//
-//            // Update state of Select button
-//            selectedSections[section] = nberOfImages == nberOfSelectedImages ? NSNumber(value: true) : NSNumber(value: false)
-//
-//            // Stop here if all selected images were found
-//            if nberOfSelectedImagesAlreadyFound == selectedImages.count {
-//                break
-//            }
-//        }
 
         // Load changed collection
         DispatchQueue.main.async {
@@ -738,12 +721,30 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
             // Show segmented control if needed
             if self.segmentedControl.isHidden {
-                self.showSegmentedControl()
+                self.showSegmentedControlAndSortButton()
             }
         }
     }
     
-    @objc func addTapUploadButton() {
+    @IBAction func didTapSortButton(_ sender: Any) {
+        // Did change date sort order
+        switch Model.sharedInstance().localImagesSort {
+        case kPiwigoSortDateCreatedDescending:
+            Model.sharedInstance().localImagesSort = kPiwigoSortDateCreatedAscending
+            self.sortButton.setImage(UIImage(named: "imageDateForward"), for: .normal)
+        case kPiwigoSortDateCreatedAscending:
+            Model.sharedInstance().localImagesSort = kPiwigoSortDateCreatedDescending
+            self.sortButton.setImage(UIImage(named: "imageDateBackward"), for: .normal)
+        default:
+            break
+        }
+        Model.sharedInstance()?.saveToDisk()
+
+        // Sort images
+        self.fetchAndSortImages()
+    }
+    
+    @objc func didTapUploadButton() {
         // Add selected images to upload queue
         uploadProvider.importUploads(from: selectedImages) { error in
             
@@ -1046,23 +1047,25 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     // MARK: - UIScrollViewDelegate Methods
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        hideSegmentedControl()
+        hideSegmentedControlAndSortButton()
     }
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         if !decelerate {
-            showSegmentedControl()
+            showSegmentedControlAndSortButton()
         }
     }
 
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        showSegmentedControl()
+        showSegmentedControlAndSortButton()
     }
     
-    private func showSegmentedControl() {
-        self.segmentedControl.isHidden = false
+    private func showSegmentedControlAndSortButton() {
+        segmentedControl.isHidden = false
+        sortButton.isHidden = false
         UIView.animate(withDuration: 0.3) {
             self.segmentedControl.backgroundColor = Model.sharedInstance().isDarkPaletteActive ? UIColor.piwigoColorGray().withAlphaComponent(0.8) : UIColor.piwigoColorGray().withAlphaComponent(0.4)
+            self.sortButton.backgroundColor = Model.sharedInstance().isDarkPaletteActive ? UIColor.piwigoColorGray().withAlphaComponent(0.8) : UIColor.piwigoColorGray().withAlphaComponent(0.4)
             if #available(iOS 13.0, *) {
                 self.segmentedControl.selectedSegmentTintColor = UIColor.piwigoColorOrange().withAlphaComponent(1.0)
             } else {
@@ -1072,13 +1075,16 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         }
     }
     
-    private func hideSegmentedControl() {
+    private func hideSegmentedControlAndSortButton() {
         UIView.animate(withDuration: 0.3) {
-            self.segmentedControl.backgroundColor = UIColor.piwigoColorGray().withAlphaComponent(0.0)
             if #available(iOS 13.0, *) {
+                self.segmentedControl.backgroundColor = UIColor.piwigoColorGray().withAlphaComponent(0.0)
+                self.sortButton.backgroundColor = UIColor.piwigoColorGray().withAlphaComponent(0.08)
                 self.segmentedControl.selectedSegmentTintColor = UIColor.piwigoColorOrange().withAlphaComponent(0.0)
             } else {
                 // Fallback on earlier versions
+                self.segmentedControl.backgroundColor = UIColor.piwigoColorGray().withAlphaComponent(0.08)
+                self.sortButton.backgroundColor = UIColor.piwigoColorGray().withAlphaComponent(0.08)
                 self.segmentedControl.tintColor = UIColor.piwigoColorOrange().withAlphaComponent(0.0)
             }
         }
@@ -1287,6 +1293,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     }
 }
 
+
 // MARK: - NSFetchedResultsControllerDelegate
 
 extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
@@ -1295,6 +1302,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
 
         switch type {
         case .insert:
+            print("••• controller:insert...")
             // Deselect image added to upload queue
             if let upload:Upload = anObject as? Upload {
                 selectedImages.removeAll(where: { $0.localIdentifier == upload.localIdentifier })
@@ -1312,10 +1320,24 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         
+        print("••• controller:didChangeContent...")
+
         // Update navigation bar
         updateNavBar()
 
         // Update collection
         localImagesCollection.reloadData()
+    }
+}
+
+extension UIImage {
+    func imageWithColor(_ color: UIColor) -> UIImage? {
+        var image = withRenderingMode(.alwaysTemplate)
+        UIGraphicsBeginImageContextWithOptions(size, false, scale)
+        color.set()
+        image.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+        image = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        return image
     }
 }
