@@ -24,7 +24,6 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         case deselect
     }
 
-    private var location: CLLocation = CLLocation.init()
     private var dateLabelText: String = ""
     private var optionalDateLabelText: String = ""
 
@@ -65,10 +64,10 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         optionalDateLabelText = labels[1]
 
         // Determine location from images in section
-        location = getLocation(of: images)
+        let location = getLocation(of: images)
         
         // Set up labels from dates and place name
-        setLabelsFromDatesAndLocation()
+        setLabelsFromDatesAndLocation(location: location)
 
         // Select/deselect button
         tintColor = UIColor.piwigoColorOrange()
@@ -107,9 +106,13 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
 
     // MARK: Utilities
     
-    @objc private func setLabelsFromDatesAndLocation() {
+    @objc private func setLabelsFromDatesAndLocation(location: CLLocation) {
         // Get place name from location (will geodecode location for future use if needed)
-        let placeNames = LocationsProvider.sharedInstance().getPlaceName(for: location)
+        guard let placeNames = LocationsProvider.sharedInstance().getPlaceName(for: location) else {
+            placeLabel.text = dateLabelText
+            dateLabel.text = optionalDateLabelText
+            return
+        }
 
         // Use label according to name availabilities
         if let placeLabelName = placeNames["placeLabel"] as? String {

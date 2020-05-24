@@ -263,13 +263,12 @@ class LocationsProvider: NSObject {
      Routine returning the place name of a location
      This routine adds an operation fetching the place name if necessary
      */
-    func getPlaceName(for location: CLLocation) -> [AnyHashable : Any] {
-        var placeNames: [AnyHashable : Any] = [:]
+    func getPlaceName(for location: CLLocation) -> [AnyHashable : Any]? {
 
         // Check coordinates
         if !CLLocationCoordinate2DIsValid(location.coordinate) {
             // Invalid location -> No place name
-            return placeNames
+            return nil
         }
 
         // Create a fetch request for the location
@@ -300,6 +299,7 @@ class LocationsProvider: NSObject {
         let knownPlaceNames: [Location] = controller.fetchedObjects ?? []
         
         // Loop over known places
+        var placeNames = [AnyHashable : Any]()
         for knownPlace: Location in knownPlaceNames {
             // Known location
             let knownLatitude = knownPlace.latitude
