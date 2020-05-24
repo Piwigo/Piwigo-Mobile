@@ -23,6 +23,8 @@
         <attribute name="author" optional="YES" attributeType="String" defaultValueString="" syncable="YES"/>
         <attribute name="category" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="comment" optional="YES" attributeType="String" defaultValueString="" syncable="YES"/>
+        <attribute name="creationDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="fileName" optional="YES" attributeType="String" defaultValueString="" syncable="YES"/>
         <attribute name="localIdentifier" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="privacyLevel" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="requestDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
@@ -38,6 +40,6 @@
     <elements>
         <element name="Location" positionX="-60.984375" positionY="-122.5" width="128" height="118"/>
         <element name="Tag" positionX="-216.05859375" positionY="-122.37890625" width="128" height="118"/>
-        <element name="Upload" positionX="-409.30078125" positionY="-185.234375" width="128" height="178"/>
+        <element name="Upload" positionX="-409.30078125" positionY="-185.234375" width="128" height="208"/>
     </elements>
 </model>

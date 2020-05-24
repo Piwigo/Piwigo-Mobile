@@ -13,6 +13,7 @@
 #import "CategoriesData.h"
 #import "CategoryTableViewCell.h"
 #import "ImagesCollection.h"
+#import "ImageService.h"
 #import "ImageUpload.h"
 //#import "ImageUploadManager.h"
 #import "ImageUploadProgressView.h"

@@ -113,7 +113,7 @@ class PhotosFetch: NSObject {
     }
 
     @objc
-    func getFileNameFomImageAsset(_ imageAsset: PHAsset?) -> String? {
+    func getFileNameFomImageAsset(_ imageAsset: PHAsset?) -> String {
         var fileName = ""
         if imageAsset != nil {
             // Get file name from image asset
@@ -123,7 +123,6 @@ class PhotosFetch: NSObject {
             }
             if (resources?.count ?? 0) > 0 {
                 for resource in resources ?? [] {
-                    //              NSLog(@"=> PHAssetResourceType = %ld — %@", resource.type, resource.originalFilename);
                     if resource.type == .adjustmentData {
                         continue
                     }
@@ -158,7 +157,7 @@ class PhotosFetch: NSObject {
             }
         }
 
-//        print("=> filename = \(fileName)")
+        print("=> filename = \(fileName)")
         return fileName
     }
 

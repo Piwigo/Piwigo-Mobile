@@ -1640,12 +1640,13 @@ NSString * const kGetImageOrderDescending = @"desc";
 
 #pragma mark - Image metadata
 
-+(NSMutableDictionary *)stripGPSdataFromImageMetadata:(NSMutableDictionary *)metadata
++(NSMutableDictionary *)stripGPSdataFromImageMetadata:(NSDictionary *)originalMetadata
 {
+    NSMutableDictionary *metadata = [originalMetadata mutableCopy];
 #if defined(DEBUG_SHARE)
     NSLog(@"Strip GPS data [Start]: %@",metadata);
 #endif
-
+    
     // GPS dictionary
     NSMutableDictionary *GPSDictionary = [[metadata objectForKey:(NSString *)kCGImagePropertyGPSDictionary] mutableCopy];
     if (GPSDictionary) {
@@ -1673,8 +1674,9 @@ NSString * const kGetImageOrderDescending = @"desc";
     return metadata;
 }
 
-+(NSMutableDictionary *)fixMetadata:(NSMutableDictionary *)metadata ofImage:(UIImage*)image
++(NSMutableDictionary *)fixMetadata:(NSDictionary *)originalMetadata ofImage:(UIImage*)image
 {
+    NSMutableDictionary *metadata = [originalMetadata mutableCopy];
 #if defined(DEBUG_SHARE)
     NSLog(@"fixMetadata [Start]: %@",metadata);
 #endif

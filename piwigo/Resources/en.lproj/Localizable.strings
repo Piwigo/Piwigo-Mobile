@@ -441,8 +441,10 @@
 
 "imageUploadTableCell_waiting" = "Waiting...";
 "imageUploadTableCell_preparing" = "Preparing...";
+"imageUploadTableCell_prepared" = "Ready for upload";
 "imageUploadTableCell_uploading" = "Uploading...";
 "imageUploadTableCell_uploaded" = "Uploaded";
+"imageUploadTableCell_paused" = "Paused";
 
 "imageUploadProgressBar_zero" = "Uploading 0/0";
 "imageUploadProgressBar_nonZero" = "Uploading %@/%@";
@@ -457,7 +459,7 @@
 "uploadCancelled_title" = "Upload Cancelled";
 
 "imageUploadError_title" = "Photo Upload Error";
-"imageUploadError_format" = "Sorry, files with extensions .%@ and .jpg are not accepted by the Piwigo server.";
+"imageUploadError_format" = "File format not accepted by Piwigo server.";
 "imageUploadError_source" = "cannot create photo source";
 "imageUploadError_destination" = "cannot create photo destination";
 "imageUploadError_iCloud" = "Could not retrieve photo. Error: %@";

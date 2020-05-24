@@ -26,6 +26,9 @@ class Upload: NSManagedObject {
     @NSManaged var requestDate: Date
     @NSManaged var requestSate: Int16
     @NSManaged var privacyLevel: Int16
+
+    @NSManaged var creationDate: Date?
+    @NSManaged var fileName: String?
     @NSManaged var author: String?
     @NSManaged var title: String?
     @NSManaged var comment: String?
@@ -51,13 +54,17 @@ class Upload: NSManagedObject {
         // State of upload request defaults to "waiting"
         requestSate = Int16(uploadProperties.requestState.rawValue)
 
+        // Photo creation date and filename
+        creationDate = uploadProperties.creationDate ?? Date.init()
+        fileName = uploadProperties.fileName ?? ""
+
         // Photo author name is empty if not provided
         author = uploadProperties.author ?? ""
         
         // Privacy level is the lowest one if not provided
         privacyLevel = Int16(uploadProperties.privacyLevel?.rawValue ?? kPiwigoPrivacyEverybody.rawValue)
 
-        // Other properties have no predefined values
+        // Other properties
         title = uploadProperties.title ?? ""
         comment = uploadProperties.comment ?? ""
         tags = uploadProperties.tags ?? []
@@ -66,20 +73,49 @@ class Upload: NSManagedObject {
 
 extension Upload {
     var state: kPiwigoUploadState {
-        var requestState: kPiwigoUploadState
+        
         switch self.requestSate {
-        case 0:
-            requestState = .waiting
-        case 1:
-            requestState = .preparing
-        case 2:
-            requestState = .uploading
-        case 3:
-            requestState = .uploaded
+        case kPiwigoUploadState.waiting.rawValue:
+            return .waiting
+            
+        case kPiwigoUploadState.preparing.rawValue:
+            return .preparing
+        case kPiwigoUploadState.formatError.rawValue:
+            return .formatError
+        case kPiwigoUploadState.prepared.rawValue:
+            return .prepared
+            
+        case kPiwigoUploadState.uploading.rawValue:
+            return .uploading
+        case kPiwigoUploadState.uploaded.rawValue:
+            return .uploaded
+        case kPiwigoUploadState.paused.rawValue:
+            return .paused
         default:
-            requestState = .waiting
+            return .waiting
         }
-        return requestState
+    }
+
+    var privacy: kPiwigoPrivacy {
+        
+        switch self.privacyLevel {
+        case Int16(kPiwigoPrivacyEverybody.rawValue):
+            return kPiwigoPrivacyEverybody
+        case Int16(kPiwigoPrivacyAdminsFamilyFriendsContacts.rawValue):
+            return kPiwigoPrivacyAdminsFamilyFriendsContacts
+        case Int16(kPiwigoPrivacyAdminsFamilyFriends.rawValue):
+            return kPiwigoPrivacyAdminsFamilyFriends
+        case Int16(kPiwigoPrivacyAdminsFamily.rawValue):
+            return kPiwigoPrivacyAdminsFamily
+        case Int16(kPiwigoPrivacyAdmins.rawValue):
+            return kPiwigoPrivacyAdmins
+        case Int16(kPiwigoPrivacyCount.rawValue):
+            return kPiwigoPrivacyCount
+        case Int16(kPiwigoPrivacyUnknown.rawValue):
+            return kPiwigoPrivacyUnknown
+        default:
+            return kPiwigoPrivacyUnknown
+        }
     }
 }
 
@@ -88,11 +124,16 @@ extension Upload {
 /**
  A struct for managing upload requests
 */
-enum kPiwigoUploadState : Int {
+enum kPiwigoUploadState : Int16 {
     case waiting
+    
     case preparing
+    case formatError
+    case prepared
+    
     case uploading
     case uploaded
+    case paused
 }
 
 struct UploadProperties
@@ -100,12 +141,15 @@ struct UploadProperties
     let localIdentifier: String             // Unique PHAsset identifier
     let category: Int                       // 8
     let requestDate: Date                   // "2020-08-22 19:18:43"
-    let requestState: kPiwigoUploadState    // Seee enum above
-    let author: String?                     // "Author"
-    let privacyLevel: kPiwigoPrivacy?       // 0
-    let title: String?                      // "Image title"
-    let comment: String?                    // "A comment…"
-    let tags: Set<Tag>?                     // Array of tags
+    var requestState: kPiwigoUploadState    // See enum above
+
+    var creationDate: Date?                 // "2012-08-23 09:18:43"
+    var fileName: String?                   // "IMG123.JPG"
+    var author: String?                     // "Author"
+    var privacyLevel: kPiwigoPrivacy?       // 0
+    var title: String?                      // "Image title"
+    var comment: String?                    // "A comment…"
+    var tags: Set<Tag>?                     // Array of tags
 }
 
 extension UploadProperties {
@@ -113,11 +157,13 @@ extension UploadProperties {
         self.init(localIdentifier: localIdentifier, category: category,
             // Upload request date is now and state is waiting
             requestDate: Date.init(), requestState: .waiting,
+            // Photo creation date and filename
+            creationDate: Date.init(), fileName: "",
             // Photo author name defaults to name entered in Settings
             author: Model.sharedInstance()?.defaultAuthor ?? "",
             // Privacy level defaults to level selected in Settings
             privacyLevel: Model.sharedInstance()?.defaultPrivacyLevel ?? kPiwigoPrivacyEverybody,
-            // No title, comment and tag by default
+            // No title, comment, tag, filename by default
             title: "", comment: "", tags: [])
     }
 }

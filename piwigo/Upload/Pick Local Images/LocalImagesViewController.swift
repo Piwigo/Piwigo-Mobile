@@ -751,6 +751,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
               DispatchQueue.main.async {
                 // Show an alert if there was an error.
                 guard let error = error else {
+                    // Launch upload jobs
+                    ImageUploadDispatcher.sharedInstance().findNextImageToUpload()
                     return
                 }
                 let alert = UIAlertController(title: NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object."),

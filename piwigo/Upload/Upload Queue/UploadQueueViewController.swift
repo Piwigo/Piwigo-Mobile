@@ -138,11 +138,11 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
     private func sortCollectionOfImages() {
         
         // Sort first limited batch of images
-        let start = CFAbsoluteTimeGetCurrent()
+//        let start = CFAbsoluteTimeGetCurrent()
         let nberOfImages = min(allUploads.count, kPiwigoNberImagesShowHUDWhenSorting)
         imagesSortedByCategory = split(inRange: 0..<nberOfImages)
-        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        print("=> Splitted", nberOfImages, "images by days, weeks and months took \(diff) ms")
+//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+//        print("=> Splitted", nberOfImages, "images by days, weeks and months took \(diff) ms")
 
         // Display first limited batch of images
         DispatchQueue.main.async {
@@ -241,14 +241,14 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
     
     private func split(inRange range: Range<Int>) -> [[Upload]]  {
 
-        // Get collection of images
-        var start = CFAbsoluteTimeGetCurrent()
+        // Get collection of images sorted by ascending request date
+//        var start = CFAbsoluteTimeGetCurrent()
         let uploads = Array(allUploads[range.startIndex ..< range.endIndex])
-        var diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        print("           uploads.objects took \(diff) ms")
+//        var diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+//        print("           uploads.objects took \(diff) ms")
 
         // Initialisation
-        start = CFAbsoluteTimeGetCurrent()
+//        start = CFAbsoluteTimeGetCurrent()
         var imagesByCatId: [[Upload]] = []
 
         // Sort imageAssets
@@ -256,11 +256,8 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
             // Get object
             let obj = uploads[index]
 
-            // Get category Id of current image
-            let newCatId = obj.category
-
             // Index of a known category?
-            let index = imagesByCatId.firstIndex(where: { $0.first?.category == newCatId})
+            let index = imagesByCatId.firstIndex(where: { $0.first?.category == obj.category})
             
             // Add object to array of known category?
             if let index = index {
@@ -272,8 +269,8 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
             }
         }
         
-        diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        print("           sorting objects took \(diff) ms")
+//        diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+//        print("           sorting objects took \(diff) ms")
         return imagesByCatId
     }
 
