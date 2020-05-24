@@ -316,8 +316,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             sortedImages = imagesSortedByDays
         }
         
-        // Initialise buttons of sections
-        selectedSections = .init(repeating: .select, count: sortedImages.count)
+        // Initialise buttons of sections for the max number of sections)
+        selectedSections = .init(repeating: .select, count: imagesSortedByDays.count)
 
         // Display first limited batch of images
         DispatchQueue.main.async {
