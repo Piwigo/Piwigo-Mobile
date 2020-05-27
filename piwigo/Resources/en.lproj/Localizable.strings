@@ -168,6 +168,12 @@
 "categoryUpload_chooseLocalAlbum" = "Select an album to get photos from";
 "categoryUpload_iCloudAlbums" = "iCloud Albums";
 "categoryUpload_chooseiCloudAlbum" = "Select an iCloud album to get photos from";
+"categoryUpload_syncedEvents" = "iPhoto Events";
+"categoryUpload_syncedAlbums" = "iPhoto Albums";
+"categoryUpload_syncedFaces" = "iPhoto Faces";
+"categoryUpload_mediaTypes" = "Media Types";
+"categoryUpload_otherAlbums" = "Other Albums";
+
 "categoyUpload_loadSubCategories" = "load";
 "categoryUpload_images" = "Upload Photos";
 "categoryUpload_subAlbum" = "Create Sub-Album";

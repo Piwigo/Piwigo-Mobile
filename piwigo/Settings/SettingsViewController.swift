@@ -1379,7 +1379,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 footer = "\(nberImages) \(NSLocalizedString("severalImages", comment: "Photos")), \(nberCategories) \(NSLocalizedString("tabBar_albums", comment: "Albums")), \(nberTags) \(NSLocalizedString("tags", comment: "Tags")), \(nberUsers) \(NSLocalizedString("settings_users", comment: "Users")), \(nberGroups) \(NSLocalizedString("settings_groups", comment: "Groups")), \(nberComments) \(NSLocalizedString("editImageDetails_comments", comment: "Comments"))"
             }
         default:
-            break
+            return 10.0
         }
 
         // Footer height?
@@ -2164,7 +2164,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
  
             // Update data
             let numberFormatter = NumberFormatter()
-            numberFormatter.positiveFormat = "#,##0"
+            numberFormatter.numberStyle = .decimal
             for info in JSONdata {
                 guard let info = info as? [String : Any] else {
                     continue
