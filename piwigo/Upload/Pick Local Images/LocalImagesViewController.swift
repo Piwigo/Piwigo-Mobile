@@ -115,7 +115,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Segmented control (choice for presenting images by date, week or month)
         segmentedControl.selectedSegmentIndex = Int(Model.sharedInstance().localImagesSectionType.rawValue)
         segmentedControl.isHidden = true
-//        segmentedControl.backgroundColor = UIColor.init(red: 148.0/256.0, green: 148.0/256.0, blue: 152.0/256.0, alpha: 1.0)
         if #available(iOS 13.0, *) {
             segmentedControl.selectedSegmentTintColor = UIColor.piwigoColorOrange()
         } else {
@@ -1128,7 +1127,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         hud?.label.font = UIFont.piwigoFontNormal()
         hud?.mode = MBProgressHUDMode.indeterminate
         let numberFormatter = NumberFormatter()
-        numberFormatter.positiveFormat = "#,##0"
+        numberFormatter.numberStyle = .decimal
         let nberPhotos = numberFormatter.string(from: NSNumber(value: imageCollection.count))!
         hud?.detailsLabel.text = String(format: "%@ %@", nberPhotos, NSLocalizedString("severalImages", comment: "Photos"))
     }

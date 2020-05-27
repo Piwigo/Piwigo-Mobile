@@ -246,7 +246,7 @@ extension TagSelectorViewController {
     override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         // Footer height?
         let numberFormatter = NumberFormatter()
-        numberFormatter.positiveFormat = "#,##0"
+        numberFormatter.numberStyle = .decimal
         let numberOfTags = dataProvider.fetchedResultsController.fetchedObjects?.count ?? 0
         let footer = "\(numberFormatter.string(from: NSNumber(value: numberOfTags)) ?? "") \(numberOfTags > 1 ? NSLocalizedString("tags", comment: "Tags").lowercased() : NSLocalizedString("tag", comment: "Tag").lowercased())"
         let attributes = [
@@ -270,7 +270,7 @@ extension TagSelectorViewController {
         footerLabel.numberOfLines = 1
 
         let numberFormatter = NumberFormatter()
-        numberFormatter.positiveFormat = "#,##0"
+        numberFormatter.numberStyle = .decimal
         let numberOfTags = dataProvider.fetchedResultsController.fetchedObjects?.count ?? 0
         footerLabel.text = "\(numberFormatter.string(from: NSNumber(value: numberOfTags)) ?? "") \(numberOfTags > 1 ? NSLocalizedString("tags", comment: "Tags").lowercased() : NSLocalizedString("tag", comment: "Tag").lowercased())"
         footerLabel.adjustsFontSizeToFitWidth = false
