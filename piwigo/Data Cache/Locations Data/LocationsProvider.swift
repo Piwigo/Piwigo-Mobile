@@ -299,7 +299,7 @@ class LocationsProvider: NSObject {
         let knownPlaceNames: [Location] = controller.fetchedObjects ?? []
         
         // Loop over known places
-        var placeNames = [AnyHashable : Any]()
+        var placeNames = [String : String]()
         for knownPlace: Location in knownPlaceNames {
             // Known location
             let knownLatitude = knownPlace.latitude
