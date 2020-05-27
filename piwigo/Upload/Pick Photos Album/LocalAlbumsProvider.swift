@@ -240,7 +240,7 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
     
     private func filter(fetchedAssetCollections: [PHFetchResult<PHAssetCollection>]) -> [PHAssetCollection] {
         // Fetch assets to determine non-empty collections
-        let start = CFAbsoluteTimeGetCurrent()
+//        let start = CFAbsoluteTimeGetCurrent()
         var collections = [PHAssetCollection]()
 
         // Fetch first image in each collection to reject empty collections
@@ -256,8 +256,8 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
             }
         }
         
-        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        print("==> Took \(diff) ms to filter albums")
+//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+//        print("==> Took \(diff) ms to filter albums")
         return collections
     }
 
