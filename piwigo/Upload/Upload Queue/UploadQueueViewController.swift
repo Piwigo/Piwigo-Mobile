@@ -387,7 +387,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
         hud?.label.font = UIFont.piwigoFontNormal()
         hud?.mode = MBProgressHUDMode.indeterminate
         let numberFormatter = NumberFormatter()
-        numberFormatter.positiveFormat = "#,##0"
+        numberFormatter.numberStyle = .decimal
         let nberPhotos = numberFormatter.string(from: NSNumber(value: allUploads.count))!
         hud?.detailsLabel.text = String(format: "%@ %@", nberPhotos, NSLocalizedString("severalImages", comment: "Photos"))
     }
