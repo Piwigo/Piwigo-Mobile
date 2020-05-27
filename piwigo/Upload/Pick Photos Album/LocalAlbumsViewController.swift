@@ -20,7 +20,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     }
 
     @IBOutlet var localAlbumsTableView: UITableView!
-    
+
     private var _categoryId: Int?
     private var categoryId: Int {
         get {
@@ -72,7 +72,19 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
-
+        
+//        let segment: UISegmentedControl = UISegmentedControl(items: [UIImage(named: "imageDay"), UIImage(named: "imageWeek"), UIImage(named: "imageMonth")])
+//        segment.sizeToFit()
+//        if #available(iOS 13.0, *) {
+//            segment.selectedSegmentTintColor = UIColor.piwigoColorOrange()
+//        } else {
+//           segment.tintColor = UIColor.piwigoColorOrange()
+//        }
+//        segment.selectedSegmentIndex = 0
+//        segment.setTitleTextAttributes([NSAttributedString.Key.font : UIFont.piwigoFontNormal()], for: .normal)
+//        self.navigationItem.titleView = segment
+        
+        
         // Table view
         localAlbumsTableView?.separatorColor = UIColor.piwigoColorSeparator()
         localAlbumsTableView?.indicatorStyle = Model.sharedInstance().isDarkPaletteActive ? .white : .black
@@ -121,61 +133,15 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     
     // MARK: - UITableView - Header
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        // Header strings
-        var titleString = ""
-        var textString = ""
-        switch section {
-            case 0:
-                titleString = "\(NSLocalizedString("categoryUpload_LocalAlbums", comment: "Local Albums"))\n"
-                textString = NSLocalizedString("categoryUpload_chooseLocalAlbum", comment: "Select an album to get images from")
-            case 1:
-                titleString = "\(NSLocalizedString("categoryUpload_iCloudAlbums", comment: "iCloud Albums"))\n"
-                textString = NSLocalizedString("categoryUpload_chooseiCloudAlbum", comment: "Select an iCloud album to get images from")
-            default:
-                break
-        }
-
-        // Header height
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let titleAttributes = [
-            NSAttributedString.Key.font: UIFont.piwigoFontBold()
-        ]
-        let titleRect = titleString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
-        let textAttributes = [
-            NSAttributedString.Key.font: UIFont.piwigoFontSmall()
-        ]
-        let textRect = textString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: textAttributes, context: context)
-
-        return CGFloat(fmax(44.0, ceil(titleRect.size.height + textRect.size.height)))
+        return 44.0
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        // Header strings
-        var titleString = ""
-        var textString = ""
-        switch section {
-            case 0:
-                titleString = "\(NSLocalizedString("categoryUpload_LocalAlbums", comment: "Local Albums"))\n"
-                textString = NSLocalizedString("categoryUpload_chooseLocalAlbum", comment: "Select an album to get images from")
-            case 1:
-                titleString = "\(NSLocalizedString("categoryUpload_iCloudAlbums", comment: "iCloud Albums"))\n"
-                textString = NSLocalizedString("categoryUpload_chooseiCloudAlbum", comment: "Select an iCloud album to get images from")
-            default:
-                break
-        }
-
-        let headerAttributedString = NSMutableAttributedString(string: "")
-
+        
         // Title
+        let titleString = LocalAlbumsProvider.sharedInstance().localAlbumHeaders[section]
         let titleAttributedString = NSMutableAttributedString(string: titleString)
         titleAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: NSRange(location: 0, length: titleString.count))
-        headerAttributedString.append(titleAttributedString)
-
-        // Text
-        let textAttributedString = NSMutableAttributedString(string: textString)
-        textAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: NSRange(location: 0, length: textString.count))
-        headerAttributedString.append(textAttributedString)
 
         // Header label
         let headerLabel = UILabel()
@@ -184,10 +150,11 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         headerLabel.numberOfLines = 0
         headerLabel.adjustsFontSizeToFitWidth = false
         headerLabel.lineBreakMode = .byWordWrapping
-        headerLabel.attributedText = headerAttributedString
+        headerLabel.attributedText = titleAttributedString
 
         // Header view
         let header = UIView()
+        header.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.75)
         header.addSubview(headerLabel)
         header.addConstraint(NSLayoutConstraint.constraintView(fromBottom: headerLabel, amount: 4)!)
         if #available(iOS 11, *) {
@@ -238,6 +205,53 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     }
 
     
+    // MARK: - UITableView - Footer
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        // No footer by default (nil => 0 point)
+        let footer = LocalAlbumsProvider.sharedInstance().localAlbumsFooters[section]
+
+        // Footer height?
+        let attributes = [
+            NSAttributedString.Key.font: UIFont.piwigoFontSmall()
+        ]
+        let context = NSStringDrawingContext()
+        context.minimumScaleFactor = 1.0
+        let footerRect = footer.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: attributes, context: context)
+
+        return ceil(footerRect.size.height + 10.0)
+    }
+
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        // Footer label
+        let footerLabel = UILabel()
+        footerLabel.translatesAutoresizingMaskIntoConstraints = false
+        footerLabel.font = UIFont.piwigoFontSmall()
+        footerLabel.textColor = UIColor.piwigoColorHeader()
+        footerLabel.textAlignment = .center
+        footerLabel.numberOfLines = 0
+        footerLabel.adjustsFontSizeToFitWidth = false
+        footerLabel.lineBreakMode = .byWordWrapping
+        footerLabel.text = LocalAlbumsProvider.sharedInstance().localAlbumsFooters[section]
+
+        // Footer view
+        let footer = UIView()
+        footer.backgroundColor = UIColor.clear
+        footer.addSubview(footerLabel)
+        footer.addConstraint(NSLayoutConstraint.constraintView(fromTop: footerLabel, amount: 4)!)
+        if #available(iOS 11, *) {
+            footer.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[footer]-|", options: [], metrics: nil, views: [
+            "footer": footerLabel
+            ]))
+        } else {
+            footer.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-15-[footer]-15-|", options: [], metrics: nil, views: [
+            "footer": footerLabel
+            ]))
+        }
+
+        return footer
+    }
+
+
     // MARK: - UITableViewDelegate Methods
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)

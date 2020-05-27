@@ -26,55 +26,65 @@ class LocalAlbumsTableViewCell: UITableViewCell {
         
         // Subtitle
         var subtitle: String = ""
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .decimal
         if nberPhotos != NSNotFound {
-            subtitle = String(format: "%ld %@", nberPhotos,
+            subtitle = String(format: "%@ %@", numberFormatter.string(from: NSNumber(value: nberPhotos)) ?? "",
                               nberPhotos > 1 ? NSLocalizedString("severalImages", comment: "Photos") : NSLocalizedString("singleImage", comment: "Photo"))
         }
         
         // Append date interval in landscape mode or on iPad
-        if contentView.bounds.size.width > 414 {
-            if let startDate = startDate {
-                if let endDate = endDate {
-                    let calendar = Calendar.current
-                    let startDateComponents = calendar.dateComponents([.day, .month, .year], from: startDate)
-                    let endDateComponents = calendar.dateComponents([.day, .month, .year], from: endDate)
+        if let startDate = startDate {
+            if let endDate = endDate {
+                let calendar = Calendar.current
+                let startDateComponents = calendar.dateComponents([.day, .month, .year], from: startDate)
+                let endDateComponents = calendar.dateComponents([.day, .month, .year], from: endDate)
 
-                    if startDateComponents.year == endDateComponents.year {
-                        // Photos from the same year
-                        if startDateComponents.month == endDateComponents.month {
-                            // Photo from the same month
-                            if startDateComponents.day == endDateComponents.day {
-                                // Photos from the same day
-                                let startString = DateFormatter.localizedString(from: startDate, dateStyle: .long, timeStyle: .none)
-                                subtitle.append(String(format: " • %@", startString))
-                            } else {
-                                // Photos from different days in the same month
-                                let dateFormatter = DateFormatter.init()
-                                dateFormatter.locale = .current
-                                dateFormatter.setLocalizedDateFormatFromTemplate("YYYYMMMM")
-                                let startString = dateFormatter.string(from: startDate)
-                                subtitle.append(String(format: " • %@", startString))
-                            }
+                if startDateComponents.year == endDateComponents.year {
+                    // Photos from the same year
+                    if startDateComponents.month == endDateComponents.month {
+                        // Photo from the same month
+                        if startDateComponents.day == endDateComponents.day {
+                            // Photos from the same day
+                            let startString = DateFormatter.localizedString(from: startDate, dateStyle: .long, timeStyle: .none)
+                            subtitle.append(String(format: " • %@", startString))
                         } else {
-                            // Photos from different months in the same year
+                            // Photos from different days in the same month
                             let dateFormatter = DateFormatter.init()
                             dateFormatter.locale = .current
-                            dateFormatter.setLocalizedDateFormatFromTemplate("MMMMd")
+                            dateFormatter.setLocalizedDateFormatFromTemplate("YYYYMMMM")
                             let startString = dateFormatter.string(from: startDate)
-                            let endString = dateFormatter.string(from: endDate)
-                            subtitle.append(String(format: " • %@ - %@ (%ld)", startString, endString, startDateComponents.year!))
+                            subtitle.append(String(format: " • %@", startString))
                         }
                     } else {
-                        // Photos from different years
-                        let startString = DateFormatter.localizedString(from: startDate, dateStyle: .long, timeStyle: .none)
-                        let endString = DateFormatter.localizedString(from: endDate, dateStyle: .long, timeStyle: .none)
-                        subtitle.append(String(format: " • %@ - %@", startString, endString))
+                        // Photos from different months in the same year
+                        let dateFormatter = DateFormatter.init()
+                        dateFormatter.locale = .current
+                        if contentView.bounds.size.width > 414 {
+                            dateFormatter.setLocalizedDateFormatFromTemplate("MMMMd")
+                        } else {
+                            dateFormatter.setLocalizedDateFormatFromTemplate("MMMd")
+                        }
+                        let startString = dateFormatter.string(from: startDate)
+                        let endString = dateFormatter.string(from: endDate)
+                        subtitle.append(String(format: " • %@ - %@ %ld", startString, endString, startDateComponents.year!))
                     }
                 } else {
-                    // No end date available
-                    let startString = DateFormatter.localizedString(from: startDate, dateStyle: .long, timeStyle: .none)
-                    subtitle.append(String(format: " • %@", startString))
+                    // Photos from different years
+                    let startString: String, endString: String
+                    if contentView.bounds.size.width > 414 {
+                        startString = DateFormatter.localizedString(from: startDate, dateStyle: .long, timeStyle: .none)
+                        endString = DateFormatter.localizedString(from: endDate, dateStyle: .long, timeStyle: .none)
+                    } else {
+                        startString = DateFormatter.localizedString(from: startDate, dateStyle: .medium, timeStyle: .none)
+                        endString = DateFormatter.localizedString(from: endDate, dateStyle: .medium, timeStyle: .none)
+                    }
+                    subtitle.append(String(format: " • %@ - %@", startString, endString))
                 }
+            } else {
+                // No end date available
+                let startString = DateFormatter.localizedString(from: startDate, dateStyle: .long, timeStyle: .none)
+                subtitle.append(String(format: " • %@", startString))
             }
         }
         subtitleLabel.font = UIFont.piwigoFontSmall()
