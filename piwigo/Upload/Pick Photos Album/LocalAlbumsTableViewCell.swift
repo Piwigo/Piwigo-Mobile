@@ -12,6 +12,7 @@ class LocalAlbumsTableViewCell: UITableViewCell {
     
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var subtitleLabel: UILabel!
+    @IBOutlet weak var numberLabel: UILabel!
     
     func configure(with title: String, nberPhotos: Int, startDate: Date?, endDate: Date?) -> Void {
 
@@ -24,16 +25,17 @@ class LocalAlbumsTableViewCell: UITableViewCell {
         titleLabel.textColor = UIColor.piwigoColorLeftLabel()
         titleLabel.text = title
         
-        // Subtitle
-        var subtitle: String = ""
+        // Number of photos
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal
         if nberPhotos != NSNotFound {
-            subtitle = String(format: "%@ %@", numberFormatter.string(from: NSNumber(value: nberPhotos)) ?? "",
-                              nberPhotos > 1 ? NSLocalizedString("severalImages", comment: "Photos") : NSLocalizedString("singleImage", comment: "Photo"))
+            numberLabel.text = numberFormatter.string(from: NSNumber(value: nberPhotos))
+        } else {
+            numberLabel.text = ""
         }
-        
-        // Append date interval in landscape mode or on iPad
+
+        // Append date interval
+        var subtitle: String = ""
         if let startDate = startDate {
             if let endDate = endDate {
                 let calendar = Calendar.current
@@ -47,14 +49,14 @@ class LocalAlbumsTableViewCell: UITableViewCell {
                         if startDateComponents.day == endDateComponents.day {
                             // Photos from the same day
                             let startString = DateFormatter.localizedString(from: startDate, dateStyle: .long, timeStyle: .none)
-                            subtitle.append(String(format: " • %@", startString))
+                            subtitle.append(String(format: "%@", startString))
                         } else {
                             // Photos from different days in the same month
                             let dateFormatter = DateFormatter.init()
                             dateFormatter.locale = .current
                             dateFormatter.setLocalizedDateFormatFromTemplate("YYYYMMMM")
                             let startString = dateFormatter.string(from: startDate)
-                            subtitle.append(String(format: " • %@", startString))
+                            subtitle.append(String(format: "%@", startString))
                         }
                     } else {
                         // Photos from different months in the same year
@@ -67,7 +69,7 @@ class LocalAlbumsTableViewCell: UITableViewCell {
                         }
                         let startString = dateFormatter.string(from: startDate)
                         let endString = dateFormatter.string(from: endDate)
-                        subtitle.append(String(format: " • %@ - %@ %ld", startString, endString, startDateComponents.year!))
+                        subtitle.append(String(format: "%@ - %@ %ld", startString, endString, startDateComponents.year!))
                     }
                 } else {
                     // Photos from different years
@@ -79,12 +81,12 @@ class LocalAlbumsTableViewCell: UITableViewCell {
                         startString = DateFormatter.localizedString(from: startDate, dateStyle: .medium, timeStyle: .none)
                         endString = DateFormatter.localizedString(from: endDate, dateStyle: .medium, timeStyle: .none)
                     }
-                    subtitle.append(String(format: " • %@ - %@", startString, endString))
+                    subtitle.append(String(format: "%@ - %@", startString, endString))
                 }
             } else {
                 // No end date available
                 let startString = DateFormatter.localizedString(from: startDate, dateStyle: .long, timeStyle: .none)
-                subtitle.append(String(format: " • %@", startString))
+                subtitle.append(String(format: "%@", startString))
             }
         }
         subtitleLabel.font = UIFont.piwigoFontSmall()
@@ -96,5 +98,6 @@ class LocalAlbumsTableViewCell: UITableViewCell {
         super.prepareForReuse()
         titleLabel.text = ""
         subtitleLabel.text = ""
+        numberLabel.text = ""
     }
 }

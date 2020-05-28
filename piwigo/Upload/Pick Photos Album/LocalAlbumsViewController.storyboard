@@ -3,10 +3,13 @@
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16097"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
+        <array key="OpenSansLight.TTF">
+            <string>OpenSans-Light</string>
+        </array>
         <array key="OpenSansRegular.TTF">
             <string>OpenSans</string>
         </array>
@@ -22,32 +25,80 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="LocalAlbumsTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="LocalAlbumsTableViewCell" textLabel="egi-v7-MAy" detailTextLabel="kJC-Sz-5OV" style="IBUITableViewCellStyleSubtitle" id="Lap-Ci-ycF" customClass="LocalAlbumsTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                <rect key="frame" x="20" y="55.5" width="374" height="65.5"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="LocalAlbumsTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="LocalAlbumsTableViewCell" rowHeight="48" id="Lap-Ci-ycF" customClass="LocalAlbumsTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="20" y="55.5" width="374" height="48"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Lap-Ci-ycF" id="xFI-FN-dAg">
-                                    <rect key="frame" x="0.0" y="0.0" width="343" height="65.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="343" height="48"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" id="egi-v7-MAy">
-                                            <rect key="frame" x="20" y="9" width="34" height="23.5"/>
-                                            <autoresizingMask key="autoresizingMask"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Album" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BnN-g8-f0Q">
+                                            <rect key="frame" x="20" y="4" width="52" height="24"/>
                                             <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" id="kJC-Sz-5OV">
-                                            <rect key="frame" x="20" y="35.5" width="46.5" height="18"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="23" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5c7-XQ-ioO">
+                                            <rect key="frame" x="320" y="15" width="15" height="18"/>
+                                            <fontDescription key="fontDescription" name="OpenSans-Light" family="Open Sans" pointSize="13"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="23 May" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kqj-Hv-fCp">
+                                            <rect key="frame" x="20" y="28" width="33" height="14"/>
+                                            <fontDescription key="fontDescription" name="OpenSans-Light" family="Open Sans" pointSize="10"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
+                                    <constraints>
+                                        <constraint firstItem="5c7-XQ-ioO" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="BnN-g8-f0Q" secondAttribute="trailing" constant="20" id="6SW-Cu-Ayq"/>
+                                        <constraint firstAttribute="trailing" secondItem="5c7-XQ-ioO" secondAttribute="trailing" constant="8" id="H9F-15-BS8"/>
+                                        <constraint firstItem="kqj-Hv-fCp" firstAttribute="leading" secondItem="xFI-FN-dAg" secondAttribute="leading" constant="20" id="ZmX-Gc-ane"/>
+                                        <constraint firstItem="5c7-XQ-ioO" firstAttribute="centerY" secondItem="xFI-FN-dAg" secondAttribute="centerY" id="m4a-H3-OaG"/>
+                                        <constraint firstItem="kqj-Hv-fCp" firstAttribute="firstBaseline" secondItem="BnN-g8-f0Q" secondAttribute="baseline" constant="16" symbolType="layoutAnchor" id="qKS-6A-q4p"/>
+                                        <constraint firstItem="BnN-g8-f0Q" firstAttribute="leading" secondItem="xFI-FN-dAg" secondAttribute="leading" constant="20" id="qkg-fc-vkT"/>
+                                        <constraint firstItem="5c7-XQ-ioO" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="kqj-Hv-fCp" secondAttribute="trailing" constant="20" id="tCt-0D-KpK"/>
+                                        <constraint firstAttribute="bottom" secondItem="kqj-Hv-fCp" secondAttribute="bottom" constant="6" id="wHf-22-R3A"/>
+                                    </constraints>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <outlet property="subtitleLabel" destination="kJC-Sz-5OV" id="twa-l6-oYy"/>
-                                    <outlet property="titleLabel" destination="egi-v7-MAy" id="s9K-sX-pZn"/>
+                                    <outlet property="numberLabel" destination="5c7-XQ-ioO" id="nRP-x1-3Mh"/>
+                                    <outlet property="subtitleLabel" destination="kqj-Hv-fCp" id="3gg-yB-nyh"/>
+                                    <outlet property="titleLabel" destination="BnN-g8-f0Q" id="m1d-MU-IjY"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="LocalAlbumsNoDatesTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="LocalAlbumsNoDatesTableViewCell" id="z4Q-3g-SCo" customClass="LocalAlbumsNoDatesTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="20" y="103.5" width="374" height="43.5"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="z4Q-3g-SCo" id="MMg-SK-Vtn">
+                                    <rect key="frame" x="0.0" y="0.0" width="343" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Album" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Waj-P7-Tae">
+                                            <rect key="frame" x="20" y="10" width="52" height="23.5"/>
+                                            <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="23" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="acn-R5-kLy">
+                                            <rect key="frame" x="320" y="13" width="15" height="18"/>
+                                            <fontDescription key="fontDescription" name="OpenSans-Light" family="Open Sans" pointSize="13"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="acn-R5-kLy" firstAttribute="centerY" secondItem="MMg-SK-Vtn" secondAttribute="centerY" id="79R-Kh-prL"/>
+                                        <constraint firstItem="acn-R5-kLy" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Waj-P7-Tae" secondAttribute="trailing" constant="20" id="QeY-eW-Xgp"/>
+                                        <constraint firstItem="Waj-P7-Tae" firstAttribute="centerY" secondItem="MMg-SK-Vtn" secondAttribute="centerY" id="RCF-nV-yBg"/>
+                                        <constraint firstAttribute="trailing" secondItem="acn-R5-kLy" secondAttribute="trailing" constant="8" id="dw3-ap-sMK"/>
+                                        <constraint firstItem="Waj-P7-Tae" firstAttribute="leading" secondItem="MMg-SK-Vtn" secondAttribute="leading" constant="20" id="gCx-IZ-fPE"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="numberLabel" destination="acn-R5-kLy" id="YcJ-4Q-vbV"/>
+                                    <outlet property="titleLabel" destination="Waj-P7-Tae" id="bQY-E8-YMR"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -62,7 +113,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="i1X-cT-d9x" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="132" y="139"/>
+            <point key="canvasLocation" x="131.8840579710145" y="138.61607142857142"/>
         </scene>
     </scenes>
 </document>

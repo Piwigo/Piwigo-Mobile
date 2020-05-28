@@ -185,23 +185,40 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "LocalAlbumsTableViewCell", for: indexPath) as? LocalAlbumsTableViewCell else {
-            print("Error: tableView.dequeueReusableCell does not return a LocalAlbumsTableViewCell!")
-            return LocalAlbumsTableViewCell()
-        }
-
         let assetCollection = LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[indexPath.section][indexPath.row]
         let title = assetCollection.localizedTitle ?? "—> ? <——"
         let nberPhotos = assetCollection.estimatedAssetCount
-        let startDate = assetCollection.startDate
-        let endDate = assetCollection.endDate
 
-        cell.configure(with: title, nberPhotos: nberPhotos, startDate: startDate, endDate: endDate)
-        if assetCollection.assetCollectionType == .smartAlbum && assetCollection.assetCollectionSubtype == .smartAlbumGeneric {
-            cell.accessibilityIdentifier = "LocalAlbum"
+        if let startDate = assetCollection.startDate, let endDate = assetCollection.endDate {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "LocalAlbumsTableViewCell", for: indexPath) as? LocalAlbumsTableViewCell else {
+                print("Error: tableView.dequeueReusableCell does not return a LocalAlbumsTableViewCell!")
+                return LocalAlbumsTableViewCell()
+            }
+            cell.configure(with: title, nberPhotos: nberPhotos, startDate: startDate, endDate: endDate)
+            if assetCollection.assetCollectionType == .smartAlbum && assetCollection.assetCollectionSubtype == .smartAlbumGeneric {
+                cell.accessibilityIdentifier = "LocalAlbum"
+            }
+            cell.isAccessibilityElement = true
+            return cell
         }
-        cell.isAccessibilityElement = true
-        return cell
+        else {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "LocalAlbumsNoDatesTableViewCell", for: indexPath) as? LocalAlbumsNoDatesTableViewCell else {
+                print("Error: tableView.dequeueReusableCell does not return a LocalAlbumsNoDatesTableViewCell!")
+                return LocalAlbumsNoDatesTableViewCell()
+            }
+            cell.configure(with: title, nberPhotos: nberPhotos)
+            cell.isAccessibilityElement = true
+            return cell
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let assetCollection = LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[indexPath.section][indexPath.row]
+        if let _ = assetCollection.startDate, let _ = assetCollection.endDate {
+            return 53.0
+        } else {
+            return 44.0
+        }
     }
 
     
