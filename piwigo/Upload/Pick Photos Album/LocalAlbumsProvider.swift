@@ -23,6 +23,8 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
     }
     
     // MARK: Properties
+    let maxNberOfAlbumsInSection = 3
+    var hasLimitedNberOfAlbums = [Bool]()
     var localAlbumHeaders = [String]()
     var fetchedLocalAlbums = [[PHAssetCollection]]()
     var localAlbumsFooters = [String]()
@@ -165,6 +167,7 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
     */
     func fetchLocalAlbums(completion: @escaping () -> Void) {
         
+        hasLimitedNberOfAlbums = [Bool]()
         localAlbumHeaders = [String]()
         fetchedLocalAlbums = [[PHAssetCollection]]()
         localAlbumsFooters = [String]()
@@ -182,6 +185,7 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
             localAlbums.append(contentsOf: regular)
         }
         if localAlbums.count > 0 {
+            hasLimitedNberOfAlbums.append(localAlbums.count > maxNberOfAlbumsInSection)
             localAlbumHeaders.append(NSLocalizedString("categoryUpload_LocalAlbums", comment: "Local Albums"))
             fetchedLocalAlbums.append(localAlbums)
             localAlbumsFooters.append(String(format: "%@ %@", numberFormatter.string(from: NSNumber(value: localAlbums.count)) ?? "", localAlbums.count > 1 ? albumsStr : albumStr))
@@ -190,6 +194,7 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         // Synced events
         let eventsAlbums = filter(fetchedAssetCollections: [syncedEvent].compactMap { $0 })
         if eventsAlbums.count > 0 {
+            hasLimitedNberOfAlbums.append(eventsAlbums.count > maxNberOfAlbumsInSection)
             localAlbumHeaders.append(NSLocalizedString("categoryUpload_syncedEvents", comment: "iPhoto Events"))
             fetchedLocalAlbums.append(eventsAlbums)
             localAlbumsFooters.append(String(format: "%@ %@", numberFormatter.string(from: NSNumber(value: eventsAlbums.count)) ?? "", eventsAlbums.count > 1 ? albumsStr : albumStr))
@@ -198,6 +203,7 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         // Synced albums
         let syncedAlbums = filter(fetchedAssetCollections: [syncedAlbum].compactMap { $0 })
         if syncedAlbums.count > 0 {
+            hasLimitedNberOfAlbums.append(syncedAlbums.count > maxNberOfAlbumsInSection)
             localAlbumHeaders.append(NSLocalizedString("categoryUpload_syncedAlbums", comment: "iPhoto Albums"))
             fetchedLocalAlbums.append(syncedAlbums)
             localAlbumsFooters.append(String(format: "%@ %@", numberFormatter.string(from: NSNumber(value: syncedAlbums.count)) ?? "", syncedAlbums.count > 1 ? albumsStr : albumStr))
@@ -206,6 +212,7 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         // Synced faces
         let facesAlbums = filter(fetchedAssetCollections: [syncedFaces].compactMap { $0 })
         if facesAlbums.count > 0 {
+            hasLimitedNberOfAlbums.append(facesAlbums.count > maxNberOfAlbumsInSection)
             localAlbumHeaders.append(NSLocalizedString("categoryUpload_syncedFaces", comment: "iPhoto Faces"))
             fetchedLocalAlbums.append(facesAlbums)
             localAlbumsFooters.append(String(format: "%@ %@", numberFormatter.string(from: NSNumber(value: facesAlbums.count)) ?? "", facesAlbums.count > 1 ? albumsStr : albumStr))
@@ -214,6 +221,7 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         // Shared albums
         let sharedAlbums = filter(fetchedAssetCollections: [CloudShared].compactMap { $0 })
         if sharedAlbums.count > 0 {
+            hasLimitedNberOfAlbums.append(sharedAlbums.count > maxNberOfAlbumsInSection)
             localAlbumHeaders.append(NSLocalizedString("categoryUpload_iCloudAlbums", comment: "iCloud Albums"))
             fetchedLocalAlbums.append(sharedAlbums)
             localAlbumsFooters.append(String(format: "%@ %@", numberFormatter.string(from: NSNumber(value: sharedAlbums.count)) ?? "", sharedAlbums.count > 1 ? albumsStr : albumStr))
@@ -222,6 +230,7 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         // Media types (selection of smart albums)
         let mediaTypes = filter(fetchedAssetCollections: [videosAlbum, selfPortraitsAlbum, livePhotosAlbum, depthEffectAlbum, panoramasAlbum, timeLapsesAlbum, slowmoAlbum, burstsAlbum, longExposuresAlbum, screenshotsAlbum, animatedAlbum].compactMap { $0 })
         if mediaTypes.count > 0 {
+            hasLimitedNberOfAlbums.append(false)
             localAlbumHeaders.append(NSLocalizedString("categoryUpload_mediaTypes", comment: "Media Types"))
             fetchedLocalAlbums.append(mediaTypes)
             localAlbumsFooters.append(String(format: "%@ %@", numberFormatter.string(from: NSNumber(value: mediaTypes.count)) ?? "", mediaTypes.count > 1 ? albumsStr : albumStr))
@@ -230,6 +239,7 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         // Other albums
         let otherAlbums = filter(fetchedAssetCollections: [allHiddenAlbum, importedAlbums].compactMap { $0 })
         if otherAlbums.count > 0 {
+            hasLimitedNberOfAlbums.append(otherAlbums.count > maxNberOfAlbumsInSection)
             localAlbumHeaders.append(NSLocalizedString("categoryUpload_otherAlbums", comment: "Other Albums"))
             fetchedLocalAlbums.append(otherAlbums)
             localAlbumsFooters.append(String(format: "%@ %@", numberFormatter.string(from: NSNumber(value: otherAlbums.count)) ?? "", otherAlbums.count > 1 ? albumsStr : albumStr))

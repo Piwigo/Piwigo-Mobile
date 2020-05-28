@@ -20,7 +20,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     }
 
     @IBOutlet var localAlbumsTableView: UITableView!
-
+    
     private var _categoryId: Int?
     private var categoryId: Int {
         get {
@@ -181,10 +181,24 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[section].count
+        return LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums[section] ? min(LocalAlbumsProvider.sharedInstance().maxNberOfAlbumsInSection, LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[section].count) + 1 : LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[section].count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        // Display [+] button at the bottom of section presenting a limited number of albums
+        if LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums[indexPath.section] == true &&
+            indexPath.row == LocalAlbumsProvider.sharedInstance().maxNberOfAlbumsInSection {
+            
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "LocalAlbumsMoreTableViewCell", for: indexPath) as? LocalAlbumsMoreTableViewCell else {
+                print("Error: tableView.dequeueReusableCell does not return a LocalAlbumsMoreTableViewCell!")
+                return LocalAlbumsMoreTableViewCell()
+            }
+            cell.isAccessibilityElement = true
+            return cell
+        }
+        
+        // Case of an album
         let assetCollection = LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[indexPath.section][indexPath.row]
         let title = assetCollection.localizedTitle ?? "—> ? <——"
         let nberPhotos = assetCollection.estimatedAssetCount
@@ -213,6 +227,14 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+
+        // Display [+] button at the bottom of section presenting a limited number of albums
+        if LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums[indexPath.section] == true &&
+            indexPath.row == LocalAlbumsProvider.sharedInstance().maxNberOfAlbumsInSection {
+            return 44.0
+        }
+        
+        // Case of an album
         let assetCollection = LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[indexPath.section][indexPath.row]
         if let _ = assetCollection.startDate, let _ = assetCollection.endDate {
             return 53.0
@@ -273,6 +295,20 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
+        // Did tap [+] button at the bottom of section —> release remaining albums
+        if LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums[indexPath.section] == true &&
+            indexPath.row == LocalAlbumsProvider.sharedInstance().maxNberOfAlbumsInSection {
+            // Release album list
+            LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums[indexPath.section] = false
+            // Add remaining albums
+            let indexPaths: [IndexPath] = Array(LocalAlbumsProvider.sharedInstance().maxNberOfAlbumsInSection+1..<LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[indexPath.section].count).map { IndexPath.init(row: $0, section: indexPath.section)}
+            tableView.insertRows(at: indexPaths, with: .automatic)
+            // Replace button
+            tableView.reloadRows(at: [indexPath], with: .automatic)
+            return
+        }
+        
+        // Case of an album
         let localImagesSB = UIStoryboard(name: "LocalImagesViewController", bundle: nil)
         let localImagesVC = localImagesSB.instantiateViewController(withIdentifier: "LocalImagesViewController") as? LocalImagesViewController
         localImagesVC?.setCategoryId(categoryId)

@@ -98,6 +98,8 @@
 		ADC019782471ABA000532A81 /* UploadQueueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC019772471ABA000532A81 /* UploadQueueViewController.swift */; };
 		ADC06AE11F40B15E0081B4FA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = ADC06ADF1F40B15E0081B4FA /* InfoPlist.strings */; };
 		ADC1641623D0CD5300D7AC8D /* ImageUploadThumbCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADC1641523D0CD5300D7AC8D /* ImageUploadThumbCollectionViewCell.xib */; };
+		ADC328072480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC328062480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift */; };
+		ADC3280B2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC3280A2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift */; };
 		ADC80E4823BDCBAA003A6960 /* EditImageThumbCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADC80E4723BDCBAA003A6960 /* EditImageThumbCollectionViewCell.xib */; };
 		ADC80E4B23BDD2DD003A6960 /* EditImageThumbTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ADC80E4A23BDD2DD003A6960 /* EditImageThumbTableViewCell.m */; };
 		ADC8167B244B5EDE00650223 /* LocalImagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC8167A244B5EDE00650223 /* LocalImagesViewController.swift */; };
@@ -380,6 +382,8 @@
 		ADC06AE31F40B2BB0081B4FA /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADC06AE41F40B2BC0081B4FA /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADC1641523D0CD5300D7AC8D /* ImageUploadThumbCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ImageUploadThumbCollectionViewCell.xib; sourceTree = "<group>"; };
+		ADC328062480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalAlbumsNoDatesTableViewCell.swift; sourceTree = "<group>"; };
+		ADC3280A2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAlbumsMoreTableViewCell.swift; sourceTree = "<group>"; };
 		ADC80E4723BDCBAA003A6960 /* EditImageThumbCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EditImageThumbCollectionViewCell.xib; sourceTree = "<group>"; };
 		ADC80E4923BDD2D0003A6960 /* EditImageThumbTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EditImageThumbTableViewCell.h; sourceTree = "<group>"; };
 		ADC80E4A23BDD2DD003A6960 /* EditImageThumbTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EditImageThumbTableViewCell.m; sourceTree = "<group>"; };
@@ -730,6 +734,8 @@
 				ADEC6B022455A3520011527C /* LocalAlbumsProvider.swift */,
 				AD42D08024448B7C00F0BAC1 /* LocalAlbumsViewController.swift */,
 				ADEC6B042455BC6F0011527C /* LocalAlbumsTableViewCell.swift */,
+				ADC328062480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift */,
+				ADC3280A2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift */,
 				AD42D08224448F2400F0BAC1 /* LocalAlbumsViewController.storyboard */,
 			);
 			path = "Pick Photos Album";
@@ -1570,6 +1576,7 @@
 				AD0ED1022441CEC200C69178 /* SwitchTableViewCell.swift in Sources */,
 				ADE03F3423D4CF1D00F21ED9 /* Tag.swift in Sources */,
 				ADE03F3623D4E3BD00F21ED9 /* TagError.swift in Sources */,
+				ADC3280B2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift in Sources */,
 				AD1092EB23D4E4D0006627B0 /* TagsProvider.swift in Sources */,
 				AD3369C023F035F700F3FA80 /* TagSelectorCell.swift in Sources */,
 				AD3369BF23F035F700F3FA80 /* TagSelectorViewController.swift in Sources */,
@@ -1641,6 +1648,7 @@
 				D8F325141A875A42007CBDAC /* EditImageTextFieldTableViewCell.m in Sources */,
 				D860440E1A99894C0067E5D1 /* ImagePreviewViewController.m in Sources */,
 				D8172E201AB7D2EA00271DB0 /* ThumbnailCategoryViewController.m in Sources */,
+				ADC328072480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift in Sources */,
 				ADB17A2124474942006D3402 /* UploadService.m in Sources */,
 				D8A94EB21AAE3C5600E4B287 /* CategoryCollectionViewCell.m in Sources */,
 				D89045B91A946A5B00A306FE /* TagsService.m in Sources */,
