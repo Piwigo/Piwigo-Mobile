@@ -23,7 +23,7 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
     }
     
     // MARK: Properties
-    let maxNberOfAlbumsInSection = 3
+    let maxNberOfAlbumsInSection = 23
     var hasLimitedNberOfAlbums = [Bool]()
     var localAlbumHeaders = [String]()
     var fetchedLocalAlbums = [[PHAssetCollection]]()
