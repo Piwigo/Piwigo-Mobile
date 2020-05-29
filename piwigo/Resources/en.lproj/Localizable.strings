@@ -166,6 +166,7 @@
 "categoryUpload_chooseAlbum" = "Select a sub-album to upload photos to";
 "categoryUpload_LocalAlbums" = "Local Albums";
 "categoryUpload_chooseLocalAlbum" = "Select an album to get photos from";
+"categoryUpload_sharedAlbums" = "Shared Albums";
 "categoryUpload_iCloudAlbums" = "iCloud Albums";
 "categoryUpload_chooseiCloudAlbum" = "Select an iCloud album to get photos from";
 "categoryUpload_syncedEvents" = "iPhoto Events";

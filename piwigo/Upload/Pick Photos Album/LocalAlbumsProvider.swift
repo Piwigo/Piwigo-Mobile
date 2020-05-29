@@ -222,7 +222,7 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         let sharedAlbums = filter(fetchedAssetCollections: [CloudShared].compactMap { $0 })
         if sharedAlbums.count > 0 {
             hasLimitedNberOfAlbums.append(sharedAlbums.count > maxNberOfAlbumsInSection)
-            localAlbumHeaders.append(NSLocalizedString("categoryUpload_iCloudAlbums", comment: "iCloud Albums"))
+            localAlbumHeaders.append(NSLocalizedString("categoryUpload_sharedAlbums", comment: "Shared Albums"))
             fetchedLocalAlbums.append(sharedAlbums)
             localAlbumsFooters.append(String(format: "%@ %@", numberFormatter.string(from: NSNumber(value: sharedAlbums.count)) ?? "", sharedAlbums.count > 1 ? albumsStr : albumStr))
         }

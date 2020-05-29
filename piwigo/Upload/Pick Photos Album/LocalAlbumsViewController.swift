@@ -194,6 +194,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
                 print("Error: tableView.dequeueReusableCell does not return a LocalAlbumsMoreTableViewCell!")
                 return LocalAlbumsMoreTableViewCell()
             }
+            cell.configure()
             cell.isAccessibilityElement = true
             return cell
         }
@@ -231,7 +232,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         // Display [+] button at the bottom of section presenting a limited number of albums
         if LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums[indexPath.section] == true &&
             indexPath.row == LocalAlbumsProvider.sharedInstance().maxNberOfAlbumsInSection {
-            return 44.0
+            return 36.0
         }
         
         // Case of an album
