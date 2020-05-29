@@ -10,4 +10,9 @@ import UIKit
 
 class LocalAlbumsMoreTableViewCell: UITableViewCell {
 
+    func configure() {
+        // Background color and aspect
+        backgroundColor = UIColor.piwigoColorCellBackground()
+        tintColor = UIColor.piwigoColorLeftLabel()
+    }
 }
