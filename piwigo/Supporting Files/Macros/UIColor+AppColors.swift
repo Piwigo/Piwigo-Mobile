@@ -25,11 +25,7 @@ extension UIColor {
     @objc
     class func piwigoColorBackground() -> UIColor {
         if Model.sharedInstance().isDarkPaletteActive {
-            if #available(iOS 10, *) {
-                return UIColor(red: 23 / 255.0, green: 23 / 255.0, blue: 23 / 255.0, alpha: 1.0)
-            } else {
-                return UIColor(red: 23 / 255.0, green: 23 / 255.0, blue: 23 / 255.0, alpha: 1.0)
-            }
+            return UIColor(red: 23 / 255.0, green: 23 / 255.0, blue: 23 / 255.0, alpha: 1.0)
         } else {
             return UIColor(red: 239 / 255.0, green: 239 / 255.0, blue: 244 / 255.0, alpha: 1.0)
         }

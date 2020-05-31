@@ -285,8 +285,10 @@
 // Image sort
 "sortBy" = "Sort by";
 "imageSortTitle" = "Sort Photos";
-"imageSortingHUD" = "Sorting Photos";
 "imageSortMessage" = "Please select how you wish to sort photos";
+"imageSortingHUD" = "Sorting Photos…";
+"imageSelectingHUD" = "Selecting Photos…";
+"imageDeselectingHUD" = "Deselecting Photos…";
 
 // Image options (actions)
 "imageOptions_title" = "Photo Options";
