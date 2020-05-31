@@ -173,9 +173,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
                     imagesSortedByCategory[imagesSortedByCategory.count - 1].append(contentsOf: (remainingImagesSortedByCategory.first)!)
 
                     // Update collection view if needed
-                    if Model.sharedInstance()?.localImagesSectionType == kPiwigoSortImagesByDays {
-                        updateSection(with: remainingImagesSortedByCategory.first!)
-                    }
+                    updateSection(with: remainingImagesSortedByCategory.first!)
                     
                     // Append new sections
                     if remainingImagesSortedByCategory.count > 1 {
@@ -183,9 +181,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
                         imagesSortedByCategory.append(contentsOf: remainingImagesSortedByCategory[1...remainingImagesSortedByCategory.count-1])
 
                         // Update collection view if needed
-                        if Model.sharedInstance()?.localImagesSectionType == kPiwigoSortImagesByDays {
-                            addSections(of: Array(remainingImagesSortedByCategory.dropFirst()))
-                        }
+                        addSections(of: Array(remainingImagesSortedByCategory.dropFirst()))
                         
                         // Hide HUD at end of job
                         DispatchQueue.main.async {
@@ -198,9 +194,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
                     remainingImagesSortedByCategory.append(contentsOf: remainingImagesSortedByCategory[0...remainingImagesSortedByCategory.count-1])
 
                     // Update collection view if needed
-                    if Model.sharedInstance()?.localImagesSectionType == kPiwigoSortImagesByDays {
-                        addSections(of: remainingImagesSortedByCategory)
-                    }
+                    addSections(of: remainingImagesSortedByCategory)
                     
                     // Hide HUD at end of job
                     DispatchQueue.main.async {
