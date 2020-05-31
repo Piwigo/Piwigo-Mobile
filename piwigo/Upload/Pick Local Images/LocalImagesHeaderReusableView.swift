@@ -26,6 +26,7 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
 
     private var dateLabelText: String = ""
     private var optionalDateLabelText: String = ""
+    private var section = 0
 
     // MARK: - View
     
@@ -59,9 +60,7 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         placeLabel.textColor = UIColor.piwigoColorLeftLabel()
 
         // Get date labels from images in section
-        let labels = getDateLabels(of: images)
-        dateLabelText = labels[0]
-        optionalDateLabelText = labels[1]
+        (dateLabelText, optionalDateLabelText) = getDateLabels(of: images)
 
         // Determine location from images in section
         let location = getLocation(of: images)
@@ -70,29 +69,12 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         setLabelsFromDatesAndLocation(location: location)
 
         // Select/deselect button
-        tintColor = UIColor.piwigoColorOrange()
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorOrange(),
-            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
-        ]
-        let title:String
-        switch selectState {
-        case .select:
-            title = NSLocalizedString("categoryImageList_selectButton", comment: "Select")
-        case .deselect:
-            title = NSLocalizedString("categoryImageList_deselectButton", comment: "Deselect")
-        case.none:
-            title = ""
-        }
-        let buttonTitle = NSAttributedString(string: title, attributes: attributes)
-        selectButton.setAttributedTitle(buttonTitle, for: .normal)
+        setButtonTitle(for: selectState)
     }
-
-    private var section = 0
 
     @IBAction func tappedSelectButton(_ sender: Any) {
         if headerDelegate?.responds(to: #selector(LocalImagesHeaderDelegate.didSelectImagesOfSection(_:))) ?? false {
-            // Select/deselect section of images
+            // Select/deselect images
             headerDelegate?.didSelectImagesOfSection(section)
         }
     }
@@ -104,8 +86,28 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         placeLabel.text = ""
     }
 
+    
     // MARK: Utilities
     
+    private func setButtonTitle(for state:SelectButtonState) {
+        tintColor = UIColor.piwigoColorOrange()
+        let attributes = [
+            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorOrange(),
+            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
+        ]
+        let title:String
+        switch state {
+        case .select:
+            title = NSLocalizedString("categoryImageList_selectButton", comment: "Select")
+        case .deselect:
+            title = NSLocalizedString("categoryImageList_deselectButton", comment: "Deselect")
+        case.none:
+            title = ""
+        }
+        let buttonTitle = NSAttributedString(string: title, attributes: attributes)
+        selectButton.setAttributedTitle(buttonTitle, for: .normal)
+    }
+
     @objc private func setLabelsFromDatesAndLocation(location: CLLocation) {
         // Get place name from location (will geodecode location for future use if needed)
         guard let placeNames = LocationsProvider.sharedInstance().getPlaceName(for: location) else {
@@ -128,7 +130,7 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         }
     }
     
-    private func getDateLabels(of images: [PHAsset]) -> [String] {
+    private func getDateLabels(of images: [PHAsset]) -> (String, String) {
         // Creation date of images (or of availability)
         var imageAsset = images.first
         var dateLabelText = ""
@@ -162,48 +164,93 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
                     } else {
                         optionalDateLabelText = "\(firstImageDateStr) - \(lastImageDateStr)"
                     }
-                } else {
-                    // => Images not taken the same day, same month?
-                    let firstImageMonth = Calendar.current.dateComponents([.year, .month], from: firstImageDate)
-                    let lastImageMonth = Calendar.current.dateComponents([.year, .month], from: lastImageDate)
-                    if (firstImageMonth == lastImageMonth) {
-                        // Images taken during the sme month
-                        // => Display month instead of dates
-                        let dateFormatter = DateFormatter.init()
-                        dateFormatter.locale = .current
-                        dateFormatter.setLocalizedDateFormatFromTemplate("MMMMYYYY")
-                        dateLabelText = dateFormatter.string(from: dateCreated1)
-                        // Define optional string with days
-                        if UIScreen.main.bounds.size.width > 414 {
-                            // i.e. larger than iPhones 6, 7 screen width
-                            dateFormatter.setLocalizedDateFormatFromTemplate("EEEE d HH:mm")
-                            optionalDateLabelText = dateFormatter.string(from: dateCreated1) + " — " + dateFormatter.string(from: dateCreated2)
-                        } else {
-                            dateFormatter.setLocalizedDateFormatFromTemplate("EEEE d")
-                            optionalDateLabelText = dateFormatter.string(from: dateCreated1) + " — " + dateFormatter.string(from: dateCreated2)
-                        }
-                    } else  {
-                        // => Will display starting and ending dates
-                        // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                        let dateFormatter = DateFormatter.init()
-                        dateFormatter.locale = .current
-                        if UIScreen.main.bounds.size.width > 414 {
-                            // i.e. larger than iPhones 6, 7 screen width
-                            dateFormatter.setLocalizedDateFormatFromTemplate("MMMMd")
-                            dateLabelText = dateFormatter.string(from: dateCreated1) + " — " + dateFormatter.string(from: dateCreated2)
-                        } else {
-                            dateFormatter.setLocalizedDateFormatFromTemplate("MMd")
-                            dateLabelText = dateFormatter.string(from: dateCreated1) + " — " + dateFormatter.string(from: dateCreated2)
-                        }
-                        // Define optional string with year
-                        dateFormatter.setLocalizedDateFormatFromTemplate("YYYY")
-                        let firstYear = dateFormatter.string(from: dateCreated1)
-                        optionalDateLabelText = firstYear
-                    }
+                    return (dateLabelText, optionalDateLabelText)
                 }
+
+                // => Images taken the same week?
+                let firstImageWeek = Calendar.current.dateComponents([.year, .weekOfYear], from: firstImageDate)
+                let lastImageWeek = Calendar.current.dateComponents([.year, .weekOfYear], from: lastImageDate)
+                if (firstImageWeek == lastImageWeek) {
+                    // Images taken during the same week
+                    // => Display dates of week
+                    let dateFormatter1 = DateFormatter.init(), dateFormatter2 = DateFormatter.init()
+                    dateFormatter1.locale = .current
+                    dateFormatter2.locale = .current
+                    dateFormatter1.setLocalizedDateFormatFromTemplate("d")
+                    dateFormatter2.setLocalizedDateFormatFromTemplate("MMMMYYYYd")
+                    dateLabelText = dateFormatter1.string(from: dateCreated1) + " - " + dateFormatter2.string(from: dateCreated2)
+                    // Define optional string with days
+                    if UIScreen.main.bounds.size.width > 414 {
+                        // i.e. larger than iPhones 6, 7 screen width
+                        dateFormatter1.setLocalizedDateFormatFromTemplate("EEEE d HH:mm")
+                        optionalDateLabelText = dateFormatter1.string(from: dateCreated1) + " — " + dateFormatter1.string(from: dateCreated2)
+                    } else {
+                        dateFormatter1.setLocalizedDateFormatFromTemplate("EEEE d")
+                        optionalDateLabelText = dateFormatter1.string(from: dateCreated1) + " — " + dateFormatter1.string(from: dateCreated2)
+                    }
+                    return (dateLabelText, optionalDateLabelText)
+                }
+
+                // => Images taken the same month?
+                let firstImageMonth = Calendar.current.dateComponents([.year, .month], from: firstImageDate)
+                let lastImageMonth = Calendar.current.dateComponents([.year, .month], from: lastImageDate)
+                if (firstImageMonth == lastImageMonth) {
+                    // Images taken during the sme month
+                    // => Display month instead of dates
+                    let dateFormatter = DateFormatter.init()
+                    dateFormatter.locale = .current
+                    dateFormatter.setLocalizedDateFormatFromTemplate("MMMMYYYY")
+                    dateLabelText = dateFormatter.string(from: dateCreated1)
+                    // Define optional string with days
+                    if UIScreen.main.bounds.size.width > 414 {
+                        // i.e. larger than iPhones 6, 7 screen width
+                        dateFormatter.setLocalizedDateFormatFromTemplate("EEEE d HH:mm")
+                        optionalDateLabelText = dateFormatter.string(from: dateCreated1) + " — " + dateFormatter.string(from: dateCreated2)
+                    } else {
+                        dateFormatter.setLocalizedDateFormatFromTemplate("EEEE d")
+                        optionalDateLabelText = dateFormatter.string(from: dateCreated1) + " — " + dateFormatter.string(from: dateCreated2)
+                    }
+                    return (dateLabelText, optionalDateLabelText)
+                }
+
+                // => Images taken the same year?
+                let firstImageYear = Calendar.current.dateComponents([.year], from: firstImageDate)
+                let lastImageYear = Calendar.current.dateComponents([.year], from: lastImageDate)
+                if (firstImageYear == lastImageYear) {
+                    // Images taken during the sme year
+                    // => Display day/month followed by year
+                    // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
+                    let dateFormatter1 = DateFormatter.init(), dateFormatter2 = DateFormatter.init()
+                    dateFormatter1.locale = .current
+                    dateFormatter2.locale = .current
+                    if UIScreen.main.bounds.size.width > 414 {
+                        // i.e. larger than iPhones 6, 7 screen width
+                        dateFormatter1.setLocalizedDateFormatFromTemplate("MMMMd")
+                        dateFormatter2.setLocalizedDateFormatFromTemplate("YYYYMMMMd")
+                        dateLabelText = dateFormatter1.string(from: dateCreated1) + " — " + dateFormatter2.string(from: dateCreated2)
+                    } else {
+                        dateFormatter1.setLocalizedDateFormatFromTemplate("MMd")
+                        dateFormatter2.setLocalizedDateFormatFromTemplate("YYMMd")
+                        dateLabelText = dateFormatter1.string(from: dateCreated1) + " — " + dateFormatter2.string(from: dateCreated2)
+                    }
+                    return (dateLabelText, optionalDateLabelText)
+                }
+                
+                // => Images taken on several years
+                let dateFormatter = DateFormatter.init()
+                dateFormatter.locale = .current
+                if UIScreen.main.bounds.size.width > 414 {
+                    // i.e. larger than iPhones 6, 7 screen width
+                    dateFormatter.setLocalizedDateFormatFromTemplate("YYYYMMMMd")
+                    dateLabelText = dateFormatter.string(from: dateCreated1) + " — " + dateFormatter.string(from: dateCreated2)
+                } else {
+                    dateFormatter.setLocalizedDateFormatFromTemplate("YYMMd")
+                    dateLabelText = dateFormatter.string(from: dateCreated1) + " — " + dateFormatter.string(from: dateCreated2)
+                }
+                return (dateLabelText, optionalDateLabelText)
             }
         }
-        return [dateLabelText, optionalDateLabelText]
+        return (dateLabelText, optionalDateLabelText)
     }
     
     private func getLocation(of images: [PHAsset]) -> CLLocation {
