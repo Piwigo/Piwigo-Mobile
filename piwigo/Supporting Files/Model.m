@@ -125,7 +125,6 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         instance.prefixFileNameBeforeUpload = NO;
         instance.defaultPrefix = @"";
         instance.localImagesSort = kPiwigoSortDateCreatedDescending;    // i.e. new to old
-        instance.localImagesSectionType = kPiwigoSortImagesByDays;      // Present images by date
 
         // Default palette mode
         instance.isDarkPaletteActive = NO;
@@ -277,7 +276,6 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         self.prefixFileNameBeforeUpload = modelData.prefixFileNameBeforeUpload;
         self.defaultPrefix = modelData.defaultPrefix;
         self.localImagesSort = modelData.localImagesSort;
-        self.localImagesSectionType = modelData.localImagesSectionType;
 	}
 }
 
@@ -358,7 +356,6 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     [saveObject addObject:self.defaultPrefix];
     // Added in 2.5.0…
     [saveObject addObject:@(self.localImagesSort)];
-    [saveObject addObject:[NSNumber numberWithInteger:self.localImagesSectionType]];
 
     [encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -656,11 +653,11 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     } else {
         self.localImagesSort = kPiwigoSortDateCreatedDescending;
     }
-    if(savedData.count > 53) {
-        self.localImagesSectionType = [[savedData objectAtIndex:53] intValue];
-    } else {
-        self.localImagesSectionType = 2;   // Presentation by date
-    }
+//    if(savedData.count > 53) {
+//        self.localImagesSectionType = [[savedData objectAtIndex:53] intValue];
+//    } else {
+//        self.localImagesSectionType = 2;   // Presentation by date
+//    }
 	return self;
 }
 

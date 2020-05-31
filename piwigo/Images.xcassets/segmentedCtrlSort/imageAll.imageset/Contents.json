@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "week@1x.png",
+      "filename" : "all@1x.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "week@2x.png",
+      "filename" : "all@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "week@3x.png",
+      "filename" : "all@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

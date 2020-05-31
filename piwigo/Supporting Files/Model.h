@@ -68,12 +68,6 @@ typedef enum {
     kPiwigoPrivacyUnknown = INT_MAX
 } kPiwigoPrivacy;
 
-typedef enum {
-    kPiwigoSortImagesByMonths,
-    kPiwigoSortImagesByWeeks,
-    kPiwigoSortImagesByDays
-} kPiwigoSortImages;
-
 #define kPiwigoPrivacyString(enum) [@[@"Everybody", @"Admins, Family, Friends, Contacts", @"Admins, Family, Friends", @"3: not assigned", @"Admins, Family", @"5: Count", @"6: not assigned", @"7: not assigned", @"Admins"] objectAtIndex:enum]
 
 @interface Model : NSObject
@@ -172,7 +166,6 @@ typedef enum {
 @property (nonatomic, assign) BOOL prefixFileNameBeforeUpload;
 @property (nonatomic, strong) NSString *defaultPrefix;
 @property (nonatomic, assign) kPiwigoSort localImagesSort;
-@property (nonatomic, assign) kPiwigoSortImages localImagesSectionType;
 
 // Default palette mode
 @property (nonatomic, assign) BOOL isDarkPaletteActive;
