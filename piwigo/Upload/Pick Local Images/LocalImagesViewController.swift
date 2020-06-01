@@ -85,7 +85,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     private var removeUploadedImages = false
     private var hudViewController: UIViewController?
 
-    
+
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
@@ -134,6 +134,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         segmentedControl.setEnabled(false, forSegmentAt: SectionType.month.rawValue)
         segmentedControl.setEnabled(false, forSegmentAt: SectionType.week.rawValue)
         segmentedControl.setEnabled(false, forSegmentAt: SectionType.day.rawValue)
+        segmentedControl.superview?.layer.cornerRadius = segmentedControl.layer.cornerRadius
         
         // Show images in upload queue by default
         removeUploadedImages = false
@@ -160,6 +161,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
 
         // Segmented control
+        segmentedControl.superview?.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.8)
         if #available(iOS 13.0, *) {
             // Keep standard background color
             segmentedControl.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
@@ -904,53 +906,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     }
 
 
-    // MARK: - UIScrollViewDelegate Methods
-    
-//    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-//        hideSegmentedControlAndSortButton()
-//    }
-    
-//    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-//        if !decelerate {
-//            showSegmentedControlAndSortButton()
-//        }
-//    }
-
-//    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-//        showSegmentedControlAndSortButton()
-//    }
-    
-//    private func showSegmentedControlAndSortButton() {
-//        segmentedControl.isHidden = false
-//        sortByDateButton.isHidden = false
-//        UIView.animate(withDuration: 0.3) {
-//            self.segmentedControl.backgroundColor = Model.sharedInstance().isDarkPaletteActive ? UIColor.piwigoColorGray().withAlphaComponent(0.8) : UIColor.piwigoColorGray().withAlphaComponent(0.4)
-//            self.sortByDateButton.backgroundColor = Model.sharedInstance().isDarkPaletteActive ? UIColor.piwigoColorGray().withAlphaComponent(0.8) : UIColor.piwigoColorGray().withAlphaComponent(0.4)
-//            if #available(iOS 13.0, *) {
-//                self.segmentedControl.selectedSegmentTintColor = UIColor.piwigoColorOrange().withAlphaComponent(1.0)
-//            } else {
-//                // Fallback on earlier versions
-//                self.segmentedControl.tintColor = UIColor.piwigoColorOrange().withAlphaComponent(1.0)
-//            }
-//        }
-//    }
-    
-//    private func hideSegmentedControlAndSortButton() {
-//        UIView.animate(withDuration: 0.3) {
-//            if #available(iOS 13.0, *) {
-//                self.segmentedControl.backgroundColor = UIColor.piwigoColorGray().withAlphaComponent(0.0)
-//                self.sortByDateButton.backgroundColor = UIColor.piwigoColorGray().withAlphaComponent(0.08)
-//                self.segmentedControl.selectedSegmentTintColor = UIColor.piwigoColorOrange().withAlphaComponent(0.0)
-//            } else {
-//                // Fallback on earlier versions
-//                self.segmentedControl.backgroundColor = UIColor.piwigoColorGray().withAlphaComponent(0.08)
-//                self.sortByDateButton.backgroundColor = UIColor.piwigoColorGray().withAlphaComponent(0.08)
-//                self.segmentedControl.tintColor = UIColor.piwigoColorOrange().withAlphaComponent(0.0)
-//            }
-//        }
-//    }
-    
-    
     // MARK: - HUD methods
     
     func showHUD(with title: String?, detail: String?) {

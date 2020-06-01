@@ -24,32 +24,8 @@
                     <view key="view" clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3Qu-Pn-VGf">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <subviews>
-                            <view contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="f5z-6S-nIy">
-                                <rect key="frame" x="0.0" y="44" width="414" height="44"/>
-                                <subviews>
-                                    <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="1" translatesAutoresizingMaskIntoConstraints="NO" id="dLb-To-65V">
-                                        <rect key="frame" x="105.5" y="6.5" width="203" height="32"/>
-                                        <segments>
-                                            <segment title="" image="imageMonth" width="50"/>
-                                            <segment title="" image="imageWeek" width="50"/>
-                                            <segment title="" image="imageDay" width="50"/>
-                                            <segment title="" image="imageAll" width="50"/>
-                                        </segments>
-                                        <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
-                                        <connections>
-                                            <action selector="didChangeSortOption:" destination="0bN-Jj-8Z5" eventType="valueChanged" id="XCZ-g0-R6J"/>
-                                        </connections>
-                                    </segmentedControl>
-                                </subviews>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="Sx9-an-l2i"/>
-                                    <constraint firstItem="dLb-To-65V" firstAttribute="centerX" secondItem="f5z-6S-nIy" secondAttribute="centerX" id="kOG-9e-cuw"/>
-                                    <constraint firstItem="dLb-To-65V" firstAttribute="centerY" secondItem="f5z-6S-nIy" secondAttribute="centerY" id="rSn-gM-gRT"/>
-                                </constraints>
-                            </view>
                             <collectionView clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" directionalLockEnabled="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" contentInsetAdjustmentBehavior="always" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="oEF-HO-Dv3">
-                                <rect key="frame" x="0.0" y="88" width="414" height="808"/>
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="1" minimumInteritemSpacing="1" id="Xr2-bY-mvB">
                                     <size key="itemSize" width="128" height="128"/>
@@ -158,13 +134,13 @@
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="placeLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IuZ-Ot-NeB">
-                                                    <rect key="frame" x="20" y="9" width="83" height="20"/>
+                                                    <rect key="frame" x="20" y="2" width="88" height="23.5"/>
                                                     <fontDescription key="fontDescription" name="OpenSans-Semibold" family="Open Sans" pointSize="17"/>
                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="dateLabel" textAlignment="natural" lineBreakMode="tailTruncation" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="NIO-n9-bqf">
-                                                    <rect key="frame" x="20" y="28.5" width="58" height="15.5"/>
+                                                    <rect key="frame" x="20" y="26" width="60" height="18"/>
                                                     <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                     <nil key="highlightedColor"/>
@@ -222,7 +198,7 @@
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2 Photos" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="u7N-dh-tIi">
-                                            <rect key="frame" x="173" y="0.0" width="68.5" height="20"/>
+                                            <rect key="frame" x="172.5" y="0.0" width="69.5" height="23.5"/>
                                             <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -242,17 +218,42 @@
                                     <outlet property="delegate" destination="0bN-Jj-8Z5" id="MhR-8A-JR2"/>
                                 </connections>
                             </collectionView>
+                            <view opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="f5z-6S-nIy">
+                                <rect key="frame" x="105.5" y="831" width="203" height="31"/>
+                                <subviews>
+                                    <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="1" translatesAutoresizingMaskIntoConstraints="NO" id="dLb-To-65V">
+                                        <rect key="frame" x="0.0" y="0.0" width="203" height="32"/>
+                                        <segments>
+                                            <segment title="" image="imageMonth" width="50"/>
+                                            <segment title="" image="imageWeek" width="50"/>
+                                            <segment title="" image="imageDay" width="50"/>
+                                            <segment title="" image="imageAll" width="50"/>
+                                        </segments>
+                                        <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                        <connections>
+                                            <action selector="didChangeSortOption:" destination="0bN-Jj-8Z5" eventType="valueChanged" id="XCZ-g0-R6J"/>
+                                        </connections>
+                                    </segmentedControl>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="dLb-To-65V" secondAttribute="width" id="EH0-7D-RJd"/>
+                                    <constraint firstItem="dLb-To-65V" firstAttribute="centerY" secondItem="f5z-6S-nIy" secondAttribute="centerY" id="SZi-NG-ePn"/>
+                                    <constraint firstItem="dLb-To-65V" firstAttribute="centerX" secondItem="f5z-6S-nIy" secondAttribute="centerX" id="kOG-9e-cuw"/>
+                                    <constraint firstAttribute="height" secondItem="dLb-To-65V" secondAttribute="height" id="pTr-fd-3Me"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="JwU-ke-ivs" firstAttribute="trailing" secondItem="f5z-6S-nIy" secondAttribute="trailing" id="2sQ-Tw-Bqe"/>
-                            <constraint firstItem="f5z-6S-nIy" firstAttribute="top" secondItem="JwU-ke-ivs" secondAttribute="top" id="Aed-aF-eRt"/>
-                            <constraint firstItem="f5z-6S-nIy" firstAttribute="bottom" secondItem="oEF-HO-Dv3" secondAttribute="top" id="Amg-WV-CIg"/>
+                            <constraint firstItem="f5z-6S-nIy" firstAttribute="bottom" secondItem="JwU-ke-ivs" secondAttribute="bottom" id="DJi-uN-Tg3"/>
                             <constraint firstItem="oEF-HO-Dv3" firstAttribute="leading" secondItem="3Qu-Pn-VGf" secondAttribute="leading" id="Tmx-Qf-73z"/>
-                            <constraint firstAttribute="bottom" secondItem="oEF-HO-Dv3" secondAttribute="bottom" id="VbM-g1-xUQ"/>
-                            <constraint firstAttribute="trailing" secondItem="oEF-HO-Dv3" secondAttribute="trailing" id="jrK-pA-Y2m"/>
-                            <constraint firstItem="f5z-6S-nIy" firstAttribute="leading" secondItem="JwU-ke-ivs" secondAttribute="leading" id="xwm-qS-iZh"/>
+                            <constraint firstItem="oEF-HO-Dv3" firstAttribute="bottom" secondItem="3Qu-Pn-VGf" secondAttribute="bottom" id="VbM-g1-xUQ"/>
+                            <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="f5z-6S-nIy" secondAttribute="bottom" constant="20" id="aoF-f5-ug4"/>
+                            <constraint firstItem="oEF-HO-Dv3" firstAttribute="trailing" secondItem="3Qu-Pn-VGf" secondAttribute="trailing" id="jrK-pA-Y2m"/>
+                            <constraint firstItem="f5z-6S-nIy" firstAttribute="centerX" secondItem="JwU-ke-ivs" secondAttribute="centerX" id="w6B-LD-Lqd"/>
+                            <constraint firstItem="oEF-HO-Dv3" firstAttribute="top" secondItem="3Qu-Pn-VGf" secondAttribute="top" id="y6L-7G-U7y"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="JwU-ke-ivs"/>
                     </view>
