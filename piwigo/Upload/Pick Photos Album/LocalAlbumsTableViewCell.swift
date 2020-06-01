@@ -26,6 +26,8 @@ class LocalAlbumsTableViewCell: UITableViewCell {
         titleLabel.text = title
         
         // Number of photos
+        numberLabel.font = UIFont.piwigoFontSmall()
+        numberLabel.textColor = UIColor.piwigoColorRightLabel()
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal
         if nberPhotos != NSNotFound {
