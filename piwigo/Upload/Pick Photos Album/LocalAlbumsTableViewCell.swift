@@ -50,10 +50,35 @@ class LocalAlbumsTableViewCell: UITableViewCell {
                         // Photo from the same month
                         if startDateComponents.day == endDateComponents.day {
                             // Photos from the same day
-                            let startString = DateFormatter.localizedString(from: startDate, dateStyle: .long, timeStyle: .none)
-                            subtitle.append(String(format: "%@", startString))
+                            if UIScreen.main.bounds.size.width > 414 {
+                                let dateFormatter1 = DateFormatter.init(), dateFormatter2 = DateFormatter.init()
+                                dateFormatter1.locale = .current
+                                dateFormatter2.locale = .current
+                                dateFormatter1.setLocalizedDateFormatFromTemplate("EEEE MMMMYYYYd HH:mm")
+                                dateFormatter2.setLocalizedDateFormatFromTemplate("HH:mm")
+                                subtitle.append(dateFormatter1.string(from: startDate) + " — " + dateFormatter2.string(from: endDate))
+                            } else {
+                                let dateFormatter = DateFormatter.init()
+                                dateFormatter.locale = .current
+                                dateFormatter.setLocalizedDateFormatFromTemplate("MMMMYYYYd")
+                                subtitle.append(dateFormatter.string(from: startDate))
+                            }
                         } else {
                             // Photos from different days in the same month
+                            let dateFormatter1 = DateFormatter.init(), dateFormatter2 = DateFormatter.init()
+                            dateFormatter1.locale = .current
+                            dateFormatter2.locale = .current
+                            if UIScreen.main.bounds.size.width > 414 {
+                                // i.e. larger than iPhones 6, 7 screen width
+                                dateFormatter1.setLocalizedDateFormatFromTemplate("EEEE d HH:mm")
+                                dateFormatter2.setLocalizedDateFormatFromTemplate("EEEE MMMMYYYYd HH:mm")
+                                subtitle.append(dateFormatter1.string(from: startDate) + " — " + dateFormatter1.string(from: endDate))
+                            } else {
+                                dateFormatter1.setLocalizedDateFormatFromTemplate("d")
+                                dateFormatter2.setLocalizedDateFormatFromTemplate("MMMMYYYYd")
+                                subtitle.append(dateFormatter1.string(from: startDate) + " — " + dateFormatter1.string(from: endDate))
+                            }
+
                             let dateFormatter = DateFormatter.init()
                             dateFormatter.locale = .current
                             dateFormatter.setLocalizedDateFormatFromTemplate("YYYYMMMM")
@@ -62,23 +87,26 @@ class LocalAlbumsTableViewCell: UITableViewCell {
                         }
                     } else {
                         // Photos from different months in the same year
-                        let dateFormatter = DateFormatter.init()
-                        dateFormatter.locale = .current
-                        if contentView.bounds.size.width > 414 {
-                            dateFormatter.setLocalizedDateFormatFromTemplate("MMMMd")
+                        let dateFormatter1 = DateFormatter.init(), dateFormatter2 = DateFormatter.init()
+                        dateFormatter1.locale = .current
+                        dateFormatter2.locale = .current
+                        if UIScreen.main.bounds.size.width > 414 {
+                            // i.e. larger than iPhones 6, 7 screen width
+                            dateFormatter1.setLocalizedDateFormatFromTemplate("MMMMd")
+                            dateFormatter2.setLocalizedDateFormatFromTemplate("YYYYMMMMd")
+                            subtitle.append(dateFormatter1.string(from: startDate) + " — " + dateFormatter2.string(from: endDate))
                         } else {
-                            dateFormatter.setLocalizedDateFormatFromTemplate("MMMd")
+                            dateFormatter1.setLocalizedDateFormatFromTemplate("MMd")
+                            dateFormatter2.setLocalizedDateFormatFromTemplate("YYMMd")
+                            subtitle.append(dateFormatter1.string(from: startDate) + " — " + dateFormatter2.string(from: endDate))
                         }
-                        let startString = dateFormatter.string(from: startDate)
-                        let endString = dateFormatter.string(from: endDate)
-                        subtitle.append(String(format: "%@ - %@ %ld", startString, endString, startDateComponents.year!))
                     }
                 } else {
                     // Photos from different years
                     let startString: String, endString: String
                     if contentView.bounds.size.width > 414 {
-                        startString = DateFormatter.localizedString(from: startDate, dateStyle: .long, timeStyle: .none)
-                        endString = DateFormatter.localizedString(from: endDate, dateStyle: .long, timeStyle: .none)
+                        startString = DateFormatter.localizedString(from: startDate, dateStyle: .full, timeStyle: .none)
+                        endString = DateFormatter.localizedString(from: endDate, dateStyle: .full, timeStyle: .none)
                     } else {
                         startString = DateFormatter.localizedString(from: startDate, dateStyle: .medium, timeStyle: .none)
                         endString = DateFormatter.localizedString(from: endDate, dateStyle: .medium, timeStyle: .none)
