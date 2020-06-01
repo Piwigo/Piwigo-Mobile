@@ -72,19 +72,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
-        
-//        let segment: UISegmentedControl = UISegmentedControl(items: [UIImage(named: "imageDay"), UIImage(named: "imageWeek"), UIImage(named: "imageMonth")])
-//        segment.sizeToFit()
-//        if #available(iOS 13.0, *) {
-//            segment.selectedSegmentTintColor = UIColor.piwigoColorOrange()
-//        } else {
-//           segment.tintColor = UIColor.piwigoColorOrange()
-//        }
-//        segment.selectedSegmentIndex = 0
-//        segment.setTitleTextAttributes([NSAttributedString.Key.font : UIFont.piwigoFontNormal()], for: .normal)
-//        self.navigationItem.titleView = segment
-        
-        
+                
         // Table view
         localAlbumsTableView?.separatorColor = UIColor.piwigoColorSeparator()
         localAlbumsTableView?.indicatorStyle = Model.sharedInstance().isDarkPaletteActive ? .white : .black
