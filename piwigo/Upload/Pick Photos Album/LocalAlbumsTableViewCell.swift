@@ -70,20 +70,14 @@ class LocalAlbumsTableViewCell: UITableViewCell {
                             dateFormatter2.locale = .current
                             if UIScreen.main.bounds.size.width > 414 {
                                 // i.e. larger than iPhones 6, 7 screen width
-                                dateFormatter1.setLocalizedDateFormatFromTemplate("EEEE d HH:mm")
-                                dateFormatter2.setLocalizedDateFormatFromTemplate("EEEE MMMMYYYYd HH:mm")
-                                subtitle.append(dateFormatter1.string(from: startDate) + " — " + dateFormatter1.string(from: endDate))
+                                dateFormatter1.setLocalizedDateFormatFromTemplate("EEEE d")
+                                dateFormatter2.setLocalizedDateFormatFromTemplate("EEEE MMMMYYYYd")
+                                subtitle.append(dateFormatter1.string(from: startDate) + " — " + dateFormatter2.string(from: endDate))
                             } else {
                                 dateFormatter1.setLocalizedDateFormatFromTemplate("d")
                                 dateFormatter2.setLocalizedDateFormatFromTemplate("MMMMYYYYd")
-                                subtitle.append(dateFormatter1.string(from: startDate) + " — " + dateFormatter1.string(from: endDate))
+                                subtitle.append(dateFormatter1.string(from: startDate) + " — " + dateFormatter2.string(from: endDate))
                             }
-
-                            let dateFormatter = DateFormatter.init()
-                            dateFormatter.locale = .current
-                            dateFormatter.setLocalizedDateFormatFromTemplate("YYYYMMMM")
-                            let startString = dateFormatter.string(from: startDate)
-                            subtitle.append(String(format: "%@", startString))
                         }
                     } else {
                         // Photos from different months in the same year
@@ -92,12 +86,12 @@ class LocalAlbumsTableViewCell: UITableViewCell {
                         dateFormatter2.locale = .current
                         if UIScreen.main.bounds.size.width > 414 {
                             // i.e. larger than iPhones 6, 7 screen width
-                            dateFormatter1.setLocalizedDateFormatFromTemplate("MMMMd")
-                            dateFormatter2.setLocalizedDateFormatFromTemplate("YYYYMMMMd")
+                            dateFormatter1.setLocalizedDateFormatFromTemplate("EEEE d MMMM")
+                            dateFormatter2.setLocalizedDateFormatFromTemplate("EEEE d MMMM YYYY")
                             subtitle.append(dateFormatter1.string(from: startDate) + " — " + dateFormatter2.string(from: endDate))
                         } else {
-                            dateFormatter1.setLocalizedDateFormatFromTemplate("MMd")
-                            dateFormatter2.setLocalizedDateFormatFromTemplate("YYMMd")
+                            dateFormatter1.setLocalizedDateFormatFromTemplate("MMMd")
+                            dateFormatter2.setLocalizedDateFormatFromTemplate("YYYYMMMd")
                             subtitle.append(dateFormatter1.string(from: startDate) + " — " + dateFormatter2.string(from: endDate))
                         }
                     }
@@ -111,7 +105,7 @@ class LocalAlbumsTableViewCell: UITableViewCell {
                         startString = DateFormatter.localizedString(from: startDate, dateStyle: .medium, timeStyle: .none)
                         endString = DateFormatter.localizedString(from: endDate, dateStyle: .medium, timeStyle: .none)
                     }
-                    subtitle.append(String(format: "%@ - %@", startString, endString))
+                    subtitle.append(String(format: "%@ — %@", startString, endString))
                 }
             } else {
                 // No end date available
