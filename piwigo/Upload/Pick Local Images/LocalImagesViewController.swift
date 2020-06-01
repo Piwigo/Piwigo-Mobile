@@ -205,7 +205,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         super.viewWillTransition(to: size, with: coordinator)
 
         // Save position of collection view
-        if let cell = localImagesCollection.visibleCells.first as? LocalImageCollectionViewCell {
+        if let cell = localImagesCollection.visibleCells.first {
             if let indexPath = localImagesCollection.indexPath(for: cell) {
                 // Reload the tableview on orientation change, to match the new width of the table.
                 coordinator.animate(alongsideTransition: { context in
