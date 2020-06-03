@@ -529,7 +529,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 // Show an alert if there was an error.
                 guard let error = error else {
                     // Launch upload jobs
-                    ImageUploadDispatcher.sharedInstance().findNextImageToUpload()
+                    UploadDispatcher.sharedInstance().findNextImageToUpload()
                     return
                 }
                 let alert = UIAlertController(title: NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object."),
@@ -1245,12 +1245,36 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
         switch type {
         case .insert:
             print("••• controller:insert...")
-            // Deselect image added to upload queue
+            // Image added to upload queue
             if let upload:Upload = anObject as? Upload {
-//                selectedImages.removeAll(where: { $0.localIdentifier == upload.localIdentifier })
+                // Get index of uploaded image
+                if let indexOfUploadedImage = selectedImages.firstIndex(where: { $0?.localIdentifier == upload.localIdentifier }) {
+                    // Deselect image
+                    selectedImages[indexOfUploadedImage] = nil
+                    // Add image to indexed upload queue
+                    indexedUploadsInQueue[indexOfUploadedImage] = upload.localIdentifier
+                }
+                // Append upload to non-indexed upload queue
+                if !uploadsInQueue.contains(upload.localIdentifier) {
+                    uploadsInQueue.append(upload.localIdentifier)
+                }
             }
         case .delete:
             print("••• controller:delete...")
+            // Image removed from upload queue
+            if let upload:Upload = anObject as? Upload {
+                // Get index of uploaded image
+                if let indexOfUploadedImage = selectedImages.firstIndex(where: { $0?.localIdentifier == upload.localIdentifier }) {
+                    // Deselect image
+                    selectedImages[indexOfUploadedImage] = nil
+                    // Remove image from indexed upload queue
+                    indexedUploadsInQueue[indexOfUploadedImage] = nil
+                }
+                // Remove upload from non-indexed upload queue
+                if uploadsInQueue.contains(upload.localIdentifier) {
+                    selectedImages.removeAll(where: { $0?.localIdentifier == upload.localIdentifier})
+                }
+            }
         case .move:
             print("••• controller:move...")
         case .update:
