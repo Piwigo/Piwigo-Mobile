@@ -62,7 +62,7 @@ class UploadImageTableViewCell: UITableViewCell {
                     // i.e. larger than iPhones 6,7 screen width
                     imageInfoLabel.text = String(format: "%ldx%ld pixels - %@", imageAsset.pixelWidth, imageAsset.pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .full, timeStyle: .medium))
                 } else if self.bounds.size.width > 375 {
-                    imageInfoLabel.text = String(format: "%ldx%ld pixels — %@", imageAsset.pixelWidth, imageAsset.pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .long, timeStyle: .medium))
+                    imageInfoLabel.text = String(format: "%ldx%ld pixels — %@", imageAsset.pixelWidth, imageAsset.pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .long, timeStyle: .short))
                 } else {
                     imageInfoLabel.text = String(format: "%ldx%ld pixels — %@", imageAsset.pixelWidth, imageAsset.pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .short, timeStyle: .short))
                 }
@@ -80,7 +80,7 @@ class UploadImageTableViewCell: UITableViewCell {
                     // i.e. larger than iPhones 6,7 screen width
                     imageInfoLabel.text = String(format: "%ldx%ld pixels, %@ - %@", imageAsset.pixelWidth, imageAsset.pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .full, timeStyle: .medium))
                 } else if self.bounds.size.width > 375 {
-                    imageInfoLabel.text = String(format: "%ldx%ld pixels, %@ - %@", imageAsset.pixelWidth, imageAsset.pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .long, timeStyle: .medium))
+                    imageInfoLabel.text = String(format: "%ldx%ld pixels, %@ - %@", imageAsset.pixelWidth, imageAsset.pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .long, timeStyle: .short))
                 } else {
                     imageInfoLabel.text = String(format: "%ldx%ld pixels, %@ - %@", imageAsset.pixelWidth, imageAsset.pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .short, timeStyle: .short))
                 }
