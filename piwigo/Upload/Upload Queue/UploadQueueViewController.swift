@@ -29,9 +29,9 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
     private var doneBarButton: UIBarButtonItem?
 
     private var allUploads: [Upload] = []
-    private var imagesSortedByCategory: [[Upload]] = []
-    private let kPiwigoNberImagesShowHUDWhenSorting = 2_500                 // Show HUD when sorting more than this number of images
-    private var hudViewController: UIViewController?
+//    private var imagesSortedByCategory: [[Upload]] = []
+//    private let kPiwigoNberImagesShowHUDWhenSorting = 2_500                 // Show HUD when sorting more than this number of images
+//    private var hudViewController: UIViewController?
 
 
     // MARK: - View Lifecycle
@@ -44,8 +44,11 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
         title = nberOfImagesInQueue > 1 ? String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("severalImages", comment: "Photos")) :
                                               String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("singleImage", comment: "Photo"))
         
+        // Get all uploads
+        self.allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects ?? []
+
         // Fetch uploads and prepare data source in background
-        fetchAndSortImages()
+//        fetchAndSortImages()
 
         // Button for returning to albums/images
         doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(quitUpload))
@@ -121,218 +124,219 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
 
 
     // MARK: - Fetch and Sort Images
-    func fetchAndSortImages() -> Void {
-        // Get all uploads
-        DispatchQueue.global(qos: .userInitiated).async {
-            // Get all uploads
-            self.allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects ?? []
-            
-            // Sort collected images
-            self.sortCollectionOfImages()
-        }
-    }
+//    func fetchAndSortImages() -> Void {
+//        // Get all uploads
+//        DispatchQueue.global(qos: .userInitiated).async {
+//            // Get all uploads
+//            self.allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects ?? []
+//
+//            // Sort collected images
+//            self.sortCollectionOfImages()
+//        }
+//    }
     
     // Sorts images by Piwigo album
     // A first batch is sorted and displayed
     // A second batch follows in the background and finally upadtes the table
-    private func sortCollectionOfImages() {
-        
-        // Sort first limited batch of images
+//    private func sortCollectionOfImages() {
+//
+//        // Sort first limited batch of images
 //        let start = CFAbsoluteTimeGetCurrent()
-        let nberOfImages = min(allUploads.count, kPiwigoNberImagesShowHUDWhenSorting)
-        imagesSortedByCategory = split(inRange: 0..<nberOfImages)
+//        let nberOfImages = min(allUploads.count, kPiwigoNberImagesShowHUDWhenSorting)
+//        imagesSortedByCategory = split(inRange: 0..<nberOfImages)
 //        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
 //        print("=> Splitted", nberOfImages, "images by days, weeks and months took \(diff) ms")
-
-        // Display first limited batch of images
-        DispatchQueue.main.async {
-            // Refresh collection view
-            self.queueTableView.reloadData()
-        }
-
-        // Sort remaining images
-        if allUploads.count > kPiwigoNberImagesShowHUDWhenSorting {
-
-            // Show HUD during job
-            DispatchQueue.main.async {
-                self.showHUDwithTitle(NSLocalizedString("imageSortingHUD", comment: "Sorting Images"))
-            }
-
-            // Initialisation
-            var remainingImagesSortedByCategory: [[Upload]] = []
-            
-            // Sort remaining images
-            remainingImagesSortedByCategory = split(inRange: kPiwigoNberImagesShowHUDWhenSorting..<allUploads.count)
-            
-            // Images sorted by category
-            if remainingImagesSortedByCategory.count > 0 {
-                let lastCategory = imagesSortedByCategory.last?.last?.category
-                let firstCategory = remainingImagesSortedByCategory.first?.first?.category
-                if lastCategory == firstCategory {
-                    // Append images to last section
-                    imagesSortedByCategory[imagesSortedByCategory.count - 1].append(contentsOf: (remainingImagesSortedByCategory.first)!)
-
-                    // Update collection view if needed
-                    updateSection(with: remainingImagesSortedByCategory.first!)
-                    
-                    // Append new sections
-                    if remainingImagesSortedByCategory.count > 1 {
-                        // Append sections
-                        imagesSortedByCategory.append(contentsOf: remainingImagesSortedByCategory[1...remainingImagesSortedByCategory.count-1])
-
-                        // Update collection view if needed
-                        addSections(of: Array(remainingImagesSortedByCategory.dropFirst()))
-                        
-                        // Hide HUD at end of job
-                        DispatchQueue.main.async {
-                            self.hideHUDwithSuccess(true) {
-                            }
-                        }
-                    }
-                } else {
-                    // Append new section
-                    remainingImagesSortedByCategory.append(contentsOf: remainingImagesSortedByCategory[0...remainingImagesSortedByCategory.count-1])
-
-                    // Update collection view if needed
-                    addSections(of: remainingImagesSortedByCategory)
-                    
-                    // Hide HUD at end of job
-                    DispatchQueue.main.async {
-                        self.hideHUDwithSuccess(true) {
-                        }
-                    }
-                }
-            }
-        }
-    }
+//
+//        // Display first limited batch of images
+//        DispatchQueue.main.async {
+//            // Refresh collection view
+//            self.queueTableView.reloadData()
+//        }
+//
+//        // Sort remaining images
+//        if allUploads.count > kPiwigoNberImagesShowHUDWhenSorting {
+//
+//            // Show HUD during job
+//            DispatchQueue.main.async {
+//                self.showHUDwithTitle(NSLocalizedString("imageSortingHUD", comment: "Sorting Images"))
+//            }
+//
+//            // Initialisation
+//            var remainingImagesSortedByCategory: [[Upload]] = []
+//
+//            // Sort remaining images
+//            remainingImagesSortedByCategory = split(inRange: kPiwigoNberImagesShowHUDWhenSorting..<allUploads.count)
+//
+//            // Images sorted by category
+//            if remainingImagesSortedByCategory.count > 0 {
+//                let lastCategory = imagesSortedByCategory.last?.last?.category
+//                let firstCategory = remainingImagesSortedByCategory.first?.first?.category
+//                if lastCategory == firstCategory {
+//                    // Append images to last section
+//                    imagesSortedByCategory[imagesSortedByCategory.count - 1].append(contentsOf: (remainingImagesSortedByCategory.first)!)
+//
+//                    // Update collection view if needed
+//                    updateSection(with: remainingImagesSortedByCategory.first!)
+//
+//                    // Append new sections
+//                    if remainingImagesSortedByCategory.count > 1 {
+//                        // Append sections
+//                        imagesSortedByCategory.append(contentsOf: remainingImagesSortedByCategory[1...remainingImagesSortedByCategory.count-1])
+//
+//                        // Update collection view if needed
+//                        addSections(of: Array(remainingImagesSortedByCategory.dropFirst()))
+//
+//                        // Hide HUD at end of job
+//                        DispatchQueue.main.async {
+//                            self.hideHUDwithSuccess(true) {
+//                            }
+//                        }
+//                    }
+//                } else {
+//                    // Append new section
+//                    remainingImagesSortedByCategory.append(contentsOf: remainingImagesSortedByCategory[0...remainingImagesSortedByCategory.count-1])
+//
+//                    // Update collection view if needed
+//                    addSections(of: remainingImagesSortedByCategory)
+//
+//                    // Hide HUD at end of job
+//                    DispatchQueue.main.async {
+//                        self.hideHUDwithSuccess(true) {
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
     
-    private func updateSection(with images:[Upload]!) {
-        // Append images of the day, week or month to last section
-        DispatchQueue.main.async {
-            // Update data source
-            let indexOfLastItem = self.imagesSortedByCategory.last!.count
-            let nberOfAddedItems = images.count
-            let indexesOfNewItems = Array(indexOfLastItem..<indexOfLastItem + nberOfAddedItems).map { IndexPath(item: $0, section: self.imagesSortedByCategory.count-1) }
-            self.imagesSortedByCategory[self.imagesSortedByCategory.count-1].append(contentsOf: images)
-            
-            // Update section
-            self.queueTableView.insertRows(at: indexesOfNewItems, with: .automatic)
-        }
-    }
+//    private func updateSection(with images:[Upload]!) {
+//        // Append images of the day, week or month to last section
+//        DispatchQueue.main.async {
+//            // Update data source
+//            let indexOfLastItem = self.imagesSortedByCategory.last!.count
+//            let nberOfAddedItems = images.count
+//            let indexesOfNewItems = Array(indexOfLastItem..<indexOfLastItem + nberOfAddedItems).map { IndexPath(item: $0, section: self.imagesSortedByCategory.count-1) }
+//            self.imagesSortedByCategory[self.imagesSortedByCategory.count-1].append(contentsOf: images)
+//
+//            // Update section
+//            self.queueTableView.insertRows(at: indexesOfNewItems, with: .automatic)
+//        }
+//    }
     
-    private func addSections(of images: [[Upload]]) {
-        // Append sections of images to current data source
-        DispatchQueue.main.async {
-            // Update data source
-            let nberOfAddedSections = images.count
-            let indexesOfNewSections = IndexSet.init(integersIn: self.imagesSortedByCategory.count..<self.imagesSortedByCategory.count + nberOfAddedSections)
-            self.imagesSortedByCategory.append(contentsOf: images)
-            // Update section
-            self.queueTableView.insertSections(indexesOfNewSections, with: .automatic)
-        }
-
-    }
+//    private func addSections(of images: [[Upload]]) {
+//        // Append sections of images to current data source
+//        DispatchQueue.main.async {
+//            // Update data source
+//            let nberOfAddedSections = images.count
+//            let indexesOfNewSections = IndexSet.init(integersIn: self.imagesSortedByCategory.count..<self.imagesSortedByCategory.count + nberOfAddedSections)
+//            self.imagesSortedByCategory.append(contentsOf: images)
+//            // Update section
+//            self.queueTableView.insertSections(indexesOfNewSections, with: .automatic)
+//        }
+//
+//    }
     
-    private func split(inRange range: Range<Int>) -> [[Upload]]  {
-
-        // Get collection of images sorted by ascending request date
+//    private func split(inRange range: Range<Int>) -> [[Upload]]  {
+//
+//        // Get collection of images sorted by ascending request date
 //        var start = CFAbsoluteTimeGetCurrent()
-        let uploads = Array(allUploads[range.startIndex ..< range.endIndex])
+//        let uploads = Array(allUploads[range.startIndex ..< range.endIndex])
 //        var diff = (CFAbsoluteTimeGetCurrent() - start)*1000
 //        print("           uploads.objects took \(diff) ms")
-
-        // Initialisation
+//
+//         Initialisation
 //        start = CFAbsoluteTimeGetCurrent()
-        var imagesByCatId: [[Upload]] = []
-
-        // Sort imageAssets
-        for index in 0..<range.endIndex-range.startIndex {
-            // Get object
-            let obj = uploads[index]
-
-            // Index of a known category?
-            let index = imagesByCatId.firstIndex(where: { $0.first?.category == obj.category})
-            
-            // Add object to array of known category?
-            if let index = index {
-                // Same category -> Append object to section
-                imagesByCatId[index].append(obj)
-            } else {
-                // Append section to collection by category
-                imagesByCatId.append([obj])
-            }
-        }
-        
+//        var imagesByCatId: [[Upload]] = []
+//
+//        // Sort imageAssets
+//        for index in 0..<range.endIndex-range.startIndex {
+//            // Get object
+//            let obj = uploads[index]
+//
+//            // Index of a known category?
+//            let index = imagesByCatId.firstIndex(where: { $0.first?.category == obj.category})
+//
+//            // Add object to array of known category?
+//            if let index = index {
+//                // Same category -> Append object to section
+//                imagesByCatId[index].append(obj)
+//            } else {
+//                // Append section to collection by category
+//                imagesByCatId.append([obj])
+//            }
+//        }
+//
 //        diff = (CFAbsoluteTimeGetCurrent() - start)*1000
 //        print("           sorting objects took \(diff) ms")
-        return imagesByCatId
-    }
+//        return imagesByCatId
+//    }
 
         
     // MARK: - UITableView - Header
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        // Title
-        var titleString = ""
-        if let category = CategoriesData.sharedInstance()?.getCategoryById(Int(imagesSortedByCategory[section].first!.category)) {
-            titleString = category.name
-        }
-        let titleAttributes = [
-            NSAttributedString.Key.font: UIFont.piwigoFontBold()
-        ]
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let titleRect = titleString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
-        return CGFloat(fmax(44.0, ceil(titleRect.size.height)))
-    }
+    
+//    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+//        // Title
+//        var titleString = ""
+//        if let category = CategoriesData.sharedInstance()?.getCategoryById(Int(imagesSortedByCategory[section].first!.category)) {
+//            titleString = category.name
+//        }
+//        let titleAttributes = [
+//            NSAttributedString.Key.font: UIFont.piwigoFontBold()
+//        ]
+//        let context = NSStringDrawingContext()
+//        context.minimumScaleFactor = 1.0
+//        let titleRect = titleString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
+//        return CGFloat(fmax(44.0, ceil(titleRect.size.height)))
+//    }
 
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let headerAttributedString = NSMutableAttributedString(string: "")
-
-        // Title
-        var titleString = ""
-        if let category = CategoriesData.sharedInstance()?.getCategoryById(Int(imagesSortedByCategory[section].first!.category)) {
-            titleString = category.name
-        }
-        let titleAttributedString = NSMutableAttributedString(string: titleString)
-        titleAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: NSRange(location: 0, length: titleString.count))
-        headerAttributedString.append(titleAttributedString)
-
-        // Header label
-        let headerLabel = UILabel()
-        headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        headerLabel.textColor = UIColor.piwigoColorHeader()
-
-        headerLabel.numberOfLines = 0
-        headerLabel.adjustsFontSizeToFitWidth = false
-        headerLabel.lineBreakMode = .byWordWrapping
-        headerLabel.attributedText = headerAttributedString
-
-        // Header view
-        let header = UIView()
-        header.addSubview(headerLabel)
-        header.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.75)
-        header.addConstraint(NSLayoutConstraint.constraintView(fromBottom: headerLabel, amount: 4)!)
-        if #available(iOS 11, *) {
-            header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[header]-|", options: [], metrics: nil, views: [
-            "header": headerLabel
-            ]))
-        } else {
-            header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-15-[header]-15-|", options: [], metrics: nil, views: [
-            "header": headerLabel
-            ]))
-        }
-
-        return header
-    }
+//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+//        let headerAttributedString = NSMutableAttributedString(string: "")
+//
+//        // Title
+//        var titleString = ""
+//        if let category = CategoriesData.sharedInstance()?.getCategoryById(Int(imagesSortedByCategory[section].first!.category)) {
+//            titleString = category.name
+//        }
+//        let titleAttributedString = NSMutableAttributedString(string: titleString)
+//        titleAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: NSRange(location: 0, length: titleString.count))
+//        headerAttributedString.append(titleAttributedString)
+//
+//        // Header label
+//        let headerLabel = UILabel()
+//        headerLabel.translatesAutoresizingMaskIntoConstraints = false
+//        headerLabel.textColor = UIColor.piwigoColorHeader()
+//
+//        headerLabel.numberOfLines = 0
+//        headerLabel.adjustsFontSizeToFitWidth = false
+//        headerLabel.lineBreakMode = .byWordWrapping
+//        headerLabel.attributedText = headerAttributedString
+//
+//        // Header view
+//        let header = UIView()
+//        header.addSubview(headerLabel)
+//        header.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.75)
+//        header.addConstraint(NSLayoutConstraint.constraintView(fromBottom: headerLabel, amount: 4)!)
+//        if #available(iOS 11, *) {
+//            header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[header]-|", options: [], metrics: nil, views: [
+//            "header": headerLabel
+//            ]))
+//        } else {
+//            header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-15-[header]-15-|", options: [], metrics: nil, views: [
+//            "header": headerLabel
+//            ]))
+//        }
+//
+//        return header
+//    }
 
 
     // MARK: - UITableView - Rows
     func numberOfSections(in tableView: UITableView) -> Int {
-        return imagesSortedByCategory.count
+        return 1
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return imagesSortedByCategory[section].count
+        return allUploads.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -341,70 +345,70 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
             return UploadImageTableViewCell()
         }
 
-        cell.configure(with: imagesSortedByCategory[indexPath.section][indexPath.row])
+        cell.configure(with: allUploads[indexPath.row])
         return cell
     }
 
     
     // MARK: - HUD methods
     
-    func showHUDwithTitle(_ title: String?) {
-        // Determine the present view controller if needed (not necessarily self.view)
-        if hudViewController == nil {
-            hudViewController = UIApplication.shared.keyWindow?.rootViewController
-            while ((hudViewController?.presentedViewController) != nil) {
-                hudViewController = hudViewController?.presentedViewController
-            }
-        }
+//    func showHUDwithTitle(_ title: String?) {
+//        // Determine the present view controller if needed (not necessarily self.view)
+//        if hudViewController == nil {
+//            hudViewController = UIApplication.shared.keyWindow?.rootViewController
+//            while ((hudViewController?.presentedViewController) != nil) {
+//                hudViewController = hudViewController?.presentedViewController
+//            }
+//        }
+//
+//        // Create the login HUD if needed
+//        var hud = hudViewController?.view.viewWithTag(loadingViewTag) as? MBProgressHUD
+//        if hud == nil {
+//            // Create the HUD
+//            hud = MBProgressHUD.showAdded(to: (hudViewController?.view)!, animated: true)
+//            hud?.tag = loadingViewTag
+//
+//            // Change the background view shape, style and color.
+//            hud?.isSquare = false
+//            hud?.animationType = MBProgressHUDAnimation.fade
+//            hud?.backgroundView.style = MBProgressHUDBackgroundStyle.solidColor
+//            hud?.backgroundView.color = UIColor(white: 0.0, alpha: 0.5)
+//            hud?.contentColor = UIColor.piwigoColorHudContent()
+//            hud?.bezelView.color = UIColor.piwigoColorHudBezelView()
+//
+//            // Will look best, if we set a minimum size.
+//            hud?.minSize = CGSize(width: 200.0, height: 100.0)
+//        }
+//
+//        // Set title
+//        hud?.label.text = title
+//        hud?.label.font = UIFont.piwigoFontNormal()
+//        hud?.mode = MBProgressHUDMode.indeterminate
+//        let numberFormatter = NumberFormatter()
+//        numberFormatter.numberStyle = .decimal
+//        let nberPhotos = numberFormatter.string(from: NSNumber(value: allUploads.count))!
+//        hud?.detailsLabel.text = String(format: "%@ %@", nberPhotos, NSLocalizedString("severalImages", comment: "Photos"))
+//    }
 
-        // Create the login HUD if needed
-        var hud = hudViewController?.view.viewWithTag(loadingViewTag) as? MBProgressHUD
-        if hud == nil {
-            // Create the HUD
-            hud = MBProgressHUD.showAdded(to: (hudViewController?.view)!, animated: true)
-            hud?.tag = loadingViewTag
-
-            // Change the background view shape, style and color.
-            hud?.isSquare = false
-            hud?.animationType = MBProgressHUDAnimation.fade
-            hud?.backgroundView.style = MBProgressHUDBackgroundStyle.solidColor
-            hud?.backgroundView.color = UIColor(white: 0.0, alpha: 0.5)
-            hud?.contentColor = UIColor.piwigoColorHudContent()
-            hud?.bezelView.color = UIColor.piwigoColorHudBezelView()
-
-            // Will look best, if we set a minimum size.
-            hud?.minSize = CGSize(width: 200.0, height: 100.0)
-        }
-
-        // Set title
-        hud?.label.text = title
-        hud?.label.font = UIFont.piwigoFontNormal()
-        hud?.mode = MBProgressHUDMode.indeterminate
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = .decimal
-        let nberPhotos = numberFormatter.string(from: NSNumber(value: allUploads.count))!
-        hud?.detailsLabel.text = String(format: "%@ %@", nberPhotos, NSLocalizedString("severalImages", comment: "Photos"))
-    }
-
-    func hideHUDwithSuccess(_ success: Bool, completion: @escaping () -> Void) {
-        DispatchQueue.main.async(execute: {
-            // Hide and remove the HUD
-            let hud = self.hudViewController?.view.viewWithTag(loadingViewTag) as? MBProgressHUD
-            if hud != nil {
-                if success {
-                    let image = UIImage(named: "completed")?.withRenderingMode(.alwaysTemplate)
-                    let imageView = UIImageView(image: image)
-                    hud?.customView = imageView
-                    hud?.mode = MBProgressHUDMode.customView
-                    hud?.label.text = NSLocalizedString("completeHUD_label", comment: "Complete")
-                    hud?.hide(animated: true, afterDelay: 0.3)
-                } else {
-                    hud?.hide(animated: true)
-                }
-            }
-            completion()
-        })
-    }
+//    func hideHUDwithSuccess(_ success: Bool, completion: @escaping () -> Void) {
+//        DispatchQueue.main.async(execute: {
+//            // Hide and remove the HUD
+//            let hud = self.hudViewController?.view.viewWithTag(loadingViewTag) as? MBProgressHUD
+//            if hud != nil {
+//                if success {
+//                    let image = UIImage(named: "completed")?.withRenderingMode(.alwaysTemplate)
+//                    let imageView = UIImageView(image: image)
+//                    hud?.customView = imageView
+//                    hud?.mode = MBProgressHUDMode.customView
+//                    hud?.label.text = NSLocalizedString("completeHUD_label", comment: "Complete")
+//                    hud?.hide(animated: true, afterDelay: 0.3)
+//                } else {
+//                    hud?.hide(animated: true)
+//                }
+//            }
+//            completion()
+//        })
+//    }
 }
 
 // MARK: - NSFetchedResultsControllerDelegate
