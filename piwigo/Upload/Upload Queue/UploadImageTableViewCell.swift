@@ -39,11 +39,13 @@ class UploadImageTableViewCell: UITableViewCell {
             self.uploadInfoLabel.text = NSLocalizedString("imageUploadTableCell_preparing", comment: "Preparing...")
         case .formatError:
             self.uploadInfoLabel.text = NSLocalizedString("imageUploadError_format", comment: "File format not accepted by Piwigo server.")
-        case .prepared:
-            self.uploadInfoLabel.text = NSLocalizedString("imageUploadTableCell_prepared", comment: "Ready for upload to Piwigo server")
 
         case .uploading:
             self.uploadInfoLabel.text = NSLocalizedString("imageUploadTableCell_uploading", comment: "Uploading...")
+
+        case .finishing:
+            self.uploadInfoLabel.text = NSLocalizedString("imageUploadTableCell_finishing", comment: "Finishing...")
+
         case .uploaded:
             self.uploadInfoLabel.text = NSLocalizedString("imageUploadTableCell_uploaded", comment: "Uploaded")
         case .paused:
