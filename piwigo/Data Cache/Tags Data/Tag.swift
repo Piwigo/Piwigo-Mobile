@@ -94,10 +94,6 @@ struct TagJSON: Decodable {
 
     private enum ResultCodingKeys: String, CodingKey {
         case tags
-        case id
-        case name
-        case lastmodified
-        case url_name
     }
 
     // Constants
