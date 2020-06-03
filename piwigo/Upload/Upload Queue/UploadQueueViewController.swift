@@ -424,8 +424,16 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
         switch type {
         case .insert:
             print("••• controller:insert...")
+            // Image added to upload queue
+            if let upload:Upload = anObject as? Upload {
+                allUploads.append(upload)
+            }
         case .delete:
             print("••• controller:delete...")
+            // Image removed from upload queue
+            if let upload:Upload = anObject as? Upload {
+                allUploads.removeAll(where: { $0.localIdentifier == upload.localIdentifier})
+            }
         case .move:
             print("••• controller:move...")
         case .update:
