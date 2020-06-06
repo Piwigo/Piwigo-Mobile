@@ -1,5 +1,5 @@
 //
-//  ImageUploadPreparation.swift
+//  UploadImagePreparer.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 21/05/2020.
@@ -8,7 +8,7 @@
 
 import Photos
 
-class ImageUploadPreparation {
+class UploadImagePreparer {
 
     // MARK: - Retrieve Image
     
@@ -212,8 +212,8 @@ class ImageUploadPreparation {
             }
         }
 
-        // Upload image with tags and properties
-        ImageUploadDispatcher.sharedInstance().didFinishPreparing(upload: newUpload, with: mimeType, imageData: imageData)
+        // Transfer image
+        UploadDispatcher.sharedInstance().transfer(upload: newUpload, with: mimeType, imageData: imageData)
     }
 
 

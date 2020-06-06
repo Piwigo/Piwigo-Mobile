@@ -33,6 +33,7 @@ class Upload: NSManagedObject {
     @NSManaged var title: String?
     @NSManaged var comment: String?
     @NSManaged var tags: Set<Tag>?
+    @NSManaged var imageId: Int64
 
     // Singleton
     @objc static let sharedInstance: Upload = Upload()
@@ -68,6 +69,7 @@ class Upload: NSManagedObject {
         title = uploadProperties.title ?? ""
         comment = uploadProperties.comment ?? ""
         tags = uploadProperties.tags ?? []
+        imageId = Int64(uploadProperties.imageId)
     }
 }
 
@@ -82,11 +84,13 @@ extension Upload {
             return .preparing
         case kPiwigoUploadState.formatError.rawValue:
             return .formatError
-        case kPiwigoUploadState.prepared.rawValue:
-            return .prepared
-            
+
         case kPiwigoUploadState.uploading.rawValue:
             return .uploading
+
+        case kPiwigoUploadState.finishing.rawValue:
+            return .finishing
+            
         case kPiwigoUploadState.uploaded.rawValue:
             return .uploaded
         case kPiwigoUploadState.paused.rawValue:
@@ -129,9 +133,10 @@ enum kPiwigoUploadState : Int16 {
     
     case preparing
     case formatError
-    case prepared
-    
+
     case uploading
+    
+    case finishing
     case uploaded
     case paused
 }
@@ -150,6 +155,7 @@ struct UploadProperties
     var title: String?                      // "Image title"
     var comment: String?                    // "A comment…"
     var tags: Set<Tag>?                     // Array of tags
+    var imageId: Int                       // 1042
 }
 
 extension UploadProperties {
@@ -164,6 +170,6 @@ extension UploadProperties {
             // Privacy level defaults to level selected in Settings
             privacyLevel: Model.sharedInstance()?.defaultPrivacyLevel ?? kPiwigoPrivacyEverybody,
             // No title, comment, tag, filename by default
-            title: "", comment: "", tags: [])
+            title: "", comment: "", tags: [], imageId: NSNotFound)
     }
 }

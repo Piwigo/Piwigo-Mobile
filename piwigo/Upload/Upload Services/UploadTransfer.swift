@@ -1,16 +1,26 @@
 //
-//  ImageUploadTransfer.swift
+//  UploadTransfer.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 21/05/2020.
 //  Copyright © 2020 Piwigo.org. All rights reserved.
 //
 
-class ImageUploadTransfer: NetworkHandler {
+class UploadTransfer {
 
-    class func uploadImage(_ imageData: Data?, with upload: UploadProperties, mimeType: String,
+    // MARK: - Piwigo API method
+
+    let kPiwigoImagesUpload = "format=json&method=pwg.images.upload"
+
+    
+    // MARK: - Upload Images
+    /**
+     Initialises the transfer of an image or a video with a Piwigo server.
+     The file is uploaded by sending chunks whose size is defined on the server.
+     */
+    func uploadImage(_ imageData: Data?, with upload: UploadProperties, mimeType: String,
                            onProgress: @escaping (_ progress: Progress?, _ currentChunk: Int, _ totalChunks: Int) -> Void,
-                           onCompletion completion: @escaping (_ task: URLSessionTask?, _ response: [AnyHashable : Any]?) -> Void,
+                           onCompletion completion: @escaping (_ task: URLSessionTask?, _ response: [AnyHashable : Any]?, _ imageParameters: [String : String]) -> Void,
                            onFailure fail: @escaping (_ task: URLSessionTask?, _ error: Error?) -> Void) {
         
         // Calculate chunk size
@@ -50,11 +60,11 @@ class ImageUploadTransfer: NetworkHandler {
         self.sendChunk(imageData, withInformation: imageParameters,
                        forOffset: 0, onChunk: 0, forTotalChunks: chunks,
                        onProgress: onProgress,
-                       onCompletion: { task, response in
+                       onCompletion: { task, response, imageParameters in
                             // Close upload session
                             Model.sharedInstance().imageUploadManager.invalidateSessionCancelingTasks(true)
                             // Done, return
-                            completion(task, response ?? [:])
+                            completion(task, response, imageParameters)
                         },
                        onFailure: { task, error in
                             // Close upload session
@@ -64,29 +74,13 @@ class ImageUploadTransfer: NetworkHandler {
                         })
     }
 
-    class func getUploadedImageStatus(byId imageId: String?, inCategory categoryId: Int,
-                                      onProgress progress: @escaping (Progress?) -> Void,
-                                      onCompletion completion: @escaping (_ task: URLSessionTask?, _ response: Any?) -> Void,
-                                      onFailure fail: @escaping (_ task: URLSessionTask?, _ error: Error?) -> Void) -> URLSessionTask? {
-        
-        let request = self.post(kCommunityImagesUploadCompleted,
-                                urlParameters: nil,
-                                parameters: [
-                                    "pwg_token": Model.sharedInstance().pwgToken!,
-                                    "image_id": imageId ?? "",
-                                    "category_id": NSNumber(value: categoryId)
-                                    ],
-                                progress: progress,
-                                success: completion,
-                                failure: fail)
-
-        return request
-    }
-
-    class func sendChunk(_ imageData: Data?, withInformation imageParameters: [String : String],
+    /**
+     Sends iteratively chunks of the file.
+     */
+    func sendChunk(_ imageData: Data?, withInformation imageParameters: [String : String],
                          forOffset offset: Int, onChunk count: Int, forTotalChunks chunks: Int,
                          onProgress: @escaping (_ progress: Progress?, _ currentChunk: Int, _ totalChunks: Int) -> Void,
-                         onCompletion completion: @escaping (_ task: URLSessionTask?, _ response: [AnyHashable : Any]?) -> Void,
+                         onCompletion completion: @escaping (_ task: URLSessionTask?, _ response: [AnyHashable : Any]?, _ imageParameters: [String : String]) -> Void,
                          onFailure fail: @escaping (_ task: URLSessionTask?, _ error: Error?) -> Void) {
         
         var imageParameters = imageParameters
@@ -104,7 +98,7 @@ class ImageUploadTransfer: NetworkHandler {
         let nextChunkNumber = count + 1
         offset += thisChunkSize
 
-        self.postMultiPart(kPiwigoImagesUpload, data: chunk, parameters: imageParameters,
+        NetworkHandler.postMultiPart(kPiwigoImagesUpload, data: chunk, parameters: imageParameters,
            progress: { progress in
                 DispatchQueue.main.async(execute: {
                     if progress != nil {
@@ -116,7 +110,7 @@ class ImageUploadTransfer: NetworkHandler {
                 // Continue?
                 if count >= chunks - 1 {
                     // Done, return
-                    completion(task, responseObject as! [AnyHashable : Any]?)
+                    completion(task, responseObject as! [AnyHashable : Any]?, imageParameters)
                 } else {
                     // Keep going!
                     self.sendChunk(imageData, withInformation: imageParameters,
@@ -129,4 +123,77 @@ class ImageUploadTransfer: NetworkHandler {
                 fail(task, error!)
             })
     }
+}
+
+
+// MARK: - Codable, kPiwigoImagesUpload
+/**
+ A struct for decoding JSON with the following structure returned by kPiwigoImagesUpload:
+
+ {"stat":"ok",
+  "result":{"image_id":1052,
+            "square_src":"https://...-sq.jpg",
+            "name":"Delft - 04",
+            "src":"https://...-th.jpg",
+            "category":{"id":140,"nb_photos":"7","label":"Essai"}
+            }
+  }
+*/
+struct ImagesUploadJSON: Decodable {
+
+    private enum RootCodingKeys: String, CodingKey {
+        case stat
+        case result
+        case err
+        case message
+    }
+
+    // Constants
+    var stat: String?
+    var errorCode = 0
+    var errorMessage = ""
+    
+    // An UploadProperties array of decoded ImagesUpload data.
+    var imagesUpload = ImagesUpload.init(image_id: nil, name: nil, square_src: nil, src: nil)
+
+    init(from decoder: Decoder) throws
+    {
+        // Root container keyed by RootCodingKeys
+        let rootContainer = try decoder.container(keyedBy: RootCodingKeys.self)
+        
+        // Status returned by Piwigo
+        stat = try rootContainer.decodeIfPresent(String.self, forKey: .stat)
+        if (stat == "ok")
+        {
+            // Decodes response from the data and store them in the array
+            imagesUpload = try rootContainer.decode(ImagesUpload.self, forKey: .result)
+            dump(imagesUpload)
+        }
+        else if (stat == "fail")
+        {
+            // Retrieve Piwigo server error
+            errorCode = try rootContainer.decode(Int.self, forKey: .err)
+            errorMessage = try rootContainer.decode(String.self, forKey: .message)
+        }
+        else {
+            // Unexpected Piwigo server error
+            errorCode = -1
+            errorMessage = NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")
+        }
+    }
+}
+
+/**
+ A struct for decoding JSON returned by kPiwigoImagesUpload.
+ All members are optional in case they are missing from the data.
+*/
+struct ImagesUpload: Codable
+{
+    let image_id: Int?              // 1042
+
+    // The following data are not used yet
+//    let category: [String]          // {"id":140,"nb_photos":"7","label":"Essai"}
+    let name: String?               // "Delft - 01"
+    let square_src: String?         // "https://…-sq.jpg"
+    let src: String?                // "https://…-th.jpg"
 }
