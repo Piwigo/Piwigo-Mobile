@@ -75,25 +75,66 @@ class UploadsProvider: NSObject {
         // so it won’t block the main thread.
         taskContext.performAndWait {
             
-            // Create a new record for each upload in the batch.
+            // Retrieve existing uploads
+            // Create a fetch request for the Upload entity sorted by localIdentifier
+            let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "localIdentifier", ascending: true)]
+            
+            // Create a fetched results controller and set its fetch request, context, and delegate.
+            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                                managedObjectContext: taskContext,
+                                                  sectionNameKeyPath: nil, cacheName: nil)
+            
+            // Perform the fetch.
+            do {
+                try controller.performFetch()
+            } catch {
+                fatalError("Unresolved error \(error)")
+            }
+            let cachedUploads = controller.fetchedObjects ?? []
+
+            // Loop over new uploads
             for uploadData in uploadsBatch {
-                // Create an Upload managed object on the private queue context.
-                guard let upload = NSEntityDescription.insertNewObject(forEntityName: "Upload", into: taskContext) as? Upload else {
-                    print(UploadError.creationError.localizedDescription)
-                    return
+            
+                // Index of this new upload in cache
+                let index = cachedUploads.firstIndex { (item) -> Bool in
+                    item.localIdentifier == uploadData.localIdentifier
                 }
                 
-                // Populate the Upload's properties using the data.
-                do {
-                    try upload.update(with: uploadData)
+                // Is this upload already cached?
+                if index == nil {
+                    // Create an Upload managed object on the private queue context.
+                    guard let upload = NSEntityDescription.insertNewObject(forEntityName: "Upload", into: taskContext) as? Upload else {
+                        print(UploadError.creationError.localizedDescription)
+                        return
+                    }
+                    
+                    // Populate the Upload's properties using the data.
+                    do {
+                        try upload.update(with: uploadData)
+                    }
+                    catch UploadError.missingData {
+                        // Delete invalid Upload from the private queue context.
+                        print(UploadError.missingData.localizedDescription)
+                        taskContext.delete(upload)
+                    }
+                    catch {
+                        print(error.localizedDescription)
+                    }
                 }
-                catch UploadError.missingData {
-                    // Delete invalid Upload from the private queue context.
-                    print(UploadError.missingData.localizedDescription)
-                    taskContext.delete(upload)
-                }
-                catch {
-                    print(error.localizedDescription)
+                else {
+                    // Update the update's properties using the raw data
+                    do {
+                        try cachedUploads[index!].update(with: uploadData)
+                    }
+                    catch UploadError.missingData {
+                        // Could not perform the update
+                        print(UploadError.missingData.localizedDescription)
+                    }
+                    catch {
+                        print(error.localizedDescription)
+                    }
+
                 }
             }
             
