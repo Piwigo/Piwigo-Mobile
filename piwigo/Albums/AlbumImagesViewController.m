@@ -185,7 +185,6 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         self.uploadQueueButton.frame = self.addButton.frame;
         self.uploadQueueButton.layer.cornerRadius = kRadius;
         self.uploadQueueButton.layer.masksToBounds = NO;
-        [self.uploadQueueButton.layer setOpacity:0.0];
         [self.uploadQueueButton.layer setShadowColor:[UIColor piwigoColorGray].CGColor];
         [self.uploadQueueButton.layer setShadowOpacity:1.0];
         [self.uploadQueueButton.layer setShadowRadius:5.0];
@@ -194,11 +193,13 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         [self.uploadQueueButton addTarget:self action:@selector(didTapUploadQueueButton)
                     forControlEvents:UIControlEventTouchUpInside];
         self.uploadQueueButton.hidden = YES;
+        self.uploadQueueButton.backgroundColor = [UIColor clearColor];
         self.nberOfUploadsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
         self.nberOfUploadsLabel.text = @"";
         self.nberOfUploadsLabel.font = [UIFont piwigoFontBold];
         self.nberOfUploadsLabel.textColor = [UIColor whiteColor];
         self.nberOfUploadsLabel.textAlignment = NSTextAlignmentCenter;
+        self.nberOfUploadsLabel.backgroundColor = [UIColor clearColor];
         [self.uploadQueueButton addSubview:self.nberOfUploadsLabel];
         [self.uploadQueueButton addConstraints:[NSLayoutConstraint constraintCenter:self.nberOfUploadsLabel]];
         [self.view insertSubview:self.uploadQueueButton belowSubview:self.addButton];
@@ -326,7 +327,6 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     
     // Buttons
     self.uploadQueueButton.backgroundColor = [UIColor piwigoColorRightLabel];
-    self.uploadQueueButton.tintColor = [UIColor piwigoColorBackground];
     self.homeAlbumButton.backgroundColor = [UIColor piwigoColorRightLabel];
     self.homeAlbumButton.tintColor = [UIColor piwigoColorBackground];
 
@@ -885,7 +885,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         // Animate appearance of Upload Queue button
         [UIView animateWithDuration:0.3 animations:^{
             // Progressive appearance
-            [self.uploadQueueButton.layer setOpacity:0.9];
+            [self.uploadQueueButton.layer setOpacity:0.4];
             CGFloat xPos = self.addButton.frame.origin.x;
             CGFloat yPos = self.addButton.frame.origin.y;
             self.uploadQueueButton.frame = CGRectMake(xPos - 3*kRadius, yPos, 2*kRadius, 2*kRadius);
