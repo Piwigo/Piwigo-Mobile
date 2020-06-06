@@ -1426,13 +1426,13 @@ NSString * const kGetImageOrderDescending = @"desc";
             parameters:@{
                          @"image_id" : @(imageId),
                          @"file" : [imageInfo objectForKey:kPiwigoImagesUploadParamFileName],
-                         @"name" : [imageInfo objectForKey:kPiwigoImagesUploadParamTitle],
+//                         @"name" : [imageInfo objectForKey:kPiwigoImagesUploadParamTitle],
                          @"author" : author,
                          @"date_creation" : [imageInfo objectForKey:kPiwigoImagesUploadParamCreationDate],
                          @"level" : [imageInfo objectForKey:kPiwigoImagesUploadParamPrivacy],
                          @"comment" : [imageInfo objectForKey:kPiwigoImagesUploadParamDescription],
                          @"single_value_mode" : @"replace",
-                         @"tag_ids" : tagIdList,
+//                         @"tag_ids" : tagIdList,
                          @"multiple_value_mode" : @"replace"
                          }
               progress:progress
