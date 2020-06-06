@@ -113,8 +113,10 @@ class UploadImageTableViewCell: UITableViewCell {
                         print("=> Error : \(description)")
                     }
                     self.cellImage.image = UIImage(named: "placeholder")
+                    self.cellImage.layer.cornerRadius = self.layer.cornerRadius - 3
                 } else {
                     self.cellImage.image = result
+                    self.cellImage.layer.cornerRadius = self.layer.cornerRadius - 3
                 }
             })
         })
