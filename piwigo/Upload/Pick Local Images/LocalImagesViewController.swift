@@ -1236,7 +1236,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 }
 
 
-// MARK: - NSFetchedResultsControllerDelegate
+// MARK: - Uploads Provider NSFetchedResultsControllerDelegate
 
 extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
     
@@ -1244,7 +1244,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
 
         switch type {
         case .insert:
-            print("••• controller:insert...")
+            print("••• LocalImagesViewController controller:insert...")
             // Image added to upload queue
             if let upload:Upload = anObject as? Upload {
                 // Get index of uploaded image
@@ -1260,7 +1260,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
                 }
             }
         case .delete:
-            print("••• controller:delete...")
+            print("••• LocalImagesViewController controller:delete...")
             // Image removed from upload queue
             if let upload:Upload = anObject as? Upload {
                 // Get index of uploaded image
@@ -1276,9 +1276,9 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
                 }
             }
         case .move:
-            print("••• controller:move...")
+            print("••• LocalImagesViewController controller:move...")
         case .update:
-            print("••• controller:update...")
+            print("••• LocalImagesViewController controller:update...")
         @unknown default:
             fatalError("LocalImagesViewController: unknown NSFetchedResultsChangeType")
         }
@@ -1286,7 +1286,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         
-        print("••• controller:didChangeContent...")
+        print("••• LocalImagesViewController controller:didChangeContent...")
 
         // Update navigation bar
         updateNavBar()
