@@ -821,6 +821,10 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                     // Connection still alive. Do nothing.
                     self.isAlreadyTryingToLogin = NO;
                     [self hideLoading];
+
+                    // Launch upload tasks
+                    [[[UploadManager alloc] init] findNextImageToUpload];
+
 #if defined(DEBUG_SESSION)
                     NSLog(@"=> checkSessionStatusAndTryRelogin: Connection still alive…");
                     NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@",
