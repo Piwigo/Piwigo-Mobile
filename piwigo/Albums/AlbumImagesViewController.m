@@ -194,9 +194,11 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                     forControlEvents:UIControlEventTouchUpInside];
         self.uploadQueueButton.hidden = YES;
         self.uploadQueueButton.backgroundColor = [UIColor clearColor];
-        self.nberOfUploadsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
+        self.nberOfUploadsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.1*kRadius, 0, 1.8*kRadius, 2*kRadius)];
         self.nberOfUploadsLabel.text = @"";
-        self.nberOfUploadsLabel.font = [UIFont piwigoFontBold];
+        self.nberOfUploadsLabel.font = [UIFont fontWithName:@"OpenSans-Bold" size:24.0];
+        self.nberOfUploadsLabel.adjustsFontSizeToFitWidth = YES;
+        self.nberOfUploadsLabel.minimumScaleFactor = 0.5;
         self.nberOfUploadsLabel.textColor = [UIColor whiteColor];
         self.nberOfUploadsLabel.textAlignment = NSTextAlignmentCenter;
         self.nberOfUploadsLabel.backgroundColor = [UIColor clearColor];
@@ -877,7 +879,10 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     if (uploads.count > 0)
     {
         // Set number of uploads
-        self.nberOfUploadsLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)uploads.count];
+        NSIndexSet *completedUploads = [uploads indexesOfObjectsPassingTest:^BOOL(Upload *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            return (obj.requestSate == kPiwigoUploadStateUploaded);
+        }];
+        self.nberOfUploadsLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)(uploads.count - completedUploads.count)];
         
         // Unhide transparent Upload Queue button
         [self.uploadQueueButton setHidden:NO];
