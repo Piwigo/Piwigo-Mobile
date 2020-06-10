@@ -62,11 +62,19 @@
                                                     <rect key="frame" x="212" y="5" width="17" height="25"/>
                                                     <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                                                 </imageView>
+                                                <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="piwigo" translatesAutoresizingMaskIntoConstraints="NO" id="ysu-Dv-NrU">
+                                                    <rect key="frame" x="202" y="202" width="25" height="25"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" secondItem="ysu-Dv-NrU" secondAttribute="height" multiplier="1:1" id="aWL-Zo-pBK"/>
+                                                    </constraints>
+                                                </imageView>
                                                 <activityIndicatorView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="1wT-ty-LCP">
                                                     <rect key="frame" x="58" y="58" width="116" height="116"/>
                                                     <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                                                     <constraints>
+                                                        <constraint firstAttribute="height" constant="25" id="COZ-bG-LzN"/>
                                                         <constraint firstAttribute="width" secondItem="1wT-ty-LCP" secondAttribute="height" multiplier="1:1" id="DA2-do-b2h"/>
+                                                        <constraint firstAttribute="width" constant="25" id="bdl-LY-J4n"/>
                                                     </constraints>
                                                     <color key="color" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </activityIndicatorView>
@@ -89,7 +97,9 @@
                                                 <constraint firstAttribute="trailing" secondItem="QVv-FQ-QhA" secondAttribute="trailing" constant="3" id="UHp-Wr-2nX"/>
                                                 <constraint firstAttribute="bottom" secondItem="Mg6-75-nMT" secondAttribute="bottom" constant="10" id="Ynf-sO-Av2"/>
                                                 <constraint firstItem="u8O-P0-eq0" firstAttribute="top" secondItem="NBu-dR-mRZ" secondAttribute="top" constant="5" id="g1B-0c-qmM"/>
+                                                <constraint firstAttribute="trailing" secondItem="ysu-Dv-NrU" secondAttribute="trailing" constant="5" id="jsf-Hq-Qiq"/>
                                                 <constraint firstItem="1wT-ty-LCP" firstAttribute="centerY" secondItem="NBu-dR-mRZ" secondAttribute="centerY" id="xYI-pO-N5Y"/>
+                                                <constraint firstAttribute="bottom" secondItem="ysu-Dv-NrU" secondAttribute="bottom" constant="5" id="xq6-t9-9y2"/>
                                             </constraints>
                                         </collectionViewCellContentView>
                                         <size key="customSize" width="232" height="232"/>
@@ -98,6 +108,7 @@
                                             <outlet property="darkenView" destination="i4Y-ZG-9Gz" id="3sC-lx-o4l"/>
                                             <outlet property="playImage" destination="u8O-P0-eq0" id="RCO-cU-K5u"/>
                                             <outlet property="selectedImage" destination="QVv-FQ-QhA" id="ZB9-o4-Anw"/>
+                                            <outlet property="uploadedImage" destination="ysu-Dv-NrU" id="9Gp-cS-YWy"/>
                                             <outlet property="uploadingProgress" destination="Mg6-75-nMT" id="qrd-rH-1c2"/>
                                             <outlet property="waitingActivity" destination="1wT-ty-LCP" id="vrq-2V-WIb"/>
                                         </connections>
@@ -252,6 +263,7 @@
         <image name="imageDay" width="25" height="23"/>
         <image name="imageMonth" width="25" height="23"/>
         <image name="imageWeek" width="25" height="23"/>
+        <image name="piwigo" width="25" height="25"/>
         <image name="placeholderImage" width="512" height="512"/>
         <image name="video" width="25" height="16"/>
     </resources>

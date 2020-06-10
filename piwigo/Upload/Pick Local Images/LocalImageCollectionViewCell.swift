@@ -46,6 +46,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             darkenView?.isHidden = !waiting
             waitingActivity?.isHidden = !waiting
             uploadingProgress?.isHidden = !waiting
+            uploadedImage?.isHidden = waiting
         }
     }
 
@@ -59,6 +60,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             darkenView?.isHidden = !uploading
             waitingActivity?.isHidden = uploading
             uploadingProgress?.isHidden = !uploading
+            uploadedImage?.isHidden = uploading
         }
     }
 
@@ -72,6 +74,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             darkenView?.isHidden = !uploaded
             waitingActivity?.isHidden = uploaded
             uploadingProgress?.isHidden = uploaded
+            uploadedImage?.isHidden = !uploaded
         }
     }
 
@@ -91,7 +94,8 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var darkenView: UIView!
     @IBOutlet weak var waitingActivity: UIActivityIndicatorView!
     @IBOutlet weak var uploadingProgress: UIProgressView!
-        
+    @IBOutlet weak var uploadedImage: UIImageView!
+    
     @objc
     func configure(with imageAsset: PHAsset, thumbnailSize: CGFloat) {
         
@@ -115,6 +119,14 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             let maxWidthOfIcon = thumbnailSize / 3.0
             let scale = maxWidthOfIcon / sizeOfIcon.width
             contentView.addConstraints(NSLayoutConstraint.constraintView(playImage, to: CGSize(width: sizeOfIcon.width * scale, height: sizeOfIcon.height * scale))!)
+        }
+        
+        // Uploaded icon: reduce original size of 25x25 pixels when using tiny thumbnails
+        if thumbnailSize > 0.0 && thumbnailSize < 75.0 {
+            let sizeOfIcon = UIImage(named: "piwigo")!.size
+            let maxWidthOfIcon = thumbnailSize / 3.0
+            let scale = maxWidthOfIcon / sizeOfIcon.width
+            contentView.addConstraints(NSLayoutConstraint.constraintView(uploadedImage, to: CGSize(width: sizeOfIcon.width * scale, height: sizeOfIcon.height * scale))!)
         }
         
         // Image: retrieve data of right size and crop image
@@ -160,5 +172,6 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         waitingActivity.isHidden = true
         uploadingProgress.isHidden = true
         setProgress(0, withAnimation: false)
+        uploadedImage.isHidden = true
     }
 }
