@@ -194,12 +194,22 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
                     forControlEvents:UIControlEventTouchUpInside];
         self.uploadQueueButton.hidden = YES;
         self.uploadQueueButton.backgroundColor = [UIColor clearColor];
-        self.nberOfUploadsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.1*kRadius, 0, 1.8*kRadius, 2*kRadius)];
+
+//        UIVisualEffect *blurEffect;
+//        blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleRegular];
+//        UIVisualEffectView *blurView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+//        blurView.frame = self.uploadQueueButton.bounds;
+//        blurView.userInteractionEnabled = NO;
+//        blurView.backgroundColor = [UIColor clearColor];
+//        blurView.layer.cornerRadius = kRadius;
+//        blurView.layer.masksToBounds = YES;
+//        [self.uploadQueueButton insertSubview:blurView atIndex:0];
+
+        self.nberOfUploadsLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         self.nberOfUploadsLabel.text = @"";
-        self.nberOfUploadsLabel.font = [UIFont fontWithName:@"OpenSans-Bold" size:24.0];
-        self.nberOfUploadsLabel.adjustsFontSizeToFitWidth = YES;
-        self.nberOfUploadsLabel.minimumScaleFactor = 0.5;
-        self.nberOfUploadsLabel.textColor = [UIColor whiteColor];
+        self.nberOfUploadsLabel.font = [UIFont fontWithName:@"OpenSans-Semibold" size:24.0];
+        self.nberOfUploadsLabel.adjustsFontSizeToFitWidth = NO;
+        self.nberOfUploadsLabel.textColor = [UIColor blackColor];
         self.nberOfUploadsLabel.textAlignment = NSTextAlignmentCenter;
         self.nberOfUploadsLabel.backgroundColor = [UIColor clearColor];
         [self.uploadQueueButton addSubview:self.nberOfUploadsLabel];
@@ -329,6 +339,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
     
     // Buttons
     self.uploadQueueButton.backgroundColor = [UIColor piwigoColorRightLabel];
+    self.nberOfUploadsLabel.textColor = [UIColor piwigoColorBackground];
     self.homeAlbumButton.backgroundColor = [UIColor piwigoColorRightLabel];
     self.homeAlbumButton.tintColor = [UIColor piwigoColorBackground];
 
@@ -852,7 +863,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         // Animate appearance of Home Album button
         [UIView animateWithDuration:0.3 animations:^{
             // Progressive appearance
-            [self.homeAlbumButton.layer setOpacity:0.9];
+            [self.homeAlbumButton.layer setOpacity:0.8];
             
             // Position of Home Album button depends on user's rights
             // — admin rights
@@ -884,16 +895,26 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         }];
         self.nberOfUploadsLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)(uploads.count - completedUploads.count)];
         
+        // Resize label to fit number
+        [self.nberOfUploadsLabel sizeToFit];
+        
+        // Elongate the button if needed
+        CGFloat width = self.nberOfUploadsLabel.bounds.size.width;
+        CGFloat height = self.nberOfUploadsLabel.bounds.size.height;
+        CGFloat extraWidth = fmax(0, (width - 2*kRadius + 12.0));
+        self.nberOfUploadsLabel.frame = CGRectMake(kRadius + (extraWidth / 2.0) - width / 2.0, kRadius - height / 2.0, width, height);
+
         // Unhide transparent Upload Queue button
         [self.uploadQueueButton setHidden:NO];
                 
         // Animate appearance of Upload Queue button
         [UIView animateWithDuration:0.3 animations:^{
             // Progressive appearance
-            [self.uploadQueueButton.layer setOpacity:0.4];
-            CGFloat xPos = self.addButton.frame.origin.x;
+            [self.uploadQueueButton.layer setOpacity:0.8];
+            CGFloat xPos = self.addButton.frame.origin.x - (extraWidth / 2.0);
             CGFloat yPos = self.addButton.frame.origin.y;
-            self.uploadQueueButton.frame = CGRectMake(xPos - 3*kRadius, yPos, 2*kRadius, 2*kRadius);
+            NSLog(@"••> %f", self.nberOfUploadsLabel.bounds.size.width);
+            self.uploadQueueButton.frame = CGRectMake(xPos - 3*kRadius, yPos, 2*kRadius + extraWidth, 2*kRadius);
         }];
     } else {
         // Hide Upload Queue button behind Add button
