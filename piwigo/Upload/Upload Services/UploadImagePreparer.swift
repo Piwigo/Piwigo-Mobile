@@ -12,8 +12,46 @@ class UploadImagePreparer {
 
     // MARK: - Retrieve Image
     
-    func retrieveUIImageFrom(imageAsset: PHAsset, for upload: UploadProperties) {
-        print("•••> retrieveUIImageFrom() starting...")
+    func prepareImage(from imageAsset: PHAsset, for upload: UploadProperties,
+                      completionHandler: @escaping (_ updatedUpload: UploadProperties?, _ mimitype: String?, _ imageData: Data?, Error?) -> Void) {
+        // Retrieve UIImage
+        retrieveUIImageFrom(imageAsset: imageAsset) { (fixedImageObject, error) in
+            // Error?
+            if let error = error {
+                completionHandler(upload, "", nil, error)
+                return
+            }
+
+            // Valid UIImage with fixed orientation?
+            if let imageObject = fixedImageObject {
+                // Retrieve image data
+                self.retrieveFullSizeImageDataFrom(imageAsset: imageAsset) { (imageData, error) in
+                    // Error?
+                    if let error = error {
+                        completionHandler(upload, "", imageData, error)
+                        return
+                    }
+                    
+                    // Valid image data?
+                    if let imageData = imageData {
+                        // Modify image
+                        self.modifyImage(upload, with: imageData, andObject: imageObject) { (updatedUpload, mimeType, updatedImageData, error) in
+                            // Error?
+                            if let error = error {
+                                completionHandler(upload, mimeType, imageData, error)
+                                return
+                            }
+                            // Valid?
+                            completionHandler(updatedUpload, mimeType, updatedImageData, nil)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private func retrieveUIImageFrom(imageAsset: PHAsset, completionHandler: @escaping (UIImage?, Error?) -> Void) {
+        print("•••> retrieveUIImageFrom...")
 
         // Case of an image…
         let options = PHImageRequestOptions()
@@ -42,17 +80,14 @@ class UploadImagePreparer {
         // Requests image…
         PHImageManager.default().requestImage(for: imageAsset, targetSize: size, contentMode: .default,
                                               options: options, resultHandler: { imageObject, info in
-            // Debug infos
-            if let info = info {
-                print("retrieveImageAsset returned info(\(info))")
-            }
-            
             // Any error?
             if info?[PHImageErrorKey] != nil || (imageObject?.size.width == 0) || (imageObject?.size.height == 0) {
+                print("     returned info(\(String(describing: info)))")
                 let error = info?[PHImageErrorKey] as? Error
+                completionHandler(nil, error)
+                return
                 // Inform user and propose to cancel or continue
 //                self.showError(withTitle: NSLocalizedString("imageUploadError_title", comment: "Image Upload Error"), andMessage: NSLocalizedString("imageUploadError_iCloud", comment: "Could not retrieve image. Error: \(error?.localizedDescription ?? "")"), forRetrying: true, withImage: image)
-                return
             }
 
             // Retrieved UIImage representation for the specified asset
@@ -60,16 +95,17 @@ class UploadImagePreparer {
                 // Fix orientation if needed
                 let fixedImageObject = self.fixOrientationOf(imageObject)
                 // Expected resource available
-                self.retrieveFullSizeImageDataFrom(imageAsset: imageAsset, for: upload, andObject: fixedImageObject)
+                completionHandler(fixedImageObject, nil)
             }
             else {
                 
             }
         })
+        completionHandler(nil, nil)
     }
 
-    func retrieveFullSizeImageDataFrom(imageAsset: PHAsset, for upload: UploadProperties, andObject imageObject: UIImage) {
-        print("••• retrieveFullSizeAssetDataFromImage starting...")
+    private func retrieveFullSizeImageDataFrom(imageAsset: PHAsset, completionHandler: @escaping (Data?, Error?) -> Void) {
+        print("•••> retrieveFullSizeAssetDataFromImage...")
 
         // Case of an image…
         let options = PHImageRequestOptions()
@@ -92,17 +128,14 @@ class UploadImagePreparer {
                 PHImageManager.default().requestImageDataAndOrientation(for: imageAsset, options: options,
                                                                         resultHandler: { imageData, dataUTI, orientation, info in
                     if info?[PHImageErrorKey] != nil || ((imageData?.count ?? 0) == 0) {
+                        print("     returned info(\(String(describing: info)))")
                         let error = info?[PHImageErrorKey] as? Error
+                        completionHandler(imageData, error)
                         // Inform user and propose to cancel or continue
 //                        self.showError(withTitle: NSLocalizedString("imageUploadError_title", comment: "Image Upload Error"), andMessage: NSLocalizedString("imageUploadError_iCloud", comment: "Could not retrieve image. Error: \(error?.localizedDescription ?? "")"), forRetrying: true, withImage: image)
-                        return
-                    }
-
-                    // Expected resource available
-                    if let imageData = imageData {
-                        self.modifyImage(upload, with: imageData, andObject: imageObject)
                     } else {
-                        
+                        // Expected resource available
+                        completionHandler(imageData, nil)
                     }
                 })
             } else {
@@ -110,16 +143,11 @@ class UploadImagePreparer {
                                                           resultHandler: { imageData, dataUTI, orientation, info in
                     if info?[PHImageErrorKey] != nil || ((imageData?.count ?? 0) == 0) {
                         let error = info?[PHImageErrorKey] as? Error
+                        completionHandler(imageData, error)
                         // Inform user and propose to cancel or continue
 //                        self.showError(withTitle: NSLocalizedString("imageUploadError_title", comment: "Image Upload Error"), andMessage: NSLocalizedString("imageUploadError_iCloud", comment: "Could not retrieve image. Error: \(error?.localizedDescription ?? "")"), forRetrying: true, withImage: image)
-                        return
-                    }
-
-                    // Expected resource available
-                    if let imageData = imageData {
-                        self.modifyImage(upload, with: imageData, andObject: imageObject)
                     } else {
-                        
+                        completionHandler(imageData, nil)
                     }
                 })
             }
@@ -129,8 +157,10 @@ class UploadImagePreparer {
     
     // MARK: - Modify Metadata
     
-    func modifyImage(_ upload: UploadProperties, with originalData: Data, andObject originalObject: UIImage) {
-        
+    private func modifyImage(_ upload: UploadProperties, with originalData: Data, andObject originalObject: UIImage,
+                             completionHandler: @escaping (_ updatedUpload: UploadProperties?, _ mimitype: String?, _ imageData: Data?, Error?) -> Void) {
+        print("•••> modifyImage...")
+
         // Create CGI reference from image data (to retrieve complete metadata)
         guard let source: CGImageSource = CGImageSourceCreateWithData((originalData as CFData), nil) else {
             // Could not prepare image source
@@ -213,13 +243,13 @@ class UploadImagePreparer {
         }
 
         // Transfer image
-        UploadDispatcher.sharedInstance().transfer(upload: newUpload, with: mimeType, imageData: imageData)
+        completionHandler(newUpload, mimeType, imageData, nil)
     }
 
 
     // MARK: - Image Orientation
     
-    func fixOrientationOf(_ image: UIImage) -> UIImage {
+    private func fixOrientationOf(_ image: UIImage) -> UIImage {
 
         // No-op if the orientation is already correct
         if image.imageOrientation == .up {
@@ -324,7 +354,7 @@ class UploadImagePreparer {
     var win_ico: [UInt8] = [0x00, 0x00, 0x01, 0x00]
     var win_cur: [UInt8] = [0x00, 0x00, 0x02, 0x00]
 
-    func contentType(forImageData data: Data?) -> String? {
+    private func contentType(forImageData data: Data?) -> String? {
         var bytes: [UInt8] = []
         (data! as NSData).getBytes(&bytes, length: 12)
 
@@ -354,7 +384,7 @@ class UploadImagePreparer {
         return nil
     }
 
-    func fileExtension(forImageData data: Data?) -> String? {
+    private func fileExtension(forImageData data: Data?) -> String? {
         var bytes: [UInt8] = []
         (data! as NSData).getBytes(&bytes, length: 12)
 

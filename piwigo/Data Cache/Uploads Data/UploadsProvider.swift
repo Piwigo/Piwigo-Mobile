@@ -156,6 +156,69 @@ class UploadsProvider: NSObject {
         return success
     }
 
+    /**
+     Updates an upload, updating managed object from the new data,
+     and saving it to the persistent store, on a private queue. After saving,
+     resets the context to clean up the cache and lower the memory footprint.
+    */
+    func updateRecord(with uploadData: UploadProperties, completionHandler: @escaping (Error?) -> Void) -> (Void) {
+        
+        // Create a private queue context.
+        let taskContext = DataController.getPrivateContext()
+                
+        // taskContext.performAndWait runs on the URLSession's delegate queue
+        // so it won’t block the main thread.
+        taskContext.performAndWait {
+            
+            // Retrieve existing upload
+            print(">>>> updateRecord...")
+            // Create a fetch request for the Upload entity sorted by localIdentifier
+            let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "localIdentifier", ascending: true)]
+            fetchRequest.predicate = NSPredicate(format: "localIdentifier == %@", uploadData.localIdentifier)
+            
+            // Create a fetched results controller and set its fetch request, context, and delegate.
+            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                                managedObjectContext: taskContext,
+                                                  sectionNameKeyPath: nil, cacheName: nil)
+            
+            // Perform the fetch.
+            do {
+                try controller.performFetch()
+            } catch {
+                fatalError("Unresolved error \(error)")
+            }
+            
+            // Update cached upload
+            if let cachedUpload = controller.fetchedObjects?.first {
+                do {
+                    try cachedUpload.update(with: uploadData)
+                }
+                catch UploadError.missingData {
+                    // Could not perform the update
+                    print(UploadError.missingData.localizedDescription)
+                }
+                catch {
+                    print(error.localizedDescription)
+                }
+            }
+            
+            // Save all insertions and deletions from the context to the store.
+            if taskContext.hasChanges {
+                do {
+                    try taskContext.save()
+                }
+                catch {
+                    print("Error: \(error)\nCould not save Core Data context.")
+                    return
+                }
+                // Reset the taskContext to free the cache and lower the memory footprint.
+                taskContext.reset()
+            }
+        }
+        completionHandler(nil)
+    }
+
     
     // MARK: - Clear Uploads
     /**

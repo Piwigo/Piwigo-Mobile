@@ -1,21 +1,25 @@
 //
-//  UploadDispatcher.swift
+//  UploadManager.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 22/05/2020.
 //  Copyright © 2020 Piwigo.org. All rights reserved.
 //
 
+import Foundation
 import Photos
 
+let kPiwigoNotificationUploadProgress = "kPiwigoNotificationUploadProgress"
+
 @objc
-class UploadDispatcher: NSObject, NSFetchedResultsControllerDelegate {
+class UploadManager: NSObject {
 
     // Singleton
-    static var instance: UploadDispatcher = UploadDispatcher()
-    class func sharedInstance() -> UploadDispatcher {
-        return instance
-    }
+//    static var instance: UploadManager = UploadManager()
+//    @objc class func sharedInstance() -> UploadManager {
+//        return instance
+//    }
+
     
     // MARK: - Core Data
     /**
@@ -24,10 +28,8 @@ class UploadDispatcher: NSObject, NSFetchedResultsControllerDelegate {
      */
     private lazy var uploadsProvider: UploadsProvider = {
         let provider : UploadsProvider = UploadsProvider()
-        provider.fetchedResultsControllerDelegate = self
         return provider
     }()
-
 
 
     // MARK: - Background Tasks Instances
@@ -55,9 +57,10 @@ class UploadDispatcher: NSObject, NSFetchedResultsControllerDelegate {
     /**
      The dispatcher prepares an image for upload and then launch the transfer.
      */
+    @objc
     func findNextImageToUpload() {
-        print("•••>> findNextImageToUpload…")
-
+        print("•••>> findNextImageToUpload… \(String(describing: uploadsProvider.fetchedResultsController.fetchedObjects?.count))")
+        
         // Get uploads in queue
         guard let allUploads = uploadsProvider.fetchedResultsController.fetchedObjects else {
             return
@@ -93,7 +96,7 @@ class UploadDispatcher: NSObject, NSFetchedResultsControllerDelegate {
         
         // Set upload properties
         var uploadProperties = UploadProperties.init(localIdentifier: nextUpload.localIdentifier, category: Int(nextUpload.category),
-                                                     requestDate: nextUpload.requestDate, requestState: nextUpload.state,
+                                                     requestDate: nextUpload.requestDate, requestState: nextUpload.state, requestProgress: nextUpload.requestProgress,
                                                      creationDate: originalAsset.creationDate, fileName: nextUpload.fileName,
                                                      author: nextUpload.author, privacyLevel: nextUpload.privacy,
                                                      title: nextUpload.title,
@@ -109,10 +112,17 @@ class UploadDispatcher: NSObject, NSFetchedResultsControllerDelegate {
                 print("   >> preparing photo \(nextUpload.fileName!)…")
                 // Update state of upload
                 uploadProperties.requestState = .preparing
-                uploadsProvider.importUploads(from: [uploadProperties], completionHandler: { _ in
+                uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                     // Launch preparation job
                     DispatchQueue.global(qos: .background).async {
-                        self.imagePreparer.retrieveUIImageFrom(imageAsset: originalAsset, for: uploadProperties)
+                        self.imagePreparer.prepareImage(from: originalAsset, for: uploadProperties) { (updatedUpload, mimeType, imageData, error) in
+                            // Error?
+                            
+                            // Valid data?
+                            if let newUpload = updatedUpload, let mime = mimeType, let data = imageData {
+                                self.transfer(upload: newUpload, with: mime, imageData: data)
+                            }
+                        }
                     }
                 })
                 return
@@ -124,10 +134,17 @@ class UploadDispatcher: NSObject, NSFetchedResultsControllerDelegate {
                     print("   >> preparing photo \(nextUpload.fileName!)…")
                     // Update state of upload
                     uploadProperties.requestState = .preparing
-                    uploadsProvider.importUploads(from: [uploadProperties], completionHandler: { _ in
+                    uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                         // Launch preparation job
                         DispatchQueue.global(qos: .background).async {
-                            self.imagePreparer.retrieveUIImageFrom(imageAsset: originalAsset, for: uploadProperties)
+                            self.imagePreparer.prepareImage(from: originalAsset, for: uploadProperties) { (updatedUpload, mimeType, imageData, error) in
+                                // Error?
+                                
+                                // Valid data?
+                                if let newUpload = updatedUpload, let mime = mimeType, let data = imageData {
+                                    self.transfer(upload: newUpload, with: mime, imageData: data)
+                                }
+                            }
                         }
                     })
                     return
@@ -135,7 +152,7 @@ class UploadDispatcher: NSObject, NSFetchedResultsControllerDelegate {
             }
             // Update state of upload: Image file format cannot be accepted by the Piwigo server
             uploadProperties.requestState = .formatError
-            uploadsProvider.importUploads(from: [uploadProperties], completionHandler: { _ in
+            uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                 // Investigate next upload request
                 self.findNextImageToUpload()
             })
@@ -157,7 +174,7 @@ class UploadDispatcher: NSObject, NSFetchedResultsControllerDelegate {
                     print("   >> preparing video \(nextUpload.fileName!)…")
                     // Update state of upload
                     uploadProperties.requestState = .preparing
-                    uploadsProvider.importUploads(from: [uploadProperties], completionHandler: { _ in
+                    uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                         // Launch preparation job
                         DispatchQueue.global(qos: .background).async {
 
@@ -168,7 +185,7 @@ class UploadDispatcher: NSObject, NSFetchedResultsControllerDelegate {
             }
             // Video file format cannot be accepted by the Piwigo server
             uploadProperties.requestState = .formatError
-            uploadsProvider.importUploads(from: [uploadProperties], completionHandler: { _ in
+            uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                 // Investigate next upload request
                 self.findNextImageToUpload()
             })
@@ -177,7 +194,7 @@ class UploadDispatcher: NSObject, NSFetchedResultsControllerDelegate {
         case .audio:
             // Update state of upload: Not managed by Piwigo iOS yet…
             uploadProperties.requestState = .formatError
-            uploadsProvider.importUploads(from: [uploadProperties], completionHandler: { _ in
+            uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                 // Investigate next upload request
                 self.findNextImageToUpload()
             })
@@ -188,7 +205,7 @@ class UploadDispatcher: NSObject, NSFetchedResultsControllerDelegate {
         default:
             // Update state of upload: Unknown format
             uploadProperties.requestState = .formatError
-            uploadsProvider.importUploads(from: [uploadProperties], completionHandler: { _ in
+            uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                 // Investigate next upload request
                 self.findNextImageToUpload()
             })
@@ -200,14 +217,18 @@ class UploadDispatcher: NSObject, NSFetchedResultsControllerDelegate {
         // Update state of upload
         var uploadProperties = upload
         uploadProperties.requestState = .uploading
-        uploadsProvider.importUploads(from: [uploadProperties], completionHandler: { _ in
+        uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
             // Launch transfer if possible
             print("•••>> preparing transfer of \(upload.fileName!)…")
             DispatchQueue.global(qos: .background).async {
                 self.imageTransfer.uploadImage(imageData, with: uploadProperties, mimeType: mimeType,
                onProgress: { (progress, currentChunk, totalChunks) in
-                    print("   >> progress: \(progress?.completedUnitCount ?? 0), \(progress?.totalUnitCount ?? 0), \(currentChunk), \(totalChunks)")
-                                                    
+                    let chunkProgress: Float = Float(currentChunk) / Float(totalChunks)
+                    let uploadInfo: [String : Any] = ["localIndentifier" : upload.localIdentifier,
+                                                      "progressFraction" : chunkProgress]
+                    DispatchQueue.main.async {
+                        NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationUploadProgress), object: nil, userInfo: uploadInfo)
+                    }
                 },
                onCompletion: { (task, jsonData, imageParameters) in
                     print("   >> completion: \(String(describing: jsonData))")
@@ -252,8 +273,9 @@ class UploadDispatcher: NSObject, NSFetchedResultsControllerDelegate {
         uploadProperties.requestState = .finishing
 
         // Finish the job by setting image parameters…
-        self.uploadsProvider.importUploads(from: [uploadProperties], completionHandler: { _ in
+        uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
             print("   >> finishing...")
+            // Set image properties
             ImageService.setImageInfoForImageWithId(uploadProperties.imageId,
                 withInformation: imageParameters,
                 onProgress:nil,
@@ -283,8 +305,10 @@ class UploadDispatcher: NSObject, NSFetchedResultsControllerDelegate {
                     }
                     // Image successfully uploaded
                     uploadProperties.requestState = .uploaded
-                    self.uploadsProvider.importUploads(from: [uploadProperties], completionHandler: { _ in
+                    self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                         print("   >> complete ;-)")
+                        // Any other image in upload queue?
+                        self.findNextImageToUpload()
                         return
                     })
                 },

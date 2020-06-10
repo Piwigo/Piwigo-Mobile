@@ -29,71 +29,27 @@ class UploadImageTableViewCell: UITableViewCell {
             return
         }
         
-        // Upload infos
+        // Upload info label
         uploadInfoLabel.textColor = UIColor.piwigoColorLeftLabel()
-        switch upload.state {
-        case .waiting:
-            self.uploadInfoLabel.text = NSLocalizedString("imageUploadTableCell_waiting", comment: "Waiting...")
-
-        case .preparing:
-            self.uploadInfoLabel.text = NSLocalizedString("imageUploadTableCell_preparing", comment: "Preparing...")
-        case .formatError:
-            self.uploadInfoLabel.text = NSLocalizedString("imageUploadError_format", comment: "File format not accepted by Piwigo server.")
-
-        case .uploading:
-            self.uploadInfoLabel.text = NSLocalizedString("imageUploadTableCell_uploading", comment: "Uploading...")
-
-        case .finishing:
-            self.uploadInfoLabel.text = NSLocalizedString("imageUploadTableCell_finishing", comment: "Finishing...")
-
-        case .uploaded:
-            self.uploadInfoLabel.text = NSLocalizedString("imageUploadTableCell_uploaded", comment: "Uploaded")
-        case .paused:
-            self.uploadInfoLabel.text = NSLocalizedString("imageUploadTableCell_paused", comment: "Paused")
-        }
-
-        // Image infos
-        imageInfoLabel.textColor = UIColor.piwigoColorRightLabel()
-        switch imageAsset.mediaType {
-        case .image:
-            playImage.isHidden = true
-            if let creationDate = imageAsset.creationDate {
-                if self.bounds.size.width > 414 {
-                    // i.e. larger than iPhones 6,7 screen width
-                    imageInfoLabel.text = String(format: "%ldx%ld pixels - %@", imageAsset.pixelWidth, imageAsset.pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .full, timeStyle: .medium))
-                } else if self.bounds.size.width > 375 {
-                    imageInfoLabel.text = String(format: "%ldx%ld pixels — %@", imageAsset.pixelWidth, imageAsset.pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .long, timeStyle: .short))
-                } else {
-                    imageInfoLabel.text = String(format: "%ldx%ld pixels — %@", imageAsset.pixelWidth, imageAsset.pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .short, timeStyle: .short))
-                }
-            } else {
-                imageInfoLabel.text = String(format: "%ldx%ld pixels", imageAsset.pixelWidth, imageAsset.pixelHeight)
-            }
-        case .video:
-            playImage.isHidden = false
-            let formatter = DateComponentsFormatter()
-            formatter.allowedUnits = [ .minute, .second ]
-            formatter.zeroFormattingBehavior = [ .pad ]
-            let formattedDuration = formatter.string(from: imageAsset.duration)!
-            if let creationDate = imageAsset.creationDate {
-                if self.bounds.size.width > 414 {
-                    // i.e. larger than iPhones 6,7 screen width
-                    imageInfoLabel.text = String(format: "%ldx%ld pixels, %@ - %@", imageAsset.pixelWidth, imageAsset.pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .full, timeStyle: .medium))
-                } else if self.bounds.size.width > 375 {
-                    imageInfoLabel.text = String(format: "%ldx%ld pixels, %@ - %@", imageAsset.pixelWidth, imageAsset.pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .long, timeStyle: .short))
-                } else {
-                    imageInfoLabel.text = String(format: "%ldx%ld pixels, %@ - %@", imageAsset.pixelWidth, imageAsset.pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .short, timeStyle: .short))
-                }
-            } else {
-                imageInfoLabel.text = String(format: "%ldx%ld pixels, %@", imageAsset.pixelWidth, imageAsset.pixelHeight, formattedDuration)
-            }
-        default:
-            if let creationDate = imageAsset.creationDate {
-                imageInfoLabel.text = DateFormatter.localizedString(from: creationDate, dateStyle: .full, timeStyle: .none)
-            }
-        }
+        uploadInfoLabel.text = upload.stateLabel
         
-        // Image: retrieve data of right size and crop image
+        // Uploading progress bar
+        switch upload.state {
+        case .waiting, .preparing, .formatError:
+            uploadingProgress?.setProgress(0.0, animated: false)
+
+        case .uploading, .paused:
+            uploadingProgress?.setProgress(upload.requestProgress, animated: false)
+
+        case .finishing, .uploaded:
+            uploadingProgress?.setProgress(1.0, animated: false)
+        }
+
+        // Image info label
+        imageInfoLabel.textColor = UIColor.piwigoColorRightLabel()
+        imageInfoLabel.text = getImageInfo(from: imageAsset)
+                
+        // Cell image: retrieve data of right size and crop image
         let retinaScale = Int(UIScreen.main.scale)
         let retinaSquare = CGSize(width: self.contentView.frame.size.width * CGFloat(retinaScale),
                                   height: self.contentView.frame.size.height * CGFloat(retinaScale))
@@ -113,24 +69,66 @@ class UploadImageTableViewCell: UITableViewCell {
                         print("=> Error : \(description)")
                     }
                     self.cellImage.image = UIImage(named: "placeholder")
-                    self.cellImage.layer.cornerRadius = self.layer.cornerRadius - 3
                 } else {
                     self.cellImage.image = result
-                    self.cellImage.layer.cornerRadius = self.layer.cornerRadius - 3
                 }
+                self.cellImage.layer.cornerRadius = 10 - 3
             })
         })
+        
+        // Video icon
+        playImage.isHidden = imageAsset.mediaType == .video ? false : true
     }
-
-    func setProgress(_ progress: CGFloat, withAnimation animate: Bool) {
-        uploadingProgress?.setProgress(Float(progress), animated: animate)
+    
+    func setProgress(_ progress: Float) {
+        uploadingProgress?.setProgress(progress, animated: true)
+    }
+    
+    private func getImageInfo(from imageAsset: PHAsset) -> String {
+        switch imageAsset.mediaType {
+        case .image:
+            if let creationDate = imageAsset.creationDate {
+                if self.bounds.size.width > 414 {
+                    // i.e. larger than iPhones 6,7 screen width
+                    return String(format: "%ldx%ld pixels - %@", imageAsset.pixelWidth, imageAsset.pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .full, timeStyle: .medium))
+                } else if self.bounds.size.width > 375 {
+                    return String(format: "%ldx%ld pixels — %@", imageAsset.pixelWidth, imageAsset.pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .long, timeStyle: .short))
+                } else {
+                    return String(format: "%ldx%ld pixels — %@", imageAsset.pixelWidth, imageAsset.pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .short, timeStyle: .short))
+                }
+            } else {
+                return String(format: "%ldx%ld pixels", imageAsset.pixelWidth, imageAsset.pixelHeight)
+            }
+        case .video:
+            let formatter = DateComponentsFormatter()
+            formatter.allowedUnits = [ .minute, .second ]
+            formatter.zeroFormattingBehavior = [ .pad ]
+            let formattedDuration = formatter.string(from: imageAsset.duration)!
+            if let creationDate = imageAsset.creationDate {
+                if self.bounds.size.width > 414 {
+                    // i.e. larger than iPhones 6,7 screen width
+                    return String(format: "%ldx%ld pixels, %@ - %@", imageAsset.pixelWidth, imageAsset.pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .full, timeStyle: .medium))
+                } else if self.bounds.size.width > 375 {
+                    return String(format: "%ldx%ld pixels, %@ - %@", imageAsset.pixelWidth, imageAsset.pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .long, timeStyle: .short))
+                } else {
+                    return String(format: "%ldx%ld pixels, %@ - %@", imageAsset.pixelWidth, imageAsset.pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .short, timeStyle: .short))
+                }
+            } else {
+                return String(format: "%ldx%ld pixels, %@", imageAsset.pixelWidth, imageAsset.pixelHeight, formattedDuration)
+            }
+        default:
+            if let creationDate = imageAsset.creationDate {
+                return DateFormatter.localizedString(from: creationDate, dateStyle: .full, timeStyle: .none)
+            }
+        }
+        return ""
     }
 
     override func prepareForReuse() {
         cellImage.image = UIImage(named: "placeholder")
         playImage.isHidden = true
         uploadInfoLabel.text = "Waiting…"
-        setProgress(0, withAnimation: false)
+//        setProgress(0, withAnimation: false)
         imageInfoLabel.text = ""
     }
 }

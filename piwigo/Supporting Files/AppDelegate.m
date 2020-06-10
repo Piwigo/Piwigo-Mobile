@@ -75,6 +75,9 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
             [self checkSessionStatusAndTryRelogin];
         }
     }];
+    
+    // Launch upload tasks
+    [[[UploadManager alloc] init] findNextImageToUpload];
 }
 
 

@@ -45,7 +45,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
                                               String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("singleImage", comment: "Photo"))
         
         // Get all uploads
-        self.allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects ?? []
+        allUploads = uploadsProvider.fetchedResultsController.fetchedObjects ?? []
 
         // Fetch uploads and prepare data source in background
 //        fetchAndSortImages()
@@ -57,6 +57,10 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
         // Register palette changes
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+
+        // Register upload progress
+        let name2: NSNotification.Name = NSNotification.Name(kPiwigoNotificationUploadProgress)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress), name: name2, object: nil)
     }
 
     @objc func applyColorPalette() {
@@ -120,6 +124,10 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
         // Unregister palette changes
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
         NotificationCenter.default.removeObserver(self, name: name, object: nil)
+
+        // Unregister palette changes
+        let name2: NSNotification.Name = NSNotification.Name(kPiwigoNotificationUploadProgress)
+        NotificationCenter.default.removeObserver(self, name: name2, object: nil)
     }
 
 
@@ -349,6 +357,19 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
         return cell
     }
 
+    @objc func applyUploadProgress(_ notification: Notification) {
+        let localIdentifier =  (notification.userInfo?["localIndentifier"] ?? "") as! String
+        let progressFraction = (notification.userInfo?["progressFraction"] ?? 0.0) as! Float
+        if let indexPathsOfVisibleCells = queueTableView.indexPathsForVisibleRows {
+            for indexPath in indexPathsOfVisibleCells {
+                if allUploads[indexPath.row].localIdentifier == localIdentifier {
+                    if let cell = queueTableView.cellForRow(at: indexPath) as? UploadImageTableViewCell {
+                        cell.setProgress(progressFraction)
+                    }
+                }
+            }
+        }
+    }
     
     // MARK: - HUD methods
     
@@ -411,7 +432,8 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
 //    }
 }
 
-// MARK: - NSFetchedResultsControllerDelegate
+
+// MARK: - Uploads Provider NSFetchedResultsControllerDelegate
 
 extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
     
@@ -423,23 +445,36 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
 
         switch type {
         case .insert:
-            print("••• controller:insert...")
+            print(">>>> controller:insert...")
             // Image added to upload queue
             if let upload:Upload = anObject as? Upload {
                 allUploads.append(upload)
             }
         case .delete:
-            print("••• controller:delete...")
+            print(">>>> controller:delete...")
             // Image removed from upload queue
             if let upload:Upload = anObject as? Upload {
                 allUploads.removeAll(where: { $0.localIdentifier == upload.localIdentifier})
             }
         case .move:
-            print("••• controller:move...")
+            print(">>>> controller:move...")
         case .update:
-            print("••• controller:update...")
+            print(">>>> controller:update...")
+            // Upload in progress
+            if let upload:Upload = anObject as? Upload {
+                if let indexPathsOfVisibleCells = queueTableView.indexPathsForVisibleRows {
+                    for indexPath in indexPathsOfVisibleCells {
+                        if allUploads[indexPath.row].localIdentifier == upload.localIdentifier {
+                            if let cell = queueTableView.cellForRow(at: indexPath) as? UploadImageTableViewCell {
+                                cell.configure(with: upload)
+                            }
+                        }
+                    }
+                }
+            }
+
         @unknown default:
-            fatalError("TagSelectorViewController: unknown NSFetchedResultsChangeType")
+            fatalError("UploadQueueViewController: unknown NSFetchedResultsChangeType")
         }
     }
     

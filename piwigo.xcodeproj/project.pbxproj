@@ -108,7 +108,7 @@
 		ADE03F3423D4CF1D00F21ED9 /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE03F3323D4CF1D00F21ED9 /* Tag.swift */; };
 		ADE03F3623D4E3BD00F21ED9 /* TagError.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE03F3523D4E3BD00F21ED9 /* TagError.swift */; };
 		ADE46684242F978F002FEDE5 /* AboutViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADE46683242F978E002FEDE5 /* AboutViewController.storyboard */; };
-		ADE69C052477D9B8002D953F /* UploadDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE69C042477D9B8002D953F /* UploadDispatcher.swift */; };
+		ADE69C052477D9B8002D953F /* UploadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE69C042477D9B8002D953F /* UploadManager.swift */; };
 		ADEC6B032455A3520011527C /* LocalAlbumsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEC6B022455A3520011527C /* LocalAlbumsProvider.swift */; };
 		ADEC6B052455BC6F0011527C /* LocalAlbumsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEC6B042455BC6F0011527C /* LocalAlbumsTableViewCell.swift */; };
 		ADEFBD632074E19000DFAD26 /* CategoryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADEFBD622074E19000DFAD26 /* CategoryTableViewCell.xib */; };
@@ -393,7 +393,7 @@
 		ADE03F3323D4CF1D00F21ED9 /* Tag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
 		ADE03F3523D4E3BD00F21ED9 /* TagError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagError.swift; sourceTree = "<group>"; };
 		ADE46683242F978E002FEDE5 /* AboutViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AboutViewController.storyboard; sourceTree = "<group>"; };
-		ADE69C042477D9B8002D953F /* UploadDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadDispatcher.swift; sourceTree = "<group>"; };
+		ADE69C042477D9B8002D953F /* UploadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadManager.swift; sourceTree = "<group>"; };
 		ADE9D69523BE716800818003 /* ImageUploadThumbTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ImageUploadThumbTableViewCell.h; path = "piwigo/Upload/Upload Parameters/Cells/ImageUploadThumbTableViewCell.h"; sourceTree = SOURCE_ROOT; };
 		ADE9D69623BE71A200818003 /* ImageUploadThumbTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ImageUploadThumbTableViewCell.m; path = "piwigo/Upload/Upload Parameters/Cells/ImageUploadThumbTableViewCell.m"; sourceTree = SOURCE_ROOT; };
 		ADE9D69823BE71CA00818003 /* ImageUploadThumbTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ImageUploadThumbTableViewCell.xib; sourceTree = "<group>"; };
@@ -742,7 +742,7 @@
 		AD8A451F247713A0002360EA /* Upload Services */ = {
 			isa = PBXGroup;
 			children = (
-				ADE69C042477D9B8002D953F /* UploadDispatcher.swift */,
+				ADE69C042477D9B8002D953F /* UploadManager.swift */,
 				AD8A4520247714EF002360EA /* UploadImagePreparer.swift */,
 				AD8A452224771618002360EA /* UploadTransfer.swift */,
 				AD1D5F6A248553710004C8BC /* UploadFinisher.swift */,
@@ -1537,7 +1537,7 @@
 				ADF1CC75243D111600D75319 /* DefaultCategoryViewController.swift in Sources */,
 				ADA24DB8243A767700864D1F /* DefaultImageSizeViewController.swift in Sources */,
 				ADA24DB1243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift in Sources */,
-				ADE69C052477D9B8002D953F /* UploadDispatcher.swift in Sources */,
+				ADE69C052477D9B8002D953F /* UploadManager.swift in Sources */,
 				AD8A4521247714EF002360EA /* UploadImagePreparer.swift in Sources */,
 				AD8A452324771618002360EA /* UploadTransfer.swift in Sources */,
 				ADBDD9372441AB3800F19DFC /* LabelTableViewCell.swift in Sources */,

@@ -29,6 +29,7 @@
         <attribute name="localIdentifier" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="privacyLevel" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="requestDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="requestProgress" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="requestSate" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" defaultValueString="" syncable="YES"/>
         <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Tag" inverseName="upload" inverseEntity="Tag" syncable="YES"/>
@@ -41,6 +42,6 @@
     <elements>
         <element name="Location" positionX="-60.984375" positionY="-122.5" width="128" height="118"/>
         <element name="Tag" positionX="-216.05859375" positionY="-122.37890625" width="128" height="118"/>
-        <element name="Upload" positionX="-409.30078125" positionY="-185.234375" width="128" height="223"/>
+        <element name="Upload" positionX="-409.30078125" positionY="-185.234375" width="128" height="238"/>
     </elements>
 </model>

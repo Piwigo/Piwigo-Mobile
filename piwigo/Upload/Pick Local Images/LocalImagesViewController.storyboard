@@ -45,6 +45,12 @@
                                                     <rect key="frame" x="0.0" y="0.0" width="232" height="232"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 </imageView>
+                                                <view hidden="YES" alpha="0.44999998807907104" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="i4Y-ZG-9Gz">
+                                                    <rect key="frame" x="0.0" y="0.0" width="232" height="232"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                                </view>
                                                 <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="video" translatesAutoresizingMaskIntoConstraints="NO" id="u8O-P0-eq0">
                                                     <rect key="frame" x="5" y="5" width="25" height="16"/>
                                                     <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
@@ -52,77 +58,48 @@
                                                         <constraint firstAttribute="width" secondItem="u8O-P0-eq0" secondAttribute="height" multiplier="25:16" id="MSd-2n-AcG"/>
                                                     </constraints>
                                                 </imageView>
-                                                <view hidden="YES" alpha="0.44999998807907104" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="i4Y-ZG-9Gz">
-                                                    <rect key="frame" x="0.0" y="0.0" width="232" height="232"/>
-                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                    <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
-                                                </view>
                                                 <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="checkMark" translatesAutoresizingMaskIntoConstraints="NO" id="QVv-FQ-QhA">
                                                     <rect key="frame" x="212" y="5" width="17" height="25"/>
                                                     <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                                                 </imageView>
-                                                <view hidden="YES" alpha="0.44999998807907104" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gJc-Qm-Hsl">
-                                                    <rect key="frame" x="0.0" y="0.0" width="232" height="232"/>
-                                                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <activityIndicatorView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="1wT-ty-LCP">
+                                                    <rect key="frame" x="58" y="58" width="116" height="116"/>
                                                     <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
-                                                </view>
-                                                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zmg-aR-SZS">
-                                                    <rect key="frame" x="0.0" y="0.0" width="232" height="232"/>
-                                                    <subviews>
-                                                        <progressView contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Mg6-75-nMT">
-                                                            <rect key="frame" x="10" y="220" width="212" height="2"/>
-                                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                            <color key="tintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
-                                                            <color key="progressTintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
-                                                            <color key="trackTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                        </progressView>
-                                                        <activityIndicatorView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="1wT-ty-LCP">
-                                                            <rect key="frame" x="58" y="58" width="116" height="116"/>
-                                                            <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
-                                                            <constraints>
-                                                                <constraint firstAttribute="width" secondItem="1wT-ty-LCP" secondAttribute="height" multiplier="1:1" id="c9Y-eg-2iJ"/>
-                                                            </constraints>
-                                                            <color key="color" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                        </activityIndicatorView>
-                                                    </subviews>
-                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="bottom" secondItem="Mg6-75-nMT" secondAttribute="bottom" constant="10" id="7SO-0c-KRd"/>
-                                                        <constraint firstItem="Mg6-75-nMT" firstAttribute="leading" secondItem="zmg-aR-SZS" secondAttribute="leading" constant="10" id="skd-HV-0TY"/>
-                                                        <constraint firstAttribute="trailing" secondItem="Mg6-75-nMT" secondAttribute="trailing" constant="10" id="w8R-sA-st8"/>
+                                                        <constraint firstAttribute="width" secondItem="1wT-ty-LCP" secondAttribute="height" multiplier="1:1" id="DA2-do-b2h"/>
                                                     </constraints>
-                                                </view>
+                                                    <color key="color" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </activityIndicatorView>
+                                                <progressView contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Mg6-75-nMT">
+                                                    <rect key="frame" x="10" y="220" width="212" height="2"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <color key="tintColor" red="0.98431372549999996" green="0.3803921569" blue="0.043137254899999998" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <color key="progressTintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <color key="trackTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </progressView>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
-                                                <constraint firstItem="gJc-Qm-Hsl" firstAttribute="leading" secondItem="NBu-dR-mRZ" secondAttribute="leading" id="3XU-12-AYO"/>
+                                                <constraint firstAttribute="trailing" secondItem="Mg6-75-nMT" secondAttribute="trailing" constant="10" id="CB0-P6-zyF"/>
+                                                <constraint firstItem="1wT-ty-LCP" firstAttribute="width" secondItem="Ma4-DR-i0O" secondAttribute="width" multiplier="0.5" id="DSP-Tt-h4v"/>
                                                 <constraint firstItem="QVv-FQ-QhA" firstAttribute="top" secondItem="NBu-dR-mRZ" secondAttribute="top" constant="5" id="E5a-Y5-V6z"/>
-                                                <constraint firstItem="zmg-aR-SZS" firstAttribute="top" secondItem="NBu-dR-mRZ" secondAttribute="top" id="EfG-Jv-D1E"/>
-                                                <constraint firstItem="1wT-ty-LCP" firstAttribute="width" secondItem="NBu-dR-mRZ" secondAttribute="width" multiplier="0.5" id="OH1-qF-9Ju"/>
+                                                <constraint firstItem="1wT-ty-LCP" firstAttribute="centerX" secondItem="NBu-dR-mRZ" secondAttribute="centerX" id="Ivm-yR-wrk"/>
                                                 <constraint firstItem="u8O-P0-eq0" firstAttribute="leading" secondItem="NBu-dR-mRZ" secondAttribute="leading" constant="5" id="RHr-6Y-fd5"/>
+                                                <constraint firstItem="Mg6-75-nMT" firstAttribute="leading" secondItem="NBu-dR-mRZ" secondAttribute="leading" constant="10" id="TBf-VZ-HLK"/>
                                                 <constraint firstAttribute="trailing" secondItem="QVv-FQ-QhA" secondAttribute="trailing" constant="3" id="UHp-Wr-2nX"/>
-                                                <constraint firstItem="zmg-aR-SZS" firstAttribute="leading" secondItem="NBu-dR-mRZ" secondAttribute="leading" id="WLz-BQ-vOu"/>
-                                                <constraint firstAttribute="trailing" secondItem="gJc-Qm-Hsl" secondAttribute="trailing" id="YQ0-42-aFu"/>
-                                                <constraint firstItem="1wT-ty-LCP" firstAttribute="centerX" secondItem="NBu-dR-mRZ" secondAttribute="centerX" id="aR2-bh-Rhh"/>
-                                                <constraint firstItem="1wT-ty-LCP" firstAttribute="centerY" secondItem="NBu-dR-mRZ" secondAttribute="centerY" id="dBJ-uj-Tkv"/>
+                                                <constraint firstAttribute="bottom" secondItem="Mg6-75-nMT" secondAttribute="bottom" constant="10" id="Ynf-sO-Av2"/>
                                                 <constraint firstItem="u8O-P0-eq0" firstAttribute="top" secondItem="NBu-dR-mRZ" secondAttribute="top" constant="5" id="g1B-0c-qmM"/>
-                                                <constraint firstAttribute="bottom" secondItem="gJc-Qm-Hsl" secondAttribute="bottom" id="nCY-ng-IwP"/>
-                                                <constraint firstAttribute="bottom" secondItem="zmg-aR-SZS" secondAttribute="bottom" id="sh1-JD-iga"/>
-                                                <constraint firstAttribute="trailing" secondItem="zmg-aR-SZS" secondAttribute="trailing" id="uba-uY-ADx"/>
-                                                <constraint firstItem="gJc-Qm-Hsl" firstAttribute="top" secondItem="NBu-dR-mRZ" secondAttribute="top" id="zKs-9C-Zl6"/>
+                                                <constraint firstItem="1wT-ty-LCP" firstAttribute="centerY" secondItem="NBu-dR-mRZ" secondAttribute="centerY" id="xYI-pO-N5Y"/>
                                             </constraints>
                                         </collectionViewCellContentView>
                                         <size key="customSize" width="232" height="232"/>
                                         <connections>
                                             <outlet property="cellImage" destination="Ma4-DR-i0O" id="xJT-3t-tAn"/>
-                                            <outlet property="darkenSelectionView" destination="i4Y-ZG-9Gz" id="ic5-XR-OHh"/>
-                                            <outlet property="darkenUploadView" destination="gJc-Qm-Hsl" id="0R8-Ia-gsf"/>
+                                            <outlet property="darkenView" destination="i4Y-ZG-9Gz" id="3sC-lx-o4l"/>
                                             <outlet property="playImage" destination="u8O-P0-eq0" id="RCO-cU-K5u"/>
                                             <outlet property="selectedImage" destination="QVv-FQ-QhA" id="ZB9-o4-Anw"/>
-                                            <outlet property="uploadingActivity" destination="1wT-ty-LCP" id="573-A8-MYE"/>
                                             <outlet property="uploadingProgress" destination="Mg6-75-nMT" id="qrd-rH-1c2"/>
-                                            <outlet property="uploadingView" destination="zmg-aR-SZS" id="2bH-8O-QXs"/>
+                                            <outlet property="waitingActivity" destination="1wT-ty-LCP" id="vrq-2V-WIb"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>

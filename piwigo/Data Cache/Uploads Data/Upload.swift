@@ -25,11 +25,13 @@ class Upload: NSManagedObject {
     @NSManaged var category: Int64
     @NSManaged var requestDate: Date
     @NSManaged var requestSate: Int16
-    @NSManaged var privacyLevel: Int16
+    @NSManaged var requestProgress: Float
 
     @NSManaged var creationDate: Date?
     @NSManaged var fileName: String?
     @NSManaged var author: String?
+    @NSManaged var privacyLevel: Int16
+
     @NSManaged var title: String?
     @NSManaged var comment: String?
     @NSManaged var tags: Set<Tag>?
@@ -54,6 +56,9 @@ class Upload: NSManagedObject {
         
         // State of upload request defaults to "waiting"
         requestSate = Int16(uploadProperties.requestState.rawValue)
+        
+        // Progress of upload requests during transfer defaults to 0.0
+        requestProgress = uploadProperties.requestProgress
 
         // Photo creation date and filename
         creationDate = uploadProperties.creationDate ?? Date.init()
@@ -100,6 +105,29 @@ extension Upload {
         }
     }
 
+    var stateLabel: String {
+        switch state {
+        case .waiting:
+            return NSLocalizedString("imageUploadTableCell_waiting", comment: "Waiting...")
+
+        case .preparing:
+            return NSLocalizedString("imageUploadTableCell_preparing", comment: "Preparing...")
+        case .formatError:
+            return NSLocalizedString("imageUploadError_format", comment: "File format not accepted by Piwigo server.")
+
+        case .uploading:
+            return NSLocalizedString("imageUploadTableCell_uploading", comment: "Uploading...")
+
+        case .finishing:
+            return NSLocalizedString("imageUploadTableCell_finishing", comment: "Finishing...")
+
+        case .uploaded:
+            return NSLocalizedString("imageUploadTableCell_uploaded", comment: "Uploaded")
+        case .paused:
+            return NSLocalizedString("imageUploadTableCell_paused", comment: "Paused")
+        }
+    }
+
     var privacy: kPiwigoPrivacy {
         
         switch self.privacyLevel {
@@ -128,6 +156,7 @@ extension Upload {
 /**
  A struct for managing upload requests
 */
+@objc
 enum kPiwigoUploadState : Int16 {
     case waiting
     
@@ -147,6 +176,7 @@ struct UploadProperties
     let category: Int                       // 8
     let requestDate: Date                   // "2020-08-22 19:18:43"
     var requestState: kPiwigoUploadState    // See enum above
+    var requestProgress: Float              // 0.0 ... 1.0
 
     var creationDate: Date?                 // "2012-08-23 09:18:43"
     var fileName: String?                   // "IMG123.JPG"
@@ -162,7 +192,7 @@ extension UploadProperties {
     init(localIdentifier: String, category: Int) {
         self.init(localIdentifier: localIdentifier, category: category,
             // Upload request date is now and state is waiting
-            requestDate: Date.init(), requestState: .waiting,
+            requestDate: Date.init(), requestState: .waiting, requestProgress: 0.0,
             // Photo creation date and filename
             creationDate: Date.init(), fileName: "",
             // Photo author name defaults to name entered in Settings

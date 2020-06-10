@@ -31,9 +31,21 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         }
         set(cellSelected) {
             _cellSelected = cellSelected
-
             selectedImage?.isHidden = !cellSelected
-            darkenSelectionView?.isHidden = !cellSelected
+            darkenView?.isHidden = !cellSelected
+        }
+    }
+
+    private var _cellWaiting = false
+    @objc var cellWaiting: Bool {
+        get {
+            _cellWaiting
+        }
+        set(waiting) {
+            _cellUploading = waiting
+            darkenView?.isHidden = !waiting
+            waitingActivity?.isHidden = !waiting
+            uploadingProgress?.isHidden = !waiting
         }
     }
 
@@ -44,15 +56,27 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         }
         set(uploading) {
             _cellUploading = uploading
-
-            uploadingView?.isHidden = !uploading
-            darkenUploadView?.isHidden = !uploading
-            uploadingActivity?.isHidden = !uploading
+            darkenView?.isHidden = !uploading
+            waitingActivity?.isHidden = uploading
+            uploadingProgress?.isHidden = !uploading
         }
     }
 
-    private var _progress: CGFloat = 0.0
-    @objc var progress: CGFloat {
+    private var _cellUploaded = false
+    @objc var cellUploaded: Bool {
+        get {
+            _cellUploaded
+        }
+        set(uploaded) {
+            _cellUploaded = uploaded
+            darkenView?.isHidden = !uploaded
+            waitingActivity?.isHidden = uploaded
+            uploadingProgress?.isHidden = uploaded
+        }
+    }
+
+    private var _progress: Float = 0.0
+    @objc var progress: Float {
         get {
             _progress
         }
@@ -64,10 +88,8 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var cellImage: UIImageView!
     @IBOutlet weak var playImage: UIImageView!
     @IBOutlet weak var selectedImage: UIImageView!
-    @IBOutlet weak var darkenSelectionView: UIView!
-    @IBOutlet weak var uploadingView: UIView!
-    @IBOutlet weak var darkenUploadView: UIView!
-    @IBOutlet weak var uploadingActivity: UIActivityIndicatorView!
+    @IBOutlet weak var darkenView: UIView!
+    @IBOutlet weak var waitingActivity: UIActivityIndicatorView!
     @IBOutlet weak var uploadingProgress: UIProgressView!
         
     @objc
@@ -75,9 +97,8 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         
         // Background color and aspect
         backgroundColor = UIColor.piwigoColorCellBackground()
-        uploadingActivity.color = UIColor.white
+        waitingActivity.color = UIColor.white
         uploadingProgress.trackTintColor = UIColor.white
-        cellSelected = false
         localIdentifier = imageAsset.localIdentifier
 
         // Checked icon: reduce original size of 17x25 pixels when using tiny thumbnails
@@ -125,8 +146,8 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         })
     }
     
-    func setProgress(_ progress: CGFloat, withAnimation animate: Bool) {
-        uploadingProgress?.setProgress(Float(progress), animated: animate)
+    func setProgress(_ progress: Float, withAnimation animate: Bool) {
+        uploadingProgress?.setProgress(progress, animated: animate)
     }
 
     override func prepareForReuse() {
@@ -134,6 +155,10 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         playImage.isHidden = true
         cellSelected = false
         cellUploading = false
+        cellUploaded = false
+        darkenView.isHidden = true
+        waitingActivity.isHidden = true
+        uploadingProgress.isHidden = true
         setProgress(0, withAnimation: false)
     }
 }
