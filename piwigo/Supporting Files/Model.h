@@ -74,7 +74,6 @@ typedef enum {
 
 +(Model*)sharedInstance;
 -(void)saveToDisk;
-+(PHPhotoLibrary*)defaultAssetsLibrary;
 
 @property (nonatomic, assign) BOOL isAppLanguageRTL;
 

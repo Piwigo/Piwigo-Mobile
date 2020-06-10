@@ -146,16 +146,6 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 	return instance;
 }
 
-+ (PHPhotoLibrary *)defaultAssetsLibrary
-{
-    static dispatch_once_t pred = 0;
-    static PHPhotoLibrary *library = nil;
-    dispatch_once(&pred, ^{
-        library = [[PHPhotoLibrary alloc] init];
-    });
-    return library;
-}
-
 -(NSString *)getNameForPrivacyLevel:(kPiwigoPrivacy)privacyLevel
 {
 	NSString *name = @"";
