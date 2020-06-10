@@ -173,6 +173,11 @@ class DataController: NSObject {
         let coordinator = persistentStoreCoordinator
         var managedObjectContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
         managedObjectContext.persistentStoreCoordinator = coordinator
+        if #available(iOS 10.0, *) {
+            managedObjectContext.automaticallyMergesChangesFromParent = true
+        } else {
+            // Fallback on earlier versions
+        }
         managedObjectContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         managedObjectContext.shouldDeleteInaccessibleFaults = true
         // Set unused undoManager to nil for macOS (it is nil by default on iOS)
@@ -185,6 +190,10 @@ class DataController: NSObject {
 
         var privateManagedObjectContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         privateManagedObjectContext.parent = managedObjectContext
+        privateManagedObjectContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        // Set unused undoManager to nil for macOS (it is nil by default on iOS)
+        // to reduce resource requirements.
+//        privateManagedObjectContext.undoManager = nil
         return privateManagedObjectContext
     }()
 
