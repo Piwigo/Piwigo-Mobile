@@ -307,6 +307,18 @@ class UploadManager: NSObject {
                     uploadProperties.requestState = .uploaded
                     self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                         print("   >> complete ;-)")
+                        // Increment number of images in category
+                        CategoriesData.sharedInstance().getCategoryById(upload.category).incrementImageSizeByOne()
+
+                        // Read image information and update cache
+                        ImageService.getImageInfo(byId: uploadProperties.imageId, andAddImageToCache: true, listOnCompletion: { task, imageData in
+                            DispatchQueue.main.async {
+                                NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationCategoryDataUpdated), object: nil, userInfo: nil)
+                            }
+                        }, onFailure: { task, error in
+                            // NOP — Not a big issue
+                        })
+                        
                         // Any other image in upload queue?
                         self.findNextImageToUpload()
                         return
