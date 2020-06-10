@@ -32,6 +32,9 @@ class UploadImageTableViewCell: UITableViewCell {
         // Upload info label
         uploadInfoLabel.textColor = UIColor.piwigoColorLeftLabel()
         uploadInfoLabel.text = upload.stateLabel
+//        if let category = CategoriesData.sharedInstance()?.getCategoryById(Int(upload.category)) {
+//            uploadInfoLabel.text?.append(contentsOf: String(format: " (%@)", category.name))
+//        }
         
         // Uploading progress bar
         switch upload.state {
