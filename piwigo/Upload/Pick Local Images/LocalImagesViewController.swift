@@ -865,7 +865,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Cell state
         cell.cellSelected = selectedImages[index] != nil
         if indexedUploadsInQueue.count == imageCollection.count {
-            // Indexed uploads available
+            // Use indexed data
             if let state = indexedUploadsInQueue[index]?.1 {
                 switch state {
                 case .waiting, .preparing, .formatError, .paused:
@@ -873,7 +873,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 case .uploading, .finishing:
                     cell.cellUploading = true
                 case .uploaded:
-                    cell.cellUploaded = false
+                    cell.cellUploaded = true
                 }
             }
         } else {
@@ -885,9 +885,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 case .uploading, .finishing:
                     cell.cellUploading = true
                 case .uploaded:
-                    cell.cellUploaded = false
+                    cell.cellUploaded = true
                 case .none:
-                    cell.cellWaiting = false
+                    cell.cellSelected = false
                 }
             }
         }
@@ -1255,13 +1255,12 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
             // Image removed from upload queue
             if let upload:Upload = anObject as? Upload {
                 // Update upload in non-indexed upload queue
-                if let index = uploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
-                    uploadsInQueue[index] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestSate))
+                if let indexInQueue = uploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
+                    uploadsInQueue[indexInQueue] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestSate))
                 }
-                // Get index of uploaded image
-                if let indexOfUploadedImage = selectedImages.firstIndex(where: { $0?.localIdentifier == upload.localIdentifier }) {
-                    // Update image to indexed upload queue
-                    indexedUploadsInQueue[indexOfUploadedImage] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestSate))
+                // Update image in indexed upload queue
+                if let indexInIndexedQueue = indexedUploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
+                    indexedUploadsInQueue[indexInIndexedQueue] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestSate))
                 }
                 // Update corresponding cell
                 updateCell(for: upload)
@@ -1272,9 +1271,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        
         print("••• LocalImagesViewController controller:didChangeContent...")
-
         // Update navigation bar
         updateNavBar()
     }
