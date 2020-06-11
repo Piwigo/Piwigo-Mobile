@@ -213,7 +213,6 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
         self.nberOfUploadsLabel.textAlignment = NSTextAlignmentCenter;
         self.nberOfUploadsLabel.backgroundColor = [UIColor clearColor];
         [self.uploadQueueButton addSubview:self.nberOfUploadsLabel];
-        [self.uploadQueueButton addConstraints:[NSLayoutConstraint constraintCenter:self.nberOfUploadsLabel]];
         [self.view insertSubview:self.uploadQueueButton belowSubview:self.addButton];
 
         // "Home" album button above collection view

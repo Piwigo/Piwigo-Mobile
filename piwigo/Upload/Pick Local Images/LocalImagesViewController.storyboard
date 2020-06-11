@@ -72,9 +72,7 @@
                                                     <rect key="frame" x="58" y="58" width="116" height="116"/>
                                                     <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="height" constant="25" id="COZ-bG-LzN"/>
                                                         <constraint firstAttribute="width" secondItem="1wT-ty-LCP" secondAttribute="height" multiplier="1:1" id="DA2-do-b2h"/>
-                                                        <constraint firstAttribute="width" constant="25" id="bdl-LY-J4n"/>
                                                     </constraints>
                                                     <color key="color" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </activityIndicatorView>
@@ -207,7 +205,7 @@
                                 </connections>
                             </collectionView>
                             <view opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="f5z-6S-nIy">
-                                <rect key="frame" x="105.5" y="831" width="203" height="31"/>
+                                <rect key="frame" x="105.5" y="845" width="203" height="31"/>
                                 <subviews>
                                     <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="1" translatesAutoresizingMaskIntoConstraints="NO" id="dLb-To-65V">
                                         <rect key="frame" x="0.0" y="0.0" width="203" height="32"/>
@@ -235,10 +233,9 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="f5z-6S-nIy" firstAttribute="bottom" secondItem="JwU-ke-ivs" secondAttribute="bottom" id="DJi-uN-Tg3"/>
                             <constraint firstItem="oEF-HO-Dv3" firstAttribute="leading" secondItem="3Qu-Pn-VGf" secondAttribute="leading" id="Tmx-Qf-73z"/>
                             <constraint firstItem="oEF-HO-Dv3" firstAttribute="bottom" secondItem="3Qu-Pn-VGf" secondAttribute="bottom" id="VbM-g1-xUQ"/>
-                            <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="f5z-6S-nIy" secondAttribute="bottom" constant="20" id="aoF-f5-ug4"/>
+                            <constraint firstAttribute="bottom" secondItem="f5z-6S-nIy" secondAttribute="bottom" constant="20" id="aoF-f5-ug4"/>
                             <constraint firstItem="oEF-HO-Dv3" firstAttribute="trailing" secondItem="3Qu-Pn-VGf" secondAttribute="trailing" id="jrK-pA-Y2m"/>
                             <constraint firstItem="f5z-6S-nIy" firstAttribute="centerX" secondItem="JwU-ke-ivs" secondAttribute="centerX" id="w6B-LD-Lqd"/>
                             <constraint firstItem="oEF-HO-Dv3" firstAttribute="top" secondItem="3Qu-Pn-VGf" secondAttribute="top" id="y6L-7G-U7y"/>
