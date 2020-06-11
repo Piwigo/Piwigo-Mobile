@@ -400,38 +400,44 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
             }
         }
 
-        if let changeDetails = changeInstance.changeDetails(for: depthEffectAlbum) {
-            depthEffectAlbum = changeDetails.fetchResultAfterChanges
-            fetchLocalAlbums {
-                if self.fetchedLocalAlbumsDelegate?.responds(to: #selector(LocalAlbumsProviderDelegate.didChangePhotoLibrary(section:))) ?? false {
-                    self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
+        if #available(iOS 10.2, *) {
+            if let changeDetails = changeInstance.changeDetails(for: depthEffectAlbum) {
+                depthEffectAlbum = changeDetails.fetchResultAfterChanges
+                fetchLocalAlbums {
+                    if self.fetchedLocalAlbumsDelegate?.responds(to: #selector(LocalAlbumsProviderDelegate.didChangePhotoLibrary(section:))) ?? false {
+                        self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
+                    }
                 }
             }
         }
 
-        if let changeDetails = changeInstance.changeDetails(for: livePhotosAlbum) {
-            livePhotosAlbum = changeDetails.fetchResultAfterChanges
-            fetchLocalAlbums {
-                if self.fetchedLocalAlbumsDelegate?.responds(to: #selector(LocalAlbumsProviderDelegate.didChangePhotoLibrary(section:))) ?? false {
-                    self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
+        if #available(iOS 10.3, *) {
+            if let changeDetails = changeInstance.changeDetails(for: livePhotosAlbum) {
+                livePhotosAlbum = changeDetails.fetchResultAfterChanges
+                fetchLocalAlbums {
+                    if self.fetchedLocalAlbumsDelegate?.responds(to: #selector(LocalAlbumsProviderDelegate.didChangePhotoLibrary(section:))) ?? false {
+                        self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
+                    }
                 }
             }
         }
 
-        if let changeDetails = changeInstance.changeDetails(for: animatedAlbum) {
-            animatedAlbum = changeDetails.fetchResultAfterChanges
-            fetchLocalAlbums {
-                if self.fetchedLocalAlbumsDelegate?.responds(to: #selector(LocalAlbumsProviderDelegate.didChangePhotoLibrary(section:))) ?? false {
-                    self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
+        if #available(iOS 11, *) {
+            if let changeDetails = changeInstance.changeDetails(for: animatedAlbum) {
+                animatedAlbum = changeDetails.fetchResultAfterChanges
+                fetchLocalAlbums {
+                    if self.fetchedLocalAlbumsDelegate?.responds(to: #selector(LocalAlbumsProviderDelegate.didChangePhotoLibrary(section:))) ?? false {
+                        self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
+                    }
                 }
             }
-        }
 
-        if let changeDetails = changeInstance.changeDetails(for: longExposuresAlbum) {
-            longExposuresAlbum = changeDetails.fetchResultAfterChanges
-            fetchLocalAlbums {
-                if self.fetchedLocalAlbumsDelegate?.responds(to: #selector(LocalAlbumsProviderDelegate.didChangePhotoLibrary(section:))) ?? false {
-                    self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
+            if let changeDetails = changeInstance.changeDetails(for: longExposuresAlbum) {
+                longExposuresAlbum = changeDetails.fetchResultAfterChanges
+                fetchLocalAlbums {
+                    if self.fetchedLocalAlbumsDelegate?.responds(to: #selector(LocalAlbumsProviderDelegate.didChangePhotoLibrary(section:))) ?? false {
+                        self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
+                    }
                 }
             }
         }
