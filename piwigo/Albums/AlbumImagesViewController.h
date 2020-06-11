@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationBackToDefaultAlbum;
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationLeftUploads;
 
 @class Tag;
 @class TagSelectorViewController;

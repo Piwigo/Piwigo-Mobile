@@ -319,6 +319,14 @@ class UploadManager: NSObject {
                             // NOP — Not a big issue
                         })
                         
+                        // Update number of left uploads
+                        let nberOfUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects?.count ?? 0
+                        let completedUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects?.map({ $0.requestSate == Int16(kPiwigoUploadState.uploaded.rawValue) ? 1 : 0}).reduce(0, +) ?? 0
+                        let uploadInfo: [String : Int] = ["leftUploads" : nberOfUploads - completedUploads]
+                        DispatchQueue.main.async {
+                            NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationLeftUploads), object: nil, userInfo: uploadInfo)
+                        }
+
                         // Any other image in upload queue?
                         self.findNextImageToUpload()
                         return

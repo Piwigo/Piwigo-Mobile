@@ -39,6 +39,7 @@
 CGFloat const kRadius = 25.0;
 CGFloat const kDeg2Rad = 3.141592654 / 180.0;
 NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBackToDefaultAlbum";
+NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploads";
 
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, UITextFieldDelegate, NSFetchedResultsControllerDelegate, ImageDetailDelegate, EditImageParamsDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, AsyncImageActivityItemProviderDelegate, TagSelectorViewDelegate, ChangedSettingsDelegate>
 
@@ -279,6 +280,9 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 
         // Register root album changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnToDefaultCategory) name:kPiwigoNotificationBackToDefaultAlbum object:nil];
+        
+        // Register uploads changes
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUploadQueueButton:) name:kPiwigoNotificationLeftUploads object:nil];
     }
 	return self;
 }
@@ -912,7 +916,6 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             [self.uploadQueueButton.layer setOpacity:0.8];
             CGFloat xPos = self.addButton.frame.origin.x - (extraWidth / 2.0);
             CGFloat yPos = self.addButton.frame.origin.y;
-            NSLog(@"••> %f", self.nberOfUploadsLabel.bounds.size.width);
             self.uploadQueueButton.frame = CGRectMake(xPos - 3*kRadius, yPos, 2*kRadius + extraWidth, 2*kRadius);
         }];
     } else {
@@ -928,6 +931,24 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
             // Hide Home Album button
             [self.uploadQueueButton setHidden:YES];
         }];
+    }
+}
+
+-(void)updateUploadQueueButton:(NSNotification *)notification
+{
+    if (notification != nil) {
+        NSDictionary *userInfo = notification.userInfo;
+        NSUInteger leftUploads = MAX(0, [[userInfo objectForKey:@"leftUploads"] integerValue]);
+        self.nberOfUploadsLabel.text = [NSString stringWithFormat:@"%lu", leftUploads];
+
+        // Resize label to fit number
+        [self.nberOfUploadsLabel sizeToFit];
+        
+        // Elongate the button if needed
+        CGFloat width = self.nberOfUploadsLabel.bounds.size.width;
+        CGFloat height = self.nberOfUploadsLabel.bounds.size.height;
+        CGFloat extraWidth = fmax(0, (width - 2*kRadius + 12.0));
+        self.nberOfUploadsLabel.frame = CGRectMake(kRadius + (extraWidth / 2.0) - width / 2.0, kRadius - height / 2.0, width, height);
     }
 }
 
