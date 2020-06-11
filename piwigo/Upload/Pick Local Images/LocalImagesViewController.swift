@@ -416,8 +416,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     
     private func indexUploads(images: PHFetchResult<PHAsset>) -> (Void) {
         // Loop over all images
-        let start = CFAbsoluteTimeGetCurrent()
-        print("=> Start indexing uploads…")
+//        let start = CFAbsoluteTimeGetCurrent()
+//        print("=> Start indexing uploads…")
         for index in 0..<images.count {
             // Get image identifier
             let imageId = images[index].localIdentifier
@@ -427,8 +427,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 indexedUploadsInQueue.append(nil)
             }
         }
-        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        print("   indexed \(imageCollection.count) uploads in \(diff) ms")
+//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+//        print("   indexed \(imageCollection.count) uploads in \(diff) ms")
     }
 
     
@@ -863,7 +863,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         cell.isUserInteractionEnabled = true
 
         // Cell state
-        cell.cellSelected = selectedImages[index] != nil
         if indexedUploadsInQueue.count == imageCollection.count {
             // Use indexed data
             if let state = indexedUploadsInQueue[index]?.1 {
@@ -875,6 +874,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 case .uploaded:
                     cell.cellUploaded = true
                 }
+            } else {
+                cell.cellAvailable = true
             }
         } else {
             // Use non-indexed data
@@ -887,10 +888,13 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 case .uploaded:
                     cell.cellUploaded = true
                 case .none:
-                    cell.cellSelected = false
+                    cell.cellAvailable = true
                 }
+            } else {
+                cell.cellAvailable = true
             }
         }
+        cell.cellSelected = selectedImages[index] != nil
         return cell
     }
 
