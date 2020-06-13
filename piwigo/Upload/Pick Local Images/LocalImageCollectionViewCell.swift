@@ -136,9 +136,9 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         }
         
         // Uploaded icon: reduce original size of 25x25 pixels when using tiny thumbnails
-        if thumbnailSize > 0.0 && thumbnailSize < 75.0 {
+        if thumbnailSize > 0.0 && thumbnailSize < 100.0 {
             let sizeOfIcon = UIImage(named: "piwigo")!.size
-            let maxWidthOfIcon = thumbnailSize / 3.0
+            let maxWidthOfIcon = thumbnailSize / 4.0
             let scale = maxWidthOfIcon / sizeOfIcon.width
             contentView.addConstraints(NSLayoutConstraint.constraintView(uploadedImage, to: CGSize(width: sizeOfIcon.width * scale, height: sizeOfIcon.height * scale))!)
         }
