@@ -94,7 +94,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
         applyColorPalette()
 
         // Navigation bar button and identifier
-        navigationItem.setRightBarButtonItems([doneBarButton].compactMap { $0 }, animated: true)
+        navigationItem.setLeftBarButtonItems([doneBarButton].compactMap { $0 }, animated: true)
         navigationController?.navigationBar.accessibilityIdentifier = "UploadQueueNav"
     }
 
