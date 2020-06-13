@@ -124,7 +124,7 @@ class UploadManager: NSObject {
                 uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                     // Launch preparation job
                     DispatchQueue.global(qos: .background).async {
-                        self.imagePreparer.prepareImage(from: originalAsset, for: uploadProperties) { (updatedUpload, mimeType, imageData, error) in
+                        self.imagePreparer.prepare(from: originalAsset, for: uploadProperties) { (updatedUpload, mimeType, imageData, error) in
                             // Error?
                             
                             // Valid data?
@@ -146,7 +146,7 @@ class UploadManager: NSObject {
                     uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                         // Launch preparation job
                         DispatchQueue.global(qos: .background).async {
-                            self.imagePreparer.prepareImage(from: originalAsset, for: uploadProperties) { (updatedUpload, mimeType, imageData, error) in
+                            self.imagePreparer.prepare(from: originalAsset, for: uploadProperties) { (updatedUpload, mimeType, imageData, error) in
                                 // Error?
                                 
                                 // Valid data?

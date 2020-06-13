@@ -10,7 +10,7 @@ import Photos
 
 class UploadImagePreparer {
 
-    func prepareImage(from imageAsset: PHAsset, for upload: UploadProperties,
+    func prepare(from imageAsset: PHAsset, for upload: UploadProperties,
                       completionHandler: @escaping (_ updatedUpload: UploadProperties?, _ mimitype: String?, _ imageData: Data?, Error?) -> Void) {
         // Retrieve UIImage
         retrieveUIImageFrom(imageAsset: imageAsset) { (fixedImageObject, error) in
