@@ -35,10 +35,16 @@ class UploadManager: NSObject {
     // MARK: - Background Tasks Instances
     /**
      • Images are prepared with an instance of UploadImagePreparer
+     • Videos are prepared with an instance of UploadVideoPreparer
      • Images and videos are transfered with an instance of UploadTransfer
      */
     private lazy var imagePreparer: UploadImagePreparer = {
         let instance : UploadImagePreparer = UploadImagePreparer()
+        return instance
+    }()
+
+    private lazy var videoPreparer: UploadVideoPreparer = {
+        let instance : UploadVideoPreparer = UploadVideoPreparer()
         return instance
     }()
 
@@ -95,8 +101,11 @@ class UploadManager: NSObject {
         let fileExt = (URL(fileURLWithPath: nextUpload.fileName!).pathExtension).lowercased()
         
         // Set upload properties
-        var uploadProperties = UploadProperties.init(localIdentifier: nextUpload.localIdentifier, category: Int(nextUpload.category),
-                                                     requestDate: nextUpload.requestDate, requestState: nextUpload.state, requestProgress: nextUpload.requestProgress,
+        var uploadProperties = UploadProperties.init(localIdentifier: nextUpload.localIdentifier,
+                                                     category: Int(nextUpload.category),
+                                                     requestDate: nextUpload.requestDate,
+                                                     requestState: nextUpload.state,
+                                                     requestProgress: nextUpload.requestProgress,
                                                      creationDate: originalAsset.creationDate, fileName: nextUpload.fileName,
                                                      author: nextUpload.author, privacyLevel: nextUpload.privacy,
                                                      title: nextUpload.title,
@@ -128,7 +137,7 @@ class UploadManager: NSObject {
                 return
             }
             if Model.sharedInstance().uploadFileTypes.contains("jpg") {
-                // Conversion to JPEG is possible for some file formats
+                // Try conversion to JPEG
                 if fileExt == "heic" || fileExt == "heif" || fileExt == "avci" {
                     // Will convert HEIC encoded image to JPEG
                     print("   >> preparing photo \(nextUpload.fileName!)…")
@@ -163,21 +172,41 @@ class UploadManager: NSObject {
             if Model.sharedInstance().uploadFileTypes.contains(fileExt) {
                 // Video file format accepted by the Piwigo server
                 print("   >> preparing video \(nextUpload.fileName!)…")
-
+                // Update state of upload
+                uploadProperties.requestState = .preparing
+                uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+                    // Launch preparation job
+                    DispatchQueue.global(qos: .background).async {
+                        self.videoPreparer.prepare(from: originalAsset, for: uploadProperties) { (updatedUpload, mimeType, imageData, error) in
+                            // Error?
+                            
+                            // Valid data?
+                            if let newUpload = updatedUpload, let mime = mimeType, let data = imageData {
+                                self.transfer(upload: newUpload, with: mime, imageData: data)
+                            }
+                        }
+                    }
+                })
                 return
             }
             if Model.sharedInstance().uploadFileTypes.contains("mp4") {
-                // Conversion to MP4 is possible
+                // Try conversion to MP4
                 if fileExt == "mov" {
                     // Will convert MOV encoded video to MP4
-                    nextUpload.fileName = URL(fileURLWithPath: URL(fileURLWithPath: nextUpload.fileName!).deletingPathExtension().absoluteString).appendingPathExtension("mp4").absoluteString
                     print("   >> preparing video \(nextUpload.fileName!)…")
                     // Update state of upload
                     uploadProperties.requestState = .preparing
                     uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                         // Launch preparation job
                         DispatchQueue.global(qos: .background).async {
-
+                            self.videoPreparer.convert(from: originalAsset, for: uploadProperties) { (updatedUpload, mimeType, imageData, error) in
+                                // Error?
+                                
+                                // Valid data?
+                                if let newUpload = updatedUpload, let mime = mimeType, let data = imageData {
+                                    self.transfer(upload: newUpload, with: mime, imageData: data)
+                                }
+                            }
                         }
                     })
                     return

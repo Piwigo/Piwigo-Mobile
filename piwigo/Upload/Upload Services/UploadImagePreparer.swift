@@ -10,8 +10,6 @@ import Photos
 
 class UploadImagePreparer {
 
-    // MARK: - Retrieve Image
-    
     func prepareImage(from imageAsset: PHAsset, for upload: UploadProperties,
                       completionHandler: @escaping (_ updatedUpload: UploadProperties?, _ mimitype: String?, _ imageData: Data?, Error?) -> Void) {
         // Retrieve UIImage
@@ -23,33 +21,43 @@ class UploadImagePreparer {
             }
 
             // Valid UIImage with fixed orientation?
-            if let imageObject = fixedImageObject {
-                // Retrieve image data
-                self.retrieveFullSizeImageDataFrom(imageAsset: imageAsset) { (imageData, error) in
+            guard let imageObject = fixedImageObject else {
+                // define error !!!!
+                completionHandler(upload, "", nil, error)
+                return
+            }
+
+            // Retrieve image data
+            self.retrieveFullSizeImageDataFrom(imageAsset: imageAsset) { (imageData, error) in
+                // Error?
+                if let error = error {
+                    completionHandler(upload, "", imageData, error)
+                    return
+                }
+                
+                // Valid image data?
+                guard let imageData = imageData else {
+                    // define error !!!!
+                    completionHandler(upload, "", nil, error)
+                    return
+                }
+                
+                // Modify image
+                self.modifyImage(upload, with: imageData, andObject: imageObject) { (updatedUpload, mimeType, updatedImageData, error) in
                     // Error?
                     if let error = error {
-                        completionHandler(upload, "", imageData, error)
+                        completionHandler(upload, mimeType, imageData, error)
                         return
-                    }
-                    
-                    // Valid image data?
-                    if let imageData = imageData {
-                        // Modify image
-                        self.modifyImage(upload, with: imageData, andObject: imageObject) { (updatedUpload, mimeType, updatedImageData, error) in
-                            // Error?
-                            if let error = error {
-                                completionHandler(upload, mimeType, imageData, error)
-                                return
-                            }
-                            // Valid?
-                            completionHandler(updatedUpload, mimeType, updatedImageData, nil)
-                        }
+                    } else {
+                        completionHandler(updatedUpload, mimeType, updatedImageData, nil)
                     }
                 }
             }
         }
     }
 
+    // MARK: - Retrieve UIImage and Image Data
+    
     private func retrieveUIImageFrom(imageAsset: PHAsset, completionHandler: @escaping (UIImage?, Error?) -> Void) {
         print("•••> retrieveUIImageFrom...")
 
@@ -96,9 +104,10 @@ class UploadImagePreparer {
                 let fixedImageObject = self.fixOrientationOf(imageObject)
                 // Expected resource available
                 completionHandler(fixedImageObject, nil)
+                return
             }
             else {
-                
+                completionHandler(imageObject, nil)
             }
         })
         completionHandler(nil, nil)
@@ -158,7 +167,7 @@ class UploadImagePreparer {
     // MARK: - Modify Metadata
     
     private func modifyImage(_ upload: UploadProperties, with originalData: Data, andObject originalObject: UIImage,
-                             completionHandler: @escaping (_ updatedUpload: UploadProperties?, _ mimitype: String?, _ imageData: Data?, Error?) -> Void) {
+                             completionHandler: @escaping (_ updatedUpload: UploadProperties?, _ mimetype: String?, _ imageData: Data?, Error?) -> Void) {
         print("•••> modifyImage...")
 
         // Create CGI reference from image data (to retrieve complete metadata)
@@ -201,7 +210,7 @@ class UploadImagePreparer {
             newUpload.fileName = URL(fileURLWithPath: URL(fileURLWithPath: upload.fileName!).deletingPathExtension().absoluteString).appendingPathExtension("JPG").lastPathComponent
         }
 
-        // If compression failed or imageCompressed nil, try to use original image
+        // If compression failed or imageCompressed is nil, try to use original image
         if imageCompressed == nil {
             let UTI: CFString? = CGImageSourceGetType(source)
             let imageDataRef = CFDataCreateMutable(nil, CFIndex(0))
@@ -215,7 +224,7 @@ class UploadImagePreparer {
             if let destination = destination {
                 if !CGImageDestinationFinalize(destination) {
                     print("Error: Could not retrieve imageData object")
-
+                    completionHandler(upload, "", nil, nil)
                     // Inform user and propose to cancel or continue
 //                    showError(withTitle: NSLocalizedString("imageUploadError_title", comment: "Image Upload Error"), andMessage: NSLocalizedString("uploadError_message", comment: "Could not upload your image. Error: \(NSLocalizedString("imageUploadError_destination", comment: "cannot create image destination"))"), forRetrying: true, withImage: image)
                     return
@@ -237,7 +246,7 @@ class UploadImagePreparer {
                 let fileExt = (URL(fileURLWithPath: upload.fileName ?? "").pathExtension).lowercased()
                 let expectedFileExtension = fileExtension(forImageData: imageData)
                 if !(fileExt == expectedFileExtension) {
-                    newUpload.fileName = URL(fileURLWithPath: URL(fileURLWithPath: upload.fileName ?? "").deletingPathExtension().absoluteString).appendingPathExtension(expectedFileExtension ?? "").lastPathComponent
+                    newUpload.fileName = URL(fileURLWithPath: upload.fileName ?? "file").deletingPathExtension().appendingPathExtension(expectedFileExtension ?? "").lastPathComponent
                 }
             }
         }
@@ -247,7 +256,7 @@ class UploadImagePreparer {
     }
 
 
-    // MARK: - Image Orientation
+    // MARK: - Fix Image Orientation
     
     private func fixOrientationOf(_ image: UIImage) -> UIImage {
 
@@ -315,45 +324,6 @@ class UploadImagePreparer {
 
     // MARK: - MIME type and file extension sniffing
 
-    // See https://en.wikipedia.org/wiki/List_of_file_signatures
-    // https://mimesniff.spec.whatwg.org/#sniffing-in-an-image-context
-
-    // https://en.wikipedia.org/wiki/BMP_file_format
-    var bmp: [UInt8] = "BM".map { $0.asciiValue! }
-    
-    // https://en.wikipedia.org/wiki/GIF
-    var gif87a: [UInt8] = "GIF87a".map { $0.asciiValue! }
-    var gif89a: [UInt8] = "GIF89a".map { $0.asciiValue! }
-    
-    // https://en.wikipedia.org/wiki/High_Efficiency_Image_File_Format
-    var heic: [UInt8] = [0x00, 0x00, 0x00, 0x18] + "ftypheic".map { $0.asciiValue! }
-    
-    // https://en.wikipedia.org/wiki/ILBM
-    var iff: [UInt8] = "FORM".map { $0.asciiValue! }
-    
-    // https://en.wikipedia.org/wiki/JPEG
-    var jpg: [UInt8] = [0xff, 0xd8, 0xff]
-    
-    // https://en.wikipedia.org/wiki/JPEG_2000
-    var jp2: [UInt8] = [0x00, 0x00, 0x00, 0x0c, 0x6a, 0x50, 0x20, 0x20, 0x0d, 0x0a, 0x87, 0x0a]
-    
-    // https://en.wikipedia.org/wiki/Portable_Network_Graphics
-    var png: [UInt8] = [0x89] + "PNG".map { $0.asciiValue! } + [0x0d, 0x0a, 0x1a, 0x0a]
-    
-    // https://en.wikipedia.org/wiki/Adobe_Photoshop#File_format
-    var psd: [UInt8] = "8BPS".map { $0.asciiValue! }
-    
-    // https://en.wikipedia.org/wiki/TIFF
-    var tif_ii: [UInt8] = "II".map { $0.asciiValue! } + [0x2a, 0x00]
-    var tif_mm: [UInt8] = "MM".map { $0.asciiValue! } + [0x00, 0x2a]
-    
-    // https://en.wikipedia.org/wiki/WebP
-    var webp: [UInt8] = "RIFF".map { $0.asciiValue! }
-    
-    // https://en.wikipedia.org/wiki/ICO_(file_format)
-    var win_ico: [UInt8] = [0x00, 0x00, 0x01, 0x00]
-    var win_cur: [UInt8] = [0x00, 0x00, 0x02, 0x00]
-
     private func contentType(forImageData data: Data?) -> String? {
         var bytes: [UInt8] = []
         (data! as NSData).getBytes(&bytes, length: 12)
@@ -415,4 +385,43 @@ class UploadImagePreparer {
         }
         return nil
     }
+
+    // See https://en.wikipedia.org/wiki/List_of_file_signatures
+    // https://mimesniff.spec.whatwg.org/#sniffing-in-an-image-context
+
+    // https://en.wikipedia.org/wiki/BMP_file_format
+    var bmp: [UInt8] = "BM".map { $0.asciiValue! }
+    
+    // https://en.wikipedia.org/wiki/GIF
+    var gif87a: [UInt8] = "GIF87a".map { $0.asciiValue! }
+    var gif89a: [UInt8] = "GIF89a".map { $0.asciiValue! }
+    
+    // https://en.wikipedia.org/wiki/High_Efficiency_Image_File_Format
+    var heic: [UInt8] = [0x00, 0x00, 0x00, 0x18] + "ftypheic".map { $0.asciiValue! }
+    
+    // https://en.wikipedia.org/wiki/ILBM
+    var iff: [UInt8] = "FORM".map { $0.asciiValue! }
+    
+    // https://en.wikipedia.org/wiki/JPEG
+    var jpg: [UInt8] = [0xff, 0xd8, 0xff]
+    
+    // https://en.wikipedia.org/wiki/JPEG_2000
+    var jp2: [UInt8] = [0x00, 0x00, 0x00, 0x0c, 0x6a, 0x50, 0x20, 0x20, 0x0d, 0x0a, 0x87, 0x0a]
+    
+    // https://en.wikipedia.org/wiki/Portable_Network_Graphics
+    var png: [UInt8] = [0x89] + "PNG".map { $0.asciiValue! } + [0x0d, 0x0a, 0x1a, 0x0a]
+    
+    // https://en.wikipedia.org/wiki/Adobe_Photoshop#File_format
+    var psd: [UInt8] = "8BPS".map { $0.asciiValue! }
+    
+    // https://en.wikipedia.org/wiki/TIFF
+    var tif_ii: [UInt8] = "II".map { $0.asciiValue! } + [0x2a, 0x00]
+    var tif_mm: [UInt8] = "MM".map { $0.asciiValue! } + [0x00, 0x2a]
+    
+    // https://en.wikipedia.org/wiki/WebP
+    var webp: [UInt8] = "RIFF".map { $0.asciiValue! }
+    
+    // https://en.wikipedia.org/wiki/ICO_(file_format)
+    var win_ico: [UInt8] = [0x00, 0x00, 0x01, 0x00]
+    var win_cur: [UInt8] = [0x00, 0x00, 0x02, 0x00]
 }
