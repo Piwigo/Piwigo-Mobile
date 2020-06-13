@@ -191,14 +191,14 @@ class UploadImagePreparer {
             imageCompressed = originalObject.jpegData(compressionQuality: compressionQuality)
 
             // Final image file will be in JPEG format
-            newUpload.fileName = URL(fileURLWithPath: URL(fileURLWithPath: upload.fileName!).deletingPathExtension().absoluteString).appendingPathExtension("JPG").absoluteString
+            newUpload.fileName = URL(fileURLWithPath: URL(fileURLWithPath: upload.fileName!).deletingPathExtension().absoluteString).appendingPathExtension("JPG").lastPathComponent
         }
         else if !(Model.sharedInstance().uploadFileTypes.contains(fileExt)) {
             // Image in unaccepted file format for Piwigo server => convert to JPEG format
             imageCompressed = originalObject.jpegData(compressionQuality: 1.0)
 
             // Final image file will be in JPEG format
-            newUpload.fileName = URL(fileURLWithPath: URL(fileURLWithPath: upload.fileName!).deletingPathExtension().absoluteString).appendingPathExtension("JPG").absoluteString
+            newUpload.fileName = URL(fileURLWithPath: URL(fileURLWithPath: upload.fileName!).deletingPathExtension().absoluteString).appendingPathExtension("JPG").lastPathComponent
         }
 
         // If compression failed or imageCompressed nil, try to use original image
@@ -237,7 +237,7 @@ class UploadImagePreparer {
                 let fileExt = (URL(fileURLWithPath: upload.fileName ?? "").pathExtension).lowercased()
                 let expectedFileExtension = fileExtension(forImageData: imageData)
                 if !(fileExt == expectedFileExtension) {
-                    newUpload.fileName = URL(fileURLWithPath: URL(fileURLWithPath: upload.fileName ?? "").deletingPathExtension().absoluteString).appendingPathExtension(expectedFileExtension ?? "").absoluteString
+                    newUpload.fileName = URL(fileURLWithPath: URL(fileURLWithPath: upload.fileName ?? "").deletingPathExtension().absoluteString).appendingPathExtension(expectedFileExtension ?? "").lastPathComponent
                 }
             }
         }
