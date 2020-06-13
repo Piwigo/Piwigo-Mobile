@@ -24,20 +24,6 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         }
     }
 
-    private var _cellAvailable = false
-    @objc var cellAvailable: Bool {
-        get {
-            _cellAvailable
-        }
-        set(available) {
-            _cellAvailable = available
-            darkenView?.isHidden = available
-            waitingActivity?.isHidden = available
-            uploadingProgress?.isHidden = available
-            uploadedImage?.isHidden = available
-        }
-    }
-
     private var _cellSelected = false
     @objc var cellSelected: Bool {
         get {
@@ -47,6 +33,9 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             _cellSelected = cellSelected
             selectedImage?.isHidden = !cellSelected
             darkenView?.isHidden = !cellSelected
+            waitingActivity?.isHidden = true
+            uploadingProgress?.isHidden = true
+            uploadedImage?.isHidden = true
         }
     }
 
@@ -179,7 +168,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
     override func prepareForReuse() {
         cellImage.image = UIImage(named: "placeholder")
         playImage.isHidden = true
-        cellAvailable = true
+        cellSelected = false
         setProgress(0, withAnimation: false)
     }
 }

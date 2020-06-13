@@ -322,8 +322,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         
         // Update interface
         DispatchQueue.main.async {
-            // Enable Select buttons
-            self.localImagesCollection.reloadData()
+            // Hide HUD (displayed when Photo Library motifies changes)
+            self.hideHUDwithSuccess(true) {
+                // Enable Select buttons
+                self.localImagesCollection.reloadData()
+            }
             
             // Below code is slower… Bizarre
 //            let indexPaths = self.localImagesCollection.indexPathsForVisibleSupplementaryElements(ofKind: UICollectionView.elementKindSectionHeader)
@@ -609,13 +612,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
             // Images in the upload queue cannot be selected
             let index = getImageIndex(for: indexPath)
-            if indexedUploadsInQueue.count < index {
-                // Use non-indexed data (might be quite slow)
-                if let _ = uploadsInQueue.firstIndex(where: { $0?.0 == cell.localIdentifier }) { return }
-            } else {
-                // Indexed uploads available
-                if indexedUploadsInQueue[getImageIndex(for: indexPath)] != nil { return }
-            }
             
             // Update the selection if not already done
             if !imagesBeingTouched.contains(indexPath) {
@@ -628,6 +624,15 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     selectedImages[index] = nil
                     cell.cellSelected = false
                 } else {
+                    // Can we select this image?
+                    if indexedUploadsInQueue.count < index {
+                        // Use non-indexed data (might be quite slow)
+                        if let _ = uploadsInQueue.firstIndex(where: { $0?.0 == cell.localIdentifier }) { return }
+                    } else {
+                        // Indexed uploads available
+                        if indexedUploadsInQueue[index] != nil { return }
+                    }
+
                     // Select the cell
                     selectedImages[index] = UploadProperties.init(localIdentifier: cell.localIdentifier, category: categoryId)
                     cell.cellSelected = true
@@ -871,7 +876,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     cell.cellUploaded = true
                 }
             } else {
-                cell.cellAvailable = true
+                cell.cellSelected = selectedImages[index] != nil
             }
         } else {
             // Use non-indexed data
@@ -884,13 +889,12 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 case .uploaded:
                     cell.cellUploaded = true
                 case .none:
-                    cell.cellAvailable = true
+                    cell.cellSelected = false
                 }
             } else {
-                cell.cellAvailable = true
+                cell.cellSelected = selectedImages[index] != nil
             }
         }
-        cell.cellSelected = selectedImages[index] != nil
         return cell
     }
 
@@ -1015,12 +1019,12 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // and update the cached fetch results, and reload the table sections to match.
         DispatchQueue.main.async(execute: {
             if let changeDetails = changeInstance.changeDetails(for: self.imageCollection) {
+                // Show HUD during update, preventing touches
+                self.showHUD(with: NSLocalizedString("editImageDetailsHUD_updatingPlural", comment: "Updating Photos…"), detail: nil)
                 // Update fetched asset collection
                 self.imageCollection = changeDetails.fetchResultAfterChanges
-                // Sort images in background
-                DispatchQueue.global(qos: .userInitiated).async {
-                    self.sortImagesAndIndexUploads()
-                }
+                // Sort images in foreground
+                self.sortImagesAndIndexUploads()
             }
         })
     }
