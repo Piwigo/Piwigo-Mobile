@@ -100,13 +100,17 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         fetchImagesByCreationDate(assetCollections: PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [self.imageCollectionId], options: nil))
         
         // Initialise arrays
-        selectedImages = Array(repeating: nil, count: imageCollection.count)            // At start, there is no image selected
+        selectedImages = .init(repeating: nil, count: imageCollection.count)            // At start, there is no image selected
         selectedSections = .init(repeating: .none, count: imageCollection.count)        // User cannot select sections of images until data is ready
-        indexedUploadsInQueue = []                                                      // At start, uploads are not indexed
         if let uploads = uploadProvider.fetchedResultsController.fetchedObjects {       // We provide a non-indexed list of images in the upload queue
             uploadsInQueue = uploads.map {($0.localIdentifier, kPiwigoUploadState(rawValue: $0.requestSate))}
         }                                                                               // so that we can at least show images in upload queue at start
                                                                                         // and prevent their selection
+        // Sort images in background
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.sortImagesAndIndexUploads()
+        }
+        
         // Collection flow layout of images
         collectionFlowLayout.scrollDirection = .vertical
         collectionFlowLayout.sectionHeadersPinToVisibleBounds = true
@@ -183,13 +187,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Update navigation bar and title
         updateNavBar()
 
-        // Progress bar
-//        ImageUploadProgressView.sharedInstance().delegate = self
-//        ImageUploadProgressView.sharedInstance().changePaletteMode()
-//        if ImageUploadManager.sharedInstance().imageUploadQueue.count > 0 {
-//            ImageUploadProgressView.sharedInstance().addView(to: view, forBottomLayout: bottomLayoutGuide)
-//        }
-
         // Register Photo Library changes
         PHPhotoLibrary.shared().register(self)
 
@@ -200,11 +197,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Register upload progress
         let name2: NSNotification.Name = NSNotification.Name(kPiwigoNotificationUploadProgress)
         NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress), name: name2, object: nil)
-
-        // Sort images in background
-        DispatchQueue.global(qos: .userInitiated).async {
-            self.sortImagesAndIndexUploads()
-        }
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -227,6 +219,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        
+        // Register Photo Library changes
+        PHPhotoLibrary.shared().unregisterChangeObserver(self)
 
         // Unregister palette changes
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
@@ -418,6 +413,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Loop over all images
 //        let start = CFAbsoluteTimeGetCurrent()
 //        print("=> Start indexing uploads…")
+        indexedUploadsInQueue = []
         for index in 0..<images.count {
             // Get image identifier
             let imageId = images[index].localIdentifier
