@@ -18,7 +18,7 @@
 		AD0FF9B821316ECE0094B907 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0FF9B721316ECE0094B907 /* SnapshotHelper.swift */; };
 		AD1092EB23D4E4D0006627B0 /* TagsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1092EA23D4E4D0006627B0 /* TagsProvider.swift */; };
 		AD11BDA22402C7E7003347BE /* UIColor+AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1F60012402B1B70099E5E5 /* UIColor+AppColors.swift */; };
-		AD13EB892494DFBF005987A8 /* UploadVideoPreparer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD13EB882494DFBF005987A8 /* UploadVideoPreparer.swift */; };
+		AD13EB892494DFBF005987A8 /* UploadVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD13EB882494DFBF005987A8 /* UploadVideo.swift */; };
 		AD196A9D2438D112006C492A /* LabelImageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AD196A9C2438D112006C492A /* LabelImageTableViewCell.m */; };
 		AD196A9F2438D11C006C492A /* LabelImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD196A9E2438D11C006C492A /* LabelImageTableViewCell.xib */; };
 		AD196AA12438D2D6006C492A /* ShareMetadataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD196AA02438D2D5006C492A /* ShareMetadataViewController.swift */; };
@@ -65,7 +65,7 @@
 		AD82C04C2433DB0E00F774BA /* SelectPrivacyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD82C04A2433D71C00F774BA /* SelectPrivacyViewController.swift */; };
 		AD84E60523BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD84E60423BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib */; };
 		AD870CD71F54AE110015BFA1 /* ImagesCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = AD870CD61F54AE110015BFA1 /* ImagesCollection.m */; };
-		AD8A4521247714EF002360EA /* UploadImagePreparer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8A4520247714EF002360EA /* UploadImagePreparer.swift */; };
+		AD8A4521247714EF002360EA /* UploadImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8A4520247714EF002360EA /* UploadImage.swift */; };
 		AD8A452324771618002360EA /* UploadTransfer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8A452224771618002360EA /* UploadTransfer.swift */; };
 		AD8F4B8B23F04B8C009483B6 /* TagSelectorViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD3369BE23F035F700F3FA80 /* TagSelectorViewController.storyboard */; };
 		AD92B8FE1F200083006E5B63 /* ReleaseNotes.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD92B9001F200083006E5B63 /* ReleaseNotes.strings */; };
@@ -199,7 +199,7 @@
 		AD0FF9B721316ECE0094B907 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotHelper.swift; path = fastlane/SnapshotHelper.swift; sourceTree = SOURCE_ROOT; };
 		AD1092EA23D4E4D0006627B0 /* TagsProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagsProvider.swift; sourceTree = "<group>"; };
 		AD1092EC23D50371006627B0 /* UploadTagsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadTagsViewController.swift; sourceTree = "<group>"; };
-		AD13EB882494DFBF005987A8 /* UploadVideoPreparer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadVideoPreparer.swift; sourceTree = "<group>"; };
+		AD13EB882494DFBF005987A8 /* UploadVideo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadVideo.swift; sourceTree = "<group>"; };
 		AD196A9B2438D112006C492A /* LabelImageTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LabelImageTableViewCell.h; sourceTree = "<group>"; };
 		AD196A9C2438D112006C492A /* LabelImageTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LabelImageTableViewCell.m; sourceTree = "<group>"; };
 		AD196A9E2438D11C006C492A /* LabelImageTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LabelImageTableViewCell.xib; sourceTree = "<group>"; };
@@ -306,7 +306,7 @@
 		AD8549351FE98CE300155BA1 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AD870CD61F54AE110015BFA1 /* ImagesCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagesCollection.m; sourceTree = "<group>"; };
 		AD870CD81F54AE230015BFA1 /* ImagesCollection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImagesCollection.h; sourceTree = "<group>"; };
-		AD8A4520247714EF002360EA /* UploadImagePreparer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadImagePreparer.swift; sourceTree = "<group>"; };
+		AD8A4520247714EF002360EA /* UploadImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadImage.swift; sourceTree = "<group>"; };
 		AD8A452224771618002360EA /* UploadTransfer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadTransfer.swift; sourceTree = "<group>"; };
 		AD92B9011F200092006E5B63 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
 		ADA18F6D23F02108006B110A /* TagsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagsViewController.m; sourceTree = "<group>"; };
@@ -745,8 +745,8 @@
 			isa = PBXGroup;
 			children = (
 				ADE69C042477D9B8002D953F /* UploadManager.swift */,
-				AD8A4520247714EF002360EA /* UploadImagePreparer.swift */,
-				AD13EB882494DFBF005987A8 /* UploadVideoPreparer.swift */,
+				AD8A4520247714EF002360EA /* UploadImage.swift */,
+				AD13EB882494DFBF005987A8 /* UploadVideo.swift */,
 				AD8A452224771618002360EA /* UploadTransfer.swift */,
 				AD1D5F6A248553710004C8BC /* UploadFinisher.swift */,
 			);
@@ -1541,7 +1541,7 @@
 				ADA24DB8243A767700864D1F /* DefaultImageSizeViewController.swift in Sources */,
 				ADA24DB1243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift in Sources */,
 				ADE69C052477D9B8002D953F /* UploadManager.swift in Sources */,
-				AD8A4521247714EF002360EA /* UploadImagePreparer.swift in Sources */,
+				AD8A4521247714EF002360EA /* UploadImage.swift in Sources */,
 				AD8A452324771618002360EA /* UploadTransfer.swift in Sources */,
 				ADBDD9372441AB3800F19DFC /* LabelTableViewCell.swift in Sources */,
 				ADEC6B052455BC6F0011527C /* LocalAlbumsTableViewCell.swift in Sources */,
@@ -1557,7 +1557,7 @@
 				ADBE45272449969C00AE0001 /* PhotosFetch.swift in Sources */,
 				ADFC3A4C2401D704004CD337 /* PrivacyPolicyViewController.swift in Sources */,
 				AD31F5F9242FB76900BD65FC /* ReleaseNotesViewController.swift in Sources */,
-				AD13EB892494DFBF005987A8 /* UploadVideoPreparer.swift in Sources */,
+				AD13EB892494DFBF005987A8 /* UploadVideo.swift in Sources */,
 				AD82C04C2433DB0E00F774BA /* SelectPrivacyViewController.swift in Sources */,
 				ADC8167B244B5EDE00650223 /* LocalImagesViewController.swift in Sources */,
 				ADD210432440DE5A00DD79A6 /* SettingsViewController.swift in Sources */,

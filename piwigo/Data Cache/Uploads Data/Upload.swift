@@ -24,14 +24,15 @@ class Upload: NSManagedObject {
     // The other attributes of an upload.
     @NSManaged var category: Int64
     @NSManaged var requestDate: Date
-    @NSManaged var requestSate: Int16
-    @NSManaged var requestProgress: Float
+    @NSManaged var requestState: Int16
+    @NSManaged var requestDelete: Bool
 
     @NSManaged var creationDate: Date?
     @NSManaged var fileName: String?
+    @NSManaged var mimeType: String?
+    
     @NSManaged var author: String?
     @NSManaged var privacyLevel: Int16
-
     @NSManaged var title: String?
     @NSManaged var comment: String?
     @NSManaged var tags: Set<Tag>?
@@ -55,14 +56,15 @@ class Upload: NSManagedObject {
         requestDate = uploadProperties.requestDate
         
         // State of upload request defaults to "waiting"
-        requestSate = Int16(uploadProperties.requestState.rawValue)
+        requestState = Int16(uploadProperties.requestState.rawValue)
         
-        // Progress of upload requests during transfer defaults to 0.0
-        requestProgress = uploadProperties.requestProgress
+        // Does not suggest to delete the uploaded image by default
+        requestDelete = uploadProperties.requestDelete
 
-        // Photo creation date and filename
+        // Photo creation date, filename and MIME type
         creationDate = uploadProperties.creationDate ?? Date.init()
         fileName = uploadProperties.fileName ?? ""
+        mimeType = uploadProperties.mimeType ?? ""
 
         // Photo author name is empty if not provided
         author = uploadProperties.author ?? ""
@@ -81,12 +83,14 @@ class Upload: NSManagedObject {
 extension Upload {
     var state: kPiwigoUploadState {
         
-        switch self.requestSate {
+        switch self.requestState {
         case kPiwigoUploadState.waiting.rawValue:
             return .waiting
             
         case kPiwigoUploadState.preparing.rawValue:
             return .preparing
+        case kPiwigoUploadState.prepared.rawValue:
+            return .prepared
         case kPiwigoUploadState.formatError.rawValue:
             return .formatError
 
@@ -112,6 +116,8 @@ extension Upload {
 
         case .preparing:
             return NSLocalizedString("imageUploadTableCell_preparing", comment: "Preparing...")
+        case .prepared:
+            return NSLocalizedString("imageUploadTableCell_prepared", comment: "Ready for upload...")
         case .formatError:
             return NSLocalizedString("imageUploadError_format", comment: "File format not accepted by Piwigo server.")
 
@@ -161,6 +167,7 @@ enum kPiwigoUploadState : Int16 {
     case waiting
     
     case preparing
+    case prepared
     case formatError
 
     case uploading
@@ -176,25 +183,27 @@ struct UploadProperties
     let category: Int                       // 8
     let requestDate: Date                   // "2020-08-22 19:18:43"
     var requestState: kPiwigoUploadState    // See enum above
-    var requestProgress: Float              // 0.0 ... 1.0
+    var requestDelete: Bool                 // false by default
 
     var creationDate: Date?                 // "2012-08-23 09:18:43"
     var fileName: String?                   // "IMG123.JPG"
+    var mimeType: String?                   // "image/png"
+    
     var author: String?                     // "Author"
     var privacyLevel: kPiwigoPrivacy?       // 0
     var title: String?                      // "Image title"
     var comment: String?                    // "A comment…"
     var tags: Set<Tag>?                     // Array of tags
-    var imageId: Int                       // 1042
+    var imageId: Int                        // 1042
 }
 
 extension UploadProperties {
     init(localIdentifier: String, category: Int) {
         self.init(localIdentifier: localIdentifier, category: category,
             // Upload request date is now and state is waiting
-            requestDate: Date.init(), requestState: .waiting, requestProgress: 0.0,
+            requestDate: Date.init(), requestState: .waiting, requestDelete: false,
             // Photo creation date and filename
-            creationDate: Date.init(), fileName: "",
+            creationDate: Date.init(), fileName: "", mimeType: "",
             // Photo author name defaults to name entered in Settings
             author: Model.sharedInstance()?.defaultAuthor ?? "",
             // Privacy level defaults to level selected in Settings

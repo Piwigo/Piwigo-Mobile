@@ -26,6 +26,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
     
     // MARK: View
     @IBOutlet var queueTableView: UITableView!
+    private var actionBarButton: UIBarButtonItem?
     private var doneBarButton: UIBarButtonItem?
 
     private var allUploads: [Upload] = []
@@ -45,12 +46,13 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
                                               String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("singleImage", comment: "Photo"))
         
         // Get all uploads
-        allUploads = uploadsProvider.fetchedResultsController.fetchedObjects ?? []
+//        allUploads = uploadsProvider.fetchedResultsController.fetchedObjects ?? []
 
         // Fetch uploads and prepare data source in background
 //        fetchAndSortImages()
 
-        // Button for returning to albums/images
+        // Buttons
+        actionBarButton = UIBarButtonItem(image: UIImage(named: "list"), landscapeImagePhone: UIImage(named: "listCompact"), style: .plain, target: self, action: #selector(didTapActionButton))
         doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(quitUpload))
         doneBarButton?.accessibilityIdentifier = "Done"
 
@@ -95,6 +97,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
 
         // Navigation bar button and identifier
         navigationItem.setLeftBarButtonItems([doneBarButton].compactMap { $0 }, animated: true)
+        navigationItem.setRightBarButtonItems([actionBarButton].compactMap { $0 }, animated: true)
         navigationController?.navigationBar.accessibilityIdentifier = "UploadQueueNav"
     }
 
@@ -114,12 +117,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
             }
         }
     }
-
-    @objc func quitUpload() {
-        // Leave Upload action and return to Albums and Images
-        dismiss(animated: true)
-    }
-
+    
     deinit {
         // Unregister palette changes
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
@@ -128,6 +126,55 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
         // Unregister palette changes
         let name2: NSNotification.Name = NSNotification.Name(kPiwigoNotificationUploadProgress)
         NotificationCenter.default.removeObserver(self, name: name2, object: nil)
+    }
+
+    // MARK: - Action Menu
+    
+    @objc func didTapActionButton() {
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+
+        // Cancel action
+        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in
+            })
+
+        // Clear upload queue
+        let clearAction = UIAlertAction(title: "", style: .default, handler: { action in
+            // Get completed uploads
+            guard let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects else {
+                return
+            }
+            // Get uploads to delete
+            let uploadsToDelete = allUploads.filter({ $0.requestState == kPiwigoUploadState.uploaded.rawValue})
+            // Delete cimpleted uploads
+            self.uploadsProvider.deleteUploads(from: uploadsToDelete) { (error) in
+                guard let _ = error else {
+                    return
+                }
+                print("ERROR ENCOUNTERED WHEN TRYING TO DELETE COMPLETED UPLOADS")
+            }
+        })
+
+        // Add actions
+        alert.addAction(cancelAction)
+        alert.addAction(clearAction)
+
+        // Present list of actions
+        alert.view.tintColor = UIColor.piwigoColorOrange()
+        if #available(iOS 13.0, *) {
+            alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+        } else {
+            // Fallback on earlier versions
+        }
+        alert.popoverPresentationController?.barButtonItem = actionBarButton
+        present(alert, animated: true) {
+            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+            alert.view.tintColor = UIColor.piwigoColorOrange()
+        }
+    }
+    
+    @objc func quitUpload() {
+        // Leave Upload action and return to Albums and Images
+        dismiss(animated: true)
     }
 
 
@@ -344,7 +391,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return allUploads.count
+        return uploadsProvider.fetchedResultsController.fetchedObjects?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -352,21 +399,18 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
             print("Error: tableView.dequeueReusableCell does not return a UploadImageTableViewCell!")
             return UploadImageTableViewCell()
         }
-
-        cell.configure(with: allUploads[indexPath.row])
+        guard let upload = uploadsProvider.fetchedResultsController.fetchedObjects?[indexPath.row] else { return cell }
+        cell.configure(with: upload)
         return cell
     }
 
     @objc func applyUploadProgress(_ notification: Notification) {
         let localIdentifier =  (notification.userInfo?["localIndentifier"] ?? "") as! String
         let progressFraction = (notification.userInfo?["progressFraction"] ?? 0.0) as! Float
-        if let indexPathsOfVisibleCells = queueTableView.indexPathsForVisibleRows {
-            for indexPath in indexPathsOfVisibleCells {
-                if allUploads[indexPath.row].localIdentifier == localIdentifier {
-                    if let cell = queueTableView.cellForRow(at: indexPath) as? UploadImageTableViewCell {
-                        cell.setProgress(progressFraction)
-                    }
-                }
+        let visibleCells = queueTableView.visibleCells as! [UploadImageTableViewCell]
+        for cell in visibleCells {
+            if cell.localIdentifier == localIdentifier {
+                cell.setProgress(progressFraction)
             }
         }
     }
@@ -443,36 +487,31 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
 
+        let oldIndexPath = indexPath ?? IndexPath.init(row: 0, section: 0)
         switch type {
         case .insert:
-            print(">>>> controller:insert...")
-            // Image added to upload queue
-            if let upload:Upload = anObject as? Upload {
-                allUploads.append(upload)
-            }
+            guard let newIndexPath = newIndexPath else { return }
+            queueTableView.insertRows(at: [newIndexPath], with: .automatic)
         case .delete:
-            print(">>>> controller:delete...")
-            // Image removed from upload queue
-            if let upload:Upload = anObject as? Upload {
-                allUploads.removeAll(where: { $0.localIdentifier == upload.localIdentifier})
-            }
+            queueTableView.deleteRows(at: [oldIndexPath], with: .automatic)
         case .move:
-            print(">>>> controller:move...")
+            guard let newIndexPath = newIndexPath else { return }
+            queueTableView.deleteRows(at: [oldIndexPath], with: .automatic)
+            queueTableView.insertRows(at: [newIndexPath], with: .automatic)
         case .update:
-            print(">>>> controller:update...")
             // Upload in progress
-            if let upload:Upload = anObject as? Upload {
-                if let indexPathsOfVisibleCells = queueTableView.indexPathsForVisibleRows {
-                    for indexPath in indexPathsOfVisibleCells {
-                        if allUploads[indexPath.row].localIdentifier == upload.localIdentifier {
-                            if let cell = queueTableView.cellForRow(at: indexPath) as? UploadImageTableViewCell {
-                                cell.configure(with: upload)
-                            }
-                        }
-                    }
-                }
-            }
-
+            guard let upload:Upload = anObject as? Upload else { return }
+            guard let cell = tableView(queueTableView, cellForRowAt: oldIndexPath) as? UploadImageTableViewCell else { return }
+            cell.configure(with: upload)
+//            if let indexPathsOfVisibleCells = queueTableView.indexPathsForVisibleRows {
+//                for indexPath in indexPathsOfVisibleCells {
+//                    if allUploads[indexPath.row].localIdentifier == upload.localIdentifier {
+//                        if let cell = queueTableView.cellForRow(at: indexPath) as? UploadImageTableViewCell {
+//                            cell.configure(with: upload)
+//                        }
+//                    }
+//                }
+//            }
         @unknown default:
             fatalError("UploadQueueViewController: unknown NSFetchedResultsChangeType")
         }

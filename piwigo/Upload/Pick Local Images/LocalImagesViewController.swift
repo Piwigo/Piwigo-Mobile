@@ -103,7 +103,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         selectedImages = .init(repeating: nil, count: imageCollection.count)            // At start, there is no image selected
         selectedSections = .init(repeating: .none, count: imageCollection.count)        // User cannot select sections of images until data is ready
         if let uploads = uploadProvider.fetchedResultsController.fetchedObjects {       // We provide a non-indexed list of images in the upload queue
-            uploadsInQueue = uploads.map {($0.localIdentifier, kPiwigoUploadState(rawValue: $0.requestSate))}
+            uploadsInQueue = uploads.map {($0.localIdentifier, kPiwigoUploadState(rawValue: $0.requestState))}
         }                                                                               // so that we can at least show images in upload queue at start
                                                                                         // and prevent their selection
         // Sort images in background
@@ -868,7 +868,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             // Use indexed data
             if let state = indexedUploadsInQueue[index]?.1 {
                 switch state {
-                case .waiting, .preparing, .formatError, .paused:
+                case .waiting, .preparing, .prepared, .formatError, .paused:
                     cell.cellWaiting = true
                 case .uploading, .finishing:
                     cell.cellUploading = true
@@ -882,7 +882,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             // Use non-indexed data
             if let upload = uploadsInQueue.first(where: { $0?.0 == imageAsset.localIdentifier }) {
                 switch upload?.1 {
-                case .waiting, .preparing, .formatError, .paused:
+                case .waiting, .preparing, .prepared, .formatError, .paused:
                     cell.cellWaiting = true
                 case .uploading, .finishing:
                     cell.cellUploading = true
@@ -1220,16 +1220,16 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
             if let upload:Upload = anObject as? Upload {
                 // Append upload to non-indexed upload queue
                 if let index = uploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
-                    uploadsInQueue[index] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestSate))
+                    uploadsInQueue[index] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState))
                 } else {
-                    uploadsInQueue.append((upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestSate)))
+                    uploadsInQueue.append((upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState)))
                 }
                 // Get index of uploaded image
                 if let indexOfUploadedImage = selectedImages.firstIndex(where: { $0?.localIdentifier == upload.localIdentifier }) {
                     // Deselect image
                     selectedImages[indexOfUploadedImage] = nil
                     // Add image to indexed upload queue
-                    indexedUploadsInQueue[indexOfUploadedImage] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestSate))
+                    indexedUploadsInQueue[indexOfUploadedImage] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState))
                 }
                 // Update corresponding cell
                 updateCell(for: upload)
@@ -1260,11 +1260,11 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
             if let upload:Upload = anObject as? Upload {
                 // Update upload in non-indexed upload queue
                 if let indexInQueue = uploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
-                    uploadsInQueue[indexInQueue] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestSate))
+                    uploadsInQueue[indexInQueue] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState))
                 }
                 // Update image in indexed upload queue
                 if let indexInIndexedQueue = indexedUploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
-                    indexedUploadsInQueue[indexInIndexedQueue] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestSate))
+                    indexedUploadsInQueue[indexInIndexedQueue] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState))
                 }
                 // Update corresponding cell
                 updateCell(for: upload)
@@ -1297,7 +1297,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
                 if let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell {
                     cell.selectedImage.isHidden = true
                     switch upload.state {
-                    case .waiting, .preparing, .formatError, .paused:
+                    case .waiting, .preparing, .prepared, .formatError, .paused:
                         cell.cellWaiting = true
                     case .uploading, .finishing:
                         cell.cellUploading = true

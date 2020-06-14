@@ -155,7 +155,112 @@ class UploadsProvider: NSObject {
         }
         return success
     }
+    
+    
+    // MARK: - Delete Uploads
+    /**
+     Delete a batch of upload requests from the Core Data store on a private queue,
+     processing the record in batches to avoid a high memory footprint.
+    */
+    func deleteUploads(from uploadRequest: [Upload], completionHandler: @escaping (Error?) -> Void) {
+        
+        guard !uploadRequest.isEmpty else { return }
+        
+        // Create a private queue context.
+        let taskContext = DataController.getPrivateContext()
+                
+        // Process records in batches to avoid a high memory footprint.
+        let batchSize = 256
+        let count = uploadRequest.count
+        
+        // Determine the total number of batches.
+        var numBatches = count / batchSize
+        numBatches += count % batchSize > 0 ? 1 : 0
+        
+        for batchNumber in 0 ..< numBatches {
+            
+            // Determine the range for this batch.
+            let batchStart = batchNumber * batchSize
+            let batchEnd = batchStart + min(batchSize, count - batchNumber * batchSize)
+            let range = batchStart..<batchEnd
+            
+            // Create a batch for this range from the decoded JSON.
+            let uploadsBatch = Array(uploadRequest[range])
+            
+            // Stop the entire import if any batch is unsuccessful.
+            if !deleteOneBatch(uploadsBatch, taskContext: taskContext) {
+                return
+            }
+        }
+        completionHandler(nil)
+    }
+    
+    /**
+     Delete one batch of uploads on a private queue. After saving,
+     resets the context to clean up the cache and lower the memory footprint.
+     
+     NSManagedObjectContext.performAndWait doesn't rethrow so this function
+     catches throws within the closure and uses a return value to indicate
+     whether the import is successful.
+    */
+    private func deleteOneBatch(_ uploadsBatch: [Upload], taskContext: NSManagedObjectContext) -> Bool {
+        
+        var success = false
+                
+        // taskContext.performAndWait
+        taskContext.performAndWait {
+            
+            // Retrieve existing completed uploads
+            // Create a fetch request for the Upload entity sorted by localIdentifier
+            let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "localIdentifier", ascending: true)]
+            fetchRequest.predicate = NSPredicate(format: "requestState == %d", kPiwigoUploadState.uploaded.rawValue)
 
+            // Create a fetched results controller and set its fetch request, context, and delegate.
+            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                                managedObjectContext: taskContext,
+                                                  sectionNameKeyPath: nil, cacheName: nil)
+            
+            // Perform the fetch.
+            do {
+                try controller.performFetch()
+            } catch {
+                fatalError("Unresolved error \(error)")
+            }
+            let completedUploads = controller.fetchedObjects ?? []
+
+            // Loop over uploads to delete
+            for upload in uploadsBatch {
+            
+                // Index of this upload in cache
+                if let index = completedUploads.firstIndex(where: { (item) -> Bool in
+                    item.localIdentifier == upload.localIdentifier })
+                {
+                    // Delete upload record
+                    taskContext.delete(completedUploads[index])
+                }
+            }
+            
+            // Save all insertions and deletions from the context to the store.
+            if taskContext.hasChanges {
+                do {
+                    try taskContext.save()
+                }
+                catch {
+                    print("Error: \(error)\nCould not save Core Data context.")
+                    return
+                }
+                // Reset the taskContext to free the cache and lower the memory footprint.
+                taskContext.reset()
+            }
+
+            success = true
+        }
+        return success
+    }
+
+
+    // MARK: - Update Uploads
     /**
      Updates an upload, updating managed object from the new data,
      and saving it to the persistent store, on a private queue. After saving,

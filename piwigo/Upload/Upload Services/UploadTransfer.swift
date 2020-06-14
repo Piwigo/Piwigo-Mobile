@@ -18,10 +18,10 @@ class UploadTransfer {
      Initialises the transfer of an image or a video with a Piwigo server.
      The file is uploaded by sending chunks whose size is defined on the server.
      */
-    func uploadImage(_ imageData: Data?, with upload: UploadProperties, mimeType: String,
-                           onProgress: @escaping (_ progress: Progress?, _ currentChunk: Int, _ totalChunks: Int) -> Void,
-                           onCompletion completion: @escaping (_ task: URLSessionTask?, _ response: [AnyHashable : Any]?, _ imageParameters: [String : String]) -> Void,
-                           onFailure fail: @escaping (_ task: URLSessionTask?, _ error: Error?) -> Void) {
+    func startUpload(with upload: UploadProperties,
+                     onProgress: @escaping (_ progress: Progress?, _ currentChunk: Int, _ totalChunks: Int) -> Void,
+                     onCompletion completion: @escaping (_ task: URLSessionTask?, _ response: [AnyHashable : Any]?, _ imageParameters: [String : String]) -> Void,
+                     onFailure fail: @escaping (_ task: URLSessionTask?, _ error: Error?) -> Void) {
         
         // Calculate chunk size
         let chunkSize = Model.sharedInstance().uploadChunkSize * 1024
@@ -47,8 +47,22 @@ class UploadTransfer {
             kPiwigoImagesUploadParamAuthor: upload.author ?? "",
             kPiwigoImagesUploadParamDescription: upload.comment ?? "",
 //            kPiwigoImagesUploadParamTags: upload.tagIds,
-            kPiwigoImagesUploadParamMimeType: mimeType
+            kPiwigoImagesUploadParamMimeType: upload.mimeType ?? ""
         ]
+
+        // Get file to upload
+        let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-") + "-" + upload.fileName!
+        let fileURL = UploadManager.applicationUploadsDirectory.appendingPathComponent(fileName)
+        var imageData: Data? = nil
+        do {
+            try imageData = NSData (contentsOf: fileURL) as Data
+            // Swift bug - https://forums.developer.apple.com/thread/115401
+//                    try imageData = Data(contentsOf: exportSession.outputURL!)
+        } catch {
+            // define error !!!!
+            completion(nil, [:], imageParameters)
+            return
+        }
 
         // Calculate number of chunks
         var chunks = (imageData?.count ?? 0) / chunkSize
@@ -61,6 +75,14 @@ class UploadTransfer {
                        forOffset: 0, onChunk: 0, forTotalChunks: chunks,
                        onProgress: onProgress,
                        onCompletion: { task, response, imageParameters in
+                            // Delete uploaded file from Piwigo/Uploads directory
+                            do {
+                                try FileManager.default.removeItem(at: fileURL)
+                            } catch {
+                                // define error !!!!
+                                completion(task, response, imageParameters)
+                                return
+                            }
                             // Close upload session
                             Model.sharedInstance().imageUploadManager.invalidateSessionCancelingTasks(true)
                             // Done, return

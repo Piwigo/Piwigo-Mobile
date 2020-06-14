@@ -12,6 +12,16 @@ import UIKit
 @objc
 class UploadImageTableViewCell: UITableViewCell {
     
+    private var _localIdentifier = ""
+    @objc var localIdentifier: String {
+        get {
+            _localIdentifier
+        }
+        set(localIdentifier) {
+            _localIdentifier = localIdentifier
+        }
+    }
+
     @IBOutlet weak var cellImage: UIImageView!
     @IBOutlet weak var playImage: UIImageView!
     @IBOutlet weak var uploadInfoLabel: UILabel!
@@ -22,6 +32,7 @@ class UploadImageTableViewCell: UITableViewCell {
 
         // Background color and aspect
         backgroundColor = UIColor.piwigoColorCellBackground()
+        localIdentifier = upload.localIdentifier
 
         // Get corresponding image asset
         guard let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [upload.localIdentifier], options: nil).firstObject else {
@@ -38,12 +49,8 @@ class UploadImageTableViewCell: UITableViewCell {
         
         // Uploading progress bar
         switch upload.state {
-        case .waiting, .preparing, .formatError:
+        case .waiting, .preparing, .prepared, .formatError, .uploading, .paused:
             uploadingProgress?.setProgress(0.0, animated: false)
-
-        case .uploading, .paused:
-            uploadingProgress?.setProgress(upload.requestProgress, animated: false)
-
         case .finishing, .uploaded:
             uploadingProgress?.setProgress(1.0, animated: false)
         }

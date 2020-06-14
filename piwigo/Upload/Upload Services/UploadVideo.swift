@@ -1,5 +1,5 @@
 //
-//  UploadVideoPreparer.swift
+//  UploadVideo.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 13/06/2020.
@@ -9,54 +9,45 @@
 import AVFoundation
 import Photos
 
-class UploadVideoPreparer {
+class UploadVideo {
     
-    func prepare(from imageAsset: PHAsset, for upload: UploadProperties,
-                      completionHandler: @escaping (_ updatedUpload: UploadProperties?, _ mimitype: String?, _ imageData: Data?, Error?) -> Void) {
+    func prepare(_ upload: UploadProperties, from imageAsset: PHAsset,
+                 completionHandler: @escaping (UploadProperties, Error?) -> Void) {
         // Retrieve video data
         let options = getVideoRequestOptions()
-        retrieveVideoAsset(from: imageAsset, with: options) { (avasset, options, error) in
+        retrieveVideo(from: imageAsset, with: options) { (avasset, options, error) in
             // Error?
             if let error = error {
-                completionHandler(upload, "", nil, error)
+                completionHandler(upload, error)
                 return
             }
 
             // Valid AVAsset?
             guard let originalVideo = avasset else {
                 // define error !!!!
-                completionHandler(upload, "", nil, error)
+                completionHandler(upload, error)
                 return
             }
             
             // Get MIME type
             guard let originalFileURL = (originalVideo as? AVURLAsset)?.url else {
                 // define error !!!!
-                completionHandler(upload, "", nil, error)
+                completionHandler(upload, error)
                 return
             }
             guard let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, originalFileURL.pathExtension as NSString, nil)?.takeRetainedValue() else {
                 // define error !!!!
-                completionHandler(upload, "", nil, error)
+                completionHandler(upload, error)
                 return
             }
             guard let mimeType = UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue() else  {
                 // define error !!!!
-                completionHandler(upload, "", nil, error)
+                completionHandler(upload, error)
                 return
             }
+            var newUpload = upload
+            newUpload.mimeType = mimeType as String
 
-            // Get video data
-            var imageData: Data? = nil
-            do {
-                try imageData = NSData (contentsOf: originalFileURL) as Data
-                // Swift bug - https://forums.developer.apple.com/thread/115401
-//                    try imageData = Data(contentsOf: exportSession.outputURL!)
-            } catch {
-                // define error !!!!
-                completionHandler(upload, "", nil, nil)
-            }
-            
             // Determine if metadata contains private data
             let assetMetadata = originalVideo.commonMetadata
             let locationMetadata = AVMetadataItem.metadataItems(from: assetMetadata, filteredByIdentifier: .commonIdentifierLocation)
@@ -65,12 +56,23 @@ class UploadVideoPreparer {
             if !Model.sharedInstance().stripGPSdataOnUpload ||
                 (Model.sharedInstance().stripGPSdataOnUpload && (locationMetadata.count == 0)) {
 
-                // Upload video with tags and properties
-                completionHandler(upload, mimeType as String, imageData, nil)
-                return
+                // Copy video into Piwigo/Upload directory
+                let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-") + "-" + upload.fileName!
+                let fileURL = UploadManager.applicationUploadsDirectory.appendingPathComponent(fileName)
+                do {
+                    try FileManager.default.copyItem(at: originalFileURL, to: fileURL)
+                    // Upload video with tags and properties
+                    completionHandler(newUpload, nil)
+                    return
+                }
+                catch let error as NSError {
+                    print("Ooops! Something went wrong: \(error)")
+                    completionHandler(upload, nil)
+                    return
+                }
             }
             
-            // Remove metadata by exporting a new video
+            // Remove metadata by exporting a new video in MP4 format
             // Determine optimal export options (highest quality for device by default)
             let exportPreset = self.getExportPreset(for: imageAsset, and: originalVideo)
             
@@ -78,63 +80,56 @@ class UploadVideoPreparer {
             self.getExportSession(imageAsset: imageAsset, options: options, exportPreset: exportPreset) { (exportSession, error) in
                 // Error?
                 if let error = error {
-                    completionHandler(upload, "", nil, error)
+                    completionHandler(upload, error)
                     return
                 }
 
                 // Valid export session?
                 guard let exportSession = exportSession else {
                     // define error !!!!
-                    completionHandler(upload, "", nil, error)
+                    completionHandler(upload, error)
                     return
                 }
                 
                 // Export video in MP4 format
-                self.modifyVideo(upload, with: exportSession) { (upload, mimeType, imageData, error) in
+                self.modifyVideo(for: upload, with: exportSession) { (newUpload, error) in
                     // Error?
                     if let error = error {
-                        completionHandler(upload, "", nil, error)
+                        completionHandler(newUpload, error)
                         return
                     }
-
-                    // Valid export session?
-                    guard let imageData = imageData else {
-                        // define error !!!!
-                        completionHandler(upload, mimeType, nil, error)
-                        return
-                    }
-
-                    completionHandler(upload, mimeType, imageData, error)
+                    completionHandler(newUpload, nil)
+                    return
                 }
             }
 
-            // No data — Inform user that it won't succeed
-            completionHandler(upload, "", nil, nil)
+            // Could not prepare the video file
+            completionHandler(upload, nil)
 //                    self.showError(withTitle: NSLocalizedString("videoUploadError_title", comment: "Video Upload Error"), andMessage: NSLocalizedString("videoUploadError_export", comment: "Sorry, the video could not be retrieved for the upload. Error: \(exportSession?.error?.localizedDescription ?? "")"), forRetrying: false, withImage: image)
             return
         }
 
-        // Inform user
+        // Could not retrieve the video
         // define error !!!!
-        completionHandler(upload, "", nil, nil)
+        completionHandler(upload, nil)
 //        self.showError(withTitle: NSLocalizedString("uploadCancelled_title", comment: "Upload Cancelled"), andMessage: NSLocalizedString("videoUploadCancelled_message", comment: "The upload of the video has been cancelled."), forRetrying: true, withImage: image)
     }
-            
-    func convert(from imageAsset: PHAsset, for upload: UploadProperties,
-                      completionHandler: @escaping (_ updatedUpload: UploadProperties?, _ mimitype: String?, _ imageData: Data?, Error?) -> Void) {
+    
+    func convert(_ imageAsset: PHAsset, for upload: UploadProperties,
+                 completionHandler: @escaping (UploadProperties, Error?) -> Void) {
         // Retrieve video data
         let options = getVideoRequestOptions()
-        retrieveVideoAsset(from: imageAsset, with: options) { (avasset, options, error) in
+        retrieveVideo(from: imageAsset, with: options) { (avasset, options, error) in
             // Error?
             if let error = error {
-                completionHandler(upload, "", nil, error)
+                completionHandler(upload, error)
                 return
             }
 
             // Valid AVAsset?
             guard let avasset = avasset else {
                 // define error !!!!
-                completionHandler(upload, "", nil, error)
+                completionHandler(upload, error)
                 return
             }
             
@@ -145,33 +140,26 @@ class UploadVideoPreparer {
             self.getExportSession(imageAsset: imageAsset, options: options, exportPreset: exportPreset) { (exportSession, error) in
                 // Error?
                 if let error = error {
-                    completionHandler(upload, "", nil, error)
+                    completionHandler(upload, error)
                     return
                 }
 
                 // Valid export session?
                 guard let exportSession = exportSession else {
                     // define error !!!!
-                    completionHandler(upload, "", nil, error)
+                    completionHandler(upload, error)
                     return
                 }
                 
                 // Export video in MP4 format
-                self.modifyVideo(upload, with: exportSession) { (upload, mimeType, imageData, error) in
+                self.modifyVideo(for: upload, with: exportSession) { (newUpload, error) in
                     // Error?
                     if let error = error {
-                        completionHandler(upload, "", nil, error)
+                        completionHandler(newUpload, error)
                         return
                     }
 
-                    // Valid export session?
-                    guard let imageData = imageData else {
-                        // define error !!!!
-                        completionHandler(upload, mimeType, nil, error)
-                        return
-                    }
-
-                    completionHandler(upload, mimeType, imageData, error)
+                    completionHandler(newUpload, nil)
                 }
             }
         }
@@ -221,8 +209,8 @@ class UploadVideoPreparer {
         return exportPreset
     }
     
-    private func retrieveVideoAsset(from imageAsset: PHAsset, with options: PHVideoRequestOptions,
-                                    completionHandler: @escaping (AVAsset?, PHVideoRequestOptions, Error?) -> Void) {
+    private func retrieveVideo(from imageAsset: PHAsset, with options: PHVideoRequestOptions,
+                               completionHandler: @escaping (AVAsset?, PHVideoRequestOptions, Error?) -> Void) {
         print("•••> retrieveVideoAssetFrom...")
 
         // The block Photos calls periodically while downloading the video.
@@ -331,8 +319,8 @@ class UploadVideoPreparer {
 
     // MARK: - Modify Metadata
 
-    private func modifyVideo(_ upload: UploadProperties, with exportSession: AVAssetExportSession,
-                             completionHandler: @escaping (_ updatedUpload: UploadProperties?, _ mimetype: String?, _ imageData: Data?, Error?) -> Void) {
+    private func modifyVideo(for upload: UploadProperties, with exportSession: AVAssetExportSession,
+                             completionHandler: @escaping (UploadProperties, Error?) -> Void) {
     print("•••> modifyVideo...")
     
         // Strips private metadata if user requested it in Settings
@@ -356,13 +344,14 @@ class UploadVideoPreparer {
         // <<==== End of code for debugging
 
         // Prepare MIME type
-        let mimeType = "video/mp4"
         var newUpload = upload
-        newUpload.fileName = URL(fileURLWithPath: newUpload.fileName ?? "file").deletingPathExtension().appendingPathExtension("mp4").lastPathComponent
+        newUpload.mimeType = "video/mp4"
+        newUpload.fileName = URL(fileURLWithPath: upload.fileName ?? "file").deletingPathExtension().appendingPathExtension("mp4").lastPathComponent
 
-        // Temporary filename and path
-        exportSession.outputURL = URL(fileURLWithPath: NSTemporaryDirectory().appending(upload.fileName ?? "")).deletingPathExtension().appendingPathExtension("mp4").absoluteURL
-//        exportSession.outputURL = URL(fileURLWithPath: URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(URL(fileURLWithPath: URL(fileURLWithPath: upload.fileName ?? "").deletingPathExtension().absoluteString).appendingPathExtension("mp4").absoluteString).absoluteString)
+        // File name of final video data to be stored into Piwigo/Uploads directory
+        let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-") + "-" + upload.fileName!
+        exportSession.outputURL = UploadManager.applicationUploadsDirectory.appendingPathComponent(fileName)
+//        exportSession.outputURL = URL(fileURLWithPath: NSTemporaryDirectory().appending(upload.fileName ?? "")).deletingPathExtension().appendingPathExtension("mp4").absoluteURL
 
         // Deletes temporary video file if exists (incomplete previous attempt?)
         do {
@@ -373,19 +362,9 @@ class UploadVideoPreparer {
         }
 
         // Export temporary video for upload
-        var imageData: Data? = nil
         exportSession.exportAsynchronously(completionHandler: {
             switch exportSession.status {
             case .completed:
-                // Get video data
-                do {
-                    try imageData = NSData (contentsOf: exportSession.outputURL!) as Data
-                    // Swift bug - https://forums.developer.apple.com/thread/115401
-//                    try imageData = Data(contentsOf: exportSession.outputURL!)
-                } catch {
-                    completionHandler(newUpload, mimeType, nil, nil)
-                }
-    
                 // ====>> For debugging…
 //                var videoAsset: AVAsset? = nil
 //                if let outputURL = exportSession.outputURL {
@@ -398,59 +377,45 @@ class UploadVideoPreparer {
 //                }
                 // <<==== End of code for debugging
 
-                // Deletes temporary video file
-                do {
-                    if let outputURL = exportSession.outputURL {
-                        try FileManager.default.removeItem(at: outputURL)
-                    }
-                } catch {
-                }
-
                 // Upload video with tags and properties
-                completionHandler(newUpload, mimeType, imageData, nil)
+                completionHandler(newUpload, nil)
                 return
             
             case .failed:
                 // Deletes temporary video file if any
                 do {
-                    if let outputURL = exportSession.outputURL {
-                        try FileManager.default.removeItem(at: outputURL)
-                    }
+                    try FileManager.default.removeItem(at: exportSession.outputURL!)
                 } catch {
                 }
 
                 // define error !!!!
-                completionHandler(upload, "", nil, nil)
+                completionHandler(newUpload, nil)
 //                self.showError(withTitle: NSLocalizedString("uploadCancelled_title", comment: "Upload Cancelled"), andMessage: NSLocalizedString("videoUploadCancelled_message", comment: "The upload of the video has been cancelled."), forRetrying: true, withImage: image)
                 return
                 
             case .cancelled:
                 // Deletes temporary video file
                 do {
-                    if let outputURL = exportSession.outputURL {
-                        try FileManager.default.removeItem(at: outputURL)
-                    }
+                    try FileManager.default.removeItem(at: exportSession.outputURL!)
                 } catch {
                 }
 
                 // Inform user
                 // define error !!!!
-                completionHandler(upload, "", nil, nil)
+                completionHandler(newUpload, nil)
 //                self.showError(withTitle: NSLocalizedString("uploadCancelled_title", comment: "Upload Cancelled"), andMessage: NSLocalizedString("videoUploadCancelled_message", comment: "The upload of the video has been cancelled."), forRetrying: true, withImage: image)
                 return
             
             default:
                 // Deletes temporary video files
                 do {
-                    if let outputURL = exportSession.outputURL {
-                        try FileManager.default.removeItem(at: outputURL)
-                    }
+                    try FileManager.default.removeItem(at: exportSession.outputURL!)
                 } catch {
                 }
 
                 // Inform user
                 // define error !!!!
-                completionHandler(upload, "", nil, nil)
+                completionHandler(newUpload, nil)
 //                self.showError(withTitle: NSLocalizedString("videoUploadError_title", comment: "Video Upload Error"), andMessage: NSLocalizedString("videoUploadError_unknown", comment: "Sorry, the upload of the video has failed for an unknown error during the MP4 conversion. Error: \(exportSession?.error?.localizedDescription ?? "")"), forRetrying: true, withImage: image)
                 return
             }

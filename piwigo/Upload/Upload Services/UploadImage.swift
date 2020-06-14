@@ -1,5 +1,5 @@
 //
-//  UploadImagePreparer.swift
+//  UploadImage.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 21/05/2020.
@@ -8,48 +8,48 @@
 
 import Photos
 
-class UploadImagePreparer {
+class UploadImage {
 
-    func prepare(from imageAsset: PHAsset, for upload: UploadProperties,
-                      completionHandler: @escaping (_ updatedUpload: UploadProperties?, _ mimitype: String?, _ imageData: Data?, Error?) -> Void) {
+    func prepare(_ upload: UploadProperties, from imageAsset: PHAsset,
+                 completionHandler: @escaping (UploadProperties, Error?) -> Void) {
         // Retrieve UIImage
-        retrieveUIImageFrom(imageAsset: imageAsset) { (fixedImageObject, error) in
+        retrieveUIImage(from: imageAsset) { (fixedImageObject, error) in
             // Error?
             if let error = error {
-                completionHandler(upload, "", nil, error)
+                completionHandler(upload, error)
                 return
             }
 
             // Valid UIImage with fixed orientation?
             guard let imageObject = fixedImageObject else {
                 // define error !!!!
-                completionHandler(upload, "", nil, error)
+                completionHandler(upload, error)
                 return
             }
 
             // Retrieve image data
-            self.retrieveFullSizeImageDataFrom(imageAsset: imageAsset) { (imageData, error) in
+            self.retrieveFullSizeImageData(from: imageAsset) { (imageData, error) in
                 // Error?
                 if let error = error {
-                    completionHandler(upload, "", imageData, error)
+                    completionHandler(upload, error)
                     return
                 }
                 
                 // Valid image data?
                 guard let imageData = imageData else {
                     // define error !!!!
-                    completionHandler(upload, "", nil, error)
+                    completionHandler(upload, error)
                     return
                 }
                 
                 // Modify image
-                self.modifyImage(upload, with: imageData, andObject: imageObject) { (updatedUpload, mimeType, updatedImageData, error) in
+                self.modifyImage(for: upload, with: imageData, andObject: imageObject) { (newUpload, error) in
                     // Error?
                     if let error = error {
-                        completionHandler(upload, mimeType, imageData, error)
+                        completionHandler(upload, error)
                         return
                     } else {
-                        completionHandler(updatedUpload, mimeType, updatedImageData, nil)
+                        completionHandler(newUpload, nil)
                     }
                 }
             }
@@ -58,7 +58,8 @@ class UploadImagePreparer {
 
     // MARK: - Retrieve UIImage and Image Data
     
-    private func retrieveUIImageFrom(imageAsset: PHAsset, completionHandler: @escaping (UIImage?, Error?) -> Void) {
+    private func retrieveUIImage(from imageAsset: PHAsset,
+                                 completionHandler: @escaping (UIImage?, Error?) -> Void) {
         print("•••> retrieveUIImageFrom...")
 
         // Case of an image…
@@ -110,10 +111,10 @@ class UploadImagePreparer {
                 completionHandler(imageObject, nil)
             }
         })
-        completionHandler(nil, nil)
     }
 
-    private func retrieveFullSizeImageDataFrom(imageAsset: PHAsset, completionHandler: @escaping (Data?, Error?) -> Void) {
+    private func retrieveFullSizeImageData(from imageAsset: PHAsset,
+                                           completionHandler: @escaping (Data?, Error?) -> Void) {
         print("•••> retrieveFullSizeAssetDataFromImage...")
 
         // Case of an image…
@@ -166,8 +167,9 @@ class UploadImagePreparer {
     
     // MARK: - Modify Metadata
     
-    private func modifyImage(_ upload: UploadProperties, with originalData: Data, andObject originalObject: UIImage,
-                             completionHandler: @escaping (_ updatedUpload: UploadProperties?, _ mimetype: String?, _ imageData: Data?, Error?) -> Void) {
+    private func modifyImage(for upload: UploadProperties,
+                             with originalData: Data, andObject originalObject: UIImage,
+                             completionHandler: @escaping (UploadProperties, Error?) -> Void) {
         print("•••> modifyImage...")
 
         // Create CGI reference from image data (to retrieve complete metadata)
@@ -200,14 +202,14 @@ class UploadImagePreparer {
             imageCompressed = originalObject.jpegData(compressionQuality: compressionQuality)
 
             // Final image file will be in JPEG format
-            newUpload.fileName = URL(fileURLWithPath: URL(fileURLWithPath: upload.fileName!).deletingPathExtension().absoluteString).appendingPathExtension("JPG").lastPathComponent
+            newUpload.fileName = URL(fileURLWithPath: upload.fileName!).deletingPathExtension().appendingPathExtension("JPG").lastPathComponent
         }
         else if !(Model.sharedInstance().uploadFileTypes.contains(fileExt)) {
             // Image in unaccepted file format for Piwigo server => convert to JPEG format
             imageCompressed = originalObject.jpegData(compressionQuality: 1.0)
 
             // Final image file will be in JPEG format
-            newUpload.fileName = URL(fileURLWithPath: URL(fileURLWithPath: upload.fileName!).deletingPathExtension().absoluteString).appendingPathExtension("JPG").lastPathComponent
+            newUpload.fileName = URL(fileURLWithPath: upload.fileName!).deletingPathExtension().appendingPathExtension("JPG").lastPathComponent
         }
 
         // If compression failed or imageCompressed is nil, try to use original image
@@ -224,7 +226,7 @@ class UploadImagePreparer {
             if let destination = destination {
                 if !CGImageDestinationFinalize(destination) {
                     print("Error: Could not retrieve imageData object")
-                    completionHandler(upload, "", nil, nil)
+                    completionHandler(upload, nil)
                     // Inform user and propose to cancel or continue
 //                    showError(withTitle: NSLocalizedString("imageUploadError_title", comment: "Image Upload Error"), andMessage: NSLocalizedString("uploadError_message", comment: "Could not upload your image. Error: \(NSLocalizedString("imageUploadError_destination", comment: "cannot create image destination"))"), forRetrying: true, withImage: image)
                     return
@@ -237,11 +239,11 @@ class UploadImagePreparer {
         let imageData = ImageService.writeMetadata(imageMetadata, intoImageData: imageCompressed)
 
         // Try to determine MIME type from image data
-        var mimeType: String = "image/jpg"
+        newUpload.mimeType = "image/jpeg"
         if let type = contentType(forImageData: imageData) {
             if type.count > 0  {
                 // Adopt determined Mime tyme
-                mimeType = type
+                newUpload.mimeType = type
                 // Re-check filename extension if MIME type known
                 let fileExt = (URL(fileURLWithPath: upload.fileName ?? "").pathExtension).lowercased()
                 let expectedFileExtension = fileExtension(forImageData: imageData)
@@ -251,8 +253,25 @@ class UploadImagePreparer {
             }
         }
 
-        // Transfer image
-        completionHandler(newUpload, mimeType, imageData, nil)
+        // File name of final image data to be stored into Piwigo/Uploads directory
+        let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-") + "-" + newUpload.fileName!
+        let fileURL = UploadManager.applicationUploadsDirectory.appendingPathComponent(fileName)
+        
+        // Deletes temporary image file if exists (incomplete previous attempt?)
+        do {
+            try FileManager.default.removeItem(at: fileURL)
+        } catch {
+        }
+
+        // Store final image data into Piwigo/Uploads directory
+        do {
+            try imageData?.write(to: fileURL)
+        } catch let error {
+            // define error !!!!
+            completionHandler(newUpload, error)
+            return
+        }
+        completionHandler(newUpload, nil)
     }
 
 

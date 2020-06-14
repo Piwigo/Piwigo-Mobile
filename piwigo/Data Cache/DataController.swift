@@ -16,18 +16,47 @@ class DataController: NSObject {
     }
 
     @objc
-    class func getContext () -> NSManagedObjectContext {
+    class func getContext() -> NSManagedObjectContext {
         return DataController.managedObjectContext
     }
     
     @objc
-    class func getPrivateContext () -> NSManagedObjectContext {
+    class func getPrivateContext() -> NSManagedObjectContext {
         return DataController.privateManagedObjectContext
+    }
+    
+    class func getApplicationStoresDirectory() -> URL {
+        return DataController.applicationStoresDirectory
     }
     
     
     // MARK: - Core Data stack
     
+    static var applicationStoresDirectory: URL = {
+        let fm = FileManager.default
+        let applicationName: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as! String
+        let applicationSupportDirectory = fm.urls(for: .applicationSupportDirectory, in: .userDomainMask).last
+        let storesURL = applicationSupportDirectory?.appendingPathComponent(applicationName)
+        print("== Piwigo Stores ==>\(storesURL!)")
+
+        // Create the Stores directory if needed
+        if !(fm.fileExists(atPath: storesURL?.path ?? "")) {
+            var errorCreatingDirectory: Error? = nil
+            do {
+                if let storesURL = storesURL {
+                    try fm.createDirectory(at: storesURL, withIntermediateDirectories: true, attributes: nil)
+                }
+            } catch let errorCreatingDirectory {
+            }
+            if errorCreatingDirectory != nil {
+                print("Unable to create Stores directory in Application Support.")
+                abort()
+            }
+        }
+
+        return storesURL!
+    }()
+
     static var managedObjectContext: NSManagedObjectContext = {
 
         var applicationDocumentsDirectory: URL = {
@@ -37,36 +66,11 @@ class DataController: NSObject {
             return urls[urls.count-1]
         }()
 
-        var applicationStoresDirectory: URL = {
-            let fm = FileManager.default
-            let applicationName: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as! String
-            let applicationSupportDirectory = fm.urls(for: .applicationSupportDirectory, in: .userDomainMask).last
-            let storesURL = applicationSupportDirectory?.appendingPathComponent(applicationName)
-            print("== CoreData ==>\(storesURL!)")
-
-            // Create the Stores directory if needed
-            if !(fm.fileExists(atPath: storesURL?.path ?? "")) {
-                var errorCreatingDirectory: Error? = nil
-                do {
-                    if let storesURL = storesURL {
-                        try fm.createDirectory(at: storesURL, withIntermediateDirectories: true, attributes: nil)
-                    }
-                } catch let errorCreatingDirectory {
-                }
-                if errorCreatingDirectory != nil {
-                    print("Unable to create Stores directory in Application Support.")
-                    abort()
-                }
-            }
-
-            return storesURL!
-        }()
-
         var applicationIncompatibleStoresDirectory: URL = {
             let fm = FileManager.default
             let anURL = applicationStoresDirectory.appendingPathComponent("Incompatible")
 
-            // Create the Stores/Incompatible directory if needed
+            // Create the Piwigo/Incompatible directory if needed
             if !fm.fileExists(atPath: anURL.path) {
                 var errorCreatingDirectory: Error? = nil
                 do {

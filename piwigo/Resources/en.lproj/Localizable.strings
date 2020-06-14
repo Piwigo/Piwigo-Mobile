@@ -450,6 +450,7 @@
 
 "imageUploadTableCell_waiting" = "Waiting...";
 "imageUploadTableCell_preparing" = "Preparing...";
+"imageUploadTableCell_prepared" = "Ready for upload...";
 "imageUploadTableCell_uploading" = "Uploading...";
 "imageUploadTableCell_finishing" = "Finishing...";
 "imageUploadTableCell_uploaded" = "Uploaded";
