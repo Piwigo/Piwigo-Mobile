@@ -88,6 +88,9 @@ class UploadManager: NSObject {
     func findNextImageToUpload() {
         print("•••>> findNextImageToUpload… \(String(describing: uploadsProvider.fetchedResultsController.fetchedObjects?.count))")
         
+        // Update badge and button
+        updateNberOfUploadsToPerform()
+        
         // Get uploads in queue
         guard let allUploads = uploadsProvider.fetchedResultsController.fetchedObjects else {
             return
@@ -457,13 +460,8 @@ class UploadManager: NSObject {
                                 // NOP — Not a big issue
                             })
                             
-                            // Update number of left uploads
-                            let nberOfUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects?.count ?? 0
-                            let completedUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects?.map({ $0.requestState == Int16(kPiwigoUploadState.uploaded.rawValue) ? 1 : 0}).reduce(0, +) ?? 0
-                            let uploadInfo: [String : Int] = ["leftUploads" : nberOfUploads - completedUploads]
-                            DispatchQueue.main.async {
-                                NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationLeftUploads), object: nil, userInfo: uploadInfo)
-                            }
+                            // Update badge and button
+                            self.updateNberOfUploadsToPerform()
 
                             // Any other image in upload queue?
                             self.findNextImageToUpload()
@@ -483,7 +481,7 @@ class UploadManager: NSObject {
     
     // MARK: - Uploaded Images Management
     
-    func moderateUploadedImages() {
+    private func moderateUploadedImages() {
         // Get uploads in queue
         guard let allUploads = uploadsProvider.fetchedResultsController.fetchedObjects else {
             return
@@ -541,7 +539,7 @@ class UploadManager: NSObject {
         }
     }
 
-    func deleteUploadedImages() -> (Void) {
+    private func deleteUploadedImages() -> (Void) {
         // Get uploads in queue
         guard let allUploads = uploadsProvider.fetchedResultsController.fetchedObjects else {
             return
@@ -566,10 +564,25 @@ class UploadManager: NSObject {
                     // Delete uploads
                     self.uploadsProvider.deleteUploads(from: uploadsToDelete) { (error) in
                         // Could not delete completed uploads!
-                        
+ 
                     }
                 }
             })
         })
+    }
+
+    private func updateNberOfUploadsToPerform() {
+        // Calculate number of uploads to perform
+        let nberOfUploads = uploadsProvider.fetchedResultsController.fetchedObjects?.count ?? 0
+        let completedUploads = uploadsProvider.fetchedResultsController.fetchedObjects?.map({ $0.requestState == Int16(kPiwigoUploadState.uploaded.rawValue) ? 1 : 0}).reduce(0, +) ?? 0
+        
+        // Upadte app badge
+        UIApplication.shared.applicationIconBadgeNumber = 23 //nberOfUploads - completedUploads
+        
+        // Update button of root album (or default album)
+        let uploadInfo: [String : Int] = ["leftUploads" : nberOfUploads - completedUploads]
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationLeftUploads), object: nil, userInfo: uploadInfo)
+        }
     }
 }

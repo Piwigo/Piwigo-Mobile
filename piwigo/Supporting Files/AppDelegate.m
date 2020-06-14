@@ -7,6 +7,7 @@
 //
 
 #import <Photos/Photos.h>
+#import <UserNotifications/UserNotifications.h>
 
 #import "AppDelegate.h"
 #import "LoginNavigationController.h"
@@ -158,7 +159,17 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
-    // Override point for customization after application launch.
+    // Register notifications for displaying number of uploads to perform in app badge
+    if (@available(iOS 9.0, *)) {
+        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeBadge) categories:nil];
+        [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+    }
+    else if (@available(iOS 10.0, *)) {
+        UNAuthorizationOptions options = (UNAuthorizationOptionBadge);
+        [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:options completionHandler:^(BOOL granted, NSError * _Nullable error) {
+            if (granted) { NSLog(@"request succeeded!"); }
+        }];
+    }
         
     // IQKeyboardManager
     IQKeyboardManager *keyboardManager = [IQKeyboardManager sharedManager];
@@ -224,6 +235,13 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
     [self setSettingsBundleData];
     
     return YES;
+}
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(nonnull NSData *)deviceToken {
+}
+
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(nonnull NSError *)error {
+    NSLog(@"Did fail to register notifications");
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
