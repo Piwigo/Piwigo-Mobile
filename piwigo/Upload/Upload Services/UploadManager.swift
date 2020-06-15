@@ -564,7 +564,21 @@ class UploadManager: NSObject {
                     // Delete uploads
                     self.uploadsProvider.deleteUploads(from: uploadsToDelete) { (error) in
                         // Could not delete completed uploads!
- 
+                    }
+                } else {
+                    // User refused to delete the photos
+                    var uploadsToUpdate = [UploadProperties]()
+                    for upload in uploadsToDelete {
+                        let uploadProperties = UploadProperties.init(localIdentifier: upload.localIdentifier,
+                            category: Int(upload.category),
+                            requestDate: upload.requestDate, requestState: upload.state, requestDelete: false,
+                            creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
+                            author: upload.author, privacyLevel: upload.privacy,
+                            title: upload.title, comment: upload.comment, tags: upload.tags, imageId: Int(upload.imageId))
+                        uploadsToUpdate.append(uploadProperties)
+                    }
+                    self.uploadsProvider.importUploads(from: uploadsToUpdate) { (_) in
+                        // Done ;-)
                     }
                 }
             })
