@@ -936,20 +936,7 @@ NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploa
 
 -(void)updateUploadQueueButton:(NSNotification *)notification
 {
-    if (notification != nil) {
-        NSDictionary *userInfo = notification.userInfo;
-        NSUInteger leftUploads = MAX(0, [[userInfo objectForKey:@"leftUploads"] integerValue]);
-        self.nberOfUploadsLabel.text = [NSString stringWithFormat:@"%lu", leftUploads];
-
-        // Resize label to fit number
-        [self.nberOfUploadsLabel sizeToFit];
-        
-        // Elongate the button if needed
-        CGFloat width = self.nberOfUploadsLabel.bounds.size.width;
-        CGFloat height = self.nberOfUploadsLabel.bounds.size.height;
-        CGFloat extraWidth = fmax(0, (width - 2*kRadius + 12.0));
-        self.nberOfUploadsLabel.frame = CGRectMake(kRadius + (extraWidth / 2.0) - width / 2.0, kRadius - height / 2.0, width, height);
-    }
+    [self  showUploadQueueButtonIfNeeded];
 }
 
 -(void)hideHomeAlbumButtonCompletion:(void (^ __nullable)(void))completion

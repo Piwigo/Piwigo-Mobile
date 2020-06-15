@@ -55,6 +55,7 @@ class UploadsProvider: NSObject {
                 return
             }
         }
+        updateBadgeAndButton()
         completionHandler(nil)
     }
     
@@ -192,6 +193,7 @@ class UploadsProvider: NSObject {
                 return
             }
         }
+        updateBadgeAndButton()
         completionHandler(nil)
     }
     
@@ -312,6 +314,7 @@ class UploadsProvider: NSObject {
             if taskContext.hasChanges {
                 do {
                     try taskContext.save()
+                    updateBadgeAndButton()
                 }
                 catch {
                     print("Error: \(error)\nCould not save Core Data context.")
@@ -347,6 +350,21 @@ class UploadsProvider: NSObject {
     }
     
 
+    // MARK: - Notify Changes (App Badge, Button)
+    func updateBadgeAndButton() {
+        // Calculate number of uploads to perform
+        let nberOfUploads = self.fetchedResultsController.fetchedObjects?.count ?? 0
+        let completedUploads = self.fetchedResultsController.fetchedObjects?.map({ $0.requestState == Int16(kPiwigoUploadState.uploaded.rawValue) ? 1 : 0}).reduce(0, +) ?? 0
+                
+        DispatchQueue.main.async {
+            // Upadte app badge
+            UIApplication.shared.applicationIconBadgeNumber = nberOfUploads - completedUploads
+            // Update button of root album (or default album)
+            NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationLeftUploads), object: nil)
+        }
+    }
+
+    
     // MARK: - NSFetchedResultsController
     
     /**
