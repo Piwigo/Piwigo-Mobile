@@ -161,6 +161,11 @@ class UploadManager: NSObject {
             return
         }
 
+        // Add category to list of recent albums
+        let userInfo = ["categoryId": String(format: "%ld", Int(nextUpload.category))]
+        let name = NSNotification.Name(rawValue: kPiwigoNotificationAddRecentAlbum)
+        NotificationCenter.default.post(name: name, object: nil, userInfo: userInfo)
+
         // Determine non-empty unique file name and extension from asset
         nextUpload.fileName = PhotosFetch.sharedInstance().getFileNameFomImageAsset(originalAsset)
         let fileExt = (URL(fileURLWithPath: nextUpload.fileName!).pathExtension).lowercased()
