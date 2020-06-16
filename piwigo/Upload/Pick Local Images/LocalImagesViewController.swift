@@ -26,7 +26,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
      The UploadsProvider that collects upload data, saves it to Core Data,
      and serves it to the uploader.
      */
-    private lazy var uploadProvider: UploadsProvider = {
+    private lazy var uploadsProvider: UploadsProvider = {
         let provider : UploadsProvider = UploadsProvider()
         provider.fetchedResultsControllerDelegate = self
         return provider
@@ -102,7 +102,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Initialise arrays
         selectedImages = .init(repeating: nil, count: imageCollection.count)            // At start, there is no image selected
         selectedSections = .init(repeating: .none, count: imageCollection.count)        // User cannot select sections of images until data is ready
-        if let uploads = uploadProvider.fetchedResultsController.fetchedObjects {       // We provide a non-indexed list of images in the upload queue
+        if let uploads = uploadsProvider.fetchedResultsController.fetchedObjects {       // We provide a non-indexed list of images in the upload queue
             uploadsInQueue = uploads.map {($0.localIdentifier, kPiwigoUploadState(rawValue: $0.requestState))}
         }                                                                               // so that we can at least show images in upload queue at start
                                                                                         // and prevent their selection
@@ -197,6 +197,17 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Register upload progress
         let name2: NSNotification.Name = NSNotification.Name(kPiwigoNotificationUploadProgress)
         NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress), name: name2, object: nil)
+        
+        // Prevent device from sleeping if uploads are in progress
+        let uploadsToPerform = uploadsProvider.fetchedResultsController.fetchedObjects?.map({
+            ($0.requestState == kPiwigoUploadState.waiting.rawValue) ||
+            ($0.requestState == kPiwigoUploadState.preparing.rawValue) ||
+            ($0.requestState == kPiwigoUploadState.prepared.rawValue) ||
+            ($0.requestState == kPiwigoUploadState.uploading.rawValue) ||
+            ($0.requestState == kPiwigoUploadState.finishing.rawValue) ? 1 : 0}).reduce(0, +) ?? 0
+        if uploadsToPerform > 0 {
+            UIApplication.shared.isIdleTimerDisabled = true
+        }
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -220,6 +231,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
+        // Allow device to sleep
+        UIApplication.shared.isIdleTimerDisabled = false
+
         // Register Photo Library changes
         PHPhotoLibrary.shared().unregisterChangeObserver(self)
 
@@ -530,7 +544,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         
     @objc func didTapUploadButton() {
         // Add selected images to upload queue
-        uploadProvider.importUploads(from: selectedImages.compactMap{ $0 }) { error in
+        uploadsProvider.importUploads(from: selectedImages.compactMap{ $0 }) { error in
             
               DispatchQueue.main.async {
                 // Show an alert if there was an error.
