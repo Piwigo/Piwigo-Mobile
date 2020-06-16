@@ -936,7 +936,11 @@ NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploa
 
 -(void)updateUploadQueueButton:(NSNotification *)notification
 {
-    [self  showUploadQueueButtonIfNeeded];
+    // Only when presenting the root or default album
+    if ((self.categoryId == 0) || (self.categoryId == [Model sharedInstance].defaultCategory))
+    {
+        [self  showUploadQueueButtonIfNeeded];
+    }
 }
 
 -(void)hideHomeAlbumButtonCompletion:(void (^ __nullable)(void))completion
