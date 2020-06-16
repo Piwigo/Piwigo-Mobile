@@ -99,6 +99,17 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
         navigationItem.setLeftBarButtonItems([doneBarButton].compactMap { $0 }, animated: true)
         navigationItem.setRightBarButtonItems([actionBarButton].compactMap { $0 }, animated: true)
         navigationController?.navigationBar.accessibilityIdentifier = "UploadQueueNav"
+
+        // Prevent device from sleeping if uploads are in progress
+        let uploadsToPerform = uploadsProvider.fetchedResultsController.fetchedObjects?.map({
+            ($0.requestState == kPiwigoUploadState.waiting.rawValue) ||
+            ($0.requestState == kPiwigoUploadState.preparing.rawValue) ||
+            ($0.requestState == kPiwigoUploadState.prepared.rawValue) ||
+            ($0.requestState == kPiwigoUploadState.uploading.rawValue) ||
+            ($0.requestState == kPiwigoUploadState.finishing.rawValue) ? 1 : 0}).reduce(0, +) ?? 0
+        if uploadsToPerform > 0 {
+            UIApplication.shared.isIdleTimerDisabled = true
+        }
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -118,7 +129,10 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
     
-    deinit {
+    override func viewWillDisappear(_ animated: Bool) {
+        // Allow device to sleep
+        UIApplication.shared.isIdleTimerDisabled = false
+
         // Unregister palette changes
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
         NotificationCenter.default.removeObserver(self, name: name, object: nil)
@@ -128,6 +142,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
         NotificationCenter.default.removeObserver(self, name: name2, object: nil)
     }
 
+    
     // MARK: - Action Menu
     
     @objc func didTapActionButton() {
