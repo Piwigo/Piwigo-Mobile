@@ -159,7 +159,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
                 return
             }
             // Get uploads to delete
-            let uploadsToDelete = allUploads.filter({ $0.requestState == kPiwigoUploadState.uploaded.rawValue})
+            let uploadsToDelete = allUploads.filter({ $0.requestState == kPiwigoUploadState.finished.rawValue})
             // Delete cimpleted uploads
             self.uploadsProvider.deleteUploads(from: uploadsToDelete) { (error) in
                 guard let _ = error else {

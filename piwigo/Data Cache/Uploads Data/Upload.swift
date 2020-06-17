@@ -96,14 +96,14 @@ extension Upload {
 
         case kPiwigoUploadState.uploading.rawValue:
             return .uploading
+        case kPiwigoUploadState.uploaded.rawValue:
+            return .uploaded
 
         case kPiwigoUploadState.finishing.rawValue:
             return .finishing
-            
-        case kPiwigoUploadState.uploaded.rawValue:
-            return .uploaded
-        case kPiwigoUploadState.paused.rawValue:
-            return .paused
+        case kPiwigoUploadState.finished.rawValue:
+            return .finished
+
         default:
             return .waiting
         }
@@ -123,14 +123,13 @@ extension Upload {
 
         case .uploading:
             return NSLocalizedString("imageUploadTableCell_uploading", comment: "Uploading...")
+        case .uploaded:
+            return NSLocalizedString("imageUploadTableCell_uploaded", comment: "Uploaded")
 
         case .finishing:
             return NSLocalizedString("imageUploadTableCell_finishing", comment: "Finishing...")
-
-        case .uploaded:
-            return NSLocalizedString("imageUploadTableCell_uploaded", comment: "Uploaded")
-        case .paused:
-            return NSLocalizedString("imageUploadTableCell_paused", comment: "Paused")
+        case .finished:
+            return NSLocalizedString("imageUploadProgressBar_completed", comment: "Completed")
         }
     }
 
@@ -171,10 +170,10 @@ enum kPiwigoUploadState : Int16 {
     case formatError
 
     case uploading
-    
-    case finishing
     case uploaded
-    case paused
+
+    case finishing
+    case finished
 }
 
 struct UploadProperties

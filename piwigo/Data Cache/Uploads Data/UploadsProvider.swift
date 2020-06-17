@@ -216,7 +216,7 @@ class UploadsProvider: NSObject {
             // Create a fetch request for the Upload entity sorted by localIdentifier
             let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: "localIdentifier", ascending: true)]
-            fetchRequest.predicate = NSPredicate(format: "requestState == %d", kPiwigoUploadState.uploaded.rawValue)
+            fetchRequest.predicate = NSPredicate(format: "requestState == %d", kPiwigoUploadState.finished.rawValue)
 
             // Create a fetched results controller and set its fetch request, context, and delegate.
             let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
@@ -354,7 +354,7 @@ class UploadsProvider: NSObject {
     func updateBadgeAndButton() {
         // Calculate number of uploads to perform
         let nberOfUploads = self.fetchedResultsController.fetchedObjects?.count ?? 0
-        let completedUploads = self.fetchedResultsController.fetchedObjects?.map({ $0.requestState == Int16(kPiwigoUploadState.uploaded.rawValue) ? 1 : 0}).reduce(0, +) ?? 0
+        let completedUploads = self.fetchedResultsController.fetchedObjects?.map({ $0.requestState == kPiwigoUploadState.finished.rawValue ? 1 : 0}).reduce(0, +) ?? 0
                 
         DispatchQueue.main.async {
             // Upadte app badge

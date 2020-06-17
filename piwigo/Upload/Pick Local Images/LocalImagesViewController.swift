@@ -882,11 +882,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             // Use indexed data
             if let state = indexedUploadsInQueue[index]?.1 {
                 switch state {
-                case .waiting, .preparing, .prepared, .formatError, .paused:
+                case .waiting, .preparing, .prepared, .formatError:
                     cell.cellWaiting = true
-                case .uploading, .finishing:
+                case .uploading, .uploaded, .finishing:
                     cell.cellUploading = true
-                case .uploaded:
+                case .finished:
                     cell.cellUploaded = true
                 }
             } else {
@@ -896,11 +896,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             // Use non-indexed data
             if let upload = uploadsInQueue.first(where: { $0?.0 == imageAsset.localIdentifier }) {
                 switch upload?.1 {
-                case .waiting, .preparing, .prepared, .formatError, .paused:
+                case .waiting, .preparing, .prepared, .formatError:
                     cell.cellWaiting = true
-                case .uploading, .finishing:
+                case .uploading, .uploaded, .finishing:
                     cell.cellUploading = true
-                case .uploaded:
+                case .finished:
                     cell.cellUploaded = true
                 case .none:
                     cell.cellSelected = false
@@ -1311,11 +1311,11 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
                 if let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell {
                     cell.selectedImage.isHidden = true
                     switch upload.state {
-                    case .waiting, .preparing, .prepared, .formatError, .paused:
+                    case .waiting, .preparing, .prepared, .formatError:
                         cell.cellWaiting = true
-                    case .uploading, .finishing:
+                    case .uploading, .uploaded, .finishing:
                         cell.cellUploading = true
-                    case .uploaded:
+                    case .finished:
                         cell.cellUploaded = true
                     }
                     cell.reloadInputViews()

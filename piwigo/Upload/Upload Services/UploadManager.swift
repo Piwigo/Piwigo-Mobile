@@ -93,19 +93,27 @@ class UploadManager: NSObject {
             return
         }
         
+        // Upload to finish?
+        if let upload = allUploads.first(where: { $0.state == .uploaded } ) {
+            finish(nextUpload: upload)
+        }
+
         // Being uploading?
         if allUploads.first(where: { $0.state == .uploading }) != nil {
-            // Uploading in progress, also preparing an upload?
+            // Uploading, next upload ready?
+            if allUploads.first(where: { $0.state == .prepared }) != nil {
+                // Yes, so wait for next iteration.
+                return
+            }
+            // Uploading, not prepared, but preparing next one?
             if allUploads.first(where: { $0.state == .preparing }) != nil {
-                // Yes, also preparing an upload, so wait for next iteraction.
+                // Yes, next upload being prepared
                 return
             }
-            // No upload in preparation, so we can prepare a next one during transfer
-            else if let nextUpload = allUploads.first(where: { $0.state == .waiting}) {
+            // Uploading, no prepared upload, upload to prepare?
+            if let nextUpload = allUploads.first(where: { $0.state == .waiting}) {
                 prepare(nextUpload: nextUpload)
-                return
             }
-            // Currently uploading, so wait for next iteraction.
             return
         }
         
@@ -113,24 +121,21 @@ class UploadManager: NSObject {
         if let upload = allUploads.first(where: { $0.state == .prepared }) {
             // Upload ready, so start the transfer
             transfer(nextUpload: upload)
-            
             // Next upload already being prepared?
             if allUploads.first(where: { $0.state == .preparing }) != nil {
-                // Yes, already preparing an upload, so wait for next iteraction.
+                // Yes, already preparing an upload, so wait for next iteration.
                 return
             }
-            // No upload in preparation, so we prepare a next one while uploading
-            else if let nextUpload = allUploads.first(where: { $0.state == .waiting}) {
+            // No prepared upload, let's prepare another one
+            if let nextUpload = allUploads.first(where: { $0.state == .waiting}) {
                 prepare(nextUpload: nextUpload)
-                return
             }
-            // Currently uploading, so wait for next iteraction.
             return
         }
 
         // Not uploading and no prepared upload
         if allUploads.first(where: { $0.state == .preparing }) != nil {
-            // Already preparing next transfer, so wait for next iteraction.
+            // Already preparing next upload, so wait for next iteration.
             return
         }
         
@@ -155,6 +160,12 @@ class UploadManager: NSObject {
     func prepare(nextUpload: Upload) {
         print("•••>> prepare next upload…")
 
+        // Quit if App not in the foreground
+        let appState = UIApplication.shared.applicationState
+        if appState == .background || appState == .inactive {
+            return
+        }
+        
         // Retrieve image asset
         guard let originalAsset = PHAsset.fetchAssets(withLocalIdentifiers: [nextUpload.localIdentifier], options: nil).firstObject else {
             // Asset not available… deleted?
@@ -331,20 +342,14 @@ class UploadManager: NSObject {
     
     func transfer(nextUpload: Upload) {
         
-        // Retrieve image asset
-        guard let originalAsset = PHAsset.fetchAssets(withLocalIdentifiers: [nextUpload.localIdentifier], options: nil).firstObject else {
-            return
-        }
-        
         // Set upload properties
         var uploadProperties = UploadProperties.init(localIdentifier: nextUpload.localIdentifier,
             category: Int(nextUpload.category),
             requestDate: nextUpload.requestDate, requestState: nextUpload.state, requestDelete: nextUpload.requestDelete,
-            creationDate: originalAsset.creationDate, fileName: nextUpload.fileName, mimeType: nextUpload.mimeType,
+            creationDate: nextUpload.creationDate, fileName: nextUpload.fileName, mimeType: nextUpload.mimeType,
             author: nextUpload.author, privacyLevel: nextUpload.privacy,
-            title: nextUpload.title,
-            comment: nextUpload.comment,
-            tags: nextUpload.tags, imageId: NSNotFound)
+            title: nextUpload.title,comment: nextUpload.comment,
+            tags: nextUpload.tags, imageId: Int(nextUpload.imageId))
 
         // Update state of upload
         uploadProperties.requestState = .uploading
@@ -381,11 +386,13 @@ class UploadManager: NSObject {
                             return
                         }
                         
-                        // Get image ID returned by Piwigo server
+                        // Update state of upload
+                        uploadProperties.requestState = .uploaded
                         uploadProperties.imageId = uploadJSON.imagesUpload.image_id!
-                        
-                        // Finish the upload task
-                        self.finish(upload: uploadProperties, with: imageParameters)
+                        self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+                            // Upload ready for finishing
+                            self.findNextImageToUpload()
+                        })
                     } catch {
                         // Alert the user if data cannot be digested.
 //                      completionHandler(TagError.wrongDataFormat)
@@ -395,86 +402,116 @@ class UploadManager: NSObject {
                 onFailure: { (task, error) in
                     if let error = error {
                         print("   >> UPLOAD ERROR: \(error)")
+                        // Step back so that the transfer will be restarted
+                        uploadProperties.requestState = .prepared
+                        self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in })
                     }
                 })
             }
         })
     }
     
-    func finish(upload: UploadProperties, with imageParameters: [String:String] ) -> (Void) {
-        // Update state of upload
-        var uploadProperties = upload
-        uploadProperties.requestState = .finishing
+    // Called when using Piwigo server before version 2.10.x?
+    // because the title could not be set during the upload.
+    func finish(nextUpload: Upload) -> (Void) {
+        // Set upload properties
+        var uploadProperties = UploadProperties.init(localIdentifier: nextUpload.localIdentifier,
+            category: Int(nextUpload.category),
+            requestDate: nextUpload.requestDate, requestState: nextUpload.state, requestDelete: nextUpload.requestDelete,
+            creationDate: nextUpload.creationDate, fileName: nextUpload.fileName, mimeType: nextUpload.mimeType,
+            author: nextUpload.author, privacyLevel: nextUpload.privacy,
+            title: nextUpload.title,comment: nextUpload.comment,
+            tags: nextUpload.tags, imageId: Int(nextUpload.imageId))
+
+        // Prepare creation date
+        var creationDate = ""
+        if let date = nextUpload.creationDate {
+            let dateFormat = DateFormatter()
+            dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
+            creationDate = dateFormat.string(from: date)
+        }
+
+        // Prepare parameters for uploading image/video (filename key is kPiwigoImagesUploadParamFileName)
+        let imageParameters: [String : String] = [
+            kPiwigoImagesUploadParamFileName: nextUpload.fileName ?? "Image.jpg",
+            kPiwigoImagesUploadParamCreationDate: creationDate,
+//            kPiwigoImagesUploadParamTitle: nextUpload.imageTitle() ?? "",
+            kPiwigoImagesUploadParamCategory: "\(NSNumber(value: nextUpload.category))",
+            kPiwigoImagesUploadParamPrivacy: "\(NSNumber(value: nextUpload.privacyLevel))",
+            kPiwigoImagesUploadParamAuthor: nextUpload.author ?? "",
+            kPiwigoImagesUploadParamDescription: nextUpload.comment ?? "",
+//            kPiwigoImagesUploadParamTags: nextUpload.tagIds,
+            kPiwigoImagesUploadParamMimeType: nextUpload.mimeType ?? ""
+        ]
 
         // Finish the job by setting image parameters…
-        uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
-            print("   >> finishing...")
-            // Set image properties
-            ImageService.setImageInfoForImageWithId(uploadProperties.imageId,
-                withInformation: imageParameters,
-                onProgress:nil,
-                onCompletion: { (task, jsonData) in
-                    print("   >> completion: \(String(describing: jsonData))")
-                    // Alert the user if no data comes back.
-                    guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {
+        print("   >> finishing...")
+        // Set image properties
+        ImageService.setImageInfoForImageWithId(uploadProperties.imageId,
+            withInformation: imageParameters,
+            onProgress:nil,
+            onCompletion: { (task, jsonData) in
+                print("   >> completion: \(String(describing: jsonData))")
+                // Alert the user if no data comes back.
+                guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {
 //                                  completionHandler(TagError.networkUnavailable)
+                    return
+                }
+                
+                // Decode the JSON.
+                do {
+                    // Decode the JSON into codable type ImagesUploadJSON.
+                    let decoder = JSONDecoder()
+                    let uploadJSON = try decoder.decode(ImageSetInfoJSON.self, from: data)
+                    
+                    // Piwigo error?
+                    let error: NSError
+                    if (uploadJSON.errorCode != 0) {
+                        error = NSError.init(domain: "Piwigo", code: uploadJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
                         return
                     }
                     
-                    // Decode the JSON.
-                    do {
-                        // Decode the JSON into codable type ImagesUploadJSON.
-                        let decoder = JSONDecoder()
-                        let uploadJSON = try decoder.decode(ImageSetInfoJSON.self, from: data)
-                        
-                        // Piwigo error?
-                        let error: NSError
-                        if (uploadJSON.errorCode != 0) {
-                            error = NSError.init(domain: "Piwigo", code: uploadJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
-                            return
-                        }
-                        
-                        // Image successfully uploaded
-                        uploadProperties.requestState = .uploaded
-                        // Will propose to delete image if wanted by user
-                        if Model.sharedInstance()?.deleteImageAfterUpload == true {
-                            // Retrieve image asset
-                            if let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [upload.localIdentifier], options: nil).firstObject {
-                                // Only local images can be deleted
-                                if imageAsset.sourceType != .typeCloudShared {
-                                    // Append image to list of images to delete
-                                    uploadProperties.requestDelete = true
-                                }
+                    // Image successfully uploaded
+                    uploadProperties.requestState = .finished
+                    // Will propose to delete image if wanted by user
+                    if Model.sharedInstance()?.deleteImageAfterUpload == true {
+                        // Retrieve image asset
+                        if let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [nextUpload.localIdentifier], options: nil).firstObject {
+                            // Only local images can be deleted
+                            if imageAsset.sourceType != .typeCloudShared {
+                                // Append image to list of images to delete
+                                uploadProperties.requestDelete = true
                             }
                         }
-                        // Update upload record, cache and views
-                        self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
-                            print("   >> complete ;-)")
-                            // Increment number of images in category
-                            CategoriesData.sharedInstance().getCategoryById(upload.category).incrementImageSizeByOne()
-
-                            // Read image information and update cache
-                            ImageService.getImageInfo(byId: uploadProperties.imageId, andAddImageToCache: true, listOnCompletion: { task, imageData in
-                                DispatchQueue.main.async {
-                                    NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationCategoryDataUpdated), object: nil, userInfo: nil)
-                                }
-                            }, onFailure: { task, error in
-                                // NOP — Not a big issue
-                            })
-                            
-                            // Any other image in upload queue?
-                            self.findNextImageToUpload()
-                            return
-                        })
-                    } catch {
-                        // Alert the user if data cannot be digested.
-//                      completionHandler(TagError.wrongDataFormat)
-                        return
                     }
-                },
-                onFailure: { (task, error) in
-                })
-        })
+                    
+                    // Update upload record, cache and views
+                    self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+                        print("   >> complete ;-)")
+                        // Increment number of images in category
+                        CategoriesData.sharedInstance().getCategoryById(Int(nextUpload.category)).incrementImageSizeByOne()
+
+                        // Read image information and update cache
+                        ImageService.getImageInfo(byId: uploadProperties.imageId, andAddImageToCache: true, listOnCompletion: { task, imageData in
+                            DispatchQueue.main.async {
+                                NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationCategoryDataUpdated), object: nil, userInfo: nil)
+                            }
+                        }, onFailure: { task, error in
+                            // NOP — Not a big issue
+                        })
+                        
+                        // Any other image in upload queue?
+                        self.findNextImageToUpload()
+                        return
+                    })
+                } catch {
+                    // Alert the user if data cannot be digested.
+//                      completionHandler(TagError.wrongDataFormat)
+                    return
+                }
+            },
+            onFailure: { (task, error) in
+            })
     }
 
     
@@ -487,7 +524,7 @@ class UploadManager: NSObject {
         }
         // Get uploaded images to moderate
         let uploadedImages = allUploads.filter({
-            $0.requestState == kPiwigoUploadState.uploaded.rawValue
+            $0.requestState == kPiwigoUploadState.finished.rawValue
         })
         
         // Get list of categories
@@ -545,7 +582,7 @@ class UploadManager: NSObject {
         }
         
         // Get uploads to delete
-        let uploadsToDelete = allUploads.filter({ $0.requestState == kPiwigoUploadState.uploaded.rawValue && $0.requestDelete == true })
+        let uploadsToDelete = allUploads.filter({ $0.requestState == kPiwigoUploadState.finished.rawValue && $0.requestDelete == true })
         
         // Get local identifiers of uploaded images to delete
         let uploadedImagesToDelete = uploadsToDelete.map( { $0.localIdentifier} )
