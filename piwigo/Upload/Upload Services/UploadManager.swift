@@ -370,7 +370,13 @@ class UploadManager: NSObject {
                     print("   >> completion: \(String(describing: jsonData))")
                     // Alert the user if no data comes back.
                     guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {
-//                      completionHandler(TagError.networkUnavailable)
+                        // Upload to be re-started?
+                        uploadProperties.requestState = .uploadingError
+                        uploadProperties.requestError = UploadError.networkUnavailable.errorDescription
+                        self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+                            // Upload ready for finishing
+                            self.findNextImageToUpload()
+                        })
                         return
                     }
                     // Decode the JSON.
@@ -380,9 +386,13 @@ class UploadManager: NSObject {
                         let uploadJSON = try decoder.decode(ImagesUploadJSON.self, from: data)
                         
                         // Piwigo error?
-                        let error: NSError
                         if (uploadJSON.errorCode != 0) {
-                            error = NSError.init(domain: "Piwigo", code: uploadJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
+                            uploadProperties.requestState = .uploadingError
+                            uploadProperties.requestError = String(format: "Error %ld: %@", uploadJSON.errorCode, uploadJSON.errorMessage)
+                            self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+                                // Upload ready for finishing
+                                self.findNextImageToUpload()
+                            })
                             return
                         }
                         
@@ -394,16 +404,20 @@ class UploadManager: NSObject {
                             self.findNextImageToUpload()
                         })
                     } catch {
-                        // Alert the user if data cannot be digested.
-//                      completionHandler(TagError.wrongDataFormat)
-                        return
+                        // Data cannot be digested, image still ready for upload
+                        uploadProperties.requestState = .uploadingError
+                        uploadProperties.requestError = UploadError.wrongDataFormat.errorDescription
+                        self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+                            // Upload ready for finishing
+                            self.findNextImageToUpload()
+                        })
                     }
                 },
                 onFailure: { (task, error) in
                     if let error = error {
-                        print("   >> UPLOAD ERROR: \(error)")
-                        // Step back so that the transfer will be restarted
-                        uploadProperties.requestState = .prepared
+                        // Image still ready for upload
+                        uploadProperties.requestState = .uploadingError
+                        uploadProperties.requestError = error.localizedDescription
                         self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in })
                     }
                 })
@@ -454,7 +468,13 @@ class UploadManager: NSObject {
                 print("   >> completion: \(String(describing: jsonData))")
                 // Alert the user if no data comes back.
                 guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {
-//                                  completionHandler(TagError.networkUnavailable)
+                    // Upload still ready for finish
+                    uploadProperties.requestState = .finishingError
+                    uploadProperties.requestError = UploadError.networkUnavailable.errorDescription
+                    self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+                        // Upload ready for finishing
+                        self.findNextImageToUpload()
+                    })
                     return
                 }
                 
@@ -465,9 +485,13 @@ class UploadManager: NSObject {
                     let uploadJSON = try decoder.decode(ImageSetInfoJSON.self, from: data)
                     
                     // Piwigo error?
-                    let error: NSError
                     if (uploadJSON.errorCode != 0) {
-                        error = NSError.init(domain: "Piwigo", code: uploadJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
+                        uploadProperties.requestState = .finishingError
+                        uploadProperties.requestError = String(format: "Error %ld: %@", uploadJSON.errorCode, uploadJSON.errorMessage)
+                        self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+                            // Upload still ready for finishing
+                            self.findNextImageToUpload()
+                        })
                         return
                     }
                     
@@ -502,15 +526,25 @@ class UploadManager: NSObject {
                         
                         // Any other image in upload queue?
                         self.findNextImageToUpload()
-                        return
                     })
                 } catch {
-                    // Alert the user if data cannot be digested.
-//                      completionHandler(TagError.wrongDataFormat)
-                    return
+                    // Data cannot be digested, upload still ready for finish
+                    uploadProperties.requestState = .finishingError
+                    uploadProperties.requestError = UploadError.wrongDataFormat.errorDescription
+                    self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+                        // Upload ready for finishing
+                        self.findNextImageToUpload()
+                    })
                 }
             },
             onFailure: { (task, error) in
+                // Upload still ready for finish
+                uploadProperties.requestState = .finishingError
+                uploadProperties.requestError = error?.localizedDescription
+                self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+                    // Upload ready for finishing
+                    self.findNextImageToUpload()
+                })
             })
     }
 

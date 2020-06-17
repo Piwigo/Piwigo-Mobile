@@ -158,7 +158,6 @@ class UploadVideo {
                         completionHandler(newUpload, error)
                         return
                     }
-
                     completionHandler(newUpload, nil)
                 }
             }
@@ -248,41 +247,41 @@ class UploadVideo {
                                                 options: options,
                                                 resultHandler: { avasset, audioMix, info in
             // ====>> For debugging…
-            if let metadata = avasset?.metadata {
-                print("=> Metadata: \(metadata)")
-            }
-            if let creationDate = avasset?.creationDate {
-                print("=> Creation date: \(creationDate)")
-            }
-            print("=> Exportable: \(avasset?.isExportable ?? false ? "Yes" : "No")")
-            if let avasset = avasset {
-                print("=> Compatibility: \(AVAssetExportSession.exportPresets(compatibleWith: avasset))")
-            }
-            if let tracks = avasset?.tracks {
-                print("=> Tracks: \(tracks)")
-            }
-            for track in avasset?.tracks ?? [] {
-                if track.mediaType == .video {
-                    print(String(format: "=>       : %.f x %.f", track.naturalSize.width, track.naturalSize.height))
-                }
-                var format = ""
-                for i in 0..<track.formatDescriptions.count {
-                    let desc = (track.formatDescriptions[i]) as! CMFormatDescription
-                    // Get String representation of media type (vide, soun, sbtl, etc.)
-                    var type: String? = nil
-                    type = self.FourCCString(CMFormatDescriptionGetMediaType(desc))
-                    // Get String representation media subtype (avc1, aac, tx3g, etc.)
-                    var subType: String? = nil
-                    subType = self.FourCCString(CMFormatDescriptionGetMediaSubType(desc))
-                    // Format string as type/subType
-                    format.append(contentsOf: "\(type ?? "")/\(subType ?? "")")
-                    // Comma separate if more than one format description
-                    if i < track.formatDescriptions.count - 1 {
-                        format.append(contentsOf: ",")
-                    }
-                }
-                print("=>       : \(format)")
-            }
+//            if let metadata = avasset?.metadata {
+//                print("=> Metadata: \(metadata)")
+//            }
+//            if let creationDate = avasset?.creationDate {
+//                print("=> Creation date: \(creationDate)")
+//            }
+//            print("=> Exportable: \(avasset?.isExportable ?? false ? "Yes" : "No")")
+//            if let avasset = avasset {
+//                print("=> Compatibility: \(AVAssetExportSession.exportPresets(compatibleWith: avasset))")
+//            }
+//            if let tracks = avasset?.tracks {
+//                print("=> Tracks: \(tracks)")
+//            }
+//            for track in avasset?.tracks ?? [] {
+//                if track.mediaType == .video {
+//                    print(String(format: "=>       : %.f x %.f", track.naturalSize.width, track.naturalSize.height))
+//                }
+//                var format = ""
+//                for i in 0..<track.formatDescriptions.count {
+//                    let desc = (track.formatDescriptions[i]) as! CMFormatDescription
+//                    // Get String representation of media type (vide, soun, sbtl, etc.)
+//                    var type: String? = nil
+//                    type = self.FourCCString(CMFormatDescriptionGetMediaType(desc))
+//                    // Get String representation media subtype (avc1, aac, tx3g, etc.)
+//                    var subType: String? = nil
+//                    subType = self.FourCCString(CMFormatDescriptionGetMediaSubType(desc))
+//                    // Format string as type/subType
+//                    format.append(contentsOf: "\(type ?? "")/\(subType ?? "")")
+//                    // Comma separate if more than one format description
+//                    if i < track.formatDescriptions.count - 1 {
+//                        format.append(contentsOf: ",")
+//                    }
+//                }
+//                print("=>       : \(format)")
+//            }
             // <<==== End of code for debugging
             
             // Any error?
@@ -339,8 +338,8 @@ class UploadVideo {
         exportSession.outputFileType = .mp4
         exportSession.shouldOptimizeForNetworkUse = true
         // ====>> For debugging…
-        print("Supported file types: \(exportSession.supportedFileTypes)")
-        print("Description: \(exportSession.description)")
+//        print("Supported file types: \(exportSession.supportedFileTypes)")
+//        print("Description: \(exportSession.description)")
         // <<==== End of code for debugging
 
         // Prepare MIME type
@@ -351,7 +350,6 @@ class UploadVideo {
         // File name of final video data to be stored into Piwigo/Uploads directory
         let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-") + "-" + upload.fileName!
         exportSession.outputURL = UploadManager.applicationUploadsDirectory.appendingPathComponent(fileName)
-//        exportSession.outputURL = URL(fileURLWithPath: NSTemporaryDirectory().appending(upload.fileName ?? "")).deletingPathExtension().appendingPathExtension("mp4").absoluteURL
 
         // Deletes temporary video file if exists (incomplete previous attempt?)
         do {

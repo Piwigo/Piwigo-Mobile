@@ -884,7 +884,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 switch state {
                 case .waiting, .preparing, .prepared, .formatError:
                     cell.cellWaiting = true
-                case .uploading, .uploaded, .finishing:
+                case .uploading, .uploadingError, .uploaded, .finishing, .finishingError:
                     cell.cellUploading = true
                 case .finished:
                     cell.cellUploaded = true
@@ -898,7 +898,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 switch upload?.1 {
                 case .waiting, .preparing, .prepared, .formatError:
                     cell.cellWaiting = true
-                case .uploading, .uploaded, .finishing:
+                case .uploading, .uploadingError, .uploaded, .finishing, .finishingError:
                     cell.cellUploading = true
                 case .finished:
                     cell.cellUploaded = true
@@ -1313,7 +1313,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
                     switch upload.state {
                     case .waiting, .preparing, .prepared, .formatError:
                         cell.cellWaiting = true
-                    case .uploading, .uploaded, .finishing:
+                    case .uploading, .uploadingError, .uploaded, .finishing, .finishingError:
                         cell.cellUploading = true
                     case .finished:
                         cell.cellUploaded = true

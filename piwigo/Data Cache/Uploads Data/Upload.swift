@@ -26,6 +26,7 @@ class Upload: NSManagedObject {
     @NSManaged var requestDate: Date
     @NSManaged var requestState: Int16
     @NSManaged var requestDelete: Bool
+    @NSManaged var requestError: String?
 
     @NSManaged var creationDate: Date?
     @NSManaged var fileName: String?
@@ -60,6 +61,9 @@ class Upload: NSManagedObject {
         
         // Does not suggest to delete the uploaded image by default
         requestDelete = uploadProperties.requestDelete
+        
+        // Error message description
+        requestError = uploadProperties.requestError
 
         // Photo creation date, filename and MIME type
         creationDate = uploadProperties.creationDate ?? Date.init()
@@ -89,18 +93,22 @@ extension Upload {
             
         case kPiwigoUploadState.preparing.rawValue:
             return .preparing
-        case kPiwigoUploadState.prepared.rawValue:
-            return .prepared
         case kPiwigoUploadState.formatError.rawValue:
             return .formatError
+        case kPiwigoUploadState.prepared.rawValue:
+            return .prepared
 
         case kPiwigoUploadState.uploading.rawValue:
             return .uploading
+        case kPiwigoUploadState.uploadingError.rawValue:
+            return .uploadingError
         case kPiwigoUploadState.uploaded.rawValue:
             return .uploaded
 
         case kPiwigoUploadState.finishing.rawValue:
             return .finishing
+        case kPiwigoUploadState.finishingError.rawValue:
+            return .finishingError
         case kPiwigoUploadState.finished.rawValue:
             return .finished
 
@@ -123,11 +131,15 @@ extension Upload {
 
         case .uploading:
             return NSLocalizedString("imageUploadTableCell_uploading", comment: "Uploading...")
+        case .uploadingError:
+            return NSLocalizedString("imageUploadTableCell_uploading", comment: "Uploading... Error")
         case .uploaded:
             return NSLocalizedString("imageUploadTableCell_uploaded", comment: "Uploaded")
 
         case .finishing:
             return NSLocalizedString("imageUploadTableCell_finishing", comment: "Finishing...")
+        case .finishingError:
+            return NSLocalizedString("imageUploadTableCell_finishingError", comment: "Finishing... Error")
         case .finished:
             return NSLocalizedString("imageUploadProgressBar_completed", comment: "Completed")
         }
@@ -166,13 +178,15 @@ enum kPiwigoUploadState : Int16 {
     case waiting
     
     case preparing
-    case prepared
     case formatError
+    case prepared
 
     case uploading
+    case uploadingError
     case uploaded
 
     case finishing
+    case finishingError
     case finished
 }
 
@@ -183,6 +197,7 @@ struct UploadProperties
     let requestDate: Date                   // "2020-08-22 19:18:43"
     var requestState: kPiwigoUploadState    // See enum above
     var requestDelete: Bool                 // false by default
+    var requestError: String?
 
     var creationDate: Date?                 // "2012-08-23 09:18:43"
     var fileName: String?                   // "IMG123.JPG"
@@ -200,7 +215,7 @@ extension UploadProperties {
     init(localIdentifier: String, category: Int) {
         self.init(localIdentifier: localIdentifier, category: category,
             // Upload request date is now and state is waiting
-            requestDate: Date.init(), requestState: .waiting, requestDelete: false,
+            requestDate: Date.init(), requestState: .waiting, requestDelete: false, requestError: "",
             // Photo creation date and filename
             creationDate: Date.init(), fileName: "", mimeType: "",
             // Photo author name defaults to name entered in Settings

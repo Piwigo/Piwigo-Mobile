@@ -47,7 +47,6 @@ class UploadImage {
                     // Error?
                     if let error = error {
                         completionHandler(upload, error)
-                        return
                     } else {
                         completionHandler(newUpload, nil)
                     }
@@ -105,7 +104,6 @@ class UploadImage {
                 let fixedImageObject = self.fixOrientationOf(imageObject)
                 // Expected resource available
                 completionHandler(fixedImageObject, nil)
-                return
             }
             else {
                 completionHandler(imageObject, nil)

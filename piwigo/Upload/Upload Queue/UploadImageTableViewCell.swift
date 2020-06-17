@@ -49,9 +49,9 @@ class UploadImageTableViewCell: UITableViewCell {
         
         // Uploading progress bar
         switch upload.state {
-        case .waiting, .preparing, .prepared, .formatError, .uploading:
+        case .waiting, .preparing, .prepared, .formatError, .uploading, .uploadingError:
             uploadingProgress?.setProgress(0.0, animated: false)
-        case .uploaded, .finishing, .finished:
+        case .uploaded, .finishing, .finishingError, .finished:
             uploadingProgress?.setProgress(1.0, animated: false)
         }
 

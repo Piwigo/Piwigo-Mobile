@@ -452,9 +452,9 @@
 "imageUploadTableCell_preparing" = "Preparing...";
 "imageUploadTableCell_prepared" = "Ready for upload...";
 "imageUploadTableCell_uploading" = "Uploading...";
-"imageUploadTableCell_finishing" = "Finishing...";
 "imageUploadTableCell_uploaded" = "Uploaded";
-"imageUploadTableCell_paused" = "Paused";
+"imageUploadTableCell_finishing" = "Finishing...";
+"imageUploadTableCell_finishingError" = "Finishing... Error";
 
 "imageUploadProgressBar_zero" = "Uploading 0/0";
 "imageUploadProgressBar_nonZero" = "Uploading %@/%@";
