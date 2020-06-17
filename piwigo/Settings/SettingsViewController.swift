@@ -1379,7 +1379,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 footer = "\(nberImages) \(NSLocalizedString("severalImages", comment: "Photos")), \(nberCategories) \(NSLocalizedString("tabBar_albums", comment: "Albums")), \(nberTags) \(NSLocalizedString("tags", comment: "Tags")), \(nberUsers) \(NSLocalizedString("settings_users", comment: "Users")), \(nberGroups) \(NSLocalizedString("settings_groups", comment: "Groups")), \(nberComments) \(NSLocalizedString("editImageDetails_comments", comment: "Comments"))"
             }
         default:
-            return 10.0
+            return 16.0
         }
 
         // Footer height?
