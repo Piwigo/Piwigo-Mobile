@@ -894,7 +894,7 @@ NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploa
     {
         // Set number of uploads
         NSIndexSet *completedUploads = [uploads indexesOfObjectsPassingTest:^BOOL(Upload *obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            return (obj.requestState == kPiwigoUploadStateUploaded);
+            return (obj.requestState == kPiwigoUploadStateFinished);
         }];
         self.nberOfUploadsLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)(uploads.count - completedUploads.count)];
         
