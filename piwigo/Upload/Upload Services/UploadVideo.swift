@@ -56,9 +56,17 @@ class UploadVideo {
             if !Model.sharedInstance().stripGPSdataOnUpload ||
                 (Model.sharedInstance().stripGPSdataOnUpload && (locationMetadata.count == 0)) {
 
-                // Copy video into Piwigo/Upload directory
+                // Prepare URL of temporary file
                 let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-") + "-" + upload.fileName!
                 let fileURL = UploadManager.applicationUploadsDirectory.appendingPathComponent(fileName)
+
+                // Deletes temporary video file if it already exists
+                do {
+                    try FileManager.default.removeItem(at: fileURL)
+                } catch {
+                }
+
+                // Copy video into Piwigo/Upload directory
                 do {
                     try FileManager.default.copyItem(at: originalFileURL, to: fileURL)
                     // Upload video with tags and properties
