@@ -57,6 +57,7 @@
 
 // Upload objects
 "CoreDataFetch_UploadCreateFailed" = "Failed to create a new Upload object.";
+"CoreDataFetch_UploadMissingAsset" = "Failed to retrieve photo.";
 
 // ===========================================================================
 // ==> LOGIN / LOGOUT
@@ -450,8 +451,10 @@
 
 "imageUploadTableCell_waiting" = "Waiting...";
 "imageUploadTableCell_preparing" = "Preparing...";
+"imageUploadTableCell_preparingError" = "Preparing...Error";
 "imageUploadTableCell_prepared" = "Ready for upload...";
 "imageUploadTableCell_uploading" = "Uploading...";
+"imageUploadTableCell_uploadingError" = "Uploading...Error";
 "imageUploadTableCell_uploaded" = "Uploaded";
 "imageUploadTableCell_finishing" = "Finishing...";
 "imageUploadTableCell_finishingError" = "Finishing... Error";

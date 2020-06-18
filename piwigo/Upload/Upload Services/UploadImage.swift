@@ -22,7 +22,7 @@ class UploadImage {
 
             // Valid UIImage with fixed orientation?
             guard let imageObject = fixedImageObject else {
-                // define error !!!!
+                let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset])
                 completionHandler(upload, error)
                 return
             }
@@ -37,7 +37,7 @@ class UploadImage {
                 
                 // Valid image data?
                 guard let imageData = imageData else {
-                    // define error !!!!
+                    let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset])
                     completionHandler(upload, error)
                     return
                 }
@@ -94,8 +94,6 @@ class UploadImage {
                 let error = info?[PHImageErrorKey] as? Error
                 completionHandler(nil, error)
                 return
-                // Inform user and propose to cancel or continue
-//                self.showError(withTitle: NSLocalizedString("imageUploadError_title", comment: "Image Upload Error"), andMessage: NSLocalizedString("imageUploadError_iCloud", comment: "Could not retrieve image. Error: \(error?.localizedDescription ?? "")"), forRetrying: true, withImage: image)
             }
 
             // Retrieved UIImage representation for the specified asset
@@ -106,7 +104,8 @@ class UploadImage {
                 completionHandler(fixedImageObject, nil)
             }
             else {
-                completionHandler(imageObject, nil)
+                let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset])
+                completionHandler(imageObject, error)
             }
         })
     }
@@ -136,13 +135,9 @@ class UploadImage {
                 PHImageManager.default().requestImageDataAndOrientation(for: imageAsset, options: options,
                                                                         resultHandler: { imageData, dataUTI, orientation, info in
                     if info?[PHImageErrorKey] != nil || ((imageData?.count ?? 0) == 0) {
-                        print("     returned info(\(String(describing: info)))")
                         let error = info?[PHImageErrorKey] as? Error
                         completionHandler(imageData, error)
-                        // Inform user and propose to cancel or continue
-//                        self.showError(withTitle: NSLocalizedString("imageUploadError_title", comment: "Image Upload Error"), andMessage: NSLocalizedString("imageUploadError_iCloud", comment: "Could not retrieve image. Error: \(error?.localizedDescription ?? "")"), forRetrying: true, withImage: image)
                     } else {
-                        // Expected resource available
                         completionHandler(imageData, nil)
                     }
                 })
@@ -152,8 +147,6 @@ class UploadImage {
                     if info?[PHImageErrorKey] != nil || ((imageData?.count ?? 0) == 0) {
                         let error = info?[PHImageErrorKey] as? Error
                         completionHandler(imageData, error)
-                        // Inform user and propose to cancel or continue
-//                        self.showError(withTitle: NSLocalizedString("imageUploadError_title", comment: "Image Upload Error"), andMessage: NSLocalizedString("imageUploadError_iCloud", comment: "Could not retrieve image. Error: \(error?.localizedDescription ?? "")"), forRetrying: true, withImage: image)
                     } else {
                         completionHandler(imageData, nil)
                     }
@@ -173,12 +166,16 @@ class UploadImage {
         // Create CGI reference from image data (to retrieve complete metadata)
         guard let source: CGImageSource = CGImageSourceCreateWithData((originalData as CFData), nil) else {
             // Could not prepare image source
+            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset])
+            completionHandler(upload, error)
             return
         }
 
         // Get metadata from image data
         guard var imageMetadata = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as Dictionary? else {
             // Could not retrieve metadata
+            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset])
+            completionHandler(upload, error)
             return
         }
 
@@ -223,10 +220,8 @@ class UploadImage {
             }
             if let destination = destination {
                 if !CGImageDestinationFinalize(destination) {
-                    print("Error: Could not retrieve imageData object")
-                    completionHandler(upload, nil)
-                    // Inform user and propose to cancel or continue
-//                    showError(withTitle: NSLocalizedString("imageUploadError_title", comment: "Image Upload Error"), andMessage: NSLocalizedString("uploadError_message", comment: "Could not upload your image. Error: \(NSLocalizedString("imageUploadError_destination", comment: "cannot create image destination"))"), forRetrying: true, withImage: image)
+                    let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset])
+                    completionHandler(upload, error)
                     return
                 }
             }
@@ -264,8 +259,7 @@ class UploadImage {
         // Store final image data into Piwigo/Uploads directory
         do {
             try imageData?.write(to: fileURL)
-        } catch let error {
-            // define error !!!!
+        } catch let error as NSError {
             completionHandler(newUpload, error)
             return
         }

@@ -86,7 +86,6 @@ class Upload: NSManagedObject {
 
 extension Upload {
     var state: kPiwigoUploadState {
-        
         switch self.requestState {
         case kPiwigoUploadState.waiting.rawValue:
             return .waiting
@@ -118,35 +117,35 @@ extension Upload {
     }
 
     var stateLabel: String {
-        switch state {
-        case .waiting:
-            return NSLocalizedString("imageUploadTableCell_waiting", comment: "Waiting...")
-
-        case .preparing:
-            return NSLocalizedString("imageUploadTableCell_preparing", comment: "Preparing...")
-        case .prepared:
-            return NSLocalizedString("imageUploadTableCell_prepared", comment: "Ready for upload...")
-        case .formatError:
-            return NSLocalizedString("imageUploadError_format", comment: "File format not accepted by Piwigo server.")
-
-        case .uploading:
-            return NSLocalizedString("imageUploadTableCell_uploading", comment: "Uploading...")
-        case .uploadingError:
-            return NSLocalizedString("imageUploadTableCell_uploading", comment: "Uploading... Error")
-        case .uploaded:
-            return NSLocalizedString("imageUploadTableCell_uploaded", comment: "Uploaded")
-
-        case .finishing:
-            return NSLocalizedString("imageUploadTableCell_finishing", comment: "Finishing...")
-        case .finishingError:
-            return NSLocalizedString("imageUploadTableCell_finishingError", comment: "Finishing... Error")
-        case .finished:
-            return NSLocalizedString("imageUploadProgressBar_completed", comment: "Completed")
-        }
+        return state.stateInfo
+//        switch state {
+//        case .waiting:
+//            return NSLocalizedString("imageUploadTableCell_waiting", comment: "Waiting...")
+//
+//        case .preparing:
+//            return NSLocalizedString("imageUploadTableCell_preparing", comment: "Preparing...")
+//        case .prepared:
+//            return NSLocalizedString("imageUploadTableCell_prepared", comment: "Ready for upload...")
+//        case .formatError:
+//            return NSLocalizedString("imageUploadError_format", comment: "File format not accepted by Piwigo server.")
+//
+//        case .uploading:
+//            return NSLocalizedString("imageUploadTableCell_uploading", comment: "Uploading...")
+//        case .uploadingError:
+//            return NSLocalizedString("imageUploadTableCell_uploading", comment: "Uploading... Error")
+//        case .uploaded:
+//            return NSLocalizedString("imageUploadTableCell_uploaded", comment: "Uploaded")
+//
+//        case .finishing:
+//            return NSLocalizedString("imageUploadTableCell_finishing", comment: "Finishing...")
+//        case .finishingError:
+//            return NSLocalizedString("imageUploadTableCell_finishingError", comment: "Finishing... Error")
+//        case .finished:
+//            return NSLocalizedString("imageUploadProgressBar_completed", comment: "Completed")
+//        }
     }
 
     var privacy: kPiwigoPrivacy {
-        
         switch self.privacyLevel {
         case Int16(kPiwigoPrivacyEverybody.rawValue):
             return kPiwigoPrivacyEverybody
@@ -178,6 +177,7 @@ enum kPiwigoUploadState : Int16 {
     case waiting
     
     case preparing
+    case preparingError
     case formatError
     case prepared
 
@@ -188,6 +188,38 @@ enum kPiwigoUploadState : Int16 {
     case finishing
     case finishingError
     case finished
+}
+
+extension kPiwigoUploadState {
+    var stateInfo: String {
+        switch self {
+        case .waiting:
+            return NSLocalizedString("imageUploadTableCell_waiting", comment: "Waiting...")
+
+        case .preparing:
+            return NSLocalizedString("imageUploadTableCell_preparing", comment: "Preparing...")
+        case .preparingError:
+            return NSLocalizedString("imageUploadTableCell_preparingError", comment: "Preparing...Error")
+        case .prepared:
+            return NSLocalizedString("imageUploadTableCell_prepared", comment: "Ready for upload...")
+        case .formatError:
+            return NSLocalizedString("imageUploadError_format", comment: "File format not accepted by Piwigo server.")
+
+        case .uploading:
+            return NSLocalizedString("imageUploadTableCell_uploading", comment: "Uploading...")
+        case .uploadingError:
+            return NSLocalizedString("imageUploadTableCell_uploadingError", comment: "Uploading... Error")
+        case .uploaded:
+            return NSLocalizedString("imageUploadTableCell_uploaded", comment: "Uploaded")
+
+        case .finishing:
+            return NSLocalizedString("imageUploadTableCell_finishing", comment: "Finishing...")
+        case .finishingError:
+            return NSLocalizedString("imageUploadTableCell_finishingError", comment: "Finishing... Error")
+        case .finished:
+            return NSLocalizedString("imageUploadProgressBar_completed", comment: "Completed")
+        }
+    }
 }
 
 struct UploadProperties
@@ -224,5 +256,9 @@ extension UploadProperties {
             privacyLevel: Model.sharedInstance()?.defaultPrivacyLevel ?? kPiwigoPrivacyEverybody,
             // No title, comment, tag, filename by default
             title: "", comment: "", tags: [], imageId: NSNotFound)
+    }
+    
+    var stateLabel: String {
+        return requestState.stateInfo
     }
 }

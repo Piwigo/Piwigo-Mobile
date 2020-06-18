@@ -31,17 +31,17 @@ class UploadVideo {
             
             // Get MIME type
             guard let originalFileURL = (originalVideo as? AVURLAsset)?.url else {
-                // define error !!!!
+                let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset])
                 completionHandler(upload, error)
                 return
             }
             guard let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, originalFileURL.pathExtension as NSString, nil)?.takeRetainedValue() else {
-                // define error !!!!
+                let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset])
                 completionHandler(upload, error)
                 return
             }
             guard let mimeType = UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue() else  {
-                // define error !!!!
+                let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset])
                 completionHandler(upload, error)
                 return
             }
@@ -74,8 +74,7 @@ class UploadVideo {
                     return
                 }
                 catch let error as NSError {
-                    print("Ooops! Something went wrong: \(error)")
-                    completionHandler(upload, nil)
+                    completionHandler(upload, error)
                     return
                 }
             }
@@ -94,7 +93,7 @@ class UploadVideo {
 
                 // Valid export session?
                 guard let exportSession = exportSession else {
-                    // define error !!!!
+                    let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset])
                     completionHandler(upload, error)
                     return
                 }
@@ -112,15 +111,10 @@ class UploadVideo {
             }
 
             // Could not prepare the video file
-            completionHandler(upload, nil)
-//                    self.showError(withTitle: NSLocalizedString("videoUploadError_title", comment: "Video Upload Error"), andMessage: NSLocalizedString("videoUploadError_export", comment: "Sorry, the video could not be retrieved for the upload. Error: \(exportSession?.error?.localizedDescription ?? "")"), forRetrying: false, withImage: image)
+            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset])
+            completionHandler(upload, error)
             return
         }
-
-        // Could not retrieve the video
-        // define error !!!!
-        completionHandler(upload, nil)
-//        self.showError(withTitle: NSLocalizedString("uploadCancelled_title", comment: "Upload Cancelled"), andMessage: NSLocalizedString("videoUploadCancelled_message", comment: "The upload of the video has been cancelled."), forRetrying: true, withImage: image)
     }
     
     func convert(_ imageAsset: PHAsset, for upload: UploadProperties,
@@ -136,7 +130,7 @@ class UploadVideo {
 
             // Valid AVAsset?
             guard let avasset = avasset else {
-                // define error !!!!
+                let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset])
                 completionHandler(upload, error)
                 return
             }
@@ -154,7 +148,7 @@ class UploadVideo {
 
                 // Valid export session?
                 guard let exportSession = exportSession else {
-                    // define error !!!!
+                    let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset])
                     completionHandler(upload, error)
                     return
                 }
@@ -316,7 +310,6 @@ class UploadVideo {
                 // Inform user and propose to cancel or continue
                 let error = info?[PHImageErrorKey] as? Error
                 completionHandler(nil, error)
-//                                    self.showError(withTitle: NSLocalizedString("videoUploadError_title", comment: "Video Upload Error"), andMessage: NSLocalizedString("videoUploadError_iCloud", comment: "Could not retrieve video. Error: \(error?.localizedDescription ?? "")"), forRetrying: true, withImage: image)
                 return
             }
             completionHandler(exportSession, nil)
@@ -394,9 +387,8 @@ class UploadVideo {
                 } catch {
                 }
 
-                // define error !!!!
-                completionHandler(newUpload, nil)
-//                self.showError(withTitle: NSLocalizedString("uploadCancelled_title", comment: "Upload Cancelled"), andMessage: NSLocalizedString("videoUploadCancelled_message", comment: "The upload of the video has been cancelled."), forRetrying: true, withImage: image)
+                let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset])
+                completionHandler(newUpload, error)
                 return
                 
             case .cancelled:
@@ -406,10 +398,8 @@ class UploadVideo {
                 } catch {
                 }
 
-                // Inform user
-                // define error !!!!
-                completionHandler(newUpload, nil)
-//                self.showError(withTitle: NSLocalizedString("uploadCancelled_title", comment: "Upload Cancelled"), andMessage: NSLocalizedString("videoUploadCancelled_message", comment: "The upload of the video has been cancelled."), forRetrying: true, withImage: image)
+                let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset])
+                completionHandler(newUpload, error)
                 return
             
             default:
@@ -419,10 +409,8 @@ class UploadVideo {
                 } catch {
                 }
 
-                // Inform user
-                // define error !!!!
-                completionHandler(newUpload, nil)
-//                self.showError(withTitle: NSLocalizedString("videoUploadError_title", comment: "Video Upload Error"), andMessage: NSLocalizedString("videoUploadError_unknown", comment: "Sorry, the upload of the video has failed for an unknown error during the MP4 conversion. Error: \(exportSession?.error?.localizedDescription ?? "")"), forRetrying: true, withImage: image)
+                let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset])
+                completionHandler(newUpload, error)
                 return
             }
         })

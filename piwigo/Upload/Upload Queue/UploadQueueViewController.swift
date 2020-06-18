@@ -149,8 +149,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
         // Cancel action
-        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in
-            })
+        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in })
 
         // Clear upload queue
         let clearAction = UIAlertAction(title: "", style: .default, handler: { action in
@@ -163,6 +162,10 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
             // Delete cimpleted uploads
             self.uploadsProvider.deleteUploads(from: uploadsToDelete) { (error) in
                 guard let _ = error else {
+                    // Close this view when there is no more upload to display
+                    if self.uploadsProvider.fetchedResultsController.fetchedObjects?.count == 0 {
+                        self.dismiss(animated: true, completion: nil)
+                    }
                     return
                 }
                 print("ERROR ENCOUNTERED WHEN TRYING TO DELETE COMPLETED UPLOADS")
@@ -421,11 +424,13 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
 
     @objc func applyUploadProgress(_ notification: Notification) {
         let localIdentifier =  (notification.userInfo?["localIndentifier"] ?? "") as! String
+        let stateInfo = (notification.userInfo?["stateInfo"] ?? "") as! String
         let progressFraction = (notification.userInfo?["progressFraction"] ?? 0.0) as! Float
         let visibleCells = queueTableView.visibleCells as! [UploadImageTableViewCell]
         for cell in visibleCells {
             if cell.localIdentifier == localIdentifier {
-                cell.setProgress(progressFraction)
+                cell.uploadInfoLabel.text = stateInfo
+                cell.setProgressBar(progressFraction)
             }
         }
     }
@@ -517,7 +522,8 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
             // Upload in progress
             guard let upload:Upload = anObject as? Upload else { return }
             guard let cell = tableView(queueTableView, cellForRowAt: oldIndexPath) as? UploadImageTableViewCell else { return }
-            cell.configure(with: upload)
+//            cell.configure(with: upload)
+
 //            if let indexPathsOfVisibleCells = queueTableView.indexPathsForVisibleRows {
 //                for indexPath in indexPathsOfVisibleCells {
 //                    if allUploads[indexPath.row].localIdentifier == upload.localIdentifier {

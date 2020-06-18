@@ -882,7 +882,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             // Use indexed data
             if let state = indexedUploadsInQueue[index]?.1 {
                 switch state {
-                case .waiting, .preparing, .prepared, .formatError:
+                case .waiting, .preparing, .preparingError, .prepared, .formatError:
                     cell.cellWaiting = true
                 case .uploading, .uploadingError, .uploaded, .finishing, .finishingError:
                     cell.cellUploading = true
@@ -896,7 +896,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             // Use non-indexed data
             if let upload = uploadsInQueue.first(where: { $0?.0 == imageAsset.localIdentifier }) {
                 switch upload?.1 {
-                case .waiting, .preparing, .prepared, .formatError:
+                case .waiting, .preparing, .preparingError, .prepared, .formatError:
                     cell.cellWaiting = true
                 case .uploading, .uploadingError, .uploaded, .finishing, .finishingError:
                     cell.cellUploading = true
@@ -1311,7 +1311,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
                 if let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell {
                     cell.selectedImage.isHidden = true
                     switch upload.state {
-                    case .waiting, .preparing, .prepared, .formatError:
+                    case .waiting, .preparing, .preparingError, .prepared, .formatError:
                         cell.cellWaiting = true
                     case .uploading, .uploadingError, .uploaded, .finishing, .finishingError:
                         cell.cellUploading = true

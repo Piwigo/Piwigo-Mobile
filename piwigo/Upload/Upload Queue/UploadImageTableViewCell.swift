@@ -43,15 +43,12 @@ class UploadImageTableViewCell: UITableViewCell {
         // Upload info label
         uploadInfoLabel.textColor = UIColor.piwigoColorLeftLabel()
         uploadInfoLabel.text = upload.stateLabel
-//        if let category = CategoriesData.sharedInstance()?.getCategoryById(Int(upload.category)) {
-//            uploadInfoLabel.text?.append(contentsOf: String(format: " (%@)", category.name))
-//        }
         
         // Uploading progress bar
-        switch upload.state {
-        case .waiting, .preparing, .prepared, .formatError, .uploading, .uploadingError:
+        if [.waiting, .preparing, .prepared, .formatError].contains(upload.state) {
             uploadingProgress?.setProgress(0.0, animated: false)
-        case .uploaded, .finishing, .finishingError, .finished:
+        }
+        if [.uploaded, .finishing, .finishingError, .finished].contains(upload.state) {
             uploadingProgress?.setProgress(1.0, animated: false)
         }
 
@@ -90,7 +87,7 @@ class UploadImageTableViewCell: UITableViewCell {
         playImage.isHidden = imageAsset.mediaType == .video ? false : true
     }
     
-    func setProgress(_ progress: Float) {
+    func setProgressBar(_ progress: Float) {
         uploadingProgress?.setProgress(progress, animated: true)
     }
     
@@ -137,8 +134,8 @@ class UploadImageTableViewCell: UITableViewCell {
     override func prepareForReuse() {
         cellImage.image = UIImage(named: "placeholder")
         playImage.isHidden = true
-        uploadInfoLabel.text = "Waiting…"
-//        setProgress(0, withAnimation: false)
+        uploadInfoLabel.text = ""
+        setProgressBar(0)
         imageInfoLabel.text = ""
     }
 }

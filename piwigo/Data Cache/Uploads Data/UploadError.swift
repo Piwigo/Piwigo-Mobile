@@ -14,6 +14,7 @@ enum UploadError: Error {
     case wrongDataFormat
     case creationError
     case missingData
+    case missingAsset
 }
 
 extension UploadError: LocalizedError {
@@ -27,6 +28,8 @@ extension UploadError: LocalizedError {
             return NSLocalizedString("CoreDataFetch_UploadMissingData", comment: "Found and will discard an upload missing a valid identifier.")
         case .creationError:
             return NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object.")
+        case .missingAsset:
+            return NSLocalizedString("CoreDataFetch_UploadMissingAsset", comment: "Failed to retrieve photo")
         }
     }
 }
