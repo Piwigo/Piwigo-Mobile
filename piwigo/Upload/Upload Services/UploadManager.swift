@@ -210,8 +210,8 @@ class UploadManager: NSObject {
         }
 
         // Determine non-empty unique file name and extension from asset
-        nextUpload.fileName = PhotosFetch.sharedInstance().getFileNameFomImageAsset(originalAsset)
-        let fileExt = (URL(fileURLWithPath: nextUpload.fileName!).pathExtension).lowercased()
+        uploadProperties.fileName = PhotosFetch.sharedInstance().getFileNameFomImageAsset(originalAsset)
+        let fileExt = (URL(fileURLWithPath: uploadProperties.fileName!).pathExtension).lowercased()
         
         // Launch preparation job if file format accepted by Piwigo server
         switch originalAsset.mediaType {
