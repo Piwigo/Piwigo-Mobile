@@ -278,7 +278,6 @@ class UploadsProvider: NSObject {
         taskContext.performAndWait {
             
             // Retrieve existing upload
-            print(">>>> updateRecord...")
             // Create a fetch request for the Upload entity sorted by localIdentifier
             let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: "localIdentifier", ascending: true)]

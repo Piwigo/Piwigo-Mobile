@@ -230,8 +230,7 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
     // Image data are not complete when retrieved using pwg.categories.getImages
     // Required by Copy, Delete, Move actions (may also be used to show albums image belongs to)
     [ImageService getImageInfoById:[[self.selectedImageIds lastObject] integerValue]
-                andAddImageToCache:NO
-          ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageDataComplete) {
+                      OnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageDataComplete) {
               
               if (imageDataComplete != nil) {
                   // Store image data

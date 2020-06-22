@@ -338,8 +338,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
 
     // Required by Copy, Delete, Move actions (may also be used to show albums image belongs to)
     [ImageService getImageInfoById:imageId
-                andAddImageToCache:NO
-          ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageDataComplete) {
+                      OnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageDataComplete) {
               if (imageDataComplete != nil) {
 
                   // Update list of images

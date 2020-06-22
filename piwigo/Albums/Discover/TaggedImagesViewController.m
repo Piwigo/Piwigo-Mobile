@@ -862,8 +862,7 @@
     
     // Image data are not complete when retrieved using pwg.categories.getImages
     [ImageService getImageInfoById:[[self.selectedImageIdsToEdit lastObject] integerValue]
-                andAddImageToCache:NO
-                  ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
+                      OnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
                       
                       if (imageData != nil) {
                           // Store image data
@@ -986,8 +985,7 @@
     
     // Image data are not complete when retrieved with pwg.categories.getImages
     [ImageService getImageInfoById:[[self.selectedImageIdsToDelete lastObject] integerValue]
-                andAddImageToCache:NO
-          ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
+                      OnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
 
               if (imageData != nil) {
                   // Collect orphaned and non-orphaned images
@@ -1184,8 +1182,7 @@
     
     // Image data are not complete when retrieved using pwg.categories.getImages
     [ImageService getImageInfoById:[[self.selectedImageIdsToShare lastObject] integerValue]
-                andAddImageToCache:NO
-                  ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
+                      OnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
                       
                       if (imageData != nil) {
                           // Store image data

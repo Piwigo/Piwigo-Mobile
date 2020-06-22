@@ -56,11 +56,11 @@ typedef enum {
 -(void)loadCategoryImageDataChunkWithSort:(NSString*)sort
 							  forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
 								OnCompletion:(void (^)(BOOL completed))completion;
--(void)addImages:(NSArray*)images;
+
+-(NSInteger)addImages:(NSArray*)images;
 -(void)updateImages:(NSArray*)updatedImages;
 -(void)updateImageAfterEdit:(PiwigoImageData *)uploadedImage;
 -(void)removeImages:(NSArray*)images;
--(void)updateCacheWithImageUploadInfo:(ImageUpload*)imageUpload;
 -(NSInteger)getDepthOfCategory;
 -(BOOL)containsUpperCategory:(NSInteger)category;
 -(void)resetData;

@@ -161,6 +161,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 							  OnCompletion:(void (^)(BOOL completed))completion
 {
 	self.onPage = 0;
+    self.lastImageBulkCount = [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
 	[self loopLoadImagesForSort:@""
 				   withProgress:progress
                    onCompletion:^(BOOL completed) {
@@ -204,88 +205,113 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     
     // Load more image data…
 	self.isLoadingMoreImages = YES;
-//    NSLog(@"loadCategoryImageDataChunkWithSort: page %ld", (long)self.onPage);
+    NSLog(@"loadCategoryImageDataChunkWithSort:%ld page %ld", (long)self.lastImageBulkCount, (long)self.onPage);
 	[ImageService loadImageChunkForLastChunkCount:self.lastImageBulkCount
                                       forCategory:self.albumId orQuery:self.query
 										   onPage:self.onPage
 										  forSort:sort
 								 ListOnCompletion:^(NSURLSessionTask *task, NSInteger count) {
+            if(progress)
+            {
+                PiwigoAlbumData *downloadingCategory = [[CategoriesData sharedInstance] getCategoryById:self.albumId];
+                NSInteger numOfImgs = downloadingCategory.numberOfImages;
+                progress(self.onPage, numOfImgs);
+            }
+
+            self.lastImageBulkCount = count;
+            if (count >= [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait]) {
+                self.onPage++;
+            }
+            self.isLoadingMoreImages = NO;
+
+            if(completion)
+            {
+                completion(YES);
+            }
+     } onFailure:^(NSURLSessionTask *task, NSError *error) {
 									 
-									 if(progress)
-									 {
-										 PiwigoAlbumData *downloadingCategory = [[CategoriesData sharedInstance] getCategoryById:self.albumId];
-										 NSInteger numOfImgs = downloadingCategory.numberOfImages;
-										 progress(self.onPage, numOfImgs);
-									 }
-									 
-									 self.lastImageBulkCount = count;
-									 self.onPage++;
-									 self.isLoadingMoreImages = NO;
-									 
-									 if(completion)
-									 {
-										 completion(YES);
-									 }
-								 } onFailure:^(NSURLSessionTask *task, NSError *error) {
-									 
-                                     // Don't return an error is the task was cancelled
-									 if (error && (task || (task.state == NSURLSessionTaskStateCanceling)))
-									 {
-                                         // Determine the present view controller
-                                         UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-                                         while (topViewController.presentedViewController) {
-                                             topViewController = topViewController.presentedViewController;
-                                         }
-                                         
-                                         UIAlertController* alert = [UIAlertController
-                                             alertControllerWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error")
-                                             message:[NSString stringWithFormat:@"%@\n%@", NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)"), [error localizedDescription]]
-                                             preferredStyle:UIAlertControllerStyleAlert];
-                                         
-                                         UIAlertAction* defaultAction = [UIAlertAction
-                                             actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                                             style:UIAlertActionStyleDefault
-                                             handler:^(UIAlertAction * action) {}];
-                                         
-                                         [alert addAction:defaultAction];
-                                         alert.view.tintColor = UIColor.piwigoColorOrange;
-                                         if (@available(iOS 13.0, *)) {
-                                             alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
-                                         } else {
-                                             // Fallback on earlier versions
-                                         }
-                                         [topViewController presentViewController:alert animated:YES completion:^{
-                                             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                                             alert.view.tintColor = UIColor.piwigoColorOrange;
-                                         }];
-									 }
-									 self.isLoadingMoreImages = NO;
-									 if(completion)
-									 {
-										 completion(NO);
-									 }
-								 }];
+         // Don't return an error is the task was cancelled
+         if (error && (task || (task.state == NSURLSessionTaskStateCanceling)))
+         {
+             // Determine the present view controller
+             UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+             while (topViewController.presentedViewController) {
+                 topViewController = topViewController.presentedViewController;
+             }
+             
+             UIAlertController* alert = [UIAlertController
+                 alertControllerWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error")
+                 message:[NSString stringWithFormat:@"%@\n%@", NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)"), [error localizedDescription]]
+                 preferredStyle:UIAlertControllerStyleAlert];
+             
+             UIAlertAction* defaultAction = [UIAlertAction
+                 actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+                 style:UIAlertActionStyleDefault
+                 handler:^(UIAlertAction * action) {}];
+             
+             [alert addAction:defaultAction];
+             alert.view.tintColor = UIColor.piwigoColorOrange;
+             if (@available(iOS 13.0, *)) {
+                 alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+             } else {
+                 // Fallback on earlier versions
+             }
+             [topViewController presentViewController:alert animated:YES completion:^{
+                 // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                 alert.view.tintColor = UIColor.piwigoColorOrange;
+             }];
+         }
+         self.isLoadingMoreImages = NO;
+         if(completion)
+         {
+             completion(NO);
+         }
+     }];
 }
 
--(void)addImages:(NSArray*)images
+-(NSInteger)addImages:(NSArray*)images
 {
     // Create new image list
     NSMutableArray *newImageList = [self.imageList mutableCopy];
 	
     // Append new images
-	for(PiwigoImageData *imageData in images)
-	{
-        // API pwg.categories.getList returns:
-        //      id, categories, name, comment, hit
-        //      file, date_creation, date_available, width, height
-        //      element_url, derivatives, (page_url)
-        //
-		[newImageList addObject:imageData];
-        [self.imageIds setValue:@(0) forKey:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]];
-	}
+    NSInteger count = 0;
+    if (self.imageList.count == 0) {
+        // No need to check the presence of duplicates
+        for(PiwigoImageData *imageData in images)
+        {
+            // API pwg.categories.getList returns:
+            //      id, categories, name, comment, hit
+            //      file, date_creation, date_available, width, height
+            //      element_url, derivatives, (page_url)
+            //
+            [newImageList addObject:imageData];
+            [self.imageIds setValue:@(0) forKey:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]];
+            count++;
+        }
+    } else {
+        // Check the presence of duplicates
+        for(PiwigoImageData *imageData in images)
+        {
+            // API pwg.categories.getList returns:
+            //      id, categories, name, comment, hit
+            //      file, date_creation, date_available, width, height
+            //      element_url, derivatives, (page_url)
+            //
+            NSInteger index = [self.imageList indexOfObjectPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger idx, BOOL * stop) {
+                return obj.imageId == imageData.imageId;
+            }];
+            if (index == NSNotFound) {
+                [newImageList addObject:imageData];
+                [self.imageIds setValue:@(0) forKey:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]];
+                count++;
+            }
+        }
+    }
     
     // Store updated list
 	self.imageList = newImageList;
+    return count;
 }
 
 -(void)updateImages:(NSArray*)updatedImages
@@ -371,20 +397,6 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     self.imageList = newImageArray;
 }
 
--(void)updateCacheWithImageUploadInfo:(ImageUpload*)imageUpload
-{
-    PiwigoImageData *newImageData = [[CategoriesData sharedInstance] getImageForCategory:imageUpload.categoryToUploadTo andId:imageUpload.imageId];
-    
-    newImageData.fileName = imageUpload.fileName;
-    newImageData.imageTitle = imageUpload.imageTitle;
-    newImageData.privacyLevel = imageUpload.privacyLevel;
-    newImageData.author = imageUpload.author;
-    newImageData.comment = imageUpload.comment;
-    newImageData.tags = imageUpload.tags;
-    
-    [self addImages:@[newImageData]];
-}
-
 -(NSInteger)getDepthOfCategory
 {
 	return self.upperCategories ? [self.upperCategories count] : 0;
@@ -412,12 +424,13 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 	{
 		[[CategoriesData sharedInstance] getCategoryById:[category integerValue]].totalNumberOfImages++;
 	}
-    
+    NSLog(@"•••> incrementImageSizeByOne: catId=%ld, nber:%ld, total:%ld", (long)self.nearestUpperCategory, (long)self.numberOfImages, (long)self.totalNumberOfImages);
+
     // If first added image, update category cache to get thumbnail image URL from server
-    if (self.numberOfImages == 1) {
-        NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO", @"albumId" : @(self.albumId)};
-        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
-    }
+//    if (self.numberOfImages == 1) {
+//        NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO", @"albumId" : @(self.albumId)};
+//        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
+//    }
 }
 
 -(void)deincrementImageSizeByOne

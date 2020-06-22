@@ -32,9 +32,9 @@
 #import "SAMKeychain.h"
 #import "SearchImagesViewController.h"
 
-//#ifndef DEBUG_LIFECYCLE
-//#define DEBUG_LIFECYCLE
-//#endif
+#ifndef DEBUG_LIFECYCLE
+#define DEBUG_LIFECYCLE
+#endif
 
 CGFloat const kRadius = 25.0;
 CGFloat const kDeg2Rad = 3.141592654 / 180.0;
@@ -271,10 +271,6 @@ NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploa
         self.uploadImagesButton.hidden = YES;
         [self.view insertSubview:self.uploadImagesButton belowSubview:self.addButton];
 
-        // Register category data updates
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getCategoryData:) name:kPiwigoNotificationGetCategoryData object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
-		
         // Register palette changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
 
@@ -596,6 +592,10 @@ NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploa
             alert.view.tintColor = UIColor.piwigoColorOrange;
         }];
     }
+    
+    // Register category data updates
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getCategoryData:) name:kPiwigoNotificationGetCategoryData object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
 }
 
 -(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
@@ -674,6 +674,10 @@ NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploa
 
     // Hide upload button during transition
     [self.addButton setHidden:YES];
+
+    // Unregister category data updates
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationGetCategoryData object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationCategoryDataUpdated object:nil];
 }
 
 -(void)viewDidDisappear:(BOOL)animated
@@ -1253,26 +1257,80 @@ NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploa
 -(void)categoriesUpdated
 {
 #if defined(DEBUG_LIFECYCLE)
-    NSLog(@"                => categoriesUpdated… %ld", (long)self.categoryId);
+    NSLog(@"=> categoriesUpdated… %ld", (long)self.categoryId);
 #endif
+    
+    // Quit if already being loading images
+    if (self.loadingImages) {
+        NSLog(@"=> categoriesUpdated… STOP [already being loading images]");
+        return; }
     
     // Images ?
     if (self.categoryId != 0) {
+        // Store current image list
+        NSArray *oldImageList = self.albumData.images;
+        NSLog(@"=> categoriesUpdated… %ld contained %ld images", self.categoryId, oldImageList.count);
+
+        // Collect images belonging to the current album
+        self.loadingImages = TRUE;
         [self.albumData loadAllImagesOnCompletion:^{
 
-             // Sort images
-             [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
+            // Sort images
+            [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
 
-                 // The album title is not shown in backButtonItem to provide enough space
-                 // for image title on devices of screen width <= 414 ==> Restore album title
-                 self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
-                
-                 // Set navigation bar buttons
-                 [self updateButtonsInPreviewMode];
+                // The album title is not shown in backButtonItem to provide enough space
+                // for image title on devices of screen width <= 414 ==> Restore album title
+                self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
 
-                 // Reload collection view
-                 [self.imagesCollection reloadData];
-//                 [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
+                // Refresh collection view if needed
+                NSLog(@"=> categoriesUpdated… %ld now contains %ld images", self.categoryId, self.albumData.images.count);
+                if (oldImageList.count == self.albumData.images.count) { return; }
+
+                // Insert cells of added images
+                NSMutableArray<NSIndexPath *> *itemsToInsert = [NSMutableArray new];
+                for (NSInteger index = 0; index < self.albumData.images.count; index++) {
+                    PiwigoImageData *image = [self.albumData.images objectAtIndex:index];
+                    NSInteger indexOfExistingItem = [oldImageList indexOfObjectPassingTest:^BOOL(PiwigoImageData *oldObj, NSUInteger oldIdx, BOOL * _Nonnull stop) {
+                     return oldObj.imageId == image.imageId;
+                    }];
+                    if (indexOfExistingItem == NSNotFound) {
+                     [itemsToInsert addObject:[NSIndexPath indexPathForItem:index inSection:1]];
+                    }
+                }
+                if (itemsToInsert.count > 0) {
+                    [self.imagesCollection insertItemsAtIndexPaths:itemsToInsert];
+                }
+
+                // Delete cells of deleted images
+                NSMutableArray<NSIndexPath *> *itemsToDelete = [NSMutableArray new];
+                for (NSInteger index = 0; index < oldImageList.count; index++) {
+                    PiwigoImageData *image = [oldImageList objectAtIndex:index];
+                    NSInteger indexOfExistingItem = [self.albumData.images indexOfObjectPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger oldIdx, BOOL * _Nonnull stop) {
+                     return obj.imageId == image.imageId;
+                    }];
+                    if (indexOfExistingItem == NSNotFound) {
+                     [itemsToInsert addObject:[NSIndexPath indexPathForItem:index inSection:1]];
+                    }
+                }
+                if (itemsToDelete.count > 0) {
+                    [self.imagesCollection deleteItemsAtIndexPaths:itemsToDelete];
+                }
+
+                // Update footer
+                UICollectionReusableView *visibleFooter = [[self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter] firstObject];
+                NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].totalNumberOfImages;
+                if ([visibleFooter isKindOfClass:[NberImagesFooterCollectionReusableView class]]) {
+                    NberImagesFooterCollectionReusableView *footer = (NberImagesFooterCollectionReusableView *)visibleFooter;
+                    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+                    [numberFormatter setPositiveFormat:@"#,##0"];
+                    footer.noImagesLabel.text = [NSString stringWithFormat:@"%@ %@", [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]], totalImageCount > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
+                }
+
+                // Set navigation bar buttons
+                [self updateButtonsInPreviewMode];
+
+                // Update done
+                self.loadingImages = FALSE;
             }];
         }];
     }
@@ -1288,6 +1346,7 @@ NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploa
          [self.imagesCollection reloadData];
      }
 }
+
 
 #pragma mark - Default Category Management
 
@@ -1690,8 +1749,7 @@ NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploa
     
     // Image data are not complete when retrieved using pwg.categories.getImages
     [ImageService getImageInfoById:[[self.selectedImageIdsToEdit lastObject] integerValue]
-                andAddImageToCache:NO
-                  ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
+                      OnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
                       
                       if (imageData != nil) {
                           // Store image data
@@ -1815,8 +1873,7 @@ NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploa
     
     // Image data are not complete when retrieved with pwg.categories.getImages
     [ImageService getImageInfoById:[[self.selectedImageIdsToDelete lastObject] integerValue]
-                andAddImageToCache:NO
-          ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
+                      OnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
 
               if (imageData != nil) {
                   // Split orphaned and non-orphaned images
@@ -2176,8 +2233,7 @@ NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploa
     
     // Image data are not complete when retrieved using pwg.categories.getImages
     [ImageService getImageInfoById:[[self.selectedImageIdsToShare lastObject] integerValue]
-                andAddImageToCache:NO
-                  ListOnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
+                      OnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
                       
                       if (imageData != nil) {
                           // Store image data
@@ -2683,7 +2739,7 @@ NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploa
             if (self.albumData.images.count > indexPath.row) {
                 // Create cell from Piwigo data
                 PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
-//                NSLog(@"Index:%ld => image ID:%@ - %@", indexPath.row, imageData.imageId, imageData.name);
+//                NSLog(@"Index:%ld => image ID:%ld - %@", indexPath.row, (long)imageData.imageId, imageData.fileName);
                 [cell setupWithImageData:imageData forCategoryId:self.categoryId];
                 cell.isSelected = [self.selectedImageIds containsObject:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]];
                 
@@ -2704,7 +2760,9 @@ NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploa
             if ((indexPath.row > fmaxf(roundf(2 * imagesPerPage / 3.0), [collectionView numberOfItemsInSection:1] - roundf(imagesPerPage / 3.0))) &&
                 (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
             {
+                self.loadingImages = YES;
                 [self.albumData loadMoreImagesOnCompletion:^{
+                    self.loadingImages = NO;
                     [self.imagesCollection reloadData];
                 }];
             }

@@ -59,7 +59,7 @@ class UploadImage {
     
     private func retrieveUIImage(from imageAsset: PHAsset,
                                  completionHandler: @escaping (UIImage?, Error?) -> Void) {
-        print("•••> retrieveUIImageFrom...")
+        print("   > retrieveUIImageFrom...")
 
         // Case of an image…
         let options = PHImageRequestOptions()
@@ -82,7 +82,7 @@ class UploadImage {
 
         // The block Photos calls periodically while downloading the photo
         options.progressHandler = { progress, error, stop, info in
-            print(String(format: "downloading Photo — progress %lf", progress))
+            print(String(format: "   > retrieveUIImageFrom... progress %lf", progress))
         }
 
         // Requests image…
@@ -90,7 +90,7 @@ class UploadImage {
                                               options: options, resultHandler: { imageObject, info in
             // Any error?
             if info?[PHImageErrorKey] != nil || (imageObject?.size.width == 0) || (imageObject?.size.height == 0) {
-                print("     returned info(\(String(describing: info)))")
+//                print("     returned info(\(String(describing: info)))")
                 let error = info?[PHImageErrorKey] as? Error
                 completionHandler(nil, error)
                 return
@@ -112,7 +112,7 @@ class UploadImage {
 
     private func retrieveFullSizeImageData(from imageAsset: PHAsset,
                                            completionHandler: @escaping (Data?, Error?) -> Void) {
-        print("•••> retrieveFullSizeAssetDataFromImage...")
+        print("   > retrieveFullSizeAssetDataFromImage...")
 
         // Case of an image…
         let options = PHImageRequestOptions()
@@ -127,7 +127,7 @@ class UploadImage {
 
         // The block Photos calls periodically while downloading the photo
         options.progressHandler = { progress, error, stop, info in
-            print(String(format: "downloading Photo from iCloud — progress %lf", progress))
+            print(String(format: "   > retrieveFullSizeAssetDataFromImage... progress %lf", progress))
         }
 
         autoreleasepool {
@@ -161,7 +161,7 @@ class UploadImage {
     private func modifyImage(for upload: UploadProperties,
                              with originalData: Data, andObject originalObject: UIImage,
                              completionHandler: @escaping (UploadProperties, Error?) -> Void) {
-        print("•••> modifyImage...")
+        print("   > modifyImage...")
 
         // Create CGI reference from image data (to retrieve complete metadata)
         guard let source: CGImageSource = CGImageSourceCreateWithData((originalData as CFData), nil) else {
@@ -235,7 +235,7 @@ class UploadImage {
         newUpload.mimeType = "image/jpeg"
         if let type = contentType(forImageData: imageData) {
             if type.count > 0  {
-                // Adopt determined Mime tyme
+                // Adopt determined Mime type
                 newUpload.mimeType = type
                 // Re-check filename extension if MIME type known
                 let fileExt = (URL(fileURLWithPath: upload.fileName ?? "").pathExtension).lowercased()
