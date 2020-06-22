@@ -103,11 +103,8 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
 
         // Prevent device from sleeping if uploads are in progress
         let uploadsToPerform = uploadsProvider.fetchedResultsController.fetchedObjects?.map({
-            ($0.requestState == kPiwigoUploadState.waiting.rawValue) ||
-            ($0.requestState == kPiwigoUploadState.preparing.rawValue) ||
-            ($0.requestState == kPiwigoUploadState.prepared.rawValue) ||
-            ($0.requestState == kPiwigoUploadState.uploading.rawValue) ||
-            ($0.requestState == kPiwigoUploadState.finishing.rawValue) ? 1 : 0}).reduce(0, +) ?? 0
+            ($0.state == .waiting) || ($0.state == .preparing) ||  ($0.state == .prepared) ||
+            ($0.state == .uploading) || ($0.state == .finishing) ? 1 : 0}).reduce(0, +) ?? 0
         if uploadsToPerform > 0 {
             UIApplication.shared.isIdleTimerDisabled = true
         }
@@ -153,8 +150,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
         let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in })
 
         // Clear completed uploads
-        let completedUploads = uploadsProvider.fetchedResultsController.fetchedObjects?.map({
-            ($0.requestState == kPiwigoUploadState.finished.rawValue) ? 1 : 0}).reduce(0, +) ?? 0
+        let completedUploads = uploadsProvider.fetchedResultsController.fetchedObjects?.map({ ($0.state == .finished) ? 1 : 0}).reduce(0, +) ?? 0
         let titleClear = completedUploads > 1 ? String(format: NSLocalizedString("imageUploadClearSeveral", comment: "Clear %@ Completed Uploads"), NumberFormatter.localizedString(from: NSNumber.init(value: completedUploads), number: .decimal)) : NSLocalizedString("imageUploadClearSingle", comment: "Clear Completed Upload")
         let clearAction = UIAlertAction(title: titleClear, style: .default, handler: { action in
             // Get completed uploads
@@ -162,7 +158,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
                 return
             }
             // Get uploads to delete
-            let uploadsToDelete = allUploads.filter({ $0.requestState == kPiwigoUploadState.finished.rawValue})
+            let uploadsToDelete = allUploads.filter({ $0.state == .finished})
             // Delete cimpleted uploads
             self.uploadsProvider.deleteUploads(from: uploadsToDelete) { (error) in
                 guard let _ = error else {
@@ -171,7 +167,6 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
                         // - delete the directory containing files to upload
                         let uploadManager = UploadManager()
                         uploadManager.emptyUploadsDirectory()
-
                         // - close this view when there is no more upload to display
                         self.dismiss(animated: true, completion: nil)
                     }

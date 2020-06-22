@@ -103,7 +103,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         selectedImages = .init(repeating: nil, count: imageCollection.count)            // At start, there is no image selected
         selectedSections = .init(repeating: .none, count: imageCollection.count)        // User cannot select sections of images until data is ready
         if let uploads = uploadsProvider.fetchedResultsController.fetchedObjects {       // We provide a non-indexed list of images in the upload queue
-            uploadsInQueue = uploads.map {($0.localIdentifier, kPiwigoUploadState(rawValue: $0.requestState))}
+            uploadsInQueue = uploads.map {($0.localIdentifier, $0.state)}
         }                                                                               // so that we can at least show images in upload queue at start
                                                                                         // and prevent their selection
         // Sort images in background
@@ -200,11 +200,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         
         // Prevent device from sleeping if uploads are in progress
         let uploadsToPerform = uploadsProvider.fetchedResultsController.fetchedObjects?.map({
-            ($0.requestState == kPiwigoUploadState.waiting.rawValue) ||
-            ($0.requestState == kPiwigoUploadState.preparing.rawValue) ||
-            ($0.requestState == kPiwigoUploadState.prepared.rawValue) ||
-            ($0.requestState == kPiwigoUploadState.uploading.rawValue) ||
-            ($0.requestState == kPiwigoUploadState.finishing.rawValue) ? 1 : 0}).reduce(0, +) ?? 0
+            ($0.state == .waiting) || ($0.state == .preparing) || ($0.state == .prepared) ||
+            ($0.state == .uploading) || ($0.state == .finishing) ? 1 : 0}).reduce(0, +) ?? 0
         if uploadsToPerform > 0 {
             UIApplication.shared.isIdleTimerDisabled = true
         }

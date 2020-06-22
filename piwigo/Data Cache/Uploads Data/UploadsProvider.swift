@@ -353,7 +353,7 @@ class UploadsProvider: NSObject {
     func updateBadgeAndButton() {
         // Calculate number of uploads to perform
         let nberOfUploads = self.fetchedResultsController.fetchedObjects?.count ?? 0
-        let completedUploads = self.fetchedResultsController.fetchedObjects?.map({ $0.requestState == kPiwigoUploadState.finished.rawValue ? 1 : 0}).reduce(0, +) ?? 0
+        let completedUploads = self.fetchedResultsController.fetchedObjects?.map({ $0.state == .finished ? 1 : 0}).reduce(0, +) ?? 0
                 
         DispatchQueue.main.async {
             // Upadte app badge
