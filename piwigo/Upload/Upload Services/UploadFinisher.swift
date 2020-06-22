@@ -19,21 +19,19 @@ class UploadFinisher {
      one must inform the moderator that a number of images were uploaded.
      */
     func getUploadedImageStatus(byId imageId: String?, inCategory categoryId: Int,
-                                      onCompletion completion: @escaping (_ task: URLSessionTask?, _ response: Any?) -> Void,
-                                      onFailure fail: @escaping (_ task: URLSessionTask?, _ error: Error?) -> Void) -> URLSessionTask? {
+            onCompletion completion: @escaping (_ task: URLSessionTask?, _ response: Any?) -> Void,
+            onFailure fail: @escaping (_ task: URLSessionTask?, _ error: Error?) -> Void) -> (Void) {
         
-        let request = NetworkHandler.post(kCommunityImagesUploadCompleted,
-                                urlParameters: nil,
-                                parameters: [
-                                    "pwg_token": Model.sharedInstance().pwgToken!,
-                                    "image_id": imageId ?? "",
-                                    "category_id": NSNumber(value: categoryId)
-                                    ],
-                                progress: nil,
-                                success: completion,
-                                failure: fail)
-
-        return request
+        NetworkHandler.post(kCommunityImagesUploadCompleted,
+                urlParameters: nil,
+                parameters: [
+                    "pwg_token": Model.sharedInstance().pwgToken!,
+                    "image_id": imageId ?? "",
+                    "category_id": NSNumber(value: categoryId)
+                    ],
+                progress: nil,
+                success: completion,
+                failure: fail)
     }
 }
 

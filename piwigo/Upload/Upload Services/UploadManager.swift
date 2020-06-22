@@ -726,10 +726,10 @@ class UploadManager: NSObject {
                         // Will retry later
                         return
                     }
-            }) { (task, error) in
+            }, onFailure: { (task, error) in
                     // Will retry later
                     return
-            }
+            })
         }
     }
 
