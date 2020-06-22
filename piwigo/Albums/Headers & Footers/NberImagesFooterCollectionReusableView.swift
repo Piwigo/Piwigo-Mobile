@@ -28,8 +28,7 @@ class NberImagesFooterCollectionReusableView: UICollectionReusableView {
         if let noImagesLabel = noImagesLabel {
             addSubview(noImagesLabel)
         }
-        addConstraint(NSLayoutConstraint.constraintCenterVerticalView(noImagesLabel)!)
-        addConstraint(NSLayoutConstraint.constraintView(fromTop: noImagesLabel, amount: 0.0)!)
+        addConstraints(NSLayoutConstraint.constraintCenter(noImagesLabel)!)
     }
 
     required init?(coder aDecoder: NSCoder) {

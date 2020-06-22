@@ -2536,7 +2536,7 @@ NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploa
                                                          options:NSStringDrawingUsesLineFragmentOrigin
                                                       attributes:attributes
                                                          context:context];
-                return CGSizeMake(collectionView.frame.size.width - 30.0, ceil(footerRect.size.height + 10.0));
+                return CGSizeMake(collectionView.frame.size.width - 30.0, ceil(footerRect.size.height));
             }
             break;
         }
