@@ -451,13 +451,10 @@
 
 "imageUploadTableCell_waiting" = "Waiting...";
 "imageUploadTableCell_preparing" = "Preparing...";
-"imageUploadTableCell_preparingError" = "Preparing...Error";
 "imageUploadTableCell_prepared" = "Ready for upload...";
 "imageUploadTableCell_uploading" = "Uploading...";
-"imageUploadTableCell_uploadingError" = "Uploading...Error";
 "imageUploadTableCell_uploaded" = "Uploaded";
 "imageUploadTableCell_finishing" = "Finishing...";
-"imageUploadTableCell_finishingError" = "Finishing... Error";
 
 "imageUploadClearSingle" = "Clear Completed Upload";
 "imageUploadClearSeveral" = "Clear %@ Completed Uploads";

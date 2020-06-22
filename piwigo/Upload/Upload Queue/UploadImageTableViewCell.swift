@@ -54,7 +54,11 @@ class UploadImageTableViewCell: UITableViewCell {
 
         // Image info label
         imageInfoLabel.textColor = UIColor.piwigoColorRightLabel()
-        imageInfoLabel.text = getImageInfo(from: imageAsset)
+        if [.preparingError, .formatError, .uploadingError, .finishingError].contains(upload.state) {
+            imageInfoLabel.text = upload.requestError
+        } else {
+            imageInfoLabel.text = getImageInfo(from: imageAsset)
+        }
                 
         // Cell image: retrieve data of right size and crop image
         let retinaScale = Int(UIScreen.main.scale)
