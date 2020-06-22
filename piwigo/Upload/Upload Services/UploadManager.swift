@@ -95,12 +95,13 @@ class UploadManager: NSObject {
             return
         }
         
-        // Any abandonned upload?
+        // Any interrupted transfer?
         if !isUploading, let upload = allUploads.first(where: { $0.state == .uploading }) {
             // Transfer encountered an error
             var uploadProperties = UploadProperties.init(localIdentifier: upload.localIdentifier,
                 category: Int(upload.category),
-                requestDate: upload.requestDate, requestState: upload.state, requestDelete: upload.requestDelete,
+                requestDate: upload.requestDate, requestState: upload.state,
+                requestDelete: upload.requestDelete, requestError: upload.requestError,
                 creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
                 author: upload.author, privacyLevel: upload.privacy,
                 title: upload.title, comment: upload.comment, tags: upload.tags, imageId: Int(upload.imageId))
@@ -211,7 +212,8 @@ class UploadManager: NSObject {
         // Set upload properties
         var uploadProperties = UploadProperties.init(localIdentifier: nextUpload.localIdentifier,
             category: Int(nextUpload.category),
-            requestDate: nextUpload.requestDate, requestState: nextUpload.state, requestDelete: nextUpload.requestDelete,
+            requestDate: nextUpload.requestDate, requestState: nextUpload.state,
+            requestDelete: nextUpload.requestDelete, requestError: nextUpload.requestError,
             creationDate: nextUpload.creationDate, fileName: nextUpload.fileName, mimeType: nextUpload.mimeType,
             author: nextUpload.author, privacyLevel: nextUpload.privacy,
             title: nextUpload.title,
@@ -429,7 +431,8 @@ class UploadManager: NSObject {
         // Set upload properties
         var uploadProperties = UploadProperties.init(localIdentifier: nextUpload.localIdentifier,
             category: Int(nextUpload.category),
-            requestDate: nextUpload.requestDate, requestState: nextUpload.state, requestDelete: nextUpload.requestDelete,
+            requestDate: nextUpload.requestDate, requestState: nextUpload.state,
+            requestDelete: nextUpload.requestDelete, requestError: nextUpload.requestError,
             creationDate: nextUpload.creationDate, fileName: nextUpload.fileName, mimeType: nextUpload.mimeType,
             author: nextUpload.author, privacyLevel: nextUpload.privacy,
             title: nextUpload.title,comment: nextUpload.comment,
@@ -520,7 +523,8 @@ class UploadManager: NSObject {
         // Set upload properties
         var uploadProperties = UploadProperties.init(localIdentifier: nextUpload.localIdentifier,
             category: Int(nextUpload.category),
-            requestDate: nextUpload.requestDate, requestState: nextUpload.state, requestDelete: nextUpload.requestDelete,
+            requestDate: nextUpload.requestDate, requestState: nextUpload.state,
+            requestDelete: nextUpload.requestDelete, requestError: nextUpload.requestError,
             creationDate: nextUpload.creationDate, fileName: nextUpload.fileName, mimeType: nextUpload.mimeType,
             author: nextUpload.author, privacyLevel: nextUpload.privacy,
             title: nextUpload.title,comment: nextUpload.comment,
@@ -725,7 +729,8 @@ class UploadManager: NSObject {
                     for upload in uploadsToDelete {
                         let uploadProperties = UploadProperties.init(localIdentifier: upload.localIdentifier,
                             category: Int(upload.category),
-                            requestDate: upload.requestDate, requestState: upload.state, requestDelete: false,
+                            requestDate: upload.requestDate, requestState: upload.state,
+                            requestDelete: false, requestError: upload.requestError,
                             creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
                             author: upload.author, privacyLevel: upload.privacy,
                             title: upload.title, comment: upload.comment, tags: upload.tags, imageId: Int(upload.imageId))
