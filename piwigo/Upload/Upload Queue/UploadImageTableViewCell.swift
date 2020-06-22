@@ -91,8 +91,23 @@ class UploadImageTableViewCell: UITableViewCell {
         playImage.isHidden = imageAsset.mediaType == .video ? false : true
     }
     
-    func setProgressBar(_ progress: Float) {
-        uploadingProgress?.setProgress(progress, animated: true)
+    func update(with userInfo: [AnyHashable : Any]) {
+        // Top label
+        let stateInfo = (userInfo["stateInfo"] ?? "") as! String
+        uploadInfoLabel.text = stateInfo
+        
+        // Progress bar
+        let progressFraction = (userInfo["progressFraction"] ?? 0.0) as! Float
+        uploadingProgress?.setProgress(progressFraction, animated: true)
+
+        // Bottom label
+        let errorDescription = (userInfo["Error"] ?? "") as! String
+        if errorDescription.count == 0,
+            let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [localIdentifier], options: nil).firstObject {
+                imageInfoLabel.text = getImageInfo(from: imageAsset)
+        } else {
+            imageInfoLabel.text = errorDescription
+        }
     }
     
     private func getImageInfo(from imageAsset: PHAsset) -> String {
@@ -139,7 +154,7 @@ class UploadImageTableViewCell: UITableViewCell {
         cellImage.image = UIImage(named: "placeholder")
         playImage.isHidden = true
         uploadInfoLabel.text = ""
-        setProgressBar(0)
+        uploadingProgress?.setProgress(0, animated: false)
         imageInfoLabel.text = ""
     }
 }

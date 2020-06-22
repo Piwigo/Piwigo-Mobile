@@ -472,13 +472,10 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
 
     @objc func applyUploadProgress(_ notification: Notification) {
         let localIdentifier =  (notification.userInfo?["localIndentifier"] ?? "") as! String
-        let stateInfo = (notification.userInfo?["stateInfo"] ?? "") as! String
-        let progressFraction = (notification.userInfo?["progressFraction"] ?? 0.0) as! Float
         let visibleCells = queueTableView.visibleCells as! [UploadImageTableViewCell]
         for cell in visibleCells {
             if cell.localIdentifier == localIdentifier {
-                cell.uploadInfoLabel.text = stateInfo
-                cell.setProgressBar(progressFraction)
+                cell.update(with: notification.userInfo!)
             }
         }
     }
@@ -568,9 +565,10 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
             queueTableView.insertRows(at: [newIndexPath], with: .automatic)
         case .update:
             // Upload in progress
-            guard let upload:Upload = anObject as? Upload else { return }
-            guard let cell = tableView(queueTableView, cellForRowAt: oldIndexPath) as? UploadImageTableViewCell else { return }
-            cell.configure(with: upload)
+            print("UploadQueueViewController… update received from UploadProvider")
+//            guard let upload:Upload = anObject as? Upload else { return }
+//            guard let cell = tableView(queueTableView, cellForRowAt: oldIndexPath) as? UploadImageTableViewCell else { return }
+//            cell.configure(with: upload)
 
 //            if let indexPathsOfVisibleCells = queueTableView.indexPathsForVisibleRows {
 //                for indexPath in indexPathsOfVisibleCells {
