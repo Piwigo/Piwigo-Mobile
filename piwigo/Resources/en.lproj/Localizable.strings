@@ -458,6 +458,8 @@
 
 "imageUploadClearSingle" = "Clear Completed Upload";
 "imageUploadClearSeveral" = "Clear %@ Completed Uploads";
+"imageUploadResumeSingle" = "Resume Failed Upload";
+"imageUploadResumeSeveral" = "Resume %@ Failed Uploads";
 
 "imageUploadProgressBar_zero" = "Uploading 0/0";
 "imageUploadProgressBar_nonZero" = "Uploading %@/%@";

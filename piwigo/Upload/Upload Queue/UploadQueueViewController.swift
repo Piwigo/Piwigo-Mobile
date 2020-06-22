@@ -183,9 +183,42 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
             let uploadManager = UploadManager()
             uploadManager.deleteUploadedImages(inAutoMode: false)
         })
+        
+        // Retry failed uploads
+        let failedUploads = uploadsProvider.fetchedResultsController.fetchedObjects?.map({ ($0.state == .preparingError) || ($0.state == .uploadingError) || ($0.state == .finishingError) ? 1 : 0}).reduce(0, +) ?? 0
+        let titleResume = failedUploads > 1 ? String(format: NSLocalizedString("imageUploadResumeSeveral", comment: "Resume %@ Failed Uploads"), NumberFormatter.localizedString(from: NSNumber.init(value: failedUploads), number: .decimal)) : NSLocalizedString("imageUploadResumeSingle", comment: "Resume Failed Upload")
+        let resumeAction = UIAlertAction(title: titleResume, style: .default, handler: { action in
+            // Collect list of failed uploads
+            if let failedUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects?.filter({$0.state == .preparingError || $0.state == .uploadingError || $0.state == .finishingError }) {
+                // Resume failed uploads
+                let uploadManager = UploadManager()
+                uploadManager.resume(failedUploads: failedUploads) { (error) in
+                    if let error = error {
+                        // Inform user
+                        let alert = UIAlertController(title: NSLocalizedString("errorHUD_label", comment: "Error"), message: error.localizedDescription, preferredStyle: .alert)
+                        let cancelAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .destructive, handler: { action in
+                            })
+                        alert.addAction(cancelAction)
+                        alert.view.tintColor = UIColor.piwigoColorOrange()
+                        if #available(iOS 13.0, *) {
+                            alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+                        } else {
+                            // Fallback on earlier versions
+                        }
+                        self.present(alert, animated: true, completion: {
+                            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                            alert.view.tintColor = UIColor.piwigoColorOrange()
+                        })
+                    }
+                }
+            }
+        })
 
         // Add actions
         alert.addAction(cancelAction)
+        if failedUploads > 0 {
+            alert.addAction(resumeAction)
+        }
         if completedUploads > 0 {
             alert.addAction(clearAction)
             alert.addAction(deleteAction)
@@ -537,7 +570,7 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
             // Upload in progress
             guard let upload:Upload = anObject as? Upload else { return }
             guard let cell = tableView(queueTableView, cellForRowAt: oldIndexPath) as? UploadImageTableViewCell else { return }
-//            cell.configure(with: upload)
+            cell.configure(with: upload)
 
 //            if let indexPathsOfVisibleCells = queueTableView.indexPathsForVisibleRows {
 //                for indexPath in indexPathsOfVisibleCells {

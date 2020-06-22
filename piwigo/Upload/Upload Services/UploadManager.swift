@@ -739,6 +739,53 @@ class UploadManager: NSObject {
         })
     }
     
+   
+    // MARK: - Failed Uploads Management
+    
+    func resume(failedUploads : [Upload], completionHandler: @escaping (Error?) -> Void) {
+        // Initialisation
+        var uploadsToUpdate = [UploadProperties]()
+        
+        // Loop over the failed uploads
+        for failedUpload in failedUploads {
+            
+            // Create upload properties with no error
+            var uploadProperties = UploadProperties.init(localIdentifier: failedUpload.localIdentifier,
+                category: Int(failedUpload.category),
+                requestDate: failedUpload.requestDate, requestState: failedUpload.state,
+                requestDelete: failedUpload.requestDelete, requestError: "",
+                creationDate: failedUpload.creationDate, fileName: failedUpload.fileName, mimeType: failedUpload.mimeType,
+                author: failedUpload.author, privacyLevel: failedUpload.privacy,
+                title: failedUpload.title, comment: failedUpload.comment,
+                tags: failedUpload.tags, imageId: Int(failedUpload.imageId))
+            
+            // Update state from which to try again
+            switch failedUpload.state {
+            case .preparingError, .uploadingError:
+                // -> Will try to re-prepare the image
+                uploadProperties.requestState = .waiting
+            case .finishingError:
+                // -> Will try again to finish the upload
+                uploadProperties.requestState = .uploaded
+            default:
+                uploadProperties.requestState = .waiting
+            }
+            
+            // Append updated upload
+            uploadsToUpdate.append(uploadProperties)
+        }
+        // Update failed uploads
+        self.uploadsProvider.importUploads(from: uploadsToUpdate) { (error) in
+            if let error = error {
+                completionHandler(error)
+                return;
+            }
+            // Launch uploads
+            self.findNextImageToUpload()
+            completionHandler(nil)
+        }
+    }
+    
     func emptyUploadsDirectory() {
         let fileManager = FileManager.default
         do {
@@ -750,8 +797,8 @@ class UploadManager: NSObject {
                 try fileManager.removeItem(at: file)
             }
             // For debugging
-            let leftFiles = try fileManager.contentsOfDirectory(at: UploadManager.applicationUploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
-            print("all files in cache after deleting images: \(leftFiles)")
+//            let leftFiles = try fileManager.contentsOfDirectory(at: UploadManager.applicationUploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+//            print("all files in cache after deleting images: \(leftFiles)")
         } catch {
             print("Could not clear upload folder: \(error)")
         }
