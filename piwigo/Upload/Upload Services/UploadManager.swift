@@ -170,10 +170,10 @@ class UploadManager: NSObject {
         }
 
         // Delete images from Photo Library if user wanted it
-        deleteUploadedImages()
+        deleteUploadedImages(inAutoMode: true)
     }
 
-    func prepare(nextUpload: Upload) {
+    private func prepare(nextUpload: Upload) {
         print("•••>> prepare next upload…")
 
         // Quit if App not in the foreground
@@ -402,7 +402,7 @@ class UploadManager: NSObject {
         }
     }
     
-    func transfer(nextUpload: Upload) {
+    private func transfer(nextUpload: Upload) {
         
         // Set upload properties
         var uploadProperties = UploadProperties.init(localIdentifier: nextUpload.localIdentifier,
@@ -490,7 +490,7 @@ class UploadManager: NSObject {
     
     // Called when using Piwigo server before version 2.10.x?
     // because the title could not be set during the upload.
-    func finish(nextUpload: Upload) -> (Void) {
+    private func finish(nextUpload: Upload) -> (Void) {
         // Set upload properties
         var uploadProperties = UploadProperties.init(localIdentifier: nextUpload.localIdentifier,
             category: Int(nextUpload.category),
@@ -657,7 +657,7 @@ class UploadManager: NSObject {
                         // Successful?
                         if uploadJSON.isSubmittedToModerator {
                             // Images successfully moderated, delete them if wanted by users
-                            self.deleteUploadedImages()
+                            self.deleteUploadedImages(inAutoMode: true)
                         }
                     } catch {
                         // Will retry later
@@ -670,14 +670,14 @@ class UploadManager: NSObject {
         }
     }
 
-    private func deleteUploadedImages() -> (Void) {
+    func deleteUploadedImages(inAutoMode: Bool) -> (Void) {
         // Get uploads in queue
         guard let allUploads = uploadsProvider.fetchedResultsController.fetchedObjects else {
             return
         }
         
         // Get uploads to delete
-        let uploadsToDelete = allUploads.filter({ $0.requestState == kPiwigoUploadState.finished.rawValue && $0.requestDelete == true })
+        let uploadsToDelete = inAutoMode ? allUploads.filter({ $0.requestState == kPiwigoUploadState.finished.rawValue && $0.requestDelete == true }) : allUploads.filter({ $0.requestState == kPiwigoUploadState.finished.rawValue })
         
         // Get local identifiers of uploaded images to delete
         let uploadedImagesToDelete = uploadsToDelete.map( { $0.localIdentifier} )

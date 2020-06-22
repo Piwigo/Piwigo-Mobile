@@ -42,8 +42,9 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
 
         // Title
         let nberOfImagesInQueue = uploadsProvider.fetchedResultsController.fetchedObjects?.count ?? 0
-        title = nberOfImagesInQueue > 1 ? String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("severalImages", comment: "Photos")) :
-                                              String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("singleImage", comment: "Photo"))
+        title = nberOfImagesInQueue > 1 ?
+            String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("severalImages", comment: "Photos")) :
+            String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("singleImage", comment: "Photo"))
         
         // Get all uploads
 //        allUploads = uploadsProvider.fetchedResultsController.fetchedObjects ?? []
@@ -151,8 +152,11 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
         // Cancel action
         let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in })
 
-        // Clear upload queue
-        let clearAction = UIAlertAction(title: "", style: .default, handler: { action in
+        // Clear completed uploads
+        let completedUploads = uploadsProvider.fetchedResultsController.fetchedObjects?.map({
+            ($0.requestState == kPiwigoUploadState.finished.rawValue) ? 1 : 0}).reduce(0, +) ?? 0
+        let titleClear = completedUploads > 1 ? String(format: NSLocalizedString("imageUploadClearSeveral", comment: "Clear %@ Completed Uploads"), NumberFormatter.localizedString(from: NSNumber.init(value: completedUploads), number: .decimal)) : NSLocalizedString("imageUploadClearSingle", comment: "Clear Completed Upload")
+        let clearAction = UIAlertAction(title: titleClear, style: .default, handler: { action in
             // Get completed uploads
             guard let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects else {
                 return
@@ -171,10 +175,21 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
                 print("ERROR ENCOUNTERED WHEN TRYING TO DELETE COMPLETED UPLOADS")
             }
         })
+        
+        // Delete uploaded photos
+        let titleDelete = completedUploads > 1 ? String(format: NSLocalizedString("deleteCategory_allImages", comment: "Delete %@ Photos"), NumberFormatter.localizedString(from: NSNumber.init(value: completedUploads), number: .decimal)) : NSLocalizedString("deleteSingleImage_title", comment: "Delete Photo")
+        let deleteAction = UIAlertAction(title: titleDelete, style: .destructive, handler: { action in
+            // Delete uploaded images
+            let uploadManager = UploadManager()
+            uploadManager.deleteUploadedImages(inAutoMode: false)
+        })
 
         // Add actions
         alert.addAction(cancelAction)
-        alert.addAction(clearAction)
+        if completedUploads > 0 {
+            alert.addAction(clearAction)
+            alert.addAction(deleteAction)
+        }
 
         // Present list of actions
         alert.view.tintColor = UIColor.piwigoColorOrange()

@@ -459,12 +459,16 @@
 "imageUploadTableCell_finishing" = "Finishing...";
 "imageUploadTableCell_finishingError" = "Finishing... Error";
 
+"imageUploadClearSingle" = "Clear Completed Upload";
+"imageUploadClearSeveral" = "Clear %@ Completed Uploads";
+
 "imageUploadProgressBar_zero" = "Uploading 0/0";
 "imageUploadProgressBar_nonZero" = "Uploading %@/%@";
 "imageUploadProgressBar_completed" = "Completed";
 "imageUploadCompleted_title" = "Upload Completed";
 "imageUploadCompleted_message" = "photo uploaded to your Piwigo server.";
 "imageUploadCompleted_message>1" = "photos uploaded to your Piwigo server.";
+
 
 // Image upload — Errors
 "uploadError_title" = "Upload Error";
