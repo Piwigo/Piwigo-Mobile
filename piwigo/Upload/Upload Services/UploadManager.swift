@@ -646,9 +646,7 @@ class UploadManager: NSObject {
             return
         }
         // Get uploaded images to moderate
-        let uploadedImages = allUploads.filter({
-            $0.requestState == kPiwigoUploadState.finished.rawValue
-        })
+        let uploadedImages = allUploads.filter({ $0.state == .finished })
         
         // Get list of categories
         let categories = IndexSet(uploadedImages.map({Int($0.category)}))
@@ -702,7 +700,7 @@ class UploadManager: NSObject {
         }
         
         // Get uploads to delete
-        let uploadsToDelete = inAutoMode ? allUploads.filter({ $0.requestState == kPiwigoUploadState.finished.rawValue && $0.requestDelete == true }) : allUploads.filter({ $0.requestState == kPiwigoUploadState.finished.rawValue })
+        let uploadsToDelete = inAutoMode ? allUploads.filter({ $0.state == .finished && $0.requestDelete == true }) : allUploads.filter({ $0.state == .finished })
         
         // Get local identifiers of uploaded images to delete
         let uploadedImagesToDelete = uploadsToDelete.map( { $0.localIdentifier} )
