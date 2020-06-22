@@ -86,7 +86,7 @@ class UploadManager: NSObject {
      */
     @objc
     func findNextImageToUpload() {
-        print("•••>> findNextImageToUpload… \(String(describing: uploadsProvider.fetchedResultsController.fetchedObjects?.count))")
+        print("•••>> findNextImageToUpload…")
         
         // Get uploads in queue
         guard let allUploads = uploadsProvider.fetchedResultsController.fetchedObjects else {
@@ -177,9 +177,12 @@ class UploadManager: NSObject {
         print("•••>> prepare next upload…")
 
         // Quit if App not in the foreground
-        let appState = UIApplication.shared.applicationState
-        if appState == .background || appState == .inactive {
-            return
+        DispatchQueue.main.async {
+            let appState = UIApplication.shared.applicationState
+            if appState == .background || appState == .inactive {
+                print("•••>> App sleeping…")
+                return
+            }
         }
         
         // Add category to list of recent albums
@@ -403,7 +406,8 @@ class UploadManager: NSObject {
     }
     
     private func transfer(nextUpload: Upload) {
-        
+        print("•••>> starting transfer of \(nextUpload.fileName!)…")
+
         // Set upload properties
         var uploadProperties = UploadProperties.init(localIdentifier: nextUpload.localIdentifier,
             category: Int(nextUpload.category),
@@ -417,7 +421,6 @@ class UploadManager: NSObject {
         uploadProperties.requestState = .uploading
         uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
             // Launch transfer if possible
-            print("•••>> starting transfer of \(uploadProperties.fileName!)…")
             DispatchQueue.global(qos: .background).async {
                 self.imageTransfer.startUpload(with: uploadProperties,
                onProgress: { (progress, currentChunk, totalChunks) in
@@ -491,6 +494,8 @@ class UploadManager: NSObject {
     // Called when using Piwigo server before version 2.10.x?
     // because the title could not be set during the upload.
     private func finish(nextUpload: Upload) -> (Void) {
+        print("•••>> finishing transfer of \(nextUpload.fileName!)…")
+
         // Set upload properties
         var uploadProperties = UploadProperties.init(localIdentifier: nextUpload.localIdentifier,
             category: Int(nextUpload.category),
@@ -504,7 +509,6 @@ class UploadManager: NSObject {
         uploadProperties.requestState = .uploading
         uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
             // Finish the job by setting image parameters…
-            print("•••>> finishing transfer of \(uploadProperties.fileName!)…")
             // Prepare creation date
             var creationDate = ""
             if let date = nextUpload.creationDate {
@@ -714,5 +718,23 @@ class UploadManager: NSObject {
                 }
             })
         })
+    }
+    
+    func emptyUploadsDirectory() {
+        let fileManager = FileManager.default
+        do {
+            // Get list of files
+            let files = try fileManager.contentsOfDirectory(at: UploadManager.applicationUploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+            print("all files in cache: \(files)")
+            // Delete files
+            for file in files {
+                try fileManager.removeItem(at: file)
+            }
+            // For debugging
+            let leftFiles = try fileManager.contentsOfDirectory(at: UploadManager.applicationUploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+            print("all files in cache after deleting images: \(leftFiles)")
+        } catch {
+            print("Could not clear upload folder: \(error)")
+        }
     }
 }

@@ -166,8 +166,13 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
             // Delete cimpleted uploads
             self.uploadsProvider.deleteUploads(from: uploadsToDelete) { (error) in
                 guard let _ = error else {
-                    // Close this view when there is no more upload to display
+                    // When there is no more upload to display…
                     if self.uploadsProvider.fetchedResultsController.fetchedObjects?.count == 0 {
+                        // - delete the directory containing files to upload
+                        let uploadManager = UploadManager()
+                        uploadManager.emptyUploadsDirectory()
+
+                        // - close this view when there is no more upload to display
                         self.dismiss(animated: true, completion: nil)
                     }
                     return
