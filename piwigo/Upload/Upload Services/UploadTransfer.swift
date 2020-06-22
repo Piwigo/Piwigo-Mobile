@@ -58,9 +58,9 @@ class UploadTransfer {
             try imageData = NSData (contentsOf: fileURL) as Data
             // Swift bug - https://forums.developer.apple.com/thread/115401
 //                    try imageData = Data(contentsOf: exportSession.outputURL!)
-        } catch {
+        } catch let error as NSError {
             // define error !!!!
-            completion(nil, [:], imageParameters)
+            fail(nil, error)
             return
         }
 
