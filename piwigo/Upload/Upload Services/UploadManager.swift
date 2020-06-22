@@ -84,6 +84,8 @@ class UploadManager: NSObject {
     /**
      The manager prepares an image for upload and then launches the transfer.
      */
+    var isUploading = false     // Used to detect if the manager is really uploading an image
+    
     @objc
     func findNextImageToUpload() {
         print("•••>> findNextImageToUpload…")
@@ -91,6 +93,22 @@ class UploadManager: NSObject {
         // Get uploads in queue
         guard let allUploads = uploadsProvider.fetchedResultsController.fetchedObjects else {
             return
+        }
+        
+        // Any abandonned upload?
+        if !isUploading, let upload = allUploads.first(where: { $0.state == .uploading }) {
+            // Transfer encountered an error
+            var uploadProperties = UploadProperties.init(localIdentifier: upload.localIdentifier,
+                category: Int(upload.category),
+                requestDate: upload.requestDate, requestState: upload.state, requestDelete: upload.requestDelete,
+                creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
+                author: upload.author, privacyLevel: upload.privacy,
+                title: upload.title, comment: upload.comment, tags: upload.tags, imageId: Int(upload.imageId))
+            uploadProperties.requestState = .uploadingError
+            uploadProperties.requestError = UploadError.networkUnavailable.errorDescription
+            uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+                self.findNextImageToUpload()
+            })
         }
         
         // Upload to finish?
@@ -405,7 +423,7 @@ class UploadManager: NSObject {
         }
     }
     
-    private func transfer(nextUpload: Upload) {
+    private func transfer(nextUpload: Upload) -> (Void) {
         print("•••>> starting transfer of \(nextUpload.fileName!)…")
 
         // Set upload properties
@@ -418,6 +436,7 @@ class UploadManager: NSObject {
             tags: nextUpload.tags, imageId: Int(nextUpload.imageId))
 
         // Update state of upload
+        isUploading = true
         uploadProperties.requestState = .uploading
         uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
             // Launch transfer if possible
@@ -434,13 +453,14 @@ class UploadManager: NSObject {
                 },
                onCompletion: { (task, jsonData, imageParameters) in
 //                    print("•••> completion: \(String(describing: jsonData))")
+                    self.isUploading = false
                     // Alert the user if no data comes back.
                     guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {
                         // Upload to be re-started?
                         uploadProperties.requestState = .uploadingError
                         uploadProperties.requestError = UploadError.networkUnavailable.errorDescription
                         self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
-                            // Upload ready for finishing
+                            // The Piwigo server did not reply something understandable
                             self.findNextImageToUpload()
                         })
                         return
@@ -456,7 +476,7 @@ class UploadManager: NSObject {
                             uploadProperties.requestState = .uploadingError
                             uploadProperties.requestError = String(format: "Error %ld: %@", uploadJSON.errorCode, uploadJSON.errorMessage)
                             self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
-                                // Upload ready for finishing
+                                // The Piwigo server returned an error
                                 self.findNextImageToUpload()
                             })
                             return
@@ -480,6 +500,7 @@ class UploadManager: NSObject {
                     }
                 },
                 onFailure: { (task, error) in
+                    self.isUploading = false
                     if let error = error {
                         // Image still ready for upload
                         uploadProperties.requestState = .uploadingError
@@ -619,7 +640,7 @@ class UploadManager: NSObject {
     
     // MARK: - Uploaded Images Management
     
-    private func moderateUploadedImages() {
+    private func moderateUploadedImages() -> (Void) {
         // Get uploads in queue
         guard let allUploads = uploadsProvider.fetchedResultsController.fetchedObjects else {
             return
