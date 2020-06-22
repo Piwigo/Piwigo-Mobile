@@ -184,7 +184,7 @@ extension kPiwigoUploadState {
         case .uploading:
             return NSLocalizedString("imageUploadTableCell_uploading", comment: "Uploading...")
         case .uploadingError:
-            return NSLocalizedString("imageUploadTableCell_uploadingError", comment: "Uploading...") + " " +
+            return NSLocalizedString("imageUploadTableCell_uploading", comment: "Uploading...") + " " +
                    NSLocalizedString("errorHUD_label", comment: "Error")
         case .uploaded:
             return NSLocalizedString("imageUploadTableCell_uploaded", comment: "Uploaded")
@@ -192,7 +192,7 @@ extension kPiwigoUploadState {
         case .finishing:
             return NSLocalizedString("imageUploadTableCell_finishing", comment: "Finishing...")
         case .finishingError:
-            return NSLocalizedString("imageUploadTableCell_finishingError", comment: "Finishing...") + " " +
+            return NSLocalizedString("imageUploadTableCell_finishing", comment: "Finishing...") + " " +
                    NSLocalizedString("errorHUD_label", comment: "Error")
         case .finished:
             return NSLocalizedString("imageUploadProgressBar_completed", comment: "Completed")
