@@ -121,6 +121,7 @@ class PhotosFetch: NSObject {
             if let imageAsset = imageAsset {
                 resources = PHAssetResource.assetResources(for: imageAsset)
             }
+            // Shared assets may not return resources
             if (resources?.count ?? 0) > 0 {
                 for resource in resources ?? [] {
                     if resource.type == .adjustmentData {
@@ -146,13 +147,13 @@ class PhotosFetch: NSObject {
                 // Filename extension required by Piwigo so that it knows how to deal with it
                 if imageAsset?.mediaType == .image {
                     // Adopt JPEG photo format by default, will be rechecked
-                    fileName = URL(fileURLWithPath: fileName).appendingPathExtension("jpg").absoluteString
+                    fileName = URL(fileURLWithPath: fileName).appendingPathExtension("jpg").lastPathComponent
                 } else if imageAsset?.mediaType == .video {
                     // Videos are exported in MP4 format
-                    fileName = URL(fileURLWithPath: fileName).appendingPathExtension("mp4").absoluteString
+                    fileName = URL(fileURLWithPath: fileName).appendingPathExtension("mp4").lastPathComponent
                 } else if imageAsset?.mediaType == .audio {
                     // Arbitrary extension, not managed yet
-                    fileName = URL(fileURLWithPath: fileName).appendingPathExtension("m4a").absoluteString
+                    fileName = URL(fileURLWithPath: fileName).appendingPathExtension("m4a").lastPathComponent
                 }
             }
         }
