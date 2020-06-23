@@ -21,7 +21,7 @@ class UploadTransfer {
     func startUpload(with upload: UploadProperties,
                      onProgress: @escaping (_ progress: Progress?, _ currentChunk: Int, _ totalChunks: Int) -> Void,
                      onCompletion completion: @escaping (_ task: URLSessionTask?, _ response: [AnyHashable : Any]?, _ imageParameters: [String : String]) -> Void,
-                     onFailure fail: @escaping (_ task: URLSessionTask?, _ error: Error?) -> Void) {
+                     onFailure fail: @escaping (_ task: URLSessionTask?, _ error: NSError?) -> Void) {
         
         // Calculate chunk size
         let chunkSize = Model.sharedInstance().uploadChunkSize * 1024
@@ -92,7 +92,7 @@ class UploadTransfer {
                             // Close upload session
                             Model.sharedInstance().imageUploadManager.invalidateSessionCancelingTasks(true)
                             // Done, return
-                            fail(task, error!)
+                        fail(task, error as NSError?)
                         })
     }
 
@@ -103,7 +103,7 @@ class UploadTransfer {
                          forOffset offset: Int, onChunk count: Int, forTotalChunks chunks: Int,
                          onProgress: @escaping (_ progress: Progress?, _ currentChunk: Int, _ totalChunks: Int) -> Void,
                          onCompletion completion: @escaping (_ task: URLSessionTask?, _ response: [AnyHashable : Any]?, _ imageParameters: [String : String]) -> Void,
-                         onFailure fail: @escaping (_ task: URLSessionTask?, _ error: Error?) -> Void) {
+                         onFailure fail: @escaping (_ task: URLSessionTask?, _ error: NSError?) -> Void) {
         
         var imageParameters = imageParameters
         var offset = offset
@@ -142,7 +142,7 @@ class UploadTransfer {
             },
            failure: { task, error in
                 // failed!
-                fail(task, error!)
+                fail(task, error as NSError?)
             })
     }
 }
