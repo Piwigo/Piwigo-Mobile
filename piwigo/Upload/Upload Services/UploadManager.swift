@@ -268,7 +268,7 @@ class UploadManager: NSObject {
             // Chek that the image format is accepted by the Piwigo server
             if Model.sharedInstance().uploadFileTypes.contains(fileExt) {
                 // Image file format accepted by the Piwigo server
-                print("•••> preparing photo \(nextUpload.fileName!)…")
+                print("•••> preparing photo…")
                 
                 // Update state of upload
                 isPreparing = true
@@ -540,6 +540,13 @@ class UploadManager: NSObject {
                 onFailure: { (task, error) in
                     self.isUploading = false
                     if let error = error {
+                        if ((error.code == 401) ||        // Unauthorized
+                            (error.code == 403) ||        // Forbidden
+                            (error.code == 404))          // Not Found
+                        {
+                            print("…notify kPiwigoNotificationNetworkErrorEncountered!")
+                            NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationNetworkErrorEncountered), object: nil, userInfo: nil)
+                        }
                         // Image still ready for upload
                         uploadProperties.requestState = .uploadingError
                         uploadProperties.requestError = error.localizedDescription
