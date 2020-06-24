@@ -163,16 +163,16 @@ class UploadsProvider: NSObject {
      Delete a batch of upload requests from the Core Data store on a private queue,
      processing the record in batches to avoid a high memory footprint.
     */
-    func deleteUploads(from uploadRequest: [Upload], completionHandler: @escaping (Error?) -> Void) {
+    func delete(uploadRequests: [Upload], completionHandler: @escaping (Error?) -> Void) {
         
-        guard !uploadRequest.isEmpty else { return }
+        guard !uploadRequests.isEmpty else { return }
         
         // Create a private queue context.
         let taskContext = DataController.getPrivateContext()
                 
         // Process records in batches to avoid a high memory footprint.
         let batchSize = 256
-        let count = uploadRequest.count
+        let count = uploadRequests.count
         
         // Determine the total number of batches.
         var numBatches = count / batchSize
@@ -186,7 +186,7 @@ class UploadsProvider: NSObject {
             let range = batchStart..<batchEnd
             
             // Create a batch for this range from the decoded JSON.
-            let uploadsBatch = Array(uploadRequest[range])
+            let uploadsBatch = Array(uploadRequests[range])
             
             // Stop the entire import if any batch is unsuccessful.
             if !deleteOneBatch(uploadsBatch, taskContext: taskContext) {
@@ -351,11 +351,11 @@ class UploadsProvider: NSObject {
 
     // MARK: - Notify Changes (App Badge, Button)
     func updateBadgeAndButton() {
-        // Calculate number of uploads to perform
-        let nberOfUploads = self.fetchedResultsController.fetchedObjects?.count ?? 0
-        let completedUploads = self.fetchedResultsController.fetchedObjects?.map({ $0.state == .finished ? 1 : 0}).reduce(0, +) ?? 0
-                
         DispatchQueue.main.async {
+            // Calculate number of uploads to perform
+            let nberOfUploads = self.fetchedResultsController.fetchedObjects?.count ?? 0
+            let completedUploads = self.fetchedResultsController.fetchedObjects?.map({ $0.state == .finished ? 1 : 0}).reduce(0, +) ?? 0
+                
             // Upadte app badge
             UIApplication.shared.applicationIconBadgeNumber = nberOfUploads - completedUploads
             // Update button of root album (or default album)
@@ -377,7 +377,7 @@ class UploadsProvider: NSObject {
      */
     @objc lazy var fetchedResultsController: NSFetchedResultsController<Upload> = {
         
-        // Create a fetch request for the Tag entity sorted by name.
+        // Create a fetch request for the Upload entity sorted by request date.
         let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "requestDate", ascending: true)]
         

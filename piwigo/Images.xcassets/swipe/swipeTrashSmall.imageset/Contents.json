@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "text.cursor@1x.png",
+      "filename" : "trash.small@1x.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "text.cursor@2x.png",
+      "filename" : "trash.small@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "text.cursor@3x.png",
+      "filename" : "trash.small@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
@@ -19,8 +19,5 @@
   "info" : {
     "author" : "xcode",
     "version" : 1
-  },
-  "properties" : {
-    "preserves-vector-representation" : true
   }
 }

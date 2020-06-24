@@ -215,7 +215,8 @@ class UploadManager: NSObject {
         }
 
         // Delete images from Photo Library if user wanted it
-        deleteUploadedImages(inAutoMode: true)
+        let uploadsToDelete = allUploads.filter({ $0.state == .finished && $0.requestDelete == true })
+        self.delete(uploadedImages: uploadsToDelete)
     }
 
     private func prepare(nextUpload: Upload) {
@@ -685,6 +686,10 @@ class UploadManager: NSObject {
         })
     }
 
+    func delete(uploads : [Upload]) -> Void {
+        
+    }
+    
     
     // MARK: - Uploaded Images Management
     
@@ -728,7 +733,10 @@ class UploadManager: NSObject {
                         // Successful?
                         if uploadJSON.isSubmittedToModerator {
                             // Images successfully moderated, delete them if wanted by users
-                            self.deleteUploadedImages(inAutoMode: true)
+                            if let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects {
+                                let uploadsToDelete = allUploads.filter({ $0.state == .finished && $0.requestDelete == true })
+                                self.delete(uploadedImages: uploadsToDelete)
+                            }
                         }
                     } catch {
                         // Will retry later
@@ -741,17 +749,9 @@ class UploadManager: NSObject {
         }
     }
 
-    func deleteUploadedImages(inAutoMode: Bool) -> (Void) {
-        // Get uploads in queue
-        guard let allUploads = uploadsProvider.fetchedResultsController.fetchedObjects else {
-            return
-        }
-        
-        // Get uploads to delete
-        let uploadsToDelete = inAutoMode ? allUploads.filter({ $0.state == .finished && $0.requestDelete == true }) : allUploads.filter({ $0.state == .finished })
-        
+    func delete(uploadedImages : [Upload]) -> (Void) {
         // Get local identifiers of uploaded images to delete
-        let uploadedImagesToDelete = uploadsToDelete.map( { $0.localIdentifier} )
+        let uploadedImagesToDelete = uploadedImages.map( { $0.localIdentifier} )
         
         // Get image assets of images to delete
         let assetsToDelete = PHAsset.fetchAssets(withLocalIdentifiers: uploadedImagesToDelete, options: nil)
@@ -763,14 +763,14 @@ class UploadManager: NSObject {
                 PHAssetChangeRequest.deleteAssets(assetsToDelete as NSFastEnumeration)
             }, completionHandler: { success, error in
                 if success == true {
-                    // Delete uploads
-                    self.uploadsProvider.deleteUploads(from: uploadsToDelete) { (error) in
+                    // Delete upload requests
+                    self.uploadsProvider.delete(uploadRequests: uploadedImages) { (error) in
                         // Could not delete completed uploads!
                     }
                 } else {
                     // User refused to delete the photos
                     var uploadsToUpdate = [UploadProperties]()
-                    for upload in uploadsToDelete {
+                    for upload in uploadedImages {
                         let uploadProperties = UploadProperties.init(localIdentifier: upload.localIdentifier,
                             category: Int(upload.category),
                             requestDate: upload.requestDate, requestState: upload.state,
@@ -823,6 +823,7 @@ class UploadManager: NSObject {
             // Append updated upload
             uploadsToUpdate.append(uploadProperties)
         }
+        
         // Update failed uploads
         self.uploadsProvider.importUploads(from: uploadsToUpdate) { (error) in
             if let error = error {

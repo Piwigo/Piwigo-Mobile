@@ -32,8 +32,16 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         return provider
     }()
     
-    
-    // MARK: View
+    // MARK: - Upload Manager
+    /**
+     The UploadManager that prepares and transfers images and updates the cache.
+     */
+    private lazy var uploadManager: UploadManager = {
+        let provider : UploadManager = UploadManager()
+        return provider
+    }()
+
+    // MARK: - View
     @objc func setCategoryId(_ categoryId: Int) {
         _categoryId = categoryId
     }
@@ -547,8 +555,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 // Show an alert if there was an error.
                 guard let error = error else {
                     // Launch upload tasks
-                    let uploadManager = UploadManager()
-                    uploadManager.findNextImageToUpload()
+                    self.uploadManager.findNextImageToUpload()
                     return
                 }
                 let alert = UIAlertController(title: NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object."),

@@ -10,8 +10,28 @@ import Photos
 import UIKit
 
 @objc
-class UploadImageTableViewCell: UITableViewCell {
+class UploadImageTableViewCell: MGSwipeTableCell {
     
+    // MARK: - Core Data
+    /**
+     The UploadsProvider that collects upload data, saves it to Core Data,
+     and serves it to the uploader.
+     */
+    private lazy var uploadsProvider: UploadsProvider = {
+        let provider : UploadsProvider = UploadsProvider()
+        return provider
+    }()
+
+    // MARK: - Upload Manager
+    /**
+     The UploadManager that prepares and transfers images and updates the cache.
+     */
+    private lazy var uploadManager: UploadManager = {
+        let provider : UploadManager = UploadManager()
+        return provider
+    }()
+
+    // MARK: - Variables
     private var _localIdentifier = ""
     @objc var localIdentifier: String {
         get {
@@ -89,6 +109,44 @@ class UploadImageTableViewCell: UITableViewCell {
         
         // Video icon
         playImage.isHidden = imageAsset.mediaType == .video ? false : true
+
+        // Right => Left swipe commands
+        swipeBackgroundColor = UIColor.piwigoColorCellBackground()
+        rightExpansion.buttonIndex = 0
+        rightExpansion.threshold = 3.0
+        rightExpansion.fillOnTrigger = true
+        rightExpansion.expansionColor = UIColor.piwigoColorBrown()
+        rightSwipeSettings.transition = .border
+        switch upload.state {
+        case .preparing, .prepared, .uploading, .uploaded, .finishing:
+            rightButtons = [];
+        case .preparingError, .uploadingError, .finishingError:
+            rightButtons = [
+                MGSwipeButton(title: "", icon: UIImage(named: "swipeRetry.png"), backgroundColor: UIColor.piwigoColorOrange(), callback: { sender in
+                    self.uploadManager.resume(failedUploads: [upload]) { (_) in }
+                    return true
+                }),
+                MGSwipeButton(title: "", icon: UIImage(named: "swipeCancel.png"), backgroundColor: UIColor.piwigoColorBrown(), callback: { sender in
+                    self.uploadsProvider.delete(uploadRequests: [upload]) { (_) in }
+                    return true
+                })]
+        case .formatError, .waiting:
+            rightButtons = [
+                MGSwipeButton(title: "", icon: UIImage(named: "swipeCancel.png"), backgroundColor: UIColor.piwigoColorBrown(), callback: { sender in
+                    self.uploadsProvider.delete(uploadRequests: [upload]) { (_) in }
+                    return true
+                })]
+        case .finished:
+            rightButtons = [
+                MGSwipeButton(title: "", icon: UIImage(named: "swipeCancel.png"), backgroundColor: UIColor.piwigoColorBrown(), callback: { sender in
+                    self.uploadsProvider.delete(uploadRequests: [upload]) { (_) in }
+                    return true
+                }),
+                MGSwipeButton(title: "", icon: UIImage(named: "swipeTrashSmall.png"), backgroundColor: .red, callback: { sender in
+                    self.uploadManager.delete(uploadedImages: [upload])
+                    return true
+                })]
+        }
     }
     
     func update(with userInfo: [AnyHashable : Any]) {

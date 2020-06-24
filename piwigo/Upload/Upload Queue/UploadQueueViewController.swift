@@ -22,9 +22,17 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
         provider.fetchedResultsControllerDelegate = self
         return provider
     }()
+
+    // MARK: - Upload Manager
+    /**
+     The UploadManager that prepares and transfers images and updates the cache.
+     */
+    private lazy var uploadManager: UploadManager = {
+        let provider : UploadManager = UploadManager()
+        return provider
+    }()
     
-    
-    // MARK: View
+    // MARK: - View
     @IBOutlet var queueTableView: UITableView!
     private var actionBarButton: UIBarButtonItem?
     private var doneBarButton: UIBarButtonItem?
@@ -160,13 +168,12 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
             // Get uploads to delete
             let uploadsToDelete = allUploads.filter({ $0.state == .finished})
             // Delete cimpleted uploads
-            self.uploadsProvider.deleteUploads(from: uploadsToDelete) { (error) in
+            self.uploadsProvider.delete(uploadRequests: uploadsToDelete) { (error) in
                 guard let _ = error else {
                     // When there is no more upload to display…
                     if self.uploadsProvider.fetchedResultsController.fetchedObjects?.count == 0 {
                         // - delete the directory containing files to upload
-                        let uploadManager = UploadManager()
-                        uploadManager.emptyUploadsDirectory()
+                        self.uploadManager.emptyUploadsDirectory()
                         // - close this view when there is no more upload to display
                         self.dismiss(animated: true, completion: nil)
                     }
@@ -180,8 +187,10 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
         let titleDelete = completedUploads > 1 ? String(format: NSLocalizedString("deleteCategory_allImages", comment: "Delete %@ Photos"), NumberFormatter.localizedString(from: NSNumber.init(value: completedUploads), number: .decimal)) : NSLocalizedString("deleteSingleImage_title", comment: "Delete Photo")
         let deleteAction = UIAlertAction(title: titleDelete, style: .destructive, handler: { action in
             // Delete uploaded images
-            let uploadManager = UploadManager()
-            uploadManager.deleteUploadedImages(inAutoMode: false)
+            if let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects {
+                let uploadsToDelete = allUploads.filter({ $0.state == .finished })
+                self.uploadManager.delete(uploadedImages: uploadsToDelete)
+            }
         })
         
         // Retry failed uploads
@@ -191,8 +200,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
             // Collect list of failed uploads
             if let failedUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects?.filter({$0.state == .preparingError || $0.state == .uploadingError || $0.state == .finishingError }) {
                 // Resume failed uploads
-                let uploadManager = UploadManager()
-                uploadManager.resume(failedUploads: failedUploads) { (error) in
+                self.uploadManager.resume(failedUploads: failedUploads) { (error) in
                     if let error = error {
                         // Inform user
                         let alert = UIAlertController(title: NSLocalizedString("errorHUD_label", comment: "Error"), message: error.localizedDescription, preferredStyle: .alert)
@@ -566,9 +574,9 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
         case .update:
             // Upload in progress
             print("UploadQueueViewController… update received from UploadProvider")
-//            guard let upload:Upload = anObject as? Upload else { return }
-//            guard let cell = tableView(queueTableView, cellForRowAt: oldIndexPath) as? UploadImageTableViewCell else { return }
-//            cell.configure(with: upload)
+            guard let upload:Upload = anObject as? Upload else { return }
+            guard let cell = tableView(queueTableView, cellForRowAt: oldIndexPath) as? UploadImageTableViewCell else { return }
+            cell.configure(with: upload)
 
 //            if let indexPathsOfVisibleCells = queueTableView.indexPathsForVisibleRows {
 //                for indexPath in indexPathsOfVisibleCells {

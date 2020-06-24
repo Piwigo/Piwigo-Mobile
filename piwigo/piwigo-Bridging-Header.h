@@ -5,6 +5,7 @@
 #import <Availability.h>
 #import <AFNetworking.h>
 #import <MBProgressHUD.h>
+#import <MGSwipeTableCell.h>
 #import <UIImageView+AFNetworking.h>
 
 #import "AlbumImagesViewController.h"
