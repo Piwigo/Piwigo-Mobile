@@ -466,7 +466,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
             return UploadImageTableViewCell()
         }
         guard let upload = uploadsProvider.fetchedResultsController.fetchedObjects?[indexPath.row] else { return cell }
-        cell.configure(with: upload)
+        cell.configure(with: upload, width: Int(tableView.bounds.size.width))
         return cell
     }
 

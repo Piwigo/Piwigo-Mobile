@@ -40,7 +40,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
     @IBOutlet weak var uploadingProgress: UIProgressView!
     @IBOutlet weak var imageInfoLabel: UILabel!
     
-    func configure(with upload:Upload) {
+    func configure(with upload:Upload, width:Int) {
 
         // Background color and aspect
         backgroundColor = UIColor.piwigoColorCellBackground()
@@ -69,13 +69,13 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         if [.preparingError, .formatError, .uploadingError, .finishingError].contains(upload.state) {
             imageInfoLabel.text = upload.requestError
         } else {
-            imageInfoLabel.text = getImageInfo(from: imageAsset)
+            imageInfoLabel.text = getImageInfo(from: imageAsset, for: width - 2*Int(indentationWidth))
         }
                 
         // Cell image: retrieve data of right size and crop image
         let retinaScale = Int(UIScreen.main.scale)
-        let retinaSquare = CGSize(width: self.contentView.frame.size.width * CGFloat(retinaScale),
-                                  height: self.contentView.frame.size.height * CGFloat(retinaScale))
+        let retinaSquare = CGSize(width: contentView.frame.size.width * CGFloat(retinaScale),
+                                  height: contentView.frame.size.height * CGFloat(retinaScale))
 
         let cropToSquare = PHImageRequestOptions()
         cropToSquare.resizeMode = .exact
@@ -143,31 +143,33 @@ class UploadImageTableViewCell: MGSwipeTableCell {
     
     func update(with userInfo: [AnyHashable : Any]) {
         // Top label
-        let stateInfo = (userInfo["stateInfo"] ?? "") as! String
-        uploadInfoLabel.text = stateInfo
-        
+        if let stateLabel: String = userInfo["stateLabel"] as! String? {
+            uploadInfoLabel.text = stateLabel
+        }
+
         // Progress bar
-        let progressFraction = (userInfo["progressFraction"] ?? 0.0) as! Float
-        uploadingProgress?.setProgress(progressFraction, animated: true)
+        if let progressFraction: Float = userInfo["progressFraction"] as! Float? {
+            uploadingProgress?.setProgress(progressFraction, animated: true)
+        }
 
         // Bottom label
         let errorDescription = (userInfo["Error"] ?? "") as! String
         if errorDescription.count == 0,
             let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [localIdentifier], options: nil).firstObject {
-                imageInfoLabel.text = getImageInfo(from: imageAsset)
+            imageInfoLabel.text = getImageInfo(from: imageAsset, for: Int(bounds.size.width))
         } else {
             imageInfoLabel.text = errorDescription
         }
     }
     
-    private func getImageInfo(from imageAsset: PHAsset) -> String {
+    private func getImageInfo(from imageAsset: PHAsset, for width: Int) -> String {
         switch imageAsset.mediaType {
         case .image:
             if let creationDate = imageAsset.creationDate {
-                if self.bounds.size.width > 414 {
+                if width > 414 {
                     // i.e. larger than iPhones 6,7 screen width
                     return String(format: "%ldx%ld pixels - %@", imageAsset.pixelWidth, imageAsset.pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .full, timeStyle: .medium))
-                } else if self.bounds.size.width > 375 {
+                } else if width > 375 {
                     return String(format: "%ldx%ld pixels — %@", imageAsset.pixelWidth, imageAsset.pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .long, timeStyle: .short))
                 } else {
                     return String(format: "%ldx%ld pixels — %@", imageAsset.pixelWidth, imageAsset.pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .short, timeStyle: .short))
@@ -181,10 +183,10 @@ class UploadImageTableViewCell: MGSwipeTableCell {
             formatter.zeroFormattingBehavior = [ .pad ]
             let formattedDuration = formatter.string(from: imageAsset.duration)!
             if let creationDate = imageAsset.creationDate {
-                if self.bounds.size.width > 414 {
+                if width > 414 {
                     // i.e. larger than iPhones 6,7 screen width
                     return String(format: "%ldx%ld pixels, %@ - %@", imageAsset.pixelWidth, imageAsset.pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .full, timeStyle: .medium))
-                } else if self.bounds.size.width > 375 {
+                } else if width > 375 {
                     return String(format: "%ldx%ld pixels, %@ - %@", imageAsset.pixelWidth, imageAsset.pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .long, timeStyle: .short))
                 } else {
                     return String(format: "%ldx%ld pixels, %@ - %@", imageAsset.pixelWidth, imageAsset.pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .short, timeStyle: .short))

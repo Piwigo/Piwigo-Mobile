@@ -452,7 +452,7 @@ class UploadManager: NSObject {
                onProgress: { (progress, currentChunk, totalChunks) in
                     let chunkProgress: Float = Float(currentChunk) / Float(totalChunks)
                     let uploadInfo: [String : Any] = ["localIndentifier" : uploadProperties.localIdentifier,
-                                                      "stateInfo" : kPiwigoUploadState.uploading.stateInfo,
+                                                      "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
                                                       "Error" : uploadProperties.requestError ?? "",
                                                       "progressFraction" : chunkProgress]
                     DispatchQueue.main.async {
