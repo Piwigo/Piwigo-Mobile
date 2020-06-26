@@ -36,7 +36,7 @@ class Upload: NSManagedObject {
     @NSManaged var privacyLevel: Int16
     @NSManaged var title: String?
     @NSManaged var comment: String?
-    @NSManaged var tags: Set<Tag>?
+    @NSManaged var tags: NSSet?
     @NSManaged var imageId: Int64
 
     // Singleton
@@ -79,7 +79,7 @@ class Upload: NSManagedObject {
         // Other properties
         title = uploadProperties.title ?? ""
         comment = uploadProperties.comment ?? ""
-        tags = uploadProperties.tags ?? []
+        tags = NSSet.init(set: uploadProperties.tags ?? NSSet.init())
         imageId = Int64(uploadProperties.imageId)
     }
 }
@@ -140,6 +140,18 @@ extension Upload {
             return kPiwigoPrivacyUnknown
         }
     }
+
+    @objc(addTagsObject:)
+    @NSManaged public func addToTags(_ value: Tag)
+
+    @objc(removeTagsObject:)
+    @NSManaged public func removeFromTags(_ value: Tag)
+
+    @objc(addTags:)
+    @NSManaged public func addToTags(_ values: NSSet)
+
+    @objc(removeTags:)
+    @NSManaged public func removeFromTags(_ values: NSSet)
 }
 
 
@@ -217,7 +229,7 @@ struct UploadProperties
     var privacyLevel: kPiwigoPrivacy?       // 0
     var title: String?                      // "Image title"
     var comment: String?                    // "A comment…"
-    var tags: Set<Tag>?                     // Array of tags
+    var tags: NSSet?                        // Array of unique tags
     var imageId: Int                        // 1042
 }
 
@@ -233,7 +245,7 @@ extension UploadProperties {
             // Privacy level defaults to level selected in Settings
             privacyLevel: Model.sharedInstance()?.defaultPrivacyLevel ?? kPiwigoPrivacyEverybody,
             // No title, comment, tag, filename by default
-            title: "", comment: "", tags: [], imageId: NSNotFound)
+            title: "", comment: "", tags: NSSet.init(), imageId: NSNotFound)
     }
     
     var stateLabel: String {
