@@ -23,14 +23,6 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
         return provider
     }()
 
-    // MARK: - Upload Manager
-    /**
-     The UploadManager that prepares and transfers images and updates the cache.
-     */
-    private lazy var uploadManager: UploadManager = {
-        let provider : UploadManager = UploadManager()
-        return provider
-    }()
     
     // MARK: - View
     @IBOutlet var queueTableView: UITableView!
@@ -173,7 +165,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
                     // When there is no more upload to display…
                     if self.uploadsProvider.fetchedResultsController.fetchedObjects?.count == 0 {
                         // - delete the directory containing files to upload
-                        self.uploadManager.emptyUploadsDirectory()
+                        UploadManager.sharedInstance()?.emptyUploadsDirectory()
                         // - close this view when there is no more upload to display
                         self.dismiss(animated: true, completion: nil)
                     }
@@ -189,7 +181,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
             // Delete uploaded images
             if let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects {
                 let uploadsToDelete = allUploads.filter({ $0.state == .finished })
-                self.uploadManager.delete(uploadedImages: uploadsToDelete)
+                UploadManager.sharedInstance()?.delete(uploadedImages: uploadsToDelete)
             }
         })
         
@@ -200,7 +192,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
             // Collect list of failed uploads
             if let failedUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects?.filter({$0.state == .preparingError || $0.state == .uploadingError || $0.state == .finishingError }) {
                 // Resume failed uploads
-                self.uploadManager.resume(failedUploads: failedUploads) { (error) in
+                UploadManager.sharedInstance()?.resume(failedUploads: failedUploads, completionHandler: { (error) in
                     if let error = error {
                         // Inform user
                         let alert = UIAlertController(title: NSLocalizedString("errorHUD_label", comment: "Error"), message: error.localizedDescription, preferredStyle: .alert)
@@ -218,7 +210,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
                             alert.view.tintColor = UIColor.piwigoColorOrange()
                         })
                     }
-                }
+                })
             }
         })
 
@@ -574,8 +566,12 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
         case .update:
             // Upload in progress
             guard let upload:Upload = anObject as? Upload else { return }
-            guard let cell = tableView(queueTableView, cellForRowAt: oldIndexPath) as? UploadImageTableViewCell else { return }
-            cell.configure(with: upload)
+            guard let cell = queueTableView.cellForRow(at: oldIndexPath) as? UploadImageTableViewCell else { return }
+//            print("UploadQueueViewController… update received from UploadProvider:", upload.stateLabel, "at", oldIndexPath.row)
+            let uploadInfo: [String : Any] = ["localIndentifier" : upload.localIdentifier,
+                                              "stateLabel" : upload.stateLabel,
+                                              "Error" : upload.requestError ?? ""]
+            cell.update(with: uploadInfo)
 
 //            if let indexPathsOfVisibleCells = queueTableView.indexPathsForVisibleRows {
 //                for indexPath in indexPathsOfVisibleCells {

@@ -15,10 +15,10 @@ let kPiwigoNotificationUploadProgress = "kPiwigoNotificationUploadProgress"
 class UploadManager: NSObject {
 
     // Singleton
-//    static var instance: UploadManager = UploadManager()
-//    @objc class func sharedInstance() -> UploadManager {
-//        return instance
-//    }
+    static var instance: UploadManager? = UploadManager()
+    @objc class func sharedInstance() -> UploadManager? {
+        return instance
+    }
 
     static var applicationUploadsDirectory: URL = {
         let fm = FileManager.default

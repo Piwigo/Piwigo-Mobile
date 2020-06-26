@@ -22,14 +22,6 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         return provider
     }()
 
-    // MARK: - Upload Manager
-    /**
-     The UploadManager that prepares and transfers images and updates the cache.
-     */
-    private lazy var uploadManager: UploadManager = {
-        let provider : UploadManager = UploadManager()
-        return provider
-    }()
 
     // MARK: - Variables
     private var _localIdentifier = ""
@@ -123,7 +115,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         case .preparingError, .uploadingError, .finishingError:
             rightButtons = [
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeRetry.png"), backgroundColor: UIColor.piwigoColorOrange(), callback: { sender in
-                    self.uploadManager.resume(failedUploads: [upload]) { (_) in }
+                    UploadManager.sharedInstance()?.resume(failedUploads: [upload], completionHandler: { (_) in })
                     return true
                 }),
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeCancel.png"), backgroundColor: UIColor.piwigoColorBrown(), callback: { sender in
@@ -143,7 +135,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
                     return true
                 }),
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeTrashSmall.png"), backgroundColor: .red, callback: { sender in
-                    self.uploadManager.delete(uploadedImages: [upload])
+                    UploadManager.sharedInstance()?.delete(uploadedImages: [upload])
                     return true
                 })]
         }
