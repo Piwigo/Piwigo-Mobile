@@ -20,7 +20,7 @@ class UploadManager: NSObject {
         return instance
     }
 
-    static var applicationUploadsDirectory: URL = {
+    static let applicationUploadsDirectory: URL = {
         let fm = FileManager.default
         let anURL = DataController.applicationStoresDirectory.appendingPathComponent("Uploads")
 
