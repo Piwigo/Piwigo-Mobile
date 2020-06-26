@@ -1529,8 +1529,9 @@
 				ADA24DB1243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift in Sources */,
 				ADBDD9372441AB3800F19DFC /* LabelTableViewCell.swift in Sources */,
 				ADEC6B032455A3520011527C /* LocalAlbumsProvider.swift in Sources */,
-				ADEC6B052455BC6F0011527C /* LocalAlbumsTableViewCell.swift in Sources */,
+				ADC328072480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift in Sources */,
 				ADC3280B2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift in Sources */,
+				ADEC6B052455BC6F0011527C /* LocalAlbumsTableViewCell.swift in Sources */,
 				AD42D08124448B7C00F0BAC1 /* LocalAlbumsViewController.swift in Sources */,
 				AD42D08524449FF000F0BAC1 /* LocalImageCollectionViewCell.swift in Sources */,
 				ADC8FAAA244C7307006BDA6A /* LocalImagesFooterReusableView.swift in Sources */,
@@ -1620,7 +1621,6 @@
 				D8F325141A875A42007CBDAC /* EditImageTextFieldTableViewCell.m in Sources */,
 				D860440E1A99894C0067E5D1 /* ImagePreviewViewController.m in Sources */,
 				D8172E201AB7D2EA00271DB0 /* ThumbnailCategoryViewController.m in Sources */,
-				ADC328072480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift in Sources */,
 				D8A94EB21AAE3C5600E4B287 /* CategoryCollectionViewCell.m in Sources */,
 				D89045B91A946A5B00A306FE /* TagsService.m in Sources */,
 				D82B8CE61A678ED2000E47CA /* NetworkHandler.m in Sources */,
@@ -2159,6 +2159,7 @@
 					"-framework",
 					"\"UIKit\"",
 				);
+				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "1db8c18e-75fc-4fdf-b2c9-2aa2c895e936";
