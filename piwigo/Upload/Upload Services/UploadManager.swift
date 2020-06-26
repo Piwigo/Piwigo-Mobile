@@ -108,7 +108,7 @@ class UploadManager: NSObject {
                 requestDelete: upload.requestDelete, requestError: UploadError.networkUnavailable.errorDescription,
                 creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
                 author: upload.author, privacyLevel: upload.privacy,
-                title: upload.title, comment: upload.comment, tags: upload.tags, imageId: Int(upload.imageId))
+                imageTitle: upload.imageName, comment: upload.comment, tags: upload.tags, imageId: Int(upload.imageId))
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                 self.findNextImageToUpload()
                 return
@@ -122,7 +122,7 @@ class UploadManager: NSObject {
                 requestDelete: upload.requestDelete, requestError: UploadError.networkUnavailable.errorDescription,
                 creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
                 author: upload.author, privacyLevel: upload.privacy,
-                title: upload.title, comment: upload.comment, tags: upload.tags, imageId: Int(upload.imageId))
+                imageTitle: upload.imageName, comment: upload.comment, tags: upload.tags, imageId: Int(upload.imageId))
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                 self.findNextImageToUpload()
                 return
@@ -136,7 +136,7 @@ class UploadManager: NSObject {
                 requestDelete: upload.requestDelete, requestError: UploadError.networkUnavailable.errorDescription,
                 creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
                 author: upload.author, privacyLevel: upload.privacy,
-                title: upload.title, comment: upload.comment, tags: upload.tags, imageId: Int(upload.imageId))
+                imageTitle: upload.imageName, comment: upload.comment, tags: upload.tags, imageId: Int(upload.imageId))
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                 self.findNextImageToUpload()
                 return
@@ -208,8 +208,7 @@ class UploadManager: NSObject {
             requestDelete: nextUpload.requestDelete, requestError: nextUpload.requestError,
             creationDate: nextUpload.creationDate, fileName: nextUpload.fileName, mimeType: nextUpload.mimeType,
             author: nextUpload.author, privacyLevel: nextUpload.privacy,
-            title: nextUpload.title,
-            comment: nextUpload.comment,
+            imageTitle: nextUpload.imageName, comment: nextUpload.comment,
             tags: nextUpload.tags, imageId: NSNotFound)
 
         // Retrieve image asset
@@ -442,7 +441,7 @@ class UploadManager: NSObject {
             requestDelete: nextUpload.requestDelete, requestError: nextUpload.requestError,
             creationDate: nextUpload.creationDate, fileName: nextUpload.fileName, mimeType: nextUpload.mimeType,
             author: nextUpload.author, privacyLevel: nextUpload.privacy,
-            title: nextUpload.title,comment: nextUpload.comment,
+            imageTitle: nextUpload.imageName, comment: nextUpload.comment,
             tags: nextUpload.tags, imageId: Int(nextUpload.imageId))
 
         // Update state of upload
@@ -546,7 +545,7 @@ class UploadManager: NSObject {
             requestDelete: nextUpload.requestDelete, requestError: nextUpload.requestError,
             creationDate: nextUpload.creationDate, fileName: nextUpload.fileName, mimeType: nextUpload.mimeType,
             author: nextUpload.author, privacyLevel: nextUpload.privacy,
-            title: nextUpload.title,comment: nextUpload.comment,
+            imageTitle: nextUpload.imageName, comment: nextUpload.comment,
             tags: nextUpload.tags, imageId: Int(nextUpload.imageId))
 
         // Update state of upload
@@ -555,7 +554,7 @@ class UploadManager: NSObject {
             // Finish the job by setting image parameters…
             // Prepare creation date
             var creationDate = ""
-            if let date = nextUpload.creationDate {
+            if let date = uploadProperties.creationDate {
                 let dateFormat = DateFormatter()
                 dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
                 creationDate = dateFormat.string(from: date)
@@ -761,7 +760,7 @@ class UploadManager: NSObject {
                             requestDelete: false, requestError: upload.requestError,
                             creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
                             author: upload.author, privacyLevel: upload.privacy,
-                            title: upload.title, comment: upload.comment, tags: upload.tags, imageId: Int(upload.imageId))
+                            imageTitle: upload.imageName, comment: upload.comment, tags: upload.tags, imageId: Int(upload.imageId))
                         uploadsToUpdate.append(uploadProperties)
                     }
                     self.uploadsProvider.importUploads(from: uploadsToUpdate) { (_) in
@@ -789,7 +788,7 @@ class UploadManager: NSObject {
                 requestDelete: failedUpload.requestDelete, requestError: "",
                 creationDate: failedUpload.creationDate, fileName: failedUpload.fileName, mimeType: failedUpload.mimeType,
                 author: failedUpload.author, privacyLevel: failedUpload.privacy,
-                title: failedUpload.title, comment: failedUpload.comment,
+                imageTitle: failedUpload.imageName, comment: failedUpload.comment,
                 tags: failedUpload.tags, imageId: Int(failedUpload.imageId))
             
             // Update state from which to try again

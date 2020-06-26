@@ -1426,7 +1426,7 @@ NSString * const kGetImageOrderDescending = @"desc";
             parameters:@{
                          @"image_id" : @(imageId),
                          @"file" : [imageInfo objectForKey:kPiwigoImagesUploadParamFileName],
-//                         @"name" : [imageInfo objectForKey:kPiwigoImagesUploadParamTitle],
+                         @"name" : [imageInfo objectForKey:kPiwigoImagesUploadParamTitle],
                          @"author" : author,
                          @"date_creation" : [imageInfo objectForKey:kPiwigoImagesUploadParamCreationDate],
                          @"level" : [imageInfo objectForKey:kPiwigoImagesUploadParamPrivacy],

@@ -238,7 +238,7 @@ class UploadImage {
                 // Adopt determined Mime type
                 newUpload.mimeType = type
                 // Re-check filename extension if MIME type known
-                let fileExt = (URL(fileURLWithPath: upload.fileName ?? "").pathExtension).lowercased()
+                let fileExt = (URL(fileURLWithPath: newUpload.fileName ?? "").pathExtension).lowercased()
                 let expectedFileExtension = fileExtension(forImageData: imageData)
                 if !(fileExt == expectedFileExtension) {
                     newUpload.fileName = URL(fileURLWithPath: upload.fileName ?? "file").deletingPathExtension().appendingPathExtension(expectedFileExtension ?? "").lastPathComponent

@@ -41,7 +41,7 @@ class UploadTransfer {
         let imageParameters: [String : String] = [
             kPiwigoImagesUploadParamFileName: upload.fileName ?? "Image.jpg",
             kPiwigoImagesUploadParamCreationDate: creationDate,
-//            kPiwigoImagesUploadParamTitle: upload.imageTitle() ?? "",
+            kPiwigoImagesUploadParamTitle: upload.imageTitle ?? "",
             kPiwigoImagesUploadParamCategory: "\(NSNumber(value: upload.category))",
             kPiwigoImagesUploadParamPrivacy: "\(NSNumber(value: upload.privacyLevel!.rawValue))",
             kPiwigoImagesUploadParamAuthor: upload.author ?? "",
