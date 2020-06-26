@@ -115,6 +115,8 @@ class PhotosFetch: NSObject {
     @objc
     func getFileNameFomImageAsset(_ imageAsset: PHAsset?) -> String {
         var fileName = ""
+        
+        // Asset resource available?
         if imageAsset != nil {
             // Get file name from image asset
             var resources: [PHAssetResource]? = nil
@@ -134,28 +136,33 @@ class PhotosFetch: NSObject {
                     }
                 }
             }
-
-            // If no filename…
-            if fileName.count == 0 {
-                // No filename => Build filename from creation date
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "yyyyMMdd-HHmmssSSSS"
-                if let creation = imageAsset?.creationDate {
-                    fileName = dateFormatter.string(from: creation)
-                }
-
-                // Filename extension required by Piwigo so that it knows how to deal with it
-                if imageAsset?.mediaType == .image {
-                    // Adopt JPEG photo format by default, will be rechecked
-                    fileName = URL(fileURLWithPath: fileName).appendingPathExtension("jpg").lastPathComponent
-                } else if imageAsset?.mediaType == .video {
-                    // Videos are exported in MP4 format
-                    fileName = URL(fileURLWithPath: fileName).appendingPathExtension("mp4").lastPathComponent
-                } else if imageAsset?.mediaType == .audio {
-                    // Arbitrary extension, not managed yet
-                    fileName = URL(fileURLWithPath: fileName).appendingPathExtension("m4a").lastPathComponent
-                }
+        }
+        
+        // If filename is empty, build one from the current date
+        if fileName.count == 0 {
+            // No filename => Build filename from creation date
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyyMMdd-HHmmssSSSS"
+            if let creation = imageAsset?.creationDate {
+                fileName = dateFormatter.string(from: creation)
             }
+
+            // Filename extension required by Piwigo so that it knows how to deal with it
+            if imageAsset?.mediaType == .image {
+                // Adopt JPEG photo format by default, will be rechecked
+                fileName = URL(fileURLWithPath: fileName).appendingPathExtension("jpg").lastPathComponent
+            } else if imageAsset?.mediaType == .video {
+                // Videos are exported in MP4 format
+                fileName = URL(fileURLWithPath: fileName).appendingPathExtension("mp4").lastPathComponent
+            } else if imageAsset?.mediaType == .audio {
+                // Arbitrary extension, not managed yet
+                fileName = URL(fileURLWithPath: fileName).appendingPathExtension("m4a").lastPathComponent
+            }
+        }
+
+        // Add prefix if user requested it
+        if Model.sharedInstance().prefixFileNameBeforeUpload && !fileName.hasPrefix(Model.sharedInstance().defaultPrefix) {
+            fileName = Model.sharedInstance().defaultPrefix + fileName
         }
 
         print("=> filename = \(fileName)")
