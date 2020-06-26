@@ -1233,7 +1233,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
 
         switch type {
         case .insert:
-            print("••• LocalImagesViewController controller:insert...")
+//            print("••• LocalImagesViewController controller:insert...")
             // Image added to upload queue
             if let upload:Upload = anObject as? Upload {
                 // Append upload to non-indexed upload queue
@@ -1253,7 +1253,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
                 updateCell(for: upload)
             }
         case .delete:
-            print("••• LocalImagesViewController controller:delete...")
+//            print("••• LocalImagesViewController controller:delete...")
             // Image removed from upload queue
             if let upload:Upload = anObject as? Upload {
                 // Remove upload from non-indexed upload queue
@@ -1271,9 +1271,10 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
                 updateCell(for: upload)
             }
         case .move:
-            print("••• LocalImagesViewController controller:move...")
+//            print("••• LocalImagesViewController controller:move...")
+            break
         case .update:
-            print("••• LocalImagesViewController controller:update...")
+//            print("••• LocalImagesViewController controller:update...")
             // Image removed from upload queue
             if let upload:Upload = anObject as? Upload {
                 // Update upload in non-indexed upload queue
@@ -1293,7 +1294,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        print("••• LocalImagesViewController controller:didChangeContent...")
+//        print("••• LocalImagesViewController controller:didChangeContent...")
         // Update navigation bar
         updateNavBar()
     }

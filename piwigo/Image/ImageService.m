@@ -541,7 +541,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     NSInteger downloadedImageDataCount = [[CategoriesData sharedInstance] getCategoryById:categoryId].imageList.count;
     NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:categoryId].numberOfImages;
 
-    NSLog(@"loadImageChunkForLastChunkCount: %ld / %ld images", downloadedImageDataCount, totalImageCount);
+//    NSLog(@"loadImageChunkForLastChunkCount: %ld / %ld images", downloadedImageDataCount, totalImageCount);
     if (((categoryId > kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount)) ||
         ((categoryId == kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount) && totalImageCount))
     {    // done. don't need anymore
@@ -666,7 +666,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                                           {
                                               PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:categoryId];
                                               NSInteger count = [albumData addImages:albumImages];
-                                              NSLog(@"loadImageChunkForLastChunkCount: %ld / %ld images", downloadedImageDataCount + count, totalImageCount);
+//                                              NSLog(@"loadImageChunkForLastChunkCount: %ld / %ld images", downloadedImageDataCount + count, totalImageCount);
                                               if (completion) {
                                                   completion(task, count);
                                               }

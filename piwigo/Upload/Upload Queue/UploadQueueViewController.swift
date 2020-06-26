@@ -573,7 +573,6 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
             queueTableView.insertRows(at: [newIndexPath], with: .automatic)
         case .update:
             // Upload in progress
-            print("UploadQueueViewController… update received from UploadProvider")
             guard let upload:Upload = anObject as? Upload else { return }
             guard let cell = tableView(queueTableView, cellForRowAt: oldIndexPath) as? UploadImageTableViewCell else { return }
             cell.configure(with: upload)

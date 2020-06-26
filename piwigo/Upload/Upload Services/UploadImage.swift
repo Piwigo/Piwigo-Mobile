@@ -69,7 +69,7 @@ class UploadImage {
         options.version = PHImageRequestOptionsVersion.current
         // Requests the highest-quality image available, regardless of how much time it takes to load.
         options.deliveryMode = .highQualityFormat
-        // Photos can download the requested video from iCloud
+        // Photos can download the requested video
         options.isNetworkAccessAllowed = true
         // Requests Photos to resize the image according to user settings
         var size = PHImageManagerMaximumSize
