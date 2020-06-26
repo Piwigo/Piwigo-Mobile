@@ -95,7 +95,7 @@ class UploadManager: NSObject {
         print("•••>> findNextImageToUpload…")
         
         // Get uploads in queue
-        guard let allUploads = uploadsProvider.fetchedResultsController.fetchedObjects else {
+        guard let allUploads = uploadsProvider.uploadRequestsToComplete() else {
             return
         }
         
