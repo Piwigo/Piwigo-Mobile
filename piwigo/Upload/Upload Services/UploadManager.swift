@@ -40,6 +40,8 @@ class UploadManager: NSObject {
 
         return anURL
     }()
+    
+    static let decoder = JSONDecoder()
 
     
     // MARK: - Core Data
@@ -476,8 +478,8 @@ class UploadManager: NSObject {
                     // Decode the JSON.
                     do {
                         // Decode the JSON into codable type ImagesUploadJSON.
-                        let decoder = JSONDecoder()
-                        let uploadJSON = try decoder.decode(ImagesUploadJSON.self, from: data)
+//                        let decoder = JSONDecoder()
+                        let uploadJSON = try UploadManager.decoder.decode(ImagesUploadJSON.self, from: data)
                         
                         // Piwigo error?
                         if (uploadJSON.errorCode != 0) {
@@ -594,8 +596,8 @@ class UploadManager: NSObject {
                     // Decode the JSON.
                     do {
                         // Decode the JSON into codable type ImagesUploadJSON.
-                        let decoder = JSONDecoder()
-                        let uploadJSON = try decoder.decode(ImageSetInfoJSON.self, from: data)
+//                        let decoder = JSONDecoder()
+                        let uploadJSON = try UploadManager.decoder.decode(ImageSetInfoJSON.self, from: data)
                         
                         // Piwigo error?
                         if (uploadJSON.errorCode != 0) {
@@ -702,8 +704,8 @@ class UploadManager: NSObject {
                     // Decode the JSON.
                     do {
                         // Decode the JSON into codable type CommunityUploadCompletedJSON.
-                        let decoder = JSONDecoder()
-                        let uploadJSON = try decoder.decode(CommunityUploadCompletedJSON.self, from: data)
+//                        let decoder = JSONDecoder()
+                        let uploadJSON = try UploadManager.decoder.decode(CommunityUploadCompletedJSON.self, from: data)
                         
                         // Piwigo error?
                         if (uploadJSON.errorCode != 0) {
