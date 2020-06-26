@@ -318,7 +318,7 @@ extension TagSelectorViewController {
 extension TagSelectorViewController: NSFetchedResultsControllerDelegate {
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        tagsTableView.beginUpdates()
+        tableView.beginUpdates()
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
@@ -336,7 +336,7 @@ extension TagSelectorViewController: NSFetchedResultsControllerDelegate {
             tagsTableView.insertRows(at: [newIndexPath], with: .automatic)
         case .update:
             guard let tag: Tag = anObject as? Tag else { return }
-            guard let cell: TagSelectorCell = tableView(tagsTableView, cellForRowAt: oldIndexPath) as? TagSelectorCell else { return }
+            guard let cell = tableView.cellForRow(at: oldIndexPath) as? TagSelectorCell else { return }
             cell.configure(with: tag)
         @unknown default:
             fatalError("TagSelectorViewController: unknown NSFetchedResultsChangeType")
@@ -344,6 +344,6 @@ extension TagSelectorViewController: NSFetchedResultsControllerDelegate {
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        tagsTableView.endUpdates()
+        tableView.endUpdates()
     }
 }

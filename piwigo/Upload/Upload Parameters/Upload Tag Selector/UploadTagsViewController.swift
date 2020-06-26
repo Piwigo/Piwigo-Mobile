@@ -110,8 +110,8 @@ extension UploadTagsViewController: NSFetchedResultsControllerDelegate {
             tableView.deleteRows(at: [indexPath], with: .automatic)
             tableView.insertRows(at: [newIndexPath], with: .automatic)
         case .update:
-            let tag: Tag = anObject as! Tag
-            let cell: UploadTagCell = tableView(tableView, cellForRowAt: indexPath) as! UploadTagCell
+            guard let tag: Tag = anObject as? Tag else { return }
+            guard let cell = tableView.cellForRow(at: oldIndexPath) as? UploadTagCell else { return }
             cell.configureCell(with: tag.tagName, action: UploadTagCell.tagCellOptions.actions.unknown)
         @unknown default:
             fatalError("UploadTagsViewController: unknown NSFetchedResultsChangeType")
