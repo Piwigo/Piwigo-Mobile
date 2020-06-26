@@ -562,15 +562,15 @@ class UploadManager: NSObject {
 
             // Prepare parameters for uploading image/video (filename key is kPiwigoImagesUploadParamFileName)
             let imageParameters: [String : String] = [
-                kPiwigoImagesUploadParamFileName: nextUpload.fileName ?? "Image.jpg",
+                kPiwigoImagesUploadParamFileName: uploadProperties.fileName ?? "Image.jpg",
                 kPiwigoImagesUploadParamCreationDate: creationDate,
-    //            kPiwigoImagesUploadParamTitle: nextUpload.imageTitle() ?? "",
-                kPiwigoImagesUploadParamCategory: "\(NSNumber(value: nextUpload.category))",
-                kPiwigoImagesUploadParamPrivacy: "\(NSNumber(value: nextUpload.privacyLevel))",
-                kPiwigoImagesUploadParamAuthor: nextUpload.author ?? "",
-                kPiwigoImagesUploadParamDescription: nextUpload.comment ?? "",
-    //            kPiwigoImagesUploadParamTags: nextUpload.tagIds,
-                kPiwigoImagesUploadParamMimeType: nextUpload.mimeType ?? ""
+                kPiwigoImagesUploadParamTitle: uploadProperties.imageTitle ?? "",
+                kPiwigoImagesUploadParamCategory: "\(NSNumber(value: uploadProperties.category))",
+                kPiwigoImagesUploadParamPrivacy: "\(NSNumber(value: uploadProperties.privacyLevel!.rawValue))",
+                kPiwigoImagesUploadParamAuthor: uploadProperties.author ?? "",
+                kPiwigoImagesUploadParamDescription: uploadProperties.comment ?? "",
+    //            kPiwigoImagesUploadParamTags: uploadProperties.tagIds,
+                kPiwigoImagesUploadParamMimeType: uploadProperties.mimeType ?? ""
             ]
 
             // Set image properties
