@@ -567,21 +567,24 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
             // Upload in progress
             guard let upload:Upload = anObject as? Upload else { return }
             guard let cell = queueTableView.cellForRow(at: oldIndexPath) as? UploadImageTableViewCell else { return }
-//            print("UploadQueueViewController… update received from UploadProvider:", upload.stateLabel, "at", oldIndexPath.row)
-            let uploadInfo: [String : Any] = ["localIndentifier" : upload.localIdentifier,
-                                              "stateLabel" : upload.stateLabel,
-                                              "Error" : upload.requestError ?? ""]
+            var uploadInfo: [String : Any]
+            switch upload.state {
+            case .waiting, .preparing, .prepared, .formatError:
+                uploadInfo = ["localIndentifier" : upload.localIdentifier,
+                              "stateLabel" : upload.stateLabel,
+                              "Error" : upload.requestError ?? "",
+                              "progressFraction" : Float(0.0)]
+            case .uploaded, .finishing, .finishingError, .finished:
+                uploadInfo = ["localIndentifier" : upload.localIdentifier,
+                              "stateLabel" : upload.stateLabel,
+                              "Error" : upload.requestError ?? "",
+                              "progressFraction" : Float(1.0)]
+            default:
+                uploadInfo = ["localIndentifier" : upload.localIdentifier,
+                              "stateLabel" : upload.stateLabel,
+                              "Error" : upload.requestError ?? ""]
+            }
             cell.update(with: uploadInfo)
-
-//            if let indexPathsOfVisibleCells = queueTableView.indexPathsForVisibleRows {
-//                for indexPath in indexPathsOfVisibleCells {
-//                    if allUploads[indexPath.row].localIdentifier == upload.localIdentifier {
-//                        if let cell = queueTableView.cellForRow(at: indexPath) as? UploadImageTableViewCell {
-//                            cell.configure(with: upload)
-//                        }
-//                    }
-//                }
-//            }
         @unknown default:
             fatalError("UploadQueueViewController: unknown NSFetchedResultsChangeType")
         }
