@@ -57,7 +57,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         uploadInfoLabel.text = upload.stateLabel
         
         // Uploading progress bar
-        if [.waiting, .preparing, .prepared, .formatError].contains(upload.state) {
+        if [.waiting, .preparing, .prepared, .formatError, .uploadingError].contains(upload.state) {
             uploadingProgress?.setProgress(0.0, animated: false)
         }
         if [.uploaded, .finishing, .finishingError, .finished].contains(upload.state) {

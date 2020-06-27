@@ -563,7 +563,7 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
             guard let cell = queueTableView.cellForRow(at: oldIndexPath) as? UploadImageTableViewCell else { return }
             var uploadInfo: [String : Any]
             switch upload.state {
-            case .waiting, .preparing, .prepared, .formatError:
+            case .waiting, .preparing, .prepared, .formatError, .uploadingError:
                 uploadInfo = ["localIndentifier" : upload.localIdentifier,
                               "stateLabel" : upload.stateLabel,
                               "Error" : upload.requestError ?? "",
