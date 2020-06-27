@@ -827,7 +827,7 @@ class UploadManager: NSObject {
         do {
             // Get list of files
             let files = try fileManager.contentsOfDirectory(at: UploadManager.applicationUploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
-            print("all files in cache: \(files)")
+//            print("all files in cache: \(files)")
             // Delete files
             for file in files {
                 try fileManager.removeItem(at: file)
