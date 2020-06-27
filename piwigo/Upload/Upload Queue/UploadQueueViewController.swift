@@ -29,7 +29,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
     private var actionBarButton: UIBarButtonItem?
     private var doneBarButton: UIBarButtonItem?
 
-    private var allUploads: [Upload] = []
+//    private var allUploads: [Upload] = []
 //    private var imagesSortedByCategory: [[Upload]] = []
 //    private let kPiwigoNberImagesShowHUDWhenSorting = 2_500                 // Show HUD when sorting more than this number of images
 //    private var hudViewController: UIViewController?
@@ -159,20 +159,8 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
             }
             // Get uploads to delete
             let uploadsToDelete = allUploads.filter({ $0.state == .finished})
-            // Delete cimpleted uploads
-            self.uploadsProvider.delete(uploadRequests: uploadsToDelete) { (error) in
-                guard let _ = error else {
-                    // When there is no more upload to display…
-                    if self.uploadsProvider.fetchedResultsController.fetchedObjects?.count == 0 {
-                        // - delete the directory containing files to upload
-                        UploadManager.sharedInstance()?.emptyUploadsDirectory()
-                        // - close this view when there is no more upload to display
-                        self.dismiss(animated: true, completion: nil)
-                    }
-                    return
-                }
-                print("ERROR ENCOUNTERED WHEN TRYING TO DELETE COMPLETED UPLOADS")
-            }
+            // Delete completed uploads in background
+            self.uploadsProvider.delete(uploadRequests: uploadsToDelete)
         })
         
         // Delete uploaded photos
@@ -559,6 +547,12 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
             queueTableView.insertRows(at: [newIndexPath], with: .automatic)
         case .delete:
             queueTableView.deleteRows(at: [oldIndexPath], with: .automatic)
+            if uploadsProvider.fetchedResultsController.fetchedObjects?.count == 0 {
+                // Delete remaining files from Upload directory (if any)
+                UploadManager.sharedInstance()?.emptyUploadsDirectory()
+                // Close the view when there is no more upload to display
+                self.dismiss(animated: true, completion: nil)
+            }
         case .move:
             guard let newIndexPath = newIndexPath else { return }
             queueTableView.deleteRows(at: [oldIndexPath], with: .automatic)

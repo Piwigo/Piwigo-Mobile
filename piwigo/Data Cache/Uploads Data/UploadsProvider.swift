@@ -228,7 +228,7 @@ class UploadsProvider: NSObject {
      Delete a batch of upload requests from the Core Data store on a private queue,
      processing the record in batches to avoid a high memory footprint.
     */
-    func delete(uploadRequests: [Upload], completionHandler: @escaping (Error?) -> Void) {
+    func delete(uploadRequests: [Upload]) {
         
         guard !uploadRequests.isEmpty else { return }
         
@@ -259,7 +259,6 @@ class UploadsProvider: NSObject {
             }
         }
         updateBadgeAndButton()
-        completionHandler(nil)
     }
     
     /**
@@ -364,6 +363,7 @@ class UploadsProvider: NSObject {
         return uploads
     }
 
+    
     // MARK: - Clear Uploads
     /**
      Clear cached Core Data upload entry
@@ -396,7 +396,7 @@ class UploadsProvider: NSObject {
             let nberOfUploads = self.fetchedResultsController.fetchedObjects?.count ?? 0
             let completedUploads = self.fetchedResultsController.fetchedObjects?.map({ $0.state == .finished ? 1 : 0}).reduce(0, +) ?? 0
                 
-            // Upadte app badge
+            // Update app badge
             UIApplication.shared.applicationIconBadgeNumber = nberOfUploads - completedUploads
             // Update button of root album (or default album)
             NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationLeftUploads), object: nil)

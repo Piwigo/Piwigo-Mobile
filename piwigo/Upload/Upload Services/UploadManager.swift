@@ -746,10 +746,8 @@ class UploadManager: NSObject {
                 PHAssetChangeRequest.deleteAssets(assetsToDelete as NSFastEnumeration)
             }, completionHandler: { success, error in
                 if success == true {
-                    // Delete upload requests
-                    self.uploadsProvider.delete(uploadRequests: uploadedImages) { (error) in
-                        // Could not delete completed uploads!
-                    }
+                    // Delete upload requests in background
+                    self.uploadsProvider.delete(uploadRequests: uploadedImages)
                 } else {
                     // User refused to delete the photos
                     var uploadsToUpdate = [UploadProperties]()
