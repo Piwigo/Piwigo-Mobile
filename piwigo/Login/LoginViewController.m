@@ -823,7 +823,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                     [self hideLoading];
 
                     // Launch upload tasks
-                    [[UploadManager sharedInstance] findNextImageToUpload];
+                    [[UploadManager sharedInstance] findNextImageToUploadWithEndPrepare:YES endUpload:YES endFinish:YES];
 
 #if defined(DEBUG_SESSION)
                     NSLog(@"=> checkSessionStatusAndTryRelogin: Connection still alive…");

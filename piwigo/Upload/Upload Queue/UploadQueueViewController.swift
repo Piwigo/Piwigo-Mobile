@@ -151,7 +151,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
 
         // Clear completed uploads
         let completedUploads = uploadsProvider.fetchedResultsController.fetchedObjects?.map({ ($0.state == .finished) ? 1 : 0}).reduce(0, +) ?? 0
-        let titleClear = completedUploads > 1 ? String(format: NSLocalizedString("imageUploadClearSeveral", comment: "Clear %@ Completed Uploads"), NumberFormatter.localizedString(from: NSNumber.init(value: completedUploads), number: .decimal)) : NSLocalizedString("imageUploadClearSingle", comment: "Clear Completed Upload")
+        let titleClear = completedUploads > 1 ? String(format: NSLocalizedString("imageUploadClearCompletedSeveral", comment: "Clear %@ Completed"), NumberFormatter.localizedString(from: NSNumber.init(value: completedUploads), number: .decimal)) : NSLocalizedString("imageUploadClearCompletedSingle", comment: "Clear 1 Completed")
         let clearAction = UIAlertAction(title: titleClear, style: .default, handler: { action in
             // Get completed uploads
             guard let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects else {
@@ -171,6 +171,20 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
                 let uploadsToDelete = allUploads.filter({ $0.state == .finished })
                 UploadManager.sharedInstance()?.delete(uploadedImages: uploadsToDelete)
             }
+        })
+        
+        // Clear impossible uploads
+        let impossibleUploads = uploadsProvider.fetchedResultsController.fetchedObjects?.map({ ($0.state == .preparingFail) ? 1 : 0}).reduce(0, +) ?? 0
+        let titleClear2 = impossibleUploads > 1 ? String(format: NSLocalizedString("imageUploadClearFailedSeveral", comment: "Clear %@ Failed"), NumberFormatter.localizedString(from: NSNumber.init(value: impossibleUploads), number: .decimal)) : NSLocalizedString("imageUploadClearFailedSingle", comment: "Clear 1 Failed")
+        let clearAction2 = UIAlertAction(title: titleClear2, style: .default, handler: { action in
+            // Get completed uploads
+            guard let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects else {
+                return
+            }
+            // Get uploads to delete
+            let uploadsToDelete = allUploads.filter({ $0.state == .preparingFail})
+            // Delete failed uploads in background
+            self.uploadsProvider.delete(uploadRequests: uploadsToDelete)
         })
         
         // Retry failed uploads
@@ -206,6 +220,9 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
         alert.addAction(cancelAction)
         if failedUploads > 0 {
             alert.addAction(resumeAction)
+        }
+        if impossibleUploads > 0 {
+            alert.addAction(clearAction2)
         }
         if completedUploads > 0 {
             alert.addAction(clearAction)

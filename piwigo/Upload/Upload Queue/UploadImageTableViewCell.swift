@@ -46,61 +46,17 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         backgroundColor = UIColor.piwigoColorCellBackground()
         localIdentifier = upload.localIdentifier
 
-        // Get corresponding image asset
-        guard let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [upload.localIdentifier], options: nil).firstObject else {
-            self.cellImage.image = UIImage(named: "placeholder")
-            return
-        }
-        
         // Upload info label
         uploadInfoLabel.textColor = UIColor.piwigoColorLeftLabel()
         uploadInfoLabel.text = upload.stateLabel
         
         // Uploading progress bar
-        if [.waiting, .preparing, .prepared, .formatError, .uploadingError].contains(upload.state) {
+        if [.waiting, .preparing, .preparingError, .preparingFail, .prepared, .formatError, .uploadingError].contains(upload.state) {
             uploadingProgress?.setProgress(0.0, animated: false)
         }
         if [.uploaded, .finishing, .finishingError, .finished].contains(upload.state) {
             uploadingProgress?.setProgress(1.0, animated: false)
         }
-
-        // Image info label
-        imageInfoLabel.textColor = UIColor.piwigoColorRightLabel()
-        if [.preparingError, .formatError, .uploadingError, .finishingError].contains(upload.state) {
-            imageInfoLabel.text = upload.requestError
-        } else {
-            imageInfoLabel.text = getImageInfo(from: imageAsset, for: width - 2*Int(indentationWidth))
-        }
-                
-        // Cell image: retrieve data of right size and crop image
-        let retinaScale = Int(UIScreen.main.scale)
-        let retinaSquare = CGSize(width: contentView.frame.size.width * CGFloat(retinaScale),
-                                  height: contentView.frame.size.height * CGFloat(retinaScale))
-
-        let cropToSquare = PHImageRequestOptions()
-        cropToSquare.resizeMode = .exact
-        let cropSideLength = min(imageAsset.pixelWidth, imageAsset.pixelHeight)
-        let square = CGRect(x: 0, y: 0, width: cropSideLength, height: cropSideLength)
-        let cropRect = square.applying(CGAffineTransform(scaleX: CGFloat(1.0 / Float(imageAsset.pixelWidth)), y: CGFloat(1.0 / Float(imageAsset.pixelHeight))))
-        cropToSquare.normalizedCropRect = cropRect
-
-        PHImageManager.default().requestImage(for: imageAsset, targetSize: retinaSquare, contentMode: .aspectFit, options: cropToSquare, resultHandler: { result, info in
-            DispatchQueue.main.async(execute: {
-                if info?[PHImageErrorKey] != nil {
-                    let error = info?[PHImageErrorKey] as? Error
-                    if let description = error?.localizedDescription {
-                        print("=> Error : \(description)")
-                    }
-                    self.cellImage.image = UIImage(named: "placeholder")
-                } else {
-                    self.cellImage.image = result
-                }
-                self.cellImage.layer.cornerRadius = 10 - 3
-            })
-        })
-        
-        // Video icon
-        playImage.isHidden = imageAsset.mediaType == .video ? false : true
 
         // Right => Left swipe commands
         swipeBackgroundColor = UIColor.piwigoColorCellBackground()
@@ -122,7 +78,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
                     self.uploadsProvider.delete(uploadRequests: [upload])
                     return true
                 })]
-        case .formatError, .waiting:
+        case .waiting, .preparingFail, .formatError:
             rightButtons = [
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeCancel.png"), backgroundColor: UIColor.piwigoColorBrown(), callback: { sender in
                     self.uploadsProvider.delete(uploadRequests: [upload])
@@ -138,6 +94,54 @@ class UploadImageTableViewCell: MGSwipeTableCell {
                     UploadManager.sharedInstance()?.delete(uploadedImages: [upload])
                     return true
                 })]
+        }
+
+        // Image info label
+        imageInfoLabel.textColor = UIColor.piwigoColorRightLabel()
+        if [.preparingError, .formatError, .uploadingError, .finishingError].contains(upload.state) {
+            imageInfoLabel.text = upload.requestError
+        } else {
+            // Get corresponding image asset
+            guard let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [upload.localIdentifier], options: nil).firstObject else {
+                imageInfoLabel.text = upload.requestError
+                self.cellImage.image = UIImage(named: "placeholder")
+                uploadingProgress?.setProgress(0.0, animated: false)
+                playImage.isHidden = true
+                return
+            }
+            
+            // Display image information
+            imageInfoLabel.text = getImageInfo(from: imageAsset, for: width - 2*Int(indentationWidth))
+
+            // Cell image: retrieve data of right size and crop image
+            let retinaScale = Int(UIScreen.main.scale)
+            let retinaSquare = CGSize(width: contentView.frame.size.width * CGFloat(retinaScale),
+                                      height: contentView.frame.size.height * CGFloat(retinaScale))
+
+            let cropToSquare = PHImageRequestOptions()
+            cropToSquare.resizeMode = .exact
+            let cropSideLength = min(imageAsset.pixelWidth, imageAsset.pixelHeight)
+            let square = CGRect(x: 0, y: 0, width: cropSideLength, height: cropSideLength)
+            let cropRect = square.applying(CGAffineTransform(scaleX: CGFloat(1.0 / Float(imageAsset.pixelWidth)), y: CGFloat(1.0 / Float(imageAsset.pixelHeight))))
+            cropToSquare.normalizedCropRect = cropRect
+
+            PHImageManager.default().requestImage(for: imageAsset, targetSize: retinaSquare, contentMode: .aspectFit, options: cropToSquare, resultHandler: { result, info in
+                DispatchQueue.main.async(execute: {
+                    if info?[PHImageErrorKey] != nil {
+                        let error = info?[PHImageErrorKey] as? Error
+                        if let description = error?.localizedDescription {
+                            print("=> Error : \(description)")
+                        }
+                        self.cellImage.image = UIImage(named: "placeholder")
+                    } else {
+                        self.cellImage.image = result
+                    }
+                    self.cellImage.layer.cornerRadius = 10 - 3
+                })
+            })
+            
+            // Video icon
+            playImage.isHidden = imageAsset.mediaType == .video ? false : true
         }
     }
     

@@ -91,8 +91,13 @@ class UploadManager: NSObject {
     var isFinishing = false
     
     @objc
-    func findNextImageToUpload() {
+    func findNextImageToUpload(endPrepare: Bool, endUpload: Bool, endFinish: Bool) {
         print("•••>> findNextImageToUpload…")
+        
+        // Update flags
+        if endPrepare { isPreparing = false}
+        if endUpload  { isUploading = false }
+        if endFinish  { isFinishing = false }
         
         // Check network access
         if !AFNetworkReachabilityManager.shared().isReachable {
@@ -115,7 +120,7 @@ class UploadManager: NSObject {
                 author: upload.author, privacyLevel: upload.privacy,
                 imageTitle: upload.imageName, comment: upload.comment, tags: upload.tags, imageId: Int(upload.imageId))
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
-                self.findNextImageToUpload()
+                self.findNextImageToUpload(endPrepare: false, endUpload: false, endFinish: false)
                 return
             })
         }
@@ -129,7 +134,7 @@ class UploadManager: NSObject {
                 author: upload.author, privacyLevel: upload.privacy,
                 imageTitle: upload.imageName, comment: upload.comment, tags: upload.tags, imageId: Int(upload.imageId))
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
-                self.findNextImageToUpload()
+                self.findNextImageToUpload(endPrepare: false, endUpload: false, endFinish: false)
                 return
             })
         }
@@ -143,7 +148,7 @@ class UploadManager: NSObject {
                 author: upload.author, privacyLevel: upload.privacy,
                 imageTitle: upload.imageName, comment: upload.comment, tags: upload.tags, imageId: Int(upload.imageId))
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
-                self.findNextImageToUpload()
+                self.findNextImageToUpload(endPrepare: false, endUpload: false, endFinish: false)
                 return
             })
         }
@@ -219,11 +224,11 @@ class UploadManager: NSObject {
         // Retrieve image asset
         guard let originalAsset = PHAsset.fetchAssets(withLocalIdentifiers: [nextUpload.localIdentifier], options: nil).firstObject else {
             // Asset not available… deleted?
-            uploadProperties.requestState = .preparingError
+            uploadProperties.requestState = .preparingFail
             uploadProperties.requestError = UploadError.missingAsset.errorDescription
             self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                 // Consider next image
-                self.findNextImageToUpload()
+                self.findNextImageToUpload(endPrepare: true, endUpload: false, endFinish: false)
             })
             return
         }
@@ -253,8 +258,7 @@ class UploadManager: NSObject {
                                 uploadProperties.requestError = error.localizedDescription
                                 self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                                     // Consider next image
-                                    self.isPreparing = false
-                                    self.findNextImageToUpload()
+                                    self.findNextImageToUpload(endPrepare: true, endUpload: false, endFinish: false)
                                 })
                                 return
                             }
@@ -265,8 +269,7 @@ class UploadManager: NSObject {
                             uploadProperties.mimeType = updatedUpload.mimeType
                             self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                                 // Upload ready for transfer
-                                self.isPreparing = false
-                                self.findNextImageToUpload()
+                                self.findNextImageToUpload(endPrepare: true, endUpload: false, endFinish: false)
                             })
                         }
                     }
@@ -293,8 +296,7 @@ class UploadManager: NSObject {
                                     uploadProperties.requestError = error.localizedDescription
                                     self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                                         // Consider next image
-                                        self.isPreparing = false
-                                        self.findNextImageToUpload()
+                                        self.findNextImageToUpload(endPrepare: true, endUpload: false, endFinish: false)
                                     })
                                     return
                                 }
@@ -305,8 +307,7 @@ class UploadManager: NSObject {
                                 uploadProperties.mimeType = updatedUpload.mimeType
                                 self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                                     // Upload ready for transfer
-                                    self.isPreparing = false
-                                    self.findNextImageToUpload()
+                                    self.findNextImageToUpload(endPrepare: true, endUpload: false, endFinish: false)
                                 })
                             }
                         }
@@ -318,8 +319,7 @@ class UploadManager: NSObject {
             uploadProperties.requestState = .formatError
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                 // Investigate next upload request
-                self.isPreparing = false
-                self.findNextImageToUpload()
+                self.findNextImageToUpload(endPrepare: true, endUpload: false, endFinish: false)
             })
 //            showError(withTitle: NSLocalizedString("imageUploadError_title", comment: "Image Upload Error"), andMessage: NSLocalizedString("imageUploadError_format", comment: "Sorry, image files with extensions .\(fileExt.uppercased()) and .jpg are not accepted by the Piwigo server."), forRetrying: false, withImage: nextImageToBeUploaded)
 
@@ -342,8 +342,7 @@ class UploadManager: NSObject {
                                 uploadProperties.requestError = error.localizedDescription
                                 self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                                     // Consider next image
-                                    self.isPreparing = false
-                                    self.findNextImageToUpload()
+                                    self.findNextImageToUpload(endPrepare: true, endUpload: false, endFinish: false)
                                 })
                                 return
                             }
@@ -354,8 +353,7 @@ class UploadManager: NSObject {
                             uploadProperties.mimeType = updatedUpload.mimeType
                             self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                                 // Upload ready for transfer
-                                self.isPreparing = false
-                                self.findNextImageToUpload()
+                                self.findNextImageToUpload(endPrepare: true, endUpload: false, endFinish: false)
                             })
                         }
                     }
@@ -383,8 +381,7 @@ class UploadManager: NSObject {
                                     uploadProperties.requestError = error.localizedDescription
                                     self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                                         // Consider next image
-                                        self.isPreparing = false
-                                        self.findNextImageToUpload()
+                                        self.findNextImageToUpload(endPrepare: true, endUpload: false, endFinish: false)
                                     })
                                     return
                                 }
@@ -395,8 +392,7 @@ class UploadManager: NSObject {
                                 uploadProperties.mimeType = updatedUpload.mimeType
                                 self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                                     // Upload ready for transfer
-                                    self.isPreparing = false
-                                    self.findNextImageToUpload()
+                                    self.findNextImageToUpload(endPrepare: true, endUpload: false, endFinish: false)
                                 })
                             }
                         }
@@ -408,8 +404,7 @@ class UploadManager: NSObject {
             uploadProperties.requestState = .formatError
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                 // Investigate next upload request
-                self.isPreparing = false
-                self.findNextImageToUpload()
+                self.findNextImageToUpload(endPrepare: true, endUpload: false, endFinish: false)
             })
 //                showError(withTitle: NSLocalizedString("videoUploadError_title", comment: "Video Upload Error"), andMessage: NSLocalizedString("videoUploadError_format", comment: "Sorry, video files with extension .\(fileExt.uppercased()) are not accepted by the Piwigo server."), forRetrying: false, withImage: uploadToPrepare)
 
@@ -418,8 +413,7 @@ class UploadManager: NSObject {
             uploadProperties.requestState = .formatError
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                 // Investigate next upload request
-                self.isPreparing = false
-                self.findNextImageToUpload()
+                self.findNextImageToUpload(endPrepare: true, endUpload: false, endFinish: false)
             })
 //            showError(withTitle: NSLocalizedString("audioUploadError_title", comment: "Audio Upload Error"), andMessage: NSLocalizedString("audioUploadError_format", comment: "Sorry, audio files are not supported by Piwigo Mobile yet."), forRetrying: false, withImage: uploadToPrepare)
 
@@ -430,8 +424,7 @@ class UploadManager: NSObject {
             uploadProperties.requestState = .formatError
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                 // Investigate next upload request
-                self.isPreparing = false
-                self.findNextImageToUpload()
+                self.findNextImageToUpload(endPrepare: true, endUpload: false, endFinish: false)
             })
         }
     }
@@ -474,8 +467,7 @@ class UploadManager: NSObject {
                         uploadProperties.requestError = UploadError.networkUnavailable.errorDescription
                         self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                             // The Piwigo server did not reply something understandable
-                            self.isUploading = false
-                            self.findNextImageToUpload()
+                            self.findNextImageToUpload(endPrepare: false, endUpload: true, endFinish: false)
                         })
                         return
                     }
@@ -491,8 +483,7 @@ class UploadManager: NSObject {
                             uploadProperties.requestError = String(format: "Error %ld: %@", uploadJSON.errorCode, uploadJSON.errorMessage)
                             self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                                 // The Piwigo server returned an error
-                                self.isUploading = false
-                                self.findNextImageToUpload()
+                                self.findNextImageToUpload(endPrepare: false, endUpload: true, endFinish: false)
                             })
                             return
                         }
@@ -502,8 +493,7 @@ class UploadManager: NSObject {
                         uploadProperties.imageId = uploadJSON.imagesUpload.image_id!
                         self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                             // Upload ready for finishing
-                            self.isUploading = false
-                            self.findNextImageToUpload()
+                            self.findNextImageToUpload(endPrepare: false, endUpload: true, endFinish: false)
                         })
                     } catch {
                         // Data cannot be digested, image still ready for upload
@@ -511,8 +501,7 @@ class UploadManager: NSObject {
                         uploadProperties.requestError = UploadError.wrongDataFormat.errorDescription
                         self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                             // Upload ready for finishing
-                            self.isUploading = false
-                            self.findNextImageToUpload()
+                            self.findNextImageToUpload(endPrepare: false, endUpload: true, endFinish: false)
                         })
                     }
                 },
@@ -529,8 +518,7 @@ class UploadManager: NSObject {
                         uploadProperties.requestState = .uploadingError
                         uploadProperties.requestError = error.localizedDescription
                         self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
-                            self.isUploading = false
-                            self.findNextImageToUpload()
+                            self.findNextImageToUpload(endPrepare: false, endUpload: true, endFinish: false)
                         })
                     }
                 })
@@ -591,8 +579,7 @@ class UploadManager: NSObject {
                         uploadProperties.requestError = UploadError.networkUnavailable.errorDescription
                         self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                             // Upload ready for finishing
-                            self.isFinishing = false
-                            self.findNextImageToUpload()
+                            self.findNextImageToUpload(endPrepare: false, endUpload: false, endFinish: true)
                         })
                         return
                     }
@@ -609,8 +596,7 @@ class UploadManager: NSObject {
                             uploadProperties.requestError = String(format: "Error %ld: %@", uploadJSON.errorCode, uploadJSON.errorMessage)
                             self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                                 // Upload still ready for finishing
-                                self.isFinishing = false
-                                self.findNextImageToUpload()
+                                self.findNextImageToUpload(endPrepare: false, endUpload: false, endFinish: true)
                             })
                             return
                         }
@@ -642,8 +628,7 @@ class UploadManager: NSObject {
                             }
                             
                             // Any other image in upload queue?
-                            self.isFinishing = false
-                            self.findNextImageToUpload()
+                            self.findNextImageToUpload(endPrepare: false, endUpload: false, endFinish: true)
                         })
                     } catch {
                         // Data cannot be digested, upload still ready for finish
@@ -651,8 +636,7 @@ class UploadManager: NSObject {
                         uploadProperties.requestError = UploadError.wrongDataFormat.errorDescription
                         self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                             // Upload ready for finishing
-                            self.isFinishing = false
-                            self.findNextImageToUpload()
+                            self.findNextImageToUpload(endPrepare: false, endUpload: false, endFinish: true)
                         })
                     }
                 },
@@ -670,8 +654,7 @@ class UploadManager: NSObject {
                         uploadProperties.requestError = error.localizedDescription
                         self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                             // Upload ready for finishing
-                            self.isFinishing = false
-                            self.findNextImageToUpload()
+                            self.findNextImageToUpload(endPrepare: false, endUpload: false, endFinish: true)
                         })
                     }
                 })
@@ -817,7 +800,7 @@ class UploadManager: NSObject {
                 return;
             }
             // Launch uploads
-            self.findNextImageToUpload()
+            self.findNextImageToUpload(endPrepare: false, endUpload: false, endFinish: false)
             completionHandler(nil)
         }
     }

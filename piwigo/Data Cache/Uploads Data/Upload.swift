@@ -92,6 +92,10 @@ extension Upload {
             
         case kPiwigoUploadState.preparing.rawValue:
             return .preparing
+        case kPiwigoUploadState.preparingError.rawValue:
+            return .preparingError
+        case kPiwigoUploadState.preparingFail.rawValue:
+            return .preparingFail
         case kPiwigoUploadState.formatError.rawValue:
             return .formatError
         case kPiwigoUploadState.prepared.rawValue:
@@ -165,6 +169,7 @@ enum kPiwigoUploadState : Int16 {
     
     case preparing
     case preparingError
+    case preparingFail
     case formatError
     case prepared
 
@@ -185,7 +190,7 @@ extension kPiwigoUploadState {
 
         case .preparing:
             return NSLocalizedString("imageUploadTableCell_preparing", comment: "Preparing...")
-        case .preparingError:
+        case .preparingError, .preparingFail:
             return NSLocalizedString("imageUploadTableCell_preparing", comment: "Preparing...") + " " +
                    NSLocalizedString("errorHUD_label", comment: "Error")
         case .prepared:

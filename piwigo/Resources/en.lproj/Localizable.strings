@@ -456,8 +456,10 @@
 "imageUploadTableCell_uploaded" = "Uploaded";
 "imageUploadTableCell_finishing" = "Finishing...";
 
-"imageUploadClearSingle" = "Clear Completed Upload";
-"imageUploadClearSeveral" = "Clear %@ Completed Uploads";
+"imageUploadClearFailedSingle" = "Clear 1 Failed";
+"imageUploadClearFailedSeveral" = "Clear %@ Failed";
+"imageUploadClearCompletedSingle" = "Clear 1 Completed";
+"imageUploadClearCompletedSeveral" = "Clear %@ Completed";
 "imageUploadResumeSingle" = "Resume Failed Upload";
 "imageUploadResumeSeveral" = "Resume %@ Failed Uploads";
 

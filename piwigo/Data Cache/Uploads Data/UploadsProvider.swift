@@ -280,7 +280,7 @@ class UploadsProvider: NSObject {
             // Create a fetch request for the Upload entity sorted by localIdentifier
             let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: "localIdentifier", ascending: true)]
-            fetchRequest.predicate = NSPredicate(format: "requestState == %d", kPiwigoUploadState.finished.rawValue)
+            fetchRequest.predicate = NSPredicate(format: "requestState == %d || requestState == %d", kPiwigoUploadState.finished.rawValue, kPiwigoUploadState.preparingFail.rawValue)
 
             // Create a fetched results controller and set its fetch request, context, and delegate.
             let controller = NSFetchedResultsController(fetchRequest: fetchRequest,

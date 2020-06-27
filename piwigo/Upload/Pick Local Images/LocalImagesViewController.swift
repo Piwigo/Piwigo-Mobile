@@ -547,7 +547,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 // Show an alert if there was an error.
                 guard let error = error else {
                     // Launch upload tasks
-                    UploadManager.sharedInstance()?.findNextImageToUpload()
+                    UploadManager.sharedInstance()?.findNextImageToUpload(endPrepare: false, endUpload: false, endFinish: false)
                     return
                 }
                 let alert = UIAlertController(title: NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object."),
@@ -878,7 +878,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             // Use indexed data
             if let state = indexedUploadsInQueue[index]?.1 {
                 switch state {
-                case .waiting, .preparing, .preparingError, .prepared, .formatError:
+                case .waiting, .preparing, .preparingError, .preparingFail, .prepared, .formatError:
                     cell.cellWaiting = true
                 case .uploading, .uploadingError, .uploaded, .finishing, .finishingError:
                     cell.cellUploading = true
@@ -892,7 +892,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             // Use non-indexed data
             if let upload = uploadsInQueue.first(where: { $0?.0 == imageAsset.localIdentifier }) {
                 switch upload?.1 {
-                case .waiting, .preparing, .preparingError, .prepared, .formatError:
+                case .waiting, .preparing, .preparingError, .preparingFail, .prepared, .formatError:
                     cell.cellWaiting = true
                 case .uploading, .uploadingError, .uploaded, .finishing, .finishingError:
                     cell.cellUploading = true
@@ -1308,7 +1308,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
                 if let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell {
                     cell.selectedImage.isHidden = true
                     switch upload.state {
-                    case .waiting, .preparing, .preparingError, .prepared, .formatError:
+                    case .waiting, .preparing, .preparingError, .preparingFail, .prepared, .formatError:
                         cell.cellWaiting = true
                     case .uploading, .uploadingError, .uploaded, .finishing, .finishingError:
                         cell.cellUploading = true
