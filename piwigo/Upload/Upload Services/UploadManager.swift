@@ -94,6 +94,11 @@ class UploadManager: NSObject {
     func findNextImageToUpload() {
         print("•••>> findNextImageToUpload…")
         
+        // Check network access
+        if !AFNetworkReachabilityManager.shared().isReachable {
+            return
+        }
+
         // Get uploads in queue
         guard let allUploads = uploadsProvider.uploadRequestsToComplete() else {
             return
