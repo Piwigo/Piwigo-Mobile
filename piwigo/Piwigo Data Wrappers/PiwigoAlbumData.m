@@ -283,38 +283,16 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 	
     // Append new images
     NSInteger count = 0;
-    if (self.imageList.count == 0) {
-        // No need to check the presence of duplicates
-        for(PiwigoImageData *imageData in images)
-        {
-            // API pwg.categories.getList returns:
-            //      id, categories, name, comment, hit
-            //      file, date_creation, date_available, width, height
-            //      element_url, derivatives, (page_url)
-            //
-            [newImageList addObject:imageData];
-            [self.imageIds setValue:@(0) forKey:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]];
-            count++;
-        }
-    } else {
-        // Check presence of duplicates
-        for(PiwigoImageData *imageData in images)
-        {
-            // API pwg.categories.getList returns:
-            //      id, categories, name, comment, hit
-            //      file, date_creation, date_available, width, height
-            //      element_url, derivatives, (page_url)
-            //
-            NSInteger index = [self.imageList indexOfObjectPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger idx, BOOL * stop) {
-                return obj.imageId == imageData.imageId;
-            }];
-            if (index == NSNotFound) {
-                [newImageList addObject:imageData];
-                [self.imageIds setValue:@(0) forKey:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]];
-                count++;
-            }
-            NSLog(@"addImages: Checked presence of duplicates: %ld / %ld", images.count, count);
-        }
+    for(PiwigoImageData *imageData in images)
+    {
+        // API pwg.categories.getList returns:
+        //      id, categories, name, comment, hit
+        //      file, date_creation, date_available, width, height
+        //      element_url, derivatives, (page_url)
+        //
+        [newImageList addObject:imageData];
+        [self.imageIds setValue:@(0) forKey:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]];
+        count++;
     }
     
     // Store updated list
