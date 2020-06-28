@@ -117,7 +117,7 @@ class UploadManager: NSObject {
                 requestDate: upload.requestDate, requestState: .preparingError,
                 requestDelete: upload.requestDelete, requestError: UploadError.networkUnavailable.errorDescription,
                 creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
-                author: upload.author, privacyLevel: upload.privacy,
+                isVideo: upload.isVideo, author: upload.author, privacyLevel: upload.privacy,
                 imageTitle: upload.imageName, comment: upload.comment, tags: upload.tags, imageId: Int(upload.imageId))
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                 self.findNextImageToUpload(endPrepare: false, endUpload: false, endFinish: false)
@@ -131,7 +131,7 @@ class UploadManager: NSObject {
                 requestDate: upload.requestDate, requestState: .uploadingError,
                 requestDelete: upload.requestDelete, requestError: UploadError.networkUnavailable.errorDescription,
                 creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
-                author: upload.author, privacyLevel: upload.privacy,
+                isVideo: upload.isVideo, author: upload.author, privacyLevel: upload.privacy,
                 imageTitle: upload.imageName, comment: upload.comment, tags: upload.tags, imageId: Int(upload.imageId))
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                 self.findNextImageToUpload(endPrepare: false, endUpload: false, endFinish: false)
@@ -145,7 +145,7 @@ class UploadManager: NSObject {
                 requestDate: upload.requestDate, requestState: .finishingError,
                 requestDelete: upload.requestDelete, requestError: UploadError.networkUnavailable.errorDescription,
                 creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
-                author: upload.author, privacyLevel: upload.privacy,
+                isVideo: upload.isVideo, author: upload.author, privacyLevel: upload.privacy,
                 imageTitle: upload.imageName, comment: upload.comment, tags: upload.tags, imageId: Int(upload.imageId))
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                 self.findNextImageToUpload(endPrepare: false, endUpload: false, endFinish: false)
@@ -216,7 +216,8 @@ class UploadManager: NSObject {
             category: Int(nextUpload.category),
             requestDate: nextUpload.requestDate, requestState: nextUpload.state,
             requestDelete: nextUpload.requestDelete, requestError: nextUpload.requestError,
-            creationDate: nextUpload.creationDate, fileName: nextUpload.fileName, mimeType: nextUpload.mimeType,
+            creationDate: nextUpload.creationDate, fileName: nextUpload.fileName,
+            mimeType: nextUpload.mimeType, isVideo: nextUpload.isVideo,
             author: nextUpload.author, privacyLevel: nextUpload.privacy,
             imageTitle: nextUpload.imageName, comment: nextUpload.comment,
             tags: nextUpload.tags, imageId: NSNotFound)
@@ -243,6 +244,7 @@ class UploadManager: NSObject {
         // Launch preparation job if file format accepted by Piwigo server
         switch originalAsset.mediaType {
         case .image:
+            uploadProperties.isVideo = false
             // Chek that the image format is accepted by the Piwigo server
             if Model.sharedInstance().uploadFileTypes.contains(fileExt) {
                 // Image file format accepted by the Piwigo server
@@ -327,6 +329,7 @@ class UploadManager: NSObject {
 //            showError(withTitle: NSLocalizedString("imageUploadError_title", comment: "Image Upload Error"), andMessage: NSLocalizedString("imageUploadError_format", comment: "Sorry, image files with extensions .\(fileExt.uppercased()) and .jpg are not accepted by the Piwigo server."), forRetrying: false, withImage: nextImageToBeUploaded)
 
         case .video:
+            uploadProperties.isVideo = true
             // Chek that the video format is accepted by the Piwigo server
             if Model.sharedInstance().uploadFileTypes.contains(fileExt) {
                 // Video file format accepted by the Piwigo server
@@ -440,7 +443,8 @@ class UploadManager: NSObject {
             category: Int(nextUpload.category),
             requestDate: nextUpload.requestDate, requestState: nextUpload.state,
             requestDelete: nextUpload.requestDelete, requestError: nextUpload.requestError,
-            creationDate: nextUpload.creationDate, fileName: nextUpload.fileName, mimeType: nextUpload.mimeType,
+            creationDate: nextUpload.creationDate, fileName: nextUpload.fileName,
+            mimeType: nextUpload.mimeType, isVideo: nextUpload.isVideo,
             author: nextUpload.author, privacyLevel: nextUpload.privacy,
             imageTitle: nextUpload.imageName, comment: nextUpload.comment,
             tags: nextUpload.tags, imageId: Int(nextUpload.imageId))
@@ -502,6 +506,7 @@ class UploadManager: NSObject {
                         imageData.imageTitle = uploadProperties.imageTitle
                         imageData.categoryIds = [uploadProperties.category]
                         imageData.fileName = uploadProperties.fileName
+                        imageData.isVideo = uploadProperties.isVideo
                         imageData.dateCreated = uploadProperties.creationDate
                         imageData.author = uploadProperties.author
                         imageData.privacyLevel = uploadProperties.privacyLevel ?? kPiwigoPrivacy(rawValue: 0)
@@ -561,7 +566,8 @@ class UploadManager: NSObject {
             category: Int(nextUpload.category),
             requestDate: nextUpload.requestDate, requestState: nextUpload.state,
             requestDelete: nextUpload.requestDelete, requestError: nextUpload.requestError,
-            creationDate: nextUpload.creationDate, fileName: nextUpload.fileName, mimeType: nextUpload.mimeType,
+            creationDate: nextUpload.creationDate, fileName: nextUpload.fileName,
+            mimeType: nextUpload.mimeType, isVideo: nextUpload.isVideo,
             author: nextUpload.author, privacyLevel: nextUpload.privacy,
             imageTitle: nextUpload.imageName, comment: nextUpload.comment,
             tags: nextUpload.tags, imageId: Int(nextUpload.imageId))
@@ -764,7 +770,8 @@ class UploadManager: NSObject {
                             category: Int(upload.category),
                             requestDate: upload.requestDate, requestState: upload.state,
                             requestDelete: false, requestError: upload.requestError,
-                            creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
+                            creationDate: upload.creationDate, fileName: upload.fileName,
+                            mimeType: upload.mimeType, isVideo: upload.isVideo,
                             author: upload.author, privacyLevel: upload.privacy,
                             imageTitle: upload.imageName, comment: upload.comment, tags: upload.tags, imageId: Int(upload.imageId))
                         uploadsToUpdate.append(uploadProperties)
@@ -792,7 +799,8 @@ class UploadManager: NSObject {
                 category: Int(failedUpload.category),
                 requestDate: failedUpload.requestDate, requestState: failedUpload.state,
                 requestDelete: failedUpload.requestDelete, requestError: "",
-                creationDate: failedUpload.creationDate, fileName: failedUpload.fileName, mimeType: failedUpload.mimeType,
+                creationDate: failedUpload.creationDate, fileName: failedUpload.fileName,
+                mimeType: failedUpload.mimeType, isVideo: failedUpload.isVideo,
                 author: failedUpload.author, privacyLevel: failedUpload.privacy,
                 imageTitle: failedUpload.imageName, comment: failedUpload.comment,
                 tags: failedUpload.tags, imageId: Int(failedUpload.imageId))

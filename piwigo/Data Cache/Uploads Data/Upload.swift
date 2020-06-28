@@ -31,6 +31,7 @@ class Upload: NSManagedObject {
     @NSManaged var creationDate: Date?
     @NSManaged var fileName: String?
     @NSManaged var mimeType: String?
+    @NSManaged var isVideo: Bool
     
     @NSManaged var author: String?
     @NSManaged var privacyLevel: Int16
@@ -69,6 +70,7 @@ class Upload: NSManagedObject {
         creationDate = uploadProperties.creationDate ?? Date.init()
         fileName = uploadProperties.fileName ?? ""
         mimeType = uploadProperties.mimeType ?? ""
+        isVideo = uploadProperties.isVideo
 
         // Photo author name is empty if not provided
         author = uploadProperties.author ?? ""
@@ -229,6 +231,7 @@ struct UploadProperties
     var creationDate: Date?                 // "2012-08-23 09:18:43"
     var fileName: String?                   // "IMG123.JPG"
     var mimeType: String?                   // "image/png"
+    var isVideo: Bool                       // true/false
     
     var author: String?                     // "Author"
     var privacyLevel: kPiwigoPrivacy?       // 0
@@ -244,7 +247,7 @@ extension UploadProperties {
             // Upload request date is now and state is waiting
             requestDate: Date.init(), requestState: .waiting, requestDelete: false, requestError: "",
             // Photo creation date and filename
-            creationDate: Date.init(), fileName: "", mimeType: "",
+            creationDate: Date.init(), fileName: "", mimeType: "", isVideo: false,
             // Photo author name defaults to name entered in Settings
             author: Model.sharedInstance()?.defaultAuthor ?? "",
             // Privacy level defaults to level selected in Settings
