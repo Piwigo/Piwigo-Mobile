@@ -41,7 +41,7 @@ class UploadManager: NSObject {
         return anURL
     }()
     
-    static let decoder = JSONDecoder()
+//    static let decoder = JSONDecoder.init()
 
     
     // MARK: - Core Data
@@ -233,6 +233,9 @@ class UploadManager: NSObject {
             return
         }
 
+        // Retrieve creation date
+        uploadProperties.creationDate = originalAsset.creationDate ?? Date.init()
+        
         // Determine non-empty unique file name and extension from asset
         uploadProperties.fileName = PhotosFetch.sharedInstance().getFileNameFomImageAsset(originalAsset)
         let fileExt = (URL(fileURLWithPath: uploadProperties.fileName!).pathExtension).lowercased()
@@ -474,8 +477,8 @@ class UploadManager: NSObject {
                     // Decode the JSON.
                     do {
                         // Decode the JSON into codable type ImagesUploadJSON.
-//                        let decoder = JSONDecoder()
-                        let uploadJSON = try UploadManager.decoder.decode(ImagesUploadJSON.self, from: data)
+                        _ = JSONDecoder()
+                        let uploadJSON = try JSONDecoder().decode(ImagesUploadJSON.self, from: data)
                         
                         // Piwigo error?
                         if (uploadJSON.errorCode != 0) {
@@ -488,9 +491,31 @@ class UploadManager: NSObject {
                             return
                         }
                         
+                        // Add uploaded image to cache
+                        let imageData = PiwigoImageData.init()
+                        imageData.imageId = uploadJSON.imagesUpload.image_id!
+                        imageData.datePosted = Date.init()
+                        imageData.squarePath = uploadJSON.imagesUpload.square_src
+                        imageData.thumbPath = uploadJSON.imagesUpload.src
+                        imageData.fileSize = NSNotFound // will trigger pwg.images.getInfo
+
+                        imageData.imageTitle = uploadProperties.imageTitle
+                        imageData.categoryIds = [uploadProperties.category]
+                        imageData.fileName = uploadProperties.fileName
+                        imageData.dateCreated = uploadProperties.creationDate
+                        imageData.author = uploadProperties.author
+                        imageData.privacyLevel = uploadProperties.privacyLevel ?? kPiwigoPrivacy(rawValue: 0)
+                        CategoriesData.sharedInstance()?.addImage(imageData)
+                        
+                        // Notifies AlbumImagesViewController to update collection
+                        DispatchQueue.main.async {
+                            NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationCategoryDataUpdated), object: nil, userInfo: nil)
+                        }
+
                         // Update state of upload
                         uploadProperties.requestState = .uploaded
                         uploadProperties.imageId = uploadJSON.imagesUpload.image_id!
+                        uploadProperties.imageTitle = uploadJSON.imagesUpload.name!
                         self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                             // Upload ready for finishing
                             self.findNextImageToUpload(endPrepare: false, endUpload: true, endFinish: false)
@@ -586,9 +611,10 @@ class UploadManager: NSObject {
                     
                     // Decode the JSON.
                     do {
-                        // Decode the JSON into codable type ImagesUploadJSON.
-//                        let decoder = JSONDecoder()
-                        let uploadJSON = try UploadManager.decoder.decode(ImageSetInfoJSON.self, from: data)
+                        // Decode the JSON into codable type ImageSetInfoJSON.
+                        let decoder = JSONDecoder.init()
+                        let uploadJSON = try decoder.decode(ImageSetInfoJSON.self, from: data)
+//                        let uploadJSON = try UploadManager.decoder.decode(ImageSetInfoJSON.self, from: data)
                         
                         // Piwigo error?
                         if (uploadJSON.errorCode != 0) {
@@ -619,13 +645,6 @@ class UploadManager: NSObject {
                         // Update upload record, cache and views
                         self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                             print("•••> complete ;-)")
-
-                            // Increment number of images in category to trigger image load
-                            CategoriesData.sharedInstance()?.getCategoryById(uploadProperties.category)?.incrementImageSizeByOne()
-                            // Notifies AlbumImagesViewController to update the collection
-                            DispatchQueue.main.async {
-                                NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationCategoryDataUpdated), object: nil, userInfo: nil)
-                            }
                             
                             // Any other image in upload queue?
                             self.findNextImageToUpload(endPrepare: false, endUpload: false, endFinish: true)
@@ -691,9 +710,10 @@ class UploadManager: NSObject {
                     // Decode the JSON.
                     do {
                         // Decode the JSON into codable type CommunityUploadCompletedJSON.
-//                        let decoder = JSONDecoder()
-                        let uploadJSON = try UploadManager.decoder.decode(CommunityUploadCompletedJSON.self, from: data)
-                        
+                        let decoder = JSONDecoder.init()
+                        let uploadJSON = try decoder.decode(CommunityUploadCompletedJSON.self, from: data)
+//                        let uploadJSON = try UploadManager.decoder.decode(CommunityUploadCompletedJSON.self, from: data)
+
                         // Piwigo error?
                         if (uploadJSON.errorCode != 0) {
                             // Will retry later

@@ -20,7 +20,7 @@ class UploadTransfer {
      */
     func startUpload(with upload: UploadProperties,
                      onProgress: @escaping (_ progress: Progress?, _ currentChunk: Int, _ totalChunks: Int) -> Void,
-                     onCompletion completion: @escaping (_ task: URLSessionTask?, _ response: [AnyHashable : Any]?, _ imageParameters: [String : String]) -> Void,
+                     onCompletion completion: @escaping (_ task: URLSessionTask?, _ response: Any?, _ imageParameters: [String : String]) -> Void,
                      onFailure fail: @escaping (_ task: URLSessionTask?, _ error: NSError?) -> Void) {
         
         // Calculate chunk size
@@ -102,7 +102,7 @@ class UploadTransfer {
     func sendChunk(_ imageData: Data?, withInformation imageParameters: [String : String],
                          forOffset offset: Int, onChunk count: Int, forTotalChunks chunks: Int,
                          onProgress: @escaping (_ progress: Progress?, _ currentChunk: Int, _ totalChunks: Int) -> Void,
-                         onCompletion completion: @escaping (_ task: URLSessionTask?, _ response: [AnyHashable : Any]?, _ imageParameters: [String : String]) -> Void,
+                         onCompletion completion: @escaping (_ task: URLSessionTask?, _ response: Any?, _ imageParameters: [String : String]) -> Void,
                          onFailure fail: @escaping (_ task: URLSessionTask?, _ error: NSError?) -> Void) {
         
         var imageParameters = imageParameters
@@ -132,7 +132,7 @@ class UploadTransfer {
                 // Continue?
                 if count >= chunks - 1 {
                     // Done, return
-                    completion(task, responseObject as! [AnyHashable : Any]?, imageParameters)
+                    completion(task, responseObject, imageParameters)
                 } else {
                     // Keep going!
                     self.sendChunk(imageData, withInformation: imageParameters,
@@ -154,11 +154,11 @@ class UploadTransfer {
 
  {"stat":"ok",
   "result":{"image_id":1052,
-            "square_src":"https://...-sq.jpg",
-            "name":"Delft - 04",
-            "src":"https://...-th.jpg",
-            "category":{"id":140,"nb_photos":"7","label":"Essai"}
-            }
+         "square_src":"https://...-sq.jpg",
+         "name":"Delft - 04",
+         "src":"https://...-th.jpg",
+         "category":{"id":140,"nb_photos":"7","label":"Essai"}
+         }
   }
 */
 struct ImagesUploadJSON: Decodable {

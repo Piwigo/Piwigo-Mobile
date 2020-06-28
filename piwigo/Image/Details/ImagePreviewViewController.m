@@ -93,11 +93,15 @@
     if (previewStr == nil) {
         // Image URL unknown => default to medium image size
         previewStr = [imageData getURLFromImageSizeType:kPiwigoImageSizeMedium];
+        // After an upload, the server only returns the Square and Thumbnail sizes
+        if (previewStr == nil) {
+            previewStr = [imageData getURLFromImageSizeType:kPiwigoImageSizeThumb];
+        }
     }
     NSURL *previewURL = [NSURL URLWithString:previewStr];
     __weak typeof(self) weakSelf = self;
     
-//    NSLog(@"==> Start loading %@", previewURL.path);
+    NSLog(@"==> Start loading %@", previewURL.path);
     self.downloadTask = [[Model sharedInstance].imagesSessionManager GET:previewURL.absoluteString
                                                               parameters:nil
                 progress:^(NSProgress *progress) {

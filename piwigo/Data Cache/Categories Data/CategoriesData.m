@@ -344,6 +344,16 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 	return nil;
 }
 
+-(void)addImage:(PiwigoImageData*)image
+{
+    for(NSString *category in image.categoryIds)
+    {
+        PiwigoAlbumData *imageCategory = [self getCategoryById:[category integerValue]];
+        [imageCategory addUploadedImageWithSort:image];
+        [imageCategory incrementImageSizeByOne];
+    }
+}
+
 -(void)removeImage:(PiwigoImageData*)image
 {
 	for(NSString *category in image.categoryIds)

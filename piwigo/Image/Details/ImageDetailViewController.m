@@ -116,7 +116,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
         
         // Retrieve complete image data if needed (buttons are greyed until job done)
         if (self.imageData.fileSize == NSNotFound) {
-            [self retrieveCompleteImageDataOfImageId:self.imageData.imageId];
+            [self retrieveCompleteImageDataOfImage:self.imageData];
         }
         
         // For managing taps
@@ -329,32 +329,45 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
 
 #pragma mark - Retrieve Image Data
 
--(void)retrieveCompleteImageDataOfImageId:(NSInteger)imageId
+-(void)retrieveCompleteImageDataOfImage:(PiwigoImageData *)imageData
 {
-//    NSLog(@"=> Retrieve complete image data for image #%ld", imageId);
+    NSLog(@"=> Retrieve complete image data for image #%ld", imageData.imageId);
 
-    // Image data are not complete when retrieved using pwg.categories.getImages
+    // Image data is not complete when retrieved using pwg.categories.getImages
     [self setEnableStateOfButtons:NO];
+    
+    // Image data is not complete after an upload with pwg.images.upload
+    BOOL shouldUpdateImage = [imageData getURLFromImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultImagePreviewSize] == nil;
 
     // Required by Copy, Delete, Move actions (may also be used to show albums image belongs to)
-    [ImageService getImageInfoById:imageId
+    [ImageService getImageInfoById:imageData.imageId
                       OnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageDataComplete) {
               if (imageDataComplete != nil) {
 
                   // Update list of images
                   self.imageData = imageDataComplete;
-                  NSInteger index = 0;
-                  for(PiwigoImageData *image in self.images)
-                  {
-                      if(image.imageId == imageDataComplete.imageId) {
-                          break;
-                      }
-                      index++;
-                  }
+                  NSInteger index = [self.images indexOfObjectPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                      return obj.imageId == imageDataComplete.imageId;
+                  }];
                   [self.images replaceObjectAtIndex:index withObject:imageDataComplete];
 
                   // Enable actions
                   [self setEnableStateOfButtons:YES];
+                  
+                  // Retrieve complete image data if needed
+                  if (shouldUpdateImage) {
+                      NSArray *viewControllers = self.childViewControllers;
+                      for (UIViewController *childVC in viewControllers)
+                      {
+                          if ([childVC isKindOfClass:[ImagePreviewViewController class]]) {
+                              // Right class ;-)
+                              ImagePreviewViewController *previewVC = (ImagePreviewViewController *)childVC;
+                              if (previewVC.imageIndex == index) {
+                                  [previewVC setImageScrollViewWithImageData:imageDataComplete];
+                              }
+                          }
+                      }
+                  }
               }
               else {
                   [self couldNotRetrieveImageData];
@@ -383,7 +396,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
         actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
         style:UIAlertActionStyleDefault
         handler:^(UIAlertAction * action) {
-          [self retrieveCompleteImageDataOfImageId:self.imageData.imageId];
+          [self retrieveCompleteImageDataOfImage:self.imageData];
         }];
     
     [alert addAction:dismissAction];
@@ -565,7 +578,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
             if (previewVC.imageIndex < self.images.count) {
                 PiwigoImageData *imageData = [self.images objectAtIndex:previewVC.imageIndex];
                 if (imageData.fileSize == NSNotFound) {
-                    [self retrieveCompleteImageDataOfImageId:imageData.imageId];
+                    [self retrieveCompleteImageDataOfImage:imageData];
                 }
             }
         }
@@ -595,7 +608,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     // Retrieve image data in case user will want to copy, edit, move, etc. the image
 //    PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex];
 //    if (self.imageData.fileSize == NSNotFound) {
-//        [self retrieveCompleteImageDataOfImageId:[imageData.imageId integerValue]];
+//        [self retrieveCompleteImageDataOfImage:imageData];
 //    }
 
     self.imageData = [self.images objectAtIndex:currentIndex];

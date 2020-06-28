@@ -58,6 +58,7 @@ typedef enum {
 								OnCompletion:(void (^)(BOOL completed))completion;
 
 -(NSInteger)addImages:(NSArray*)images;
+-(void)addUploadedImageWithSort:(PiwigoImageData*)imageData;
 -(void)updateImages:(NSArray*)updatedImages;
 -(void)updateImageAfterEdit:(PiwigoImageData *)uploadedImage;
 -(void)removeImages:(NSArray*)images;

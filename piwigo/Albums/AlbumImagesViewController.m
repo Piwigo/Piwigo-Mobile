@@ -32,9 +32,9 @@
 #import "SAMKeychain.h"
 #import "SearchImagesViewController.h"
 
-//#ifndef DEBUG_LIFECYCLE
-//#define DEBUG_LIFECYCLE
-//#endif
+#ifndef DEBUG_LIFECYCLE
+#define DEBUG_LIFECYCLE
+#endif
 
 CGFloat const kRadius = 25.0;
 CGFloat const kDeg2Rad = 3.141592654 / 180.0;
@@ -1284,7 +1284,10 @@ NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploa
 
                 // Refresh collection view if needed
                 NSLog(@"=> categoriesUpdated… %ld now contains %ld images", self.categoryId, self.albumData.images.count);
-                if (oldImageList.count == self.albumData.images.count) { return; }
+                if (oldImageList.count == self.albumData.images.count) {
+                    self.loadingImages = NO;
+                    return;
+                }
 
                 // Insert cells of added images
                 NSMutableArray<NSIndexPath *> *itemsToInsert = [NSMutableArray new];
