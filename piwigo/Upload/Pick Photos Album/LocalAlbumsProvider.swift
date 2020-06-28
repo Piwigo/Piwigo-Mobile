@@ -144,7 +144,8 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         /**
          Cloud Album Types
         */
-        // User’s personal iCloud Photo Stream album
+        // User’s personal My Photo Stream album (since iOS 13, limited to low-resolution)
+        // See https://github.com/Piwigo/Piwigo/issues/1163
         CloudMyPhotoStream = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .albumMyPhotoStream, options: nil)
 
         // iCloud Shared Photo Stream albums.

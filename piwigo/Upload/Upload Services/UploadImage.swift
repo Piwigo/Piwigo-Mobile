@@ -64,9 +64,9 @@ class UploadImage {
         // Case of an image…
         let options = PHImageRequestOptions()
         // Does not block the calling thread until image data is ready or an error occurs
-        options.isSynchronous = false
+        options.isSynchronous = true
         // Requests the most recent version of the image asset
-        options.version = PHImageRequestOptionsVersion.current
+        options.version = .current
         // Requests the highest-quality image available, regardless of how much time it takes to load.
         options.deliveryMode = .highQualityFormat
         // Photos can download the requested video
@@ -117,9 +117,9 @@ class UploadImage {
         // Case of an image…
         let options = PHImageRequestOptions()
         // Does not block the calling thread until image data is ready or an error occurs
-        options.isSynchronous = false
+        options.isSynchronous = true
         // Requests the most recent version of the image asset
-        options.version = PHImageRequestOptionsVersion.current
+        options.version = .current
         // Requests a fast-loading image, possibly sacrificing image quality.
         options.deliveryMode = .fastFormat
         // Photos can download the requested video from iCloud
