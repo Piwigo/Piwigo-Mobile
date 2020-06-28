@@ -344,7 +344,7 @@ class UploadsProvider: NSObject {
             // Retrieve existing completed uploads
             // Create a fetch request for the Upload entity sorted by localIdentifier
             let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "localIdentifier", ascending: true)]
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "requestDate", ascending: true)]
             fetchRequest.predicate = NSPredicate(format: "requestState != %d", kPiwigoUploadState.finished.rawValue)
 
             // Create a fetched results controller and set its fetch request, context, and delegate.
