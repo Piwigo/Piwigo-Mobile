@@ -680,7 +680,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                                           NSLog(@"loadImageChunkForLastChunkCount — Fail: %@", [error description]);
 #endif
                                           if(fail) {
-                                              fail(nil, error);
+                                              fail(task, error);
                                           }
                                       }
                               ];

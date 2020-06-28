@@ -1261,9 +1261,10 @@ NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploa
 #endif
     
     // Quit if already being loading images
-    if (self.loadingImages) {
-        NSLog(@"=> categoriesUpdated… STOP [already being loading images]");
-        return; }
+//    if (self.loadingImages) {
+//        NSLog(@"=> categoriesUpdated… STOP [already being loading images]");
+//        return;
+//    }
     
     // Images ?
     if (self.categoryId != 0) {
