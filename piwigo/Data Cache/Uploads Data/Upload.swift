@@ -148,16 +148,16 @@ extension Upload {
     }
 
     @objc(addTagsObject:)
-    @NSManaged public func addToTags(_ value: Tag)
+    @NSManaged public func addToUploads(_ value: Upload)
 
     @objc(removeTagsObject:)
-    @NSManaged public func removeFromTags(_ value: Tag)
+    @NSManaged public func removeFromUploads(_ value: Upload)
 
     @objc(addTags:)
-    @NSManaged public func addToTags(_ values: NSSet)
+    @NSManaged public func addToUploads(_ values: NSSet)
 
     @objc(removeTags:)
-    @NSManaged public func removeFromTags(_ values: NSSet)
+    @NSManaged public func removeFromUploads(_ values: NSSet)
 }
 
 
