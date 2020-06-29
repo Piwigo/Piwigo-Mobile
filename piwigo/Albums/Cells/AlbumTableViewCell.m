@@ -10,7 +10,6 @@
 #import "AlbumTableViewCell.h"
 #import "CategoriesData.h"
 #import "ImageService.h"
-#import "LEColorPicker.h"
 #import "MBProgressHUD.h"
 #import "Model.h"
 #import "MoveCategoryViewController.h"
