@@ -63,7 +63,7 @@ public enum Model : String {
     iPhone11           = "iPhone 11",
     iPhone11Pro        = "iPhone 11 Pro",
     iPhone11ProMax     = "iPhone 11 Pro Max",
-    iPhoneSE2          = "iPhone SE 2"
+    iPhoneSE2          = "iPhone SE 2",
     //Apple TV
     AppleTV            = "Apple TV",
     AppleTV_4K         = "Apple TV 4K",
