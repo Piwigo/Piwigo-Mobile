@@ -1412,13 +1412,11 @@ NSString * const kGetImageOrderDescending = @"desc";
     }
 
     // Prepare tag ids
-    NSString *tagIdList;
+    NSString *tagIdList= @"";
     if ([[[imageInfo objectForKey:kPiwigoImagesUploadParamTags]
           valueForKey:@"description"] count]) {
         tagIdList = [[[imageInfo objectForKey:kPiwigoImagesUploadParamTags]
                             valueForKey:@"description"] componentsJoinedByString:@","];
-    } else {
-        tagIdList = @"";
     }
 
     return [self post:kPiwigoImageSetInfo
