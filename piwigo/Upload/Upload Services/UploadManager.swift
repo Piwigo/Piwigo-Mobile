@@ -41,7 +41,7 @@ class UploadManager: NSObject {
         return anURL
     }()
     
-//    static let decoder = JSONDecoder.init()
+    private let decoder = JSONDecoder.init()
 
     
     // MARK: - Core Data
@@ -467,7 +467,62 @@ class UploadManager: NSObject {
                 },
                onCompletion: { (task, jsonData, imageParameters) in
 //                    print("•••> completion: \(String(describing: jsonData))")
-                    // Alert the user if no data comes back.
+                // Alert the user if no data comes back.
+//                guard let jsonTypeResponse = jsonData as! [String:Any]?,
+//                    let stat: String = jsonTypeResponse["stat"] as! String? else {
+//                    // Upload to be re-started?
+//                    uploadProperties.requestState = .uploadingError
+//                    uploadProperties.requestError = UploadError.networkUnavailable.errorDescription
+//                    self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+//                        // The Piwigo server did not reply something understandable
+//                        self.findNextImageToUpload(endPrepare: false, endUpload: true, endFinish: false)
+//                    })
+//                    return
+//                }
+//                if stat == "fail"
+//                {
+//                    // Retrieve Piwigo server error
+//                    if let errorCode = jsonTypeResponse["err"] as! Int?,
+//                        let errorMessage = jsonTypeResponse["message"] as! String? {
+//                        uploadProperties.requestState = .uploadingError
+//                        uploadProperties.requestError = String(format: "Error %ld: %@", errorCode, errorMessage)
+//                        self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+//                            // The Piwigo server returned an error
+//                            self.findNextImageToUpload(endPrepare: false, endUpload: true, endFinish: false)
+//                        })
+//                    } else {
+//                        // Unexpected Piwigo server error
+//                        let errorCode = -1
+//                        let errorMessage = "Unexpected error encountered while calling server method with provided parameters."
+//                        uploadProperties.requestState = .uploadingError
+//                        uploadProperties.requestError = String(format: "Error %ld: %@", errorCode, errorMessage)
+//                        self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+//                            // The Piwigo server returned an error
+//                            self.findNextImageToUpload(endPrepare: false, endUpload: true, endFinish: false)
+//                        })
+//                    }
+//                    return
+//                }
+//                if stat != "ok" {
+//                    // Data cannot be digested, image still ready for upload
+//                    uploadProperties.requestState = .uploadingError
+//                    uploadProperties.requestError = UploadError.wrongDataFormat.errorDescription
+//                    self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+//                        // Upload ready for finishing
+//                        self.findNextImageToUpload(endPrepare: false, endUpload: true, endFinish: false)
+//                    })
+//                    return
+//                }
+//
+//                // Decodes response from the data
+//                let imageData = PiwigoImageData.init()
+//                let result: [String:Any] = jsonTypeResponse["result"] as! [String:Any]
+//                imageData.imageId = result["image_id"] as! Int
+//                imageData.squarePath = result["square_src"] as? String
+//                imageData.thumbPath = result["src"] as? String
+                
+                    // The code below crashes at line "let uploadJSON = try self.decoder.decode…"
+                    // when uploading PNG files !!!
                     guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {
                         // Upload to be re-started?
                         uploadProperties.requestState = .uploadingError
@@ -481,9 +536,8 @@ class UploadManager: NSObject {
                     // Decode the JSON.
                     do {
                         // Decode the JSON into codable type ImagesUploadJSON.
-                        _ = JSONDecoder()
-                        let uploadJSON = try JSONDecoder().decode(ImagesUploadJSON.self, from: data)
-                        
+                        let uploadJSON = try self.decoder.decode(ImagesUploadJSON.self, from: data)
+
                         // Piwigo error?
                         if (uploadJSON.errorCode != 0) {
                             uploadProperties.requestState = .uploadingError
@@ -519,8 +573,7 @@ class UploadManager: NSObject {
 
                         // Update state of upload
                         uploadProperties.requestState = .uploaded
-                        uploadProperties.imageId = uploadJSON.imagesUpload.image_id!
-                        uploadProperties.imageTitle = uploadJSON.imagesUpload.name!
+                        uploadProperties.imageId = imageData.imageId
                         self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                             // Upload ready for finishing
                             self.findNextImageToUpload(endPrepare: false, endUpload: true, endFinish: false)
@@ -618,8 +671,7 @@ class UploadManager: NSObject {
                     // Decode the JSON.
                     do {
                         // Decode the JSON into codable type ImageSetInfoJSON.
-                        let decoder = JSONDecoder.init()
-                        let uploadJSON = try decoder.decode(ImageSetInfoJSON.self, from: data)
+                        let uploadJSON = try self.decoder.decode(ImageSetInfoJSON.self, from: data)
 //                        let uploadJSON = try UploadManager.decoder.decode(ImageSetInfoJSON.self, from: data)
                         
                         // Piwigo error?
@@ -716,8 +768,7 @@ class UploadManager: NSObject {
                     // Decode the JSON.
                     do {
                         // Decode the JSON into codable type CommunityUploadCompletedJSON.
-                        let decoder = JSONDecoder.init()
-                        let uploadJSON = try decoder.decode(CommunityUploadCompletedJSON.self, from: data)
+                        let uploadJSON = try self.decoder.decode(CommunityUploadCompletedJSON.self, from: data)
 //                        let uploadJSON = try UploadManager.decoder.decode(CommunityUploadCompletedJSON.self, from: data)
 
                         // Piwigo error?
