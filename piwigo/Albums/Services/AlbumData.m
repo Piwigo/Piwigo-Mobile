@@ -201,7 +201,7 @@
         self.images = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
 		if(completion)
 		{
-            NSLog(@"updateImageSort: we have all image data i.e. %ld", self.images.count);
+            NSLog(@"updateImageSort: we have all image data i.e. %ld", (long)self.images.count);
             completion();
 		}
 		return;

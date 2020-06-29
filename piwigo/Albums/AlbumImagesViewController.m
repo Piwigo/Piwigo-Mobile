@@ -1270,7 +1270,7 @@ NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploa
     if (self.categoryId != 0) {
         // Store current image list
         NSArray *oldImageList = self.albumData.images;
-        NSLog(@"=> categoriesUpdated… %ld contained %ld images", self.categoryId, oldImageList.count);
+        NSLog(@"=> categoriesUpdated… %ld contained %ld images", (long)self.categoryId, (long)oldImageList.count);
 
         // Collect images belonging to the current album
         self.loadingImages = TRUE;
@@ -1284,7 +1284,7 @@ NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploa
                 self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
 
                 // Refresh collection view if needed
-                NSLog(@"=> categoriesUpdated… %ld now contains %ld images", self.categoryId, self.albumData.images.count);
+                NSLog(@"=> categoriesUpdated… %ld now contains %ld images", (long)self.categoryId, (long)self.albumData.images.count);
                 if (oldImageList.count == self.albumData.images.count) {
                     self.loadingImages = NO;
                     return;

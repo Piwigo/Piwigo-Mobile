@@ -159,7 +159,7 @@ struct TagProperties: Codable
     let lastmodified: String?       // "2018-08-23 15:30:43"
     let counter: Int64?             // 8
 
-    // The following data are not stored in cache
+    // The following data is not stored in cache
     let url_name: String?           // "birthday"
     let url: String?                // "https:…"
 }
@@ -174,6 +174,6 @@ struct TagProperties4Admin: Codable
     let name: String?               // "Birthday"
     let lastmodified: String?       // "2018-08-23 15:30:43"
 
-    // The following data are not stored in cache
+    // The following data is not stored in cache
     let url_name: String?           // "birthday"
 }
