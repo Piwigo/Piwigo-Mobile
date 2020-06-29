@@ -57,6 +57,7 @@
 
 // Upload objects
 "CoreDataFetch_UploadCreateFailed" = "Impossible de créer un nouvel objet Upload.";
+"CoreDataFetch_UploadMissingAsset" = "Impossible de récupérer les photos.";
 
 // ===========================================================================
 // ==> LOGIN / LOGOUT
@@ -166,8 +167,15 @@
 "categoryUpload_chooseAlbum" = "Sélectionnez le sous-album recevant les photos";
 "categoryUpload_LocalAlbums" = "Albums Locaux";
 "categoryUpload_chooseLocalAlbum" = "Sélectionnez l'album local qui contient les photos à envoyer";
+"categoryUpload_sharedAlbums" = "Albums partagés";
 "categoryUpload_iCloudAlbums" = "Albums iCloud";
 "categoryUpload_chooseiCloudAlbum" = "Sélectionnez l'album iCloud qui contient les photos à envoyer";
+"categoryUpload_syncedEvents" = "Événements iPhoto";
+"categoryUpload_syncedAlbums" = "Albums iPhoto";
+"categoryUpload_syncedFaces" = "Visages iPhoto";
+"categoryUpload_mediaTypes" = "Types de média";
+"categoryUpload_otherAlbums" = "Autres albums";
+
 "categoyUpload_loadSubCategories" = "télécharge";
 "categoryUpload_images" = "Téléverser des photos";
 "categoryUpload_subAlbum" = "Créer un sous-album";
@@ -278,8 +286,10 @@
 // Image sort
 "sortBy" = "Trier par";
 "imageSortTitle" = "Trier les photos";
-"imageSortingHUD" = "Tri des photos";
 "imageSortMessage" = "Veuillez sélectionner comment vous souhaitez trier les photos";
+"imageSortingHUD" = "Tri des photos";
+"imageSelectingHUD" = "Sélection des photos…";
+"imageDeselectingHUD" = "Désélection des photos…";
 
 // Image options (actions)
 "imageOptions_title" = "Options";
@@ -439,7 +449,20 @@
 
 "imageUploadRemove" = "Suppression des photos téléversées";
 
+"imageUploadTableCell_waiting" = "En attente...";
+"imageUploadTableCell_preparing" = "En cours de préparation...";
+"imageUploadTableCell_prepared" = "Prêt pour le téléversement...";
 "imageUploadTableCell_uploading" = "Téléversement...";
+"imageUploadTableCell_uploaded" = "Téléversement réussi";
+"imageUploadTableCell_finishing" = "Finalisation...";
+
+"imageUploadClearFailedSingle" = "Effacer télévers. échoué";
+"imageUploadClearFailedSeveral" = "Effacer %@ télévers. échoués";
+"imageUploadClearCompletedSingle" = "Effacer le télévers. terminé";
+"imageUploadClearCompletedSeveral" = "Effacer %@ télévers. terminés";
+"imageUploadResumeSingle" = "Reprendre le téléversement";
+"imageUploadResumeSeveral" = "Reprendre %@ téléversements";
+
 "imageUploadProgressBar_zero" = "Téléversement 0/0";
 "imageUploadProgressBar_nonZero" = "Téléversement %@/%@";
 "imageUploadProgressBar_completed" = "Terminé";
@@ -447,13 +470,14 @@
 "imageUploadCompleted_message" = "photo envoyée à votre serveur Piwigo.";
 "imageUploadCompleted_message>1" = "photos envoyées à votre serveur Piwigo.";
 
+
 // Image upload — Errors
 "uploadError_title" = "Echec du Téléversement";
 "uploadError_message" = "Echec du téléversement de votre photo. Erreur : %@";
 "uploadCancelled_title" = "Transfert Annulé";
 
 "imageUploadError_title" = "Echec du téléversement";
-"imageUploadError_format" = "Désolé, les fichiers ayant comme extension .%@ et .jpg ne sont pas acceptés par le serveur Piwigo.";
+"imageUploadError_format" = "Format de fichier non accepté par le serveur Piwigo.";
 "imageUploadError_source" = "impossible de créer le source de la photo";
 "imageUploadError_destination" = "impossible de créer la destination de la photo";
 "imageUploadError_iCloud" = "Echec de la récupération de la photo. Erreur : %@";

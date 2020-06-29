@@ -57,6 +57,7 @@
 
 // Upload objects
 "CoreDataFetch_UploadCreateFailed" = "Failed to create a new Upload object.";
+"CoreDataFetch_UploadMissingAsset" = "Failed to retrieve photo.";
 
 // ===========================================================================
 // ==> LOGIN / LOGOUT
@@ -166,8 +167,15 @@
 "categoryUpload_chooseAlbum" = "Vælg et underalbum til upload af billeder";
 "categoryUpload_LocalAlbums" = "Lokale album";
 "categoryUpload_chooseLocalAlbum" = "Vælg et album at hente biller fra";
+"categoryUpload_sharedAlbums" = "Shared Albums";
 "categoryUpload_iCloudAlbums" = "iCloud album";
 "categoryUpload_chooseiCloudAlbum" = "Vælg et iCloud album at hente biller fra";
+"categoryUpload_syncedEvents" = "iPhoto Events";
+"categoryUpload_syncedAlbums" = "iPhoto Albums";
+"categoryUpload_syncedFaces" = "iPhoto Faces";
+"categoryUpload_mediaTypes" = "Media Types";
+"categoryUpload_otherAlbums" = "Other Albums";
+
 "categoyUpload_loadSubCategories" = "indlæs";
 "categoryUpload_images" = "Upload billeder";
 "categoryUpload_subAlbum" = "Opret underalbum";
@@ -278,8 +286,10 @@
 // Image sort
 "sortBy" = "Sortér efter";
 "imageSortTitle" = "Sorter billeder";
-"imageSortingHUD" = "Sortering af billeder";
 "imageSortMessage" = "Vælg hvordan du ønsker at sortere billeder";
+"imageSortingHUD" = "Sortering af billeder";
+"imageSelectingHUD" = "Selecting Photos…";
+"imageDeselectingHUD" = "Deselecting Photos…";
 
 // Image options (actions)
 "imageOptions_title" = "Billed Valgmuligheder";
@@ -439,7 +449,20 @@
 
 "imageUploadRemove" = "Fjerner uploadede billeder";
 
+"imageUploadTableCell_waiting" = "Waiting...";
+"imageUploadTableCell_preparing" = "Preparing...";
+"imageUploadTableCell_prepared" = "Ready for upload...";
 "imageUploadTableCell_uploading" = "Uploader...";
+"imageUploadTableCell_uploaded" = "Uploaded";
+"imageUploadTableCell_finishing" = "Finishing...";
+
+"imageUploadClearFailedSingle" = "Clear Failed Upload";
+"imageUploadClearFailedSeveral" = "Clear %@ Failed Uploads";
+"imageUploadClearCompletedSingle" = "Clear Completed Upload";
+"imageUploadClearCompletedSeveral" = "Clear %@ Completed Uploads";
+"imageUploadResumeSingle" = "Resume Failed Upload";
+"imageUploadResumeSeveral" = "Resume %@ Failed Uploads";
+
 "imageUploadProgressBar_zero" = "Uploader 0/0";
 "imageUploadProgressBar_nonZero" = "Uploader %@/%@";
 "imageUploadProgressBar_completed" = "Fuldført";
@@ -447,13 +470,14 @@
 "imageUploadCompleted_message" = "billede/video uploadet til Piwigo server.";
 "imageUploadCompleted_message>1" = "billeder/videoer uploadet til Piwigo server.";
 
+
 // Image upload — Errors
 "uploadError_title" = "Fejl under upload";
 "uploadError_message" = "Kunne ikke uploade dit billede. Fejl: %@";
 "uploadCancelled_title" = "Upload annulleret";
 
 "imageUploadError_title" = "Fejl under upload";
-"imageUploadError_format" = "Billedfiler med filnavn .%@ og .jpg accepteres ikke af Piwigo server.";
+"imageUploadError_format" = "File format not accepted by Piwigo server.";
 "imageUploadError_source" = "kan ikke oprette billede kilde";
 "imageUploadError_destination" = "kan ikke oprette billed destination";
 "imageUploadError_iCloud" = "Kunne ikke hente billedet. Fejl: %@";

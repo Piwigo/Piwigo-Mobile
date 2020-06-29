@@ -57,6 +57,7 @@
 
 // Upload objects
 "CoreDataFetch_UploadCreateFailed" = "新しいアップロードオブジェクトの作成に失敗しました。";
+"CoreDataFetch_UploadMissingAsset" = "Failed to retrieve photo.";
 
 // ===========================================================================
 // ==> LOGIN / LOGOUT
@@ -166,8 +167,15 @@
 "categoryUpload_chooseAlbum" = "写真をアップロードするアルバムを選択します";
 "categoryUpload_LocalAlbums" = "ローカルアルバム";
 "categoryUpload_chooseLocalAlbum" = "写真を取得するアルバムを選択します";
+"categoryUpload_sharedAlbums" = "Shared Albums";
 "categoryUpload_iCloudAlbums" = "iCloudのアルバム";
 "categoryUpload_chooseiCloudAlbum" = "写真を取得するiCloud アルバムを選択します";
+"categoryUpload_syncedEvents" = "iPhoto Events";
+"categoryUpload_syncedAlbums" = "iPhoto Albums";
+"categoryUpload_syncedFaces" = "iPhoto Faces";
+"categoryUpload_mediaTypes" = "Media Types";
+"categoryUpload_otherAlbums" = "Other Albums";
+
 "categoyUpload_loadSubCategories" = "読み込む";
 "categoryUpload_images" = "写真をアップロードする";
 "categoryUpload_subAlbum" = "サブアルバムを作成します";
@@ -278,8 +286,10 @@
 // Image sort
 "sortBy" = "並び順";
 "imageSortTitle" = "写真を並べ換える";
-"imageSortingHUD" = "写真を並べ換える";
 "imageSortMessage" = "写真の並び順を選択してください";
+"imageSortingHUD" = "写真を並べ換える";
+"imageSelectingHUD" = "Selecting Photos…";
+"imageDeselectingHUD" = "Deselecting Photos…";
 
 // Image options (actions)
 "imageOptions_title" = "写真オプション";
@@ -439,7 +449,20 @@
 
 "imageUploadRemove" = "アップロードした写真を削除する";
 
+"imageUploadTableCell_waiting" = "Waiting...";
+"imageUploadTableCell_preparing" = "Preparing...";
+"imageUploadTableCell_prepared" = "Ready for upload...";
 "imageUploadTableCell_uploading" = "アップロード中...";
+"imageUploadTableCell_uploaded" = "Uploaded";
+"imageUploadTableCell_finishing" = "Finishing...";
+
+"imageUploadClearFailedSingle" = "Clear Failed Upload";
+"imageUploadClearFailedSeveral" = "Clear %@ Failed Uploads";
+"imageUploadClearCompletedSingle" = "Clear Completed Upload";
+"imageUploadClearCompletedSeveral" = "Clear %@ Completed Uploads";
+"imageUploadResumeSingle" = "Resume Failed Upload";
+"imageUploadResumeSeveral" = "Resume %@ Failed Uploads";
+
 "imageUploadProgressBar_zero" = "アップロード中 0/0";
 "imageUploadProgressBar_nonZero" = "アップロード中 %@/%@";
 "imageUploadProgressBar_completed" = "完了しました";
@@ -447,13 +470,14 @@
 "imageUploadCompleted_message" = "写真／動画が、Piwigoサーバにアップロードされました。";
 "imageUploadCompleted_message>1" = "写真／動画が、Piwigoサーバにアップロードされました。";
 
+
 // Image upload — Errors
 "uploadError_title" = "アップロードエラー";
 "uploadError_message" = "写真をアップロードできませんでした。エラー: %@";
 "uploadCancelled_title" = "アップロードが取り消されました";
 
 "imageUploadError_title" = "写真アップロードエラー";
-"imageUploadError_format" = "申し訳ありませんが、このPiwigoサーバでは拡張子 %@ と .jpg の画像ファイルを受け付けていません。";
+"imageUploadError_format" = "File format not accepted by Piwigo server.";
 "imageUploadError_source" = "元写真を作成できません";
 "imageUploadError_destination" = "写真の保存先を作成できません";
 "imageUploadError_iCloud" = "写真を取得できませんでした。エラー：%@";

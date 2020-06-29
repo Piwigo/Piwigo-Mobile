@@ -456,10 +456,10 @@
 "imageUploadTableCell_uploaded" = "Uploaded";
 "imageUploadTableCell_finishing" = "Finishing...";
 
-"imageUploadClearFailedSingle" = "Clear 1 Failed";
-"imageUploadClearFailedSeveral" = "Clear %@ Failed";
-"imageUploadClearCompletedSingle" = "Clear 1 Completed";
-"imageUploadClearCompletedSeveral" = "Clear %@ Completed";
+"imageUploadClearFailedSingle" = "Clear Failed Upload";
+"imageUploadClearFailedSeveral" = "Clear %@ Failed Uploads";
+"imageUploadClearCompletedSingle" = "Clear Completed Upload";
+"imageUploadClearCompletedSeveral" = "Clear %@ Completed Uploads";
 "imageUploadResumeSingle" = "Resume Failed Upload";
 "imageUploadResumeSeveral" = "Resume %@ Failed Uploads";
 

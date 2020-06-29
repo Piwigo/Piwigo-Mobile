@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v2.5.0_text" = "Version 2.5\n\n• Upload photos and videos in the background\n• Much faster access to the Photo Library\n• Minor bug fixes and improvements of the interface\n• Code modernization";
+
 "v2.4.8_text" = "Versione 2.4.8\n\n• Piwigo ti avverte quando:\n - un sito web dispone di un certificato non valido,\n - prima di stabilire una connessione non sicura\n• Migliorata gestione cache\n• Correzioni di bug minori e miglioramenti dell'interfaccia";
 
 "v2.4.7_text" = "Versione 2.4.7\n30 gennaio 2020\n\n• Traduzione cinese semplificata, russa e spagnola\n• Risolve un problema di riproduzione video su alcuni server";

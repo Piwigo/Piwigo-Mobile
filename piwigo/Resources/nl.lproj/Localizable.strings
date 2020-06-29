@@ -57,6 +57,7 @@
 
 // Upload objects
 "CoreDataFetch_UploadCreateFailed" = "Failed to create a new Upload object.";
+"CoreDataFetch_UploadMissingAsset" = "Failed to retrieve photo.";
 
 // ===========================================================================
 // ==> LOGIN / LOGOUT
@@ -166,8 +167,15 @@
 "categoryUpload_chooseAlbum" = "Selecteer een album om foto's naar up te loaden";
 "categoryUpload_LocalAlbums" = "Lokale albums";
 "categoryUpload_chooseLocalAlbum" = "Selecteer een album om er foto's van op te halen";
+"categoryUpload_sharedAlbums" = "Shared Albums";
 "categoryUpload_iCloudAlbums" = "iCloud albums";
 "categoryUpload_chooseiCloudAlbum" = "Selecteer een  iCloud album om er foto's van op te halen";
+"categoryUpload_syncedEvents" = "iPhoto Events";
+"categoryUpload_syncedAlbums" = "iPhoto Albums";
+"categoryUpload_syncedFaces" = "iPhoto Faces";
+"categoryUpload_mediaTypes" = "Media Types";
+"categoryUpload_otherAlbums" = "Other Albums";
+
 "categoyUpload_loadSubCategories" = "laden";
 "categoryUpload_images" = "Foto's uploaden";
 "categoryUpload_subAlbum" = "Maak sub-album";
@@ -278,8 +286,10 @@
 // Image sort
 "sortBy" = "Sorteren op";
 "imageSortTitle" = "Sorteer foto's";
-"imageSortingHUD" = "Foto's sorteren";
 "imageSortMessage" = "Selecteer hoe je de foto's wilt sorteren";
+"imageSortingHUD" = "Foto's sorteren";
+"imageSelectingHUD" = "Selecting Photos…";
+"imageDeselectingHUD" = "Deselecting Photos…";
 
 // Image options (actions)
 "imageOptions_title" = "Foto-opties";
@@ -439,7 +449,20 @@
 
 "imageUploadRemove" = "Geüploade foto's verwijderen";
 
+"imageUploadTableCell_waiting" = "Waiting...";
+"imageUploadTableCell_preparing" = "Preparing...";
+"imageUploadTableCell_prepared" = "Ready for upload...";
 "imageUploadTableCell_uploading" = "Bezig met uploaden...";
+"imageUploadTableCell_uploaded" = "Uploaded";
+"imageUploadTableCell_finishing" = "Finishing...";
+
+"imageUploadClearFailedSingle" = "Clear Failed Upload";
+"imageUploadClearFailedSeveral" = "Clear %@ Failed Uploads";
+"imageUploadClearCompletedSingle" = "Clear Completed Upload";
+"imageUploadClearCompletedSeveral" = "Clear %@ Completed Uploads";
+"imageUploadResumeSingle" = "Resume Failed Upload";
+"imageUploadResumeSeveral" = "Resume %@ Failed Uploads";
+
 "imageUploadProgressBar_zero" = "Bezig met uploaden 0/0";
 "imageUploadProgressBar_nonZero" = "Bezig met uploaden %@/%@";
 "imageUploadProgressBar_completed" = "Klaar";
@@ -447,13 +470,14 @@
 "imageUploadCompleted_message" = "foto/video die ge-upload zijn naar jouw Piwigo-server.";
 "imageUploadCompleted_message>1" = "afbeeldingen/video's geüpload naar uw server Piwigo.";
 
+
 // Image upload — Errors
 "uploadError_title" = "Upload-fout";
 "uploadError_message" = "Kon je foto niet uploaden. Fout: %@";
 "uploadCancelled_title" = "Uploaden afgebroken";
 
 "imageUploadError_title" = "Foto-upload-fout";
-"imageUploadError_format" = "Sorry. Fotobestanden met extensie %@ en .jpg worden niet ondersteund door de Piwigo-server.";
+"imageUploadError_format" = "File format not accepted by Piwigo server.";
 "imageUploadError_source" = "kan geen foto-bron maken";
 "imageUploadError_destination" = "kan geen foto-bestemming maken";
 "imageUploadError_iCloud" = "Kon afbeelding niet ophalen. Fout: %@";
