@@ -78,6 +78,8 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      enableASanStackUseAfterReturn = "YES"
+      disableMainThreadChecker = "YES"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
@@ -87,6 +89,9 @@
       debugServiceExtension = "internal"
       enableGPUValidationMode = "1"
       allowLocationSimulation = "NO"
+      viewDebuggingEnabled = "No"
+      queueDebuggingEnabled = "No"
+      memoryGraphOnResourceException = "Yes"
       GPUProfilerEnabled = "No">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
