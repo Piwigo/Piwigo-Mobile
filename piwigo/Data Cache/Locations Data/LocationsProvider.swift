@@ -263,12 +263,12 @@ class LocationsProvider: NSObject {
      Routine returning the place name of a location
      This routine adds an operation fetching the place name if necessary
      */
-    func getPlaceName(for location: CLLocation) -> [AnyHashable : Any]? {
+    func getPlaceName(for location: CLLocation) -> [String : String] {
 
         // Check coordinates
         if !CLLocationCoordinate2DIsValid(location.coordinate) {
             // Invalid location -> No place name
-            return nil
+            return [:]
         }
 
         // Create a fetch request for the location

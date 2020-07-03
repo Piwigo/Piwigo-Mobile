@@ -110,16 +110,17 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
 
     @objc private func setLabelsFromDatesAndLocation(location: CLLocation) {
         // Get place name from location (will geodecode location for future use if needed)
-        guard let placeNames = LocationsProvider.sharedInstance().getPlaceName(for: location) else {
+        let placeNames = LocationsProvider.sharedInstance().getPlaceName(for: location)
+        if placeNames.count == 0 {
             placeLabel.text = dateLabelText
             dateLabel.text = optionalDateLabelText
             return
         }
 
         // Use label according to name availabilities
-        if let placeLabelName = placeNames["placeLabel"] as? String {
+        if let placeLabelName = placeNames["placeLabel"] {
             placeLabel.text = placeLabelName
-            if let dateLabelName = placeNames["dateLabel"] as? String {
+            if let dateLabelName = placeNames["dateLabel"] {
                 self.dateLabel.text = String(format: "%@ • %@", dateLabelText, dateLabelName)
             } else {
                 self.dateLabel.text = String(format: "%@ • %@", dateLabelText, optionalDateLabelText)
