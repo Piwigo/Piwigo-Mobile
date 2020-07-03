@@ -673,8 +673,10 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     hud.animationType = MBProgressHUDAnimationFade;
     hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
     hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
-    hud.contentColor = [UIColor piwigoColorHudContent];
-    hud.bezelView.color = [UIColor piwigoColorHudBezelView];
+    hud.contentColor = [UIColor piwigoColorText];
+    hud.bezelView.color = [UIColor piwigoColorText];
+    hud.bezelView.style = MBProgressHUDBackgroundStyleSolidColor;
+    hud.bezelView.backgroundColor = [UIColor piwigoColorCellBackground];
 
     // Define the text
     hud.label.text = label;

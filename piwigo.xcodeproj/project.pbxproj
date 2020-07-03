@@ -46,6 +46,12 @@
 		AD3369C023F035F700F3FA80 /* TagSelectorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3369BD23F035F700F3FA80 /* TagSelectorCell.swift */; };
 		AD35A16B2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD35A16A2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift */; };
 		AD35CA3A1E9C1EBC00E3B897 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD35CA391E9C1EBC00E3B897 /* Images.xcassets */; };
+		AD38C04424AF724100CDC765 /* pwg.images.setInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD38C04324AF724100CDC765 /* pwg.images.setInfo.swift */; };
+		AD38C04524AF724100CDC765 /* pwg.images.setInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD38C04324AF724100CDC765 /* pwg.images.setInfo.swift */; };
+		AD38C04724AF72E100CDC765 /* pwg.images.setInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = AD38C04624AF72E100CDC765 /* pwg.images.setInfo.json */; };
+		AD38C04824AF72E100CDC765 /* pwg.images.setInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = AD38C04624AF72E100CDC765 /* pwg.images.setInfo.json */; };
+		AD38C04C24AF746000CDC765 /* community.images.uploadCompleted.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD38C04B24AF746000CDC765 /* community.images.uploadCompleted.swift */; };
+		AD38C04D24AF746000CDC765 /* community.images.uploadCompleted.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD38C04B24AF746000CDC765 /* community.images.uploadCompleted.swift */; };
 		AD39165E22A126CA00414E4B /* SearchImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD39165922A06FDF00414E4B /* SearchImagesViewController.m */; };
 		AD42D08124448B7C00F0BAC1 /* LocalAlbumsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD42D08024448B7C00F0BAC1 /* LocalAlbumsViewController.swift */; };
 		AD42D08324448F2400F0BAC1 /* LocalAlbumsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD42D08224448F2400F0BAC1 /* LocalAlbumsViewController.storyboard */; };
@@ -249,6 +255,10 @@
 		AD3369BE23F035F700F3FA80 /* TagSelectorViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TagSelectorViewController.storyboard; sourceTree = "<group>"; };
 		AD35A16A2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSLayoutConstraint+CommonConstraints.swift"; sourceTree = "<group>"; };
 		AD35CA391E9C1EBC00E3B897 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		AD38C04324AF724100CDC765 /* pwg.images.setInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.images.setInfo.swift; sourceTree = "<group>"; };
+		AD38C04624AF72E100CDC765 /* pwg.images.setInfo.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pwg.images.setInfo.json; sourceTree = "<group>"; };
+		AD38C04A24AF73E800CDC765 /* community.images.uploadCompleted.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = community.images.uploadCompleted.json; sourceTree = "<group>"; };
+		AD38C04B24AF746000CDC765 /* community.images.uploadCompleted.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = community.images.uploadCompleted.swift; sourceTree = "<group>"; };
 		AD39165922A06FDF00414E4B /* SearchImagesViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchImagesViewController.m; sourceTree = "<group>"; };
 		AD39165B22A06FF200414E4B /* SearchImagesViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SearchImagesViewController.h; sourceTree = "<group>"; };
 		AD3A6D502383445200767F10 /* ImageUploadThumbCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageUploadThumbCollectionViewCell.h; sourceTree = "<group>"; };
@@ -589,6 +599,7 @@
 			isa = PBXGroup;
 			children = (
 				AD11E46024A930B000C8876F /* piwigoWebAPI.swift */,
+				AD38C04924AF73D900CDC765 /* community */,
 				ADD79A4124A9424900428C58 /* pwg.images */,
 				AD11E46224A930B000C8876F /* Info.plist */,
 			);
@@ -623,6 +634,15 @@
 				AD30FD3821316DA8009AA30E /* Info.plist */,
 			);
 			path = piwigoAppStore;
+			sourceTree = "<group>";
+		};
+		AD38C04924AF73D900CDC765 /* community */ = {
+			isa = PBXGroup;
+			children = (
+				AD38C04A24AF73E800CDC765 /* community.images.uploadCompleted.json */,
+				AD38C04B24AF746000CDC765 /* community.images.uploadCompleted.swift */,
+			);
+			path = community;
 			sourceTree = "<group>";
 		};
 		AD41BEC8223E9BB200A5DEE3 /* Locations Data */ = {
@@ -846,6 +866,8 @@
 		ADD79A4124A9424900428C58 /* pwg.images */ = {
 			isa = PBXGroup;
 			children = (
+				AD38C04624AF72E100CDC765 /* pwg.images.setInfo.json */,
+				AD38C04324AF724100CDC765 /* pwg.images.setInfo.swift */,
 				AD11E46824A9319C00C8876F /* pwg.images.upload.json */,
 				ADD79A3F24A93B5600428C58 /* pwg.images.upload2.json */,
 				ADD79A3C24A9352500428C58 /* pwg.images.upload.swift */,
@@ -1390,6 +1412,7 @@
 			files = (
 				ADD79A4024A93B5600428C58 /* pwg.images.upload2.json in Resources */,
 				AD11E46924A9319C00C8876F /* pwg.images.upload.json in Resources */,
+				AD38C04824AF72E100CDC765 /* pwg.images.setInfo.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1420,6 +1443,7 @@
 				ADF1CC77243D132100D75319 /* DefaultCategoryViewController.storyboard in Resources */,
 				ADA24DB6243A74C200864D1F /* DefaultImageSizeViewController.storyboard in Resources */,
 				ADA24DAF243A68FA00864D1F /* DefaultImageThumbnailSizeViewController.storyboard in Resources */,
+				AD38C04724AF72E100CDC765 /* pwg.images.setInfo.json in Resources */,
 				AD84E60523BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib in Resources */,
 				AD770FD623B4BDB5007DAD50 /* EditImageParams.storyboard in Resources */,
 				ADDB397023BF574C00AB584B /* EditImageShiftPickerTableViewCell.xib in Resources */,
@@ -1555,6 +1579,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				AD11E46124A930B000C8876F /* piwigoWebAPI.swift in Sources */,
+				AD38C04524AF724100CDC765 /* pwg.images.setInfo.swift in Sources */,
+				AD38C04D24AF746000CDC765 /* community.images.uploadCompleted.swift in Sources */,
 				ADD79A3D24A9352500428C58 /* pwg.images.upload.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1672,6 +1698,8 @@
 				D8E4D6211ABE34DF0057EB95 /* LoginNavigationController.m in Sources */,
 				ADAA57D122DD00B700EB4EAA /* DiscoverImagesViewController.m in Sources */,
 				ADC80E4B23BDD2DD003A6960 /* EditImageThumbTableViewCell.m in Sources */,
+				AD38C04424AF724100CDC765 /* pwg.images.setInfo.swift in Sources */,
+				AD38C04C24AF746000CDC765 /* community.images.uploadCompleted.swift in Sources */,
 				D88A685B1AC2323D002A3259 /* CategoryTableViewCell.m in Sources */,
 				D8D3F7241A785E1B00AEA7F1 /* ImageCollectionViewCell.m in Sources */,
 				D8F325171A87F212007CBDAC /* EditImageTextViewTableViewCell.m in Sources */,

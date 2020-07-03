@@ -480,9 +480,11 @@ CGFloat const kAllCategoriesWidth = 512.0;      // AllCategories view width
         hud.animationType = MBProgressHUDAnimationFade;
         hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
         hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
-        hud.contentColor = [UIColor piwigoColorHudContent];
-        hud.bezelView.color = [UIColor piwigoColorHudBezelView];
-        
+        hud.contentColor = [UIColor piwigoColorText];
+        hud.bezelView.color = [UIColor piwigoColorText];
+        hud.bezelView.style = MBProgressHUDBackgroundStyleSolidColor;
+        hud.bezelView.backgroundColor = [UIColor piwigoColorCellBackground];
+
         // Will look best, if we set a minimum size.
         hud.minSize = CGSizeMake(200.f, 100.f);
     }

@@ -987,8 +987,10 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             hud?.animationType = MBProgressHUDAnimation.fade
             hud?.backgroundView.style = MBProgressHUDBackgroundStyle.solidColor
             hud?.backgroundView.color = UIColor(white: 0.0, alpha: 0.5)
-            hud?.contentColor = UIColor.piwigoColorHudContent()
-            hud?.bezelView.color = UIColor.piwigoColorHudBezelView()
+            hud?.contentColor = UIColor.piwigoColorText()
+            hud?.bezelView.color = UIColor.piwigoColorText()
+            hud?.bezelView.style = MBProgressHUDBackgroundStyle.solidColor
+            hud?.bezelView.backgroundColor = UIColor.piwigoColorCellBackground()
 
             // Will look best, if we set a minimum size.
             hud?.minSize = CGSize(width: 200.0, height: 100.0)

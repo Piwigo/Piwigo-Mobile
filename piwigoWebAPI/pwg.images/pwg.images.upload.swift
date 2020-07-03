@@ -8,6 +8,9 @@
 
 import Foundation
 
+// MARK: - pwg.images.upload
+let kPiwigoImagesUpload = "format=json&method=pwg.images.upload"
+
 struct ImagesUploadJSON: Decodable {
 
     private enum RootCodingKeys: String, CodingKey {

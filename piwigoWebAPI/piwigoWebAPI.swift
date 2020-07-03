@@ -23,8 +23,6 @@ class piwigoWebAPI: XCTestCase {
         }
         
         let decoder = JSONDecoder()
-//        decoder.keyDecodingStrategy = .convertFromSnakeCase
-//        decoder.dateDecodingStrategy = .secondsSince1970
         guard let result = try? decoder.decode(ImagesUploadJSON.self, from: data) else {
             XCTFail()
             return
@@ -58,5 +56,45 @@ class piwigoWebAPI: XCTestCase {
         XCTAssertEqual(result2.imagesUpload.name, "Screenshot 2020-06-28 at 14.01.38")
         XCTAssertEqual(result2.imagesUpload.square_src, "https://.../20200628212043-0a9c6158-sq.png")
         XCTAssertEqual(result2.imagesUpload.src, "https://.../20200628212043-0a9c6158-th.png")
+    }
+
+    func testPwgImagesSetInfoDecoding() {
+        
+        // Case of a successful request
+        let bundle = Bundle(for: type(of: self))
+        guard let url = bundle.url(forResource: "pwg.images.setInfo", withExtension: "json"),
+            let data = try? Data(contentsOf: url) else {
+                return
+        }
+        
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(ImagesSetInfoJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(result.stat, "ok")
+        XCTAssertTrue(result.imageSetInfo)
+    }
+
+    
+    // MARK: - community
+    func testCommunityImagesUploadCompletedDecoding() {
+        
+        // Case of a successful request
+        let bundle = Bundle(for: type(of: self))
+        guard let url = bundle.url(forResource: "community.images.uploadCompleted", withExtension: "json"),
+            let data = try? Data(contentsOf: url) else {
+                return
+        }
+        
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(CommunityImagesUploadCompletedJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(result.stat, "ok")
+        XCTAssertTrue(result.isSubmittedToModerator)
     }
 }
