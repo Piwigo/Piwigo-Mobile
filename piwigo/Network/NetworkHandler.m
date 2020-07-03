@@ -140,7 +140,7 @@ NSInteger const loadingViewTag = 899;
             // If there is not certificate, report an error (should rarely happen)
             if (SecTrustGetCertificateCount(trust) == 0) {
                 // No certificate!
-                return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
+                return NSURLSessionAuthChallengeRejectProtectionSpace;
             }
 
             // Retrieve the certificate of the server
@@ -264,12 +264,12 @@ NSInteger const loadingViewTag = 899;
 #endif
         }
         
-        return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
+        return NSURLSessionAuthChallengeRejectProtectionSpace;
     }];
 
     // Task-Specific Authentication Challenges
     // For servers performing HTTP Basic/Digest Authentication
-    [[Model sharedInstance].sessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
+    [[Model sharedInstance].sessionManager setAuthenticationChallengeHandler:^id _Nonnull(NSURLSession * _Nonnull session, NSURLSessionTask * _Nonnull task, NSURLAuthenticationChallenge * _Nonnull challenge, void (^ _Nonnull completionHandler)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable)) {
         
 #if defined(DEBUG_SESSION)
         NSLog(@"===>> didReceiveAuthenticationChallenge: %@", challenge.protectionSpace);
@@ -298,19 +298,17 @@ NSInteger const loadingViewTag = 899;
             // Supply requested credentials if not provided yet
             if (challenge.previousFailureCount == 0) {
                 // Trying HTTP credentials…
-                *credential = [NSURLCredential
-                               credentialWithUser:user
-                               password:password
-                               persistence:NSURLCredentialPersistenceSynchronizable];
-                return NSURLSessionAuthChallengeUseCredential;
+                NSURLCredential *credential = [NSURLCredential credentialWithUser:user
+                                                                         password:password
+                                                  persistence:NSURLCredentialPersistenceSynchronizable];
+                return credential;
             } else {
                 // HTTP credentials refused!
                 [SAMKeychain deletePasswordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
-                return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
+                return @(NSURLSessionAuthChallengeRejectProtectionSpace);
             }
         }
-        
-        return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
+        return @(NSURLSessionAuthChallengeRejectProtectionSpace);
     }];
 }
 
@@ -380,7 +378,7 @@ NSInteger const loadingViewTag = 899;
             // If there is not certificate, report an error (should rarely happen)
             if (SecTrustGetCertificateCount(trust) == 0) {
                 // No certificate!
-                return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
+                return NSURLSessionAuthChallengeRejectProtectionSpace;
             }
 
             // Retrieve the certificate of the server
@@ -419,14 +417,14 @@ NSInteger const loadingViewTag = 899;
             // Release potential stored certificate after use
             if (storedCertificate) { CFRelease(storedCertificate); }
         }
-        
-        return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
+        return NSURLSessionAuthChallengeRejectProtectionSpace;
     }];
 
     // Task-Specific Authentication Challenges
     // For servers performing HTTP Basic/Digest Authentication
-    [[Model sharedInstance].imagesSessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
-        
+    [[Model sharedInstance].imagesSessionManager setAuthenticationChallengeHandler:^id _Nonnull(NSURLSession * _Nonnull session, NSURLSessionTask * _Nonnull task, NSURLAuthenticationChallenge * _Nonnull challenge, void (^ _Nonnull completionHandler)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable)) {
+//    [[Model sharedInstance].imagesSessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
+
 #if defined(DEBUG_SESSION)
         NSLog(@"===>> didReceiveAuthenticationChallenge: %@", challenge.protectionSpace);
 #endif
@@ -439,7 +437,7 @@ NSInteger const loadingViewTag = 899;
             // HTTP basic authentification credentials
             NSString *user = [Model sharedInstance].HttpUsername;
             NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
-            
+
             // Without HTTP credentials available, tries Piwigo credentials
             if ((user == nil) || (user.length <= 0) || (password == nil)) {
                 user  = [Model sharedInstance].username;
@@ -450,23 +448,22 @@ NSInteger const loadingViewTag = 899;
                 [[Model sharedInstance] saveToDisk];
                 [SAMKeychain setPassword:password forService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
             }
-            
+
             // Supply requested credentials if not provided yet
             if (challenge.previousFailureCount == 0) {
                 // Trying HTTP credentials…
-                *credential = [NSURLCredential
+                NSURLCredential *credential = [NSURLCredential
                                credentialWithUser:user
                                password:password
                                persistence:NSURLCredentialPersistenceSynchronizable];
-                return NSURLSessionAuthChallengeUseCredential;
+                return credential;
             } else {
                 // HTTP credentials refused!
                 [SAMKeychain deletePasswordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
-                return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
+                return @(NSURLSessionAuthChallengeRejectProtectionSpace);
             }
         }
-        
-        return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
+        return @(NSURLSessionAuthChallengeRejectProtectionSpace);
     }];
 }
 
@@ -524,7 +521,7 @@ NSInteger const loadingViewTag = 899;
             // If there is not certificate, report an error (should rarely happen)
             if (SecTrustGetCertificateCount(trust) == 0) {
                 // No certificate!
-                return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
+                return NSURLSessionAuthChallengeRejectProtectionSpace;
             }
 
             // Retrieve the certificate of the server
@@ -564,12 +561,13 @@ NSInteger const loadingViewTag = 899;
             if (storedCertificate) { CFRelease(storedCertificate); }
         }
         
-        return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
+        return NSURLSessionAuthChallengeRejectProtectionSpace;
     }];
 
     // Task-Specific Authentication Challenges
     // For servers performing HTTP Basic/Digest Authentication
-    [[Model sharedInstance].imageUploadManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
+    [[Model sharedInstance].imageUploadManager setAuthenticationChallengeHandler:^id _Nonnull(NSURLSession * _Nonnull session, NSURLSessionTask * _Nonnull task, NSURLAuthenticationChallenge * _Nonnull challenge, void (^ _Nonnull completionHandler)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable)) {
+//    [[Model sharedInstance].imageUploadManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
         
 #if defined(DEBUG_SESSION)
         NSLog(@"===>> didReceiveAuthenticationChallenge: %@", challenge.protectionSpace);
@@ -598,19 +596,18 @@ NSInteger const loadingViewTag = 899;
             // Supply requested credentials if not provided yet
             if (challenge.previousFailureCount == 0) {
                 // Trying HTTP credentials…
-                *credential = [NSURLCredential
+                NSURLCredential *credential = [NSURLCredential
                                credentialWithUser:user
                                password:password
                                persistence:NSURLCredentialPersistenceSynchronizable];
-                return NSURLSessionAuthChallengeUseCredential;
+                return credential;
             } else {
                 // HTTP credentials refused!
                 [SAMKeychain deletePasswordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
-                return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
+                return @(NSURLSessionAuthChallengeRejectProtectionSpace);
             }
         }
-        
-        return NSURLSessionAuthChallengeCancelAuthenticationChallenge;
+        return @(NSURLSessionAuthChallengeRejectProtectionSpace);
     }];
 }
 
@@ -840,28 +837,27 @@ NSInteger const loadingViewTag = 899;
                  failure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
     NSURLSessionTask *task = [[Model sharedInstance].sessionManager
-                              POST:[NetworkHandler getURLWithPath:path
-                                                    withURLParams:urlParams]
-                                parameters:parameters
-                                  progress:progress
-                                   success:^(NSURLSessionTask *task, id responseObject) {
-                                       if (success) {
-                                           success(task, responseObject);
-                                       }
-//                                       [manager invalidateSessionCancelingTasks:YES];
+                              POST:[NetworkHandler getURLWithPath:path withURLParams:urlParams]
+                              parameters:parameters headers:nil
+                              progress:progress
+                              success:^(NSURLSessionTask *task, id responseObject) {
+                                   if (success) {
+                                       success(task, responseObject);
                                    }
-                                   failure:^(NSURLSessionTask *task, NSError *error) {
+//                                       [manager invalidateSessionCancelingTasks:YES];
+                               }
+                              failure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG_SESSION)
-                                       NSLog(@"NetworkHandler/post Error %@: %@", @([error code]), [error localizedDescription]);
-                                       NSLog(@"=> localizedFailureReason: %@", [error localizedFailureReason]);
-                                       NSLog(@"=> originalRequest= %@", task.originalRequest);
-                                       NSLog(@"=> response= %@", task.response);
+                                   NSLog(@"NetworkHandler/post Error %@: %@", @([error code]), [error localizedDescription]);
+                                   NSLog(@"=> localizedFailureReason: %@", [error localizedFailureReason]);
+                                   NSLog(@"=> originalRequest= %@", task.originalRequest);
+                                   NSLog(@"=> response= %@", task.response);
 #endif
-                                       if(fail) {
-                                           fail(task, error);
-                                       }
-//                                       [manager invalidateSessionCancelingTasks:YES];
+                                   if(fail) {
+                                       fail(task, error);
                                    }
+//                                       [manager invalidateSessionCancelingTasks:YES];
+                               }
                               ];
     
     return task;
@@ -877,7 +873,7 @@ NSInteger const loadingViewTag = 899;
 {
     NSURLSessionTask *task = [[Model sharedInstance].imageUploadManager
                               POST:[NetworkHandler getURLWithPath:path withURLParams:nil]
-                        parameters:nil
+                              parameters:nil headers:nil
          constructingBodyWithBlock:^(id<AFMultipartFormData> formData)
                 {
                     [formData appendPartWithFileData:fileData

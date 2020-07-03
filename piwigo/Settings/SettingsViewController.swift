@@ -1746,8 +1746,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
     func closeSessionAndClearCache() {
         // Session closed
-        Model.sharedInstance().sessionManager.invalidateSessionCancelingTasks(true)
-        Model.sharedInstance().imagesSessionManager.invalidateSessionCancelingTasks(true)
+        Model.sharedInstance().sessionManager.invalidateSessionCancelingTasks(true, resetSession: true)
+        Model.sharedInstance().imagesSessionManager.invalidateSessionCancelingTasks(true, resetSession: true)
         Model.sharedInstance().imageCache.removeAllCachedResponses()
         Model.sharedInstance().hadOpenedSession = false
 

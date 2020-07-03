@@ -251,8 +251,8 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
     [DataController saveContext];
 
     // Cancel tasks and close sessions
-    [[Model sharedInstance].sessionManager invalidateSessionCancelingTasks:YES];
-    [[Model sharedInstance].imagesSessionManager invalidateSessionCancelingTasks:YES];
+    [[Model sharedInstance].sessionManager invalidateSessionCancelingTasks:YES resetSession:YES];
+    [[Model sharedInstance].imagesSessionManager invalidateSessionCancelingTasks:YES resetSession:YES];
 
     // Disable network activity indicator
     [AFNetworkActivityIndicatorManager sharedManager].enabled = NO;

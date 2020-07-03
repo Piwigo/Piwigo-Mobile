@@ -103,8 +103,8 @@
     
     NSLog(@"==> Start loading %@", previewURL.path);
     self.downloadTask = [[Model sharedInstance].imagesSessionManager GET:previewURL.absoluteString
-                                                              parameters:nil
-                progress:^(NSProgress *progress) {
+        parameters:nil headers:nil
+        progress:^(NSProgress * _Nonnull progress) {
                     dispatch_async(dispatch_get_main_queue(),
                        ^(void){
                            if([weakSelf.imagePreviewDelegate respondsToSelector:@selector(downloadProgress:)])
@@ -113,27 +113,27 @@
                        }
                                 });
                 }
-                 success:^(NSURLSessionTask *task, UIImage *image) {
-                     if (image != nil) {
-                         weakSelf.scrollView.imageView.image = image;
-                         if([weakSelf.imagePreviewDelegate respondsToSelector:@selector(downloadProgress:)])
-                         {
-                             [weakSelf.imagePreviewDelegate downloadProgress:1.0];
-                         }
-                         weakSelf.imageLoaded = YES;                      // Hide progress bar
-                     }
-                     else {     // Keep thumbnail or placeholder if image could not be loaded
-        #if defined(DEBUG)
-                         NSLog(@"setImageScrollViewWithImageData: loaded image is nil!");
-        #endif
-                     }
+         success:^(NSURLSessionTask *task, UIImage *image) {
+             if (image != nil) {
+                 weakSelf.scrollView.imageView.image = image;
+                 if([weakSelf.imagePreviewDelegate respondsToSelector:@selector(downloadProgress:)])
+                 {
+                     [weakSelf.imagePreviewDelegate downloadProgress:1.0];
                  }
-                 failure:^(NSURLSessionTask *task, NSError *error) {
-        #if defined(DEBUG)
-                     NSLog(@"setImageScrollViewWithImageData/GET Error: %@", error);
-        #endif
-                 }
-             ];
+                 weakSelf.imageLoaded = YES;                      // Hide progress bar
+             }
+             else {     // Keep thumbnail or placeholder if image could not be loaded
+#if defined(DEBUG)
+                 NSLog(@"setImageScrollViewWithImageData: loaded image is nil!");
+#endif
+             }
+         }
+         failure:^(NSURLSessionTask *task, NSError *error) {
+#if defined(DEBUG)
+             NSLog(@"setImageScrollViewWithImageData/GET Error: %@", error);
+#endif
+         }
+     ];
     
     [self.downloadTask resume];
 }

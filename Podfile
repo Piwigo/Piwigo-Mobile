@@ -21,7 +21,7 @@ target 'piwigo' do
   end
 
   # Pods for piwigo
-  pod 'AFNetworking',      '~> 3.2.1'
+  pod 'AFNetworking',      '~> 4.0.1'
   pod 'MBProgressHUD',     '~> 1.2.0'
   pod 'MGSwipeTableCell',  '~> 1.6.11'
   pod 'SAMKeychain',       '~> 1.5.3'
