@@ -287,11 +287,11 @@ class DefaultCategoryViewController: UIViewController, UITableViewDataSource, UI
         // Does the default album view controller already exists?
         var cur = 0
         var index = 0
-        var rootAlbumViewController: AlbumImagesViewController? = nil
+        var rootAlbumViewController: AlbumImagesViewController?
         for viewController in navigationController?.viewControllers ?? [] {
 
             // Look for AlbumImagesViewControllers
-            if (viewController is AlbumImagesViewController) {
+            if viewController is AlbumImagesViewController {
                 let thisViewController = viewController as? AlbumImagesViewController
 
                 // Is this the view controller of the default album?
