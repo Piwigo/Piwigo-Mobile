@@ -7,6 +7,7 @@
 //
 
 import AVFoundation
+import MobileCoreServices
 import Photos
 
 class UploadVideo {
