@@ -10,55 +10,86 @@ import Photos
 
 class UploadImage {
 
-    func prepare(_ upload: UploadProperties, from imageAsset: PHAsset,
-                 completionHandler: @escaping (UploadProperties, Error?) -> Void) {
+    // MARK: - Shared instances
+    /// The UploadsProvider that collects upload data, saves it to Core Data, and serves it to the uploader.
+    private lazy var uploadsProvider: UploadsProvider = {
+        let provider : UploadsProvider = UploadsProvider()
+        return provider
+    }()
+    /// The UploadManager that prepares and transfers images
+    var uploadManager: UploadManager?
+
+
+    // MARK: - Image preparation
+    func prepare(_ upload: UploadProperties, from imageAsset: PHAsset) -> Void {
+        
         // Retrieve UIImage
-        retrieveUIImage(from: imageAsset) { (fixedImageObject, error) in
-            // Error?
-            if let error = error {
-                completionHandler(upload, error)
-                return
-            }
-
-            // Valid UIImage with fixed orientation?
-            guard let imageObject = fixedImageObject else {
-                let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset])
-                completionHandler(upload, error)
-                return
-            }
-
-            // Retrieve image data
-            self.retrieveFullSizeImageData(from: imageAsset) { (imageData, error) in
-                // Error?
-                if let error = error {
-                    completionHandler(upload, error)
-                    return
-                }
-                
-                // Valid image data?
-                guard let imageData = imageData else {
-                    let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset])
-                    completionHandler(upload, error)
-                    return
-                }
-                
-                // Modify image
-                self.modifyImage(for: upload, with: imageData, andObject: imageObject) { (newUpload, error) in
-                    // Error?
-                    if let error = error {
-                        completionHandler(upload, error)
-                    } else {
-                        completionHandler(newUpload, nil)
-                    }
-                }
-            }
+        let (fixedImageObject, imageError) = retrieveUIImage(from: imageAsset)
+        if let _ = imageError {
+            updateUploadRequestWith(upload, error: imageError)
         }
+        guard let imageObject = fixedImageObject else {
+            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+            updateUploadRequestWith(upload, error: error)
+            return
+        }
+
+        // Retrieve image data
+        let (fullSizeData, dataError) = retrieveFullSizeImageData(from: imageAsset)
+        if let _ = dataError {
+            updateUploadRequestWith(upload, error: dataError)
+        }
+        guard let imageData = fullSizeData else {
+            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+            updateUploadRequestWith(upload, error: error)
+            return
+        }
+        
+        // Modify image
+        modifyImage(for: upload, with: imageData, andObject: imageObject) { [unowned self] (newUpload, error) in
+            // Update upload request
+            self.updateUploadRequestWith(newUpload, error: error)
+        }
+    }
+    
+    private func updateUploadRequestWith(_ upload: UploadProperties, error: Error?) {
+
+        // Error?
+        if let error = error {
+            // Could not prepare image
+            let uploadProperties = UploadProperties.init(localIdentifier: upload.localIdentifier, category: upload.category,
+                requestDate: upload.requestDate, requestState: .preparingError,
+                requestDelete: upload.requestDelete, requestError: error.localizedDescription,
+                creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
+                isVideo: upload.isVideo, author: upload.author, privacyLevel: upload.privacyLevel,
+                imageTitle: upload.imageTitle, comment: upload.comment, tags: upload.tags, imageId: upload.imageId)
+            
+            // Update request with error description
+            uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+                // Consider next image
+                self.uploadManager?.setIsPreparing(status: false)
+            })
+            return
+        }
+
+        // Update state of upload
+        let uploadProperties = UploadProperties.init(localIdentifier: upload.localIdentifier, category: upload.category,
+            requestDate: upload.requestDate, requestState: .prepared,
+            requestDelete: upload.requestDelete, requestError: "",
+            creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
+            isVideo: upload.isVideo, author: upload.author, privacyLevel: upload.privacyLevel,
+            imageTitle: upload.imageTitle, comment: upload.comment, tags: upload.tags, imageId: upload.imageId)
+
+        // Update request ready for transfer
+        uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+            // Upload ready for transfer
+            self.uploadManager?.setIsPreparing(status: false)
+        })
     }
 
     // MARK: - Retrieve UIImage and Image Data
     
-    private func retrieveUIImage(from imageAsset: PHAsset,
-                                 completionHandler: @escaping (UIImage?, Error?) -> Void) {
+    private func retrieveUIImage(from imageAsset: PHAsset) -> (UIImage?, Error?) {
         print("   > retrieveUIImageFrom...")
 
         // Case of an image…
@@ -86,32 +117,32 @@ class UploadImage {
         }
 
         // Requests image…
+        var error: Error?
+        var fixedImageObject: UIImage?
         PHImageManager.default().requestImage(for: imageAsset, targetSize: size, contentMode: .default,
                                               options: options, resultHandler: { imageObject, info in
             // Any error?
             if info?[PHImageErrorKey] != nil || (imageObject?.size.width == 0) || (imageObject?.size.height == 0) {
 //                print("     returned info(\(String(describing: info)))")
-                let error = info?[PHImageErrorKey] as? Error
-                completionHandler(nil, error)
+                error = info?[PHImageErrorKey] as? Error
                 return
             }
 
             // Retrieved UIImage representation for the specified asset
             if let imageObject = imageObject {
                 // Fix orientation if needed
-                let fixedImageObject = self.fixOrientationOf(imageObject)
-                // Expected resource available
-                completionHandler(fixedImageObject, nil)
+                fixedImageObject = self.fixOrientationOf(imageObject)
+                return
             }
             else {
-                let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset])
-                completionHandler(imageObject, error)
+                error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                return
             }
         })
+        return (fixedImageObject, error)
     }
 
-    private func retrieveFullSizeImageData(from imageAsset: PHAsset,
-                                           completionHandler: @escaping (Data?, Error?) -> Void) {
+    private func retrieveFullSizeImageData(from imageAsset: PHAsset) -> (Data?, Error?) {
         print("   > retrieveFullSizeAssetDataFromImage...")
 
         // Case of an image…
@@ -130,29 +161,30 @@ class UploadImage {
             print(String(format: "   > retrieveFullSizeAssetDataFromImage... progress %lf", progress))
         }
 
+        var error: Error?
+        var data: Data?
         autoreleasepool {
             if #available(iOS 13.0, *) {
                 PHImageManager.default().requestImageDataAndOrientation(for: imageAsset, options: options,
                                                                         resultHandler: { imageData, dataUTI, orientation, info in
                     if info?[PHImageErrorKey] != nil || ((imageData?.count ?? 0) == 0) {
-                        let error = info?[PHImageErrorKey] as? Error
-                        completionHandler(imageData, error)
+                        error = info?[PHImageErrorKey] as? Error
                     } else {
-                        completionHandler(imageData, nil)
+                        data = imageData
                     }
                 })
             } else {
                 PHImageManager.default().requestImageData(for: imageAsset, options: options,
                                                           resultHandler: { imageData, dataUTI, orientation, info in
                     if info?[PHImageErrorKey] != nil || ((imageData?.count ?? 0) == 0) {
-                        let error = info?[PHImageErrorKey] as? Error
-                        completionHandler(imageData, error)
+                        error = info?[PHImageErrorKey] as? Error
                     } else {
-                        completionHandler(imageData, nil)
+                        data = imageData
                     }
                 })
             }
         }
+        return (data, error)
     }
 
     
@@ -166,7 +198,7 @@ class UploadImage {
         // Create CGI reference from image data (to retrieve complete metadata)
         guard let source: CGImageSource = CGImageSourceCreateWithData((originalData as CFData), nil) else {
             // Could not prepare image source
-            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset])
+            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
             completionHandler(upload, error)
             return
         }
@@ -174,7 +206,7 @@ class UploadImage {
         // Get metadata from image data
         guard var imageMetadata = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as Dictionary? else {
             // Could not retrieve metadata
-            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset])
+            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
             completionHandler(upload, error)
             return
         }
@@ -220,7 +252,7 @@ class UploadImage {
             }
             if let destination = destination {
                 if !CGImageDestinationFinalize(destination) {
-                    let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset])
+                    let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                     completionHandler(upload, error)
                     return
                 }
@@ -248,7 +280,11 @@ class UploadImage {
 
         // File name of final image data to be stored into Piwigo/Uploads directory
         let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-") + "-" + newUpload.fileName!
-        let fileURL = UploadManager.applicationUploadsDirectory.appendingPathComponent(fileName)
+        guard let fileURL = uploadManager?.applicationUploadsDirectory.appendingPathComponent(fileName) else {
+            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+            self.updateUploadRequestWith(upload, error: error)
+            return
+        }
         
         // Deletes temporary image file if exists (incomplete previous attempt?)
         do {

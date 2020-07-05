@@ -42,8 +42,16 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
 
 -(void)loadNavigation
 {
-    AlbumImagesViewController *albums = [[AlbumImagesViewController alloc] initWithAlbumId:[Model sharedInstance].defaultCategory inCache:NO];
-    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:albums];
+    // Create upload manager instance
+    self.uploadManager = [[UploadManager alloc] init];
+    [self.uploadManager setIsPreparingWithStatus:NO];
+    [self.uploadManager setIsUploadingWithStatus:NO];
+    [self.uploadManager setIsFinishingWithStatus:NO];
+    [self.uploadManager resumeAll];
+
+    // Display default album
+    AlbumImagesViewController *defaultAlbum = [[AlbumImagesViewController alloc] initWithAlbumId:[Model sharedInstance].defaultCategory inCache:NO];
+    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:defaultAlbum];
     [self.loginVC removeFromParentViewController];
 	self.loginVC = nil;
     
@@ -76,9 +84,6 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
             [self checkSessionStatusAndTryRelogin];
         }
     }];
-    
-    // Launch upload tasks
-    [[UploadManager sharedInstance] findNextImageToUploadWithEndPrepare:YES endUpload:YES endFinish:YES];
 }
 
 

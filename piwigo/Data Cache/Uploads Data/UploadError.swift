@@ -18,7 +18,7 @@ enum UploadError: Error {
 }
 
 extension UploadError: LocalizedError {
-    public var errorDescription: String? {
+    public var localizedDescription: String {
         switch self {
         case .networkUnavailable:
             return NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry, the communication was broken.\nTry logging in again.")

@@ -547,7 +547,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 // Show an alert if there was an error.
                 guard let error = error else {
                     // Launch upload tasks
-                    UploadManager.sharedInstance()?.findNextImageToUpload(endPrepare: false, endUpload: false, endFinish: false)
+                    let appDelegate = UIApplication.shared.delegate as! AppDelegate
+                    appDelegate.uploadManager?.findNextImageToUpload()
                     return
                 }
                 let alert = UIAlertController(title: NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object."),

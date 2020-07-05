@@ -169,7 +169,8 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
             // Delete uploaded images
             if let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects {
                 let uploadsToDelete = allUploads.filter({ $0.state == .finished })
-                UploadManager.sharedInstance()?.delete(uploadedImages: uploadsToDelete)
+                let appDelegate = UIApplication.shared.delegate as! AppDelegate
+                appDelegate.uploadManager?.delete(uploadedImages: uploadsToDelete)
             }
         })
         
@@ -194,7 +195,8 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
             // Collect list of failed uploads
             if let failedUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects?.filter({$0.state == .preparingError || $0.state == .uploadingError || $0.state == .finishingError }) {
                 // Resume failed uploads
-                UploadManager.sharedInstance()?.resume(failedUploads: failedUploads, completionHandler: { (error) in
+                let appDelegate = UIApplication.shared.delegate as! AppDelegate
+                appDelegate.uploadManager?.resume(failedUploads: failedUploads, completionHandler: { (error) in
                     if let error = error {
                         // Inform user
                         let alert = UIAlertController(title: NSLocalizedString("errorHUD_label", comment: "Error"), message: error.localizedDescription, preferredStyle: .alert)
@@ -566,7 +568,8 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
             queueTableView.deleteRows(at: [oldIndexPath], with: .automatic)
             if uploadsProvider.fetchedResultsController.fetchedObjects?.count == 0 {
                 // Delete remaining files from Upload directory (if any)
-                UploadManager.sharedInstance()?.emptyUploadsDirectory()
+                let appDelegate = UIApplication.shared.delegate as! AppDelegate
+                appDelegate.uploadManager?.emptyUploadsDirectory()
                 // Close the view when there is no more upload to display
                 self.dismiss(animated: true, completion: nil)
             }

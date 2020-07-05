@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+@class UploadManager;
+
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationPaletteChanged;
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationNetworkErrorEncountered;
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationAddRecentAlbum;
@@ -17,6 +19,7 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationRemoveRecentAlbum;
 
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic, strong) UploadManager *uploadManager;
 
 -(void)loadLoginView;
 -(void)loadNavigation;

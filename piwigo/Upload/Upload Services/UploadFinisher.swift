@@ -6,19 +6,246 @@
 //  Copyright © 2020 Piwigo.org. All rights reserved.
 //
 
+import Photos
+
 class UploadFinisher {
     
-    // MARK: - Piwigo API methods
+    // MARK: - Shared instances
+    /// The UploadsProvider that collects upload data, saves it to Core Data, and serves it to the uploader.
+    private lazy var uploadsProvider: UploadsProvider = {
+        let provider : UploadsProvider = UploadsProvider()
+        return provider
+    }()
+    /// The UploadManager that prepares and transfers images
+    var uploadManager: UploadManager?
 
-    let kCommunityImagesUploadCompleted = "format=json&method=community.images.uploadCompleted"
 
-    
+    // MARK: - Set Image Info
+    func imageOfRequest(upload: UploadProperties) {
+        
+        // Prepare creation date
+        var creationDate = ""
+        if let date = upload.creationDate {
+            let dateFormat = DateFormatter()
+            dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
+            creationDate = dateFormat.string(from: date)
+        }
+
+        // Prepare parameters for uploading image/video (filename key is kPiwigoImagesUploadParamFileName)
+        let imageParameters: [String : String] = [
+            kPiwigoImagesUploadParamFileName: upload.fileName ?? "Image.jpg",
+            kPiwigoImagesUploadParamCreationDate: creationDate,
+            kPiwigoImagesUploadParamTitle: upload.imageTitle ?? "",
+            kPiwigoImagesUploadParamCategory: "\(NSNumber(value: upload.category))",
+            kPiwigoImagesUploadParamPrivacy: "\(NSNumber(value: upload.privacyLevel!.rawValue))",
+            kPiwigoImagesUploadParamAuthor: upload.author ?? "",
+            kPiwigoImagesUploadParamDescription: upload.comment ?? "",
+//            kPiwigoImagesUploadParamTags: upload.tagIds,
+            kPiwigoImagesUploadParamMimeType: upload.mimeType ?? ""
+        ]
+
+        ImageService.setImageInfoForImageWithId(upload.imageId, withInformation: imageParameters,
+            onProgress:nil,
+            onCompletion: { (task, jsonData) in
+    //                print("•••> completion: \(String(describing: jsonData))")
+                // Check returned data
+                guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {
+                    // Upload still ready for finish
+                    let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.networkUnavailable.localizedDescription])
+                    self.updateUploadRequestWith(upload, error: error)
+                    return
+                }
+                
+                // Case where we uploaded a PNG file… (JSONDecoder() crashes !!)
+                let fileExt = (URL(fileURLWithPath: upload.fileName!).pathExtension).lowercased()
+                if fileExt == "png" {
+                    guard let jsonTypeResponse = jsonData as! [String:Any]?,
+                        let stat: String = jsonTypeResponse["stat"] as! String? else {
+                        // Upload to be re-started?
+                            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.networkUnavailable.localizedDescription])
+                        self.updateUploadRequestWith(upload, error: error)
+                        return
+                    }
+                    if stat == "fail"
+                    {
+                        // Retrieve Piwigo server error
+                        if let errorCode = jsonTypeResponse["err"] as! Int?,
+                            let errorMessage = jsonTypeResponse["message"] as! String? {
+                            let error = NSError.init(domain: "Piwigo", code: errorCode, userInfo: [NSLocalizedDescriptionKey : errorMessage])
+                            self.updateUploadRequestWith(upload, error: error)
+                        } else {
+                            // Unexpected Piwigo server error
+                            let error = NSError.init(domain: "Piwigo", code: -1, userInfo: [NSLocalizedDescriptionKey : "Unexpected error encountered while calling server method with provided parameters."])
+                            self.updateUploadRequestWith(upload, error: error)
+                        }
+                        return
+                    }
+                    if stat != "ok" {
+                        // Data cannot be digested, image still ready for upload
+                        let error = NSError.init(domain: "Piwigo", code: -1, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongDataFormat.localizedDescription])
+                        self.updateUploadRequestWith(upload, error: error)
+                        return
+                    }
+                }
+                else {
+                    // Decode the JSON.
+                    do {
+                        // Decode the JSON into codable type ImageSetInfoJSON.
+                        let decoder = JSONDecoder()
+                        let uploadJSON = try decoder.decode(ImagesSetInfoJSON.self, from: data)
+                        
+                        // Piwigo error?
+                        if (uploadJSON.errorCode != 0) {
+                            let error = NSError.init(domain: "Piwigo", code: uploadJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
+                            self.updateUploadRequestWith(upload, error: error)
+                            return
+                        }
+                    } catch {
+                        // Data cannot be digested, upload still ready for finish
+                        let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongDataFormat.localizedDescription])
+                        self.updateUploadRequestWith(upload, error: error)
+                        return
+                    }
+                }
+                // Image successfully uploaded
+                var uploadProperties = upload
+                uploadProperties.requestState = .finished
+                
+                // Will propose to delete image if wanted by user
+                if Model.sharedInstance()?.deleteImageAfterUpload == true {
+                    // Retrieve image asset
+                    if let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [upload.localIdentifier], options: nil).firstObject {
+                        // Only local images can be deleted
+                        if imageAsset.sourceType != .typeCloudShared {
+                            // Append image to list of images to delete
+                            uploadProperties.requestDelete = true
+                        }
+                    }
+                }
+                
+                // Update upload record, cache and views
+                self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+                    print("•••> complete ;-)")
+                    
+                    // Any other image in upload queue?
+                    self.uploadManager?.setIsFinishing(status: false)
+                })
+            },
+            onFailure: { (task, error) in
+                if let error = error as NSError? {
+                    if ((error.code == 401) ||        // Unauthorized
+                        (error.code == 403) ||        // Forbidden
+                        (error.code == 404))          // Not Found
+                    {
+                        print("…notify kPiwigoNotificationNetworkErrorEncountered!")
+                        NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationNetworkErrorEncountered), object: nil, userInfo: nil)
+                    }
+                    // Upload still ready for finish
+                    self.updateUploadRequestWith(upload, error: error)
+                }
+            })
+    }
+
+    private func updateUploadRequestWith(_ upload: UploadProperties, error: Error?) {
+
+        // Error?
+        if let error = error {
+            // Could not prepare image
+            let uploadProperties = UploadProperties.init(localIdentifier: upload.localIdentifier, category: upload.category,
+                requestDate: upload.requestDate, requestState: .finishingError,
+                requestDelete: upload.requestDelete, requestError: error.localizedDescription,
+                creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
+                isVideo: upload.isVideo, author: upload.author, privacyLevel: upload.privacyLevel,
+                imageTitle: upload.imageTitle, comment: upload.comment, tags: upload.tags, imageId: upload.imageId)
+            
+            // Update request with error description
+            uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+                // Consider next image
+                self.uploadManager?.setIsFinishing(status: false)
+            })
+            return
+        }
+
+        // Update state of upload
+        let uploadProperties = UploadProperties.init(localIdentifier: upload.localIdentifier, category: upload.category,
+            requestDate: upload.requestDate, requestState: .finished,
+            requestDelete: upload.requestDelete, requestError: "",
+            creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
+            isVideo: upload.isVideo, author: upload.author, privacyLevel: upload.privacyLevel,
+            imageTitle: upload.imageTitle, comment: upload.comment, tags: upload.tags, imageId: upload.imageId)
+
+        // Update request ready for transfer
+        uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+            // Upload ready for transfer
+            self.uploadManager?.setIsFinishing(status: false)
+        })
+    }
+
+
     // MARK: - Community Moderation
     /**
      When the Community plugin is installed (v2.9+) on the server,
      one must inform the moderator that a number of images were uploaded.
      */
-    func getUploadedImageStatus(byId imageId: String?, inCategory categoryId: Int,
+    func moderateImages(imageIds: String, inCategory category: Int) {
+        
+        getUploadedImageStatus(byId: imageIds, inCategory: category,
+            onCompletion: { (task, jsonData) in
+//                    print("•••> completion: \(String(describing: jsonData))")
+                
+                guard let jsonTypeResponse = jsonData as! [String:Any]?,
+                    let stat: String = jsonTypeResponse["stat"] as! String? else {
+                    // Will retry later
+                    return
+                }
+
+                // Successful?
+                if stat == "ok" {
+                    // Images successfully moderated, delete them if wanted by users
+                    if let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects {
+                        let uploadsToDelete = allUploads.filter({ $0.state == .finished && $0.requestDelete == true })
+                        self.uploadManager?.delete(uploadedImages: uploadsToDelete)
+                    }
+                }
+
+                // The following code crashes at "let decoder = JSONDecoder()" if a PNG file was uploaded !!!?
+                // That is why we wimply check without decoding the JSON into codable type CommunityUploadCompletedJSON.
+//                guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {
+//                    // Will retry later
+//                    return
+//                }
+                // Decode the JSON.
+//                do {
+//                    // Decode the JSON into codable type CommunityUploadCompletedJSON.
+//                    let decoder = JSONDecoder()
+//                    let uploadJSON = try decoder.decode(CommunityImagesUploadCompletedJSON.self, from: data)
+//
+//                    // Piwigo error?
+//                    if (uploadJSON.errorCode != 0) {
+//                        // Will retry later
+//                        print("••>> moderateUploadedImages(): Piwigo error \(uploadJSON.errorCode) - \(uploadJSON.errorMessage)")
+//                        return
+//                    }
+//
+//                    // Successful?
+//                    if uploadJSON.isSubmittedToModerator {
+//                        // Images successfully moderated, delete them if wanted by users
+//                        if let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects {
+//                            let uploadsToDelete = allUploads.filter({ $0.state == .finished && $0.requestDelete == true })
+//                            UploadManager.sharedInstance()?.delete(uploadedImages: uploadsToDelete)
+//                        }
+//                    }
+//                } catch {
+//                    // Will retry later
+//                    return
+//                }
+        }, onFailure: { (task, error) in
+                // Will retry later
+                return
+        })
+    }
+
+    private func getUploadedImageStatus(byId imageId: String?, inCategory categoryId: Int,
             onCompletion completion: @escaping (_ task: URLSessionTask?, _ response: Any?) -> Void,
             onFailure fail: @escaping (_ task: URLSessionTask?, _ error: Error?) -> Void) -> (Void) {
         
@@ -32,108 +259,5 @@ class UploadFinisher {
                 progress: nil,
                 success: completion,
                 failure: fail)
-    }
-}
-
-
-// MARK: - Codable, kPiwigoImageSetInfo
-/**
- A struct for decoding JSON with the following structure returned by kPiwigoImageSetInfo:
-
- {"result": "<NULL>"
- "stat":"ok"}
- 
-*/
-struct ImageSetInfoJSON: Decodable {
-
-    private enum RootCodingKeys: String, CodingKey {
-        case stat
-        case result
-        case err
-        case message
-    }
-
-    // Constants
-    var stat: String?
-    var errorCode = 0
-    var errorMessage = ""
-    
-    // A boolean reporting if the method was successful
-    var imageSetInfo = false
-
-    init(from decoder: Decoder) throws
-    {
-        // Root container keyed by RootCodingKeys
-        let rootContainer = try decoder.container(keyedBy: RootCodingKeys.self)
-        
-        // Status returned by Piwigo
-        stat = try rootContainer.decodeIfPresent(String.self, forKey: .stat)
-        if (stat == "ok")
-        {
-            imageSetInfo = true
-        }
-        else if (stat == "fail")
-        {
-            // Retrieve Piwigo server error
-            errorCode = try rootContainer.decode(Int.self, forKey: .err)
-            errorMessage = try rootContainer.decode(String.self, forKey: .message)
-        }
-        else {
-            // Unexpected Piwigo server error
-            errorCode = -1
-            errorMessage = NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")
-        }
-    }
-}
-
-
-// MARK: - Codable, kCommunityImagesUploadCompleted
-/**
- A struct for decoding JSON with the following structure returned by kCommunityImagesUploadCompleted:
-
- {"stat":"ok",
-  "result":{ "pending" = ( ) }
-  }
-
-*/
-struct CommunityUploadCompletedJSON: Decodable {
-    
-    private enum RootCodingKeys: String, CodingKey {
-        case stat
-        case result
-        case err
-        case message
-    }
-
-    // Constants
-    var stat: String?
-    var errorCode = 0
-    var errorMessage = ""
-    
-    // A boolean reporting if the method was successful
-    var isSubmittedToModerator = false
-
-    init(from decoder: Decoder) throws
-    {
-        // Root container keyed by RootCodingKeys
-        let rootContainer = try decoder.container(keyedBy: RootCodingKeys.self)
-        
-        // Status returned by Piwigo
-        stat = try rootContainer.decodeIfPresent(String.self, forKey: .stat)
-        if (stat == "ok")
-        {
-            isSubmittedToModerator = true
-        }
-        else if (stat == "fail")
-        {
-            // Retrieve Piwigo server error
-            errorCode = try rootContainer.decode(Int.self, forKey: .err)
-            errorMessage = try rootContainer.decode(String.self, forKey: .message)
-        }
-        else {
-            // Unexpected Piwigo server error
-            errorCode = -1
-            errorMessage = NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")
-        }
     }
 }

@@ -7,28 +7,20 @@
 //
 
 class UploadTransfer {
-
-    // MARK: - Piwigo API method
-
-    let kPiwigoImagesUpload = "format=json&method=pwg.images.upload"
-
     
-    // MARK: - Upload Images
-    /**
-     Initialises the transfer of an image or a video with a Piwigo server.
-     The file is uploaded by sending chunks whose size is defined on the server.
-     */
-    func startUpload(with upload: UploadProperties,
-                     onProgress: @escaping (_ progress: Progress?, _ currentChunk: Int, _ totalChunks: Int) -> Void,
-                     onCompletion completion: @escaping (_ task: URLSessionTask?, _ response: Any?, _ imageParameters: [String : String]) -> Void,
-                     onFailure fail: @escaping (_ task: URLSessionTask?, _ error: NSError?) -> Void) {
+    // MARK: - Shared instances
+    /// The UploadsProvider that collects upload data, saves it to Core Data, and serves it to the uploader.
+    private lazy var uploadsProvider: UploadsProvider = {
+        let provider : UploadsProvider = UploadsProvider()
+        return provider
+    }()
+    /// The UploadManager that prepares and transfers images
+    var uploadManager: UploadManager?
+
+
+    // MARK: - Transfer Image of Request
+    func imageOfRequest(_ upload: UploadProperties) {
         
-        // Calculate chunk size
-        let chunkSize = Model.sharedInstance().uploadChunkSize * 1024
-
-        // Create upload session
-        NetworkHandler.createUploadSessionManager() // 60s timeout, 2 connections max
-
         // Prepare creation date
         var creationDate = ""
         if let date = upload.creationDate {
@@ -37,7 +29,7 @@ class UploadTransfer {
             creationDate = dateFormat.string(from: date)
         }
 
-        // Prepare parameters for uploading image/video (filename key is kPiwigoImagesUploadParamFileName)
+        // Prepare parameters for uploading image/video
         let imageParameters: [String : String] = [
             kPiwigoImagesUploadParamFileName: upload.fileName ?? "Image.jpg",
             kPiwigoImagesUploadParamCreationDate: creationDate,
@@ -50,9 +42,190 @@ class UploadTransfer {
             kPiwigoImagesUploadParamMimeType: upload.mimeType ?? ""
         ]
 
-        // Get file to upload
+        // Get URL of file to upload
         let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-") + "-" + upload.fileName!
-        let fileURL = UploadManager.applicationUploadsDirectory.appendingPathComponent(fileName)
+        guard let fileURL = uploadManager?.applicationUploadsDirectory.appendingPathComponent(fileName) else {
+            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+            updateUploadRequestWith(upload, error: error)
+            return
+        }
+
+        // Launch transfer
+        startUploading(fileURL: fileURL, with: imageParameters,
+            onProgress: { (progress, currentChunk, totalChunks) in
+                let chunkProgress: Float = Float(currentChunk) / Float(totalChunks)
+                let uploadInfo: [String : Any] = ["localIndentifier" : upload.localIdentifier,
+                                                  "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
+                                                  "Error" : upload.requestError ?? "",
+                                                  "progressFraction" : chunkProgress]
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationUploadProgress), object: nil, userInfo: uploadInfo)
+                }
+            },
+            onCompletion: { [unowned self] (task, jsonData, imageParameters) in
+//                    print("•••> completion: \(String(describing: jsonData))")
+                // Check returned data
+                guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {
+                    // Update upload request status
+                    let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.networkUnavailable.localizedDescription])
+                    self.updateUploadRequestWith(upload, error: error)
+                    return
+                }
+                
+                // Prepare image for cache
+                let imageData = PiwigoImageData.init()
+                imageData.datePosted = Date.init()
+                imageData.fileSize = NSNotFound // will trigger pwg.images.getInfo
+                imageData.imageTitle = upload.imageTitle
+                imageData.categoryIds = [upload.category]
+                imageData.fileName = upload.fileName
+                imageData.isVideo = upload.isVideo
+                imageData.dateCreated = upload.creationDate
+                imageData.author = upload.author
+                imageData.privacyLevel = upload.privacyLevel ?? kPiwigoPrivacy(rawValue: 0)
+
+                // Case where we uploaded a PNG file… (JSONDecoder() crashes !!)
+                let fileExt = (URL(fileURLWithPath: upload.fileName!).pathExtension).lowercased()
+                if fileExt == "png" {
+                    guard let jsonTypeResponse = jsonData as! [String:Any]?,
+                        let stat: String = jsonTypeResponse["stat"] as! String? else {
+                        // Upload to be re-started?
+                        let error = UploadError.networkUnavailable
+                        self.updateUploadRequestWith(upload, error: error)
+                        return
+                    }
+                    if stat == "fail"
+                    {
+                        // Retrieve Piwigo server error
+                        if let errorCode = jsonTypeResponse["err"] as! Int?,
+                            let errorMessage = jsonTypeResponse["message"] as! String? {
+                            let error = NSError.init(domain: "Piwigo", code: errorCode, userInfo: [NSLocalizedDescriptionKey : errorMessage])
+                            self.updateUploadRequestWith(upload, error: error)
+                        } else {
+                            // Unexpected Piwigo server error
+                            let error = NSError.init(domain: "Piwigo", code: -1, userInfo: [NSLocalizedDescriptionKey : "Unexpected error encountered while calling server method with provided parameters."])
+                            self.updateUploadRequestWith(upload, error: error)
+                        }
+                        return
+                    }
+                    if stat != "ok" {
+                        // Data cannot be digested, image still ready for upload
+                        let error = NSError.init(domain: "Piwigo", code: -1, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongDataFormat.localizedDescription])
+                        self.updateUploadRequestWith(upload, error: error)
+                        return
+                    }
+
+                    // Get data from server response
+                    let result: [String:Any] = jsonTypeResponse["result"] as! [String:Any]
+                    imageData.imageId = result["image_id"] as! Int
+                    imageData.squarePath = result["square_src"] as? String
+                    imageData.thumbPath = result["src"] as? String
+                }
+                else {
+                    // Decode the JSON.
+                    do {
+                        // Decode the JSON into codable type ImagesUploadJSON.
+                        let decoder = JSONDecoder()
+                        let uploadJSON = try decoder.decode(ImagesUploadJSON.self, from: data)
+
+                        // Piwigo error?
+                        if (uploadJSON.errorCode != 0) {
+                            let error = NSError.init(domain: "Piwigo", code: uploadJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
+                            self.updateUploadRequestWith(upload, error: error)
+                            return
+                        }
+                        
+                        // Get data fro server response
+                        imageData.imageId = uploadJSON.imagesUpload.image_id!
+                        imageData.squarePath = uploadJSON.imagesUpload.square_src
+                        imageData.thumbPath = uploadJSON.imagesUpload.src
+                    } catch {
+                        // Data cannot be digested, image still ready for upload
+                        let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongDataFormat.localizedDescription])
+                        self.updateUploadRequestWith(upload, error: error)
+                        return
+                    }
+                }
+
+                // Add uploaded image to cache
+                CategoriesData.sharedInstance()?.addImage(imageData)
+                
+                // Notifies AlbumImagesViewController to update collection
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationCategoryDataUpdated), object: nil, userInfo: nil)
+                }
+
+                // Update state of upload
+                var uploadProperties = upload
+                uploadProperties.imageId = imageData.imageId
+                self.updateUploadRequestWith(uploadProperties, error: nil)
+            },
+            onFailure: { (task, error) in
+                if let error = error {
+                    if ((error.code == 401) ||        // Unauthorized
+                        (error.code == 403) ||        // Forbidden
+                        (error.code == 404))          // Not Found
+                    {
+                        print("…notify kPiwigoNotificationNetworkErrorEncountered!")
+                        NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationNetworkErrorEncountered), object: nil, userInfo: nil)
+                    }
+                    // Image still ready for upload
+                    self.updateUploadRequestWith(upload, error: error)
+                }
+            })
+    }
+
+    private func updateUploadRequestWith(_ upload: UploadProperties, error: Error?) {
+
+        // Error?
+        if let error = error {
+            // Could not prepare image
+            let uploadProperties = UploadProperties.init(localIdentifier: upload.localIdentifier, category: upload.category,
+                requestDate: upload.requestDate, requestState: .uploadingError,
+                requestDelete: upload.requestDelete, requestError: error.localizedDescription,
+                creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
+                isVideo: upload.isVideo, author: upload.author, privacyLevel: upload.privacyLevel,
+                imageTitle: upload.imageTitle, comment: upload.comment, tags: upload.tags, imageId: upload.imageId)
+            
+            // Update request with error description
+            uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+                // Consider next image
+                self.uploadManager?.setIsUploading(status: false)
+            })
+            return
+        }
+
+        // Update state of upload
+        let uploadProperties = UploadProperties.init(localIdentifier: upload.localIdentifier, category: upload.category,
+            requestDate: upload.requestDate, requestState: .uploaded,
+            requestDelete: upload.requestDelete, requestError: "",
+            creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
+            isVideo: upload.isVideo, author: upload.author, privacyLevel: upload.privacyLevel,
+            imageTitle: upload.imageTitle, comment: upload.comment, tags: upload.tags, imageId: upload.imageId)
+
+        // Update request ready for transfer
+        uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+            // Upload ready for transfer
+            self.uploadManager?.setIsUploading(status: false)
+        })
+    }
+
+    /**
+     Initialises the transfer of an image or a video with a Piwigo server.
+     The file is uploaded by sending chunks whose size is defined on the server.
+     */
+    func startUploading(fileURL: URL, with imageParameters: [String : String],
+                        onProgress: @escaping (_ progress: Progress?, _ currentChunk: Int, _ totalChunks: Int) -> Void,
+                        onCompletion completion: @escaping (_ task: URLSessionTask?, _ response: Any?, _ imageParameters: [String : String]) -> Void,
+                        onFailure fail: @escaping (_ task: URLSessionTask?, _ error: NSError?) -> Void) {
+        
+        // Calculate chunk size
+        let chunkSize = Model.sharedInstance().uploadChunkSize * 1024
+
+        // Create upload session
+        NetworkHandler.createUploadSessionManager() // 60s timeout, 2 connections max
+
+        // Get file to upload
         var imageData: Data? = nil
         do {
             try imageData = NSData (contentsOf: fileURL) as Data
@@ -86,24 +259,24 @@ class UploadTransfer {
                             // Done, return
                             completion(task, response, updatedParameters)
                             // Close upload session
-                            Model.sharedInstance().imageUploadManager.invalidateSessionCancelingTasks(true)
+                            Model.sharedInstance().imageUploadManager.invalidateSessionCancelingTasks(true, resetSession: true)
                         },
                        onFailure: { task, error in
                             // Close upload session
-                            Model.sharedInstance().imageUploadManager.invalidateSessionCancelingTasks(true)
+                            Model.sharedInstance().imageUploadManager.invalidateSessionCancelingTasks(true, resetSession: true)
                             // Done, return
-                        fail(task, error as NSError?)
+                            fail(task, error as NSError?)
                         })
     }
 
     /**
      Sends iteratively chunks of the file.
      */
-    func sendChunk(_ imageData: Data?, withInformation imageParameters: [String:String],
-                         forOffset offset: Int, onChunk count: Int, forTotalChunks chunks: Int,
-                         onProgress: @escaping (_ progress: Progress?, _ currentChunk: Int, _ totalChunks: Int) -> Void,
-                         onCompletion completion: @escaping (_ task: URLSessionTask?, _ response: Any?, _ updatedParameters: [String:String]) -> Void,
-                         onFailure fail: @escaping (_ task: URLSessionTask?, _ error: NSError?) -> Void) {
+    private func sendChunk(_ imageData: Data?, withInformation imageParameters: [String:String],
+                           forOffset offset: Int, onChunk count: Int, forTotalChunks chunks: Int,
+                           onProgress: @escaping (_ progress: Progress?, _ currentChunk: Int, _ totalChunks: Int) -> Void,
+                           onCompletion completion: @escaping (_ task: URLSessionTask?, _ response: Any?, _ updatedParameters: [String:String]) -> Void,
+                           onFailure fail: @escaping (_ task: URLSessionTask?, _ error: NSError?) -> Void) {
         
         var parameters = imageParameters
         var offset = offset

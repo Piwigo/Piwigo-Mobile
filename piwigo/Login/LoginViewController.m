@@ -810,7 +810,11 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                     [self hideLoading];
 
                     // Launch upload tasks
-                    [[UploadManager sharedInstance] findNextImageToUploadWithEndPrepare:YES endUpload:YES endFinish:YES];
+                    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                    [[appDelegate uploadManager] setIsPreparingWithStatus:NO];
+                    [[appDelegate uploadManager] setIsUploadingWithStatus:NO];
+                    [[appDelegate uploadManager] setIsFinishingWithStatus:NO];
+                    [[appDelegate uploadManager] findNextImageToUpload];
 
 #if defined(DEBUG_SESSION)
                     NSLog(@"=> checkSessionStatusAndTryRelogin: Connection still alive…");
@@ -917,7 +921,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
         hud.contentColor = [UIColor piwigoColorText];
         hud.bezelView.color = [UIColor piwigoColorText];
         hud.bezelView.style = MBProgressHUDBackgroundStyleSolidColor;
-        hud.bezelView.backgroundColor = [UIColor piwigoColorCellBackground];
+        hud.bezelView.backgroundColor = [UIColor piwigoColorBrown];
         
         // Set title
         hud.label.text = NSLocalizedString(@"login_loggingIn", @"Logging In...");
