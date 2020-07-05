@@ -56,40 +56,27 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
         [self.view addSubview:self.piwigoButton];
 
         self.serverTextField = [PiwigoTextField new];
-		self.serverTextField.translatesAutoresizingMaskIntoConstraints = NO;
 		self.serverTextField.placeholder = NSLocalizedString(@"login_serverPlaceholder", @"example.com");
 		self.serverTextField.text = [NSString stringWithFormat:@"%@", [Model sharedInstance].serverName];
-		self.serverTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-		self.serverTextField.autocorrectionType = UITextAutocorrectionTypeNo;
 		self.serverTextField.keyboardType = UIKeyboardTypeURL;
 		self.serverTextField.returnKeyType = UIReturnKeyNext;
-        self.serverTextField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
-        self.serverTextField.clearButtonMode = YES;
 		self.serverTextField.delegate = self;
 		[self.view addSubview:self.serverTextField];
 				
 		self.userTextField = [PiwigoTextField new];
-		self.userTextField.translatesAutoresizingMaskIntoConstraints = NO;
 		self.userTextField.placeholder = NSLocalizedString(@"login_userPlaceholder", @"Username (optional)");
 		self.userTextField.text = [Model sharedInstance].username;
-		self.userTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-		self.userTextField.autocorrectionType = UITextAutocorrectionTypeNo;
         self.userTextField.keyboardType = UIKeyboardTypeDefault;
 		self.userTextField.returnKeyType = UIReturnKeyNext;
-        self.userTextField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
-        self.userTextField.clearButtonMode = YES;
 		self.userTextField.delegate = self;
 		[self.view addSubview:self.userTextField];
 		
 		self.passwordTextField = [PiwigoTextField new];
-		self.passwordTextField.translatesAutoresizingMaskIntoConstraints = NO;
 		self.passwordTextField.placeholder = NSLocalizedString(@"login_passwordPlaceholder", @"Password (optional)");
 		self.passwordTextField.secureTextEntry = YES;
 		self.passwordTextField.text = [SAMKeychain passwordForService:[Model sharedInstance].serverName account:[Model sharedInstance].username];
-        self.passwordTextField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
         self.passwordTextField.keyboardType = UIKeyboardTypeDefault;
 		self.passwordTextField.returnKeyType = UIReturnKeyGo;
-        self.passwordTextField.clearButtonMode = YES;
 		[self.view addSubview:self.passwordTextField];
 		
 		self.loginButton = [PiwigoButton new];

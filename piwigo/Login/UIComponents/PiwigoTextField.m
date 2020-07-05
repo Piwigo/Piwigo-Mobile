@@ -17,6 +17,11 @@
 	{
 		self.layer.cornerRadius = 10.0;
 		self.font = [UIFont piwigoFontNormal];
+        self.translatesAutoresizingMaskIntoConstraints = NO;
+        self.clearButtonMode = YES;
+        self.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        self.autocorrectionType = UITextAutocorrectionTypeNo;
+        self.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
 	}
 	return self;
 }
