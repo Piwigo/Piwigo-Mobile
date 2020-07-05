@@ -1418,9 +1418,9 @@ NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploa
 
 -(void)didTapUploadQueueButton
 {
-    // Open local albums view controller in new navigation controlelr
+    // Open upload queue controller in new navigation controller
     UIStoryboard *uploadQueueSB = [UIStoryboard storyboardWithName:@"UploadQueueViewController" bundle:nil];
-    LocalAlbumsViewController *uploadQueueVC = [uploadQueueSB instantiateViewControllerWithIdentifier:@"UploadQueueViewController"];
+    UploadQueueViewController *uploadQueueVC = [uploadQueueSB instantiateViewControllerWithIdentifier:@"UploadQueueViewController"];
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:uploadQueueVC];
     navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     navController.modalPresentationStyle = UIModalPresentationFormSheet;
