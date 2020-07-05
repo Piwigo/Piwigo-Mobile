@@ -57,7 +57,7 @@
 
 // Upload objects
 "CoreDataFetch_UploadCreateFailed" = "Nie udało się utworzyć nowego obiektu prześlij.";
-"CoreDataFetch_UploadMissingAsset" = "Failed to retrieve photo.";
+"CoreDataFetch_UploadMissingAsset" = "Nie udało się pobrać zdjęcia.";
 
 // ===========================================================================
 // ==> LOGIN / LOGOUT
@@ -167,14 +167,14 @@
 "categoryUpload_chooseAlbum" = "Wybierz podalbum, do którego przesyłać zdjęcia";
 "categoryUpload_LocalAlbums" = "Albumy lokalne";
 "categoryUpload_chooseLocalAlbum" = "Wybierz album z którego chcesz pobrać zdjęcia";
-"categoryUpload_sharedAlbums" = "Shared Albums";
+"categoryUpload_sharedAlbums" = "Udostępnione albumy";
 "categoryUpload_iCloudAlbums" = "Albumy iCloud";
 "categoryUpload_chooseiCloudAlbum" = "Wybierz album iCloud z którego chcesz pobrać zdjęcia";
-"categoryUpload_syncedEvents" = "iPhoto Events";
-"categoryUpload_syncedAlbums" = "iPhoto Albums";
-"categoryUpload_syncedFaces" = "iPhoto Faces";
-"categoryUpload_mediaTypes" = "Media Types";
-"categoryUpload_otherAlbums" = "Other Albums";
+"categoryUpload_syncedEvents" = "Wydarzenia iPhoto";
+"categoryUpload_syncedAlbums" = "Albumy iPhoto";
+"categoryUpload_syncedFaces" = "Twarze iPhoto";
+"categoryUpload_mediaTypes" = "Typy mediów";
+"categoryUpload_otherAlbums" = "Inne albumy";
 
 "categoyUpload_loadSubCategories" = "ładowanie";
 "categoryUpload_images" = "Prześlij zdjęcia";
@@ -287,9 +287,9 @@
 "sortBy" = "Sortuj wg";
 "imageSortTitle" = "Sortuj zdjęcia";
 "imageSortMessage" = "Wybierz sposób sortowania zdjęć";
-"imageSortingHUD" = "Sortowanie zdjęć";
-"imageSelectingHUD" = "Selecting Photos…";
-"imageDeselectingHUD" = "Deselecting Photos…";
+"imageSortingHUD" = "Sortowanie zdjęć...";
+"imageSelectingHUD" = "Zaznaczanie zdjęć...";
+"imageDeselectingHUD" = "Odznaczanie zdjęć...";
 
 // Image options (actions)
 "imageOptions_title" = "Opcje zdjęcia";
@@ -449,19 +449,19 @@
 
 "imageUploadRemove" = "Usuwanie przesłanych zdjęć";
 
-"imageUploadTableCell_waiting" = "Waiting...";
-"imageUploadTableCell_preparing" = "Preparing...";
-"imageUploadTableCell_prepared" = "Ready for upload...";
+"imageUploadTableCell_waiting" = "Oczekiwanie...";
+"imageUploadTableCell_preparing" = "Przygotowywanie...";
+"imageUploadTableCell_prepared" = "Gotowy do przesłania...";
 "imageUploadTableCell_uploading" = "Przesyłanie...";
-"imageUploadTableCell_uploaded" = "Uploaded";
-"imageUploadTableCell_finishing" = "Finishing...";
+"imageUploadTableCell_uploaded" = "Przesłane";
+"imageUploadTableCell_finishing" = "Kończenie...";
 
-"imageUploadClearFailedSingle" = "Clear Failed Upload";
-"imageUploadClearFailedSeveral" = "Clear %@ Failed Uploads";
-"imageUploadClearCompletedSingle" = "Clear Completed Upload";
-"imageUploadClearCompletedSeveral" = "Clear %@ Completed Uploads";
-"imageUploadResumeSingle" = "Resume Failed Upload";
-"imageUploadResumeSeveral" = "Resume %@ Failed Uploads";
+"imageUploadClearFailedSingle" = "Wyczyść nieudane przesłanie";
+"imageUploadClearFailedSeveral" = "Wyczyść nieudane przesłania: %@";
+"imageUploadClearCompletedSingle" = "Wyczyść zakończone przesłanie";
+"imageUploadClearCompletedSeveral" = "Wyczyść zakończone przesłania: %@";
+"imageUploadResumeSingle" = "Wznów nieudane przesłanie";
+"imageUploadResumeSeveral" = "Wznów nieudane przesłania: %@";
 
 "imageUploadProgressBar_zero" = "Przesyłanie 0/0";
 "imageUploadProgressBar_nonZero" = "Przesyłanie %@/%@";
@@ -477,7 +477,7 @@
 "uploadCancelled_title" = "Anulowano Wysyłanie";
 
 "imageUploadError_title" = "Błąd przesyłania zdjęcia";
-"imageUploadError_format" = "File format not accepted by Piwigo server.";
+"imageUploadError_format" = "Format pliku nie został zaakceptowany przez serwer Piwigo.";
 "imageUploadError_source" = "nie można utworzyć źródła zdjęcia";
 "imageUploadError_destination" = "nie można utworzyć celu zdjęcia";
 "imageUploadError_iCloud" = "Nie można pobrać zdjęcia. Błąd: %@";

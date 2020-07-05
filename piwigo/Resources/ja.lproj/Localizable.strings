@@ -456,10 +456,10 @@
 "imageUploadTableCell_uploaded" = "Uploaded";
 "imageUploadTableCell_finishing" = "Finishing...";
 
-"imageUploadClearFailedSingle" = "Clear Failed Upload";
-"imageUploadClearFailedSeveral" = "Clear %@ Failed Uploads";
-"imageUploadClearCompletedSingle" = "Clear Completed Upload";
-"imageUploadClearCompletedSeveral" = "Clear %@ Completed Uploads";
+"imageUploadClearFailedSingle" = "失敗したアップロードをクリアする";
+"imageUploadClearFailedSeveral" = "%@ 件の失敗したアップロードをクリアする";
+"imageUploadClearCompletedSingle" = "完了したアップロードをクリアする";
+"imageUploadClearCompletedSeveral" = "%@ 件の完了したアップロードをクリア";
 "imageUploadResumeSingle" = "Resume Failed Upload";
 "imageUploadResumeSeveral" = "Resume %@ Failed Uploads";
 

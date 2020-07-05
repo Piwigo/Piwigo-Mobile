@@ -57,7 +57,7 @@
 
 // Upload objects
 "CoreDataFetch_UploadCreateFailed" = "No se ha podido crear un nuevo objeto de carga.";
-"CoreDataFetch_UploadMissingAsset" = "Failed to retrieve photo.";
+"CoreDataFetch_UploadMissingAsset" = "Error al recuperar la foto.";
 
 // ===========================================================================
 // ==> LOGIN / LOGOUT
@@ -167,14 +167,14 @@
 "categoryUpload_chooseAlbum" = "Selecciona un sub-álbum al que subir fotos";
 "categoryUpload_LocalAlbums" = "Álbumes locales";
 "categoryUpload_chooseLocalAlbum" = "Selecciona un álbum del que obtener fotos";
-"categoryUpload_sharedAlbums" = "Shared Albums";
+"categoryUpload_sharedAlbums" = "Álbumes compartidos";
 "categoryUpload_iCloudAlbums" = "Álbumes de iCloud";
 "categoryUpload_chooseiCloudAlbum" = "Selecciona un álbum de iCloud del cuál obtener fotos de";
-"categoryUpload_syncedEvents" = "iPhoto Events";
-"categoryUpload_syncedAlbums" = "iPhoto Albums";
-"categoryUpload_syncedFaces" = "iPhoto Faces";
-"categoryUpload_mediaTypes" = "Media Types";
-"categoryUpload_otherAlbums" = "Other Albums";
+"categoryUpload_syncedEvents" = "Eventos de iPhoto";
+"categoryUpload_syncedAlbums" = "Álbumes de iPhoto";
+"categoryUpload_syncedFaces" = "Caras de iPhoto";
+"categoryUpload_mediaTypes" = "Tipos de medios";
+"categoryUpload_otherAlbums" = "Otros álbumes";
 
 "categoyUpload_loadSubCategories" = "cargar";
 "categoryUpload_images" = "Subir fotos";
@@ -288,8 +288,8 @@
 "imageSortTitle" = "Ordenar fotos";
 "imageSortMessage" = "Selecciona cómo deseas ordenar las fotos";
 "imageSortingHUD" = "Ordenando fotos";
-"imageSelectingHUD" = "Selecting Photos…";
-"imageDeselectingHUD" = "Deselecting Photos…";
+"imageSelectingHUD" = "Seleccionando fotos…";
+"imageDeselectingHUD" = "Deseleccionando fotos…";
 
 // Image options (actions)
 "imageOptions_title" = "Opciones para la foto";
@@ -449,19 +449,19 @@
 
 "imageUploadRemove" = "Eliminando fotos subidas";
 
-"imageUploadTableCell_waiting" = "Waiting...";
-"imageUploadTableCell_preparing" = "Preparing...";
-"imageUploadTableCell_prepared" = "Ready for upload...";
+"imageUploadTableCell_waiting" = "Esperando...";
+"imageUploadTableCell_preparing" = "Preparando...";
+"imageUploadTableCell_prepared" = "Listo para subir...";
 "imageUploadTableCell_uploading" = "Subiendo...";
-"imageUploadTableCell_uploaded" = "Uploaded";
-"imageUploadTableCell_finishing" = "Finishing...";
+"imageUploadTableCell_uploaded" = "Subido";
+"imageUploadTableCell_finishing" = "Terminando...";
 
-"imageUploadClearFailedSingle" = "Clear Failed Upload";
-"imageUploadClearFailedSeveral" = "Clear %@ Failed Uploads";
-"imageUploadClearCompletedSingle" = "Clear Completed Upload";
-"imageUploadClearCompletedSeveral" = "Clear %@ Completed Uploads";
-"imageUploadResumeSingle" = "Resume Failed Upload";
-"imageUploadResumeSeveral" = "Resume %@ Failed Uploads";
+"imageUploadClearFailedSingle" = "Limpiar subida fallida";
+"imageUploadClearFailedSeveral" = "Limpiar %@ subidas fallidas";
+"imageUploadClearCompletedSingle" = "Limpiar subida completada";
+"imageUploadClearCompletedSeveral" = "Limpiar %@ subidas completadas";
+"imageUploadResumeSingle" = "Reanudar la subida fallida";
+"imageUploadResumeSeveral" = "Reanudar %@ subidas fallidas";
 
 "imageUploadProgressBar_zero" = "Subiendo 0/0";
 "imageUploadProgressBar_nonZero" = "Subiendo %@/%@";
@@ -477,7 +477,7 @@
 "uploadCancelled_title" = "Carga cancelada";
 
 "imageUploadError_title" = "Error al cargar la foto";
-"imageUploadError_format" = "File format not accepted by Piwigo server.";
+"imageUploadError_format" = "Formato de archivo no aceptado por el servidor Piwigo.";
 "imageUploadError_source" = "no se pudo crear la fuente de la foto";
 "imageUploadError_destination" = "no se puede crear el destino de la foto";
 "imageUploadError_iCloud" = "No se pudo obtener la foto. Error: %@";
