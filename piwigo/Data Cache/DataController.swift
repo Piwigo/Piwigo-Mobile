@@ -195,6 +195,7 @@ class DataController: NSObject {
         var privateManagedObjectContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         privateManagedObjectContext.parent = managedObjectContext
         privateManagedObjectContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        privateManagedObjectContext.shouldDeleteInaccessibleFaults = true
         // Set unused undoManager to nil for macOS (it is nil by default on iOS)
         // to reduce resource requirements.
 //        privateManagedObjectContext.undoManager = nil
