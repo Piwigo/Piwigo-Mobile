@@ -165,7 +165,7 @@ class PhotosFetch: NSObject {
             fileName = Model.sharedInstance().defaultPrefix + fileName
         }
 
-        print("=> filename = \(fileName)")
+//        print("=> filename = \(fileName)")
         return fileName
     }
 
