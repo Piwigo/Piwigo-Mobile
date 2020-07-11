@@ -243,16 +243,13 @@ class UploadsProvider: NSObject {
     
     // MARK: - Delete Uploads
     /**
-     Delete a batch of upload requests from the Core Data store on a private queue,
+     Delete a batch of upload requests from the Core Data store on the main queue,
      processing the record in batches to avoid a high memory footprint.
     */
     func delete(uploadRequests: [Upload]) {
         
         guard !uploadRequests.isEmpty else { return }
         
-        // Create a private queue context.
-        let taskContext = DataController.getPrivateContext()
-                
         // Process records in batches to avoid a high memory footprint.
         let batchSize = 256
         let count = uploadRequests.count
@@ -272,7 +269,7 @@ class UploadsProvider: NSObject {
             let uploadsBatch = Array(uploadRequests[range])
             
             // Stop the entire import if any batch is unsuccessful.
-            if !deleteOneBatch(uploadsBatch, taskContext: taskContext) {
+            if !deleteOneBatch(uploadsBatch) {
                 return
             }
         }
@@ -287,12 +284,12 @@ class UploadsProvider: NSObject {
      catches throws within the closure and uses a return value to indicate
      whether the import is successful.
     */
-    private func deleteOneBatch(_ uploadsBatch: [Upload], taskContext: NSManagedObjectContext) -> Bool {
+    private func deleteOneBatch(_ uploadsBatch: [Upload]) -> Bool {
         
         var success = false
                 
         // taskContext.performAndWait
-        taskContext.performAndWait {
+        managedObjectContext.performAndWait {
             
             // Retrieve existing completed uploads
             // Create a fetch request for the Upload entity sorted by localIdentifier
@@ -302,7 +299,7 @@ class UploadsProvider: NSObject {
 
             // Create a fetched results controller and set its fetch request, context, and delegate.
             let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                managedObjectContext: taskContext,
+                                                managedObjectContext: managedObjectContext,
                                                   sectionNameKeyPath: nil, cacheName: nil)
             
             // Perform the fetch.
@@ -321,21 +318,18 @@ class UploadsProvider: NSObject {
                     item.localIdentifier == upload.localIdentifier })
                 {
                     // Delete upload record
-                    taskContext.delete(completedUploads[index])
+                    managedObjectContext.delete(completedUploads[index])
                 }
             }
             
             // Save all insertions and deletions from the context to the store.
-            if taskContext.hasChanges {
+            if managedObjectContext.hasChanges {
                 do {
-                    try taskContext.save()
+                    try managedObjectContext.save()
                 }
                 catch {
-                    print("Error: \(error)\nCould not save Core Data context.")
-                    return
+                    fatalError("Failure to save context: \(error)")
                 }
-                // Reset the taskContext to free the cache and lower the memory footprint.
-                taskContext.reset()
             }
 
             success = true
