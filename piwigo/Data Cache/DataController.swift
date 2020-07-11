@@ -100,8 +100,13 @@ class DataController: NSObject {
 
         var managedObjectModel: NSManagedObjectModel = {
             // This resource is the same name as your xcdatamodeld contained in your project
-            let modelURL = Bundle.main.url(forResource: "DataModel", withExtension: "momd")!
-            return NSManagedObjectModel(contentsOf: modelURL)!
+            guard let modelURL = Bundle.main.url(forResource: "DataModel", withExtension: "momd") else {
+                fatalError("Error loading model from bundle")
+            }
+            guard let managedObjectModel = NSManagedObjectModel(contentsOf: modelURL) else {
+                fatalError("Error initializing mom from: \(modelURL)")
+            }
+            return managedObjectModel
         }()
 
         var persistentStoreCoordinator: NSPersistentStoreCoordinator = {
