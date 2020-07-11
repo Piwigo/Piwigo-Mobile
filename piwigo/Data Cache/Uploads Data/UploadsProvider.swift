@@ -342,7 +342,7 @@ class UploadsProvider: NSObject {
     /**
      Fetches upload requests synchronously in the background
      */
-    func uploadRequestsToComplete() -> [Upload]? {
+    func requestsToComplete() -> [Upload]? {
         
         // Initialisation
         var uploads: [Upload]? = nil
@@ -352,18 +352,76 @@ class UploadsProvider: NSObject {
 
         // Perform the fetch
         taskContext.performAndWait {
-            
+
             // Retrieve existing completed uploads
             // Create a fetch request for the Upload entity sorted by localIdentifier
             let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: "requestDate", ascending: true)]
-            fetchRequest.predicate = NSPredicate(format: "requestState != %d", kPiwigoUploadState.finished.rawValue)
+            fetchRequest.predicate = NSPredicate(format: "requestState != %d && requestState != %d  && requestState != %d", kPiwigoUploadState.finished.rawValue, kPiwigoUploadState.preparingFail.rawValue, kPiwigoUploadState.formatError.rawValue)
 
             // Create a fetched results controller and set its fetch request, context, and delegate.
             let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
                                                 managedObjectContext: taskContext,
                                                   sectionNameKeyPath: nil, cacheName: nil)
-            
+
+            // Perform the fetch.
+            do {
+                try controller.performFetch()
+            } catch {
+                fatalError("Unresolved error \(error)")
+            }
+            uploads = controller.fetchedObjects
+        }
+        return uploads
+
+//        // Create a fetch request for the Upload entity sorted by localIdentifier
+//        // Retrieve upload requests which have to be resumed or performed
+//        let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
+//        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "requestDate", ascending: true)]
+//        fetchRequest.predicate = NSPredicate(format: "requestState != %d && requestState != %d  && requestState != %d", kPiwigoUploadState.finished.rawValue, kPiwigoUploadState.preparingFail.rawValue, kPiwigoUploadState.formatError.rawValue)
+//
+//        // Create `asynchronousFetchRequest` with the fetch request and the completion closure
+//        let asynchronousFetchRequest = NSAsynchronousFetchRequest(fetchRequest: fetchRequest) { asynchronousFetchResult in
+//
+//            // Retrieve an array of dogs from the fetch result `finalResult`
+//            guard let uploads = asynchronousFetchResult.finalResult else { return }
+//
+//            // Trigger upload manager
+//            if uploads.count > 0 {
+//
+//            }
+//        }
+//
+//        do {
+//            // Executes `asynchronousFetchRequest`
+//            try taskContext.execute(asynchronousFetchRequest)
+//        } catch let error {
+//            print("NSAsynchronousFetchRequest error: \(error)")
+//        }
+    }
+
+    func requestsToResume() -> [Upload]? {
+        
+        // Initialisation
+        var uploads: [Upload]? = nil
+        
+        // Create a private queue context.
+        let taskContext = DataController.getPrivateContext()
+
+        // Perform the fetch
+        taskContext.performAndWait {
+
+            // Retrieve existing completed uploads
+            // Create a fetch request for the Upload entity sorted by localIdentifier
+            let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "requestDate", ascending: true)]
+            fetchRequest.predicate = NSPredicate(format: "requestState != %d && requestState != %d  && requestState != %d", kPiwigoUploadState.preparingError.rawValue, kPiwigoUploadState.uploadingError.rawValue, kPiwigoUploadState.finishingError.rawValue)
+
+            // Create a fetched results controller and set its fetch request, context, and delegate.
+            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                                managedObjectContext: taskContext,
+                                                  sectionNameKeyPath: nil, cacheName: nil)
+
             // Perform the fetch.
             do {
                 try controller.performFetch()
@@ -374,7 +432,7 @@ class UploadsProvider: NSObject {
         }
         return uploads
     }
-
+    
     
     // MARK: - Clear Uploads
     /**
