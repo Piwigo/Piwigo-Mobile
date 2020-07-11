@@ -449,10 +449,10 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 	}
 
     // If no image left, update category cache to remove thumbnail image
-    if (self.numberOfImages == 0) {
-        NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO", @"albumId" : @(self.albumId)};
-        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
-    }
+//    if (self.numberOfImages == 0) {
+//        NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO", @"albumId" : @(self.albumId)};
+//        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
+//    }
 }
 
 #pragma mark - debugging support -
