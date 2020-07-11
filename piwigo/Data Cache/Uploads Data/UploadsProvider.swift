@@ -143,10 +143,19 @@ class UploadsProvider: NSObject {
             if taskContext.hasChanges {
                 do {
                     try taskContext.save()
+
+                    // Performs a task in the main queue and wait until this tasks finishes
+                    managedObjectContext.performAndWait {
+                        do {
+                            // Saves the data from the child to the main context to be stored properly
+                            try managedObjectContext.save()
+                        } catch {
+                            fatalError("Failure to save context: \(error)")
+                        }
+                    }
                 }
                 catch {
-                    print("Error: \(error)\nCould not save Core Data context.")
-                    return
+                    fatalError("Failure to save context: \(error)")
                 }
                 // Reset the taskContext to free the cache and lower the memory footprint.
                 taskContext.reset()
@@ -209,16 +218,25 @@ class UploadsProvider: NSObject {
             if taskContext.hasChanges {
                 do {
                     try taskContext.save()
-                    updateBadgeAndButton()
+                    
+                    // Performs a task in the main queue and wait until this tasks finishes
+                    managedObjectContext.performAndWait {
+                        do {
+                            // Saves the data from the child to the main context to be stored properly
+                            try managedObjectContext.save()
+                        } catch {
+                            fatalError("Failure to save context: \(error)")
+                        }
+                    }
                 }
                 catch {
-                    print("Error: \(error)\nCould not save Core Data context.")
-                    return
+                    fatalError("Failure to save context: \(error)")
                 }
                 // Reset the taskContext to free the cache and lower the memory footprint.
                 taskContext.reset()
             }
         }
+        updateBadgeAndButton()
         completionHandler(nil)
     }
 
