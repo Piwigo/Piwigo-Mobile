@@ -100,51 +100,80 @@ class UploadImageTableViewCell: MGSwipeTableCell {
 
         // Image info label
         imageInfoLabel.textColor = UIColor.piwigoColorRightLabel()
-        if [.preparingError, .formatError, .uploadingError, .finishingError].contains(upload.state) {
-            imageInfoLabel.text = upload.requestError
-        } else {
-            // Get corresponding image asset
-            guard let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [upload.localIdentifier], options: nil).firstObject else {
+        
+        // Get corresponding image asset
+        guard let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [upload.localIdentifier], options: nil).firstObject else {
+            if upload.requestError?.count ?? 0 > 0 {
                 imageInfoLabel.text = upload.requestError
-                self.cellImage.image = UIImage(named: "placeholder")
-                uploadingProgress?.setProgress(0.0, animated: false)
-                playImage.isHidden = true
-                return
+            } else {
+                switch upload.state {
+                case .preparingError, .preparingFail:
+                    imageInfoLabel.text = UploadError.missingAsset.localizedDescription
+                case .formatError:
+                    imageInfoLabel.text = UploadError.wrongDataFormat.localizedDescription
+                case .uploadingError, .finishingError:
+                    imageInfoLabel.text = UploadError.networkUnavailable.localizedDescription
+                default:
+                    imageInfoLabel.text = "— ? —"
+                }
             }
-            
+            self.cellImage.image = UIImage(named: "placeholder")
+            uploadingProgress?.setProgress(0.0, animated: false)
+            playImage.isHidden = true
+            return
+        }
+        
+        // Display image image
+        if [.preparingError, .preparingFail, .formatError, .uploadingError, .finishingError].contains(upload.state) {
+            // Display error message
+            if upload.requestError?.count ?? 0 > 0 {
+                imageInfoLabel.text = upload.requestError
+            } else {
+                switch upload.state {
+                case .preparingError, .preparingFail:
+                    imageInfoLabel.text = UploadError.missingAsset.localizedDescription
+                case .formatError:
+                    imageInfoLabel.text = UploadError.wrongDataFormat.localizedDescription
+                case .uploadingError, .finishingError:
+                    imageInfoLabel.text = UploadError.networkUnavailable.localizedDescription
+                default:
+                    imageInfoLabel.text = "— ? —"
+                }
+            }
+        } else {
             // Display image information
             imageInfoLabel.text = getImageInfo(from: imageAsset, for: width - 2*Int(indentationWidth))
-
-            // Cell image: retrieve data of right size and crop image
-            let retinaScale = Int(UIScreen.main.scale)
-            let retinaSquare = CGSize(width: contentView.frame.size.width * CGFloat(retinaScale),
-                                      height: contentView.frame.size.height * CGFloat(retinaScale))
-
-            let cropToSquare = PHImageRequestOptions()
-            cropToSquare.resizeMode = .exact
-            let cropSideLength = min(imageAsset.pixelWidth, imageAsset.pixelHeight)
-            let square = CGRect(x: 0, y: 0, width: cropSideLength, height: cropSideLength)
-            let cropRect = square.applying(CGAffineTransform(scaleX: CGFloat(1.0 / Float(imageAsset.pixelWidth)), y: CGFloat(1.0 / Float(imageAsset.pixelHeight))))
-            cropToSquare.normalizedCropRect = cropRect
-
-            PHImageManager.default().requestImage(for: imageAsset, targetSize: retinaSquare, contentMode: .aspectFit, options: cropToSquare, resultHandler: { result, info in
-                DispatchQueue.main.async(execute: {
-                    if info?[PHImageErrorKey] != nil {
-                        let error = info?[PHImageErrorKey] as? Error
-                        if let description = error?.localizedDescription {
-                            print("=> Error : \(description)")
-                        }
-                        self.cellImage.image = UIImage(named: "placeholder")
-                    } else {
-                        self.cellImage.image = result
-                    }
-                    self.cellImage.layer.cornerRadius = 10 - 3
-                })
-            })
-            
-            // Video icon
-            playImage.isHidden = imageAsset.mediaType == .video ? false : true
         }
+
+        // Cell image: retrieve data of right size and crop image
+        let retinaScale = Int(UIScreen.main.scale)
+        let retinaSquare = CGSize(width: contentView.frame.size.width * CGFloat(retinaScale),
+                                  height: contentView.frame.size.height * CGFloat(retinaScale))
+
+        let cropToSquare = PHImageRequestOptions()
+        cropToSquare.resizeMode = .exact
+        let cropSideLength = min(imageAsset.pixelWidth, imageAsset.pixelHeight)
+        let square = CGRect(x: 0, y: 0, width: cropSideLength, height: cropSideLength)
+        let cropRect = square.applying(CGAffineTransform(scaleX: CGFloat(1.0 / Float(imageAsset.pixelWidth)), y: CGFloat(1.0 / Float(imageAsset.pixelHeight))))
+        cropToSquare.normalizedCropRect = cropRect
+
+        PHImageManager.default().requestImage(for: imageAsset, targetSize: retinaSquare, contentMode: .aspectFit, options: cropToSquare, resultHandler: { result, info in
+            DispatchQueue.main.async(execute: {
+                if info?[PHImageErrorKey] != nil {
+                    let error = info?[PHImageErrorKey] as? Error
+                    if let description = error?.localizedDescription {
+                        print("=> Error : \(description)")
+                    }
+                    self.cellImage.image = UIImage(named: "placeholder")
+                } else {
+                    self.cellImage.image = result
+                }
+                self.cellImage.layer.cornerRadius = 10 - 3
+            })
+        })
+        
+        // Video icon
+        playImage.isHidden = imageAsset.mediaType == .video ? false : true
     }
     
     func update(with userInfo: [AnyHashable : Any]) {
