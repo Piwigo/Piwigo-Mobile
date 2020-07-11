@@ -809,13 +809,6 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                     self.isAlreadyTryingToLogin = NO;
                     [self hideLoading];
 
-                    // Launch upload tasks
-                    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                    [[appDelegate uploadManager] setIsPreparingWithStatus:NO];
-                    [[appDelegate uploadManager] setIsUploadingWithStatus:NO];
-                    [[appDelegate uploadManager] setIsFinishingWithStatus:NO];
-                    [[appDelegate uploadManager] findNextImageToUpload];
-
 #if defined(DEBUG_SESSION)
                     NSLog(@"=> checkSessionStatusAndTryRelogin: Connection still alive…");
                     NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@",

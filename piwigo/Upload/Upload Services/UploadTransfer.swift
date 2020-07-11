@@ -20,7 +20,8 @@ class UploadTransfer {
 
     // MARK: - Transfer Image of Request
     func imageOfRequest(_ upload: UploadProperties) {
-        
+        print("    > imageOfRequest...")
+
         // Prepare creation date
         var creationDate = ""
         if let date = upload.creationDate {
@@ -188,6 +189,7 @@ class UploadTransfer {
                 imageTitle: upload.imageTitle, comment: upload.comment, tags: upload.tags, imageId: upload.imageId)
             
             // Update request with error description
+            print("    >", error.localizedDescription)
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                 // Consider next image
                 self.uploadManager?.setIsUploading(status: false)
@@ -203,7 +205,8 @@ class UploadTransfer {
             isVideo: upload.isVideo, author: upload.author, privacyLevel: upload.privacyLevel,
             imageTitle: upload.imageTitle, comment: upload.comment, tags: upload.tags, imageId: upload.imageId)
 
-        // Update request ready for transfer
+        // Update request ready for finish
+        print("    > transferred file \(uploadProperties.fileName!)")
         uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
             // Upload ready for transfer
             self.uploadManager?.setIsUploading(status: false)

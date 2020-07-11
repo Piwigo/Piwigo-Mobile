@@ -65,6 +65,7 @@ class UploadImage {
                 imageTitle: upload.imageTitle, comment: upload.comment, tags: upload.tags, imageId: upload.imageId)
             
             // Update request with error description
+            print("    >", error.localizedDescription)
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                 // Consider next image
                 self.uploadManager?.setIsPreparing(status: false)
@@ -81,6 +82,7 @@ class UploadImage {
             imageTitle: upload.imageTitle, comment: upload.comment, tags: upload.tags, imageId: upload.imageId)
 
         // Update request ready for transfer
+        print("    > prepared file \(uploadProperties.fileName!)")
         uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
             // Upload ready for transfer
             self.uploadManager?.setIsPreparing(status: false)
@@ -90,7 +92,7 @@ class UploadImage {
     // MARK: - Retrieve UIImage and Image Data
     
     private func retrieveUIImage(from imageAsset: PHAsset) -> (UIImage?, Error?) {
-        print("   > retrieveUIImageFrom...")
+        print("    > retrieveUIImageFrom...")
 
         // Case of an image…
         let options = PHImageRequestOptions()
@@ -113,7 +115,7 @@ class UploadImage {
 
         // The block Photos calls periodically while downloading the photo
         options.progressHandler = { progress, error, stop, info in
-            print(String(format: "   > retrieveUIImageFrom... progress %lf", progress))
+            print(String(format: "    > retrieveUIImageFrom... progress %lf", progress))
         }
 
         // Requests image…
@@ -143,7 +145,7 @@ class UploadImage {
     }
 
     private func retrieveFullSizeImageData(from imageAsset: PHAsset) -> (Data?, Error?) {
-        print("   > retrieveFullSizeAssetDataFromImage...")
+        print("    > retrieveFullSizeAssetDataFromImage...")
 
         // Case of an image…
         let options = PHImageRequestOptions()
@@ -158,7 +160,7 @@ class UploadImage {
 
         // The block Photos calls periodically while downloading the photo
         options.progressHandler = { progress, error, stop, info in
-            print(String(format: "   > retrieveFullSizeAssetDataFromImage... progress %lf", progress))
+            print(String(format: "    > retrieveFullSizeAssetDataFromImage... progress %lf", progress))
         }
 
         var error: Error?
@@ -193,7 +195,7 @@ class UploadImage {
     private func modifyImage(for upload: UploadProperties,
                              with originalData: Data, andObject originalObject: UIImage,
                              completionHandler: @escaping (UploadProperties, Error?) -> Void) {
-        print("   > modifyImage...")
+        print("    > modifyImage...")
 
         // Create CGI reference from image data (to retrieve complete metadata)
         guard let source: CGImageSource = CGImageSourceCreateWithData((originalData as CFData), nil) else {

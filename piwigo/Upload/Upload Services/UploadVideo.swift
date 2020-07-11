@@ -179,6 +179,7 @@ class UploadVideo {
                 imageTitle: upload.imageTitle, comment: upload.comment, tags: upload.tags, imageId: upload.imageId)
             
             // Update request with error description
+            print("    >", error.localizedDescription)
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                 // Consider next image
                 self.uploadManager?.setIsPreparing(status: false)
@@ -195,6 +196,7 @@ class UploadVideo {
             imageTitle: upload.imageTitle, comment: upload.comment, tags: upload.tags, imageId: upload.imageId)
 
         // Update request ready for transfer
+        print("    > prepared file \(uploadProperties.fileName!)")
         uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
             // Upload ready for transfer
             self.uploadManager?.setIsPreparing(status: false)
@@ -247,7 +249,7 @@ class UploadVideo {
     
     private func retrieveVideo(from imageAsset: PHAsset, with options: PHVideoRequestOptions,
                                completionHandler: @escaping (AVAsset?, PHVideoRequestOptions, Error?) -> Void) {
-        print("   > retrieveVideoAssetFrom...")
+        print("    > retrieveVideoAssetFrom...")
 
         // The block Photos calls periodically while downloading the video.
         options.progressHandler = { progress, error, stop, dict in
@@ -333,7 +335,7 @@ class UploadVideo {
     }
                              
     private func getExportSession(imageAsset: PHAsset, options: PHVideoRequestOptions, exportPreset: String,                                           completionHandler: @escaping (AVAssetExportSession?, Error?) -> Void) {
-        print("   > getExportSession...")
+        print("    > getExportSession...")
         
         // Requests video with selected export preset…
         PHImageManager.default().requestExportSession(forVideo: imageAsset,
@@ -355,7 +357,7 @@ class UploadVideo {
     // MARK: - Modify Metadata
 
     private func modifyVideo(for upload: UploadProperties, with exportSession: AVAssetExportSession) -> Void {
-    print("   > modifyVideo...")
+    print("    > modifyVideo...")
     
         // Strips private metadata if user requested it in Settings
         // Apple documentation: 'metadataItemFilterForSharing' removes user-identifying metadata items, such as location information and leaves only metadata releated to commerce or playback itself. For example: playback, copyright, and commercial-related metadata, such as a purchaser’s ID as set by a vendor of digital media, along with metadata either derivable from the media itself or necessary for its proper behavior are all left intact.

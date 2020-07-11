@@ -22,7 +22,8 @@ class UploadFinisher {
 
     // MARK: - Set Image Info
     func imageOfRequest(upload: UploadProperties) {
-        
+        print("    > imageOfRequest...")
+
         // Prepare creation date
         var creationDate = ""
         if let date = upload.creationDate {
@@ -125,7 +126,7 @@ class UploadFinisher {
                 
                 // Update upload record, cache and views
                 self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
-                    print("•••> complete ;-)")
+                    print("•••>> complete ;-)")
                     
                     // Any other image in upload queue?
                     self.uploadManager?.setIsFinishing(status: false)
@@ -159,6 +160,7 @@ class UploadFinisher {
                 imageTitle: upload.imageTitle, comment: upload.comment, tags: upload.tags, imageId: upload.imageId)
             
             // Update request with error description
+            print("    >", error.localizedDescription)
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                 // Consider next image
                 self.uploadManager?.setIsFinishing(status: false)
@@ -175,6 +177,7 @@ class UploadFinisher {
             imageTitle: upload.imageTitle, comment: upload.comment, tags: upload.tags, imageId: upload.imageId)
 
         // Update request ready for transfer
+        print("    > finished with \(uploadProperties.fileName!)")
         uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
             // Upload ready for transfer
             self.uploadManager?.setIsFinishing(status: false)

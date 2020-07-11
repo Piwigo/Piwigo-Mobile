@@ -43,11 +43,10 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
 -(void)loadNavigation
 {
     // Create upload manager instance
-    self.uploadManager = [[UploadManager alloc] init];
-    [self.uploadManager setIsPreparingWithStatus:NO];
-    [self.uploadManager setIsUploadingWithStatus:NO];
-    [self.uploadManager setIsFinishingWithStatus:NO];
-    [self.uploadManager resumeAll];
+    if (self.uploadManager == nil) {
+        self.uploadManager = [[UploadManager alloc] init];
+        [self.uploadManager resumeAll];
+    }
 
     // Display default album
     AlbumImagesViewController *defaultAlbum = [[AlbumImagesViewController alloc] initWithAlbumId:[Model sharedInstance].defaultCategory inCache:NO];
