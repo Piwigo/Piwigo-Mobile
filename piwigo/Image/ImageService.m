@@ -1281,7 +1281,10 @@ NSString * const kGetImageOrderDescending = @"desc";
                   if(completion) {
                       if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
                           for (PiwigoImageData *image in images) {
+                              // Update cache
                               [[CategoriesData sharedInstance] removeImage:image];
+                              // Update UI
+                              [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil userInfo:nil];
                           }
                           completion(task);
                       } else {
