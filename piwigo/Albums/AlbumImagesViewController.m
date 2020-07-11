@@ -1305,15 +1305,19 @@ NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploa
                     [self.imagesCollection insertItemsAtIndexPaths:itemsToInsert];
                 }
 
-                // Delete cells of deleted images
+                // Delete cells of deleted images, and remove them from selection
                 NSMutableArray<NSIndexPath *> *itemsToDelete = [NSMutableArray new];
                 for (NSInteger index = 0; index < oldImageList.count; index++) {
-                    PiwigoImageData *image = [oldImageList objectAtIndex:index];
+                    PiwigoImageData *imageData = [oldImageList objectAtIndex:index];
                     NSInteger indexOfExistingItem = [self.albumData.images indexOfObjectPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger oldIdx, BOOL * _Nonnull stop) {
-                     return obj.imageId == image.imageId;
+                     return obj.imageId == imageData.imageId;
                     }];
                     if (indexOfExistingItem == NSNotFound) {
-                     [itemsToInsert addObject:[NSIndexPath indexPathForItem:index inSection:1]];
+                     [itemsToDelete addObject:[NSIndexPath indexPathForItem:index inSection:1]];
+                        NSString *imageIdObject = [NSString stringWithFormat:@"%ld", (long)imageData.imageId];
+                        if ([self.selectedImageIds containsObject:imageIdObject]) {
+                            [self.selectedImageIds removeObject:imageIdObject];
+                        }
                     }
                 }
                 if (itemsToDelete.count > 0) {
@@ -1331,14 +1335,18 @@ NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploa
                 }
 
                 // Set navigation bar buttons
-                [self updateButtonsInPreviewMode];
+                if (self.isSelect == YES) {
+                    [self updateButtonsInSelectionMode];
+                } else {
+                    [self updateButtonsInPreviewMode];
+                }
 
                 // Update done
                 self.loadingImages = FALSE;
             }];
         }];
     }
-     else {
+    else {
          // The album title is not shown in backButtonItem to provide enough space
          // for image title on devices of screen width <= 414 ==> Restore album title
          self.title = NSLocalizedString(@"tabBar_albums", @"Albums");
@@ -2145,13 +2153,13 @@ NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploa
               ListOnCompletion:^(NSURLSessionTask *task) {
                   
                   // Images deleted
-                  for (PiwigoImageData *selectedImage in self.selectedImagesToDelete) {
-                      [self.albumData removeImageWithId:selectedImage.imageId];
-                      [self.selectedImageIds removeObject:[NSString stringWithFormat:@"%ld", (long)selectedImage.imageId]];
-                  }
+//                  for (PiwigoImageData *selectedImage in self.selectedImagesToDelete) {
+//                      [self.albumData removeImageWithId:selectedImage.imageId];
+//                      [self.selectedImageIds removeObject:[NSString stringWithFormat:@"%ld", (long)selectedImage.imageId]];
+//                  }
                   
                   // Reload collection
-                  [self.imagesCollection reloadData];
+//                  [self.imagesCollection reloadData];
 
                   // Hide HUD
                   dispatch_async(dispatch_get_main_queue(), ^{
