@@ -42,7 +42,6 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 		
         self.isLoadingMoreImages = NO;
         self.lastImageBulkCount = 0;
-//		self.lastImageBulkCount = [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
 		self.onPage = 0;
 	}
 	return self;
@@ -96,9 +95,13 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     albumData.name = [NSString stringWithString:query];
     albumData.comment = @"";
     albumData.globalRank = 0.0;
-    albumData.numberOfImages = 0;
-    albumData.totalNumberOfImages = 0;
     albumData.numberOfSubCategories = 0;
+
+    // Set number of images to more than one page
+    // because the number of images will be known after the first load.
+    NSInteger startNber = 2 * [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+    albumData.numberOfImages = startNber;
+    albumData.totalNumberOfImages = startNber;
     
     // No album image
     albumData.albumThumbnailId = 0;
@@ -141,10 +144,14 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     }
     albumData.comment = @"";
     albumData.globalRank = 0.0;
-    albumData.numberOfImages = 0;
-    albumData.totalNumberOfImages = 0;
     albumData.numberOfSubCategories = 0;
     
+    // Set number of images to more than one page
+    // because the number of images will be known after the first load.
+    NSInteger startNber = 2 * [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+    albumData.numberOfImages = startNber;
+    albumData.totalNumberOfImages = startNber;
+
     // No album image
     albumData.albumThumbnailId = 0;
     albumData.albumThumbnailUrl = @"";
@@ -220,7 +227,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
                 progress(self.onPage, numOfImgs);
             }
 
-            self.lastImageBulkCount = count;
+            self.lastImageBulkCount += count;
             if (count >= [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait]) {
                 self.onPage++;
             }
@@ -272,7 +279,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
      }];
 }
 
--(NSInteger)addImages:(NSArray*)images
+-(void)addImages:(NSArray*)images
 {
     // Create new image list
     NSMutableArray *newImageList = [NSMutableArray new];
@@ -281,7 +288,6 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     }
 	
     // Append new images
-    NSInteger count = 0;
     for(PiwigoImageData *imageData in images)
     {
         // API pwg.categories.getList returns:
@@ -291,12 +297,10 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
         //
         [newImageList addObject:imageData];
         [self.imageIds setValue:@(0) forKey:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]];
-        count++;
     }
     
     // Store updated list
 	self.imageList = newImageList;
-    return count;
 }
 
 -(void)addUploadedImage:(PiwigoImageData*)imageData
@@ -416,7 +420,6 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 	self.imageIds = [NSMutableDictionary new];
 	self.isLoadingMoreImages = NO;
     self.lastImageBulkCount = 0;
-//	self.lastImageBulkCount = [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
 	self.onPage = 0;
 	self.imageList = [NSArray new];
 }

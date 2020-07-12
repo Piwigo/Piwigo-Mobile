@@ -111,7 +111,6 @@ typedef enum {
 // Sort images by date: old to new
 @property (nonatomic, assign) kPiwigoSort defaultSort;
 @property (nonatomic, assign) NSInteger currentPage;
-@property (nonatomic, assign) NSInteger lastPageImageCount;
 
 // Display images titles in collection views
 @property (nonatomic, assign) BOOL displayImageTitles;
