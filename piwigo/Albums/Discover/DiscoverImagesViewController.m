@@ -101,7 +101,7 @@
         }
 
         // Bar buttons
-        self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"categoryImageList_selectButton", @"Select") style:UIBarButtonItemStylePlain target:self action:@selector(select)];
+        self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"categoryImageList_selectButton", @"Select") style:UIBarButtonItemStylePlain target:self action:@selector(didTapSelect)];
         [self.selectBarButton setAccessibilityIdentifier:@"Select"];
         self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
         [self.cancelBarButton setAccessibilityIdentifier:@"Cancel"];
@@ -559,30 +559,10 @@
 
 #pragma mark - Select Images
 
--(void)select
+-(void)didTapSelect
 {
-    if (!self.isSelect) {
-        
-        // Activate Images Selection mode
-        self.isSelect = YES;
-        
-        // Disable interaction with category cells and scroll to first image cell if needed
-        NSInteger numberOfImageCells = 0;
-        for (UICollectionViewCell *cell in self.imagesCollection.visibleCells) {
-
-            // Will scroll to position if no visible image cell
-            if ([cell isKindOfClass:[ImageCollectionViewCell class]]) {
-                numberOfImageCells++;
-            }
-        }
-
-        // Scroll to position of images if needed
-        if (!numberOfImageCells)
-            [self.imagesCollection scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1] atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
-        
-        // Refresh collection view
-        [self.imagesCollection reloadData];
-    }
+    // Activate Images Selection mode
+    self.isSelect = YES;
     
     // Update navigation bar
     [self updateBarButtons];
@@ -610,9 +590,6 @@
     self.touchedImageIds = [NSMutableArray new];
     self.selectedImageIds = [NSMutableArray new];
     [UIApplication sharedApplication].idleTimerDisabled = NO;
-    
-    // Refresh collection view
-    [self.imagesCollection reloadData];
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
@@ -676,7 +653,7 @@
                 }
                 
                 // Reload the cell and update the navigation bar
-                [self.imagesCollection reloadData];
+                [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
                 [self updateBarButtons];
             }
         }
@@ -863,8 +840,8 @@
             selectedCell.isSelected = NO;
             [self.selectedImageIds removeObject:imageIdObject];
         }
-        [collectionView reloadData];
-        
+        [collectionView reloadItemsAtIndexPaths:@[indexPath]];
+
         // and display nav buttons
         [self updateBarButtons];
     }
