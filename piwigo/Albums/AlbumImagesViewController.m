@@ -2017,10 +2017,18 @@ NSString * const kPiwigoNotificationDeletedImage = @"kPiwigoNotificationDeletedI
     [self disableBarButtons];
     
     // Display HUD
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") inMode:MBProgressHUDModeIndeterminate withDetailLabel:NO];
-    });
-    
+    self.totalNumberOfImages = self.selectedImageIds.count;
+    if (self.totalNumberOfImages > 1) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") inMode:MBProgressHUDModeAnnularDeterminate withDetailLabel:NO];
+        });
+    }
+    else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") inMode:MBProgressHUDModeIndeterminate withDetailLabel:NO];
+        });
+    }
+
     // Retrieve image data
     self.selectedImagesToDelete = [NSMutableArray new];
     self.selectedImagesToRemove = [NSMutableArray new];
@@ -2052,8 +2060,15 @@ NSString * const kPiwigoNotificationDeletedImage = @"kPiwigoNotificationDeletedI
                       [self.selectedImagesToDelete insertObject:imageData atIndex:0];
                   }
               
-                  // Next image
+                  // Image info retrieved
                   [self.selectedImageIdsToDelete removeLastObject];
+
+                  // Update HUD
+                  dispatch_async(dispatch_get_main_queue(), ^{
+                      [MBProgressHUD HUDForView:self.hudViewController.view].progress = 1.0 - (double)(self.selectedImageIdsToDelete.count) / self.totalNumberOfImages;
+                  });
+
+                  // Next image
                   [self retrieveImageDataBeforeDelete];
               }
               else {
