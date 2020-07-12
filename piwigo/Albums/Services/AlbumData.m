@@ -189,7 +189,7 @@
 	
     NSLog(@"updateImageSort: catId=%ld, downloaded:%ld, total:%ld", (long)self.categoryId, (long)downloadedImageDataCount, (long)totalImageCount);
 	if (downloadedImageDataCount == totalImageCount)
-	{	// we have all the image data, just manually sort it
+	{	// We have all the image data, just manually sort it (uploaded images are appended to cache)
         self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList for:[Model sharedInstance].defaultSort];
 		if(completion)
 		{
@@ -200,8 +200,8 @@
 	}
 	
     self.sortType = imageSort;
-	self.images = [NSArray new];
-	[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] resetData];
+//	self.images = [NSArray new];
+//	[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] resetData];
 	[self loadMoreImagesOnCompletion:completion];
 }
 
