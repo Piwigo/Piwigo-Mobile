@@ -287,7 +287,7 @@
 "sortBy" = "Ordenar por";
 "imageSortTitle" = "Ordenar fotos";
 "imageSortMessage" = "Selecciona cómo deseas ordenar las fotos";
-"imageSortingHUD" = "Ordenando fotos";
+"imageSortingHUD" = "Ordenando fotos…";
 "imageSelectingHUD" = "Seleccionando fotos…";
 "imageDeselectingHUD" = "Deseleccionando fotos…";
 

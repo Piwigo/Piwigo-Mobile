@@ -57,7 +57,7 @@
 
 // Upload objects
 "CoreDataFetch_UploadCreateFailed" = "新しいアップロードオブジェクトの作成に失敗しました。";
-"CoreDataFetch_UploadMissingAsset" = "Failed to retrieve photo.";
+"CoreDataFetch_UploadMissingAsset" = "写真の取得に失敗しました。";
 
 // ===========================================================================
 // ==> LOGIN / LOGOUT
@@ -77,10 +77,10 @@
 "loginHTTP_message" = "Piwigoサーバにおいて、基本アクセス認証が必要です。";
 "loginHTTPuser_placeholder" = "ユーザ名";
 "loginHTTPpwd_placeholder" = "パスワード";
-"loginCertFailed_title" = "Connection Not Private";
-"loginCertFailed_message" = "Piwigo warns you when a website has a certificate that is not valid. Do you still want to accept this certificate?";
-"loginHTTPSfailed_title" = "Secure Connection Failed";
-"loginHTTPSfailed_message" = "Piwigo cannot establish a secure connection. Do you want to try to establish an insecure connection?";
+"loginCertFailed_title" = "接続がプライベートではありません";
+"loginCertFailed_message" = "Piwigoはウェブサイトに無効な証明書がある場合に警告します。この証明書を受け入れますか？";
+"loginHTTPSfailed_title" = "安全な接続に失敗しました";
+"loginHTTPSfailed_message" = "Piwigoは安全な接続を確立できません。安全でない接続の確立を試みますか？";
 
 // Login — Errors
 "serverURLerror_title" = "URLが間違っています";
@@ -167,14 +167,14 @@
 "categoryUpload_chooseAlbum" = "写真をアップロードするアルバムを選択します";
 "categoryUpload_LocalAlbums" = "ローカルアルバム";
 "categoryUpload_chooseLocalAlbum" = "写真を取得するアルバムを選択します";
-"categoryUpload_sharedAlbums" = "Shared Albums";
+"categoryUpload_sharedAlbums" = "共有アルバム";
 "categoryUpload_iCloudAlbums" = "iCloudのアルバム";
 "categoryUpload_chooseiCloudAlbum" = "写真を取得するiCloud アルバムを選択します";
-"categoryUpload_syncedEvents" = "iPhoto Events";
-"categoryUpload_syncedAlbums" = "iPhoto Albums";
-"categoryUpload_syncedFaces" = "iPhoto Faces";
-"categoryUpload_mediaTypes" = "Media Types";
-"categoryUpload_otherAlbums" = "Other Albums";
+"categoryUpload_syncedEvents" = "iPhotoのイベント";
+"categoryUpload_syncedAlbums" = "iPhotoのアルバム";
+"categoryUpload_syncedFaces" = "iPhotoの顔";
+"categoryUpload_mediaTypes" = "メディアの種類";
+"categoryUpload_otherAlbums" = "その他のアルバム";
 
 "categoyUpload_loadSubCategories" = "読み込む";
 "categoryUpload_images" = "写真をアップロードする";
@@ -288,8 +288,8 @@
 "imageSortTitle" = "写真を並べ換える";
 "imageSortMessage" = "写真の並び順を選択してください";
 "imageSortingHUD" = "写真を並べ換える";
-"imageSelectingHUD" = "Selecting Photos…";
-"imageDeselectingHUD" = "Deselecting Photos…";
+"imageSelectingHUD" = "写真を選択中…";
+"imageDeselectingHUD" = "写真の選択を解除中…";
 
 // Image options (actions)
 "imageOptions_title" = "写真オプション";
@@ -449,19 +449,19 @@
 
 "imageUploadRemove" = "アップロードした写真を削除する";
 
-"imageUploadTableCell_waiting" = "Waiting...";
-"imageUploadTableCell_preparing" = "Preparing...";
-"imageUploadTableCell_prepared" = "Ready for upload...";
+"imageUploadTableCell_waiting" = "待機中...";
+"imageUploadTableCell_preparing" = "準備中...";
+"imageUploadTableCell_prepared" = "アップロードの準備ができました...";
 "imageUploadTableCell_uploading" = "アップロード中...";
-"imageUploadTableCell_uploaded" = "Uploaded";
-"imageUploadTableCell_finishing" = "Finishing...";
+"imageUploadTableCell_uploaded" = "アップロード済み";
+"imageUploadTableCell_finishing" = "完了しています...";
 
 "imageUploadClearFailedSingle" = "失敗したアップロードをクリアする";
 "imageUploadClearFailedSeveral" = "%@ 件の失敗したアップロードをクリアする";
 "imageUploadClearCompletedSingle" = "完了したアップロードをクリアする";
 "imageUploadClearCompletedSeveral" = "%@ 件の完了したアップロードをクリア";
-"imageUploadResumeSingle" = "Resume Failed Upload";
-"imageUploadResumeSeveral" = "Resume %@ Failed Uploads";
+"imageUploadResumeSingle" = "失敗したアップロードを再開する";
+"imageUploadResumeSeveral" = "%@ 件の失敗したアップロードを再開する";
 
 "imageUploadProgressBar_zero" = "アップロード中 0/0";
 "imageUploadProgressBar_nonZero" = "アップロード中 %@/%@";
@@ -477,7 +477,7 @@
 "uploadCancelled_title" = "アップロードが取り消されました";
 
 "imageUploadError_title" = "写真アップロードエラー";
-"imageUploadError_format" = "File format not accepted by Piwigo server.";
+"imageUploadError_format" = "Piwigoサーバーでは受け付けられないファイル形式です。";
 "imageUploadError_source" = "元写真を作成できません";
 "imageUploadError_destination" = "写真の保存先を作成できません";
 "imageUploadError_iCloud" = "写真を取得できませんでした。エラー：%@";

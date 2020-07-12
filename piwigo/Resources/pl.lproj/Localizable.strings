@@ -287,9 +287,9 @@
 "sortBy" = "Sortuj wg";
 "imageSortTitle" = "Sortuj zdjęcia";
 "imageSortMessage" = "Wybierz sposób sortowania zdjęć";
-"imageSortingHUD" = "Sortowanie zdjęć...";
-"imageSelectingHUD" = "Zaznaczanie zdjęć...";
-"imageDeselectingHUD" = "Odznaczanie zdjęć...";
+"imageSortingHUD" = "Sortowanie zdjęć…";
+"imageSelectingHUD" = "Zaznaczanie zdjęć…";
+"imageDeselectingHUD" = "Odznaczanie zdjęć…";
 
 // Image options (actions)
 "imageOptions_title" = "Opcje zdjęcia";

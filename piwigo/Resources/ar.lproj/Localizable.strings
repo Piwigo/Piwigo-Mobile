@@ -25,11 +25,11 @@
 "alertRetryButton" = "إعادة المحاولة";
 "alertNextButton" = "الصورة الموالية";
 "alertTryButton" = "محاولة";
-"alertClearButton" = "Clear";
+"alertClearButton" = "مسح";
 
 // HUD views
-"loadingHUD_label" = "Loading…";
-"completeHUD_label" = "Complete";
+"loadingHUD_label" = "جاري التحميل…";
+"completeHUD_label" = "إنهاء";
 "errorHUD_label" = "خطأ";
 
 // Upload rights
@@ -46,18 +46,18 @@
 // ===========================================================================
 // ==> CORE DATA
 // ===========================================================================
-"CoreDataStore_WarningTitle" = "Warning";
+"CoreDataStore_WarningTitle" = "تحذير";
 "CoreDataStore_WarningMessage" = "A serious application error occurred while Piwigo tried to read the data cache. A new cache has therefore been created.";
-"CoreDataFetch_DigestError" = "Could not digest the fetched data.";
+"CoreDataFetch_DigestError" = "تعذر استيعاب البياتات التي تم جلبها.";
 
 // Tag objects
-"CoreDataFetch_TagError" = "Fetch tags error!";
+"CoreDataFetch_TagError" = "خطأ في جلب العلامات!";
 "CoreDataFetch_TagMissingData" = "Found and will discard a tag missing a valid code or name.";
-"CoreDataFetch_TagCreateFailed" = "Failed to create a new Tag object.";
+"CoreDataFetch_TagCreateFailed" = "فشل في إنشاء عنصر علامة جديد.";
 
 // Upload objects
 "CoreDataFetch_UploadCreateFailed" = "Failed to create a new Upload object.";
-"CoreDataFetch_UploadMissingAsset" = "Failed to retrieve photo.";
+"CoreDataFetch_UploadMissingAsset" = "فشل في استعادة الصورة.";
 
 // ===========================================================================
 // ==> LOGIN / LOGOUT
@@ -77,17 +77,17 @@
 "loginHTTP_message" = "مطلوب مصادقة الوصول الأساسية من قبل خادم Piwigo:";
 "loginHTTPuser_placeholder" = "اسم المستخدم";
 "loginHTTPpwd_placeholder" = "كلمة المرور";
-"loginCertFailed_title" = "Connection Not Private";
-"loginCertFailed_message" = "Piwigo warns you when a website has a certificate that is not valid. Do you still want to accept this certificate?";
-"loginHTTPSfailed_title" = "Secure Connection Failed";
-"loginHTTPSfailed_message" = "Piwigo cannot establish a secure connection. Do you want to try to establish an insecure connection?";
+"loginCertFailed_title" = "الاتصال ليس خاصًا";
+"loginCertFailed_message" = "تطبيق Piwigo يحذرك عندما يحتوي أحد المواقع على شهادة صالحة. هل مازلت تودّ قبول هذه الشهادة؟";
+"loginHTTPSfailed_title" = "فشل الاتصال الآمن";
+"loginHTTPSfailed_message" = "تعذر على تطبيق Piwigo إنشاء اتصال آمن. هل تودّ محاولة إنشاء اتصال غير آمن؟";
 
 // Login — Errors
 "serverURLerror_title" = "URL غير صحيحة";
-"serverURLerror_message" = "Please correct the Piwigo web server address.";
+"serverURLerror_message" = "يرجى تصحيح عنوان خادم الويب الخاص بتطبيق Piwigo.";
 "serverMethodsError_title" = "طرق غير معروفة";
 "serverMethodsError_message" = "أخفق الحصول على طرق الخادم. مشكلة مع خادم Piwigo ؟";
-"serverInvalidMethodError_message" = "Failed to call server method.";
+"serverInvalidMethodError_message" = "فشل استدعاء منهج الخادم.";
 "serverMissingParamError_message" = "Failed to execute server method with missing parameter.";
 "serverInvalidParamError_message" = "Failed to call server method with provided parameters.";
 "serverUnknownError_message" = "Unexpected error encountered while calling server method with provided parameters.";
