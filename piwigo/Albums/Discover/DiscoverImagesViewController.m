@@ -435,7 +435,7 @@
         
         // Image Id?
         NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
-        NSLog(@"=> addImage %ld to Category %ld", imageId, catId);
+        NSLog(@"=> addImage %ld to Category %ld", (long)imageId, (long)catId);
         
         // Store current image list
         NSArray *oldImageList = self.albumData.images;
@@ -499,7 +499,7 @@
         
         // Image Id?
         NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
-        NSLog(@"=> removeImage %ld to Category %ld", imageId, catId);
+        NSLog(@"=> removeImage %ld to Category %ld", (long)imageId, (long)catId);
         
         // Store current image list
         NSArray *oldImageList = self.albumData.images;

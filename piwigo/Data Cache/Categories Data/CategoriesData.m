@@ -354,7 +354,7 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 
     // Smart albums
     if ([self getCategoryById:kPiwigoRecentCategoryId] != nil) {
-        [self addImage:image toCategory:[NSString stringWithFormat:@"%ld", kPiwigoRecentCategoryId]];
+        [self addImage:image toCategory:[NSString stringWithFormat:@"%ld", (long)kPiwigoRecentCategoryId]];
     }
 }
 
@@ -379,22 +379,22 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 
     // Smart albums
     if ([self getImageForCategory:kPiwigoSearchCategoryId andId:image.imageId] != nil) {
-        [self removeImage:image fromCategory:[NSString stringWithFormat:@"%ld", kPiwigoSearchCategoryId]];
+        [self removeImage:image fromCategory:[NSString stringWithFormat:@"%ld", (long)kPiwigoSearchCategoryId]];
     }
     if ([self getImageForCategory:kPiwigoVisitsCategoryId andId:image.imageId] != nil) {
-        [self removeImage:image fromCategory:[NSString stringWithFormat:@"%ld", kPiwigoVisitsCategoryId]];
+        [self removeImage:image fromCategory:[NSString stringWithFormat:@"%ld", (long)kPiwigoVisitsCategoryId]];
     }
     if ([self getImageForCategory:kPiwigoBestCategoryId andId:image.imageId] != nil) {
-        [self removeImage:image fromCategory:[NSString stringWithFormat:@"%ld", kPiwigoBestCategoryId]];
+        [self removeImage:image fromCategory:[NSString stringWithFormat:@"%ld", (long)kPiwigoBestCategoryId]];
     }
     if ([self getImageForCategory:kPiwigoRecentCategoryId andId:image.imageId] != nil) {
-        [self removeImage:image fromCategory:[NSString stringWithFormat:@"%ld", kPiwigoRecentCategoryId]];
+        [self removeImage:image fromCategory:[NSString stringWithFormat:@"%ld", (long)kPiwigoRecentCategoryId]];
     }
     if ([self getImageForCategory:kPiwigoTagsCategoryId andId:image.imageId] != nil) {
-        [self removeImage:image fromCategory:[NSString stringWithFormat:@"%ld", kPiwigoTagsCategoryId]];
+        [self removeImage:image fromCategory:[NSString stringWithFormat:@"%ld", (long)kPiwigoTagsCategoryId]];
     }
     if ([self getImageForCategory:kPiwigoFavoritesCategoryId andId:image.imageId] != nil) {
-        [self removeImage:image fromCategory:[NSString stringWithFormat:@"%ld", kPiwigoFavoritesCategoryId]];
+        [self removeImage:image fromCategory:[NSString stringWithFormat:@"%ld", (long)kPiwigoFavoritesCategoryId]];
     }
 }
 
