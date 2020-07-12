@@ -2302,15 +2302,6 @@ NSString * const kPiwigoNotificationDeletedImage = @"kPiwigoNotificationDeletedI
     [ImageService deleteImages:self.selectedImagesToDelete
               ListOnCompletion:^(NSURLSessionTask *task) {
                   
-                  // Images deleted
-//                  for (PiwigoImageData *selectedImage in self.selectedImagesToDelete) {
-//                      [self.albumData removeImageWithId:selectedImage.imageId];
-//                      [self.selectedImageIds removeObject:[NSString stringWithFormat:@"%ld", (long)selectedImage.imageId]];
-//                  }
-                  
-                  // Reload collection
-//                  [self.imagesCollection reloadData];
-
                   // Hide HUD
                   dispatch_async(dispatch_get_main_queue(), ^{
                       [self hideHUDwithSuccess:YES completion:^{
