@@ -2126,10 +2126,9 @@ NSString * const kPiwigoNotificationDeletedImage = @"kPiwigoNotificationDeletedI
             [self.selectedImagesToDelete addObjectsFromArray:self.selectedImagesToRemove];
 
             // Display HUD during server update
-            self.totalNumberOfImages = self.selectedImagesToDelete.count;
             if (self.selectedImagesToDelete.count > 1) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [self showHUDwithTitle:NSLocalizedString(@"deleteSeveralImagesHUD_deleting", @"Deleting Images…") inMode:MBProgressHUDModeAnnularDeterminate withDetailLabel:NO];
+                    [self showHUDwithTitle:NSLocalizedString(@"deleteSeveralImagesHUD_deleting", @"Deleting Images…") inMode:MBProgressHUDModeIndeterminate withDetailLabel:NO];
                 });
             }
             else {
