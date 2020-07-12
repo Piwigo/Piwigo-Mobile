@@ -57,7 +57,7 @@ typedef enum {
 							  forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
 								OnCompletion:(void (^)(BOOL completed))completion;
 
--(NSInteger)addImages:(NSArray*)images;
+-(void)addImages:(NSArray*)images;
 -(void)addUploadedImage:(PiwigoImageData*)imageData;
 -(void)updateImages:(NSArray*)updatedImages;
 -(void)updateImageAfterEdit:(PiwigoImageData *)uploadedImage;
