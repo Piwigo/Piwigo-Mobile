@@ -689,7 +689,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     [alert addAction:deleteAction];
     if (([self.imageData.categoryIds count] > 1) && (self.categoryId > 0)) {
         // This image is used in another album
-        // Proposes to remove it from the current album, unless it was selected from a Search
+        // Proposes to remove it from the current album, unless it was selected from a smart album
         [alert addAction:removeAction];
     }
 
@@ -729,9 +729,8 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
                     // Update image data
                     self.imageData.categoryIds = categoryIds;
 
-                    // Remove image from current category
-                    [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] removeImages:@[self.imageData]];
-                    [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] deincrementImageSizeByOne];
+                    // Remove image from cache and update UI
+                    [[CategoriesData sharedInstance] removeImage:self.imageData fromCategory:[NSString stringWithFormat:@"%ld", (long)self.categoryId]];
 
                     // Hide HUD
                     [self hideHUDwithSuccess:YES completion:^{

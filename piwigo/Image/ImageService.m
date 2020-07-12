@@ -543,6 +543,7 @@ NSString * const kGetImageOrderDescending = @"desc";
 
     NSLog(@"loadImageChunkForLastChunkCount: %ld / %ld images", (long)downloadedImageDataCount, (long)totalImageCount);
     if (((categoryId > kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount)) ||
+        ((categoryId > kPiwigoRecentCategoryId) && (downloadedImageDataCount == totalImageCount)) ||
         ((categoryId == kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount) && totalImageCount))
     {    // done. don't need anymore
         if(fail)
@@ -589,7 +590,9 @@ NSString * const kGetImageOrderDescending = @"desc";
                                       if (searchedImages)
                                       {
                                           PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:categoryId];
-                                          [albumData addImages:searchedImages];
+                                          NSInteger count = [albumData addImages:searchedImages];
+                                          NSLog(@"loadImageChunkForLastChunkCount: added %ld images", (long)count);
+//                                          [albumData addImages:searchedImages];
                                       }
                                       
                                       if (completion) {
@@ -1231,7 +1234,8 @@ NSString * const kGetImageOrderDescending = @"desc";
 			  success:^(NSURLSessionTask *task, id responseObject) {
 				  if(completion) {
 					  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
-						  [[CategoriesData sharedInstance] removeImage:image];
+						  // Remove image from cache and update UI
+                          [[CategoriesData sharedInstance] removeImage:image];
 						  completion(task);
 					  } else {
 						  fail(task, responseObject);
@@ -1281,10 +1285,8 @@ NSString * const kGetImageOrderDescending = @"desc";
                   if(completion) {
                       if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
                           for (PiwigoImageData *image in images) {
-                              // Update cache
+                              // Remove image from cache and update UI
                               [[CategoriesData sharedInstance] removeImage:image];
-                              // Update UI
-                              [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil userInfo:nil];
                           }
                           completion(task);
                       } else {

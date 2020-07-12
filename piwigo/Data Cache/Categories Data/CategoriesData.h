@@ -32,7 +32,9 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationChangedCurrentCategory;
 
 -(PiwigoImageData*)getImageForCategory:(NSInteger)category andIndex:(NSInteger)index;
 -(PiwigoImageData*)getImageForCategory:(NSInteger)category andId:(NSInteger)imageId;
+
 -(void)addImage:(PiwigoImageData*)image;
 -(void)removeImage:(PiwigoImageData*)image;
+-(void)removeImage:(PiwigoImageData*)image fromCategory:(NSString *)category;
 
 @end

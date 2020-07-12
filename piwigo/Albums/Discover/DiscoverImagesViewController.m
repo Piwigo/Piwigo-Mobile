@@ -116,9 +116,6 @@
         self.moveBarButton.tintColor = [UIColor piwigoColorOrange];
         self.navigationController.toolbarHidden = YES;
 
-        // Register category data updates
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
-        
         // Register palette changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
     }
@@ -246,6 +243,11 @@
             }
         }
     }
+    
+    // Register category data updates
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addImageToCategory:) name:kPiwigoNotificationUploadedImage object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeImageFromCategory:) name:kPiwigoNotificationDeletedImage object:nil];
 }
 
 -(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
@@ -281,6 +283,11 @@
     if(self.view.bounds.size.width <= 414) {     // i.e. smaller than iPhones 6,7 Plus screen width
         self.title = @"";
     }
+    
+    // Unregister category data updates
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationCategoryDataUpdated object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationUploadedImage object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationDeletedImage object:nil];
 }
 
 -(void)updateBarButtons
@@ -415,6 +422,138 @@
 
         [self.imagesCollection reloadData];
     }];
+}
+
+-(void)addImageToCategory:(NSNotification *)notification
+{
+    if (notification != nil) {
+        NSDictionary *userInfo = notification.userInfo;
+
+        // Right category Id?
+        NSInteger catId = [[userInfo objectForKey:@"albumId"] integerValue];
+        if (catId != self.categoryId) return;
+        
+        // Image Id?
+        NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
+        NSLog(@"=> addImage %ld to Category %ld", imageId, catId);
+        
+        // Store current image list
+        NSArray *oldImageList = self.albumData.images;
+        NSLog(@"=> category %ld contained %ld images", (long)self.categoryId, (long)oldImageList.count);
+
+        // Load new image (appended to cache) and sort images before updating UI
+        [self.albumData loadMoreImagesOnCompletion:^{
+            // Sort images
+            [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
+
+                // The album title is not shown in backButtonItem to provide enough space
+                // for image title on devices of screen width <= 414 ==> Restore album title
+                self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
+
+                // Refresh collection view if needed
+                NSLog(@"=> category %ld now contains %ld images", (long)self.categoryId, (long)self.albumData.images.count);
+                if (oldImageList.count == self.albumData.images.count) {
+                    return;
+                }
+
+                // Insert cells of added images
+                NSMutableArray<NSIndexPath *> *itemsToInsert = [NSMutableArray new];
+                for (NSInteger index = 0; index < self.albumData.images.count; index++) {
+                    PiwigoImageData *image = [self.albumData.images objectAtIndex:index];
+                    NSInteger indexOfExistingItem = [oldImageList indexOfObjectPassingTest:^BOOL(PiwigoImageData *oldObj, NSUInteger oldIdx, BOOL * _Nonnull stop) {
+                     return oldObj.imageId == image.imageId;
+                    }];
+                    if (indexOfExistingItem == NSNotFound) {
+                     [itemsToInsert addObject:[NSIndexPath indexPathForItem:index inSection:0]];
+                    }
+                }
+                if (itemsToInsert.count > 0) {
+                    [self.imagesCollection insertItemsAtIndexPaths:itemsToInsert];
+                }
+
+                // Update footer
+                UICollectionReusableView *visibleFooter = [[self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter] firstObject];
+                NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].numberOfImages;
+                if ([visibleFooter isKindOfClass:[NberImagesFooterCollectionReusableView class]]) {
+                    NberImagesFooterCollectionReusableView *footer = (NberImagesFooterCollectionReusableView *)visibleFooter;
+                    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+                    [numberFormatter setPositiveFormat:@"#,##0"];
+                    footer.noImagesLabel.text = [NSString stringWithFormat:@"%@ %@", [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]], totalImageCount > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
+                }
+
+                // Set navigation bar buttons
+                [self updateBarButtons];
+            }];
+        }];
+    }
+}
+
+-(void)removeImageFromCategory:(NSNotification *)notification
+{
+    if (notification != nil) {
+        NSDictionary *userInfo = notification.userInfo;
+
+        // Right category Id?
+        NSInteger catId = [[userInfo objectForKey:@"albumId"] integerValue];
+        if (catId != self.categoryId) return;
+        
+        // Image Id?
+        NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
+        NSLog(@"=> removeImage %ld to Category %ld", imageId, catId);
+        
+        // Store current image list
+        NSArray *oldImageList = self.albumData.images;
+        NSLog(@"=> category %ld contained %ld images", (long)self.categoryId, (long)oldImageList.count);
+
+        // Load new image (appended to cache) and sort images before updating UI
+        [self.albumData loadMoreImagesOnCompletion:^{
+            // Sort images
+            [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
+
+                // The album title is not shown in backButtonItem to provide enough space
+                // for image title on devices of screen width <= 414 ==> Restore album title
+                self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
+
+                // Refresh collection view if needed
+                NSLog(@"=> category %ld now contains %ld images", (long)self.categoryId, (long)self.albumData.images.count);
+                if (oldImageList.count == self.albumData.images.count) {
+                    return;
+                }
+
+                // Delete cells of deleted images, and remove them from selection
+                NSMutableArray<NSIndexPath *> *itemsToDelete = [NSMutableArray new];
+                for (NSInteger index = 0; index < oldImageList.count; index++) {
+                    PiwigoImageData *imageData = [oldImageList objectAtIndex:index];
+                    NSInteger indexOfExistingItem = [self.albumData.images indexOfObjectPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger oldIdx, BOOL * _Nonnull stop) {
+                     return obj.imageId == imageData.imageId;
+                    }];
+                    if (indexOfExistingItem == NSNotFound) {
+                        [itemsToDelete addObject:[NSIndexPath indexPathForItem:index inSection:0]];
+                        NSString *imageIdObject = [NSString stringWithFormat:@"%ld", (long)imageData.imageId];
+                        if ([self.selectedImageIds containsObject:imageIdObject]) {
+                            [self.selectedImageIds removeObject:imageIdObject];
+                        }
+                    }
+                }
+                if (itemsToDelete.count > 0) {
+                    [self.imagesCollection deleteItemsAtIndexPaths:itemsToDelete];
+                }
+
+                // Update footer
+                UICollectionReusableView *visibleFooter = [[self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter] firstObject];
+                NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].totalNumberOfImages;
+                if ([visibleFooter isKindOfClass:[NberImagesFooterCollectionReusableView class]]) {
+                    NberImagesFooterCollectionReusableView *footer = (NberImagesFooterCollectionReusableView *)visibleFooter;
+                    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+                    [numberFormatter setPositiveFormat:@"#,##0"];
+                    footer.noImagesLabel.text = [NSString stringWithFormat:@"%@ %@", [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]], totalImageCount > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
+                }
+
+                // Set navigation bar buttons
+                [self updateBarButtons];
+            }];
+        }];
+    }
 }
 
 
@@ -1084,13 +1223,13 @@
               ListOnCompletion:^(NSURLSessionTask *task) {
                   
                   // Images deleted
-                  for (PiwigoImageData *selectedImage in self.selectedImagesToDelete) {
-                      [self.albumData removeImageWithId:selectedImage.imageId];
-                      [self.selectedImageIds removeObject:[NSString stringWithFormat:@"%ld", (long)selectedImage.imageId]];
-                  }
+//                  for (PiwigoImageData *selectedImage in self.selectedImagesToDelete) {
+//                      [self.albumData removeImageWithId:selectedImage.imageId];
+//                      [self.selectedImageIds removeObject:[NSString stringWithFormat:@"%ld", (long)selectedImage.imageId]];
+//                  }
                   
                   // Reload collection
-                  [self.imagesCollection reloadData];
+//                  [self.imagesCollection reloadData];
 
                   // Hide HUD
                   dispatch_async(dispatch_get_main_queue(), ^{
@@ -1358,11 +1497,9 @@
 
 -(void)didDeleteImage:(PiwigoImageData *)image atIndex:(NSInteger)index
 {
-    [self.albumData removeImage:image];
     index = MAX(0, index-1);                                    // index must be > 0
     index = MIN(index, [self.albumData.images count] - 1);      // index must be < nber images
     self.imageOfInterest = [NSIndexPath indexPathForItem:index inSection:0];
-    [self.imagesCollection reloadData];
 }
 
 -(void)needToLoadMoreImages

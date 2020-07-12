@@ -72,6 +72,7 @@
 	
     // Return if job done
     if (((self.categoryId > kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount)) ||
+        ((self.categoryId == kPiwigoRecentCategoryId) && (downloadedImageDataCount == totalImageCount)) ||
         ((self.categoryId == kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount) && totalImageCount))
 	{
         NSLog(@"loadMoreImagesOnCompletion: we have all image data");
@@ -185,20 +186,15 @@
 -(void)updateImageSort:(kPiwigoSort)imageSort
           OnCompletion:(void (^)(void))completion
 {
-//    if(imageSort == self.sortType)
-//    {    // nothing changed, return
-//        return;
-//    }
-//    self.sortType = imageSort;
-	
 	NSInteger downloadedImageDataCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;
 	NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].numberOfImages;
 	
     NSLog(@"updateImageSort: catId=%ld, downloaded:%ld, total:%ld", (long)self.categoryId, (long)downloadedImageDataCount, (long)totalImageCount);
 	if ((((self.categoryId > kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount)) ||
+         ((self.categoryId == kPiwigoRecentCategoryId) && (downloadedImageDataCount == totalImageCount)) ||
          ((self.categoryId == kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount) && totalImageCount)) && (imageSort == self.sortType))
 	{	// we have all the image data, just manually sort it
-        self.images = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
+        self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList for:[Model sharedInstance].defaultSort];
 		if(completion)
 		{
             NSLog(@"updateImageSort: we have all image data i.e. %ld", (long)self.images.count);

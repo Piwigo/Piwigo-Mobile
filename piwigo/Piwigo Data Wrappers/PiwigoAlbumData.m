@@ -163,7 +163,6 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 {
 	self.onPage = 0;
     self.lastImageBulkCount = 0;
-//    self.lastImageBulkCount = [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
 	[self loopLoadImagesForSort:@""
 				   withProgress:progress
                    onCompletion:^(BOOL completed) {
@@ -300,7 +299,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     return count;
 }
 
--(void)addUploadedImageWithSort:(PiwigoImageData*)imageData
+-(void)addUploadedImage:(PiwigoImageData*)imageData
 {
     // Create new image list
     NSMutableArray *newImageList = [NSMutableArray new];
@@ -315,8 +314,8 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     [newImageList addObject:imageData];
     [self.imageIds setValue:@(0) forKey:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]];
     
-    // Store sorted updated list
-    self.imageList = [CategoryImageSort sortImages:newImageList for:[Model sharedInstance].defaultSort];
+    // Update image list
+    self.imageList = newImageList;
 }
 
 -(void)updateImages:(NSArray*)updatedImages
@@ -446,6 +445,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 	for(NSString *category in self.upperCategories)
 	{
 		[[CategoriesData sharedInstance] getCategoryById:[category integerValue]].totalNumberOfImages--;
+        NSLog(@"•••> decrementImageSizeByOne: catId=%ld, nber:%ld, total:%ld", (long)[category integerValue], (long)self.numberOfImages, (long)self.totalNumberOfImages);
 	}
 
     // If no image left, update category cache to remove thumbnail image

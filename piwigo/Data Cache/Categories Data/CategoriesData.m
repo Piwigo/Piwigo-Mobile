@@ -346,22 +346,67 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 
 -(void)addImage:(PiwigoImageData*)image
 {
+    // Categories to which the image will belong to
     for(NSString *category in image.categoryIds)
     {
-        PiwigoAlbumData *imageCategory = [self getCategoryById:[category integerValue]];
-        [imageCategory addUploadedImageWithSort:image];
-        [imageCategory incrementImageSizeByOne];
+        [self addImage:image toCategory:category];
     }
+
+    // Smart albums
+    if ([self getCategoryById:kPiwigoRecentCategoryId] != nil) {
+        [self addImage:image toCategory:[NSString stringWithFormat:@"%ld", kPiwigoRecentCategoryId]];
+    }
+}
+
+-(void)addImage:(PiwigoImageData *)image toCategory:(NSString *)category
+{
+    PiwigoAlbumData *imageCategory = [self getCategoryById:[category integerValue]];
+    [imageCategory addUploadedImage:image];
+    [imageCategory incrementImageSizeByOne];
+
+    // Notify UI that an image has been uploaded and appended to cache
+    NSDictionary *userInfo = @{@"albumId" : category, @"imageId" : @(image.imageId)};
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationUploadedImage object:nil userInfo:userInfo];
 }
 
 -(void)removeImage:(PiwigoImageData*)image
 {
-	for(NSString *category in image.categoryIds)
+	// Categories to which the image belongs to
+    for(NSString *category in image.categoryIds)
 	{
-		PiwigoAlbumData *imageCategory = [self getCategoryById:[category integerValue]];
-		[imageCategory deincrementImageSizeByOne];
-		[imageCategory removeImages:@[image]];
+        [self removeImage:image fromCategory:category];
 	}
+
+    // Smart albums
+    if ([self getImageForCategory:kPiwigoSearchCategoryId andId:image.imageId] != nil) {
+        [self removeImage:image fromCategory:[NSString stringWithFormat:@"%ld", kPiwigoSearchCategoryId]];
+    }
+    if ([self getImageForCategory:kPiwigoVisitsCategoryId andId:image.imageId] != nil) {
+        [self removeImage:image fromCategory:[NSString stringWithFormat:@"%ld", kPiwigoVisitsCategoryId]];
+    }
+    if ([self getImageForCategory:kPiwigoBestCategoryId andId:image.imageId] != nil) {
+        [self removeImage:image fromCategory:[NSString stringWithFormat:@"%ld", kPiwigoBestCategoryId]];
+    }
+    if ([self getImageForCategory:kPiwigoRecentCategoryId andId:image.imageId] != nil) {
+        [self removeImage:image fromCategory:[NSString stringWithFormat:@"%ld", kPiwigoRecentCategoryId]];
+    }
+    if ([self getImageForCategory:kPiwigoTagsCategoryId andId:image.imageId] != nil) {
+        [self removeImage:image fromCategory:[NSString stringWithFormat:@"%ld", kPiwigoTagsCategoryId]];
+    }
+    if ([self getImageForCategory:kPiwigoFavoritesCategoryId andId:image.imageId] != nil) {
+        [self removeImage:image fromCategory:[NSString stringWithFormat:@"%ld", kPiwigoFavoritesCategoryId]];
+    }
+}
+
+-(void)removeImage:(PiwigoImageData*)image fromCategory:(NSString *)category
+{
+    PiwigoAlbumData *imageCategory = [self getCategoryById:[category integerValue]];
+    [imageCategory deincrementImageSizeByOne];
+    [imageCategory removeImages:@[image]];
+
+    // Notify UI that an image has been deleted
+    NSDictionary *userInfo = @{@"albumId" : category, @"imageId" : @(image.imageId)};
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDeletedImage object:nil userInfo:userInfo];
 }
 
 

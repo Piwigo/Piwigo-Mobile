@@ -148,13 +148,8 @@ class UploadTransfer {
                     }
                 }
 
-                // Add uploaded image to cache
+                // Add uploaded image to cache and update UI if needed
                 CategoriesData.sharedInstance()?.addImage(imageData)
-                
-                // Notifies AlbumImagesViewController to update collection
-                DispatchQueue.main.async {
-                    NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationCategoryDataUpdated), object: nil, userInfo: nil)
-                }
 
                 // Update state of upload
                 var uploadProperties = upload

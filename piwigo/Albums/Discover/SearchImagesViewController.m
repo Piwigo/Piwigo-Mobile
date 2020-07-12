@@ -107,6 +107,14 @@
     [self.navigationController setToolbarHidden:YES animated:YES];
 }
 
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    // Register category data updates
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeImageFromCategory:) name:kPiwigoNotificationDeletedImage object:nil];
+}
+
 -(void)scrollToHighlightedCell
 {    
     // Should we scroll to image of interest?
@@ -200,6 +208,14 @@
     }
 }
 
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    // Unregister category data updates
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationDeletedImage object:nil];
+}
+
 
 #pragma mark - Update data
 
@@ -211,6 +227,63 @@
         
         [self.imagesCollection reloadData];
     }];
+}
+
+-(void)removeImageFromCategory:(NSNotification *)notification
+{
+    if (notification != nil) {
+        NSDictionary *userInfo = notification.userInfo;
+
+        // Right category Id?
+        NSInteger catId = [[userInfo objectForKey:@"albumId"] integerValue];
+        if (catId != kPiwigoSearchCategoryId) return;
+        
+        // Image Id?
+        NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
+        NSLog(@"=> removeImage %ld to Category %ld", imageId, catId);
+        
+        // Store current image list
+        NSArray *oldImageList = self.albumData.images;
+        NSLog(@"=> category %ld contained %ld images", (long)kPiwigoSearchCategoryId, (long)oldImageList.count);
+
+        // Load new image (appended to cache) and sort images before updating UI
+        [self.albumData loadMoreImagesOnCompletion:^{
+            // Sort images
+            [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
+
+                // Refresh collection view if needed
+                NSLog(@"=> category %ld now contains %ld images", (long)kPiwigoSearchCategoryId, (long)self.albumData.images.count);
+                if (oldImageList.count == self.albumData.images.count) {
+                    return;
+                }
+
+                // Delete cells of deleted images, and remove them from selection
+                NSMutableArray<NSIndexPath *> *itemsToDelete = [NSMutableArray new];
+                for (NSInteger index = 0; index < oldImageList.count; index++) {
+                    PiwigoImageData *imageData = [oldImageList objectAtIndex:index];
+                    NSInteger indexOfExistingItem = [self.albumData.images indexOfObjectPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger oldIdx, BOOL * _Nonnull stop) {
+                     return obj.imageId == imageData.imageId;
+                    }];
+                    if (indexOfExistingItem == NSNotFound) {
+                        [itemsToDelete addObject:[NSIndexPath indexPathForItem:index inSection:0]];
+                    }
+                }
+                if (itemsToDelete.count > 0) {
+                    [self.imagesCollection deleteItemsAtIndexPaths:itemsToDelete];
+                }
+
+                // Update footer
+                UICollectionReusableView *visibleFooter = [[self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter] firstObject];
+                NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].totalNumberOfImages;
+                if ([visibleFooter isKindOfClass:[NberImagesFooterCollectionReusableView class]]) {
+                    NberImagesFooterCollectionReusableView *footer = (NberImagesFooterCollectionReusableView *)visibleFooter;
+                    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+                    [numberFormatter setPositiveFormat:@"#,##0"];
+                    footer.noImagesLabel.text = [NSString stringWithFormat:@"%@ %@", [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]], totalImageCount > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
+                }
+            }];
+        }];
+    }
 }
 
 
@@ -383,11 +456,9 @@
 
 -(void)didDeleteImage:(PiwigoImageData *)image atIndex:(NSInteger)index
 {
-    [self.albumData removeImage:image];
     index = MAX(0, index-1);                                    // index must be > 0
     index = MIN(index, [self.albumData.images count] - 1);      // index must be < nber images
     self.imageOfInterest = [NSIndexPath indexPathForItem:index inSection:0];
-    [self.imagesCollection reloadData];
 }
 
 -(void)needToLoadMoreImages

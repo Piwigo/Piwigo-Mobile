@@ -40,6 +40,8 @@ CGFloat const kRadius = 25.0;
 CGFloat const kDeg2Rad = 3.141592654 / 180.0;
 NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBackToDefaultAlbum";
 NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploads";
+NSString * const kPiwigoNotificationUploadedImage = @"kPiwigoNotificationUploadedImage";
+NSString * const kPiwigoNotificationDeletedImage = @"kPiwigoNotificationDeletedImage";
 
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, UITextFieldDelegate, NSFetchedResultsControllerDelegate, ImageDetailDelegate, EditImageParamsDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, AsyncImageActivityItemProviderDelegate, TagSelectorViewDelegate, ChangedSettingsDelegate>
 
@@ -277,7 +279,7 @@ NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploa
         // Register root album changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnToDefaultCategory) name:kPiwigoNotificationBackToDefaultAlbum object:nil];
         
-        // Register uploads changes
+        // Register upload requests changes
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUploadQueueButton:) name:kPiwigoNotificationLeftUploads object:nil];
     }
 	return self;
@@ -596,6 +598,8 @@ NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploa
     // Register category data updates
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getCategoryData:) name:kPiwigoNotificationGetCategoryData object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addImageToCategory:) name:kPiwigoNotificationUploadedImage object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeImageFromCategory:) name:kPiwigoNotificationDeletedImage object:nil];
 }
 
 -(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
@@ -678,6 +682,8 @@ NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploa
     // Unregister category data updates
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationGetCategoryData object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationCategoryDataUpdated object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationUploadedImage object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationDeletedImage object:nil];
 }
 
 -(void)viewDidDisappear:(BOOL)animated
@@ -1359,6 +1365,156 @@ NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploa
      }
 }
 
+-(void)addImageToCategory:(NSNotification *)notification
+{
+    if (notification != nil) {
+        NSDictionary *userInfo = notification.userInfo;
+
+        // Right category Id?
+        NSInteger catId = [[userInfo objectForKey:@"albumId"] integerValue];
+        if (catId != self.categoryId) return;
+        
+        // Image Id?
+        NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
+        NSLog(@"=> addImage %ld to Category %ld", imageId, catId);
+        
+        // Store current image list
+        NSArray *oldImageList = self.albumData.images;
+        NSLog(@"=> category %ld contained %ld images", (long)self.categoryId, (long)oldImageList.count);
+
+        // Load new image (appended to cache) and sort images before updating UI
+        self.loadingImages = YES;
+        [self.albumData loadMoreImagesOnCompletion:^{
+            // Sort images
+            [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
+
+                // The album title is not shown in backButtonItem to provide enough space
+                // for image title on devices of screen width <= 414 ==> Restore album title
+                self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
+
+                // Refresh collection view if needed
+                NSLog(@"=> category %ld now contains %ld images", (long)self.categoryId, (long)self.albumData.images.count);
+                if (oldImageList.count == self.albumData.images.count) {
+                    self.loadingImages = NO;
+                    return;
+                }
+
+                // Insert cells of added images
+                NSMutableArray<NSIndexPath *> *itemsToInsert = [NSMutableArray new];
+                for (NSInteger index = 0; index < self.albumData.images.count; index++) {
+                    PiwigoImageData *image = [self.albumData.images objectAtIndex:index];
+                    NSInteger indexOfExistingItem = [oldImageList indexOfObjectPassingTest:^BOOL(PiwigoImageData *oldObj, NSUInteger oldIdx, BOOL * _Nonnull stop) {
+                     return oldObj.imageId == image.imageId;
+                    }];
+                    if (indexOfExistingItem == NSNotFound) {
+                     [itemsToInsert addObject:[NSIndexPath indexPathForItem:index inSection:1]];
+                    }
+                }
+                if (itemsToInsert.count > 0) {
+                    [self.imagesCollection insertItemsAtIndexPaths:itemsToInsert];
+                }
+
+                // Update footer
+                UICollectionReusableView *visibleFooter = [[self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter] firstObject];
+                NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].totalNumberOfImages;
+                if ([visibleFooter isKindOfClass:[NberImagesFooterCollectionReusableView class]]) {
+                    NberImagesFooterCollectionReusableView *footer = (NberImagesFooterCollectionReusableView *)visibleFooter;
+                    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+                    [numberFormatter setPositiveFormat:@"#,##0"];
+                    footer.noImagesLabel.text = [NSString stringWithFormat:@"%@ %@", [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]], totalImageCount > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
+                }
+
+                // Set navigation bar buttons
+                if (self.isSelect == YES) {
+                    [self updateButtonsInSelectionMode];
+                } else {
+                    [self updateButtonsInPreviewMode];
+                }
+
+                // Update done
+                self.loadingImages = FALSE;
+            }];
+        }];
+    }
+}
+
+-(void)removeImageFromCategory:(NSNotification *)notification
+{
+    if (notification != nil) {
+        NSDictionary *userInfo = notification.userInfo;
+
+        // Right category Id?
+        NSInteger catId = [[userInfo objectForKey:@"albumId"] integerValue];
+        if (catId != self.categoryId) return;
+        
+        // Image Id?
+        NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
+        NSLog(@"=> removeImage %ld to Category %ld", imageId, catId);
+        
+        // Store current image list
+        NSArray *oldImageList = self.albumData.images;
+        NSLog(@"=> category %ld contained %ld images", (long)self.categoryId, (long)oldImageList.count);
+
+        // Load new image (appended to cache) and sort images before updating UI
+        self.loadingImages = YES;
+        [self.albumData loadMoreImagesOnCompletion:^{
+            // Sort images
+            [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
+
+                // The album title is not shown in backButtonItem to provide enough space
+                // for image title on devices of screen width <= 414 ==> Restore album title
+                self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
+
+                // Refresh collection view if needed
+                NSLog(@"=> category %ld now contains %ld images", (long)self.categoryId, (long)self.albumData.images.count);
+                if (oldImageList.count == self.albumData.images.count) {
+                    self.loadingImages = NO;
+                    return;
+                }
+
+                // Delete cells of deleted images, and remove them from selection
+                NSMutableArray<NSIndexPath *> *itemsToDelete = [NSMutableArray new];
+                for (NSInteger index = 0; index < oldImageList.count; index++) {
+                    PiwigoImageData *imageData = [oldImageList objectAtIndex:index];
+                    NSInteger indexOfExistingItem = [self.albumData.images indexOfObjectPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger oldIdx, BOOL * _Nonnull stop) {
+                     return obj.imageId == imageData.imageId;
+                    }];
+                    if (indexOfExistingItem == NSNotFound) {
+                     [itemsToDelete addObject:[NSIndexPath indexPathForItem:index inSection:1]];
+                        NSString *imageIdObject = [NSString stringWithFormat:@"%ld", (long)imageData.imageId];
+                        if ([self.selectedImageIds containsObject:imageIdObject]) {
+                            [self.selectedImageIds removeObject:imageIdObject];
+                        }
+                    }
+                }
+                if (itemsToDelete.count > 0) {
+                    [self.imagesCollection deleteItemsAtIndexPaths:itemsToDelete];
+                }
+
+                // Update footer
+                UICollectionReusableView *visibleFooter = [[self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter] firstObject];
+                NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].totalNumberOfImages;
+                if ([visibleFooter isKindOfClass:[NberImagesFooterCollectionReusableView class]]) {
+                    NberImagesFooterCollectionReusableView *footer = (NberImagesFooterCollectionReusableView *)visibleFooter;
+                    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+                    [numberFormatter setPositiveFormat:@"#,##0"];
+                    footer.noImagesLabel.text = [NSString stringWithFormat:@"%@ %@", [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]], totalImageCount > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
+                }
+
+                // Set navigation bar buttons
+                if (self.isSelect == YES) {
+                    [self updateButtonsInSelectionMode];
+                } else {
+                    [self updateButtonsInPreviewMode];
+                }
+
+                // Update done
+                self.loadingImages = FALSE;
+            }];
+        }];
+    }
+}
+
 
 #pragma mark - Default Category Management
 
@@ -2034,14 +2190,8 @@ NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploa
            OnCompletion:^(NSURLSessionTask *task, BOOL updatedSuccessfully) {
                if (updatedSuccessfully)
                {
-                   // Remove image from current category
-                   [self.albumData removeImageWithId:self.selectedImage.imageId];
-                   [self.selectedImageIds removeObject:[NSString stringWithFormat:@"%ld", (long)self.selectedImage.imageId]];
-                   [self.imagesCollection reloadData];
-
-                   // Update cache
-                   [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] removeImages:@[self.selectedImage]];
-                   [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] deincrementImageSizeByOne];
+                   // Remove image from cache and update UI
+                   [[CategoriesData sharedInstance] removeImage:self.selectedImage];
 
                    // Next image
                    [self.selectedImagesToRemove removeLastObject];
@@ -2990,11 +3140,9 @@ NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploa
 
 -(void)didDeleteImage:(PiwigoImageData *)image atIndex:(NSInteger)index
 {
-    [self.albumData removeImage:image];
     index = MAX(0, index-1);                                    // index must be > 0
     index = MIN(index, [self.albumData.images count] - 1);      // index must be < nber images
     self.imageOfInterest = [NSIndexPath indexPathForItem:index inSection:1];
-    [self.imagesCollection reloadData];
 }
 
 -(void)needToLoadMoreImages

@@ -10,6 +10,8 @@
 
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationBackToDefaultAlbum;
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationLeftUploads;
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationUploadedImage;
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationDeletedImage;
 
 @interface AlbumImagesViewController : UIViewController
 
