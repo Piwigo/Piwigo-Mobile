@@ -548,7 +548,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     NSInteger downloadedImageDataCount = [[CategoriesData sharedInstance] getCategoryById:categoryId].imageList.count;
     NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:categoryId].numberOfImages;
     NSLog(@"loadImageChunkForLastChunkCount: %ld / %ld images", (long)downloadedImageDataCount, (long)totalImageCount);
-    if (downloadedImageDataCount == totalImageCount)
+    if (downloadedImageDataCount >= totalImageCount)
     {    // done. don't need anymore
         if(fail)
         {
