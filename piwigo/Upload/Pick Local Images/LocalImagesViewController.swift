@@ -66,7 +66,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     @IBOutlet weak var sortOptionsView: UIView!
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     
-    private var imageCollection: PHFetchResult<PHAsset>!                    // Collection of images in selected non-empty local album
+    private var fetchedImages: PHFetchResult<PHAsset>!                    // Collection of images in selected non-empty local album
     private var sortType: SectionType = .all                                // [Months, Weeks, Days, All images in one section]
     private var indexOfImageSortedByMonth: [IndexSet] = []                  // Indexes of images sorted by month, week and day
     private var indexOfImageSortedByWeek: [IndexSet] = []
@@ -100,8 +100,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         fetchImagesByCreationDate(assetCollections: PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [self.imageCollectionId], options: nil))
         
         // Initialise arrays
-        selectedImages = .init(repeating: nil, count: imageCollection.count)            // At start, there is no image selected
-        selectedSections = .init(repeating: .none, count: imageCollection.count)        // User cannot select sections of images until data is ready
+        selectedImages = .init(repeating: nil, count: fetchedImages.count)            // At start, there is no image selected
+        selectedSections = .init(repeating: .none, count: fetchedImages.count)        // User cannot select sections of images until data is ready
         if let uploads = uploadsProvider.fetchedResultsController.fetchedObjects {       // We provide a non-indexed list of images in the upload queue
             uploadsInQueue = uploads.map {($0.localIdentifier, $0.state)}
         }                                                                               // so that we can at least show images in upload queue at start
@@ -294,13 +294,15 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
          We fetch a specific path of the Photos Library to reduce the workload and store the fetched collection for future use.
          The fetch is performed with ascending creation date.
          */
-//        let start = CFAbsoluteTimeGetCurrent()
+        let start = CFAbsoluteTimeGetCurrent()
         let fetchOptions = PHFetchOptions()
+        fetchOptions.includeHiddenAssets = false
         fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-//        fetchOptions.predicate = NSPredicate(format: "isHidden == false")     // From 0.2 to 2.2s for 70k images when activated
-        imageCollection = PHAsset.fetchAssets(in: assetCollections.firstObject!, options: fetchOptions)
-//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-//        print("=> Fetched \(imageCollection.count) assets in \(diff) ms")
+        fetchedImages = PHAsset.fetchAssets(in: assetCollections.firstObject!, options: fetchOptions)
+        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+        print("=> Fetched \(fetchedImages.count) assets in \(diff) ms")
+        // => Fetched 70331 assets in 205.949068069458 ms with hidden assets
+        // => Fetched 70331 assets in 216.99798107147217 ms with option "includeHiddenAssets = false"
     }
     
     // Sorts images by months, weeks and days in the background,
@@ -312,7 +314,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 //        queue.maxConcurrentOperationCount = 1   // Make it a serial queue for debugging
         let operation1 = BlockOperation.init(block: {
             // Sort images by months, weeks and days in the background
-            (self.indexOfImageSortedByDay, self.indexOfImageSortedByWeek, self.indexOfImageSortedByMonth) = self.sortByMonthWeekDay(images: self.imageCollection)
+            (self.indexOfImageSortedByDay, self.indexOfImageSortedByWeek, self.indexOfImageSortedByMonth) = self.sortByMonthWeekDay(images: self.fetchedImages)
 
             // Update interface
             DispatchQueue.main.async {
@@ -324,7 +326,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         })
         let operation2 = BlockOperation.init(block: {
             // Index the images in the upload queue
-            self.indexUploads(images: self.imageCollection)
+            self.indexUploads(images: self.fetchedImages)
         })
         queue.addOperations([operation1, operation2], waitUntilFinished: true)
 
@@ -419,7 +421,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         imagesByWeek.append(IndexSet.init(integersIn: firstIndexOfSameWeek..<images.count))
         imagesByMonth.append(IndexSet.init(integersIn: firstIndexOfSameMonth..<images.count))
 //        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-//        print("   Sorted \(imageCollection.count) images by days, weeks and months in \(diff) ms")
+//        print("   Sorted \(fetchedImages.count) images by days, weeks and months in \(diff) ms")
         return (imagesByDay, imagesByWeek, imagesByMonth)
     }
     
@@ -438,7 +440,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             }
         }
 //        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-//        print("   indexed \(imageCollection.count) uploads in \(diff) ms")
+//        print("   indexed \(fetchedImages.count) uploads in \(diff) ms")
     }
 
     
@@ -578,7 +580,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         selectedSections = .init(repeating: .select, count: indexOfImageSortedByDay.count)
 
         // Clear list of selected images
-        selectedImages = Array(repeating: nil, count: imageCollection.count)
+        selectedImages = Array(repeating: nil, count: fetchedImages.count)
 
         // Update navigation bar
         updateNavBar()
@@ -749,7 +751,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             var imageAssets: [PHAsset] = []
             for row in 0..<min(localImagesCollection.numberOfItems(inSection: indexPath.section), 20) {
                 let index = getImageIndex(for: IndexPath.init(item: row, section: indexPath.section))
-                imageAssets.append(imageCollection[index])
+                imageAssets.append(fetchedImages[index])
             }
             
             // Configure the header
@@ -840,7 +842,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 return 0
             }
         case .all:
-            return imageCollection.count
+            return fetchedImages.count
         }
     }
 
@@ -860,7 +862,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         
         // Get image asset, index depends on image sort type and date order
         let index = getImageIndex(for: indexPath)
-        let imageAsset = imageCollection[index]
+        let imageAsset = fetchedImages[index]
 
         // Configure cell with image asset
         cell.configure(with: imageAsset, thumbnailSize: CGFloat(ImagesCollection.imageSize(for: collectionView, imagesPerRowInPortrait: Model.sharedInstance().thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup)))
@@ -875,7 +877,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         cell.isUserInteractionEnabled = true
 
         // Cell state
-        if indexedUploadsInQueue.count == imageCollection.count {
+        if indexedUploadsInQueue.count == fetchedImages.count {
             // Use indexed data
             if let state = indexedUploadsInQueue[index]?.1 {
                 switch state {
@@ -915,7 +917,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         let indexPathsForVisibleItems = localImagesCollection.indexPathsForVisibleItems
         for indexPath in indexPathsForVisibleItems {
             let index = getImageIndex(for: indexPath)
-            let imageAsset = imageCollection[index]
+            let imageAsset = fetchedImages[index]
             if imageAsset.localIdentifier == localIdentifier {
                 if let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell {
                     cell.setProgress(progressFraction, withAnimation: true)
@@ -1031,7 +1033,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Check each of the fetches for changes,
         // and update the cached fetch results, and reload the table sections to match.
         DispatchQueue.main.async(execute: {
-            if let changeDetails = changeInstance.changeDetails(for: self.imageCollection) {
+            if let changeDetails = changeInstance.changeDetails(for: self.fetchedImages) {
                 // Show HUD during update, preventing touches
                 self.showHUD(with: NSLocalizedString("editImageDetailsHUD_updatingPlural", comment: "Updating Photos…"), detail: nil)
                 // Update fetched asset collection
@@ -1043,7 +1045,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     // Insert objects
                     self.selectedImages.insert(nil, at: index)
                 })
-                self.imageCollection = changeDetails.fetchResultAfterChanges
+                self.fetchedImages = changeDetails.fetchResultAfterChanges
                 // Sort images in foreground - Not efficient!!!!
                 self.sortImagesAndIndexUploads()
             }
@@ -1165,7 +1167,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             if indexedUploadsInQueue[index] == nil {
                 // Select image if not already selected
                 if batch[index] == nil {
-                    let imageId = imageCollection[index].localIdentifier
+                    let imageId = fetchedImages[index].localIdentifier
                     batch[index] = UploadProperties.init(localIdentifier: imageId, category: self.categoryId)
                 }
             }
@@ -1219,7 +1221,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             case kPiwigoSortDateCreatedAscending:
                 return indexPath.row
             case kPiwigoSortDateCreatedDescending:
-                return imageCollection.count - 1 - indexPath.row
+                return fetchedImages.count - 1 - indexPath.row
             default:
                 return 0
             }
@@ -1311,7 +1313,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
             
             // Get the corresponding index and local identifier
             let indexOfUploadedImage = getImageIndex(for: indexPath)
-            let imageAsset = imageCollection[indexOfUploadedImage]
+            let imageAsset = fetchedImages[indexOfUploadedImage]
             
             // Identify cell to be updated (if presented)
             if imageAsset.localIdentifier == upload.localIdentifier {
