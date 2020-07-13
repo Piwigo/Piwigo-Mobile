@@ -294,13 +294,13 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
          We fetch a specific path of the Photos Library to reduce the workload and store the fetched collection for future use.
          The fetch is performed with ascending creation date.
          */
-        let start = CFAbsoluteTimeGetCurrent()
+//        let start = CFAbsoluteTimeGetCurrent()
         let fetchOptions = PHFetchOptions()
         fetchOptions.includeHiddenAssets = false
         fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         fetchedImages = PHAsset.fetchAssets(in: assetCollections.firstObject!, options: fetchOptions)
-        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        print("=> Fetched \(fetchedImages.count) assets in \(diff) ms")
+//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+//        print("=> Fetched \(fetchedImages.count) assets in \(diff) ms")
         // => Fetched 70331 assets in 205.949068069458 ms with hidden assets
         // => Fetched 70331 assets in 216.99798107147217 ms with option "includeHiddenAssets = false"
     }
