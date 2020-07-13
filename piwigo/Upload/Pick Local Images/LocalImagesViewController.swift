@@ -68,7 +68,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     
     private var imageCollection: PHFetchResult<PHAsset>!                    // Collection of images in selected non-empty local album
     private var sortType: SectionType = .all                                // [Months, Weeks, Days, All images in one section]
-    private var indexOfImageSortedByMonth: [IndexSet] = []                  // Indices of images sorted by month, week and day
+    private var indexOfImageSortedByMonth: [IndexSet] = []                  // Indexes of images sorted by month, week and day
     private var indexOfImageSortedByWeek: [IndexSet] = []
     private var indexOfImageSortedByDay: [IndexSet] = []
 
@@ -1035,8 +1035,16 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 // Show HUD during update, preventing touches
                 self.showHUD(with: NSLocalizedString("editImageDetailsHUD_updatingPlural", comment: "Updating Photos…"), detail: nil)
                 // Update fetched asset collection
+                changeDetails.removedIndexes?.forEach({ (index) in
+                    // Remove objects
+                    self.selectedImages.remove(at: index)
+                })
+                changeDetails.insertedIndexes?.forEach({ (index) in
+                    // Insert objects
+                    self.selectedImages.insert(nil, at: index)
+                })
                 self.imageCollection = changeDetails.fetchResultAfterChanges
-                // Sort images in foreground
+                // Sort images in foreground - Not efficient!!!!
                 self.sortImagesAndIndexUploads()
             }
         })
@@ -1165,7 +1173,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     }
 
     private func deselectImagesInSection(from firstIndex: Int, in batch: inout ArraySlice<UploadProperties?>) -> (Void) {
-        // Loop over all images in section to select them
+        // Loop over all images in section to deselect them
         for index in firstIndex..<firstIndex + batch.count {
             // Deselect any image
             batch[index] = nil
