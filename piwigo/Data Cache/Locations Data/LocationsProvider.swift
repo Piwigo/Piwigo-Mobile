@@ -268,7 +268,7 @@ class LocationsProvider: NSObject {
         // Check coordinates
         if !CLLocationCoordinate2DIsValid(location.coordinate) {
             // Invalid location -> No place name
-            return [:]
+            return [String : String]()
         }
 
         // Create a fetch request for the location
