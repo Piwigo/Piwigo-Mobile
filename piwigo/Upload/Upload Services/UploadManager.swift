@@ -5,6 +5,7 @@
 //  Created by Eddy Lelièvre-Berna on 22/05/2020.
 //  Copyright © 2020 Piwigo.org. All rights reserved.
 //
+// See https://academy.realm.io/posts/gwendolyn-weston-ios-background-networking/
 
 import Foundation
 import Photos
@@ -446,6 +447,7 @@ class UploadManager: NSObject {
             // Launch transfer if possible
             let transfer = UploadTransfer()
             transfer.uploadManager = self
+//            transfer.imageInBackgroundForRequest(uploadProperties)
             transfer.imageOfRequest(uploadProperties)
         })
     }

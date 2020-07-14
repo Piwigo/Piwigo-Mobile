@@ -433,12 +433,6 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 		[[CategoriesData sharedInstance] getCategoryById:[category integerValue]].totalNumberOfImages++;
         NSLog(@"•••> incrementImageSizeByOne: catId=%ld, nber:%ld, total:%ld", (long)[category integerValue], (long)self.numberOfImages, (long)self.totalNumberOfImages);
 	}
-
-    // If first added image, update category cache to get thumbnail image URL from server
-//    if (self.numberOfImages == 1) {
-//        NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO", @"albumId" : @(self.albumId)};
-//        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
-//    }
 }
 
 -(void)deincrementImageSizeByOne
@@ -450,12 +444,6 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 		[[CategoriesData sharedInstance] getCategoryById:[category integerValue]].totalNumberOfImages--;
         NSLog(@"•••> decrementImageSizeByOne: catId=%ld, nber:%ld, total:%ld", (long)[category integerValue], (long)self.numberOfImages, (long)self.totalNumberOfImages);
 	}
-
-    // If no image left, update category cache to remove thumbnail image
-//    if (self.numberOfImages == 0) {
-//        NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO", @"albumId" : @(self.albumId)};
-//        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
-//    }
 }
 
 #pragma mark - debugging support -

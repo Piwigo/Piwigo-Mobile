@@ -152,14 +152,15 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     
     // Display album image
     self.backgroundImage.layer.cornerRadius = 10;
-    NSInteger imageSize = CGImageGetHeight(albumData.categoryImage.CGImage) * CGImageGetBytesPerRow(albumData.categoryImage.CGImage);
-    
-    if (albumData.categoryImage && imageSize > 0)
-    {
-        // Album thumbnail in memory
-        self.backgroundImage.image = albumData.categoryImage;
-    }
-    else if (albumData.albumThumbnailUrl.length <= 0)
+//    NSInteger imageSize = CGImageGetHeight(albumData.categoryImage.CGImage) * CGImageGetBytesPerRow(albumData.categoryImage.CGImage);
+//    
+//    if (albumData.categoryImage && imageSize > 0)
+//    {
+//        // Album thumbnail in memory
+//        self.backgroundImage.image = albumData.categoryImage;
+//    }
+//    else
+        if (albumData.albumThumbnailUrl.length <= 0)
     {
         // No album thumbnail
         albumData.categoryImage = [UIImage imageNamed:@"placeholder"];

@@ -42,6 +42,7 @@ NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBa
 NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploads";
 NSString * const kPiwigoNotificationUploadedImage = @"kPiwigoNotificationUploadedImage";
 NSString * const kPiwigoNotificationDeletedImage = @"kPiwigoNotificationDeletedImage";
+NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChangedAlbumData";
 
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, UITextFieldDelegate, NSFetchedResultsControllerDelegate, ImageDetailDelegate, EditImageParamsDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, AsyncImageActivityItemProviderDelegate, TagSelectorViewDelegate, ChangedSettingsDelegate>
 
@@ -1455,7 +1456,7 @@ NSString * const kPiwigoNotificationDeletedImage = @"kPiwigoNotificationDeletedI
         NSArray *oldImageList = self.albumData.images;
         NSLog(@"=> category %ld contained %ld images", (long)self.categoryId, (long)oldImageList.count);
 
-        // Load new image (appended to cache) and sort images before updating UI
+        // Remove image (removed from cache) and sort images before updating UI
         self.loadingImages = YES;
         [self.albumData loadMoreImagesOnCompletion:^{
             // Sort images

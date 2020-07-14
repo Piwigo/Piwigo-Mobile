@@ -18,7 +18,7 @@ class UploadTransfer {
     var uploadManager: UploadManager?
 
 
-    // MARK: - Transfer Image of Request
+    // MARK: - Transfer Image in Foreground
     func imageOfRequest(_ upload: UploadProperties) {
         print("    > imageOfRequest...")
 
@@ -315,5 +315,122 @@ class UploadTransfer {
                 // failed!
                 fail(task, error as NSError?)
             })
+    }
+
+
+    // MARK: - Transfer Image in Background
+    func imageInBackgroundForRequest(_ upload: UploadProperties) {
+        print("    > imageInBackgroundForRequest...")
+        
+        // Prepare creation date
+        var creationDate = ""
+        if let date = upload.creationDate {
+            let dateFormat = DateFormatter()
+            dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
+            creationDate = dateFormat.string(from: date)
+        }
+
+        // Prepare parameters for uploading image/video
+        let imageParameters: [String : String] = [
+            kPiwigoImagesUploadParamFileName: upload.fileName ?? "Image.jpg",
+            kPiwigoImagesUploadParamCreationDate: creationDate,
+            kPiwigoImagesUploadParamTitle: upload.imageTitle ?? "",
+            kPiwigoImagesUploadParamCategory: "\(NSNumber(value: upload.category))",
+            kPiwigoImagesUploadParamPrivacy: "\(NSNumber(value: upload.privacyLevel!.rawValue))",
+            kPiwigoImagesUploadParamAuthor: upload.author ?? "",
+            kPiwigoImagesUploadParamDescription: upload.comment ?? "",
+//            kPiwigoImagesUploadParamTags: upload.tagIds,
+            kPiwigoImagesUploadParamMimeType: upload.mimeType ?? ""
+        ]
+
+        // Get URL of file to upload
+        let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-") + "-" + upload.fileName!
+        guard let fileURL = uploadManager?.applicationUploadsDirectory.appendingPathComponent(fileName) else {
+            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+            updateUploadRequestWith(upload, error: error)
+            return
+        }
+        
+        // Prepare URL
+//        let url = URL(string: NetworkHandler.getURLWithPath("format=json&method=pwg.images.addSimple&category=142", withURLParams: nil))
+        let url = URL(string: NetworkHandler.getURLWithPath("method=pwg.images.addSimple&category=142", withURLParams: nil))
+        guard let validUrl = url else { fatalError() }
+
+        // JSON data
+//        struct PwgImagesAddSimple: Codable {
+//            let category: Int
+//        }
+//        let order = PwgImagesAddSimple(category: 142)
+//        guard let uploadData = try? JSONEncoder().encode(order) else {
+//            return
+//        }
+
+        // Prepare URL Request Object
+        var urlRequest = URLRequest(url: validUrl)
+        urlRequest.httpMethod = "POST"
+//        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        urlRequest.setValue(upload.fileName!, forHTTPHeaderField: "filename")
+//        urlRequest.setValue(upload.fileName!, forHTTPHeaderField: "image")
+
+//        let boundary = createBoundary()
+        
+        // Create upload session
+//        NetworkHandler.createUploadSessionManager() // 60s timeout, 2 connections max
+//        Model.sharedInstance().imageUploadManager.uploadTask(with: URLRequest(url: validUrl),
+//                                                             fromFile: fileURL,
+//        progress: { (progress) in
+//            print("\(progress.debugDescription)")
+//
+//        }) { (responseData, response, error) in
+//
+//            if(error != nil){
+//                print("\(error!.localizedDescription)")
+//            }
+//
+//            print("\(responseData.debugDescription)")
+//            print("\(response.debugDescription)")
+//        }.resume()
+//        return
+
+        // Set Content-Type Header to multipart/form-data
+//        urlRequest.setValue("multipart/form-data", forHTTPHeaderField: "Content-Type")
+//        urlRequest.setValue("file", forHTTPHeaderField: "Content-Type")
+//        urlRequest.setValue(upload.mimeType, forHTTPHeaderField: "Content-Type")
+
+//        var mutableHeaders: [AnyHashable : Any] = [:]
+//        mutableHeaders["Content-Disposition"] = "form-data; name=\"\(name)\"; filename=\"\(fileName)\""
+//        mutableHeaders["Content-Type"] = mimeType
+
+        // Create session
+//        let config = URLSessionConfiguration.background(withIdentifier: "org.piwigo.backgroundSession")
+//        let session = URLSession(configuration: config, delegate: (UIApplication.shared.delegate as! URLSessionDelegate), delegateQueue: nil)
+        
+//        let task = session.uploadTask(with: urlRequest, fromFile: fileURL)
+        URLSession.shared.uploadTask(with: urlRequest, fromFile: fileURL) { (responseData, response, error) in
+            
+            if(error != nil){
+                print("\(error!.localizedDescription)")
+            }
+            
+            guard let responseData = responseData else {
+                print("no response data")
+                return
+            }
+            
+            if let responseString = String(data: responseData, encoding: .utf8) {
+                print("uploaded to: \(responseString)")
+            }
+
+        }.resume()
+    }
+
+    private func createBoundary() -> String {
+        var uuid = UUID().uuidString
+        uuid = uuid.replacingOccurrences(of: "-", with: "")
+        uuid = uuid.map { $0.lowercased() }.joined()
+     
+        let boundary = String(repeating: "-", count: 20) + uuid + "\(Int(Date.timeIntervalSinceReferenceDate))"
+     
+        return boundary
     }
 }
