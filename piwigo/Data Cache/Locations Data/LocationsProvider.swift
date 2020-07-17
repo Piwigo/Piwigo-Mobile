@@ -296,10 +296,10 @@ class LocationsProvider: NSObject {
         } catch {
             fatalError("Unresolved error \(error)")
         }
-        let knownPlaceNames: [Location] = controller.fetchedObjects ?? []
+        let knownPlaceNames = controller.fetchedObjects ?? []
         
         // Loop over known places
-        var placeNames = [String : String]()
+        var placeNames: [String: String] = .init(minimumCapacity: 2)
         for knownPlace: Location in knownPlaceNames {
             // Known location
             let knownLatitude = knownPlace.latitude
