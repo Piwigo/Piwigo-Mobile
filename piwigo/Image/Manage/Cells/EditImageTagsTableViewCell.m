@@ -7,7 +7,6 @@
 //
 
 #import "EditImageTagsTableViewCell.h"
-#import "TagsData.h"
 
 @interface EditImageTagsTableViewCell()
 
@@ -45,7 +44,7 @@
 	}
 }
 
--(void)setTagList:(NSArray*)tags inColor:(UIColor *)color
+-(void)setTagList:(NSArray <PiwigoTagData *> *)tags inColor:(UIColor *)color
 {
 	self.tagsString = [[TagsData sharedInstance] getTagsStringFromList:tags];
     self.tagsLabel.textColor = [UIColor piwigoColorRightLabel];

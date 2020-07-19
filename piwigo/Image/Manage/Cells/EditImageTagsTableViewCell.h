@@ -8,8 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+#import "TagsData.h"
+
 @interface EditImageTagsTableViewCell : UITableViewCell
 
--(void)setTagList:(NSArray*)tags inColor:(UIColor *)color;
+-(void)setTagList:(NSArray <PiwigoTagData *> *)tags inColor:(UIColor *)color;
 
 @end
