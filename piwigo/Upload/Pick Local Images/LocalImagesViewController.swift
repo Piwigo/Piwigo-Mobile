@@ -126,7 +126,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         actionBarButton?.accessibilityIdentifier = "Sort"
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelSelect))
         cancelBarButton?.accessibilityIdentifier = "Cancel"
-        uploadBarButton = UIBarButtonItem(image: UIImage(named: "upload"), style: .plain, target: self, action: #selector(didTapUploadButton))
+        uploadBarButton = UIBarButtonItem(title: NSLocalizedString("tabBar_upload", comment: "Upload"), style: .done, target: self, action: #selector(didTapUploadButton))
         
         // Segmented control (choice for presenting images by month, week, day or in a single collection)
         if #available(iOS 13.0, *) {
