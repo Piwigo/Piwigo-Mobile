@@ -766,7 +766,7 @@ typedef enum {
             UIStoryboard *tagsSB = [UIStoryboard storyboardWithName:@"TagsViewController" bundle:nil];
             TagsViewController *tagsVC = [tagsSB instantiateViewControllerWithIdentifier:@"TagsViewController"];
             tagsVC.delegate = self;
-            [tagsVC setAlreadySelectedTags: [self.commonParameters.tags mutableCopy]];
+            [tagsVC setAlreadySelectedOldTags: self.commonParameters.tags];
             [self.navigationController pushViewController:tagsVC animated:YES];
             break;
         }

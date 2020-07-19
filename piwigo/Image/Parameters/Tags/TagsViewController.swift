@@ -34,6 +34,19 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
         }
     }
 
+    @objc func setAlreadySelectedOldTags(_ alreadySelectedOldTags: [PiwigoTagData]?) {
+        _alreadySelectedOldTags = alreadySelectedOldTags ?? [PiwigoTagData]()
+    }
+    private var _alreadySelectedOldTags = [PiwigoTagData]()
+    private var alreadySelectedOldTags: [PiwigoTagData] {
+        get {
+            return _alreadySelectedOldTags
+        }
+        set(alreadySelectedOldTags) {
+            _alreadySelectedOldTags = alreadySelectedOldTags
+        }
+    }
+
 
     // MARK: - Core Data
     /**
@@ -72,6 +85,9 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
                         firstCharacters.add((tag.tagName as String).prefix(1).uppercased())
                     }
                     self.letterIndex = (firstCharacters.allObjects as! [String]).sorted()
+                    
+                    // Digest old Tags if provided by old cache
+                    self.digestOldTags()
                     
                     // Update list of non-selected tags
                     self.updateListOfNotSelectedTags()
@@ -424,6 +440,20 @@ extension TagsViewController {
 
     
     // MARK: - Utilities
+    func digestOldTags() {
+        // Digest old Tags if provided by old cache
+        if self.alreadySelectedOldTags.count > 0 {
+            let allTags = self.dataProvider.fetchedResultsController.fetchedObjects ?? [Tag]()
+            self.alreadySelectedOldTags.forEach { (oldTag) in
+                if let newTag = allTags.first(where: {$0.tagId == oldTag.tagId}) {
+                    if !self.alreadySelectedTags.contains(newTag) {
+                        self.alreadySelectedTags.append(newTag)
+                    }
+                }
+            }
+        }
+    }
+    
     func updateListOfNotSelectedTags() {
         // Build list of not selected tags
         notSelectedTags = dataProvider.fetchedResultsController.fetchedObjects ?? [Tag]()
