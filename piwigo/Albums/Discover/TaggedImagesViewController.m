@@ -22,7 +22,6 @@
 #import "Model.h"
 #import "MoveImageViewController.h"
 #import "TaggedImagesViewController.h"
-#import "TagSelectViewController.h"
 
 @interface TaggedImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UIGestureRecognizerDelegate, ImageDetailDelegate, EditImageParamsDelegate, AsyncImageActivityItemProviderDelegate, MoveImagesDelegate>
 

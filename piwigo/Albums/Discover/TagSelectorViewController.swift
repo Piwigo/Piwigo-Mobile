@@ -34,8 +34,8 @@ class TagSelectorViewController: UITableViewController {
         
     
     // MARK: View
-    @IBOutlet var tagsTableView: UITableView!
-    var letterIndex: [String] = []
+    @IBOutlet private var tagsTableView: UITableView!
+    private var letterIndex: [String] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -80,7 +80,7 @@ class TagSelectorViewController: UITableViewController {
         navigationItem.setLeftBarButtonItems([cancelBarButton], animated: true)
     }
     
-    @objc func applyColorPalette() {
+    @objc private func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = UIColor.piwigoColorBackground()
 
@@ -115,7 +115,7 @@ class TagSelectorViewController: UITableViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
     }
 
-    @objc func quitTagSelect()
+    @objc private func quitTagSelect()
     {
         dismiss(animated: true, completion: nil)
     }
