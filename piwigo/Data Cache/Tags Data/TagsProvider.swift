@@ -64,8 +64,7 @@ class TagsProvider {
                 return
             }
             completionHandler(nil)
-        }) { (URLSessionTask, Error) in
-
+        }) { (task, error) in
             completionHandler(TagError.networkUnavailable)
         }
     }
