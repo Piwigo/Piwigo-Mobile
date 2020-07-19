@@ -714,8 +714,7 @@ typedef enum {
         case EditImageParamsOrderDescription:
 		{
 			EditImageTextViewTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"description" forIndexPath:indexPath];
-            [cell setupWithImageDetail:self.commonParameters.comment];
-            if (self.shouldUpdateComment) cell.textView.textColor = [UIColor piwigoColorOrange];
+            [cell setComment:self.commonParameters.comment inColor:self.shouldUpdateTags ? [UIColor piwigoColorOrange] : [UIColor piwigoColorLeftLabel]];
             cell.textView.delegate = self;
             tableViewCell = cell;
 			break;

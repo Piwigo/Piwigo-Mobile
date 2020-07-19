@@ -12,6 +12,6 @@
 
 @property (weak, nonatomic) IBOutlet UITextView *textView;
 
--(void)setupWithImageDetail:(NSString *)imageDetail;
+-(void)setComment:(NSString *)imageDetail inColor:(UIColor *)color;
 
 @end

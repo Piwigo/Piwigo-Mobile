@@ -32,7 +32,7 @@
     self.textView.layer.cornerRadius = 5.0;
 }
 
--(void)setupWithImageDetail:(NSString *)imageDetail
+-(void)setComment:(NSString *)imageDetail inColor:(UIColor *)color
 {
     // Cell background
     self.backgroundColor = [UIColor piwigoColorBackground];
@@ -42,7 +42,7 @@
 
     // Cell text view
     self.textView.text = imageDetail;
-    self.textView.textColor = [UIColor piwigoColorLeftLabel];
+    self.textView.textColor = color;
     self.textView.backgroundColor = [UIColor piwigoColorBackground];
     self.textView.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
 }
