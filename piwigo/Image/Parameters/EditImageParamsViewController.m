@@ -22,7 +22,6 @@
 #import "MBProgressHUD.h"
 #import "PiwigoTagData.h"
 #import "TagsData.h"
-#import "TagsViewController.h"
 
 CGFloat const kEditImageParamsViewWidth = 512.0;
 
@@ -764,9 +763,10 @@ typedef enum {
             [self.view endEditing:YES];
             
             // Create view controller
-            TagsViewController *tagsVC = [TagsViewController new];
+            UIStoryboard *tagsSB = [UIStoryboard storyboardWithName:@"TagsViewController" bundle:nil];
+            TagsViewController *tagsVC = [tagsSB instantiateViewControllerWithIdentifier:@"TagsViewController"];
             tagsVC.delegate = self;
-            tagsVC.alreadySelectedTags = [self.commonParameters.tags mutableCopy];
+            [tagsVC setAlreadySelectedTags: [self.commonParameters.tags mutableCopy]];
             [self.navigationController pushViewController:tagsVC animated:YES];
             break;
         }
@@ -1119,7 +1119,7 @@ typedef enum {
 
 #pragma mark - TagsViewControllerDelegate Methods
 
--(void)didExitWithSelectedTags:(NSArray *)selectedTags
+-(void)didSelectTags:(NSArray<Tag *> *)selectedTags
 {
     // Update image parameter
 	self.commonParameters.tags = selectedTags;
