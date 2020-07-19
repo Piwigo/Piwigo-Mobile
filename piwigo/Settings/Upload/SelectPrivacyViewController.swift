@@ -200,6 +200,7 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
             }
         }
 
+        // Update cell of parent view
         if delegate?.responds(to: #selector(SelectPrivacyDelegate.didSelectPrivacyLevel(_:))) ?? false {
             delegate?.didSelectPrivacyLevel(selectedPrivacy)
         }
