@@ -2926,7 +2926,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
             
             // Load image data in advance if possible (page after page…)
             if ((indexPath.row > fmaxf(roundf(2 * imagesPerPage / 3.0), [collectionView numberOfItemsInSection:1] - roundf(imagesPerPage / 3.0))) &&
-                (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
+                (self.albumData.images.count < [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
             {
                 self.loadingImages = YES;
                 [self.albumData loadMoreImagesOnCompletion:^{
