@@ -15,7 +15,7 @@ enum LocationError: Error {
 }
 
 extension LocationError: LocalizedError {
-    public var errorDescription: String? {
+    public var localizedDescription: String {
         switch self {
         case .missingData:
             return NSLocalizedString("CoreDataFetch_LocationMissingData", comment: "Found and will discard a location missing a valid identifier.")
