@@ -151,7 +151,7 @@
 	return tags;
 }
 
--(NSString*)getTagsStringFromList:(NSArray*)tagList
+-(NSString*)getTagsStringFromList:(NSArray <PiwigoTagData *> *)tagList
 {
 	NSString *tagListString = @"";
     if (tagList != nil) {
@@ -168,7 +168,7 @@
 	return tagListString;
 }
 
--(NSInteger)getIndexOfTag:(PiwigoTagData*)tag
+-(NSInteger)getIndexOfTag:(PiwigoTagData *)tag
 {
 	NSInteger count = 0;
 	for(PiwigoTagData *tagData in self.tagList)
