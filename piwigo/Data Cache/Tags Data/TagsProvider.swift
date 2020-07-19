@@ -147,9 +147,7 @@ class TagsProvider {
             for tagData in tagsBatch {
             
                 // Index of this new tag in cache
-                let index = cachedTags.firstIndex { (item) -> Bool in
-                    item.tagId == tagData.id!
-                }
+                let index = cachedTags.firstIndex { $0.tagId == tagData.id! }
                 
                 // Is this tag already cached?
                 if (index == nil) {
