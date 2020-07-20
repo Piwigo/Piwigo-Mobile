@@ -17,7 +17,7 @@ enum TagError: Error {
 }
 
 extension TagError: LocalizedError {
-    public var localizedDescription: String {
+    public var errorDescription: String? {
         switch self {
         case .networkUnavailable:
             return NSLocalizedString("internetErrorGeneral_broken", comment: "Sorry, the communication was broken.\nTry logging in again.")
