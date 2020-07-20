@@ -62,7 +62,7 @@ class UploadImage {
                 requestDelete: upload.requestDelete, requestError: error.localizedDescription,
                 creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
                 isVideo: upload.isVideo, author: upload.author, privacyLevel: upload.privacyLevel,
-                imageTitle: upload.imageTitle, comment: upload.comment, tags: upload.tags, imageId: upload.imageId)
+                imageTitle: upload.imageTitle, comment: upload.comment, tagIds: upload.tagIds, imageId: upload.imageId)
             
             // Update request with error description
             print("    >", error.localizedDescription)
@@ -79,7 +79,7 @@ class UploadImage {
             requestDelete: upload.requestDelete, requestError: "",
             creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
             isVideo: upload.isVideo, author: upload.author, privacyLevel: upload.privacyLevel,
-            imageTitle: upload.imageTitle, comment: upload.comment, tags: upload.tags, imageId: upload.imageId)
+            imageTitle: upload.imageTitle, comment: upload.comment, tagIds: upload.tagIds, imageId: upload.imageId)
 
         // Update request ready for transfer
         print("    > prepared file \(uploadProperties.fileName!)")
