@@ -29,8 +29,7 @@ class UploadTransfer {
             dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
             creationDate = dateFormat.string(from: date)
         }
-
-        // Prepare parameters for uploading image/video
+        
         let imageParameters: [String : String] = [
             kPiwigoImagesUploadParamFileName: upload.fileName ?? "Image.jpg",
             kPiwigoImagesUploadParamCreationDate: creationDate,
@@ -39,7 +38,7 @@ class UploadTransfer {
             kPiwigoImagesUploadParamPrivacy: "\(NSNumber(value: upload.privacyLevel!.rawValue))",
             kPiwigoImagesUploadParamAuthor: upload.author ?? "",
             kPiwigoImagesUploadParamDescription: upload.comment ?? "",
-//            kPiwigoImagesUploadParamTags: upload.tagIds,
+            kPiwigoImagesUploadParamTags: upload.tagIds ?? "",
             kPiwigoImagesUploadParamMimeType: upload.mimeType ?? ""
         ]
 
@@ -136,7 +135,7 @@ class UploadTransfer {
                             return
                         }
                         
-                        // Get data fro server response
+                        // Get data from server response
                         imageData.imageId = uploadJSON.imagesUpload.image_id!
                         imageData.squarePath = uploadJSON.imagesUpload.square_src
                         imageData.thumbPath = uploadJSON.imagesUpload.src
@@ -181,7 +180,8 @@ class UploadTransfer {
                 requestDelete: upload.requestDelete, requestError: error.localizedDescription,
                 creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
                 isVideo: upload.isVideo, author: upload.author, privacyLevel: upload.privacyLevel,
-                imageTitle: upload.imageTitle, comment: upload.comment, tags: upload.tags, imageId: upload.imageId)
+                imageTitle: upload.imageTitle, comment: upload.comment, tagIds: upload.tagIds,
+                imageId: upload.imageId)
             
             // Update request with error description
             print("    >", error.localizedDescription)
@@ -198,7 +198,7 @@ class UploadTransfer {
             requestDelete: upload.requestDelete, requestError: "",
             creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
             isVideo: upload.isVideo, author: upload.author, privacyLevel: upload.privacyLevel,
-            imageTitle: upload.imageTitle, comment: upload.comment, tags: upload.tags, imageId: upload.imageId)
+            imageTitle: upload.imageTitle, comment: upload.comment, tagIds: upload.tagIds, imageId: upload.imageId)
 
         // Update request ready for finish
         print("    > transferred file \(uploadProperties.fileName!)")
