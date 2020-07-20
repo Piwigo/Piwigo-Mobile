@@ -6,6 +6,7 @@
 //  Copyright © 2020 Piwigo.org. All rights reserved.
 //
 // See https://app.quicktype.io/?share=2O9jStiO6T444YFJc8F3
+//     https://jsonlint.com/?code=
 
 import Foundation
 import XCTest
@@ -78,6 +79,66 @@ class piwigoWebAPI: XCTestCase {
     }
 
     
+    // MARK: - pwg.tags…
+    func testPwgTagsGetListDecoding() {
+        
+        // Case of a successful request
+        let bundle = Bundle(for: type(of: self))
+        guard let url = bundle.url(forResource: "pwg.tags.getList", withExtension: "json"),
+            let data = try? Data(contentsOf: url) else {
+                return
+        }
+        
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(TagJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(result.stat, "ok")
+        XCTAssertEqual(result.tagPropertiesArray[1].id, 14)
+        XCTAssertEqual(result.tagPropertiesArray[2].counter, 9)
+    }
+
+    func testPwgTagsGetAdminListDecoding() {
+        
+        // Case of a successful request
+        let bundle = Bundle(for: type(of: self))
+        guard let url = bundle.url(forResource: "pwg.tags.getAdminList", withExtension: "json"),
+            let data = try? Data(contentsOf: url) else {
+                return
+        }
+        
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(TagJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(result.stat, "ok")
+        XCTAssertEqual(result.tagPropertiesArray[0].id, 1)
+        XCTAssertEqual(result.tagPropertiesArray[2].name, "Piwigo")
+    }
+
+    func testPwgTagsAddDecoding() {
+        
+        // Case of a successful request
+        let bundle = Bundle(for: type(of: self))
+        guard let url = bundle.url(forResource: "pwg.tags.add", withExtension: "json"),
+            let data = try? Data(contentsOf: url) else {
+                return
+        }
+        
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(TagAddJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(result.stat, "ok")
+        XCTAssertEqual(result.tagProperties.id, 26)
+    }
+
     // MARK: - community
     func testCommunityImagesUploadCompletedDecoding() {
         

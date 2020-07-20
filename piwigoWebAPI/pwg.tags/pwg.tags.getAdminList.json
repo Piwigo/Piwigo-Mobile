@@ -1,0 +1,30 @@
+{
+    "result": {
+        "tags": [{
+                "id": "1",
+                "lastmodified": "2018-08-23 15:30:43",
+                "name": "Birthday",
+                "url_name": "birthday"
+            },
+            {
+                "id": "14",
+                "lastmodified": "2019-08-27 20:33:01",
+                "name": "Cities",
+                "url_name": "cities"
+            },
+            {
+                "id": "2",
+                "lastmodified": "2018-08-23 15:30:43",
+                "name": "Piwigo",
+                "url_name": "piwigo"
+            },
+            {
+                "id": "18",
+                "lastmodified": "2020-02-08 18:02:22",
+                "name": "Test Tag",
+                "url_name": "test_tag"
+            }
+        ]
+    },
+    "stat": "ok"
+}
