@@ -16,30 +16,26 @@
         <scene sceneID="BRU-A7-OjA">
             <objects>
                 <tableViewController storyboardIdentifier="TagSelectorViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="bV6-2f-3yr" customClass="TagSelectorViewController" customModule="piwigo" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="insetGrouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="DTH-yA-3NV">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="insetGrouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" sectionFooterHeight="-1" id="DTH-yA-3NV">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="sectionIndexColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="TagSelectorCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TagSelectorCell" rowHeight="43" id="IlB-vX-O4C" customClass="TagSelectorCell" customModule="piwigo">
-                                <rect key="frame" x="20" y="55.5" width="374" height="43"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="TagSelectorCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TagSelectorCell" id="IlB-vX-O4C" customClass="TagSelectorCell" customModule="piwigo">
+                                <rect key="frame" x="20" y="55.5" width="374" height="43.5"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="IlB-vX-O4C" id="zsI-d8-wOo">
-                                    <rect key="frame" x="0.0" y="0.0" width="374" height="43"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="374" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="tagLabel" textAlignment="natural" lineBreakMode="wordWrap" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="5v0-0N-QkM">
-                                            <rect key="frame" x="20" y="10" width="334" height="23.5"/>
+                                        <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="tagLabel" textAlignment="natural" lineBreakMode="wordWrap" minimumFontSize="9" id="5v0-0N-QkM">
+                                            <rect key="frame" x="20" y="10" width="334" height="24"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
-                                    <constraints>
-                                        <constraint firstItem="5v0-0N-QkM" firstAttribute="leading" secondItem="zsI-d8-wOo" secondAttribute="leadingMargin" id="6th-hR-2v0"/>
-                                        <constraint firstItem="5v0-0N-QkM" firstAttribute="centerY" secondItem="zsI-d8-wOo" secondAttribute="centerY" id="ngC-1b-JSU"/>
-                                        <constraint firstAttribute="trailing" secondItem="5v0-0N-QkM" secondAttribute="trailing" constant="20" symbolic="YES" id="zJw-RW-tTy"/>
-                                    </constraints>
                                 </tableViewCellContentView>
                                 <connections>
                                     <outlet property="tagLabel" destination="5v0-0N-QkM" id="ZqM-uH-d2m"/>
