@@ -815,14 +815,7 @@ typedef enum {
             
             // Update creation date
             NSIndexPath *indexPath = [NSIndexPath indexPathForRow:EditImageParamsOrderDate inSection:0];
-            UITableViewCell *cell = [self.editImageParamsTableView cellForRowAtIndexPath:indexPath];
-            if ([cell isKindOfClass:[EditImageTextFieldTableViewCell class]]) {
-                EditImageTextFieldTableViewCell *dateCell = (EditImageTextFieldTableViewCell *)cell;
-                [dateCell setupWithLabel:NSLocalizedString(@"editImageDetails_dateCreation", @"Creation Date")
-                             placeHolder:@""
-                          andImageDetail:[self getStringFromDate:self.commonParameters.dateCreated]];
-                [self.editImageParamsTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:NO];
-            }
+            [self.editImageParamsTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
         }
         
         // Show date of hide picker
@@ -1107,11 +1100,6 @@ typedef enum {
 	// Update image parameter
     self.commonParameters.privacyLevel = privacyLevel;
 	
-    // Update table view cell
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:(EditImageParamsOrderPrivacy - (self.hasDatePicker == NO)) inSection:0];
-    EditImagePrivacyTableViewCell *cell = (EditImagePrivacyTableViewCell*)[self.editImageParamsTableView cellForRowAtIndexPath:indexPath];
-	if (cell) [cell setPrivacyLevel:privacyLevel inColor:[UIColor piwigoColorOrange]];
-    
     // Remember to update image info
     self.shouldUpdatePrivacyLevel = YES;
 }
