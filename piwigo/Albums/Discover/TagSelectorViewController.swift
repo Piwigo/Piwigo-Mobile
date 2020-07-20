@@ -323,21 +323,35 @@ extension TagSelectorViewController: NSFetchedResultsControllerDelegate {
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
 
-        let oldIndexPath = indexPath ?? IndexPath.init(row: 0, section: 0)
         switch type {
         case .insert:
-            guard let newIndexPath = newIndexPath else { return }
-            tagsTableView.insertRows(at: [newIndexPath], with: .automatic)
+            if let newIndexPath = newIndexPath {
+//                print(".insert =>", newIndexPath.debugDescription)
+                tagsTableView.insertRows(at: [newIndexPath], with: .automatic)
+            }
+            
         case .delete:
-            tagsTableView.deleteRows(at: [oldIndexPath], with: .automatic)
+            if let indexPath = indexPath {
+//                print(".delete =>", indexPath.debugDescription)
+                tagsTableView.deleteRows(at: [indexPath], with: .automatic)
+            }
+            
         case .move:
-            guard let newIndexPath = newIndexPath else { return }
-            tagsTableView.deleteRows(at: [oldIndexPath], with: .automatic)
-            tagsTableView.insertRows(at: [newIndexPath], with: .automatic)
+            if let indexPath = indexPath, let newIndexPath = newIndexPath {
+//                print(".move =>", indexPath.debugDescription, "=>", newIndexPath.debugDescription)
+                tagsTableView.deleteRows(at: [indexPath], with: .automatic)
+                tagsTableView.insertRows(at: [newIndexPath], with: .automatic)
+            }
+            
         case .update:
             guard let tag: Tag = anObject as? Tag else { return }
-            guard let cell = tableView.cellForRow(at: oldIndexPath) as? TagSelectorCell else { return }
-            cell.configure(with: tag)
+            if let indexPath = indexPath {
+//                print(".update =>", indexPath.debugDescription)
+                if let cell = tableView.cellForRow(at: indexPath) as? TagSelectorCell {
+                    cell.configure(with: tag)
+                }
+            }
+            
         @unknown default:
             fatalError("TagSelectorViewController: unknown NSFetchedResultsChangeType")
         }
