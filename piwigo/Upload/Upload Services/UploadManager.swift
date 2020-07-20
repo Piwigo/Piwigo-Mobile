@@ -166,7 +166,8 @@ class UploadManager: NSObject {
                 requestDelete: upload.requestDelete, requestError: UploadError.networkUnavailable.errorDescription,
                 creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
                 isVideo: upload.isVideo, author: upload.author, privacyLevel: upload.privacy,
-                imageTitle: upload.imageName, comment: upload.comment, tags: upload.tags, imageId: Int(upload.imageId))
+                imageTitle: upload.imageName, comment: upload.comment,
+                tagIds: upload.tagIds, imageId: Int(upload.imageId))
             
             print("    >  Interrupted finish")
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
@@ -182,7 +183,8 @@ class UploadManager: NSObject {
                 requestDelete: upload.requestDelete, requestError: UploadError.networkUnavailable.errorDescription,
                 creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
                 isVideo: upload.isVideo, author: upload.author, privacyLevel: upload.privacy,
-                imageTitle: upload.imageName, comment: upload.comment, tags: upload.tags, imageId: Int(upload.imageId))
+                imageTitle: upload.imageName, comment: upload.comment,
+                tagIds: upload.tagIds, imageId: Int(upload.imageId))
 
             print("    >  Interrupted upload")
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
@@ -198,7 +200,8 @@ class UploadManager: NSObject {
                 requestDelete: upload.requestDelete, requestError: UploadError.networkUnavailable.errorDescription,
                 creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
                 isVideo: upload.isVideo, author: upload.author, privacyLevel: upload.privacy,
-                imageTitle: upload.imageName, comment: upload.comment, tags: upload.tags, imageId: Int(upload.imageId))
+                imageTitle: upload.imageName, comment: upload.comment,
+                tagIds: upload.tagIds, imageId: Int(upload.imageId))
 
             print("    >  Interrupted preparation")
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
@@ -286,7 +289,7 @@ class UploadManager: NSObject {
             mimeType: nextUpload.mimeType, isVideo: nextUpload.isVideo,
             author: nextUpload.author, privacyLevel: nextUpload.privacy,
             imageTitle: nextUpload.imageName, comment: nextUpload.comment,
-            tags: nextUpload.tags, imageId: NSNotFound)
+            tagIds: nextUpload.tagIds, imageId: NSNotFound)
 
         // Retrieve image asset
         guard let originalAsset = PHAsset.fetchAssets(withLocalIdentifiers: [nextUpload.localIdentifier], options: nil).firstObject else {
@@ -439,7 +442,7 @@ class UploadManager: NSObject {
             mimeType: nextUpload.mimeType, isVideo: nextUpload.isVideo,
             author: nextUpload.author, privacyLevel: nextUpload.privacy,
             imageTitle: nextUpload.imageName, comment: nextUpload.comment,
-            tags: nextUpload.tags, imageId: Int(nextUpload.imageId))
+            tagIds: nextUpload.tagIds, imageId: Int(nextUpload.imageId))
 
         // Update state of upload request
         uploadProperties.requestState = .uploading
@@ -472,7 +475,7 @@ class UploadManager: NSObject {
             mimeType: nextUpload.mimeType, isVideo: nextUpload.isVideo,
             author: nextUpload.author, privacyLevel: nextUpload.privacy,
             imageTitle: nextUpload.imageName, comment: nextUpload.comment,
-            tags: nextUpload.tags, imageId: Int(nextUpload.imageId))
+            tagIds: nextUpload.tagIds, imageId: Int(nextUpload.imageId))
 
         // Update state of upload resquest
         uploadProperties.requestState = .finishing
@@ -542,7 +545,8 @@ class UploadManager: NSObject {
                             creationDate: upload.creationDate, fileName: upload.fileName,
                             mimeType: upload.mimeType, isVideo: upload.isVideo,
                             author: upload.author, privacyLevel: upload.privacy,
-                            imageTitle: upload.imageName, comment: upload.comment, tags: upload.tags, imageId: Int(upload.imageId))
+                            imageTitle: upload.imageName, comment: upload.comment,
+                            tagIds: upload.tagIds, imageId: Int(upload.imageId))
                         uploadsToUpdate.append(uploadProperties)
                     }
                     self.uploadsProvider.importUploads(from: uploadsToUpdate) { (_) in
@@ -584,7 +588,7 @@ class UploadManager: NSObject {
                 mimeType: failedUpload.mimeType, isVideo: failedUpload.isVideo,
                 author: failedUpload.author, privacyLevel: failedUpload.privacy,
                 imageTitle: failedUpload.imageName, comment: failedUpload.comment,
-                tags: failedUpload.tags, imageId: Int(failedUpload.imageId))
+                tagIds: failedUpload.tagIds, imageId: Int(failedUpload.imageId))
             
             // Update state from which to try again
             switch failedUpload.state {
