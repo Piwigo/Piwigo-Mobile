@@ -23,22 +23,22 @@ class UploadTransfer {
         print("    > imageOfRequest...")
 
         // Prepare creation date
-        var creationDate = ""
-        if let date = upload.creationDate {
-            let dateFormat = DateFormatter()
-            dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
-            creationDate = dateFormat.string(from: date)
-        }
+//        var creationDate = ""
+//        if let date = upload.creationDate {
+//            let dateFormat = DateFormatter()
+//            dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
+//            creationDate = dateFormat.string(from: date)
+//        }
         
         let imageParameters: [String : String] = [
             kPiwigoImagesUploadParamFileName: upload.fileName ?? "Image.jpg",
-            kPiwigoImagesUploadParamCreationDate: creationDate,
-            kPiwigoImagesUploadParamTitle: upload.imageTitle ?? "",
+//            kPiwigoImagesUploadParamCreationDate: creationDate,
+//            kPiwigoImagesUploadParamTitle: upload.imageTitle ?? "",
             kPiwigoImagesUploadParamCategory: "\(NSNumber(value: upload.category))",
             kPiwigoImagesUploadParamPrivacy: "\(NSNumber(value: upload.privacyLevel!.rawValue))",
-            kPiwigoImagesUploadParamAuthor: upload.author ?? "",
-            kPiwigoImagesUploadParamDescription: upload.comment ?? "",
-            kPiwigoImagesUploadParamTags: upload.tagIds ?? "",
+//            kPiwigoImagesUploadParamAuthor: upload.author ?? "",
+//            kPiwigoImagesUploadParamDescription: upload.comment ?? "",
+//            kPiwigoImagesUploadParamTags: upload.tagIds ?? "",
             kPiwigoImagesUploadParamMimeType: upload.mimeType ?? ""
         ]
 
@@ -62,7 +62,7 @@ class UploadTransfer {
                     NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationUploadProgress), object: nil, userInfo: uploadInfo)
                 }
             },
-            onCompletion: { [unowned self] (task, jsonData, imageParameters) in
+            onCompletion: { [unowned self] (task, jsonData) in
 //                    print("•••> completion: \(String(describing: jsonData))")
                 // Check returned data
                 guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {
@@ -214,7 +214,7 @@ class UploadTransfer {
      */
     func startUploading(fileURL: URL, with imageParameters: [String : String],
                         onProgress: @escaping (_ progress: Progress?, _ currentChunk: Int, _ totalChunks: Int) -> Void,
-                        onCompletion completion: @escaping (_ task: URLSessionTask?, _ response: Any?, _ imageParameters: [String : String]) -> Void,
+                        onCompletion completion: @escaping (_ task: URLSessionTask?, _ response: Any?) -> Void,
                         onFailure fail: @escaping (_ task: URLSessionTask?, _ error: NSError?) -> Void) {
         
         // Calculate chunk size
@@ -251,11 +251,11 @@ class UploadTransfer {
                                 try FileManager.default.removeItem(at: fileURL)
                             } catch {
                                 // Not a big issue, will clean up the directory later
-                                completion(task, response, updatedParameters)
+                                completion(task, response)
                                 return
                             }
                             // Done, return
-                            completion(task, response, updatedParameters)
+                            completion(task, response)
                             // Close upload session
                             Model.sharedInstance().imageUploadManager.invalidateSessionCancelingTasks(true, resetSession: true)
                         },
@@ -323,23 +323,23 @@ class UploadTransfer {
         print("    > imageInBackgroundForRequest...")
         
         // Prepare creation date
-        var creationDate = ""
-        if let date = upload.creationDate {
-            let dateFormat = DateFormatter()
-            dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
-            creationDate = dateFormat.string(from: date)
-        }
+//        var creationDate = ""
+//        if let date = upload.creationDate {
+//            let dateFormat = DateFormatter()
+//            dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
+//            creationDate = dateFormat.string(from: date)
+//        }
 
         // Prepare parameters for uploading image/video
         let imageParameters: [String : String] = [
             kPiwigoImagesUploadParamFileName: upload.fileName ?? "Image.jpg",
-            kPiwigoImagesUploadParamCreationDate: creationDate,
-            kPiwigoImagesUploadParamTitle: upload.imageTitle ?? "",
+//            kPiwigoImagesUploadParamCreationDate: creationDate,
+//            kPiwigoImagesUploadParamTitle: upload.imageTitle ?? "",
             kPiwigoImagesUploadParamCategory: "\(NSNumber(value: upload.category))",
             kPiwigoImagesUploadParamPrivacy: "\(NSNumber(value: upload.privacyLevel!.rawValue))",
-            kPiwigoImagesUploadParamAuthor: upload.author ?? "",
-            kPiwigoImagesUploadParamDescription: upload.comment ?? "",
-//            kPiwigoImagesUploadParamTags: upload.tagIds,
+//            kPiwigoImagesUploadParamAuthor: upload.author ?? "",
+//            kPiwigoImagesUploadParamDescription: upload.comment ?? "",
+//            kPiwigoImagesUploadParamTags: upload.tagIds ?? Set<String>(),
             kPiwigoImagesUploadParamMimeType: upload.mimeType ?? ""
         ]
 

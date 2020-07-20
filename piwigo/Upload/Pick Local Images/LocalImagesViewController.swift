@@ -19,7 +19,7 @@ enum SectionType: Int {
 }
 
 @objc
-class LocalImagesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIScrollViewDelegate, PHPhotoLibraryChangeObserver, LocalImagesHeaderDelegate /*, ImageUploadProgressDelegate */ {
+class LocalImagesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIScrollViewDelegate, PHPhotoLibraryChangeObserver, LocalImagesHeaderDelegate, UploadSwitchDelegate {
     
     // MARK: - Core Data
     /**
@@ -144,7 +144,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         removeUploadedImages = false
     }
 
-
     @objc func applyColorPalette() {
         // Background color of the views
         view.backgroundColor = UIColor.piwigoColorBackground()
@@ -238,7 +237,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
         NotificationCenter.default.removeObserver(self, name: name, object: nil)
         
-        // Unregister palette changes
+        // Unregister upload progress
         let name2: NSNotification.Name = NSNotification.Name(kPiwigoNotificationUploadProgress)
         NotificationCenter.default.removeObserver(self, name: name2, object: nil)
     }
@@ -297,7 +296,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 //        let start = CFAbsoluteTimeGetCurrent()
         let fetchOptions = PHFetchOptions()
         fetchOptions.includeHiddenAssets = false
-        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
         fetchedImages = PHAsset.fetchAssets(in: assetCollections.firstObject!, options: fetchOptions)
 //        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
 //        print("=> Fetched \(fetchedImages.count) assets in \(diff) ms")
@@ -425,6 +424,50 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         return (imagesByDay, imagesByWeek, imagesByMonth)
     }
     
+    private func getImageIndex(for indexPath:IndexPath) -> Int {
+        switch sortType {
+        case .month:
+            switch Model.sharedInstance().localImagesSort {
+            case kPiwigoSortDateCreatedDescending:
+                return indexOfImageSortedByMonth[indexPath.section].first! + indexPath.row
+            case kPiwigoSortDateCreatedAscending:
+                let lastSection = indexOfImageSortedByMonth.endIndex - 1
+                return indexOfImageSortedByMonth[lastSection - indexPath.section].last! - indexPath.row
+            default:
+                return 0
+            }
+        case .week:
+            switch Model.sharedInstance().localImagesSort {
+            case kPiwigoSortDateCreatedDescending:
+                return indexOfImageSortedByWeek[indexPath.section].first! + indexPath.row
+            case kPiwigoSortDateCreatedAscending:
+                let lastSection = indexOfImageSortedByWeek.endIndex - 1
+                return indexOfImageSortedByWeek[lastSection - indexPath.section].last! - indexPath.row
+            default:
+                return 0
+            }
+        case .day:
+            switch Model.sharedInstance().localImagesSort {
+            case kPiwigoSortDateCreatedDescending:
+                return indexOfImageSortedByDay[indexPath.section].first! + indexPath.row
+            case kPiwigoSortDateCreatedAscending:
+                let lastSection = indexOfImageSortedByDay.endIndex - 1
+                return indexOfImageSortedByDay[lastSection - indexPath.section].last! - indexPath.row
+            default:
+                return 0
+            }
+        case .all:
+            switch Model.sharedInstance().localImagesSort {
+            case kPiwigoSortDateCreatedDescending:
+                return indexPath.row
+            case kPiwigoSortDateCreatedAscending:
+                return fetchedImages.count - 1 - indexPath.row
+            default:
+                return 0
+            }
+        }
+    }
+
     private func indexUploads(images: PHFetchResult<PHAsset>) -> (Void) {
         // Loop over all images
 //        let start = CFAbsoluteTimeGetCurrent()
@@ -542,33 +585,23 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     }
         
     @objc func didTapUploadButton() {
-        // Add selected images to upload queue
-        uploadsProvider.importUploads(from: selectedImages.compactMap{ $0 }) { error in
+        // Avoid potential crash (should never happen, but…)
+        if selectedImages.count == 0 { return }
+        
+        // Show upload parameter views
+        let uploadSwitchSB = UIStoryboard(name: "UploadSwitchViewController", bundle: nil)
+        if let uploadSwitchVC = uploadSwitchSB.instantiateViewController(withIdentifier: "UploadSwitchViewController") as? UploadSwitchViewController {
+            uploadSwitchVC.delegate = self
             
-              DispatchQueue.main.async {
-                // Show an alert if there was an error.
-                guard let error = error else {
-                    // Launch upload tasks
-                    let appDelegate = UIApplication.shared.delegate as! AppDelegate
-                    appDelegate.uploadManager?.findNextImageToUpload()
-                    return
-                }
-                let alert = UIAlertController(title: NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object."),
-                                              message: error.localizedDescription,
-                                              preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: NSLocalizedString("alertOkButton", comment: "OK"),
-                                              style: .default, handler: nil))
-                alert.view.tintColor = UIColor.piwigoColorOrange()
-                if #available(iOS 13.0, *) {
-                    alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
-                } else {
-                    // Fallback on earlier versions
-                }
-                self.present(alert, animated: true, completion: {
-                    // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                    alert.view.tintColor = UIColor.piwigoColorOrange()
-                })
-            }
+            // Push Edit view embedded in navigation controller
+            let navController = UINavigationController(rootViewController: uploadSwitchVC)
+            navController.transitioningDelegate = self
+            navController.modalPresentationStyle = .custom
+            navController.modalTransitionStyle = .coverVertical
+            navController.popoverPresentationController?.sourceView = localImagesCollection
+            navController.popoverPresentationController?.barButtonItem = self.uploadBarButton
+            navController.popoverPresentationController?.permittedArrowDirections = .up
+            navigationController?.present(navController, animated: true)
         }
     }
     
@@ -678,7 +711,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
         // Get start and last indices of section
         let firstIndex: Int, lastIndex: Int
-        if Model.sharedInstance().localImagesSort == kPiwigoSortDateCreatedAscending {
+        if Model.sharedInstance().localImagesSort == kPiwigoSortDateCreatedDescending {
             firstIndex = getImageIndex(for: IndexPath.init(item: 0, section: section))
             lastIndex = getImageIndex(for: IndexPath.init(item: nberOfImagesInSection - 1, section: section))
         } else {
@@ -816,27 +849,27 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         switch sortType {
         case .month:
             switch Model.sharedInstance().localImagesSort {
-            case kPiwigoSortDateCreatedAscending:
-                return indexOfImageSortedByMonth[section].count
             case kPiwigoSortDateCreatedDescending:
+                return indexOfImageSortedByMonth[section].count
+            case kPiwigoSortDateCreatedAscending:
                 return indexOfImageSortedByMonth[indexOfImageSortedByMonth.count - 1 - section].count
             default:
                 return 0
             }
         case .week:
             switch Model.sharedInstance().localImagesSort {
-            case kPiwigoSortDateCreatedAscending:
-                return indexOfImageSortedByWeek[section].count
             case kPiwigoSortDateCreatedDescending:
+                return indexOfImageSortedByWeek[section].count
+            case kPiwigoSortDateCreatedAscending:
                 return indexOfImageSortedByWeek[indexOfImageSortedByWeek.count - 1 - section].count
             default:
                 return 0
             }
         case .day:
             switch Model.sharedInstance().localImagesSort {
-            case kPiwigoSortDateCreatedAscending:
-                return indexOfImageSortedByDay[section].count
             case kPiwigoSortDateCreatedDescending:
+                return indexOfImageSortedByDay[section].count
+            case kPiwigoSortDateCreatedAscending:
                 return indexOfImageSortedByDay[indexOfImageSortedByDay.count - 1 - section].count
             default:
                 return 0
@@ -1009,17 +1042,16 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     func hideHUDwithSuccess(_ success: Bool, completion: @escaping () -> Void) {
         DispatchQueue.main.async(execute: {
             // Hide and remove the HUD
-            let hud = self.hudViewController?.view.viewWithTag(loadingViewTag) as? MBProgressHUD
-            if hud != nil {
+            if let hud = self.hudViewController?.view.viewWithTag(loadingViewTag) as? MBProgressHUD {
                 if success {
                     let image = UIImage(named: "completed")?.withRenderingMode(.alwaysTemplate)
                     let imageView = UIImageView(image: image)
-                    hud?.customView = imageView
-                    hud?.mode = MBProgressHUDMode.customView
-                    hud?.label.text = NSLocalizedString("completeHUD_label", comment: "Complete")
-                    hud?.hide(animated: true, afterDelay: 0.3)
+                    hud.customView = imageView
+                    hud.mode = MBProgressHUDMode.customView
+                    hud.label.text = NSLocalizedString("completeHUD_label", comment: "Complete")
+                    hud.hide(animated: true, afterDelay: 0.3)
                 } else {
-                    hud?.hide(animated: true)
+                    hud.hide(animated: true)
                 }
             }
             completion()
@@ -1058,7 +1090,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     func didSelectImagesOfSection(_ section: Int) {
         let nberOfImagesInSection = localImagesCollection.numberOfItems(inSection: section)
         let firstIndex: Int, lastIndex: Int
-        if Model.sharedInstance().localImagesSort == kPiwigoSortDateCreatedAscending {
+        if Model.sharedInstance().localImagesSort == kPiwigoSortDateCreatedDescending {
             firstIndex = getImageIndex(for: IndexPath.init(item: 0, section: section))
             lastIndex = getImageIndex(for: IndexPath.init(item: nberOfImagesInSection - 1, section: section))
         } else {
@@ -1182,48 +1214,58 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         }
     }
 
-    // MARK: - utilities
-    
-    private func getImageIndex(for indexPath:IndexPath) -> Int {
-        switch sortType {
-        case .month:
-            switch Model.sharedInstance().localImagesSort {
-            case kPiwigoSortDateCreatedAscending:
-                return indexOfImageSortedByMonth[indexPath.section].first! + indexPath.row
-            case kPiwigoSortDateCreatedDescending:
-                let lastSection = indexOfImageSortedByMonth.endIndex - 1
-                return indexOfImageSortedByMonth[lastSection - indexPath.section].last! - indexPath.row
-            default:
-                return 0
+
+    // MARK: - UploadSwitchDelegate Methods
+    func didValidateUploadSettings(with imageParameters: [String : Any]) {
+        // Retrieve common image parameters
+        for index in 0..<selectedImages.count {
+            if let request = selectedImages[index] {
+                var updatedRequest = request
+                if let imageTitle = imageParameters["title"] as? String {
+                    updatedRequest.imageTitle = imageTitle
+                }
+                if let author = imageParameters["author"] as? String {
+                    updatedRequest.author = author
+                }
+                if let privacy = imageParameters["privacy"] as? kPiwigoPrivacy {
+                    updatedRequest.privacyLevel = privacy
+                }
+                if let tagIds = imageParameters["tagIds"] as? String {
+                    updatedRequest.tagIds = tagIds
+                }
+                if let comment = imageParameters["comment"] as? String {
+                    updatedRequest.comment = comment
+                }
+                selectedImages[index] = updatedRequest
             }
-        case .week:
-            switch Model.sharedInstance().localImagesSort {
-            case kPiwigoSortDateCreatedAscending:
-                return indexOfImageSortedByWeek[indexPath.section].first! + indexPath.row
-            case kPiwigoSortDateCreatedDescending:
-                let lastSection = indexOfImageSortedByWeek.endIndex - 1
-                return indexOfImageSortedByWeek[lastSection - indexPath.section].last! - indexPath.row
-            default:
-                return 0
-            }
-        case .day:
-            switch Model.sharedInstance().localImagesSort {
-            case kPiwigoSortDateCreatedAscending:
-                return indexOfImageSortedByDay[indexPath.section].first! + indexPath.row
-            case kPiwigoSortDateCreatedDescending:
-                let lastSection = indexOfImageSortedByDay.endIndex - 1
-                return indexOfImageSortedByDay[lastSection - indexPath.section].last! - indexPath.row
-            default:
-                return 0
-            }
-        case .all:
-            switch Model.sharedInstance().localImagesSort {
-            case kPiwigoSortDateCreatedAscending:
-                return indexPath.row
-            case kPiwigoSortDateCreatedDescending:
-                return fetchedImages.count - 1 - indexPath.row
-            default:
-                return 0
+        }
+        
+        // Add selected images to upload queue
+        uploadsProvider.importUploads(from: selectedImages.compactMap{ $0 }) { error in
+
+              DispatchQueue.main.async {
+                // Show an alert if there was an error.
+                guard let error = error else {
+                    // Launch upload tasks
+                    let appDelegate = UIApplication.shared.delegate as! AppDelegate
+                    appDelegate.uploadManager?.findNextImageToUpload()
+                    return
+                }
+                let alert = UIAlertController(title: NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object."),
+                                              message: error.localizedDescription,
+                                              preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: NSLocalizedString("alertOkButton", comment: "OK"),
+                                              style: .default, handler: nil))
+                alert.view.tintColor = UIColor.piwigoColorOrange()
+                if #available(iOS 13.0, *) {
+                    alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+                } else {
+                    // Fallback on earlier versions
+                }
+                self.present(alert, animated: true, completion: {
+                    // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                    alert.view.tintColor = UIColor.piwigoColorOrange()
+                })
             }
         }
     }
@@ -1333,6 +1375,12 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
                 }
             }
         }
+    }
+}
+
+extension LocalImagesViewController : UIViewControllerTransitioningDelegate {
+    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+        return ReducedSizePresentationController(presentedViewController: presented, presenting: presenting)
     }
 }
 

@@ -79,7 +79,7 @@ extension UploadTagsViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "UploadTagCell", for: indexPath) as? UploadTagCell else {
-            print("Error: tableView.dequeueReusableCell doesn'return a UploadTagCell!")
+            print("Error: tableView.dequeueReusableCell doesn't return a UploadTagCell!")
             return UploadTagCell()
         }
         guard let tag = dataProvider.fetchedResultsController.fetchedObjects?[indexPath.row] else { return cell }
@@ -87,6 +87,7 @@ extension UploadTagsViewController {
         return cell
     }
 }
+
 
 // MARK: - NSFetchedResultsControllerDelegate
 
