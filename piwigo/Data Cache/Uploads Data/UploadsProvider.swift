@@ -145,12 +145,14 @@ class UploadsProvider: NSObject {
                     try taskContext.save()
 
                     // Performs a task in the main queue and wait until this tasks finishes
-                    managedObjectContext.performAndWait {
-                        do {
-                            // Saves the data from the child to the main context to be stored properly
-                            try managedObjectContext.save()
-                        } catch {
-                            fatalError("Failure to save context: \(error)")
+                    DispatchQueue.main.async {
+                        self.managedObjectContext.performAndWait {
+                            do {
+                                // Saves the data from the child to the main context to be stored properly
+                                try self.managedObjectContext.save()
+                            } catch {
+                                fatalError("Failure to save context: \(error)")
+                            }
                         }
                     }
                 }
@@ -220,12 +222,14 @@ class UploadsProvider: NSObject {
                     try taskContext.save()
                     
                     // Performs a task in the main queue and wait until this tasks finishes
-                    managedObjectContext.performAndWait {
-                        do {
-                            // Saves the data from the child to the main context to be stored properly
-                            try managedObjectContext.save()
-                        } catch {
-                            fatalError("Failure to save context: \(error)")
+                    DispatchQueue.main.async {
+                        self.managedObjectContext.performAndWait {
+                            do {
+                                // Saves the data from the child to the main context to be stored properly
+                                try self.managedObjectContext.save()
+                            } catch {
+                                fatalError("Failure to save context: \(error)")
+                            }
                         }
                     }
                 }
@@ -373,31 +377,6 @@ class UploadsProvider: NSObject {
             uploads = controller.fetchedObjects
         }
         return uploads
-
-//        // Create a fetch request for the Upload entity sorted by localIdentifier
-//        // Retrieve upload requests which have to be resumed or performed
-//        let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
-//        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "requestDate", ascending: true)]
-//        fetchRequest.predicate = NSPredicate(format: "requestState != %d && requestState != %d  && requestState != %d", kPiwigoUploadState.finished.rawValue, kPiwigoUploadState.preparingFail.rawValue, kPiwigoUploadState.formatError.rawValue)
-//
-//        // Create `asynchronousFetchRequest` with the fetch request and the completion closure
-//        let asynchronousFetchRequest = NSAsynchronousFetchRequest(fetchRequest: fetchRequest) { asynchronousFetchResult in
-//
-//            // Retrieve an array of dogs from the fetch result `finalResult`
-//            guard let uploads = asynchronousFetchResult.finalResult else { return }
-//
-//            // Trigger upload manager
-//            if uploads.count > 0 {
-//
-//            }
-//        }
-//
-//        do {
-//            // Executes `asynchronousFetchRequest`
-//            try taskContext.execute(asynchronousFetchRequest)
-//        } catch let error {
-//            print("NSAsynchronousFetchRequest error: \(error)")
-//        }
     }
 
     func requestsToResume() -> [Upload]? {
