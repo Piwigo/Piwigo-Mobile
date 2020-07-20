@@ -766,7 +766,11 @@ typedef enum {
             UIStoryboard *tagsSB = [UIStoryboard storyboardWithName:@"TagsViewController" bundle:nil];
             TagsViewController *tagsVC = [tagsSB instantiateViewControllerWithIdentifier:@"TagsViewController"];
             tagsVC.delegate = self;
-            [tagsVC setAlreadySelectedOldTags: self.commonParameters.tags];
+            NSMutableArray *tagList = [NSMutableArray new];
+            for (PiwigoTagData *tag in self.commonParameters.tags) {
+                [tagList addObject:[NSNumber numberWithLong:tag.tagId]];
+            }
+            [tagsVC setAlreadySelectedTags: tagList];
             [self.navigationController pushViewController:tagsVC animated:YES];
             break;
         }
@@ -1109,16 +1113,32 @@ typedef enum {
 
 -(void)didSelectTags:(NSArray<Tag *> *)selectedTags
 {
-    // Update image parameter
-	self.commonParameters.tags = selectedTags;
+    // Update image tags
+    if (selectedTags.count == self.commonParameters.tags.count) {
+        // Same number of tags - identical?
+        NSInteger count = 0;
+        for (NSInteger index = 0; index < selectedTags.count; index++) {
+            if (self.commonParameters.tags[index].tagId == selectedTags[index].tagId) {
+                count++;
+            }
+        }
+        if (count == selectedTags.count) return;
+    }
+    
+    // Update image tags
+    NSMutableArray <PiwigoTagData *>* newListOfTags = [NSMutableArray new];
+    for (Tag *selectedTag in selectedTags) {
+        PiwigoTagData *oldTag = [PiwigoTagData new];
+        oldTag.tagId = selectedTag.tagId;
+        oldTag.tagName = selectedTag.tagName;
+        oldTag.lastModified = selectedTag.lastModified;
+        oldTag.numberOfImagesUnderTag = selectedTag.numberOfImagesUnderTag;
+        [newListOfTags addObject:oldTag];
+    }
 
-    // Update table view cell
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:(EditImageParamsOrderTags - (self.hasDatePicker == NO)) inSection:0];
-    EditImageTagsTableViewCell *cell = (EditImageTagsTableViewCell*)[self.editImageParamsTableView cellForRowAtIndexPath:indexPath];
-    if (cell) [cell setTagList:self.commonParameters.tags inColor:[UIColor piwigoColorOrange]];
-
-    // Remember to update image info
+    // Update common tag list and remember to update image info
     self.shouldUpdateTags = YES;
+    self.commonParameters.tags = newListOfTags;
 }
 
 

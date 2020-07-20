@@ -21,42 +21,44 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="sectionIndexColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="TagTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TagTableViewCell" rowHeight="43" id="JLM-UW-y4d" userLabel="TagTableViewCell" customClass="TagTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                <rect key="frame" x="20" y="55.5" width="374" height="43"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="TagTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TagTableViewCell" rowHeight="43.5" translatesAutoresizingMaskIntoConstraints="NO" id="JLM-UW-y4d" userLabel="TagTableViewCell" customClass="TagTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="20" y="55.5" width="374" height="43.5"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="JLM-UW-y4d" id="A0J-gA-CTM">
-                                    <rect key="frame" x="0.0" y="0.0" width="374" height="43"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="374" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="activityLabel" textAlignment="natural" lineBreakMode="wordWrap" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="F5m-b5-6AC">
-                                            <rect key="frame" x="20" y="10" width="98" height="23"/>
-                                            <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
-                                            <nil key="textColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="addItem" translatesAutoresizingMaskIntoConstraints="NO" id="dW4-TH-asX" userLabel="Add Image">
-                                            <rect key="frame" x="329" y="9" width="25" height="25"/>
+                                        <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" image="addItem" translatesAutoresizingMaskIntoConstraints="NO" id="dW4-TH-asX" userLabel="Add Image">
+                                            <rect key="frame" x="329" y="9.5" width="25" height="25"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="25" id="Hv3-fK-7Cp"/>
                                                 <constraint firstAttribute="width" secondItem="dW4-TH-asX" secondAttribute="height" multiplier="1:1" id="Whb-To-E0o"/>
                                             </constraints>
                                         </imageView>
-                                        <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="removeItem" translatesAutoresizingMaskIntoConstraints="NO" id="zWH-dn-Nuv" userLabel="Remove Image">
-                                            <rect key="frame" x="329" y="9" width="25" height="25"/>
+                                        <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" image="removeItem" translatesAutoresizingMaskIntoConstraints="NO" id="zWH-dn-Nuv" userLabel="Remove Image">
+                                            <rect key="frame" x="329" y="9.5" width="25" height="25"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="25" id="e6F-iv-tEV"/>
                                                 <constraint firstAttribute="width" secondItem="zWH-dn-Nuv" secondAttribute="height" multiplier="1:1" id="mxw-1t-Urj"/>
                                             </constraints>
                                         </imageView>
+                                        <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="activityLabel" textAlignment="natural" lineBreakMode="wordWrap" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="F5m-b5-6AC">
+                                            <rect key="frame" x="20" y="10" width="98" height="23.5"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="23.5" id="dzy-5F-3Kc"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="F5m-b5-6AC" firstAttribute="leading" secondItem="A0J-gA-CTM" secondAttribute="leadingMargin" id="6AJ-N3-e3g"/>
                                         <constraint firstItem="zWH-dn-Nuv" firstAttribute="centerY" secondItem="A0J-gA-CTM" secondAttribute="centerY" id="Aan-Kf-j0Y"/>
                                         <constraint firstAttribute="trailing" secondItem="zWH-dn-Nuv" secondAttribute="trailing" constant="20" symbolic="YES" id="Djb-gt-rru"/>
                                         <constraint firstItem="dW4-TH-asX" firstAttribute="centerY" secondItem="A0J-gA-CTM" secondAttribute="centerY" id="Lq3-um-eGO"/>
-                                        <constraint firstItem="zWH-dn-Nuv" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="F5m-b5-6AC" secondAttribute="trailing" constant="10" id="bI0-ql-tCE"/>
-                                        <constraint firstItem="dW4-TH-asX" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="F5m-b5-6AC" secondAttribute="trailing" constant="10" id="fdM-3J-q4j"/>
-                                        <constraint firstItem="F5m-b5-6AC" firstAttribute="centerY" secondItem="A0J-gA-CTM" secondAttribute="centerY" id="rjO-Mq-6hm"/>
+                                        <constraint firstItem="dW4-TH-asX" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="F5m-b5-6AC" secondAttribute="trailing" constant="10" id="RZ1-zJ-oyg"/>
+                                        <constraint firstItem="F5m-b5-6AC" firstAttribute="leading" secondItem="A0J-gA-CTM" secondAttribute="leading" constant="20" id="erA-za-9Bt"/>
+                                        <constraint firstItem="F5m-b5-6AC" firstAttribute="centerY" secondItem="A0J-gA-CTM" secondAttribute="centerY" id="fY6-21-tEf"/>
                                         <constraint firstAttribute="trailing" secondItem="dW4-TH-asX" secondAttribute="trailing" constant="20" symbolic="YES" id="yeP-cH-UDI"/>
                                     </constraints>
                                 </tableViewCellContentView>
@@ -78,7 +80,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="n3Q-7Y-kiP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="132" y="129"/>
+            <point key="canvasLocation" x="131.8840579710145" y="128.57142857142856"/>
         </scene>
     </scenes>
     <resources>

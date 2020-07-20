@@ -21,29 +21,17 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
 
     @objc weak var delegate: TagsViewControllerDelegate?
 
-    @objc func setAlreadySelectedTags(_ alreadySelectedTags: [Tag]?) {
-        _alreadySelectedTags = alreadySelectedTags ?? [Tag]()
+    // Called before uploading images (Tag class)
+    @objc func setAlreadySelectedTags(_ alreadySelectedTags: [Int64]?) {
+        _alreadySelectedTags = alreadySelectedTags ?? [Int64]()
     }
-    private var _alreadySelectedTags = [Tag]()
-    private var alreadySelectedTags: [Tag] {
+    private var _alreadySelectedTags = [Int64]()
+    private var alreadySelectedTags: [Int64] {
         get {
             return _alreadySelectedTags
         }
         set(alreadySelectedTags) {
             _alreadySelectedTags = alreadySelectedTags
-        }
-    }
-
-    @objc func setAlreadySelectedOldTags(_ alreadySelectedOldTags: [PiwigoTagData]?) {
-        _alreadySelectedOldTags = alreadySelectedOldTags ?? [PiwigoTagData]()
-    }
-    private var _alreadySelectedOldTags = [PiwigoTagData]()
-    private var alreadySelectedOldTags: [PiwigoTagData] {
-        get {
-            return _alreadySelectedOldTags
-        }
-        set(alreadySelectedOldTags) {
-            _alreadySelectedOldTags = alreadySelectedOldTags
         }
     }
 
@@ -63,7 +51,6 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
     // MARK: - View Lifecycle
     @IBOutlet var tagsTableView: UITableView!
     private var letterIndex: [String] = []
-    private var notSelectedTags = [Tag]()
     private var addBarButton: UIBarButtonItem?
     private var addAction: UIAlertAction?
     private var hudViewController: UIViewController?
@@ -73,10 +60,9 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
 
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
-        dataProvider.fetchTags(asAdmin: false) { error in
+        dataProvider.fetchTags(asAdmin: Model.sharedInstance()?.hasAdminRights ?? false) { error in
             DispatchQueue.main.async {
 
-                // Show an alert if there was an error.
                 guard let error = error else {
                     
                     // Build ABC index
@@ -85,15 +71,13 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
                         firstCharacters.add((tag.tagName as String).prefix(1).uppercased())
                     }
                     self.letterIndex = (firstCharacters.allObjects as! [String]).sorted()
-                    
-                    // Digest old Tags if provided by old cache
-                    self.digestOldTags()
-                    
-                    // Update list of non-selected tags
-                    self.updateListOfNotSelectedTags()
+                                        
+                    // Refresh UI
                     self.tableView.reloadData()
                     return
                 }
+
+                // Show an alert if there was an error.
                 let alert = UIAlertController(title: NSLocalizedString("CoreDataFetch_TagError", comment: "Fetch tags error!"),
                                               message: error.localizedDescription,
                                               preferredStyle: .alert)
@@ -166,7 +150,10 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
 
         // Return list of selected tags
         if delegate?.responds(to: #selector(TagsViewControllerDelegate.didSelectTags(_:))) ?? false {
-            delegate?.didSelectTags(alreadySelectedTags)
+            let allTags = dataProvider.fetchedResultsController.fetchedObjects
+            delegate?.didSelectTags(allTags?.filter({ (tag) -> Bool in
+                alreadySelectedTags.contains(tag.tagId)
+            }))
         }
     }
 }
@@ -196,6 +183,7 @@ extension TagsViewController {
         tableView.scrollToRow(at: newIndexPath, at: .top, animated: false)
         return index
     }
+
 
     // MARK: - UITableView - Header
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -260,10 +248,11 @@ extension TagsViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let allTags = dataProvider.fetchedResultsController.fetchedObjects
         if section == 0 {
-            return alreadySelectedTags.count
+            return allTags?.filter({alreadySelectedTags.contains($0.tagId)}).count ?? 0
         } else {
-            return notSelectedTags.count
+            return allTags?.filter({!alreadySelectedTags.contains($0.tagId)}).count ?? 0
         }
     }
 
@@ -273,13 +262,14 @@ extension TagsViewController {
             return TagTableViewCell()
         }
 
+        let allTags = dataProvider.fetchedResultsController.fetchedObjects
         if indexPath.section == 0 {
             // Selected tags
-            let currentTag = alreadySelectedTags[indexPath.row]
+            guard let currentTag = allTags?.filter({alreadySelectedTags.contains($0.tagId)})[indexPath.row] else { return cell }
             cell.configure(with: currentTag, andEditOption: .remove)
         } else {
             // Not selected tags
-            let currentTag = notSelectedTags[indexPath.row]
+            guard let currentTag = allTags?.filter({!alreadySelectedTags.contains($0.tagId)})[indexPath.row] else { return cell }
             cell.configure(with: currentTag, andEditOption: .add)
         }
         
@@ -291,58 +281,44 @@ extension TagsViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
+        let allTags = dataProvider.fetchedResultsController.fetchedObjects
         if indexPath.section == 0 {
             // Tapped selected tag
-            let currentTag = alreadySelectedTags[indexPath.row]
+            let currentTagId = alreadySelectedTags[indexPath.row]
 
             // Delete tag tapped in tag list
-            alreadySelectedTags.removeAll { $0 === currentTag }
+            alreadySelectedTags.remove(at: indexPath.row)
 
-            // Add deselected tag to list of not selected tags
-            updateListOfNotSelectedTags()
-
-            // Determine index of added tag
-            guard let indexOfTag = notSelectedTags.firstIndex(where: {$0.tagId == currentTag.tagId}) else {
-                // Should never happen unless tag disappeared from store
-                tableView.deleteRows(at: [indexPath], with: .automatic)
-                return
-            }
-            let insertPath = IndexPath(row: indexOfTag, section: 1)
+            // Determine new indexPath of deselected tag
+            let indexOfTag = allTags?.filter({!alreadySelectedTags.contains($0.tagId)})
+                                     .firstIndex(where: {$0.tagId == currentTagId})
+            let insertPath = IndexPath(row: indexOfTag!, section: 1)
 
             // Move cell from top to bottom section
             tableView.moveRow(at: indexPath, to: insertPath)
 
             // Update icon of cell
-            if let cell = tableView.cellForRow(at: insertPath) as? TagTableViewCell {
-                cell.configure(with: currentTag, andEditOption: .add)
-            }
-        } else {
+            tableView.reloadRows(at: [insertPath], with: .automatic)
+        }
+        else {
             // Tapped not selected tag
-            let currentTag = notSelectedTags[indexPath.row]
-
-            // Delete tag tapped in list of not selected tag
-            notSelectedTags.removeAll { $0 === currentTag }
+            guard let currentTagId = allTags?.filter({ (tag) -> Bool in
+                !alreadySelectedTags.contains(tag.tagId)
+            })[indexPath.row].tagId else { return }
 
             // Add tag to list of selected tags
-            alreadySelectedTags.append(currentTag)
-            alreadySelectedTags = alreadySelectedTags.sorted(by: { (tag1, tag2) -> Bool in
-                return tag1.tagName.localizedStandardCompare(tag2.tagName) == .orderedAscending})
+            alreadySelectedTags.append(currentTagId)
             
-            // Determine index of added tag
-            guard let indexOfTag = alreadySelectedTags.firstIndex(where: {$0.tagId == currentTag.tagId}) else {
-                // Should never happen unless tag disappeared from store
-                tableView.deleteRows(at: [indexPath], with: .automatic)
-                return
-            }
-            let insertPath = IndexPath(row: indexOfTag, section: 0)
+            // Determine new indexPath of selected tag
+            let indexOfTag = allTags?.filter({alreadySelectedTags.contains($0.tagId)})
+                                     .firstIndex(where: {$0.tagId == currentTagId})
+            let insertPath = IndexPath(row: indexOfTag!, section: 0)
 
             // Move cell from bottom to top section
             tableView.moveRow(at: indexPath, to: insertPath)
 
             // Update icon of cell
-            if let cell = tableView.cellForRow(at: insertPath) as? TagTableViewCell {
-                cell.configure(with: currentTag, andEditOption: .remove)
-            }
+            tableView.reloadRows(at: [insertPath], with: .automatic)
         }
     }
 
@@ -402,6 +378,7 @@ extension TagsViewController {
         // Rename album
         dataProvider.addTag(with: tagName, completionHandler: { error in
             guard let error = error else {
+                self.hideHUDwithSuccess(true) { }
                 return
             }
             self.hideHUDwithSuccess(false) {
@@ -415,7 +392,7 @@ extension TagsViewController {
         if message != nil {
             errorMessage = "\(errorMessage)\n\(message ?? "")"
         }
-        let alert = UIAlertController(title: NSLocalizedString("tagsAddError_title", comment: "Create Fail"), message: errorMessage, preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: NSLocalizedString("tagsAddError_title", comment: "Create Fail"), message: errorMessage, preferredStyle: .alert)
 
         let defaultAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .cancel, handler: { action in
             })
@@ -435,34 +412,6 @@ extension TagsViewController {
         self.present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             alert.view.tintColor = UIColor.piwigoColorOrange()
-        }
-    }
-
-    
-    // MARK: - Utilities
-    func digestOldTags() {
-        // Digest old Tags if provided by old cache
-        if self.alreadySelectedOldTags.count > 0 {
-            let allTags = self.dataProvider.fetchedResultsController.fetchedObjects ?? [Tag]()
-            self.alreadySelectedOldTags.forEach { (oldTag) in
-                if let newTag = allTags.first(where: {$0.tagId == oldTag.tagId}) {
-                    if !self.alreadySelectedTags.contains(newTag) {
-                        self.alreadySelectedTags.append(newTag)
-                    }
-                }
-            }
-        }
-    }
-    
-    func updateListOfNotSelectedTags() {
-        // Build list of not selected tags
-        notSelectedTags = dataProvider.fetchedResultsController.fetchedObjects ?? [Tag]()
-        alreadySelectedTags.forEach { (selectedTag) in
-            // Index of selected tag in full list
-            if let index = notSelectedTags.firstIndex(where: {$0.tagId == selectedTag.tagId}) {
-                // Remove selected tag from full list
-                notSelectedTags.remove(at: index)
-            }
         }
     }
 
@@ -565,21 +514,66 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
 
-        let oldIndexPath = indexPath ?? IndexPath.init(row: 0, section: 0)
         switch type {
         case .insert:
-            guard let newIndexPath = newIndexPath else { return }
-            tagsTableView.insertRows(at: [newIndexPath], with: .automatic)
-        case .delete:
-            tagsTableView.deleteRows(at: [oldIndexPath], with: .automatic)
-        case .move:
-            guard let newIndexPath = newIndexPath else { return }
-            tagsTableView.deleteRows(at: [oldIndexPath], with: .automatic)
-            tagsTableView.insertRows(at: [newIndexPath], with: .automatic)
-        case .update:
+            // Add tag to list of not selected tags
             guard let tag: Tag = anObject as? Tag else { return }
-            guard let cell = tableView.cellForRow(at: oldIndexPath) as? TagSelectorCell else { return }
-            cell.configure(with: tag)
+            // Insert tag into list of selected tags
+            let allTags = dataProvider.fetchedResultsController.fetchedObjects
+            let index = allTags?.filter({!alreadySelectedTags.contains($0.tagId)})
+                                .firstIndex(where: {$0.tagId == tag.tagId})
+            let addAtIndexPath = IndexPath.init(row: index!, section: 1)
+//            print(".insert =>", addAtIndexPath.debugDescription)
+            tagsTableView.insertRows(at: [addAtIndexPath], with: .automatic)
+
+        case .delete:
+            // Remove tag from the right list of tags
+            guard let tag: Tag = anObject as? Tag else { return }
+            let allTags = dataProvider.fetchedResultsController.fetchedObjects
+
+            // List of selected tags
+            if let index = allTags?.filter({alreadySelectedTags.contains($0.tagId)})
+                                   .firstIndex(where: {$0.tagId == tag.tagId}) {
+                alreadySelectedTags.removeAll(where: {$0 == tag.tagId})
+                let deleteAtIndexPath = IndexPath.init(row: index, section: 0)
+//                print(".delete =>", deleteAtIndexPath.debugDescription)
+                tagsTableView.deleteRows(at: [deleteAtIndexPath], with: .automatic)
+            }
+            // List of not selected tags
+            else if let index = allTags?.filter({!alreadySelectedTags.contains($0.tagId)})
+                                        .firstIndex(where: {$0.tagId == tag.tagId}) {
+                let deleteAtIndexPath = IndexPath.init(row: index, section: 1)
+//                print(".delete =>", deleteAtIndexPath.debugDescription)
+                tagsTableView.deleteRows(at: [deleteAtIndexPath], with: .automatic)
+            }
+
+        case .move:        // Should never "move"
+            // Update tag belonging to the right list
+            print("TagsViewController / NSFetchedResultsControllerDelegate: \"move\" should never happen!")
+
+        case .update:        // Will never "move"
+            // Update tag belonging to the right list
+            guard let tag: Tag = anObject as? Tag else { return }
+            let allTags = dataProvider.fetchedResultsController.fetchedObjects
+            
+            if let index = allTags?.filter({alreadySelectedTags.contains($0.tagId)})
+                                   .firstIndex(where: {$0.tagId == tag.tagId}) {
+                let updateAtIndexPath = IndexPath.init(row: index, section: 0)
+//                print(".update =>", updateAtIndexPath.debugDescription)
+                if let cell = tableView.cellForRow(at: updateAtIndexPath) as? TagTableViewCell {
+                    cell.configure(with: tag, andEditOption: .remove)
+                }
+            }
+            // List of not selected tags
+            else if let index = allTags?.filter({!alreadySelectedTags.contains($0.tagId)})
+                                        .firstIndex(where: {$0.tagId == tag.tagId}) {
+                let updateAtIndexPath = IndexPath.init(row: index, section: 1)
+//                print(".update =>", updateAtIndexPath.debugDescription)
+                if let cell = tableView.cellForRow(at: updateAtIndexPath) as? TagTableViewCell {
+                    cell.configure(with: tag, andEditOption: .add)
+                }
+            }
+
         @unknown default:
             fatalError("TagsViewController: unknown NSFetchedResultsChangeType")
         }
