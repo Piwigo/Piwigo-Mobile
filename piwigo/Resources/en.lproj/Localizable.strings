@@ -337,6 +337,7 @@
 "tag"  = "Tag";
 "tagsTitle_selectOne" = "Select a Tag";
 "tagsHeader_selected" = "Selected";
+"tagsHeader_notSelected" = "Not Selected";
 "tagsHeader_all" = "All";
 "tagsAdd_title" = "Add Tag";
 "tagsAdd_message" = "Enter a name for this new tag";

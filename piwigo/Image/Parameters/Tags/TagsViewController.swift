@@ -204,7 +204,7 @@ extension TagsViewController {
         if section == 0 {
             header = NSLocalizedString("tagsHeader_selected", comment: "Selected")
         } else {
-            header = NSLocalizedString("tagsHeader_all", comment: "All")
+            header = NSLocalizedString("tagsHeader_notSelected", comment: "Not Selected")
         }
         let attributes = [
             NSAttributedString.Key.font: UIFont.piwigoFontBold()
@@ -230,7 +230,7 @@ extension TagsViewController {
         if section == 0 {
             titleString = NSLocalizedString("tagsHeader_selected", comment: "Selected")
         } else {
-            titleString = NSLocalizedString("tagsHeader_all", comment: "All")
+            titleString = NSLocalizedString("tagsHeader_notSelected", comment: "Not Selected")
         }
         let titleAttributedString = NSMutableAttributedString(string: titleString)
         titleAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: NSRange(location: 0, length: titleString.count))
