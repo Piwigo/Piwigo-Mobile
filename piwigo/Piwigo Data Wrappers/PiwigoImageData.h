@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 #import "Model.h"
+#import "PiwigoTagData.h"
 
 typedef enum {
 	kPiwigoImageSizeSquare,
@@ -87,7 +88,7 @@ typedef enum {
 //
 @property (nonatomic, strong) NSString *author;                 // author
 @property (nonatomic, assign) kPiwigoPrivacy privacyLevel;      // level
-@property (nonatomic, strong) NSArray *tags;                    // tags
+@property (nonatomic, strong) NSArray<PiwigoTagData*> *tags;    // tags
 @property (nonatomic, assign) float ratingScore;                // rating score
 @property (nonatomic, assign) NSInteger fileSize;               // filesize
 
