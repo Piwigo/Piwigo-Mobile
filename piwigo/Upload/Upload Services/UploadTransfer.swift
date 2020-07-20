@@ -22,23 +22,10 @@ class UploadTransfer {
     func imageOfRequest(_ upload: UploadProperties) {
         print("    > imageOfRequest...")
 
-        // Prepare creation date
-//        var creationDate = ""
-//        if let date = upload.creationDate {
-//            let dateFormat = DateFormatter()
-//            dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
-//            creationDate = dateFormat.string(from: date)
-//        }
-        
         let imageParameters: [String : String] = [
             kPiwigoImagesUploadParamFileName: upload.fileName ?? "Image.jpg",
-//            kPiwigoImagesUploadParamCreationDate: creationDate,
-//            kPiwigoImagesUploadParamTitle: upload.imageTitle ?? "",
             kPiwigoImagesUploadParamCategory: "\(NSNumber(value: upload.category))",
             kPiwigoImagesUploadParamPrivacy: "\(NSNumber(value: upload.privacyLevel!.rawValue))",
-//            kPiwigoImagesUploadParamAuthor: upload.author ?? "",
-//            kPiwigoImagesUploadParamDescription: upload.comment ?? "",
-//            kPiwigoImagesUploadParamTags: upload.tagIds ?? "",
             kPiwigoImagesUploadParamMimeType: upload.mimeType ?? ""
         ]
 
