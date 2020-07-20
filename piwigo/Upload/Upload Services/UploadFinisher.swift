@@ -41,7 +41,7 @@ class UploadFinisher {
             kPiwigoImagesUploadParamPrivacy: "\(NSNumber(value: upload.privacyLevel!.rawValue))",
             kPiwigoImagesUploadParamAuthor: upload.author ?? "",
             kPiwigoImagesUploadParamDescription: upload.comment ?? "",
-//            kPiwigoImagesUploadParamTags: upload.tagIds,
+            kPiwigoImagesUploadParamTags: upload.tagIds ?? "",
             kPiwigoImagesUploadParamMimeType: upload.mimeType ?? ""
         ]
 
@@ -157,7 +157,7 @@ class UploadFinisher {
                 requestDelete: upload.requestDelete, requestError: error.localizedDescription,
                 creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
                 isVideo: upload.isVideo, author: upload.author, privacyLevel: upload.privacyLevel,
-                imageTitle: upload.imageTitle, comment: upload.comment, tags: upload.tags, imageId: upload.imageId)
+                imageTitle: upload.imageTitle, comment: upload.comment, tagIds: upload.tagIds, imageId: upload.imageId)
             
             // Update request with error description
             print("    >", error.localizedDescription)
@@ -174,7 +174,7 @@ class UploadFinisher {
             requestDelete: upload.requestDelete, requestError: "",
             creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
             isVideo: upload.isVideo, author: upload.author, privacyLevel: upload.privacyLevel,
-            imageTitle: upload.imageTitle, comment: upload.comment, tags: upload.tags, imageId: upload.imageId)
+            imageTitle: upload.imageTitle, comment: upload.comment, tagIds: upload.tagIds, imageId: upload.imageId)
 
         // Update request ready for transfer
         print("    > finished with \(uploadProperties.fileName!)")

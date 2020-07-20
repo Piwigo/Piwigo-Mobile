@@ -1377,12 +1377,16 @@ NSString * const kGetImageOrderDescending = @"desc";
                          forKey:kPiwigoImagesUploadParamDescription];
 
     // Tags
-    NSMutableArray *tagIds = [NSMutableArray new];
+    NSMutableString *tagIds = [NSMutableString new];
     for(PiwigoTagData *tagData in imageData.tags)
     {
-        [tagIds addObject:@(tagData.tagId)];
+        [tagIds appendFormat:@"%ld,", tagData.tagId];
     }
-    [imageInformation setObject:[tagIds copy]
+    NSInteger nberChars = tagIds.length;
+    if (nberChars > 0) {
+        [tagIds deleteCharactersInRange:NSMakeRange(nberChars - 1, 1)];
+    }
+    [imageInformation setObject:tagIds
                          forKey:kPiwigoImagesUploadParamTags];
 
     // Privacy level
@@ -1425,14 +1429,6 @@ NSString * const kGetImageOrderDescending = @"desc";
         author = @"";
     }
 
-    // Prepare tag ids
-    NSString *tagIdList= @"";
-    if ([[[imageInfo objectForKey:kPiwigoImagesUploadParamTags]
-          valueForKey:@"description"] count]) {
-        tagIdList = [[[imageInfo objectForKey:kPiwigoImagesUploadParamTags]
-                            valueForKey:@"description"] componentsJoinedByString:@","];
-    }
-
     return [self post:kPiwigoImageSetInfo
          URLParameters:nil
             parameters:@{
@@ -1444,7 +1440,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                          @"level" : [imageInfo objectForKey:kPiwigoImagesUploadParamPrivacy],
                          @"comment" : [imageInfo objectForKey:kPiwigoImagesUploadParamDescription],
                          @"single_value_mode" : @"replace",
-                         @"tag_ids" : tagIdList,
+                         @"tag_ids" : [imageInfo objectForKey:kPiwigoImagesUploadParamTags],
                          @"multiple_value_mode" : @"replace"
                          }
               progress:progress
