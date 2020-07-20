@@ -172,15 +172,12 @@ extension TagsViewController {
     // Returns the section that the table view should scroll to
     override func tableView(_ tableView: UITableView, sectionForSectionIndexTitle title: String, at index: Int) -> Int {
 
-        var newRow = 0
-        for tag in dataProvider.fetchedResultsController.fetchedObjects! {
-            if  tag.tagName.hasPrefix(title) {
-                break
-            }
-            newRow += 1
+        if let row = dataProvider.fetchedResultsController.fetchedObjects?
+                                 .filter({!alreadySelectedTags.contains($0.tagId)})
+                                 .firstIndex(where: {$0.tagName.hasPrefix(title)}) {
+            let newIndexPath = IndexPath(row: row, section: 1)
+            tableView.scrollToRow(at: newIndexPath, at: .top, animated: false)
         }
-        let newIndexPath = IndexPath(row: newRow, section: 0)
-        tableView.scrollToRow(at: newIndexPath, at: .top, animated: false)
         return index
     }
 
