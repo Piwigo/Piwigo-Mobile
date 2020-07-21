@@ -133,6 +133,7 @@ class UploadSwitchViewController: UIViewController {
 
         // Updload images
         delegate?.didValidateUploadSettings(with: imageParameters, uploadParameters)
+        dismiss(animated: true)
     }
     
     @objc func cancelUpload() {

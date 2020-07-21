@@ -1224,7 +1224,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
     // MARK: - UploadSwitchDelegate Methods
     @objc func didValidateUploadSettings(with imageParameters: [String : Any], _ uploadParameters: [String:Any]) {
-        // Retrieve common image parameters
+        // Retrieve common image parameters and upload settings
         for index in 0..<selectedImages.count {
             if let request = selectedImages[index] {
                 var updatedRequest = request
@@ -1246,7 +1246,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     updatedRequest.comment = comment
                 }
                 
-                // Upload parameters
+                // Upload settings
                 if let stripGPSdataOnUpload = uploadParameters["stripGPSdataOnUpload"] as? Bool {
                     updatedRequest.stripGPSdataOnUpload = stripGPSdataOnUpload
                 }
@@ -1304,6 +1304,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 })
             }
         }
+        
+        // Clear selection
+        cancelSelect()
     }
     
     @objc func didInvalidateUploadSettings() {
