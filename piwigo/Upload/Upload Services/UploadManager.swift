@@ -152,7 +152,7 @@ class UploadManager: NSObject {
             return
         }
 
-        // Get uploads in queue
+        // Get uploads to complete in queue
         guard let allUploads = uploadsProvider.requestsToComplete() else {
             return
         }
@@ -223,18 +223,22 @@ class UploadManager: NSObject {
         }
         
         // No more image to transfer
+        // Get completed uploads in queue
+        guard let completedUploads = uploadsProvider.requestsCompleted() else {
+            return
+        }
+
         // Moderate uploaded images if Community plugin installed
         if Model.sharedInstance().usesCommunityPluginV29 {
             DispatchQueue.global(qos: .background).async {
-                self.moderateUploadedImages()
+                self.moderate(uploadedImages: completedUploads)
             }
             return
         }
 
         // Delete images from Photo Library if user wanted it
-        let uploadsToDelete = allUploads.filter({ $0.state == .finished && $0.deleteImageAfterUpload == true })
         DispatchQueue.global(qos: .background).async {
-            self.delete(uploadedImages: uploadsToDelete)
+            self.delete(uploadedImages: completedUploads.filter({$0.deleteImageAfterUpload == true}))
         }
     }
 
@@ -440,14 +444,7 @@ class UploadManager: NSObject {
 
     // MARK: - Uploaded Images Management
     
-    private func moderateUploadedImages() -> Void {
-        // Get uploads in queue
-        guard let allUploads = uploadsProvider.fetchedResultsController.fetchedObjects else {
-            return
-        }
-        // Get uploaded images to moderate
-        let uploadedImages = allUploads.filter({ $0.state == .finished })
-        
+    private func moderate(uploadedImages : [Upload]) -> Void {
         // Get list of categories
         let categories = IndexSet(uploadedImages.map({Int($0.category)}))
         
@@ -464,7 +461,9 @@ class UploadManager: NSObject {
         for category in categories {
             let imageIds = uploadedImages.filter({ $0.category == category}).map( { String(format: "%ld,", $0.imageId) } ).reduce("", +)
             // Moderate uploaded images
-            UploadFinisher().moderateImages(imageIds: imageIds, inCategory: category)
+            let finish = UploadFinisher()
+            finish.uploadManager = self
+            finish.moderateImages(imageIds: imageIds, inCategory: category)
         }
     }
 

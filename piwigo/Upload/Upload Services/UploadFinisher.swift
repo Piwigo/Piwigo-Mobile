@@ -195,9 +195,9 @@ class UploadFinisher {
                 // Successful?
                 if stat == "ok" {
                     // Images successfully moderated, delete them if wanted by users
-                    if let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects {
-                        let uploadsToDelete = allUploads.filter({ $0.state == .finished && $0.deleteImageAfterUpload == true })
-                        self.uploadManager?.delete(uploadedImages: uploadsToDelete)
+                    if let completedUploads = self.uploadsProvider.requestsCompleted() {
+                        let imagesToDelete = completedUploads.filter({$0.deleteImageAfterUpload == true})
+                        self.uploadManager?.delete(uploadedImages: imagesToDelete)
                     }
                 }
 
