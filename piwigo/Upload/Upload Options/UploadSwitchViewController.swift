@@ -10,7 +10,7 @@ import UIKit
 
 @objc
 protocol UploadSwitchDelegate: NSObjectProtocol {
-    func didValidateUploadSettings(with imageParameters:[String:Any])
+    func didValidateUploadSettings(with imageParameters:[String:Any], _ uploadParameters:[String:Any])
 }
 
 class UploadSwitchViewController: UIViewController {
@@ -108,7 +108,9 @@ class UploadSwitchViewController: UIViewController {
         print("didTapUpload")
         // Retrieve custom image parameters and upload settings from child views
         var imageParameters = [String:Any].init(minimumCapacity: 5)
+        var uploadParameters = [String:Any].init(minimumCapacity: 8)
         children.forEach { (child) in
+            
             // Image parameters
             if let paramsCtrl = child as? UploadParametersViewController {
                 imageParameters["title"] = paramsCtrl.commonTitle
@@ -117,11 +119,23 @@ class UploadSwitchViewController: UIViewController {
                 imageParameters["tagIds"] = String(paramsCtrl.commonTags.map({"\($0.tagId),"}).reduce("", +).dropLast(1))
                 imageParameters["comment"] = paramsCtrl.commonComment
             }
+            
+            // Upload settings
+            if let settingsCtrl = child as? UploadSettingsViewController {
+                uploadParameters["stripGPSdataOnUpload"] = settingsCtrl.stripGPSdataOnUpload
+                uploadParameters["resizeImageOnUpload"] = settingsCtrl.resizeImageOnUpload
+                uploadParameters["photoResize"] = settingsCtrl.photoResize
+                uploadParameters["compressImageOnUpload"] = settingsCtrl.compressImageOnUpload
+                uploadParameters["photoQuality"] = settingsCtrl.photoQuality
+                uploadParameters["prefixFileNameBeforeUpload"] = settingsCtrl.prefixFileNameBeforeUpload
+                uploadParameters["defaultPrefix"] = settingsCtrl.defaultPrefix
+                uploadParameters["deleteImageAfterUpload"] = settingsCtrl.deleteImageAfterUpload
+            }
         }
 
         // Updload images
-        if delegate?.responds(to: #selector(LocalImagesViewController.didValidateUploadSettings(with:))) ?? false {
-            delegate?.didValidateUploadSettings(with: imageParameters)
+        if delegate?.responds(to: #selector(LocalImagesViewController.didValidateUploadSettings(with:_:))) ?? false {
+            delegate?.didValidateUploadSettings(with: imageParameters, uploadParameters)
         }
     }
     

@@ -596,7 +596,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             // Push Edit view embedded in navigation controller
             let navController = UINavigationController(rootViewController: uploadSwitchVC)
             navController.transitioningDelegate = self
-            navController.modalPresentationStyle = .custom
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                navController.modalPresentationStyle = .popover
+            } else {
+                navController.modalPresentationStyle = .custom
+            }
             navController.modalTransitionStyle = .coverVertical
             navController.popoverPresentationController?.sourceView = localImagesCollection
             navController.popoverPresentationController?.barButtonItem = self.uploadBarButton
@@ -1216,11 +1220,13 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
 
     // MARK: - UploadSwitchDelegate Methods
-    func didValidateUploadSettings(with imageParameters: [String : Any]) {
+    @objc func didValidateUploadSettings(with imageParameters: [String : Any], _ uploadParameters: [String:Any]) {
         // Retrieve common image parameters
         for index in 0..<selectedImages.count {
             if let request = selectedImages[index] {
                 var updatedRequest = request
+                
+                // Image parameters
                 if let imageTitle = imageParameters["title"] as? String {
                     updatedRequest.imageTitle = imageTitle
                 }
@@ -1236,6 +1242,33 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 if let comment = imageParameters["comment"] as? String {
                     updatedRequest.comment = comment
                 }
+                
+                // Upload parameters
+                if let stripGPSdataOnUpload = uploadParameters["stripGPSdataOnUpload"] as? Bool {
+                    updatedRequest.stripGPSdataOnUpload = stripGPSdataOnUpload
+                }
+                if let resizeImageOnUpload = uploadParameters["resizeImageOnUpload"] as? Bool {
+                    updatedRequest.resizeImageOnUpload = resizeImageOnUpload
+                }
+                if let photoResize = uploadParameters["photoResize"] as? Int {
+                    updatedRequest.photoResize = photoResize
+                }
+                if let compressImageOnUpload = uploadParameters["compressImageOnUpload"] as? Bool {
+                    updatedRequest.compressImageOnUpload = compressImageOnUpload
+                }
+                if let photoQuality = uploadParameters["photoQuality"] as? Int {
+                    updatedRequest.photoQuality = photoQuality
+                }
+                if let prefixFileNameBeforeUpload = uploadParameters["prefixFileNameBeforeUpload"] as? Bool {
+                    updatedRequest.prefixFileNameBeforeUpload = prefixFileNameBeforeUpload
+                }
+                if let defaultPrefix = uploadParameters["defaultPrefix"] {
+                    updatedRequest.defaultPrefix = defaultPrefix as? String
+                }
+                if let deleteImageAfterUpload = uploadParameters["deleteImageAfterUpload"] as? Bool {
+                    updatedRequest.deleteImageAfterUpload = deleteImageAfterUpload
+                }
+
                 selectedImages[index] = updatedRequest
             }
         }
@@ -1384,14 +1417,14 @@ extension LocalImagesViewController : UIViewControllerTransitioningDelegate {
     }
 }
 
-extension UIImage {
-    func imageWithColor(_ color: UIColor) -> UIImage? {
-        var image = withRenderingMode(.alwaysTemplate)
-        UIGraphicsBeginImageContextWithOptions(size, false, scale)
-        color.set()
-        image.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
-        image = UIGraphicsGetImageFromCurrentImageContext()!
-        UIGraphicsEndImageContext()
-        return image
-    }
-}
+//extension UIImage {
+//    func imageWithColor(_ color: UIColor) -> UIImage? {
+//        var image = withRenderingMode(.alwaysTemplate)
+//        UIGraphicsBeginImageContextWithOptions(size, false, scale)
+//        color.set()
+//        image.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+//        image = UIGraphicsGetImageFromCurrentImageContext()!
+//        UIGraphicsEndImageContext()
+//        return image
+//    }
+//}

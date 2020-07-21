@@ -24,7 +24,7 @@ class UploadImage {
     func prepare(_ upload: UploadProperties, from imageAsset: PHAsset) -> Void {
         
         // Retrieve UIImage
-        let (fixedImageObject, imageError) = retrieveUIImage(from: imageAsset)
+        let (fixedImageObject, imageError) = retrieveUIImage(from: imageAsset, for: upload)
         if let _ = imageError {
             updateUploadRequestWith(upload, error: imageError)
         }
@@ -57,12 +57,7 @@ class UploadImage {
         // Error?
         if let error = error {
             // Could not prepare image
-            let uploadProperties = UploadProperties.init(localIdentifier: upload.localIdentifier, category: upload.category,
-                requestDate: upload.requestDate, requestState: .preparingError,
-                requestDelete: upload.requestDelete, requestError: error.localizedDescription,
-                creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
-                isVideo: upload.isVideo, author: upload.author, privacyLevel: upload.privacyLevel,
-                imageTitle: upload.imageTitle, comment: upload.comment, tagIds: upload.tagIds, imageId: upload.imageId)
+            let uploadProperties = upload.update(with: .preparingError, error: error.localizedDescription)
             
             // Update request with error description
             print("    >", error.localizedDescription)
@@ -74,12 +69,7 @@ class UploadImage {
         }
 
         // Update state of upload
-        let uploadProperties = UploadProperties.init(localIdentifier: upload.localIdentifier, category: upload.category,
-            requestDate: upload.requestDate, requestState: .prepared,
-            requestDelete: upload.requestDelete, requestError: "",
-            creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
-            isVideo: upload.isVideo, author: upload.author, privacyLevel: upload.privacyLevel,
-            imageTitle: upload.imageTitle, comment: upload.comment, tagIds: upload.tagIds, imageId: upload.imageId)
+        let uploadProperties = upload.update(with: .prepared, error: "")
 
         // Update request ready for transfer
         print("    > prepared file \(uploadProperties.fileName!)")
@@ -91,7 +81,7 @@ class UploadImage {
 
     // MARK: - Retrieve UIImage and Image Data
     
-    private func retrieveUIImage(from imageAsset: PHAsset) -> (UIImage?, Error?) {
+    private func retrieveUIImage(from imageAsset: PHAsset, for upload:UploadProperties) -> (UIImage?, Error?) {
         print("    > retrieveUIImageFrom...")
 
         // Case of an image…
@@ -107,7 +97,7 @@ class UploadImage {
         // Requests Photos to resize the image according to user settings
         var size = PHImageManagerMaximumSize
         options.resizeMode = .exact
-        if Model.sharedInstance().resizeImageOnUpload && Float(Model.sharedInstance().photoResize) < 100.0 {
+        if upload.resizeImageOnUpload && Float(upload.photoResize) < 100.0 {
             let scale = CGFloat(Model.sharedInstance().photoResize) / 100.0
             size = CGSize(width: CGFloat(imageAsset.pixelWidth) * scale, height: CGFloat(imageAsset.pixelHeight) * scale)
             options.resizeMode = .exact
@@ -214,7 +204,7 @@ class UploadImage {
         }
 
         // Strip GPS metadata if user requested it in Settings
-        if Model.sharedInstance().stripGPSdataOnUpload {
+        if upload.stripGPSdataOnUpload {
             imageMetadata = ImageService.stripGPSdata(fromImageMetadata: imageMetadata)! as Dictionary<NSObject, AnyObject>
         }
 
@@ -225,9 +215,9 @@ class UploadImage {
         var imageCompressed: Data? = nil
         var newUpload = upload
         let fileExt = (URL(fileURLWithPath: upload.fileName!).pathExtension).lowercased()
-        if Model.sharedInstance().compressImageOnUpload && (CGFloat(Model.sharedInstance().photoQuality) < 100.0) {
+        if upload.compressImageOnUpload && (CGFloat(upload.photoQuality) < 100.0) {
             // Compress image (only possible in JPEG)
-            let compressionQuality: CGFloat = CGFloat(Model.sharedInstance().photoQuality) / 100.0
+            let compressionQuality: CGFloat = CGFloat(upload.photoQuality) / 100.0
             imageCompressed = originalObject.jpegData(compressionQuality: compressionQuality)
 
             // Final image file will be in JPEG format

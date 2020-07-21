@@ -25,7 +25,6 @@ class Upload: NSManagedObject {
     @NSManaged var category: Int64
     @NSManaged var requestDate: Date
     @NSManaged var requestState: Int16
-    @NSManaged var requestDelete: Bool
     @NSManaged var requestError: String?
 
     @NSManaged var creationDate: Date?
@@ -39,6 +38,15 @@ class Upload: NSManagedObject {
     @NSManaged var comment: String?
     @NSManaged var tagIds: String?
     @NSManaged var imageId: Int64
+
+    @NSManaged var stripGPSdataOnUpload: Bool
+    @NSManaged var resizeImageOnUpload: Bool
+    @NSManaged var photoResize: Int16
+    @NSManaged var compressImageOnUpload: Bool
+    @NSManaged var photoQuality: Int16
+    @NSManaged var prefixFileNameBeforeUpload: Bool
+    @NSManaged var defaultPrefix: String?
+    @NSManaged var deleteImageAfterUpload: Bool
 
     // Singleton
     @objc static let sharedInstance: Upload = Upload()
@@ -60,9 +68,6 @@ class Upload: NSManagedObject {
         // State of upload request defaults to "waiting"
         requestState = Int16(uploadProperties.requestState.rawValue)
         
-        // Does not suggest to delete the uploaded image by default
-        requestDelete = uploadProperties.requestDelete
-        
         // Error message description
         requestError = uploadProperties.requestError
 
@@ -78,11 +83,21 @@ class Upload: NSManagedObject {
         // Privacy level is the lowest one if not provided
         privacyLevel = Int16(uploadProperties.privacyLevel?.rawValue ?? kPiwigoPrivacyEverybody.rawValue)
 
-        // Other properties
+        // Other image properties
         imageName = uploadProperties.imageTitle ?? ""
         comment = uploadProperties.comment ?? ""
         tagIds = uploadProperties.tagIds ?? ""
         imageId = Int64(uploadProperties.imageId)
+        
+        // Upload settings
+        stripGPSdataOnUpload = uploadProperties.stripGPSdataOnUpload
+        resizeImageOnUpload = uploadProperties.resizeImageOnUpload
+        photoResize = Int16(uploadProperties.photoResize)
+        compressImageOnUpload = uploadProperties.compressImageOnUpload
+        photoQuality = Int16(uploadProperties.photoQuality)
+        prefixFileNameBeforeUpload = uploadProperties.prefixFileNameBeforeUpload
+        defaultPrefix = uploadProperties.defaultPrefix
+        deleteImageAfterUpload = uploadProperties.deleteImageAfterUpload
     }
 }
 
@@ -145,6 +160,44 @@ extension Upload {
         default:
             return kPiwigoPrivacyUnknown
         }
+    }
+
+    func getUploadProperties(with state: kPiwigoUploadState, error: String?) -> UploadProperties {
+        return UploadProperties.init(localIdentifier: self.localIdentifier, category: Int(self.category),
+            // Upload request date is now and state is waiting
+            requestDate: self.requestDate, requestState: state, requestError: error,
+            // Photo creation date and filename
+            creationDate: self.creationDate, fileName: self.fileName,
+            mimeType: self.mimeType, isVideo: self.isVideo,
+            // Photo author name defaults to name entered in Settings
+            author: self.author, privacyLevel: self.privacy,
+            imageTitle: self.imageName, comment: self.comment,
+            tagIds: self.tagIds, imageId: Int(self.imageId),
+            // Upload settings
+            stripGPSdataOnUpload: self.stripGPSdataOnUpload,
+            resizeImageOnUpload: self.resizeImageOnUpload, photoResize: Int(self.photoResize),
+            compressImageOnUpload: self.compressImageOnUpload, photoQuality: Int(self.photoQuality),
+            prefixFileNameBeforeUpload: self.prefixFileNameBeforeUpload, defaultPrefix: self.defaultPrefix,
+            deleteImageAfterUpload: self.deleteImageAfterUpload)
+    }
+
+    func getUploadPropertiesCancellingDeletion() -> UploadProperties {
+        return UploadProperties.init(localIdentifier: self.localIdentifier, category: Int(self.category),
+            // Upload request date is now and state is waiting
+            requestDate: self.requestDate, requestState: self.state, requestError: self.requestError,
+            // Photo creation date and filename
+            creationDate: self.creationDate, fileName: self.fileName,
+            mimeType: self.mimeType, isVideo: self.isVideo,
+            // Photo author name defaults to name entered in Settings
+            author: self.author, privacyLevel: self.privacy,
+            imageTitle: self.imageName, comment: self.comment,
+            tagIds: self.tagIds, imageId: Int(self.imageId),
+            // Upload settings
+            stripGPSdataOnUpload: self.stripGPSdataOnUpload,
+            resizeImageOnUpload: self.resizeImageOnUpload, photoResize: Int(self.photoResize),
+            compressImageOnUpload: self.compressImageOnUpload, photoQuality: Int(self.photoQuality),
+            prefixFileNameBeforeUpload: self.prefixFileNameBeforeUpload, defaultPrefix: self.defaultPrefix,
+            deleteImageAfterUpload: false)
     }
 
     @objc(addTagsObject:)
@@ -225,7 +278,6 @@ struct UploadProperties
     let category: Int                       // 8
     let requestDate: Date                   // "2020-08-22 19:18:43"
     var requestState: kPiwigoUploadState    // See enum above
-    var requestDelete: Bool                 // false by default
     var requestError: String?
 
     var creationDate: Date?                 // "2012-08-23 09:18:43"
@@ -239,23 +291,62 @@ struct UploadProperties
     var comment: String?                    // "A comment…"
     var tagIds: String?                     // List of tag IDs
     var imageId: Int                        // 1042
+
+    var stripGPSdataOnUpload: Bool
+    var resizeImageOnUpload: Bool
+    var photoResize: Int
+    var compressImageOnUpload: Bool
+    var photoQuality: Int
+    var prefixFileNameBeforeUpload: Bool
+    var defaultPrefix: String?
+    var deleteImageAfterUpload: Bool
 }
 
 extension UploadProperties {
+    // Create new upload from localIdentifier and category
     init(localIdentifier: String, category: Int) {
         self.init(localIdentifier: localIdentifier, category: category,
             // Upload request date is now and state is waiting
-            requestDate: Date.init(), requestState: .waiting, requestDelete: false, requestError: "",
+            requestDate: Date.init(), requestState: .waiting, requestError: "",
             // Photo creation date and filename
             creationDate: Date.init(), fileName: "", mimeType: "", isVideo: false,
             // Photo author name defaults to name entered in Settings
             author: Model.sharedInstance()?.defaultAuthor ?? "",
             // Privacy level defaults to level selected in Settings
             privacyLevel: Model.sharedInstance()?.defaultPrivacyLevel ?? kPiwigoPrivacyEverybody,
-            // No title, comment, tag, filename by default
-            imageTitle: "", comment: "", tagIds: "", imageId: NSNotFound)
+            // No title, comment, tag, filename by default, image ID unknown
+            imageTitle: "", comment: "", tagIds: "", imageId: NSNotFound,
+            // Upload settings
+            stripGPSdataOnUpload: Model.sharedInstance().stripGPSdataOnUpload,
+            resizeImageOnUpload: Model.sharedInstance().resizeImageOnUpload,
+            photoResize: Model.sharedInstance().photoResize,
+            compressImageOnUpload: Model.sharedInstance().compressImageOnUpload,
+            photoQuality: Model.sharedInstance().photoQuality,
+            prefixFileNameBeforeUpload: Model.sharedInstance().prefixFileNameBeforeUpload,
+            defaultPrefix: Model.sharedInstance().defaultPrefix ?? "",
+            deleteImageAfterUpload: Model.sharedInstance().deleteImageAfterUpload)
     }
     
+    // Update upload request state and error
+    func update(with state: kPiwigoUploadState, error: String?) -> UploadProperties {
+        return UploadProperties.init(localIdentifier: self.localIdentifier, category: self.category,
+            // Upload request date is now and state is waiting
+            requestDate: self.requestDate, requestState: state, requestError: error,
+            // Photo creation date and filename
+            creationDate: self.creationDate, fileName: self.fileName,
+            mimeType: self.mimeType, isVideo: self.isVideo,
+            // Photo parameters
+            author: self.author, privacyLevel: self.privacyLevel,
+            imageTitle: self.imageTitle, comment: self.comment,
+            tagIds: self.tagIds, imageId: self.imageId,
+            // Upload settings
+            stripGPSdataOnUpload: self.stripGPSdataOnUpload,
+            resizeImageOnUpload: self.resizeImageOnUpload, photoResize: self.photoResize,
+            compressImageOnUpload: self.compressImageOnUpload, photoQuality: self.photoQuality,
+            prefixFileNameBeforeUpload: self.prefixFileNameBeforeUpload, defaultPrefix: self.defaultPrefix,
+            deleteImageAfterUpload: self.deleteImageAfterUpload)
+    }
+        
     var stateLabel: String {
         return requestState.stateInfo
     }

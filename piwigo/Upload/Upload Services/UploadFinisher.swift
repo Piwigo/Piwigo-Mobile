@@ -119,7 +119,7 @@ class UploadFinisher {
                         // Only local images can be deleted
                         if imageAsset.sourceType != .typeCloudShared {
                             // Append image to list of images to delete
-                            uploadProperties.requestDelete = true
+                            uploadProperties.deleteImageAfterUpload = true
                         }
                     }
                 }
@@ -152,12 +152,7 @@ class UploadFinisher {
         // Error?
         if let error = error {
             // Could not prepare image
-            let uploadProperties = UploadProperties.init(localIdentifier: upload.localIdentifier, category: upload.category,
-                requestDate: upload.requestDate, requestState: .finishingError,
-                requestDelete: upload.requestDelete, requestError: error.localizedDescription,
-                creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
-                isVideo: upload.isVideo, author: upload.author, privacyLevel: upload.privacyLevel,
-                imageTitle: upload.imageTitle, comment: upload.comment, tagIds: upload.tagIds, imageId: upload.imageId)
+            let uploadProperties = upload.update(with: .finishingError, error: error.localizedDescription)
             
             // Update request with error description
             print("    >", error.localizedDescription)
@@ -169,12 +164,7 @@ class UploadFinisher {
         }
 
         // Update state of upload
-        let uploadProperties = UploadProperties.init(localIdentifier: upload.localIdentifier, category: upload.category,
-            requestDate: upload.requestDate, requestState: .finished,
-            requestDelete: upload.requestDelete, requestError: "",
-            creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
-            isVideo: upload.isVideo, author: upload.author, privacyLevel: upload.privacyLevel,
-            imageTitle: upload.imageTitle, comment: upload.comment, tagIds: upload.tagIds, imageId: upload.imageId)
+        let uploadProperties = upload.update(with: .finished, error: "")
 
         // Update request ready for transfer
         print("    > finished with \(uploadProperties.fileName!)")
@@ -206,7 +196,7 @@ class UploadFinisher {
                 if stat == "ok" {
                     // Images successfully moderated, delete them if wanted by users
                     if let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects {
-                        let uploadsToDelete = allUploads.filter({ $0.state == .finished && $0.requestDelete == true })
+                        let uploadsToDelete = allUploads.filter({ $0.state == .finished && $0.deleteImageAfterUpload == true })
                         self.uploadManager?.delete(uploadedImages: uploadsToDelete)
                     }
                 }

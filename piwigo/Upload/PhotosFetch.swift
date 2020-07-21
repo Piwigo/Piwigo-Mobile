@@ -160,11 +160,6 @@ class PhotosFetch: NSObject {
             }
         }
 
-        // Add prefix if user requested it
-        if Model.sharedInstance().prefixFileNameBeforeUpload && !fileName.hasPrefix(Model.sharedInstance().defaultPrefix) {
-            fileName = Model.sharedInstance().defaultPrefix + fileName
-        }
-
 //        print("=> filename = \(fileName)")
         return fileName
     }

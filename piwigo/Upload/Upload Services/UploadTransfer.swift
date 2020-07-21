@@ -162,13 +162,7 @@ class UploadTransfer {
         // Error?
         if let error = error {
             // Could not prepare image
-            let uploadProperties = UploadProperties.init(localIdentifier: upload.localIdentifier, category: upload.category,
-                requestDate: upload.requestDate, requestState: .uploadingError,
-                requestDelete: upload.requestDelete, requestError: error.localizedDescription,
-                creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
-                isVideo: upload.isVideo, author: upload.author, privacyLevel: upload.privacyLevel,
-                imageTitle: upload.imageTitle, comment: upload.comment, tagIds: upload.tagIds,
-                imageId: upload.imageId)
+            let uploadProperties = upload.update(with: .uploadingError, error: error.localizedDescription)
             
             // Update request with error description
             print("    >", error.localizedDescription)
@@ -180,12 +174,7 @@ class UploadTransfer {
         }
 
         // Update state of upload
-        let uploadProperties = UploadProperties.init(localIdentifier: upload.localIdentifier, category: upload.category,
-            requestDate: upload.requestDate, requestState: .uploaded,
-            requestDelete: upload.requestDelete, requestError: "",
-            creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
-            isVideo: upload.isVideo, author: upload.author, privacyLevel: upload.privacyLevel,
-            imageTitle: upload.imageTitle, comment: upload.comment, tagIds: upload.tagIds, imageId: upload.imageId)
+        let uploadProperties = upload.update(with: .uploaded, error: "")
 
         // Update request ready for finish
         print("    > transferred file \(uploadProperties.fileName!)")

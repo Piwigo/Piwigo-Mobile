@@ -160,15 +160,7 @@ class UploadManager: NSObject {
         // Any interrupted transfer?
         if !isFinishing, let upload = allUploads.first(where: { $0.state == .finishing }) {
             // Transfer encountered an error
-            let uploadProperties = UploadProperties.init(localIdentifier: upload.localIdentifier,
-                category: Int(upload.category),
-                requestDate: upload.requestDate, requestState: .finishingError,
-                requestDelete: upload.requestDelete, requestError: UploadError.networkUnavailable.errorDescription,
-                creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
-                isVideo: upload.isVideo, author: upload.author, privacyLevel: upload.privacy,
-                imageTitle: upload.imageName, comment: upload.comment,
-                tagIds: upload.tagIds, imageId: Int(upload.imageId))
-            
+            let uploadProperties = upload.getUploadProperties(with: .finishingError, error: UploadError.networkUnavailable.errorDescription)
             print("    >  Interrupted finish")
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
                 self.findNextImageToUpload()
@@ -177,15 +169,7 @@ class UploadManager: NSObject {
         }
         if !isUploading, let upload = allUploads.first(where: { $0.state == .uploading }) {
             // Transfer encountered an error
-            let uploadProperties = UploadProperties.init(localIdentifier: upload.localIdentifier,
-                category: Int(upload.category),
-                requestDate: upload.requestDate, requestState: .uploadingError,
-                requestDelete: upload.requestDelete, requestError: UploadError.networkUnavailable.errorDescription,
-                creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
-                isVideo: upload.isVideo, author: upload.author, privacyLevel: upload.privacy,
-                imageTitle: upload.imageName, comment: upload.comment,
-                tagIds: upload.tagIds, imageId: Int(upload.imageId))
-
+            let uploadProperties = upload.getUploadProperties(with: .uploadingError, error: UploadError.networkUnavailable.errorDescription)
             print("    >  Interrupted upload")
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
                 self.findNextImageToUpload()
@@ -194,15 +178,7 @@ class UploadManager: NSObject {
         }
         if !isPreparing, let upload = allUploads.first(where: { $0.state == .preparing }) {
             // Transfer encountered an error
-            let uploadProperties = UploadProperties.init(localIdentifier: upload.localIdentifier,
-                category: Int(upload.category),
-                requestDate: upload.requestDate, requestState: .preparingError,
-                requestDelete: upload.requestDelete, requestError: UploadError.networkUnavailable.errorDescription,
-                creationDate: upload.creationDate, fileName: upload.fileName, mimeType: upload.mimeType,
-                isVideo: upload.isVideo, author: upload.author, privacyLevel: upload.privacy,
-                imageTitle: upload.imageName, comment: upload.comment,
-                tagIds: upload.tagIds, imageId: Int(upload.imageId))
-
+            let uploadProperties = upload.getUploadProperties(with: .preparingError, error:  UploadError.networkUnavailable.errorDescription)
             print("    >  Interrupted preparation")
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
                 self.findNextImageToUpload()
@@ -256,7 +232,7 @@ class UploadManager: NSObject {
         }
 
         // Delete images from Photo Library if user wanted it
-        let uploadsToDelete = allUploads.filter({ $0.state == .finished && $0.requestDelete == true })
+        let uploadsToDelete = allUploads.filter({ $0.state == .finished && $0.deleteImageAfterUpload == true })
         DispatchQueue.global(qos: .background).async {
             self.delete(uploadedImages: uploadsToDelete)
         }
@@ -279,17 +255,9 @@ class UploadManager: NSObject {
         // Set upload properties
         if nextUpload.isFault {
             // The upload request is not fired yet.
-            print("    > nextUpload.isFault !!!!!!!!!!!!!!")
+            assertionFailure("    > nextUpload.isFault !!!!!!!!!!!!!!")
         }
-        var uploadProperties = UploadProperties.init(localIdentifier: nextUpload.localIdentifier,
-            category: Int(nextUpload.category),
-            requestDate: nextUpload.requestDate, requestState: nextUpload.state,
-            requestDelete: nextUpload.requestDelete, requestError: nextUpload.requestError,
-            creationDate: nextUpload.creationDate, fileName: nextUpload.fileName,
-            mimeType: nextUpload.mimeType, isVideo: nextUpload.isVideo,
-            author: nextUpload.author, privacyLevel: nextUpload.privacy,
-            imageTitle: nextUpload.imageName, comment: nextUpload.comment,
-            tagIds: nextUpload.tagIds, imageId: NSNotFound)
+        var uploadProperties = nextUpload.getUploadProperties(with: nextUpload.state, error: nextUpload.requestError)
 
         // Retrieve image asset
         guard let originalAsset = PHAsset.fetchAssets(withLocalIdentifiers: [nextUpload.localIdentifier], options: nil).firstObject else {
@@ -308,8 +276,12 @@ class UploadManager: NSObject {
         uploadProperties.creationDate = originalAsset.creationDate ?? Date.init()
         
         // Determine non-empty unique file name and extension from asset
-        uploadProperties.fileName = PhotosFetch.sharedInstance().getFileNameFomImageAsset(originalAsset)
-        let fileExt = (URL(fileURLWithPath: uploadProperties.fileName!).pathExtension).lowercased()
+        var fileName = PhotosFetch.sharedInstance().getFileNameFomImageAsset(originalAsset)
+        if nextUpload.prefixFileNameBeforeUpload, let prefix = nextUpload.defaultPrefix {
+            if !fileName.hasPrefix(prefix) { fileName = prefix + fileName }
+        }
+        uploadProperties.fileName = fileName
+        let fileExt = (URL(fileURLWithPath: fileName).pathExtension).lowercased()
         
         // Launch preparation job if file format accepted by Piwigo server
         switch originalAsset.mediaType {
@@ -433,19 +405,8 @@ class UploadManager: NSObject {
             return
         }
 
-        // Set upload properties
-        var uploadProperties = UploadProperties.init(localIdentifier: nextUpload.localIdentifier,
-            category: Int(nextUpload.category),
-            requestDate: nextUpload.requestDate, requestState: nextUpload.state,
-            requestDelete: nextUpload.requestDelete, requestError: nextUpload.requestError,
-            creationDate: nextUpload.creationDate, fileName: nextUpload.fileName,
-            mimeType: nextUpload.mimeType, isVideo: nextUpload.isVideo,
-            author: nextUpload.author, privacyLevel: nextUpload.privacy,
-            imageTitle: nextUpload.imageName, comment: nextUpload.comment,
-            tagIds: nextUpload.tagIds, imageId: Int(nextUpload.imageId))
-
         // Update state of upload request
-        uploadProperties.requestState = .uploading
+        let uploadProperties = nextUpload.getUploadProperties(with: .uploading, error: "")
         uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
             // Launch transfer if possible
             let transfer = UploadTransfer()
@@ -466,19 +427,8 @@ class UploadManager: NSObject {
             return
         }
 
-        // Set upload properties
-        var uploadProperties = UploadProperties.init(localIdentifier: nextUpload.localIdentifier,
-            category: Int(nextUpload.category),
-            requestDate: nextUpload.requestDate, requestState: nextUpload.state,
-            requestDelete: nextUpload.requestDelete, requestError: nextUpload.requestError,
-            creationDate: nextUpload.creationDate, fileName: nextUpload.fileName,
-            mimeType: nextUpload.mimeType, isVideo: nextUpload.isVideo,
-            author: nextUpload.author, privacyLevel: nextUpload.privacy,
-            imageTitle: nextUpload.imageName, comment: nextUpload.comment,
-            tagIds: nextUpload.tagIds, imageId: Int(nextUpload.imageId))
-
         // Update state of upload resquest
-        uploadProperties.requestState = .finishing
+        let uploadProperties = nextUpload.getUploadProperties(with: .finishing, error: "")
         uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
             // Finish the job by setting image parameters…
             let finish = UploadFinisher()
@@ -505,7 +455,7 @@ class UploadManager: NSObject {
         DispatchQueue.main.async {
             let appState = UIApplication.shared.applicationState
             if appState == .background || appState == .inactive {
-                print("    > will moderate later: NOT IN FOREGROOUND !!!")
+                print("    > will moderate later: NOT IN FOREGROUND !!!")
                 return
             }
         }
@@ -538,15 +488,7 @@ class UploadManager: NSObject {
                     // User refused to delete the photos
                     var uploadsToUpdate = [UploadProperties]()
                     for upload in uploadedImages {
-                        let uploadProperties = UploadProperties.init(localIdentifier: upload.localIdentifier,
-                            category: Int(upload.category),
-                            requestDate: upload.requestDate, requestState: upload.state,
-                            requestDelete: false, requestError: upload.requestError,
-                            creationDate: upload.creationDate, fileName: upload.fileName,
-                            mimeType: upload.mimeType, isVideo: upload.isVideo,
-                            author: upload.author, privacyLevel: upload.privacy,
-                            imageTitle: upload.imageName, comment: upload.comment,
-                            tagIds: upload.tagIds, imageId: Int(upload.imageId))
+                        let uploadProperties = upload.getUploadPropertiesCancellingDeletion()
                         uploadsToUpdate.append(uploadProperties)
                     }
                     self.uploadsProvider.importUploads(from: uploadsToUpdate) { (_) in
@@ -580,26 +522,17 @@ class UploadManager: NSObject {
         for failedUpload in failedUploads {
             
             // Create upload properties with no error
-            var uploadProperties = UploadProperties.init(localIdentifier: failedUpload.localIdentifier,
-                category: Int(failedUpload.category),
-                requestDate: failedUpload.requestDate, requestState: failedUpload.state,
-                requestDelete: failedUpload.requestDelete, requestError: "",
-                creationDate: failedUpload.creationDate, fileName: failedUpload.fileName,
-                mimeType: failedUpload.mimeType, isVideo: failedUpload.isVideo,
-                author: failedUpload.author, privacyLevel: failedUpload.privacy,
-                imageTitle: failedUpload.imageName, comment: failedUpload.comment,
-                tagIds: failedUpload.tagIds, imageId: Int(failedUpload.imageId))
-            
-            // Update state from which to try again
+            var uploadProperties: UploadProperties
             switch failedUpload.state {
             case .preparingError, .uploadingError:
                 // -> Will try to re-prepare the image
-                uploadProperties.requestState = .waiting
+                uploadProperties = failedUpload.getUploadProperties(with: .waiting, error: "")
             case .finishingError:
                 // -> Will try again to finish the upload
-                uploadProperties.requestState = .uploaded
+                uploadProperties = failedUpload.getUploadProperties(with: .uploaded, error: "")
             default:
-                uploadProperties.requestState = .waiting
+                // —> Will retry from scratch
+                uploadProperties = failedUpload.getUploadProperties(with: .waiting, error: "")
             }
             
             // Append updated upload

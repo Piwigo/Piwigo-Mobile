@@ -76,8 +76,28 @@ class ReducedSizePresentationController : UIPresentationController {
                 return CGRect.zero
             }
 
-            return CGRect(x: 0, y: theView.bounds.height*1/3,
-                          width: theView.bounds.width, height: theView.bounds.height*2/3)
+            var frame: CGRect = .zero
+            frame.size = size(forChildContentContainer: presentedViewController,
+                              withParentContainerSize: containerView!.bounds.size)
+            frame.size = size(forChildContentContainer: presentingViewController,
+                              withParentContainerSize: containerView!.bounds.size)
+
+            return CGRect(x: 0, y: theView.bounds.height*1/2,
+                          width: theView.bounds.width, height: theView.bounds.height*1/2)
         }
+
+//        var frame: CGRect = .zero
+//        frame.size = size(forChildContentContainer: presentedViewController,
+//                          withParentContainerSize: containerView!.bounds.size)
+//
+//        switch direction {
+//        case .right:
+//          frame.origin.x = containerView!.frame.width*(1.0/3.0)
+//        case .bottom:
+//          frame.origin.y = containerView!.frame.height*(1.0/3.0)
+//        default:
+//          frame.origin = .zero
+//        }
+//        return frame
     }
 }

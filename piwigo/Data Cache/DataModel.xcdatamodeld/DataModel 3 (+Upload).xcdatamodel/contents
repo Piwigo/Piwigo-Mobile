@@ -22,18 +22,25 @@
         <attribute name="author" optional="YES" attributeType="String" defaultValueString="" syncable="YES"/>
         <attribute name="category" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="comment" optional="YES" attributeType="String" defaultValueString="" syncable="YES"/>
+        <attribute name="compressImageOnUpload" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="creationDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="defaultPrefix" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="deleteImageAfterUpload" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="fileName" optional="YES" attributeType="String" defaultValueString="" syncable="YES"/>
         <attribute name="imageId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="imageName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="isVideo" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="localIdentifier" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="mimeType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="photoQuality" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="photoResize" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="prefixFileNameBeforeUpload" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="privacyLevel" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="requestDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="requestDelete" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="requestError" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="requestState" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="resizeImageOnUpload" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="stripGPSdataOnUpload" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="tagIds" optional="YES" attributeType="String" syncable="YES"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
@@ -44,6 +51,6 @@
     <elements>
         <element name="Location" positionX="-60.984375" positionY="-122.5" width="128" height="118"/>
         <element name="Tag" positionX="-216.05859375" positionY="-122.37890625" width="128" height="103"/>
-        <element name="Upload" positionX="-403.19921875" positionY="-201.09375" width="128" height="283"/>
+        <element name="Upload" positionX="-403.19921875" positionY="-201.09375" width="128" height="388"/>
     </elements>
 </model>
