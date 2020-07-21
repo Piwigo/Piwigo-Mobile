@@ -29,7 +29,7 @@ class UploadSwitchViewController: UIViewController {
         super.viewDidLoad()
         
         // Bar buttons
-        cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(quitUpload))
+        cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelUpload))
         cancelBarButton?.accessibilityIdentifier = "Cancel"
         uploadBarButton = UIBarButtonItem(title: NSLocalizedString("tabBar_upload", comment: "Upload"), style: .done, target: self, action: #selector(didTapUploadButton))
         
@@ -100,8 +100,7 @@ class UploadSwitchViewController: UIViewController {
 
     
     // MARK: - Actions
-    @objc func quitUpload() {
-        // Leave popover view
+    @objc func cancelUpload() {
         dismiss(animated: true)
     }
 
