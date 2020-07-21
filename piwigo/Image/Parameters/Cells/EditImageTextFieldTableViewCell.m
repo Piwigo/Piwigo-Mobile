@@ -32,7 +32,7 @@
 
     // Cell label
     self.cellLabel.text = label;
-    self.cellLabel.textColor = [UIColor piwigoColorRightLabel];
+    self.cellLabel.textColor = [UIColor piwigoColorLeftLabel];
     
     // Cell text field
     if (imageDetail == nil) {
@@ -40,7 +40,7 @@
     } else {
         self.cellTextField.text = imageDetail;
     }
-    self.cellTextField.textColor = [UIColor piwigoColorLeftLabel];
+    self.cellTextField.textColor = [UIColor piwigoColorRightLabel];
     if ([placeHolder length] > 0) {
         self.cellTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeHolder attributes:@{NSForegroundColorAttributeName: [UIColor piwigoColorPlaceHolder]}];
     }

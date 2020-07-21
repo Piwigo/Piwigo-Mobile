@@ -38,7 +38,7 @@
     self.backgroundColor = [UIColor piwigoColorBackground];
     
     // Cell label
-    self.label.textColor = [UIColor piwigoColorRightLabel];
+    self.label.textColor = [UIColor piwigoColorLeftLabel];
 
     // Cell text view
     self.textView.text = imageDetail;

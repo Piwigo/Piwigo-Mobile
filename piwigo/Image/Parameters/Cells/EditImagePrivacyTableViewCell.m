@@ -37,7 +37,7 @@
 -(void)setLeftLabelText:(NSString*)text
 {
     self.label.text = text;
-    self.label.textColor = [UIColor piwigoColorRightLabel];
+    self.label.textColor = [UIColor piwigoColorLeftLabel];
 }
 
 -(void)setPrivacyLevel:(kPiwigoPrivacy)privacy inColor:(UIColor *)color

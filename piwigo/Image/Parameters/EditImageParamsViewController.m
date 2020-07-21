@@ -697,7 +697,7 @@ typedef enum {
 		{
 			EditImagePrivacyTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"privacy" forIndexPath:indexPath];
 			[cell setLeftLabelText:NSLocalizedString(@"editImageDetails_privacyLevel", @"Who can see this photo?")];
-            [cell setPrivacyLevel:self.commonParameters.privacyLevel inColor:self.shouldUpdatePrivacyLevel ? [UIColor piwigoColorOrange] : [UIColor piwigoColorLeftLabel]];
+            [cell setPrivacyLevel:self.commonParameters.privacyLevel inColor:self.shouldUpdatePrivacyLevel ? [UIColor piwigoColorOrange] : [UIColor piwigoColorRightLabel]];
             tableViewCell = cell;
 			break;
 		}
@@ -705,7 +705,7 @@ typedef enum {
         case EditImageParamsOrderTags:
 		{
 			EditImageTagsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"tags" forIndexPath:indexPath];
-            [cell setTagList:self.commonParameters.tags inColor:self.shouldUpdateTags ? [UIColor piwigoColorOrange] : [UIColor piwigoColorLeftLabel]];
+            [cell setTagList:self.commonParameters.tags inColor:self.shouldUpdateTags ? [UIColor piwigoColorOrange] : [UIColor piwigoColorRightLabel]];
             tableViewCell = cell;
 			break;
 		}
@@ -713,7 +713,7 @@ typedef enum {
         case EditImageParamsOrderDescription:
 		{
 			EditImageTextViewTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"description" forIndexPath:indexPath];
-            [cell setComment:self.commonParameters.comment inColor:self.shouldUpdateTags ? [UIColor piwigoColorOrange] : [UIColor piwigoColorLeftLabel]];
+            [cell setComment:self.commonParameters.comment inColor:self.shouldUpdateTags ? [UIColor piwigoColorOrange] : [UIColor piwigoColorRightLabel]];
             cell.textView.delegate = self;
             tableViewCell = cell;
 			break;

@@ -112,7 +112,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
         cell.setup(withLabel: NSLocalizedString("editImageDetails_title", comment: "Title:"),
                    placeHolder: NSLocalizedString("editImageDetails_titlePlaceholder", comment: "Title"),
                    andImageDetail: commonTitle)
-        cell.cellTextField.textColor = shouldUpdateTitle ? UIColor.piwigoColorOrange() : UIColor.piwigoColorLeftLabel()
+        cell.cellTextField.textColor = shouldUpdateTitle ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel()
         cell.cellTextField.tag = EditImageDetailsOrder.imageName.rawValue
         cell.cellTextField.delegate = self
         tableViewCell = cell
@@ -125,7 +125,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
         cell.setup(withLabel: NSLocalizedString("editImageDetails_author", comment: "Author:"),
                    placeHolder: NSLocalizedString("settings_defaultAuthorPlaceholder", comment: "Author Name"),
                    andImageDetail: (commonAuthor == "NSNotFound") ? "" : commonAuthor)
-        cell.cellTextField.textColor = shouldUpdateAuthor ? UIColor.piwigoColorOrange() : UIColor.piwigoColorLeftLabel()
+        cell.cellTextField.textColor = shouldUpdateAuthor ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel()
         cell.cellTextField.tag = EditImageDetailsOrder.author.rawValue
         cell.cellTextField.delegate = self
         tableViewCell = cell
@@ -136,7 +136,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
             return EditImagePrivacyTableViewCell()
         }
         cell.setLeftLabelText(NSLocalizedString("editImageDetails_privacyLevel", comment: "Who can see this photo?"))
-        cell.setPrivacyLevel(commonPrivacyLevel, in: shouldUpdatePrivacyLevel ? UIColor.piwigoColorOrange() : UIColor.piwigoColorLeftLabel())
+        cell.setPrivacyLevel(commonPrivacyLevel, in: shouldUpdatePrivacyLevel ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
         tableViewCell = cell
 
         case .tags:
@@ -154,7 +154,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
             newTag.numberOfImagesUnderTag = Int(tag.numberOfImagesUnderTag)
             tagList.append(newTag)
         }
-        cell.setTagList(tagList, in: shouldUpdateTags ? UIColor.piwigoColorOrange() : UIColor.piwigoColorLeftLabel())
+        cell.setTagList(tagList, in: shouldUpdateTags ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
         tableViewCell = cell
 
         case .comment:
@@ -162,7 +162,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
             print("Error: tableView.dequeueReusableCell does not return a EditImageTextViewTableViewCell!")
             return EditImageTagsTableViewCell()
         }
-        cell.setComment(commonComment, in: shouldUpdateComment ? UIColor.piwigoColorOrange() : UIColor.piwigoColorLeftLabel())
+        cell.setComment(commonComment, in: shouldUpdateComment ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
         cell.textView.delegate = self
         tableViewCell = cell
 
@@ -322,6 +322,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
 
     func textViewDidBeginEditing(_ textView: UITextView) {
         shouldUpdateComment = true
+        textView.textColor = UIColor.piwigoColorOrange()
     }
 
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
