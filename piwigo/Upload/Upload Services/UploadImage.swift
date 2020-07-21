@@ -98,7 +98,7 @@ class UploadImage {
         var size = PHImageManagerMaximumSize
         options.resizeMode = .exact
         if upload.resizeImageOnUpload && Float(upload.photoResize) < 100.0 {
-            let scale = CGFloat(Model.sharedInstance().photoResize) / 100.0
+            let scale = CGFloat(upload.photoResize) / 100.0
             size = CGSize(width: CGFloat(imageAsset.pixelWidth) * scale, height: CGFloat(imageAsset.pixelHeight) * scale)
             options.resizeMode = .exact
         }
