@@ -588,6 +588,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Avoid potential crash (should never happen, but…)
         if selectedImages.count == 0 { return }
         
+        // Disable button
+        uploadBarButton?.isEnabled = false
+        
         // Show upload parameter views
         let uploadSwitchSB = UIStoryboard(name: "UploadSwitchViewController", bundle: nil)
         if let uploadSwitchVC = uploadSwitchSB.instantiateViewController(withIdentifier: "UploadSwitchViewController") as? UploadSwitchViewController {
@@ -603,7 +606,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             }
             navController.modalTransitionStyle = .coverVertical
             navController.popoverPresentationController?.sourceView = localImagesCollection
-            navController.popoverPresentationController?.barButtonItem = self.uploadBarButton
+            navController.popoverPresentationController?.barButtonItem = uploadBarButton
             navController.popoverPresentationController?.permittedArrowDirections = .up
             navigationController?.present(navController, animated: true)
         }
@@ -1301,6 +1304,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 })
             }
         }
+    }
+    
+    @objc func didInvalidateUploadSettings() {
+        // Return to same situation as before
+        uploadBarButton?.isEnabled = true
     }
 }
 

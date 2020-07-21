@@ -360,45 +360,35 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         if let changeDetails = changeInstance.changeDetails(for: burstsAlbum) {
             burstsAlbum = changeDetails.fetchResultAfterChanges
             fetchLocalAlbums {
-                if self.fetchedLocalAlbumsDelegate?.responds(to: #selector(LocalAlbumsProviderDelegate.didChangePhotoLibrary(section:))) ?? false {
-                    self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
-                }
+                self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
             }
         }
 
         if let changeDetails = changeInstance.changeDetails(for: slowmoAlbum) {
             slowmoAlbum = changeDetails.fetchResultAfterChanges
             fetchLocalAlbums {
-                if self.fetchedLocalAlbumsDelegate?.responds(to: #selector(LocalAlbumsProviderDelegate.didChangePhotoLibrary(section:))) ?? false {
-                    self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
-                }
+                self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
             }
         }
 
         if let changeDetails = changeInstance.changeDetails(for: userLibraryAlbum) {
             userLibraryAlbum = changeDetails.fetchResultAfterChanges
             fetchLocalAlbums {
-                if self.fetchedLocalAlbumsDelegate?.responds(to: #selector(LocalAlbumsProviderDelegate.didChangePhotoLibrary(section:))) ?? false {
-                    self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
-                }
+                self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
             }
         }
 
         if let changeDetails = changeInstance.changeDetails(for: selfPortraitsAlbum) {
             selfPortraitsAlbum = changeDetails.fetchResultAfterChanges
             fetchLocalAlbums {
-                if self.fetchedLocalAlbumsDelegate?.responds(to: #selector(LocalAlbumsProviderDelegate.didChangePhotoLibrary(section:))) ?? false {
-                    self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
-                }
+                self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
             }
         }
 
         if let changeDetails = changeInstance.changeDetails(for: screenshotsAlbum) {
             screenshotsAlbum = changeDetails.fetchResultAfterChanges
             fetchLocalAlbums {
-                if self.fetchedLocalAlbumsDelegate?.responds(to: #selector(LocalAlbumsProviderDelegate.didChangePhotoLibrary(section:))) ?? false {
-                    self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
-                }
+                self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
             }
         }
 
@@ -406,9 +396,7 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
             if let changeDetails = changeInstance.changeDetails(for: depthEffectAlbum) {
                 depthEffectAlbum = changeDetails.fetchResultAfterChanges
                 fetchLocalAlbums {
-                    if self.fetchedLocalAlbumsDelegate?.responds(to: #selector(LocalAlbumsProviderDelegate.didChangePhotoLibrary(section:))) ?? false {
-                        self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
-                    }
+                    self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
                 }
             }
         }
@@ -417,9 +405,7 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
             if let changeDetails = changeInstance.changeDetails(for: livePhotosAlbum) {
                 livePhotosAlbum = changeDetails.fetchResultAfterChanges
                 fetchLocalAlbums {
-                    if self.fetchedLocalAlbumsDelegate?.responds(to: #selector(LocalAlbumsProviderDelegate.didChangePhotoLibrary(section:))) ?? false {
-                        self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
-                    }
+                    self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
                 }
             }
         }
@@ -428,18 +414,14 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
             if let changeDetails = changeInstance.changeDetails(for: animatedAlbum) {
                 animatedAlbum = changeDetails.fetchResultAfterChanges
                 fetchLocalAlbums {
-                    if self.fetchedLocalAlbumsDelegate?.responds(to: #selector(LocalAlbumsProviderDelegate.didChangePhotoLibrary(section:))) ?? false {
-                        self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
-                    }
+                    self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
                 }
             }
 
             if let changeDetails = changeInstance.changeDetails(for: longExposuresAlbum) {
                 longExposuresAlbum = changeDetails.fetchResultAfterChanges
                 fetchLocalAlbums {
-                    if self.fetchedLocalAlbumsDelegate?.responds(to: #selector(LocalAlbumsProviderDelegate.didChangePhotoLibrary(section:))) ?? false {
-                        self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
-                    }
+                    self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
                 }
             }
         }
@@ -447,45 +429,35 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         if let changeDetails = changeInstance.changeDetails(for: regularAlbums) {
             regularAlbums = changeDetails.fetchResultAfterChanges
             fetchLocalAlbums {
-                if self.fetchedLocalAlbumsDelegate?.responds(to: #selector(LocalAlbumsProviderDelegate.didChangePhotoLibrary(section:))) ?? false {
-                    self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
-                }
+                self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
             }
         }
 
         if let changeDetails = changeInstance.changeDetails(for: syncedEvent) {
             syncedEvent = changeDetails.fetchResultAfterChanges
             fetchLocalAlbums {
-                if self.fetchedLocalAlbumsDelegate?.responds(to: #selector(LocalAlbumsProviderDelegate.didChangePhotoLibrary(section:))) ?? false {
-                    self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
-                }
+                self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
             }
         }
 
         if let changeDetails = changeInstance.changeDetails(for: syncedFaces) {
             syncedFaces = changeDetails.fetchResultAfterChanges
             fetchLocalAlbums {
-                if self.fetchedLocalAlbumsDelegate?.responds(to: #selector(LocalAlbumsProviderDelegate.didChangePhotoLibrary(section:))) ?? false {
-                    self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
-                }
+                self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
             }
         }
 
         if let changeDetails = changeInstance.changeDetails(for: syncedAlbum) {
             syncedAlbum = changeDetails.fetchResultAfterChanges
             fetchLocalAlbums {
-                if self.fetchedLocalAlbumsDelegate?.responds(to: #selector(LocalAlbumsProviderDelegate.didChangePhotoLibrary(section:))) ?? false {
-                    self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
-                }
+                self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
             }
         }
 
         if let changeDetails = changeInstance.changeDetails(for: importedAlbums) {
             importedAlbums = changeDetails.fetchResultAfterChanges
             fetchLocalAlbums {
-                if self.fetchedLocalAlbumsDelegate?.responds(to: #selector(LocalAlbumsProviderDelegate.didChangePhotoLibrary(section:))) ?? false {
-                    self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
-                }
+                self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 0)
             }
         }
 
@@ -499,9 +471,7 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         if let changeDetails = changeInstance.changeDetails(for: CloudShared) {
             CloudShared = changeDetails.fetchResultAfterChanges
             fetchLocalAlbums {
-                if self.fetchedLocalAlbumsDelegate?.responds(to: #selector(LocalAlbumsProviderDelegate.didChangePhotoLibrary(section:))) ?? false {
-                    self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 1)
-                }
+                self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 1)
             }
         }
     }

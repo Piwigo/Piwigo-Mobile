@@ -119,9 +119,7 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
         super.viewWillDisappear(animated)
 
         // Return selected album
-        if sortDelegate?.responds(to: #selector(CategorySortDelegate.didSelectCategorySortType(_:))) ?? false {
-            sortDelegate?.didSelectCategorySortType(currentCategorySortType)
-        }
+        sortDelegate?.didSelectCategorySortType(currentCategorySortType)
 
         // Unregister palette changes
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)

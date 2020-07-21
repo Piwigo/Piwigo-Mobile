@@ -132,9 +132,7 @@ class UploadSwitchViewController: UIViewController {
         }
 
         // Updload images
-        if delegate?.responds(to: #selector(LocalImagesViewController.didValidateUploadSettings(with:_:))) ?? false {
-            delegate?.didValidateUploadSettings(with: imageParameters, uploadParameters)
-        }
+        delegate?.didValidateUploadSettings(with: imageParameters, uploadParameters)
     }
     
     @objc func cancelUpload() {

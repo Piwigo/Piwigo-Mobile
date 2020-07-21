@@ -73,10 +73,8 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
     }
 
     @IBAction func tappedSelectButton(_ sender: Any) {
-        if headerDelegate?.responds(to: #selector(LocalImagesHeaderDelegate.didSelectImagesOfSection(_:))) ?? false {
-            // Select/deselect images
-            headerDelegate?.didSelectImagesOfSection(section)
-        }
+        // Select/deselect images
+        headerDelegate?.didSelectImagesOfSection(section)
     }
 
     override func prepareForReuse() {

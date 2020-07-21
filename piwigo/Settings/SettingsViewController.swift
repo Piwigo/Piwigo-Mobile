@@ -180,7 +180,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         super.viewWillDisappear(animated)
 
         // Load new default album view if necessary
-        if didChangeDefaultAlbum && settingsDelegate?.responds(to: #selector(ChangedSettingsDelegate.didChangeDefaultAlbum)) ?? false {
+        if didChangeDefaultAlbum {
             settingsDelegate?.didChangeDefaultAlbum()
         }
 
