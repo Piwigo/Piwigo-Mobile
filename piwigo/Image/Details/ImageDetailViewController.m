@@ -277,6 +277,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
         if ([Model sharedInstance].hasAdminRights)
         {
             // User with admin rights can edit, delete images and set as album image
+            self.deleteBarButton.tintColor = [UIColor redColor];
             [self.navigationItem setRightBarButtonItems:@[self.editBarButton, self.deleteBarButton, self.setThumbnailBarButton, self.moveBarButton, self.shareBarButton]];
         }
         else if ([[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
