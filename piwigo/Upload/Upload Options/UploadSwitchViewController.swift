@@ -90,17 +90,6 @@ class UploadSwitchViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-                        
-        view.layer.cornerRadius = 10
-        view.clipsToBounds = false
-        navigationController?.navigationBar.layer.cornerRadius = 10
-        navigationController?.navigationBar.clipsToBounds = false
-//        parametersView.layer.cornerRadius = 10
-//        settingsView.layer.cornerRadius = 10
-    }
-
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
