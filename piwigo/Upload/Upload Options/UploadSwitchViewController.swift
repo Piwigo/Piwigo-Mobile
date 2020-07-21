@@ -10,9 +10,11 @@ import UIKit
 
 @objc
 protocol UploadSwitchDelegate: NSObjectProtocol {
+    func didInvalidateUploadSettings()
     func didValidateUploadSettings(with imageParameters:[String:Any], _ uploadParameters:[String:Any])
 }
 
+@objc
 class UploadSwitchViewController: UIViewController {
     
     @objc weak var delegate: UploadSwitchDelegate?
@@ -100,10 +102,6 @@ class UploadSwitchViewController: UIViewController {
 
     
     // MARK: - Actions
-    @objc func cancelUpload() {
-        dismiss(animated: true)
-    }
-
     @objc func didTapUploadButton() {
         print("didTapUpload")
         // Retrieve custom image parameters and upload settings from child views
@@ -139,6 +137,12 @@ class UploadSwitchViewController: UIViewController {
         }
     }
     
+    @objc func cancelUpload() {
+        // Return to local images view
+        delegate?.didInvalidateUploadSettings()
+        dismiss(animated: true)
+    }
+
     @objc func didSwitchView() {
         switch switchViewSegmentedControl.selectedSegmentIndex {
         case 0:
