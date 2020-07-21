@@ -55,7 +55,7 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
     var importedAlbums: PHFetchResult<PHAssetCollection>!
     
     // Cloud alums
-    var CloudMyPhotoStream: PHFetchResult<PHAssetCollection>!
+//    var CloudMyPhotoStream: PHFetchResult<PHAssetCollection>!
     var CloudShared: PHFetchResult<PHAssetCollection>!
     
 
@@ -146,7 +146,7 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         */
         // User’s personal My Photo Stream album (since iOS 13, limited to low-resolution)
         // See https://github.com/Piwigo/Piwigo/issues/1163
-        CloudMyPhotoStream = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .albumMyPhotoStream, options: nil)
+//        CloudMyPhotoStream = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .albumMyPhotoStream, options: nil)
 
         // iCloud Shared Photo Stream albums.
         CloudShared = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .albumCloudShared, options: fetchOptions)
@@ -179,7 +179,8 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
 
         // Local albums
         // Library, photo stream and favorites at the top
-        var localAlbums = filter(fetchedAssetCollections: [userLibraryAlbum, CloudMyPhotoStream, favoritesAlbum].compactMap { $0 })
+//        var localAlbums = filter(fetchedAssetCollections: [userLibraryAlbum, CloudMyPhotoStream, favoritesAlbum].compactMap { $0 })
+        var localAlbums = filter(fetchedAssetCollections: [userLibraryAlbum, favoritesAlbum].compactMap { $0 })
         // Followed by albums created in Photos
         let regular = filter(fetchedAssetCollections: [regularAlbums].compactMap { $0 })
         if regular.count > 0 {
@@ -488,14 +489,12 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
             }
         }
 
-        if let changeDetails = changeInstance.changeDetails(for: CloudMyPhotoStream) {
-            CloudMyPhotoStream = changeDetails.fetchResultAfterChanges
-            fetchLocalAlbums {
-                if self.fetchedLocalAlbumsDelegate?.responds(to: #selector(LocalAlbumsProviderDelegate.didChangePhotoLibrary(section:))) ?? false {
-                    self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 1)
-                }
-            }
-        }
+//        if let changeDetails = changeInstance.changeDetails(for: CloudMyPhotoStream) {
+//            CloudMyPhotoStream = changeDetails.fetchResultAfterChanges
+//            fetchLocalAlbums {
+//                self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary(section: 1)
+//            }
+//        }
 
         if let changeDetails = changeInstance.changeDetails(for: CloudShared) {
             CloudShared = changeDetails.fetchResultAfterChanges
