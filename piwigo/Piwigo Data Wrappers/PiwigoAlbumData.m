@@ -10,7 +10,6 @@
 #import "ImageService.h"
 #import "Model.h"
 #import "CategoriesData.h"
-#import "ImageUpload.h"
 #import "ImagesCollection.h"
 
 NSInteger const kPiwigoSearchCategoryId     = -1;           // Search

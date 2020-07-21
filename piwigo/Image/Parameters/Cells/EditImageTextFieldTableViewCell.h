@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-#import "ImageUpload.h"
-
 @interface EditImageTextFieldTableViewCell : UITableViewCell
 
 @property (weak, nonatomic)     IBOutlet UITextField *cellTextField;
