@@ -10,7 +10,7 @@ import UIKit
 
 @objc
 protocol UploadSwitchDelegate: NSObjectProtocol {
-    func didInvalidateUploadSettings()
+    func uploadSettingsDidDisappear()
     func didValidateUploadSettings(with imageParameters:[String:Any], _ uploadParameters:[String:Any])
 }
 
@@ -99,6 +99,11 @@ class UploadSwitchViewController: UIViewController {
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
         NotificationCenter.default.removeObserver(self, name: name, object: nil)
     }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        // Update navigation bar of parent view
+        delegate?.uploadSettingsDidDisappear()
+    }
 
     
     // MARK: - Actions
@@ -138,7 +143,7 @@ class UploadSwitchViewController: UIViewController {
     
     @objc func cancelUpload() {
         // Return to local images view
-        delegate?.didInvalidateUploadSettings()
+        delegate?.uploadSettingsDidDisappear()
         dismiss(animated: true)
     }
 

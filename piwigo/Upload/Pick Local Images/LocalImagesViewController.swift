@@ -256,6 +256,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     navigationItem.rightBarButtonItems = [actionBarButton, uploadBarButton].compactMap { $0 }
                     uploadBarButton?.isEnabled = false
                 }
+                cancelBarButton?.isEnabled = false
+                actionBarButton?.isEnabled = true
+                uploadBarButton?.isEnabled = true
                 title = NSLocalizedString("selectImages", comment: "Select Photos")
             case 1:
                 navigationItem.leftBarButtonItems = [cancelBarButton].compactMap { $0 }
@@ -267,6 +270,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 } else {
                     navigationItem.rightBarButtonItems = [actionBarButton, uploadBarButton].compactMap { $0 }
                 }
+                cancelBarButton?.isEnabled = true
+                actionBarButton?.isEnabled = true
                 uploadBarButton?.isEnabled = true
                 title = NSLocalizedString("selectImageSelected", comment: "1 Photo Selected")
             default:
@@ -279,6 +284,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 } else {
                     navigationItem.rightBarButtonItems = [actionBarButton, uploadBarButton].compactMap { $0 }
                 }
+                cancelBarButton?.isEnabled = true
+                actionBarButton?.isEnabled = true
                 uploadBarButton?.isEnabled = true
                 title = String(format:NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), NSNumber(value: nberOfSelectedImages))
         }
@@ -589,7 +596,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         if selectedImages.count == 0 { return }
         
         // Disable button
+        cancelBarButton?.isEnabled = false
         uploadBarButton?.isEnabled = false
+        actionBarButton?.isEnabled = false
         
         // Show upload parameter views
         let uploadSwitchSB = UIStoryboard(name: "UploadSwitchViewController", bundle: nil)
@@ -1309,9 +1318,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         cancelSelect()
     }
     
-    @objc func didInvalidateUploadSettings() {
-        // Return to same situation as before
-        uploadBarButton?.isEnabled = true
+    @objc func uploadSettingsDidDisappear() {
+        // Update the navigation bar
+        updateNavBar()
     }
 }
 
