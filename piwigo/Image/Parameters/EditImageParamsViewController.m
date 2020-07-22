@@ -770,7 +770,7 @@ typedef enum {
             for (PiwigoTagData *tag in self.commonParameters.tags) {
                 [tagList addObject:[NSNumber numberWithLong:tag.tagId]];
             }
-            [tagsVC setAlreadySelectedTags: tagList];
+            [tagsVC setSelectedTagIds: tagList];
             [self.navigationController pushViewController:tagsVC animated:YES];
             break;
         }

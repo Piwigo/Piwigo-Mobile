@@ -22,16 +22,16 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
     @objc weak var delegate: TagsViewControllerDelegate?
 
     // Called before uploading images (Tag class)
-    @objc func setAlreadySelectedTags(_ alreadySelectedTags: [Int32]?) {
-        _alreadySelectedTags = alreadySelectedTags ?? [Int32]()
+    @objc func setSelectedTagIds(_ selectedTagIds: [Int32]?) {
+        _selectedTagIds = selectedTagIds ?? [Int32]()
     }
-    private var _alreadySelectedTags = [Int32]()
-    private var alreadySelectedTags: [Int32] {
+    private var _selectedTagIds = [Int32]()
+    private var selectedTagIds: [Int32] {
         get {
-            return _alreadySelectedTags
+            return _selectedTagIds
         }
-        set(alreadySelectedTags) {
-            _alreadySelectedTags = alreadySelectedTags
+        set(selectedTagIds) {
+            _selectedTagIds = selectedTagIds
         }
     }
 
@@ -51,6 +51,9 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
     // MARK: - View Lifecycle
     @IBOutlet var tagsTableView: UITableView!
     private var letterIndex: [String] = []
+    private var selectedTags = [Tag]()
+    private var nonSelectedTags = [Tag]()
+    
     private var addBarButton: UIBarButtonItem?
     private var addAction: UIAlertAction?
     private var hudViewController: UIViewController?
@@ -65,8 +68,6 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
 
                 guard let error = error else {
                     
-                    // Build ABC index
-                    self.updateSectionIndex()
                     return
                 }
 
@@ -132,6 +133,17 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
         // Register palette changes
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+        
+        // Prepare data source
+        self.selectedTags = self.dataProvider.fetchedResultsController.fetchedObjects?
+                                .filter({self.selectedTagIds.contains($0.tagId)}) ?? [Tag]()
+        self.nonSelectedTags = self.dataProvider.fetchedResultsController.fetchedObjects?
+                                .filter({!self.selectedTagIds.contains($0.tagId)}) ?? [Tag]()
+        // Build ABC index
+        self.updateSectionIndex()
+        
+        // Refresh table
+        self.tagsTableView.reloadData()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -142,12 +154,7 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
         NotificationCenter.default.removeObserver(self, name: name, object: nil)
 
         // Return list of selected tags
-        if delegate?.responds(to: #selector(TagsViewControllerDelegate.didSelectTags(_:))) ?? false {
-            let allTags = dataProvider.fetchedResultsController.fetchedObjects
-            delegate?.didSelectTags(allTags?.filter({ (tag) -> Bool in
-                alreadySelectedTags.contains(tag.tagId)
-            }))
-        }
+        delegate?.didSelectTags(selectedTags)
     }
 }
     
@@ -161,14 +168,10 @@ extension TagsViewController {
     private func updateSectionIndex() {
         // Build section index
         let firstCharacters = NSMutableSet.init(capacity: 0)
-        for tag in self.dataProvider.fetchedResultsController.fetchedObjects!
-                        .filter({!self.alreadySelectedTags.contains($0.tagId)}) {
-            firstCharacters.add((tag.tagName as String).prefix(1).uppercased())
+        for tag in nonSelectedTags {
+            firstCharacters.add(tag.tagName.prefix(1).uppercased())
         }
         self.letterIndex = (firstCharacters.allObjects as! [String]).sorted()
-                            
-        // Refresh UI
-        self.tableView.reloadSectionIndexTitles()
     }
     
     // Returns the titles for the sections
@@ -179,9 +182,7 @@ extension TagsViewController {
     // Returns the section that the table view should scroll to
     override func tableView(_ tableView: UITableView, sectionForSectionIndexTitle title: String, at index: Int) -> Int {
 
-        if let row = dataProvider.fetchedResultsController.fetchedObjects?
-                                 .filter({!alreadySelectedTags.contains($0.tagId)})
-                                 .firstIndex(where: {$0.tagName.hasPrefix(title)}) {
+        if let row = nonSelectedTags.firstIndex(where: {$0.tagName.hasPrefix(title)}) {
             let newIndexPath = IndexPath(row: row, section: 1)
             tableView.scrollToRow(at: newIndexPath, at: .top, animated: false)
         }
@@ -252,11 +253,10 @@ extension TagsViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let allTags = dataProvider.fetchedResultsController.fetchedObjects
         if section == 0 {
-            return allTags?.filter({alreadySelectedTags.contains($0.tagId)}).count ?? 0
+            return selectedTags.count
         } else {
-            return allTags?.filter({!alreadySelectedTags.contains($0.tagId)}).count ?? 0
+            return nonSelectedTags.count
         }
     }
 
@@ -266,15 +266,12 @@ extension TagsViewController {
             return TagTableViewCell()
         }
 
-        let allTags = dataProvider.fetchedResultsController.fetchedObjects
         if indexPath.section == 0 {
             // Selected tags
-            guard let currentTag = allTags?.filter({alreadySelectedTags.contains($0.tagId)})[indexPath.row] else { return cell }
-            cell.configure(with: currentTag, andEditOption: .remove)
+            cell.configure(with: selectedTags[indexPath.row], andEditOption: .remove)
         } else {
             // Not selected tags
-            guard let currentTag = allTags?.filter({!alreadySelectedTags.contains($0.tagId)})[indexPath.row] else { return cell }
-            cell.configure(with: currentTag, andEditOption: .add)
+            cell.configure(with: nonSelectedTags[indexPath.row], andEditOption: .add)
         }
         
         return cell
@@ -285,17 +282,24 @@ extension TagsViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        let allTags = dataProvider.fetchedResultsController.fetchedObjects
         if indexPath.section == 0 {
             // Tapped selected tag
-            let currentTagId = alreadySelectedTags[indexPath.row]
+            let currentTag = selectedTags[indexPath.row]
 
-            // Delete tag tapped in tag list
-            alreadySelectedTags.remove(at: indexPath.row)
+            // Remove tag from list of selected tags
+            selectedTags.remove(at: indexPath.row)
+            selectedTagIds.removeAll(where: {$0 == currentTag.tagId})
 
+            // Add tag to list of non selected tags
+            nonSelectedTags.append(currentTag)
+            
+            // Sort tags using a case-insensitive, localized, comparison
+            nonSelectedTags.sort { (tag1,tag2) in
+                tag1.tagName.localizedCaseInsensitiveCompare(tag2.tagName) == .orderedAscending
+            }
+            
             // Determine new indexPath of deselected tag
-            let indexOfTag = allTags?.filter({!alreadySelectedTags.contains($0.tagId)})
-                                     .firstIndex(where: {$0.tagId == currentTagId})
+            let indexOfTag = nonSelectedTags.firstIndex(where: {$0.tagId == currentTag.tagId})
             let insertPath = IndexPath(row: indexOfTag!, section: 1)
 
             // Move cell from top to bottom section
@@ -305,17 +309,23 @@ extension TagsViewController {
             tableView.reloadRows(at: [insertPath], with: .automatic)
         }
         else {
-            // Tapped not selected tag
-            guard let currentTagId = allTags?.filter({ (tag) -> Bool in
-                !alreadySelectedTags.contains(tag.tagId)
-            })[indexPath.row].tagId else { return }
+            // Tapped non selected tag
+            let currentTag = nonSelectedTags[indexPath.row]
 
-            // Add tag to list of selected tags
-            alreadySelectedTags.append(currentTagId)
+            // Remove tag from list of non-selected tags
+            nonSelectedTags.remove(at: indexPath.row)
             
+            // Add tag to list of selected tags
+            selectedTags.append(currentTag)
+            selectedTagIds.append(currentTag.tagId)
+            
+            // Sort tags using a case-insensitive, localized, comparison
+            selectedTags.sort { (tag1,tag2) in
+                (tag1.tagName as String).localizedCaseInsensitiveCompare(tag2.tagName as String) == .orderedAscending
+            }
+
             // Determine new indexPath of selected tag
-            let indexOfTag = allTags?.filter({alreadySelectedTags.contains($0.tagId)})
-                                     .firstIndex(where: {$0.tagId == currentTagId})
+            let indexOfTag = selectedTags.firstIndex(where: {$0.tagId == currentTag.tagId})
             let insertPath = IndexPath(row: indexOfTag!, section: 0)
 
             // Move cell from bottom to top section
@@ -327,6 +337,7 @@ extension TagsViewController {
         
         // Update section index
         updateSectionIndex()
+        self.tableView.reloadSectionIndexTitles()
     }
 
 
@@ -487,10 +498,9 @@ extension TagsViewController {
         // Enable Add/Delete Tag action if text field not empty
         let finalString = (textField.text as NSString?)?.replacingCharacters(in: range, with: string)
         var existTagWithName = false
-        if let allTags: [Tag] = dataProvider.fetchedResultsController.fetchedObjects {
-            if let _ = allTags.firstIndex(where: {$0.tagName == finalString}) {
-                existTagWithName = true
-            }
+        if let _ = selectedTags.firstIndex(where: {$0.tagName == finalString}),
+            let _ = nonSelectedTags.firstIndex(where: {$0.tagName == finalString}) {
+            existTagWithName = true
         }
         addAction?.isEnabled = (((finalString?.count ?? 0) >= 1) && !existTagWithName)
         return true
@@ -523,12 +533,13 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
 
         switch type {
         case .insert:
-            // Add tag to list of not selected tags
+            // Add tag to list of non selected tags
+            /// We cannot sort the list now to avoid the case where we insert several rows at the same index path.
+            /// The sort is performed after the data source updates.
             guard let tag: Tag = anObject as? Tag else { return }
-            // Insert tag into list of selected tags
-            let allTags = dataProvider.fetchedResultsController.fetchedObjects
-            let index = allTags?.filter({!alreadySelectedTags.contains($0.tagId)})
-                                .firstIndex(where: {$0.tagId == tag.tagId})
+            nonSelectedTags.append(tag)
+            // Determine index of added tag and insert tag
+            let index = nonSelectedTags.firstIndex(where: {$0.tagId == tag.tagId})
             let addAtIndexPath = IndexPath.init(row: index!, section: 1)
 //            print(".insert =>", addAtIndexPath.debugDescription)
             tagsTableView.insertRows(at: [addAtIndexPath], with: .automatic)
@@ -536,19 +547,21 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
         case .delete:
             // Remove tag from the right list of tags
             guard let tag: Tag = anObject as? Tag else { return }
-            let allTags = dataProvider.fetchedResultsController.fetchedObjects
-
             // List of selected tags
-            if let index = allTags?.filter({alreadySelectedTags.contains($0.tagId)})
-                                   .firstIndex(where: {$0.tagId == tag.tagId}) {
-                alreadySelectedTags.removeAll(where: {$0 == tag.tagId})
+            if let index = selectedTags.firstIndex(where: {$0.tagId == tag.tagId}) {
+                // Remove selected tag from data source
+                selectedTags.remove(at: index)
+                selectedTagIds.removeAll(where: {$0 == tag.tagId})
+                // Delete tag from table view
                 let deleteAtIndexPath = IndexPath.init(row: index, section: 0)
 //                print(".delete =>", deleteAtIndexPath.debugDescription)
                 tagsTableView.deleteRows(at: [deleteAtIndexPath], with: .automatic)
             }
             // List of not selected tags
-            else if let index = allTags?.filter({!alreadySelectedTags.contains($0.tagId)})
-                                        .firstIndex(where: {$0.tagId == tag.tagId}) {
+            else if let index = nonSelectedTags.firstIndex(where: {$0.tagId == tag.tagId}) {
+                // Remove non-selected tag from data source
+                nonSelectedTags.remove(at: index)
+                // Delete tag from table view
                 let deleteAtIndexPath = IndexPath.init(row: index, section: 1)
 //                print(".delete =>", deleteAtIndexPath.debugDescription)
                 tagsTableView.deleteRows(at: [deleteAtIndexPath], with: .automatic)
@@ -561,10 +574,8 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
         case .update:        // Will never "move"
             // Update tag belonging to the right list
             guard let tag: Tag = anObject as? Tag else { return }
-            let allTags = dataProvider.fetchedResultsController.fetchedObjects
-            
-            if let index = allTags?.filter({alreadySelectedTags.contains($0.tagId)})
-                                   .firstIndex(where: {$0.tagId == tag.tagId}) {
+            // List of selected tags
+            if let index = selectedTags.firstIndex(where: {$0.tagId == tag.tagId}) {
                 let updateAtIndexPath = IndexPath.init(row: index, section: 0)
 //                print(".update =>", updateAtIndexPath.debugDescription)
                 if let cell = tableView.cellForRow(at: updateAtIndexPath) as? TagTableViewCell {
@@ -572,8 +583,7 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
                 }
             }
             // List of not selected tags
-            else if let index = allTags?.filter({!alreadySelectedTags.contains($0.tagId)})
-                                        .firstIndex(where: {$0.tagId == tag.tagId}) {
+            else if let index = nonSelectedTags.firstIndex(where: {$0.tagId == tag.tagId}) {
                 let updateAtIndexPath = IndexPath.init(row: index, section: 1)
 //                print(".update =>", updateAtIndexPath.debugDescription)
                 if let cell = tableView.cellForRow(at: updateAtIndexPath) as? TagTableViewCell {
@@ -588,5 +598,15 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tableView.endUpdates()
+
+        // Update section index
+        self.updateSectionIndex()
+        self.tableView.reloadSectionIndexTitles()
+        
+        // Sort tags using a case-insensitive, localized, comparison
+        nonSelectedTags.sort { (tag1,tag2) in
+            tag1.tagName.localizedCaseInsensitiveCompare(tag2.tagName) == .orderedAscending
+        }
+        tableView.reloadSections(IndexSet.init(integer: 1), with: .automatic)
     }
 }

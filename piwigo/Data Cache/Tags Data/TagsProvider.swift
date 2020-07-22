@@ -27,6 +27,9 @@ class TagsProvider {
     // MARK: - Fetch Tags
     /**
      Fetches the tag feed from the remote Piwigo server, and imports it into Core Data.
+     The API method for admin pwg.tags.getAdminList does not return the number of tagged photos,
+     so we must call pwg.tags.getList to present tagged photos when the user has admin rights.
+     Because we wish to keep the tag list up-to-date, calling pwg.tags.getList leads to the deletions of unused tags in the store.
     */
     func fetchTags(asAdmin: Bool, completionHandler: @escaping (Error?) -> Void) {
 
@@ -418,7 +421,8 @@ class TagsProvider {
         
         // Create a fetch request for the Tag entity sorted by name.
         let fetchRequest = NSFetchRequest<Tag>(entityName: "Tag")
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "tagName", ascending: true)]
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "tagName", ascending: true,
+                                         selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))]
         
         // Create a fetched results controller and set its fetch request, context, and delegate.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,

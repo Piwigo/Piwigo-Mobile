@@ -213,7 +213,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
         let tagsSB = UIStoryboard(name: "TagsViewController", bundle: nil)
         if let tagsVC = tagsSB.instantiateViewController(withIdentifier: "TagsViewController") as? TagsViewController {
             tagsVC.delegate = self
-            tagsVC.setAlreadySelectedTags(commonTags.map({$0.tagId}))
+            tagsVC.setSelectedTagIds(commonTags.map({$0.tagId}))
             navigationController?.pushViewController(tagsVC, animated: true)
         }
             
