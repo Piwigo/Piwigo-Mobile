@@ -66,14 +66,7 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
                 guard let error = error else {
                     
                     // Build ABC index
-                    let firstCharacters = NSMutableSet.init(capacity: 0)
-                    for tag in self.dataProvider.fetchedResultsController.fetchedObjects! {
-                        firstCharacters.add((tag.tagName as String).prefix(1).uppercased())
-                    }
-                    self.letterIndex = (firstCharacters.allObjects as! [String]).sorted()
-                                        
-                    // Refresh UI
-                    self.tableView.reloadData()
+                    self.updateSectionIndex()
                     return
                 }
 
@@ -164,6 +157,20 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
 extension TagsViewController {
 
     // MARK: - ABC Index
+    // Compile index
+    private func updateSectionIndex() {
+        // Build section index
+        let firstCharacters = NSMutableSet.init(capacity: 0)
+        for tag in self.dataProvider.fetchedResultsController.fetchedObjects!
+                        .filter({!self.alreadySelectedTags.contains($0.tagId)}) {
+            firstCharacters.add((tag.tagName as String).prefix(1).uppercased())
+        }
+        self.letterIndex = (firstCharacters.allObjects as! [String]).sorted()
+                            
+        // Refresh UI
+        self.tableView.reloadSectionIndexTitles()
+    }
+    
     // Returns the titles for the sections
     override func sectionIndexTitles(for tableView: UITableView) -> [String]? {
         return letterIndex
@@ -317,6 +324,9 @@ extension TagsViewController {
             // Update icon of cell
             tableView.reloadRows(at: [insertPath], with: .automatic)
         }
+        
+        // Update section index
+        updateSectionIndex()
     }
 
 
