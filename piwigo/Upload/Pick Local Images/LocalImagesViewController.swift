@@ -506,6 +506,20 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in
             })
 
+        // Select all images
+        let selectAction = UIAlertAction(title: NSLocalizedString("selectAll", comment: "Select All"), style: .default) { (action) in
+            // Loop over all images in section to select them (Select 70356 images of section 0 took 150.6 ms)
+            // Here, we exploit the cached local IDs
+            for index in 0..<self.selectedImages.count {
+                // Images in the upload queue cannot be selected
+                if self.indexedUploadsInQueue[index] == nil {
+                    self.selectedImages[index] = UploadProperties.init(localIdentifier: self.localIdentifiers[index], category: self.categoryId)
+                }
+            }
+            // Reload collection while updating section buttons
+            self.localImagesCollection.reloadData()
+        }
+        
         // Change sort option
         let sortAction = UIAlertAction(title: CategorySortViewController.getNameForCategorySortType(Model.sharedInstance().localImagesSort), style: .default, handler: { action in
             switch Model.sharedInstance().localImagesSort {
@@ -554,6 +568,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Add actions
         alert.addAction(cancelAction)
 //        alert.addAction(uploadedAction)
+        alert.addAction(selectAction)
         alert.addAction(sortAction)
         if completedUploads > 0 {
             alert.addAction(deleteAction)
