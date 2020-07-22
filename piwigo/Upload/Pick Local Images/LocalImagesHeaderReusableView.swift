@@ -99,7 +99,7 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
             title = NSLocalizedString("categoryImageList_selectButton", comment: "Select")
         case .deselect:
             title = NSLocalizedString("categoryImageList_deselectButton", comment: "Deselect")
-        case.none:
+        case .none:
             title = ""
         }
         let buttonTitle = NSAttributedString(string: title, attributes: attributes)

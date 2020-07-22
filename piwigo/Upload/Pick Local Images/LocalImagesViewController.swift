@@ -66,14 +66,15 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     @IBOutlet weak var sortOptionsView: UIView!
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     
-    private var fetchedImages: PHFetchResult<PHAsset>!                    // Collection of images in selected non-empty local album
-    private var sortType: SectionType = .all                                // [Months, Weeks, Days, All images in one section]
-    private var indexOfImageSortedByMonth: [IndexSet] = []                  // Indexes of images sorted by month, week and day
-    private var indexOfImageSortedByWeek: [IndexSet] = []
-    private var indexOfImageSortedByDay: [IndexSet] = []
+    private var fetchedImages: PHFetchResult<PHAsset>!          // Collection of images in selected non-empty local album
+    private var localIdentifiers = [String]()                   // Cached local identifiers of images
+    private var sortType: SectionType = .all                    // [Months, Weeks, Days, All images in one section]
+    private var indexOfImageSortedByMonth: [IndexSet] = []      // Indices of images sorted by month
+    private var indexOfImageSortedByWeek: [IndexSet] = []       // Indices of images sorted week
+    private var indexOfImageSortedByDay: [IndexSet] = []        // Indices of images sorted day
 
-    private var uploadsInQueue = [(String?,kPiwigoUploadState?)?]()                     // Array of uploads in queue at start
-    private var indexedUploadsInQueue = [(String?,kPiwigoUploadState?)?]()              // Arrays of uploads at indices of corresponding image
+    private var uploadsInQueue = [(String?,kPiwigoUploadState?)?]()         // Array of uploads in queue at start
+    private var indexedUploadsInQueue = [(String?,kPiwigoUploadState?)?]()  // Arrays of uploads at indices of corresponding image
     private var selectedImages = [UploadProperties?]()                                  // Array of images to upload
     private var selectedSections = [LocalImagesHeaderReusableView.SelectButtonState]()  // State of Select buttons
     private var imagesBeingTouched = [IndexPath]()                                      // Array of indexPaths of touched images
@@ -331,8 +332,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             }
         })
         let operation2 = BlockOperation.init(block: {
-            // Index the images in the upload queue
-            self.indexUploads(images: self.fetchedImages)
+            // Index images in the upload queue and cache localIdentifiers
+            self.indexUploadsAndCacheIDs(of: self.fetchedImages)
         })
         queue.addOperations([operation1, operation2], waitUntilFinished: true)
 
@@ -475,14 +476,16 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         }
     }
 
-    private func indexUploads(images: PHFetchResult<PHAsset>) -> (Void) {
+    private func indexUploadsAndCacheIDs(of images: PHFetchResult<PHAsset>) -> (Void) {
         // Loop over all images
 //        let start = CFAbsoluteTimeGetCurrent()
 //        print("=> Start indexing uploads…")
+        localIdentifiers = []
         indexedUploadsInQueue = []
         for index in 0..<images.count {
             // Get image identifier
             let imageId = images[index].localIdentifier
+            localIdentifiers.append(imageId)
             if let upload = uploadsInQueue.first(where: { $0?.0 == imageId }) {
                 indexedUploadsInQueue.append(upload)
             } else {
@@ -966,8 +969,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         let indexPathsForVisibleItems = localImagesCollection.indexPathsForVisibleItems
         for indexPath in indexPathsForVisibleItems {
             let index = getImageIndex(for: indexPath)
-            let imageAsset = fetchedImages[index]
-            if imageAsset.localIdentifier == localIdentifier {
+            let imageId = localIdentifiers[index]
+            if imageId == localIdentifier {
                 if let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell {
                     cell.setProgress(progressFraction, withAnimation: true)
                 }
@@ -1088,10 +1091,12 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 changeDetails.removedIndexes?.forEach({ (index) in
                     // Remove objects
                     self.selectedImages.remove(at: index)
+                    self.localIdentifiers.remove(at: index)
                 })
                 changeDetails.insertedIndexes?.forEach({ (index) in
                     // Insert objects
                     self.selectedImages.insert(nil, at: index)
+                    self.localIdentifiers.insert(changeDetails.fetchResultAfterChanges.object(at: index).localIdentifier, at: index)
                 })
                 self.fetchedImages = changeDetails.fetchResultAfterChanges
                 // Sort images in foreground - Not efficient!!!!
@@ -1115,119 +1120,30 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         }
 //        let start = CFAbsoluteTimeGetCurrent()
         if selectedSections[section] == .select {
-            if nberOfImagesInSection < 1_000 {
-                // Select all images in one go
-                var batch = selectedImages[firstIndex...lastIndex]
-                selectImagesInSection(from: firstIndex, in: &batch)
-                selectedImages[firstIndex...lastIndex] = batch
-            } else {
-                // Show HUD during job
-                DispatchQueue.main.async {
-                    let numberFormatter = NumberFormatter()
-                    numberFormatter.numberStyle = .decimal
-                    let nberStr = numberFormatter.string(from: NSNumber(value: nberOfImagesInSection))!
-                    self.showHUD(with: NSLocalizedString("imageSelectingHUD", comment: "Selecting…"),
-                                 detail: String(format: "%@ %@", nberStr, NSLocalizedString("severalImages", comment: "Photos")))
+            // Loop over all images in section to select them (Select 70356 images of section 0 took 150.6 ms)
+            // Here, we exploit the cached local IDs
+            for index in firstIndex...lastIndex {
+                // Images in the upload queue cannot be selected
+                if indexedUploadsInQueue[index] == nil {
+                    selectedImages[index] = UploadProperties.init(localIdentifier: localIdentifiers[index], category: self.categoryId)
                 }
-                // Select images in parallel tasks
-                let queue = OperationQueue()
-    //            queue.maxConcurrentOperationCount = 1   // Make it a serial queue for debugging
-                let (nberOfImagesInJob, leftImages) = nberOfImagesInSection.quotientAndRemainder(dividingBy: 3)
-                var operations = [BlockOperation]()
-                var batch1 = selectedImages[firstIndex..<firstIndex + nberOfImagesInJob]
-                operations.append(BlockOperation.init(block: {self.selectImagesInSection(from: firstIndex, in: &batch1)}))
-                var batch2 = selectedImages[firstIndex + nberOfImagesInJob..<firstIndex + 2*nberOfImagesInJob]
-                operations.append(BlockOperation.init(block: {self.selectImagesInSection(from: firstIndex + nberOfImagesInJob, in: &batch2)}))
-                var batch3 = selectedImages[firstIndex + 2*nberOfImagesInJob..<firstIndex + 3*nberOfImagesInJob]
-                operations.append(BlockOperation.init(block: {self.selectImagesInSection(from: firstIndex + 2*nberOfImagesInJob, in: &batch3)}))
-                var batch4: ArraySlice<UploadProperties?>?
-                if leftImages > 0 {
-                    batch4 = selectedImages[firstIndex + 3*nberOfImagesInJob...lastIndex]
-                    operations.append(BlockOperation.init(block: {self.selectImagesInSection(from: firstIndex + 3*nberOfImagesInJob, in: &(batch4!))}))
-                }
-                queue.addOperations(operations, waitUntilFinished: true)
-                selectedImages[firstIndex..<firstIndex + nberOfImagesInJob] = batch1
-                selectedImages[firstIndex + nberOfImagesInJob..<firstIndex + 2*nberOfImagesInJob] = batch2
-                selectedImages[firstIndex + 2*nberOfImagesInJob..<firstIndex + 3*nberOfImagesInJob] = batch3
-                if let batch = batch4 { selectedImages[firstIndex + 3*nberOfImagesInJob..<lastIndex] = batch }
             }
             // Change section button state
             selectedSections[section] = .deselect
         } else {
-            if nberOfImagesInSection < 1_000 {
-                // Deselect all images in one go
-                var batch = selectedImages[firstIndex...lastIndex]
-                deselectImagesInSection(from: firstIndex, in: &batch)
-                selectedImages[firstIndex...lastIndex] = batch
-            } else {
-                // Show HUD during job
-                DispatchQueue.main.async {
-                    let numberFormatter = NumberFormatter()
-                    numberFormatter.numberStyle = .decimal
-                    let nberStr = numberFormatter.string(from: NSNumber(value: nberOfImagesInSection))!
-                    self.showHUD(with: NSLocalizedString("imageDeselectingHUD", comment: "Deselecting…"),
-                                 detail: String(format: "%@ %@", nberStr, NSLocalizedString("severalImages", comment: "Photos")))
-                }
-                // Select images in parallel tasks
-                let queue = OperationQueue()
-//                queue.maxConcurrentOperationCount = 1   // Make it a serial queue for debugging
-                let (nberOfImagesInJob, leftImages) = nberOfImagesInSection.quotientAndRemainder(dividingBy: 3)
-                var operations = [BlockOperation]()
-                var batch1 = selectedImages[firstIndex..<firstIndex + nberOfImagesInJob]
-                operations.append(BlockOperation.init(block: {self.deselectImagesInSection(from: firstIndex, in: &batch1)}))
-                var batch2 = selectedImages[firstIndex + nberOfImagesInJob..<firstIndex + 2*nberOfImagesInJob]
-                operations.append(BlockOperation.init(block: {self.deselectImagesInSection(from: firstIndex + nberOfImagesInJob, in: &batch2)}))
-                var batch3 = selectedImages[firstIndex + 2*nberOfImagesInJob..<firstIndex + 3*nberOfImagesInJob]
-                operations.append(BlockOperation.init(block: {self.deselectImagesInSection(from: firstIndex + 2*nberOfImagesInJob, in: &batch3)}))
-                var batch4: ArraySlice<UploadProperties?>?
-                if leftImages > 0 {
-                    batch4 = selectedImages[firstIndex + 3*nberOfImagesInJob...lastIndex]
-                    operations.append(BlockOperation.init(block: {self.deselectImagesInSection(from: firstIndex + 3*nberOfImagesInJob, in: &(batch4!))}))
-                }
-                queue.addOperations(operations, waitUntilFinished: true)
-                selectedImages[firstIndex..<firstIndex + nberOfImagesInJob] = batch1
-                selectedImages[firstIndex + nberOfImagesInJob..<firstIndex + 2*nberOfImagesInJob] = batch2
-                selectedImages[firstIndex + 2*nberOfImagesInJob..<firstIndex + 3*nberOfImagesInJob] = batch3
-                if let batch = batch4 { selectedImages[firstIndex + 3*nberOfImagesInJob..<lastIndex] = batch }
-            }
+            // Deselect images of section (70356 images of section 0 took 52.2 ms)
+            selectedImages[firstIndex...lastIndex] = .init(repeating: nil, count: lastIndex - firstIndex + 1)
             // Change section button state
             selectedSections[section] = .select
         }
 //        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
 //        print("=> Select/Deselect \(localImagesCollection.numberOfItems(inSection: section)) images of section \(section) took \(diff) ms")
 
-        // Hide HUD at end of job
-        DispatchQueue.main.async {
-            self.hideHUDwithSuccess(true) {
-                // Update navigation bar
-                self.updateNavBar()
+        // Update navigation bar
+        self.updateNavBar()
 
-                // Update collection
-                self.localImagesCollection.reloadData()
-            }
-        }
-    }
-
-    private func selectImagesInSection(from firstIndex: Int, in batch: inout ArraySlice<UploadProperties?>) -> (Void) {
-        // Loop over all images in section to select them
-        for index in firstIndex..<firstIndex + batch.count {
-            // Images in the upload queue cannot be selected
-            if indexedUploadsInQueue[index] == nil {
-                // Select image if not already selected
-                if batch[index] == nil {
-                    let imageId = fetchedImages[index].localIdentifier
-                    batch[index] = UploadProperties.init(localIdentifier: imageId, category: self.categoryId)
-                }
-            }
-        }
-    }
-
-    private func deselectImagesInSection(from firstIndex: Int, in batch: inout ArraySlice<UploadProperties?>) -> (Void) {
-        // Loop over all images in section to deselect them
-        for index in firstIndex..<firstIndex + batch.count {
-            // Deselect any image
-            batch[index] = nil
-        }
+        // Update collection
+        self.localImagesCollection.reloadData()
     }
 
 
@@ -1408,10 +1324,10 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
             
             // Get the corresponding index and local identifier
             let indexOfUploadedImage = getImageIndex(for: indexPath)
-            let imageAsset = fetchedImages[indexOfUploadedImage]
+            let imageId = localIdentifiers[indexOfUploadedImage]
             
             // Identify cell to be updated (if presented)
-            if imageAsset.localIdentifier == upload.localIdentifier {
+            if imageId == upload.localIdentifier {
                 // Update visible cell
                 if let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell {
                     cell.selectedImage.isHidden = true
