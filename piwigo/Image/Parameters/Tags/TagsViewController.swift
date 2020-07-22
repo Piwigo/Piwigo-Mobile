@@ -22,11 +22,11 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
     @objc weak var delegate: TagsViewControllerDelegate?
 
     // Called before uploading images (Tag class)
-    @objc func setAlreadySelectedTags(_ alreadySelectedTags: [Int64]?) {
-        _alreadySelectedTags = alreadySelectedTags ?? [Int64]()
+    @objc func setAlreadySelectedTags(_ alreadySelectedTags: [Int32]?) {
+        _alreadySelectedTags = alreadySelectedTags ?? [Int32]()
     }
-    private var _alreadySelectedTags = [Int64]()
-    private var alreadySelectedTags: [Int64] {
+    private var _alreadySelectedTags = [Int32]()
+    private var alreadySelectedTags: [Int32] {
         get {
             return _alreadySelectedTags
         }

@@ -19,7 +19,7 @@ class Tag: NSManagedObject {
 
     // A unique identifier for removing duplicates. Constrain
     // the Piwigo Tag entity on this attribute in the data model editor.
-    @NSManaged var tagId: Int64
+    @NSManaged var tagId: Int32
     
     // The other attributes of a tag.
     @NSManaged var tagName: String

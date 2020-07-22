@@ -1380,7 +1380,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     NSMutableString *tagIds = [NSMutableString new];
     for(PiwigoTagData *tagData in imageData.tags)
     {
-        [tagIds appendFormat:@"%ld,", tagData.tagId];
+        [tagIds appendFormat:@"%ld,", (long)tagData.tagId];
     }
     NSInteger nberChars = tagIds.length;
     if (nberChars > 0) {

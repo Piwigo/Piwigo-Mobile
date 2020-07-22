@@ -64,7 +64,7 @@ struct TagAddJSON: Decodable {
 */
 struct TagPropertiesAdd: Codable
 {
-    let id: Int64?                  // 1
+    let id: Int32?                  // 1
     
     // The following data is not stored in cache
     let info: String?               // "Birthday"

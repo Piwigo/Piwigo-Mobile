@@ -57,7 +57,7 @@ struct TagJSON: Decodable {
                 
                 // Inject data into TagProperties after converting id
                 for tagProperty4Admin in tagPropertiesArray4Admin {
-                    let id:Int64? = Int64(tagProperty4Admin.id ?? "")!
+                    let id:Int32? = Int32(tagProperty4Admin.id ?? "")!
                     let tagProperty = TagProperties(id: id, name: tagProperty4Admin.name, lastmodified: tagProperty4Admin.lastmodified, counter: Int64.max, url_name: tagProperty4Admin.url_name, url: "")
                     tagPropertiesArray.append(tagProperty)
                 }
@@ -83,7 +83,7 @@ struct TagJSON: Decodable {
 */
 struct TagProperties: Codable
 {
-    let id: Int64?                  // 1
+    let id: Int32?                  // 1
     let name: String?               // "Birthday"
     let lastmodified: String?       // "2018-08-23 15:30:43"
     let counter: Int64?             // 8
