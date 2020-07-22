@@ -522,6 +522,18 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             self.localImagesCollection.reloadData()
         })
 
+        // Delete uploaded photos
+        let completedUploads = uploadsProvider.fetchedResultsController.fetchedObjects?.map({ ($0.state == .finished) ? 1 : 0}).reduce(0, +) ?? 0
+        let titleDelete = completedUploads > 1 ? String(format: NSLocalizedString("deleteCategory_allImages", comment: "Delete %@ Photos"), NumberFormatter.localizedString(from: NSNumber.init(value: completedUploads), number: .decimal)) : NSLocalizedString("deleteSingleImage_title", comment: "Delete Photo")
+        let deleteAction = UIAlertAction(title: titleDelete, style: .destructive, handler: { action in
+            // Delete uploaded images (fetch on the main queue)
+            if let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects {
+                let uploadsToDelete = allUploads.filter({ $0.state == .finished })
+                let appDelegate = UIApplication.shared.delegate as! AppDelegate
+                appDelegate.uploadManager?.delete(uploadedImages: uploadsToDelete)
+            }
+        })
+
 //        let uploadedAction = UIAlertAction(title: removeUploadedImages ? NSLocalizedString("localImageSort_notUploaded", comment: "Not Uploaded") : "✓ \(NSLocalizedString("localImageSort_notUploaded", comment: "Not Uploaded"))", style: .default, handler: { action in
 //            // Remove uploaded images?
 //            if self.removeUploadedImages {
@@ -543,6 +555,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         alert.addAction(cancelAction)
 //        alert.addAction(uploadedAction)
         alert.addAction(sortAction)
+        if completedUploads > 0 {
+            alert.addAction(deleteAction)
+        }
 
         // Present list of actions
         alert.view.tintColor = UIColor.piwigoColorOrange()

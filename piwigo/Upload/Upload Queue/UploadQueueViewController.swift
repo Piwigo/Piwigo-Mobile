@@ -166,7 +166,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
         // Delete uploaded photos
         let titleDelete = completedUploads > 1 ? String(format: NSLocalizedString("deleteCategory_allImages", comment: "Delete %@ Photos"), NumberFormatter.localizedString(from: NSNumber.init(value: completedUploads), number: .decimal)) : NSLocalizedString("deleteSingleImage_title", comment: "Delete Photo")
         let deleteAction = UIAlertAction(title: titleDelete, style: .destructive, handler: { action in
-            // Delete uploaded images
+            // Delete uploaded images (fetch on the main queue)
             if let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects {
                 let uploadsToDelete = allUploads.filter({ $0.state == .finished })
                 let appDelegate = UIApplication.shared.delegate as! AppDelegate
