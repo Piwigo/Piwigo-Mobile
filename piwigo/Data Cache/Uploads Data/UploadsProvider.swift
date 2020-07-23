@@ -240,7 +240,6 @@ class UploadsProvider: NSObject {
                 taskContext.reset()
             }
         }
-        updateBadgeAndButton()
         completionHandler(nil)
     }
 
