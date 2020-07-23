@@ -376,6 +376,7 @@ class UploadsProvider: NSObject {
             }
             uploads = controller.fetchedObjects
         }
+        updateBadgeAndButton()
         return uploads
     }
 
