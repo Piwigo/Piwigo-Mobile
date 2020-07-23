@@ -476,6 +476,10 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
         cell.configure(with: upload, width: Int(tableView.bounds.size.width))
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+        return false
+    }
 
     @objc func applyUploadProgress(_ notification: Notification) {
         let localIdentifier =  (notification.userInfo?["localIndentifier"] ?? "") as! String
