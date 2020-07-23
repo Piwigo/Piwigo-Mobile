@@ -510,6 +510,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 }
             }
             // Reload collection while updating section buttons
+            self.updateNavBar()
             self.localImagesCollection.reloadData()
         }
         
