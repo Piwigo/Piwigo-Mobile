@@ -42,6 +42,7 @@ class UploadTransfer {
             onProgress: { (progress, currentChunk, totalChunks) in
                 let chunkProgress: Float = Float(currentChunk) / Float(totalChunks)
                 let uploadInfo: [String : Any] = ["localIndentifier" : upload.localIdentifier,
+                                                  "photoResize" : Int16(upload.photoResize),
                                                   "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
                                                   "Error" : upload.requestError ?? "",
                                                   "progressFraction" : chunkProgress]

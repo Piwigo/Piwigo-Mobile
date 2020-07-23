@@ -975,7 +975,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         let indexPathsForVisibleItems = localImagesCollection.indexPathsForVisibleItems
         for indexPath in indexPathsForVisibleItems {
             let index = getImageIndex(for: indexPath)
-            let imageId = localIdentifiers[index]
+            let imageId = fetchedImages[index].localIdentifier // Don't use the cache which might not be ready
             if imageId == localIdentifier {
                 if let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell {
                     cell.setProgress(progressFraction, withAnimation: true)
@@ -1339,7 +1339,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
             
             // Get the corresponding index and local identifier
             let indexOfUploadedImage = getImageIndex(for: indexPath)
-            let imageId = localIdentifiers[indexOfUploadedImage]
+            let imageId = fetchedImages[indexOfUploadedImage].localIdentifier // Don't use the cache which might not be ready
             
             // Identify cell to be updated (if presented)
             if imageId == upload.localIdentifier {
