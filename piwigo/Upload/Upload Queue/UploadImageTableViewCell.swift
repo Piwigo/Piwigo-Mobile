@@ -142,7 +142,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
             }
         } else {
             // Display image information
-            imageInfoLabel.text = getImageInfo(from: imageAsset, for: width - 2*Int(indentationWidth))
+            imageInfoLabel.text = getImageInfo(from: imageAsset, for: width - 2*Int(indentationWidth), scale: upload.photoResize)
         }
 
         // Cell image: retrieve data of right size and crop image
@@ -189,28 +189,31 @@ class UploadImageTableViewCell: MGSwipeTableCell {
 
         // Bottom label
         let errorDescription = (userInfo["Error"] ?? "") as! String
+        let photoResize = (userInfo["photoResize"] ?? 100) as! Int16
         if errorDescription.count == 0,
             let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [localIdentifier], options: nil).firstObject {
-            imageInfoLabel.text = getImageInfo(from: imageAsset, for: Int(bounds.size.width))
+            imageInfoLabel.text = getImageInfo(from: imageAsset, for: Int(bounds.size.width), scale: photoResize)
         } else {
             imageInfoLabel.text = errorDescription
         }
     }
     
-    private func getImageInfo(from imageAsset: PHAsset, for width: Int) -> String {
+    private func getImageInfo(from imageAsset: PHAsset, for width: Int, scale: Int16) -> String {
+        let pixelWidth = (Float(imageAsset.pixelWidth * Int(scale)) / 100.0).rounded()
+        let pixelHeight = (Float(imageAsset.pixelHeight * Int(scale)) / 100.0).rounded()
         switch imageAsset.mediaType {
         case .image:
             if let creationDate = imageAsset.creationDate {
                 if width > 414 {
                     // i.e. larger than iPhones 6,7 screen width
-                    return String(format: "%ldx%ld pixels - %@", imageAsset.pixelWidth, imageAsset.pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .full, timeStyle: .medium))
+                    return String(format: "%.0fx%.0f pixels - %@", pixelWidth, pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .full, timeStyle: .medium))
                 } else if width > 375 {
-                    return String(format: "%ldx%ld pixels — %@", imageAsset.pixelWidth, imageAsset.pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .long, timeStyle: .short))
+                    return String(format: "%.0fx%.0f pixels — %@", pixelWidth, pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .long, timeStyle: .short))
                 } else {
-                    return String(format: "%ldx%ld pixels — %@", imageAsset.pixelWidth, imageAsset.pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .short, timeStyle: .short))
+                    return String(format: "%.0fx%.0f pixels — %@", pixelWidth, pixelHeight, DateFormatter.localizedString(from: creationDate, dateStyle: .short, timeStyle: .short))
                 }
             } else {
-                return String(format: "%ldx%ld pixels", imageAsset.pixelWidth, imageAsset.pixelHeight)
+                return String(format: "%.0fx%.0f pixels", pixelWidth, pixelHeight)
             }
         case .video:
             let formatter = DateComponentsFormatter()
@@ -220,14 +223,14 @@ class UploadImageTableViewCell: MGSwipeTableCell {
             if let creationDate = imageAsset.creationDate {
                 if width > 414 {
                     // i.e. larger than iPhones 6,7 screen width
-                    return String(format: "%ldx%ld pixels, %@ - %@", imageAsset.pixelWidth, imageAsset.pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .full, timeStyle: .medium))
+                    return String(format: "%.0fx%.0f pixels, %@ - %@", pixelWidth, pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .full, timeStyle: .medium))
                 } else if width > 375 {
-                    return String(format: "%ldx%ld pixels, %@ - %@", imageAsset.pixelWidth, imageAsset.pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .long, timeStyle: .short))
+                    return String(format: "%.0fx%.0f pixels, %@ - %@", pixelWidth, pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .long, timeStyle: .short))
                 } else {
-                    return String(format: "%ldx%ld pixels, %@ - %@", imageAsset.pixelWidth, imageAsset.pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .short, timeStyle: .short))
+                    return String(format: "%.0fx%.0f pixels, %@ - %@", pixelWidth, pixelHeight, formattedDuration, DateFormatter.localizedString(from: creationDate, dateStyle: .short, timeStyle: .short))
                 }
             } else {
-                return String(format: "%ldx%ld pixels, %@", imageAsset.pixelWidth, imageAsset.pixelHeight, formattedDuration)
+                return String(format: "%.0fx%.0f pixels, %@", pixelWidth, pixelHeight, formattedDuration)
             }
         default:
             if let creationDate = imageAsset.creationDate {
