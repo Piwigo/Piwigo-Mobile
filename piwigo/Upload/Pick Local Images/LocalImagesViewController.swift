@@ -66,6 +66,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     @IBOutlet weak var sortOptionsView: UIView!
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     
+    private let queue = OperationQueue()                        // Queue used to sort and cache things
     private var fetchedImages: PHFetchResult<PHAsset>!          // Collection of images in selected non-empty local album
     private var localIdentifiers = [String]()                   // Cached local identifiers of images
     private var sortType: SectionType = .all                    // [Months, Weeks, Days, All images in one section]
@@ -125,6 +126,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Bar buttons
         actionBarButton = UIBarButtonItem(image: UIImage(named: "list"), landscapeImagePhone: UIImage(named: "listCompact"), style: .plain, target: self, action: #selector(didTapActionButton))
         actionBarButton?.accessibilityIdentifier = "Sort"
+        actionBarButton?.isEnabled = false
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelSelect))
         cancelBarButton?.accessibilityIdentifier = "Cancel"
         uploadBarButton = UIBarButtonItem(title: NSLocalizedString("tabBar_upload", comment: "Upload"), style: .done, target: self, action: #selector(didTapUploadButton))
@@ -228,10 +230,13 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
+        // Cancel operations if needed
+        queue.cancelAllOperations()
+
         // Allow device to sleep
         UIApplication.shared.isIdleTimerDisabled = false
 
-        // Register Photo Library changes
+        // Unregister Photo Library changes
         PHPhotoLibrary.shared().unregisterChangeObserver(self)
 
         // Unregister palette changes
@@ -258,23 +263,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     uploadBarButton?.isEnabled = false
                 }
                 cancelBarButton?.isEnabled = false
-                actionBarButton?.isEnabled = true
+                actionBarButton?.isEnabled = (queue.operationCount == 0)
                 uploadBarButton?.isEnabled = true
                 title = NSLocalizedString("selectImages", comment: "Select Photos")
-            case 1:
-                navigationItem.leftBarButtonItems = [cancelBarButton].compactMap { $0 }
-                // Do not show two buttons to provide enough space for title
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                if view.bounds.size.width <= 414 {
-                    // i.e. smaller than iPhones 6,7 Plus screen width
-                    navigationItem.rightBarButtonItems = [uploadBarButton].compactMap { $0 }
-                } else {
-                    navigationItem.rightBarButtonItems = [actionBarButton, uploadBarButton].compactMap { $0 }
-                }
-                cancelBarButton?.isEnabled = true
-                actionBarButton?.isEnabled = true
-                uploadBarButton?.isEnabled = true
-                title = NSLocalizedString("selectImageSelected", comment: "1 Photo Selected")
             default:
                 navigationItem.leftBarButtonItems = [cancelBarButton].compactMap { $0 }
                 // Do not show two buttons to provide enough space for title
@@ -286,9 +277,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     navigationItem.rightBarButtonItems = [actionBarButton, uploadBarButton].compactMap { $0 }
                 }
                 cancelBarButton?.isEnabled = true
-                actionBarButton?.isEnabled = true
+                actionBarButton?.isEnabled = (queue.operationCount == 0)
                 uploadBarButton?.isEnabled = true
-                title = String(format:NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), NSNumber(value: nberOfSelectedImages))
+                title = nberOfSelectedImages == 1 ? NSLocalizedString("selectImageSelected", comment: "1 Photo Selected") : String(format:NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), NSNumber(value: nberOfSelectedImages))
         }
     }
 
@@ -315,45 +306,47 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     // Sorts images by months, weeks and days in the background,
     // initialise the array of selected sections and enable the choices
     private func sortImagesAndIndexUploads() -> Void {
-       
+
         // Sort all images in one loop i.e. O(n)
-        let queue = OperationQueue()
-//        queue.maxConcurrentOperationCount = 1   // Make it a serial queue for debugging
-        let operation1 = BlockOperation.init(block: {
+        let sortOperation = BlockOperation.init(block: {
             // Sort images by months, weeks and days in the background
             (self.indexOfImageSortedByDay, self.indexOfImageSortedByWeek, self.indexOfImageSortedByMonth) = self.sortByMonthWeekDay(images: self.fetchedImages)
 
-            // Update interface
+            // Initialise buttons of sections for the max number of sections
+            self.selectedSections = .init(repeating: .select, count: self.indexOfImageSortedByDay.count)
+        })
+        sortOperation.completionBlock = {
+            // Allow sort options and refresh section headers
             DispatchQueue.main.async {
                 // Enable segments
                 self.segmentedControl.setEnabled(true, forSegmentAt: SectionType.month.rawValue)
                 self.segmentedControl.setEnabled(true, forSegmentAt: SectionType.week.rawValue)
                 self.segmentedControl.setEnabled(true, forSegmentAt: SectionType.day.rawValue)
             }
-        })
-        let operation2 = BlockOperation.init(block: {
+        }
+        
+        // Cache upload indices and image localIdentifiers
+        let cacheOperation = BlockOperation.init(block: {
             // Index images in the upload queue and cache localIdentifiers
             self.indexUploadsAndCacheIDs(of: self.fetchedImages)
         })
-        queue.addOperations([operation1, operation2], waitUntilFinished: true)
+        cacheOperation.completionBlock = {
+            // Allow action button and refresh UI
+            DispatchQueue.main.async {
+                // Allow action button
+                self.actionBarButton?.isEnabled = true
 
-        // Initialise buttons of sections for the max number of sections
-        self.selectedSections = .init(repeating: .select, count: self.indexOfImageSortedByDay.count)
-        
-        // Update interface
-        DispatchQueue.main.async {
-            // Hide HUD (displayed when Photo Library motifies changes)
-            self.hideHUDwithSuccess(true) {
-                // Enable Select buttons
-                self.localImagesCollection.reloadData()
+                // Hide HUD (displayed when Photo Library motifies changes)
+                self.hideHUDwithSuccess(true) {
+                    // Enable Select buttons
+                    self.localImagesCollection.reloadData()
+                }
             }
-            
-            // Below code is slower… Bizarre
-//            let indexPaths = self.localImagesCollection.indexPathsForVisibleSupplementaryElements(ofKind: UICollectionView.elementKindSectionHeader)
-//            for indexPath in indexPaths {
-//                self.localImagesCollection.reloadSections(IndexSet.init(integer: indexPath.section))
-//            }
         }
+        
+        // Perform both operations in background and in parallel
+        queue.maxConcurrentOperationCount = .max   // Make it a serial queue for debugging with 1
+        queue.addOperations([sortOperation, cacheOperation], waitUntilFinished: true)
     }
 
     private func sortByMonthWeekDay(images: PHFetchResult<PHAsset>) -> (imagesByDay: [IndexSet], imagesByWeek: [IndexSet], imagesByMonth: [IndexSet])  {
@@ -548,26 +541,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             }
         })
 
-//        let uploadedAction = UIAlertAction(title: removeUploadedImages ? NSLocalizedString("localImageSort_notUploaded", comment: "Not Uploaded") : "✓ \(NSLocalizedString("localImageSort_notUploaded", comment: "Not Uploaded"))", style: .default, handler: { action in
-//            // Remove uploaded images?
-//            if self.removeUploadedImages {
-//                // Store choice
-//                self.removeUploadedImages = false
-//
-//                // Sort images
-//                self.localImagesCollection.reloadData()
-//            } else {
-//                // Store choice
-//                self.removeUploadedImages = true
-//
-//                // Remove uploaded images from collection
-//                self.localImagesCollection.reloadData()
-//            }
-//        })
-
         // Add actions
         alert.addAction(cancelAction)
-//        alert.addAction(uploadedAction)
         alert.addAction(selectAction)
         alert.addAction(sortAction)
         if completedUploads > 0 {
@@ -1129,8 +1104,17 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     self.localIdentifiers.insert(changeDetails.fetchResultAfterChanges.object(at: index).localIdentifier, at: index)
                 })
                 self.fetchedImages = changeDetails.fetchResultAfterChanges
-                // Sort images in foreground - Not efficient!!!!
-                self.sortImagesAndIndexUploads()
+
+                // Disable sort options and action menu before sort
+                self.actionBarButton?.isEnabled = false
+                self.segmentedControl.setEnabled(false, forSegmentAt: SectionType.month.rawValue)
+                self.segmentedControl.setEnabled(false, forSegmentAt: SectionType.week.rawValue)
+                self.segmentedControl.setEnabled(false, forSegmentAt: SectionType.day.rawValue)
+
+                // Sort images in background
+                DispatchQueue.global(qos: .userInitiated).async {
+                    self.sortImagesAndIndexUploads()
+                }
             }
         })
     }
@@ -1150,7 +1134,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         }
 //        let start = CFAbsoluteTimeGetCurrent()
         if selectedSections[section] == .select {
-            // Loop over all images in section to select them (Select 70356 images of section 0 took 150.6 ms)
+            // Loop over all images in section to select them (70356 images takes 150.6 ms with iPhone 11 Pro)
             // Here, we exploit the cached local IDs
             for index in firstIndex...lastIndex {
                 // Images in the upload queue cannot be selected
@@ -1161,7 +1145,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             // Change section button state
             selectedSections[section] = .deselect
         } else {
-            // Deselect images of section (70356 images of section 0 took 52.2 ms)
+            // Deselect images of section (70356 images takes 52.2 ms with iPhone 11 Pro)
             selectedImages[firstIndex...lastIndex] = .init(repeating: nil, count: lastIndex - firstIndex + 1)
             // Change section button state
             selectedSections[section] = .select
