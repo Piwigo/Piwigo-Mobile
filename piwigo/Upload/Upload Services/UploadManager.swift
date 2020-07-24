@@ -291,7 +291,7 @@ class UploadManager: NSObject {
             // The upload request is not fired yet.
             // Happens after a crash during an upload for example
             nextUpload.willAccessValue(forKey: nil)
-            uploadProperties = nextUpload.getUploadProperties(with: nextUpload.state, error: nextUpload.requestError)
+            uploadProperties = nextUpload.getUploadProperties(with: .waiting, error: "")
             nextUpload.didAccessValue(forKey: nil)
         } else {
             uploadProperties = nextUpload.getUploadProperties(with: nextUpload.state, error: nextUpload.requestError)
