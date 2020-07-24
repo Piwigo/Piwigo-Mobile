@@ -1294,6 +1294,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
                 NSLog(@"=> categoriesUpdated… %ld now contains %ld images", (long)self.categoryId, (long)self.albumData.images.count);
                 if (oldImageList.count == self.albumData.images.count) {
                     self.loadingImages = NO;
+                    [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
                     return;
                 }
 
