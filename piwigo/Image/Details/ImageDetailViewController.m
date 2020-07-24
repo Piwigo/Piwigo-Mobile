@@ -227,10 +227,32 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
 
 -(void)updateNavBar
 {
-    // Interface depends on device
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+    // Redefine bar buttons (definition lost after rotation of device)
+    self.editBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editImage)];
+    [self.editBarButton setAccessibilityIdentifier:@"edit"];
+    self.deleteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageTrash"] landscapeImagePhone:[UIImage imageNamed:@"imageTrashCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(deleteImage)];
+    self.deleteBarButton.tintColor = [UIColor redColor];
+    [self.deleteBarButton setAccessibilityIdentifier:@"delete"];
+    self.shareBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageShare"] landscapeImagePhone:[UIImage imageNamed:@"imageShareCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(shareImage)];
+    self.shareBarButton.tintColor = [UIColor piwigoColorOrange];
+    [self.shareBarButton setAccessibilityIdentifier:@"share"];
+    self.setThumbnailBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imagePaperclip"] landscapeImagePhone:[UIImage imageNamed:@"imagePaperclipCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(setAsAlbumImage)];
+    self.setThumbnailBarButton.tintColor = [UIColor piwigoColorOrange];
+    [self.setThumbnailBarButton setAccessibilityIdentifier:@"albumThumbnail"];
+    self.moveBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageMove"] landscapeImagePhone:[UIImage imageNamed:@"imageMoveCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addImageToCategory)];
+    self.moveBarButton.tintColor = [UIColor piwigoColorOrange];
+    [self.moveBarButton setAccessibilityIdentifier:@"move"];
+//        self.favoriteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageNotFavorite"] landscapeImagePhone:[UIImage imageNamed:@"imageNotFavoriteCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addImageToFavorites)];
+//        self.favoriteBarButton.tintColor = [UIColor piwigoColorOrange];
+//        [self.favoriteBarButton setAccessibilityIdentifier:@"favorite"];
+
+    // Interface depends on device and orientation
+    if (([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) ||
+        ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad &&
+         [[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeLeft &&
+         [[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeRight)) {
             
-        // iPhone
+        // iPhone or iPad in portrait mode
         if ([Model sharedInstance].hasAdminRights)
         {
             // User with admin rights can move, edit, delete images and set as album image
@@ -268,9 +290,9 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
             [self.navigationController setToolbarHidden:YES animated:NO];
         }
     }
-    else    // iPad
+    else    // iPad in landscape mode
     {
-        // Hide toolbar
+        // iPad in landcsape mode: buttons in navigation bar -> Hide toolbar
         self.isToolbarRequired = NO;
         [self.navigationController setToolbarHidden:YES animated:YES];
 
@@ -1078,7 +1100,6 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
             viewController.modalPresentationStyle = UIModalPresentationPopover;
             viewController.popoverPresentationController.sourceView = self.view;
             viewController.popoverPresentationController.barButtonItem = self.setThumbnailBarButton;
-            viewController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
             [self.navigationController presentViewController:viewController animated:YES completion:nil];
        }
         else if ([viewController isKindOfClass:[MoveImageViewController class]])
@@ -1086,7 +1107,6 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
             viewController.modalPresentationStyle = UIModalPresentationPopover;
             viewController.popoverPresentationController.sourceView = self.view;
             viewController.popoverPresentationController.barButtonItem = self.moveBarButton;
-            viewController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
             [self.navigationController presentViewController:viewController animated:YES completion:nil];
         }
         else if ([viewController isKindOfClass:[EditImageParamsViewController class]])
@@ -1096,7 +1116,6 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
             navController.modalPresentationStyle = UIModalPresentationPopover;
             navController.popoverPresentationController.sourceView = self.view;
             navController.popoverPresentationController.barButtonItem = self.editBarButton;
-            navController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
             [self.navigationController presentViewController:navController animated:YES completion:nil];
         }
     }

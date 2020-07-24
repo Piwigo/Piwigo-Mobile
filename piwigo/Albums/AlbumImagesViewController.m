@@ -1060,25 +1060,24 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
     [self.addButton setHidden:YES];
     [self.homeAlbumButton setHidden:YES];
 
+    // Redefine bar buttons (definition lost after rotation of device)
+    self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
+    self.deleteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageTrash"] landscapeImagePhone:[UIImage imageNamed:@"imageTrashCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(deleteSelection)];
+    self.deleteBarButton.tintColor = [UIColor redColor];
+    self.shareBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageShare"] landscapeImagePhone:[UIImage imageNamed:@"imageShareCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(shareSelection)];
+    self.shareBarButton.tintColor = [UIColor piwigoColorOrange];
+    self.moveBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageMove"] landscapeImagePhone:[UIImage imageNamed:@"imageMoveCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addImagesToCategory)];
+    self.moveBarButton.tintColor = [UIColor piwigoColorOrange];
+
     // User can delete images/videos if he/she has:
     // — admin rights
     if ([Model sharedInstance].hasAdminRights)
     {
-        // Interface depends on device and orientation
+        // iPhone in portrait mode
         if (([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) &&
             (([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeLeft) &&
              ([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeRight))) {
     
-            // iPhone in portrait mode
-            // Redefine bar buttons (definition lost after rotation of device)
-            self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
-            self.deleteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageTrash"] landscapeImagePhone:[UIImage imageNamed:@"imageTrashCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(deleteSelection)];
-            self.deleteBarButton.tintColor = [UIColor redColor];
-            self.shareBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageShare"] landscapeImagePhone:[UIImage imageNamed:@"imageShareCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(shareSelection)];
-            self.shareBarButton.tintColor = [UIColor piwigoColorOrange];
-            self.moveBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageMove"] landscapeImagePhone:[UIImage imageNamed:@"imageMoveCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addImagesToCategory)];
-            self.moveBarButton.tintColor = [UIColor piwigoColorOrange];
-
             // Left side of navigation bar
             [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
             self.cancelBarButton.enabled = YES;
@@ -1115,18 +1114,10 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
     // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by' values of images for checking rights
     else if ([Model sharedInstance].hasNormalRights && [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
     {
-        // Interface depends on device and orientation
+        // iPhone in portrait mode
         if (([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) &&
             (([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeLeft) &&
              ([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeRight))) {
-                
-                // iPhone in portrait mode
-                // Redefine bar buttons (definition lost after rotation of device)
-                self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
-                self.shareBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageShare"] landscapeImagePhone:[UIImage imageNamed:@"imageShareCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(shareSelection)];
-                self.shareBarButton.tintColor = [UIColor piwigoColorOrange];
-                self.moveBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageMove"] landscapeImagePhone:[UIImage imageNamed:@"imageMoveCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addImagesToCategory)];
-                self.moveBarButton.tintColor = [UIColor piwigoColorOrange];
                 
                 // Left side of navigation bar
                 [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
