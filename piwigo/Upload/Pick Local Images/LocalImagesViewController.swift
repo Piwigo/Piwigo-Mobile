@@ -1219,13 +1219,12 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         
         // Add selected images to upload queue
         uploadsProvider.importUploads(from: selectedImages.compactMap{ $0 }) { error in
-
               DispatchQueue.main.async {
                 // Show an alert if there was an error.
                 guard let error = error else {
                     // Launch upload tasks
                     let appDelegate = UIApplication.shared.delegate as! AppDelegate
-                    appDelegate.uploadManager?.findNextImageToUpload()
+                    appDelegate.triggerUploadManager()
                     return
                 }
                 let alert = UIAlertController(title: NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object."),

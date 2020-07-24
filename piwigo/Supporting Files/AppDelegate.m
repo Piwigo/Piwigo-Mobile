@@ -42,11 +42,8 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
 
 -(void)loadNavigation
 {
-    // Create upload manager instance
-    if (self.uploadManager == nil) {
-        self.uploadManager = [[UploadManager alloc] init];
-        [self.uploadManager resumeAll];
-    }
+    // Resume upload manager
+    [self resumeUploadManager];
 
     // Display default album
     AlbumImagesViewController *defaultAlbum = [[AlbumImagesViewController alloc] initWithAlbumId:[Model sharedInstance].defaultCategory inCache:NO];
@@ -485,6 +482,34 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
     [Model sharedInstance].recentCategories = [recentCategories componentsJoinedByString:@","];
     [[Model sharedInstance] saveToDisk];
 //    NSLog(@"•••> Recent albums: %@", [Model sharedInstance].recentCategories);
+}
+
+#pragma mark - Upload Manager
+
+-(void)resumeUploadManager {
+    // Create upload manager instance if needed
+    if (self.uploadManager == nil) {
+        self.uploadManager = [[UploadManager alloc] init];
+    }
+    
+    // Create dedicated background queue if needed
+    if (self.uploadQueue == nil) {
+        /* Create a serial queue. */
+        dispatch_queue_attr_t attributes = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_BACKGROUND, -1);
+        self.uploadQueue = dispatch_queue_create("UploadManager", attributes);
+    }
+    
+    // Resume upload tasks
+    dispatch_async(self.uploadQueue, ^{
+        [self.uploadManager resumeAll];
+    });
+}
+
+-(void)triggerUploadManager {
+    // Trigger upload tasks
+    dispatch_async(self.uploadQueue, ^{
+        [self.uploadManager findNextImageToUpload];
+    });
 }
 
 @end
