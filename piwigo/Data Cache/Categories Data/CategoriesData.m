@@ -368,13 +368,11 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     NSDictionary *userInfo = @{@"albumId" : category, @"imageId" : @(image.imageId)};
     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationUploadedImage object:nil userInfo:userInfo];
     
-    // If this is the first image of the category, notify UI to set the album thumbnail
-    if (imageCategory.numberOfImages == 1) {
-        NSDictionary *userInfo = @{@"albumId" : category,
-                                   @"thumbnailId" : @(image.imageId),
-                                   @"thumbnailUrl" : image.ThumbPath};
-        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedAlbumData object:nil userInfo:userInfo];
-    }
+    // Notify UI that the number of images has changed and that the thumbnail may have to be changed
+    userInfo = @{@"albumId" : category,
+                 @"thumbnailId" : @(image.imageId),
+                 @"thumbnailUrl" : image.ThumbPath};
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedAlbumData object:nil userInfo:userInfo];
 }
 
 -(void)removeImage:(PiwigoImageData*)image
@@ -416,13 +414,11 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     NSDictionary *userInfo = @{@"albumId" : category, @"imageId" : @(image.imageId)};
     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDeletedImage object:nil userInfo:userInfo];
 
-    // If no image left in category, notify UI to clear album thumbnail
-    if (imageCategory.numberOfImages == 0) {
-        NSDictionary *userInfo = @{@"albumId" : category,
-                                   @"thumbnailId" : @"0",
-                                   @"thumbnailUrl" : @""};
-        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedAlbumData object:nil userInfo:userInfo];
-    }
+    // Notify UI that the number of images has changed and that the thumbnail may have to be changed
+    userInfo = @{@"albumId" : category,
+                 @"thumbnailId" : @"0",
+                 @"thumbnailUrl" : @""};
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedAlbumData object:nil userInfo:userInfo];
 }
 
 

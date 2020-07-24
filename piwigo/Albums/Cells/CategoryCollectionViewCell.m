@@ -65,15 +65,17 @@
 
         // Add or remove thumbnail image?
         NSString *thumbnailUrl = [userInfo objectForKey:@"thumbnailUrl"];
-        if (thumbnailUrl.length == 0) {
+        if (self.albumData.numberOfImages == 0) {
             self.albumData.categoryImage = nil;
             self.albumData.albumThumbnailId = 0;
             self.albumData.albumThumbnailUrl = nil;
-        } else {
+        } else if (self.albumData.numberOfImages == 1) {
             NSInteger thumbnailId = [[userInfo objectForKey:@"thumbnailId"] intValue];
             self.albumData.albumThumbnailId = thumbnailId;
             self.albumData.albumThumbnailUrl = thumbnailUrl;
         }
+        
+        // Update number of images and thumbnail if needed
         [self.tableView reloadData];
     }
 }
