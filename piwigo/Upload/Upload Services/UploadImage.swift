@@ -8,20 +8,10 @@
 
 import Photos
 
-class UploadImage {
-
-    // MARK: - Shared instances
-    /// The UploadsProvider that collects upload data, saves it to Core Data, and serves it to the uploader.
-    private lazy var uploadsProvider: UploadsProvider = {
-        let provider : UploadsProvider = UploadsProvider()
-        return provider
-    }()
-    /// The UploadManager that prepares and transfers images
-    var uploadManager: UploadManager?
-
+extension UploadManager {
 
     // MARK: - Image preparation
-    func prepare(_ upload: UploadProperties, from imageAsset: PHAsset) -> Void {
+    func prepareImage(for upload: UploadProperties, from imageAsset: PHAsset) -> Void {
         
         // Retrieve UIImage
         let (fixedImageObject, imageError) = retrieveUIImage(from: imageAsset, for: upload)
@@ -61,9 +51,9 @@ class UploadImage {
             
             // Update request with error description
             print("    >", error.localizedDescription)
-            uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+            uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
                 // Consider next image
-                self.uploadManager?.setIsPreparing(status: false)
+                self.setIsPreparing(status: false)
             })
             return
         }
@@ -73,9 +63,9 @@ class UploadImage {
 
         // Update request ready for transfer
         print("    > prepared file \(uploadProperties.fileName!)")
-        uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+        uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
             // Upload ready for transfer
-            self.uploadManager?.setIsPreparing(status: false)
+            self.setIsPreparing(status: false)
         })
     }
 
@@ -272,11 +262,7 @@ class UploadImage {
 
         // File name of final image data to be stored into Piwigo/Uploads directory
         let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-") + "-" + newUpload.fileName!
-        guard let fileURL = uploadManager?.applicationUploadsDirectory.appendingPathComponent(fileName) else {
-            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-            self.updateUploadRequestWith(upload, error: error)
-            return
-        }
+        let fileURL = applicationUploadsDirectory.appendingPathComponent(fileName)
         
         // Deletes temporary image file if exists (incomplete previous attempt?)
         do {
@@ -424,43 +410,4 @@ class UploadImage {
         }
         return nil
     }
-
-    // See https://en.wikipedia.org/wiki/List_of_file_signatures
-    // https://mimesniff.spec.whatwg.org/#sniffing-in-an-image-context
-
-    // https://en.wikipedia.org/wiki/BMP_file_format
-    var bmp: [UInt8] = "BM".map { $0.asciiValue! }
-    
-    // https://en.wikipedia.org/wiki/GIF
-    var gif87a: [UInt8] = "GIF87a".map { $0.asciiValue! }
-    var gif89a: [UInt8] = "GIF89a".map { $0.asciiValue! }
-    
-    // https://en.wikipedia.org/wiki/High_Efficiency_Image_File_Format
-    var heic: [UInt8] = [0x00, 0x00, 0x00, 0x18] + "ftypheic".map { $0.asciiValue! }
-    
-    // https://en.wikipedia.org/wiki/ILBM
-    var iff: [UInt8] = "FORM".map { $0.asciiValue! }
-    
-    // https://en.wikipedia.org/wiki/JPEG
-    var jpg: [UInt8] = [0xff, 0xd8, 0xff]
-    
-    // https://en.wikipedia.org/wiki/JPEG_2000
-    var jp2: [UInt8] = [0x00, 0x00, 0x00, 0x0c, 0x6a, 0x50, 0x20, 0x20, 0x0d, 0x0a, 0x87, 0x0a]
-    
-    // https://en.wikipedia.org/wiki/Portable_Network_Graphics
-    var png: [UInt8] = [0x89] + "PNG".map { $0.asciiValue! } + [0x0d, 0x0a, 0x1a, 0x0a]
-    
-    // https://en.wikipedia.org/wiki/Adobe_Photoshop#File_format
-    var psd: [UInt8] = "8BPS".map { $0.asciiValue! }
-    
-    // https://en.wikipedia.org/wiki/TIFF
-    var tif_ii: [UInt8] = "II".map { $0.asciiValue! } + [0x2a, 0x00]
-    var tif_mm: [UInt8] = "MM".map { $0.asciiValue! } + [0x00, 0x2a]
-    
-    // https://en.wikipedia.org/wiki/WebP
-    var webp: [UInt8] = "RIFF".map { $0.asciiValue! }
-    
-    // https://en.wikipedia.org/wiki/ICO_(file_format)
-    var win_ico: [UInt8] = [0x00, 0x00, 0x01, 0x00]
-    var win_cur: [UInt8] = [0x00, 0x00, 0x02, 0x00]
 }

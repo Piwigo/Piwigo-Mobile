@@ -63,13 +63,52 @@ class UploadManager: NSObject {
         return anURL
     }()
 
+    // See https://en.wikipedia.org/wiki/List_of_file_signatures
+    // https://mimesniff.spec.whatwg.org/#sniffing-in-an-image-context
+
+    // https://en.wikipedia.org/wiki/BMP_file_format
+    var bmp: [UInt8] = "BM".map { $0.asciiValue! }
+    
+    // https://en.wikipedia.org/wiki/GIF
+    var gif87a: [UInt8] = "GIF87a".map { $0.asciiValue! }
+    var gif89a: [UInt8] = "GIF89a".map { $0.asciiValue! }
+    
+    // https://en.wikipedia.org/wiki/High_Efficiency_Image_File_Format
+    var heic: [UInt8] = [0x00, 0x00, 0x00, 0x18] + "ftypheic".map { $0.asciiValue! }
+    
+    // https://en.wikipedia.org/wiki/ILBM
+    var iff: [UInt8] = "FORM".map { $0.asciiValue! }
+    
+    // https://en.wikipedia.org/wiki/JPEG
+    var jpg: [UInt8] = [0xff, 0xd8, 0xff]
+    
+    // https://en.wikipedia.org/wiki/JPEG_2000
+    var jp2: [UInt8] = [0x00, 0x00, 0x00, 0x0c, 0x6a, 0x50, 0x20, 0x20, 0x0d, 0x0a, 0x87, 0x0a]
+    
+    // https://en.wikipedia.org/wiki/Portable_Network_Graphics
+    var png: [UInt8] = [0x89] + "PNG".map { $0.asciiValue! } + [0x0d, 0x0a, 0x1a, 0x0a]
+    
+    // https://en.wikipedia.org/wiki/Adobe_Photoshop#File_format
+    var psd: [UInt8] = "8BPS".map { $0.asciiValue! }
+    
+    // https://en.wikipedia.org/wiki/TIFF
+    var tif_ii: [UInt8] = "II".map { $0.asciiValue! } + [0x2a, 0x00]
+    var tif_mm: [UInt8] = "MM".map { $0.asciiValue! } + [0x00, 0x2a]
+    
+    // https://en.wikipedia.org/wiki/WebP
+    var webp: [UInt8] = "RIFF".map { $0.asciiValue! }
+    
+    // https://en.wikipedia.org/wiki/ICO_(file_format)
+    var win_ico: [UInt8] = [0x00, 0x00, 0x01, 0x00]
+    var win_cur: [UInt8] = [0x00, 0x00, 0x02, 0x00]
+
     
     // MARK: - Core Data
     /**
      The UploadsProvider that collects upload data, saves it to Core Data,
      and serves it to the uploader.
      */
-    private lazy var uploadsProvider: UploadsProvider = {
+    lazy var uploadsProvider: UploadsProvider = {
         let provider : UploadsProvider = UploadsProvider()
         return provider
     }()
@@ -192,9 +231,7 @@ class UploadManager: NSObject {
             let upload = allUploads.first(where: { $0.state == .uploaded } ) {
             // Finish upload
             isFinishing = true
-            DispatchQueue.global(qos: .background).async {
-                self.finish(nextUpload: upload)
-            }
+            self.finish(nextUpload: upload)
             return
         }
 
@@ -204,9 +241,7 @@ class UploadManager: NSObject {
             let upload = allUploads.first(where: { $0.state == .prepared }) {
             // Upload ready, so start the transfer
             isUploading = true
-            DispatchQueue.global(qos: .background).async {
-                self.transfer(nextUpload: upload)
-            }
+            self.transfer(nextUpload: upload)
             return
         }
         
@@ -216,9 +251,7 @@ class UploadManager: NSObject {
             let nextUpload = allUploads.first(where: { $0.state == .waiting }) {
             // Prepare the next upload
             isPreparing = true
-            DispatchQueue.global(qos: .background).async {
-                self.prepare(nextUpload: nextUpload)
-            }
+            self.prepare(nextUpload: nextUpload)
             return
         }
         
@@ -230,16 +263,12 @@ class UploadManager: NSObject {
 
         // Moderate uploaded images if Community plugin installed
         if Model.sharedInstance().usesCommunityPluginV29 {
-            DispatchQueue.global(qos: .background).async {
-                self.moderate(uploadedImages: completedUploads)
-            }
+            self.moderate(uploadedImages: completedUploads)
             return
         }
 
         // Delete images from Photo Library if user wanted it
-        DispatchQueue.global(qos: .background).async {
-            self.delete(uploadedImages: completedUploads.filter({$0.deleteImageAfterUpload == true}))
-        }
+        self.delete(uploadedImages: completedUploads.filter({$0.deleteImageAfterUpload == true}))
     }
 
     private func prepare(nextUpload: Upload) -> Void {
@@ -259,6 +288,7 @@ class UploadManager: NSObject {
         // Set upload properties
         if nextUpload.isFault {
             // The upload request is not fired yet.
+            // Happens after a crash during an upload for example
             assertionFailure("    > nextUpload.isFault !!!!!!!!!!!!!!")
         }
         var uploadProperties = nextUpload.getUploadProperties(with: nextUpload.state, error: nextUpload.requestError)
@@ -268,7 +298,7 @@ class UploadManager: NSObject {
             // Asset not available… deleted?
             uploadProperties.requestState = .preparingFail
             uploadProperties.requestError = UploadError.missingAsset.errorDescription
-            self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+            self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
                 // Consider next image
                 self.isPreparing = false
                 self.findNextImageToUpload()
@@ -298,11 +328,9 @@ class UploadManager: NSObject {
 
                 // Update state of upload
                 uploadProperties.requestState = .preparing
-                uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+                uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
                     // Launch preparation job
-                    let image = UploadImage()
-                    image.uploadManager = self
-                    image.prepare(uploadProperties, from: originalAsset)
+                    self.prepareImage(for: uploadProperties, from: originalAsset)
                 })
                 return
             }
@@ -315,18 +343,16 @@ class UploadManager: NSObject {
                     
                     // Update state of upload
                     uploadProperties.requestState = .preparing
-                    uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+                    uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
                         // Launch preparation job
-                        let image = UploadImage()
-                        image.uploadManager = self
-                        image.prepare(uploadProperties, from: originalAsset)
+                        self.prepareImage(for: uploadProperties, from: originalAsset)
                     })
                     return
                 }
             }
             // Image file format cannot be accepted by the Piwigo server
             uploadProperties.requestState = .formatError
-            uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+            uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
                 // Investigate next upload request
                 self.isPreparing = false
                 self.findNextImageToUpload()
@@ -342,11 +368,9 @@ class UploadManager: NSObject {
 
                 // Update state of upload
                 uploadProperties.requestState = .preparing
-                uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+                uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
                     // Launch preparation job
-                    let video = UploadVideo()
-                    video.uploadManager = self
-                    video.prepare(uploadProperties, from: originalAsset)
+                    self.prepareVideo(for: uploadProperties, from: originalAsset)
                 })
                 return
             }
@@ -359,18 +383,16 @@ class UploadManager: NSObject {
 
                     // Update state of upload
                     uploadProperties.requestState = .preparing
-                    uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+                    uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
                         // Launch preparation job
-                        let video = UploadVideo()
-                        video.uploadManager = self
-                        video.convert(originalAsset, for: uploadProperties)
+                        self.convertVideo(of: originalAsset, for: uploadProperties)
                     })
                     return
                 }
             }
             // Video file format cannot be accepted by the Piwigo server
             uploadProperties.requestState = .formatError
-            uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+            uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
                 // Investigate next upload request
                 self.isPreparing = false
                 self.findNextImageToUpload()
@@ -380,7 +402,7 @@ class UploadManager: NSObject {
         case .audio:
             // Update state of upload: Not managed by Piwigo iOS yet…
             uploadProperties.requestState = .formatError
-            uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+            uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
                 // Investigate next upload request
                 self.isPreparing = false
                 self.findNextImageToUpload()
@@ -392,7 +414,7 @@ class UploadManager: NSObject {
         default:
             // Update state of upload request: Unknown format
             uploadProperties.requestState = .formatError
-            uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+            uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
                 // Investigate next upload request
                 self.isPreparing = false
                 self.findNextImageToUpload()
@@ -411,12 +433,10 @@ class UploadManager: NSObject {
 
         // Update state of upload request
         let uploadProperties = nextUpload.getUploadProperties(with: .uploading, error: "")
-        uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+        uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
             // Launch transfer if possible
-            let transfer = UploadTransfer()
-            transfer.uploadManager = self
 //            transfer.imageInBackgroundForRequest(uploadProperties)
-            transfer.imageOfRequest(uploadProperties)
+            self.transferImage(of: uploadProperties)
         })
     }
     
@@ -433,11 +453,9 @@ class UploadManager: NSObject {
 
         // Update state of upload resquest
         let uploadProperties = nextUpload.getUploadProperties(with: .finishing, error: "")
-        uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+        uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
             // Finish the job by setting image parameters…
-            let finish = UploadFinisher()
-            finish.uploadManager = self
-            finish.imageOfRequest(upload: uploadProperties)
+            self.setImageParameters(with: uploadProperties)
         })
     }
 
@@ -461,9 +479,7 @@ class UploadManager: NSObject {
         for category in categories {
             let imageIds = uploadedImages.filter({ $0.category == category}).map( { String(format: "%ld,", $0.imageId) } ).reduce("", +)
             // Moderate uploaded images
-            let finish = UploadFinisher()
-            finish.uploadManager = self
-            finish.moderateImages(imageIds: imageIds, inCategory: category)
+            self.moderateImages(withIds: imageIds, inCategory: category)
         }
     }
 

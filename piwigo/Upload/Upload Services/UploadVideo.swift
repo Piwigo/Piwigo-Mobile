@@ -10,20 +10,10 @@ import AVFoundation
 import MobileCoreServices
 import Photos
 
-class UploadVideo {
-    
-    // MARK: - Shared instances
-    /// The UploadsProvider that collects upload data, saves it to Core Data, and serves it to the uploader.
-    private lazy var uploadsProvider: UploadsProvider = {
-        let provider : UploadsProvider = UploadsProvider()
-        return provider
-    }()
-    /// The UploadManager that prepares and transfers images
-    var uploadManager: UploadManager?
-
+extension UploadManager {
     
     // MARK: - Video preparation
-    func prepare(_ upload: UploadProperties, from imageAsset: PHAsset) -> Void {
+    func prepareVideo(for upload: UploadProperties, from imageAsset: PHAsset) -> Void {
         // Retrieve video data
         let options = getVideoRequestOptions()
         retrieveVideo(from: imageAsset, with: options) { (avasset, options, error) in
@@ -69,11 +59,7 @@ class UploadVideo {
 
                 // Prepare URL of temporary file
                 let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-") + "-" + upload.fileName!
-                guard let fileURL = self.uploadManager?.applicationUploadsDirectory.appendingPathComponent(fileName) else {
-                    let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                    self.updateUploadRequestWith(upload, error: error)
-                    return
-                }
+                let fileURL = self.applicationUploadsDirectory.appendingPathComponent(fileName)
 
                 // Deletes temporary video file if it already exists
                 do {
@@ -125,7 +111,7 @@ class UploadVideo {
         }
     }
     
-    func convert(_ imageAsset: PHAsset, for upload: UploadProperties) -> Void {
+    func convertVideo(of imageAsset: PHAsset, for upload: UploadProperties) -> Void {
         // Retrieve video data
         let options = getVideoRequestOptions()
         retrieveVideo(from: imageAsset, with: options) { (avasset, options, error) in
@@ -175,9 +161,9 @@ class UploadVideo {
             
             // Update request with error description
             print("    >", error.localizedDescription)
-            uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+            uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
                 // Consider next image
-                self.uploadManager?.setIsPreparing(status: false)
+                self.setIsPreparing(status: false)
             })
             return
         }
@@ -187,9 +173,9 @@ class UploadVideo {
 
         // Update request ready for transfer
         print("    > prepared file \(uploadProperties.fileName!)")
-        uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+        uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
             // Upload ready for transfer
-            self.uploadManager?.setIsPreparing(status: false)
+            self.setIsPreparing(status: false)
         })
     }
 
@@ -376,7 +362,7 @@ class UploadVideo {
 
         // File name of final video data to be stored into Piwigo/Uploads directory
         let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-") + "-" + newUpload.fileName!
-        exportSession.outputURL = uploadManager?.applicationUploadsDirectory.appendingPathComponent(fileName)
+        exportSession.outputURL = applicationUploadsDirectory.appendingPathComponent(fileName)
 
         // Deletes temporary video file if exists (incomplete previous attempt?)
         do {

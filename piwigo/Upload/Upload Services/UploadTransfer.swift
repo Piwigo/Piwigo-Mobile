@@ -6,20 +6,10 @@
 //  Copyright © 2020 Piwigo.org. All rights reserved.
 //
 
-class UploadTransfer {
+extension UploadManager {
     
-    // MARK: - Shared instances
-    /// The UploadsProvider that collects upload data, saves it to Core Data, and serves it to the uploader.
-    private lazy var uploadsProvider: UploadsProvider = {
-        let provider : UploadsProvider = UploadsProvider()
-        return provider
-    }()
-    /// The UploadManager that prepares and transfers images
-    var uploadManager: UploadManager?
-
-
     // MARK: - Transfer Image in Foreground
-    func imageOfRequest(_ upload: UploadProperties) {
+    func transferImage(of upload: UploadProperties) {
         print("    > imageOfRequest...")
 
         let imageParameters: [String : String] = [
@@ -31,11 +21,7 @@ class UploadTransfer {
 
         // Get URL of file to upload
         let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-") + "-" + upload.fileName!
-        guard let fileURL = uploadManager?.applicationUploadsDirectory.appendingPathComponent(fileName) else {
-            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-            updateUploadRequestWith(upload, error: error)
-            return
-        }
+        let fileURL = applicationUploadsDirectory.appendingPathComponent(fileName)
 
         // Launch transfer
         startUploading(fileURL: fileURL, with: imageParameters,
@@ -167,9 +153,9 @@ class UploadTransfer {
             
             // Update request with error description
             print("    >", error.localizedDescription)
-            uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+            uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
                 // Consider next image
-                self.uploadManager?.setIsUploading(status: false)
+                self.setIsUploading(status: false)
             })
             return
         }
@@ -179,9 +165,9 @@ class UploadTransfer {
 
         // Update request ready for finish
         print("    > transferred file \(uploadProperties.fileName!)")
-        uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+        uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
             // Upload ready for transfer
-            self.uploadManager?.setIsUploading(status: false)
+            self.setIsUploading(status: false)
         })
     }
 
@@ -322,11 +308,7 @@ class UploadTransfer {
 
         // Get URL of file to upload
         let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-") + "-" + upload.fileName!
-        guard let fileURL = uploadManager?.applicationUploadsDirectory.appendingPathComponent(fileName) else {
-            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-            updateUploadRequestWith(upload, error: error)
-            return
-        }
+        let fileURL = applicationUploadsDirectory.appendingPathComponent(fileName)
         
         // Prepare URL
 //        let url = URL(string: NetworkHandler.getURLWithPath("format=json&method=pwg.images.addSimple&category=142", withURLParams: nil))

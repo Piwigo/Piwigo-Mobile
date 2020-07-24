@@ -8,20 +8,10 @@
 
 import Photos
 
-class UploadFinisher {
+extension UploadManager{
     
-    // MARK: - Shared instances
-    /// The UploadsProvider that collects upload data, saves it to Core Data, and serves it to the uploader.
-    private lazy var uploadsProvider: UploadsProvider = {
-        let provider : UploadsProvider = UploadsProvider()
-        return provider
-    }()
-    /// The UploadManager that prepares and transfers images
-    var uploadManager: UploadManager?
-
-
     // MARK: - Set Image Info
-    func imageOfRequest(upload: UploadProperties) {
+    func setImageParameters(with upload: UploadProperties) {
         print("    > imageOfRequest...")
 
         // Prepare creation date
@@ -125,11 +115,11 @@ class UploadFinisher {
                 }
                 
                 // Update upload record, cache and views
-                self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+                self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
                     print("•••>> complete ;-)")
                     
                     // Any other image in upload queue?
-                    self.uploadManager?.setIsFinishing(status: false)
+                    self.setIsFinishing(status: false)
                 })
             },
             onFailure: { (task, error) in
@@ -156,9 +146,9 @@ class UploadFinisher {
             
             // Update request with error description
             print("    >", error.localizedDescription)
-            uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+            uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
                 // Consider next image
-                self.uploadManager?.setIsFinishing(status: false)
+                self.setIsFinishing(status: false)
             })
             return
         }
@@ -168,9 +158,9 @@ class UploadFinisher {
 
         // Update request ready for transfer
         print("    > finished with \(uploadProperties.fileName!)")
-        uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+        uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
             // Upload ready for transfer
-            self.uploadManager?.setIsFinishing(status: false)
+            self.setIsFinishing(status: false)
         })
     }
 
@@ -180,7 +170,7 @@ class UploadFinisher {
      When the Community plugin is installed (v2.9+) on the server,
      one must inform the moderator that a number of images were uploaded.
      */
-    func moderateImages(imageIds: String, inCategory category: Int) {
+    func moderateImages(withIds imageIds: String, inCategory category: Int) {
         
         getUploadedImageStatus(byId: imageIds, inCategory: category,
             onCompletion: { (task, jsonData) in
@@ -197,7 +187,7 @@ class UploadFinisher {
                     // Images successfully moderated, delete them if wanted by users
                     if let completedUploads = self.uploadsProvider.requestsCompleted() {
                         let imagesToDelete = completedUploads.filter({$0.deleteImageAfterUpload == true})
-                        self.uploadManager?.delete(uploadedImages: imagesToDelete)
+                        self.delete(uploadedImages: imagesToDelete)
                     }
                 }
 
