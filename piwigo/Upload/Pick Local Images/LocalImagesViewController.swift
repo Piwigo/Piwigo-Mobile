@@ -130,6 +130,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelSelect))
         cancelBarButton?.accessibilityIdentifier = "Cancel"
         uploadBarButton = UIBarButtonItem(title: NSLocalizedString("tabBar_upload", comment: "Upload"), style: .done, target: self, action: #selector(didTapUploadButton))
+        uploadBarButton?.isEnabled = false
         
         // Segmented control (choice for presenting images by month, week, day or in a single collection)
         if #available(iOS 13.0, *) {
@@ -264,7 +265,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 }
                 cancelBarButton?.isEnabled = false
                 actionBarButton?.isEnabled = (queue.operationCount == 0)
-                uploadBarButton?.isEnabled = true
+                uploadBarButton?.isEnabled = false
                 title = NSLocalizedString("selectImages", comment: "Select Photos")
             default:
                 navigationItem.leftBarButtonItems = [cancelBarButton].compactMap { $0 }
@@ -278,7 +279,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 }
                 cancelBarButton?.isEnabled = true
                 actionBarButton?.isEnabled = (queue.operationCount == 0)
-                uploadBarButton?.isEnabled = true
+                uploadBarButton?.isEnabled = (queue.operationCount == 0)
                 title = nberOfSelectedImages == 1 ? NSLocalizedString("selectImageSelected", comment: "1 Photo Selected") : String(format:NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), NSNumber(value: nberOfSelectedImages))
         }
     }
