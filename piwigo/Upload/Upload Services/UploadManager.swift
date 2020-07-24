@@ -62,6 +62,8 @@ class UploadManager: NSObject {
         }
         return anURL
     }()
+    
+    let decoder = JSONDecoder()
 
     // See https://en.wikipedia.org/wiki/List_of_file_signatures
     // https://mimesniff.spec.whatwg.org/#sniffing-in-an-image-context

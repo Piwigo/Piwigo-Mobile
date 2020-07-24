@@ -58,67 +58,27 @@ extension UploadManager {
                 imageData.author = upload.author
                 imageData.privacyLevel = upload.privacyLevel ?? kPiwigoPrivacy(rawValue: 0)
 
-                // Case where we uploaded a PNG file… (JSONDecoder() crashes !!)
-                let fileExt = (URL(fileURLWithPath: upload.fileName!).pathExtension).lowercased()
-                if fileExt == "png" {
-                    guard let jsonTypeResponse = jsonData as! [String:Any]?,
-                        let stat: String = jsonTypeResponse["stat"] as! String? else {
-                        // Upload to be re-started?
-                        let error = UploadError.networkUnavailable
-                        self.updateUploadRequestWith(upload, error: error)
-                        return
-                    }
-                    if stat == "fail"
-                    {
-                        // Retrieve Piwigo server error
-                        if let errorCode = jsonTypeResponse["err"] as! Int?,
-                            let errorMessage = jsonTypeResponse["message"] as! String? {
-                            let error = NSError.init(domain: "Piwigo", code: errorCode, userInfo: [NSLocalizedDescriptionKey : errorMessage])
-                            self.updateUploadRequestWith(upload, error: error)
-                        } else {
-                            // Unexpected Piwigo server error
-                            let error = NSError.init(domain: "Piwigo", code: -1, userInfo: [NSLocalizedDescriptionKey : "Unexpected error encountered while calling server method with provided parameters."])
-                            self.updateUploadRequestWith(upload, error: error)
-                        }
-                        return
-                    }
-                    if stat != "ok" {
-                        // Data cannot be digested, image still ready for upload
-                        let error = NSError.init(domain: "Piwigo", code: -1, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongDataFormat.localizedDescription])
-                        self.updateUploadRequestWith(upload, error: error)
-                        return
-                    }
+                // Decode the JSON.
+                do {
+                    // Decode the JSON into codable type ImagesUploadJSON.
+                    let uploadJSON = try self.decoder.decode(ImagesUploadJSON.self, from: data)
 
+                    // Piwigo error?
+                    if (uploadJSON.errorCode != 0) {
+                        let error = NSError.init(domain: "Piwigo", code: uploadJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
+                        self.updateUploadRequestWith(upload, error: error)
+                        return
+                    }
+                    
                     // Get data from server response
-                    let result: [String:Any] = jsonTypeResponse["result"] as! [String:Any]
-                    imageData.imageId = result["image_id"] as! Int
-                    imageData.squarePath = result["square_src"] as? String
-                    imageData.thumbPath = result["src"] as? String
-                }
-                else {
-                    // Decode the JSON.
-                    do {
-                        // Decode the JSON into codable type ImagesUploadJSON.
-                        let decoder = JSONDecoder()
-                        let uploadJSON = try decoder.decode(ImagesUploadJSON.self, from: data)
-
-                        // Piwigo error?
-                        if (uploadJSON.errorCode != 0) {
-                            let error = NSError.init(domain: "Piwigo", code: uploadJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
-                            self.updateUploadRequestWith(upload, error: error)
-                            return
-                        }
-                        
-                        // Get data from server response
-                        imageData.imageId = uploadJSON.imagesUpload.image_id!
-                        imageData.squarePath = uploadJSON.imagesUpload.square_src
-                        imageData.thumbPath = uploadJSON.imagesUpload.src
-                    } catch {
-                        // Data cannot be digested, image still ready for upload
-                        let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongDataFormat.localizedDescription])
-                        self.updateUploadRequestWith(upload, error: error)
-                        return
-                    }
+                    imageData.imageId = uploadJSON.data.image_id!
+                    imageData.squarePath = uploadJSON.data.square_src
+                    imageData.thumbPath = uploadJSON.data.src
+                } catch {
+                    // Data cannot be digested, image still ready for upload
+                    let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongDataFormat.localizedDescription])
+                    self.updateUploadRequestWith(upload, error: error)
+                    return
                 }
 
                 // Add uploaded image to cache and update UI if needed
