@@ -1363,7 +1363,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
          [self updateButtonsInPreviewMode];
 
          // Reload collection view
-         [self.imagesCollection reloadData];
+         [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
      }
 }
 
@@ -1689,7 +1689,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
                     if(createdSuccessfully)
                     {
                         // Reload data
-                        [self.imagesCollection reloadData];
+                        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
 
                         // Hide HUD
                         [self hideHUDwithSuccess:YES completion:nil];
@@ -2932,7 +2932,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
                 self.loadingImages = YES;
                 [self.albumData loadMoreImagesOnCompletion:^{
                     self.loadingImages = NO;
-                    [self.imagesCollection reloadData];
+                    [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
                 }];
             }
             
@@ -3159,7 +3159,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
         {
             self.imageDetailView.images = [self.albumData.images mutableCopy];
         }
-        [self.imagesCollection reloadData];
+        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
     }];
 }
 
@@ -3170,7 +3170,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
 {
     // Deselect image
     [self.selectedImageIds removeObject:[NSString stringWithFormat:@"%ld", (long)imageId]];
-    [self.imagesCollection reloadData];
+    [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
 }
 
 -(void)didRenameFileOfImage:(PiwigoImageData *)imageData
@@ -3203,7 +3203,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
     index = MAX(0, index-1);                                    // index must be >= 0
     index = MIN(index, [self.albumData.images count] - 1);      // index must be < nber images
     self.imageOfInterest = [NSIndexPath indexPathForItem:index inSection:1];
-    [self.imagesCollection reloadData];
+    [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
 }
 
 -(void)deselectImages
@@ -3258,7 +3258,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
 	self.currentSortCategory = sortType;
     [self.albumData updateImageSort:sortType OnCompletion:^{
 //        NSLog(@"didSelectCategorySortType:Sorting images…");
-        [self.imagesCollection reloadData];
+        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
     }];
 }
 
