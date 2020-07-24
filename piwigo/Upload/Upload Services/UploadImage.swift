@@ -244,6 +244,7 @@ extension UploadManager {
 
         // Add metadata to final image
         let imageData = ImageService.writeMetadata(imageMetadata, intoImageData: imageCompressed)
+        imageCompressed = nil
 
         // Try to determine MIME type from image data
         newUpload.mimeType = "image/jpeg"
@@ -350,7 +351,7 @@ extension UploadManager {
     // MARK: - MIME type and file extension sniffing
 
     private func contentType(forImageData data: Data?) -> String? {
-        var bytes: [UInt8] = []
+        var bytes: [UInt8] = Array.init(repeating: UInt8(0), count: 12)
         (data! as NSData).getBytes(&bytes, length: 12)
 
         if memcmp(bytes, &jpg, jpg.count) == 0 {
@@ -380,7 +381,7 @@ extension UploadManager {
     }
 
     private func fileExtension(forImageData data: Data?) -> String? {
-        var bytes: [UInt8] = []
+        var bytes: [UInt8] = Array.init(repeating: UInt8(0), count: 12)
         (data! as NSData).getBytes(&bytes, length: 12)
 
         if memcmp(bytes, &jpg, jpg.count) == 0 {

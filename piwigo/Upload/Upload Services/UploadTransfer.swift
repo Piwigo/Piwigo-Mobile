@@ -247,6 +247,7 @@ extension UploadManager {
         let length = imageData?.count ?? 0
         let thisChunkSize = length - offset > chunkSize ? chunkSize : length - offset
         let chunk = imageData?.subdata(in: offset..<offset + thisChunkSize)
+        print("    > #\(count) with chunkSize:", chunkSize, "thisChunkSize:", thisChunkSize, "total:", imageData?.count ?? 0)
 
         parameters[kPiwigoImagesUploadParamChunk] = "\(NSNumber(value: count))"
         parameters[kPiwigoImagesUploadParamChunks] = "\(NSNumber(value: chunks))"
@@ -264,6 +265,7 @@ extension UploadManager {
             },
            success: { task, responseObject in
                 // Continue?
+                print("    > #\(count) done:", responseObject.debugDescription)
                 if count >= chunks - 1 {
                     // Done, return
                     completion(task, responseObject, parameters)
