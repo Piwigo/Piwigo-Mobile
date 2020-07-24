@@ -286,17 +286,17 @@ class UploadManager: NSObject {
         NotificationCenter.default.post(name: name, object: nil, userInfo: userInfo)
 
         // Set upload properties
-        var uploadProperties = nextUpload.getUploadProperties(with: nextUpload.state, error: nextUpload.requestError)
+        var uploadProperties: UploadProperties
         if nextUpload.isFault {
             // The upload request is not fired yet.
-            // May happen after a crash occurring during an upload for example
-            uploadProperties.requestState = .waiting    // Because we have no idea of the status
-            uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
-                self.findNextImageToUpload()
-                return
-            })
+            // Happens after a crash during an upload for example
+            nextUpload.willAccessValue(forKey: nil)
+            uploadProperties = nextUpload.getUploadProperties(with: nextUpload.state, error: nextUpload.requestError)
+            nextUpload.didAccessValue(forKey: nil)
+        } else {
+            uploadProperties = nextUpload.getUploadProperties(with: nextUpload.state, error: nextUpload.requestError)
         }
-
+        
         // Retrieve image asset
         guard let originalAsset = PHAsset.fetchAssets(withLocalIdentifiers: [nextUpload.localIdentifier], options: nil).firstObject else {
             // Asset not available… deleted?
