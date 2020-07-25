@@ -25,17 +25,17 @@ extension UploadManager{
         // Prepare parameters for uploading image/video (filename key is kPiwigoImagesUploadParamFileName)
         let imageParameters: [String : String] = [
             kPiwigoImagesUploadParamFileName: upload.fileName ?? "Image.jpg",
-            kPiwigoImagesUploadParamCreationDate: creationDate,
             kPiwigoImagesUploadParamTitle: upload.imageTitle ?? "",
-            kPiwigoImagesUploadParamCategory: "\(NSNumber(value: upload.category))",
-            kPiwigoImagesUploadParamPrivacy: "\(NSNumber(value: upload.privacyLevel!.rawValue))",
             kPiwigoImagesUploadParamAuthor: upload.author ?? "",
+            kPiwigoImagesUploadParamCreationDate: creationDate,
+            kPiwigoImagesUploadParamPrivacy: "\(NSNumber(value: upload.privacyLevel!.rawValue))",
             kPiwigoImagesUploadParamDescription: upload.comment ?? "",
             kPiwigoImagesUploadParamTags: upload.tagIds ?? "",
-            kPiwigoImagesUploadParamMimeType: upload.mimeType ?? ""
         ]
 
-        ImageService.setImageInfoForImageWithId(upload.imageId, withInformation: imageParameters,
+        ImageService.setImageInfoForImageWithId(upload.imageId,
+                                                information: imageParameters,
+                                                sessionManager: sessionManager,
             onProgress:nil,
             onCompletion: { (task, jsonData) in
     //                print("•••> completion: \(String(describing: jsonData))")
@@ -205,6 +205,7 @@ extension UploadManager{
                     "image_id": imageId ?? "",
                     "category_id": NSNumber(value: categoryId)
                     ],
+                sessionManager: sessionManager,
                 progress: nil,
                 success: completion,
                 failure: fail)

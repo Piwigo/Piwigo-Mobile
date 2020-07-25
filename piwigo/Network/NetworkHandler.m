@@ -467,7 +467,7 @@ NSInteger const loadingViewTag = 899;
     }];
 }
 
-+(void)createUploadSessionManager
++(AFHTTPSessionManager *)createUploadSessionManager
 {
     // Configuration
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
@@ -484,20 +484,20 @@ NSInteger const loadingViewTag = 899;
     }
 
     // Create session manager
-    [Model sharedInstance].imageUploadManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName]] sessionConfiguration:config];
+    AFHTTPSessionManager *imageUploadManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName]] sessionConfiguration:config];
     
     // Security policy
     AFSecurityPolicy *policy = [AFSecurityPolicy defaultPolicy];
-    [[Model sharedInstance].imageUploadManager setSecurityPolicy:policy];
+    [imageUploadManager setSecurityPolicy:policy];
     
     // Add "text/plain" to response serializer
     AFJSONResponseSerializer *serializer = [AFJSONResponseSerializer serializer];
     serializer.acceptableContentTypes = [serializer.acceptableContentTypes setByAddingObject:@"text/plain"];
-    [Model sharedInstance].imageUploadManager.responseSerializer = serializer;
+    imageUploadManager.responseSerializer = serializer;
     
     // Session-Wide Authentication Challenges
     // Perform server trust authentication (certificate validation)
-    [[Model sharedInstance].imageUploadManager setSessionDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession * _Nonnull session, NSURLAuthenticationChallenge * _Nonnull challenge, NSURLCredential * _Nullable __autoreleasing * _Nullable credential) {
+    [imageUploadManager setSessionDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession * _Nonnull session, NSURLAuthenticationChallenge * _Nonnull challenge, NSURLCredential * _Nullable __autoreleasing * _Nullable credential) {
         
 #if defined(DEBUG_SESSION)
         NSLog(@"===>> didReceiveAuthenticationChallenge: %@", challenge.protectionSpace);
@@ -566,7 +566,7 @@ NSInteger const loadingViewTag = 899;
 
     // Task-Specific Authentication Challenges
     // For servers performing HTTP Basic/Digest Authentication
-    [[Model sharedInstance].imageUploadManager setAuthenticationChallengeHandler:^id _Nonnull(NSURLSession * _Nonnull session, NSURLSessionTask * _Nonnull task, NSURLAuthenticationChallenge * _Nonnull challenge, void (^ _Nonnull completionHandler)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable)) {
+    [imageUploadManager setAuthenticationChallengeHandler:^id _Nonnull(NSURLSession * _Nonnull session, NSURLSessionTask * _Nonnull task, NSURLAuthenticationChallenge * _Nonnull challenge, void (^ _Nonnull completionHandler)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable)) {
 //    [[Model sharedInstance].imageUploadManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
         
 #if defined(DEBUG_SESSION)
@@ -609,6 +609,7 @@ NSInteger const loadingViewTag = 899;
         }
         return @(NSURLSessionAuthChallengeRejectProtectionSpace);
     }];
+    return imageUploadManager;
 }
 
 
@@ -832,11 +833,12 @@ NSInteger const loadingViewTag = 899;
 +(NSURLSessionTask*)post:(NSString*)path
            URLParameters:(NSDictionary*)urlParams
               parameters:(NSDictionary*)parameters
+          sessionManager:(AFHTTPSessionManager *)sessionManager
                 progress:(void (^)(NSProgress *))progress
                  success:(void (^)(NSURLSessionTask *task, id responseObject))success
                  failure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
-    NSURLSessionTask *task = [[Model sharedInstance].sessionManager
+    NSURLSessionTask *task = [sessionManager
                               POST:[NetworkHandler getURLWithPath:path withURLParams:urlParams]
                               parameters:parameters headers:nil
                               progress:progress
@@ -867,11 +869,12 @@ NSInteger const loadingViewTag = 899;
 +(NSURLSessionTask*)postMultiPart:(NSString*)path
                              data:(NSData*)fileData
                        parameters:(NSDictionary*)parameters
+                   sessionManager:(AFHTTPSessionManager *)sessionManager
                          progress:(void (^)(NSProgress *))progress
                           success:(void (^)(NSURLSessionTask *task, id responseObject))success
                           failure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
-    NSURLSessionTask *task = [[Model sharedInstance].imageUploadManager
+    NSURLSessionTask *task = [sessionManager
                               POST:[NetworkHandler getURLWithPath:path withURLParams:nil]
                               parameters:nil headers:nil
          constructingBodyWithBlock:^(id<AFMultipartFormData> formData)

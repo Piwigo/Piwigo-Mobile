@@ -37,11 +37,7 @@ class UploadManager: NSObject {
         appState = UIApplication.State.inactive
     }
 
-    deinit {
-        NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: UIApplication.willResignActiveNotification, object: nil)
-    }
-    
+    // MARK: - Networking
     /// Uploads directory into which image/video files are temporarily stored
     let applicationUploadsDirectory: URL = {
         let fm = FileManager.default
@@ -63,8 +59,19 @@ class UploadManager: NSObject {
         return anURL
     }()
     
+    let sessionManager: AFHTTPSessionManager = NetworkHandler.createUploadSessionManager()
     let decoder = JSONDecoder()
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.willResignActiveNotification, object: nil)
 
+        // Close upload session
+        sessionManager.invalidateSessionCancelingTasks(true, resetSession: true)
+    }
+    
+
+    // MARK: - Image Formats
     // See https://en.wikipedia.org/wiki/List_of_file_signatures
     // https://mimesniff.spec.whatwg.org/#sniffing-in-an-image-context
 

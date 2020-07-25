@@ -89,7 +89,8 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
                              onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 +(NSURLSessionTask*)setImageInfoForImageWithId:(NSInteger)imageId
-                               withInformation:(NSDictionary*)imageInformation
+                                   information:(NSDictionary*)imageInformation
+                                sessionManager:(AFHTTPSessionManager *)sessionManager
                                     onProgress:(void (^)(NSProgress *))progress
                                   OnCompletion:(void (^)(NSURLSessionTask *task, id response))completion
                                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;

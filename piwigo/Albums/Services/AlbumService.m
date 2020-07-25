@@ -28,6 +28,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
     return [self post:kPiwigoGetInfos
         URLParameters:nil
            parameters:nil
+       sessionManager:[Model sharedInstance].sessionManager
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
@@ -208,6 +209,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
     return [self post:kPiwigoCategoriesGetList
         URLParameters:nil
            parameters:parameters
+       sessionManager:[Model sharedInstance].sessionManager
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
@@ -366,6 +368,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
     return [self post:kCommunityCategoriesGetList
         URLParameters:nil
            parameters:parameters
+       sessionManager:[Model sharedInstance].sessionManager
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
@@ -423,6 +426,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
     return [self post:kPiwigoCategoriesAdd
         URLParameters:nil
            parameters:parameters
+       sessionManager:[Model sharedInstance].sessionManager
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
         
@@ -488,6 +492,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 						@"name" : categoryName,
                         @"comment" : categoryComment
                         }
+       sessionManager:[Model sharedInstance].sessionManager
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
 				  if(completion)
@@ -527,6 +532,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                         @"photo_deletion_mode" : deletionMode,
 						@"pwg_token" : [Model sharedInstance].pwgToken
                         }
+       sessionManager:[Model sharedInstance].sessionManager
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
 				  if(completion)
@@ -570,6 +576,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 						@"pwg_token" : [Model sharedInstance].pwgToken,
 						@"parent" : [NSString stringWithFormat:@"%@", @(categoryToMoveIntoId)]
                         }
+       sessionManager:[Model sharedInstance].sessionManager
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
 				  if(completion)
@@ -608,6 +615,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 						@"category_id" : [NSString stringWithFormat:@"%@", @(categoryId)],
 						@"image_id" : [NSString stringWithFormat:@"%@", @(imageId)]
                         }
+       sessionManager:[Model sharedInstance].sessionManager
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
 				  if(completion)
@@ -644,6 +652,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
            parameters:@{
                         @"category_id" : [NSString stringWithFormat:@"%@", @(categoryId)]
                         }
+       sessionManager:[Model sharedInstance].sessionManager
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   if(completion)

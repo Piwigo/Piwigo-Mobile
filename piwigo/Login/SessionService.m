@@ -22,6 +22,7 @@
     return [self post:kReflectionGetMethodList
         URLParameters:nil
            parameters:nil
+       sessionManager:[Model sharedInstance].sessionManager
              progress:^(NSProgress * progress) {
                  if ([Model sharedInstance].userCancelledCommunication) {
                      [progress cancel];
@@ -69,6 +70,7 @@
         URLParameters:nil
            parameters:@{@"username" : user,
                         @"password" : password}
+       sessionManager:[Model sharedInstance].sessionManager
              progress:^(NSProgress * progress) {
                  if ([Model sharedInstance].userCancelledCommunication) {
                      [progress cancel];
@@ -116,6 +118,7 @@
     return [self post:kPiwigoSessionGetStatus
         URLParameters:nil
            parameters:nil
+       sessionManager:[Model sharedInstance].sessionManager
              progress:^(NSProgress * progress) {
                  if ([Model sharedInstance].userCancelledCommunication) {
                      [progress cancel];
@@ -477,6 +480,7 @@
     return [self post:kCommunitySessionGetStatus
         URLParameters:nil
            parameters:nil
+       sessionManager:[Model sharedInstance].sessionManager
              progress:^(NSProgress * progress) {
                  if ([Model sharedInstance].userCancelledCommunication) {
                      [progress cancel];
@@ -512,6 +516,7 @@
 	return [self post:kPiwigoSessionLogout
 		URLParameters:nil
            parameters:nil
+       sessionManager:[Model sharedInstance].sessionManager
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
 

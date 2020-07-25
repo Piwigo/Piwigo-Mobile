@@ -100,7 +100,6 @@ typedef enum {
 @property (nonatomic, strong) NSURLCache *imageCache;
 @property (nonatomic, strong) AFHTTPSessionManager *imagesSessionManager;
 @property (nonatomic, strong) AFImageDownloader *imageDownloader;
-@property (nonatomic, strong) AFHTTPSessionManager *imageUploadManager;
 
 // Album/category settings
 @property (nonatomic, assign) NSInteger defaultCategory;

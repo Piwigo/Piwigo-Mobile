@@ -33,7 +33,7 @@ class TagsProvider {
     */
     func fetchTags(asAdmin: Bool, completionHandler: @escaping (Error?) -> Void) {
 
-        NetworkHandler.post(asAdmin ? kPiwigoTagsGetAdminList : kPiwigoTagsGetList, urlParameters: nil, parameters: nil, progress: nil, success: { (task, jsonData) in
+        NetworkHandler.post(asAdmin ? kPiwigoTagsGetAdminList : kPiwigoTagsGetList, urlParameters: nil, parameters: nil, sessionManager: Model.sharedInstance().sessionManager, progress: nil, success: { (task, jsonData) in
 
             // Alert the user if no data comes back.
             guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {
@@ -233,8 +233,9 @@ class TagsProvider {
     */
     func addTag(with name: String, completionHandler: @escaping (Error?) -> Void) {
         
-        NetworkHandler.post(kPiwigoTagsAdd, urlParameters: nil,
-                            parameters: ["name": name], progress: nil,
+        NetworkHandler.post(kPiwigoTagsAdd, urlParameters: nil, parameters: ["name": name],
+                            sessionManager: Model.sharedInstance()?.sessionManager,
+                            progress: nil,
                             success: { (task, jsonData) in
             // Alert the user if no data comes back.
             guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {

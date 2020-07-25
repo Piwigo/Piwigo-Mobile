@@ -74,20 +74,21 @@ extension UploadManager {
                     imageData.imageId = uploadJSON.data.image_id!
                     imageData.squarePath = uploadJSON.data.square_src
                     imageData.thumbPath = uploadJSON.data.src
+
+                    // Add uploaded image to cache and update UI if needed
+                    CategoriesData.sharedInstance()?.addImage(imageData)
+
+                    // Update state of upload
+                    var uploadProperties = upload
+                    uploadProperties.imageId = imageData.imageId
+                    self.updateUploadRequestWith(uploadProperties, error: nil)
+                    return
                 } catch {
                     // Data cannot be digested, image still ready for upload
                     let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongDataFormat.localizedDescription])
                     self.updateUploadRequestWith(upload, error: error)
                     return
                 }
-
-                // Add uploaded image to cache and update UI if needed
-                CategoriesData.sharedInstance()?.addImage(imageData)
-
-                // Update state of upload
-                var uploadProperties = upload
-                uploadProperties.imageId = imageData.imageId
-                self.updateUploadRequestWith(uploadProperties, error: nil)
             },
             onFailure: { (task, error) in
                 if let error = error {
@@ -143,9 +144,6 @@ extension UploadManager {
         // Calculate chunk size
         let chunkSize = Model.sharedInstance().uploadChunkSize * 1024
 
-        // Create upload session
-        NetworkHandler.createUploadSessionManager() // 60s timeout, 2 connections max
-
         // Get file to upload
         var imageData: Data? = nil
         do {
@@ -180,11 +178,11 @@ extension UploadManager {
                             // Done, return
                             completion(task, response)
                             // Close upload session
-                            Model.sharedInstance().imageUploadManager.invalidateSessionCancelingTasks(true, resetSession: true)
+//                            imageUploadManager.invalidateSessionCancelingTasks(true, resetSession: true)
                         },
                        onFailure: { task, error in
                             // Close upload session
-                            Model.sharedInstance().imageUploadManager.invalidateSessionCancelingTasks(true, resetSession: true)
+//                            imageUploadManager.invalidateSessionCancelingTasks(true, resetSession: true)
                             // Done, return
                             fail(task, error as NSError?)
                         })
@@ -216,6 +214,7 @@ extension UploadManager {
         offset += thisChunkSize
 
         NetworkHandler.postMultiPart(kPiwigoImagesUpload, data: chunk, parameters: parameters,
+                                     sessionManager: sessionManager,
            progress: { progress in
                 DispatchQueue.main.async(execute: {
                     if progress != nil {
