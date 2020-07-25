@@ -14,24 +14,21 @@ let kPiwigoTagsGetAdminList = "format=json&method=pwg.tags.getAdminList"
 
 struct TagJSON: Decodable {
 
+    var status: String?
+    var data = [TagProperties]()
+    var errorCode = 0
+    var errorMessage = ""
+
     private enum RootCodingKeys: String, CodingKey {
-        case stat
-        case result
-        case err
-        case message
+        case status = "stat"
+        case data = "result"
+        case errorCode = "err"
+        case errorMessage = "message"
     }
 
     private enum ResultCodingKeys: String, CodingKey {
         case tags
     }
-
-    // Constants
-    var stat: String?
-    var errorCode = 0
-    var errorMessage = ""
-    
-    // A TagProperties array of decoded Tag data.
-    var tagPropertiesArray = [TagProperties]()
 
     init(from decoder: Decoder) throws
     {
@@ -39,17 +36,17 @@ struct TagJSON: Decodable {
         let rootContainer = try decoder.container(keyedBy: RootCodingKeys.self)
         
         // Status returned by Piwigo
-        stat = try rootContainer.decodeIfPresent(String.self, forKey: .stat)
-        if (stat == "ok")
+        status = try rootContainer.decodeIfPresent(String.self, forKey: .status)
+        if (status == "ok")
         {
             // Result container keyed by ResultCodingKeys
-            let resultContainer = try rootContainer.nestedContainer(keyedBy: ResultCodingKeys.self, forKey: .result)
+            let resultContainer = try rootContainer.nestedContainer(keyedBy: ResultCodingKeys.self, forKey: .data)
 //            dump(resultContainer)
             
             // Decodes tags from the data and store them in the array
             do {
                 // Use TagProperties struct
-                try tagPropertiesArray = resultContainer.decode([TagProperties].self, forKey: .tags)
+                try data = resultContainer.decode([TagProperties].self, forKey: .tags)
             }
             catch {
                 // Use a different struct because id is a String instead of an Int
@@ -59,15 +56,15 @@ struct TagJSON: Decodable {
                 for tagProperty4Admin in tagPropertiesArray4Admin {
                     let id:Int32? = Int32(tagProperty4Admin.id ?? "")!
                     let tagProperty = TagProperties(id: id, name: tagProperty4Admin.name, lastmodified: tagProperty4Admin.lastmodified, counter: Int64.max, url_name: tagProperty4Admin.url_name, url: "")
-                    tagPropertiesArray.append(tagProperty)
+                    data.append(tagProperty)
                 }
             }
         }
-        else if (stat == "fail")
+        else if (status == "fail")
         {
             // Retrieve Piwigo server error
-            errorCode = try rootContainer.decode(Int.self, forKey: .err)
-            errorMessage = try rootContainer.decode(String.self, forKey: .message)
+            errorCode = try rootContainer.decode(Int.self, forKey: .errorCode)
+            errorMessage = try rootContainer.decode(String.self, forKey: .errorMessage)
         }
         else {
             // Unexpected Piwigo server error

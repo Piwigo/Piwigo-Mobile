@@ -56,7 +56,7 @@ class TagsProvider {
                 }
 
                 // Import the tagJSON into Core Data.
-                try self.importTags(from: tagJSON.tagPropertiesArray)
+                try self.importTags(from: tagJSON.data)
 
             } catch {
                 // Alert the user if data cannot be digested.
@@ -257,7 +257,7 @@ class TagsProvider {
                 }
 
                 // Import the tagJSON into Core Data.
-                let newTag = TagProperties.init(id: tagJSON.tagProperties.id, name: name,
+                let newTag = TagProperties.init(id: tagJSON.data.id, name: name,
                                                 lastmodified: "", counter: 0, url_name: "", url: "")
 
                 // Import the new tag in a private queue context.

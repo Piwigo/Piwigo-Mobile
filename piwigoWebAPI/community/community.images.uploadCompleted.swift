@@ -13,20 +13,17 @@ let kCommunityImagesUploadCompleted = "format=json&method=community.images.uploa
 
 struct CommunityImagesUploadCompletedJSON: Decodable {
     
+    var status: String?
+    var success = false
+    var errorCode = 0
+    var errorMessage = ""
+
     private enum RootCodingKeys: String, CodingKey {
-        case stat
+        case status = "stat"
         case result
         case err
         case message
     }
-
-    // Constants
-    var stat: String?
-    var errorCode = 0
-    var errorMessage = ""
-    
-    // A boolean reporting if the method was successful
-    var isSubmittedToModerator = false
 
     init(from decoder: Decoder) throws
     {
@@ -34,12 +31,12 @@ struct CommunityImagesUploadCompletedJSON: Decodable {
         let rootContainer = try decoder.container(keyedBy: RootCodingKeys.self)
         
         // Status returned by Piwigo
-        stat = try rootContainer.decodeIfPresent(String.self, forKey: .stat)
-        if (stat == "ok")
+        status = try rootContainer.decodeIfPresent(String.self, forKey: .status)
+        if (status == "ok")
         {
-            isSubmittedToModerator = true
+            success = true
         }
-        else if (stat == "fail")
+        else if (status == "fail")
         {
             // Retrieve Piwigo server error
             errorCode = try rootContainer.decode(Int.self, forKey: .err)

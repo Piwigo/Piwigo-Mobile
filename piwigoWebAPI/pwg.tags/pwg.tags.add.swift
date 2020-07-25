@@ -13,24 +13,21 @@ let kPiwigoTagsAdd = "format=json&method=pwg.tags.add"
 
 struct TagAddJSON: Decodable {
 
+    var status: String?
+    var data = TagPropertiesAdd.init(id: 0, info: "")
+    var errorCode = 0
+    var errorMessage = ""
+
     private enum RootCodingKeys: String, CodingKey {
-        case stat
-        case result
-        case err
-        case message
+        case status = "stat"
+        case data = "result"
+        case errorCode = "err"
+        case errorMessage = "message"
     }
 
     private enum ResultCodingKeys: String, CodingKey {
         case tags
     }
-
-    // Constants
-    var stat: String?
-    var errorCode = 0
-    var errorMessage = ""
-    
-    // A TagProperties array of decoded Tag data.
-    var tagProperties = TagPropertiesAdd.init(id: 0, info: "")
 
     init(from decoder: Decoder) throws
     {
@@ -38,17 +35,17 @@ struct TagAddJSON: Decodable {
         let rootContainer = try decoder.container(keyedBy: RootCodingKeys.self)
         
         // Status returned by Piwigo
-        stat = try rootContainer.decodeIfPresent(String.self, forKey: .stat)
-        if (stat == "ok")
+        status = try rootContainer.decodeIfPresent(String.self, forKey: .status)
+        if (status == "ok")
         {
             // Decodes tags from the data and store them in the array
-            try tagProperties = rootContainer.decode(TagPropertiesAdd.self, forKey: .result)
+            try data = rootContainer.decode(TagPropertiesAdd.self, forKey: .data)
         }
-        else if (stat == "fail")
+        else if (status == "fail")
         {
             // Retrieve Piwigo server error
-            errorCode = try rootContainer.decode(Int.self, forKey: .err)
-            errorMessage = try rootContainer.decode(String.self, forKey: .message)
+            errorCode = try rootContainer.decode(Int.self, forKey: .errorCode)
+            errorMessage = try rootContainer.decode(String.self, forKey: .errorMessage)
         }
         else {
             // Unexpected Piwigo server error

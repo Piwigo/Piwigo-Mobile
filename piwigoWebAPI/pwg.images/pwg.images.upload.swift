@@ -14,15 +14,15 @@ let kPiwigoImagesUpload = "format=json&method=pwg.images.upload"
 struct ImagesUploadJSON: Decodable {
 
     var status: String?
-    var data = ImagesUpload.init(image_id: NSNotFound, category: nil, name: "", square_src: "", src: "")
+    var data = ImagesUpload.init(image_id: NSNotFound, square_src: "", src: "", category: nil, name: "")
     var errorCode = 0
     var errorMessage = ""
 
     private enum RootCodingKeys: String, CodingKey {
         case status = "stat"
         case data = "result"
-        case err = "err"
-        case message = "message"
+        case errorCode = "err"
+        case errorMessage = "message"
     }
 
     init(from decoder: Decoder) throws
@@ -45,8 +45,8 @@ struct ImagesUploadJSON: Decodable {
             else if (status == "fail")
             {
                 // Retrieve Piwigo server error
-                errorCode = try rootContainer.decode(Int.self, forKey: .err)
-                errorMessage = try rootContainer.decode(String.self, forKey: .message)
+                errorCode = try rootContainer.decode(Int.self, forKey: .errorCode)
+                errorMessage = try rootContainer.decode(String.self, forKey: .errorMessage)
             }
             else {
                 // Unexpected Piwigo server error
@@ -63,12 +63,12 @@ struct ImagesUploadJSON: Decodable {
 struct ImagesUpload: Codable
 {
     let image_id: Int?              // 1042
+    let square_src: String?         // "https://…-sq.jpg"
+    let src: String?                // "https://…-th.jpg"
 
     // The following data are not used yet
     let category: Category?         // {"id":140,"nb_photos":"7","label":"Essai"}
     let name: String?               // "Delft - 01"
-    let square_src: String?         // "https://…-sq.jpg"
-    let src: String?                // "https://…-th.jpg"
 }
 
 // MARK: - Category

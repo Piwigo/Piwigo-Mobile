@@ -58,6 +58,39 @@ extension UploadManager{
                         self.updateUploadRequestWith(upload, error: error)
                         return
                     }
+
+                    // Successful?
+                    if uploadJSON.success {
+                        // Image successfully uploaded
+                        var uploadProperties = upload
+                        uploadProperties.requestState = .finished
+                        
+                        // Will propose to delete image if wanted by user
+                        if Model.sharedInstance()?.deleteImageAfterUpload == true {
+                            // Retrieve image asset
+                            if let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [upload.localIdentifier], options: nil).firstObject {
+                                // Only local images can be deleted
+                                if imageAsset.sourceType != .typeCloudShared {
+                                    // Append image to list of images to delete
+                                    uploadProperties.deleteImageAfterUpload = true
+                                }
+                            }
+                        }
+                        
+                        // Update upload record, cache and views
+                        self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
+                            print("•••>> complete ;-)")
+                            
+                            // Any other image in upload queue?
+                            self.setIsFinishing(status: false)
+                        })
+                    } else {
+                        // Could not set image parameters, upload still ready for finish
+                        print("••>> setImageInfoForImageWithId(): no successful")
+                        let error = NSError.init(domain: "Piwigo", code: -1, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")])
+                        self.updateUploadRequestWith(upload, error: error)
+                        return
+                    }
                 } catch {
                     // Data cannot be digested, upload still ready for finish
                     let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongDataFormat.localizedDescription])
@@ -65,29 +98,6 @@ extension UploadManager{
                     return
                 }
 
-                // Image successfully uploaded
-                var uploadProperties = upload
-                uploadProperties.requestState = .finished
-                
-                // Will propose to delete image if wanted by user
-                if Model.sharedInstance()?.deleteImageAfterUpload == true {
-                    // Retrieve image asset
-                    if let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [upload.localIdentifier], options: nil).firstObject {
-                        // Only local images can be deleted
-                        if imageAsset.sourceType != .typeCloudShared {
-                            // Append image to list of images to delete
-                            uploadProperties.deleteImageAfterUpload = true
-                        }
-                    }
-                }
-                
-                // Update upload record, cache and views
-                self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
-                    print("•••>> complete ;-)")
-                    
-                    // Any other image in upload queue?
-                    self.setIsFinishing(status: false)
-                })
             },
             onFailure: { (task, error) in
                 if let error = error as NSError? {
@@ -143,52 +153,41 @@ extension UploadManager{
             onCompletion: { (task, jsonData) in
 //                    print("•••> completion: \(String(describing: jsonData))")
                 
-                guard let jsonTypeResponse = jsonData as! [String:Any]?,
-                    let stat: String = jsonTypeResponse["stat"] as! String? else {
+                // The following code crashes at "let decoder = JSONDecoder()" if a PNG file was uploaded !!!?
+                // That is why we wimply check without decoding the JSON into codable type CommunityUploadCompletedJSON.
+                guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {
                     // Will retry later
                     return
                 }
-
-                // Successful?
-                if stat == "ok" {
-                    // Images successfully moderated, delete them if wanted by users
-                    if let completedUploads = self.uploadsProvider.requestsCompleted() {
-                        let imagesToDelete = completedUploads.filter({$0.deleteImageAfterUpload == true})
-                        self.delete(uploadedImages: imagesToDelete)
-                    }
-                }
-
-                // The following code crashes at "let decoder = JSONDecoder()" if a PNG file was uploaded !!!?
-                // That is why we wimply check without decoding the JSON into codable type CommunityUploadCompletedJSON.
-//                guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {
-//                    // Will retry later
-//                    return
-//                }
                 // Decode the JSON.
-//                do {
-//                    // Decode the JSON into codable type CommunityUploadCompletedJSON.
-//                    let decoder = JSONDecoder()
-//                    let uploadJSON = try decoder.decode(CommunityImagesUploadCompletedJSON.self, from: data)
-//
-//                    // Piwigo error?
-//                    if (uploadJSON.errorCode != 0) {
-//                        // Will retry later
-//                        print("••>> moderateUploadedImages(): Piwigo error \(uploadJSON.errorCode) - \(uploadJSON.errorMessage)")
-//                        return
-//                    }
-//
-//                    // Successful?
-//                    if uploadJSON.isSubmittedToModerator {
-//                        // Images successfully moderated, delete them if wanted by users
-//                        if let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects {
-//                            let uploadsToDelete = allUploads.filter({ $0.state == .finished && $0.requestDelete == true })
-//                            UploadManager.sharedInstance()?.delete(uploadedImages: uploadsToDelete)
-//                        }
-//                    }
-//                } catch {
-//                    // Will retry later
-//                    return
-//                }
+                do {
+                    // Decode the JSON into codable type CommunityUploadCompletedJSON.
+                    let decoder = JSONDecoder()
+                    let uploadJSON = try decoder.decode(CommunityImagesUploadCompletedJSON.self, from: data)
+
+                    // Piwigo error?
+                    if (uploadJSON.errorCode != 0) {
+                        // Will retry later
+                        print("••>> moderateUploadedImages(): Piwigo error \(uploadJSON.errorCode) - \(uploadJSON.errorMessage)")
+                        return
+                    }
+
+                    // Successful?
+                    if uploadJSON.success {
+                        // Images successfully moderated, delete them if wanted by users
+                        if let completedUploads = self.uploadsProvider.requestsCompleted() {
+                            let imagesToDelete = completedUploads.filter({$0.deleteImageAfterUpload == true})
+                            self.delete(uploadedImages: imagesToDelete)
+                        }
+                    } else {
+                        // Will retry later
+                        print("••>> moderateUploadedImages(): no successful")
+                        return
+                    }
+                } catch {
+                    // Will retry later
+                    return
+                }
         }, onFailure: { (task, error) in
                 // Will retry later
                 return

@@ -13,37 +13,34 @@ let kPiwigoImagesSetInfo = "format=json&method=pwg.images.setInfo"
 
 struct ImagesSetInfoJSON: Decodable {
 
-    private enum RootCodingKeys: String, CodingKey {
-        case stat
-        case result
-        case err
-        case message
-    }
-
-    // Constants
-    var stat: String?
+    var status: String?
+    var success = false
     var errorCode = 0
     var errorMessage = ""
-    
-    // A boolean reporting if the method was successful
-    var imageSetInfo = false
 
+    private enum RootCodingKeys: String, CodingKey {
+        case status = "stat"
+        case result
+        case errorCode = "err"
+        case errorMessage = "message"
+    }
+    
     init(from decoder: Decoder) throws
     {
         // Root container keyed by RootCodingKeys
         let rootContainer = try decoder.container(keyedBy: RootCodingKeys.self)
         
         // Status returned by Piwigo
-        stat = try rootContainer.decodeIfPresent(String.self, forKey: .stat)
-        if (stat == "ok")
+        status = try rootContainer.decodeIfPresent(String.self, forKey: .status)
+        if (status == "ok")
         {
-            imageSetInfo = true
+            success = true
         }
-        else if (stat == "fail")
+        else if (status == "fail")
         {
             // Retrieve Piwigo server error
-            errorCode = try rootContainer.decode(Int.self, forKey: .err)
-            errorMessage = try rootContainer.decode(String.self, forKey: .message)
+            errorCode = try rootContainer.decode(Int.self, forKey: .errorCode)
+            errorMessage = try rootContainer.decode(String.self, forKey: .errorMessage)
         }
         else {
             // Unexpected Piwigo server error
