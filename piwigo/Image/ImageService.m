@@ -1100,6 +1100,12 @@ NSString * const kGetImageOrderDescending = @"desc";
         imageData.fileSize = NSNotFound;
     }
     
+    // Object "md5sum"
+    imageData.MD5checksum = [NetworkHandler UTF8EncodedStringFromString:[imageJson objectForKey:@"md5sum"]];
+    if(imageData.MD5checksum.length == 0) {
+        imageData.MD5checksum = @"";
+    }
+
     return imageData;
 }
 

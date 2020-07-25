@@ -30,6 +30,7 @@ class Upload: NSManagedObject {
     @NSManaged var creationDate: Date?
     @NSManaged var fileName: String?
     @NSManaged var mimeType: String?
+    @NSManaged var md5Sum: String?
     @NSManaged var isVideo: Bool
     
     @NSManaged var author: String?
@@ -168,7 +169,7 @@ extension Upload {
             requestDate: self.requestDate, requestState: state, requestError: error,
             // Photo creation date and filename
             creationDate: self.creationDate, fileName: self.fileName,
-            mimeType: self.mimeType, isVideo: self.isVideo,
+            mimeType: self.mimeType, md5Sum: self.md5Sum, isVideo: self.isVideo,
             // Photo author name defaults to name entered in Settings
             author: self.author, privacyLevel: self.privacy,
             imageTitle: self.imageName, comment: self.comment,
@@ -187,7 +188,7 @@ extension Upload {
             requestDate: self.requestDate, requestState: self.state, requestError: self.requestError,
             // Photo creation date and filename
             creationDate: self.creationDate, fileName: self.fileName,
-            mimeType: self.mimeType, isVideo: self.isVideo,
+            mimeType: self.mimeType, md5Sum: self.md5Sum, isVideo: self.isVideo,
             // Photo author name defaults to name entered in Settings
             author: self.author, privacyLevel: self.privacy,
             imageTitle: self.imageName, comment: self.comment,
@@ -283,6 +284,7 @@ struct UploadProperties
     var creationDate: Date?                 // "2012-08-23 09:18:43"
     var fileName: String?                   // "IMG123.JPG"
     var mimeType: String?                   // "image/png"
+    var md5Sum: String?                     // "8b1a9953c4611296a827abf8c47804d7"
     var isVideo: Bool                       // true/false
     
     var author: String?                     // "Author"
@@ -309,7 +311,7 @@ extension UploadProperties {
             // Upload request date is now and state is waiting
             requestDate: Date.init(), requestState: .waiting, requestError: "",
             // Photo creation date and filename
-            creationDate: Date.init(), fileName: "", mimeType: "", isVideo: false,
+            creationDate: Date.init(), fileName: "", mimeType: "", md5Sum: "", isVideo: false,
             // Photo author name defaults to name entered in Settings
             author: Model.sharedInstance()?.defaultAuthor ?? "",
             // Privacy level defaults to level selected in Settings
@@ -334,7 +336,7 @@ extension UploadProperties {
             requestDate: self.requestDate, requestState: state, requestError: error,
             // Photo creation date and filename
             creationDate: self.creationDate, fileName: self.fileName,
-            mimeType: self.mimeType, isVideo: self.isVideo,
+            mimeType: self.mimeType, md5Sum: self.md5Sum, isVideo: self.isVideo,
             // Photo parameters
             author: self.author, privacyLevel: self.privacyLevel,
             imageTitle: self.imageTitle, comment: self.comment,

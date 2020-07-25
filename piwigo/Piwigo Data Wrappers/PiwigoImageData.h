@@ -83,7 +83,7 @@ typedef enum {
 // API pwg.images.getInfo returns in addition:
 //
 //      author, level, tags, (added_by), rating_score, (rates), (representative_ext)
-//      filesize, (md5sum), (date_metadata_update), (lastmodified), (rotation), (latitude), (longitude)
+//      filesize, md5sum, (date_metadata_update), (lastmodified), (rotation), (latitude), (longitude)
 //      (comments), (comments_paging), (coi)
 //
 @property (nonatomic, strong) NSString *author;                 // author
@@ -91,6 +91,7 @@ typedef enum {
 @property (nonatomic, strong) NSArray<PiwigoTagData*> *tags;    // tags
 @property (nonatomic, assign) float ratingScore;                // rating score
 @property (nonatomic, assign) NSInteger fileSize;               // filesize
+@property (nonatomic, strong) NSString * MD5checksum;           // MD5 checksum
 
 @property (nonatomic, assign) BOOL isVideo;
 
