@@ -287,10 +287,10 @@ CGFloat const kMoveCategoryViewWidth = 512.0;           // View width
         depth -= [defaultCategoryData getDepthOfCategory];
         [cell setupWithCategoryData:categoryData atDepth:depth withSubCategoryButton:YES];
         
-        // Cell is parent category?
-        if (categoryData.albumId == self.selectedCategory.parentAlbumId)
-        {
-            cell.userInteractionEnabled = NO;
+        // Selected category cannot be moved into one of its sub-categories
+        // i.e. current
+        if ((categoryData.albumId == self.selectedCategory.parentAlbumId) ||
+            [categoryData.upperCategories containsObject:[NSString stringWithFormat:@"%ld", (long)self.selectedCategory.albumId]]) {
             cell.categoryLabel.textColor = [UIColor piwigoColorRightLabel];
         }
 
@@ -309,8 +309,16 @@ CGFloat const kMoveCategoryViewWidth = 512.0;           // View width
 
 - (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    PiwigoAlbumData *categoryData = [self.categories objectAtIndex:indexPath.row];
-    if (categoryData.albumId == self.selectedCategory.parentAlbumId)
+    PiwigoAlbumData *categoryData;
+    if ((self.recentCategories.count > 0) && (indexPath.section == 0)) {
+        categoryData = [self.recentCategories objectAtIndex:indexPath.row];
+    } else {
+        categoryData = [self.categories objectAtIndex:indexPath.row];
+    }
+    
+    // User cannot move album to current parent album or in itself
+    if ((categoryData.albumId == self.selectedCategory.parentAlbumId) ||
+        [categoryData.upperCategories containsObject:[NSString stringWithFormat:@"%ld", (long)self.selectedCategory.albumId]])
         return NO;
     
     return YES;
@@ -330,8 +338,9 @@ CGFloat const kMoveCategoryViewWidth = 512.0;           // View width
         categoryData = [self.categories objectAtIndex:indexPath.row];
     }
     
-    // User cannot move album at current place
-    if (categoryData.albumId == self.selectedCategory.parentAlbumId) return;
+    // User cannot move album to current parent album or in itself
+    if ((categoryData.albumId == self.selectedCategory.parentAlbumId) ||
+        [categoryData.upperCategories containsObject:[NSString stringWithFormat:@"%ld", (long)self.selectedCategory.albumId]]) return;
 
     UIAlertController* alert = [UIAlertController
         alertControllerWithTitle:@""
@@ -349,6 +358,10 @@ CGFloat const kMoveCategoryViewWidth = 512.0;           // View width
          actionWithTitle:NSLocalizedString(@"moveCategory", @"Move Album")
          style:UIAlertActionStyleDefault
          handler:^(UIAlertAction * action) {
+             // Add chosen category to list of recent albums
+             NSDictionary *userInfo = @{@"categoryId" : [NSString stringWithFormat:@"%ld", (long)categoryData.albumId]};
+             [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationAddRecentAlbum object:nil userInfo:userInfo];
+             // Move album to selected category
              [self makeSelectedCategoryAChildOf:categoryData.albumId];
          }];
     
@@ -402,106 +415,80 @@ CGFloat const kMoveCategoryViewWidth = 512.0;           // View width
     [AlbumService moveCategory:self.selectedCategory.albumId
               intoCategory:categoryId
               OnCompletion:^(NSURLSessionTask *task, BOOL movedSuccessfully) {
-                  if(movedSuccessfully)
-                  {
-                      [self hideHUDwithSuccess:YES completion:^{
-                          // Updated categories in cache…
-                          // Update old parent categories except root album
-                          for (NSString *oldParentStr in self.selectedCategory.upperCategories) {
-                              // Check that it is not the root album, nor the moved album
-                              NSInteger oldParentId = [oldParentStr integerValue];
-                              if ((oldParentId == 0) ||
-                                  (oldParentId == self.selectedCategory.albumId)) { continue; }
-                              
-                              // Decrement number of sub-categories, remove number of moved images
-                              PiwigoAlbumData *oldParent = [[CategoriesData sharedInstance] getCategoryById:oldParentId];
-                              oldParent.numberOfSubCategories -= self.selectedCategory.numberOfSubCategories + 1;
-                              oldParent.totalNumberOfImages -= self.selectedCategory.totalNumberOfImages;
-                          }
-                                                                              
-                          // Update moved category and its sub-categories; and parent category if not root
-                          NSInteger count = self.selectedCategory.numberOfSubCategories;
-                          NSString *movedCatId = [NSString stringWithFormat:@"%ld", (long)self.selectedCategory.albumId];
-                          if (categoryId == 0) {
-                              // Update upperCategories of moved sub-categories
-                              if (count != 0) {
-                                  for (PiwigoAlbumData *category in [CategoriesData sharedInstance].allCategories) {
-                                      // Is this a sub-category of the moved album?
-                                      if ([category.upperCategories containsObject:movedCatId]  &&
-                                          category.albumId != self.selectedCategory.albumId) {
-                                          // Replace list of upper categories
-                                          category.upperCategories = @[movedCatId];
-                                          count--;
-                                          if (count == 0) { break; }
-                                      }
-                                  }
-                              }
-
-                              // New parent category is the root album
-                              self.selectedCategory.upperCategories = @[movedCatId];
-                              self.selectedCategory.nearestUpperCategory = categoryId;
-                              self.selectedCategory.parentAlbumId = categoryId;
-                          }
-                          else {
-                              // New parent category is not the root album
-                              PiwigoAlbumData *newParent = [[CategoriesData sharedInstance] getCategoryById:categoryId];
-
-                              // Update new parent categories except root album
-                              for (NSString *newParentStr in newParent.upperCategories) {
-                                  // Check that it is not the root album, nor the moved album
-                                  NSInteger newParentId = [newParentStr integerValue];
-                                  if ((newParentId == 0) ||
-                                      (newParentId == self.selectedCategory.albumId)) { continue; }
-                                  
-                                  // Add number of sub-categories, Add number of moved images
-                                  PiwigoAlbumData *aNewParent = [[CategoriesData sharedInstance] getCategoryById:newParentId];
-                                  aNewParent.numberOfSubCategories += self.selectedCategory.numberOfSubCategories + 1;
-                                  aNewParent.totalNumberOfImages += self.selectedCategory.totalNumberOfImages;
-                              }
-
-                              // Update upperCategories of moved sub-categories
-                              if (count != 0) {
-                                  NSMutableArray<NSString *> *upperCatToRemove = [self.selectedCategory.upperCategories mutableCopy];
-                                  [upperCatToRemove removeObject:movedCatId];
-                                  for (PiwigoAlbumData *category in [CategoriesData sharedInstance].allCategories) {
-                                      // Is this a sub-category of the moved album?
-                                      if ([category.upperCategories containsObject:movedCatId] &&
-                                          category.albumId != self.selectedCategory.albumId) {
-                                          // Replace list of upper categories
-                                          NSMutableArray<NSString *> *upperCategories = [category.upperCategories mutableCopy];
-                                          [upperCategories removeObjectsInArray:upperCatToRemove];
-                                          [upperCategories addObjectsFromArray:newParent.upperCategories];
-                                          category.upperCategories = upperCategories;
-                                          count--;
-                                          if (count == 0) { break; }
-                                      }
-                                  }
-                              }
-
-                              // Replace upper category of moved album
-                              NSMutableArray<NSString *> *upperCategories = [newParent.upperCategories mutableCopy];
-                              [upperCategories addObject:movedCatId];
-                              self.selectedCategory.upperCategories = upperCategories;
-                              self.selectedCategory.nearestUpperCategory = categoryId;
-                              self.selectedCategory.parentAlbumId = categoryId;
-                          }
-                          
-                          // Update cache
-                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
-                          [self quitMoveCategory];
-                      }];
+          if(movedSuccessfully)
+          {
+              // Update cached old parent categories, except root album
+              for (NSString *oldParentStr in self.selectedCategory.upperCategories) {
+                  // Check that it is not the root album, nor the moved album
+                  NSInteger oldParentId = [oldParentStr integerValue];
+                  if ((oldParentId == 0) ||
+                      (oldParentId == self.selectedCategory.albumId)) { continue; }
+                  
+                  // Remove number of moved sub-categories and images
+                  [[CategoriesData sharedInstance] getCategoryById:oldParentId].numberOfSubCategories -= self.selectedCategory.numberOfSubCategories + 1;
+                  [[CategoriesData sharedInstance] getCategoryById:oldParentId].totalNumberOfImages -= self.selectedCategory.totalNumberOfImages;
+              }
+                     
+              // Update cached new parent categories, except root album
+              NSArray<NSString *> *newUpperCategories = [NSMutableArray new];
+              if (categoryId != 0) {
+                  // Parent category in which we moved the category
+                  newUpperCategories = [[CategoriesData sharedInstance] getCategoryById:categoryId].upperCategories;
+                  for (NSString *newParentStr in newUpperCategories) {
+                      // Check that it is not the root album, nor the moved album
+                      NSInteger newParentId = [newParentStr integerValue];
+                      if ((newParentId == 0) ||
+                          (newParentId == self.selectedCategory.albumId)) { continue; }
+                      
+                      // Add number of moved sub-categories and images
+                      [[CategoriesData sharedInstance] getCategoryById:newParentId].numberOfSubCategories += self.selectedCategory.numberOfSubCategories + 1;
+                      [[CategoriesData sharedInstance] getCategoryById:newParentId].totalNumberOfImages += self.selectedCategory.totalNumberOfImages;
                   }
-                  else
-                  {
-                      [self hideHUDwithSuccess:NO completion:^{
-                          [self showMoveCategoryErrorWithMessage:nil];
-                      }];
+              }
+
+              // Update upperCategories of moved sub-categories
+              NSMutableArray<NSString *> *upperCatToRemove = [self.selectedCategory.upperCategories mutableCopy];
+              [upperCatToRemove removeObject:[NSString stringWithFormat:@"%ld", (long)self.selectedCategory.albumId]];
+              NSMutableArray<PiwigoAlbumData *> *catToUpdate = [NSMutableArray new];
+              
+              if (self.selectedCategory.numberOfSubCategories > 0) {
+                  NSArray<PiwigoAlbumData *> *subCategories = [[NSArray alloc] initWithArray:[[CategoriesData sharedInstance] getCategoriesForParentCategory:self.selectedCategory.albumId]];
+                  for (PiwigoAlbumData *subCategory in subCategories) {
+                      // Replace list of upper categories
+                      NSMutableArray<NSString *> *upperCategories = [subCategory.upperCategories mutableCopy];
+                      [upperCategories removeObjectsInArray:upperCatToRemove];
+                      [upperCategories addObjectsFromArray:newUpperCategories];
+                      subCategory.upperCategories = upperCategories;
+                      [catToUpdate addObject:subCategory];
                   }
-              } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                  [self hideHUDwithSuccess:NO completion:^{
-                      [self showMoveCategoryErrorWithMessage:[error localizedDescription]];
-                  }];
+              }
+
+              // Replace upper category of moved album
+              NSMutableArray<NSString *> *upperCategories = [self.selectedCategory.upperCategories mutableCopy];
+              [upperCategories removeObjectsInArray:upperCatToRemove];
+              [upperCategories addObjectsFromArray:newUpperCategories];
+              self.selectedCategory.upperCategories = upperCategories;
+              self.selectedCategory.nearestUpperCategory = categoryId;
+              self.selectedCategory.parentAlbumId = categoryId;
+              [catToUpdate addObject:self.selectedCategory];
+              
+              // Update cache
+              [[CategoriesData sharedInstance] updateCategories:catToUpdate];
+              [self hideHUDwithSuccess:YES completion:^{
+                  [self quitMoveCategory];
               }];
+          }
+          else
+          {
+              [self hideHUDwithSuccess:NO completion:^{
+                  [self showMoveCategoryErrorWithMessage:nil];
+              }];
+          }
+      } onFailure:^(NSURLSessionTask *task, NSError *error) {
+          [self hideHUDwithSuccess:NO completion:^{
+              [self showMoveCategoryErrorWithMessage:[error localizedDescription]];
+          }];
+      }];
 }
 
 -(void)showMoveCategoryErrorWithMessage:(NSString*)message
@@ -683,9 +670,9 @@ CGFloat const kMoveCategoryViewWidth = 512.0;           // View width
         }
         
         // The category to be moved must not be presented
-        if (category.albumId == self.selectedCategory.albumId) {
-            continue;
-        }
+//        if (category.albumId == self.selectedCategory.albumId) {
+//            continue;
+//        }
         
         // Is this category already in displayed list?
         BOOL doesNotExist = YES;
@@ -751,18 +738,21 @@ CGFloat const kMoveCategoryViewWidth = 512.0;           // View width
     for (NSString *catIdStr in recentCat)
     {
         // Get category data
-        NSInteger catId = [catIdStr integerValue];
-        PiwigoAlbumData *categoryData = [[CategoriesData sharedInstance] getCategoryById:catId];
+//        NSInteger catId = [catIdStr integerValue];
+        PiwigoAlbumData *categoryData = [[CategoriesData sharedInstance] getCategoryById:[catIdStr integerValue]];
         
         // Check collected data are in cache
         if (categoryData == nil) continue;
         
         // Do not add current category
-        if (catId == self.selectedCategory.albumId) continue;
+        if ((categoryData.albumId == self.selectedCategory.parentAlbumId) ||
+            [categoryData.upperCategories containsObject:[NSString stringWithFormat:@"%ld", (long)self.selectedCategory.albumId]]) continue;
+
+//        if (catId == self.selectedCategory.albumId) continue;
 
         // Do not add parent categories
-        if (self.selectedCategory.parentAlbumId == catId) continue;
-        if ([self.selectedCategory.upperCategories containsObject:catIdStr]) continue;
+//        if (self.selectedCategory.parentAlbumId == catId) continue;
+//        if ([self.selectedCategory.upperCategories containsObject:catIdStr]) continue;
 
         // Add category if it exists in cache
         [recentCategories addObject:categoryData];
@@ -788,8 +778,7 @@ CGFloat const kMoveCategoryViewWidth = 512.0;           // View width
     for(PiwigoAlbumData *category in allCategories)
     {
         // Only add sub-categories of tapped category
-        if ((category.parentAlbumId != categoryTapped.albumId) ||
-            (category.albumId == self.selectedCategory.albumId)) {
+        if (category.parentAlbumId != categoryTapped.albumId) {
             continue;
         }
         [subcategories addObject:category];
@@ -869,8 +858,7 @@ CGFloat const kMoveCategoryViewWidth = 512.0;           // View width
         }
         
         // Only add sub-categories of tapped category
-        if ((category.nearestUpperCategory != categoryTapped.albumId) ||
-            (category.albumId == self.selectedCategory.albumId)) {
+        if (category.nearestUpperCategory != categoryTapped.albumId) {
             continue;
         }
         

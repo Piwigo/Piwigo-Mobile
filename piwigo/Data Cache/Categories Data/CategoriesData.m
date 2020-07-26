@@ -301,7 +301,7 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 	return nil;
 }
 
--(NSArray*)getCategoriesForParentCategory:(NSInteger)parentCategory
+-(NSArray<PiwigoAlbumData *>*)getCategoriesForParentCategory:(NSInteger)parentCategory
 {
     NSMutableArray *categories = [NSMutableArray new];
     

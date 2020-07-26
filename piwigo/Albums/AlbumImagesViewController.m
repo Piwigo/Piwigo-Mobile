@@ -1276,16 +1276,10 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
 
             // Sort images
             [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
-
-                // The album title is not shown in backButtonItem to provide enough space
-                // for image title on devices of screen width <= 414 ==> Restore album title
-                self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
-
-                // Refresh collection view if needed
                 NSLog(@"=> categoriesUpdated… %ld now contains %ld images", (long)self.categoryId, (long)self.albumData.images.count);
                 if (oldImageList.count == self.albumData.images.count) {
                     self.loadingImages = NO;
-                    [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
+                    [self.imagesCollection reloadData];     // Total number of images may have changed
                     return;
                 }
 
