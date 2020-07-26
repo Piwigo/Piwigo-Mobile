@@ -353,7 +353,6 @@
 "selectImageSelected" = "已选择1张照片";
 "selectImagesSelected" = "已选择 %@ 张照片";
 "selectAll" = "全部";
-"deselectAll" = "Deselect All";
 
 // Image rename (filename)
 "renameImage_title" = "原始文件";

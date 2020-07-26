@@ -353,7 +353,6 @@
 "selectImageSelected" = "Выбрано 1 фото";
 "selectImagesSelected" = "Выбрано фотографий: %@";
 "selectAll" = "Все";
-"deselectAll" = "Deselect All";
 
 // Image rename (filename)
 "renameImage_title" = "Исходный файл";

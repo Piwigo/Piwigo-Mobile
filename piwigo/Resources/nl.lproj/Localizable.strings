@@ -353,7 +353,6 @@
 "selectImageSelected" = "1 foto geselecteerd";
 "selectImagesSelected" = "%@ foto's geselecteerd";
 "selectAll" = "Allemaal";
-"deselectAll" = "Deselect All";
 
 // Image rename (filename)
 "renameImage_title" = "Origineel bestand";

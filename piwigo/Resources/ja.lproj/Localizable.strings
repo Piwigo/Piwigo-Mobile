@@ -353,7 +353,6 @@
 "selectImageSelected" = "1写真が選択されています";
 "selectImagesSelected" = "%@枚の写真が選択されています";
 "selectAll" = "すべて";
-"deselectAll" = "Deselect All";
 
 // Image rename (filename)
 "renameImage_title" = "元のファイル";

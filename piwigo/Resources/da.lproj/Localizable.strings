@@ -353,7 +353,6 @@
 "selectImageSelected" = "1 billede valgt";
 "selectImagesSelected" = "%@ billeder valgt";
 "selectAll" = "Alle";
-"deselectAll" = "Deselect All";
 
 // Image rename (filename)
 "renameImage_title" = "Oprindelig fil";

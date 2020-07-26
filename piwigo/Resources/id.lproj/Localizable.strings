@@ -353,7 +353,6 @@
 "selectImageSelected" = "1 gambar yang dipilih";
 "selectImagesSelected" = "%@ gambar yang dipilih";
 "selectAll" = "Semua";
-"deselectAll" = "Deselect All";
 
 // Image rename (filename)
 "renameImage_title" = "Original File";
