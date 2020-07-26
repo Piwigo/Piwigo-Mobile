@@ -337,6 +337,7 @@
 "tag" = "Schlagwort";
 "tagsTitle_selectOne" = "Ein Schlagwort auswählen";
 "tagsHeader_selected" = "Ausgewählt";
+"tagsHeader_notSelected" = "Not Selected";
 "tagsHeader_all" = "Alle";
 "tagsAdd_title" = "Schlagwort hinzufügen";
 "tagsAdd_message" = "Gib einen Namen für das neue Schlagwort ein";
@@ -352,6 +353,7 @@
 "selectImageSelected" = "1 Foto ausgewählt";
 "selectImagesSelected" = "%@ Fotos ausgewählt";
 "selectAll" = "Alle";
+"deselectAll" = "Deselect All";
 
 // Image rename (filename)
 "renameImage_title" = "Originaldatei";

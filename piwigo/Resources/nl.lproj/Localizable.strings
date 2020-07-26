@@ -337,6 +337,7 @@
 "tag" = "Label";
 "tagsTitle_selectOne" = "Selecteer een Label";
 "tagsHeader_selected" = "Geselecteerd";
+"tagsHeader_notSelected" = "Not Selected";
 "tagsHeader_all" = "Alles";
 "tagsAdd_title" = "Voeg label toe";
 "tagsAdd_message" = "Voer een naam in voor dit label";
@@ -352,6 +353,7 @@
 "selectImageSelected" = "1 foto geselecteerd";
 "selectImagesSelected" = "%@ foto's geselecteerd";
 "selectAll" = "Allemaal";
+"deselectAll" = "Deselect All";
 
 // Image rename (filename)
 "renameImage_title" = "Origineel bestand";

@@ -337,6 +337,7 @@
 "tag" = "Tag";
 "tagsTitle_selectOne" = "Pilih tag";
 "tagsHeader_selected" = "Dipilih";
+"tagsHeader_notSelected" = "Not Selected";
 "tagsHeader_all" = "Semua";
 "tagsAdd_title" = "Add Tag";
 "tagsAdd_message" = "Enter a name for this new tag";
@@ -352,6 +353,7 @@
 "selectImageSelected" = "1 gambar yang dipilih";
 "selectImagesSelected" = "%@ gambar yang dipilih";
 "selectAll" = "Semua";
+"deselectAll" = "Deselect All";
 
 // Image rename (filename)
 "renameImage_title" = "Original File";

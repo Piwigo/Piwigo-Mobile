@@ -337,6 +337,7 @@
 "tag" = "Etikett";
 "tagsTitle_selectOne" = "Välj en Etikett";
 "tagsHeader_selected" = "Valda";
+"tagsHeader_notSelected" = "Not Selected";
 "tagsHeader_all" = "Alla";
 "tagsAdd_title" = "Lägg till etikett";
 "tagsAdd_message" = "Ange ett namn för den nya etiketten";
@@ -352,6 +353,7 @@
 "selectImageSelected" = "1 bild vald";
 "selectImagesSelected" = "%@ bilder valda";
 "selectAll" = "Alla";
+"deselectAll" = "Deselect All";
 
 // Image rename (filename)
 "renameImage_title" = "Originalfil";

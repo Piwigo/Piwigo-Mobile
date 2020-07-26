@@ -337,6 +337,7 @@
 "tag" = "Znacznik";
 "tagsTitle_selectOne" = "Wybierz znacznik";
 "tagsHeader_selected" = "Wybrane";
+"tagsHeader_notSelected" = "Not Selected";
 "tagsHeader_all" = "Wszystkie";
 "tagsAdd_title" = "Dodaj znacznik";
 "tagsAdd_message" = "Wprowadź nazwę dla nowego znacznika";
@@ -352,6 +353,7 @@
 "selectImageSelected" = "1 zdjęcie wybrane";
 "selectImagesSelected" = "%@ wybranych zdjęć";
 "selectAll" = "Wszystkie";
+"deselectAll" = "Deselect All";
 
 // Image rename (filename)
 "renameImage_title" = "Oryginalny plik";

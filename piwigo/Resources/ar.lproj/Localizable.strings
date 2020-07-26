@@ -337,6 +337,7 @@
 "tag" = "Tag";
 "tagsTitle_selectOne" = "Select a Tag";
 "tagsHeader_selected" = "تم تحديدها";
+"tagsHeader_notSelected" = "Not Selected";
 "tagsHeader_all" = "الكل";
 "tagsAdd_title" = "Add Tag";
 "tagsAdd_message" = "Enter a name for this new tag";
@@ -352,6 +353,7 @@
 "selectImageSelected" = "1 Photo Selected";
 "selectImagesSelected" = "%@ Photos Selected";
 "selectAll" = "الكل";
+"deselectAll" = "Deselect All";
 
 // Image rename (filename)
 "renameImage_title" = "Original File";

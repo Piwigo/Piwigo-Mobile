@@ -337,6 +337,7 @@
 "tag" = "Тег";
 "tagsTitle_selectOne" = "Выберите тег";
 "tagsHeader_selected" = "Выбрано";
+"tagsHeader_notSelected" = "Not Selected";
 "tagsHeader_all" = "Все";
 "tagsAdd_title" = "Добавить тег";
 "tagsAdd_message" = "Введите название для этого нового тега";
@@ -352,6 +353,7 @@
 "selectImageSelected" = "Выбрано 1 фото";
 "selectImagesSelected" = "Выбрано фотографий: %@";
 "selectAll" = "Все";
+"deselectAll" = "Deselect All";
 
 // Image rename (filename)
 "renameImage_title" = "Исходный файл";

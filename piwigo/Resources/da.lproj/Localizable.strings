@@ -337,6 +337,7 @@
 "tag" = "Etiket";
 "tagsTitle_selectOne" = "Vælg Etiket";
 "tagsHeader_selected" = "Valgte";
+"tagsHeader_notSelected" = "Not Selected";
 "tagsHeader_all" = "Alle";
 "tagsAdd_title" = "Tilføj etiket";
 "tagsAdd_message" = "Indtast et navn for den nye etiket";
@@ -352,6 +353,7 @@
 "selectImageSelected" = "1 billede valgt";
 "selectImagesSelected" = "%@ billeder valgt";
 "selectAll" = "Alle";
+"deselectAll" = "Deselect All";
 
 // Image rename (filename)
 "renameImage_title" = "Oprindelig fil";
