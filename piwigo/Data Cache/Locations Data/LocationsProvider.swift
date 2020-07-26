@@ -311,9 +311,13 @@ class LocationsProvider: NSObject {
                 // Retrieve non-empty cached strings
                 if knownPlace.placeName.count > 0 {
                     placeNames["placeLabel"] = knownPlace.placeName
+                } else {
+                    placeNames["placeLabel"] = ""
                 }
                 if knownPlace.streetName.count > 0 {
                     placeNames["dateLabel"] = knownPlace.streetName
+                } else {
+                    placeNames["dateLabel"] = ""
                 }
                 return placeNames
             }
