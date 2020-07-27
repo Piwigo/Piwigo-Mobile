@@ -1018,13 +1018,15 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 -(BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
     // Disable HTTP login action until user provides infos
-    if (textField == [self.httpAlertController.textFields objectAtIndex:0]) {
-        if ([self.httpAlertController.textFields objectAtIndex:0].text.length == 0)
-            [self.httpLoginAction setEnabled:NO];
-    }
-    else if (textField == [self.httpAlertController.textFields objectAtIndex:1]) {
-        if ([self.httpAlertController.textFields objectAtIndex:1].text.length == 0)
-            [self.httpLoginAction setEnabled:NO];
+    if (self.httpAlertController != nil) {
+        if (textField == [self.httpAlertController.textFields objectAtIndex:0]) {
+            if ([self.httpAlertController.textFields objectAtIndex:0].text.length == 0)
+                [self.httpLoginAction setEnabled:NO];
+        }
+        else if (textField == [self.httpAlertController.textFields objectAtIndex:1]) {
+            if ([self.httpAlertController.textFields objectAtIndex:1].text.length == 0)
+                [self.httpLoginAction setEnabled:NO];
+        }
     }
     return YES;
 }
@@ -1035,9 +1037,11 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
     if(textField == self.serverTextField) {
         [self.loginButton setEnabled:NO];
     }
-    else if ((textField == [self.httpAlertController.textFields objectAtIndex:0]) ||
-        (textField == [self.httpAlertController.textFields objectAtIndex:1])) {
-        [self.httpLoginAction setEnabled:NO];
+    else if (self.httpAlertController != nil) {
+        if ((textField == [self.httpAlertController.textFields objectAtIndex:0]) ||
+            (textField == [self.httpAlertController.textFields objectAtIndex:1])) {
+            [self.httpLoginAction setEnabled:NO];
+        }
     }
     
     return YES;
@@ -1047,18 +1051,17 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 {
     NSString *finalString = [textField.text stringByReplacingCharactersInRange:range withString:string];
     
-    if ((textField == [self.httpAlertController.textFields objectAtIndex:0]) ||
-        (textField == [self.httpAlertController.textFields objectAtIndex:1])) {
-        // Enable HTTP Login action if field not empty
-        [self.httpLoginAction setEnabled:(finalString.length >= 1)];
-    }
-    else if(textField == self.serverTextField) {
-        // Disable Login button if URL invalid
-        BOOL validURL = [self saveServerAddress:finalString andUsername:self.userTextField.text];
-        if (!validURL) {
-            [self showIncorrectWebAddressAlert];
+    if (self.httpAlertController != nil) {
+        if ((textField == [self.httpAlertController.textFields objectAtIndex:0]) ||
+            (textField == [self.httpAlertController.textFields objectAtIndex:1])) {
+            // Enable HTTP Login action if field not empty
+            [self.httpLoginAction setEnabled:(finalString.length >= 1)];
         }
-        [self.loginButton setEnabled:validURL];
+    }
+    else if (textField == self.serverTextField) {
+        // Disable Login button if URL invalid
+        [self saveServerAddress:finalString andUsername:self.userTextField.text];
+        [self.loginButton setEnabled:YES];
     }
     
     return YES;
