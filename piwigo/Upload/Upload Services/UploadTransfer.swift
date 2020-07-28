@@ -20,7 +20,7 @@ extension UploadManager {
         ]
 
         // Get URL of file to upload
-        let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-") + "-" + upload.fileName!
+        let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
         let fileURL = applicationUploadsDirectory.appendingPathComponent(fileName)
 
         // Launch transfer
@@ -227,6 +227,7 @@ extension UploadManager {
                 print("    > #\(count) done:", responseObject.debugDescription)
                 if count >= chunks - 1 {
                     // Done, return
+                    print("=>> MimeType: %@", task?.response?.mimeType as Any)
                     completion(task, responseObject, parameters)
                 } else {
                     // Keep going!
@@ -241,116 +242,308 @@ extension UploadManager {
             })
     }
 
-
+    
     // MARK: - Transfer Image in Background
-    func imageInBackgroundForRequest(_ upload: UploadProperties) {
+    // See https://tools.ietf.org/html/rfc7578
+    func transferInBackgroundImage(of upload: UploadProperties) {
         print("    > imageInBackgroundForRequest...")
         
-        // Prepare creation date
-//        var creationDate = ""
-//        if let date = upload.creationDate {
-//            let dateFormat = DateFormatter()
-//            dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
-//            creationDate = dateFormat.string(from: date)
-//        }
-
-        // Prepare parameters for uploading image/video
-        let imageParameters: [String : String] = [
-            kPiwigoImagesUploadParamFileName: upload.fileName ?? "Image.jpg",
-//            kPiwigoImagesUploadParamCreationDate: creationDate,
-//            kPiwigoImagesUploadParamTitle: upload.imageTitle ?? "",
-            kPiwigoImagesUploadParamCategory: "\(NSNumber(value: upload.category))",
-            kPiwigoImagesUploadParamPrivacy: "\(NSNumber(value: upload.privacyLevel!.rawValue))",
-//            kPiwigoImagesUploadParamAuthor: upload.author ?? "",
-//            kPiwigoImagesUploadParamDescription: upload.comment ?? "",
-//            kPiwigoImagesUploadParamTags: upload.tagIds ?? Set<String>(),
-            kPiwigoImagesUploadParamMimeType: upload.mimeType ?? ""
-        ]
-
         // Get URL of file to upload
-        let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-") + "-" + upload.fileName!
+        let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
         let fileURL = applicationUploadsDirectory.appendingPathComponent(fileName)
         
+        // Get content of file to upload
+        var imageData: Data = Data()
+        do {
+            try imageData = NSData (contentsOf: fileURL) as Data
+        }
+        catch let error as NSError {
+            // define error !!!!
+            print(error.localizedDescription)
+            return
+        }
+
+        // Calculate number of chunks
+        let chunkSize = Model.sharedInstance().uploadChunkSize * 1024
+        let chunks = Int((Float(imageData.count) / Float(chunkSize)).rounded(.up))
+        let chunksStr = String(format: "%ld", chunks)
+        
+        // For producing filename suffixes
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .none
+        numberFormatter.minimumIntegerDigits = 5
+
+        // Prepare files
+        let boundary = createBoundary()
+        for chunk in 0..<chunks {
+            // Current chunk
+            let chunkStr = String(format: "%ld", chunk)
+            
+            // HTTP request body
+            let httpBody = NSMutableData()
+            httpBody.appendString(convertFormField(named: "name", value: upload.fileName!, using: boundary))
+            httpBody.appendString(convertFormField(named: "chunk", value: chunkStr, using: boundary))
+            httpBody.appendString(convertFormField(named: "chunks", value: chunksStr, using: boundary))
+            httpBody.appendString(convertFormField(named: "category", value: "\(upload.category)", using: boundary))
+            httpBody.appendString(convertFormField(named: "level", value: "\(upload.privacyLevel!.rawValue)", using: boundary))
+            httpBody.appendString(convertFormField(named: "pwg_token", value: (Model.sharedInstance()?.pwgToken)!, using: boundary))
+
+            let chunkOfData = imageData.subdata(in: chunk * chunkSize..<min((chunk+1)*chunkSize, imageData.count))
+            httpBody.append(convertFileData(fieldName: "file",
+                                            fileName: upload.fileName!,
+                                            mimeType: upload.mimeType ?? "image/jpg",
+                                            fileData: chunkOfData,
+                                            using: boundary))
+
+            httpBody.appendString("--\(boundary)--")
+
+            // File name of chunk data to be stored into Piwigo/Uploads directory
+            let chunkFileName = fileName + "." + numberFormatter.string(from: NSNumber(value: chunk))!
+            let fileURL = applicationUploadsDirectory.appendingPathComponent(chunkFileName)
+            
+            // Deletes temporary image file if exists (incomplete previous attempt?)
+            do {
+                try FileManager.default.removeItem(at: fileURL)
+            } catch {
+            }
+
+            // Store final image data into Piwigo/Uploads directory
+            do {
+                try httpBody.write(to: fileURL)
+            } catch let error as NSError {
+                // Disk full? —> to be managed…
+                print(error)
+                return
+            }
+        }
+
+        // Launch upload
+        send(chunk: 0, of: chunks, with: boundary, for: upload)
+    }
+    
+    private func send(chunk: Int, of chunks:Int, with boundary: String, for upload:UploadProperties) {
+        
         // Prepare URL
-//        let url = URL(string: NetworkHandler.getURLWithPath("format=json&method=pwg.images.addSimple&category=142", withURLParams: nil))
-        let url = URL(string: NetworkHandler.getURLWithPath("method=pwg.images.addSimple&category=142", withURLParams: nil))
+        let url = URL(string: "https://lelievre-berna.net/Piwigo/ws.php?format=json&method=pwg.images.upload")
         guard let validUrl = url else { fatalError() }
 
-        // JSON data
-//        struct PwgImagesAddSimple: Codable {
-//            let category: Int
+        // Prepare URL Request Object
+        var request = URLRequest(url: validUrl)
+        request.httpMethod = "POST"
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        request.setValue(upload.fileName!, forHTTPHeaderField: "filename")
+
+        // For producing filename suffixes
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .none
+        numberFormatter.minimumIntegerDigits = 5
+
+        // File name of chunk data to be stored into Piwigo/Uploads directory
+        let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
+        let chunkFileName = fileName + "." + numberFormatter.string(from: NSNumber(value: chunk))!
+        let fileURL = applicationUploadsDirectory.appendingPathComponent(chunkFileName)
+
+        // Get content of file to upload
+//        var httpBody: Data = Data()
+//        do {
+//            try httpBody = NSData (contentsOf: fileURL) as Data
 //        }
-//        let order = PwgImagesAddSimple(category: 142)
-//        guard let uploadData = try? JSONEncoder().encode(order) else {
+//        catch let error as NSError {
+//            // define error !!!!
+//            print(error.localizedDescription)
 //            return
 //        }
 
-        // Prepare URL Request Object
-        var urlRequest = URLRequest(url: validUrl)
-        urlRequest.httpMethod = "POST"
-//        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        urlRequest.setValue(upload.fileName!, forHTTPHeaderField: "filename")
-//        urlRequest.setValue(upload.fileName!, forHTTPHeaderField: "image")
-
-//        let boundary = createBoundary()
-        
-        // Create upload session
-//        NetworkHandler.createUploadSessionManager() // 60s timeout, 2 connections max
-//        Model.sharedInstance().imageUploadManager.uploadTask(with: URLRequest(url: validUrl),
-//                                                             fromFile: fileURL,
-//        progress: { (progress) in
-//            print("\(progress.debugDescription)")
-//
-//        }) { (responseData, response, error) in
-//
-//            if(error != nil){
-//                print("\(error!.localizedDescription)")
-//            }
-//
-//            print("\(responseData.debugDescription)")
-//            print("\(response.debugDescription)")
-//        }.resume()
-//        return
-
-        // Set Content-Type Header to multipart/form-data
-//        urlRequest.setValue("multipart/form-data", forHTTPHeaderField: "Content-Type")
-//        urlRequest.setValue("file", forHTTPHeaderField: "Content-Type")
-//        urlRequest.setValue(upload.mimeType, forHTTPHeaderField: "Content-Type")
-
-//        var mutableHeaders: [AnyHashable : Any] = [:]
-//        mutableHeaders["Content-Disposition"] = "form-data; name=\"\(name)\"; filename=\"\(fileName)\""
-//        mutableHeaders["Content-Type"] = mimeType
-
-        // Create session
-//        let config = URLSessionConfiguration.background(withIdentifier: "org.piwigo.backgroundSession")
-//        let session = URLSession(configuration: config, delegate: (UIApplication.shared.delegate as! URLSessionDelegate), delegateQueue: nil)
-        
-//        let task = session.uploadTask(with: urlRequest, fromFile: fileURL)
-        URLSession.shared.uploadTask(with: urlRequest, fromFile: fileURL) { (responseData, response, error) in
-            
-            if(error != nil){
-                print("\(error!.localizedDescription)")
+        // Launch upload task
+//        request.httpBody = httpBody
+//        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+//        let task = URLSession.shared.uploadTask(with: request, from: httpBody as Data) { (data, response, error) in
+        let task = URLSession.shared.uploadTask(with: request, fromFile: fileURL) { (data, response, error) in
+//            URLSession.shared.uploadTask(with: <#T##URLRequest#>, fromFile: fileURL)
+            // handle the response here
+            guard let httpResponse = response as? HTTPURLResponse,
+                (200...299).contains(httpResponse.statusCode) else {
+                    if let _ = error {
+                        print("\(error!.localizedDescription)")
+                    }
+                  if let responseString = String(data: data!, encoding: .utf8) {
+                    print("\(responseString)")
+                  }
+              return
             }
-            
-            guard let responseData = responseData else {
-                print("no response data")
-                return
-            }
-            
-            if let responseString = String(data: responseData, encoding: .utf8) {
-                print("uploaded to: \(responseString)")
-            }
+//            print("MimeType: \(String(describing: httpResponse.mimeType))")
 
-        }.resume()
+            // Check returned data
+            do {
+                guard let data = data else { return }
+                guard let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: AnyObject] else { return }
+                print(JSONSerialization.isValidJSONObject(json) ? "is Valid JSON Object ;-)" : "is Not Valid JSON Object :=(")
+                print("json:", json)
+
+               // Decode the JSON.
+                do {
+                    // Decode the JSON into codable type ImagesUploadJSON.
+                    let uploadJSON = try self.decoder.decode(ImagesUploadJSON.self, from: data)
+
+                    // Piwigo error?
+                    if (uploadJSON.errorCode != 0) {
+                       let error = NSError.init(domain: "Piwigo", code: uploadJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
+                       self.updateUploadRequestWith(upload, error: error)
+                       return
+                    }
+
+                    if uploadJSON.data.image_id == NSNotFound {
+                        // Continue with next chunk
+                        self.send(chunk: chunk + 1, of: chunks, with: boundary, for: upload)
+                    } else {
+                        // Prepare image for cache
+                        let imageData = PiwigoImageData.init()
+                        imageData.datePosted = Date.init()
+                        imageData.fileSize = NSNotFound // will trigger pwg.images.getInfo
+                        imageData.imageTitle = upload.imageTitle
+                        imageData.categoryIds = [upload.category]
+                        imageData.fileName = upload.fileName
+                        imageData.isVideo = upload.isVideo
+                        imageData.dateCreated = upload.creationDate
+                        imageData.author = upload.author
+                        imageData.privacyLevel = upload.privacyLevel ?? kPiwigoPrivacy(rawValue: 0)
+
+                        // Get data from server response
+                        imageData.imageId = uploadJSON.data.image_id!
+                        imageData.squarePath = uploadJSON.data.square_src
+                        imageData.thumbPath = uploadJSON.data.src
+
+                        // Add uploaded image to cache and update UI if needed
+                        DispatchQueue.main.async {
+                            CategoriesData.sharedInstance()?.addImage(imageData)
+                        }
+
+                        // Delete uploaded files from Piwigo/Uploads directory
+                        let fileManager = FileManager.default
+                        do {
+                            // Get list of files in Uploads directory
+                            let files = try fileManager.contentsOfDirectory(at: self.applicationUploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+                //            print("all files in cache: \(files)")
+                            // Delete files
+                            for file in files.filter({$0.lastPathComponent.hasPrefix(fileName)}) {
+                                try fileManager.removeItem(at: file)
+                            }
+                        } catch {
+                            // Not a big issue
+                            // Will have another occasion to clean up the directory later
+                        }
+
+                        // Update state of upload
+                        var uploadProperties = upload
+                        uploadProperties.imageId = imageData.imageId
+                        self.updateUploadRequestWith(uploadProperties, error: nil)
+                    }
+                    return
+                } catch {
+                   // Data cannot be digested, image still ready for upload
+                   let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongDataFormat.localizedDescription])
+                   self.updateUploadRequestWith(upload, error: error)
+                   return
+                }
+            } catch {
+                print("error:", error)
+                print("Not a valid JSON object!!")
+            }
+        }
+        task.resume()
     }
 
-    private func createBoundary() -> String {
+    func createBoundary() -> String {
         var uuid = UUID().uuidString
         uuid = uuid.replacingOccurrences(of: "-", with: "")
         uuid = uuid.map { $0.lowercased() }.joined()
-     
         let boundary = String(repeating: "-", count: 20) + uuid + "\(Int(Date.timeIntervalSinceReferenceDate))"
-     
+        
         return boundary
     }
+
+    func convertFormField(named name: String, value: String, using boundary: String) -> String {
+      var fieldString = "--\(boundary)\r\n"
+      fieldString += "Content-Disposition: form-data; name=\"\(name)\"\r\n"
+//      fieldString += "Content-Type: text/plain; charset=UTF-8\r\n"
+      fieldString += "\r\n"
+      fieldString += "\(value)\r\n"
+
+      return fieldString
+    }
+    
+    func convertFileData(fieldName: String, fileName: String, mimeType: String, fileData: Data, using boundary: String) -> Data {
+      let data = NSMutableData()
+
+      data.appendString("--\(boundary)\r\n")
+      data.appendString("Content-Disposition: form-data; name=\"\(fieldName)\"; filename=\"\(fileName)\"\r\n")
+      data.appendString("Content-Type: \(mimeType)\r\n\r\n")
+      data.append(fileData)
+      data.appendString("\r\n")
+
+      return data as Data
+    }
+    
+    func essai() {
+        let url = URL(string: "https://lelievre-berna.net/Piwigo/ws.php?format=json&method=pwg.session.getStatus")
+
+        var request = URLRequest(url: url!)
+        request.httpMethod = "post"
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("utf-8", forHTTPHeaderField: "Accept-Charset")
+
+//        let jsonDict: [String:Any] = [:]
+//        let jsonData = try! JSONSerialization.data(withJSONObject: jsonDict, options: [])
+//        request.httpBody = jsonData
+
+        URLSession.shared.dataTask(with: request) { (data, response, error) in
+            if let error = error {
+                print("error:", error)
+                return
+            }
+
+            do {
+                guard let data = data else { return }
+                guard let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: AnyObject] else { return }
+                print("json:", json)
+            } catch {
+                print("error:", error)
+            }
+        }.resume()
+    }
+
+    func essai2() {
+        let url = URL(string: "https://lelievre-berna.net/Piwigo/ws.php?format=json&method=pwg.images.getInfo&image_id=236")
+
+        var request = URLRequest(url: url!)
+        request.httpMethod = "get"
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("utf-8", forHTTPHeaderField: "Accept-Charset")
+
+        URLSession.shared.dataTask(with: request) { (data, response, error) in
+            if let error = error {
+                print("error:", error)
+                return
+            }
+
+            do {
+                guard let data = data else { return }
+                guard let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: AnyObject] else { return }
+                print("json:", json)
+            } catch {
+                print("error:", error)
+            }
+        }.resume()
+    }
+
+}
+
+extension NSMutableData {
+  func appendString(_ string: String) {
+    if let data = string.data(using: .utf8) {
+      self.append(data)
+    }
+  }
 }

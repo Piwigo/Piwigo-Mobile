@@ -843,6 +843,11 @@ NSInteger const loadingViewTag = 899;
                               parameters:parameters headers:nil
                               progress:progress
                               success:^(NSURLSessionTask *task, id responseObject) {
+//       NSLog(@"==> post: %@", task.originalRequest.allHTTPHeaderFields);
+//       NSLog(@"==> post: %@", task.response.URL);
+//       NSLog(@"==> post: %@", task.response.MIMEType);
+//       NSLog(@"==> post: %@", task.response.textEncodingName);
+//       NSLog(@"==> post: %@", task.response.description);
                                    if (success) {
                                        success(task, responseObject);
                                    }
@@ -901,6 +906,8 @@ NSInteger const loadingViewTag = 899;
                 }
                                   progress:progress
                                    success:^(NSURLSessionTask *task, id responseObject) {
+                                       NSLog(@"==> post: %@", task.response.MIMEType);
+                                       NSLog(@"==> post: %@", task.response.textEncodingName);
                                        if (success) {
                                            success(task, responseObject);
                                        }

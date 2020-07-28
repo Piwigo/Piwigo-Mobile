@@ -58,7 +58,7 @@ extension UploadManager {
                 (Model.sharedInstance().stripGPSdataOnUpload && (locationMetadata.count == 0)) {
 
                 // Prepare URL of temporary file
-                let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-") + "-" + upload.fileName!
+                let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
                 let fileURL = self.applicationUploadsDirectory.appendingPathComponent(fileName)
 
                 // Deletes temporary video file if it already exists
@@ -361,7 +361,7 @@ extension UploadManager {
         newUpload.fileName = URL(fileURLWithPath: upload.fileName ?? "file").deletingPathExtension().appendingPathExtension("MP4").lastPathComponent
 
         // File name of final video data to be stored into Piwigo/Uploads directory
-        let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-") + "-" + newUpload.fileName!
+        let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
         exportSession.outputURL = applicationUploadsDirectory.appendingPathComponent(fileName)
 
         // Deletes temporary video file if exists (incomplete previous attempt?)

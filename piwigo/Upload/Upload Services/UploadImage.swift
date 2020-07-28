@@ -269,7 +269,7 @@ extension UploadManager {
         }
 
         // File name of final image data to be stored into Piwigo/Uploads directory
-        let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-") + "-" + newUpload.fileName!
+        let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
         let fileURL = applicationUploadsDirectory.appendingPathComponent(fileName)
         
         // Deletes temporary image file if exists (incomplete previous attempt?)

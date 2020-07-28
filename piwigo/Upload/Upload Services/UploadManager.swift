@@ -13,7 +13,7 @@ import Photos
 let kPiwigoNotificationUploadProgress = "kPiwigoNotificationUploadProgress"
 
 @objc
-class UploadManager: NSObject {
+class UploadManager: NSObject, URLSessionDelegate {
 
     // MARK: - Initialisation
     override init() {
@@ -448,8 +448,9 @@ class UploadManager: NSObject {
         let uploadProperties = nextUpload.getUploadProperties(with: .uploading, error: "")
         uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
             // Launch transfer if possible
-//            transfer.imageInBackgroundForRequest(uploadProperties)
-            self.transferImage(of: uploadProperties)
+            self.transferInBackgroundImage(of: uploadProperties)
+//            self.transferImage(of: uploadProperties)
+//            self.essai2()
         })
     }
     
