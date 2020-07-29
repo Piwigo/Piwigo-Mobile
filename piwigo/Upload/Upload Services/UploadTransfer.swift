@@ -358,7 +358,10 @@ extension UploadManager {
 //        request.httpBody = httpBody
 //        let task = URLSession.shared.dataTask(with: request) { data, response, error in
 //        let task = URLSession.shared.uploadTask(with: request, from: httpBody as Data) { (data, response, error) in
-        let task = URLSession.shared.uploadTask(with: request, fromFile: fileURL) { (data, response, error) in
+//        let task = URLSession.shared.uploadTask(with: request, fromFile: fileURL) { (data, response, error) in
+            
+        let uploadSession: URLSession = UploadSessionDelegate.shared.uploadSession
+        let task = uploadSession.uploadTask(with: request, fromFile: fileURL) { (data, response, error) in
 //            URLSession.shared.uploadTask(with: <#T##URLRequest#>, fromFile: fileURL)
             // handle the response here
             guard let httpResponse = response as? HTTPURLResponse,

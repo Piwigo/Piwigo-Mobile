@@ -324,6 +324,16 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
     }
 }
 
+- (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)(void))completionHandler {
+    NSLog(@"    > Handle events for background session with ID: %@", identifier);
+    
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:identifier];
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:config
+                                                          delegate:[UploadSessionDelegate shared]
+                                                     delegateQueue:nil];
+    NSLog(@"    > Rejoining session %@", session);
+}
+
 
 #pragma mark - Light and dark modes
 

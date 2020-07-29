@@ -296,7 +296,7 @@ extension UploadManager {
             // Fallback on earlier versions
             md5Checksum = oldMD5(data: imageData)
         }
-        print("   > Checksum: \(md5Checksum ?? "No MD5 Checksum!")")
+        print("    > Checksum: \(md5Checksum ?? "No MD5 Checksum!")")
         newUpload.md5Sum = md5Checksum
 
         completionHandler(newUpload, nil)
