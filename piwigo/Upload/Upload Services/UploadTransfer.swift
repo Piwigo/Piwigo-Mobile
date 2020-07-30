@@ -274,7 +274,7 @@ extension UploadManager {
         numberFormatter.minimumIntegerDigits = 5
 
         // Prepare files
-        let boundary = createBoundary()
+        let boundary = createBoundary(from: upload.localIdentifier)
         for chunk in 0..<chunks {
             // Current chunk
             let chunkStr = String(format: "%ld", chunk)
@@ -332,6 +332,9 @@ extension UploadManager {
         request.httpMethod = "POST"
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         request.setValue(upload.fileName!, forHTTPHeaderField: "filename")
+        request.addValue(upload.localIdentifier, forHTTPHeaderField: "identifier")
+        request.addValue(String(chunk), forHTTPHeaderField: "chunk")
+        request.addValue(String(chunks), forHTTPHeaderField: "chunks")
 
         // For producing filename suffixes
         let numberFormatter = NumberFormatter()
@@ -339,8 +342,8 @@ extension UploadManager {
         numberFormatter.minimumIntegerDigits = 5
 
         // File name of chunk data to be stored into Piwigo/Uploads directory
-        let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
-        let chunkFileName = fileName + "." + numberFormatter.string(from: NSNumber(value: chunk))!
+        let filenamePrefix = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
+        let chunkFileName = filenamePrefix + "." + numberFormatter.string(from: NSNumber(value: chunk))!
         let fileURL = applicationUploadsDirectory.appendingPathComponent(chunkFileName)
 
         // Get content of file to upload
@@ -361,107 +364,197 @@ extension UploadManager {
 //        let task = URLSession.shared.uploadTask(with: request, fromFile: fileURL) { (data, response, error) in
             
         let uploadSession: URLSession = UploadSessionDelegate.shared.uploadSession
-        let task = uploadSession.uploadTask(with: request, fromFile: fileURL) { (data, response, error) in
-//            URLSession.shared.uploadTask(with: <#T##URLRequest#>, fromFile: fileURL)
-            // handle the response here
-            guard let httpResponse = response as? HTTPURLResponse,
-                (200...299).contains(httpResponse.statusCode) else {
-                    if let _ = error {
-                        print("\(error!.localizedDescription)")
-                    }
-                  if let responseString = String(data: data!, encoding: .utf8) {
-                    print("\(responseString)")
-                  }
-              return
-            }
-//            print("MimeType: \(String(describing: httpResponse.mimeType))")
-
-            // Check returned data
-            do {
-                guard let data = data else { return }
-                guard let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: AnyObject] else { return }
-                print(JSONSerialization.isValidJSONObject(json) ? "is Valid JSON Object ;-)" : "is Not Valid JSON Object :=(")
-                print("json:", json)
-
-               // Decode the JSON.
-                do {
-                    // Decode the JSON into codable type ImagesUploadJSON.
-                    let uploadJSON = try self.decoder.decode(ImagesUploadJSON.self, from: data)
-
-                    // Piwigo error?
-                    if (uploadJSON.errorCode != 0) {
-                       let error = NSError.init(domain: "Piwigo", code: uploadJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
-                       self.updateUploadRequestWith(upload, error: error)
-                       return
-                    }
-
-                    if uploadJSON.data.image_id == NSNotFound {
-                        // Continue with next chunk
-                        self.send(chunk: chunk + 1, of: chunks, with: boundary, for: upload)
-                    } else {
-                        // Prepare image for cache
-                        let imageData = PiwigoImageData.init()
-                        imageData.datePosted = Date.init()
-                        imageData.fileSize = NSNotFound // will trigger pwg.images.getInfo
-                        imageData.imageTitle = upload.imageTitle
-                        imageData.categoryIds = [upload.category]
-                        imageData.fileName = upload.fileName
-                        imageData.isVideo = upload.isVideo
-                        imageData.dateCreated = upload.creationDate
-                        imageData.author = upload.author
-                        imageData.privacyLevel = upload.privacyLevel ?? kPiwigoPrivacy(rawValue: 0)
-
-                        // Get data from server response
-                        imageData.imageId = uploadJSON.data.image_id!
-                        imageData.squarePath = uploadJSON.data.square_src
-                        imageData.thumbPath = uploadJSON.data.src
-
-                        // Add uploaded image to cache and update UI if needed
-                        DispatchQueue.main.async {
-                            CategoriesData.sharedInstance()?.addImage(imageData)
-                        }
-
-                        // Delete uploaded files from Piwigo/Uploads directory
-                        let fileManager = FileManager.default
-                        do {
-                            // Get list of files in Uploads directory
-                            let files = try fileManager.contentsOfDirectory(at: self.applicationUploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
-                //            print("all files in cache: \(files)")
-                            // Delete files
-                            for file in files.filter({$0.lastPathComponent.hasPrefix(fileName)}) {
-                                try fileManager.removeItem(at: file)
-                            }
-                        } catch {
-                            // Not a big issue
-                            // Will have another occasion to clean up the directory later
-                        }
-
-                        // Update state of upload
-                        var uploadProperties = upload
-                        uploadProperties.imageId = imageData.imageId
-                        self.updateUploadRequestWith(uploadProperties, error: nil)
-                    }
-                    return
-                } catch {
-                   // Data cannot be digested, image still ready for upload
-                   let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongDataFormat.localizedDescription])
-                   self.updateUploadRequestWith(upload, error: error)
-                   return
-                }
-            } catch {
-                print("error:", error)
-                print("Not a valid JSON object!!")
-            }
-        }
+        let task = uploadSession.uploadTask(with: request, fromFile: fileURL)
+//        let task = uploadSession.uploadTask(with: request, fromFile: fileURL) { (data, response, error) in
+//            // handle the response here
+//            guard let httpResponse = response as? HTTPURLResponse,
+//                (200...299).contains(httpResponse.statusCode) else {
+//                    if let _ = error {
+//                        print("\(error!.localizedDescription)")
+//                    }
+//                  if let responseString = String(data: data!, encoding: .utf8) {
+//                    print("\(responseString)")
+//                  }
+//              return
+//            }
+////            print("MimeType: \(String(describing: httpResponse.mimeType))")
+//
+//            // Check returned data
+//            do {
+//                guard let data = data else { return }
+//                guard let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: AnyObject] else { return }
+//                print(JSONSerialization.isValidJSONObject(json) ? "is Valid JSON Object ;-)" : "is Not Valid JSON Object :=(")
+//                print("json:", json)
+//
+//               // Decode the JSON.
+//                do {
+//                    // Decode the JSON into codable type ImagesUploadJSON.
+//                    let uploadJSON = try self.decoder.decode(ImagesUploadJSON.self, from: data)
+//
+//                    // Piwigo error?
+//                    if (uploadJSON.errorCode != 0) {
+//                       let error = NSError.init(domain: "Piwigo", code: uploadJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
+//                       self.updateUploadRequestWith(upload, error: error)
+//                       return
+//                    }
+//
+//                    if uploadJSON.data.image_id == NSNotFound {
+//                        // Continue with next chunk
+//                        self.send(chunk: chunk + 1, of: chunks, with: boundary, for: upload)
+//                    } else {
+//                        // Prepare image for cache
+//                        let imageData = PiwigoImageData.init()
+//                        imageData.datePosted = Date.init()
+//                        imageData.fileSize = NSNotFound // will trigger pwg.images.getInfo
+//                        imageData.imageTitle = upload.imageTitle
+//                        imageData.categoryIds = [upload.category]
+//                        imageData.fileName = upload.fileName
+//                        imageData.isVideo = upload.isVideo
+//                        imageData.dateCreated = upload.creationDate
+//                        imageData.author = upload.author
+//                        imageData.privacyLevel = upload.privacyLevel ?? kPiwigoPrivacy(rawValue: 0)
+//
+//                        // Get data from server response
+//                        imageData.imageId = uploadJSON.data.image_id!
+//                        imageData.squarePath = uploadJSON.data.square_src
+//                        imageData.thumbPath = uploadJSON.data.src
+//
+//                        // Add uploaded image to cache and update UI if needed
+//                        DispatchQueue.main.async {
+//                            CategoriesData.sharedInstance()?.addImage(imageData)
+//                        }
+//
+//                        // Delete uploaded files from Piwigo/Uploads directory
+//                        let fileManager = FileManager.default
+//                        do {
+//                            // Get list of files in Uploads directory
+//                            let files = try fileManager.contentsOfDirectory(at: self.applicationUploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+//                //            print("all files in cache: \(files)")
+//                            // Delete files
+//                            for file in files.filter({$0.lastPathComponent.hasPrefix(fileName)}) {
+//                                try fileManager.removeItem(at: file)
+//                            }
+//                        } catch {
+//                            // Not a big issue
+//                            // Will have another occasion to clean up the directory later
+//                        }
+//
+//                        // Update state of upload
+//                        var uploadProperties = upload
+//                        uploadProperties.imageId = imageData.imageId
+//                        self.updateUploadRequestWith(uploadProperties, error: nil)
+//                    }
+//                    return
+//                } catch {
+//                   // Data cannot be digested, image still ready for upload
+//                   let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongDataFormat.localizedDescription])
+//                   self.updateUploadRequestWith(upload, error: error)
+//                   return
+//                }
+//            } catch {
+//                print("error:", error)
+//                print("Not a valid JSON object!!")
+//            }
+//        }
         task.resume()
     }
 
-    func createBoundary() -> String {
-        var uuid = UUID().uuidString
-        uuid = uuid.replacingOccurrences(of: "-", with: "")
-        uuid = uuid.map { $0.lowercased() }.joined()
-        let boundary = String(repeating: "-", count: 20) + uuid + "\(Int(Date.timeIntervalSinceReferenceDate))"
-        
+    func didCompleteUploadTask(_ task: URLSessionTask, withError error: Error?) {
+        // handle the response here
+        guard let httpResponse = task.response as? HTTPURLResponse,
+            (200...299).contains(httpResponse.statusCode) else {
+            if let _ = error {
+                print("\(error!.localizedDescription)")
+            }
+            return
+        }
+    }
+
+    func didCompleteUploadTask(_ task: URLSessionTask, withData data: Data) {
+        // Check returned data
+        do {
+            guard let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: AnyObject] else { return }
+            print(JSONSerialization.isValidJSONObject(json) ? "is Valid JSON Object ;-)" : "is Not Valid JSON Object :=(")
+            print("json:", json)
+            
+            // Retrieve task parameters
+            guard let identifier = task.originalRequest?.value(forHTTPHeaderField: "identifier"),
+                let chunk = Int((task.originalRequest?.value(forHTTPHeaderField: "chunk"))!),
+                let chunks = Int((task.originalRequest?.value(forHTTPHeaderField: "chunks"))!) else {
+                    return
+            }
+            
+            // Retrieve corresponding upload properties
+            guard let uploadObject = uploadsProvider.requestsToComplete()?.filter({$0.localIdentifier == identifier}).first else {
+                return
+            }
+            let upload: UploadProperties = uploadObject.getUploadProperties(with: .uploading, error: "")
+
+            // Decode the JSON.
+            do {
+                // Decode the JSON into codable type ImagesUploadJSON.
+                let uploadJSON = try self.decoder.decode(ImagesUploadJSON.self, from: data)
+
+                // Piwigo error?
+                if (uploadJSON.errorCode != 0) {
+                   let error = NSError.init(domain: "Piwigo", code: uploadJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
+                   self.updateUploadRequestWith(upload, error: error)
+                   return
+                }
+
+                if uploadJSON.data.image_id == NSNotFound {
+                    // Continue with next chunk
+                    let boundary = createBoundary(from: upload.localIdentifier)
+                    self.send(chunk: chunk + 1, of: chunks, with: boundary, for: upload)
+                } else {
+                    // Prepare image for cache
+                    let imageData = PiwigoImageData.init()
+                    imageData.datePosted = Date.init()
+                    imageData.fileSize = NSNotFound // will trigger pwg.images.getInfo
+                    imageData.imageTitle = upload.imageTitle
+                    imageData.categoryIds = [upload.category]
+                    imageData.fileName = upload.fileName
+                    imageData.isVideo = upload.isVideo
+                    imageData.dateCreated = upload.creationDate
+                    imageData.author = upload.author
+                    imageData.privacyLevel = upload.privacyLevel ?? kPiwigoPrivacy(rawValue: 0)
+
+                    // Get data from server response
+                    imageData.imageId = uploadJSON.data.image_id!
+                    imageData.squarePath = uploadJSON.data.square_src
+                    imageData.thumbPath = uploadJSON.data.src
+
+                    // Add uploaded image to cache and update UI if needed
+                    DispatchQueue.main.async {
+                        CategoriesData.sharedInstance()?.addImage(imageData)
+                    }
+
+                    // Delete uploaded files from Piwigo/Uploads directory
+                    let filenamePrefix = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
+                    deleteFilesInUploadsDirectory(with: filenamePrefix)
+
+                    // Update state of upload
+                    var uploadProperties = upload
+                    uploadProperties.imageId = imageData.imageId
+                    self.updateUploadRequestWith(uploadProperties, error: nil)
+                }
+                return
+            } catch {
+               // Data cannot be digested, image still ready for upload
+               let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongDataFormat.localizedDescription])
+               self.updateUploadRequestWith(upload, error: error)
+               return
+            }
+        } catch {
+            print("error:", error)
+            print("Not a valid JSON object!!")
+        }
+    }
+
+    func createBoundary(from identifier: String) -> String {
+        let suffix = "Piwigo-Mobile-" + identifier.replacingOccurrences(of: "/", with: "-")
+        let boundary = String(repeating: "-", count: 68 - suffix.count) + suffix
+        print("    > \(boundary)")
         return boundary
     }
 

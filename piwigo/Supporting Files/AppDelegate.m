@@ -332,6 +332,9 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
                                                           delegate:[UploadSessionDelegate shared]
                                                      delegateQueue:nil];
     NSLog(@"    > Rejoining session %@", session);
+    
+    [UploadSessionDelegate shared].bckgSessionCompletionHandler = completionHandler;
+    NSLog(@"    > completionHandler transmitted for later use");
 }
 
 

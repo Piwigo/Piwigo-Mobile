@@ -12,17 +12,20 @@ import Foundation
 class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegate, URLSessionDataDelegate {
     
     @objc static var shared = UploadSessionDelegate()
+    @objc var bckgSessionCompletionHandler: (() -> Void)?
+
+    private let bckgIdentifier:String! = "org.piwigo.bckgSession"
     
     // Create single instance
     lazy var uploadSession: URLSession = {
-//        let config = URLSessionConfiguration.background(withIdentifier: "org.piwigo.uploadSession")
+//        let config = URLSessionConfiguration.background(withIdentifier: bckgIdentifier)
         let config = URLSessionConfiguration.default
         
         /// Background tasks can be scheduled at the discretion of the system for optimal performance
         config.isDiscretionary = false
         
         /// Indicates whether the app should be resumed or launched in the background when transfers finish
-        config.sessionSendsLaunchEvents = true
+        config.sessionSendsLaunchEvents = false
         
         /// Indicates whether TCP connections should be kept open when the app moves to the background
         config.shouldUseExtendedBackgroundIdleMode = false
@@ -112,6 +115,11 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
     
     func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
         print("    > Background session \(session) finished events.")
+        
+        // Execute completion handler
+        if let bckgHandler = bckgSessionCompletionHandler {
+            bckgHandler()
+        }
     }
     
 
@@ -137,10 +145,48 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         print("    > Upload task finished transferring data")
-        if error == nil {
-            print("session \(session) upload completed")
-        } else {
-            print("session \(session) upload failed with error \(String(describing: error?.localizedDescription))")
+        
+        // What should we do with this error?
+        guard let query = task.originalRequest?.url?.query else {
+            assertionFailure("    > session \(session): task with no query!")
+            return
+        }
+
+        // Task did complete without error?
+        guard let error = error else {
+            // Case of an upload
+            if query.contains(kPiwigoImagesUpload) {
+                // Case of an upload
+                print("    > Upload task completed")
+                return
+            }
+            
+            assertionFailure("    > session \(session): Unknown task completed!!")
+            return
+        }
+        
+        // An error was encountered - Case of an upload
+        if query.contains(kPiwigoImagesUpload) {
+            print("    > session \(session): Upload task failed with error \(String(describing: error.localizedDescription))")
+            return
+        }
+        assertionFailure("    > session \(session): Unknown task failed with error \(String(describing: error.localizedDescription))")
+    }
+
+
+    //MARK: - Session Data Delegate
+    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+        print("    > Upload task has received some of the expected data")
+        
+        // What should we do with this data?
+        guard let query = dataTask.originalRequest?.url?.query else {
+            assertionFailure("    > session \(session): task with no query!")
+            return
+        }
+
+        // Case of an upload
+        if query.contains(kPiwigoImagesUpload) {
+            UploadManager.shared.didCompleteUploadTask(dataTask, withData: data)
         }
     }
 
