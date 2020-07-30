@@ -60,7 +60,8 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
         return URL(string: strURL)?.host ?? ""
     }()
 
-    // MARK: Session Delegate
+    
+    // MARK: - Session Delegate
     func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
         print("    > The upload session has been invalidated")
     }
@@ -69,6 +70,7 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
                     completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
         print("    > Session-level authentication request from the remote server \(domain)")
         
+        // Get protection space for current domain
         let protectionSpace = challenge.protectionSpace
         guard protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
             protectionSpace.host.contains(domain) else {
@@ -76,6 +78,8 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
                 return
         }
 
+        
+        // Get state of the server SSL transaction state
         guard let serverTrust = protectionSpace.serverTrust else {
             completionHandler(.performDefaultHandling, nil)
             return
@@ -94,32 +98,54 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
             completionHandler(.rejectProtectionSpace, nil)
         }
 
-        // Retrieve the certificate of the server
-        let certificate = SecTrustGetCertificateAtIndex(serverTrust, CFIndex(0))!
-
-        // Get certificate in Keychain (should exist)
-        // Certificates are stored in the Keychain with label "Piwigo:<host>"
-        let query = [kSecClass as String       : kSecClassCertificate,
-                     kSecAttrLabel as String   : "Piwigo:\(domain)",
-                     kSecReturnRef as String   : kCFBooleanTrue!] as [String : Any]
-
-        var dataTypeRef: AnyObject? = nil
-        let status: OSStatus = SecItemCopyMatching(query as CFDictionary, &dataTypeRef)
-        if status == errSecSuccess {
-            // A certificate exists for that host, does it match the one of the server?
-            let certData = SecCertificateCopyData(certificate)
-            let storedData = SecCertificateCopyData(dataTypeRef as! SecCertificate)
-            if certData == storedData {
-                // Certificates are identical
-                let credential = URLCredential(trust: serverTrust)
-                completionHandler(.useCredential, credential)
-            }
+        // Check if the certificate is trusted by user (i.e. is in the Keychain)
+        // Case where the certificate is e.g. self-signed
+        if certificateIsInKeychain(with: serverTrust) {
+            let credential = URLCredential(trust: serverTrust)
+            completionHandler(.useCredential, credential)
+            return
         }
         
         // Cancel the upload
         completionHandler(.cancelAuthenticationChallenge, nil)
     }
     
+    func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
+        print("    > Background session \(session) finished events.")
+    }
+    
+
+    // MARK: - Session Task Delegate
+    func urlSession(_ session: URLSession, task: URLSessionTask, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+        print("    > Task-level authentication request from the remote server")
+
+        // Check authentication method
+        let authMethod = challenge.protectionSpace.authenticationMethod
+        guard authMethod == NSURLAuthenticationMethodHTTPBasic,
+            authMethod == NSURLAuthenticationMethodHTTPDigest else {
+            completionHandler(.performDefaultHandling, nil)
+            return
+        }
+        
+        // Get HTTP basic authentification credentials
+        guard let credential = credentialsFromKeychain() else {
+            completionHandler(.cancelAuthenticationChallenge, nil)
+            return
+        }
+        completionHandler(.useCredential, credential)
+    }
+
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        print("    > Upload task finished transferring data")
+        if error == nil {
+            print("session \(session) upload completed")
+        } else {
+            print("session \(session) upload failed with error \(String(describing: error?.localizedDescription))")
+        }
+    }
+
+
+    // MARK: - Certificate Validation
     func checkValidity(of serverTrust: SecTrust) -> (Bool) {
         // Define policy for validating domain name
         let policy = SecPolicyCreateSSL(true, domain as CFString)
@@ -142,22 +168,41 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
         return isValid
     }
     
-    func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
-        print("    > Background session \(session) finished events.")
+    func certificateIsInKeychain(with serverTrust: SecTrust) -> (Bool) {
+        // Retrieve the certificate of the server
+        let certificate = SecTrustGetCertificateAtIndex(serverTrust, CFIndex(0))!
+
+        // Get certificate in Keychain (should exist)
+        // Certificates are stored in the Keychain with label "Piwigo:<host>"
+        let query = [kSecClass as String       : kSecClassCertificate,
+                     kSecAttrLabel as String   : "Piwigo:\(domain)",
+                     kSecReturnRef as String   : kCFBooleanTrue!] as [String : Any]
+
+        var dataTypeRef: AnyObject? = nil
+        let status: OSStatus = SecItemCopyMatching(query as CFDictionary, &dataTypeRef)
+
+        var isInKeychain = false
+        if status == errSecSuccess {
+            // A certificate exists for that host, does it match the one of the server?
+            let certData = SecCertificateCopyData(certificate)
+            let storedData = SecCertificateCopyData(dataTypeRef as! SecCertificate)
+            if certData == storedData {
+                // Certificates are identical
+                isInKeychain = true
+            }
+        }
+        return isInKeychain
     }
     
-
-    // MARK: Session Task Delegate
-    func urlSession(_ session: URLSession, task: URLSessionTask, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-        print("    > Task-level authentication request from the remote server")
-    }
-
-    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        print("    > Upload task finished transferring data")
-        if error == nil {
-            print("session \(session) upload completed")
-        } else {
-            print("session \(session) upload failed with error \(String(describing: error?.localizedDescription))")
+    
+    // MARK: - HTTP Credentials
+    func credentialsFromKeychain() -> URLCredential? {
+        // Return credentials retrieved from the keychain
+        guard let username = Model.sharedInstance().httpUsername, !username.isEmpty,
+            let password = SAMKeychain.password(forService:  "\(Model.sharedInstance().serverProtocol ?? "https://")\(Model.sharedInstance().serverName ?? "")", account: username), !password.isEmpty else {
+                return nil
         }
+        return URLCredential(user: username, password: password,
+                             persistence: .forSession)
     }
 }

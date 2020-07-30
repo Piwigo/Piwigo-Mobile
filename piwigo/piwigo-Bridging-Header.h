@@ -6,6 +6,7 @@
 #import <AFNetworking.h>
 #import <MBProgressHUD.h>
 #import <MGSwipeTableCell.h>
+#import <SAMKeychain.h>
 #import <UIImageView+AFNetworking.h>
 
 #import "AlbumImagesViewController.h"
