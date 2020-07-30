@@ -15,6 +15,8 @@ let kPiwigoNotificationUploadProgress = "kPiwigoNotificationUploadProgress"
 @objc
 class UploadManager: NSObject, URLSessionDelegate {
 
+    @objc static var shared = UploadManager()
+
     // MARK: - Initialisation
     override init() {
         super.init()

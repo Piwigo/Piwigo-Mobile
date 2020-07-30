@@ -497,11 +497,6 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
 #pragma mark - Upload Manager
 
 -(void)resumeUploadManager {
-    // Create upload manager instance if needed
-    if (self.uploadManager == nil) {
-        self.uploadManager = [[UploadManager alloc] init];
-    }
-    
     // Create dedicated background queue if needed
     if (self.uploadQueue == nil) {
         /* Create a serial queue. */
@@ -511,14 +506,14 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
     
     // Resume upload tasks
     dispatch_async(self.uploadQueue, ^{
-        [self.uploadManager resumeAll];
+        [[UploadManager shared] resumeAll];
     });
 }
 
 -(void)triggerUploadManager {
     // Trigger upload tasks
     dispatch_async(self.uploadQueue, ^{
-        [self.uploadManager findNextImageToUpload];
+        [[UploadManager shared] findNextImageToUpload];
     });
 }
 

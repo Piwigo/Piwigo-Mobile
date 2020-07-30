@@ -538,8 +538,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             // Delete uploaded images (fetch on the main queue)
             if let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects {
                 let uploadsToDelete = allUploads.filter({ $0.state == .finished })
-                let appDelegate = UIApplication.shared.delegate as! AppDelegate
-                appDelegate.uploadManager?.delete(uploadedImages: uploadsToDelete)
+                UploadManager.shared.delete(uploadedImages: uploadsToDelete)
             }
         })
 
