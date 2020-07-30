@@ -570,7 +570,7 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
             queueTableView.deleteRows(at: [oldIndexPath], with: .automatic)
             if uploadsProvider.fetchedResultsController.fetchedObjects?.count == 0 {
                 // Delete remaining files from Upload directory (if any)
-                UploadManager.shared.emptyUploadsDirectory()
+                UploadManager.shared.deleteFilesInUploadsDirectory(with: nil)
                 // Close the view when there is no more upload to display
                 self.dismiss(animated: true, completion: nil)
             }

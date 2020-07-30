@@ -280,7 +280,7 @@ class UploadsProvider: NSObject {
     }
     
     /**
-     Delete one batch of uploads on a private queue. After saving,
+     Delete one batch of uploads on the main queue. After saving,
      resets the context to clean up the cache and lower the memory footprint.
      
      NSManagedObjectContext.performAndWait doesn't rethrow so this function
@@ -294,35 +294,18 @@ class UploadsProvider: NSObject {
         // taskContext.performAndWait
         managedObjectContext.performAndWait {
             
-            // Retrieve existing completed uploads
-            // Create a fetch request for the Upload entity sorted by localIdentifier
-            let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "localIdentifier", ascending: true)]
-            fetchRequest.predicate = NSPredicate(format: "requestState == %d || requestState == %d", kPiwigoUploadState.finished.rawValue, kPiwigoUploadState.preparingFail.rawValue)
-
-            // Create a fetched results controller and set its fetch request, context, and delegate.
-            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                managedObjectContext: managedObjectContext,
-                                                  sectionNameKeyPath: nil, cacheName: nil)
-            
-            // Perform the fetch.
-            do {
-                try controller.performFetch()
-            } catch {
-                fatalError("Unresolved error \(error)")
-            }
-            let completedUploads = controller.fetchedObjects ?? []
-
             // Loop over uploads to delete
             for upload in uploadsBatch {
             
-                // Index of this upload in cache
-                if let index = completedUploads.firstIndex(where: { (item) -> Bool in
-                    item.localIdentifier == upload.localIdentifier })
-                {
-                    // Delete upload record
-                    managedObjectContext.delete(completedUploads[index])
-                }
+                // Delete corresponding temporary files if any
+                let filenamePrefix = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
+                UploadManager.shared.deleteFilesInUploadsDirectory(with: filenamePrefix)
+
+                // Retrieve object in main context
+                let uploadToDelete = managedObjectContext.object(with: upload.objectID)
+
+                // Delete upload record
+                managedObjectContext.delete(uploadToDelete)
             }
             
             // Save all insertions and deletions from the context to the store.

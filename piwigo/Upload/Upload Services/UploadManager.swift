@@ -582,16 +582,25 @@ class UploadManager: NSObject, URLSessionDelegate {
         }
     }
     
-    func emptyUploadsDirectory() -> Void {
+    func deleteFilesInUploadsDirectory(with prefix: String?) -> Void {
         let fileManager = FileManager.default
         do {
             // Get list of files
+            var filesToDelete: [URL] = []
             let files = try fileManager.contentsOfDirectory(at: self.applicationUploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
-//            print("all files in cache: \(files)")
+            if let prefix = prefix {
+                // Will delete files with given prefix
+                filesToDelete = files.filter({$0.lastPathComponent.hasPrefix(prefix)})
+            } else {
+                // Will delete all files
+                filesToDelete = files
+            }
+
             // Delete files
-            for file in files {
+            for file in filesToDelete {
                 try fileManager.removeItem(at: file)
             }
+
             // For debugging
 //            let leftFiles = try fileManager.contentsOfDirectory(at: self.applicationUploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
 //            print("all files in cache after deleting images: \(leftFiles)")
