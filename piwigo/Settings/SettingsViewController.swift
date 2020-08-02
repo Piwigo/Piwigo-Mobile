@@ -54,7 +54,18 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     private var didChangeDefaultAlbum = false
 
 
-// MARK: - View Lifecycle
+    // MARK: - Core Data
+    /**
+     The UploadsProvider that collects upload data, saves it to Core Data,
+     and serves it to the uploader.
+     */
+    private lazy var uploadsProvider: UploadsProvider = {
+        let provider : UploadsProvider = UploadsProvider()
+        return provider
+    }()
+
+    
+    // MARK: - View Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -1535,9 +1546,23 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case SettingsSection.clear.rawValue /* Cache Clear */:
             switch indexPath.row {
             case 0 /* Clear cache */:
-                let alert = UIAlertController(title: NSLocalizedString("settings_cacheClear", comment: "Clear Image Cache"), message: NSLocalizedString("settings_cacheClearMsg", comment: "Are you sure you want to clear the image cache? This will make albums and images take a while to load again."), preferredStyle: .alert)
+                let alert = UIAlertController(title: NSLocalizedString("settings_cacheClear", comment: "Clear Image Cache"), message: NSLocalizedString("settings_cacheClearMsg", comment: "Are you sure you want to clear the image cache? This will make albums and images take a while to load again."), preferredStyle: .actionSheet)
 
                 let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .cancel, handler: nil)
+
+                #if DEBUG
+                let nberOfUploads = uploadsProvider.fetchedResultsController.fetchedObjects?.count ?? 0
+                let titleClearUploadRequests = nberOfUploads > 1 ? String(format: "Clear %ld Upload Requests", NumberFormatter.localizedString(from: NSNumber.init(value: nberOfUploads), number: .decimal)) : "Clear 1 Upload Request"
+                let clearUploadsAction = UIAlertAction(title: titleClearUploadRequests,
+                                                       style: .default, handler: { action in
+                    // Get completed uploads
+                    guard let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects else {
+                        return
+                    }
+                    // Delete all upload requests in main queue
+                    self.uploadsProvider.delete(uploadRequests: allUploads)
+                })
+                #endif
 
                 let clearAction = UIAlertAction(title: NSLocalizedString("alertClearButton", comment: "Clear"), style: .destructive, handler: { action in
                         Model.sharedInstance().imageCache.removeAllCachedResponses()
@@ -1546,6 +1571,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
                 // Add actions
                 alert.addAction(dismissAction)
+                #if DEBUG
+                alert.addAction(clearUploadsAction)
+                #endif
                 alert.addAction(clearAction)
 
                 // Present list of actions
