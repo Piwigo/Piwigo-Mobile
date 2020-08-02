@@ -97,9 +97,9 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
         applyColorPalette()
 
         // Navigation bar button and identifier
-        navigationItem.setLeftBarButtonItems([doneBarButton].compactMap { $0 }, animated: true)
-        navigationItem.setRightBarButtonItems([actionBarButton].compactMap { $0 }, animated: true)
+        navigationItem.setLeftBarButtonItems([doneBarButton].compactMap { $0 }, animated: false)
         navigationController?.navigationBar.accessibilityIdentifier = "UploadQueueNav"
+        updateNavBar()
 
         // Prevent device from sleeping if uploads are in progress
         let uploadsToPerform = uploadsProvider.fetchedResultsController.fetchedObjects?.map({
@@ -143,40 +143,27 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
     
     // MARK: - Action Menu
     
+    func updateNavBar() {
+        let impossibleUploads = uploadsProvider.fetchedResultsController.fetchedObjects?.map({ ($0.state == .preparingFail) ? 1 : 0}).reduce(0, +) ?? 0
+        let failedUploads = uploadsProvider.fetchedResultsController.fetchedObjects?.map({ ($0.state == .preparingError) || ($0.state == .uploadingError) || ($0.state == .finishingError) ? 1 : 0}).reduce(0, +) ?? 0
+
+        if impossibleUploads + failedUploads > 0 {
+            navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
+        } else {
+            navigationItem.rightBarButtonItems = nil
+        }
+    }
+    
     @objc func didTapActionButton() {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
         // Cancel action
         let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in })
-
-        // Clear completed uploads
-        let completedUploads = uploadsProvider.fetchedResultsController.fetchedObjects?.map({ ($0.state == .finished) ? 1 : 0}).reduce(0, +) ?? 0
-        let titleClear = completedUploads > 1 ? String(format: NSLocalizedString("imageUploadClearCompletedSeveral", comment: "Clear %@ Completed"), NumberFormatter.localizedString(from: NSNumber.init(value: completedUploads), number: .decimal)) : NSLocalizedString("imageUploadClearCompletedSingle", comment: "Clear 1 Completed")
-        let clearAction = UIAlertAction(title: titleClear, style: .default, handler: { action in
-            // Get completed uploads
-            guard let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects else {
-                return
-            }
-            // Get uploads to delete
-            let uploadsToDelete = allUploads.filter({ $0.state == .finished})
-            // Delete completed uploads in background
-            self.uploadsProvider.delete(uploadRequests: uploadsToDelete)
-        })
-        
-        // Delete uploaded photos
-        let titleDelete = completedUploads > 1 ? String(format: NSLocalizedString("deleteCategory_allImages", comment: "Delete %@ Photos"), NumberFormatter.localizedString(from: NSNumber.init(value: completedUploads), number: .decimal)) : NSLocalizedString("deleteSingleImage_title", comment: "Delete Photo")
-        let deleteAction = UIAlertAction(title: titleDelete, style: .destructive, handler: { action in
-            // Delete uploaded images (fetch on the main queue)
-            if let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects {
-                let uploadsToDelete = allUploads.filter({ $0.state == .finished })
-                UploadManager.shared.delete(uploadedImages: uploadsToDelete)
-            }
-        })
         
         // Clear impossible uploads
         let impossibleUploads = uploadsProvider.fetchedResultsController.fetchedObjects?.map({ ($0.state == .preparingFail) ? 1 : 0}).reduce(0, +) ?? 0
-        let titleClear2 = impossibleUploads > 1 ? String(format: NSLocalizedString("imageUploadClearFailedSeveral", comment: "Clear %@ Failed"), NumberFormatter.localizedString(from: NSNumber.init(value: impossibleUploads), number: .decimal)) : NSLocalizedString("imageUploadClearFailedSingle", comment: "Clear 1 Failed")
-        let clearAction2 = UIAlertAction(title: titleClear2, style: .default, handler: { action in
+        let titleClear = impossibleUploads > 1 ? String(format: NSLocalizedString("imageUploadClearFailedSeveral", comment: "Clear %@ Failed"), NumberFormatter.localizedString(from: NSNumber.init(value: impossibleUploads), number: .decimal)) : NSLocalizedString("imageUploadClearFailedSingle", comment: "Clear 1 Failed")
+        let clearAction = UIAlertAction(title: titleClear, style: .default, handler: { action in
             // Get completed uploads
             guard let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects else {
                 return
@@ -222,11 +209,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
             alert.addAction(resumeAction)
         }
         if impossibleUploads > 0 {
-            alert.addAction(clearAction2)
-        }
-        if completedUploads > 0 {
             alert.addAction(clearAction)
-            alert.addAction(deleteAction)
         }
 
         // Present list of actions
@@ -611,5 +594,6 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Update table view
         queueTableView.endUpdates()
+        updateNavBar()
     }
 }
