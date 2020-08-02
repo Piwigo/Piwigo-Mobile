@@ -427,7 +427,7 @@ class DefaultCategoryViewController: UIViewController, UITableViewDataSource, UI
                     },
                     onFailure: { task, error in
 #if DEBUG
-                        print(String(format: "getAlbumListForCategory error %ld: %@", Int(error?.code ?? 0), error?.localizedDescription ?? ""))
+                        print(String(format: "getAlbumListForCategory: %@", error?.localizedDescription ?? ""))
 #endif
                         // Hide loading HUD
                         self.hideHUD()
@@ -574,7 +574,7 @@ class DefaultCategoryViewController: UIViewController, UITableViewDataSource, UI
                                     },
                                       onFailure: { task, error in
 #if DEBUG
-                print(String(format: "getAlbumListForCategory error %ld: %@", Int(error?.code ?? 0), error?.localizedDescription ?? ""))
+                print(String(format: "getAlbumListForCategory: %@", error?.localizedDescription ?? ""))
 #endif
                                         // Hide loading HUD
                                         self.hideHUD()
@@ -687,7 +687,7 @@ class DefaultCategoryViewController: UIViewController, UITableViewDataSource, UI
                 self.hideHUD()
             }, onFailure: { task, error in
             #if DEBUG
-                print(String(format: "getAlbumListForCategory error %ld: %@", Int(error?.code ?? 0), error?.localizedDescription ?? ""))
+                print(String(format: "getAlbumListForCategory: %@", error?.localizedDescription ?? ""))
             #endif
                 // Hide loading HUD
                 self.hideHUD()
