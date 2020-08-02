@@ -450,8 +450,8 @@ class UploadManager: NSObject, URLSessionDelegate {
         let uploadProperties = nextUpload.getUploadProperties(with: .uploading, error: "")
         uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
             // Launch transfer if possible
-            self.transferInBackgroundImage(of: uploadProperties)
-//            self.transferImage(of: uploadProperties)
+//            self.transferInBackgroundImage(of: uploadProperties)
+            self.transferImage(of: uploadProperties)
 //            self.essai2()
         })
     }

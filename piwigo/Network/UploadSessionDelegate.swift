@@ -12,23 +12,21 @@ import Foundation
 class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegate, URLSessionDataDelegate {
     
     @objc static var shared = UploadSessionDelegate()
-    @objc var bckgSessionCompletionHandler: (() -> Void)?
-
-    private let bckgIdentifier:String! = "org.piwigo.bckgSession"
+    @objc let uploadSessionIdentifier:String! = "org.piwigo.uploadBckgSession"
+    @objc var uploadSessionCompletionHandler: (() -> Void)?
     
     // Create single instance
     lazy var uploadSession: URLSession = {
-//        let config = URLSessionConfiguration.background(withIdentifier: bckgIdentifier)
-        let config = URLSessionConfiguration.default
+        let config = URLSessionConfiguration.background(withIdentifier: uploadSessionIdentifier)
         
         /// Background tasks can be scheduled at the discretion of the system for optimal performance
         config.isDiscretionary = false
         
         /// Indicates whether the app should be resumed or launched in the background when transfers finish
-        config.sessionSendsLaunchEvents = false
+        config.sessionSendsLaunchEvents = true
         
         /// Indicates whether TCP connections should be kept open when the app moves to the background
-        config.shouldUseExtendedBackgroundIdleMode = false
+        config.shouldUseExtendedBackgroundIdleMode = true
 
         /// Indicates whether the request is allowed to use the built-in cellular radios to satisfy the request.
         config.allowsCellularAccess = true
@@ -36,13 +34,11 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
         /// How long a task should wait for additional data to arrive before giving up (60s by default)
         config.timeoutIntervalForRequest = 60
         
-        /// Any upload task created by a background session is automatically retried if the original request fails due to a timeout.
-        /// To configure how long an upload or download task should be allowed to be retried or transferred, use the timeoutIntervalForResource property.
-        /// How long a task should wait for additional data to arrive before giving up (60s by default)
-        config.timeoutIntervalForResource = 60
+        /// How long an upload task should be allowed to be retried or transferred (7 days by default).
+        config.timeoutIntervalForResource = 24 * 60 * 60
         
         /// Determines the maximum number of simultaneous connections made to the host by tasks (4 by default)
-        config.httpMaximumConnectionsPerHost = 2
+        config.httpMaximumConnectionsPerHost = 1
         
         /// Do not return a response from the cache
         config.requestCachePolicy = .reloadIgnoringCacheData
@@ -114,11 +110,13 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
     }
     
     func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
-        print("    > Background session \(session) finished events.")
+        print("    > Background session \(session.configuration.identifier ?? "") finished events.")
         
-        // Execute completion handler
-        if let bckgHandler = bckgSessionCompletionHandler {
-            bckgHandler()
+        // Execute completion handler, i.e. inform iOS that we collect data returned by Piwigo server
+        DispatchQueue.main.async {
+            if let bckgHandler = self.uploadSessionCompletionHandler {
+                bckgHandler()
+            }
         }
     }
     
@@ -143,51 +141,28 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
         completionHandler(.useCredential, credential)
     }
 
+    func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
+        print("    > Upload task \(task.taskIdentifier) did send \(bytesSent) bytes, i.e. \(totalBytesSent) bytes over \(totalBytesExpectedToSend) at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium))")
+    }
+    
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        print("    > Upload task finished transferring data")
         
-        // What should we do with this error?
-        guard let query = task.originalRequest?.url?.query else {
-            assertionFailure("    > session \(session): task with no query!")
-            return
-        }
-
         // Task did complete without error?
         guard let error = error else {
-            // Case of an upload
-            if query.contains(kPiwigoImagesUpload) {
-                // Case of an upload
-                print("    > Upload task completed")
-                return
-            }
+            print("    > Upload task \(task.taskIdentifier) finished transferring data w/o error at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium))")
+            return
+        }
             
-            assertionFailure("    > session \(session): Unknown task completed!!")
-            return
-        }
-        
-        // An error was encountered - Case of an upload
-        if query.contains(kPiwigoImagesUpload) {
-            print("    > session \(session): Upload task failed with error \(String(describing: error.localizedDescription))")
-            return
-        }
-        assertionFailure("    > session \(session): Unknown task failed with error \(String(describing: error.localizedDescription))")
+        // An error was encountered
+        print("    > Upload task \(task.taskIdentifier) failed with error \(String(describing: error.localizedDescription))")
+        UploadManager.shared.didCompleteUploadTask(task, withError: error)
     }
 
 
     //MARK: - Session Data Delegate
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
-        print("    > Upload task has received some of the expected data")
-        
-        // What should we do with this data?
-        guard let query = dataTask.originalRequest?.url?.query else {
-            assertionFailure("    > session \(session): task with no query!")
-            return
-        }
-
-        // Case of an upload
-        if query.contains(kPiwigoImagesUpload) {
-            UploadManager.shared.didCompleteUploadTask(dataTask, withData: data)
-        }
+        print("    > Upload task \(dataTask.taskIdentifier) did receive some data at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium))")
+        UploadManager.shared.didCompleteUploadTask(dataTask, withData: data)
     }
 
 

@@ -246,7 +246,7 @@ extension UploadManager {
     // MARK: - Transfer Image in Background
     // See https://tools.ietf.org/html/rfc7578
     func transferInBackgroundImage(of upload: UploadProperties) {
-        print("    > imageInBackgroundForRequest...")
+        print("    > imageInBackgroundForRequest: prepare files...")
         
         // Get URL of file to upload
         let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
@@ -317,12 +317,28 @@ extension UploadManager {
             }
         }
 
-        // Launch upload
-        send(chunk: 0, of: chunks, with: boundary, for: upload)
+        // How many chunks to upload?
+//        if chunks == 1 {
+            // Upload single chunk
+            send(chunk: 0, of: chunks, for: upload.localIdentifier)
+//        } else {
+//            // Upload all chunks except last one,
+//            // because Piwigo expect to have received all chunks when it receives the last one.
+//            for chunk in 0..<chunks-1 {
+//                send(chunk: chunk, of: chunks, for: upload.localIdentifier)
+//            }
+//        }
     }
     
-    private func send(chunk: Int, of chunks:Int, with boundary: String, for upload:UploadProperties) {
+    func send(chunk: Int, of chunks:Int, for uploadIdentifier: String) {
         
+        // Retrieve corresponding upload properties
+        guard let uploadObject = uploadsProvider.requestsToComplete()?.filter({$0.localIdentifier == uploadIdentifier}).first else {
+            return
+        }
+        let upload: UploadProperties = uploadObject.getUploadProperties(with: .uploading, error: "")
+        let boundary = createBoundary(from: uploadIdentifier)
+
         // Prepare URL
         let url = URL(string: "https://lelievre-berna.net/Piwigo/ws.php?format=json&method=pwg.images.upload")
         guard let validUrl = url else { fatalError() }
@@ -363,6 +379,7 @@ extension UploadManager {
 //        let task = URLSession.shared.uploadTask(with: request, from: httpBody as Data) { (data, response, error) in
 //        let task = URLSession.shared.uploadTask(with: request, fromFile: fileURL) { (data, response, error) in
             
+        // As soon as tasks are created, the timeout counter starts
         let uploadSession: URLSession = UploadSessionDelegate.shared.uploadSession
         let task = uploadSession.uploadTask(with: request, fromFile: fileURL)
 //        let task = uploadSession.uploadTask(with: request, fromFile: fileURL) { (data, response, error) in
@@ -399,8 +416,19 @@ extension UploadManager {
 //                    }
 //
 //                    if uploadJSON.data.image_id == NSNotFound {
+//                        // Update UI
+//                        let chunkProgress: Float = Float(chunk+1) / Float(chunks)
+//                        let uploadInfo: [String : Any] = ["localIndentifier" : upload.localIdentifier,
+//                                                          "photoResize" : Int16(upload.photoResize),
+//                                                          "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
+//                                                          "Error" : upload.requestError ?? "",
+//                                                          "progressFraction" : chunkProgress]
+//                        DispatchQueue.main.async {
+//                            NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationUploadProgress), object: nil, userInfo: uploadInfo)
+//                        }
 //                        // Continue with next chunk
-//                        self.send(chunk: chunk + 1, of: chunks, with: boundary, for: upload)
+////                        self.send(chunk: chunk + 1, of: chunks, for: upload.localIdentifier)
+//                        return
 //                    } else {
 //                        // Prepare image for cache
 //                        let imageData = PiwigoImageData.init()
@@ -425,19 +453,8 @@ extension UploadManager {
 //                        }
 //
 //                        // Delete uploaded files from Piwigo/Uploads directory
-//                        let fileManager = FileManager.default
-//                        do {
-//                            // Get list of files in Uploads directory
-//                            let files = try fileManager.contentsOfDirectory(at: self.applicationUploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
-//                //            print("all files in cache: \(files)")
-//                            // Delete files
-//                            for file in files.filter({$0.lastPathComponent.hasPrefix(fileName)}) {
-//                                try fileManager.removeItem(at: file)
-//                            }
-//                        } catch {
-//                            // Not a big issue
-//                            // Will have another occasion to clean up the directory later
-//                        }
+//                        let filenamePrefix = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
+//                        self.deleteFilesInUploadsDirectory(with: filenamePrefix)
 //
 //                        // Update state of upload
 //                        var uploadProperties = upload
@@ -456,6 +473,21 @@ extension UploadManager {
 //                print("Not a valid JSON object!!")
 //            }
 //        }
+        
+        if #available(iOS 11.0, *) {
+            // Determine file size
+            var fileSize = Int64(Model.sharedInstance()?.uploadChunkSize ?? 512000)
+            if let size = try? FileManager.default.attributesOfItem(atPath: fileURL.absoluteString)[FileAttributeKey.size] as? Int64 {
+                fileSize = size
+            }
+            // Tell the system how many bytes are expected to be exchanged
+            print("    > Upload task \(task.taskIdentifier) will send \(fileSize + 500) bytes")
+            task.countOfBytesClientExpectsToSend = fileSize + 500
+            task.countOfBytesClientExpectsToReceive = 600
+        } else {
+            // Fallback on earlier versions
+        }
+        print("    > Upload task \(task.taskIdentifier) resumed at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium))")
         task.resume()
     }
 
@@ -474,8 +506,8 @@ extension UploadManager {
         // Check returned data
         do {
             guard let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: AnyObject] else { return }
-            print(JSONSerialization.isValidJSONObject(json) ? "is Valid JSON Object ;-)" : "is Not Valid JSON Object :=(")
-            print("json:", json)
+            print(JSONSerialization.isValidJSONObject(json) ? "    > returned valid JSON object ;-)" : "    > Did not return valid JSON object :=(")
+            print("    > JSON object of", json.count, "bytes")
             
             // Retrieve task parameters
             guard let identifier = task.originalRequest?.value(forHTTPHeaderField: "identifier"),
@@ -503,9 +535,22 @@ extension UploadManager {
                 }
 
                 if uploadJSON.data.image_id == NSNotFound {
-                    // Continue with next chunk
-                    let boundary = createBoundary(from: upload.localIdentifier)
-                    self.send(chunk: chunk + 1, of: chunks, with: boundary, for: upload)
+                    // Update UI
+                    let chunkProgress: Float = Float(chunk+1) / Float(chunks)
+                    let uploadInfo: [String : Any] = ["localIndentifier" : upload.localIdentifier,
+                                                      "photoResize" : Int16(upload.photoResize),
+                                                      "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
+                                                      "Error" : upload.requestError ?? "",
+                                                      "progressFraction" : chunkProgress]
+                    DispatchQueue.main.async {
+                        NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationUploadProgress), object: nil, userInfo: uploadInfo)
+                    }
+                    
+                    // Are all preliminary chunks uploaded?
+//                    if chunk + 1 == chunks - 1 {
+                        // Remains to upload the last chunk
+                        self.send(chunk: chunk + 1, of: chunks, for: upload.localIdentifier)
+//                    }
                 } else {
                     // Prepare image for cache
                     let imageData = PiwigoImageData.init()
@@ -552,7 +597,8 @@ extension UploadManager {
     }
 
     func createBoundary(from identifier: String) -> String {
-        let suffix = "Piwigo-Mobile-" + identifier.replacingOccurrences(of: "/", with: "-")
+        /// We don't use the UUID to be able to test uploads with a simulator.
+        let suffix = identifier.replacingOccurrences(of: "/", with: "").map { $0.lowercased() }.joined()
         let boundary = String(repeating: "-", count: 68 - suffix.count) + suffix
         print("    > \(boundary)")
         return boundary
