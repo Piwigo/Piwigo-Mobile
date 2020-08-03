@@ -54,6 +54,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     private var didChangeDefaultAlbum = false
 
 
+    #if DEBUG
     // MARK: - Core Data
     /**
      The UploadsProvider that collects upload data, saves it to Core Data,
@@ -63,6 +64,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         let provider : UploadsProvider = UploadsProvider()
         return provider
     }()
+    #endif
 
     
     // MARK: - View Lifecycle
@@ -1546,12 +1548,16 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case SettingsSection.clear.rawValue /* Cache Clear */:
             switch indexPath.row {
             case 0 /* Clear cache */:
-                let alert = UIAlertController(title: NSLocalizedString("settings_cacheClear", comment: "Clear Image Cache"), message: NSLocalizedString("settings_cacheClearMsg", comment: "Are you sure you want to clear the image cache? This will make albums and images take a while to load again."), preferredStyle: .actionSheet)
+                #if DEBUG
+                let alert = UIAlertController(title: NSLocalizedString("settings_cacheClear", comment: "Clear Cache"), message:"", preferredStyle: .actionSheet)
+                #else
+                let alert = UIAlertController(title: NSLocalizedString("settings_cacheClear", comment: "Clear Cache"), message: NSLocalizedString("settings_cacheClearMsg", comment: "Are you sure you want to clear the image cache? This will make albums and images take a while to load again."), preferredStyle: .alert)
+                #endif
 
                 let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .cancel, handler: nil)
 
                 #if DEBUG
-                let nberOfUploads = uploadsProvider.fetchedResultsController.fetchedObjects?.count ?? 0
+                let nberOfUploads: Int = uploadsProvider.fetchedResultsController.fetchedObjects?.count ?? 0
                 let titleClearUploadRequests = nberOfUploads > 1 ? String(format: "Clear %ld Upload Requests", NumberFormatter.localizedString(from: NSNumber.init(value: nberOfUploads), number: .decimal)) : "Clear 1 Upload Request"
                 let clearUploadsAction = UIAlertAction(title: titleClearUploadRequests,
                                                        style: .default, handler: { action in
