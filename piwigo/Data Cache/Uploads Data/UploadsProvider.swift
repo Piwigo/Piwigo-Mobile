@@ -457,14 +457,12 @@ class UploadsProvider: NSObject {
      */
     func updateBadgeAndButton() {
         DispatchQueue.main.async {
-            // Calculate number of uploads to perform
-            let nberOfUploads = self.fetchedResultsController.fetchedObjects?.count ?? 0
-            let completedUploads = self.fetchedResultsController.fetchedObjects?.map({ $0.state == .finished ? 1 : 0}).reduce(0, +) ?? 0
-                
             // Update app badge
-            UIApplication.shared.applicationIconBadgeNumber = nberOfUploads - completedUploads
+            let nberOfUploadsToComplete = self.fetchedNonCompletedResultsController.fetchedObjects?.count ?? 0
+            UIApplication.shared.applicationIconBadgeNumber = nberOfUploadsToComplete
             // Update button of root album (or default album)
-            NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationLeftUploads), object: nil)
+            let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : nberOfUploadsToComplete]
+            NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationLeftUploads), object: nil, userInfo: uploadInfo)
         }
     }
 

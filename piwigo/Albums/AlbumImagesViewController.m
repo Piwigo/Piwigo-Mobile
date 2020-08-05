@@ -44,7 +44,7 @@ NSString * const kPiwigoNotificationUploadedImage = @"kPiwigoNotificationUploade
 NSString * const kPiwigoNotificationDeletedImage = @"kPiwigoNotificationDeletedImage";
 NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChangedAlbumData";
 
-@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, UITextFieldDelegate, NSFetchedResultsControllerDelegate, ImageDetailDelegate, EditImageParamsDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, AsyncImageActivityItemProviderDelegate, TagSelectorViewDelegate, ChangedSettingsDelegate>
+@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, UITextFieldDelegate, ImageDetailDelegate, EditImageParamsDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, AsyncImageActivityItemProviderDelegate, TagSelectorViewDelegate, ChangedSettingsDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
@@ -728,12 +728,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
                 self.addButton.tintColor = [UIColor whiteColor];
             } completion:^(BOOL finished) {
                 // Show button on the left of the Add button if needed
-                if ((self.categoryId == 0) || (self.categoryId == [Model sharedInstance].defaultCategory))
-                {
-                    // Show UploadQueue button in root or default album
-                    [self showUploadQueueButtonIfNeeded];
-                }
-                else {
+                if ((self.categoryId != 0) && (self.categoryId != [Model sharedInstance].defaultCategory)) {
                     // Show Home button if not in root or default album
                     [self showHomeAlbumButtonIfNeeded];
                 }
@@ -854,12 +849,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
         self.addButton.tintColor = [UIColor whiteColor];
             
         // Show button on the left of the Add button if needed
-        if ((self.categoryId == 0) || (self.categoryId == [Model sharedInstance].defaultCategory))
-        {
-            // Show UploadQueue button in root or default album
-            [self showUploadQueueButtonIfNeeded];
-        }
-        else {
+        if ((self.categoryId != 0) && (self.categoryId != [Model sharedInstance].defaultCategory)) {
             // Show Home button if not in root or default album
             [self showHomeAlbumButtonIfNeeded];
         }
@@ -896,18 +886,13 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
     }
 }
 
--(void)showUploadQueueButtonIfNeeded
+-(void)showUploadQueueButtonIfNeeded:(NSInteger)nberOfUploads
 {
     // Are there images in upload queue?
-    NSFetchedResultsController *uploadsFC = [[[UploadsProvider alloc] init] fetchedResultsController];
-    NSArray *uploads = uploadsFC.fetchedObjects;
-    if (uploads.count > 0)
+    if (nberOfUploads > 0)
     {
         // Set number of uploads
-        NSIndexSet *completedUploads = [uploads indexesOfObjectsPassingTest:^BOOL(Upload *obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            return (obj.requestState == kPiwigoUploadStateFinished);
-        }];
-        self.nberOfUploadsLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)(uploads.count - completedUploads.count)];
+        self.nberOfUploadsLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)nberOfUploads];
         
         // Resize label to fit number
         [self.nberOfUploadsLabel sizeToFit];
@@ -947,10 +932,15 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
 
 -(void)updateUploadQueueButton:(NSNotification *)notification
 {
-    // Only when presenting the root or default album
-    if ((self.categoryId == 0) || (self.categoryId == [Model sharedInstance].defaultCategory))
-    {
-        [self  showUploadQueueButtonIfNeeded];
+    NSInteger nberOfUploadsToComplete = 0;
+    if (notification != nil) {
+        NSDictionary *userInfo = notification.userInfo;
+        nberOfUploadsToComplete = [[userInfo objectForKey:@"nberOfUploadsToComplete"] integerValue];
+    }
+        
+    // Only presented in the root or default album
+    if ((self.categoryId == 0) || (self.categoryId == [Model sharedInstance].defaultCategory)) {
+        [self showUploadQueueButtonIfNeeded:nberOfUploadsToComplete];
     }
 }
 
@@ -1578,10 +1568,6 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
     [self presentViewController:navController animated:YES completion:nil];
 }
 
--(void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath
-{
-    NSLog(@"•••• controller did change object ;-)");
-}
 
 #pragma mark - Create Sub-Album
 
