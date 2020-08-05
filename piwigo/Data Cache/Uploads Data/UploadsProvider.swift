@@ -499,4 +499,44 @@ class UploadsProvider: NSObject {
         
         return controller
     }()
+
+    /**
+     A fetched results controller delegate to present non-completed upload requests
+     */
+    @objc weak var fetchedNonCompletedResultsControllerDelegate: NSFetchedResultsControllerDelegate?
+    
+    /**
+     A fetched results controller to fetch Upload records sorted by state the main queue.
+     */
+    @objc lazy var fetchedNonCompletedResultsController: NSFetchedResultsController<Upload> = {
+        
+        // Create a fetch request for the Upload entity sorted by request date.
+        let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
+
+        // Set the batch size to a suitable number
+        fetchRequest.fetchBatchSize = 20
+
+        // Sort upload requests by state and date
+        let firstSortDescriptor = NSSortDescriptor(key: "requestState", ascending: false)
+        let secondSortDescriptor = NSSortDescriptor(key: "requestDate", ascending: true)
+        fetchRequest.sortDescriptors = [firstSortDescriptor, secondSortDescriptor]
+        
+        // Do not consider completed upload requests
+        fetchRequest.predicate = NSPredicate(format: "requestState != %d", kPiwigoUploadState.finished.rawValue)
+
+        // Create a fetched results controller and set its fetch request, context, and delegate.
+        let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                            managedObjectContext: self.managedObjectContext,
+                                              sectionNameKeyPath: "stateSection", cacheName: "nonCompleted")
+        controller.delegate = fetchedNonCompletedResultsControllerDelegate
+        
+        // Perform the fetch.
+        do {
+            try controller.performFetch()
+        } catch {
+            fatalError("Unresolved error \(error)")
+        }
+        
+        return controller
+    }()
 }

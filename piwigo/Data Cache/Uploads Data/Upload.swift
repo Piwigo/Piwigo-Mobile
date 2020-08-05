@@ -142,6 +142,34 @@ extension Upload {
         return state.stateInfo
     }
 
+    @objc var stateSection: String {
+        get {
+            switch self.requestState {
+            case kPiwigoUploadState.preparingFail.rawValue,
+                 kPiwigoUploadState.formatError.rawValue:
+                return "Section1"
+                
+            case kPiwigoUploadState.preparingError.rawValue,
+                 kPiwigoUploadState.uploadingError.rawValue,
+                 kPiwigoUploadState.finishingError.rawValue:
+                return "Section2"
+                
+            case kPiwigoUploadState.waiting.rawValue,
+                 kPiwigoUploadState.preparing.rawValue,
+                 kPiwigoUploadState.prepared.rawValue,
+                 kPiwigoUploadState.uploading.rawValue,
+                 kPiwigoUploadState.uploaded.rawValue,
+                 kPiwigoUploadState.finishing.rawValue:
+                return "Section3"
+                
+            case kPiwigoUploadState.finished.rawValue:
+                fallthrough
+            default:
+                return "NoSection"
+            }
+        }
+    }
+    
     var privacy: kPiwigoPrivacy {
         switch self.privacyLevel {
         case Int16(kPiwigoPrivacyEverybody.rawValue):

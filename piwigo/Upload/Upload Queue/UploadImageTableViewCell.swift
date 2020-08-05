@@ -121,7 +121,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
             return
         }
         
-        // Display image image
+        // Image asset available
         if [.preparingError, .preparingFail, .formatError, .uploadingError, .finishingError].contains(upload.state) {
             // Display error message
             if upload.requestError?.count ?? 0 > 0 {
@@ -137,6 +137,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
                 default:
                     imageInfoLabel.text = "— ? —"
                 }
+                uploadingProgress?.setProgress(0.0, animated: false)
             }
         } else {
             // Display image information
