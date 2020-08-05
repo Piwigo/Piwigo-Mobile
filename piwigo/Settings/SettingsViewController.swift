@@ -1557,8 +1557,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .cancel, handler: nil)
 
                 #if DEBUG
-                let nberOfUploads: Int = uploadsProvider.fetchedResultsController.fetchedObjects?.count ?? 0
-                let titleClearUploadRequests = nberOfUploads > 1 ? String(format: "Clear %ld Upload Requests", NumberFormatter.localizedString(from: NSNumber.init(value: nberOfUploads), number: .decimal)) : "Clear 1 Upload Request"
+                let nberOfUploads = uploadsProvider.fetchedResultsController.fetchedObjects?.count ?? 0
+                let titleClearUploadRequests = nberOfUploads > 1 ? String(format: "Clear %ld Upload Requests",
+                    nberOfUploads) : "Clear 1 Upload Request"
                 let clearUploadsAction = UIAlertAction(title: titleClearUploadRequests,
                                                        style: .default, handler: { action in
                     // Get completed uploads
