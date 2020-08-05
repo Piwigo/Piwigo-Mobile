@@ -539,8 +539,13 @@ class UploadManager: NSObject, URLSessionDelegate {
         isUploading = false
         isFinishing = false
         if let failedUploads = uploadsProvider.requestsToResume() {
-            // Resume failed uploads
-            resume(failedUploads: failedUploads) { (_) in }
+            if failedUploads.count > 0 {
+                // Resume failed uploads
+                resume(failedUploads: failedUploads) { (_) in }
+            } else {
+                // Continue uploads
+                findNextImageToUpload()
+            }
         }
     }
 
