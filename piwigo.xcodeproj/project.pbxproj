@@ -63,7 +63,6 @@
 		AD5F64EE24C607FC00660BE3 /* pwg.tags.getList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5F64EC24C607FC00660BE3 /* pwg.tags.getList.swift */; };
 		AD5F64F224C6088600660BE3 /* pwg.tags.getList.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5F64F124C6088600660BE3 /* pwg.tags.getList.json */; };
 		AD5F64F424C6091500660BE3 /* pwg.tags.getAdminList.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5F64F324C6091500660BE3 /* pwg.tags.getAdminList.json */; };
-		AD5F64FC24C7014500660BE3 /* ReducedSizePresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA3CED624BF41E200694922 /* ReducedSizePresentationController.swift */; };
 		AD65236B248837D3007E2537 /* UploadFinisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1D5F6A248553710004C8BC /* UploadFinisher.swift */; };
 		AD6B2E731F0930B40040EAD9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E751F0930B40040EAD9 /* Localizable.strings */; };
 		AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E781F0930CE0040EAD9 /* About.strings */; };
@@ -342,7 +341,6 @@
 		ADA24DB5243A74C200864D1F /* DefaultImageSizeViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = DefaultImageSizeViewController.storyboard; sourceTree = "<group>"; };
 		ADA24DB7243A767700864D1F /* DefaultImageSizeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultImageSizeViewController.swift; sourceTree = "<group>"; };
 		ADA36E0E21D777D900133708 /* OpenSansSemiBold.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = OpenSansSemiBold.TTF; sourceTree = "<group>"; };
-		ADA3CED624BF41E200694922 /* ReducedSizePresentationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReducedSizePresentationController.swift; sourceTree = "<group>"; };
 		ADA3CED824BF50D000694922 /* UploadSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadSettingsViewController.swift; sourceTree = "<group>"; };
 		ADA3CEDA24BF50E200694922 /* UploadParametersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadParametersViewController.swift; sourceTree = "<group>"; };
 		ADA6DA4621B2AD9900F941F1 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
@@ -678,7 +676,6 @@
 				ADA3CEDA24BF50E200694922 /* UploadParametersViewController.swift */,
 				ADA3CED824BF50D000694922 /* UploadSettingsViewController.swift */,
 				AD6FD1F924BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard */,
-				ADA3CED624BF41E200694922 /* ReducedSizePresentationController.swift */,
 			);
 			path = "Upload Options";
 			sourceTree = "<group>";
@@ -1579,7 +1576,6 @@
 				AD31F5F9242FB76900BD65FC /* ReleaseNotesViewController.swift in Sources */,
 				AD82C04C2433DB0E00F774BA /* SelectPrivacyViewController.swift in Sources */,
 				ADD210432440DE5A00DD79A6 /* SettingsViewController.swift in Sources */,
-				AD5F64FC24C7014500660BE3 /* ReducedSizePresentationController.swift in Sources */,
 				ADFA89052438CFD800F73F0F /* ShareMetadataCell.swift in Sources */,
 				AD196AA12438D2D6006C492A /* ShareMetadataViewController.swift in Sources */,
 				AD0ED1002441C42200C69178 /* SliderTableViewCell.swift in Sources */,

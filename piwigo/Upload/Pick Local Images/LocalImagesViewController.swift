@@ -616,12 +616,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             
             // Push Edit view embedded in navigation controller
             let navController = UINavigationController(rootViewController: uploadSwitchVC)
-            navController.transitioningDelegate = self
-            if UIDevice.current.userInterfaceIdiom == .pad {
-                navController.modalPresentationStyle = .popover
-            } else {
-                navController.modalPresentationStyle = .custom
-            }
+            navController.modalPresentationStyle = .popover
             navController.modalTransitionStyle = .coverVertical
             navController.popoverPresentationController?.sourceView = localImagesCollection
             navController.popoverPresentationController?.barButtonItem = uploadBarButton
@@ -1364,21 +1359,3 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
         }
     }
 }
-
-extension LocalImagesViewController : UIViewControllerTransitioningDelegate {
-    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
-        return ReducedSizePresentationController(presentedViewController: presented, presenting: presenting)
-    }
-}
-
-//extension UIImage {
-//    func imageWithColor(_ color: UIColor) -> UIImage? {
-//        var image = withRenderingMode(.alwaysTemplate)
-//        UIGraphicsBeginImageContextWithOptions(size, false, scale)
-//        color.set()
-//        image.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
-//        image = UIGraphicsGetImageFromCurrentImageContext()!
-//        UIGraphicsEndImageContext()
-//        return image
-//    }
-//}
