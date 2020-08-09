@@ -125,6 +125,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         instance.prefixFileNameBeforeUpload = NO;
         instance.defaultPrefix = @"";
         instance.localImagesSort = kPiwigoSortDateCreatedDescending;    // i.e. new to old
+        instance.wifiOnlyUploading = NO;            // Wi-Fi only option
 
         // Default palette mode
         instance.isDarkPaletteActive = NO;
@@ -266,6 +267,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         self.prefixFileNameBeforeUpload = modelData.prefixFileNameBeforeUpload;
         self.defaultPrefix = modelData.defaultPrefix;
         self.localImagesSort = modelData.localImagesSort;
+        self.wifiOnlyUploading = modelData.wifiOnlyUploading;
 	}
 }
 
@@ -346,6 +348,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     [saveObject addObject:self.defaultPrefix];
     // Added in 2.5.0…
     [saveObject addObject:@(self.localImagesSort)];
+    [saveObject addObject:[NSNumber numberWithBool:self.wifiOnlyUploading]];
 
     [encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -643,11 +646,11 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     } else {
         self.localImagesSort = kPiwigoSortDateCreatedDescending;
     }
-//    if(savedData.count > 53) {
-//        self.localImagesSectionType = [[savedData objectAtIndex:53] intValue];
-//    } else {
-//        self.localImagesSectionType = 2;   // Presentation by date
-//    }
+    if(savedData.count > 53) {
+        self.wifiOnlyUploading = [[savedData objectAtIndex:53] boolValue];
+    } else {
+        self.wifiOnlyUploading = NO;    // Wi-Fi not required for uploading
+    }
 	return self;
 }
 

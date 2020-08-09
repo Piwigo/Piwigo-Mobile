@@ -163,6 +163,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL prefixFileNameBeforeUpload;
 @property (nonatomic, strong) NSString *defaultPrefix;
 @property (nonatomic, assign) kPiwigoSort localImagesSort;
+@property (nonatomic, assign) BOOL wifiOnlyUploading;
 
 // Default palette mode
 @property (nonatomic, assign) BOOL isDarkPaletteActive;

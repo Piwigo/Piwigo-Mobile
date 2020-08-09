@@ -656,6 +656,7 @@
 "settings_defaultPrefix>320px" = "Filename Prefix";
 "settings_defaultPrefixPlaceholder" = "Prefix";
 "settings_deleteImage>375px" = "Delete Photo After Upload";
+"settings_wifiOnly" = "Wi-Fi Only";
 "settings_deleteImage" = "Delete After Upload";
 
 // Settings — Cache

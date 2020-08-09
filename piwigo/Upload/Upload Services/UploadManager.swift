@@ -21,8 +21,12 @@ class UploadManager: NSObject, URLSessionDelegate {
     override init() {
         super.init()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(didBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(willResignActive), name: UIApplication.willResignActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.didBecomeActive),
+                                               name: UIApplication.didBecomeActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.willResignActive),
+                                               name: UIApplication.willResignActiveNotification, object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(self.findNextImageToUpload),
+//                                               name: NSNotification.Name.NSProcessInfoPowerStateDidChange, object: nil)
     }
 
     private var appState = UIApplication.State.active
@@ -67,6 +71,7 @@ class UploadManager: NSObject, URLSessionDelegate {
     deinit {
         NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIApplication.willResignActiveNotification, object: nil)
+//        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.NSProcessInfoPowerStateDidChange, object: nil)
 
         // Close upload session
         sessionManager.invalidateSessionCancelingTasks(true, resetSession: true)
@@ -191,7 +196,8 @@ class UploadManager: NSObject, URLSessionDelegate {
         }
 
         // Check network access and status
-        if !AFNetworkReachabilityManager.shared().isReachable {
+        if !AFNetworkReachabilityManager.shared().isReachable ||
+            (AFNetworkReachabilityManager.shared().isReachableViaWWAN && Model.sharedInstance().wifiOnlyUploading) {
             return
         }
 

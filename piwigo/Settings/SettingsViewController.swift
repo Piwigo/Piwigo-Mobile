@@ -401,7 +401,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case SettingsSection.images.rawValue:
             nberOfRows = 5
         case SettingsSection.imageUpload.rawValue:
-            nberOfRows = 6 + (Model.sharedInstance().hasAdminRights ? 1 : 0)
+            nberOfRows = 7 + (Model.sharedInstance().hasAdminRights ? 1 : 0)
                            + (Model.sharedInstance().resizeImageOnUpload ? 1 : 0)
                            + (Model.sharedInstance().compressImageOnUpload ? 1 : 0)
                            + (Model.sharedInstance().prefixFileNameBeforeUpload ? 1 : 0)
@@ -964,7 +964,27 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.accessibilityIdentifier = "prefixFileName"
                 tableViewCell = cell
                 
-            case 9 /* Delete image after upload? */:
+            case 9 /* Wi-Fi Only? */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
+                    return SwitchTableViewCell()
+                }
+                cell.configure(with: NSLocalizedString("settings_wifiOnly", comment: "Wi-Fi Only"))
+                cell.cellSwitch.setOn(Model.sharedInstance().wifiOnlyUploading, animated: true)
+                cell.cellSwitchBlock = { switchState in
+                    // Change option
+                    Model.sharedInstance().wifiOnlyUploading = switchState
+                    Model.sharedInstance().saveToDisk()
+                    // Relaunch uploads if disabled
+                    if switchState == false {
+                        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+                        appDelegate.triggerUploadManager()
+                    }
+                }
+                cell.accessibilityIdentifier = "wifiOnly"
+                tableViewCell = cell
+
+            case 10 /* Delete image after upload? */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
                     print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                     return SwitchTableViewCell()
@@ -1338,7 +1358,16 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // MARK: Default Upload Settings
         case SettingsSection.imageUpload.rawValue /* Default Upload Settings */:
             switch indexPath.row {
-            case 0 /* Author Name */, 2 /* Strip private Metadata */, 3 /* Resize Before Upload */, 4 /* Image Size slider */, 5 /* Compress Before Upload switch */, 6 /* Image Quality slider */, 7 /* Prefix Filename Before Upload switch */, 8 /* Filename Prefix */, 9 /* Delete image after upload */:
+            case 0 /* Author Name */,
+                 2 /* Strip private Metadata */,
+                 3 /* Resize Before Upload */,
+                 4 /* Image Size slider */,
+                 5 /* Compress Before Upload switch */,
+                 6 /* Image Quality slider */,
+                 7 /* Prefix Filename Before Upload switch */,
+                 8 /* Filename Prefix */,
+                 9 /* Wi-Fi Only */,
+                 10 /* Delete image after upload */:
                 result = false
             case 1 /* Privacy Level */:
                 result = true
