@@ -50,6 +50,9 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
         // Register network reachability
         NotificationCenter.default.addObserver(self, selector: #selector(self.mainHeader), name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
 
+        // Register Low Power Mode status
+        NotificationCenter.default.addObserver(self, selector: #selector(self.mainHeader), name: NSNotification.Name.NSProcessInfoPowerStateDidChange, object: nil)
+
         // Register upload progress
         let name2: NSNotification.Name = NSNotification.Name(kPiwigoNotificationUploadProgress)
         NotificationCenter.default.addObserver(self, selector: #selector(self.applyUploadProgress), name: name2, object: nil)
@@ -230,26 +233,34 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
     // MARK: - UITableView - Header
     
     @objc func mainHeader() {
-        if !AFNetworkReachabilityManager.shared().isReachable {
-            // No network access
-            let headerView = UploadQueueHeaderView(frame: .zero)
-            headerView.configure(text: NSLocalizedString("uploadNoInternetNetwork", comment: "No Internet Connection"))
-            queueTableView.tableHeaderView = headerView
-        }
-        else if AFNetworkReachabilityManager.shared().isReachableViaWWAN && Model.sharedInstance().wifiOnlyUploading {
-            // No Wi-Fi and user wishes to upload only on Wi-Fi
-            let headerView = UploadQueueHeaderView(frame: .zero)
-            headerView.configure(text: NSLocalizedString("uploadNoWiFiNetwork", comment: "No Wi-Fi Connection"))
-            queueTableView.tableHeaderView = headerView
-        }
-        else {
-            // Prevent device from sleeping if uploads are in progress
-            queueTableView.tableHeaderView = nil
-            let uploadsToPerform = uploadsProvider.fetchedResultsController.fetchedObjects?.map({
-                ($0.state == .waiting) || ($0.state == .preparing) ||  ($0.state == .prepared) ||
-                ($0.state == .uploading) || ($0.state == .finishing) ? 1 : 0}).reduce(0, +) ?? 0
-            if uploadsToPerform > 0 {
-                UIApplication.shared.isIdleTimerDisabled = true
+        DispatchQueue.main.async {
+            if !AFNetworkReachabilityManager.shared().isReachable {
+                // No network access
+                let headerView = UploadQueueHeaderView(frame: .zero)
+                headerView.configure(text: NSLocalizedString("uploadNoInternetNetwork", comment: "No Internet Connection"))
+                self.queueTableView.tableHeaderView = headerView
+            }
+            else if AFNetworkReachabilityManager.shared().isReachableViaWWAN && Model.sharedInstance().wifiOnlyUploading {
+                // No Wi-Fi and user wishes to upload only on Wi-Fi
+                let headerView = UploadQueueHeaderView(frame: .zero)
+                headerView.configure(text: NSLocalizedString("uploadNoWiFiNetwork", comment: "No Wi-Fi Connection"))
+                self.queueTableView.tableHeaderView = headerView
+            }
+            else if ProcessInfo.processInfo.isLowPowerModeEnabled {
+                // Low Power mode enabled
+                let headerView = UploadQueueHeaderView(frame: .zero)
+                headerView.configure(text: NSLocalizedString("uploadLowPowerMode", comment: "Low Power Mode enabled"))
+                self.queueTableView.tableHeaderView = headerView
+            }
+            else {
+                // Prevent device from sleeping if uploads are in progress
+                self.queueTableView.tableHeaderView = nil
+                let uploadsToPerform = self.uploadsProvider.fetchedResultsController.fetchedObjects?.map({
+                    ($0.state == .waiting) || ($0.state == .preparing) ||  ($0.state == .prepared) ||
+                    ($0.state == .uploading) || ($0.state == .finishing) ? 1 : 0}).reduce(0, +) ?? 0
+                if uploadsToPerform > 0 {
+                    UIApplication.shared.isIdleTimerDisabled = true
+                }
             }
         }
     }

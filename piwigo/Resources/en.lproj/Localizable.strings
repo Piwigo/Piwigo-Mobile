@@ -478,6 +478,7 @@
 "uploadCancelled_title" = "Upload Cancelled";
 "uploadNoInternetNetwork" = "No Internet Connection";
 "uploadNoWiFiNetwork" = "No Wi-Fi Connection";
+"uploadLowPowerMode" = "Low Power Mode enabled";
 
 "imageUploadError_title" = "Photo Upload Error";
 "imageUploadError_format" = "File format not accepted by Piwigo server.";
