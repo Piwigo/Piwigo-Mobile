@@ -46,18 +46,6 @@ extension UploadManager {
                     return
                 }
                 
-                // Prepare image for cache
-                let imageData = PiwigoImageData.init()
-                imageData.datePosted = Date.init()
-                imageData.fileSize = NSNotFound // will trigger pwg.images.getInfo
-                imageData.imageTitle = upload.imageTitle
-                imageData.categoryIds = [upload.category]
-                imageData.fileName = upload.fileName
-                imageData.isVideo = upload.isVideo
-                imageData.dateCreated = upload.creationDate
-                imageData.author = upload.author
-                imageData.privacyLevel = upload.privacyLevel ?? kPiwigoPrivacy(rawValue: 0)
-
                 // Decode the JSON.
                 do {
                     // Decode the JSON into codable type ImagesUploadJSON.
@@ -70,17 +58,34 @@ extension UploadManager {
                         return
                     }
                     
-                    // Get data from server response
-                    imageData.imageId = uploadJSON.data.image_id!
-                    imageData.squarePath = uploadJSON.data.square_src
-                    imageData.thumbPath = uploadJSON.data.src
+                    // Add image to cache when uploaded by admin users
+                    if Model.sharedInstance()?.hasAdminRights ?? false {
+                        // Prepare image for cache
+                        let imageData = PiwigoImageData.init()
+                        imageData.datePosted = Date.init()
+                        imageData.fileSize = NSNotFound // will trigger pwg.images.getInfo
+                        imageData.imageTitle = upload.imageTitle
+                        imageData.categoryIds = [upload.category]
+                        imageData.fileName = upload.fileName
+                        imageData.isVideo = upload.isVideo
+                        imageData.dateCreated = upload.creationDate
+                        imageData.author = upload.author
+                        imageData.privacyLevel = upload.privacyLevel ?? kPiwigoPrivacy(rawValue: 0)
 
-                    // Add uploaded image to cache and update UI if needed
-                    CategoriesData.sharedInstance()?.addImage(imageData)
+                        // Add data returned by server
+                        imageData.imageId = uploadJSON.data.image_id!
+                        imageData.squarePath = uploadJSON.data.square_src
+                        imageData.thumbPath = uploadJSON.data.src
+
+                        // Add uploaded image to cache and update UI if needed
+                        DispatchQueue.main.async {
+                            CategoriesData.sharedInstance()?.addImage(imageData)
+                        }
+                    }
 
                     // Update state of upload
                     var uploadProperties = upload
-                    uploadProperties.imageId = imageData.imageId
+                    uploadProperties.imageId = uploadJSON.data.image_id!
                     self.updateUploadRequestWith(uploadProperties, error: nil)
                     return
                 } catch {
@@ -552,26 +557,29 @@ extension UploadManager {
                         self.send(chunk: chunk + 1, of: chunks, for: upload.localIdentifier)
 //                    }
                 } else {
-                    // Prepare image for cache
-                    let imageData = PiwigoImageData.init()
-                    imageData.datePosted = Date.init()
-                    imageData.fileSize = NSNotFound // will trigger pwg.images.getInfo
-                    imageData.imageTitle = upload.imageTitle
-                    imageData.categoryIds = [upload.category]
-                    imageData.fileName = upload.fileName
-                    imageData.isVideo = upload.isVideo
-                    imageData.dateCreated = upload.creationDate
-                    imageData.author = upload.author
-                    imageData.privacyLevel = upload.privacyLevel ?? kPiwigoPrivacy(rawValue: 0)
+                    // Add image to cache when uploaded by admin users
+                    if Model.sharedInstance()?.hasAdminRights ?? false {
+                        // Prepare image for cache
+                        let imageData = PiwigoImageData.init()
+                        imageData.datePosted = Date.init()
+                        imageData.fileSize = NSNotFound // will trigger pwg.images.getInfo
+                        imageData.imageTitle = upload.imageTitle
+                        imageData.categoryIds = [upload.category]
+                        imageData.fileName = upload.fileName
+                        imageData.isVideo = upload.isVideo
+                        imageData.dateCreated = upload.creationDate
+                        imageData.author = upload.author
+                        imageData.privacyLevel = upload.privacyLevel ?? kPiwigoPrivacy(rawValue: 0)
 
-                    // Get data from server response
-                    imageData.imageId = uploadJSON.data.image_id!
-                    imageData.squarePath = uploadJSON.data.square_src
-                    imageData.thumbPath = uploadJSON.data.src
+                        // Add data returned by server
+                        imageData.imageId = uploadJSON.data.image_id!
+                        imageData.squarePath = uploadJSON.data.square_src
+                        imageData.thumbPath = uploadJSON.data.src
 
-                    // Add uploaded image to cache and update UI if needed
-                    DispatchQueue.main.async {
-                        CategoriesData.sharedInstance()?.addImage(imageData)
+                        // Add uploaded image to cache and update UI if needed
+                        DispatchQueue.main.async {
+                            CategoriesData.sharedInstance()?.addImage(imageData)
+                        }
                     }
 
                     // Delete uploaded files from Piwigo/Uploads directory
@@ -580,7 +588,7 @@ extension UploadManager {
 
                     // Update state of upload
                     var uploadProperties = upload
-                    uploadProperties.imageId = imageData.imageId
+                    uploadProperties.imageId = uploadJSON.data.image_id!
                     self.updateUploadRequestWith(uploadProperties, error: nil)
                 }
                 return
