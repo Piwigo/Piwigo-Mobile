@@ -131,19 +131,6 @@ class UploadManager: NSObject, URLSessionDelegate {
     - isUploading tells that an image/video is being transferred to the server.
     - isFinishing tells that the image/video parameters are being set.
     */
-    @objc func setIsPaused(status : Bool) {
-        _isPaused = status
-    }
-    private var _isPaused = false
-    private var isPaused: Bool {
-        get {
-            return _isPaused
-        }
-        set(isPaused) {
-            _isPaused = isPaused
-        }
-    }
-
     @objc func setIsPreparing(status : Bool) {
         _isPreparing = status
         if !status, !isUploading, !isFinishing { findNextImageToUpload() }
@@ -189,7 +176,7 @@ class UploadManager: NSObject, URLSessionDelegate {
     @objc
     func findNextImageToUpload() -> Void {
         print("•••>> findNextImageToUpload()", self.debugDescription)
-        print("    > ", isPaused, "|", isPreparing, "|", isUploading, "|", isFinishing)
+        print("    > ", isPreparing, "|", isUploading, "|", isFinishing)
 
         // Pause upload maneger if app not in the foreground
         if appState == .background || appState == .inactive {
@@ -198,7 +185,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         }
 
         // Check network access and status
-        if isPaused || !AFNetworkReachabilityManager.shared().isReachable {
+        if !AFNetworkReachabilityManager.shared().isReachable {
             return
         }
 
@@ -207,7 +194,7 @@ class UploadManager: NSObject, URLSessionDelegate {
             return
         }
         
-        // Update app badge and Upload bottom in root/default album
+        // Update app badge and Upload button in root/default album
         DispatchQueue.main.async {
             // Update app badge
             UIApplication.shared.applicationIconBadgeNumber = allUploads.count
@@ -544,7 +531,6 @@ class UploadManager: NSObject, URLSessionDelegate {
     // MARK: - Failed Uploads Management
     
     @objc func resumeAll() -> Void {
-        isPaused = false
         isPreparing = false
         isUploading = false
         isFinishing = false
