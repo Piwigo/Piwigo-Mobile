@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.5.0_text" = "Version 2.5\n\n• Records upload requests and uploads photos/videos when possible (background uploading will be available after a server update)\n• No upload when the Low Power Mode is enabled\n• \"Wi-Fi only\" option for uploads\n• Much faster access to the Photo Library\n• Minor bug fixes and improvements of the interface\n• Code modernization";
+"v2.5.0_text" = "Version 2.5\n\n• Records upload requests\n• Uploads photos/videos when possible\n• \"Wi-Fi only\" option for uploads\n• No upload when in Low Power Mode\n• Much faster access to the Photo Library\n• Minor bug fixes and improvements of the interface\n• Code modernization\n\nBackground uploading will be available after a server update.";
 
 "v2.4.8_text" = "Versione 2.4.8\n\n• Piwigo ti avverte quando:\n - un sito web dispone di un certificato non valido,\n - prima di stabilire una connessione non sicura\n• Migliorata gestione cache\n• Correzioni di bug minori e miglioramenti dell'interfaccia";
 
