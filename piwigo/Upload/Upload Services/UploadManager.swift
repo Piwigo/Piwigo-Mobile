@@ -207,6 +207,15 @@ class UploadManager: NSObject, URLSessionDelegate {
             return
         }
         
+        // Update app badge and Upload bottom in root/default album
+        DispatchQueue.main.async {
+            // Update app badge
+            UIApplication.shared.applicationIconBadgeNumber = allUploads.count
+            // Update button of root album (or default album)
+            let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : allUploads.count]
+            NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationLeftUploads), object: nil, userInfo: uploadInfo)
+        }
+        
         // Any interrupted transfer?
         if !isFinishing, let upload = allUploads.first(where: { $0.state == .finishing }) {
             // Transfer encountered an error
@@ -513,7 +522,7 @@ class UploadManager: NSObject, URLSessionDelegate {
                 PHAssetChangeRequest.deleteAssets(assetsToDelete as NSFastEnumeration)
             }, completionHandler: { success, error in
                 if success == true {
-                    // Delete upload requests in background
+                    // Delete upload requests in the main queue
                     self.uploadsProvider.delete(uploadRequests: uploadedImages)
                 } else {
                     // User refused to delete the photos
@@ -522,6 +531,7 @@ class UploadManager: NSObject, URLSessionDelegate {
                         let uploadProperties = upload.getUploadPropertiesCancellingDeletion()
                         uploadsToUpdate.append(uploadProperties)
                     }
+                    // Update upload requests
                     self.uploadsProvider.importUploads(from: uploadsToUpdate) { (_) in
                         // Done ;-)
                     }

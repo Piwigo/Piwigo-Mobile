@@ -55,7 +55,6 @@ class UploadsProvider: NSObject {
                 return
             }
         }
-        updateBadgeAndButton()
         completionHandler(nil)
     }
     
@@ -276,7 +275,6 @@ class UploadsProvider: NSObject {
                 return
             }
         }
-        updateBadgeAndButton()
     }
     
     /**
@@ -358,7 +356,6 @@ class UploadsProvider: NSObject {
             }
             uploads = controller.fetchedObjects
         }
-        updateBadgeAndButton()
         return uploads
     }
 
@@ -451,22 +448,6 @@ class UploadsProvider: NSObject {
     }
     
 
-    // MARK: - Notify Changes (App Badge, Button)
-    /**
-     Updates the application badge and the Upload button in the main queue
-     */
-    func updateBadgeAndButton() {
-        DispatchQueue.main.async {
-            // Update app badge
-            let nberOfUploadsToComplete = self.fetchedNonCompletedResultsController.fetchedObjects?.count ?? 0
-            UIApplication.shared.applicationIconBadgeNumber = nberOfUploadsToComplete
-            // Update button of root album (or default album)
-            let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : nberOfUploadsToComplete]
-            NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationLeftUploads), object: nil, userInfo: uploadInfo)
-        }
-    }
-
-    
     // MARK: - NSFetchedResultsController
     /**
      A fetched results controller delegate to give consumers a chance to upload the next images.
@@ -499,12 +480,12 @@ class UploadsProvider: NSObject {
     }()
 
     /**
-     A fetched results controller delegate to present non-completed upload requests
+     A fetched results controller delegate to update the UploadQueue table view
      */
     @objc weak var fetchedNonCompletedResultsControllerDelegate: NSFetchedResultsControllerDelegate?
     
     /**
-     A fetched results controller to fetch Upload records sorted by state the main queue.
+     A fetched results controller to fetch Upload records sorted by state in the main queue for feeding the UploadQueue table view
      */
     @objc lazy var fetchedNonCompletedResultsController: NSFetchedResultsController<Upload> = {
         
@@ -525,7 +506,7 @@ class UploadsProvider: NSObject {
         // Create a fetched results controller and set its fetch request, context, and delegate.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
                                             managedObjectContext: self.managedObjectContext,
-                                              sectionNameKeyPath: "stateSection", cacheName: "nonCompleted")
+                                              sectionNameKeyPath: "stateSection", cacheName: nil)
         controller.delegate = fetchedNonCompletedResultsControllerDelegate
         
         // Perform the fetch.
