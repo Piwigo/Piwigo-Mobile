@@ -84,12 +84,20 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return EditImageDetailsOrder.count.rawValue
+        // Don't present privacy level choice to non-admin users
+        var nberOfRows = EditImageDetailsOrder.count.rawValue
+        nberOfRows -= (!Model.sharedInstance().hasAdminRights ? 1 : 0)
+
+        return nberOfRows
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        // Don't present privacy level choice to non-admin users
+        var row = indexPath.row
+        row += (!Model.sharedInstance().hasAdminRights && (row > 1)) ? 1 : 0
+
         var height: CGFloat = 44.0
-        switch EditImageDetailsOrder(rawValue: indexPath.row) {
+        switch EditImageDetailsOrder(rawValue: row) {
         case .privacy, .tags:
                 height = 78.0
         case .comment:
@@ -101,9 +109,12 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        var tableViewCell = UITableViewCell()
+        // Don't present privacy level choice to non-admin users
+        var row = indexPath.row
+        row += (!Model.sharedInstance().hasAdminRights && (row > 1)) ? 1 : 0
 
-        switch EditImageDetailsOrder(rawValue: indexPath.row) {
+        var tableViewCell = UITableViewCell()
+        switch EditImageDetailsOrder(rawValue: row) {
         case .imageName:
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "title", for: indexPath) as? EditImageTextFieldTableViewCell else {
             print("Error: tableView.dequeueReusableCell does not return a EditImageTextFieldTableViewCell!")
@@ -180,8 +191,11 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        let selectedAction = EditImageDetailsOrder(rawValue: indexPath.row)
-        switch selectedAction {
+        // Don't present privacy level choice to non-admin users
+        var row = indexPath.row
+        row += (!Model.sharedInstance().hasAdminRights && (row > 1)) ? 1 : 0
+
+        switch EditImageDetailsOrder(rawValue: row) {
         case .author:
         if (commonAuthor == "NSNotFound") {
             // only update if not yet set, dont overwrite
@@ -223,8 +237,12 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
     }
 
     override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+        // Don't present privacy level choice to non-admin users
+        var row = indexPath.row
+        row += (!Model.sharedInstance().hasAdminRights && (row > 1)) ? 1 : 0
+
         var result: Bool
-        switch EditImageDetailsOrder(rawValue: indexPath.row) {
+        switch EditImageDetailsOrder(rawValue: row) {
         case .imageName, .author, .comment:
             result = false
         default:
@@ -236,8 +254,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
 
     // MARK: - UITextFieldDelegate Methods
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        let tag = EditImageDetailsOrder(rawValue: textField.tag)
-        switch tag {
+        switch EditImageDetailsOrder(rawValue: textField.tag) {
         case .imageName:
             // Title
             shouldUpdateTitle = true
@@ -253,8 +270,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
         guard let finalString = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) else {
             return true
         }
-        let tag = EditImageDetailsOrder(rawValue: textField.tag)
-        switch tag {
+        switch EditImageDetailsOrder(rawValue: textField.tag) {
         case .imageName:
         commonTitle = finalString
         
@@ -272,8 +288,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
     }
 
     func textFieldShouldClear(_ textField: UITextField) -> Bool {
-        let tag = EditImageDetailsOrder(rawValue: textField.tag)
-        switch tag {
+        switch EditImageDetailsOrder(rawValue: textField.tag) {
         case .imageName:
         commonTitle = ""
 
@@ -292,8 +307,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
     }
 
     func textFieldDidEndEditing(_ textField: UITextField) {
-        let tag = EditImageDetailsOrder(rawValue: textField.tag)
-        switch tag {
+        switch EditImageDetailsOrder(rawValue: textField.tag) {
         case .imageName:
         if let typedText = textField.text {
             commonTitle = typedText
