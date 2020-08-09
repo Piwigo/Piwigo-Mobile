@@ -29,11 +29,6 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
     private var actionBarButton: UIBarButtonItem?
     private var doneBarButton: UIBarButtonItem?
 
-//    private var allUploads: [Upload] = []
-//    private var imagesSortedByCategory: [[Upload]] = []
-//    private let kPiwigoNberImagesShowHUDWhenSorting = 2_500                 // Show HUD when sorting more than this number of images
-//    private var hudViewController: UIViewController?
-
 
     // MARK: - View Lifecycle
     
@@ -365,15 +360,13 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
         
         switch type {
         case .insert:
-            print("insert… at", sectionIndex)
+            print("insert section… at", sectionIndex)
             queueTableView.insertSections(IndexSet.init(integer: sectionIndex), with: .automatic)
         case .delete:
-            print("delete… at", sectionIndex)
+            print("delete section… at", sectionIndex)
             queueTableView.deleteSections(IndexSet.init(integer: sectionIndex), with: .automatic)
-        case .move:
-            print("move… at", sectionIndex)
-        case .update:
-            print("update… at", sectionIndex)
+        case .move, .update:
+            fallthrough
         @unknown default:
                 fatalError("UploadQueueViewController: unknown NSFetchedResultsChangeType")
         }
@@ -402,7 +395,8 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
         case .move:
             guard let newIndexPath = newIndexPath else { return }
             print("move… from", oldIndexPath, "to", newIndexPath)
-            queueTableView.moveRow(at: oldIndexPath, to: newIndexPath)
+            queueTableView.deleteRows(at: [oldIndexPath], with: .automatic)
+            queueTableView.insertRows(at: [newIndexPath], with: .automatic)
             guard let upload:Upload = anObject as? Upload else { return }
             updateCell(at: newIndexPath, with: upload)
         case .update:
@@ -442,6 +436,7 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Update table view
         queueTableView.endUpdates()
+        queueTableView.layoutIfNeeded()
         updateNavBar()
     }
 }
