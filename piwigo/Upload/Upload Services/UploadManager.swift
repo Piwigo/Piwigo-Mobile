@@ -184,6 +184,12 @@ class UploadManager: NSObject, URLSessionDelegate {
             return
         }
 
+        // Determine the Power State
+        if ProcessInfo.processInfo.isLowPowerModeEnabled {
+            // Low Power Mode is enabled. Stop transferring images.
+            return
+        }
+
         // Check network access and status
         if !AFNetworkReachabilityManager.shared().isReachable {
             return
