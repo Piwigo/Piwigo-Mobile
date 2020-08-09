@@ -532,12 +532,19 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         })
 
         // Delete uploaded photos
-        let completedUploads = uploadsProvider.fetchedResultsController.fetchedObjects?.map({ ($0.state == .finished) ? 1 : 0}).reduce(0, +) ?? 0
+        let completedUploads = indexedUploadsInQueue.compactMap({$0}).count
         let titleDelete = completedUploads > 1 ? String(format: NSLocalizedString("deleteCategory_allImages", comment: "Delete %@ Photos"), NumberFormatter.localizedString(from: NSNumber.init(value: completedUploads), number: .decimal)) : NSLocalizedString("deleteSingleImage_title", comment: "Delete Photo")
         let deleteAction = UIAlertAction(title: titleDelete, style: .destructive, handler: { action in
             // Delete uploaded images (fetch on the main queue)
+            let indexedUploads = self.indexedUploadsInQueue.compactMap({$0})
             if let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects {
-                let uploadsToDelete = allUploads.filter({ $0.state == .finished })
+                let completedUploads = allUploads.filter({ $0.state == .finished })
+                var uploadsToDelete: [Upload] = []
+                for index in 0..<indexedUploads.count {
+                    if let upload = completedUploads.first(where: {$0.localIdentifier == indexedUploads[index].0}) {
+                        uploadsToDelete.append(upload)
+                    }
+                }
                 UploadManager.shared.delete(uploadedImages: uploadsToDelete)
             }
         })
