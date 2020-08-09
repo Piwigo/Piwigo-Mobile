@@ -34,7 +34,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-                                                                                        // and prevent their selection
+        
         // Collection view identifier
         paramsTableView.accessibilityIdentifier = "Parameters"
     }
@@ -102,6 +102,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
                 height = 78.0
         case .comment:
                 height = 428.0
+                height += !Model.sharedInstance().hasAdminRights ? 78.0 : 0.0
             default:
                 break
         }

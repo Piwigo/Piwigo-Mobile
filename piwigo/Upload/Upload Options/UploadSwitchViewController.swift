@@ -51,6 +51,11 @@ class UploadSwitchViewController: UIViewController {
         navigationItem.leftBarButtonItems = [cancelBarButton].compactMap { $0 }
         navigationItem.rightBarButtonItems = [uploadBarButton].compactMap { $0 }
         navigationItem.titleView = switchViewSegmentedControl
+        
+        // iOS 9 fix
+        if #available(iOS 11, *) {
+            parametersView.translatesAutoresizingMaskIntoConstraints = false
+        }
     }
 
     @objc func applyColorPalette() {

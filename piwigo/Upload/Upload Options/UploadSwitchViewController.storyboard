@@ -17,18 +17,18 @@
         <scene sceneID="KMk-QD-90r">
             <objects>
                 <viewController storyboardIdentifier="UploadSwitchViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="wtH-Uw-lbX" customClass="UploadSwitchViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" id="O2a-9j-R6V">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="786"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                    <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="O2a-9j-R6V">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <subviews>
-                            <containerView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xAg-zf-Vfy">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="786"/>
+                            <containerView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" id="xAg-zf-Vfy">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <connections>
                                     <segue destination="gBK-79-fhj" kind="embed" id="cdG-vy-DhL"/>
                                 </connections>
                             </containerView>
                             <containerView hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GX6-Pj-a7B">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="786"/>
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                 <connections>
                                     <segue destination="AfX-ch-wru" kind="embed" id="rLp-U3-cSy"/>
                                 </connections>
@@ -64,8 +64,8 @@
         <scene sceneID="UR3-ng-AbN">
             <objects>
                 <tableViewController storyboardIdentifier="UploadParametersViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="gBK-79-fhj" customClass="UploadParametersViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" contentMode="scaleToFill" restorationIdentifier="paramsTableView" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" keyboardDismissMode="interactive" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" contentViewInsetsToSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gIY-hy-olu">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="786"/>
+                    <tableView key="view" contentMode="scaleToFill" restorationIdentifier="paramsTableView" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" contentInsetAdjustmentBehavior="never" keyboardDismissMode="interactive" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" contentViewInsetsToSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gIY-hy-olu">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="tintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
@@ -272,8 +272,8 @@
         <scene sceneID="IYU-zo-yRf">
             <objects>
                 <tableViewController storyboardIdentifier="UploadSettingsViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="AfX-ch-wru" customClass="UploadSettingsViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="preferences" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" contentViewInsetsToSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aWO-0Q-Gv4">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="786"/>
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="preferences" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" contentInsetAdjustmentBehavior="never" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" contentViewInsetsToSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aWO-0Q-Gv4">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                         <view key="tableFooterView" contentMode="scaleToFill" id="XTI-pR-ZrJ">
