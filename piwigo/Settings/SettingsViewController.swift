@@ -57,6 +57,14 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     #if DEBUG
     // MARK: - Core Data
     /**
+     The TagsProvider that fetches tag data, saves it to Core Data,
+     and serves it to this table view.
+     */
+    private lazy var tagsProvider: TagsProvider = {
+        let provider : TagsProvider = TagsProvider()
+        return provider
+    }()
+    /**
      The UploadsProvider that collects upload data, saves it to Core Data,
      and serves it to the uploader.
      */
@@ -1173,9 +1181,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 if view.bounds.size.width > 414 {
                     // i.e. larger than iPhones 6, 7 screen width
-                    cell.configure(with: NSLocalizedString("settings_cacheClearAll", comment: "Clear image caches"))
+                    cell.configure(with: NSLocalizedString("settings_cacheClearAll", comment: "Clear Photo Cache"))
                 } else {
-                    cell.configure(with: NSLocalizedString("settings_cacheClear", comment: "Clear caches"))
+                    cell.configure(with: NSLocalizedString("settings_cacheClear", comment: "Clear Cache"))
                 }
                 cell.accessibilityIdentifier = "clearCache"
                 tableViewCell = cell
@@ -1549,7 +1557,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             switch indexPath.row {
             case 0 /* Clear cache */:
                 #if DEBUG
-                let alert = UIAlertController(title: NSLocalizedString("settings_cacheClear", comment: "Clear Cache"), message:"", preferredStyle: .actionSheet)
+                let alert = UIAlertController(title: "", message:"", preferredStyle: .actionSheet)
                 #else
                 let alert = UIAlertController(title: NSLocalizedString("settings_cacheClear", comment: "Clear Cache"), message: NSLocalizedString("settings_cacheClearMsg", comment: "Are you sure you want to clear the image cache? This will make albums and images take a while to load again."), preferredStyle: .alert)
                 #endif
@@ -1557,6 +1565,15 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .cancel, handler: nil)
 
                 #if DEBUG
+                let nberOfTags = tagsProvider.fetchedResultsController.fetchedObjects?.count ?? 0
+                let titleClearTags = nberOfTags > 1 ? String(format: "Clear %ld Tags", nberOfTags) : "Clear 1 Tag"
+                let clearTagsAction = UIAlertAction(title: titleClearTags,
+                                                    style: .default, handler: { action in
+                    // Delete all tags in background queue
+                    self.tagsProvider.clearTags()
+                    TagsData.sharedInstance().clearCache()
+                })
+
                 let nberOfUploads = uploadsProvider.fetchedResultsController.fetchedObjects?.count ?? 0
                 let titleClearUploadRequests = nberOfUploads > 1 ? String(format: "Clear %ld Upload Requests",
                     nberOfUploads) : "Clear 1 Upload Request"
@@ -1580,6 +1597,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 alert.addAction(dismissAction)
                 #if DEBUG
                 alert.addAction(clearUploadsAction)
+                alert.addAction(clearTagsAction)
                 #endif
                 alert.addAction(clearAction)
 
