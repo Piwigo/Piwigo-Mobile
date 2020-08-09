@@ -29,14 +29,14 @@ class piwigoWebAPI: XCTestCase {
             return
         }
         
-        XCTAssertEqual(result.stat, "ok")
+        XCTAssertEqual(result.status, "ok")
         XCTAssertEqual(result.errorCode, 0)
         XCTAssertEqual(result.errorMessage, "")
         
-        XCTAssertEqual(result.imagesUpload.image_id, 6580)
-        XCTAssertEqual(result.imagesUpload.name, "Delft - 06")
-        XCTAssertEqual(result.imagesUpload.square_src, "https://.../20200628211106-5fc9fb08-sq.jpg")
-        XCTAssertEqual(result.imagesUpload.src, "https://.../20200628211106-5fc9fb08-th.jpg")
+        XCTAssertEqual(result.data.image_id, 6580)
+        XCTAssertEqual(result.data.name, "Delft - 06")
+        XCTAssertEqual(result.data.square_src, "https://.../20200628211106-5fc9fb08-sq.jpg")
+        XCTAssertEqual(result.data.src, "https://.../20200628211106-5fc9fb08-th.jpg")
 
         // Case of a PNG file
         guard let url2 = bundle.url(forResource: "pwg.images.upload2", withExtension: "json"),
@@ -49,14 +49,14 @@ class piwigoWebAPI: XCTestCase {
             return
         }
         
-        XCTAssertEqual(result2.stat, "ok")
+        XCTAssertEqual(result2.status, "ok")
         XCTAssertEqual(result2.errorCode, 0)
         XCTAssertEqual(result2.errorMessage, "")
         
-        XCTAssertEqual(result2.imagesUpload.image_id, 6582)
-        XCTAssertEqual(result2.imagesUpload.name, "Screenshot 2020-06-28 at 14.01.38")
-        XCTAssertEqual(result2.imagesUpload.square_src, "https://.../20200628212043-0a9c6158-sq.png")
-        XCTAssertEqual(result2.imagesUpload.src, "https://.../20200628212043-0a9c6158-th.png")
+        XCTAssertEqual(result2.data.image_id, 6582)
+        XCTAssertEqual(result2.data.name, "Screenshot 2020-06-28 at 14.01.38")
+        XCTAssertEqual(result2.data.square_src, "https://.../20200628212043-0a9c6158-sq.png")
+        XCTAssertEqual(result2.data.src, "https://.../20200628212043-0a9c6158-th.png")
     }
 
     func testPwgImagesSetInfoDecoding() {
@@ -74,8 +74,8 @@ class piwigoWebAPI: XCTestCase {
             return
         }
         
-        XCTAssertEqual(result.stat, "ok")
-        XCTAssertTrue(result.imageSetInfo)
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertTrue(result.success)
     }
 
     
@@ -95,9 +95,9 @@ class piwigoWebAPI: XCTestCase {
             return
         }
         
-        XCTAssertEqual(result.stat, "ok")
-        XCTAssertEqual(result.tagPropertiesArray[1].id, 14)
-        XCTAssertEqual(result.tagPropertiesArray[2].counter, 9)
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertEqual(result.data[1].id, 14)
+        XCTAssertEqual(result.data[2].counter, 9)
     }
 
     func testPwgTagsGetAdminListDecoding() {
@@ -115,9 +115,9 @@ class piwigoWebAPI: XCTestCase {
             return
         }
         
-        XCTAssertEqual(result.stat, "ok")
-        XCTAssertEqual(result.tagPropertiesArray[0].id, 1)
-        XCTAssertEqual(result.tagPropertiesArray[2].name, "Piwigo")
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertEqual(result.data[0].id, 1)
+        XCTAssertEqual(result.data[2].name, "Piwigo")
     }
 
     func testPwgTagsAddDecoding() {
@@ -135,8 +135,8 @@ class piwigoWebAPI: XCTestCase {
             return
         }
         
-        XCTAssertEqual(result.stat, "ok")
-        XCTAssertEqual(result.tagProperties.id, 26)
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertEqual(result.data.id, 26)
     }
 
     // MARK: - community
@@ -155,7 +155,7 @@ class piwigoWebAPI: XCTestCase {
             return
         }
         
-        XCTAssertEqual(result.stat, "ok")
-        XCTAssertTrue(result.isSubmittedToModerator)
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertTrue(result.success)
     }
 }

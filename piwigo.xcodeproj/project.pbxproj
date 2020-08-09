@@ -19,7 +19,6 @@
 		AD1092EB23D4E4D0006627B0 /* TagsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1092EA23D4E4D0006627B0 /* TagsProvider.swift */; };
 		AD11BDA22402C7E7003347BE /* UIColor+AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1F60012402B1B70099E5E5 /* UIColor+AppColors.swift */; };
 		AD11E46124A930B000C8876F /* piwigoWebAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD11E46024A930B000C8876F /* piwigoWebAPI.swift */; };
-		AD11E46924A9319C00C8876F /* pwg.images.upload.json in Resources */ = {isa = PBXBuildFile; fileRef = AD11E46824A9319C00C8876F /* pwg.images.upload.json */; };
 		AD13EB892494DFBF005987A8 /* UploadVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD13EB882494DFBF005987A8 /* UploadVideo.swift */; };
 		AD196AA12438D2D6006C492A /* ShareMetadataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD196AA02438D2D5006C492A /* ShareMetadataViewController.swift */; };
 		AD1EBB68213404D50012FA44 /* piwigoGetPiwigo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1EBB67213404D50012FA44 /* piwigoGetPiwigo.swift */; };
@@ -46,7 +45,6 @@
 		AD35CA3A1E9C1EBC00E3B897 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD35CA391E9C1EBC00E3B897 /* Images.xcassets */; };
 		AD38C04424AF724100CDC765 /* pwg.images.setInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD38C04324AF724100CDC765 /* pwg.images.setInfo.swift */; };
 		AD38C04524AF724100CDC765 /* pwg.images.setInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD38C04324AF724100CDC765 /* pwg.images.setInfo.swift */; };
-		AD38C04824AF72E100CDC765 /* pwg.images.setInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = AD38C04624AF72E100CDC765 /* pwg.images.setInfo.json */; };
 		AD38C04C24AF746000CDC765 /* community.images.uploadCompleted.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD38C04B24AF746000CDC765 /* community.images.uploadCompleted.swift */; };
 		AD38C04D24AF746000CDC765 /* community.images.uploadCompleted.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD38C04B24AF746000CDC765 /* community.images.uploadCompleted.swift */; };
 		AD39165E22A126CA00414E4B /* SearchImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD39165922A06FDF00414E4B /* SearchImagesViewController.m */; };
@@ -120,7 +118,6 @@
 		ADD210412440CC7600DD79A6 /* SettingsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADD210402440CC7600DD79A6 /* SettingsViewController.storyboard */; };
 		ADD210432440DE5A00DD79A6 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD210422440DE5A00DD79A6 /* SettingsViewController.swift */; };
 		ADD79A3D24A9352500428C58 /* pwg.images.upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD79A3C24A9352500428C58 /* pwg.images.upload.swift */; };
-		ADD79A4024A93B5600428C58 /* pwg.images.upload2.json in Resources */ = {isa = PBXBuildFile; fileRef = ADD79A3F24A93B5600428C58 /* pwg.images.upload2.json */; };
 		ADD79A4224A942A700428C58 /* pwg.images.upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD79A3C24A9352500428C58 /* pwg.images.upload.swift */; };
 		ADDB396F23BF574400AB584B /* EditImageShiftPickerTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ADDB396B23BF4F9C00AB584B /* EditImageShiftPickerTableViewCell.m */; };
 		ADDB397023BF574C00AB584B /* EditImageShiftPickerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADDB396D23BF4FAD00AB584B /* EditImageShiftPickerTableViewCell.xib */; };
@@ -633,7 +630,6 @@
 			isa = PBXGroup;
 			children = (
 				AD38C04A24AF73E800CDC765 /* community.images.uploadCompleted.json */,
-				AD38C04B24AF746000CDC765 /* community.images.uploadCompleted.swift */,
 			);
 			path = community;
 			sourceTree = "<group>";
@@ -661,10 +657,8 @@
 			isa = PBXGroup;
 			children = (
 				AD5F64E724C601EE00660BE3 /* pwg.tags.add.json */,
-				AD5F64E824C6024200660BE3 /* pwg.tags.add.swift */,
 				AD5F64F124C6088600660BE3 /* pwg.tags.getList.json */,
 				AD5F64F324C6091500660BE3 /* pwg.tags.getAdminList.json */,
-				AD5F64EC24C607FC00660BE3 /* pwg.tags.getList.swift */,
 			);
 			path = pwg.tags;
 			sourceTree = "<group>";
@@ -782,6 +776,32 @@
 			path = "Upload Services";
 			sourceTree = "<group>";
 		};
+		AD9A1BE324E03AAF00D22C86 /* community */ = {
+			isa = PBXGroup;
+			children = (
+				AD38C04B24AF746000CDC765 /* community.images.uploadCompleted.swift */,
+			);
+			path = community;
+			sourceTree = "<group>";
+		};
+		AD9A1BE424E03AC700D22C86 /* pwg.images */ = {
+			isa = PBXGroup;
+			children = (
+				AD38C04324AF724100CDC765 /* pwg.images.setInfo.swift */,
+				ADD79A3C24A9352500428C58 /* pwg.images.upload.swift */,
+			);
+			path = pwg.images;
+			sourceTree = "<group>";
+		};
+		AD9A1BE624E03BFF00D22C86 /* pwg.tags */ = {
+			isa = PBXGroup;
+			children = (
+				AD5F64E824C6024200660BE3 /* pwg.tags.add.swift */,
+				AD5F64EC24C607FC00660BE3 /* pwg.tags.getList.swift */,
+			);
+			path = pwg.tags;
+			sourceTree = "<group>";
+		};
 		ADABACB92235A68E0095C4D0 /* Categories Data */ = {
 			isa = PBXGroup;
 			children = (
@@ -851,10 +871,8 @@
 			isa = PBXGroup;
 			children = (
 				AD38C04624AF72E100CDC765 /* pwg.images.setInfo.json */,
-				AD38C04324AF724100CDC765 /* pwg.images.setInfo.swift */,
 				AD11E46824A9319C00C8876F /* pwg.images.upload.json */,
 				ADD79A3F24A93B5600428C58 /* pwg.images.upload2.json */,
-				ADD79A3C24A9352500428C58 /* pwg.images.upload.swift */,
 			);
 			path = pwg.images;
 			sourceTree = "<group>";
@@ -1090,6 +1108,9 @@
 		D87C5A971A6F4F93001763BC /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				AD9A1BE324E03AAF00D22C86 /* community */,
+				AD9A1BE424E03AC700D22C86 /* pwg.images */,
+				AD9A1BE624E03BFF00D22C86 /* pwg.tags */,
 				D82B8CE41A678ED2000E47CA /* NetworkHandler.h */,
 				D82B8CE51A678ED2000E47CA /* NetworkHandler.m */,
 				AD76906724D1957D00EE7EC0 /* UploadSessionDelegate.swift */,
@@ -1343,10 +1364,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ADD79A4024A93B5600428C58 /* pwg.images.upload2.json in Resources */,
-				AD11E46924A9319C00C8876F /* pwg.images.upload.json in Resources */,
 				AD5F64F424C6091500660BE3 /* pwg.tags.getAdminList.json in Resources */,
-				AD38C04824AF72E100CDC765 /* pwg.images.setInfo.json in Resources */,
 				AD5F64F224C6088600660BE3 /* pwg.tags.getList.json in Resources */,
 				AD5F64EB24C604EB00660BE3 /* pwg.tags.add.json in Resources */,
 			);
@@ -1555,7 +1573,6 @@
 				AD2B0A17243D00CD00AF1FEE /* DefaultAlbumThumbnailSizeViewController.swift in Sources */,
 				ADF1CC75243D111600D75319 /* DefaultCategoryViewController.swift in Sources */,
 				ADA24DB8243A767700864D1F /* DefaultImageSizeViewController.swift in Sources */,
-				AD76906824D1957D00EE7EC0 /* UploadSessionDelegate.swift in Sources */,
 				ADA24DB1243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift in Sources */,
 				ADBDD9372441AB3800F19DFC /* LabelTableViewCell.swift in Sources */,
 				ADEC6B032455A3520011527C /* LocalAlbumsProvider.swift in Sources */,
@@ -1595,10 +1612,11 @@
 				ADC019762471AA5200532A81 /* UploadImageTableViewCell.swift in Sources */,
 				ADC019782471ABA000532A81 /* UploadQueueViewController.swift in Sources */,
 				ADE69C052477D9B8002D953F /* UploadManager.swift in Sources */,
-				AD8A452324771618002360EA /* UploadTransfer.swift in Sources */,
-				AD13EB892494DFBF005987A8 /* UploadVideo.swift in Sources */,
+				AD76906824D1957D00EE7EC0 /* UploadSessionDelegate.swift in Sources */,
 				AD23A1F42427DA3800F662AB /* UploadsProvider.swift in Sources */,
 				AD6FD1FC24BF0321009AA3B7 /* UploadSwitchViewController.swift in Sources */,
+				AD8A452324771618002360EA /* UploadTransfer.swift in Sources */,
+				AD13EB892494DFBF005987A8 /* UploadVideo.swift in Sources */,
 				ADA3CEDB24BF50E200694922 /* UploadParametersViewController.swift in Sources */,
 				ADA3CED924BF50D000694922 /* UploadSettingsViewController.swift in Sources */,
 				AD35A16B2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift in Sources */,
