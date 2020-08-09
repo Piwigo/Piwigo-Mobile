@@ -461,8 +461,8 @@
 "imageUploadClearFailedSeveral" = "Clear %@ Failed Uploads";
 "imageUploadClearCompletedSingle" = "Clear Completed Upload";
 "imageUploadClearCompletedSeveral" = "Clear %@ Completed Uploads";
-"imageUploadResumeSingle" = "Resume Failed Upload";
-"imageUploadResumeSeveral" = "Resume %@ Failed Uploads";
+"imageUploadResumeSingle" = "Resume Upload";
+"imageUploadResumeSeveral" = "Resume %@ Uploads";
 
 "imageUploadProgressBar_zero" = "正在上传 0/0";
 "imageUploadProgressBar_nonZero" = "正在上传 %@/%@";
@@ -476,6 +476,8 @@
 "uploadError_title" = "上传错误";
 "uploadError_message" = "无法上传你的照片，错误信息为 %@";
 "uploadCancelled_title" = "上传已取消";
+"uploadNoInternetNetwork" = "No Internet Connection";
+"uploadNoWiFiNetwork" = "No Wi-Fi Connection";
 
 "imageUploadError_title" = "照片上传错误";
 "imageUploadError_format" = "File format not accepted by Piwigo server.";
@@ -656,6 +658,7 @@
 "settings_defaultPrefix>320px" = "文件名前缀";
 "settings_defaultPrefixPlaceholder" = "前缀";
 "settings_deleteImage>375px" = "上传后删除照片";
+"settings_wifiOnly" = "Wi-Fi Only";
 "settings_deleteImage" = "上传后删除照片";
 
 // Settings — Cache

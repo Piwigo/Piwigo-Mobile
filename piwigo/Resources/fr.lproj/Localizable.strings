@@ -476,6 +476,8 @@
 "uploadError_title" = "Echec du Téléversement";
 "uploadError_message" = "Echec du téléversement de votre photo. Erreur : %@";
 "uploadCancelled_title" = "Transfert Annulé";
+"uploadNoInternetNetwork" = "Pas de connexion Internet";
+"uploadNoWiFiNetwork" = "Pas de connexion Wi-Fi";
 
 "imageUploadError_title" = "Echec du téléversement";
 "imageUploadError_format" = "Format de fichier non accepté par le serveur Piwigo.";
@@ -656,6 +658,7 @@
 "settings_defaultPrefix>320px" = "Préfixe du fichier";
 "settings_defaultPrefixPlaceholder" = "Préfixe";
 "settings_deleteImage>375px" = "Effacer la photo après envoi";
+"settings_wifiOnly" = "WiFi uniquement";
 "settings_deleteImage" = "Effacer après Envoi";
 
 // Settings — Cache

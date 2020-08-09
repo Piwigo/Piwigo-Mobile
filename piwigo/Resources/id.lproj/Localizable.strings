@@ -461,8 +461,8 @@
 "imageUploadClearFailedSeveral" = "Clear %@ Failed Uploads";
 "imageUploadClearCompletedSingle" = "Clear Completed Upload";
 "imageUploadClearCompletedSeveral" = "Clear %@ Completed Uploads";
-"imageUploadResumeSingle" = "Resume Failed Upload";
-"imageUploadResumeSeveral" = "Resume %@ Failed Uploads";
+"imageUploadResumeSingle" = "Resume Upload";
+"imageUploadResumeSeveral" = "Resume %@ Uploads";
 
 "imageUploadProgressBar_zero" = "Mengunggah 0/0";
 "imageUploadProgressBar_nonZero" = "Mengunggah %@/%@";
@@ -476,6 +476,8 @@
 "uploadError_title" = "Galat dalam Mengunggah";
 "uploadError_message" = "Tidak dapat mengunggah gambar Anda. Galat: %@";
 "uploadCancelled_title" = "Mengunggah Dibatalkan";
+"uploadNoInternetNetwork" = "No Internet Connection";
+"uploadNoWiFiNetwork" = "No Wi-Fi Connection";
 
 "imageUploadError_title" = "Galat dalam Mengunggah Gambar";
 "imageUploadError_format" = "File format not accepted by Piwigo server.";
@@ -656,6 +658,7 @@
 "settings_defaultPrefix>320px" = "Filename Prefix";
 "settings_defaultPrefixPlaceholder" = "Prefix";
 "settings_deleteImage>375px" = "Hapus Gambar Setelah Mengunggah";
+"settings_wifiOnly" = "Wi-Fi Only";
 "settings_deleteImage" = "Hapus Setelah Mengunggah";
 
 // Settings — Cache

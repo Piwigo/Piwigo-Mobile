@@ -461,8 +461,8 @@
 "imageUploadClearFailedSeveral" = "Clear %@ Failed Uploads";
 "imageUploadClearCompletedSingle" = "Clear Completed Upload";
 "imageUploadClearCompletedSeveral" = "Clear %@ Completed Uploads";
-"imageUploadResumeSingle" = "Resume Failed Upload";
-"imageUploadResumeSeveral" = "Resume %@ Failed Uploads";
+"imageUploadResumeSingle" = "Resume Upload";
+"imageUploadResumeSeveral" = "Resume %@ Uploads";
 
 "imageUploadProgressBar_zero" = "Laddar upp 0/0";
 "imageUploadProgressBar_nonZero" = "Ladda upp %@/%@";
@@ -476,6 +476,8 @@
 "uploadError_title" = "Uppladdningsfel";
 "uploadError_message" = "Kunde inte ladda upp din bild. Fel: %@";
 "uploadCancelled_title" = "Uppladdning avbruten";
+"uploadNoInternetNetwork" = "No Internet Connection";
+"uploadNoWiFiNetwork" = "No Wi-Fi Connection";
 
 "imageUploadError_title" = "Bilduppladdningsfel";
 "imageUploadError_format" = "File format not accepted by Piwigo server.";
@@ -656,6 +658,7 @@
 "settings_defaultPrefix>320px" = "Filnamnsprefix";
 "settings_defaultPrefixPlaceholder" = "Prefix";
 "settings_deleteImage>375px" = "Radera bild efter uppladdning";
+"settings_wifiOnly" = "Wi-Fi Only";
 "settings_deleteImage" = "Radera efter uppladdning";
 
 // Settings — Cache

@@ -461,8 +461,8 @@
 "imageUploadClearFailedSeveral" = "Clear %@ Failed Uploads";
 "imageUploadClearCompletedSingle" = "Clear Completed Upload";
 "imageUploadClearCompletedSeveral" = "Clear %@ Completed Uploads";
-"imageUploadResumeSingle" = "Resume Failed Upload";
-"imageUploadResumeSeveral" = "Resume %@ Failed Uploads";
+"imageUploadResumeSingle" = "Resume Upload";
+"imageUploadResumeSeveral" = "Resume %@ Uploads";
 
 "imageUploadProgressBar_zero" = "Uploader 0/0";
 "imageUploadProgressBar_nonZero" = "Uploader %@/%@";
@@ -476,6 +476,8 @@
 "uploadError_title" = "Fejl under upload";
 "uploadError_message" = "Kunne ikke uploade dit billede. Fejl: %@";
 "uploadCancelled_title" = "Upload annulleret";
+"uploadNoInternetNetwork" = "No Internet Connection";
+"uploadNoWiFiNetwork" = "No Wi-Fi Connection";
 
 "imageUploadError_title" = "Fejl under upload";
 "imageUploadError_format" = "File format not accepted by Piwigo server.";
@@ -656,6 +658,7 @@
 "settings_defaultPrefix>320px" = "Filnavn præfiks";
 "settings_defaultPrefixPlaceholder" = "Præfiks";
 "settings_deleteImage>375px" = "Slet billede efter upload";
+"settings_wifiOnly" = "Wi-Fi Only";
 "settings_deleteImage" = "Slet efter upload";
 
 // Settings — Cache

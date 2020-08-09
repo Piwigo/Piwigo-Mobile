@@ -337,7 +337,7 @@
 "tag" = "Znacznik";
 "tagsTitle_selectOne" = "Wybierz znacznik";
 "tagsHeader_selected" = "Wybrane";
-"tagsHeader_notSelected" = "Not Selected";
+"tagsHeader_notSelected" = "Nie wybrane";
 "tagsHeader_all" = "Wszystkie";
 "tagsAdd_title" = "Dodaj znacznik";
 "tagsAdd_message" = "Wprowadź nazwę dla nowego znacznika";
@@ -476,6 +476,8 @@
 "uploadError_title" = "Błąd przesyłania";
 "uploadError_message" = "Nie można przesłać zdjęcia. Błąd: %@";
 "uploadCancelled_title" = "Anulowano Wysyłanie";
+"uploadNoInternetNetwork" = "No Internet Connection";
+"uploadNoWiFiNetwork" = "No Wi-Fi Connection";
 
 "imageUploadError_title" = "Błąd przesyłania zdjęcia";
 "imageUploadError_format" = "Format pliku nie został zaakceptowany przez serwer Piwigo.";
@@ -656,6 +658,7 @@
 "settings_defaultPrefix>320px" = "Prefiks nazwy pliku";
 "settings_defaultPrefixPlaceholder" = "Prefiks";
 "settings_deleteImage>375px" = "Usuń zdjęcie po przesłaniu";
+"settings_wifiOnly" = "Wi-Fi Only";
 "settings_deleteImage" = "Usuń po wysłaniu";
 
 // Settings — Cache

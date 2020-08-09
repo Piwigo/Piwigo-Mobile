@@ -461,8 +461,8 @@
 "imageUploadClearFailedSeveral" = "Clear %@ Failed Uploads";
 "imageUploadClearCompletedSingle" = "Clear Completed Upload";
 "imageUploadClearCompletedSeveral" = "Clear %@ Completed Uploads";
-"imageUploadResumeSingle" = "Resume Failed Upload";
-"imageUploadResumeSeveral" = "Resume %@ Failed Uploads";
+"imageUploadResumeSingle" = "Resume Upload";
+"imageUploadResumeSeveral" = "Resume %@ Uploads";
 
 "imageUploadProgressBar_zero" = "جار التحميل 0/0";
 "imageUploadProgressBar_nonZero" = "جار التحميل %@/%@";
@@ -476,6 +476,8 @@
 "uploadError_title" = "خطأ في التحميل";
 "uploadError_message" = "تعذر تحميل الصورة الخاصة بك. خطأ: %@";
 "uploadCancelled_title" = "تم إلغاء الرفع";
+"uploadNoInternetNetwork" = "No Internet Connection";
+"uploadNoWiFiNetwork" = "No Wi-Fi Connection";
 
 "imageUploadError_title" = "خطأ في تحميل الصورة";
 "imageUploadError_format" = "File format not accepted by Piwigo server.";
@@ -656,6 +658,7 @@
 "settings_defaultPrefix>320px" = "Filename Prefix";
 "settings_defaultPrefixPlaceholder" = "Prefix";
 "settings_deleteImage>375px" = "حذف الصورة بعد تحميل";
+"settings_wifiOnly" = "Wi-Fi Only";
 "settings_deleteImage" = "الحذف بعد التحميل";
 
 // Settings — Cache

@@ -476,6 +476,8 @@
 "uploadError_title" = "Error al subir";
 "uploadError_message" = "No se pudo cargar la foto. Error: %@";
 "uploadCancelled_title" = "Carga cancelada";
+"uploadNoInternetNetwork" = "No Internet Connection";
+"uploadNoWiFiNetwork" = "No Wi-Fi Connection";
 
 "imageUploadError_title" = "Error al cargar la foto";
 "imageUploadError_format" = "Formato de archivo no aceptado por el servidor Piwigo.";
@@ -656,6 +658,7 @@
 "settings_defaultPrefix>320px" = "Prefijo del nombre del archivo";
 "settings_defaultPrefixPlaceholder" = "Prefijo";
 "settings_deleteImage>375px" = "Eliminar foto después de subir";
+"settings_wifiOnly" = "Wi-Fi Only";
 "settings_deleteImage" = "Eliminar después de subir";
 
 // Settings — Cache

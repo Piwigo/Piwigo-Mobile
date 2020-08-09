@@ -461,8 +461,8 @@
 "imageUploadClearFailedSeveral" = "Clear %@ Failed Uploads";
 "imageUploadClearCompletedSingle" = "Clear Completed Upload";
 "imageUploadClearCompletedSeveral" = "Clear %@ Completed Uploads";
-"imageUploadResumeSingle" = "Resume Failed Upload";
-"imageUploadResumeSeveral" = "Resume %@ Failed Uploads";
+"imageUploadResumeSingle" = "Resume Upload";
+"imageUploadResumeSeveral" = "Resume %@ Uploads";
 
 "imageUploadProgressBar_zero" = "Загрузка 0/0";
 "imageUploadProgressBar_nonZero" = "Загрузка %@/%@";
@@ -476,6 +476,8 @@
 "uploadError_title" = "Ошибка загрузки";
 "uploadError_message" = "Не удалось закачать Ваше фото. Ошибка: %@";
 "uploadCancelled_title" = "Загрузка отменена";
+"uploadNoInternetNetwork" = "No Internet Connection";
+"uploadNoWiFiNetwork" = "No Wi-Fi Connection";
 
 "imageUploadError_title" = "Ошибка загрузки фото";
 "imageUploadError_format" = "File format not accepted by Piwigo server.";
@@ -656,6 +658,7 @@
 "settings_defaultPrefix>320px" = "Префикс имени файла";
 "settings_defaultPrefixPlaceholder" = "Префикс";
 "settings_deleteImage>375px" = "Удалить фотографию после загрузки";
+"settings_wifiOnly" = "Wi-Fi Only";
 "settings_deleteImage" = "Удалить после загрузки";
 
 // Settings — Cache

@@ -476,6 +476,8 @@
 "uploadError_title" = "Fehler beim Hochladen";
 "uploadError_message" = "Konnte Ihr Foto nicht hochladen. Fehler: %@";
 "uploadCancelled_title" = "Hochladen abgebrochen";
+"uploadNoInternetNetwork" = "No Internet Connection";
+"uploadNoWiFiNetwork" = "No Wi-Fi Connection";
 
 "imageUploadError_title" = "Fehler beim Foto Hochladen";
 "imageUploadError_format" = "Dateiformat vom Piwigo-Server nicht akzeptiert.";
@@ -656,6 +658,7 @@
 "settings_defaultPrefix>320px" = "Dateinamen Präfix";
 "settings_defaultPrefixPlaceholder" = "Präfix";
 "settings_deleteImage>375px" = "Foto nach dem Hochladen löschen";
+"settings_wifiOnly" = "Wi-Fi Only";
 "settings_deleteImage" = "Nach dem Hochladen löschen";
 
 // Settings — Cache

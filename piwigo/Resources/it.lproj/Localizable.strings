@@ -461,8 +461,8 @@
 "imageUploadClearFailedSeveral" = "Clear %@ Failed Uploads";
 "imageUploadClearCompletedSingle" = "Clear Completed Upload";
 "imageUploadClearCompletedSeveral" = "Clear %@ Completed Uploads";
-"imageUploadResumeSingle" = "Resume Failed Upload";
-"imageUploadResumeSeveral" = "Resume %@ Failed Uploads";
+"imageUploadResumeSingle" = "Resume Upload";
+"imageUploadResumeSeveral" = "Resume %@ Uploads";
 
 "imageUploadProgressBar_zero" = "Caricamento in corso 0/0";
 "imageUploadProgressBar_nonZero" = "Caricamento di %@/%@";
@@ -476,6 +476,8 @@
 "uploadError_title" = "Errore di caricamento";
 "uploadError_message" = "Impossibile caricare la tua immagine. Errore: %@";
 "uploadCancelled_title" = "Caricamento annullato";
+"uploadNoInternetNetwork" = "No Internet Connection";
+"uploadNoWiFiNetwork" = "No Wi-Fi Connection";
 
 "imageUploadError_title" = "Errore nel caricamento dell'immagine";
 "imageUploadError_format" = "File format not accepted by Piwigo server.";
@@ -656,6 +658,7 @@
 "settings_defaultPrefix>320px" = "Prefisso nome file";
 "settings_defaultPrefixPlaceholder" = "Prefisso";
 "settings_deleteImage>375px" = "Elimina l'immagine dopo il caricamento";
+"settings_wifiOnly" = "Wi-Fi Only";
 "settings_deleteImage" = "Elimina dopo il caricamento";
 
 // Settings — Cache

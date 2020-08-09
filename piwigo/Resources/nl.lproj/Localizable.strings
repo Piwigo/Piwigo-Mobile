@@ -461,8 +461,8 @@
 "imageUploadClearFailedSeveral" = "Clear %@ Failed Uploads";
 "imageUploadClearCompletedSingle" = "Clear Completed Upload";
 "imageUploadClearCompletedSeveral" = "Clear %@ Completed Uploads";
-"imageUploadResumeSingle" = "Resume Failed Upload";
-"imageUploadResumeSeveral" = "Resume %@ Failed Uploads";
+"imageUploadResumeSingle" = "Resume Upload";
+"imageUploadResumeSeveral" = "Resume %@ Uploads";
 
 "imageUploadProgressBar_zero" = "Bezig met uploaden 0/0";
 "imageUploadProgressBar_nonZero" = "Bezig met uploaden %@/%@";
@@ -476,6 +476,8 @@
 "uploadError_title" = "Upload-fout";
 "uploadError_message" = "Kon je foto niet uploaden. Fout: %@";
 "uploadCancelled_title" = "Uploaden afgebroken";
+"uploadNoInternetNetwork" = "No Internet Connection";
+"uploadNoWiFiNetwork" = "No Wi-Fi Connection";
 
 "imageUploadError_title" = "Foto-upload-fout";
 "imageUploadError_format" = "File format not accepted by Piwigo server.";
@@ -656,6 +658,7 @@
 "settings_defaultPrefix>320px" = "Bestandsnaam voorvoegsel";
 "settings_defaultPrefixPlaceholder" = "Voorvoegsel";
 "settings_deleteImage>375px" = "Verwijder de foto ná het uploaden";
+"settings_wifiOnly" = "Wi-Fi Only";
 "settings_deleteImage" = "Verwijder na uploaden";
 
 // Settings — Cache

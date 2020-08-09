@@ -337,7 +337,7 @@
 "tag" = "タグ";
 "tagsTitle_selectOne" = "タグを選択";
 "tagsHeader_selected" = "選択済み";
-"tagsHeader_notSelected" = "Not Selected";
+"tagsHeader_notSelected" = "選択されていません";
 "tagsHeader_all" = "すべて";
 "tagsAdd_title" = "タグを追加";
 "tagsAdd_message" = "新規タグの名前を入力して下さい";
@@ -476,6 +476,8 @@
 "uploadError_title" = "アップロードエラー";
 "uploadError_message" = "写真をアップロードできませんでした。エラー: %@";
 "uploadCancelled_title" = "アップロードが取り消されました";
+"uploadNoInternetNetwork" = "No Internet Connection";
+"uploadNoWiFiNetwork" = "No Wi-Fi Connection";
 
 "imageUploadError_title" = "写真アップロードエラー";
 "imageUploadError_format" = "Piwigoサーバーでは受け付けられないファイル形式です。";
@@ -656,6 +658,7 @@
 "settings_defaultPrefix>320px" = "ファイル名のプレフィクス";
 "settings_defaultPrefixPlaceholder" = "プレフィクス";
 "settings_deleteImage>375px" = "アップロード後に写真を削除します";
+"settings_wifiOnly" = "Wi-Fi Only";
 "settings_deleteImage" = "アップロード後に削除します";
 
 // Settings — Cache
