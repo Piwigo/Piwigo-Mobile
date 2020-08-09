@@ -83,6 +83,7 @@
 		AD8A452324771618002360EA /* UploadTransfer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8A452224771618002360EA /* UploadTransfer.swift */; };
 		AD8F4B8B23F04B8C009483B6 /* TagSelectorViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD3369BE23F035F700F3FA80 /* TagSelectorViewController.storyboard */; };
 		AD92B8FE1F200083006E5B63 /* ReleaseNotes.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD92B9001F200083006E5B63 /* ReleaseNotes.strings */; };
+		AD9A1BE824E04F0000D22C86 /* UploadQueueHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9A1BE724E04F0000D22C86 /* UploadQueueHeaderView.swift */; };
 		ADA24DAF243A68FA00864D1F /* DefaultImageThumbnailSizeViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADA24DAE243A68FA00864D1F /* DefaultImageThumbnailSizeViewController.storyboard */; };
 		ADA24DB1243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA24DB0243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift */; };
 		ADA24DB6243A74C200864D1F /* DefaultImageSizeViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADA24DB5243A74C200864D1F /* DefaultImageSizeViewController.storyboard */; };
@@ -333,6 +334,7 @@
 		AD8A4520247714EF002360EA /* UploadImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadImage.swift; sourceTree = "<group>"; };
 		AD8A452224771618002360EA /* UploadTransfer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadTransfer.swift; sourceTree = "<group>"; };
 		AD92B9011F200092006E5B63 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
+		AD9A1BE724E04F0000D22C86 /* UploadQueueHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadQueueHeaderView.swift; sourceTree = "<group>"; };
 		ADA24DAE243A68FA00864D1F /* DefaultImageThumbnailSizeViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = DefaultImageThumbnailSizeViewController.storyboard; sourceTree = "<group>"; };
 		ADA24DB0243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultImageThumbnailSizeViewController.swift; sourceTree = "<group>"; };
 		ADA24DB5243A74C200864D1F /* DefaultImageSizeViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = DefaultImageSizeViewController.storyboard; sourceTree = "<group>"; };
@@ -815,6 +817,7 @@
 			isa = PBXGroup;
 			children = (
 				ADC019772471ABA000532A81 /* UploadQueueViewController.swift */,
+				AD9A1BE724E04F0000D22C86 /* UploadQueueHeaderView.swift */,
 				ADC019752471AA5200532A81 /* UploadImageTableViewCell.swift */,
 				ADC019732471A70F00532A81 /* UploadQueueViewController.storyboard */,
 			);
@@ -1651,6 +1654,7 @@
 				AD39165E22A126CA00414E4B /* SearchImagesViewController.m in Sources */,
 				AD770FDD23B6A666007DAD50 /* EditImageDatePickerTableViewCell.m in Sources */,
 				D87C5A9A1A6F4FB0001763BC /* SessionService.m in Sources */,
+				AD9A1BE824E04F0000D22C86 /* UploadQueueHeaderView.swift in Sources */,
 				D82B8D2B1A68832C000E47CA /* Model.m in Sources */,
 				D863EECD1A6A495700C0A6E9 /* LoginViewController.m in Sources */,
 				D87C5A961A6F4C43001763BC /* KeychainItemWrapper.m in Sources */,

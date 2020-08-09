@@ -476,6 +476,8 @@
 "uploadError_title" = "Upload Error";
 "uploadError_message" = "Could not upload your photo. Error: %@";
 "uploadCancelled_title" = "Upload Cancelled";
+"uploadNoInternetNetwork" = "No Internet Connection";
+"uploadNoWiFiNetwork" = "No Wi-Fi Connection";
 
 "imageUploadError_title" = "Photo Upload Error";
 "imageUploadError_format" = "File format not accepted by Piwigo server.";

@@ -25,6 +25,7 @@ class UploadManager: NSObject, URLSessionDelegate {
                                                name: UIApplication.didBecomeActiveNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.willResignActive),
                                                name: UIApplication.willResignActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.findNextImageToUpload), name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
 //        NotificationCenter.default.addObserver(self, selector: #selector(self.findNextImageToUpload),
 //                                               name: NSNotification.Name.NSProcessInfoPowerStateDidChange, object: nil)
     }

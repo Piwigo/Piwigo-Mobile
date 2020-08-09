@@ -35,24 +35,24 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Get all uploads
-//        allUploads = uploadsProvider.fetchedResultsController.fetchedObjects ?? []
-
-        // Fetch uploads and prepare data source in background
-//        fetchAndSortImages()
-
         // Buttons
         actionBarButton = UIBarButtonItem(image: UIImage(named: "list"), landscapeImagePhone: UIImage(named: "listCompact"), style: .plain, target: self, action: #selector(didTapActionButton))
         doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(quitUpload))
         doneBarButton?.accessibilityIdentifier = "Done"
+        
+        // Header informing user on network status
+        mainHeader()
 
         // Register palette changes
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.applyColorPalette), name: name, object: nil)
+        
+        // Register network reachability
+        NotificationCenter.default.addObserver(self, selector: #selector(self.mainHeader), name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
 
         // Register upload progress
         let name2: NSNotification.Name = NSNotification.Name(kPiwigoNotificationUploadProgress)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress), name: name2, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.applyUploadProgress), name: name2, object: nil)
     }
 
     @objc func applyColorPalette() {
@@ -89,14 +89,13 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
         navigationItem.setLeftBarButtonItems([doneBarButton].compactMap { $0 }, animated: false)
         navigationController?.navigationBar.accessibilityIdentifier = "UploadQueueNav"
         updateNavBar()
+    }
 
-        // Prevent device from sleeping if uploads are in progress
-        let uploadsToPerform = uploadsProvider.fetchedResultsController.fetchedObjects?.map({
-            ($0.state == .waiting) || ($0.state == .preparing) ||  ($0.state == .prepared) ||
-            ($0.state == .uploading) || ($0.state == .finishing) ? 1 : 0}).reduce(0, +) ?? 0
-        if uploadsToPerform > 0 {
-            UIApplication.shared.isIdleTimerDisabled = true
-        }
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        
+        guard let header = queueTableView.tableHeaderView else { return }
+        header.frame.size.height = header.systemLayoutSizeFitting(CGSize(width: view.bounds.width - 32.0, height: 0)).height
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -229,6 +228,31 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate, UITableV
 
         
     // MARK: - UITableView - Header
+    
+    @objc func mainHeader() {
+        if !AFNetworkReachabilityManager.shared().isReachable {
+            // No network access
+            let headerView = UploadQueueHeaderView(frame: .zero)
+            headerView.configure(text: NSLocalizedString("uploadNoInternetNetwork", comment: "No Internet Connection"))
+            queueTableView.tableHeaderView = headerView
+        }
+        else if AFNetworkReachabilityManager.shared().isReachableViaWWAN && Model.sharedInstance().wifiOnlyUploading {
+            // No Wi-Fi and user wishes to upload only on Wi-Fi
+            let headerView = UploadQueueHeaderView(frame: .zero)
+            headerView.configure(text: NSLocalizedString("uploadNoWiFiNetwork", comment: "No Wi-Fi Connection"))
+            queueTableView.tableHeaderView = headerView
+        }
+        else {
+            // Prevent device from sleeping if uploads are in progress
+            queueTableView.tableHeaderView = nil
+            let uploadsToPerform = uploadsProvider.fetchedResultsController.fetchedObjects?.map({
+                ($0.state == .waiting) || ($0.state == .preparing) ||  ($0.state == .prepared) ||
+                ($0.state == .uploading) || ($0.state == .finishing) ? 1 : 0}).reduce(0, +) ?? 0
+            if uploadsToPerform > 0 {
+                UIApplication.shared.isIdleTimerDisabled = true
+            }
+        }
+    }
     
     func sectionNameFor(_ section: Int) -> String {
         var sectionName = "Unknown section"
