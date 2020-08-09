@@ -183,6 +183,20 @@ class UploadManager: NSObject, URLSessionDelegate {
         print("•••>> findNextImageToUpload()", self.debugDescription)
         print("    > ", isPreparing, "|", isUploading, "|", isFinishing)
 
+        // Get uploads to complete in queue
+        guard let allUploads = uploadsProvider.requestsToComplete() else {
+            return
+        }
+        
+        // Update app badge and Upload button in root/default album
+        DispatchQueue.main.async {
+            // Update app badge
+            UIApplication.shared.applicationIconBadgeNumber = allUploads.count
+            // Update button of root album (or default album)
+            let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : allUploads.count]
+            NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationLeftUploads), object: nil, userInfo: uploadInfo)
+        }
+        
         // Pause upload maneger if app not in the foreground
         if appState == .background || appState == .inactive {
             print("    > NOT IN FOREGROUND !!!")
@@ -201,20 +215,6 @@ class UploadManager: NSObject, URLSessionDelegate {
             return
         }
 
-        // Get uploads to complete in queue
-        guard let allUploads = uploadsProvider.requestsToComplete() else {
-            return
-        }
-        
-        // Update app badge and Upload button in root/default album
-        DispatchQueue.main.async {
-            // Update app badge
-            UIApplication.shared.applicationIconBadgeNumber = allUploads.count
-            // Update button of root album (or default album)
-            let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : allUploads.count]
-            NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationLeftUploads), object: nil, userInfo: uploadInfo)
-        }
-        
         // Any interrupted transfer?
         if !isFinishing, let upload = allUploads.first(where: { $0.state == .finishing }) {
             // Transfer encountered an error
