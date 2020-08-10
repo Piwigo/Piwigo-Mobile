@@ -22,13 +22,13 @@ class UploadManager: NSObject, URLSessionDelegate {
         super.init()
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.didBecomeActive),
-                                               name: UIApplication.didBecomeActiveNotification, object: nil)
+            name: UIApplication.didBecomeActiveNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.willResignActive),
-                                               name: UIApplication.willResignActiveNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.findNextImageToUpload), name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.findNextImageToUpload), name: NSNotification.Name.NSProcessInfoPowerStateDidChange, object: nil)
-//        NotificationCenter.default.addObserver(self, selector: #selector(self.findNextImageToUpload),
-//                                               name: NSNotification.Name.NSProcessInfoPowerStateDidChange, object: nil)
+            name: UIApplication.willResignActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.findNextImageToUpload),
+            name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.findNextImageToUpload),
+            name: NSNotification.Name.NSProcessInfoPowerStateDidChange, object: nil)
     }
 
     private var appState = UIApplication.State.active
@@ -73,7 +73,7 @@ class UploadManager: NSObject, URLSessionDelegate {
     deinit {
         NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIApplication.willResignActiveNotification, object: nil)
-//        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.NSProcessInfoPowerStateDidChange, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.NSProcessInfoPowerStateDidChange, object: nil)
 
         // Close upload session
         sessionManager.invalidateSessionCancelingTasks(true, resetSession: true)
