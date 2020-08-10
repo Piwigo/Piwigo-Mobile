@@ -12,6 +12,17 @@ import CoreData
 @objc
 class UploadsProvider: NSObject {
 
+    override init() {
+        super.init()
+        let name = NSNotification.Name(kPiwigoNotificationDeletedImageFromUploadCache)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.didDeleteImageWithId), name: name, object: nil)
+    }
+    
+    deinit {
+        let name = NSNotification.Name(kPiwigoNotificationDeletedImageFromUploadCache)
+        NotificationCenter.default.removeObserver(self, name: name, object: nil)
+    }
+
     // MARK: - Core Data object context
     
     lazy var managedObjectContext: NSManagedObjectContext = {
@@ -319,6 +330,77 @@ class UploadsProvider: NSObject {
             success = true
         }
         return success
+    }
+
+    /**
+     Delete one upload request on the private queue. After saving,
+     resets the context to clean up the cache and lower the memory footprint.
+    */
+    @objc private func didDeleteImageWithId(_ notification: Notification) {
+        // Collect image ID
+        guard let imageId = notification.userInfo?["imageId"] as? Int64 else {
+            return
+        }
+
+        // Create a private queue context.
+        let taskContext = DataController.getPrivateContext()
+                
+        // taskContext.performAndWait
+        taskContext.performAndWait {
+            
+            // Retrieve existing upload (if any)
+            // Create a fetch request for the image ID sorted by localIdentifier
+            let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "imageId", ascending: true)]
+            fetchRequest.predicate = NSPredicate(format: "imageId == %ld", imageId)
+            
+            // Create a fetched results controller and set its fetch request, context, and delegate.
+            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                                managedObjectContext: taskContext,
+                                                  sectionNameKeyPath: nil, cacheName: nil)
+            
+            // Perform the fetch.
+            do {
+                try controller.performFetch()
+            } catch {
+                fatalError("Unresolved error \(error)")
+            }
+            
+            // Update cached upload
+            if let cachedUpload = controller.fetchedObjects?.first
+            {
+                // Delete upload request
+                taskContext.delete(cachedUpload)
+                
+                // Delete corresponding temporary files if any
+                let filenamePrefix = cachedUpload.localIdentifier.replacingOccurrences(of: "/", with: "-")
+                UploadManager.shared.deleteFilesInUploadsDirectory(with: filenamePrefix)
+            
+                // Save all insertions and deletions from the context to the store.
+                if taskContext.hasChanges {
+                    do {
+                        try taskContext.save()
+                        
+                        // Performs a task in the main queue and wait until this tasks finishes
+                        DispatchQueue.main.async {
+                            self.managedObjectContext.performAndWait {
+                                do {
+                                    // Saves the data from the child to the main context to be stored properly
+                                    try self.managedObjectContext.save()
+                                } catch {
+                                    fatalError("Failure to save context: \(error)")
+                                }
+                            }
+                        }
+                    }
+                    catch {
+                        fatalError("Failure to save context: \(error)")
+                    }
+                    // Reset the taskContext to free the cache and lower the memory footprint.
+                    taskContext.reset()
+                }
+            }
+        }
     }
 
 

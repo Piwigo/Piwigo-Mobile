@@ -229,16 +229,16 @@ extension Upload {
             deleteImageAfterUpload: false)
     }
 
-    @objc(addTagsObject:)
+    @objc(addUploadsObject:)
     @NSManaged public func addToUploads(_ value: Upload)
 
-    @objc(removeTagsObject:)
+    @objc(removeUploadsObject:)
     @NSManaged public func removeFromUploads(_ value: Upload)
 
-    @objc(addTags:)
+    @objc(addUploads:)
     @NSManaged public func addToUploads(_ values: NSSet)
 
-    @objc(removeTags:)
+    @objc(removeUploads:)
     @NSManaged public func removeFromUploads(_ values: NSSet)
 }
 
