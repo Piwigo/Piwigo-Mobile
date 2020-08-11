@@ -279,7 +279,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 }
                 cancelBarButton?.isEnabled = true
                 actionBarButton?.isEnabled = (queue.operationCount == 0)
-                uploadBarButton?.isEnabled = (queue.operationCount == 0)
+                uploadBarButton?.isEnabled = true
                 title = nberOfSelectedImages == 1 ? NSLocalizedString("selectImageSelected", comment: "1 Photo Selected") : String(format:NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), NSNumber(value: nberOfSelectedImages))
         }
     }
