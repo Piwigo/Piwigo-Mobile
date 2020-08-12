@@ -436,8 +436,13 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
             updateCell(at: newIndexPath, with: upload)
         case .update:
             print("update… at", oldIndexPath)
-            guard let upload:Upload = anObject as? Upload else { return }
-            updateCell(at: oldIndexPath, with: upload)
+            if newIndexPath == nil {        // Regular update
+                guard let upload:Upload = anObject as? Upload else { break }
+                updateCell(at: oldIndexPath, with: upload)
+            } else {                        // Moving update when using iOS 10
+                queueTableView.deleteRows(at: [oldIndexPath], with: .fade)
+                queueTableView.insertRows(at: [newIndexPath!], with: .fade)
+            }
         @unknown default:
             fatalError("UploadQueueViewController: unknown NSFetchedResultsChangeType")
         }
@@ -469,7 +474,22 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
     }
 
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        // Update table view
+        // To prevent crash occurring when the last row of a section is removed
+        var willDeleteSection = false
+        for section in 1..<queueTableView.numberOfSections {
+            if queueTableView.numberOfRows(inSection: section) == 1 {
+                willDeleteSection = true
+            }
+        }
+        
+        if willDeleteSection {
+            let dispatchTime = DispatchTime.now() + 0.5
+            DispatchQueue.main.asyncAfter(deadline: dispatchTime) {
+                self.queueTableView.reloadData()
+            }
+            return
+        }
+        
         queueTableView.endUpdates()
         queueTableView.layoutIfNeeded()
         updateNavBar()
