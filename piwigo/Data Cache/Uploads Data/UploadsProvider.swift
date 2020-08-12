@@ -432,10 +432,10 @@ class UploadsProvider: NSObject {
             // Predicate
             var predicates = [NSPredicate]()
             states.forEach { (state) in
-                predicates.append(NSPredicate(format: "requestState != %d", state.rawValue))
+                predicates.append(NSPredicate(format: "requestState == %d", state.rawValue))
             }
             var compoundPredicate = NSCompoundPredicate()
-            compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+            compoundPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: predicates)
             fetchRequest.predicate = compoundPredicate
 
             // Create a fetched results controller and set its fetch request, context, and delegate.

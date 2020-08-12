@@ -186,7 +186,10 @@ class UploadManager: NSObject, URLSessionDelegate {
         print("    > ", isPreparing, "|", isUploading, "|", isFinishing)
 
         // Get uploads to complete in queue
-        guard let allUploads = uploadsProvider.getRequestsIn(states: [.finished, .preparingFail, .formatError]) else {
+        let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
+                                            .prepared, .uploading, .uploadingError,
+                                            .uploaded, .finishing, .finishingError]
+        guard let allUploads = uploadsProvider.getRequestsIn(states: states) else {
             return
         }
         
@@ -566,7 +569,8 @@ class UploadManager: NSObject, URLSessionDelegate {
         isPreparing = false
         isUploading = false
         isFinishing = false
-        if let failedUploads = uploadsProvider.getRequestsIn(states: [.preparingError, .uploadingError, .finishingError]) {
+        let states: [kPiwigoUploadState] = [.preparingError, .uploadingError, .finishingError]
+        if let failedUploads = uploadsProvider.getRequestsIn(states: states) {
             if failedUploads.count > 0 {
                 // Resume failed uploads
                 resume(failedUploads: failedUploads) { (_) in }
