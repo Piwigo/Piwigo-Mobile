@@ -609,7 +609,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         
     @objc func didTapUploadButton() {
         // Avoid potential crash (should never happen, but…)
-        if selectedImages.count == 0 { return }
+        if selectedImages.compactMap({ $0 }).count == 0 { return }
         
         // Disable button
         cancelBarButton?.isEnabled = false
@@ -620,6 +620,17 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         let uploadSwitchSB = UIStoryboard(name: "UploadSwitchViewController", bundle: nil)
         if let uploadSwitchVC = uploadSwitchSB.instantiateViewController(withIdentifier: "UploadSwitchViewController") as? UploadSwitchViewController {
             uploadSwitchVC.delegate = self
+
+            // Will we propose to delete images after upload?
+            if let firstLocalIdentifer = selectedImages.compactMap({ $0 }).first?.localIdentifier {
+                if let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [firstLocalIdentifer], options: nil).firstObject {
+                    // Only local images can be deleted
+                    if imageAsset.sourceType != .typeCloudShared {
+                        // Will allow user to delete images after upload
+                        uploadSwitchVC.canDeleteImages = true
+                    }
+                }
+            }
             
             // Push Edit view embedded in navigation controller
             let navController = UINavigationController(rootViewController: uploadSwitchVC)
@@ -1098,8 +1109,12 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 // Update fetched asset collection
                 changeDetails.removedIndexes?.forEach({ (index) in
                     // Remove objects
-                    self.selectedImages.remove(at: index)
-                    self.localIdentifiers.remove(at: index)
+                    if index < self.selectedImages.count {
+                        self.selectedImages.remove(at: index)
+                    }
+                    if index < self.localIdentifiers.count {
+                        self.localIdentifiers.remove(at: index)
+                    }
                 })
                 changeDetails.insertedIndexes?.forEach({ (index) in
                     // Insert objects

@@ -65,18 +65,6 @@ extension UploadManager{
                         var uploadProperties = upload
                         uploadProperties.requestState = .finished
                         
-                        // Will propose to delete image if wanted by user
-                        if Model.sharedInstance()?.deleteImageAfterUpload == true {
-                            // Retrieve image asset
-                            if let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [upload.localIdentifier], options: nil).firstObject {
-                                // Only local images can be deleted
-                                if imageAsset.sourceType != .typeCloudShared {
-                                    // Append image to list of images to delete
-                                    uploadProperties.deleteImageAfterUpload = true
-                                }
-                            }
-                        }
-                        
                         // Update upload record, cache and views
                         self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
                             print("•••>> complete ;-)")

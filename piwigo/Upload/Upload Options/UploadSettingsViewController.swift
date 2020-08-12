@@ -18,7 +18,8 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
     var prefixFileNameBeforeUpload = Model.sharedInstance().prefixFileNameBeforeUpload
     var defaultPrefix = Model.sharedInstance().defaultPrefix ?? ""
     private var shouldUpdateDefaultPrefix = false
-    var deleteImageAfterUpload = Model.sharedInstance().deleteImageAfterUpload
+    private var canDeleteImages = false
+    var deleteImageAfterUpload = false
 
     // MARK: - View Lifecycle
     override func viewDidLoad() {
@@ -46,6 +47,14 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
         // Register palette changes
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+        
+        // Can we propose to delete images after upload?
+        if let switchVC = parent as? UploadSwitchViewController {
+            canDeleteImages = switchVC.canDeleteImages
+            if canDeleteImages {
+                deleteImageAfterUpload = Model.sharedInstance().deleteImageAfterUpload
+            }
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -75,9 +84,10 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5 + (resizeImageOnUpload ? 1 : 0)
+        return 4 + (resizeImageOnUpload ? 1 : 0)
                  + (compressImageOnUpload ? 1 : 0)
                  + (prefixFileNameBeforeUpload ? 1 : 0)
+                 + (canDeleteImages ? 1 : 0)
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

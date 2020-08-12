@@ -358,7 +358,7 @@ extension UploadProperties {
             photoQuality: Model.sharedInstance().photoQuality,
             prefixFileNameBeforeUpload: Model.sharedInstance().prefixFileNameBeforeUpload,
             defaultPrefix: Model.sharedInstance().defaultPrefix ?? "",
-            deleteImageAfterUpload: Model.sharedInstance().deleteImageAfterUpload)
+            deleteImageAfterUpload: false)
     }
     
     // Update upload request state and error

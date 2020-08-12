@@ -26,6 +26,16 @@ class UploadSwitchViewController: UIViewController {
     @IBOutlet weak var parametersView: UIView!
     @IBOutlet weak var settingsView: UIView!
 
+    private var _canDeleteImages = false
+    @objc var canDeleteImages: Bool {
+        get {
+            _canDeleteImages
+        }
+        set(canDeleteImages) {
+            _canDeleteImages = canDeleteImages
+        }
+    }
+
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,7 +62,7 @@ class UploadSwitchViewController: UIViewController {
         navigationItem.rightBarButtonItems = [uploadBarButton].compactMap { $0 }
         navigationItem.titleView = switchViewSegmentedControl
         
-        // iOS 9 fix
+        // iOS 9 & 10 fix
         if #available(iOS 11, *) {
             parametersView.translatesAutoresizingMaskIntoConstraints = false
         }
