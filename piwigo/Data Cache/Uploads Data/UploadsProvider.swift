@@ -408,7 +408,12 @@ class UploadsProvider: NSObject {
     /**
      Fetches upload requests synchronously in the background
      */
-    func requestsToComplete() -> [Upload]? {
+    func getRequestsIn(states: [kPiwigoUploadState]) -> [Upload]? {
+        // Check that states is not empty
+        if states.count == 0 {
+            assertionFailure("!!! getRequestsIn() called with no args !!!")
+            return nil
+        }
         
         // Initialisation
         var uploads: [Upload]? = nil
@@ -423,7 +428,15 @@ class UploadsProvider: NSObject {
             // Create a fetch request for the Upload entity sorted by localIdentifier
             let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: "requestDate", ascending: true)]
-            fetchRequest.predicate = NSPredicate(format: "requestState != %d && requestState != %d  && requestState != %d", kPiwigoUploadState.finished.rawValue, kPiwigoUploadState.preparingFail.rawValue, kPiwigoUploadState.formatError.rawValue)
+            
+            // Predicate
+            var predicates = [NSPredicate]()
+            states.forEach { (state) in
+                predicates.append(NSPredicate(format: "requestState != %d", state.rawValue))
+            }
+            var compoundPredicate = NSCompoundPredicate()
+            compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+            fetchRequest.predicate = compoundPredicate
 
             // Create a fetched results controller and set its fetch request, context, and delegate.
             let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
@@ -440,72 +453,105 @@ class UploadsProvider: NSObject {
         }
         return uploads
     }
+    
+//    func requestsToComplete() -> [Upload]? {
+//
+//        // Initialisation
+//        var uploads: [Upload]? = nil
+//
+//        // Create a private queue context.
+//        let taskContext = DataController.getPrivateContext()
+//
+//        // Perform the fetch
+//        taskContext.performAndWait {
+//
+//            // Retrieve existing completed uploads
+//            // Create a fetch request for the Upload entity sorted by localIdentifier
+//            let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
+//            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "requestDate", ascending: true)]
+//            fetchRequest.predicate = NSPredicate(format: "requestState != %d && requestState != %d  && requestState != %d", kPiwigoUploadState.finished.rawValue, kPiwigoUploadState.preparingFail.rawValue, kPiwigoUploadState.formatError.rawValue)
+//
+//            // Create a fetched results controller and set its fetch request, context, and delegate.
+//            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+//                                                managedObjectContext: taskContext,
+//                                                  sectionNameKeyPath: nil, cacheName: nil)
+//
+//            // Perform the fetch.
+//            do {
+//                try controller.performFetch()
+//            } catch {
+//                fatalError("Unresolved error \(error)")
+//            }
+//            uploads = controller.fetchedObjects
+//        }
+//        return uploads
+//    }
 
-    func requestsToResume() -> [Upload]? {
-        
-        // Initialisation
-        var uploads: [Upload]? = nil
-        
-        // Create a private queue context.
-        let taskContext = DataController.getPrivateContext()
+//    func requestsToResume() -> [Upload]? {
+//        
+//        // Initialisation
+//        var uploads: [Upload]? = nil
+//        
+//        // Create a private queue context.
+//        let taskContext = DataController.getPrivateContext()
+//
+//        // Perform the fetch
+//        taskContext.performAndWait {
+//
+//            // Retrieve existing completed uploads
+//            // Create a fetch request for the Upload entity sorted by localIdentifier
+//            let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
+//            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "requestDate", ascending: true)]
+//            fetchRequest.predicate = NSPredicate(format: "requestState == %d || requestState == %d  || requestState == %d", kPiwigoUploadState.preparingError.rawValue, kPiwigoUploadState.uploadingError.rawValue, kPiwigoUploadState.finishingError.rawValue)
+//
+//            // Create a fetched results controller and set its fetch request, context, and delegate.
+//            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+//                                                managedObjectContext: taskContext,
+//                                                  sectionNameKeyPath: nil, cacheName: nil)
+//
+//            // Perform the fetch.
+//            do {
+//                try controller.performFetch()
+//            } catch {
+//                fatalError("Unresolved error \(error)")
+//            }
+//            uploads = controller.fetchedObjects
+//        }
+//        return uploads
+//    }
 
-        // Perform the fetch
-        taskContext.performAndWait {
-
-            // Retrieve existing completed uploads
-            // Create a fetch request for the Upload entity sorted by localIdentifier
-            let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "requestDate", ascending: true)]
-            fetchRequest.predicate = NSPredicate(format: "requestState == %d || requestState == %d  || requestState == %d", kPiwigoUploadState.preparingError.rawValue, kPiwigoUploadState.uploadingError.rawValue, kPiwigoUploadState.finishingError.rawValue)
-
-            // Create a fetched results controller and set its fetch request, context, and delegate.
-            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                managedObjectContext: taskContext,
-                                                  sectionNameKeyPath: nil, cacheName: nil)
-
-            // Perform the fetch.
-            do {
-                try controller.performFetch()
-            } catch {
-                fatalError("Unresolved error \(error)")
-            }
-            uploads = controller.fetchedObjects
-        }
-        return uploads
-    }
-
-    func requestsCompleted() -> [Upload]? {
-        
-        // Initialisation
-        var uploads: [Upload]? = nil
-        
-        // Create a private queue context.
-        let taskContext = DataController.getPrivateContext()
-
-        // Perform the fetch
-        taskContext.performAndWait {
-
-            // Retrieve existing completed uploads
-            // Create a fetch request for the Upload entity sorted by localIdentifier
-            let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "requestDate", ascending: true)]
-            fetchRequest.predicate = NSPredicate(format: "requestState == %d", kPiwigoUploadState.finished.rawValue)
-
-            // Create a fetched results controller and set its fetch request, context, and delegate.
-            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                managedObjectContext: taskContext,
-                                                  sectionNameKeyPath: nil, cacheName: nil)
-
-            // Perform the fetch.
-            do {
-                try controller.performFetch()
-            } catch {
-                fatalError("Unresolved error \(error)")
-            }
-            uploads = controller.fetchedObjects
-        }
-        return uploads
-    }
+//    func requestsFinished() -> [Upload]? {
+//        
+//        // Initialisation
+//        var uploads: [Upload]? = nil
+//        
+//        // Create a private queue context.
+//        let taskContext = DataController.getPrivateContext()
+//
+//        // Perform the fetch
+//        taskContext.performAndWait {
+//
+//            // Retrieve existing completed uploads
+//            // Create a fetch request for the Upload entity sorted by localIdentifier
+//            let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
+//            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "requestDate", ascending: true)]
+//            fetchRequest.predicate = NSPredicate(format: "requestState == %d", kPiwigoUploadState.finished.rawValue)
+//
+//            // Create a fetched results controller and set its fetch request, context, and delegate.
+//            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+//                                                managedObjectContext: taskContext,
+//                                                  sectionNameKeyPath: nil, cacheName: nil)
+//
+//            // Perform the fetch.
+//            do {
+//                try controller.performFetch()
+//            } catch {
+//                fatalError("Unresolved error \(error)")
+//            }
+//            uploads = controller.fetchedObjects
+//        }
+//        return uploads
+//    }
 
     
     // MARK: - Clear Uploads

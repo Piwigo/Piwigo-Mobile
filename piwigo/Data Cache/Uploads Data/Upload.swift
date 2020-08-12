@@ -132,6 +132,8 @@ extension Upload {
             return .finishingError
         case kPiwigoUploadState.finished.rawValue:
             return .finished
+        case kPiwigoUploadState.moderated.rawValue:
+            return .moderated
 
         default:
             return .waiting
@@ -162,7 +164,8 @@ extension Upload {
                  kPiwigoUploadState.finishing.rawValue:
                 return "Section3"
                 
-            case kPiwigoUploadState.finished.rawValue:
+            case kPiwigoUploadState.finished.rawValue,
+                 kPiwigoUploadState.moderated.rawValue:
                 fallthrough
             default:
                 return "NoSection"
@@ -264,6 +267,7 @@ enum kPiwigoUploadState : Int16 {
     case finishing
     case finishingError
     case finished
+    case moderated
 }
 
 extension kPiwigoUploadState {
@@ -295,7 +299,7 @@ extension kPiwigoUploadState {
         case .finishingError:
             return NSLocalizedString("imageUploadTableCell_finishing", comment: "Finishing...") + " " +
                    NSLocalizedString("errorHUD_label", comment: "Error")
-        case .finished:
+        case .finished, .moderated:
             return NSLocalizedString("imageUploadProgressBar_completed", comment: "Completed")
         }
     }

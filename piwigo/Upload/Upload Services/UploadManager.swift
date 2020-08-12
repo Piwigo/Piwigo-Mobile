@@ -186,7 +186,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         print("    > ", isPreparing, "|", isUploading, "|", isFinishing)
 
         // Get uploads to complete in queue
-        guard let allUploads = uploadsProvider.requestsToComplete() else {
+        guard let allUploads = uploadsProvider.getRequestsIn(states: [.finished, .preparingFail, .formatError]) else {
             return
         }
         
@@ -276,20 +276,19 @@ class UploadManager: NSObject, URLSessionDelegate {
             return
         }
         
-        // No more image to transfer
-        // Get completed uploads in queue
-        guard let completedUploads = uploadsProvider.requestsCompleted() else {
-            return
-        }
-
-        // Moderate uploaded images if Community plugin installed
-        if Model.sharedInstance().usesCommunityPluginV29 {
-            self.moderate(uploadedImages: completedUploads)
+        // No more image to transfer ;-)
+        // Moderate images uploaded by Community regular user
+        if Model.sharedInstance().hasNormalRights, Model.sharedInstance().usesCommunityPluginV29,
+            let finishedUploads = uploadsProvider.getRequestsIn(states: [.finished]), finishedUploads.count > 0 {
+            self.moderate(uploadedImages: finishedUploads)
             return
         }
 
         // Delete images from Photo Library if user wanted it
-        self.delete(uploadedImages: completedUploads.filter({$0.deleteImageAfterUpload == true}))
+        if let completedUploads = uploadsProvider.getRequestsIn(states: [.finished, .moderated]),
+            completedUploads.filter({$0.deleteImageAfterUpload == true}).count > 0 {
+            self.delete(uploadedImages: completedUploads.filter({$0.deleteImageAfterUpload == true}))
+        }
     }
 
     private func prepare(nextUpload: Upload) -> Void {
@@ -502,10 +501,29 @@ class UploadManager: NSObject, URLSessionDelegate {
         }
         
         // Moderate images by category
-        for category in categories {
-            let imageIds = uploadedImages.filter({ $0.category == category}).map( { String(format: "%ld,", $0.imageId) } ).reduce("", +)
+        for categoryId in categories {
+            // Set list of images to moderate in that category
+            let categoryImages = uploadedImages.filter({ $0.category == categoryId})
+            let imageIds = categoryImages.map( { String(format: "%ld,", $0.imageId) } ).reduce("", +)
+            
             // Moderate uploaded images
-            self.moderateImages(withIds: imageIds, inCategory: category)
+            moderateImages(withIds: imageIds, inCategory: categoryId) { (success) in
+                if success {
+                    // Update upload resquests to remember that the moderation was requested
+                    var uploadsProperties = [UploadProperties]()
+                    categoryImages.forEach { (moderatedUpload) in
+                        uploadsProperties.append(moderatedUpload.getUploadProperties(with: .moderated, error: ""))
+                    }
+                    self.uploadsProvider.importUploads(from: uploadsProperties) { [unowned self] (error) in
+                        guard let _ = error else {
+                            return  // Will retry later
+                        }
+                        self.findNextImageToUpload()    // Might still have to delete images
+                    }
+                } else {
+                    return  // Will try later
+                }
+            }
         }
     }
 
@@ -548,7 +566,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         isPreparing = false
         isUploading = false
         isFinishing = false
-        if let failedUploads = uploadsProvider.requestsToResume() {
+        if let failedUploads = uploadsProvider.getRequestsIn(states: [.preparingError, .uploadingError, .finishingError]) {
             if failedUploads.count > 0 {
                 // Resume failed uploads
                 resume(failedUploads: failedUploads) { (_) in }

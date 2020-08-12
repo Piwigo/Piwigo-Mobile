@@ -945,7 +945,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     cell.cellWaiting = true
                 case .uploading, .uploadingError, .uploaded, .finishing, .finishingError:
                     cell.cellUploading = true
-                case .finished:
+                case .finished, .moderated:
                     cell.cellUploaded = true
                 }
             } else {
@@ -959,7 +959,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     cell.cellWaiting = true
                 case .uploading, .uploadingError, .uploaded, .finishing, .finishingError:
                     cell.cellUploading = true
-                case .finished:
+                case .finished, .moderated:
                     cell.cellUploaded = true
                 case .none:
                     cell.cellSelected = false
@@ -1356,7 +1356,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
                         cell.cellWaiting = true
                     case .uploading, .uploadingError, .uploaded, .finishing, .finishingError:
                         cell.cellUploading = true
-                    case .finished:
+                    case .finished, .moderated:
                         cell.cellUploaded = true
                     }
                     cell.reloadInputViews()

@@ -338,7 +338,7 @@ extension UploadManager {
     func send(chunk: Int, of chunks:Int, for uploadIdentifier: String) {
         
         // Retrieve corresponding upload properties
-        guard let uploadObject = uploadsProvider.requestsToComplete()?.filter({$0.localIdentifier == uploadIdentifier}).first else {
+        guard let uploadObject = uploadsProvider.getRequestsIn(states: [.finished, .preparingFail, .formatError])?.filter({$0.localIdentifier == uploadIdentifier}).first else {
             return
         }
         let upload: UploadProperties = uploadObject.getUploadProperties(with: .uploading, error: "")
@@ -522,7 +522,7 @@ extension UploadManager {
             }
             
             // Retrieve corresponding upload properties
-            guard let uploadObject = uploadsProvider.requestsToComplete()?.filter({$0.localIdentifier == identifier}).first else {
+            guard let uploadObject = uploadsProvider.getRequestsIn(states: [.finished, .preparingFail, .formatError])?.filter({$0.localIdentifier == identifier}).first else {
                 return
             }
             let upload: UploadProperties = uploadObject.getUploadProperties(with: .uploading, error: "")

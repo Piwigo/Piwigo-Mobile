@@ -147,14 +147,14 @@ extension UploadManager{
      When the Community plugin is installed (v2.9+) on the server,
      one must inform the moderator that a number of images were uploaded.
      */
-    func moderateImages(withIds imageIds: String, inCategory category: Int) {
+    func moderateImages(withIds imageIds: String,
+                        inCategory categoryId: Int,
+                        completionHandler: @escaping (Bool) -> Void) -> (Void) {
         
-        getUploadedImageStatus(byId: imageIds, inCategory: category,
+        getUploadedImageStatus(byId: imageIds, inCategory: categoryId,
             onCompletion: { (task, jsonData) in
 //                    print("•••> completion: \(String(describing: jsonData))")
-                
-                // The following code crashes at "let decoder = JSONDecoder()" if a PNG file was uploaded !!!?
-                // That is why we wimply check without decoding the JSON into codable type CommunityUploadCompletedJSON.
+                // Check returned data
                 guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {
                     // Will retry later
                     return
@@ -169,28 +169,28 @@ extension UploadManager{
                     if (uploadJSON.errorCode != 0) {
                         // Will retry later
                         print("••>> moderateUploadedImages(): Piwigo error \(uploadJSON.errorCode) - \(uploadJSON.errorMessage)")
+                        completionHandler(false)
                         return
                     }
 
                     // Successful?
                     if uploadJSON.success {
                         // Images successfully moderated, delete them if wanted by users
-                        if let completedUploads = self.uploadsProvider.requestsCompleted() {
-                            let imagesToDelete = completedUploads.filter({$0.deleteImageAfterUpload == true})
-                            self.delete(uploadedImages: imagesToDelete)
-                        }
+                        completionHandler(true)
                     } else {
                         // Will retry later
-                        print("••>> moderateUploadedImages(): no successful")
+                        completionHandler(false)
                         return
                     }
                 } catch {
                     // Will retry later
+                    completionHandler(false)
                     return
                 }
         }, onFailure: { (task, error) in
-                // Will retry later
-                return
+            // Will retry later
+            completionHandler(false)
+            return
         })
     }
 

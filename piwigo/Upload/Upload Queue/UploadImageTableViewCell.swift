@@ -84,7 +84,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
                     self.uploadsProvider.delete(uploadRequests: [upload])
                     return true
                 })]
-        case .finished:
+        case .finished, .moderated:
             rightButtons = [
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeCancel.png"), backgroundColor: UIColor.piwigoColorBrown(), callback: { sender in
                     self.uploadsProvider.delete(uploadRequests: [upload])
