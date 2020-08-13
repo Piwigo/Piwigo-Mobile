@@ -281,12 +281,30 @@ class UploadsProvider: NSObject {
             // Create a batch for this range from the decoded JSON.
             let uploadsBatch = Array(uploadRequests[range])
             
-            // Stop the entire import if any batch is unsuccessful.
+            // Stop the entire deletion if any batch is unsuccessful.
             if !deleteOneBatch(uploadsBatch) {
                 return
             }
         }
-    }
+
+        // Get uploads to complete in queue
+        let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
+                                            .preparingFail, .formatError, .prepared,
+                                            .uploading, .uploadingError, .uploaded,
+                                            .finishing, .finishingError]
+        guard let allUploads = getRequestsIn(states: states) else {
+            return
+        }
+        
+        // Update app badge and Upload button in root/default album
+        DispatchQueue.main.async {
+            // Update app badge
+            UIApplication.shared.applicationIconBadgeNumber = allUploads.count
+            // Update button of root album (or default album)
+            let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : allUploads.count]
+            NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationLeftUploads), object: nil, userInfo: uploadInfo)
+        }
+}
     
     /**
      Delete one batch of uploads on the main queue. After saving,
