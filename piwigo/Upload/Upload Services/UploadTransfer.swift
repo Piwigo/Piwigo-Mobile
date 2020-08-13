@@ -232,7 +232,7 @@ extension UploadManager {
                 print("    > #\(count) done:", responseObject.debugDescription)
                 if count >= chunks - 1 {
                     // Done, return
-                    print("=>> MimeType: %@", task?.response?.mimeType as Any)
+                    print("=>> MimeType:", task?.response?.mimeType as Any)
                     completion(task, responseObject, parameters)
                 } else {
                     // Keep going!
