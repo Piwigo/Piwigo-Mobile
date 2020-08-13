@@ -25,18 +25,36 @@ class UploadManager: NSObject, URLSessionDelegate {
             name: UIApplication.didBecomeActiveNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.willResignActive),
             name: UIApplication.willResignActiveNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.findNextImageToUpload),
+        NotificationCenter.default.addObserver(self, selector: #selector(self.didChangeReachability),
             name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.findNextImageToUpload),
+        NotificationCenter.default.addObserver(self, selector: #selector(self.didChangePowerState),
             name: NSNotification.Name.NSProcessInfoPowerStateDidChange, object: nil)
     }
 
+    @objc func didChangeReachability() {
+        // Check network access and status
+        if !AFNetworkReachabilityManager.shared().isReachable ||
+            (AFNetworkReachabilityManager.shared().isReachableViaWWAN && Model.sharedInstance().wifiOnlyUploading) {
+            return
+        }
+        resumeAll()
+    }
+    
+    @objc func didChangePowerState() {
+        // Determine the Power State
+        if ProcessInfo.processInfo.isLowPowerModeEnabled {
+            // Low Power Mode is enabled. Stop transferring images.
+            return
+        }
+        resumeAll()
+    }
+    
     private var appState = UIApplication.State.active
     @objc func didBecomeActive() -> Void {
         // Executed when the application is about to move from inactive to active state.
         print("•••>> didBecomeActive")
         appState = UIApplication.State.active
-        findNextImageToUpload()
+        resumeAll()
     }
     
     @objc func willResignActive() -> Void {
@@ -187,8 +205,9 @@ class UploadManager: NSObject, URLSessionDelegate {
 
         // Get uploads to complete in queue
         let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
-                                            .prepared, .uploading, .uploadingError,
-                                            .uploaded, .finishing, .finishingError]
+                                            .preparingFail, .formatError, .prepared,
+                                            .uploading, .uploadingError, .uploaded,
+                                            .finishing, .finishingError]
         guard let allUploads = uploadsProvider.getRequestsIn(states: states) else {
             return
         }
@@ -569,7 +588,8 @@ class UploadManager: NSObject, URLSessionDelegate {
         isPreparing = false
         isUploading = false
         isFinishing = false
-        let states: [kPiwigoUploadState] = [.preparingError, .uploadingError, .finishingError]
+        let states: [kPiwigoUploadState] = [.preparingError, .preparingFail, .formatError,
+                                            .uploadingError, .finishingError]
         if let failedUploads = uploadsProvider.getRequestsIn(states: states) {
             if failedUploads.count > 0 {
                 // Resume failed uploads
