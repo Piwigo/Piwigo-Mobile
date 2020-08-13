@@ -9,9 +9,8 @@
 import Photos
 import UIKit
 
-@available(iOS 13.0, *)
 @objc
-class UploadQueueViewController: UIViewController, UITableViewDelegate {
+class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     // MARK: - Core Data
     /**
@@ -29,9 +28,6 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
     @IBOutlet var queueTableView: UITableView!
     private var actionBarButton: UIBarButtonItem?
     private var doneBarButton: UIBarButtonItem?
-
-    var diffableDataSource: UITableViewDiffableDataSource<String,NSManagedObjectID>?
-    var diffableDataSourceSnapshot = NSDiffableDataSourceSnapshot<String,NSManagedObjectID>()
     
     // MARK: - View Lifecycle
     
@@ -71,7 +67,9 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
             NSAttributedString.Key.font: UIFont.piwigoFontNormal()
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes
-        navigationController?.navigationBar.prefersLargeTitles = false
+        if #available(iOS 11.0, *) {
+            navigationController?.navigationBar.prefersLargeTitles = false
+        }
         navigationController?.navigationBar.barStyle = Model.sharedInstance().isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
@@ -80,8 +78,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         // Table view
         queueTableView.separatorColor = UIColor.piwigoColorSeparator()
         queueTableView.indicatorStyle = Model.sharedInstance().isDarkPaletteActive ? .white : .black
-        configureDataSource()
-        applyInitialSnapshots()
+        queueTableView.reloadData()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -189,7 +186,11 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
                             })
                         alert.addAction(cancelAction)
                         alert.view.tintColor = UIColor.piwigoColorOrange()
-                        alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+                        if #available(iOS 13.0, *) {
+                            alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+                        } else {
+                            // Fallback on earlier versions
+                        }
                         self.present(alert, animated: true, completion: {
                             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
                             alert.view.tintColor = UIColor.piwigoColorOrange()
@@ -210,7 +211,11 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
 
         // Present list of actions
         alert.view.tintColor = UIColor.piwigoColorOrange()
-        alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+        if #available(iOS 13.0, *) {
+            alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+        } else {
+            // Fallback on earlier versions
+        }
         alert.popoverPresentationController?.barButtonItem = actionBarButton
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
@@ -313,9 +318,15 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         header.addSubview(headerLabel)
         header.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.75)
         header.addConstraint(NSLayoutConstraint.constraintView(fromBottom: headerLabel, amount: 4)!)
-        header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[header]-|", options: [], metrics: nil, views: [
+        if #available(iOS 11, *) {
+            header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[header]-|", options: [], metrics: nil, views: [
             "header": headerLabel
             ]))
+        } else {
+            header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-15-[header]-15-|", options: [], metrics: nil, views: [
+            "header": headerLabel
+            ]))
+        }
 
         return header
     }
@@ -329,43 +340,31 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
 
 
     // MARK: - UITableView - Rows
-    private func configureDataSource() {
-        diffableDataSource = UITableViewDiffableDataSource<String, NSManagedObjectID>(tableView: queueTableView) { (tableView, indexPath, id) -> UITableViewCell? in
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "UploadImageTableViewCell", for: indexPath) as? UploadImageTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a UploadImageTableViewCell!")
-                return UploadImageTableViewCell()
-            }
-            let upload = self.uploadsProvider.fetchedNonCompletedResultsController.object(at: indexPath)
-            cell.configure(with: upload, width: Int(tableView.bounds.size.width))
-            return cell
+    func numberOfSections(in tableView: UITableView) -> Int {
+        if let sections = uploadsProvider.fetchedNonCompletedResultsController.sections {
+            return sections.count
         }
+        return 0
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        guard let sections = uploadsProvider.fetchedNonCompletedResultsController.sections else {
+            fatalError("No sections in fetchedResultsController")
+        }
+        let sectionInfo = sections[section]
+        return sectionInfo.numberOfObjects
     }
     
-    private func applyInitialSnapshots() {
-        var snapshot = NSDiffableDataSourceSnapshot<String, NSManagedObjectID>()
-        
-        // Sections
-        let sectionInfos = uploadsProvider.fetchedNonCompletedResultsController.sections
-        let sections = sectionInfos?.map({$0.name}) ?? Array(repeating: "—?—", count: sectionInfos?.count ?? 0)
-        snapshot.appendSections(sections)
-        diffableDataSource?.apply(snapshot, animatingDifferences: false)
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "UploadImageTableViewCell", for: indexPath) as? UploadImageTableViewCell else {
+            print("Error: tableView.dequeueReusableCell does not return a UploadImageTableViewCell!")
+            return UploadImageTableViewCell()
+        }
+        let upload = uploadsProvider.fetchedNonCompletedResultsController.object(at: indexPath)
+        cell.configure(with: upload, width: Int(tableView.bounds.size.width))
+        return cell
     }
     
-    private func applyNewSnapshot() {
-        var snapshot = NSDiffableDataSourceSnapshot<String, NSManagedObjectID>()
-        
-        // Sections
-        let sectionInfos = uploadsProvider.fetchedNonCompletedResultsController.sections
-        let sections = sectionInfos?.map({$0.name}) ?? Array(repeating: "—?—", count: sectionInfos?.count ?? 0)
-        snapshot.appendSections(sections)
-        diffableDataSource?.apply(snapshot, animatingDifferences: false)
-        
-        // Items
-        let items = uploadsProvider.fetchedNonCompletedResultsController.fetchedObjects ?? []
-        diffableDataSourceSnapshot.appendItems(items.map({$0.objectID}))
-        diffableDataSource?.apply(self.diffableDataSourceSnapshot)
-    }
-        
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         return false
     }
@@ -384,13 +383,114 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
 
 // MARK: - Uploads Provider NSFetchedResultsControllerDelegate
 
-@available(iOS 13.0, *)
-extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
+extension UploadQueueViewControllerOld: NSFetchedResultsControllerDelegate {
     
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
-        let snapshot = snapshot as NSDiffableDataSourceSnapshot<String,NSManagedObjectID>
-        DispatchQueue.main.async {
-            self.diffableDataSource?.apply(snapshot, animatingDifferences: true)
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        queueTableView.beginUpdates()
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
+        print("    > sectionInfo:", sectionInfo)
+        
+        switch type {
+        case .insert:
+            print("insert section… at", sectionIndex)
+            queueTableView.insertSections(IndexSet.init(integer: sectionIndex), with: .automatic)
+        case .delete:
+            print("delete section… at", sectionIndex)
+            queueTableView.deleteSections(IndexSet.init(integer: sectionIndex), with: .automatic)
+        case .move, .update:
+            fallthrough
+        @unknown default:
+                fatalError("UploadQueueViewController: unknown NSFetchedResultsChangeType")
         }
+    }
+
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+
+        let oldIndexPath = indexPath ?? IndexPath.init(row: 0, section: 0)
+        switch type {
+        case .insert:
+            print("insert…")
+            guard let newIndexPath = newIndexPath else { return }
+            queueTableView.insertRows(at: [newIndexPath], with: .automatic)
+        case .delete:
+            print("delete… at", oldIndexPath)
+            // Delete row
+            queueTableView.deleteRows(at: [oldIndexPath], with: .automatic)
+            // If all upload requests are done, delete all temporary files (in case some would not be deleted)
+            if uploadsProvider.fetchedNonCompletedResultsController.fetchedObjects?.count == 0 {
+                // Delete remaining files from Upload directory (if any)
+                UploadManager.shared.deleteFilesInUploadsDirectory(with: nil)
+                // Close the view when there is no more upload request to display
+                self.dismiss(animated: true, completion: nil)
+                return
+            }
+        case .move:
+            guard let newIndexPath = newIndexPath else { return }
+            print("move… from", oldIndexPath, "to", newIndexPath)
+            queueTableView.deleteRows(at: [oldIndexPath], with: .automatic)
+            queueTableView.insertRows(at: [newIndexPath], with: .automatic)
+            guard let upload:Upload = anObject as? Upload else { return }
+            updateCell(at: newIndexPath, with: upload)
+        case .update:
+            print("update… at", oldIndexPath)
+            if newIndexPath == nil {        // Regular update
+                guard let upload:Upload = anObject as? Upload else { break }
+                updateCell(at: oldIndexPath, with: upload)
+            } else {                        // Moving update when using iOS 10
+                queueTableView.deleteRows(at: [oldIndexPath], with: .fade)
+                queueTableView.insertRows(at: [newIndexPath!], with: .fade)
+            }
+        @unknown default:
+            fatalError("UploadQueueViewController: unknown NSFetchedResultsChangeType")
+        }
+    }
+    
+    private func updateCell(at indexPath: IndexPath, with upload: Upload) -> Void {
+        guard let cell = queueTableView.cellForRow(at: indexPath) as? UploadImageTableViewCell else { return }
+        var uploadInfo: [String : Any]
+        switch upload.state {
+        case .waiting, .preparing, .prepared, .formatError, .uploadingError:
+            uploadInfo = ["localIndentifier" : upload.localIdentifier,
+                          "photoResize" : upload.photoResize,
+                          "stateLabel" : upload.stateLabel,
+                          "Error" : upload.requestError ?? "",
+                          "progressFraction" : Float(0.0)]
+        case .uploaded, .finishing, .finishingError, .finished:
+            uploadInfo = ["localIndentifier" : upload.localIdentifier,
+                          "photoResize" : upload.photoResize,
+                          "stateLabel" : upload.stateLabel,
+                          "Error" : upload.requestError ?? "",
+                          "progressFraction" : Float(1.0)]
+        default:
+            uploadInfo = ["localIndentifier" : upload.localIdentifier,
+                          "photoResize" : upload.photoResize,
+                          "stateLabel" : upload.stateLabel,
+                          "Error" : upload.requestError ?? ""]
+        }
+        cell.update(with: uploadInfo)
+    }
+
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        // To prevent crash occurring when the last row of a section is removed
+        var willDeleteSection = false
+        for section in 1..<queueTableView.numberOfSections {
+            if queueTableView.numberOfRows(inSection: section) == 1 {
+                willDeleteSection = true
+            }
+        }
+        
+        if willDeleteSection {
+            let dispatchTime = DispatchTime.now() + 0.5
+            DispatchQueue.main.asyncAfter(deadline: dispatchTime) {
+                self.queueTableView.reloadData()
+            }
+            return
+        }
+        
+        queueTableView.endUpdates()
+        queueTableView.layoutIfNeeded()
+        updateNavBar()
     }
 }
