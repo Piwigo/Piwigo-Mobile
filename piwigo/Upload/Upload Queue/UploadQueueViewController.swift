@@ -31,7 +31,6 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
     private var doneBarButton: UIBarButtonItem?
 
     var diffableDataSource: UITableViewDiffableDataSource<String,NSManagedObjectID>?
-    var diffableDataSourceSnapshot = NSDiffableDataSourceSnapshot<String,NSManagedObjectID>()
     
     // MARK: - View Lifecycle
     
