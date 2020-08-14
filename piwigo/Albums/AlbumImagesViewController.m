@@ -1560,14 +1560,15 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
 -(void)didTapUploadQueueButton
 {
     // Open upload queue controller in new navigation controller
-    UIStoryboard *uploadQueueSB = [UIStoryboard storyboardWithName:@"UploadQueueViewController" bundle:nil];
     UINavigationController *navController = nil;
     if (@available(iOS 13.0, *)) {
+        UIStoryboard *uploadQueueSB = [UIStoryboard storyboardWithName:@"UploadQueueViewController" bundle:nil];
         UploadQueueViewController *uploadQueueVC = [uploadQueueSB instantiateViewControllerWithIdentifier:@"UploadQueueViewController"];
         navController = [[UINavigationController alloc] initWithRootViewController:uploadQueueVC];
     } else {
         // Fallback on earlier versions
-        UploadQueueViewControllerOld *uploadQueueVC = [uploadQueueSB instantiateViewControllerWithIdentifier:@"UploadQueueViewController"];
+        UIStoryboard *uploadQueueSB = [UIStoryboard storyboardWithName:@"UploadQueueViewControllerOld" bundle:nil];
+        UploadQueueViewControllerOld *uploadQueueVC = [uploadQueueSB instantiateViewControllerWithIdentifier:@"UploadQueueViewControllerOld"];
         navController = [[UINavigationController alloc] initWithRootViewController:uploadQueueVC];
     }
     navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
