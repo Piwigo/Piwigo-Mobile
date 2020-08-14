@@ -256,10 +256,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
             }
             else {
                 // Prevent device from sleeping if uploads are in progress
-                let headerView = UploadQueueHeaderView(frame: .zero)
-                headerView.configure(text: NSLocalizedString("uploadLowPowerMode", comment: "Low Power Mode enabled"))
-                self.queueTableView.tableHeaderView = headerView
-//                self.queueTableView.tableHeaderView = nil
+                self.queueTableView.tableHeaderView = nil
                 let uploadsToPerform = self.uploadsProvider.fetchedResultsController.fetchedObjects?.map({
                     ($0.state == .waiting) || ($0.state == .preparing) ||  ($0.state == .prepared) ||
                     ($0.state == .uploading) || ($0.state == .finishing) ? 1 : 0}).reduce(0, +) ?? 0
