@@ -652,7 +652,7 @@ class UploadsProvider: NSObject {
         // Create a fetched results controller and set its fetch request, context, and delegate.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
                                             managedObjectContext: self.managedObjectContext,
-                                              sectionNameKeyPath: "stateSection", cacheName: nil)
+                                              sectionNameKeyPath: "sectionKey", cacheName: nil)
         controller.delegate = fetchedNonCompletedResultsControllerDelegate
         
         // Perform the fetch.

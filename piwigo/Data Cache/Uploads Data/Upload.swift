@@ -144,33 +144,8 @@ extension Upload {
         return state.stateInfo
     }
 
-    @objc var stateSection: String {
-        get {
-            switch self.requestState {
-            case kPiwigoUploadState.preparingFail.rawValue,
-                 kPiwigoUploadState.formatError.rawValue:
-                return "Section1"
-                
-            case kPiwigoUploadState.preparingError.rawValue,
-                 kPiwigoUploadState.uploadingError.rawValue,
-                 kPiwigoUploadState.finishingError.rawValue:
-                return "Section2"
-                
-            case kPiwigoUploadState.waiting.rawValue,
-                 kPiwigoUploadState.preparing.rawValue,
-                 kPiwigoUploadState.prepared.rawValue,
-                 kPiwigoUploadState.uploading.rawValue,
-                 kPiwigoUploadState.uploaded.rawValue,
-                 kPiwigoUploadState.finishing.rawValue:
-                return "Section3"
-                
-            case kPiwigoUploadState.finished.rawValue,
-                 kPiwigoUploadState.moderated.rawValue:
-                fallthrough
-            default:
-                return "NoSection"
-            }
-        }
+    @objc var sectionKey: String {
+        return state.sectionKey
     }
     
     var privacy: kPiwigoPrivacy {
@@ -301,6 +276,33 @@ extension kPiwigoUploadState {
                    NSLocalizedString("errorHUD_label", comment: "Error")
         case .finished, .moderated:
             return NSLocalizedString("imageUploadProgressBar_completed", comment: "Completed")
+        }
+    }
+    
+    var sectionKey: String {
+        switch self {
+        case .preparingFail,
+             .formatError:
+            return "Section1"
+            
+        case .preparingError,
+             .uploadingError,
+             .finishingError:
+            return "Section2"
+            
+        case .waiting,
+             .preparing,
+             .prepared,
+             .uploading,
+             .uploaded,
+             .finishing:
+            return "Section3"
+            
+        case .finished,
+             .moderated:
+            fallthrough
+        default:
+            return "NoSection"
         }
     }
 }
