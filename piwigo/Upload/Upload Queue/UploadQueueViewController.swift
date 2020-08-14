@@ -320,13 +320,6 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         return header
     }
     
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        guard let sectionInfo = uploadsProvider.fetchedNonCompletedResultsController.sections?[section] else {
-            return nil
-        }
-        return sectionInfo.name
-    }
-
 
     // MARK: - UITableView - Rows
     private func configureDataSource() {
@@ -349,21 +342,11 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         let sections = sectionInfos?.map({$0.name}) ?? Array(repeating: "—?—", count: sectionInfos?.count ?? 0)
         snapshot.appendSections(sections)
         diffableDataSource?.apply(snapshot, animatingDifferences: false)
-    }
-    
-    private func applyNewSnapshot() {
-        var snapshot = NSDiffableDataSourceSnapshot<String, NSManagedObjectID>()
-        
-        // Sections
-        let sectionInfos = uploadsProvider.fetchedNonCompletedResultsController.sections
-        let sections = sectionInfos?.map({$0.name}) ?? Array(repeating: "—?—", count: sectionInfos?.count ?? 0)
-        snapshot.appendSections(sections)
-        diffableDataSource?.apply(snapshot, animatingDifferences: false)
         
         // Items
         let items = uploadsProvider.fetchedNonCompletedResultsController.fetchedObjects ?? []
-        diffableDataSourceSnapshot.appendItems(items.map({$0.objectID}))
-        diffableDataSource?.apply(self.diffableDataSourceSnapshot)
+        snapshot.appendItems(items.map({$0.objectID}))
+        diffableDataSource?.apply(snapshot)
     }
         
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
@@ -388,9 +371,10 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
 extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
+        print("••>> didChangeContentWith…")
         let snapshot = snapshot as NSDiffableDataSourceSnapshot<String,NSManagedObjectID>
         DispatchQueue.main.async {
-            self.diffableDataSource?.apply(snapshot, animatingDifferences: true)
+            self.diffableDataSource?.apply(snapshot, animatingDifferences: self.queueTableView.window != nil)
         }
     }
 }
