@@ -461,8 +461,8 @@
 "imageUploadClearFailedSeveral" = "Wyczyść nieudane przesłania: %@";
 "imageUploadClearCompletedSingle" = "Wyczyść zakończone przesłanie";
 "imageUploadClearCompletedSeveral" = "Wyczyść zakończone przesłania: %@";
-"imageUploadResumeSingle" = "Wznów nieudane przesłanie";
-"imageUploadResumeSeveral" = "Wznów nieudane przesłania: %@";
+"imageUploadResumeSingle" = "Wznów nieudane przesyłanie";
+"imageUploadResumeSeveral" = "Wznów nieudane przesyłanie: %@";
 
 "imageUploadProgressBar_zero" = "Przesyłanie 0/0";
 "imageUploadProgressBar_nonZero" = "Przesyłanie %@/%@";
@@ -476,8 +476,8 @@
 "uploadError_title" = "Błąd przesyłania";
 "uploadError_message" = "Nie można przesłać zdjęcia. Błąd: %@";
 "uploadCancelled_title" = "Anulowano Wysyłanie";
-"uploadNoInternetNetwork" = "No Internet Connection";
-"uploadNoWiFiNetwork" = "No Wi-Fi Connection";
+"uploadNoInternetNetwork" = "Brak połączenia z Internetem";
+"uploadNoWiFiNetwork" = "Brak połączenia Wi-Fi";
 
 "imageUploadError_title" = "Błąd przesyłania zdjęcia";
 "imageUploadError_format" = "Format pliku nie został zaakceptowany przez serwer Piwigo.";
@@ -658,7 +658,7 @@
 "settings_defaultPrefix>320px" = "Prefiks nazwy pliku";
 "settings_defaultPrefixPlaceholder" = "Prefiks";
 "settings_deleteImage>375px" = "Usuń zdjęcie po przesłaniu";
-"settings_wifiOnly" = "Wi-Fi Only";
+"settings_wifiOnly" = "Tylko przez Wi-Fi";
 "settings_deleteImage" = "Usuń po wysłaniu";
 
 // Settings — Cache

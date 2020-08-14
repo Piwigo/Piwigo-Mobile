@@ -337,7 +337,7 @@
 "tag" = "Schlagwort";
 "tagsTitle_selectOne" = "Ein Schlagwort auswählen";
 "tagsHeader_selected" = "Ausgewählt";
-"tagsHeader_notSelected" = "Not Selected";
+"tagsHeader_notSelected" = "Nicht ausgewählt";
 "tagsHeader_all" = "Alle";
 "tagsAdd_title" = "Schlagwort hinzufügen";
 "tagsAdd_message" = "Gib einen Namen für das neue Schlagwort ein";
@@ -352,7 +352,7 @@
 "selectImages" = "Wähle Fotos aus";
 "selectImageSelected" = "1 Foto ausgewählt";
 "selectImagesSelected" = "%@ Fotos ausgewählt";
-"selectAll" = "Alle";
+"selectAll" = "Alles auswählen";
 
 // Image rename (filename)
 "renameImage_title" = "Originaldatei";
@@ -476,8 +476,8 @@
 "uploadError_title" = "Fehler beim Hochladen";
 "uploadError_message" = "Konnte Ihr Foto nicht hochladen. Fehler: %@";
 "uploadCancelled_title" = "Hochladen abgebrochen";
-"uploadNoInternetNetwork" = "No Internet Connection";
-"uploadNoWiFiNetwork" = "No Wi-Fi Connection";
+"uploadNoInternetNetwork" = "Keine Internetverbindung";
+"uploadNoWiFiNetwork" = "Keine WLAN-Verbindung";
 
 "imageUploadError_title" = "Fehler beim Foto Hochladen";
 "imageUploadError_format" = "Dateiformat vom Piwigo-Server nicht akzeptiert.";
@@ -658,7 +658,7 @@
 "settings_defaultPrefix>320px" = "Dateinamen Präfix";
 "settings_defaultPrefixPlaceholder" = "Präfix";
 "settings_deleteImage>375px" = "Foto nach dem Hochladen löschen";
-"settings_wifiOnly" = "Wi-Fi Only";
+"settings_wifiOnly" = "Nur WLAN";
 "settings_deleteImage" = "Nach dem Hochladen löschen";
 
 // Settings — Cache
