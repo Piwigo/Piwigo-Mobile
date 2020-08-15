@@ -7,24 +7,26 @@
 //
 
 #import <AFNetworking/AFImageDownloader.h>
+#import <sys/utsname.h>
 
+#import "AppDelegate.h"
+#import "CategoriesData.h"
 #import "LoginViewController.h"
 #import "LoginViewController_iPhone.h"
 #import "LoginViewController_iPad.h"
-#import "SAMKeychain.h"
-#import "Model.h"
-#import "SessionService.h"
-#import "AppDelegate.h"
 #import "MBProgressHUD.h"
-#import "CategoriesData.h"
+#import "Model.h"
+#import "SAMKeychain.h"
+#import "SessionService.h"
+#import "Utilities.h"
 
 //#ifndef DEBUG_SESSION
 //#define DEBUG_SESSION
 //#endif
 
-NSString * const kPiwigoURL = @"— https://piwigo.org —";
+NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 
-@interface LoginViewController () <UITextFieldDelegate>
+@interface LoginViewController () <UITextFieldDelegate, MFMailComposeViewControllerDelegate>
 
 @property (nonatomic, strong) UIAlertController *httpAlertController;
 @property (nonatomic, strong) UIAlertAction *httpLoginAction;
@@ -52,8 +54,8 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
         self.piwigoButton.translatesAutoresizingMaskIntoConstraints = NO;
         self.piwigoButton.titleLabel.font = [UIFont piwigoFontNormal];
         [self.piwigoButton setTitleColor:[UIColor piwigoColorOrange] forState:UIControlStateNormal];
-        [self.piwigoButton setTitle:kPiwigoURL forState:UIControlStateNormal];
-        [self.piwigoButton addTarget:self action:@selector(openPiwigoURL) forControlEvents:UIControlEventTouchUpInside];
+        [self.piwigoButton setTitle:kPiwigoSupport forState:UIControlStateNormal];
+        [self.piwigoButton addTarget:self action:@selector(mailPiwigoSupport) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:self.piwigoButton];
 
         self.serverTextField = [PiwigoTextField new];
@@ -1219,4 +1221,46 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://piwigo.org"]];
 }
 
+-(void)mailPiwigoSupport
+{
+    if ([MFMailComposeViewController canSendMail]) {
+        MFMailComposeViewController* composeVC = [[MFMailComposeViewController alloc] init];
+        composeVC.mailComposeDelegate = self;
+        
+        // Configure the fields of the interface.
+        [composeVC setToRecipients:@[NSLocalizedStringFromTableInBundle(@"contact_email", @"PrivacyPolicy", [NSBundle mainBundle], @"Contact email")]];
+        
+        // Collect version and build numbers
+        NSString *appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+        NSString *appBuildString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
+        
+        // Compile ticket number from current date
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"yyyyMMddHHmm"];
+        [dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:[Model sharedInstance].language]];
+        NSDate *date = [NSDate date];
+        NSString *ticketDate = [dateFormatter stringFromDate:date];
+
+        // Set subject
+        [composeVC setSubject:[NSString stringWithFormat:@"[Ticket#%@]: %@", ticketDate, NSLocalizedString(@"settings_appName", @"Piwigo Mobile")]];
+        
+        // Collect system and device data
+        struct utsname systemInfo;
+        uname(&systemInfo);
+        NSString* deviceModel = [Utilities deviceNameForCode:[NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding]];
+        NSString *deviceOS = [[UIDevice currentDevice] systemName];
+        NSString *deviceOSversion = [[UIDevice currentDevice] systemVersion];
+        
+        // Set message body
+        [composeVC setMessageBody:[NSString stringWithFormat:@"%@ %@ (%@)\n%@ — %@ %@\n==============>>\n\n", NSLocalizedString(@"settings_appName", @"Piwigo Mobile"), appVersionString, appBuildString, deviceModel, deviceOS, deviceOSversion] isHTML:NO];
+        
+        // Present the view controller modally.
+        [self presentViewController:composeVC animated:YES completion:nil];
+    }
+}
+
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 @end
