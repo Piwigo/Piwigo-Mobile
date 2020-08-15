@@ -40,10 +40,11 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 	{
 		self.view.backgroundColor = [UIColor piwigoColorBrown];
 		
-		self.piwigoLogo = [UIImageView new];
+        self.piwigoLogo = [UIButton buttonWithType:UIButtonTypeCustom];
+        [self.piwigoLogo setImage:[UIImage imageNamed:@"piwigoLogo"] forState:UIControlStateNormal];
 		self.piwigoLogo.translatesAutoresizingMaskIntoConstraints = NO;
-        self.piwigoLogo.image = [UIImage imageNamed:@"piwigoLogo"];
 		self.piwigoLogo.contentMode = UIViewContentModeScaleAspectFit;
+        [self.piwigoLogo addTarget:self action:@selector(openPiwigoURL) forControlEvents:UIControlEventTouchUpInside];
 		[self.view addSubview:self.piwigoLogo];
 		
         self.piwigoButton = [UIButton new];

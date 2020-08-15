@@ -61,6 +61,7 @@
     NSDictionary *metrics = @{
                               @"side" : @(side),
                               @"width" : @(textFieldWidth),
+                              @"logoWidth" : @(self.textFieldHeight * 4.02),
                               @"logoHeight" : @(self.textFieldHeight + 36),
                               @"height" : @(self.textFieldHeight)
                               };
@@ -78,7 +79,7 @@
     // Horizontally
     [portrait addObject:[NSLayoutConstraint constraintCenterVerticalView:self.piwigoLogo]];
     [portrait addObjectsFromArray:[NSLayoutConstraint
-          constraintsWithVisualFormat:@"H:|-(>=side)-[logo]-(>=side)-|"
+          constraintsWithVisualFormat:@"H:|-(>=side)-[logo(logoWidth)]-(>=side)-|"
                               options:kNilOptions metrics:metrics views:views]];
 
     [portrait addObject:[NSLayoutConstraint constraintCenterVerticalView:self.piwigoButton]];
