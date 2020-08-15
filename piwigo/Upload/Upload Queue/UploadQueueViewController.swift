@@ -18,19 +18,25 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
      The UploadsProvider that collects upload data, saves it to Core Data,
      and serves it to the uploader.
      */
+    lazy var managedObjectContext: NSManagedObjectContext = {
+        let context:NSManagedObjectContext = (UIApplication.shared.delegate as! AppDelegate).managedObjectContext
+        return context
+    }()
+
     private lazy var uploadsProvider: UploadsProvider = {
         let provider : UploadsProvider = UploadsProvider()
         provider.fetchedNonCompletedResultsControllerDelegate = self
         return provider
     }()
-
+    
     
     // MARK: - View
     @IBOutlet var queueTableView: UITableView!
     private var actionBarButton: UIBarButtonItem?
     private var doneBarButton: UIBarButtonItem?
 
-    var diffableDataSource: UITableViewDiffableDataSource<String,NSManagedObjectID>?
+    typealias DataSource = UITableViewDiffableDataSource<String,NSManagedObjectID>
+    private lazy var diffableDataSource: DataSource = configDataSource()
     
     // MARK: - View Lifecycle
     
@@ -58,6 +64,9 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         // Register upload progress
         let name2: NSNotification.Name = NSNotification.Name(kPiwigoNotificationUploadProgress)
         NotificationCenter.default.addObserver(self, selector: #selector(self.applyUploadProgress), name: name2, object: nil)
+
+        // Initialise dataSource and tableView
+        applyInitialSnapshots()
     }
 
     @objc func applyColorPalette() {
@@ -79,8 +88,6 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         // Table view
         queueTableView.separatorColor = UIColor.piwigoColorSeparator()
         queueTableView.indicatorStyle = Model.sharedInstance().isDarkPaletteActive ? .white : .black
-        configureDataSource()
-        applyInitialSnapshots()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -223,7 +230,38 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
     }
 
         
-    // MARK: - UITableView - Header
+    // MARK: - UITableView - DataSource
+    
+    private func configDataSource() -> DataSource {
+        let dataSource = UITableViewDiffableDataSource<String, NSManagedObjectID>(tableView: queueTableView) { (tableView, indexPath, objectID) -> UITableViewCell? in
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "UploadImageTableViewCell", for: indexPath) as? UploadImageTableViewCell else {
+                print("Error: tableView.dequeueReusableCell does not return a UploadImageTableViewCell!")
+                return UploadImageTableViewCell()
+            }
+            let upload = self.managedObjectContext.object(with: objectID) as! Upload
+            cell.configure(with: upload, width: Int(tableView.bounds.size.width))
+            return cell
+        }
+        return dataSource
+    }
+    
+    private func applyInitialSnapshots() {
+        var snapshot = NSDiffableDataSourceSnapshot<String, NSManagedObjectID>()
+        
+        // Sections
+        let sectionInfos = uploadsProvider.fetchedNonCompletedResultsController.sections
+        let sections = sectionInfos?.map({$0.name}) ?? Array(repeating: "—?—", count: sectionInfos?.count ?? 0)
+        snapshot.appendSections(sections)
+        diffableDataSource.apply(snapshot, animatingDifferences: false)
+        
+        // Items
+        let items = uploadsProvider.fetchedNonCompletedResultsController.fetchedObjects ?? []
+        snapshot.appendItems(items.map({$0.objectID}))
+        diffableDataSource.apply(snapshot, animatingDifferences: false)
+    }
+    
+
+    // MARK: - UITableView - Headers
     
     @objc func mainHeader() {
         DispatchQueue.main.async {
@@ -258,24 +296,21 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         }
     }
     
-    func sectionNameFor(_ section: Int) -> String {
-        var sectionName = "Unknown section"
-        guard let sectionInfo = uploadsProvider.fetchedNonCompletedResultsController.sections?[section] else {
-            return sectionName
-        }
-        switch sectionInfo.name {
-        case "Section1":
-            sectionName = "Impossible Uploads"
-        case "Section2":
-            sectionName = "Resumable Uploads"
-        case "Section3":
-            sectionName = "Uploads Queue"
-        case "Section4":
+    func sectionNameFor(_ sectionKey: String) -> String {
+        var sectionName = "—?—"
+        let section = SectionKeys.init(rawValue: sectionKey)
+        switch section {
+        case .Section1:
+            sectionName = NSLocalizedString("uploadSection_impossible", comment: "Impossible Uploads")
+        case .Section2:
+            sectionName = NSLocalizedString("uploadSection_resumable", comment: "Resumable Uploads")
+        case .Section3:
+            sectionName = NSLocalizedString("uploadSection_queue", comment: "Uploads Queue")
+        case .Section4:
             fallthrough
         default:
-            sectionName = "Unknown section name"
+            sectionName = "—?—"
         }
-        
         return sectionName
     }
     
@@ -284,7 +319,8 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         let titleAttributes = [NSAttributedString.Key.font: UIFont.piwigoFontBold()]
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
-        let titleRect = sectionNameFor(section).boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
+        let sectionKey = diffableDataSource.snapshot().sectionIdentifiers[section]
+        let titleRect = sectionNameFor(sectionKey).boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
         return CGFloat(fmax(44.0, ceil(titleRect.size.height)))
     }
 
@@ -292,7 +328,8 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         let headerAttributedString = NSMutableAttributedString(string: "")
 
         // Title
-        let sectionName = sectionNameFor(section)
+        let sectionKey = diffableDataSource.snapshot().sectionIdentifiers[section]
+        let sectionName = sectionNameFor(sectionKey)
         let titleAttributedString = NSMutableAttributedString(string: sectionName)
         titleAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: NSRange(location: 0, length: sectionName.count))
         headerAttributedString.append(titleAttributedString)
@@ -321,33 +358,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
     
 
     // MARK: - UITableView - Rows
-    private func configureDataSource() {
-        diffableDataSource = UITableViewDiffableDataSource<String, NSManagedObjectID>(tableView: queueTableView) { (tableView, indexPath, id) -> UITableViewCell? in
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "UploadImageTableViewCell", for: indexPath) as? UploadImageTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a UploadImageTableViewCell!")
-                return UploadImageTableViewCell()
-            }
-            let upload = self.uploadsProvider.fetchedNonCompletedResultsController.object(at: indexPath)
-            cell.configure(with: upload, width: Int(tableView.bounds.size.width))
-            return cell
-        }
-    }
     
-    private func applyInitialSnapshots() {
-        var snapshot = NSDiffableDataSourceSnapshot<String, NSManagedObjectID>()
-        
-        // Sections
-        let sectionInfos = uploadsProvider.fetchedNonCompletedResultsController.sections
-        let sections = sectionInfos?.map({$0.name}) ?? Array(repeating: "—?—", count: sectionInfos?.count ?? 0)
-        snapshot.appendSections(sections)
-        diffableDataSource?.apply(snapshot, animatingDifferences: false)
-        
-        // Items
-        let items = uploadsProvider.fetchedNonCompletedResultsController.fetchedObjects ?? []
-        snapshot.appendItems(items.map({$0.objectID}))
-        diffableDataSource?.apply(snapshot)
-    }
-        
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         return false
     }
@@ -373,7 +384,7 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
         print("••>> didChangeContentWith…")
         let snapshot = snapshot as NSDiffableDataSourceSnapshot<String,NSManagedObjectID>
         DispatchQueue.main.async {
-            self.diffableDataSource?.apply(snapshot, animatingDifferences: self.queueTableView.window != nil)
+            self.diffableDataSource.apply(snapshot, animatingDifferences: self.queueTableView.window != nil)
         }
     }
 }

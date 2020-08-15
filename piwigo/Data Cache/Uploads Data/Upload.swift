@@ -14,6 +14,10 @@ import CoreData
  Managed object subclass for the Upload entity.
  */
 
+enum SectionKeys: String {
+    case Section1, Section2, Section3, Section4
+}
+
 @objc
 class Upload: NSManagedObject {
 
@@ -283,12 +287,12 @@ extension kPiwigoUploadState {
         switch self {
         case .preparingFail,
              .formatError:
-            return "Section1"
+            return SectionKeys.Section1.rawValue
             
         case .preparingError,
              .uploadingError,
              .finishingError:
-            return "Section2"
+            return SectionKeys.Section2.rawValue
             
         case .waiting,
              .preparing,
@@ -296,13 +300,13 @@ extension kPiwigoUploadState {
              .uploading,
              .uploaded,
              .finishing:
-            return "Section3"
+            return SectionKeys.Section3.rawValue
             
         case .finished,
              .moderated:
             fallthrough
         default:
-            return "NoSection"
+            return SectionKeys.Section4.rawValue
         }
     }
 }
