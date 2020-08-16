@@ -427,13 +427,12 @@ extension UploadQueueViewControllerOld: NSFetchedResultsControllerDelegate {
                 UploadManager.shared.deleteFilesInUploadsDirectory(with: nil)
                 // Close the view when there is no more upload request to display
                 self.dismiss(animated: true, completion: nil)
-                return
             }
         case .move:
             guard let newIndexPath = newIndexPath else { return }
             print("move… from", oldIndexPath, "to", newIndexPath)
-            queueTableView.deleteRows(at: [oldIndexPath], with: .automatic)
-            queueTableView.insertRows(at: [newIndexPath], with: .automatic)
+            queueTableView.deleteRows(at: [oldIndexPath], with: .fade)
+            queueTableView.insertRows(at: [newIndexPath], with: .fade)
             guard let upload:Upload = anObject as? Upload else { return }
             updateCell(at: newIndexPath, with: upload)
         case .update:

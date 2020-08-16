@@ -382,9 +382,18 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
         print("••>> didChangeContentWith…")
+        // Update UI
         let snapshot = snapshot as NSDiffableDataSourceSnapshot<String,NSManagedObjectID>
         DispatchQueue.main.async {
             self.diffableDataSource.apply(snapshot, animatingDifferences: self.queueTableView.window != nil)
+        }
+        
+        // If all upload requests are done, delete all temporary files (in case some would not be deleted)
+        if snapshot.numberOfItems == 0 {
+            // Delete remaining files from Upload directory (if any)
+            UploadManager.shared.deleteFilesInUploadsDirectory(with: nil)
+            // Close the view when there is no more upload request to display
+            self.dismiss(animated: true, completion: nil)
         }
     }
 }

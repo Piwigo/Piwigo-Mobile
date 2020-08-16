@@ -552,7 +552,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         }
     }
 
-    func delete(uploadedImages : [Upload]) -> Void {
+    func delete(uploadedImages: [Upload]) -> Void {
         // Get local identifiers of uploaded images to delete
         let uploadedImagesToDelete = uploadedImages.map( { $0.localIdentifier} )
         
@@ -663,8 +663,8 @@ class UploadManager: NSObject, URLSessionDelegate {
             }
 
             // For debugging
-//            let leftFiles = try fileManager.contentsOfDirectory(at: self.applicationUploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
-//            print("all files in cache after deleting images: \(leftFiles)")
+            let leftFiles = try fileManager.contentsOfDirectory(at: self.applicationUploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+            print("•••>> Remaining files in cache: \(leftFiles)")
         } catch {
             print("Could not clear upload folder: \(error)")
         }
