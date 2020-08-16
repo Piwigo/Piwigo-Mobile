@@ -43,7 +43,12 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         mainHeader()
 
         // No extra space above tableView
-        self.automaticallyAdjustsScrollViewInsets = false
+        if #available(iOS 11.0, *) {
+            queueTableView.contentInsetAdjustmentBehavior = .never
+        } else {
+            // Fallback on earlier versions
+            automaticallyAdjustsScrollViewInsets = false
+        }
 
         // Register palette changes
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
@@ -274,11 +279,11 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         }
         switch sectionInfo.name {
         case "Section1":
-            sectionName = "Impossible Uploads"
+            sectionName = NSLocalizedString("uploadSection_impossible", comment: "Impossible Uploads")
         case "Section2":
-            sectionName = "Resumable Uploads"
+            sectionName = NSLocalizedString("uploadSection_resumable", comment: "Resumable Uploads")
         case "Section3":
-            sectionName = "Uploads Queue"
+            sectionName = NSLocalizedString("uploadSection_queue", comment: "Uploads Queue")
         case "Section4":
             fallthrough
         default:
@@ -334,13 +339,6 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         return header
     }
     
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        guard let sectionInfo = uploadsProvider.fetchedNonCompletedResultsController.sections?[section] else {
-            return nil
-        }
-        return sectionInfo.name
-    }
-
 
     // MARK: - UITableView - Rows
     func numberOfSections(in tableView: UITableView) -> Int {
