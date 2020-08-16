@@ -58,16 +58,14 @@
                             @"usu" : self.versionLabel
                             };
     
+    // ==> Portrait
+    NSMutableArray *portrait = [NSMutableArray new];
     NSDictionary *metrics = @{
                               @"side" : @(side),
                               @"width" : @(textFieldWidth),
                               @"logoWidth" : @(self.textFieldHeight * 4.02),
-                              @"logoHeight" : @(self.textFieldHeight + 36),
                               @"height" : @(self.textFieldHeight)
                               };
-    
-    // ==> Portrait
-    NSMutableArray *portrait = [NSMutableArray new];
     
     // Vertically
     [portrait addObject:[NSLayoutConstraint constraintViewFromTop:self.loginButton amount:(fmax([UIScreen mainScreen].bounds.size.height,[UIScreen mainScreen].bounds.size.width) / 2.0 + self.textFieldHeight + 2 * 10.0)]];
@@ -116,6 +114,18 @@
 
     
     // ==> Landscape
+    CGFloat logoHeight = self.textFieldHeight + 36.0;
+    CGFloat logoWidth = floorf(logoHeight * 4.02);
+    CGFloat landscapeSide = floorf([UIScreen mainScreen].bounds.size.width - logoWidth - side - textFieldWidth) / 2.0;
+    metrics = @{
+                @"side" : @(landscapeSide),
+                @"gap"  : @(side),
+                @"width" : @(textFieldWidth),
+                @"logoWidth" : @(logoWidth),
+                @"logoHeight" : @(logoHeight),
+                @"height" : @(self.textFieldHeight)
+                };
+
     NSMutableArray *landscape = [NSMutableArray new];
 
     // Vertically
@@ -125,7 +135,8 @@
                                     constraintsWithVisualFormat:@"V:[server(height)]-15-[user(height)]-15-[password(height)]-15-[login(height)]-15-[notSecure]"
                                     options:kNilOptions metrics:metrics views:views]];
 
-    [landscape addObject:[NSLayoutConstraint constraintView:self.piwigoLogo toHeight:(self.textFieldHeight + 36.0)]];
+    [landscape addObject:[NSLayoutConstraint constraintView:self.piwigoLogo toHeight:logoHeight]];
+    [landscape addObject:[NSLayoutConstraint constraintView:self.piwigoLogo toWidth:logoWidth]];
 
     [landscape addObject:[NSLayoutConstraint constraintWithItem:self.byLabel1
                                                       attribute:NSLayoutAttributeTop
@@ -141,36 +152,36 @@
 
     // Horizontally
     [landscape addObjectsFromArray:[NSLayoutConstraint
-           constraintsWithVisualFormat:@"H:|-(>=side)-[logo]-side-[server(width)]-(>=side)-|"
+           constraintsWithVisualFormat:@"H:|-(>=side)-[logo]-gap-[server(width)]-(>=side)-|"
                                options:NSLayoutFormatAlignAllTop metrics:metrics views:views]];
 
     [landscape addObjectsFromArray:[NSLayoutConstraint
-           constraintsWithVisualFormat:@"H:|-(>=side)-[logo]-side-[user(==server)]-(>=side)-|"
+           constraintsWithVisualFormat:@"H:|-(>=side)-[logo]-gap-[user(==server)]-(>=side)-|"
                                options:kNilOptions metrics:metrics views:views]];
 
     [landscape addObjectsFromArray:[NSLayoutConstraint
-           constraintsWithVisualFormat:@"H:|-(>=side)-[logo]-side-[password(==server)]-(>=side)-|"
+           constraintsWithVisualFormat:@"H:|-(>=side)-[logo]-gap-[password(==server)]-(>=side)-|"
                                options:kNilOptions metrics:metrics views:views]];
 
     [landscape addObjectsFromArray:[NSLayoutConstraint
-           constraintsWithVisualFormat:@"H:|-(>=side)-[logo]-side-[login(==server)]-(>=side)-|"
+           constraintsWithVisualFormat:@"H:|-(>=side)-[logo]-gap-[login(==server)]-(>=side)-|"
                                options:kNilOptions metrics:metrics views:views]];
 
     [landscape addObjectsFromArray:[NSLayoutConstraint
-           constraintsWithVisualFormat:@"H:|-(>=side)-[logo]-side-[notSecure(==server)]-(>=side)-|"
+           constraintsWithVisualFormat:@"H:|-(>=side)-[logo]-gap-[notSecure(==server)]-(>=side)-|"
                                options:kNilOptions metrics:metrics views:views]];
 
     [landscape addObjectsFromArray:[NSLayoutConstraint
-           constraintsWithVisualFormat:@"H:|-(>=side)-[url(==logo)]-side-[user]-(>=side)-|"
+           constraintsWithVisualFormat:@"H:|-(>=side)-[url(==logo)]-gap-[user]-(>=side)-|"
                                options:NSLayoutFormatAlignAllBottom metrics:metrics views:views]];
     [landscape addObjectsFromArray:[NSLayoutConstraint
-           constraintsWithVisualFormat:@"H:|-(>=side)-[by1]-side-[login]-(>=side)-|"
+           constraintsWithVisualFormat:@"H:|-(>=side)-[by1]-gap-[login]-(>=side)-|"
                                options:kNilOptions metrics:metrics views:views]];
     [landscape addObjectsFromArray:[NSLayoutConstraint
-           constraintsWithVisualFormat:@"H:|-(>=side)-[by2]-side-[login]-(>=side)-|"
+           constraintsWithVisualFormat:@"H:|-(>=side)-[by2]-gap-[login]-(>=side)-|"
                                options:kNilOptions metrics:metrics views:views]];
     [landscape addObjectsFromArray:[NSLayoutConstraint
-           constraintsWithVisualFormat:@"H:|-(>=side)-[usu]-side-[login]-(>=side)-|"
+           constraintsWithVisualFormat:@"H:|-(>=side)-[usu]-gap-[login]-(>=side)-|"
                                options:kNilOptions metrics:metrics views:views]];
 
     self.landscapeConstraints = [NSArray arrayWithArray:landscape];
