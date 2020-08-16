@@ -204,6 +204,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         print("    > ", isPreparing, "|", isUploading, "|", isFinishing)
 
         // Get uploads to complete in queue
+        // Considers only uploads to the server to which the user is logged in
         let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
                                             .preparingFail, .formatError, .prepared,
                                             .uploading, .uploadingError, .uploaded,
@@ -300,6 +301,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         
         // No more image to transfer ;-)
         // Moderate images uploaded by Community regular user
+        // Considers only uploads to the server to which the user is logged in
         if Model.sharedInstance().hasNormalRights, Model.sharedInstance().usesCommunityPluginV29,
             let finishedUploads = uploadsProvider.getRequestsIn(states: [.finished]), finishedUploads.count > 0 {
             self.moderate(uploadedImages: finishedUploads)
@@ -307,6 +309,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         }
 
         // Delete images from Photo Library if user wanted it
+        // Considers only uploads to the server to which the user is logged in
         if let completedUploads = uploadsProvider.getRequestsIn(states: [.finished, .moderated]),
             completedUploads.filter({$0.deleteImageAfterUpload == true}).count > 0 {
             self.delete(uploadedImages: completedUploads.filter({$0.deleteImageAfterUpload == true}))
@@ -585,9 +588,10 @@ class UploadManager: NSObject, URLSessionDelegate {
     // MARK: - Failed Uploads Management
     
     @objc func resumeAll() -> Void {
-        isPreparing = false
-        isUploading = false
-        isFinishing = false
+        // Reset flags
+        isPreparing = false; isUploading = false; isFinishing = false
+
+        // Considers only uploads to the server to which the user is logged in
         let states: [kPiwigoUploadState] = [.preparingError, .preparingFail, .formatError,
                                             .uploadingError, .finishingError]
         if let failedUploads = uploadsProvider.getRequestsIn(states: states) {

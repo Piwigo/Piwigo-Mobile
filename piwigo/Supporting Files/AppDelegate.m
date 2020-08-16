@@ -505,12 +505,12 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
         // Create a serial queue
         dispatch_queue_attr_t attributes = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_BACKGROUND, -1);
         self.uploadQueue = dispatch_queue_create("UploadManager", attributes);
-        
-        // Resume upload tasks
-        dispatch_async(self.uploadQueue, ^{
-            [[UploadManager shared] resumeAll];
-        });
     }
+
+    // Resume upload tasks
+    dispatch_async(self.uploadQueue, ^{
+        [[UploadManager shared] resumeAll];
+    });
 }
 
 -(void)triggerUploadManager {

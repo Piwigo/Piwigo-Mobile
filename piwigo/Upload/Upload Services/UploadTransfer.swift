@@ -338,6 +338,7 @@ extension UploadManager {
     func send(chunk: Int, of chunks:Int, for uploadIdentifier: String) {
         
         // Retrieve corresponding upload properties
+        // Considers only uploads to the server to which the user is logged in
         let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
                                             .prepared, .uploading, .uploadingError,
                                             .uploaded, .finishing, .finishingError]
@@ -525,6 +526,7 @@ extension UploadManager {
             }
             
             // Retrieve corresponding upload properties
+            // Considers only uploads to the server to which the user is logged in
             let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
                                                 .prepared, .uploading, .uploadingError,
                                                 .uploaded, .finishing, .finishingError]

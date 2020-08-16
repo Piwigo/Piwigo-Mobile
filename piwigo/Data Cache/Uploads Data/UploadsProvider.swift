@@ -288,6 +288,7 @@ class UploadsProvider: NSObject {
         }
 
         // Get uploads to complete in queue
+        // Considers only uploads to the server to which the user is logged in
         let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
                                             .preparingFail, .formatError, .prepared,
                                             .uploading, .uploadingError, .uploaded,
@@ -452,9 +453,9 @@ class UploadsProvider: NSObject {
             states.forEach { (state) in
                 predicates.append(NSPredicate(format: "requestState == %d", state.rawValue))
             }
-            var compoundPredicate = NSCompoundPredicate()
-            compoundPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: predicates)
-            fetchRequest.predicate = compoundPredicate
+            let statesPredicate = NSCompoundPredicate.init(orPredicateWithSubpredicates: predicates)
+            let serverPredicate = NSPredicate(format: "serverPath == %@", Model.sharedInstance().serverPath)
+            fetchRequest.predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [statesPredicate, serverPredicate])
 
             // Create a fetched results controller and set its fetch request, context, and delegate.
             let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
@@ -508,8 +509,13 @@ class UploadsProvider: NSObject {
         
         // Create a fetch request for the Upload entity sorted by request date.
         let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
+
+        // Sort upload requests by date
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "requestDate", ascending: true)]
         
+        // Consider upload requests for the current server only
+        fetchRequest.predicate = NSPredicate(format: "serverPath == %@", Model.sharedInstance().serverPath)
+
         // Create a fetched results controller and set its fetch request, context, and delegate.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
                                             managedObjectContext: self.managedObjectContext,
@@ -547,8 +553,10 @@ class UploadsProvider: NSObject {
         let secondSortDescriptor = NSSortDescriptor(key: "requestDate", ascending: true)
         fetchRequest.sortDescriptors = [firstSortDescriptor, secondSortDescriptor]
         
-        // Do not consider completed upload requests
-        fetchRequest.predicate = NSPredicate(format: "requestState != %d", kPiwigoUploadState.finished.rawValue)
+        // Do not consider completed upload requests for the current server
+        let statesPredicate = NSPredicate(format: "requestState != %d", kPiwigoUploadState.finished.rawValue)
+        let serverPredicate = NSPredicate(format: "serverPath == %@", Model.sharedInstance().serverPath)
+        fetchRequest.predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [statesPredicate, serverPredicate])
 
         // Create a fetched results controller and set its fetch request, context, and delegate.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,

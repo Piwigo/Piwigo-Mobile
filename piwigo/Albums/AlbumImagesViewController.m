@@ -419,8 +419,8 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
         self.loadingImages = YES;
         [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
 
-            // Set navigation bar buttons
-//            [self updateButtonsInPreviewMode];
+            // Reset navigation bar buttons after image load
+            [self updateButtonsInPreviewMode];
 
             self.loadingImages = NO;
             [self.imagesCollection reloadData];
