@@ -420,7 +420,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
         [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
 
             // Set navigation bar buttons
-            [self updateButtonsInPreviewMode];
+//            [self updateButtonsInPreviewMode];
 
             self.loadingImages = NO;
             [self.imagesCollection reloadData];
@@ -859,7 +859,8 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
 -(void)showHomeAlbumButtonIfNeeded
 {
     // Present Home Album button if needed
-    if (self.homeAlbumButton.isHidden)
+    if ((self.homeAlbumButton.isHidden) ||
+        CGRectContainsPoint(self.homeAlbumButton.frame, self.addButton.frame.origin))
     {
         // Unhide transparent Home Album button
         [self.homeAlbumButton setHidden:NO];
