@@ -86,7 +86,7 @@
 
     // Piwigo logo
     [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.piwigoLogo]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(logoSide)-[logo(logoWidth)]-(logoSide)-|" options:kNilOptions metrics:metrics views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(>=logoSide)-[logo(logoWidth)]-(>=logoSide)-|" options:kNilOptions metrics:metrics views:views]];
 
     // URL button
     [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.piwigoButton]];
