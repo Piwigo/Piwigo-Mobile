@@ -182,6 +182,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
         [self.addButton addTarget:self action:@selector(didTapAddButton)
                forControlEvents:UIControlEventTouchUpInside];
         self.addButton.hidden = YES;
+        [self.addButton setAccessibilityIdentifier:@"add"];
         [self.view addSubview:self.addButton];
 
         // "Upload Queue" button above collection view
@@ -253,6 +254,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
         [self.createAlbumButton addTarget:self action:@selector(didTapCreateAlbumButton)
                forControlEvents:UIControlEventTouchUpInside];
         self.createAlbumButton.hidden = YES;
+        [self.createAlbumButton setAccessibilityIdentifier:@"createAlbum"];
         [self.view insertSubview:self.createAlbumButton belowSubview:self.addButton];
 
         // "Upload Images" button above collection view
@@ -272,6 +274,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
         [self.uploadImagesButton addTarget:self action:@selector(didTapUploadImagesButton)
                forControlEvents:UIControlEventTouchUpInside];
         self.uploadImagesButton.hidden = YES;
+        [self.uploadImagesButton setAccessibilityIdentifier:@"addImages"];
         [self.view insertSubview:self.uploadImagesButton belowSubview:self.addButton];
 
         // Register palette changes

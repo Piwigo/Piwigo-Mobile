@@ -131,6 +131,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         cancelBarButton?.accessibilityIdentifier = "Cancel"
         uploadBarButton = UIBarButtonItem(title: NSLocalizedString("tabBar_upload", comment: "Upload"), style: .done, target: self, action: #selector(didTapUploadButton))
         uploadBarButton?.isEnabled = false
+        uploadBarButton?.accessibilityIdentifier = "Upload"
         
         // Segmented control (choice for presenting images by month, week, day or in a single collection)
         if #available(iOS 13.0, *) {
@@ -143,6 +144,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         segmentedControl.setEnabled(false, forSegmentAt: SectionType.week.rawValue)
         segmentedControl.setEnabled(false, forSegmentAt: SectionType.day.rawValue)
         segmentedControl.superview?.layer.cornerRadius = segmentedControl.layer.cornerRadius
+        segmentedControl.accessibilityIdentifier = "sort";
         
         // Show images in upload queue by default
         removeUploadedImages = false

@@ -198,8 +198,8 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
                 return LocalAlbumsTableViewCell()
             }
             cell.configure(with: title, nberPhotos: nberPhotos, startDate: startDate, endDate: endDate)
-            if assetCollection.assetCollectionType == .smartAlbum && assetCollection.assetCollectionSubtype == .smartAlbumGeneric {
-                cell.accessibilityIdentifier = "LocalAlbum"
+            if assetCollection.assetCollectionType == .smartAlbum && assetCollection.assetCollectionSubtype == .smartAlbumUserLibrary {
+                cell.accessibilityIdentifier = "Recent"
             }
             cell.isAccessibilityElement = true
             return cell
@@ -210,6 +210,9 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
                 return LocalAlbumsNoDatesTableViewCell()
             }
             cell.configure(with: title, nberPhotos: nberPhotos)
+            if assetCollection.assetCollectionType == .smartAlbum && assetCollection.assetCollectionSubtype == .smartAlbumUserLibrary {
+                cell.accessibilityIdentifier = "Recent"
+            }
             cell.isAccessibilityElement = true
             return cell
         }

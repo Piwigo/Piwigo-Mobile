@@ -19,7 +19,7 @@
 #
 # A list of devices you want to take the screenshots from
 devices([
-  "iPhone SE",										# 4-inch
+  "iPhone SE (1st generation)",						# 4-inch
 #  "iPhone 8",										# 4.7-inch
 #  "iPhone 8 Plus",									# 5.5-inch
 #  "iPhone Xs",										# 5.8-inch
