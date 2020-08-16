@@ -50,7 +50,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         instance.isAppLanguageRTL = (direction == UIUserInterfaceLayoutDirectionRightToLeft);
 		
         instance.serverProtocol = @"https://";
-        instance.serverName = @"";
+        instance.serverPath = @"";
         instance.stringEncoding = NSUTF8StringEncoding; // UTF-8 by default
         instance.username = @"";
         instance.HttpUsername = @"";
@@ -215,7 +215,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 		NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:codedData];
 		Model *modelData = [unarchiver decodeObjectForKey:@"Model"];
 		self.serverProtocol = modelData.serverProtocol;
-		self.serverName = modelData.serverName;
+		self.serverPath = modelData.serverPath;
 		self.defaultPrivacyLevel = modelData.defaultPrivacyLevel;
 		self.defaultAuthor = modelData.defaultAuthor;
 		self.diskCache = modelData.diskCache;
@@ -283,7 +283,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 
 - (void)encodeWithCoder:(NSCoder *)encoder {
 	NSMutableArray *saveObject = [[NSMutableArray alloc] init];
-	[saveObject addObject:self.serverName];
+	[saveObject addObject:self.serverPath];
 	[saveObject addObject:@(self.defaultPrivacyLevel)];
 	[saveObject addObject:self.defaultAuthor];
 	[saveObject addObject:@(self.diskCache)];
@@ -357,11 +357,11 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 	self = [super init];
 	NSArray *savedData = [decoder decodeObjectForKey:@"Model"];
     
-    NSString *serverName = [savedData objectAtIndex:0];
-    if ([serverName isEqualToString:@"(null)(null)"]) {
-        self.serverName = @"";
+    NSString *serverPath = [savedData objectAtIndex:0];
+    if ([serverPath isEqualToString:@"(null)(null)"]) {
+        self.serverPath = @"";
     } else {
-        self.serverName = serverName;
+        self.serverPath = serverPath;
     }
 	self.defaultPrivacyLevel = (kPiwigoPrivacy)[[savedData objectAtIndex:1] integerValue];
 	self.defaultAuthor = [savedData objectAtIndex:2];

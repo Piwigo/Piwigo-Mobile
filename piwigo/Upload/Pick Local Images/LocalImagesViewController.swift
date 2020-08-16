@@ -507,7 +507,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             for index in 0..<self.selectedImages.count {
                 // Images in the upload queue cannot be selected
                 if self.indexedUploadsInQueue[index] == nil {
-                    self.selectedImages[index] = UploadProperties.init(localIdentifier: self.localIdentifiers[index], category: self.categoryId)
+                    self.selectedImages[index] = UploadProperties.init(localIdentifier: self.localIdentifiers[index], serverPath: Model.sharedInstance().serverPath, category: self.categoryId)
                 }
             }
             // Reload collection while updating section buttons
@@ -718,7 +718,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     }
 
                     // Select the cell
-                    selectedImages[index] = UploadProperties.init(localIdentifier: cell.localIdentifier, category: categoryId)
+                    selectedImages[index] = UploadProperties.init(localIdentifier: cell.localIdentifier, serverPath: Model.sharedInstance().serverPath, category: categoryId)
                     cell.cellSelected = true
                 }
 
@@ -1021,7 +1021,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             cell.cellSelected = false
         } else {
             // Select the cell
-            selectedImages[index] = UploadProperties.init(localIdentifier: cell.localIdentifier, category: categoryId)
+            selectedImages[index] = UploadProperties.init(localIdentifier: cell.localIdentifier, serverPath: Model.sharedInstance().serverPath, category: categoryId)
             cell.cellSelected = true
         }
 
@@ -1157,7 +1157,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             for index in firstIndex...lastIndex {
                 // Images in the upload queue cannot be selected
                 if indexedUploadsInQueue[index] == nil {
-                    selectedImages[index] = UploadProperties.init(localIdentifier: localIdentifiers[index], category: self.categoryId)
+                    selectedImages[index] = UploadProperties.init(localIdentifier: localIdentifiers[index], serverPath: Model.sharedInstance().serverPath, category: self.categoryId)
                 }
             }
             // Change section button state

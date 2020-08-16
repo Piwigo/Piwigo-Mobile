@@ -78,7 +78,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL isAppLanguageRTL;
 
 @property (nonatomic, strong) NSString *serverProtocol;     // => Manages cases where the Piwigo server
-@property (nonatomic, strong) NSString *serverName;         // returns the wrong protocol (http: or https:)
+@property (nonatomic, strong) NSString *serverPath;         // returns the wrong protocol (http: or https:)
 @property (nonatomic, strong) NSString *pwgToken;
 @property (nonatomic, strong) NSString *language;
 @property (nonatomic, assign) NSUInteger stringEncoding;    // Character encoding used by the Piwigo server

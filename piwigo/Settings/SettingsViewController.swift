@@ -452,9 +452,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 var detail: String
                 if view.bounds.size.width > 414 {
                     // i.e. larger than iPhones 6, 7 screen width
-                    detail = String(format: "%@%@", Model.sharedInstance().serverProtocol, Model.sharedInstance().serverName)
+                    detail = String(format: "%@%@", Model.sharedInstance().serverProtocol, Model.sharedInstance().serverPath)
                 } else {
-                    detail = Model.sharedInstance().serverName
+                    detail = Model.sharedInstance().serverPath
                 }
                 cell.configure(with: title, detail: detail)
                 cell.accessoryType = UITableViewCell.AccessoryType.none

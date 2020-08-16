@@ -122,7 +122,7 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
 -(void)checkSessionStatusAndTryRelogin
 {
     BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;
-    NSString *server = [Model sharedInstance].serverName;
+    NSString *server = [Model sharedInstance].serverPath;
     NSString *user = [KeychainAccess getLoginUser];
     
     if(hadOpenedSession && (server.length > 0) && (user.length > 0))
@@ -185,7 +185,7 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
         //Complete user interface initialization
         // Login ?
         NSString *user, *password;
-        NSString *server = [Model sharedInstance].serverName;
+        NSString *server = [Model sharedInstance].serverPath;
         [SAMKeychain setAccessibilityType:kSecAttrAccessibleAfterFirstUnlock];
         
         // Look for credentials if server address provided
@@ -301,7 +301,7 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
 
     // Should we reopen the session ?
     BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;
-    NSString *server = [Model sharedInstance].serverName;
+    NSString *server = [Model sharedInstance].serverPath;
     NSString *user = [Model sharedInstance].username;
     if (hadOpenedSession && (server.length > 0) && (user.length > 0))
     {

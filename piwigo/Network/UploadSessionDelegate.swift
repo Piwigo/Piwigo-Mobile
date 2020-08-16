@@ -55,7 +55,7 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
     }()
     
     let domain: String = {
-        let strURL = "\(Model.sharedInstance().serverProtocol ?? "http://")\(Model.sharedInstance().serverName ?? "")"
+        let strURL = "\(Model.sharedInstance().serverProtocol ?? "http://")\(Model.sharedInstance().serverPath ?? "")"
         return URL(string: strURL)?.host ?? ""
     }()
 
@@ -220,7 +220,7 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
     func credentialsFromKeychain() -> URLCredential? {
         // Return credentials retrieved from the keychain
         guard let username = Model.sharedInstance().httpUsername, !username.isEmpty,
-            let password = SAMKeychain.password(forService:  "\(Model.sharedInstance().serverProtocol ?? "https://")\(Model.sharedInstance().serverName ?? "")", account: username), !password.isEmpty else {
+            let password = SAMKeychain.password(forService:  "\(Model.sharedInstance().serverProtocol ?? "https://")\(Model.sharedInstance().serverPath ?? "")", account: username), !password.isEmpty else {
                 return nil
         }
         return URLCredential(user: username, password: password,

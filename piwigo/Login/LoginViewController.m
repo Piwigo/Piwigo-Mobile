@@ -60,7 +60,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 
         self.serverTextField = [PiwigoTextField new];
 		self.serverTextField.placeholder = NSLocalizedString(@"login_serverPlaceholder", @"example.com");
-		self.serverTextField.text = [NSString stringWithFormat:@"%@", [Model sharedInstance].serverName];
+		self.serverTextField.text = [NSString stringWithFormat:@"%@", [Model sharedInstance].serverPath];
 		self.serverTextField.keyboardType = UIKeyboardTypeURL;
 		self.serverTextField.returnKeyType = UIReturnKeyNext;
 		self.serverTextField.delegate = self;
@@ -77,7 +77,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 		self.passwordTextField = [PiwigoTextField new];
 		self.passwordTextField.placeholder = NSLocalizedString(@"login_passwordPlaceholder", @"Password (optional)");
 		self.passwordTextField.secureTextEntry = YES;
-		self.passwordTextField.text = [SAMKeychain passwordForService:[Model sharedInstance].serverName account:[Model sharedInstance].username];
+		self.passwordTextField.text = [SAMKeychain passwordForService:[Model sharedInstance].serverPath account:[Model sharedInstance].username];
         self.passwordTextField.keyboardType = UIKeyboardTypeDefault;
 		self.passwordTextField.returnKeyType = UIReturnKeyGo;
 		[self.view addSubview:self.passwordTextField];
@@ -255,7 +255,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     if(self.userTextField.text.length > 0)
     {
         // Store credentials in Keychain
-        [SAMKeychain setPassword:self.passwordTextField.text forService:[Model sharedInstance].serverName account:self.userTextField.text];
+        [SAMKeychain setPassword:self.passwordTextField.text forService:[Model sharedInstance].serverPath account:self.userTextField.text];
     }
 
     // Create permanent session managers for retrieving data and downloading images
@@ -286,7 +286,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
             [self performLogin];
         } else {
             // Methods unknown, so we cannot reach the server, inform user
-            NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"serverMethodsError_message", @"Failed to get server methods.\nProblem with Piwigo server?")}];
+            NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"serverMethodsError_message", @"Failed to get server methods.\nProblem with Piwigo server?")}];
             [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
         }
         
@@ -416,7 +416,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 -(void)requestHttpCredentialsAfterError:(NSError *)error
 {
     NSString *user = [Model sharedInstance].HttpUsername;
-    NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
+    NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] account:user];
     if (password == nil) password = @"";
 
     self.httpAlertController = [UIAlertController
@@ -463,7 +463,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
           handler:^(UIAlertAction * action) {
               // Store credentials
               [Model sharedInstance].HttpUsername = [self.httpAlertController.textFields objectAtIndex:0].text;
-              [SAMKeychain setPassword:[self.httpAlertController.textFields objectAtIndex:1].text forService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:[self.httpAlertController.textFields objectAtIndex:0].text];
+              [SAMKeychain setPassword:[self.httpAlertController.textFields objectAtIndex:1].text forService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] account:[self.httpAlertController.textFields objectAtIndex:0].text];
               // Try logging in with new HTTP credentials
               [self launchLogin];
           }];
@@ -556,7 +556,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
             
         } else {
             // Methods unknown, so we cannot reach the server, inform user
-            NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"serverMethodsError_message", @"Failed to get server methods.\nProblem with Piwigo server?")}];
+            NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"serverMethodsError_message", @"Failed to get server methods.\nProblem with Piwigo server?")}];
             [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
         }
         
@@ -604,10 +604,10 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                      else
                      {
                          // Don't keep unaccepted credentials
-                         [SAMKeychain deletePasswordForService:[Model sharedInstance].serverName account:self.userTextField.text];
+                         [SAMKeychain deletePasswordForService:[Model sharedInstance].serverPath account:self.userTextField.text];
 
                          // Session could not be opened
-                         NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"loginError_message", @"The username and password don't match on the given server")}];
+                         NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"loginError_message", @"The username and password don't match on the given server")}];
                          [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
                      }
                  } onFailure:^(NSURLSessionTask *task, NSError *error) {
@@ -625,7 +625,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 	else     // No username or user cancelled communication, get only server status
 	{
         // Reset keychain and credentials
-        [SAMKeychain deletePasswordForService:[Model sharedInstance].serverName account:[Model sharedInstance].username];
+        [SAMKeychain deletePasswordForService:[Model sharedInstance].serverPath account:[Model sharedInstance].username];
         [Model sharedInstance].username = @"";
         [[Model sharedInstance] saveToDisk];
 
@@ -662,7 +662,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
             } else {
                 // Inform user that server failed to retrieve Community parameters
                 [Model sharedInstance].hadOpenedSession = NO;
-                NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"serverCommunityError_message", @"Failed to get Community extension parameters.\nTry logging in again.")}];
+                NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"serverCommunityError_message", @"Failed to get Community extension parameters.\nTry logging in again.")}];
                 [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
                 self.isAlreadyTryingToLogin = NO;
             }
@@ -765,7 +765,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                 // Inform user that we could not authenticate with server
                 [Model sharedInstance].hadOpenedSession = NO;
                 self.isAlreadyTryingToLogin = NO;
-                NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"sessionStatusError_message", @"Failed to authenticate with server.\nTry logging in again.")}];
+                NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"sessionStatusError_message", @"Failed to authenticate with server.\nTry logging in again.")}];
                 [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
             }
         } onFailure:^(NSURLSessionTask *task, NSError *error) {
@@ -826,7 +826,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                 });
 
                 // Connection really lost, inform user
-                NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"internetErrorGeneral_broken", @"Sorry, the communication was broken.\nTry logging in again.")}];
+                NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"internetErrorGeneral_broken", @"Sorry, the communication was broken.\nTry logging in again.")}];
                 [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
                 [Model sharedInstance].hadOpenedSession = NO;
                 self.isAlreadyTryingToLogin = NO;
@@ -859,7 +859,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 
     // Perform re-login
     NSString *user = [Model sharedInstance].username;
-    NSString *password = [SAMKeychain passwordForService:[Model sharedInstance].serverName account:user];
+    NSString *password = [SAMKeychain passwordForService:[Model sharedInstance].serverPath account:user];
     [SessionService performLoginWithUser:user
                              andPassword:password
                             onCompletion:^(BOOL result, id response) {
@@ -875,7 +875,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                                 {
                                     // Session could not be re-opened, inform user
                                     [Model sharedInstance].hadOpenedSession = NO;
-                                    NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"loginError_message", @"The username and password don't match on the given server")}];
+                                    NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"loginError_message", @"The username and password don't match on the given server")}];
                                     [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
                                     self.isAlreadyTryingToLogin = NO;
                                 }
@@ -1169,7 +1169,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                 [Model sharedInstance].serverProtocol = [NSString stringWithFormat:@"%@://", serverURL.scheme];
                 break;
         }
-        [Model sharedInstance].serverName = [NSString stringWithFormat:@"%@:%@%@", serverURL.host, serverURL.port, serverURL.path];
+        [Model sharedInstance].serverPath = [NSString stringWithFormat:@"%@:%@%@", serverURL.host, serverURL.port, serverURL.path];
         [Model sharedInstance].username = user;
         [[Model sharedInstance] saveToDisk];
         return YES;
@@ -1179,7 +1179,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     [Model sharedInstance].serverProtocol = @"https://";
     
     // Save username, server address and protocol to disk
-    [Model sharedInstance].serverName = [NSString stringWithFormat:@"%@%@", serverURL.host, serverURL.path];
+    [Model sharedInstance].serverPath = [NSString stringWithFormat:@"%@%@", serverURL.host, serverURL.path];
     [Model sharedInstance].username = user;
     [[Model sharedInstance] saveToDisk];
     return YES;

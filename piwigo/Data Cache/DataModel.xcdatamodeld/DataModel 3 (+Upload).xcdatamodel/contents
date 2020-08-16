@@ -41,6 +41,7 @@
         <attribute name="requestError" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="requestState" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="resizeImageOnUpload" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="serverPath" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="stripGPSdataOnUpload" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="tagIds" optional="YES" attributeType="String" syncable="YES"/>
         <uniquenessConstraints>
@@ -52,6 +53,6 @@
     <elements>
         <element name="Location" positionX="-60.984375" positionY="-122.5" width="128" height="118"/>
         <element name="Tag" positionX="-216.05859375" positionY="-122.37890625" width="128" height="103"/>
-        <element name="Upload" positionX="-403.19921875" positionY="-201.09375" width="128" height="403"/>
+        <element name="Upload" positionX="-403.19921875" positionY="-201.09375" width="128" height="418"/>
     </elements>
 </model>

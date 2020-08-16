@@ -103,7 +103,7 @@ NSInteger const loadingViewTag = 899;
     }
     
     // Create session manager
-    [Model sharedInstance].sessionManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName]] sessionConfiguration:config];
+    [Model sharedInstance].sessionManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath]] sessionConfiguration:config];
     
     // Security policy
     AFSecurityPolicy *policy = [AFSecurityPolicy defaultPolicy];
@@ -125,7 +125,7 @@ NSInteger const loadingViewTag = 899;
         {
             // Evaluate the trust the standard way.
             SecTrustRef trust = challenge.protectionSpace.serverTrust;
-            NSString *strURL = [NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName];
+            NSString *strURL = [NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath];
             NSURL *serverURL = [NSURL URLWithString:strURL];
             BOOL trusted = [policy evaluateServerTrust:trust forDomain:serverURL.host];
 #if defined(DEBUG_SESSION)
@@ -282,17 +282,17 @@ NSInteger const loadingViewTag = 899;
 
             // HTTP basic authentification credentials
             NSString *user = [Model sharedInstance].HttpUsername;
-            NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
+            NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] account:user];
             
             // Without HTTP credentials available, tries Piwigo credentials
             if ((user == nil) || (user.length <= 0) || (password == nil)) {
                 user  = [Model sharedInstance].username;
-                password = [SAMKeychain passwordForService:[Model sharedInstance].serverName account:user];
+                password = [SAMKeychain passwordForService:[Model sharedInstance].serverPath account:user];
                 if (password == nil) password = @"";
                 
                 [Model sharedInstance].HttpUsername = user;
                 [[Model sharedInstance] saveToDisk];
-                [SAMKeychain setPassword:password forService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
+                [SAMKeychain setPassword:password forService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] account:user];
             }
             
             // Supply requested credentials if not provided yet
@@ -304,7 +304,7 @@ NSInteger const loadingViewTag = 899;
                 return credential;
             } else {
                 // HTTP credentials refused!
-                [SAMKeychain deletePasswordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
+                [SAMKeychain deletePasswordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] account:user];
                 return @(NSURLSessionAuthChallengeRejectProtectionSpace);
             }
         }
@@ -335,7 +335,7 @@ NSInteger const loadingViewTag = 899;
     }
 
     // Create session manager
-    [Model sharedInstance].imagesSessionManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName]] sessionConfiguration:config];
+    [Model sharedInstance].imagesSessionManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath]] sessionConfiguration:config];
     
     // Create image downloader
     [Model sharedInstance].imageDownloader = [[AFImageDownloader alloc] initWithSessionManager:[Model sharedInstance].imagesSessionManager downloadPrioritization:AFImageDownloadPrioritizationFIFO maximumActiveDownloads:4 imageCache:nil];
@@ -363,7 +363,7 @@ NSInteger const loadingViewTag = 899;
         {
             // Evaluate the trust the standard way.
             SecTrustRef trust = challenge.protectionSpace.serverTrust;
-            NSString *strURL = [NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName];
+            NSString *strURL = [NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath];
             NSURL *serverURL = [NSURL URLWithString:strURL];
             BOOL trusted = [policy evaluateServerTrust:trust forDomain:serverURL.host];
 #if defined(DEBUG_SESSION)
@@ -436,17 +436,17 @@ NSInteger const loadingViewTag = 899;
 
             // HTTP basic authentification credentials
             NSString *user = [Model sharedInstance].HttpUsername;
-            NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
+            NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] account:user];
 
             // Without HTTP credentials available, tries Piwigo credentials
             if ((user == nil) || (user.length <= 0) || (password == nil)) {
                 user  = [Model sharedInstance].username;
-                password = [SAMKeychain passwordForService:[Model sharedInstance].serverName account:user];
+                password = [SAMKeychain passwordForService:[Model sharedInstance].serverPath account:user];
                 if (password == nil) password = @"";
 
                 [Model sharedInstance].HttpUsername = user;
                 [[Model sharedInstance] saveToDisk];
-                [SAMKeychain setPassword:password forService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
+                [SAMKeychain setPassword:password forService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] account:user];
             }
 
             // Supply requested credentials if not provided yet
@@ -459,7 +459,7 @@ NSInteger const loadingViewTag = 899;
                 return credential;
             } else {
                 // HTTP credentials refused!
-                [SAMKeychain deletePasswordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
+                [SAMKeychain deletePasswordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] account:user];
                 return @(NSURLSessionAuthChallengeRejectProtectionSpace);
             }
         }
@@ -484,7 +484,7 @@ NSInteger const loadingViewTag = 899;
     }
 
     // Create session manager
-    AFHTTPSessionManager *imageUploadManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName]] sessionConfiguration:config];
+    AFHTTPSessionManager *imageUploadManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath]] sessionConfiguration:config];
     
     // Security policy
     AFSecurityPolicy *policy = [AFSecurityPolicy defaultPolicy];
@@ -506,7 +506,7 @@ NSInteger const loadingViewTag = 899;
         {
             // Evaluate the trust the standard way.
             SecTrustRef trust = challenge.protectionSpace.serverTrust;
-            NSString *strURL = [NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName];
+            NSString *strURL = [NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath];
             NSURL *serverURL = [NSURL URLWithString:strURL];
             BOOL trusted = [policy evaluateServerTrust:trust forDomain:serverURL.host];
 #if defined(DEBUG_SESSION)
@@ -580,17 +580,17 @@ NSInteger const loadingViewTag = 899;
             
             // HTTP basic authentification credentials
             NSString *user = [Model sharedInstance].HttpUsername;
-            NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
+            NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] account:user];
             
             // Without HTTP credentials available, tries Piwigo credentials
             if ((user == nil) || (user.length <= 0) || (password == nil)) {
                 user  = [Model sharedInstance].username;
-                password = [SAMKeychain passwordForService:[Model sharedInstance].serverName account:user];
+                password = [SAMKeychain passwordForService:[Model sharedInstance].serverPath account:user];
                 if (password == nil) password = @"";
                 
                 [Model sharedInstance].HttpUsername = user;
                 [[Model sharedInstance] saveToDisk];
-                [SAMKeychain setPassword:password forService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
+                [SAMKeychain setPassword:password forService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] account:user];
             }
             
             // Supply requested credentials if not provided yet
@@ -603,7 +603,7 @@ NSInteger const loadingViewTag = 899;
                 return credential;
             } else {
                 // HTTP credentials refused!
-                [SAMKeychain deletePasswordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
+                [SAMKeychain deletePasswordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] account:user];
                 return @(NSURLSessionAuthChallengeRejectProtectionSpace);
             }
         }
@@ -641,14 +641,14 @@ NSInteger const loadingViewTag = 899;
         if (range.location == NSNotFound) {
             // No path, incomplete URL —> return image.jpg but should never happen
             return [NSString stringWithFormat:@"%@%@/image.jpg",
-                    [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName];
+                    [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath];
         }
         authority = [leftURL substringWithRange:NSMakeRange(0, range.location)];
         leftURL = [leftURL stringByReplacingOccurrencesOfString:authority withString:@"" options:0 range:NSMakeRange(0, authority.length)];
         
         // The Piwigo server may not be in the root e.g. example.com/piwigo/…
         // So we remove the path to avoid a duplicate if necessary
-        NSURL *loginURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName]];
+        NSURL *loginURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath]];
         if ([loginURL.path length] > 0) {
             if ([leftURL hasPrefix:loginURL.path]) {
                 leftURL = [leftURL stringByReplacingOccurrencesOfString:loginURL.path withString:@"" options:0 range:NSMakeRange(0, loginURL.path.length)];
@@ -661,7 +661,7 @@ NSInteger const loadingViewTag = 899;
             // No query -> remaining string is a path
             path = [leftURL stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLPathAllowedCharacterSet]];
             originalURL = [NSString stringWithFormat:@"%@%@%@",
-                           [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName, path];
+                           [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath, path];
         }
         else {
             // URL seems to contain a query
@@ -670,7 +670,7 @@ NSInteger const loadingViewTag = 899;
             leftURL = [leftURL stringByReplacingOccurrencesOfString:path withString:@"" options:0 range:NSMakeRange(0, path.length)];
             leftURL = [leftURL stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
             originalURL = [NSString stringWithFormat:@"%@%@%@%@",
-                           [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName, path, leftURL];
+                           [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath, path, leftURL];
         }
     }
     
@@ -678,7 +678,7 @@ NSInteger const loadingViewTag = 899;
     if (serverURL == nil) {
         // The URL is still not RFC compliant —> return image.jpg to avoid a crash
         return [NSString stringWithFormat:@"%@%@/image.jpg",
-                [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName];
+                [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath];
     }
 
     // Servers may return image URLs different from those used to login (e.g. wrong server settings)
@@ -698,7 +698,7 @@ NSInteger const loadingViewTag = 899;
 
     // The Piwigo server may not be in the root e.g. example.com/piwigo/…
     // So we remove the path to avoid a duplicate if necessary
-    NSURL *loginURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName]];
+    NSURL *loginURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath]];
     if ([loginURL.path length] > 0) {
         if ([cleanPath hasPrefix:loginURL.path]) {
             cleanPath = [cleanPath stringByReplacingOccurrencesOfString:loginURL.path withString:@"" options:0 range:NSMakeRange(0, loginURL.path.length)];
@@ -726,7 +726,7 @@ NSInteger const loadingViewTag = 899;
     
     // Compile final URL using the one provided at login
     NSString *encodedImageURL = [NSString stringWithFormat:@"%@%@%@%@",
-                            [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName, prefix, cleanPath];
+                            [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath, prefix, cleanPath];
     
 #if defined(DEBUG_SESSION)
     if (![encodedImageURL isEqualToString:originalURL]) {
@@ -748,7 +748,7 @@ NSInteger const loadingViewTag = 899;
     if (serverURL == nil) {
         // The URL is incorrect —> return image.jpg in server home page to avoid a crash
         return [NSString stringWithFormat:@"%@%@/image.jpg",
-                [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName];
+                [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath];
     }
     
     // Servers may return image URLs different from those used to login
@@ -768,7 +768,7 @@ NSInteger const loadingViewTag = 899;
 
     // The Piwigo server may not be in the root e.g. example.com/piwigo/…
     // So we remove the path to avoid a duplicate if necessary
-    NSURL *loginURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName]];
+    NSURL *loginURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath]];
     if ([loginURL.path length] > 0) {
         if ([cleanPath hasPrefix:loginURL.path]) {
             cleanPath = [cleanPath stringByReplacingOccurrencesOfString:loginURL.path withString:@"" options:0 range:NSMakeRange(0, loginURL.path.length)];
@@ -804,7 +804,7 @@ NSInteger const loadingViewTag = 899;
     
     // Compile final URL
     NSString *url = [NSString stringWithFormat:@"%@%@/ws.php?%@%@",
-                     [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName, prefix, cleanPath];
+                     [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath, prefix, cleanPath];
     
 #if defined(DEBUG_SESSION)
     if (![url isEqualToString:originalURL]) {

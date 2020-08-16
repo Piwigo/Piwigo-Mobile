@@ -253,7 +253,7 @@ shouldWaitForResponseToAuthenticationChallenge:(NSURLAuthenticationChallenge *)a
     {
         // HTTP basic authentification credentials
         NSString *user = [Model sharedInstance].HttpUsername;
-        NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
+        NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] account:user];
         [authenticationChallenge.sender useCredential:[NSURLCredential credentialWithUser:user password:password
                                                        persistence:NSURLCredentialPersistenceSynchronizable] forAuthenticationChallenge:authenticationChallenge];
         [authenticationChallenge.sender continueWithoutCredentialForAuthenticationChallenge:authenticationChallenge];

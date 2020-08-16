@@ -26,6 +26,7 @@ class Upload: NSManagedObject {
     @NSManaged var localIdentifier: String
     
     // The other attributes of an upload.
+    @NSManaged var serverPath: String
     @NSManaged var category: Int64
     @NSManaged var requestDate: Date
     @NSManaged var requestState: Int16
@@ -63,6 +64,9 @@ class Upload: NSManagedObject {
         
         // Local identifier of the image to upload
         localIdentifier = uploadProperties.localIdentifier
+        
+        // Server path to which the image is to be uploaded
+        serverPath = uploadProperties.serverPath
         
         // Category to upload the image to
         category = Int64(uploadProperties.category)
@@ -174,7 +178,8 @@ extension Upload {
     }
 
     func getUploadProperties(with state: kPiwigoUploadState, error: String?) -> UploadProperties {
-        return UploadProperties.init(localIdentifier: self.localIdentifier, category: Int(self.category),
+        return UploadProperties.init(localIdentifier: self.localIdentifier,
+            serverPath: self.serverPath, category: Int(self.category),
             // Upload request date is now and state is waiting
             requestDate: self.requestDate, requestState: state, requestError: error,
             // Photo creation date and filename
@@ -193,7 +198,8 @@ extension Upload {
     }
 
     func getUploadPropertiesCancellingDeletion() -> UploadProperties {
-        return UploadProperties.init(localIdentifier: self.localIdentifier, category: Int(self.category),
+        return UploadProperties.init(localIdentifier: self.localIdentifier,
+            serverPath: self.serverPath, category: Int(self.category),
             // Upload request date is now and state is waiting
             requestDate: self.requestDate, requestState: self.state, requestError: self.requestError,
             // Photo creation date and filename
@@ -314,6 +320,7 @@ extension kPiwigoUploadState {
 struct UploadProperties
 {
     let localIdentifier: String             // Unique PHAsset identifier
+    let serverPath: String                  // URL path of Piwigo server
     let category: Int                       // 8
     let requestDate: Date                   // "2020-08-22 19:18:43"
     var requestState: kPiwigoUploadState    // See enum above
@@ -344,8 +351,8 @@ struct UploadProperties
 
 extension UploadProperties {
     // Create new upload from localIdentifier and category
-    init(localIdentifier: String, category: Int) {
-        self.init(localIdentifier: localIdentifier, category: category,
+    init(localIdentifier: String, serverPath: String, category: Int) {
+        self.init(localIdentifier: localIdentifier, serverPath: serverPath, category: category,
             // Upload request date is now and state is waiting
             requestDate: Date.init(), requestState: .waiting, requestError: "",
             // Photo creation date and filename
@@ -369,7 +376,8 @@ extension UploadProperties {
     
     // Update upload request state and error
     func update(with state: kPiwigoUploadState, error: String?) -> UploadProperties {
-        return UploadProperties.init(localIdentifier: self.localIdentifier, category: self.category,
+        return UploadProperties.init(localIdentifier: self.localIdentifier,
+            serverPath: self.serverPath, category: self.category,
             // Upload request date is now and state is waiting
             requestDate: self.requestDate, requestState: state, requestError: error,
             // Photo creation date and filename
