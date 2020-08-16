@@ -8,6 +8,7 @@
 //  A class to fetch data from the remote server and save it to the Core Data store.
 
 import CoreData
+import Photos
 
 @objc
 class UploadsProvider: NSObject {
@@ -487,14 +488,38 @@ class UploadsProvider: NSObject {
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)
 
         // Execute batch delete request
-        do {
-            try managedObjectContext.execute(batchDeleteRequest)
+        try? managedObjectContext.executeAndMergeChanges(using: batchDeleteRequest)
+    }
+    /**
+     Remove from cache completed requests whose images do not exist in Photo Library.
+    */
+    func clearCompletedUploads() {
+        
+        // Get completed upload requests
+        let completedUploads = getRequestsIn(states: [.finished, .moderated]) ?? []
+
+        // Create a private queue context.
+        let taskContext = DataController.getPrivateContext()
+        
+        // Which one should be deleted?
+        var uploadsToDelete = [NSManagedObjectID]()
+        for upload in completedUploads {
+            if let _ = PHAsset.fetchAssets(withLocalIdentifiers: [upload.localIdentifier], options: nil).firstObject {
+                continue
+            }
+            // Asset not available… will delete it
+            uploadsToDelete.append(upload.objectID)
         }
-        catch {
-            fatalError("Unresolved error \(error)")
+
+        if uploadsToDelete.count > 0 {
+            // Create batch delete request
+            let batchDeleteRequest = NSBatchDeleteRequest(objectIDs: uploadsToDelete)
+
+            // Execute batch delete request
+            try? taskContext.executeAndMergeChanges(using: batchDeleteRequest)
         }
     }
-    
+
 
     // MARK: - NSFetchedResultsController
     /**

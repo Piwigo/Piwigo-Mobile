@@ -603,6 +603,9 @@ class UploadManager: NSObject, URLSessionDelegate {
                 findNextImageToUpload()
             }
         }
+        
+        // Clean cache from completed uploads whose images do not exist in Photos Library
+        uploadsProvider.clearCompletedUploads()
     }
 
     func resume(failedUploads : [Upload], completionHandler: @escaping (Error?) -> Void) -> Void {
