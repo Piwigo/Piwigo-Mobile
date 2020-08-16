@@ -146,8 +146,8 @@ class UploadImageTableViewCell: MGSwipeTableCell {
 
         // Cell image: retrieve data of right size and crop image
         let retinaScale = Int(UIScreen.main.scale)
-        let retinaSquare = CGSize(width: contentView.frame.size.width * CGFloat(retinaScale),
-                                  height: contentView.frame.size.height * CGFloat(retinaScale))
+        let retinaSquare = CGSize(width: 58.0 * CGFloat(retinaScale),
+                                  height: 58.0 * CGFloat(retinaScale))
 
         let cropToSquare = PHImageRequestOptions()
         cropToSquare.resizeMode = .exact
@@ -156,7 +156,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         let cropRect = square.applying(CGAffineTransform(scaleX: CGFloat(1.0 / Float(imageAsset.pixelWidth)), y: CGFloat(1.0 / Float(imageAsset.pixelHeight))))
         cropToSquare.normalizedCropRect = cropRect
 
-        PHImageManager.default().requestImage(for: imageAsset, targetSize: retinaSquare, contentMode: .aspectFit, options: cropToSquare, resultHandler: { result, info in
+        PHImageManager.default().requestImage(for: imageAsset, targetSize: retinaSquare, contentMode: .aspectFill, options: cropToSquare, resultHandler: { result, info in
             DispatchQueue.main.async(execute: {
                 if info?[PHImageErrorKey] != nil {
                     let error = info?[PHImageErrorKey] as? Error
