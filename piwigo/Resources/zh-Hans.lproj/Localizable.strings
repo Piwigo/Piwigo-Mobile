@@ -478,6 +478,10 @@
 "uploadCancelled_title" = "上传已取消";
 "uploadNoInternetNetwork" = "No Internet Connection";
 "uploadNoWiFiNetwork" = "No Wi-Fi Connection";
+"uploadLowPowerMode" = "Low Power Mode enabled";
+"uploadSection_impossible" = "Impossible Uploads";
+"uploadSection_resumable" = "Resumable Uploads";
+"uploadSection_queue" = "Uploads Queue";
 
 "imageUploadError_title" = "照片上传错误";
 "imageUploadError_format" = "File format not accepted by Piwigo server.";

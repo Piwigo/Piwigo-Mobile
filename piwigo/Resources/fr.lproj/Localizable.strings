@@ -461,8 +461,8 @@
 "imageUploadClearFailedSeveral" = "Effacer %@ télévers. échoués";
 "imageUploadClearCompletedSingle" = "Effacer le télévers. terminé";
 "imageUploadClearCompletedSeveral" = "Effacer %@ télévers. terminés";
-"imageUploadResumeSingle" = "Reprendre le téléversement";
-"imageUploadResumeSeveral" = "Reprendre %@ téléversements";
+"imageUploadResumeSingle" = "Relancer le transfert";
+"imageUploadResumeSeveral" = "Relancer %@ transferts";
 
 "imageUploadProgressBar_zero" = "Téléversement 0/0";
 "imageUploadProgressBar_nonZero" = "Téléversement %@/%@";
@@ -478,6 +478,10 @@
 "uploadCancelled_title" = "Transfert Annulé";
 "uploadNoInternetNetwork" = "Pas de connexion Internet";
 "uploadNoWiFiNetwork" = "Pas de connexion Wi-Fi";
+"uploadLowPowerMode" = "Mode économie d'énergie activé";
+"uploadSection_impossible" = "Transferts impossibles";
+"uploadSection_resumable" = "Transferts réamorçables";
+"uploadSection_queue" = "File d'attente des transferts";
 
 "imageUploadError_title" = "Echec du téléversement";
 "imageUploadError_format" = "Format de fichier non accepté par le serveur Piwigo.";

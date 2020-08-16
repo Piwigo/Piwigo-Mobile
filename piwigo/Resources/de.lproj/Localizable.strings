@@ -478,6 +478,10 @@
 "uploadCancelled_title" = "Hochladen abgebrochen";
 "uploadNoInternetNetwork" = "Keine Internetverbindung";
 "uploadNoWiFiNetwork" = "Keine WLAN-Verbindung";
+"uploadLowPowerMode" = "Low Power Mode enabled";
+"uploadSection_impossible" = "Impossible Uploads";
+"uploadSection_resumable" = "Resumable Uploads";
+"uploadSection_queue" = "Uploads Queue";
 
 "imageUploadError_title" = "Fehler beim Foto Hochladen";
 "imageUploadError_format" = "Dateiformat vom Piwigo-Server nicht akzeptiert.";

@@ -478,6 +478,10 @@
 "uploadCancelled_title" = "Carga cancelada";
 "uploadNoInternetNetwork" = "No hay conexión a Internet";
 "uploadNoWiFiNetwork" = "No hay conexión Wi-Fi";
+"uploadLowPowerMode" = "Low Power Mode enabled";
+"uploadSection_impossible" = "Impossible Uploads";
+"uploadSection_resumable" = "Resumable Uploads";
+"uploadSection_queue" = "Uploads Queue";
 
 "imageUploadError_title" = "Error al cargar la foto";
 "imageUploadError_format" = "Formato de archivo no aceptado por el servidor Piwigo.";
