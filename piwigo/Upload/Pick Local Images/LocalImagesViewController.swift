@@ -296,7 +296,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 //        let start = CFAbsoluteTimeGetCurrent()
         let fetchOptions = PHFetchOptions()
         fetchOptions.includeHiddenAssets = false
-        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         fetchedImages = PHAsset.fetchAssets(in: assetCollections.firstObject!, options: fetchOptions)
 //        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
 //        print("=> Fetched \(fetchedImages.count) assets in \(diff) ms")
@@ -516,7 +516,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         }
         
         // Change sort option
-        let sortAction = UIAlertAction(title: CategorySortViewController.getNameForCategorySortType(Model.sharedInstance().localImagesSort), style: .default, handler: { action in
+        let sortOption = Model.sharedInstance().localImagesSort == kPiwigoSortDateCreatedDescending ? kPiwigoSortDateCreatedAscending : kPiwigoSortDateCreatedDescending
+        let sortAction = UIAlertAction(title: CategorySortViewController.getNameForCategorySortType(sortOption), style: .default, handler: { action in
             switch Model.sharedInstance().localImagesSort {
             case kPiwigoSortDateCreatedDescending:
                 Model.sharedInstance().localImagesSort = kPiwigoSortDateCreatedAscending
