@@ -311,7 +311,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         // Delete images from Photo Library if user wanted it
         // Considers only uploads to the server to which the user is logged in
         if let completedUploads = uploadsProvider.getRequestsIn(states: [.finished, .moderated]),
-            completedUploads.filter({$0.deleteImageAfterUpload == true}).count > 0 {
+            completedUploads.filter({$0.deleteImageAfterUpload == true}).count > 0, allUploads.count == 0 {
             self.delete(uploadedImages: completedUploads.filter({$0.deleteImageAfterUpload == true}))
         }
     }
