@@ -6,7 +6,7 @@
 #
 # A list of devices you want to take the screenshots from
 devices([
-  "iPhone SE (1st generation)",					# 4-inch
+  "iPhone SE (1st generation)",						# 4-inch
   "iPhone 8",										# 4.7-inch
   "iPhone 8 Plus",									# 5.5-inch
   "iPhone 11 Pro",									# 5.8-inch
@@ -20,7 +20,7 @@ devices([
 
 #   ["pt", "pt_BR"] # Portuguese with Brazilian locale
 languages([
-#   "en",
+   "en",
    "zh-Hans",
    "da",
    "nl",
