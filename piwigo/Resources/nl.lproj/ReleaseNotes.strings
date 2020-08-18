@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v2.5.0_text" = "Version 2.5\n\n• Records upload requests\n• Uploads photos/videos when possible\n• \"Wi-Fi only\" option for uploads\n• No upload when in Low Power Mode\n• Much faster access to the Photo Library\n• Minor bug fixes and improvements of the interface\n• Code modernization\n\nBackground uploading will be available after a server update.";
+
 "v2.4.8_text" = "Versie 2.4.8\n\n• Piwigo waarschuwt je wanneer:\n - een website heeft een certificaat dat niet geldig is,\n - voor het opzetten van een onveilige verbinding\n• Verbeterd cachebeheer\n• Kleine foutjes gerepareerd en verbeteringen van de interface";
 
 "v2.4.7_text" = "Versie 2.4.7\n30 januari 2020\n\n• Chinese vereenvoudigd, Russisch en Spaans vertalingen\n• Corrigeert een video afspeelprobleem op sommige servers";

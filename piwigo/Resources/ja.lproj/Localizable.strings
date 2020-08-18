@@ -44,6 +44,22 @@
 "internetCancelledConnection_title" = "接続が中止されました";
 
 // ===========================================================================
+// ==> CORE DATA
+// ===========================================================================
+"CoreDataStore_WarningTitle" = "注意";
+"CoreDataStore_WarningMessage" = "Piwigoがデータキャッシュを読もうとした際に深刻なアプリケーションエラーが発生しました。ゆえに、新しいキャッシュが生成されました。";
+"CoreDataFetch_DigestError" = "取得データを要約できませんでした。";
+
+// Tag objects
+"CoreDataFetch_TagError" = "タグ取得エラー！";
+"CoreDataFetch_TagMissingData" = "有効なコードや名前のないタグを見つけて捨てる。";
+"CoreDataFetch_TagCreateFailed" = "新しいタグオブジェクトの作成に失敗しました。";
+
+// Upload objects
+"CoreDataFetch_UploadCreateFailed" = "新しいアップロードオブジェクトの作成に失敗しました。";
+"CoreDataFetch_UploadMissingAsset" = "写真の取得に失敗しました。";
+
+// ===========================================================================
 // ==> LOGIN / LOGOUT
 // ===========================================================================
 // Login
@@ -61,10 +77,10 @@
 "loginHTTP_message" = "Piwigoサーバにおいて、基本アクセス認証が必要です。";
 "loginHTTPuser_placeholder" = "ユーザ名";
 "loginHTTPpwd_placeholder" = "パスワード";
-"loginCertFailed_title" = "Connection Not Private";
-"loginCertFailed_message" = "Piwigo warns you when a website has a certificate that is not valid. Do you still want to accept this certificate?";
-"loginHTTPSfailed_title" = "Secure Connection Failed";
-"loginHTTPSfailed_message" = "Piwigo cannot establish a secure connection. Do you want to try to establish an insecure connection?";
+"loginCertFailed_title" = "接続がプライベートではありません";
+"loginCertFailed_message" = "Piwigoはウェブサイトに無効な証明書がある場合に警告します。この証明書を受け入れますか？";
+"loginHTTPSfailed_title" = "安全な接続に失敗しました";
+"loginHTTPSfailed_message" = "Piwigoは安全な接続を確立できません。安全でない接続の確立を試みますか？";
 
 // Login — Errors
 "serverURLerror_title" = "URLが間違っています";
@@ -99,8 +115,6 @@
 
 // Logout — Errors
 "logoutFail_title" = "ログアウトに失敗しました";
-"logoutFail_message" = "ログアウトに失敗しました。もう一度やり直しますか？";
-
 
 // ===========================================================================
 // ==> ALBUMS
@@ -153,8 +167,15 @@
 "categoryUpload_chooseAlbum" = "写真をアップロードするアルバムを選択します";
 "categoryUpload_LocalAlbums" = "ローカルアルバム";
 "categoryUpload_chooseLocalAlbum" = "写真を取得するアルバムを選択します";
+"categoryUpload_sharedAlbums" = "共有アルバム";
 "categoryUpload_iCloudAlbums" = "iCloudのアルバム";
 "categoryUpload_chooseiCloudAlbum" = "写真を取得するiCloud アルバムを選択します";
+"categoryUpload_syncedEvents" = "iPhotoのイベント";
+"categoryUpload_syncedAlbums" = "iPhotoのアルバム";
+"categoryUpload_syncedFaces" = "iPhotoの顔";
+"categoryUpload_mediaTypes" = "メディアの種類";
+"categoryUpload_otherAlbums" = "その他のアルバム";
+
 "categoyUpload_loadSubCategories" = "読み込む";
 "categoryUpload_images" = "写真をアップロードする";
 "categoryUpload_subAlbum" = "サブアルバムを作成します";
@@ -250,8 +271,13 @@
 "singleVideo" = "動画";
 "singleAudio" = "音声";
 "severalImages" = "写真";
+"severalVideos" = "ビデオ";
 "noImages" = "写真がありません";
 "pullToRefresh" = "写真の再読み込み";
+"andMore" = " & さらに";
+"Months" = "ヶ月間";
+"Weeks" = "週間";
+"Days" = "日間";
 
 // Errors
 "albumPhotoError_title" = "アルバム写真の取得エラー";
@@ -260,8 +286,10 @@
 // Image sort
 "sortBy" = "並び順";
 "imageSortTitle" = "写真を並べ換える";
-"imageSortingHUD" = "写真を並べ換える";
 "imageSortMessage" = "写真の並び順を選択してください";
+"imageSortingHUD" = "写真を並べ換える";
+"imageSelectingHUD" = "写真を選択中…";
+"imageDeselectingHUD" = "写真の選択を解除中…";
 
 // Image options (actions)
 "imageOptions_title" = "写真オプション";
@@ -309,6 +337,7 @@
 "tag" = "タグ";
 "tagsTitle_selectOne" = "タグを選択";
 "tagsHeader_selected" = "選択済み";
+"tagsHeader_notSelected" = "選択されていません";
 "tagsHeader_all" = "すべて";
 "tagsAdd_title" = "タグを追加";
 "tagsAdd_message" = "新規タグの名前を入力して下さい";
@@ -421,7 +450,20 @@
 
 "imageUploadRemove" = "アップロードした写真を削除する";
 
+"imageUploadTableCell_waiting" = "待機中...";
+"imageUploadTableCell_preparing" = "準備中...";
+"imageUploadTableCell_prepared" = "アップロードの準備ができました...";
 "imageUploadTableCell_uploading" = "アップロード中...";
+"imageUploadTableCell_uploaded" = "アップロード済み";
+"imageUploadTableCell_finishing" = "完了しています...";
+
+"imageUploadClearFailedSingle" = "失敗したアップロードをクリアする";
+"imageUploadClearFailedSeveral" = "%@ 件の失敗したアップロードをクリアする";
+"imageUploadClearCompletedSingle" = "完了したアップロードをクリアする";
+"imageUploadClearCompletedSeveral" = "%@ 件の完了したアップロードをクリア";
+"imageUploadResumeSingle" = "失敗したアップロードを再開する";
+"imageUploadResumeSeveral" = "%@ 件の失敗したアップロードを再開する";
+
 "imageUploadProgressBar_zero" = "アップロード中 0/0";
 "imageUploadProgressBar_nonZero" = "アップロード中 %@/%@";
 "imageUploadProgressBar_completed" = "完了しました";
@@ -429,13 +471,20 @@
 "imageUploadCompleted_message" = "写真／動画が、Piwigoサーバにアップロードされました。";
 "imageUploadCompleted_message>1" = "写真／動画が、Piwigoサーバにアップロードされました。";
 
+
 // Image upload — Errors
 "uploadError_title" = "アップロードエラー";
 "uploadError_message" = "写真をアップロードできませんでした。エラー: %@";
 "uploadCancelled_title" = "アップロードが取り消されました";
+"uploadNoInternetNetwork" = "No Internet Connection";
+"uploadNoWiFiNetwork" = "No Wi-Fi Connection";
+"uploadLowPowerMode" = "Low Power Mode enabled";
+"uploadSection_impossible" = "Impossible Uploads";
+"uploadSection_resumable" = "Resumable Uploads";
+"uploadSection_queue" = "Uploads Queue";
 
 "imageUploadError_title" = "写真アップロードエラー";
-"imageUploadError_format" = "申し訳ありませんが、このPiwigoサーバでは拡張子 %@ と .jpg の画像ファイルを受け付けていません。";
+"imageUploadError_format" = "Piwigoサーバーでは受け付けられないファイル形式です。";
 "imageUploadError_source" = "元写真を作成できません";
 "imageUploadError_destination" = "写真の保存先を作成できません";
 "imageUploadError_iCloud" = "写真を取得できませんでした。エラー：%@";
@@ -600,11 +649,11 @@
 "settings_stripGPSdata>375px" = "アップロードする前にプライベートなメタデータを取り除きます";
 "settings_photoResize" = "アップロードする前にサイズを変更します";
 "settings_photoResize>375px" = "アップロードする前に写真のサイズを変更します";
-"settings_photoSize" = "> サイズ   ";
+"settings_photoSize" = "サイズ";
 "settings_placeholderSize" = "写真のサイズを 5 - 100 の範囲で入力して下さい";
 "settings_photoCompress" = "アップロードする前に圧縮します";
 "settings_photoCompress>375px" = "アップロードする前に写真を圧縮します";
-"settings_photoQuality" = "> 画質";
+"settings_photoQuality" = "画質";
 "settings_placeholderQuality" = "写真の品質を 50 - 98 の範囲で入力してください";
 "settings_prefixFilename>414px" = "アップロードする際にプレフィクスを写真のファイル名に付ける";
 "settings_prefixFilename>375px" = "アップロードする際にファイル名にプレフィクスを付ける";
@@ -613,6 +662,7 @@
 "settings_defaultPrefix>320px" = "ファイル名のプレフィクス";
 "settings_defaultPrefixPlaceholder" = "プレフィクス";
 "settings_deleteImage>375px" = "アップロード後に写真を削除します";
+"settings_wifiOnly" = "Wi-Fi Only";
 "settings_deleteImage" = "アップロード後に削除します";
 
 // Settings — Cache

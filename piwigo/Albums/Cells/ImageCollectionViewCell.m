@@ -64,7 +64,7 @@
         self.playImage.translatesAutoresizingMaskIntoConstraints = NO;
         self.playImage.contentMode = UIViewContentModeScaleAspectFit;
         [self.contentView addSubview:self.playImage];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintView:self.playImage toSize:CGSizeMake(25, 25)]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintView:self.playImage to:CGSizeMake(25, 25)]];
         [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromLeft:self.playImage amount:5]];
         [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromTop:self.playImage amount:5]];
 
@@ -120,7 +120,7 @@
 		self.selectedImage.tintColor = [UIColor piwigoColorOrange];
 		self.selectedImage.hidden = YES;
 		[self.contentView addSubview:self.selectedImage];
-		[self.contentView addConstraints:[NSLayoutConstraint constraintView:self.selectedImage toSize:CGSizeMake(25, 25)]];
+		[self.contentView addConstraints:[NSLayoutConstraint constraintView:self.selectedImage to:CGSizeMake(25, 25)]];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromRight:self.selectedImage amount:0]];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromTop:self.selectedImage amount:5]];
 		
@@ -134,7 +134,7 @@
 		self.noDataLabel.text = NSLocalizedString(@"categoryImageList_noDataError", @"Error No Data");
 		self.noDataLabel.hidden = YES;
 		[self.contentView addSubview:self.noDataLabel];
-		[self.contentView addConstraints:[NSLayoutConstraint constraintCenterView:self.noDataLabel]];
+		[self.contentView addConstraints:[NSLayoutConstraint constraintCenter:self.noDataLabel]];
 		[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.noDataLabel
 																	 attribute:NSLayoutAttributeLeft
 																	 relatedBy:NSLayoutRelationGreaterThanOrEqual
@@ -180,6 +180,9 @@
             if ([Model sharedInstance].hasXXSmallSizeImages && (self.imageData.XXSmallPath.length > 0)) {
                 NSURL *URL = [NSURL URLWithString:self.imageData.XXSmallPath];
                 [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
+            } else if ([Model sharedInstance].hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
+                    NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
+                    [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
@@ -189,6 +192,9 @@
             if ([Model sharedInstance].hasXSmallSizeImages && (self.imageData.XSmallPath.length > 0)) {
                 NSURL *URL = [NSURL URLWithString:self.imageData.XSmallPath];
                 [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
+            } else if ([Model sharedInstance].hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
+                    NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
+                    [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
@@ -198,6 +204,9 @@
             if ([Model sharedInstance].hasSmallSizeImages && (self.imageData.SmallPath.length > 0)) {
                 NSURL *URL = [NSURL URLWithString:self.imageData.SmallPath];
                 [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
+            } else if ([Model sharedInstance].hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
+                    NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
+                    [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
@@ -207,6 +216,9 @@
             if ([Model sharedInstance].hasMediumSizeImages && (self.imageData.MediumPath.length > 0)) {
                 NSURL *URL = [NSURL URLWithString:self.imageData.MediumPath];
                 [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
+            } else if ([Model sharedInstance].hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
+                    NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
+                    [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
@@ -216,6 +228,9 @@
             if ([Model sharedInstance].hasLargeSizeImages && (self.imageData.LargePath.length > 0)) {
                 NSURL *URL = [NSURL URLWithString:self.imageData.LargePath];
                 [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
+            } else if ([Model sharedInstance].hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
+                    NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
+                    [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
@@ -224,6 +239,9 @@
         case kPiwigoImageSizeXLarge:
             if ([Model sharedInstance].hasXLargeSizeImages && (self.imageData.XLargePath.length > 0)) {
                 NSURL *URL = [NSURL URLWithString:self.imageData.XLargePath];
+                [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
+            } else if ([Model sharedInstance].hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
+                NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
                 [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
@@ -234,6 +252,10 @@
             if ([Model sharedInstance].hasXXLargeSizeImages && (self.imageData.XXLargePath.length > 0)) {
                 NSURL *URL = [NSURL URLWithString:self.imageData.XXLargePath];
                 [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
+            }
+            else if ([Model sharedInstance].hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
+                    NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
+                    [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
@@ -256,9 +278,7 @@
     if (([Model sharedInstance].displayImageTitles) ||
         (categoryId == kPiwigoVisitsCategoryId)     ||
         (categoryId == kPiwigoBestCategoryId)       ||
-        (categoryId == kPiwigoRecentCategoryId)     ||
-        (categoryId == kPiwigoTagsCategoryId)       ||
-        (categoryId == kPiwigoFavoritesCategoryId)) {
+        (categoryId == kPiwigoRecentCategoryId)) {
         self.bottomLayer.hidden = NO;
         self.nameLabel.hidden = NO;
         if (categoryId == kPiwigoVisitsCategoryId) {

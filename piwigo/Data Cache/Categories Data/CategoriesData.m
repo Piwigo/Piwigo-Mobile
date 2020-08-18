@@ -11,6 +11,7 @@
 NSString * const kPiwigoNotificationGetCategoryData = @"kPiwigoNotificationGetCategoryData";
 NSString * const kPiwigoNotificationCategoryDataUpdated = @"kPiwigoNotificationCategoryDataUpdated";
 NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificationChangedCurrentCategory";
+NSString * const kPiwigoNotificationDeletedImageFromUploadCache = @"kPiwigoNotificationDeletedImageFromUploadCache";
 
 @interface CategoriesData()
 
@@ -301,7 +302,7 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 	return nil;
 }
 
--(NSArray*)getCategoriesForParentCategory:(NSInteger)parentCategory
+-(NSArray<PiwigoAlbumData *>*)getCategoriesForParentCategory:(NSInteger)parentCategory
 {
     NSMutableArray *categories = [NSMutableArray new];
     
@@ -344,14 +345,85 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 	return nil;
 }
 
+-(void)addImage:(PiwigoImageData*)image
+{
+    // Categories to which the image will belong to
+    for(NSString *category in image.categoryIds)
+    {
+        [self addImage:image toCategory:category];
+    }
+
+    // Smart albums
+    if ([self getCategoryById:kPiwigoRecentCategoryId] != nil) {
+        [self addImage:image toCategory:[NSString stringWithFormat:@"%ld", (long)kPiwigoRecentCategoryId]];
+    }
+}
+
+-(void)addImage:(PiwigoImageData *)image toCategory:(NSString *)category
+{
+    PiwigoAlbumData *imageCategory = [self getCategoryById:[category integerValue]];
+    [imageCategory addUploadedImage:image];
+    [imageCategory incrementImageSizeByOne];
+
+    // Notify UI that an image has been uploaded and appended to cache
+    NSDictionary *userInfo = @{@"albumId" : category, @"imageId" : @(image.imageId)};
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationUploadedImage object:nil userInfo:userInfo];
+    
+    // Notify UI that the number of images has changed and that the thumbnail may have to be changed
+    userInfo = @{@"albumId" : category,
+                 @"thumbnailId" : @(image.imageId),
+                 @"thumbnailUrl" : image.ThumbPath};
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedAlbumData object:nil userInfo:userInfo];
+}
+
 -(void)removeImage:(PiwigoImageData*)image
 {
-	for(NSString *category in image.categoryIds)
+	// Categories to which the image belongs to
+    for(NSString *category in image.categoryIds)
 	{
-		PiwigoAlbumData *imageCategory = [self getCategoryById:[category integerValue]];
-		[imageCategory deincrementImageSizeByOne];
-		[imageCategory removeImages:@[image]];
+        [self removeImage:image fromCategory:category];
 	}
+
+    // Smart albums
+    if ([self getImageForCategory:kPiwigoSearchCategoryId andId:image.imageId] != nil) {
+        [self removeImage:image fromCategory:[NSString stringWithFormat:@"%ld", (long)kPiwigoSearchCategoryId]];
+    }
+    if ([self getImageForCategory:kPiwigoVisitsCategoryId andId:image.imageId] != nil) {
+        [self removeImage:image fromCategory:[NSString stringWithFormat:@"%ld", (long)kPiwigoVisitsCategoryId]];
+    }
+    if ([self getImageForCategory:kPiwigoBestCategoryId andId:image.imageId] != nil) {
+        [self removeImage:image fromCategory:[NSString stringWithFormat:@"%ld", (long)kPiwigoBestCategoryId]];
+    }
+    if ([self getImageForCategory:kPiwigoRecentCategoryId andId:image.imageId] != nil) {
+        [self removeImage:image fromCategory:[NSString stringWithFormat:@"%ld", (long)kPiwigoRecentCategoryId]];
+    }
+    if ([self getImageForCategory:kPiwigoTagsCategoryId andId:image.imageId] != nil) {
+        [self removeImage:image fromCategory:[NSString stringWithFormat:@"%ld", (long)kPiwigoTagsCategoryId]];
+    }
+    if ([self getImageForCategory:kPiwigoFavoritesCategoryId andId:image.imageId] != nil) {
+        [self removeImage:image fromCategory:[NSString stringWithFormat:@"%ld", (long)kPiwigoFavoritesCategoryId]];
+    }
+    
+    // Delete image from Upload cache
+    NSDictionary *userInfo = @{@"imageId" : @(image.imageId)};
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDeletedImageFromUploadCache object:nil userInfo:userInfo];
+}
+
+-(void)removeImage:(PiwigoImageData*)image fromCategory:(NSString *)category
+{
+    PiwigoAlbumData *imageCategory = [self getCategoryById:[category integerValue]];
+    [imageCategory deincrementImageSizeByOne];
+    [imageCategory removeImages:@[image]];
+
+    // Notify UI that an image has been deleted to refresh the collection view
+    NSDictionary *userInfo = @{@"albumId" : category, @"imageId" : @(image.imageId)};
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDeletedImage object:nil userInfo:userInfo];
+
+    // Notify UI that the number of images has changed and that the thumbnail may have to be changed
+    userInfo = @{@"albumId" : category,
+                 @"thumbnailId" : @"0",
+                 @"thumbnailUrl" : @""};
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedAlbumData object:nil userInfo:userInfo];
 }
 
 

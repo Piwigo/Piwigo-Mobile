@@ -44,6 +44,22 @@
 "internetCancelledConnection_title" = "连接已取消";
 
 // ===========================================================================
+// ==> CORE DATA
+// ===========================================================================
+"CoreDataStore_WarningTitle" = "警告";
+"CoreDataStore_WarningMessage" = "Piwigo缓存已损坏，因此将会建立新的缓存";
+"CoreDataFetch_DigestError" = "无法解析获取到的数据";
+
+// Tag objects
+"CoreDataFetch_TagError" = "获取标签时出现错误！";
+"CoreDataFetch_TagMissingData" = "获取到的标签缺少合法编号或名称";
+"CoreDataFetch_TagCreateFailed" = "无法创建标签";
+
+// Upload objects
+"CoreDataFetch_UploadCreateFailed" = "无法创建上传对象";
+"CoreDataFetch_UploadMissingAsset" = "Failed to retrieve photo.";
+
+// ===========================================================================
 // ==> LOGIN / LOGOUT
 // ===========================================================================
 // Login
@@ -99,8 +115,6 @@
 
 // Logout — Errors
 "logoutFail_title" = "注销失败";
-"logoutFail_message" = "注销失败。请重试？";
-
 
 // ===========================================================================
 // ==> ALBUMS
@@ -153,8 +167,15 @@
 "categoryUpload_chooseAlbum" = "选择一个子相册以上传图像";
 "categoryUpload_LocalAlbums" = "本地相册";
 "categoryUpload_chooseLocalAlbum" = "选择一个相册以获取图片";
+"categoryUpload_sharedAlbums" = "Shared Albums";
 "categoryUpload_iCloudAlbums" = "iCloud 相册";
 "categoryUpload_chooseiCloudAlbum" = "选择一个iCloud 相册以获取图片";
+"categoryUpload_syncedEvents" = "iPhoto Events";
+"categoryUpload_syncedAlbums" = "iPhoto Albums";
+"categoryUpload_syncedFaces" = "iPhoto Faces";
+"categoryUpload_mediaTypes" = "Media Types";
+"categoryUpload_otherAlbums" = "Other Albums";
+
 "categoyUpload_loadSubCategories" = "加载";
 "categoryUpload_images" = "上传图片";
 "categoryUpload_subAlbum" = "创建子相册";
@@ -250,8 +271,13 @@
 "singleVideo" = "视频";
 "singleAudio" = "音频";
 "severalImages" = "照片";
+"severalVideos" = "视频";
 "noImages" = "没有照片";
 "pullToRefresh" = "刷新照片";
+"andMore" = " & 更多";
+"Months" = "月";
+"Weeks" = "周";
+"Days" = "天";
 
 // Errors
 "albumPhotoError_title" = "无法获取相册中的照片";
@@ -260,8 +286,10 @@
 // Image sort
 "sortBy" = "排序方式";
 "imageSortTitle" = "排序图片";
-"imageSortingHUD" = "排序照片中...";
 "imageSortMessage" = "请选择您希望如何排序照片";
+"imageSortingHUD" = "排序照片中...";
+"imageSelectingHUD" = "Selecting Photos…";
+"imageDeselectingHUD" = "Deselecting Photos…";
 
 // Image options (actions)
 "imageOptions_title" = "照片选项";
@@ -309,6 +337,7 @@
 "tag" = "标签";
 "tagsTitle_selectOne" = "选择一个标签";
 "tagsHeader_selected" = "已选";
+"tagsHeader_notSelected" = "Not Selected";
 "tagsHeader_all" = "所有";
 "tagsAdd_title" = "添加标签";
 "tagsAdd_message" = "为新标签输入一个名字";
@@ -421,7 +450,20 @@
 
 "imageUploadRemove" = "移除已上传的照片";
 
+"imageUploadTableCell_waiting" = "Waiting...";
+"imageUploadTableCell_preparing" = "Preparing...";
+"imageUploadTableCell_prepared" = "Ready for upload...";
 "imageUploadTableCell_uploading" = "上传中...";
+"imageUploadTableCell_uploaded" = "Uploaded";
+"imageUploadTableCell_finishing" = "Finishing...";
+
+"imageUploadClearFailedSingle" = "Clear Failed Upload";
+"imageUploadClearFailedSeveral" = "Clear %@ Failed Uploads";
+"imageUploadClearCompletedSingle" = "Clear Completed Upload";
+"imageUploadClearCompletedSeveral" = "Clear %@ Completed Uploads";
+"imageUploadResumeSingle" = "Resume Upload";
+"imageUploadResumeSeveral" = "Resume %@ Uploads";
+
 "imageUploadProgressBar_zero" = "正在上传 0/0";
 "imageUploadProgressBar_nonZero" = "正在上传 %@/%@";
 "imageUploadProgressBar_completed" = "完成";
@@ -429,13 +471,20 @@
 "imageUploadCompleted_message" = "照片成功上传到你的Piwigo服务器";
 "imageUploadCompleted_message>1" = "照片成功上传到你的Piwigo服务器";
 
+
 // Image upload — Errors
 "uploadError_title" = "上传错误";
 "uploadError_message" = "无法上传你的照片，错误信息为 %@";
 "uploadCancelled_title" = "上传已取消";
+"uploadNoInternetNetwork" = "No Internet Connection";
+"uploadNoWiFiNetwork" = "No Wi-Fi Connection";
+"uploadLowPowerMode" = "Low Power Mode enabled";
+"uploadSection_impossible" = "Impossible Uploads";
+"uploadSection_resumable" = "Resumable Uploads";
+"uploadSection_queue" = "Uploads Queue";
 
 "imageUploadError_title" = "照片上传错误";
-"imageUploadError_format" = "抱歉，Piwigo服务器无法接受.%@与.jpg后缀名";
+"imageUploadError_format" = "File format not accepted by Piwigo server.";
 "imageUploadError_source" = "无法创建照片源";
 "imageUploadError_destination" = "无法创建照片目标";
 "imageUploadError_iCloud" = "找不到照片，错误信息为 %@";
@@ -600,11 +649,11 @@
 "settings_stripGPSdata>375px" = "上传前删除私密元数据";
 "settings_photoResize" = "上传前调整大小";
 "settings_photoResize>375px" = "上传照片前调整大小";
-"settings_photoSize" = "> 大小";
+"settings_photoSize" = "大小";
 "settings_placeholderSize" = "输入5-100之间的照片大小";
 "settings_photoCompress" = "上传前压缩";
 "settings_photoCompress>375px" = "上传照片前压缩";
-"settings_photoQuality" = "> 质量";
+"settings_photoQuality" = "质量";
 "settings_placeholderQuality" = "输入照片质量（50~98）";
 "settings_prefixFilename>414px" = "自动为上传的照片文件名增加前缀";
 "settings_prefixFilename>375px" = "自动为上传的文件名增加前缀";
@@ -613,6 +662,7 @@
 "settings_defaultPrefix>320px" = "文件名前缀";
 "settings_defaultPrefixPlaceholder" = "前缀";
 "settings_deleteImage>375px" = "上传后删除照片";
+"settings_wifiOnly" = "Wi-Fi Only";
 "settings_deleteImage" = "上传后删除照片";
 
 // Settings — Cache

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="OpenSansRegular.TTF">
+            <string>OpenSans</string>
+        </array>
+    </customFonts>
+    <scenes>
+        <!--Tags View Controller-->
+        <scene sceneID="rHd-A7-nlW">
+            <objects>
+                <tableViewController storyboardIdentifier="TagsViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="i10-49-fht" customClass="TagsViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="insetGrouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="qTv-3F-XiU">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="sectionIndexColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="TagTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TagTableViewCell" rowHeight="43.5" translatesAutoresizingMaskIntoConstraints="NO" id="JLM-UW-y4d" userLabel="TagTableViewCell" customClass="TagTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="20" y="55.5" width="374" height="43.5"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="JLM-UW-y4d" id="A0J-gA-CTM">
+                                    <rect key="frame" x="0.0" y="0.0" width="374" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" image="addItem" translatesAutoresizingMaskIntoConstraints="NO" id="dW4-TH-asX" userLabel="Add Image">
+                                            <rect key="frame" x="329" y="9.5" width="25" height="25"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="25" id="Hv3-fK-7Cp"/>
+                                                <constraint firstAttribute="width" secondItem="dW4-TH-asX" secondAttribute="height" multiplier="1:1" id="Whb-To-E0o"/>
+                                            </constraints>
+                                        </imageView>
+                                        <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" image="removeItem" translatesAutoresizingMaskIntoConstraints="NO" id="zWH-dn-Nuv" userLabel="Remove Image">
+                                            <rect key="frame" x="329" y="9.5" width="25" height="25"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="25" id="e6F-iv-tEV"/>
+                                                <constraint firstAttribute="width" secondItem="zWH-dn-Nuv" secondAttribute="height" multiplier="1:1" id="mxw-1t-Urj"/>
+                                            </constraints>
+                                        </imageView>
+                                        <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="activityLabel" textAlignment="natural" lineBreakMode="wordWrap" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="F5m-b5-6AC">
+                                            <rect key="frame" x="20" y="10" width="98" height="23.5"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="23.5" id="dzy-5F-3Kc"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="zWH-dn-Nuv" firstAttribute="centerY" secondItem="A0J-gA-CTM" secondAttribute="centerY" id="Aan-Kf-j0Y"/>
+                                        <constraint firstAttribute="trailing" secondItem="zWH-dn-Nuv" secondAttribute="trailing" constant="20" symbolic="YES" id="Djb-gt-rru"/>
+                                        <constraint firstItem="dW4-TH-asX" firstAttribute="centerY" secondItem="A0J-gA-CTM" secondAttribute="centerY" id="Lq3-um-eGO"/>
+                                        <constraint firstItem="dW4-TH-asX" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="F5m-b5-6AC" secondAttribute="trailing" constant="10" id="RZ1-zJ-oyg"/>
+                                        <constraint firstItem="F5m-b5-6AC" firstAttribute="leading" secondItem="A0J-gA-CTM" secondAttribute="leading" constant="20" id="erA-za-9Bt"/>
+                                        <constraint firstItem="F5m-b5-6AC" firstAttribute="centerY" secondItem="A0J-gA-CTM" secondAttribute="centerY" id="fY6-21-tEf"/>
+                                        <constraint firstAttribute="trailing" secondItem="dW4-TH-asX" secondAttribute="trailing" constant="20" symbolic="YES" id="yeP-cH-UDI"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="leftLabel" destination="F5m-b5-6AC" id="TTx-AV-CEB"/>
+                                    <outlet property="rightAddImage" destination="dW4-TH-asX" id="C3P-km-QkR"/>
+                                    <outlet property="rightRemoveImage" destination="zWH-dn-Nuv" id="OwV-ub-xS8"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="i10-49-fht" id="N2g-6J-atK"/>
+                            <outlet property="delegate" destination="i10-49-fht" id="cXw-26-OkQ"/>
+                        </connections>
+                    </tableView>
+                    <connections>
+                        <outlet property="tagsTableView" destination="qTv-3F-XiU" id="COh-Jd-OTy"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="n3Q-7Y-kiP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="131.8840579710145" y="128.57142857142856"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="addItem" width="25" height="25"/>
+        <image name="removeItem" width="25" height="25"/>
+    </resources>
+</document>

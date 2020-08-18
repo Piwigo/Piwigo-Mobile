@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v2.5.0_text" = "Version 2.5\n\n• Records upload requests\n• Uploads photos/videos when possible\n• \"Wi-Fi only\" option for uploads\n• No upload when in Low Power Mode\n• Much faster access to the Photo Library\n• Minor bug fixes and improvements of the interface\n• Code modernization\n\nBackground uploading will be available after a server update.";
+
 "v2.4.8_text" = "版本 2.4.8\n• 新增以下警告条件：\n - 网站证书不可信\n - 建立的连接不安全\n• 增强缓存管理机制\n• 错误修复和界面改进";
 
 "v2.4.7_text" = "版本2.4.7\n\n• 新增简体中文，俄文和西班牙文翻译\n• 修复了某些服务器上的视频播放问题";

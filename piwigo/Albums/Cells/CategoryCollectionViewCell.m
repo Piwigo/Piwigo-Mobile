@@ -36,7 +36,7 @@
 		[self.contentView addSubview:self.tableView];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.tableView]];
     
-//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated:) name:kPiwigoNotificationChangedAlbumData object:nil];
 	}
 	return self;
 }
@@ -54,10 +54,31 @@
 	self.albumData = nil;
 }
 
-//-(void)categoriesUpdated
-//{
-//    [self.tableView reloadData];
-//}
+-(void)categoriesUpdated:(NSNotification *)notification
+{
+    if (notification != nil) {
+        NSDictionary *userInfo = notification.userInfo;
+
+        // Right category Id?
+        NSInteger catId = [[userInfo objectForKey:@"albumId"] integerValue];
+        if (catId != self.albumData.albumId) return;
+
+        // Add or remove thumbnail image?
+        NSString *thumbnailUrl = [userInfo objectForKey:@"thumbnailUrl"];
+        if (self.albumData.numberOfImages == 0) {
+            self.albumData.categoryImage = nil;
+            self.albumData.albumThumbnailId = 0;
+            self.albumData.albumThumbnailUrl = nil;
+        } else if (self.albumData.numberOfImages == 1) {
+            NSInteger thumbnailId = [[userInfo objectForKey:@"thumbnailId"] intValue];
+            self.albumData.albumThumbnailId = thumbnailId;
+            self.albumData.albumThumbnailUrl = thumbnailUrl;
+        }
+        
+        // Update number of images and thumbnail if needed
+        [self.tableView reloadData];
+    }
+}
 
 #pragma mark UITableView Methods
 

@@ -12,7 +12,7 @@
 // Tab bar
 "tabBar_albums" = "Albums";
 "tabBar_upload" = "Upload";
-"tabBar_preferences" = "Preferences";
+"tabBar_preferences" = "Settings";
 
 // Alert buttons
 "alertOkButton" = "OK";
@@ -46,6 +46,8 @@
 // ===========================================================================
 // ==> CORE DATA
 // ===========================================================================
+"CoreDataStore_WarningTitle" = "Warning";
+"CoreDataStore_WarningMessage" = "A serious application error occurred while Piwigo tried to read the data cache. A new cache has therefore been created.";
 "CoreDataFetch_DigestError" = "Could not digest the fetched data.";
 
 // Tag objects
@@ -55,6 +57,7 @@
 
 // Upload objects
 "CoreDataFetch_UploadCreateFailed" = "Failed to create a new Upload object.";
+"CoreDataFetch_UploadMissingAsset" = "Failed to retrieve photo.";
 
 // ===========================================================================
 // ==> LOGIN / LOGOUT
@@ -164,8 +167,15 @@
 "categoryUpload_chooseAlbum" = "Select a sub-album to upload photos to";
 "categoryUpload_LocalAlbums" = "Local Albums";
 "categoryUpload_chooseLocalAlbum" = "Select an album to get photos from";
+"categoryUpload_sharedAlbums" = "Shared Albums";
 "categoryUpload_iCloudAlbums" = "iCloud Albums";
 "categoryUpload_chooseiCloudAlbum" = "Select an iCloud album to get photos from";
+"categoryUpload_syncedEvents" = "iPhoto Events";
+"categoryUpload_syncedAlbums" = "iPhoto Albums";
+"categoryUpload_syncedFaces" = "iPhoto Faces";
+"categoryUpload_mediaTypes" = "Media Types";
+"categoryUpload_otherAlbums" = "Other Albums";
+
 "categoyUpload_loadSubCategories" = "load";
 "categoryUpload_images" = "Upload Photos";
 "categoryUpload_subAlbum" = "Create Sub-Album";
@@ -261,8 +271,13 @@
 "singleVideo" = "Video";
 "singleAudio" = "Audio";
 "severalImages" = "Photos";
+"severalVideos" = "Videos";
 "noImages" = "No Photos";
 "pullToRefresh" = "Reload Photos";
+"andMore" = " & more";
+"Months" = "Months";
+"Weeks" = "Weeks";
+"Days" = "Days";
 
 // Errors
 "albumPhotoError_title" = "Get Album Photos Error";
@@ -271,8 +286,10 @@
 // Image sort
 "sortBy" = "Sort by";
 "imageSortTitle" = "Sort Photos";
-"imageSortingHUD" = "Sorting Photos";
 "imageSortMessage" = "Please select how you wish to sort photos";
+"imageSortingHUD" = "Sorting Photos…";
+"imageSelectingHUD" = "Selecting Photos…";
+"imageDeselectingHUD" = "Deselecting Photos…";
 
 // Image options (actions)
 "imageOptions_title" = "Photo Options";
@@ -320,6 +337,7 @@
 "tag"  = "Tag";
 "tagsTitle_selectOne" = "Select a Tag";
 "tagsHeader_selected" = "Selected";
+"tagsHeader_notSelected" = "Not Selected";
 "tagsHeader_all" = "All";
 "tagsAdd_title" = "Add Tag";
 "tagsAdd_message" = "Enter a name for this new tag";
@@ -334,7 +352,7 @@
 "selectImages" = "Select Photos";
 "selectImageSelected" = "1 Photo Selected";
 "selectImagesSelected" = "%@ Photos Selected";
-"selectAll" = "All";
+"selectAll" = "Select All";
 
 // Image rename (filename)
 "renameImage_title" = "Original File";
@@ -432,7 +450,20 @@
 
 "imageUploadRemove" = "Removing uploaded photos";
 
+"imageUploadTableCell_waiting" = "Waiting...";
+"imageUploadTableCell_preparing" = "Preparing...";
+"imageUploadTableCell_prepared" = "Ready for upload...";
 "imageUploadTableCell_uploading" = "Uploading...";
+"imageUploadTableCell_uploaded" = "Uploaded";
+"imageUploadTableCell_finishing" = "Finishing...";
+
+"imageUploadClearFailedSingle" = "Clear Failed Upload";
+"imageUploadClearFailedSeveral" = "Clear %@ Failed Uploads";
+"imageUploadClearCompletedSingle" = "Clear Completed Upload";
+"imageUploadClearCompletedSeveral" = "Clear %@ Completed Uploads";
+"imageUploadResumeSingle" = "Resume Upload";
+"imageUploadResumeSeveral" = "Resume %@ Uploads";
+
 "imageUploadProgressBar_zero" = "Uploading 0/0";
 "imageUploadProgressBar_nonZero" = "Uploading %@/%@";
 "imageUploadProgressBar_completed" = "Completed";
@@ -440,13 +471,20 @@
 "imageUploadCompleted_message" = "photo uploaded to your Piwigo server.";
 "imageUploadCompleted_message>1" = "photos uploaded to your Piwigo server.";
 
+
 // Image upload — Errors
 "uploadError_title" = "Upload Error";
 "uploadError_message" = "Could not upload your photo. Error: %@";
 "uploadCancelled_title" = "Upload Cancelled";
+"uploadNoInternetNetwork" = "No Internet Connection";
+"uploadNoWiFiNetwork" = "No Wi-Fi Connection";
+"uploadLowPowerMode" = "Low Power Mode enabled";
+"uploadSection_impossible" = "Impossible Uploads";
+"uploadSection_resumable" = "Resumable Uploads";
+"uploadSection_queue" = "Uploads Queue";
 
 "imageUploadError_title" = "Photo Upload Error";
-"imageUploadError_format" = "Sorry, files with extensions .%@ and .jpg are not accepted by the Piwigo server.";
+"imageUploadError_format" = "File format not accepted by Piwigo server.";
 "imageUploadError_source" = "cannot create photo source";
 "imageUploadError_destination" = "cannot create photo destination";
 "imageUploadError_iCloud" = "Could not retrieve photo. Error: %@";
@@ -611,11 +649,11 @@
 "settings_stripGPSdata>375px" = "Strip Private Metadata Before Upload";
 "settings_photoResize" = "Resize Before Upload";
 "settings_photoResize>375px" = "Resize Photo Before Upload";
-"settings_photoSize" = "> Size   ";
+"settings_photoSize" = "Size";
 "settings_placeholderSize" = "Enter a Photo Size from 5 - 100";
 "settings_photoCompress" = "Compress Before Upload";
 "settings_photoCompress>375px" = "Compress Photo Before Upload";
-"settings_photoQuality" = "> Quality";
+"settings_photoQuality" = "Quality";
 "settings_placeholderQuality" = "Enter an Photo Quality from 50 - 98";
 "settings_prefixFilename>414px" = "Prefix Photo Filename Before Upload";
 "settings_prefixFilename>375px" = "Prefix Filename Before Upload";
@@ -624,6 +662,7 @@
 "settings_defaultPrefix>320px" = "Filename Prefix";
 "settings_defaultPrefixPlaceholder" = "Prefix";
 "settings_deleteImage>375px" = "Delete Photo After Upload";
+"settings_wifiOnly" = "Wi-Fi Only";
 "settings_deleteImage" = "Delete After Upload";
 
 // Settings — Cache

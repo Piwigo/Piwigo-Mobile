@@ -4,13 +4,26 @@
 
 #import <Availability.h>
 #import <AFNetworking.h>
+#import <MBProgressHUD.h>
+#import <MGSwipeTableCell.h>
+#import <SAMKeychain.h>
 #import <UIImageView+AFNetworking.h>
 
 #import "AlbumImagesViewController.h"
+#import "AlbumService.h"
 #import "AppDelegate.h"
 #import "CategoriesData.h"
-#import "LocationsData.h"
+#import "CategoryTableViewCell.h"
+#import "EditImageTextFieldTableViewCell.h"
+#import "EditImagePrivacyTableViewCell.h"
+#import "EditImageTagsTableViewCell.h"
+#import "EditImageTextViewTableViewCell.h"
+#import "ImagesCollection.h"
+#import "ImageService.h"
 #import "Model.h"
 #import "NetworkHandler.h"
+#import "PiwigoTagData.h"
+#import "SessionService.h"
 #import "TaggedImagesViewController.h"
 #import "TagsData.h"
+#import "Utilities.h"

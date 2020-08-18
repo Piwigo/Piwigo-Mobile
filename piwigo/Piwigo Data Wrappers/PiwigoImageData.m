@@ -463,6 +463,48 @@
 
 #pragma mark - Images
 
++(kPiwigoImageSize)getImageSizeForRow:(NSInteger)row
+{
+    kPiwigoImageSize imageSize;
+    
+    switch(row) {
+        case 0:
+            imageSize = kPiwigoImageSizeSquare;
+            break;
+        case 1:
+            imageSize = kPiwigoImageSizeThumb;
+            break;
+        case 2:
+            imageSize = kPiwigoImageSizeXXSmall;
+            break;
+        case 3:
+            imageSize = kPiwigoImageSizeXSmall;
+            break;
+        case 4:
+            imageSize = kPiwigoImageSizeSmall;
+            break;
+        case 5:
+            imageSize = kPiwigoImageSizeMedium;
+            break;
+        case 6:
+            imageSize = kPiwigoImageSizeLarge;
+            break;
+        case 7:
+            imageSize = kPiwigoImageSizeXLarge;
+            break;
+        case 8:
+            imageSize = kPiwigoImageSizeXXLarge;
+            break;
+        case 9:
+            imageSize = kPiwigoImageSizeFullRes;
+            break;
+        default:
+            imageSize = kPiwigoImageSizeEnumCount;
+            break;
+    }
+    return imageSize;
+}
+
 +(NSInteger)optimumImageSizeForDevice
 {
     // Determine the resolution of the screen

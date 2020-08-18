@@ -56,6 +56,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     return [self post:kPiwigoCategoriesGetImages
 		URLParameters:nil
            parameters:parameters
+       sessionManager:[Model sharedInstance].sessionManager
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
 				  
@@ -148,6 +149,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     return [self post:kPiwigoImageSearch
         URLParameters:nil
            parameters:parameters
+       sessionManager:[Model sharedInstance].sessionManager
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
@@ -271,12 +273,20 @@ NSString * const kGetImageOrderDescending = @"desc";
     return [self post:kPiwigoCategoriesGetImages
         URLParameters:nil
            parameters:parameters
+       sessionManager:[Model sharedInstance].sessionManager
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
           if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
               // Store number of images in cache
-              NSInteger nberImages = [[[[responseObject objectForKey:@"result"] objectForKey:@"paging"] objectForKey:@"count"] integerValue];
+              NSInteger nberImages;
+              if ((categoryId == kPiwigoVisitsCategoryId) ||
+                  (categoryId == kPiwigoBestCategoryId)   ||
+                  (categoryId == kPiwigoRecentCategoryId)) {
+                  nberImages = [[[[responseObject objectForKey:@"result"] objectForKey:@"paging"] objectForKey:@"total_count"] integerValue];
+              } else {
+                  nberImages = [[[[responseObject objectForKey:@"result"] objectForKey:@"paging"] objectForKey:@"count"] integerValue];
+              }
               [[CategoriesData sharedInstance] getCategoryById:categoryId].numberOfImages = nberImages;
               [[CategoriesData sharedInstance] getCategoryById:categoryId].totalNumberOfImages = nberImages;
               
@@ -376,6 +386,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     return [self post:kPiwigoTagsGetImages
         URLParameters:nil
            parameters:parameters
+       sessionManager:[Model sharedInstance].sessionManager
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
@@ -477,6 +488,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     return [self post:kPiwigoUserFavoritesGetList
         URLParameters:nil
            parameters:parameters
+       sessionManager:[Model sharedInstance].sessionManager
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
@@ -540,9 +552,8 @@ NSString * const kGetImageOrderDescending = @"desc";
 {
     NSInteger downloadedImageDataCount = [[CategoriesData sharedInstance] getCategoryById:categoryId].imageList.count;
     NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:categoryId].numberOfImages;
-
-    if (((categoryId > kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount)) ||
-        ((categoryId == kPiwigoSearchCategoryId) && (downloadedImageDataCount == totalImageCount) && totalImageCount))
+    NSLog(@"loadImageChunkForLastChunkCount: %ld / %ld images", (long)downloadedImageDataCount, (long)totalImageCount);
+    if (downloadedImageDataCount >= totalImageCount)
     {    // done. don't need anymore
         if(fail)
         {
@@ -562,10 +573,14 @@ NSString * const kGetImageOrderDescending = @"desc";
                                       {
                                           PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:categoryId];
                                           [albumData addImages:searchedImages];
-                                      }
-                                      
-                                      if (completion) {
-                                          completion(task, searchedImages.count);
+                                          NSLog(@"loadImageChunkForLastChunkCount: added %ld images", (long)searchedImages.count);
+                                          if (completion) {
+                                              completion(task, searchedImages.count);
+                                          }
+                                      } else {
+                                          if (completion) {
+                                            completion(task, 0);
+                                          }
                                       }
 
                                   } onFailure:^(NSURLSessionTask *task, NSError *error) {
@@ -589,12 +604,16 @@ NSString * const kGetImageOrderDescending = @"desc";
                                       {
                                           PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:categoryId];
                                           [albumData addImages:searchedImages];
+                                          NSLog(@"loadImageChunkForLastChunkCount: added %ld images", (long)searchedImages.count);
+                                          if (completion) {
+                                              completion(task, searchedImages.count);
+                                          }
+                                      } else {
+                                          if (completion) {
+                                            completion(task, 0);
+                                          }
                                       }
-                                      
-                                      if (completion) {
-                                          completion(task, searchedImages.count);
-                                      }
-                                      
+
                                   } onFailure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
                                       NSLog(@"loadImageChunkForLastChunkCount — Fail: %@", [error description]);
@@ -615,12 +634,15 @@ NSString * const kGetImageOrderDescending = @"desc";
                                       {
                                           PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:categoryId];
                                           [albumData addImages:searchedImages];
+                                          NSLog(@"loadImageChunkForLastChunkCount: added %ld images", (long)searchedImages.count);
+                                          if (completion) {
+                                              completion(task, searchedImages.count);
+                                          }
+                                      } else {
+                                          if (completion) {
+                                            completion(task, 0);
+                                          }
                                       }
-                                      
-                                      if (completion) {
-                                          completion(task, searchedImages.count);
-                                      }
-                                      
                                   } onFailure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
                                       NSLog(@"loadImageChunkForLastChunkCount — Fail: %@", [error description]);
@@ -635,16 +657,20 @@ NSString * const kGetImageOrderDescending = @"desc";
         task = [ImageService getFavoritesOnPage:onPage
                                        forOrder:sort
                                    OnCompletion:^(NSURLSessionTask *task, NSArray *searchedImages) {
-                                       if (searchedImages)
-                                       {
-                                           PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:categoryId];
-                                           [albumData addImages:searchedImages];
-                                       }
-                                      
-                                       if (completion) {
-                                           completion(task, searchedImages.count);
-                                       }
-                                      
+                                        if (searchedImages)
+                                        {
+                                            PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:categoryId];
+                                            [albumData addImages:searchedImages];
+                                            NSLog(@"loadImageChunkForLastChunkCount: added %ld images", (long)searchedImages.count);
+                                            if (completion) {
+                                                completion(task, searchedImages.count);
+                                            }
+                                        } else {
+                                            if (completion) {
+                                              completion(task, 0);
+                                            }
+                                        }
+
                                    } onFailure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
                                        NSLog(@"loadImageChunkForLastChunkCount — Fail: %@", [error description]);
@@ -665,17 +691,21 @@ NSString * const kGetImageOrderDescending = @"desc";
                                           {
                                               PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:categoryId];
                                               [albumData addImages:albumImages];
-                                          }
-                                    
-                                          if (completion) {
-                                              completion(task, albumImages.count);
+                                              NSLog(@"loadImageChunkForLastChunkCount: added %ld images", (long)albumImages.count);
+                                              if (completion) {
+                                                  completion(task, albumImages.count);
+                                              }
+                                          } else {
+                                              if (completion) {
+                                                  completion(task, 0);
+                                              }
                                           }
                                       } onFailure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
                                           NSLog(@"loadImageChunkForLastChunkCount — Fail: %@", [error description]);
 #endif
                                           if(fail) {
-                                              fail(nil, error);
+                                              fail(task, error);
                                           }
                                       }
                               ];
@@ -687,14 +717,6 @@ NSString * const kGetImageOrderDescending = @"desc";
 
 +(NSArray*)parseAlbumImagesJSON:(NSDictionary*)json forCategoryId:(NSInteger)categoryId
 {
-	NSDictionary *paging = [json objectForKey:@"paging"];
-    if (categoryId == kPiwigoTagsCategoryId) {
-        [Model sharedInstance].lastPageImageCount = [[paging objectForKey:@"total_count"] integerValue];
-    }
-    else {
-        [Model sharedInstance].lastPageImageCount = [[paging objectForKey:@"count"] integerValue];
-    }
-	
 	NSArray *imagesInfo = [json objectForKey:@"images"];
 	if(![imagesInfo isKindOfClass:[NSArray class]])
 	{
@@ -714,8 +736,7 @@ NSString * const kGetImageOrderDescending = @"desc";
 #pragma mark - Get image data
 
 +(NSURLSessionTask*)getImageInfoById:(NSInteger)imageId
-                  andAddImageToCache:(BOOL)addImage
-                    ListOnCompletion:(void (^)(NSURLSessionTask *task, PiwigoImageData *imageData))completion
+                        OnCompletion:(void (^)(NSURLSessionTask *task, PiwigoImageData *imageData))completion
                            onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
     // Compile parameters
@@ -727,6 +748,7 @@ NSString * const kGetImageOrderDescending = @"desc";
 	return [self post:kPiwigoImagesGetInfo
 		URLParameters:nil
            parameters:parameters
+       sessionManager:[Model sharedInstance].sessionManager
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
 				  
@@ -735,11 +757,7 @@ NSString * const kGetImageOrderDescending = @"desc";
               PiwigoImageData *imageData = [ImageService parseBasicImageInfoJSON:[responseObject objectForKey:@"result"]];
               for(NSNumber *categoryId in imageData.categoryIds)
               {
-                  if (addImage) {
-                      [[[CategoriesData sharedInstance] getCategoryById:[categoryId integerValue]] addImages:@[imageData]];
-                  } else {
-                      [[[CategoriesData sharedInstance] getCategoryById:[categoryId integerValue]] updateImages:@[imageData]];
-                  }
+                  [[[CategoriesData sharedInstance] getCategoryById:[categoryId integerValue]] updateImages:@[imageData]];
               }
               if(completion) {
                   completion(task, imageData);
@@ -1036,9 +1054,9 @@ NSString * const kGetImageOrderDescending = @"desc";
     // Object "level"
     if ([imageJson objectForKey:@"level"] &&
         ![[imageJson objectForKey:@"level"] isKindOfClass:[NSNull class]]) {
-        imageData.privacyLevel = [[imageJson objectForKey:@"level"] integerValue];
+        imageData.privacyLevel = (kPiwigoPrivacy)[[imageJson objectForKey:@"level"] integerValue];
     } else {
-        imageData.privacyLevel = NSNotFound;
+        imageData.privacyLevel = kPiwigoPrivacyUnknown;
     }
     
     // Object "tags"
@@ -1082,6 +1100,12 @@ NSString * const kGetImageOrderDescending = @"desc";
         imageData.fileSize = NSNotFound;
     }
     
+    // Object "md5sum"
+    imageData.MD5checksum = [NetworkHandler UTF8EncodedStringFromString:[imageJson objectForKey:@"md5sum"]];
+    if(imageData.MD5checksum.length == 0) {
+        imageData.MD5checksum = @"";
+    }
+
     return imageData;
 }
 
@@ -1227,11 +1251,13 @@ NSString * const kGetImageOrderDescending = @"desc";
                         @"image_id" : [NSString stringWithFormat:@"%ld", (long)image.imageId],
                         @"pwg_token" : [Model sharedInstance].pwgToken
                         }
+       sessionManager:[Model sharedInstance].sessionManager
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
 				  if(completion) {
 					  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
-						  [[CategoriesData sharedInstance] removeImage:image];
+						  // Remove image from cache and update UI
+                          [[CategoriesData sharedInstance] removeImage:image];
 						  completion(task);
 					  } else {
 						  fail(task, responseObject);
@@ -1276,11 +1302,13 @@ NSString * const kGetImageOrderDescending = @"desc";
                         @"image_id" : listOfImageIds,
                         @"pwg_token" : [Model sharedInstance].pwgToken
                         }
+       sessionManager:[Model sharedInstance].sessionManager
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   if(completion) {
                       if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
                           for (PiwigoImageData *image in images) {
+                              // Remove image from cache and update UI
                               [[CategoriesData sharedInstance] removeImage:image];
                           }
                           completion(task);
@@ -1363,12 +1391,16 @@ NSString * const kGetImageOrderDescending = @"desc";
                          forKey:kPiwigoImagesUploadParamDescription];
 
     // Tags
-    NSMutableArray *tagIds = [NSMutableArray new];
+    NSMutableString *tagIds = [NSMutableString new];
     for(PiwigoTagData *tagData in imageData.tags)
     {
-        [tagIds addObject:@(tagData.tagId)];
+        [tagIds appendFormat:@"%ld,", (long)tagData.tagId];
     }
-    [imageInformation setObject:[tagIds copy]
+    NSInteger nberChars = tagIds.length;
+    if (nberChars > 0) {
+        [tagIds deleteCharactersInRange:NSMakeRange(nberChars - 1, 1)];
+    }
+    [imageInformation setObject:tagIds
                          forKey:kPiwigoImagesUploadParamTags];
 
     // Privacy level
@@ -1378,7 +1410,8 @@ NSString * const kGetImageOrderDescending = @"desc";
     
     // Call pwg.images.setInfo to set image parameters
     return [self setImageInfoForImageWithId:imageData.imageId
-                            withInformation:imageInformation
+                                information:imageInformation
+                             sessionManager:[Model sharedInstance].sessionManager
                                  onProgress:progress
                                OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
                       
@@ -1399,7 +1432,8 @@ NSString * const kGetImageOrderDescending = @"desc";
 }
 
 +(NSURLSessionTask*)setImageInfoForImageWithId:(NSInteger)imageId
-                               withInformation:(NSDictionary*)imageInfo
+                                   information:(NSDictionary*)imageInfo
+                                sessionManager:(AFHTTPSessionManager *)sessionManager
                                     onProgress:(void (^)(NSProgress *))progress
                                   OnCompletion:(void (^)(NSURLSessionTask *task, id response))completion
                                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
@@ -1409,16 +1443,6 @@ NSString * const kGetImageOrderDescending = @"desc";
     if ([author isEqualToString:@"NSNotFound"] || (author == nil)) {
         // We should never set NSNotFound in the database
         author = @"";
-    }
-
-    // Prepare tag ids
-    NSString *tagIdList;
-    if ([[[imageInfo objectForKey:kPiwigoImagesUploadParamTags]
-          valueForKey:@"description"] count]) {
-        tagIdList = [[[imageInfo objectForKey:kPiwigoImagesUploadParamTags]
-                            valueForKey:@"description"] componentsJoinedByString:@","];
-    } else {
-        tagIdList = @"";
     }
 
     return [self post:kPiwigoImageSetInfo
@@ -1432,11 +1456,12 @@ NSString * const kGetImageOrderDescending = @"desc";
                          @"level" : [imageInfo objectForKey:kPiwigoImagesUploadParamPrivacy],
                          @"comment" : [imageInfo objectForKey:kPiwigoImagesUploadParamDescription],
                          @"single_value_mode" : @"replace",
-                         @"tag_ids" : tagIdList,
+                         @"tag_ids" : [imageInfo objectForKey:kPiwigoImagesUploadParamTags],
                          @"multiple_value_mode" : @"replace"
                          }
-              progress:progress
-               success:^(NSURLSessionTask *task, id responseObject) {
+       sessionManager:sessionManager
+             progress:progress
+              success:^(NSURLSessionTask *task, id responseObject) {
                         if(completion) {
                             completion(task, responseObject);
                         }
@@ -1473,6 +1498,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                          @"file" : fileName,
                          @"single_value_mode" : @"replace"
                          }
+        sessionManager:[Model sharedInstance].sessionManager
               progress:progress
                success:^(NSURLSessionTask *task, id responseObject) {
                         if(completion) {
@@ -1524,37 +1550,38 @@ NSString * const kGetImageOrderDescending = @"desc";
 {
     NSString *newImageCategories = [categoryIds componentsJoinedByString:@";"];
     NSURLSessionTask *request = [self post:kPiwigoImageSetInfo
-                             URLParameters:nil
-                                parameters:@{
-                                             @"image_id" : [NSString stringWithFormat:@"%ld", (long)image.imageId],
-                                             @"categories" : newImageCategories,
-                                             @"multiple_value_mode" : @"replace"
-                                             }
-                                  progress:progress
-                                   success:^(NSURLSessionTask *task, id responseObject) {
-                                       
-                                       if(completion)
-                                       {
-                                           completion(task, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
-                                       }
-                                } failure:^(NSURLSessionTask *task, NSError *error) {
+             URLParameters:nil
+                parameters:@{
+                             @"image_id" : [NSString stringWithFormat:@"%ld", (long)image.imageId],
+                             @"categories" : newImageCategories,
+                             @"multiple_value_mode" : @"replace"
+                             }
+            sessionManager:[Model sharedInstance].sessionManager
+                  progress:progress
+                   success:^(NSURLSessionTask *task, id responseObject) {
+                       
+                       if(completion)
+                       {
+                           completion(task, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
+                       }
+                } failure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
-                                     NSLog(@"=> setCategoriesForImage — Fail: %@", [error description]);
+                     NSLog(@"=> setCategoriesForImage — Fail: %@", [error description]);
 #endif
-                                     NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
-                                     if ((statusCode == 401) ||        // Unauthorized
-                                         (statusCode == 403) ||        // Forbidden
-                                         (statusCode == 404))          // Not Found
-                                     {
-                                         NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
-                                         dispatch_async(dispatch_get_main_queue(), ^{
-                                             [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
-                                         });
-                                     }
-                                     if(fail) {
-                                         fail(task, error);
-                                     }
-                                 }];
+                     NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
+                     if ((statusCode == 401) ||        // Unauthorized
+                         (statusCode == 403) ||        // Forbidden
+                         (statusCode == 404))          // Not Found
+                     {
+                         NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
+                         dispatch_async(dispatch_get_main_queue(), ^{
+                             [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
+                         });
+                     }
+                     if(fail) {
+                         fail(task, error);
+                     }
+                 }];
 
     return request;
 }
@@ -1565,35 +1592,36 @@ NSString * const kGetImageOrderDescending = @"desc";
                               onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
     NSURLSessionTask *request = [self post:kPiwigoUserFavoritesAdd
-                             URLParameters:nil
-                                parameters:@{
-                                             @"image_id" : [NSString stringWithFormat:@"%ld", (long)image.imageId]
-                                             }
-                                  progress:progress
-                                   success:^(NSURLSessionTask *task, id responseObject) {
-                                       
-                                       if(completion)
-                                       {
-                                           completion(task, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
-                                       }
-                                } failure:^(NSURLSessionTask *task, NSError *error) {
+             URLParameters:nil
+                parameters:@{
+                             @"image_id" : [NSString stringWithFormat:@"%ld", (long)image.imageId]
+                             }
+            sessionManager:[Model sharedInstance].sessionManager
+                  progress:progress
+                   success:^(NSURLSessionTask *task, id responseObject) {
+                       
+                       if(completion)
+                       {
+                           completion(task, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
+                       }
+                } failure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
-                                    NSLog(@"=> addImageToFavorites — Fail: %@", [error description]);
+                    NSLog(@"=> addImageToFavorites — Fail: %@", [error description]);
 #endif
-                                    NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
-                                    if ((statusCode == 401) ||        // Unauthorized
-                                        (statusCode == 403) ||        // Forbidden
-                                        (statusCode == 404))          // Not Found
-                                    {
-                                        NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
-                                        dispatch_async(dispatch_get_main_queue(), ^{
-                                            [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
-                                        });
-                                    }
-                                    if(fail) {
-                                        fail(task, error);
-                                    }
-                                }];
+                    NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
+                    if ((statusCode == 401) ||        // Unauthorized
+                        (statusCode == 403) ||        // Forbidden
+                        (statusCode == 404))          // Not Found
+                    {
+                        NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
+                        });
+                    }
+                    if(fail) {
+                        fail(task, error);
+                    }
+                }];
 
     return request;
 }
@@ -1604,35 +1632,36 @@ NSString * const kGetImageOrderDescending = @"desc";
                                    onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
     NSURLSessionTask *request = [self post:kPiwigoUserFavoritesRemove
-                             URLParameters:nil
-                                parameters:@{
-                                             @"image_id" : [NSString stringWithFormat:@"%ld", (long)image.imageId]
-                                             }
-                                  progress:progress
-                                   success:^(NSURLSessionTask *task, id responseObject) {
-                                       
-                                       if(completion)
-                                       {
-                                           completion(task, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
-                                       }
-                                } failure:^(NSURLSessionTask *task, NSError *error) {
+             URLParameters:nil
+                parameters:@{
+                             @"image_id" : [NSString stringWithFormat:@"%ld", (long)image.imageId]
+                             }
+            sessionManager:[Model sharedInstance].sessionManager
+                  progress:progress
+                   success:^(NSURLSessionTask *task, id responseObject) {
+                       
+                       if(completion)
+                       {
+                           completion(task, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
+                       }
+                } failure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
-                                   NSLog(@"=> removeImageFromFavorites — Fail: %@", [error description]);
+                   NSLog(@"=> removeImageFromFavorites — Fail: %@", [error description]);
 #endif
-                                   NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
-                                   if ((statusCode == 401) ||        // Unauthorized
-                                       (statusCode == 403) ||        // Forbidden
-                                       (statusCode == 404))          // Not Found
-                                   {
-                                       NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
-                                       dispatch_async(dispatch_get_main_queue(), ^{
-                                           [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
-                                       });
-                                   }
-                                   if(fail) {
-                                       fail(task, error);
-                                   }
-                               }];
+                   NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
+                   if ((statusCode == 401) ||        // Unauthorized
+                       (statusCode == 403) ||        // Forbidden
+                       (statusCode == 404))          // Not Found
+                   {
+                       NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
+                       dispatch_async(dispatch_get_main_queue(), ^{
+                           [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
+                       });
+                   }
+                   if(fail) {
+                       fail(task, error);
+                   }
+               }];
 
     return request;
 }
@@ -1640,12 +1669,13 @@ NSString * const kGetImageOrderDescending = @"desc";
 
 #pragma mark - Image metadata
 
-+(NSMutableDictionary *)stripGPSdataFromImageMetadata:(NSMutableDictionary *)metadata
++(NSMutableDictionary *)stripGPSdataFromImageMetadata:(NSDictionary *)originalMetadata
 {
+    NSMutableDictionary *metadata = [originalMetadata mutableCopy];
 #if defined(DEBUG_SHARE)
     NSLog(@"Strip GPS data [Start]: %@",metadata);
 #endif
-
+    
     // GPS dictionary
     NSMutableDictionary *GPSDictionary = [[metadata objectForKey:(NSString *)kCGImagePropertyGPSDictionary] mutableCopy];
     if (GPSDictionary) {
@@ -1673,8 +1703,9 @@ NSString * const kGetImageOrderDescending = @"desc";
     return metadata;
 }
 
-+(NSMutableDictionary *)fixMetadata:(NSMutableDictionary *)metadata ofImage:(UIImage*)image
++(NSMutableDictionary *)fixMetadata:(NSDictionary *)originalMetadata ofImage:(UIImage*)image
 {
+    NSMutableDictionary *metadata = [originalMetadata mutableCopy];
 #if defined(DEBUG_SHARE)
     NSLog(@"fixMetadata [Start]: %@",metadata);
 #endif

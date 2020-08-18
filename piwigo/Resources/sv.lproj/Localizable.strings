@@ -44,6 +44,22 @@
 "internetCancelledConnection_title" = "Anslutningen avbrutet";
 
 // ===========================================================================
+// ==> CORE DATA
+// ===========================================================================
+"CoreDataStore_WarningTitle" = "Varning";
+"CoreDataStore_WarningMessage" = "Ett allvarligt programfel uppstod när Piwigo försökte läsa datacheminnet. En ny cache har därför skapats.";
+"CoreDataFetch_DigestError" = "Kunde inte sammanfatta den hämtade datan.";
+
+// Tag objects
+"CoreDataFetch_TagError" = "Hämta taggar fel!";
+"CoreDataFetch_TagMissingData" = "Hittade och kommer att kasta en tagg som saknar en giltig kod eller namn.";
+"CoreDataFetch_TagCreateFailed" = "Det gick inte att skapa ett nytt taggobjekt.";
+
+// Upload objects
+"CoreDataFetch_UploadCreateFailed" = "Det gick inte att skapa ett nytt uppladdningsobjekt.";
+"CoreDataFetch_UploadMissingAsset" = "Failed to retrieve photo.";
+
+// ===========================================================================
 // ==> LOGIN / LOGOUT
 // ===========================================================================
 // Login
@@ -99,8 +115,6 @@
 
 // Logout — Errors
 "logoutFail_title" = "Utloggning misslyckades";
-"logoutFail_message" = "Kunde inte logga ut. Försök igen?";
-
 
 // ===========================================================================
 // ==> ALBUMS
@@ -153,8 +167,15 @@
 "categoryUpload_chooseAlbum" = "Välj ett album att ladda upp bilder till";
 "categoryUpload_LocalAlbums" = "Lokala album";
 "categoryUpload_chooseLocalAlbum" = "Välj ett album att hämta bilder från";
+"categoryUpload_sharedAlbums" = "Shared Albums";
 "categoryUpload_iCloudAlbums" = "iCloudalbum";
 "categoryUpload_chooseiCloudAlbum" = "Välj ett iCloud-album att hämta bilder från";
+"categoryUpload_syncedEvents" = "iPhoto Events";
+"categoryUpload_syncedAlbums" = "iPhoto Albums";
+"categoryUpload_syncedFaces" = "iPhoto Faces";
+"categoryUpload_mediaTypes" = "Media Types";
+"categoryUpload_otherAlbums" = "Other Albums";
+
 "categoyUpload_loadSubCategories" = "ladda";
 "categoryUpload_images" = "Ladda upp bilder";
 "categoryUpload_subAlbum" = "Skapa underalbum";
@@ -250,8 +271,13 @@
 "singleVideo" = "Video";
 "singleAudio" = "Ljud";
 "severalImages" = "Bilder";
+"severalVideos" = "Videor";
 "noImages" = "Inga bilder";
 "pullToRefresh" = "Ladda om bilderna";
+"andMore" = " & mer";
+"Months" = "Månader";
+"Weeks" = "Veckor";
+"Days" = "Dagar";
 
 // Errors
 "albumPhotoError_title" = "Hämta albumets bildfel";
@@ -260,8 +286,10 @@
 // Image sort
 "sortBy" = "Sortera efter";
 "imageSortTitle" = "Sortera bilder";
-"imageSortingHUD" = "Sorterar bilder";
 "imageSortMessage" = "Välj hur du vill sortera bilder";
+"imageSortingHUD" = "Sorterar bilder";
+"imageSelectingHUD" = "Selecting Photos…";
+"imageDeselectingHUD" = "Deselecting Photos…";
 
 // Image options (actions)
 "imageOptions_title" = "Bildalternativ";
@@ -309,6 +337,7 @@
 "tag" = "Etikett";
 "tagsTitle_selectOne" = "Välj en Etikett";
 "tagsHeader_selected" = "Valda";
+"tagsHeader_notSelected" = "Not Selected";
 "tagsHeader_all" = "Alla";
 "tagsAdd_title" = "Lägg till etikett";
 "tagsAdd_message" = "Ange ett namn för den nya etiketten";
@@ -421,7 +450,20 @@
 
 "imageUploadRemove" = "Tar bort uppladdade bilder";
 
+"imageUploadTableCell_waiting" = "Waiting...";
+"imageUploadTableCell_preparing" = "Preparing...";
+"imageUploadTableCell_prepared" = "Ready for upload...";
 "imageUploadTableCell_uploading" = "Laddar upp...";
+"imageUploadTableCell_uploaded" = "Uploaded";
+"imageUploadTableCell_finishing" = "Finishing...";
+
+"imageUploadClearFailedSingle" = "Clear Failed Upload";
+"imageUploadClearFailedSeveral" = "Clear %@ Failed Uploads";
+"imageUploadClearCompletedSingle" = "Clear Completed Upload";
+"imageUploadClearCompletedSeveral" = "Clear %@ Completed Uploads";
+"imageUploadResumeSingle" = "Resume Upload";
+"imageUploadResumeSeveral" = "Resume %@ Uploads";
+
 "imageUploadProgressBar_zero" = "Laddar upp 0/0";
 "imageUploadProgressBar_nonZero" = "Ladda upp %@/%@";
 "imageUploadProgressBar_completed" = "Klart";
@@ -429,13 +471,20 @@
 "imageUploadCompleted_message" = "bilder/videor laddades upp till din Piwigoserver.";
 "imageUploadCompleted_message>1" = "bilder/videor laddades upp till din Piwigoserver.";
 
+
 // Image upload — Errors
 "uploadError_title" = "Uppladdningsfel";
 "uploadError_message" = "Kunde inte ladda upp din bild. Fel: %@";
 "uploadCancelled_title" = "Uppladdning avbruten";
+"uploadNoInternetNetwork" = "No Internet Connection";
+"uploadNoWiFiNetwork" = "No Wi-Fi Connection";
+"uploadLowPowerMode" = "Low Power Mode enabled";
+"uploadSection_impossible" = "Impossible Uploads";
+"uploadSection_resumable" = "Resumable Uploads";
+"uploadSection_queue" = "Uploads Queue";
 
 "imageUploadError_title" = "Bilduppladdningsfel";
-"imageUploadError_format" = "Tyvärr, men bildfiler med tillägg .%@ och .jpg accepteras inte av Piwigo servern.";
+"imageUploadError_format" = "File format not accepted by Piwigo server.";
 "imageUploadError_source" = "kan inte skapa bildkälla";
 "imageUploadError_destination" = "kan inte skapa bild destination";
 "imageUploadError_iCloud" = "Kunde inte att hämta bild. Fel: %@";
@@ -600,11 +649,11 @@
 "settings_stripGPSdata>375px" = "Rensa privat Metadata före uppladdning";
 "settings_photoResize" = "Skala om före uppladdning";
 "settings_photoResize>375px" = "Ändra bildstorlek före uppladdning";
-"settings_photoSize" = "> Storlek   ";
+"settings_photoSize" = "Storlek";
 "settings_placeholderSize" = "Ange en bildstorlek mellan 5 - 100";
 "settings_photoCompress" = "Komprimera före uppladdning";
 "settings_photoCompress>375px" = "Komprimera bild före uppladdning";
-"settings_photoQuality" = "> Kvalitet";
+"settings_photoQuality" = "Kvalitet";
 "settings_placeholderQuality" = "Ange en bildkvalitet från 50-98";
 "settings_prefixFilename>414px" = "Prefix bildfilnamn innan uppladdning";
 "settings_prefixFilename>375px" = "Prefix filnamn innan uppladdning";
@@ -613,6 +662,7 @@
 "settings_defaultPrefix>320px" = "Filnamnsprefix";
 "settings_defaultPrefixPlaceholder" = "Prefix";
 "settings_deleteImage>375px" = "Radera bild efter uppladdning";
+"settings_wifiOnly" = "Wi-Fi Only";
 "settings_deleteImage" = "Radera efter uppladdning";
 
 // Settings — Cache

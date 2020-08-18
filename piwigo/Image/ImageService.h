@@ -60,8 +60,7 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
                                           onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 +(NSURLSessionTask*)getImageInfoById:(NSInteger)imageId
-                  andAddImageToCache:(BOOL)addImage
-                    ListOnCompletion:(void (^)(NSURLSessionTask *task, PiwigoImageData *imageData))completion
+                        OnCompletion:(void (^)(NSURLSessionTask *task, PiwigoImageData *imageData))completion
                            onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 +(NSURLRequest*)urlRequestForImage:(PiwigoImageData*)image withMnimumSize:(CGFloat)minSize;
@@ -90,7 +89,8 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
                              onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 +(NSURLSessionTask*)setImageInfoForImageWithId:(NSInteger)imageId
-                               withInformation:(NSDictionary*)imageInformation
+                                   information:(NSDictionary*)imageInformation
+                                sessionManager:(AFHTTPSessionManager *)sessionManager
                                     onProgress:(void (^)(NSProgress *))progress
                                   OnCompletion:(void (^)(NSURLSessionTask *task, id response))completion
                                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
@@ -117,8 +117,8 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
                                 OnCompletion:(void (^)(NSURLSessionTask *task, BOOL removedSuccessfully))completion
                                    onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(NSMutableDictionary *)stripGPSdataFromImageMetadata:(NSMutableDictionary *)metadata;
-+(NSMutableDictionary *)fixMetadata:(NSMutableDictionary *)metadata ofImage:(UIImage*)image;
++(NSMutableDictionary *)stripGPSdataFromImageMetadata:(NSDictionary *)metadata;
++(NSMutableDictionary *)fixMetadata:(NSDictionary *)originalMetadata ofImage:(UIImage*)image;
 +(NSData*)writeMetadata:(NSDictionary*)metadata intoImageData:(NSData *)imageData;
 
 @end

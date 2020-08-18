@@ -1,5 +1,5 @@
 # Uncomment the next line to define a global platform for your project
-platform :ios, '8.0'
+platform :ios, '9.3'
 
 target 'piwigo' do
   # Uncomment the next line if you're using Swift or would like to use dynamic frameworks
@@ -21,12 +21,11 @@ target 'piwigo' do
   end
 
   # Pods for piwigo
-  pod 'AFNetworking', '~> 3.2.1'
-  # pod 'EAIntroView'
-  pod 'MBProgressHUD', '~> 1.1.0'
-  pod 'MGSwipeTableCell'
-  pod 'SAMKeychain'
-  pod 'IQKeyboardManager' #iOS8 and later
+  pod 'AFNetworking',      '~> 4.0.1'
+  pod 'MBProgressHUD',     '~> 1.2.0'
+  pod 'MGSwipeTableCell',  '~> 1.6.11'
+  pod 'SAMKeychain',       '~> 1.5.3'
+  pod 'IQKeyboardManager', '~> 6.5.5'
 
   target 'piwigoAppStore' do
     inherit! :search_paths

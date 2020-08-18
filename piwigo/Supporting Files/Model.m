@@ -50,11 +50,12 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         instance.isAppLanguageRTL = (direction == UIUserInterfaceLayoutDirectionRightToLeft);
 		
         instance.serverProtocol = @"https://";
-        instance.serverName = @"";
+        instance.serverPath = @"";
         instance.stringEncoding = NSUTF8StringEncoding; // UTF-8 by default
         instance.username = @"";
         instance.HttpUsername = @"";
 		instance.hasAdminRights = NO;
+        instance.hasNormalRights = NO;
         instance.hadOpenedSession = NO;
         instance.hasUploadedImages = NO;
         instance.usesCommunityPluginV29 = NO;           // Checked at each new session
@@ -71,7 +72,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         instance.maxNberRecentCategories = 5;
 
         // Sort images by date: old to new
-		instance.defaultSort = kPiwigoSortCategoryDateCreatedAscending;
+		instance.defaultSort = kPiwigoSortDateCreatedAscending;
         
         // Display images titles in collection views
         instance.displayImageTitles = YES;
@@ -89,10 +90,10 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         
         // Optimised image thumbnail size, will be cross-checked at login
         instance.defaultThumbnailSize = [PiwigoImageData optimumImageThumbnailSizeForDevice];
-        instance.thumbnailsPerRowInPortrait = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ? 4.0 : 6.0;
+        instance.thumbnailsPerRowInPortrait = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ? 4 : 6;
 
         // Default image settings
-        instance.didOptimiseImagePreviewSize = NO;  // ===> Unused and therefore available…
+        instance.couldNotMigrateCoreDataStore = NO;
 		instance.defaultImagePreviewSize = [PiwigoImageData optimumImageSizeForDevice];
         instance.shareMetadataTypeAirDrop = YES;
         instance.shareMetadataTypeAssignToContact = NO;
@@ -123,6 +124,8 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         instance.deleteImageAfterUpload = NO;
         instance.prefixFileNameBeforeUpload = NO;
         instance.defaultPrefix = @"";
+        instance.localImagesSort = kPiwigoSortDateCreatedDescending;    // i.e. new to old
+        instance.wifiOnlyUploading = NO;            // Wi-Fi only option
 
         // Default palette mode
         instance.isDarkPaletteActive = NO;
@@ -144,17 +147,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 	return instance;
 }
 
-+ (PHPhotoLibrary *)defaultAssetsLibrary
-{
-    static dispatch_once_t pred = 0;
-    static PHPhotoLibrary *library = nil;
-    dispatch_once(&pred, ^{
-        library = [[PHPhotoLibrary alloc] init];
-    });
-    return library;
-}
-
--(NSString *)getNameForPrivacyLevel:(NSInteger)privacyLevel
+-(NSString *)getNameForPrivacyLevel:(kPiwigoPrivacy)privacyLevel
 {
 	NSString *name = @"";
 	switch(privacyLevel)
@@ -174,59 +167,13 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 		case kPiwigoPrivacyEverybody:
 			name = NSLocalizedString(@"privacyLevel_everybody", @"Everybody");
 			break;
-        case NSNotFound:
-            name = @"";
-            break;
-			
+            
 		case kPiwigoPrivacyCount:
+        case kPiwigoPrivacyUnknown:
 			break;
 	}
 	
 	return name;
-}
-
--(NSString *)getNameForShareActivity:(NSString *)activity forWidth:(CGFloat)width
-{
-    NSString *name = @"";
-    if ([activity isEqualToString:UIActivityTypeAirDrop]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_AirDrop>375px", @"Transfer images with AirDrop") : NSLocalizedString(@"shareActivityCode_AirDrop", @"Transfer with AirDrop");
-    } else if ([activity isEqualToString:UIActivityTypeAssignToContact]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_AssignToContact>375px", @"Assign image to contact") : NSLocalizedString(@"shareActivityCode_AssignToContact", @"Assign to contact");
-    } else if ([activity isEqualToString:UIActivityTypeCopyToPasteboard]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_CopyToPasteboard>375px", @"Copy images to Pasteboard") : NSLocalizedString(@"shareActivityCode_CopyToPasteboard", @"Copy to Pasteboard");
-    } else if ([activity isEqualToString:UIActivityTypeMail]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Mail>375px", @"Post images by email") : NSLocalizedString(@"shareActivityCode_Mail", @"Post by email");
-    } else if ([activity isEqualToString:UIActivityTypeMessage]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Message>375px", @"Post images with the Message app") : NSLocalizedString(@"shareActivityCode_Message", @"Post with Message");
-    } else if ([activity isEqualToString:UIActivityTypePostToFacebook]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Facebook>375px", @"Post images to Facebook") : NSLocalizedString(@"shareActivityCode_Facebook", @"Post to Facebook");
-    } else if ([activity isEqualToString:kPiwigoActivityTypeMessenger]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Messenger>375px", @"Post images with the Messenger app") : NSLocalizedString(@"shareActivityCode_Messenger", @"Post with Messenger");
-    } else if ([activity isEqualToString:UIActivityTypePostToFlickr]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Flickr>375px", @"Post images to Flickr") : NSLocalizedString(@"shareActivityCode_Flickr", @"Post to Flickr");
-    } else if ([activity isEqualToString:kPiwigoActivityTypePostInstagram]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Instagram>375px", @"Post images to Instagram") : NSLocalizedString(@"shareActivityCode_Instagram", @"Post to Instagram");
-    } else if ([activity isEqualToString:kPiwigoActivityTypePostToSignal]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Signal>375px", @"Post images with the Signal app") : NSLocalizedString(@"shareActivityCode_Signal", @"Post with Signal");
-    } else if ([activity isEqualToString:kPiwigoActivityTypePostToSnapchat]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Snapchat>375px", @"Post images to Snapchat app") : NSLocalizedString(@"shareActivityCode_Snapchat", @"Post to Snapchat");
-    } else if ([activity isEqualToString:UIActivityTypePostToTencentWeibo]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_TencentWeibo>375px", @"Post images to TencentWeibo") : NSLocalizedString(@"shareActivityCode_TencentWeibo", @"Post to TencentWeibo");
-    } else if ([activity isEqualToString:UIActivityTypePostToTwitter]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Twitter>375px", @"Post images to Twitter") : NSLocalizedString(@"shareActivityCode_Twitter", @"Post to Twitter");
-    } else if ([activity isEqualToString:UIActivityTypePostToVimeo]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Vimeo>375px", @"Post videos to Vimeo") : NSLocalizedString(@"shareActivityCode_Vimeo", @"Post to Vimeo");
-    } else if ([activity isEqualToString:UIActivityTypePostToWeibo]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Weibo>375px", @"Post images to Weibo") : NSLocalizedString(@"shareActivityCode_Weibo", @"Post to Weibo");
-    } else if ([activity isEqualToString:kPiwigoActivityTypePostToWhatsApp]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_WhatsApp>375px", @"Post images with the WhatsApp app") : NSLocalizedString(@"shareActivityCode_WhatsApp", @"Post with WhatsApp");
-    } else if ([activity isEqualToString:UIActivityTypeSaveToCameraRoll]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_CameraRoll>375px", @"Save images to Camera Roll") : NSLocalizedString(@"shareActivityCode_CameraRoll", @"Save to Camera Roll");
-    } else if ([activity isEqualToString:kPiwigoActivityTypeOther]) {
-        name = width > 375 ? NSLocalizedString(@"shareActivityCode_Other>375px", @"Share images with other apps") : NSLocalizedString(@"shareActivityCode_Other", @"Share with other apps");
-    }
-    
-    return name;
 }
 
 
@@ -268,7 +215,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 		NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:codedData];
 		Model *modelData = [unarchiver decodeObjectForKey:@"Model"];
 		self.serverProtocol = modelData.serverProtocol;
-		self.serverName = modelData.serverName;
+		self.serverPath = modelData.serverPath;
 		self.defaultPrivacyLevel = modelData.defaultPrivacyLevel;
 		self.defaultAuthor = modelData.defaultAuthor;
 		self.diskCache = modelData.diskCache;
@@ -293,7 +240,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         self.thumbnailsPerRowInPortrait = modelData.thumbnailsPerRowInPortrait;
         self.defaultCategory = modelData.defaultCategory;
         self.dateOfLastTranslationRequest = modelData.dateOfLastTranslationRequest;
-        self.didOptimiseImagePreviewSize = modelData.didOptimiseImagePreviewSize;  // ===> Unused
+        self.couldNotMigrateCoreDataStore = modelData.couldNotMigrateCoreDataStore;
         self.shareMetadataTypeAirDrop = modelData.shareMetadataTypeAirDrop;
         self.shareMetadataTypeAssignToContact = modelData.shareMetadataTypeAssignToContact;
         self.shareMetadataTypeCopyToPasteboard = modelData.shareMetadataTypeCopyToPasteboard;
@@ -319,6 +266,8 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         self.maxNberRecentCategories = modelData.maxNberRecentCategories;
         self.prefixFileNameBeforeUpload = modelData.prefixFileNameBeforeUpload;
         self.defaultPrefix = modelData.defaultPrefix;
+        self.localImagesSort = modelData.localImagesSort;
+        self.wifiOnlyUploading = modelData.wifiOnlyUploading;
 	}
 }
 
@@ -334,7 +283,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 
 - (void)encodeWithCoder:(NSCoder *)encoder {
 	NSMutableArray *saveObject = [[NSMutableArray alloc] init];
-	[saveObject addObject:self.serverName];
+	[saveObject addObject:self.serverPath];
 	[saveObject addObject:@(self.defaultPrivacyLevel)];
 	[saveObject addObject:self.defaultAuthor];
 	[saveObject addObject:@(self.diskCache)];
@@ -360,13 +309,13 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     [saveObject addObject:@(self.switchPaletteThreshold)];
     [saveObject addObject:[NSNumber numberWithBool:self.isDarkPaletteModeActive]];
     // Added in v2.1.8…
-    [saveObject addObject:@(self.thumbnailsPerRowInPortrait)];
+    [saveObject addObject:[NSNumber numberWithInteger:self.thumbnailsPerRowInPortrait]];
     // Added in v2.2.0…
-    [saveObject addObject:@(self.defaultCategory)];
+    [saveObject addObject:[NSNumber numberWithInteger:self.defaultCategory]];
     // Added in v2.2.3…
     [saveObject addObject:[NSNumber numberWithDouble:self.dateOfLastTranslationRequest]];
     // Added in v2.2.5…
-    [saveObject addObject:[NSNumber numberWithBool:self.didOptimiseImagePreviewSize]];  // ===> Unused
+    [saveObject addObject:[NSNumber numberWithBool:self.couldNotMigrateCoreDataStore]];
     // Added in v2.3…
     [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypeAirDrop]];
     [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypeAssignToContact]];
@@ -397,6 +346,9 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     // Added in 2.4.6…
     [saveObject addObject:[NSNumber numberWithBool:self.prefixFileNameBeforeUpload]];
     [saveObject addObject:self.defaultPrefix];
+    // Added in 2.5.0…
+    [saveObject addObject:@(self.localImagesSort)];
+    [saveObject addObject:[NSNumber numberWithBool:self.wifiOnlyUploading]];
 
     [encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -405,11 +357,11 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 	self = [super init];
 	NSArray *savedData = [decoder decodeObjectForKey:@"Model"];
     
-    NSString *serverName = [savedData objectAtIndex:0];
-    if ([serverName isEqualToString:@"(null)(null)"]) {
-        self.serverName = @"";
+    NSString *serverPath = [savedData objectAtIndex:0];
+    if ([serverPath isEqualToString:@"(null)(null)"]) {
+        self.serverPath = @"";
     } else {
-        self.serverName = serverName;
+        self.serverPath = serverPath;
     }
 	self.defaultPrivacyLevel = (kPiwigoPrivacy)[[savedData objectAtIndex:1] integerValue];
 	self.defaultAuthor = [savedData objectAtIndex:2];
@@ -434,9 +386,9 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 		self.loadAllCategoryInfo = YES;
 	}
 	if(savedData.count > 9) {
-		self.defaultSort = (kPiwigoSortCategory)[[savedData objectAtIndex:9] intValue];
+		self.defaultSort = (kPiwigoSort)[[savedData objectAtIndex:9] intValue];
 	} else {
-		self.defaultSort = kPiwigoSortCategoryDateCreatedAscending;
+		self.defaultSort = kPiwigoSortDateCreatedAscending;
 	}
 	if(savedData.count > 10) {
 		self.resizeImageOnUpload = [[savedData objectAtIndex:10] boolValue];
@@ -533,7 +485,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     } else {
         self.isDarkPaletteModeActive = NO;
     }
-    NSInteger nberOfImages = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ? 4.0 : 6.0;
+    NSInteger nberOfImages = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ? 4 : 6;
     if(savedData.count > 23) {
         if(savedData.count > 47) {
             self.thumbnailsPerRowInPortrait = [[savedData objectAtIndex:23] integerValue];
@@ -559,8 +511,10 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     } else {
         self.dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate] - k2WeeksInDays;
     }
-    if(savedData.count > 26) {  // ===> Unused and therefore available…
-        self.didOptimiseImagePreviewSize = NO;
+    if(savedData.count > 26) {
+        self.couldNotMigrateCoreDataStore = [[savedData objectAtIndex:26] boolValue];
+    } else {
+        self.couldNotMigrateCoreDataStore = NO;
     }
     if(savedData.count > 27) {
         self.shareMetadataTypeAirDrop = [[savedData objectAtIndex:27] boolValue];
@@ -686,6 +640,16 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         self.defaultPrefix = [savedData objectAtIndex:51];
     } else {
         self.defaultPrefix = @"";       // No prefix to filenames by default value
+    }
+    if(savedData.count > 52) {
+        self.localImagesSort = (kPiwigoSort)[[savedData objectAtIndex:52] intValue];
+    } else {
+        self.localImagesSort = kPiwigoSortDateCreatedDescending;
+    }
+    if(savedData.count > 53) {
+        self.wifiOnlyUploading = [[savedData objectAtIndex:53] boolValue];
+    } else {
+        self.wifiOnlyUploading = NO;    // Wi-Fi not required for uploading
     }
 	return self;
 }

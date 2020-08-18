@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 #import "Model.h"
+#import "PiwigoTagData.h"
 
 typedef enum {
 	kPiwigoImageSizeSquare,
@@ -82,14 +83,15 @@ typedef enum {
 // API pwg.images.getInfo returns in addition:
 //
 //      author, level, tags, (added_by), rating_score, (rates), (representative_ext)
-//      filesize, (md5sum), (date_metadata_update), (lastmodified), (rotation), (latitude), (longitude)
+//      filesize, md5sum, (date_metadata_update), (lastmodified), (rotation), (latitude), (longitude)
 //      (comments), (comments_paging), (coi)
 //
 @property (nonatomic, strong) NSString *author;                 // author
-@property (nonatomic, assign) NSInteger privacyLevel;           // level
-@property (nonatomic, strong) NSArray *tags;                    // tags
+@property (nonatomic, assign) kPiwigoPrivacy privacyLevel;      // level
+@property (nonatomic, strong) NSArray<PiwigoTagData*> *tags;    // tags
 @property (nonatomic, assign) float ratingScore;                // rating score
 @property (nonatomic, assign) NSInteger fileSize;               // filesize
+@property (nonatomic, strong) NSString * MD5checksum;           // MD5 checksum
 
 @property (nonatomic, assign) BOOL isVideo;
 
@@ -102,6 +104,7 @@ typedef enum {
 +(NSInteger)optimumImageThumbnailSizeForDevice;
 +(NSString*)nameForImageThumbnailSizeType:(kPiwigoImageSize)imageSize withInfo:(BOOL)addInfo;
 
++(kPiwigoImageSize)getImageSizeForRow:(NSInteger)row;
 +(NSInteger)optimumImageSizeForDevice;
 +(NSString*)nameForImageSizeType:(kPiwigoImageSize)imageSize withInfo:(BOOL)addInfo;
 

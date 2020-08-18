@@ -25,6 +25,7 @@ public enum Model : String {
     iPadAir2           = "iPad Air 2",
     iPad5              = "iPad 5", //aka iPad 2017
     iPad6              = "iPad 6", //aka iPad 2018
+    iPad7              = "iPad 7", //aka iPad 2019
     //iPad mini
     iPadMini           = "iPad Mini",
     iPadMini2          = "iPad Mini 2",
@@ -37,6 +38,8 @@ public enum Model : String {
     iPadPro12_9        = "iPad Pro 12.9\"",
     iPadPro2_12_9      = "iPad Pro 2 12.9\"",
     iPadPro3_12_9      = "iPad Pro 3 12.9\"",
+    iPadPro2_11        = "iPad Pro 2 11\"",
+    iPadPro4_12_9      = "iPad Pro 4 12.9\"",
     //iPhone
     iPhone4            = "iPhone 4",
     iPhone4S           = "iPhone 4S",
@@ -59,6 +62,7 @@ public enum Model : String {
     iPhone11           = "iPhone 11",
     iPhone11Pro        = "iPhone 11 Pro",
     iPhone11ProMax     = "iPhone 11 Pro Max",
+    iPhoneSE2          = "iPhone SE 2",
     //Apple TV
     AppleTV            = "Apple TV",
     AppleTV_4K         = "Apple TV 4K",
@@ -109,6 +113,8 @@ public extension UIDevice {
             "iPad6,12"  : .iPad5,
             "iPad7,5"   : .iPad6, //aka iPad 2018
             "iPad7,6"   : .iPad6,
+            "iPad7,11"  : .iPad7, //aka iPad 2019
+            "iPad7,12"  : .iPad7,
             //iPad mini
             "iPad2,5"   : .iPadMini,
             "iPad2,6"   : .iPadMini,
@@ -138,6 +144,10 @@ public extension UIDevice {
             "iPad8,6"   : .iPadPro3_12_9,
             "iPad8,7"   : .iPadPro3_12_9,
             "iPad8,8"   : .iPadPro3_12_9,
+            "iPad8,9"   : .iPadPro2_11,
+            "iPad8,10"  : .iPadPro2_11,
+            "iPad8,11"  : .iPadPro4_12_9,
+            "iPad8,12"  : .iPadPro4_12_9,
             //iPhone
             "iPhone3,1" : .iPhone4,
             "iPhone3,2" : .iPhone4,
@@ -171,6 +181,7 @@ public extension UIDevice {
             "iPhone12,1" : .iPhone11,
             "iPhone12,3" : .iPhone11Pro,
             "iPhone12,5" : .iPhone11ProMax,
+            "iPhone12,8" : .iPhoneSE2,
             //AppleTV
             "AppleTV5,3" : .AppleTV,
             "AppleTV6,2" : .AppleTV_4K
@@ -223,9 +234,9 @@ class piwigoAppStore: XCTestCase {
         sleep(2);
 
         // Select Photos Title A->Z sort order
-        app.navigationBars.element(boundBy: 0).buttons["preferences"].tap()
+        app.navigationBars.element(boundBy: 0).buttons["settings"].tap()
         sleep(1);
-        app.tables["preferences"].cells["defaultSort"].tap()
+        app.tables["settings"].cells["defaultSort"].tap()
         app.tables["sortSelect"].cells.element(boundBy: 0).tap()
         app.navigationBars.buttons["Done"].tap()
 
@@ -238,7 +249,7 @@ class piwigoAppStore: XCTestCase {
         let tableQuery = collectionCell.children(matching: .other).element.tables.element(boundBy: 0)
         sleep(1);
         tableQuery/*@START_MENU_TOKEN@*/.staticTexts["comment"]/*[[".cells[\"albumName, comment, nberImages\"].staticTexts[\"comment\"]",".staticTexts[\"comment\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.swipeLeft()
-        snapshot("Image1")
+        snapshot("Image01")
         
         // Screenshot #2: collection of images
         app.collectionViews.children(matching: .cell).element(boundBy: 2).tap()
@@ -247,7 +258,7 @@ class piwigoAppStore: XCTestCase {
             app.collectionViews.children(matching: .cell).element(boundBy: 0).swipeUp()
             sleep(2);
         }
-        snapshot("Image2")
+        snapshot("Image02")
 
         // Screenshot #3: collection with selected images
         app.collectionViews.children(matching: .cell).element(boundBy: 0).swipeUp()
@@ -277,7 +288,7 @@ class piwigoAppStore: XCTestCase {
                 app.collectionViews.children(matching: .cell).element(boundBy: 28).tap()
             }
         }
-        snapshot("Image3")
+        snapshot("Image03")
 
         // Screenshot #4: image previewed
         app.navigationBars.buttons["Cancel"].tap()
@@ -326,34 +337,34 @@ class piwigoAppStore: XCTestCase {
         else if deviceType == "iPad Pro 9.7\"" {
             app.collectionViews.children(matching: .cell).element(boundBy: 11).tap()
             sleep(2)
-            app.images.element(boundBy: 0).pinch(withScale: 1.15, velocity: 2.0)
+            app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
         }
         else if deviceType == "iPad Pro 10.5\"" {
             app.collectionViews.children(matching: .cell).element(boundBy: 11).tap()
             sleep(2)
-            app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
+            app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
         }
-        else if deviceType == "iPad Pro 11\"" {
+        else if deviceType == "iPad Pro 2 11\"" {
             app.collectionViews.children(matching: .cell).element(boundBy: 11).tap()
             sleep(2)
-            app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
+            app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
         }
         else if deviceType == "iPad Pro 2 12.9\"" {
             app.collectionViews.children(matching: .cell).element(boundBy: 9).swipeDown()
             sleep(2)
             app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
             sleep(2)
-            app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
+            app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
         }
         else if deviceType == "iPad Pro 3 12.9\"" {
             app.collectionViews.children(matching: .cell).element(boundBy: 9).swipeDown()
             sleep(2)
             app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
             sleep(2)
-            app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
+            app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
         }
         sleep(2)                        // Leave time for animation
-        snapshot("Image4")
+        snapshot("Image04")
         
         // Screenshot #5: Edit parameters
         app.navigationBars.buttons.element(boundBy: 0).tap()
@@ -376,77 +387,79 @@ class piwigoAppStore: XCTestCase {
         else if deviceType == "iPad Pro 9.7\"" {
             app.collectionViews.children(matching: .cell).element(boundBy: 21).tap()
             sleep(2)
-            app.images.element(boundBy: 0).pinch(withScale: 1.15, velocity: 2.0)
+            app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
         }
         else if deviceType == "iPad Pro 10.5\"" {
             app.collectionViews.children(matching: .cell).element(boundBy: 21).tap()
             sleep(2)
-            app.images.element(boundBy: 0).pinch(withScale: 1.15, velocity: 2.0)
+            app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
         }
-        else if deviceType == "iPad Pro 11\"" {
+        else if deviceType == "iPad Pro 2 11\"" {
             app.collectionViews.children(matching: .cell).element(boundBy: 21).tap()
             sleep(2)
-            app.images.element(boundBy: 0).pinch(withScale: 1.15, velocity: 2.0)
+            app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
         }
         else if deviceType == "iPad Pro 2 12.9\"" {
             app.collectionViews.children(matching: .cell).element(boundBy: 26).tap()
             sleep(2)
-            app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
+            app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
         }
         else if deviceType == "iPad Pro 3 12.9\"" {
             app.collectionViews.children(matching: .cell).element(boundBy: 26).tap()
             sleep(2)
-            app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
+            app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
         }
         sleep(1)                        // Leave time for animation
-        app.buttons["edit"].tap();
+        app.buttons["edit"].tap()
         sleep(2)                        // Leave time for animation
-        snapshot("Image5")
+        snapshot("Image05")
 
-        // Screenshot #6: upload view
-        app.buttons["Cancel"].tap();
+        // Screenshot #6: create album & add image buttons
+        app.buttons["Cancel"].tap()
         sleep(2)                        // Leave time for animation
         app.navigationBars.buttons.element(boundBy: 0).tap()
         sleep(2)                        // Leave time for animation
-        app.buttons["add"].tap();
-        snapshot("Image6")
+        app.buttons["add"].tap()
+        snapshot("Image06")
         
         // Screenshot #7: local images
+        app.buttons["addImages"].tap()
         sleep(1)                        // Leave time for animation
-        app.tables["PickPiwigoAlbum"].cells.element(boundBy: 0).tap();
+        app.tables.children(matching: .cell).matching(identifier: "Recent").element.tap()
         sleep(1)                        // Leave time for animation
-        app.tables.children(matching: .cell).matching(identifier: "CameraRoll").element.tap()
+        app.buttons["imageDay"].tap()
         sleep(1)                        // Leave time for animation
         let images = app.collectionViews.matching(identifier: "CameraRoll").children(matching: .cell)
-        images.element(boundBy: 0).children(matching: .other).element.tap()
-        images.element(boundBy: 1).children(matching: .other).element.tap()
         images.element(boundBy: 2).children(matching: .other).element.tap()
         images.element(boundBy: 3).children(matching: .other).element.tap()
         images.element(boundBy: 4).children(matching: .other).element.tap()
         images.element(boundBy: 5).children(matching: .other).element.tap()
         images.element(boundBy: 6).children(matching: .other).element.tap()
         images.element(boundBy: 8).children(matching: .other).element.tap()
-        snapshot("Image7")
-        
-        // Screenshot #8: upload images
-        app.navigationBars.buttons["upload"].tap()
+        snapshot("Image07")
+                        
+        // Screenshot #8: upload images, parameters
+        app.navigationBars["LocalImagesNav"].buttons["Upload"].tap()
         sleep(1)
-        app.tables["ImageUploadTable"].children(matching: .cell).element(boundBy: 1).swipeLeft()
-        snapshot("Image8")
-
-        // Screenshot #9: settings
+        snapshot("Image08")
+        
+        // Screenshot #9: upload images, settings
+        app.navigationBars["UploadSwitchView"]/*@START_MENU_TOKEN@*/.buttons["settings"]/*[[".segmentedControls.buttons[\"settings\"]",".buttons[\"settings\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
+        sleep(1)
+        snapshot("Image09")
+        
+        // Screenshot #10: settings
+        app.navigationBars["UploadSwitchView"].buttons["Cancel"].tap()
+        let localimagesnavNavigationBar = app.navigationBars["LocalImagesNav"]
+        localimagesnavNavigationBar.buttons.element(boundBy: 0).tap()
         sleep(1)                        // Leave time for animation
-        app.navigationBars["ImageUploadNav"].buttons.element(boundBy: 0).tap()
-        sleep(1)                        // Leave time for animation
-        app.navigationBars["ImageUploadNav"].buttons.element(boundBy: 0).tap()
-        sleep(1)                        // Leave time for animation
-        app.buttons["Cancel"].tap()
-        sleep(1)                        // Leave time for animation
+        localimagesnavNavigationBar.buttons.element(boundBy: 0).tap()
+        app.navigationBars["LocalAlbumsNav"].buttons["Cancel"].tap()
         app.buttons["rootAlbum"].tap()
         sleep(1)                        // Leave time for animation
-        app.buttons["preferences"].tap()
+        app.buttons["settings"].tap()
         sleep(1)                        // Leave time for animation
-        app.tables["preferences"].cells["server"].swipeUp()
-        snapshot("Image9")
+        app.tables["settings"].cells["server"].swipeUp()
+        snapshot("Image10")
     }
 }

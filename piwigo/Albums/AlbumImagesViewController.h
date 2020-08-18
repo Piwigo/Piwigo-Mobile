@@ -9,9 +9,10 @@
 #import <UIKit/UIKit.h>
 
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationBackToDefaultAlbum;
-
-@class Tag;
-@class TagSelectorViewController;
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationLeftUploads;
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationUploadedImage;
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationDeletedImage;
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationChangedAlbumData;
 
 @interface AlbumImagesViewController : UIViewController
 

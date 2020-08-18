@@ -44,6 +44,22 @@
 "internetCancelledConnection_title" = "Соединение отменено";
 
 // ===========================================================================
+// ==> CORE DATA
+// ===========================================================================
+"CoreDataStore_WarningTitle" = "Внимание";
+"CoreDataStore_WarningMessage" = "Произошла серьезная ошибка приложения при попытке Piwigo прочитать кэш данных. Поэтому был создан новый кэш.";
+"CoreDataFetch_DigestError" = "Не удалось обработать полученные данные.";
+
+// Tag objects
+"CoreDataFetch_TagError" = "Ошибка выборки тэгов!";
+"CoreDataFetch_TagMissingData" = "Найден и будет отключен тэг, в котором отсутствует допустимый код или имя.";
+"CoreDataFetch_TagCreateFailed" = "Не удалось создать новый тэг объекта.";
+
+// Upload objects
+"CoreDataFetch_UploadCreateFailed" = "Не удалось создать новую загрузку объекта.";
+"CoreDataFetch_UploadMissingAsset" = "Failed to retrieve photo.";
+
+// ===========================================================================
 // ==> LOGIN / LOGOUT
 // ===========================================================================
 // Login
@@ -99,8 +115,6 @@
 
 // Logout — Errors
 "logoutFail_title" = "Ошибка выхода";
-"logoutFail_message" = "Не удалось выйти. Попробовать еще раз?";
-
 
 // ===========================================================================
 // ==> ALBUMS
@@ -153,8 +167,15 @@
 "categoryUpload_chooseAlbum" = "Выберите альбом для загрузки фото";
 "categoryUpload_LocalAlbums" = "Альбомы на устройстве";
 "categoryUpload_chooseLocalAlbum" = "Выберите альбом из которого необходимо получить фотографии";
+"categoryUpload_sharedAlbums" = "Shared Albums";
 "categoryUpload_iCloudAlbums" = "Альбомы iCloud";
 "categoryUpload_chooseiCloudAlbum" = "Выберите альбом iCloud, из которого получить фото";
+"categoryUpload_syncedEvents" = "iPhoto Events";
+"categoryUpload_syncedAlbums" = "iPhoto Albums";
+"categoryUpload_syncedFaces" = "iPhoto Faces";
+"categoryUpload_mediaTypes" = "Media Types";
+"categoryUpload_otherAlbums" = "Other Albums";
+
 "categoyUpload_loadSubCategories" = "загрузить";
 "categoryUpload_images" = "Загрузить фото";
 "categoryUpload_subAlbum" = "Создать подальбом";
@@ -250,8 +271,13 @@
 "singleVideo" = "Видео";
 "singleAudio" = "Аудио";
 "severalImages" = "Фото";
+"severalVideos" = "Видео";
 "noImages" = "Нет фото";
 "pullToRefresh" = "Перезагрузить фотографии";
+"andMore" = " и многое другое";
+"Months" = "Месяца(-ев)";
+"Weeks" = "неделя(-ль)";
+"Days" = "дней";
 
 // Errors
 "albumPhotoError_title" = "Ошибка установки фотографий альбома";
@@ -260,8 +286,10 @@
 // Image sort
 "sortBy" = "Сортировка";
 "imageSortTitle" = "Сортировать фото";
-"imageSortingHUD" = "Сортировка фотографий";
 "imageSortMessage" = "Пожалуйста, выберите способ сортировки фотографий";
+"imageSortingHUD" = "Сортировка фотографий";
+"imageSelectingHUD" = "Selecting Photos…";
+"imageDeselectingHUD" = "Deselecting Photos…";
 
 // Image options (actions)
 "imageOptions_title" = "Параметры фотографии";
@@ -309,6 +337,7 @@
 "tag" = "Тег";
 "tagsTitle_selectOne" = "Выберите тег";
 "tagsHeader_selected" = "Выбрано";
+"tagsHeader_notSelected" = "Not Selected";
 "tagsHeader_all" = "Все";
 "tagsAdd_title" = "Добавить тег";
 "tagsAdd_message" = "Введите название для этого нового тега";
@@ -421,7 +450,20 @@
 
 "imageUploadRemove" = "Перенос загруженных изображений";
 
+"imageUploadTableCell_waiting" = "Waiting...";
+"imageUploadTableCell_preparing" = "Preparing...";
+"imageUploadTableCell_prepared" = "Ready for upload...";
 "imageUploadTableCell_uploading" = "Загрузка...";
+"imageUploadTableCell_uploaded" = "Uploaded";
+"imageUploadTableCell_finishing" = "Finishing...";
+
+"imageUploadClearFailedSingle" = "Clear Failed Upload";
+"imageUploadClearFailedSeveral" = "Clear %@ Failed Uploads";
+"imageUploadClearCompletedSingle" = "Clear Completed Upload";
+"imageUploadClearCompletedSeveral" = "Clear %@ Completed Uploads";
+"imageUploadResumeSingle" = "Resume Upload";
+"imageUploadResumeSeveral" = "Resume %@ Uploads";
+
 "imageUploadProgressBar_zero" = "Загрузка 0/0";
 "imageUploadProgressBar_nonZero" = "Загрузка %@/%@";
 "imageUploadProgressBar_completed" = "Выполнено";
@@ -429,13 +471,20 @@
 "imageUploadCompleted_message" = "фото загружено на Ваш сервер Piwigo.";
 "imageUploadCompleted_message>1" = "фотографии загружены на Ваш сервер Piwigo.";
 
+
 // Image upload — Errors
 "uploadError_title" = "Ошибка загрузки";
 "uploadError_message" = "Не удалось закачать Ваше фото. Ошибка: %@";
 "uploadCancelled_title" = "Загрузка отменена";
+"uploadNoInternetNetwork" = "No Internet Connection";
+"uploadNoWiFiNetwork" = "No Wi-Fi Connection";
+"uploadLowPowerMode" = "Low Power Mode enabled";
+"uploadSection_impossible" = "Impossible Uploads";
+"uploadSection_resumable" = "Resumable Uploads";
+"uploadSection_queue" = "Uploads Queue";
 
 "imageUploadError_title" = "Ошибка загрузки фото";
-"imageUploadError_format" = "Увы, но файлы с расширениями .%@ и .jpg не поддерживаются сервером Piwigo.";
+"imageUploadError_format" = "File format not accepted by Piwigo server.";
 "imageUploadError_source" = "невозможно создать источник фотографий";
 "imageUploadError_destination" = "невозможно создать место назначения изображения";
 "imageUploadError_iCloud" = "Не удалось восстановление фото. Ошибка: %@";
@@ -600,11 +649,11 @@
 "settings_stripGPSdata>375px" = "Удаление личных метаданных перед загрузкой";
 "settings_photoResize" = "Изменить размер перед загрузкой";
 "settings_photoResize>375px" = "Изменить размер фото перед загрузкой";
-"settings_photoSize" = "> Размер   ";
+"settings_photoSize" = "Размер";
 "settings_placeholderSize" = "Введите размер фотографии от 5 до 100";
 "settings_photoCompress" = "Сжать перед загрузкой";
 "settings_photoCompress>375px" = "Сжать изображение перед загрузкой";
-"settings_photoQuality" = "> Качество";
+"settings_photoQuality" = "Качество";
 "settings_placeholderQuality" = "Введите качество фотографии от 50 до 98";
 "settings_prefixFilename>414px" = "Префикс фото имя файла перед загрузкой";
 "settings_prefixFilename>375px" = "Префикс имени файла перед загрузкой";
@@ -613,6 +662,7 @@
 "settings_defaultPrefix>320px" = "Префикс имени файла";
 "settings_defaultPrefixPlaceholder" = "Префикс";
 "settings_deleteImage>375px" = "Удалить фотографию после загрузки";
+"settings_wifiOnly" = "Wi-Fi Only";
 "settings_deleteImage" = "Удалить после загрузки";
 
 // Settings — Cache

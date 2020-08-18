@@ -1,0 +1,14 @@
+{
+    "result" :     {
+        "category" :         {
+            "id" : 142,
+            "label" : "Test 22",
+            "nb_photos" : "8",
+        },
+        "image_id" : 6580,
+        "name" : "Delft - 06",
+        "square_src" : "https://.../20200628211106-5fc9fb08-sq.jpg",
+        "src" : "https://.../20200628211106-5fc9fb08-th.jpg",
+    },
+    "stat" : "ok",
+}

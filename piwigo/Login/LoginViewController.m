@@ -7,24 +7,26 @@
 //
 
 #import <AFNetworking/AFImageDownloader.h>
+#import <sys/utsname.h>
 
+#import "AppDelegate.h"
+#import "CategoriesData.h"
 #import "LoginViewController.h"
 #import "LoginViewController_iPhone.h"
 #import "LoginViewController_iPad.h"
-#import "SAMKeychain.h"
-#import "Model.h"
-#import "SessionService.h"
-#import "AppDelegate.h"
 #import "MBProgressHUD.h"
-#import "CategoriesData.h"
+#import "Model.h"
+#import "SAMKeychain.h"
+#import "SessionService.h"
+#import "Utilities.h"
 
 //#ifndef DEBUG_SESSION
 //#define DEBUG_SESSION
 //#endif
 
-NSString * const kPiwigoURL = @"— https://piwigo.org —";
+NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 
-@interface LoginViewController () <UITextFieldDelegate>
+@interface LoginViewController () <UITextFieldDelegate, MFMailComposeViewControllerDelegate>
 
 @property (nonatomic, strong) UIAlertController *httpAlertController;
 @property (nonatomic, strong) UIAlertAction *httpLoginAction;
@@ -40,10 +42,11 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 	{
 		self.view.backgroundColor = [UIColor piwigoColorBrown];
 		
-		self.piwigoLogo = [UIImageView new];
+        self.piwigoLogo = [UIButton buttonWithType:UIButtonTypeCustom];
+        [self.piwigoLogo setImage:[UIImage imageNamed:@"piwigoLogo"] forState:UIControlStateNormal];
 		self.piwigoLogo.translatesAutoresizingMaskIntoConstraints = NO;
-        self.piwigoLogo.image = [UIImage imageNamed:@"piwigoLogo"];
 		self.piwigoLogo.contentMode = UIViewContentModeScaleAspectFit;
+        [self.piwigoLogo addTarget:self action:@selector(openPiwigoURL) forControlEvents:UIControlEventTouchUpInside];
 		[self.view addSubview:self.piwigoLogo];
 		
         self.piwigoButton = [UIButton new];
@@ -51,45 +54,32 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
         self.piwigoButton.translatesAutoresizingMaskIntoConstraints = NO;
         self.piwigoButton.titleLabel.font = [UIFont piwigoFontNormal];
         [self.piwigoButton setTitleColor:[UIColor piwigoColorOrange] forState:UIControlStateNormal];
-        [self.piwigoButton setTitle:kPiwigoURL forState:UIControlStateNormal];
-        [self.piwigoButton addTarget:self action:@selector(openPiwigoURL) forControlEvents:UIControlEventTouchUpInside];
+        [self.piwigoButton setTitle:kPiwigoSupport forState:UIControlStateNormal];
+        [self.piwigoButton addTarget:self action:@selector(mailPiwigoSupport) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:self.piwigoButton];
 
         self.serverTextField = [PiwigoTextField new];
-		self.serverTextField.translatesAutoresizingMaskIntoConstraints = NO;
 		self.serverTextField.placeholder = NSLocalizedString(@"login_serverPlaceholder", @"example.com");
-		self.serverTextField.text = [NSString stringWithFormat:@"%@", [Model sharedInstance].serverName];
-		self.serverTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-		self.serverTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+		self.serverTextField.text = [NSString stringWithFormat:@"%@", [Model sharedInstance].serverPath];
 		self.serverTextField.keyboardType = UIKeyboardTypeURL;
 		self.serverTextField.returnKeyType = UIReturnKeyNext;
-        self.serverTextField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
-        self.serverTextField.clearButtonMode = YES;
 		self.serverTextField.delegate = self;
 		[self.view addSubview:self.serverTextField];
 				
 		self.userTextField = [PiwigoTextField new];
-		self.userTextField.translatesAutoresizingMaskIntoConstraints = NO;
 		self.userTextField.placeholder = NSLocalizedString(@"login_userPlaceholder", @"Username (optional)");
 		self.userTextField.text = [Model sharedInstance].username;
-		self.userTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-		self.userTextField.autocorrectionType = UITextAutocorrectionTypeNo;
         self.userTextField.keyboardType = UIKeyboardTypeDefault;
 		self.userTextField.returnKeyType = UIReturnKeyNext;
-        self.userTextField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
-        self.userTextField.clearButtonMode = YES;
 		self.userTextField.delegate = self;
 		[self.view addSubview:self.userTextField];
 		
 		self.passwordTextField = [PiwigoTextField new];
-		self.passwordTextField.translatesAutoresizingMaskIntoConstraints = NO;
 		self.passwordTextField.placeholder = NSLocalizedString(@"login_passwordPlaceholder", @"Password (optional)");
 		self.passwordTextField.secureTextEntry = YES;
-		self.passwordTextField.text = [SAMKeychain passwordForService:[Model sharedInstance].serverName account:[Model sharedInstance].username];
-        self.passwordTextField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
+		self.passwordTextField.text = [SAMKeychain passwordForService:[Model sharedInstance].serverPath account:[Model sharedInstance].username];
         self.passwordTextField.keyboardType = UIKeyboardTypeDefault;
 		self.passwordTextField.returnKeyType = UIReturnKeyGo;
-        self.passwordTextField.clearButtonMode = YES;
 		[self.view addSubview:self.passwordTextField];
 		
 		self.loginButton = [PiwigoButton new];
@@ -214,6 +204,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
     self.isAlreadyTryingToLogin = YES;
     self.usesCommunityPluginV29 = NO;
     [Model sharedInstance].hasAdminRights = NO;
+    [Model sharedInstance].hasNormalRights = NO;
     [Model sharedInstance].usesCommunityPluginV29 = NO;
     
     // To remember app received anthentication challenge
@@ -221,9 +212,10 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
     [Model sharedInstance].didRequestHTTPauthentication = NO;
 #if defined(DEBUG_SESSION)
     NSLog(@"=> launchLogin: starting with…");
-    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@",
+    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@, hasNormalRights=%@",
           ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
-          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
+          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
+          ([Model sharedInstance].hasNormalRights ? @"YES" : @"NO"));
 #endif
 
     // Check server address and cancel login if address not provided
@@ -240,12 +232,16 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                 handler:^(UIAlertAction * action) {}];
         
         [alert addAction:defaultAction];
+        alert.view.tintColor = UIColor.piwigoColorOrange;
         if (@available(iOS 13.0, *)) {
             alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
         } else {
             // Fallback on earlier versions
         }
-        [self presentViewController:alert animated:YES completion:nil];
+        [self presentViewController:alert animated:YES completion:^{
+            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+            alert.view.tintColor = UIColor.piwigoColorOrange;
+        }];
         
         return;
     }
@@ -259,7 +255,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
     if(self.userTextField.text.length > 0)
     {
         // Store credentials in Keychain
-        [SAMKeychain setPassword:self.passwordTextField.text forService:[Model sharedInstance].serverName account:self.userTextField.text];
+        [SAMKeychain setPassword:self.passwordTextField.text forService:[Model sharedInstance].serverPath account:self.userTextField.text];
     }
 
     // Create permanent session managers for retrieving data and downloading images
@@ -290,7 +286,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
             [self performLogin];
         } else {
             // Methods unknown, so we cannot reach the server, inform user
-            NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"serverMethodsError_message", @"Failed to get server methods.\nProblem with Piwigo server?")}];
+            NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"serverMethodsError_message", @"Failed to get server methods.\nProblem with Piwigo server?")}];
             [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
         }
         
@@ -403,20 +399,24 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
     
     [self.httpAlertController addAction:cancelAction];
     [self.httpAlertController addAction:acceptAction];
+    self.httpAlertController.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
         self.httpAlertController.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self presentViewController:self.httpAlertController animated:YES completion:nil];
+        [self presentViewController:self.httpAlertController animated:YES completion:^{
+            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+            self.httpAlertController.view.tintColor = UIColor.piwigoColorOrange;
+        }];
     });
 }
 
 -(void)requestHttpCredentialsAfterError:(NSError *)error
 {
     NSString *user = [Model sharedInstance].HttpUsername;
-    NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:user];
+    NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] account:user];
     if (password == nil) password = @"";
 
     self.httpAlertController = [UIAlertController
@@ -463,19 +463,23 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
           handler:^(UIAlertAction * action) {
               // Store credentials
               [Model sharedInstance].HttpUsername = [self.httpAlertController.textFields objectAtIndex:0].text;
-              [SAMKeychain setPassword:[self.httpAlertController.textFields objectAtIndex:1].text forService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] account:[self.httpAlertController.textFields objectAtIndex:0].text];
+              [SAMKeychain setPassword:[self.httpAlertController.textFields objectAtIndex:1].text forService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] account:[self.httpAlertController.textFields objectAtIndex:0].text];
               // Try logging in with new HTTP credentials
               [self launchLogin];
           }];
     
     [self.httpAlertController addAction:cancelAction];
     [self.httpAlertController addAction:self.httpLoginAction];
+    self.httpAlertController.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
         self.httpAlertController.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
-    [self presentViewController:self.httpAlertController animated:YES completion:nil];
+    [self presentViewController:self.httpAlertController animated:YES completion:^{
+        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+        self.httpAlertController.view.tintColor = UIColor.piwigoColorOrange;
+    }];
 }
 
 -(void)requestNonSecuredAccessAfterError:(NSError *)error
@@ -503,13 +507,17 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
     
     [self.httpAlertController addAction:cancelAction];
     [self.httpAlertController addAction:acceptAction];
+    self.httpAlertController.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
         self.httpAlertController.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self presentViewController:self.httpAlertController animated:YES completion:nil];
+        [self presentViewController:self.httpAlertController animated:YES completion:^{
+            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+            self.httpAlertController.view.tintColor = UIColor.piwigoColorOrange;
+        }];
     });
 }
 
@@ -548,7 +556,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
             
         } else {
             // Methods unknown, so we cannot reach the server, inform user
-            NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"serverMethodsError_message", @"Failed to get server methods.\nProblem with Piwigo server?")}];
+            NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"serverMethodsError_message", @"Failed to get server methods.\nProblem with Piwigo server?")}];
             [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
         }
         
@@ -568,9 +576,10 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 -(void)performLogin
 {
 #if defined(DEBUG_SESSION)
-    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@",
+    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@, hasNormalRights=%@",
           ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
-          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
+          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
+          ([Model sharedInstance].hasNormalRights ? @"YES" : @"NO"));
     NSLog(@"=> performLogin: starting…");
 #endif
     
@@ -595,10 +604,10 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                      else
                      {
                          // Don't keep unaccepted credentials
-                         [SAMKeychain deletePasswordForService:[Model sharedInstance].serverName account:self.userTextField.text];
+                         [SAMKeychain deletePasswordForService:[Model sharedInstance].serverPath account:self.userTextField.text];
 
                          // Session could not be opened
-                         NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"loginError_message", @"The username and password don't match on the given server")}];
+                         NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"loginError_message", @"The username and password don't match on the given server")}];
                          [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
                      }
                  } onFailure:^(NSURLSessionTask *task, NSError *error) {
@@ -616,7 +625,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 	else     // No username or user cancelled communication, get only server status
 	{
         // Reset keychain and credentials
-        [SAMKeychain deletePasswordForService:[Model sharedInstance].serverName account:[Model sharedInstance].username];
+        [SAMKeychain deletePasswordForService:[Model sharedInstance].serverPath account:[Model sharedInstance].username];
         [Model sharedInstance].username = @"";
         [[Model sharedInstance] saveToDisk];
 
@@ -629,9 +638,10 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 -(void)getCommunityStatusAtFirstLogin:(BOOL)isFirstLogin
 {
 #if defined(DEBUG_SESSION)
-    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@",
+    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@, hasNormalRights=%@",
           ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
-          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
+          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
+          ([Model sharedInstance].hasNormalRights ? @"YES" : @"NO"));
     NSLog(@"=> getCommunityStatusAtFirstLogin:%@ starting…", isFirstLogin ? @"YES" : @"NO");
 #endif
     if((self.usesCommunityPluginV29) && (![Model sharedInstance].userCancelledCommunication)) {
@@ -652,7 +662,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
             } else {
                 // Inform user that server failed to retrieve Community parameters
                 [Model sharedInstance].hadOpenedSession = NO;
-                NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"serverCommunityError_message", @"Failed to get Community extension parameters.\nTry logging in again.")}];
+                NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"serverCommunityError_message", @"Failed to get Community extension parameters.\nTry logging in again.")}];
                 [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
                 self.isAlreadyTryingToLogin = NO;
             }
@@ -675,9 +685,10 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 -(void)getSessionStatusAtLogin:(BOOL)isLoggingIn andFirstLogin:(BOOL)isFirstLogin
 {
 #if defined(DEBUG_SESSION)
-    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@",
+    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@, hasNormalRights=%@",
           ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
-          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
+          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
+          ([Model sharedInstance].hasNormalRights ? @"YES" : @"NO"));
     NSLog(@"=> getSessionStatusAtLogin:%@ andFirstLogin:%@ starting…",
           isLoggingIn ? @"YES" : @"NO", isFirstLogin ? @"YES" : @"NO");
 #endif
@@ -723,12 +734,16 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                             
                             [alert addAction:defaultAction];
                             [alert addAction:continueAction];
+                            alert.view.tintColor = UIColor.piwigoColorOrange;
                             if (@available(iOS 13.0, *)) {
                                 alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
                             } else {
                                 // Fallback on earlier versions
                             }
-                            [self presentViewController:alert animated:YES completion:nil];
+                            [self presentViewController:alert animated:YES completion:^{
+                                // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                                alert.view.tintColor = UIColor.piwigoColorOrange;
+                            }];
                         });
                     }];
                 } else {
@@ -750,7 +765,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                 // Inform user that we could not authenticate with server
                 [Model sharedInstance].hadOpenedSession = NO;
                 self.isAlreadyTryingToLogin = NO;
-                NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"sessionStatusError_message", @"Failed to authenticate with server.\nTry logging in again.")}];
+                NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"sessionStatusError_message", @"Failed to authenticate with server.\nTry logging in again.")}];
                 [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
             }
         } onFailure:^(NSURLSessionTask *task, NSError *error) {
@@ -796,6 +811,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                     // Connection still alive. Do nothing.
                     self.isAlreadyTryingToLogin = NO;
                     [self hideLoading];
+
 #if defined(DEBUG_SESSION)
                     NSLog(@"=> checkSessionStatusAndTryRelogin: Connection still alive…");
                     NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@",
@@ -810,7 +826,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                 });
 
                 // Connection really lost, inform user
-                NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"internetErrorGeneral_broken", @"Sorry, the communication was broken.\nTry logging in again.")}];
+                NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"internetErrorGeneral_broken", @"Sorry, the communication was broken.\nTry logging in again.")}];
                 [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
                 [Model sharedInstance].hadOpenedSession = NO;
                 self.isAlreadyTryingToLogin = NO;
@@ -830,9 +846,10 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 {
 #if defined(DEBUG_SESSION)
     NSLog(@"=> performRelogin: starting with…");
-    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@",
+    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@, hasNormalRights=%@",
           ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
-          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
+          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
+          ([Model sharedInstance].hasNormalRights ? @"YES" : @"NO"));
 #endif
     
     // Update HUD during re-login
@@ -842,7 +859,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 
     // Perform re-login
     NSString *user = [Model sharedInstance].username;
-    NSString *password = [SAMKeychain passwordForService:[Model sharedInstance].serverName account:user];
+    NSString *password = [SAMKeychain passwordForService:[Model sharedInstance].serverPath account:user];
     [SessionService performLoginWithUser:user
                              andPassword:password
                             onCompletion:^(BOOL result, id response) {
@@ -858,7 +875,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                                 {
                                     // Session could not be re-opened, inform user
                                     [Model sharedInstance].hadOpenedSession = NO;
-                                    NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverName] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"loginError_message", @"The username and password don't match on the given server")}];
+                                    NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"loginError_message", @"The username and password don't match on the given server")}];
                                     [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
                                     self.isAlreadyTryingToLogin = NO;
                                 }
@@ -897,8 +914,10 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
         hud.animationType = MBProgressHUDAnimationFade;
         hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
         hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
-        hud.contentColor = [UIColor piwigoColorHudContent];
-        hud.bezelView.color = [UIColor piwigoColorHudBezelView];
+        hud.contentColor = [UIColor whiteColor];
+        hud.bezelView.color = [UIColor piwigoColorText];
+        hud.bezelView.style = MBProgressHUDBackgroundStyleSolidColor;
+        hud.bezelView.backgroundColor = [UIColor piwigoColorBrown];
         
         // Set title
         hud.label.text = NSLocalizedString(@"login_loggingIn", @"Logging In...");
@@ -1002,13 +1021,15 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 -(BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
     // Disable HTTP login action until user provides infos
-    if (textField == [self.httpAlertController.textFields objectAtIndex:0]) {
-        if ([self.httpAlertController.textFields objectAtIndex:0].text.length == 0)
-            [self.httpLoginAction setEnabled:NO];
-    }
-    else if (textField == [self.httpAlertController.textFields objectAtIndex:1]) {
-        if ([self.httpAlertController.textFields objectAtIndex:1].text.length == 0)
-            [self.httpLoginAction setEnabled:NO];
+    if (self.httpAlertController != nil) {
+        if (textField == [self.httpAlertController.textFields objectAtIndex:0]) {
+            if ([self.httpAlertController.textFields objectAtIndex:0].text.length == 0)
+                [self.httpLoginAction setEnabled:NO];
+        }
+        else if (textField == [self.httpAlertController.textFields objectAtIndex:1]) {
+            if ([self.httpAlertController.textFields objectAtIndex:1].text.length == 0)
+                [self.httpLoginAction setEnabled:NO];
+        }
     }
     return YES;
 }
@@ -1019,9 +1040,11 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
     if(textField == self.serverTextField) {
         [self.loginButton setEnabled:NO];
     }
-    else if ((textField == [self.httpAlertController.textFields objectAtIndex:0]) ||
-        (textField == [self.httpAlertController.textFields objectAtIndex:1])) {
-        [self.httpLoginAction setEnabled:NO];
+    else if (self.httpAlertController != nil) {
+        if ((textField == [self.httpAlertController.textFields objectAtIndex:0]) ||
+            (textField == [self.httpAlertController.textFields objectAtIndex:1])) {
+            [self.httpLoginAction setEnabled:NO];
+        }
     }
     
     return YES;
@@ -1031,18 +1054,17 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
 {
     NSString *finalString = [textField.text stringByReplacingCharactersInRange:range withString:string];
     
-    if ((textField == [self.httpAlertController.textFields objectAtIndex:0]) ||
-        (textField == [self.httpAlertController.textFields objectAtIndex:1])) {
-        // Enable HTTP Login action if field not empty
-        [self.httpLoginAction setEnabled:(finalString.length >= 1)];
-    }
-    else if(textField == self.serverTextField) {
-        // Disable Login button if URL invalid
-        BOOL validURL = [self saveServerAddress:finalString andUsername:self.userTextField.text];
-        if (!validURL) {
-            [self showIncorrectWebAddressAlert];
+    if (self.httpAlertController != nil) {
+        if ((textField == [self.httpAlertController.textFields objectAtIndex:0]) ||
+            (textField == [self.httpAlertController.textFields objectAtIndex:1])) {
+            // Enable HTTP Login action if field not empty
+            [self.httpLoginAction setEnabled:(finalString.length >= 1)];
         }
-        [self.loginButton setEnabled:validURL];
+    }
+    else if (textField == self.serverTextField) {
+        // Disable Login button if URL invalid
+        [self saveServerAddress:finalString andUsername:self.userTextField.text];
+        [self.loginButton setEnabled:YES];
     }
     
     return YES;
@@ -1147,7 +1169,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
                 [Model sharedInstance].serverProtocol = [NSString stringWithFormat:@"%@://", serverURL.scheme];
                 break;
         }
-        [Model sharedInstance].serverName = [NSString stringWithFormat:@"%@:%@%@", serverURL.host, serverURL.port, serverURL.path];
+        [Model sharedInstance].serverPath = [NSString stringWithFormat:@"%@:%@%@", serverURL.host, serverURL.port, serverURL.path];
         [Model sharedInstance].username = user;
         [[Model sharedInstance] saveToDisk];
         return YES;
@@ -1157,7 +1179,7 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
     [Model sharedInstance].serverProtocol = @"https://";
     
     // Save username, server address and protocol to disk
-    [Model sharedInstance].serverName = [NSString stringWithFormat:@"%@%@", serverURL.host, serverURL.path];
+    [Model sharedInstance].serverPath = [NSString stringWithFormat:@"%@%@", serverURL.host, serverURL.path];
     [Model sharedInstance].username = user;
     [[Model sharedInstance] saveToDisk];
     return YES;
@@ -1177,12 +1199,16 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
         handler:^(UIAlertAction * action) {}];
     
     [alert addAction:defaultAction];
+    alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
         alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
-    [self presentViewController:alert animated:YES completion:nil];
+    [self presentViewController:alert animated:YES completion:^{
+        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+        alert.view.tintColor = UIColor.piwigoColorOrange;
+    }];
 }
 
 -(void)dismissKeyboard
@@ -1195,4 +1221,46 @@ NSString * const kPiwigoURL = @"— https://piwigo.org —";
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://piwigo.org"]];
 }
 
+-(void)mailPiwigoSupport
+{
+    if ([MFMailComposeViewController canSendMail]) {
+        MFMailComposeViewController* composeVC = [[MFMailComposeViewController alloc] init];
+        composeVC.mailComposeDelegate = self;
+        
+        // Configure the fields of the interface.
+        [composeVC setToRecipients:@[NSLocalizedStringFromTableInBundle(@"contact_email", @"PrivacyPolicy", [NSBundle mainBundle], @"Contact email")]];
+        
+        // Collect version and build numbers
+        NSString *appVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+        NSString *appBuildString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
+        
+        // Compile ticket number from current date
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"yyyyMMddHHmm"];
+        [dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:[Model sharedInstance].language]];
+        NSDate *date = [NSDate date];
+        NSString *ticketDate = [dateFormatter stringFromDate:date];
+
+        // Set subject
+        [composeVC setSubject:[NSString stringWithFormat:@"[Ticket#%@]: %@", ticketDate, NSLocalizedString(@"settings_appName", @"Piwigo Mobile")]];
+        
+        // Collect system and device data
+        struct utsname systemInfo;
+        uname(&systemInfo);
+        NSString* deviceModel = [Utilities deviceNameForCode:[NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding]];
+        NSString *deviceOS = [[UIDevice currentDevice] systemName];
+        NSString *deviceOSversion = [[UIDevice currentDevice] systemVersion];
+        
+        // Set message body
+        [composeVC setMessageBody:[NSString stringWithFormat:@"%@ %@ (%@)\n%@ — %@ %@\n==============>>\n\n", NSLocalizedString(@"settings_appName", @"Piwigo Mobile"), appVersionString, appBuildString, deviceModel, deviceOS, deviceOSversion] isHTML:NO];
+        
+        // Present the view controller modally.
+        [self presentViewController:composeVC animated:YES completion:nil];
+    }
+}
+
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 @end

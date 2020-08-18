@@ -11,19 +11,19 @@ typedef enum {
     kImageCollectionFull,
 } kImageCollectionType;
 
-extern NSInteger const kAlbumCellSpacing;
-extern NSInteger const kAlbumMarginsSpacing;
+extern CGFloat const kAlbumCellSpacing;
+extern CGFloat const kAlbumMarginsSpacing;
 
-extern NSInteger const kImageCellSpacing4iPhone;
-extern NSInteger const kImageCellHorSpacing4iPad;
-extern NSInteger const kImageCellHorSpacing4iPadPopup;
-extern NSInteger const kImageCellVertSpacing4iPad;
-extern NSInteger const kImageCellVertSpacing4iPadPopup;
-extern NSInteger const kImageMarginsSpacing;
-extern NSInteger const kThumbnailFileSize;
+extern CGFloat const kImageCellSpacing4iPhone;
+extern CGFloat const kImageCellHorSpacing4iPad;
+extern CGFloat const kImageCellHorSpacing4iPadPopup;
+extern CGFloat const kImageCellVertSpacing4iPad;
+extern CGFloat const kImageCellVertSpacing4iPadPopup;
+extern CGFloat const kImageMarginsSpacing;
+extern CGFloat const kThumbnailFileSize;
 
-extern NSInteger const kImageDetailsCellSpacing;
-extern NSInteger const kImageDetailsMarginsSpacing;
+extern CGFloat const kImageDetailsCellSpacing;
+extern CGFloat const kImageDetailsMarginsSpacing;
 
 @interface ImagesCollection : NSObject
 

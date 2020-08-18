@@ -13,7 +13,7 @@
 
 @interface LoginViewController : UIViewController
 
-@property (nonatomic, strong) UIImageView *piwigoLogo;
+@property (nonatomic, strong) UIButton *piwigoLogo;
 @property (nonatomic, strong) UIButton *piwigoButton;
 @property (nonatomic, strong) PiwigoTextField *serverTextField;
 @property (nonatomic, strong) PiwigoTextField *userTextField;

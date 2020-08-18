@@ -10,7 +10,6 @@
 #import <CoreData/CoreData.h>
 
 #import "AFAutoPurgingImageCache.h"
-#import "CategorySortViewController.h"
 
 FOUNDATION_EXPORT NSInteger const kPiwigoMemoryCacheInc;
 FOUNDATION_EXPORT NSInteger const kPiwigoMemoryCacheMin;
@@ -34,12 +33,39 @@ FOUNDATION_EXPORT NSString *kPiwigoActivityTypeOther;
 @class PHPhotoLibrary;
 
 typedef enum {
+    kPiwigoSortNameAscending,               // Photo title, A → Z
+    kPiwigoSortNameDescending,              // Photo title, Z → A
+    
+    kPiwigoSortDateCreatedDescending,       // Date created, new → old
+    kPiwigoSortDateCreatedAscending,        // Date created, old → new
+    
+    kPiwigoSortDatePostedDescending,        // Date posted, new → old
+    kPiwigoSortDatePostedAscending,         // Date posted, old → new
+    
+    kPiwigoSortFileNameAscending,           // File name, A → Z
+    kPiwigoSortFileNameDescending,          // File name, Z → A
+    
+    kPiwigoSortRatingScoreDescending,       // Rating score, high → low
+    kPiwigoSortRatingScoreAscending,        // Rating score, low → high
+
+    kPiwigoSortVisitsDescending,            // Visits, high → low
+    kPiwigoSortVisitsAscending,             // Visits, low → high
+
+    kPiwigoSortManual,                      // Manual order
+//    kPiwigoSortVideoOnly,
+//    kPiwigoSortImageOnly,
+    
+    kPiwigoSortCount
+} kPiwigoSort;
+
+typedef enum {
 	kPiwigoPrivacyEverybody = 0,
 	kPiwigoPrivacyAdminsFamilyFriendsContacts = 1,
 	kPiwigoPrivacyAdminsFamilyFriends = 2,
 	kPiwigoPrivacyAdminsFamily = 4,
 	kPiwigoPrivacyAdmins = 8,
-	kPiwigoPrivacyCount = 5
+	kPiwigoPrivacyCount = 5,
+    kPiwigoPrivacyUnknown = INT_MAX
 } kPiwigoPrivacy;
 
 #define kPiwigoPrivacyString(enum) [@[@"Everybody", @"Admins, Family, Friends, Contacts", @"Admins, Family, Friends", @"3: not assigned", @"Admins, Family", @"5: Count", @"6: not assigned", @"7: not assigned", @"Admins"] objectAtIndex:enum]
@@ -48,12 +74,11 @@ typedef enum {
 
 +(Model*)sharedInstance;
 -(void)saveToDisk;
-+(PHPhotoLibrary*)defaultAssetsLibrary;
 
 @property (nonatomic, assign) BOOL isAppLanguageRTL;
 
 @property (nonatomic, strong) NSString *serverProtocol;     // => Manages cases where the Piwigo server
-@property (nonatomic, strong) NSString *serverName;         // returns the wrong protocol (http: or https:)
+@property (nonatomic, strong) NSString *serverPath;         // returns the wrong protocol (http: or https:)
 @property (nonatomic, strong) NSString *pwgToken;
 @property (nonatomic, strong) NSString *language;
 @property (nonatomic, assign) NSUInteger stringEncoding;    // Character encoding used by the Piwigo server
@@ -62,6 +87,7 @@ typedef enum {
 @property (nonatomic, strong) NSString *HttpUsername;
 @property (nonatomic, strong) NSString *uploadFileTypes;
 @property (nonatomic, assign) BOOL hasAdminRights;
+@property (nonatomic, assign) BOOL hasNormalRights;
 @property (nonatomic, assign) BOOL usesCommunityPluginV29;
 @property (nonatomic, assign) BOOL hasUploadedImages;
 @property (nonatomic, assign) BOOL hadOpenedSession;
@@ -74,7 +100,6 @@ typedef enum {
 @property (nonatomic, strong) NSURLCache *imageCache;
 @property (nonatomic, strong) AFHTTPSessionManager *imagesSessionManager;
 @property (nonatomic, strong) AFImageDownloader *imageDownloader;
-@property (nonatomic, strong) AFHTTPSessionManager *imageUploadManager;
 
 // Album/category settings
 @property (nonatomic, assign) NSInteger defaultCategory;
@@ -83,9 +108,8 @@ typedef enum {
 @property (nonatomic, assign) NSUInteger maxNberRecentCategories;
 
 // Sort images by date: old to new
-@property (nonatomic, assign) kPiwigoSortCategory defaultSort;
+@property (nonatomic, assign) kPiwigoSort defaultSort;
 @property (nonatomic, assign) NSInteger currentPage;
-@property (nonatomic, assign) NSInteger lastPageImageCount;
 
 // Display images titles in collection views
 @property (nonatomic, assign) BOOL displayImageTitles;
@@ -106,7 +130,6 @@ typedef enum {
 @property (nonatomic, assign) NSInteger thumbnailsPerRowInPortrait;
 
 // Default image settings
-@property (nonatomic, assign) BOOL didOptimiseImagePreviewSize;
 @property (nonatomic, assign) NSInteger defaultImagePreviewSize;
 @property (nonatomic, assign) BOOL shareMetadataTypeAirDrop;
 @property (nonatomic, assign) BOOL shareMetadataTypeAssignToContact;
@@ -139,6 +162,8 @@ typedef enum {
 @property (nonatomic, assign) BOOL deleteImageAfterUpload;
 @property (nonatomic, assign) BOOL prefixFileNameBeforeUpload;
 @property (nonatomic, strong) NSString *defaultPrefix;
+@property (nonatomic, assign) kPiwigoSort localImagesSort;
+@property (nonatomic, assign) BOOL wifiOnlyUploading;
 
 // Default palette mode
 @property (nonatomic, assign) BOOL isDarkPaletteActive;
@@ -151,11 +176,11 @@ typedef enum {
 @property (nonatomic, assign) BOOL loadAllCategoryInfo;
 @property (nonatomic, assign) NSInteger memoryCache;
 @property (nonatomic, assign) NSInteger diskCache;
+@property (nonatomic, assign) BOOL couldNotMigrateCoreDataStore;
 
 // Request help for translating Piwigo every month or so
 @property (nonatomic, assign) NSTimeInterval dateOfLastTranslationRequest;
 
--(NSString *)getNameForPrivacyLevel:(NSInteger)privacyLevel;
--(NSString *)getNameForShareActivity:(NSString *)activity forWidth:(CGFloat)width;
+-(NSString *)getNameForPrivacyLevel:(kPiwigoPrivacy)privacyLevel;
 
 @end

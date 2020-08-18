@@ -7,6 +7,7 @@
 //
 
 #import <Photos/Photos.h>
+#import <UserNotifications/UserNotifications.h>
 
 #import "AppDelegate.h"
 #import "LoginNavigationController.h"
@@ -15,6 +16,7 @@
 
 #import "AFNetworkActivityIndicatorManager.h"
 #import "AlbumImagesViewController.h"
+#import "IQKeyboardManager.h"
 #import "KeychainAccess.h"
 #import "Model.h"
 #import "SAMKeychain.h"
@@ -40,8 +42,12 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
 
 -(void)loadNavigation
 {
-    AlbumImagesViewController *albums = [[AlbumImagesViewController alloc] initWithAlbumId:[Model sharedInstance].defaultCategory inCache:NO];
-    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:albums];
+    // Resume upload manager
+    [self resumeUploadManager];
+
+    // Display default album
+    AlbumImagesViewController *defaultAlbum = [[AlbumImagesViewController alloc] initWithAlbumId:[Model sharedInstance].defaultCategory inCache:NO];
+    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:defaultAlbum];
     [self.loginVC removeFromParentViewController];
 	self.loginVC = nil;
     
@@ -116,7 +122,7 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
 -(void)checkSessionStatusAndTryRelogin
 {
     BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;
-    NSString *server = [Model sharedInstance].serverName;
+    NSString *server = [Model sharedInstance].serverPath;
     NSString *user = [KeychainAccess getLoginUser];
     
     if(hadOpenedSession && (server.length > 0) && (user.length > 0))
@@ -150,139 +156,28 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
 }
 
 
-#pragma mark - Core Data stack
-
-#ifdef __IPHONE_10_0
-//@synthesize persistentContainer = _persistentContainer;
-
-//- (NSPersistentContainer *)persistentContainer {
-//    // The persistent container for the application. This implementation creates and returns a container, having loaded the store for the application to it.
-//    @synchronized (self) {
-//        if (self.persistentContainer == nil) {
-//            self.persistentContainer = [[NSPersistentContainer alloc] initWithName:@"DataModel"];
-//            [self.persistentContainer loadPersistentStoresWithCompletionHandler:^(NSPersistentStoreDescription *storeDescription, NSError *error) {
-//                if (error != nil) {
-//                    // Replace this implementation with code to handle the error appropriately.
-//                    // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-//
-//                    /*
-//                     Typical reasons for an error here include:
-//                     * The parent directory does not exist, cannot be created, or disallows writing.
-//                     * The persistent store is not accessible, due to permissions or data protection when the device is locked.
-//                     * The device is out of space.
-//                     * The store could not be migrated to the current model version.
-//                     Check the error message to determine what the actual problem was.
-//                    */
-//                    NSLog(@"Unresolved error %@, %@", error, error.userInfo);
-//                    abort();
-//                }
-//            }];
-//
-//            // Merge the changes from other contexts automatically.
-//            self.persistentContainer.viewContext.automaticallyMergesChangesFromParent = YES;
-//            self.persistentContainer.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy;
-//            self.persistentContainer.viewContext.undoManager = nil;
-//            self.persistentContainer.viewContext.shouldDeleteInaccessibleFaults = YES;
-//        }
-//    }
-//
-//    return self.persistentContainer;
-//}
-#endif
-
-//@synthesize managedObjectModel = _managedObjectModel;
-//@synthesize managedObjectContext = _managedObjectContext;
-//@synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
-
-//- (NSManagedObjectContext *)managedObjectContext
-//{
-//    if (self.managedObjectContext) {
-//        return self.managedObjectContext;
-//    }
-//
-//    if (@available(iOS 10.0, *)) {
-//        return self.persistentContainer.viewContext;
-//    }
-//
-//    NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
-//
-//    if (coordinator) {
-//        self.managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
-//        [self.managedObjectContext setPersistentStoreCoordinator:coordinator];
-//        [self.managedObjectContext setMergePolicy:NSMergeByPropertyObjectTrumpMergePolicy];
-//        [self.managedObjectContext setUndoManager:nil];
-//        [self.managedObjectContext setShouldDeleteInaccessibleFaults:YES];
-//    }
-//
-//    return self.managedObjectContext;
-//}
-
-//- (NSManagedObjectModel *)managedObjectModel
-//{
-//    if (self.managedObjectModel) {
-//        return self.managedObjectModel;
-//    }
-//
-//    if (@available(iOS 10.0, *)) {
-//        return self.persistentContainer.managedObjectModel;
-//    }
-//
-//    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"DataModel" withExtension:@"momd"];
-//
-//    self.managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
-//
-//    return self.managedObjectModel;
-//}
-
-//- (NSPersistentStoreCoordinator *)persistentStoreCoordinator {
-//    if (self.persistentStoreCoordinator) {
-//        return self.persistentStoreCoordinator;
-//    }
-//
-//    if (@available(iOS 10.0, *)) {
-//        return self.persistentContainer.persistentStoreCoordinator;
-//    }
-//
-//    NSURL *applicationDocumentsDirectory = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
-//    NSURL *storeURL = [applicationDocumentsDirectory URLByAppendingPathComponent:@"DataModel.sqlite"];
-//
-//    NSError *error = nil;
-//    self.persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
-//
-//    if (![self.persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) {
-//        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-//        abort();
-//    }
-//
-//    return self.persistentStoreCoordinator;
-//}
-
-
-#pragma mark - Core Data Saving support
-
-//- (void)saveContext {
-//    NSManagedObjectContext *context = nil;
-//    if (@available(iOS 10.0, *)) {
-//        context = self.persistentContainer.viewContext;
-//    } else {
-//        context = self.managedObjectContext;
-//    }
-//    NSError *error = nil;
-//    if ([context hasChanges] && ![context save:&error]) {
-//        // Replace this implementation with code to handle the error appropriately.
-//        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-//        NSLog(@"Unresolved error %@, %@", error, error.userInfo);
-//        abort();
-//    }
-//}
-
-
 #pragma mark - Application delegate methods
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
-    // Override point for customization after application launch.
-    
+    // Register notifications for displaying number of uploads to perform in app badge
+    if (@available(iOS 9.0, *)) {
+        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeBadge) categories:nil];
+        [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+    }
+    else if (@available(iOS 10.0, *)) {
+        UNAuthorizationOptions options = (UNAuthorizationOptionBadge);
+        [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:options completionHandler:^(BOOL granted, NSError * _Nullable error) {
+            if (granted) { NSLog(@"request succeeded!"); }
+        }];
+    }
+        
+    // IQKeyboardManager
+    IQKeyboardManager *keyboardManager = [IQKeyboardManager sharedManager];
+    keyboardManager.overrideKeyboardAppearance = YES;
+    keyboardManager.shouldToolbarUsesTextFieldTintColor = YES;
+    keyboardManager.shouldShowToolbarPlaceholder = YES;
+
     // Cache data in Core Data storage
     [self setManagedObjectContext:[DataController getContext]];
 
@@ -290,7 +185,7 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
         //Complete user interface initialization
         // Login ?
         NSString *user, *password;
-        NSString *server = [Model sharedInstance].serverName;
+        NSString *server = [Model sharedInstance].serverPath;
         [SAMKeychain setAccessibilityType:kSecAttrAccessibleAfterFirstUnlock];
         
         // Look for credentials if server address provided
@@ -343,6 +238,13 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
     return YES;
 }
 
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(nonnull NSData *)deviceToken {
+}
+
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(nonnull NSError *)error {
+    NSLog(@"Did fail to register notifications");
+}
+
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     
@@ -350,8 +252,8 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
     [DataController saveContext];
 
     // Cancel tasks and close sessions
-    [[Model sharedInstance].sessionManager invalidateSessionCancelingTasks:YES];
-    [[Model sharedInstance].imagesSessionManager invalidateSessionCancelingTasks:YES];
+    [[Model sharedInstance].sessionManager invalidateSessionCancelingTasks:YES resetSession:YES];
+    [[Model sharedInstance].imagesSessionManager invalidateSessionCancelingTasks:YES resetSession:YES];
 
     // Disable network activity indicator
     [AFNetworkActivityIndicatorManager sharedManager].enabled = NO;
@@ -399,7 +301,7 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
 
     // Should we reopen the session ?
     BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;
-    NSString *server = [Model sharedInstance].serverName;
+    NSString *server = [Model sharedInstance].serverPath;
     NSString *user = [Model sharedInstance].username;
     if (hadOpenedSession && (server.length > 0) && (user.length > 0))
     {
@@ -419,6 +321,19 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
         if ([availableCategories containsObject:AVAudioSessionCategoryPlayback]) {
             [audioSession setCategory:AVAudioSessionCategoryPlayback error:nil];
         }
+    }
+}
+
+- (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)(void))completionHandler {
+    NSLog(@"    > Handle events for background session with ID: %@", identifier);
+    
+    if ([identifier compare:[UploadSessionDelegate shared].uploadSessionIdentifier] == NSOrderedSame) {
+        NSURLSessionConfiguration *config = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:identifier];
+        NSURLSession *session = [NSURLSession sessionWithConfiguration:config
+                                                              delegate:[UploadSessionDelegate shared]
+                                                         delegateQueue:nil];
+        [UploadSessionDelegate shared].uploadSessionCompletionHandler = completionHandler;
+        NSLog(@"    > Rejoining session %@ with CompletionHandler", session);
     }
 }
 
@@ -478,6 +393,9 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
     
     // Store modified settings
     [[Model sharedInstance] saveToDisk];
+    
+    // Tint colour
+    [UIView appearance].tintColor = [UIColor piwigoColorOrange];
     
     // Activity indicator
     [UIActivityIndicatorView appearance].color = [UIColor piwigoColorOrange];
@@ -577,6 +495,29 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
     [Model sharedInstance].recentCategories = [recentCategories componentsJoinedByString:@","];
     [[Model sharedInstance] saveToDisk];
 //    NSLog(@"•••> Recent albums: %@", [Model sharedInstance].recentCategories);
+}
+
+#pragma mark - Upload Manager
+
+-(void)resumeUploadManager {
+    // Create dedicated background queue if needed
+    if (self.uploadQueue == nil) {
+        // Create a serial queue
+        dispatch_queue_attr_t attributes = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_BACKGROUND, -1);
+        self.uploadQueue = dispatch_queue_create("UploadManager", attributes);
+    }
+
+    // Resume upload tasks
+    dispatch_async(self.uploadQueue, ^{
+        [[UploadManager shared] resumeAll];
+    });
+}
+
+-(void)triggerUploadManager {
+    // Trigger upload tasks
+    dispatch_async(self.uploadQueue, ^{
+        [[UploadManager shared] findNextImageToUpload];
+    });
 }
 
 @end

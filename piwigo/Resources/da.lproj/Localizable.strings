@@ -44,6 +44,22 @@
 "internetCancelledConnection_title" = "Forbindelsen afbrudt";
 
 // ===========================================================================
+// ==> CORE DATA
+// ===========================================================================
+"CoreDataStore_WarningTitle" = "Advarsel";
+"CoreDataStore_WarningMessage" = "A serious application error occurred while Piwigo tried to read the data cache. A new cache has therefore been created.";
+"CoreDataFetch_DigestError" = "Could not digest the fetched data.";
+
+// Tag objects
+"CoreDataFetch_TagError" = "Fetch tags error!";
+"CoreDataFetch_TagMissingData" = "Found and will discard a tag missing a valid code or name.";
+"CoreDataFetch_TagCreateFailed" = "Failed to create a new Tag object.";
+
+// Upload objects
+"CoreDataFetch_UploadCreateFailed" = "Failed to create a new Upload object.";
+"CoreDataFetch_UploadMissingAsset" = "Failed to retrieve photo.";
+
+// ===========================================================================
 // ==> LOGIN / LOGOUT
 // ===========================================================================
 // Login
@@ -99,8 +115,6 @@
 
 // Logout — Errors
 "logoutFail_title" = "Logout Mislykkedes";
-"logoutFail_message" = "Kunne ikke logge ud. Prøv igen?";
-
 
 // ===========================================================================
 // ==> ALBUMS
@@ -153,8 +167,15 @@
 "categoryUpload_chooseAlbum" = "Vælg et underalbum til upload af billeder";
 "categoryUpload_LocalAlbums" = "Lokale album";
 "categoryUpload_chooseLocalAlbum" = "Vælg et album at hente biller fra";
+"categoryUpload_sharedAlbums" = "Shared Albums";
 "categoryUpload_iCloudAlbums" = "iCloud album";
 "categoryUpload_chooseiCloudAlbum" = "Vælg et iCloud album at hente biller fra";
+"categoryUpload_syncedEvents" = "iPhoto Events";
+"categoryUpload_syncedAlbums" = "iPhoto Albums";
+"categoryUpload_syncedFaces" = "iPhoto Faces";
+"categoryUpload_mediaTypes" = "Media Types";
+"categoryUpload_otherAlbums" = "Other Albums";
+
 "categoyUpload_loadSubCategories" = "indlæs";
 "categoryUpload_images" = "Upload billeder";
 "categoryUpload_subAlbum" = "Opret underalbum";
@@ -250,8 +271,13 @@
 "singleVideo" = "Video";
 "singleAudio" = "Lyd";
 "severalImages" = "Billeder";
+"severalVideos" = "Videoer";
 "noImages" = "Ingen Billeder";
 "pullToRefresh" = "Genindlæs Billeder";
+"andMore" = " & more";
+"Months" = "Months";
+"Weeks" = "Weeks";
+"Days" = "Days";
 
 // Errors
 "albumPhotoError_title" = "Hent Albummets Fotofejl";
@@ -260,8 +286,10 @@
 // Image sort
 "sortBy" = "Sortér efter";
 "imageSortTitle" = "Sorter billeder";
-"imageSortingHUD" = "Sortering af billeder";
 "imageSortMessage" = "Vælg hvordan du ønsker at sortere billeder";
+"imageSortingHUD" = "Sortering af billeder";
+"imageSelectingHUD" = "Selecting Photos…";
+"imageDeselectingHUD" = "Deselecting Photos…";
 
 // Image options (actions)
 "imageOptions_title" = "Billed Valgmuligheder";
@@ -309,6 +337,7 @@
 "tag" = "Etiket";
 "tagsTitle_selectOne" = "Vælg Etiket";
 "tagsHeader_selected" = "Valgte";
+"tagsHeader_notSelected" = "Not Selected";
 "tagsHeader_all" = "Alle";
 "tagsAdd_title" = "Tilføj etiket";
 "tagsAdd_message" = "Indtast et navn for den nye etiket";
@@ -421,7 +450,20 @@
 
 "imageUploadRemove" = "Fjerner uploadede billeder";
 
+"imageUploadTableCell_waiting" = "Waiting...";
+"imageUploadTableCell_preparing" = "Preparing...";
+"imageUploadTableCell_prepared" = "Ready for upload...";
 "imageUploadTableCell_uploading" = "Uploader...";
+"imageUploadTableCell_uploaded" = "Uploaded";
+"imageUploadTableCell_finishing" = "Finishing...";
+
+"imageUploadClearFailedSingle" = "Clear Failed Upload";
+"imageUploadClearFailedSeveral" = "Clear %@ Failed Uploads";
+"imageUploadClearCompletedSingle" = "Clear Completed Upload";
+"imageUploadClearCompletedSeveral" = "Clear %@ Completed Uploads";
+"imageUploadResumeSingle" = "Resume Upload";
+"imageUploadResumeSeveral" = "Resume %@ Uploads";
+
 "imageUploadProgressBar_zero" = "Uploader 0/0";
 "imageUploadProgressBar_nonZero" = "Uploader %@/%@";
 "imageUploadProgressBar_completed" = "Fuldført";
@@ -429,13 +471,20 @@
 "imageUploadCompleted_message" = "billede/video uploadet til Piwigo server.";
 "imageUploadCompleted_message>1" = "billeder/videoer uploadet til Piwigo server.";
 
+
 // Image upload — Errors
 "uploadError_title" = "Fejl under upload";
 "uploadError_message" = "Kunne ikke uploade dit billede. Fejl: %@";
 "uploadCancelled_title" = "Upload annulleret";
+"uploadNoInternetNetwork" = "No Internet Connection";
+"uploadNoWiFiNetwork" = "No Wi-Fi Connection";
+"uploadLowPowerMode" = "Low Power Mode enabled";
+"uploadSection_impossible" = "Impossible Uploads";
+"uploadSection_resumable" = "Resumable Uploads";
+"uploadSection_queue" = "Uploads Queue";
 
 "imageUploadError_title" = "Fejl under upload";
-"imageUploadError_format" = "Billedfiler med filnavn .%@ og .jpg accepteres ikke af Piwigo server.";
+"imageUploadError_format" = "File format not accepted by Piwigo server.";
 "imageUploadError_source" = "kan ikke oprette billede kilde";
 "imageUploadError_destination" = "kan ikke oprette billed destination";
 "imageUploadError_iCloud" = "Kunne ikke hente billedet. Fejl: %@";
@@ -600,11 +649,11 @@
 "settings_stripGPSdata>375px" = "Fjern private Metadata før Upload";
 "settings_photoResize" = "Ændr størrelse før Upload";
 "settings_photoResize>375px" = "Ændr størrelse på billedet før Upload";
-"settings_photoSize" = "> Størrelse   ";
+"settings_photoSize" = "Størrelse";
 "settings_placeholderSize" = "Angiv en fotostørrelse fra 5-100";
 "settings_photoCompress" = "Komprimer før Upload";
 "settings_photoCompress>375px" = "Komprimer billede før Upload";
-"settings_photoQuality" = "> Kvalitet";
+"settings_photoQuality" = "Kvalitet";
 "settings_placeholderQuality" = "Angiv en billedkvalitet fra 50 - 98";
 "settings_prefixFilename>414px" = "Præfiks billedfilnavn før upload";
 "settings_prefixFilename>375px" = "Præfiks filnavn før upload";
@@ -613,6 +662,7 @@
 "settings_defaultPrefix>320px" = "Filnavn præfiks";
 "settings_defaultPrefixPlaceholder" = "Præfiks";
 "settings_deleteImage>375px" = "Slet billede efter upload";
+"settings_wifiOnly" = "Wi-Fi Only";
 "settings_deleteImage" = "Slet efter upload";
 
 // Settings — Cache

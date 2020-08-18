@@ -12,7 +12,7 @@
 
 "tabBar_albums" = "ألبومات";
 "tabBar_upload" = "تحميل";
-"tabBar_preferences" = "تفضيلات";
+"tabBar_preferences" = "الإعدادات";
 
 // Alert buttons
 "alertOkButton" = "موافق";
@@ -25,11 +25,11 @@
 "alertRetryButton" = "إعادة المحاولة";
 "alertNextButton" = "الصورة الموالية";
 "alertTryButton" = "محاولة";
-"alertClearButton" = "Clear";
+"alertClearButton" = "مسح";
 
 // HUD views
-"loadingHUD_label" = "Loading…";
-"completeHUD_label" = "Complete";
+"loadingHUD_label" = "جاري التحميل…";
+"completeHUD_label" = "إنهاء";
 "errorHUD_label" = "خطأ";
 
 // Upload rights
@@ -42,6 +42,22 @@
 "internetCancellingConnection_button" = "جاري إلغاء الإتصال…";
 "internetCancelledConnection_button" = "إلغاء الإتصال";
 "internetCancelledConnection_title" = "تم إلغاء الإتصال";
+
+// ===========================================================================
+// ==> CORE DATA
+// ===========================================================================
+"CoreDataStore_WarningTitle" = "تحذير";
+"CoreDataStore_WarningMessage" = "A serious application error occurred while Piwigo tried to read the data cache. A new cache has therefore been created.";
+"CoreDataFetch_DigestError" = "تعذر استيعاب البياتات التي تم جلبها.";
+
+// Tag objects
+"CoreDataFetch_TagError" = "خطأ في جلب العلامات!";
+"CoreDataFetch_TagMissingData" = "Found and will discard a tag missing a valid code or name.";
+"CoreDataFetch_TagCreateFailed" = "فشل في إنشاء عنصر علامة جديد.";
+
+// Upload objects
+"CoreDataFetch_UploadCreateFailed" = "Failed to create a new Upload object.";
+"CoreDataFetch_UploadMissingAsset" = "فشل في استعادة الصورة.";
 
 // ===========================================================================
 // ==> LOGIN / LOGOUT
@@ -61,17 +77,17 @@
 "loginHTTP_message" = "مطلوب مصادقة الوصول الأساسية من قبل خادم Piwigo:";
 "loginHTTPuser_placeholder" = "اسم المستخدم";
 "loginHTTPpwd_placeholder" = "كلمة المرور";
-"loginCertFailed_title" = "Connection Not Private";
-"loginCertFailed_message" = "Piwigo warns you when a website has a certificate that is not valid. Do you still want to accept this certificate?";
-"loginHTTPSfailed_title" = "Secure Connection Failed";
-"loginHTTPSfailed_message" = "Piwigo cannot establish a secure connection. Do you want to try to establish an insecure connection?";
+"loginCertFailed_title" = "الاتصال ليس خاصًا";
+"loginCertFailed_message" = "تطبيق Piwigo يحذرك عندما يحتوي أحد المواقع على شهادة صالحة. هل مازلت تودّ قبول هذه الشهادة؟";
+"loginHTTPSfailed_title" = "فشل الاتصال الآمن";
+"loginHTTPSfailed_message" = "تعذر على تطبيق Piwigo إنشاء اتصال آمن. هل تودّ محاولة إنشاء اتصال غير آمن؟";
 
 // Login — Errors
 "serverURLerror_title" = "URL غير صحيحة";
-"serverURLerror_message" = "Please correct the Piwigo web server address.";
+"serverURLerror_message" = "يرجى تصحيح عنوان خادم الويب الخاص بتطبيق Piwigo.";
 "serverMethodsError_title" = "طرق غير معروفة";
 "serverMethodsError_message" = "أخفق الحصول على طرق الخادم. مشكلة مع خادم Piwigo ؟";
-"serverInvalidMethodError_message" = "Failed to call server method.";
+"serverInvalidMethodError_message" = "فشل استدعاء منهج الخادم.";
 "serverMissingParamError_message" = "Failed to execute server method with missing parameter.";
 "serverInvalidParamError_message" = "Failed to call server method with provided parameters.";
 "serverUnknownError_message" = "Unexpected error encountered while calling server method with provided parameters.";
@@ -99,8 +115,6 @@
 
 // Logout — Errors
 "logoutFail_title" = "فشل في تسجيل الخروج";
-"logoutFail_message" = "أخفق تسجيل الخروج. حاول ثانية؟";
-
 
 // ===========================================================================
 // ==> ALBUMS
@@ -153,8 +167,15 @@
 "categoryUpload_chooseAlbum" = "حدد ألبوما لتحميل الصور إلى";
 "categoryUpload_LocalAlbums" = "الألبومات المحلية";
 "categoryUpload_chooseLocalAlbum" = "حدد ألبوما للحصول على صور من";
+"categoryUpload_sharedAlbums" = "Shared Albums";
 "categoryUpload_iCloudAlbums" = "iCloud الالبومات";
 "categoryUpload_chooseiCloudAlbum" = "حدد ألبوم iCloud للحصول على صور منه";
+"categoryUpload_syncedEvents" = "iPhoto Events";
+"categoryUpload_syncedAlbums" = "iPhoto Albums";
+"categoryUpload_syncedFaces" = "iPhoto Faces";
+"categoryUpload_mediaTypes" = "Media Types";
+"categoryUpload_otherAlbums" = "Other Albums";
+
 "categoyUpload_loadSubCategories" = "تحميل";
 "categoryUpload_images" = "تحميل الصور";
 "categoryUpload_subAlbum" = "إنشاء ألبوم الفرعية";
@@ -250,8 +271,13 @@
 "singleVideo" = "فيديو";
 "singleAudio" = "الصوت";
 "severalImages" = "الصور";
+"severalVideos" = "Videos";
 "noImages" = "لا توجد صور";
 "pullToRefresh" = "إعادة تحميل الصور";
+"andMore" = " & more";
+"Months" = "Months";
+"Weeks" = "Weeks";
+"Days" = "Days";
 
 // Errors
 "albumPhotoError_title" = "احصل على خطأ صور الألبوم";
@@ -260,8 +286,10 @@
 // Image sort
 "sortBy" = "التصنيف حسب";
 "imageSortTitle" = "فرز الصور";
-"imageSortingHUD" = "Sorting Photos";
 "imageSortMessage" = "الرجاء تحديد الطريقة التي ترغب في فرز الصور بها";
+"imageSortingHUD" = "Sorting Photos…";
+"imageSelectingHUD" = "Selecting Photos…";
+"imageDeselectingHUD" = "Deselecting Photos…";
 
 // Image options (actions)
 "imageOptions_title" = "خيارات الصورة";
@@ -309,6 +337,7 @@
 "tag" = "Tag";
 "tagsTitle_selectOne" = "Select a Tag";
 "tagsHeader_selected" = "تم تحديدها";
+"tagsHeader_notSelected" = "Not Selected";
 "tagsHeader_all" = "الكل";
 "tagsAdd_title" = "Add Tag";
 "tagsAdd_message" = "Enter a name for this new tag";
@@ -421,7 +450,20 @@
 
 "imageUploadRemove" = "Removing uploaded photos";
 
+"imageUploadTableCell_waiting" = "Waiting...";
+"imageUploadTableCell_preparing" = "Preparing...";
+"imageUploadTableCell_prepared" = "Ready for upload...";
 "imageUploadTableCell_uploading" = "تحميل...";
+"imageUploadTableCell_uploaded" = "Uploaded";
+"imageUploadTableCell_finishing" = "Finishing...";
+
+"imageUploadClearFailedSingle" = "Clear Failed Upload";
+"imageUploadClearFailedSeveral" = "Clear %@ Failed Uploads";
+"imageUploadClearCompletedSingle" = "Clear Completed Upload";
+"imageUploadClearCompletedSeveral" = "Clear %@ Completed Uploads";
+"imageUploadResumeSingle" = "Resume Upload";
+"imageUploadResumeSeveral" = "Resume %@ Uploads";
+
 "imageUploadProgressBar_zero" = "جار التحميل 0/0";
 "imageUploadProgressBar_nonZero" = "جار التحميل %@/%@";
 "imageUploadProgressBar_completed" = "اكتملت";
@@ -429,13 +471,20 @@
 "imageUploadCompleted_message" = "صورة / فيديو تم تحميلها إلى خادم Piwigo الخاص بك.";
 "imageUploadCompleted_message>1" = "صور / فيديوهات تم تحميلها إلى خادم Piwigo الخاص بك.";
 
+
 // Image upload — Errors
 "uploadError_title" = "خطأ في التحميل";
 "uploadError_message" = "تعذر تحميل الصورة الخاصة بك. خطأ: %@";
 "uploadCancelled_title" = "تم إلغاء الرفع";
+"uploadNoInternetNetwork" = "No Internet Connection";
+"uploadNoWiFiNetwork" = "No Wi-Fi Connection";
+"uploadLowPowerMode" = "Low Power Mode enabled";
+"uploadSection_impossible" = "Impossible Uploads";
+"uploadSection_resumable" = "Resumable Uploads";
+"uploadSection_queue" = "Uploads Queue";
 
 "imageUploadError_title" = "خطأ في تحميل الصورة";
-"imageUploadError_format" = "عذرا، لا يتم قبول ملفات الصور ذات الإضافات.%@ و .jpg بواسطة خادم Piwigo.";
+"imageUploadError_format" = "File format not accepted by Piwigo server.";
 "imageUploadError_source" = "لا يمكن إنشاء مصدر الصورة";
 "imageUploadError_destination" = "لا يمكن إنشاء وجهة الصورة";
 "imageUploadError_iCloud" = "تعذر استرداد الصورة. خطأ:%@";
@@ -600,11 +649,11 @@
 "settings_stripGPSdata>375px" = "جرد البيانات الوصفية الخاصة قبل التحميل";
 "settings_photoResize" = "تغيير الحجم قبل التحميل";
 "settings_photoResize>375px" = "تغيير حجم الصورة قبل التحميل";
-"settings_photoSize" = "> الحجم   ";
+"settings_photoSize" = "الحجم";
 "settings_placeholderSize" = "أدخل حجم الصورة من 5 - 100";
 "settings_photoCompress" = "التضغيط قبل التحميل";
 "settings_photoCompress>375px" = "ضغط الصورة قبل التحميل";
-"settings_photoQuality" = "> الجودة";
+"settings_photoQuality" = "الجودة";
 "settings_placeholderQuality" = "أدخل جودة الصورة من 50 - 98";
 "settings_prefixFilename>414px" = "Prefix Photo Filename Before Upload";
 "settings_prefixFilename>375px" = "Prefix Filename Before Upload";
@@ -613,6 +662,7 @@
 "settings_defaultPrefix>320px" = "Filename Prefix";
 "settings_defaultPrefixPlaceholder" = "Prefix";
 "settings_deleteImage>375px" = "حذف الصورة بعد تحميل";
+"settings_wifiOnly" = "Wi-Fi Only";
 "settings_deleteImage" = "الحذف بعد التحميل";
 
 // Settings — Cache

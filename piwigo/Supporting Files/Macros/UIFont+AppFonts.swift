@@ -12,68 +12,68 @@ import UIKit
 extension UIFont {
 
     @objc
-    class func piwigoFontLight() -> UIFont? {
-        return UIFont(name: "OpenSans-Light", size: 17.0)
+    class func piwigoFontLight() -> UIFont {
+        return UIFont(name: "OpenSans-Light", size: 17.0) ?? UIFont.systemFont(ofSize: 17.0)
     }
 
     @objc
-    class func piwigoFontNormal() -> UIFont? {
-        return UIFont(name: "OpenSans", size: 17.0)
+    class func piwigoFontNormal() -> UIFont {
+        return UIFont(name: "OpenSans", size: 17.0) ?? UIFont.systemFont(ofSize: 17.0)
     }
 
     @objc
-    class func piwigoFontSemiBold() -> UIFont? {
-        return UIFont(name: "OpenSans-Semibold", size: 17.0)
+    class func piwigoFontSemiBold() -> UIFont {
+        return UIFont(name: "OpenSans-Semibold", size: 17.0) ?? UIFont.boldSystemFont(ofSize: 17.0)
     }
 
     @objc
-    class func piwigoFontBold() -> UIFont? {
-        return UIFont(name: "OpenSans-Bold", size: 17.0)
+    class func piwigoFontBold() -> UIFont {
+        return UIFont(name: "OpenSans-Bold", size: 17.0) ?? UIFont.boldSystemFont(ofSize: 17.0)
     }
 
     @objc
-    class func piwigoFontExtraBold() -> UIFont? {
-        return UIFont(name: "OpenSans-Extrabold", size: 17.0)
+    class func piwigoFontExtraBold() -> UIFont {
+        return UIFont(name: "OpenSans-Extrabold", size: 17.0) ?? UIFont.boldSystemFont(ofSize: 17.0)
     }
 
     @objc
-    class func piwigoFontSmall() -> UIFont? {
-        return UIFont(name: "OpenSans", size: 13.0)
+    class func piwigoFontSmall() -> UIFont {
+        return UIFont(name: "OpenSans", size: 13.0) ?? UIFont.systemFont(ofSize: 13.0)
     }
 
     @objc
-    class func piwigoFontSmallLight() -> UIFont? {
-        return UIFont(name: "OpenSans-Light", size: 13.0)
+    class func piwigoFontSmallLight() -> UIFont {
+        return UIFont(name: "OpenSans-Light", size: 13.0) ?? UIFont.systemFont(ofSize: 13.0)
     }
 
     @objc
-    class func piwigoFontSmallSemiBold() -> UIFont? {
-        return UIFont(name: "OpenSans-Semibold", size: 13.0)
+    class func piwigoFontSmallSemiBold() -> UIFont {
+        return UIFont(name: "OpenSans-Semibold", size: 13.0) ?? UIFont.boldSystemFont(ofSize: 13.0)
     }
 
     @objc
-    class func piwigoFontTiny() -> UIFont? {
-        return UIFont(name: "OpenSans", size: 10.0)
+    class func piwigoFontTiny() -> UIFont {
+        return UIFont(name: "OpenSans", size: 10.0) ?? UIFont.systemFont(ofSize: 10.0)
     }
 
     @objc
-    class func piwigoFontLarge() -> UIFont? {
-        return UIFont(name: "OpenSans", size: 28.0)
+    class func piwigoFontLarge() -> UIFont {
+        return UIFont(name: "OpenSans", size: 28.0) ?? UIFont.systemFont(ofSize: 28.0)
     }
 
     @objc
-    class func piwigoFontLargeTitle() -> UIFont? {
-        return UIFont(name: "OpenSans-Extrabold", size: 28.0)
+    class func piwigoFontLargeTitle() -> UIFont {
+        return UIFont(name: "OpenSans-Extrabold", size: 28.0) ?? UIFont.boldSystemFont(ofSize: 28.0)
     }
 
     @objc
-    class func piwigoFontButton() -> UIFont? {
-        return UIFont(name: "OpenSans", size: 21.0)
+    class func piwigoFontButton() -> UIFont {
+        return UIFont(name: "OpenSans", size: 21.0) ?? UIFont.systemFont(ofSize: 21.0)
     }
 
     @objc
-    class func piwigoFontDisclosure() -> UIFont? {
-        return UIFont(name: "LacunaRegular", size: 21.0)
+    class func piwigoFontDisclosure() -> UIFont {
+        return UIFont(name: "LacunaRegular", size: 21.0) ?? UIFont.systemFont(ofSize: 21.0)
     }
 
     @objc

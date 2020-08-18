@@ -30,7 +30,7 @@ typedef enum {
 @property (nonatomic, assign) NSInteger albumId;
 @property (nonatomic, strong) NSString *query;
 @property (nonatomic, assign) NSInteger parentAlbumId;
-@property (nonatomic, strong) NSArray *upperCategories;
+@property (nonatomic, strong) NSArray<NSString*> *upperCategories;
 @property (nonatomic, assign) NSInteger nearestUpperCategory;
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSString *comment;
@@ -44,7 +44,7 @@ typedef enum {
 @property (nonatomic, strong) UIImage *categoryImage;
 @property (nonatomic, assign) BOOL hasUploadRights;
 
-@property (nonatomic, readonly) NSArray *imageList;
+@property (nonatomic, readonly) NSArray<PiwigoImageData *> *imageList;
 @property (nonatomic, readonly) NSInteger onPage;
 
 -(PiwigoAlbumData *)initWithId:(NSInteger)categoryId andParameters:(NSDictionary *)parameters;
@@ -56,11 +56,12 @@ typedef enum {
 -(void)loadCategoryImageDataChunkWithSort:(NSString*)sort
 							  forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
 								OnCompletion:(void (^)(BOOL completed))completion;
+
 -(void)addImages:(NSArray*)images;
+-(void)addUploadedImage:(PiwigoImageData*)imageData;
 -(void)updateImages:(NSArray*)updatedImages;
 -(void)updateImageAfterEdit:(PiwigoImageData *)uploadedImage;
 -(void)removeImages:(NSArray*)images;
--(void)updateCacheWithImageUploadInfo:(ImageUpload*)imageUpload;
 -(NSInteger)getDepthOfCategory;
 -(BOOL)containsUpperCategory:(NSInteger)category;
 -(void)resetData;

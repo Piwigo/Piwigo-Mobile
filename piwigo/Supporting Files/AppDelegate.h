@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-//#import "DataController.h"
+@class UploadManager;
 
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationPaletteChanged;
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationNetworkErrorEncountered;
@@ -17,22 +17,14 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationRemoveRecentAlbum;
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
-@property (strong, nonatomic) UIWindow *window;
+@property (nonatomic, strong) UIWindow *window;
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
-//@property (strong, nonatomic) DataController *dataController;
-
-//#ifdef __IPHONE_10_0
-//@property (nonatomic, strong) NSPersistentContainer *persistentContainer;
-//#endif
-//@property (nonatomic, strong) NSManagedObjectModel *managedObjectModel;
-//@property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
-//@property (nonatomic, strong) NSPersistentStoreCoordinator *persistentStoreCoordinator;
+@property (nonatomic, strong) dispatch_queue_t uploadQueue;
 
 -(void)loadLoginView;
 -(void)loadNavigation;
 -(void)screenBrightnessChanged;
-
-//-(NSManagedObjectContext *)managedObjectContext;
-//-(void)saveContext;
+-(void)resumeUploadManager;
+-(void)triggerUploadManager;
 
 @end

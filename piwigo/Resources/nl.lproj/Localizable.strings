@@ -12,7 +12,7 @@
 
 "tabBar_albums" = "Albums";
 "tabBar_upload" = "Uploaden";
-"tabBar_preferences" = "Voorkeuren";
+"tabBar_preferences" = "Instellingen";
 
 // Alert buttons
 "alertOkButton" = "Ok";
@@ -42,6 +42,22 @@
 "internetCancellingConnection_button" = "Verbinding afgebroken…";
 "internetCancelledConnection_button" = "Verbinding afgebroken";
 "internetCancelledConnection_title" = "Verbindingen afgebroken";
+
+// ===========================================================================
+// ==> CORE DATA
+// ===========================================================================
+"CoreDataStore_WarningTitle" = "Waarschuwing";
+"CoreDataStore_WarningMessage" = "A serious application error occurred while Piwigo tried to read the data cache. A new cache has therefore been created.";
+"CoreDataFetch_DigestError" = "Could not digest the fetched data.";
+
+// Tag objects
+"CoreDataFetch_TagError" = "Fetch tags error!";
+"CoreDataFetch_TagMissingData" = "Found and will discard a tag missing a valid code or name.";
+"CoreDataFetch_TagCreateFailed" = "Failed to create a new Tag object.";
+
+// Upload objects
+"CoreDataFetch_UploadCreateFailed" = "Failed to create a new Upload object.";
+"CoreDataFetch_UploadMissingAsset" = "Failed to retrieve photo.";
 
 // ===========================================================================
 // ==> LOGIN / LOGOUT
@@ -99,8 +115,6 @@
 
 // Logout — Errors
 "logoutFail_title" = "Afmelden is mislukt";
-"logoutFail_message" = "Afmelden mislukt. Nog een keer proberen?";
-
 
 // ===========================================================================
 // ==> ALBUMS
@@ -153,8 +167,15 @@
 "categoryUpload_chooseAlbum" = "Selecteer een album om foto's naar up te loaden";
 "categoryUpload_LocalAlbums" = "Lokale albums";
 "categoryUpload_chooseLocalAlbum" = "Selecteer een album om er foto's van op te halen";
+"categoryUpload_sharedAlbums" = "Shared Albums";
 "categoryUpload_iCloudAlbums" = "iCloud albums";
 "categoryUpload_chooseiCloudAlbum" = "Selecteer een  iCloud album om er foto's van op te halen";
+"categoryUpload_syncedEvents" = "iPhoto Events";
+"categoryUpload_syncedAlbums" = "iPhoto Albums";
+"categoryUpload_syncedFaces" = "iPhoto Faces";
+"categoryUpload_mediaTypes" = "Media Types";
+"categoryUpload_otherAlbums" = "Other Albums";
+
 "categoyUpload_loadSubCategories" = "laden";
 "categoryUpload_images" = "Foto's uploaden";
 "categoryUpload_subAlbum" = "Maak sub-album";
@@ -250,8 +271,13 @@
 "singleVideo" = "Video";
 "singleAudio" = "Audio";
 "severalImages" = "Foto's";
+"severalVideos" = "Video's";
 "noImages" = "Geen foto's";
 "pullToRefresh" = "Foto's opnieuw laden";
+"andMore" = " & more";
+"Months" = "Months";
+"Weeks" = "Weeks";
+"Days" = "Days";
 
 // Errors
 "albumPhotoError_title" = "Haal albumfoto's is mislukt";
@@ -260,8 +286,10 @@
 // Image sort
 "sortBy" = "Sorteren op";
 "imageSortTitle" = "Sorteer foto's";
-"imageSortingHUD" = "Foto's sorteren";
 "imageSortMessage" = "Selecteer hoe je de foto's wilt sorteren";
+"imageSortingHUD" = "Foto's sorteren";
+"imageSelectingHUD" = "Selecting Photos…";
+"imageDeselectingHUD" = "Deselecting Photos…";
 
 // Image options (actions)
 "imageOptions_title" = "Foto-opties";
@@ -309,6 +337,7 @@
 "tag" = "Label";
 "tagsTitle_selectOne" = "Selecteer een Label";
 "tagsHeader_selected" = "Geselecteerd";
+"tagsHeader_notSelected" = "Not Selected";
 "tagsHeader_all" = "Alles";
 "tagsAdd_title" = "Voeg label toe";
 "tagsAdd_message" = "Voer een naam in voor dit label";
@@ -421,7 +450,20 @@
 
 "imageUploadRemove" = "Geüploade foto's verwijderen";
 
+"imageUploadTableCell_waiting" = "Waiting...";
+"imageUploadTableCell_preparing" = "Preparing...";
+"imageUploadTableCell_prepared" = "Ready for upload...";
 "imageUploadTableCell_uploading" = "Bezig met uploaden...";
+"imageUploadTableCell_uploaded" = "Uploaded";
+"imageUploadTableCell_finishing" = "Finishing...";
+
+"imageUploadClearFailedSingle" = "Clear Failed Upload";
+"imageUploadClearFailedSeveral" = "Clear %@ Failed Uploads";
+"imageUploadClearCompletedSingle" = "Clear Completed Upload";
+"imageUploadClearCompletedSeveral" = "Clear %@ Completed Uploads";
+"imageUploadResumeSingle" = "Resume Upload";
+"imageUploadResumeSeveral" = "Resume %@ Uploads";
+
 "imageUploadProgressBar_zero" = "Bezig met uploaden 0/0";
 "imageUploadProgressBar_nonZero" = "Bezig met uploaden %@/%@";
 "imageUploadProgressBar_completed" = "Klaar";
@@ -429,13 +471,20 @@
 "imageUploadCompleted_message" = "foto/video die ge-upload zijn naar jouw Piwigo-server.";
 "imageUploadCompleted_message>1" = "afbeeldingen/video's geüpload naar uw server Piwigo.";
 
+
 // Image upload — Errors
 "uploadError_title" = "Upload-fout";
 "uploadError_message" = "Kon je foto niet uploaden. Fout: %@";
 "uploadCancelled_title" = "Uploaden afgebroken";
+"uploadNoInternetNetwork" = "No Internet Connection";
+"uploadNoWiFiNetwork" = "No Wi-Fi Connection";
+"uploadLowPowerMode" = "Low Power Mode enabled";
+"uploadSection_impossible" = "Impossible Uploads";
+"uploadSection_resumable" = "Resumable Uploads";
+"uploadSection_queue" = "Uploads Queue";
 
 "imageUploadError_title" = "Foto-upload-fout";
-"imageUploadError_format" = "Sorry. Fotobestanden met extensie %@ en .jpg worden niet ondersteund door de Piwigo-server.";
+"imageUploadError_format" = "File format not accepted by Piwigo server.";
 "imageUploadError_source" = "kan geen foto-bron maken";
 "imageUploadError_destination" = "kan geen foto-bestemming maken";
 "imageUploadError_iCloud" = "Kon afbeelding niet ophalen. Fout: %@";
@@ -600,11 +649,11 @@
 "settings_stripGPSdata>375px" = "Verwijder privé metadata vóór het uploaden";
 "settings_photoResize" = "Pas grootte aan vóór de upload";
 "settings_photoResize>375px" = "Pas de fotogrootte aan vóór de upload";
-"settings_photoSize" = "> Grootte   ";
+"settings_photoSize" = "Grootte";
 "settings_placeholderSize" = "Voor een fotoformaat in vanaf 5-100";
 "settings_photoCompress" = "Comprimeer vóór het uploaden";
 "settings_photoCompress>375px" = "Comprimeer de foto vóór het uploaden";
-"settings_photoQuality" = "> Kwaliteit";
+"settings_photoQuality" = "Kwaliteit";
 "settings_placeholderQuality" = "Voer beeldkwaliteit in tussen 50-98";
 "settings_prefixFilename>414px" = "Voorvoegsel foto bestandsnaam voor het uploaden";
 "settings_prefixFilename>375px" = "Bestandsnaam voorvoegsel voor het uploaden";
@@ -613,6 +662,7 @@
 "settings_defaultPrefix>320px" = "Bestandsnaam voorvoegsel";
 "settings_defaultPrefixPlaceholder" = "Voorvoegsel";
 "settings_deleteImage>375px" = "Verwijder de foto ná het uploaden";
+"settings_wifiOnly" = "Wi-Fi Only";
 "settings_deleteImage" = "Verwijder na uploaden";
 
 // Settings — Cache

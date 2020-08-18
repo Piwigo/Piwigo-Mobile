@@ -1,0 +1,30 @@
+{
+    "result": {
+        "tags": [{
+                "id": 1,
+                "lastmodified": "2018-08-23 15:30:43",
+                "counter": 11,
+                "name": "Birthday",
+                "url": "https:…",
+                "url_name": "birthday"
+            },
+            {
+                "id": 14,
+                "lastmodified": "2019-08-27 20:33:01",
+                "counter": 5,
+                "name": "Cities",
+                "url": "https:…",
+                "url_name": "cities"
+            },
+            {
+                "id": 2,
+                "lastmodified": "2018-08-23 15:30:43",
+                "counter": 9,
+                "name": "Piwigo",
+                "url": "https:…",
+                "url_name": "piwigo"
+            }
+        ]
+    },
+    "stat": "ok"
+}

@@ -62,15 +62,19 @@
                             @"usu" : self.versionLabel
                            };
 
+    CGFloat logoWidth = self.textFieldHeight * 4.02;
+    CGFloat logoSide = floorf([UIScreen mainScreen].bounds.size.width - logoWidth) / 2.0;
     NSDictionary *metrics = @{
                               @"height" : @(self.textFieldHeight),
-                              @"side" : @(margin)
+                              @"logoWidth" : @(logoWidth),
+                              @"logoSide" : @(logoSide),
+                              @"side"   : @(margin)
                               };
     
     // Vertically
     [self.view addConstraint:[NSLayoutConstraint constraintViewFromTop:self.loginButton amount:([UIScreen mainScreen].bounds.size.height / 2.0 + self.textFieldHeight + 2 * 10.0)]];
     
-    if ([UIScreen mainScreen].bounds.size.height > 500) {
+    if ([UIScreen mainScreen].bounds.size.height > 600) {
         [self.view addConstraints:[NSLayoutConstraint
                 constraintsWithVisualFormat:@"V:|-(>=50,<=100)-[logo(height)]-(>=20)-[url(==logo)]-10-[server(==logo)]-10-[user(==logo)]-10-[password(==logo)]-10-[login(==logo)]-10-[notSecure]-(>=30)-[by1][by2]-3-[usu]-20-|"
                                    options:kNilOptions metrics:metrics views:views]];
@@ -82,6 +86,7 @@
 
     // Piwigo logo
     [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.piwigoLogo]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(>=logoSide)-[logo(logoWidth)]-(>=logoSide)-|" options:kNilOptions metrics:metrics views:views]];
 
     // URL button
     [self.view addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.piwigoButton]];
