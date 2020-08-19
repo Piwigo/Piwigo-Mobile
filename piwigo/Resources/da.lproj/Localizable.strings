@@ -287,7 +287,7 @@
 "sortBy" = "Sortér efter";
 "imageSortTitle" = "Sorter billeder";
 "imageSortMessage" = "Vælg hvordan du ønsker at sortere billeder";
-"imageSortingHUD" = "Sortering af billeder";
+"imageSortingHUD" = "Sorterer billeder…";
 "imageSelectingHUD" = "Selecting Photos…";
 "imageDeselectingHUD" = "Deselecting Photos…";
 

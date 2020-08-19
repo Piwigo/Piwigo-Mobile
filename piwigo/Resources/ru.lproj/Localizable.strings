@@ -478,10 +478,10 @@
 "uploadCancelled_title" = "Загрузка отменена";
 "uploadNoInternetNetwork" = "No Internet Connection";
 "uploadNoWiFiNetwork" = "No Wi-Fi Connection";
-"uploadLowPowerMode" = "Low Power Mode enabled";
-"uploadSection_impossible" = "Impossible Uploads";
-"uploadSection_resumable" = "Resumable Uploads";
-"uploadSection_queue" = "Uploads Queue";
+"uploadLowPowerMode" = "Режим низкого энергопотребления включен";
+"uploadSection_impossible" = "Загрузки невозможны";
+"uploadSection_resumable" = "Возобновление загрузок";
+"uploadSection_queue" = "Очередь загрузок";
 
 "imageUploadError_title" = "Ошибка загрузки фото";
 "imageUploadError_format" = "File format not accepted by Piwigo server.";
