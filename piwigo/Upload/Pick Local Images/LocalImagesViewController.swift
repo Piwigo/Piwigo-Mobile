@@ -103,7 +103,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         
         // Initialise arrays
         selectedImages = .init(repeating: nil, count: fetchedImages.count)            // At start, there is no image selected
-        selectedSections = .init(repeating: .none, count: fetchedImages.count)        // User cannot select sections of images until data is ready
+        selectedSections = .init(repeating: .none, count: fetchedImages.count)
         if let uploads = uploadsProvider.fetchedResultsController.fetchedObjects {       // We provide a non-indexed list of images in the upload queue
             uploadsInQueue = uploads.map {($0.localIdentifier, $0.state)}
         }                                                                               // so that we can at least show images in upload queue at start
@@ -578,36 +578,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Did select new sort option [Months, Weeks, Days, All in one section]
         sortType = SectionType(rawValue: sender.selectedSegmentIndex) ?? .all
                 
-//        // Sort images as requested using cached arrays
-//        switch sortType {
-//        case .month:
-//            self.sortedImages = self.imagesSortedByMonth
-//            // Refresh collection (may be called from background queue)
-//            DispatchQueue.main.async {
-//                // Refresh collection view
-//                self.localImagesCollection.reloadData()
-//            }
-//        case .week:
-//            self.sortedImages = self.imagesSortedByWeek
-//            // Refresh collection (may be called from background queue)
-//            DispatchQueue.main.async {
-//                // Refresh collection view
-//                self.localImagesCollection.reloadData()
-//            }
-//        case .day:
-//            self.sortedImages = self.imagesSortedByDay
-//            // Refresh collection (may be called from background queue)
-//            DispatchQueue.main.async {
-//                // Refresh collection view
-//                self.localImagesCollection.reloadData()
-//            }
-//        case .all:
-            // Refresh collection (may be called from background queue)
-            DispatchQueue.main.async {
-                // Refresh collection view
-                self.localImagesCollection.reloadData()
-            }
-//        }
+        // Refresh collection (may be called from background queue)
+        DispatchQueue.main.async {
+            // Refresh collection view
+            self.localImagesCollection.reloadData()
+        }
     }
         
     @objc func didTapUploadButton() {
@@ -651,7 +626,13 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     
     @objc func cancelSelect() {
         // Clear list of selected sections
-        selectedSections = .init(repeating: .select, count: indexOfImageSortedByDay.count)
+        if indexOfImageSortedByDay.count == 0 {
+            // Sort not yet completed (avoid crash is user upload image before the sort is done)
+            selectedSections = .init(repeating: .select, count: fetchedImages.count)
+        } else {
+            // Sort completed
+            selectedSections = .init(repeating: .select, count: indexOfImageSortedByDay.count)
+        }
 
         // Clear list of selected images
         selectedImages = Array(repeating: nil, count: fetchedImages.count)
