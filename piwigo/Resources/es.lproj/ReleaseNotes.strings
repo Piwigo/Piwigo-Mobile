@@ -8,7 +8,7 @@
 
 "v2.5.0_text" = "Versión 2.5\n\n• Registra solicitudes de subida\n• Sube fotos/vídeos cuando es posible\n• Opción \"Sólo Wi-Fi\" para subidas\n• No realizar subidas cuando se está en modo de ahorro de batería\n• Acceso mucho más rápido a la Biblioteca de Fotos\n• Correcciones de errores menores y mejoras de la interfaz\n• Modernización del código\n\nLa subida en segundo plano estará disponible después de una actualización de servidor.";
 
-"v2.4.8_text" = "Versión 2.4.8\n\n• Piwigo te advierte cuando:\n - un sitio web tiene un certificado que no es válido,\n - antes de establecer una conexión insegura\n• Gestión de caché mejorada\n• Correcciones y mejoras menores de la interfaz";
+"v2.4.8_text" = "Versión 2.4.8\n25 de marzo de 2020\n\n• Piwigo te advierte cuando:\n - un sitio web tiene un certificado que no es válido,\n - antes de establecer una conexión insegura\n• Gestión de caché mejorada\n• Correcciones y mejoras menores de la interfaz";
 
 "v2.4.7_text" = "Versión 2.4.7\n30 de enero 2020\n\n• Traducciones al chino simplificado, ruso y español\n• Soluciona un problema de reproducción de vídeo de algunos servidores";
 

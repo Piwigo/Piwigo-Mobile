@@ -337,7 +337,7 @@
 "tag" = "Etiqueta";
 "tagsTitle_selectOne" = "Selecciona una etiqueta";
 "tagsHeader_selected" = "Seleccionado";
-"tagsHeader_notSelected" = "Not Selected";
+"tagsHeader_notSelected" = "No seleccionado";
 "tagsHeader_all" = "Todo";
 "tagsAdd_title" = "Añadir etiqueta";
 "tagsAdd_message" = "Introduce un nombre para esta nueva etiqueta";

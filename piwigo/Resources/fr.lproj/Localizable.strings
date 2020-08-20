@@ -47,7 +47,7 @@
 // ==> CORE DATA
 // ===========================================================================
 "CoreDataStore_WarningTitle" = "Avertissement";
-"CoreDataStore_WarningMessage" = "Une erreur sérieuse s'est produite pendant que Piwigo tentait de lire le cache de données. Une nouvelle cache a donc été créée.";
+"CoreDataStore_WarningMessage" = "Une erreur sérieuse s'est produite pendant que Piwigo tentait de lire le cache de données. Un nouveau cache a donc été créé.";
 "CoreDataFetch_DigestError" = "Impossible de digérer les données récupérées.";
 
 // Tag objects
@@ -287,7 +287,7 @@
 "sortBy" = "Trier par";
 "imageSortTitle" = "Trier les photos";
 "imageSortMessage" = "Veuillez sélectionner comment vous souhaitez trier les photos";
-"imageSortingHUD" = "Tri des photos";
+"imageSortingHUD" = "Tri des photos…";
 "imageSelectingHUD" = "Sélection des photos…";
 "imageDeselectingHUD" = "Désélection des photos…";
 
@@ -452,15 +452,15 @@
 
 "imageUploadTableCell_waiting" = "En attente...";
 "imageUploadTableCell_preparing" = "En cours de préparation...";
-"imageUploadTableCell_prepared" = "Prêt pour le téléversement...";
+"imageUploadTableCell_prepared" = "Prêt à télécharger...";
 "imageUploadTableCell_uploading" = "Téléversement...";
-"imageUploadTableCell_uploaded" = "Téléversement réussi";
+"imageUploadTableCell_uploaded" = "Transféré";
 "imageUploadTableCell_finishing" = "Finalisation...";
 
 "imageUploadClearFailedSingle" = "Effacer télévers. échoué";
-"imageUploadClearFailedSeveral" = "Effacer %@ télévers. échoués";
-"imageUploadClearCompletedSingle" = "Effacer le télévers. terminé";
-"imageUploadClearCompletedSeveral" = "Effacer %@ télévers. terminés";
+"imageUploadClearFailedSeveral" = "Effacer %@ transferts échoués";
+"imageUploadClearCompletedSingle" = "Effacer transfert terminé";
+"imageUploadClearCompletedSeveral" = "Effacer %@ transferts terminés";
 "imageUploadResumeSingle" = "Relancer le transfert";
 "imageUploadResumeSeveral" = "Relancer %@ transferts";
 
@@ -662,7 +662,7 @@
 "settings_defaultPrefix>320px" = "Préfixe du fichier";
 "settings_defaultPrefixPlaceholder" = "Préfixe";
 "settings_deleteImage>375px" = "Effacer la photo après envoi";
-"settings_wifiOnly" = "WiFi uniquement";
+"settings_wifiOnly" = "Wi-Fi uniquement";
 "settings_deleteImage" = "Effacer après Envoi";
 
 // Settings — Cache
