@@ -308,9 +308,10 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
             else {
                 // Prevent device from sleeping if uploads are in progress
                 self.queueTableView.tableHeaderView = nil
-                let uploadsToPerform = self.diffableDataSource.snapshot().numberOfItems(inSection: SectionKeys.Section3.rawValue)
-                if uploadsToPerform > 0 {
-                    UIApplication.shared.isIdleTimerDisabled = true
+                if let _ = self.diffableDataSource.snapshot().indexOfSection(SectionKeys.Section3.rawValue) {
+                    if self.diffableDataSource.snapshot().numberOfItems(inSection: SectionKeys.Section3.rawValue) > 0 {
+                        UIApplication.shared.isIdleTimerDisabled = true
+                    }
                 }
             }
         }
