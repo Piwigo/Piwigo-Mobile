@@ -31,7 +31,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
     
     
     // MARK: - View
-    @IBOutlet var queueTableView: UITableView!
+    @IBOutlet weak var queueTableView: UITableView!
     private var actionBarButton: UIBarButtonItem?
     private var doneBarButton: UIBarButtonItem?
 
@@ -134,7 +134,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
         NotificationCenter.default.removeObserver(self, name: name, object: nil)
 
-        // Unregister palette changes
+        // Unregister upload progress
         let name2: NSNotification.Name = NSNotification.Name(kPiwigoNotificationUploadProgress)
         NotificationCenter.default.removeObserver(self, name: name2, object: nil)
     }

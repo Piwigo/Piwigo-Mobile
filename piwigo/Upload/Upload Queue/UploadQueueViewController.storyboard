@@ -88,13 +88,17 @@
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="gf5-wR-3Of" id="Q1E-tY-KQo"/>
+                                    <outlet property="delegate" destination="gf5-wR-3Of" id="ZCm-9W-44z"/>
+                                </connections>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <viewLayoutGuide key="safeArea" id="oZW-jH-Uym"/>
                     </view>
                     <connections>
-                        <outlet property="queueTableView" destination="8xb-qD-vuv" id="G3d-OW-fMK"/>
+                        <outlet property="queueTableView" destination="8xb-qD-vuv" id="OPU-Zj-Fat"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ot8-O6-K8f" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
