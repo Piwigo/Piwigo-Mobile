@@ -57,7 +57,7 @@
 
 // Upload objects
 "CoreDataFetch_UploadCreateFailed" = "无法创建上传对象";
-"CoreDataFetch_UploadMissingAsset" = "Failed to retrieve photo.";
+"CoreDataFetch_UploadMissingAsset" = "无法获取图片";
 
 // ===========================================================================
 // ==> LOGIN / LOGOUT
@@ -167,14 +167,14 @@
 "categoryUpload_chooseAlbum" = "选择一个子相册以上传图像";
 "categoryUpload_LocalAlbums" = "本地相册";
 "categoryUpload_chooseLocalAlbum" = "选择一个相册以获取图片";
-"categoryUpload_sharedAlbums" = "Shared Albums";
+"categoryUpload_sharedAlbums" = "共享相册";
 "categoryUpload_iCloudAlbums" = "iCloud 相册";
 "categoryUpload_chooseiCloudAlbum" = "选择一个iCloud 相册以获取图片";
-"categoryUpload_syncedEvents" = "iPhoto Events";
-"categoryUpload_syncedAlbums" = "iPhoto Albums";
-"categoryUpload_syncedFaces" = "iPhoto Faces";
-"categoryUpload_mediaTypes" = "Media Types";
-"categoryUpload_otherAlbums" = "Other Albums";
+"categoryUpload_syncedEvents" = "iPhoto事件";
+"categoryUpload_syncedAlbums" = "iPhoto相册";
+"categoryUpload_syncedFaces" = "iPhoto人脸";
+"categoryUpload_mediaTypes" = "媒体类型";
+"categoryUpload_otherAlbums" = "其他相册";
 
 "categoyUpload_loadSubCategories" = "加载";
 "categoryUpload_images" = "上传图片";
@@ -288,8 +288,8 @@
 "imageSortTitle" = "排序图片";
 "imageSortMessage" = "请选择您希望如何排序照片";
 "imageSortingHUD" = "排序照片中...";
-"imageSelectingHUD" = "Selecting Photos…";
-"imageDeselectingHUD" = "Deselecting Photos…";
+"imageSelectingHUD" = "选择相片中...";
+"imageDeselectingHUD" = "反选相片中...";
 
 // Image options (actions)
 "imageOptions_title" = "照片选项";
@@ -337,7 +337,7 @@
 "tag" = "标签";
 "tagsTitle_selectOne" = "选择一个标签";
 "tagsHeader_selected" = "已选";
-"tagsHeader_notSelected" = "Not Selected";
+"tagsHeader_notSelected" = "未选中";
 "tagsHeader_all" = "所有";
 "tagsAdd_title" = "添加标签";
 "tagsAdd_message" = "为新标签输入一个名字";
@@ -352,7 +352,7 @@
 "selectImages" = "选择照片";
 "selectImageSelected" = "已选择1张照片";
 "selectImagesSelected" = "已选择 %@ 张照片";
-"selectAll" = "全部";
+"selectAll" = "全选";
 
 // Image rename (filename)
 "renameImage_title" = "原始文件";
@@ -450,19 +450,19 @@
 
 "imageUploadRemove" = "移除已上传的照片";
 
-"imageUploadTableCell_waiting" = "Waiting...";
-"imageUploadTableCell_preparing" = "Preparing...";
-"imageUploadTableCell_prepared" = "Ready for upload...";
+"imageUploadTableCell_waiting" = "请稍等...";
+"imageUploadTableCell_preparing" = "正在准备...";
+"imageUploadTableCell_prepared" = "已准备好上传...";
 "imageUploadTableCell_uploading" = "上传中...";
-"imageUploadTableCell_uploaded" = "Uploaded";
-"imageUploadTableCell_finishing" = "Finishing...";
+"imageUploadTableCell_uploaded" = "已上传";
+"imageUploadTableCell_finishing" = "结束中...";
 
-"imageUploadClearFailedSingle" = "Clear Failed Upload";
-"imageUploadClearFailedSeveral" = "Clear %@ Failed Uploads";
-"imageUploadClearCompletedSingle" = "Clear Completed Upload";
-"imageUploadClearCompletedSeveral" = "Clear %@ Completed Uploads";
-"imageUploadResumeSingle" = "Resume Upload";
-"imageUploadResumeSeveral" = "Resume %@ Uploads";
+"imageUploadClearFailedSingle" = "清除失败的上传任务";
+"imageUploadClearFailedSeveral" = "清除 %@ 个失败的上传任务";
+"imageUploadClearCompletedSingle" = "清除已完成的上传任务";
+"imageUploadClearCompletedSeveral" = "清除 %@ 个已完成的上传任务";
+"imageUploadResumeSingle" = "继续上传";
+"imageUploadResumeSeveral" = "继续剩余的 %@ 个上传";
 
 "imageUploadProgressBar_zero" = "正在上传 0/0";
 "imageUploadProgressBar_nonZero" = "正在上传 %@/%@";
@@ -476,15 +476,15 @@
 "uploadError_title" = "上传错误";
 "uploadError_message" = "无法上传你的照片，错误信息为 %@";
 "uploadCancelled_title" = "上传已取消";
-"uploadNoInternetNetwork" = "No Internet Connection";
-"uploadNoWiFiNetwork" = "No Wi-Fi Connection";
-"uploadLowPowerMode" = "Low Power Mode enabled";
-"uploadSection_impossible" = "Impossible Uploads";
-"uploadSection_resumable" = "Resumable Uploads";
-"uploadSection_queue" = "Uploads Queue";
+"uploadNoInternetNetwork" = "没有网络连接";
+"uploadNoWiFiNetwork" = "没有Wi-Fi连接";
+"uploadLowPowerMode" = "已开启低电量模式";
+"uploadSection_impossible" = "无法完成的上传任务";
+"uploadSection_resumable" = "可继续的上传任务";
+"uploadSection_queue" = "上传队列";
 
 "imageUploadError_title" = "照片上传错误";
-"imageUploadError_format" = "File format not accepted by Piwigo server.";
+"imageUploadError_format" = "Piwigo服务器不支持这个文件格式";
 "imageUploadError_source" = "无法创建照片源";
 "imageUploadError_destination" = "无法创建照片目标";
 "imageUploadError_iCloud" = "找不到照片，错误信息为 %@";
@@ -662,7 +662,7 @@
 "settings_defaultPrefix>320px" = "文件名前缀";
 "settings_defaultPrefixPlaceholder" = "前缀";
 "settings_deleteImage>375px" = "上传后删除照片";
-"settings_wifiOnly" = "Wi-Fi Only";
+"settings_wifiOnly" = "仅限Wi-Fi";
 "settings_deleteImage" = "上传后删除照片";
 
 // Settings — Cache
