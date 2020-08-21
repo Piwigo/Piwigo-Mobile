@@ -14,10 +14,6 @@ import CoreData
  Managed object subclass for the Upload entity.
  */
 
-enum SectionKeys: String {
-    case Section1, Section2, Section3, Section4
-}
-
 @objc
 class Upload: NSManagedObject {
 
@@ -235,6 +231,28 @@ extension Upload {
 /**
  A struct for managing upload requests
 */
+enum SectionKeys: String {
+    case Section1, Section2, Section3, Section4
+}
+
+extension SectionKeys {
+    var name: String {
+        switch self {
+        case .Section1:
+            return NSLocalizedString("uploadSection_impossible", comment: "Impossible Uploads")
+        case .Section2:
+            return NSLocalizedString("uploadSection_resumable", comment: "Resumable Uploads")
+        case .Section3:
+            return NSLocalizedString("uploadSection_queue", comment: "Uploads Queue")
+        case .Section4:
+            fallthrough
+        default:
+            return "—?—"
+        }
+    }
+}
+
+
 @objc
 enum kPiwigoUploadState : Int16 {
     case waiting

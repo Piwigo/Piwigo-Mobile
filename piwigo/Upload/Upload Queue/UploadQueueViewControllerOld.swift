@@ -42,6 +42,9 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         // Header informing user on network status
         mainHeader()
 
+        // Register section header view
+        queueTableView.register(UploadImageHeaderView.self, forHeaderFooterViewReuseIdentifier:"UploadImageHeaderView")
+
         // No extra space above tableView
         if #available(iOS 11.0, *) {
             queueTableView.contentInsetAdjustmentBehavior = .never
@@ -49,51 +52,13 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
             // Fallback on earlier versions
             automaticallyAdjustsScrollViewInsets = false
         }
-
-        // Register palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.applyColorPalette), name: name, object: nil)
-        
-        // Register network reachability
-        NotificationCenter.default.addObserver(self, selector: #selector(self.mainHeader), name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
-
-        // Register Low Power Mode status
-        NotificationCenter.default.addObserver(self, selector: #selector(self.mainHeader), name: NSNotification.Name.NSProcessInfoPowerStateDidChange, object: nil)
-
-        // Register upload progress
-        let name2: NSNotification.Name = NSNotification.Name(kPiwigoNotificationUploadProgress)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.applyUploadProgress), name: name2, object: nil)
-    }
-
-    @objc func applyColorPalette() {
-        // Background color of the view
-        view.backgroundColor = UIColor.piwigoColorBackground()
-
-        // Navigation bar
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
-        ]
-        navigationController?.navigationBar.titleTextAttributes = attributes
-        if #available(iOS 11.0, *) {
-            navigationController?.navigationBar.prefersLargeTitles = false
-        }
-        navigationController?.navigationBar.barStyle = Model.sharedInstance().isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
-
-        // Table view
-        queueTableView.separatorColor = UIColor.piwigoColorSeparator()
-        queueTableView.indicatorStyle = Model.sharedInstance().isDarkPaletteActive ? .white : .black
-        queueTableView.reloadData()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
         // Set colors, fonts, etc.
-        applyColorPalette()
+        applyColorPaletteToInitialViews()
 
         // Navigation bar button and identifier
         navigationItem.setLeftBarButtonItems([doneBarButton].compactMap { $0 }, animated: false)
@@ -125,6 +90,55 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         }
     }
     
+    private func applyColorPaletteToInitialViews() {
+        // Background color of the view
+        view.backgroundColor = UIColor.piwigoColorBackground()
+
+        // Navigation bar
+        let attributes = [
+            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
+            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
+        ]
+        navigationController?.navigationBar.titleTextAttributes = attributes
+        if #available(iOS 11.0, *) {
+            navigationController?.navigationBar.prefersLargeTitles = false
+        }
+        navigationController?.navigationBar.barStyle = Model.sharedInstance().isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
+        navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
+        navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
+
+        // Table view
+        queueTableView.separatorColor = UIColor.piwigoColorSeparator()
+        queueTableView.indicatorStyle = Model.sharedInstance().isDarkPaletteActive ? .white : .black
+    }
+    
+    @objc func applyColorPalette() {
+        // Set colors, fonts, etc.
+        applyColorPaletteToInitialViews()
+
+        // Table view items
+        queueTableView.reloadData()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // Register palette changes
+        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.applyColorPalette), name: name, object: nil)
+        
+        // Register network reachability
+        NotificationCenter.default.addObserver(self, selector: #selector(self.mainHeader), name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
+
+        // Register Low Power Mode status
+        NotificationCenter.default.addObserver(self, selector: #selector(self.mainHeader), name: NSNotification.Name.NSProcessInfoPowerStateDidChange, object: nil)
+
+        // Register upload progress
+        let name2: NSNotification.Name = NSNotification.Name(kPiwigoNotificationUploadProgress)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.applyUploadProgress), name: name2, object: nil)
+    }
+
     override func viewWillDisappear(_ animated: Bool) {
         // Allow device to sleep
         UIApplication.shared.isIdleTimerDisabled = false
@@ -272,70 +286,30 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         }
     }
     
-    func sectionNameFor(_ section: Int) -> String {
-        var sectionName = "Unknown section"
-        guard let sectionInfo = uploadsProvider.fetchedNonCompletedResultsController.sections?[section] else {
-            return sectionName
-        }
-        switch sectionInfo.name {
-        case "Section1":
-            sectionName = NSLocalizedString("uploadSection_impossible", comment: "Impossible Uploads")
-        case "Section2":
-            sectionName = NSLocalizedString("uploadSection_resumable", comment: "Resumable Uploads")
-        case "Section3":
-            sectionName = NSLocalizedString("uploadSection_queue", comment: "Uploads Queue")
-        case "Section4":
-            fallthrough
-        default:
-            sectionName = "Unknown section name"
-        }
-        
-        return sectionName
-    }
-    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        // Title
+        var sectionName = SectionKeys.Section4.name
+        if let sectionInfo = uploadsProvider.fetchedNonCompletedResultsController.sections?[section] {
+            let sectionKey = SectionKeys.init(rawValue: sectionInfo.name) ?? SectionKeys.Section4
+            sectionName = sectionKey.name
+        }
         let titleAttributes = [NSAttributedString.Key.font: UIFont.piwigoFontBold()]
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
-        let titleRect = sectionNameFor(section).boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
+        let titleRect = sectionName.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
         return CGFloat(fmax(44.0, ceil(titleRect.size.height)))
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let headerAttributedString = NSMutableAttributedString(string: "")
-
-        // Title
-        let sectionName = sectionNameFor(section)
-        let titleAttributedString = NSMutableAttributedString(string: sectionName)
-        titleAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: NSRange(location: 0, length: sectionName.count))
-        headerAttributedString.append(titleAttributedString)
-
-        // Header label
-        let headerLabel = UILabel()
-        headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        headerLabel.textColor = UIColor.piwigoColorHeader()
-
-        headerLabel.numberOfLines = 0
-        headerLabel.adjustsFontSizeToFitWidth = false
-        headerLabel.lineBreakMode = .byWordWrapping
-        headerLabel.attributedText = headerAttributedString
-
-        // Header view
-        let header = UIView()
-        header.addSubview(headerLabel)
-        header.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.75)
-        header.addConstraint(NSLayoutConstraint.constraintView(fromBottom: headerLabel, amount: 4)!)
-        if #available(iOS 11, *) {
-            header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[header]-|", options: [], metrics: nil, views: [
-            "header": headerLabel
-            ]))
-        } else {
-            header.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-15-[header]-15-|", options: [], metrics: nil, views: [
-            "header": headerLabel
-            ]))
+        guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "UploadImageHeaderView") as? UploadImageHeaderView else {
+            print("Error: tableView.dequeueReusableHeaderFooterView does not return a UploadImageHeaderView!")
+            return UploadImageHeaderView()
         }
-
+        if let sectionInfo = uploadsProvider.fetchedNonCompletedResultsController.sections?[section] {
+            let sectionKey = SectionKeys.init(rawValue: sectionInfo.name)!
+            header.config(with: sectionKey)
+        } else {
+            header.config(with: SectionKeys.Section4)
+        }
         return header
     }
     
