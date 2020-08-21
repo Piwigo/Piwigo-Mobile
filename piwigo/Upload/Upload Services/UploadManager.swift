@@ -32,9 +32,10 @@ class UploadManager: NSObject, URLSessionDelegate {
     }
 
     @objc func didChangeReachability() {
+        guard let wifiOnly = Model.sharedInstance()?.wifiOnlyUploading else { return }
         // Check network access and status
         if !AFNetworkReachabilityManager.shared().isReachable ||
-            (AFNetworkReachabilityManager.shared().isReachableViaWWAN && Model.sharedInstance().wifiOnlyUploading) {
+            (AFNetworkReachabilityManager.shared().isReachableViaWWAN && wifiOnly) {
             return
         }
         resumeAll()
@@ -222,7 +223,7 @@ class UploadManager: NSObject, URLSessionDelegate {
             NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationLeftUploads), object: nil, userInfo: uploadInfo)
         }
         
-        // Pause upload maneger if app not in the foreground
+        // Pause upload manager if app not in the foreground
         if appState == .background || appState == .inactive {
             print("    > NOT IN FOREGROUND !!!")
             return
@@ -234,6 +235,17 @@ class UploadManager: NSObject, URLSessionDelegate {
             return
         }
 
+        // Acceptable conditions for treating upload requests?
+        guard let _ = Model.sharedInstance()?.wifiOnlyUploading,
+            let _ = Model.sharedInstance()?.hasAdminRights,
+            let _ = Model.sharedInstance()?.hasNormalRights,
+            let _ = Model.sharedInstance()?.usesCommunityPluginV29,
+            let _ = Model.sharedInstance()?.uploadFileTypes,
+            let _ = Model.sharedInstance()?.stripGPSdataOnUpload,
+            let _ = Model.sharedInstance()?.pwgToken else {
+            return
+        }
+        
         // Check network access and status
         if !AFNetworkReachabilityManager.shared().isReachable ||
             (AFNetworkReachabilityManager.shared().isReachableViaWWAN && Model.sharedInstance().wifiOnlyUploading) {

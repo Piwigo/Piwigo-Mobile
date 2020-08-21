@@ -147,7 +147,7 @@ extension UploadManager {
                         onFailure fail: @escaping (_ task: URLSessionTask?, _ error: NSError?) -> Void) {
         
         // Calculate chunk size
-        let chunkSize = Model.sharedInstance().uploadChunkSize * 1024
+        let chunkSize = (Model.sharedInstance()?.uploadChunkSize ?? 512) * 1024
 
         // Get file to upload
         var imageData: Data? = nil
@@ -206,7 +206,7 @@ extension UploadManager {
         var offset = offset
         
         // Calculate this chunk size
-        let chunkSize = Model.sharedInstance().uploadChunkSize * 1024
+        let chunkSize = (Model.sharedInstance()?.uploadChunkSize ?? 512) * 1024
         let length = imageData?.count ?? 0
         let thisChunkSize = length - offset > chunkSize ? chunkSize : length - offset
         let chunk = imageData?.subdata(in: offset..<offset + thisChunkSize)
@@ -269,7 +269,7 @@ extension UploadManager {
         }
 
         // Calculate number of chunks
-        let chunkSize = Model.sharedInstance().uploadChunkSize * 1024
+        let chunkSize = (Model.sharedInstance()?.uploadChunkSize ?? 512) * 1024
         let chunks = Int((Float(imageData.count) / Float(chunkSize)).rounded(.up))
         let chunksStr = String(format: "%ld", chunks)
         
@@ -485,7 +485,7 @@ extension UploadManager {
         
         if #available(iOS 11.0, *) {
             // Determine file size
-            var fileSize = Int64(Model.sharedInstance()?.uploadChunkSize ?? 512000)
+            var fileSize = Int64(Model.sharedInstance()?.uploadChunkSize ?? 512) * 1024
             if let size = try? FileManager.default.attributesOfItem(atPath: fileURL.absoluteString)[FileAttributeKey.size] as? Int64 {
                 fileSize = size
             }
