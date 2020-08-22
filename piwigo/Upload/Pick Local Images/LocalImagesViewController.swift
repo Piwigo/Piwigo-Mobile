@@ -519,6 +519,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 self.localImagesCollection.reloadData()
             }
             alert.addAction(selectAction)
+        } else {
+            let deselectAction = UIAlertAction(title: NSLocalizedString("categoryImageList_deselectButton", comment: "Deselect"), style: .default) { (action) in
+                self.cancelSelect()
+            }
+            alert.addAction(deselectAction)
         }
         
         // Change sort option
