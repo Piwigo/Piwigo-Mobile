@@ -574,19 +574,20 @@ class UploadsProvider: NSObject {
         fetchRequest.fetchBatchSize = 20
 
         // Sort upload requests by state and date
-        let firstSortDescriptor = NSSortDescriptor(key: "requestState", ascending: false)
+        let firstSortDescriptor = NSSortDescriptor(key: "requestSectionKey", ascending: false)
         let secondSortDescriptor = NSSortDescriptor(key: "requestDate", ascending: true)
         fetchRequest.sortDescriptors = [firstSortDescriptor, secondSortDescriptor]
         
         // Do not consider completed upload requests for the current server
-        let statesPredicate = NSPredicate(format: "requestState != %d", kPiwigoUploadState.finished.rawValue)
+        let notFinishedPredicate = NSPredicate(format: "requestState != %d", kPiwigoUploadState.finished.rawValue)
+        let notModeratedPredicate = NSPredicate(format: "requestState != %d", kPiwigoUploadState.moderated.rawValue)
         let serverPredicate = NSPredicate(format: "serverPath == %@", Model.sharedInstance().serverPath)
-        fetchRequest.predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [statesPredicate, serverPredicate])
+        fetchRequest.predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [notFinishedPredicate, notModeratedPredicate, serverPredicate])
 
         // Create a fetched results controller and set its fetch request, context, and delegate.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
                                             managedObjectContext: self.managedObjectContext,
-                                              sectionNameKeyPath: "sectionKey", cacheName: nil)
+                                              sectionNameKeyPath: "requestSectionKey", cacheName: nil)
         controller.delegate = fetchedNonCompletedResultsControllerDelegate
         
         // Perform the fetch.

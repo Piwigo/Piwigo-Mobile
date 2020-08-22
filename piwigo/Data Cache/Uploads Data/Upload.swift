@@ -13,6 +13,26 @@ import CoreData
 /**
  Managed object subclass for the Upload entity.
  */
+enum SectionKeys: String {
+    case Section1, Section2, Section3, Section4
+}
+
+extension SectionKeys {
+    var name: String {
+        switch self {
+        case .Section1:
+            return NSLocalizedString("uploadSection_impossible", comment: "Impossible Uploads")
+        case .Section2:
+            return NSLocalizedString("uploadSection_resumable", comment: "Resumable Uploads")
+        case .Section3:
+            return NSLocalizedString("uploadSection_queue", comment: "Uploads Queue")
+        case .Section4:
+            fallthrough
+        default:
+            return "—?—"
+        }
+    }
+}
 
 @objc
 class Upload: NSManagedObject {
@@ -26,6 +46,7 @@ class Upload: NSManagedObject {
     @NSManaged var category: Int64
     @NSManaged var requestDate: Date
     @NSManaged var requestState: Int16
+    @NSManaged var requestSectionKey: String
     @NSManaged var requestError: String?
 
     @NSManaged var creationDate: Date?
@@ -73,6 +94,10 @@ class Upload: NSManagedObject {
         // State of upload request defaults to "waiting"
         requestState = Int16(uploadProperties.requestState.rawValue)
         
+        // Section key corresponding to the request state
+        requestSectionKey = SectionKeys.init(rawValue: uploadProperties.requestState.sectionKey)!.rawValue
+        print("•••>> requestSectionKey: \(requestSectionKey)")
+
         // Error message description
         requestError = uploadProperties.requestError
 
@@ -148,10 +173,6 @@ extension Upload {
         return state.stateInfo
     }
 
-    @objc var sectionKey: String {
-        return state.sectionKey
-    }
-    
     var privacy: kPiwigoPrivacy {
         switch self.privacyLevel {
         case Int16(kPiwigoPrivacyEverybody.rawValue):
@@ -231,28 +252,6 @@ extension Upload {
 /**
  A struct for managing upload requests
 */
-enum SectionKeys: String {
-    case Section1, Section2, Section3, Section4
-}
-
-extension SectionKeys {
-    var name: String {
-        switch self {
-        case .Section1:
-            return NSLocalizedString("uploadSection_impossible", comment: "Impossible Uploads")
-        case .Section2:
-            return NSLocalizedString("uploadSection_resumable", comment: "Resumable Uploads")
-        case .Section3:
-            return NSLocalizedString("uploadSection_queue", comment: "Uploads Queue")
-        case .Section4:
-            fallthrough
-        default:
-            return "—?—"
-        }
-    }
-}
-
-
 @objc
 enum kPiwigoUploadState : Int16 {
     case waiting
