@@ -110,7 +110,6 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
         self.handleButton.hidden = NO;
 
         // Right => Left swipe
-        self.swipeBackgroundColor = [UIColor piwigoColorOrange];
         self.rightSwipeSettings.transition = MGSwipeTransitionBorder;
         self.rightButtons = @[[MGSwipeButton buttonWithTitle:@""
                                                         icon:[UIImage imageNamed:@"swipeTrash.png"]
