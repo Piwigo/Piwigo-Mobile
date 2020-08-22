@@ -501,20 +501,24 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Cancel action
         let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in
             })
+        alert.addAction(cancelAction)
 
         // Select all images
-        let selectAction = UIAlertAction(title: NSLocalizedString("selectAll", comment: "Select All"), style: .default) { (action) in
-            // Loop over all images in section to select them (Select 70356 images of section 0 took 150.6 ms)
-            // Here, we exploit the cached local IDs
-            for index in 0..<self.selectedImages.count {
-                // Images in the upload queue cannot be selected
-                if self.indexedUploadsInQueue[index] == nil {
-                    self.selectedImages[index] = UploadProperties.init(localIdentifier: self.localIdentifiers[index], serverPath: Model.sharedInstance().serverPath, category: self.categoryId)
+        if selectedImages.compactMap({$0}).count + indexedUploadsInQueue.compactMap({$0}).count < fetchedImages.count {
+            let selectAction = UIAlertAction(title: NSLocalizedString("selectAll", comment: "Select All"), style: .default) { (action) in
+                // Loop over all images in section to select them (Select 70356 images of section 0 took 150.6 ms)
+                // Here, we exploit the cached local IDs
+                for index in 0..<self.selectedImages.count {
+                    // Images in the upload queue cannot be selected
+                    if self.indexedUploadsInQueue[index] == nil {
+                        self.selectedImages[index] = UploadProperties.init(localIdentifier: self.localIdentifiers[index], serverPath: Model.sharedInstance().serverPath, category: self.categoryId)
+                    }
                 }
+                // Reload collection while updating section buttons
+                self.updateNavBar()
+                self.localImagesCollection.reloadData()
             }
-            // Reload collection while updating section buttons
-            self.updateNavBar()
-            self.localImagesCollection.reloadData()
+            alert.addAction(selectAction)
         }
         
         // Change sort option
@@ -533,30 +537,26 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             // Sort images
             self.localImagesCollection.reloadData()
         })
+        alert.addAction(sortAction)
 
         // Delete uploaded photos
         let completedUploads = indexedUploadsInQueue.compactMap({$0}).count
-        let titleDelete = completedUploads > 1 ? String(format: NSLocalizedString("deleteCategory_allImages", comment: "Delete %@ Photos"), NumberFormatter.localizedString(from: NSNumber.init(value: completedUploads), number: .decimal)) : NSLocalizedString("deleteSingleImage_title", comment: "Delete Photo")
-        let deleteAction = UIAlertAction(title: titleDelete, style: .destructive, handler: { action in
-            // Delete uploaded images (fetch on the main queue)
-            let indexedUploads = self.indexedUploadsInQueue.compactMap({$0})
-            if let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects {
-                let completedUploads = allUploads.filter({ $0.state == .finished })
-                var uploadsToDelete: [Upload] = []
-                for index in 0..<indexedUploads.count {
-                    if let upload = completedUploads.first(where: {$0.localIdentifier == indexedUploads[index].0}) {
-                        uploadsToDelete.append(upload)
-                    }
-                }
-                UploadManager.shared.delete(uploadedImages: uploadsToDelete)
-            }
-        })
-
-        // Add actions
-        alert.addAction(cancelAction)
-        alert.addAction(selectAction)
-        alert.addAction(sortAction)
         if completedUploads > 0 {
+            let titleDelete = completedUploads > 1 ? String(format: NSLocalizedString("deleteCategory_allImages", comment: "Delete %@ Photos"), NumberFormatter.localizedString(from: NSNumber.init(value: completedUploads), number: .decimal)) : NSLocalizedString("deleteSingleImage_title", comment: "Delete Photo")
+            let deleteAction = UIAlertAction(title: titleDelete, style: .destructive, handler: { action in
+                // Delete uploaded images (fetch on the main queue)
+                let indexedUploads = self.indexedUploadsInQueue.compactMap({$0})
+                if let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects {
+                    let completedUploads = allUploads.filter({ $0.state == .finished })
+                    var uploadsToDelete: [Upload] = []
+                    for index in 0..<indexedUploads.count {
+                        if let upload = completedUploads.first(where: {$0.localIdentifier == indexedUploads[index].0}) {
+                            uploadsToDelete.append(upload)
+                        }
+                    }
+                    UploadManager.shared.delete(uploadedImages: uploadsToDelete)
+                }
+            })
             alert.addAction(deleteAction)
         }
 
