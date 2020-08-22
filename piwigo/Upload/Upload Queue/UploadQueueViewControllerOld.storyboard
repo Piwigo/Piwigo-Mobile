@@ -4,7 +4,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
-        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -17,13 +16,13 @@
         <scene sceneID="KMl-pI-OvZ">
             <objects>
                 <viewController storyboardIdentifier="UploadQueueViewControllerOld" useStoryboardIdentifierAsRestorationIdentifier="YES" id="baD-QY-HA1" customClass="UploadQueueViewControllerOld" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" id="FsX-i2-2H5">
+                    <view key="view" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FsX-i2-2H5">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" alwaysBounceVertical="YES" contentInsetAdjustmentBehavior="never" dataMode="prototypes" style="insetGrouped" separatorStyle="default" rowHeight="64" estimatedRowHeight="-1" sectionHeaderHeight="44" sectionFooterHeight="1" id="8xb-qD-vuv">
-                                <rect key="frame" x="0.0" y="44" width="414" height="808"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" contentInsetAdjustmentBehavior="never" dataMode="prototypes" style="insetGrouped" separatorStyle="default" rowHeight="64" estimatedRowHeight="-1" sectionHeaderHeight="44" sectionFooterHeight="1" translatesAutoresizingMaskIntoConstraints="NO" id="8xb-qD-vuv">
+                                <rect key="frame" x="0.0" y="44" width="414" height="852"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="UploadImageTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="UploadImageTableViewCell" rowHeight="60" id="72J-2W-0G4" customClass="UploadImageTableViewCell" customModule="piwigo" customModuleProvider="target">
@@ -95,7 +94,6 @@
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                        <viewLayoutGuide key="safeArea" id="SGh-6C-6f1"/>
                     </view>
                     <connections>
                         <outlet property="queueTableView" destination="8xb-qD-vuv" id="cH3-XD-pcE"/>
@@ -103,7 +101,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5gi-lI-GQh" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="799" y="-262"/>
+            <point key="canvasLocation" x="798.55072463768124" y="-262.5"/>
         </scene>
     </scenes>
     <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
