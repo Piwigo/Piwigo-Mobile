@@ -33,6 +33,7 @@ extension UploadManager {
                                                   "Error" : upload.requestError ?? "",
                                                   "progressFraction" : chunkProgress]
                 DispatchQueue.main.async {
+                    // Update UploadQueue cell and button shown in root album (or default album)
                     NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationUploadProgress), object: nil, userInfo: uploadInfo)
                 }
             },
@@ -556,9 +557,10 @@ extension UploadManager {
                                                       "Error" : upload.requestError ?? "",
                                                       "progressFraction" : chunkProgress]
                     DispatchQueue.main.async {
+                        // Update UploadQueue cell and button shown in root album (or default album)
                         NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationUploadProgress), object: nil, userInfo: uploadInfo)
                     }
-                    
+
                     // Are all preliminary chunks uploaded?
 //                    if chunk + 1 == chunks - 1 {
                         // Remains to upload the last chunk

@@ -40,6 +40,7 @@ CGFloat const kRadius = 25.0;
 CGFloat const kDeg2Rad = 3.141592654 / 180.0;
 NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBackToDefaultAlbum";
 NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploads";
+NSString * const kPiwigoNotificationUploadProgress = @"kPiwigoNotificationUploadProgress";
 NSString * const kPiwigoNotificationUploadedImage = @"kPiwigoNotificationUploadedImage";
 NSString * const kPiwigoNotificationDeletedImage = @"kPiwigoNotificationDeletedImage";
 NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChangedAlbumData";
@@ -71,6 +72,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
 @property (nonatomic, strong) UIButton *homeAlbumButton;
 @property (nonatomic, strong) UIButton *uploadQueueButton;
 @property (nonatomic, strong) UILabel *nberOfUploadsLabel;
+@property (nonatomic, strong) CAShapeLayer* progressLayer;
 
 @property (nonatomic, assign) BOOL isSelect;
 @property (nonatomic, assign) NSInteger totalNumberOfImages;
@@ -167,10 +169,9 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
         self.addButton.layer.cornerRadius = kRadius;
         self.addButton.layer.masksToBounds = NO;
         [self.addButton.layer setOpacity:0.0];
-        [self.addButton.layer setShadowColor:[UIColor piwigoColorGray].CGColor];
         [self.addButton.layer setShadowOpacity:1.0];
-        [self.addButton.layer setShadowRadius:5.0];
-        [self.addButton.layer setShadowOffset:CGSizeMake(0.0, 2.0)];
+        [self.addButton.layer setShadowRadius:1.0];
+        [self.addButton.layer setShadowOffset:CGSizeMake(0.0, 0.0)];
         self.addButton.backgroundColor = [UIColor piwigoColorOrange];
         self.addButton.tintColor = [UIColor whiteColor];
         self.addButton.showsTouchWhenHighlighted = YES;
@@ -190,31 +191,27 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
         self.uploadQueueButton.frame = self.addButton.frame;
         self.uploadQueueButton.layer.cornerRadius = kRadius;
         self.uploadQueueButton.layer.masksToBounds = NO;
-        [self.uploadQueueButton.layer setShadowColor:[UIColor piwigoColorGray].CGColor];
         [self.uploadQueueButton.layer setShadowOpacity:1.0];
-        [self.uploadQueueButton.layer setShadowRadius:5.0];
-        [self.uploadQueueButton.layer setShadowOffset:CGSizeMake(0.0, 2.0)];
+        [self.uploadQueueButton.layer setShadowRadius:1.0];
+        [self.uploadQueueButton.layer setShadowOffset:CGSizeMake(0.0, 0.0)];
         self.uploadQueueButton.showsTouchWhenHighlighted = YES;
         [self.uploadQueueButton addTarget:self action:@selector(didTapUploadQueueButton)
                     forControlEvents:UIControlEventTouchUpInside];
         self.uploadQueueButton.hidden = YES;
         self.uploadQueueButton.backgroundColor = [UIColor clearColor];
 
-//        UIVisualEffect *blurEffect;
-//        blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleRegular];
-//        UIVisualEffectView *blurView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-//        blurView.frame = self.uploadQueueButton.bounds;
-//        blurView.userInteractionEnabled = NO;
-//        blurView.backgroundColor = [UIColor clearColor];
-//        blurView.layer.cornerRadius = kRadius;
-//        blurView.layer.masksToBounds = YES;
-//        [self.uploadQueueButton insertSubview:blurView atIndex:0];
+        self.progressLayer = [[CAShapeLayer alloc] init];
+        self.progressLayer.fillColor = [[UIColor clearColor] CGColor];
+        self.progressLayer.frame = CGRectMake(0, 0, 2*kRadius, 2*kRadius);
+        self.progressLayer.lineWidth = 3;
+        self.progressLayer.strokeStart = 0;
+        self.progressLayer.strokeEnd = 0;
+        [self.uploadQueueButton.layer addSublayer:self.progressLayer];
 
         self.nberOfUploadsLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         self.nberOfUploadsLabel.text = @"";
         self.nberOfUploadsLabel.font = [UIFont fontWithName:@"OpenSans-Semibold" size:24.0];
         self.nberOfUploadsLabel.adjustsFontSizeToFitWidth = NO;
-        self.nberOfUploadsLabel.textColor = [UIColor blackColor];
         self.nberOfUploadsLabel.textAlignment = NSTextAlignmentCenter;
         self.nberOfUploadsLabel.backgroundColor = [UIColor clearColor];
         [self.uploadQueueButton addSubview:self.nberOfUploadsLabel];
@@ -226,10 +223,9 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
         self.homeAlbumButton.layer.cornerRadius = kRadius;
         self.homeAlbumButton.layer.masksToBounds = NO;
         [self.homeAlbumButton.layer setOpacity:0.0];
-        [self.homeAlbumButton.layer setShadowColor:[UIColor piwigoColorGray].CGColor];
         [self.homeAlbumButton.layer setShadowOpacity:1.0];
-        [self.homeAlbumButton.layer setShadowRadius:5.0];
-        [self.homeAlbumButton.layer setShadowOffset:CGSizeMake(0.0, 2.0)];
+        [self.homeAlbumButton.layer setShadowRadius:1.0];
+        [self.homeAlbumButton.layer setShadowOffset:CGSizeMake(0.0, 0.0)];
         self.homeAlbumButton.showsTouchWhenHighlighted = YES;
         [self.homeAlbumButton setImage:[UIImage imageNamed:@"rootAlbum"] forState:UIControlStateNormal];
         [self.homeAlbumButton addTarget:self action:@selector(returnToDefaultCategory)
@@ -243,10 +239,9 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
         self.createAlbumButton.layer.cornerRadius = 0.86*kRadius;
         self.createAlbumButton.layer.masksToBounds = NO;
         [self.createAlbumButton.layer setOpacity:0.0];
-        [self.createAlbumButton.layer setShadowColor:[UIColor piwigoColorGray].CGColor];
         [self.createAlbumButton.layer setShadowOpacity:1.0];
-        [self.createAlbumButton.layer setShadowRadius:5.0];
-        [self.createAlbumButton.layer setShadowOffset:CGSizeMake(0.0, 2.0)];
+        [self.createAlbumButton.layer setShadowRadius:1.0];
+        [self.createAlbumButton.layer setShadowOffset:CGSizeMake(0.0, 0.0)];
         self.createAlbumButton.backgroundColor = [UIColor piwigoColorOrange];
         self.createAlbumButton.tintColor = [UIColor whiteColor];
         self.createAlbumButton.showsTouchWhenHighlighted = YES;
@@ -263,10 +258,9 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
         self.uploadImagesButton.layer.cornerRadius = 0.86*kRadius;
         self.uploadImagesButton.layer.masksToBounds = NO;
         [self.uploadImagesButton.layer setOpacity:0.0];
-        [self.uploadImagesButton.layer setShadowColor:[UIColor piwigoColorGray].CGColor];
         [self.uploadImagesButton.layer setShadowOpacity:1.0];
-        [self.uploadImagesButton.layer setShadowRadius:5.0];
-        [self.uploadImagesButton.layer setShadowOffset:CGSizeMake(0.0, 2.0)];
+        [self.uploadImagesButton.layer setShadowRadius:1.0];
+        [self.uploadImagesButton.layer setShadowOffset:CGSizeMake(0.0, 0.0)];
         self.uploadImagesButton.backgroundColor = [UIColor piwigoColorOrange];
         self.uploadImagesButton.tintColor = [UIColor whiteColor];
         self.uploadImagesButton.showsTouchWhenHighlighted = YES;
@@ -276,15 +270,6 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
         self.uploadImagesButton.hidden = YES;
         [self.uploadImagesButton setAccessibilityIdentifier:@"addImages"];
         [self.view insertSubview:self.uploadImagesButton belowSubview:self.addButton];
-
-        // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
-
-        // Register root album changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnToDefaultCategory) name:kPiwigoNotificationBackToDefaultAlbum object:nil];
-        
-        // Register upload requests changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUploadQueueButton:) name:kPiwigoNotificationLeftUploads object:nil];
     }
 	return self;
 }
@@ -343,8 +328,15 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
     self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"pullToRefresh", @"Reload Images") attributes:attributesRefresh];
     
     // Buttons
+    [self.addButton.layer setShadowColor:[UIColor piwigoColorLeftLabel].CGColor];
+    [self.createAlbumButton.layer setShadowColor:[UIColor piwigoColorLeftLabel].CGColor];
+    [self.uploadImagesButton.layer setShadowColor:[UIColor piwigoColorLeftLabel].CGColor];
+    [self.homeAlbumButton.layer setShadowColor:[UIColor piwigoColorLeftLabel].CGColor];
+    [self.uploadQueueButton.layer setShadowColor:[UIColor piwigoColorLeftLabel].CGColor];
+
     self.uploadQueueButton.backgroundColor = [UIColor piwigoColorRightLabel];
     self.nberOfUploadsLabel.textColor = [UIColor piwigoColorBackground];
+    self.progressLayer.strokeColor = [[UIColor piwigoColorBackground] CGColor];
     self.homeAlbumButton.backgroundColor = [UIColor piwigoColorRightLabel];
     self.homeAlbumButton.tintColor = [UIColor piwigoColorBackground];
 
@@ -464,6 +456,18 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
 {
 	[super viewDidAppear:animated];
 	
+    // Register palette changes
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
+
+    // Register root album changes
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnToDefaultCategory) name:kPiwigoNotificationBackToDefaultAlbum object:nil];
+    
+    // Register upload manager changes
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateNberOfUploads:) name:kPiwigoNotificationLeftUploads object:nil];
+
+    // Register upload progress
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUploadQueueButtonWithProgress:) name:kPiwigoNotificationUploadProgress object:nil];
+
     // Called after displaying SearchImagesViewController?
     if (@available(iOS 11.0, *)) {
         UIViewController *presentedViewController = [self presentedViewController];
@@ -890,61 +894,93 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
     }
 }
 
--(void)showUploadQueueButtonIfNeeded:(NSInteger)nberOfUploads
+-(void)updateNberOfUploads:(NSNotification *)notification
 {
-    // Are there images in upload queue?
-    if (nberOfUploads > 0)
-    {
-        // Set number of uploads
-        self.nberOfUploadsLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)nberOfUploads];
-        
-        // Resize label to fit number
-        [self.nberOfUploadsLabel sizeToFit];
-        
-        // Elongate the button if needed
-        CGFloat width = self.nberOfUploadsLabel.bounds.size.width;
-        CGFloat height = self.nberOfUploadsLabel.bounds.size.height;
-        CGFloat extraWidth = fmax(0, (width - 2*kRadius + 12.0));
-        self.nberOfUploadsLabel.frame = CGRectMake(kRadius + (extraWidth / 2.0) - width / 2.0, kRadius - height / 2.0, width, height);
+    if (notification == nil) { return; }
+    NSDictionary *userInfo = notification.userInfo;
+    
+    // Update number of upload requests?
+    if ([userInfo objectForKey:@"nberOfUploadsToComplete"] != nil) {
+        NSInteger nberOfUploads = [[userInfo objectForKey:@"nberOfUploadsToComplete"] integerValue];
 
-        // Unhide transparent Upload Queue button
-        [self.uploadQueueButton setHidden:NO];
+        // Only presented in the root or default album
+        if ((nberOfUploads > 0) &&
+            ((self.categoryId == 0) || (self.categoryId == [Model sharedInstance].defaultCategory))) {
+            // Set number of uploads
+            NSString *nber = [NSString stringWithFormat:@"%lu", (unsigned long)nberOfUploads];
+            if ([nber compare:self.nberOfUploadsLabel.text] != NSOrderedSame) {
+                // Number changed -> reset progress layer
+                self.progressLayer.strokeEnd = 0;
+            }
+            self.nberOfUploadsLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)nberOfUploads];
+            
+            // Resize label to fit number
+            [self.nberOfUploadsLabel sizeToFit];
+            
+            // Elongate the button if needed
+            CGFloat width = self.nberOfUploadsLabel.bounds.size.width + 20;
+            CGFloat height = self.nberOfUploadsLabel.bounds.size.height;
+            CGFloat extraWidth = fmax(0, (width - 2*kRadius));
+            self.nberOfUploadsLabel.frame = CGRectMake(kRadius + (extraWidth / 2.0) - width / 2.0, kRadius - height / 2.0, width, height);
+
+            self.progressLayer.frame = CGRectMake(0, 0, 2*kRadius + extraWidth, 2*kRadius);
+            UIBezierPath *path = [UIBezierPath bezierPathWithArcCenter:CGPointMake(kRadius + extraWidth, kRadius) radius:(kRadius-1.5f) startAngle:(-M_PI_2) endAngle:M_PI_2 clockwise:YES];
+            [path addLineToPoint:CGPointMake(kRadius, 2*kRadius-1.5f)];
+            [path addArcWithCenter:CGPointMake(kRadius, kRadius) radius:(kRadius-1.5f) startAngle:M_PI_2 endAngle:M_PI+M_PI_2 clockwise:YES];
+            [path addLineToPoint:CGPointMake(kRadius + extraWidth, 1.5f)];
+            self.progressLayer.path = [path CGPath];
+
+            // Show button is needed
+            if (self.uploadQueueButton.hidden) {
+                // Unhide transparent Upload Queue button
+                [self.uploadQueueButton setHidden:NO];
+                        
+                // Animate appearance of Upload Queue button
+                [UIView animateWithDuration:0.3 animations:^{
+                    // Progressive appearance
+                    [self.uploadQueueButton.layer setOpacity:0.8];
+                    CGFloat xPos = self.addButton.frame.origin.x - extraWidth;
+                    CGFloat yPos = self.addButton.frame.origin.y;
+                    self.uploadQueueButton.frame = CGRectMake(xPos - 3*kRadius, yPos, 2*kRadius + extraWidth, 2*kRadius);
+                }];
+            }
+        } else {
+            // Hide button if not already hidden
+            if (!self.uploadQueueButton.hidden) {
+                // Hide Upload Queue button behind Add button
+                [UIView animateWithDuration:0.2 animations:^{
+                    // Progressive disappearance
+                    [self.uploadQueueButton.layer setOpacity:0.0];
+
+                    // Animate displacement towards the Add button if needed
+                    self.uploadQueueButton.frame = self.addButton.frame;
                 
-        // Animate appearance of Upload Queue button
-        [UIView animateWithDuration:0.3 animations:^{
-            // Progressive appearance
-            [self.uploadQueueButton.layer setOpacity:0.8];
-            CGFloat xPos = self.addButton.frame.origin.x - (extraWidth / 2.0);
-            CGFloat yPos = self.addButton.frame.origin.y;
-            self.uploadQueueButton.frame = CGRectMake(xPos - 3*kRadius, yPos, 2*kRadius + extraWidth, 2*kRadius);
-        }];
-    } else {
-        // Hide Upload Queue button behind Add button
-        [UIView animateWithDuration:0.2 animations:^{
-            // Progressive disappearance
-            [self.uploadQueueButton.layer setOpacity:0.0];
-
-            // Animate displacement towards the Add button if needed
-            self.uploadQueueButton.frame = self.addButton.frame;
-        
-        } completion:^(BOOL finished) {
-            // Hide Home Album button
-            [self.uploadQueueButton setHidden:YES];
-        }];
+                } completion:^(BOOL finished) {
+                    // Hide Home Album button
+                    [self.uploadQueueButton setHidden:YES];
+                }];
+            }
+        }
     }
 }
 
--(void)updateUploadQueueButton:(NSNotification *)notification
+-(void)updateUploadQueueButtonWithProgress:(NSNotification *)notification
 {
-    NSInteger nberOfUploadsToComplete = 0;
-    if (notification != nil) {
-        NSDictionary *userInfo = notification.userInfo;
-        nberOfUploadsToComplete = [[userInfo objectForKey:@"nberOfUploadsToComplete"] integerValue];
-    }
-        
-    // Only presented in the root or default album
-    if ((self.categoryId == 0) || (self.categoryId == [Model sharedInstance].defaultCategory)) {
-        [self showUploadQueueButtonIfNeeded:nberOfUploadsToComplete];
+    if (notification == nil) { return; }
+    NSDictionary *userInfo = notification.userInfo;
+
+    // Upload progress path?
+    if ([userInfo objectForKey:@"progressFraction"] != nil) {
+        CGFloat progress = [[userInfo objectForKey:@"progressFraction"] floatValue];
+
+        // Animate progress layer of Upload Queue button
+        CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
+        [animation setFromValue:@(self.progressLayer.strokeEnd)];
+        [animation setToValue:@(progress)];
+        NSLog(@"•••> animation from %g to %g", self.progressLayer.strokeEnd, progress);
+        self.progressLayer.strokeEnd = progress;
+//        animation.duration = 0.1f;
+        [self.progressLayer addAnimation:animation forKey:nil];
     }
 }
 

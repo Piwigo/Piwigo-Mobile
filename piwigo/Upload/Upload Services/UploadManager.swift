@@ -10,8 +10,6 @@
 import Foundation
 import Photos
 
-let kPiwigoNotificationUploadProgress = "kPiwigoNotificationUploadProgress"
-
 @objc
 class UploadManager: NSObject, URLSessionDelegate {
 
