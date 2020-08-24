@@ -984,13 +984,22 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
         CGFloat progress = [[userInfo objectForKey:@"progressFraction"] floatValue];
 
         // Animate progress layer of Upload Queue button
-        CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
-        [animation setFromValue:@(self.progressLayer.strokeEnd)];
-        [animation setToValue:@(progress)];
-        NSLog(@"•••> animation from %g to %g", self.progressLayer.strokeEnd, progress);
-        self.progressLayer.strokeEnd = progress;
-//        animation.duration = 0.1f;
-        [self.progressLayer addAnimation:animation forKey:nil];
+        if (progress > 0.0) {
+            CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
+            [animation setFromValue:@(self.progressLayer.strokeEnd)];
+            [animation setToValue:@(progress)];
+            NSLog(@"•••> animation from %g to %g", self.progressLayer.strokeEnd, progress);
+            self.progressLayer.strokeEnd = progress;
+            animation.duration = 0.2f;
+            [self.progressLayer addAnimation:animation forKey:nil];
+        } else {
+            // No animation
+            [CATransaction begin];
+            [CATransaction setDisableActions:YES];
+            self.progressLayer.strokeEnd = 0.0;
+            [CATransaction commit];
+            // Animations are disabled until here...
+        }
     }
 }
 
