@@ -96,7 +96,6 @@ class Upload: NSManagedObject {
         
         // Section key corresponding to the request state
         requestSectionKey = SectionKeys.init(rawValue: uploadProperties.requestState.sectionKey)!.rawValue
-        print("•••>> requestSectionKey: \(requestSectionKey)")
 
         // Error message description
         requestError = uploadProperties.requestError
