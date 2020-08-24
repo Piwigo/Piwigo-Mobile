@@ -645,6 +645,15 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
             } else {
                 self.homeAlbumButton.frame = CGRectMake(xPos - 3*kRadius, yPos, 2*kRadius, 2*kRadius);
             }
+            if (self.uploadQueueButton.isHidden) {
+                self.uploadQueueButton.frame = self.addButton.frame;
+            } else {
+                // Elongate the button if needed
+                CGRect frame = self.uploadQueueButton.frame;
+                frame.origin.x = xPos - 3*kRadius - (frame.size.width - 2*kRadius);
+                frame.origin.y = yPos;
+                self.uploadQueueButton.frame = frame;
+            }
             if (self.createAlbumButton.isHidden) {
                 self.createAlbumButton.frame = self.addButton.frame;
                 self.uploadImagesButton.frame = self.addButton.frame;
