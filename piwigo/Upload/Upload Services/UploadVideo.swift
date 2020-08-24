@@ -230,7 +230,7 @@ extension UploadManager {
         // The block Photos calls periodically while downloading the video.
         options.progressHandler = { progress, error, stop, dict in
         #if DEBUG_UPLOAD
-            print(String(format: "downloading Video from iCloud — progress %lf", progress))
+            print(String(format: "downloading Video — progress %lf", progress))
         #endif
             // The handler needs to update the user interface => Dispatch to main thread
 //            DispatchQueue.main.async(execute: {
