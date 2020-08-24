@@ -199,7 +199,8 @@ class UploadManager: NSObject, URLSessionDelegate {
         
     @objc
     func findNextImageToUpload() -> Void {
-        print("•••>> findNextImageToUpload()", self.debugDescription)
+        // Check current queue
+        print("•••>> findNextImageToUpload() in", queueName())
         print("    > ", isPreparing, "|", isUploading, "|", isFinishing)
 
         // Get uploads to complete in queue
@@ -680,6 +681,35 @@ class UploadManager: NSObject, URLSessionDelegate {
             print("•••>> Remaining files in cache: \(leftFiles)")
         } catch {
             print("Could not clear upload folder: \(error)")
+        }
+    }
+}
+
+/// The name/description of the current queue (Operation or Dispatch), if that can be found. Else, the name/description of the thread.
+public func queueName() -> String {
+    if let currentOperationQueue = OperationQueue.current {
+        if let currentDispatchQueue = currentOperationQueue.underlyingQueue {
+            return "dispatch queue: \(currentDispatchQueue.label.nonEmpty ?? currentDispatchQueue.description)"
+        }
+        else {
+            return "operation queue: \(currentOperationQueue.name?.nonEmpty ?? currentOperationQueue.description)"
+        }
+    }
+    else {
+        let currentThread = Thread.current
+        return "UNKNOWN QUEUE on thread: \(currentThread.name?.nonEmpty ?? currentThread.description)"
+    }
+}
+
+public extension String {
+
+    /// Returns this string if it is not empty, else `nil`.
+    var nonEmpty: String? {
+        if self.isEmpty {
+            return nil
+        }
+        else {
+            return self
         }
     }
 }

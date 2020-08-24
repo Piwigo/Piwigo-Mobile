@@ -10,8 +10,7 @@ extension UploadManager {
     
     // MARK: - Transfer Image in Foreground
     func transferImage(of upload: UploadProperties) {
-        print("    > imageOfRequest...")
-
+        // Prepare image parameters
         let imageParameters: [String : String] = [
             kPiwigoImagesUploadParamFileName: upload.fileName ?? "Image.jpg",
             kPiwigoImagesUploadParamCategory: "\(NSNumber(value: upload.category))",
@@ -219,32 +218,38 @@ extension UploadManager {
         let nextChunkNumber = count + 1
         offset += thisChunkSize
 
+        // Check current queue
+        print("•••>> sendChunk() before portMultipart •••>>", queueName())
         NetworkHandler.postMultiPart(kPiwigoImagesUpload, data: chunk, parameters: parameters,
                                      sessionManager: sessionManager,
            progress: { progress in
-                DispatchQueue.main.async(execute: {
-                    if progress != nil {
-                        onProgress(progress, count + 1, chunks)
-                    }
-                })
+                if progress != nil {
+                    onProgress(progress, count + 1, chunks)
+                }
             },
            success: { task, responseObject in
-                // Continue?
-                print("    > #\(count) done:", responseObject.debugDescription)
-                if count >= chunks - 1 {
-                    // Done, return
-                    print("=>> MimeType:", task?.response?.mimeType as Any)
-                    completion(task, responseObject, parameters)
-                } else {
-                    // Keep going!
-                    self.sendChunk(imageData, withInformation: parameters,
-                                   forOffset: offset, onChunk: nextChunkNumber, forTotalChunks: chunks,
-                                   onProgress: onProgress, onCompletion: completion, onFailure: fail)
+                // Continue in background queue!
+                DispatchQueue.global(qos: .background).async {
+                    // Continue?
+                    print("    > #\(count) done:", responseObject.debugDescription)
+                    if count >= chunks - 1 {
+                        // Done, return
+                        print("=>> MimeType:", task?.response?.mimeType as Any)
+                        completion(task, responseObject, parameters)
+                    } else {
+                        // Keep going!
+                        self.sendChunk(imageData, withInformation: parameters,
+                                       forOffset: offset, onChunk: nextChunkNumber, forTotalChunks: chunks,
+                                       onProgress: onProgress, onCompletion: completion, onFailure: fail)
+                    }
                 }
             },
            failure: { task, error in
-                // failed!
-                fail(task, error as NSError?)
+                // Continue in background queue!
+                DispatchQueue.global(qos: .background).async {
+                    // failed!
+                    fail(task, error as NSError?)
+                }
             })
     }
 

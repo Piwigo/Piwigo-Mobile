@@ -187,7 +187,9 @@ class UploadsProvider: NSObject {
      resets the context to clean up the cache and lower the memory footprint.
     */
     func updateRecord(with uploadData: UploadProperties, completionHandler: @escaping (Error?) -> Void) -> (Void) {
-        
+        // Check current queue
+        print("•••>> updateRecord() in", queueName())
+
         // Create a private queue context.
         let taskContext = DataController.getPrivateContext()
                 
@@ -317,9 +319,10 @@ class UploadsProvider: NSObject {
      whether the import is successful.
     */
     private func deleteOneBatch(_ uploadsBatch: [Upload]) -> Bool {
-        
+        // Check current queue
+        print("•••>> deleteOneBatch()", queueName())
+
         var success = false
-                
         // taskContext.performAndWait
         managedObjectContext.performAndWait {
             
@@ -357,6 +360,9 @@ class UploadsProvider: NSObject {
      resets the context to clean up the cache and lower the memory footprint.
     */
     @objc private func didDeleteImageWithId(_ notification: Notification) {
+        // Check current queue
+        print("•••>> didDeleteImageWithId()", queueName())
+
         // Collect image ID
         guard let imageId = notification.userInfo?["imageId"] as? Int64 else {
             return
@@ -435,6 +441,9 @@ class UploadsProvider: NSObject {
             return nil
         }
         
+        // Check current queue
+        print("•••>> getRequestsIn(states:)", queueName())
+
         // Initialisation
         var uploads: [Upload]? = nil
         
@@ -494,7 +503,9 @@ class UploadsProvider: NSObject {
      Remove from cache completed requests whose images do not exist in Photo Library.
     */
     func clearCompletedUploads() {
-        
+        // Check current queue
+        print("•••>> clearCompletedUploads()", queueName())
+
         // Get completed upload requests
         let completedUploads = getRequestsIn(states: [.finished, .moderated]) ?? []
 
