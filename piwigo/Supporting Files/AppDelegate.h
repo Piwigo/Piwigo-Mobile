@@ -23,7 +23,5 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationRemoveRecentAlbum;
 -(void)loadLoginView;
 -(void)loadNavigation;
 -(void)screenBrightnessChanged;
--(void)resumeUploadManager;
--(void)triggerUploadManager;
 
 @end

@@ -975,10 +975,12 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     // Change option
                     Model.sharedInstance().wifiOnlyUploading = switchState
                     Model.sharedInstance().saveToDisk()
-                    // Relaunch uploads if disabled
+                    // Relaunch uploads in background queue if disabled
                     if switchState == false {
-                        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-                        appDelegate.triggerUploadManager()
+                        // Launch upload tasks in background queue
+                        DispatchQueue.global(qos: .background).async {
+                            UploadManager.shared.findNextImageToUpload()
+                        }
                     }
                 }
                 cell.accessibilityIdentifier = "wifiOnly"

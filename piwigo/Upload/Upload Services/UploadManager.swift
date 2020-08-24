@@ -36,28 +36,40 @@ class UploadManager: NSObject, URLSessionDelegate {
             (AFNetworkReachabilityManager.shared().isReachableViaWWAN && wifiOnly) {
             return
         }
-        resumeAll()
+        
+        // Resume upload operations in background queue
+        DispatchQueue.global(qos: .background).async {
+            self.resumeAll()
+        }
     }
     
     @objc func didChangePowerState() {
-        // Determine the Power State
+        // Executed in the main queue when the Power Mode is changed
         if ProcessInfo.processInfo.isLowPowerModeEnabled {
             // Low Power Mode is enabled. Stop transferring images.
             return
         }
-        resumeAll()
+        
+        // Resume upload operations in background queue
+        DispatchQueue.global(qos: .background).async {
+            self.resumeAll()
+        }
     }
     
     private var appState = UIApplication.State.active
     @objc func didBecomeActive() -> Void {
-        // Executed when the application is about to move from inactive to active state.
+        // Executed in the main queue when the application is about to move from inactive to active state.
         print("•••>> didBecomeActive")
         appState = UIApplication.State.active
-        resumeAll()
+        
+        // Resume upload operations in background queue
+        DispatchQueue.global(qos: .background).async {
+            self.resumeAll()
+        }
     }
     
     @objc func willResignActive() -> Void {
-        // Executed when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
+        // Executed in the main queue when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         print("•••>> willResignActive")
         appState = UIApplication.State.inactive
     }

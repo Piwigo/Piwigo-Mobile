@@ -42,9 +42,6 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
 
 -(void)loadNavigation
 {
-    // Resume upload manager
-    [self resumeUploadManager];
-
     // Display default album
     AlbumImagesViewController *defaultAlbum = [[AlbumImagesViewController alloc] initWithAlbumId:[Model sharedInstance].defaultCategory inCache:NO];
     self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:defaultAlbum];
@@ -80,6 +77,18 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
             [self checkSessionStatusAndTryRelogin];
         }
     }];
+
+    // Create background queue for the Upload Manager
+    dispatch_queue_attr_t qos = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL,
+                                                                        QOS_CLASS_BACKGROUND, -1);
+    dispatch_queue_t uploadManagerQueue = dispatch_queue_create("org.piwigo.upload-thread", qos);
+
+    // Resume upload operations in background queue
+    dispatch_async(uploadManagerQueue, ^{
+        NSLog(@"•••>> dispatch queue: %s", dispatch_queue_get_label(nil));
+        NSLog(@"•••>> dispatch queue: %@", uploadManagerQueue.debugDescription);
+        [[UploadManager shared] resumeAll];
+    });
 }
 
 
@@ -495,34 +504,6 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
     [Model sharedInstance].recentCategories = [recentCategories componentsJoinedByString:@","];
     [[Model sharedInstance] saveToDisk];
 //    NSLog(@"•••> Recent albums: %@", [Model sharedInstance].recentCategories);
-}
-
-#pragma mark - Upload Manager
-
--(void)resumeUploadManager {
-    // Create dedicated background queue if needed
-    dispatch_queue_attr_t qos = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL,
-                                                                        QOS_CLASS_BACKGROUND, -1);
-    dispatch_queue_t uploadManagerQueue = dispatch_queue_create("org.piwigo.upload-thread", qos);
-
-    // Resume upload tasks
-    dispatch_async(uploadManagerQueue, ^{
-        NSLog(@"•••>> dispatch queue: %s", dispatch_queue_get_label(nil));
-        NSLog(@"•••>> dispatch queue: %@", uploadManagerQueue.debugDescription);
-        [[UploadManager shared] resumeAll];
-    });
-}
-
--(void)triggerUploadManager {
-    // Create dedicated background queue if needed
-    dispatch_queue_attr_t qos = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL,
-                                                                        QOS_CLASS_BACKGROUND, -1);
-    dispatch_queue_t uploadManagerQueue = dispatch_queue_create("org.piwigo.upload-thread", qos);
-
-    // Trigger upload tasks
-    dispatch_async(uploadManagerQueue, ^{
-        [[UploadManager shared] findNextImageToUpload];
-    });
 }
 
 @end
