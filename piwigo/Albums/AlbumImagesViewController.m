@@ -917,9 +917,9 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
             ((self.categoryId == 0) || (self.categoryId == [Model sharedInstance].defaultCategory))) {
             // Set number of uploads
             NSString *nber = [NSString stringWithFormat:@"%lu", (unsigned long)nberOfUploads];
-            if ([nber compare:self.nberOfUploadsLabel.text] != NSOrderedSame) {
-                // Number changed -> reset progress layer
-                self.progressLayer.strokeEnd = 0;
+            if ([nber compare:self.nberOfUploadsLabel.text] == NSOrderedSame) {
+                // Number unchanged -> NOP
+                return;
             }
             self.nberOfUploadsLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)nberOfUploads];
             
