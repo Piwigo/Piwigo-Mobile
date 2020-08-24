@@ -20,6 +20,16 @@ extension UploadManager {
     // MARK: - Image preparation
     func prepareImage(for upload: UploadProperties, from imageAsset: PHAsset) -> Void {
         
+        let uploadInfo: [String : Any] = ["localIndentifier" : upload.localIdentifier,
+                                          "photoResize" : Int16(upload.photoResize),
+                                          "stateLabel" : kPiwigoUploadState.preparing.stateInfo,
+                                          "Error" : upload.requestError ?? "",
+                                          "progressFraction" : Float(0.0)]
+        DispatchQueue.main.async {
+            // Update UploadQueue cell and button shown in root album (or default album)
+            NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationUploadProgress), object: nil, userInfo: uploadInfo)
+        }
+
         // Retrieve UIImage
         let (fixedImageObject, imageError) = retrieveUIImage(from: imageAsset, for: upload)
         if let _ = imageError {
