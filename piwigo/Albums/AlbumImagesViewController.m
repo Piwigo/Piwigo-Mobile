@@ -951,13 +951,14 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
                     CGFloat xPos = self.addButton.frame.origin.x - extraWidth;
                     CGFloat yPos = self.addButton.frame.origin.y;
                     self.uploadQueueButton.frame = CGRectMake(xPos - 3*kRadius, yPos, 2*kRadius + extraWidth, 2*kRadius);
+                    [self.uploadQueueButton setNeedsLayout];
                 }];
             }
         } else {
             // Hide button if not already hidden
             if (!self.uploadQueueButton.hidden) {
                 // Hide Upload Queue button behind Add button
-                [UIView animateWithDuration:0.2 animations:^{
+                [UIView animateWithDuration:0.3 animations:^{
                     // Progressive disappearance
                     [self.uploadQueueButton.layer setOpacity:0.0];
 
