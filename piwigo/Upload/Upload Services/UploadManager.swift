@@ -19,8 +19,8 @@ class UploadManager: NSObject, URLSessionDelegate {
     override init() {
         super.init()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(self.didBecomeActive),
-            name: UIApplication.didBecomeActiveNotification, object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(self.didBecomeActive),
+//            name: UIApplication.didBecomeActiveNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.willResignActive),
             name: UIApplication.willResignActiveNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.didChangeReachability),
@@ -57,17 +57,6 @@ class UploadManager: NSObject, URLSessionDelegate {
     }
     
     private var appState = UIApplication.State.active
-    @objc func didBecomeActive() -> Void {
-        // Executed in the main queue when the application is about to move from inactive to active state.
-        print("•••>> didBecomeActive")
-        appState = UIApplication.State.active
-        
-        // Resume upload operations in background queue
-        DispatchQueue.global(qos: .background).async {
-            self.resumeAll()
-        }
-    }
-    
     @objc func willResignActive() -> Void {
         // Executed in the main queue when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         print("•••>> willResignActive")
@@ -612,6 +601,7 @@ class UploadManager: NSObject, URLSessionDelegate {
     
     @objc func resumeAll() -> Void {
         // Reset flags
+        appState = .active
         isPreparing = false; isUploading = false; isFinishing = false
 
         // Considers only uploads to the server to which the user is logged in

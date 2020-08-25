@@ -300,7 +300,7 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-	// Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+	// Called called as part of the transition from the background to the active state. This call is then followed by a call to applicationDidBecomeActive().
 
     // Enable network activity indicator
     [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
@@ -315,6 +315,7 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
     if (hadOpenedSession && (server.length > 0) && (user.length > 0))
     {
         // Let's see…
+        self.loginVC.isAlreadyTryingToLogin = NO;
         [self.loginVC checkSessionStatusAndTryRelogin];
     }
 }
