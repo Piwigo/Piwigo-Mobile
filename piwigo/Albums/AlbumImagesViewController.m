@@ -1447,7 +1447,11 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
                     }
                 }
                 if (itemsToInsert.count > 0) {
-                    [self.imagesCollection insertItemsAtIndexPaths:itemsToInsert];
+                    if ([self.imagesCollection numberOfItemsInSection:1] == self.albumData.images.count - itemsToInsert.count) {
+                        [self.imagesCollection insertItemsAtIndexPaths:itemsToInsert];
+                    } else {
+                        [self.imagesCollection reloadData];
+                    }
                 }
 
                 // Update footer
@@ -1524,7 +1528,11 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
                     }
                 }
                 if (itemsToDelete.count > 0) {
-                    [self.imagesCollection deleteItemsAtIndexPaths:itemsToDelete];
+                    if ([self.imagesCollection numberOfItemsInSection:1] == self.albumData.images.count + itemsToDelete.count) {
+                        [self.imagesCollection deleteItemsAtIndexPaths:itemsToDelete];
+                    } else {
+                        [self.imagesCollection reloadData];
+                    }
                 }
 
                 // Update footer
