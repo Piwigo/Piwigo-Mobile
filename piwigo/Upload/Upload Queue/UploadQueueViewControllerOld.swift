@@ -305,7 +305,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
             return UploadImageHeaderView()
         }
         if let sectionInfo = uploadsProvider.fetchedNonCompletedResultsController.sections?[section] {
-            let sectionKey = SectionKeys.init(rawValue: sectionInfo.name)!
+            let sectionKey = SectionKeys.init(rawValue: sectionInfo.name) ?? SectionKeys.Section4
             header.config(with: sectionKey)
         } else {
             header.config(with: SectionKeys.Section4)
