@@ -62,6 +62,9 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
     // Observe the PiwigoRemoveRecentAlbumNotification
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeRecentAlbumWithAlbumId:) name:kPiwigoNotificationRemoveRecentAlbum object:nil];
 
+    // Observe the Power State notification
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkSessionWhenLeavingLowPowerMode) name:NSProcessInfoPowerStateDidChangeNotification object:nil];
+
     // Set network reachability status change block
     [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
 //#if defined(DEBUG)
@@ -140,6 +143,14 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
         NSLog(@"       Connection changed but again reachable: Login in again");
 #endif
         [self.loginVC checkSessionStatusAndTryRelogin];
+    }
+}
+
+-(void)checkSessionWhenLeavingLowPowerMode
+{
+    if (![[NSProcessInfo processInfo] isLowPowerModeEnabled]) {
+        // Restart battery intensive upload operations
+        [self checkSessionStatusAndTryRelogin];
     }
 }
 
