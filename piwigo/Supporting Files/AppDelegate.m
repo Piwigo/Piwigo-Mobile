@@ -132,7 +132,7 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
 {
     BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;
     NSString *server = [Model sharedInstance].serverPath;
-    NSString *user = [KeychainAccess getLoginUser];
+    NSString *user = [Model sharedInstance].username;
     
     if(hadOpenedSession && (server.length > 0) && (user.length > 0))
     {
