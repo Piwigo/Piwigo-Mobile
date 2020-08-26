@@ -1632,6 +1632,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 #endif
                 alert.addAction(clearAction)
 
+                // Determine position of cell in table view
+                let rowAtIndexPath = IndexPath(row: 0, section: SettingsSection.clear.rawValue)
+                let rectOfCellInTableView = settingsTableView?.rectForRow(at: rowAtIndexPath)
+
                 // Present list of actions
                 alert.view.tintColor = UIColor.piwigoColorOrange()
                 if #available(iOS 13.0, *) {
@@ -1639,6 +1643,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 } else {
                     // Fallback on earlier versions
                 }
+                alert.popoverPresentationController?.sourceView = settingsTableView
+                alert.popoverPresentationController?.permittedArrowDirections = .any
+                alert.popoverPresentationController?.sourceRect = rectOfCellInTableView ?? CGRect.zero
                 present(alert, animated: true, completion: {
                     // Bugfix: iOS9 - Tint not fully Applied without Reapplying
                     alert.view.tintColor = UIColor.piwigoColorOrange()
@@ -1815,7 +1822,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 // Fallback on earlier versions
             }
             alert.popoverPresentationController?.sourceView = settingsTableView
-            alert.popoverPresentationController?.permittedArrowDirections = .up
+            alert.popoverPresentationController?.permittedArrowDirections = .any
             alert.popoverPresentationController?.sourceRect = rectOfCellInTableView ?? CGRect.zero
             present(alert, animated: true, completion: {
                 // Bugfix: iOS9 - Tint not fully Applied without Reapplying
