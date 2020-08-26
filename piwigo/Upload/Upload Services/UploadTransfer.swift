@@ -114,7 +114,7 @@ extension UploadManager {
 
         // Error?
         if let error = error {
-            // Could not prepare image
+            // Could not transfer image
             let uploadProperties = upload.update(with: .uploadingError, error: error.localizedDescription)
             
             // Update request with error description
