@@ -988,7 +988,6 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
             CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
             [animation setFromValue:@(self.progressLayer.strokeEnd)];
             [animation setToValue:@(progress)];
-            NSLog(@"•••> animation from %g to %g", self.progressLayer.strokeEnd, progress);
             self.progressLayer.strokeEnd = progress;
             animation.duration = 0.2f;
             [self.progressLayer addAnimation:animation forKey:nil];
