@@ -758,6 +758,16 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                             // Refresh category data
                             NSDictionary *userInfo = @{@"NoHUD" : @"NO", @"fromCache" : @"NO", @"albumId" : @(0)};
                             [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
+
+                            // Create background queue
+                            dispatch_queue_attr_t qos = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL,
+                                                                                                QOS_CLASS_BACKGROUND, -1);
+                            dispatch_queue_t uploadManagerQueue = dispatch_queue_create("org.piwigo.upload-thread", qos);
+
+                            // Resume upload operations in background queue
+                            dispatch_async(uploadManagerQueue, ^{
+                                [[UploadManager shared] resumeAll];
+                            });
                         }
                     }];
                 }
@@ -808,9 +818,19 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                     [self performRelogin];
 
                 } else {
-                    // Connection still alive. Do nothing.
+                    // Connection still alive. Close HUD
                     self.isAlreadyTryingToLogin = NO;
                     [self hideLoading];
+
+                    // Create background queue
+                    dispatch_queue_attr_t qos = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL,
+                                                                                        QOS_CLASS_BACKGROUND, -1);
+                    dispatch_queue_t uploadManagerQueue = dispatch_queue_create("org.piwigo.upload-thread", qos);
+
+                    // Resume upload operations in background queue
+                    dispatch_async(uploadManagerQueue, ^{
+                        [[UploadManager shared] resumeAll];
+                    });
 
 #if defined(DEBUG_SESSION)
                     NSLog(@"=> checkSessionStatusAndTryRelogin: Connection still alive…");
