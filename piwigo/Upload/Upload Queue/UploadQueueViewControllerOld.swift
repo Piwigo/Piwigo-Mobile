@@ -39,9 +39,6 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(quitUpload))
         doneBarButton?.accessibilityIdentifier = "Done"
         
-        // Header informing user on network status
-        mainHeader()
-
         // Register section header view
         queueTableView.register(UploadImageHeaderView.self, forHeaderFooterViewReuseIdentifier:"UploadImageHeaderView")
 
@@ -64,6 +61,9 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         navigationItem.setLeftBarButtonItems([doneBarButton].compactMap { $0 }, animated: false)
         navigationController?.navigationBar.accessibilityIdentifier = "UploadQueueNav"
         updateNavBar()
+        
+        // Header informing user on network status
+        mainHeader()
     }
 
     override func viewWillLayoutSubviews() {
@@ -283,6 +283,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
                     UIApplication.shared.isIdleTimerDisabled = true
                 }
             }
+            self.viewWillLayoutSubviews()
         }
     }
     

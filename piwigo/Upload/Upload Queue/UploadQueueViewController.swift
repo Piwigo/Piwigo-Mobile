@@ -47,9 +47,6 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         actionBarButton = UIBarButtonItem(image: UIImage(named: "list"), landscapeImagePhone: UIImage(named: "listCompact"), style: .plain, target: self, action: #selector(didTapActionButton))
         doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(quitUpload))
         doneBarButton?.accessibilityIdentifier = "Done"
-        
-        // Header informing user on network status
-        mainHeader()
 
         // Register section header view
         queueTableView.register(UploadImageHeaderView.self, forHeaderFooterViewReuseIdentifier:"UploadImageHeaderView")
@@ -68,6 +65,9 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         navigationItem.setLeftBarButtonItems([doneBarButton].compactMap { $0 }, animated: false)
         navigationController?.navigationBar.accessibilityIdentifier = "UploadQueueNav"
         updateNavBar()
+        
+        // Header informing user on network status
+        mainHeader()
     }
 
     override func viewWillLayoutSubviews() {
@@ -340,6 +340,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
                     }
                 }
             }
+            self.viewWillLayoutSubviews()
         }
     }
     
