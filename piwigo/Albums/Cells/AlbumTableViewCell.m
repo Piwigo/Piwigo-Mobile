@@ -467,7 +467,7 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     
     UIAlertAction* keepImagesAction = [UIAlertAction
         actionWithTitle:NSLocalizedString(@"deleteCategory_noImages", @"Keep Images")
-        style:UIAlertActionStyleDestructive
+        style:UIAlertActionStyleDefault
         handler:^(UIAlertAction * action) {
             [self confirmCategoryDeletionWithNumberOfImages:self.albumData.totalNumberOfImages deletionMode:kCategoryDeletionModeNone andViewController:topViewController];
     }];
