@@ -163,7 +163,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
             newTag.tagId = Int(tag.tagId)
             newTag.tagName = tag.tagName
             newTag.lastModified = tag.lastModified
-            newTag.numberOfImagesUnderTag = Int(tag.numberOfImagesUnderTag)
+            newTag.numberOfImagesUnderTag = tag.numberOfImagesUnderTag
             tagList.append(newTag)
         }
         cell.setTagList(tagList, in: shouldUpdateTags ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
