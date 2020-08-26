@@ -450,9 +450,11 @@ extension UploadQueueViewControllerOld: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // To prevent crash occurring when the last row of a section is removed
         var willDeleteSection = false
-        for section in 1..<queueTableView.numberOfSections {
-            if queueTableView.numberOfRows(inSection: section) == 1 {
-                willDeleteSection = true
+        if queueTableView.numberOfSections > 1 {
+            for section in 1..<queueTableView.numberOfSections {
+                if queueTableView.numberOfRows(inSection: section) == 1 {
+                    willDeleteSection = true
+                }
             }
         }
         
@@ -461,11 +463,10 @@ extension UploadQueueViewControllerOld: NSFetchedResultsControllerDelegate {
             DispatchQueue.main.asyncAfter(deadline: dispatchTime) {
                 self.queueTableView.reloadData()
             }
-            return
+        } else {
+            queueTableView.endUpdates()
+            queueTableView.layoutIfNeeded()
         }
-        
-        queueTableView.endUpdates()
-        queueTableView.layoutIfNeeded()
         updateNavBar()
     }
 }
