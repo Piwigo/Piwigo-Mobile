@@ -21,3 +21,9 @@ platform :ios do
     capture_screenshots(workspace: "piwigo.xcworkspace", scheme: "piwigoAppStore")
   end
 end
+
+update_app_identifier(
+  xcodeproj: "piwigo.xcodeproj", 	# Optional path to xcodeproj, will use the first .xcodeproj if not set
+  plist_path: "piwigo/Info.plist", 	# Path to info plist file, relative to xcodeproj
+  app_identifier: "org.piwigo" 		# The App Identifier
+)

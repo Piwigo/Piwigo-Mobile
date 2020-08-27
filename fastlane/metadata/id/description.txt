@@ -1,0 +1,24 @@
+Piwigo untuk iPhone/iPad/iPod melengkapi perangkat lunak galeri foto pada komputasi awan Piwigo (v2.8 atau lebih tinggi):
+
+• Jelajahi album,
+• Buat, hapus, pindahkan dan ganti nama album,
+• Cari, dit, unduh dan hapus foto & video,
+• Salin dan pindahkan foto dan video antar album,
+• Atur foto sebagai gambar album,
+• Unggah foto:
+ - dengan memodifikasi ukuran dan kualitas,
+ - dengan deskripsi, penulis, tag, metadata EXIF,
+ - dengan atau tanpa metadata GPS.
+• Unggah video,
+• Bagikan foto dan video.
+
+Piwigo memberdayakan Anda untuk membuat galeri foto Anda sendiri di web. Ini mencakup banyak fitur hebat seperti album, tag, geolokasi, banyak tingkat penyesuaian, unggah oleh pengunjung, privasi, kalender atau statistik.
+
+Piwigo gratis dan sumber-terbuka.
+
+Piwigo juga kompatibel dengan ekstensi berikut ini:
+- Community: mengijinkan pengguna selain admin menambahkan foto
+- piwigo-videojs: menambah dukungan video
+
+Tanggapan atau pertanyaan ?
+Piwigo menawarkan layanan gratis di http://piwigo.org/forum dan kami ingin mendengar kabar dari Anda.

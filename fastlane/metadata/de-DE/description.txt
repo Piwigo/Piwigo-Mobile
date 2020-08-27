@@ -1,0 +1,24 @@
+Piwigo für iPhone/iPad/iPod ergänzt die Cloud Foto Galerie Software Piwigo (V2. 8 oder höher):
+
+• Durchsuche Deine Alben, 
+• erstelle, lösche, verschiebe und benenne Alben um,
+• bearbeiten, herunterladen und löschen von Fotos und Videos,
+• kopiere und verschiebe Fotos und Videos zwischen Alben,
+• lege ein Foto als Albumbild fest,
+• Lade Fotos hoch:
+ - veränderbare Größe und Qualität,
+ - mit Beschreibung, Autor, Schlagwörtern, EXIF-Metadaten,
+ - mit oder ohne GPS-Metadaten.
+• Videos hochladen,
+• Teile Fotos und Videos.
+
+Piwigo ermöglicht, Deine eigene Fotogalerie im Web zu erstellen. Es beinhaltet viele leistungsstarke Funktionen wie Alben, Verschlagwortung, Geolocation, Vielfache individuelle Anpassungsmöglichkeiten, hochladen von Bildern durch Besucher, indem Besucher, Sicherheitsstufen, Kalender oder Statistiken.
+
+Piwigo ist kostenlos und Opensource.
+
+Piwigo ist kompatibel zu folgenden extensions:
+- Community: Fotos hinzufügen als nicht-Admin
+- piwigo-videojs: Unterstützung für Videos
+
+Feedback oder Fragen?
+Piwigo bietet kostenlosen Support über http://piwigo.org/forum, wir würden uns freuen von Dir zu hören.

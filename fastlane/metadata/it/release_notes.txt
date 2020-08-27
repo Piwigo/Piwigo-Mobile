@@ -1,0 +1,9 @@
+• Richieste di caricamento delle registrazioni
+• Quando possibile Carica foto/video
+• Opzione "solo Wi-Fi" per i caricamenti
+• Nessun caricamento quando in modalità a basso consumo
+• Accesso molto più veloce alla Libreria foto
+• Correzioni di bug minori e miglioramenti dell'interfaccia
+• Modernizzazione del codice
+
+Il caricamento dello sfondo sarà disponibile dopo un aggiornamento del server.

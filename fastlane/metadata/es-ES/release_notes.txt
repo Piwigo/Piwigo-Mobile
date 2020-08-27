@@ -1,0 +1,9 @@
+• Registra solicitudes de subida
+• Sube fotos/vídeos cuando es posible
+• Opción "Sólo Wi-Fi" para subidas
+• No realizar subidas cuando se está en modo de ahorro de batería
+• Acceso mucho más rápido a la Biblioteca de Fotos
+• Correcciones de errores menores y mejoras de la interfaz
+• Modernización del código
+
+La subida en segundo plano estará disponible después de una actualización de servidor.

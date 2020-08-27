@@ -1,6 +1,6 @@
-app_identifier("net.lelievre-berna.PiwigoUIScreenshots") # The bundle identifier of your app
-# apple_id("[[APPLE_ID]]") # Your Apple email address
-
+app_identifier("org.piwigo") 		# The bundle identifier of your app
+apple_id("eddy@lelievre-berna.net") # Your Apple email address
+team_id("117746085")
 
 # For more information about the Appfile, see:
 #     https://docs.fastlane.tools/advanced/#appfile

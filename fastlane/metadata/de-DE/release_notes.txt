@@ -1,0 +1,9 @@
+• Zeichnet Upload-Anforderungen auf
+• lädt Fotos/Videos hoch, wenn möglich
+• Option "Nur WLAN" für Uploads
+• Kein Hochladen im Energiesparmodus
+• Deutlich schnellerer Zugriff auf die Fotobibliothek
+• Kleinere Fehlerbehebungen und Verbesserungen der Schnittstelle
+• Code-Modernisierung
+
+Das Hochladen im Hintergrund wird nach einem Server-Update verfügbar sein.

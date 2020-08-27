@@ -1,0 +1,24 @@
+Piwigo för iPhone/iPad/iPod kompletterar fotogalleri-programmet i molnet Piwigo (v2.8 eller högre):
+
+• Bläddra bland dina album,
+• Skapa, radera, flytta och byt namn på album,
+• Sök, redigera, ladda ner och ta bort bilder och videoklipp,
+• Kopiera och flytta foton och videoklipp mellan album,
+• Ställ in en bild som albumbild,
+• Ladda upp bilder:
+  - av modifierbar storlek och kvalitet,
+  - med beskrivning, författare, taggar, EXIF-metadata,
+  - med eller utan GPS-metadata.
+• Ladda upp videoklipp,
+• Dela bilder och videoklipp.
+
+Piwigo ger dig möjlighet att skapa ditt eget bildgalleri på webben. Den innehåller många kraftfulla funktioner som album, taggar, geolocation, många nivåer av anpassning, uppladdning av besökare, integritet, kalender eller statistik.
+
+Piwigo är gratis och opensource.
+
+Piwigo är också kompatibel med följande tillägg:
+- Community: tillåter icke-administratörsanvändare att lägga till bilder
+- piwigo-videos: lägger till stöd för video
+
+Återkoppling eller frågor?
+Piwigo erbjuder gratis support på http://piwigo.org/forum och vi vill gärna höra från dig.

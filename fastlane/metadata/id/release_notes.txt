@@ -1,0 +1,9 @@
+• Records upload requests
+• Uploads photos/videos when possible
+• "Wi-Fi only" option for uploads
+• No upload when in Low Power Mode
+• Much faster access to the Photo Library
+• Minor bug fixes and improvements of the interface
+• Code modernization
+
+Background uploading will be available after a server update.
