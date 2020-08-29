@@ -586,7 +586,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         uploadsProvider.clearCompletedUploads()
     }
 
-    func resume(failedUploads : [Upload], completionHandler: @escaping (Error?) -> Void) -> Void {
+    func resume(failedUploads: [Upload], completionHandler: @escaping (Error?) -> Void) -> Void {
         
         // Initialisation
         var uploadsToUpdate = [UploadProperties]()
@@ -619,7 +619,9 @@ class UploadManager: NSObject, URLSessionDelegate {
                 return;
             }
             // Launch uploads
-            self.findNextImageToUpload()
+            DispatchQueue.global(qos: .background).async {
+                self.findNextImageToUpload()
+            }
             completionHandler(nil)
         }
     }
