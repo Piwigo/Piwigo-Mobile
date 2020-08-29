@@ -17,6 +17,9 @@
 # To launch fastlane:
 #	bundle exec fastlane snapshot --number_of_retries 0 --skip_open_summary
 #
+# To upload screenshots
+#   bundle exec fastlane deliver
+#
 # A list of devices you want to take the screenshots from
 devices([
   "iPhone SE (1st generation)",						# 4-inch
