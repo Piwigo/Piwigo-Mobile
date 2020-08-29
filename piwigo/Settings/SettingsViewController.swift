@@ -1644,7 +1644,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     // Fallback on earlier versions
                 }
                 alert.popoverPresentationController?.sourceView = settingsTableView
-                alert.popoverPresentationController?.permittedArrowDirections = .any
+                alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
                 alert.popoverPresentationController?.sourceRect = rectOfCellInTableView ?? CGRect.zero
                 present(alert, animated: true, completion: {
                     // Bugfix: iOS9 - Tint not fully Applied without Reapplying
@@ -1822,7 +1822,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 // Fallback on earlier versions
             }
             alert.popoverPresentationController?.sourceView = settingsTableView
-            alert.popoverPresentationController?.permittedArrowDirections = .any
+            alert.popoverPresentationController?.permittedArrowDirections = [.up, .down]
             alert.popoverPresentationController?.sourceRect = rectOfCellInTableView ?? CGRect.zero
             present(alert, animated: true, completion: {
                 // Bugfix: iOS9 - Tint not fully Applied without Reapplying
