@@ -40,7 +40,7 @@ struct ImagesUploadJSON: Decodable {
             {
                 // Decodes response from the data and store them in the array
                 data = try rootContainer.decode(ImagesUpload.self, forKey: .data)
-    //            dump(imagesUpload)
+    //            dump(data)
             }
             else if (status == "fail")
             {
