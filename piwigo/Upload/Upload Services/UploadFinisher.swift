@@ -41,7 +41,7 @@ extension UploadManager{
                     // Check returned data
                     guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {
                         // Upload still ready for finish
-                        let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.networkUnavailable.localizedDescription])
+                        let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.invalidJSONobject.localizedDescription])
                         self.updateUploadRequestWith(upload, error: error)
                         return
                     }
@@ -80,7 +80,7 @@ extension UploadManager{
                         }
                     } catch {
                         // Data cannot be digested, upload still ready for finish
-                        let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongDataFormat.localizedDescription])
+                        let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongJSONobject.localizedDescription])
                         self.updateUploadRequestWith(upload, error: error)
                         return
                     }
