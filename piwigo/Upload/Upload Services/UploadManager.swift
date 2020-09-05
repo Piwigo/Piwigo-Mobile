@@ -9,6 +9,13 @@
 
 import Foundation
 import Photos
+import var CommonCrypto.CC_MD5_DIGEST_LENGTH
+import func CommonCrypto.CC_MD5
+import typealias CommonCrypto.CC_LONG
+
+#if canImport(CryptoKit)
+import CryptoKit        // Requires iOS 13
+#endif
 
 @objc
 class UploadManager: NSObject, URLSessionDelegate {
@@ -104,6 +111,34 @@ class UploadManager: NSObject, URLSessionDelegate {
     var win_cur: [UInt8] = [0x00, 0x00, 0x02, 0x00]
 
     
+    // MARK: - MD5 Checksum
+    #if canImport(CryptoKit)        // Requires iOS 13
+    @available(iOS 13.0, *)
+    func MD5(data: Data?) -> String {
+        let digest = Insecure.MD5.hash(data: data ?? Data())
+        return digest.map { String(format: "%02hhx", $0) }.joined()
+    }
+    #endif
+
+    func oldMD5(data: Data?) -> String {
+        let length = Int(CC_MD5_DIGEST_LENGTH)
+        let messageData = data ?? Data()
+        var digestData = Data(count: length)
+
+        _ = digestData.withUnsafeMutableBytes { digestBytes -> UInt8 in
+                messageData.withUnsafeBytes { messageBytes -> UInt8 in
+                if let messageBytesBaseAddress = messageBytes.baseAddress,
+                    let digestBytesBlindMemory = digestBytes.bindMemory(to: UInt8.self).baseAddress {
+                    let messageLength = CC_LONG(messageData.count)
+                    CC_MD5(messageBytesBaseAddress, messageLength, digestBytesBlindMemory)
+                }
+                return 0
+            }
+        }
+        return digestData.map { String(format: "%02hhx", $0) }.joined()
+    }
+
+
     // MARK: - Core Data
     /**
      The UploadsProvider that collects upload data, saves it to Core Data,
@@ -654,6 +689,8 @@ class UploadManager: NSObject, URLSessionDelegate {
     }
 }
 
+
+// MARK: - For checking operation queue
 /// The name/description of the current queue (Operation or Dispatch), if that can be found. Else, the name/description of the thread.
 public func queueName() -> String {
     if let currentOperationQueue = OperationQueue.current {

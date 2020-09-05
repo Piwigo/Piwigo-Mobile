@@ -388,8 +388,33 @@ extension UploadManager {
 //                }
                 // <<==== End of code for debugging
 
-                // Upload video with tags and properties
-                self.updateUploadRequestWith(newUpload, error: nil)
+                // MD5 checksum of exported video
+                if let outputURL = exportSession.outputURL {
+                    var videoData: Data = Data()
+                    do {
+                        try videoData = NSData (contentsOf: outputURL) as Data
+                        
+                        // Determine MD5 checksum of video file to upload
+                        var md5Checksum: String? = ""
+                        if #available(iOS 13.0, *) {
+                            #if canImport(CryptoKit)        // Requires iOS 13
+                            md5Checksum = self.MD5(data: videoData)
+                            #endif
+                        } else {
+                            // Fallback on earlier versions
+                            md5Checksum = self.oldMD5(data: videoData)
+                        }
+                        newUpload.md5Sum = md5Checksum
+
+                        // Upload video with tags and properties
+                        self.updateUploadRequestWith(newUpload, error: nil)
+                    }
+                    catch let error as NSError {
+                        // define error !!!!
+                        // Upload video with tags and properties
+                        self.updateUploadRequestWith(newUpload, error: error)
+                    }
+                }
                 return
             
             case .failed:

@@ -104,6 +104,7 @@ class Upload: NSManagedObject {
         creationDate = uploadProperties.creationDate ?? Date.init()
         fileName = uploadProperties.fileName ?? ""
         mimeType = uploadProperties.mimeType ?? ""
+        md5Sum = uploadProperties.md5Sum ?? ""
         isVideo = uploadProperties.isVideo
 
         // Photo author name is empty if not provided
