@@ -981,6 +981,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             if imageId == localIdentifier {
                 if let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell {
                     cell.setProgress(progressFraction, withAnimation: true)
+                    break
                 }
             }
         }

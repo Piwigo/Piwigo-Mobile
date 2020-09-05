@@ -351,6 +351,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         for cell in visibleCells {
             if cell.localIdentifier == localIdentifier {
                 cell.update(with: notification.userInfo!)
+                break
             }
         }
     }
