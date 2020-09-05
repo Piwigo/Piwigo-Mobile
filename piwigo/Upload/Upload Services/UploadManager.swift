@@ -224,7 +224,8 @@ class UploadManager: NSObject, URLSessionDelegate {
         }
         
         // Pause upload manager if app not in the foreground
-        if appState == .background || appState == .inactive {
+        if !(Model.sharedInstance()?.usesUploadAsync ?? false) &&
+            (appState == .background || appState == .inactive) {
             print("    > NOT IN FOREGROUND !!!")
             return
         }
@@ -236,10 +237,14 @@ class UploadManager: NSObject, URLSessionDelegate {
         }
 
         // Acceptable conditions for treating upload requests?
-        guard let _ = Model.sharedInstance()?.wifiOnlyUploading,
+        guard let _ = Model.sharedInstance()?.serverProtocol,
+            let _ = Model.sharedInstance()?.serverPath,
+            let _ = Model.sharedInstance()?.username,
+            let _ = Model.sharedInstance()?.wifiOnlyUploading,
             let _ = Model.sharedInstance()?.hasAdminRights,
             let _ = Model.sharedInstance()?.hasNormalRights,
             let _ = Model.sharedInstance()?.usesCommunityPluginV29,
+            let _ = Model.sharedInstance()?.usesUploadAsync,
             let _ = Model.sharedInstance()?.uploadFileTypes,
             let _ = Model.sharedInstance()?.stripGPSdataOnUpload,
             let _ = Model.sharedInstance()?.pwgToken else {
@@ -331,8 +336,9 @@ class UploadManager: NSObject, URLSessionDelegate {
     private func prepare(nextUpload: Upload) -> Void {
         print("•••>> prepare next upload…")
 
-        // Pause upload maneger if app not in the foreground
-        if appState == .background || appState == .inactive {
+        // Pause upload manager if app not in the foreground
+        if !(Model.sharedInstance()?.usesUploadAsync ?? false) &&
+            (appState == .background || appState == .inactive) {
             print("    > NOT IN FOREGROUND !!!")
             return
         }
@@ -486,8 +492,9 @@ class UploadManager: NSObject, URLSessionDelegate {
     private func transfer(nextUpload: Upload) -> Void {
         print("•••>> starting transfer of \(nextUpload.fileName!)…")
 
-        // Pause upload maneger if app not in the foreground
-        if appState == .background || appState == .inactive {
+        // Pause upload manager if app not in the foreground
+        if !(Model.sharedInstance()?.usesUploadAsync ?? false) &&
+            (appState == .background || appState == .inactive) {
             print("    > NOT IN FOREGROUND !!!")
             return
         }
@@ -496,9 +503,11 @@ class UploadManager: NSObject, URLSessionDelegate {
         let uploadProperties = nextUpload.getUploadProperties(with: .uploading, error: "")
         uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
             // Launch transfer if possible
-//            self.transferInBackgroundImage(of: uploadProperties)
-            self.transferImage(of: uploadProperties)
-//            self.essai2()
+            if Model.sharedInstance()?.usesUploadAsync ?? false {
+                self.transferInBackgroundImage(of: uploadProperties)
+            } else {
+                self.transferImage(of: uploadProperties)
+            }
         })
     }
     
@@ -507,8 +516,9 @@ class UploadManager: NSObject, URLSessionDelegate {
     private func finish(nextUpload: Upload) -> Void {
         print("•••>> finishing transfer of \(nextUpload.fileName!)…")
 
-        // Pause upload maneger if app not in the foreground
-        if appState == .background || appState == .inactive {
+        // Pause upload manager if app not in the foreground
+        if !(Model.sharedInstance()?.usesUploadAsync ?? false) &&
+            (appState == .background || appState == .inactive) {
             print("    > NOT IN FOREGROUND !!!")
             return
         }

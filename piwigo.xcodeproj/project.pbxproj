@@ -66,6 +66,8 @@
 		AD5F64F224C6088600660BE3 /* pwg.tags.getList.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5F64F124C6088600660BE3 /* pwg.tags.getList.json */; };
 		AD5F64F424C6091500660BE3 /* pwg.tags.getAdminList.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5F64F324C6091500660BE3 /* pwg.tags.getAdminList.json */; };
 		AD65236B248837D3007E2537 /* UploadFinisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1D5F6A248553710004C8BC /* UploadFinisher.swift */; };
+		AD6A128B24FAB56B00E3BBED /* pwg.images.uploadAsync.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6A128A24FAB56A00E3BBED /* pwg.images.uploadAsync.swift */; };
+		AD6A128C24FAB57300E3BBED /* pwg.images.uploadAsync.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6A128A24FAB56A00E3BBED /* pwg.images.uploadAsync.swift */; };
 		AD6B2E731F0930B40040EAD9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E751F0930B40040EAD9 /* Localizable.strings */; };
 		AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E781F0930CE0040EAD9 /* About.strings */; };
 		AD6FD1FA24BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD6FD1F924BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard */; };
@@ -307,6 +309,7 @@
 		AD5F64F124C6088600660BE3 /* pwg.tags.getList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pwg.tags.getList.json; sourceTree = "<group>"; };
 		AD5F64F324C6091500660BE3 /* pwg.tags.getAdminList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pwg.tags.getAdminList.json; sourceTree = "<group>"; };
 		AD5FCE2122EC629D00F37B1E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		AD6A128A24FAB56A00E3BBED /* pwg.images.uploadAsync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.images.uploadAsync.swift; sourceTree = "<group>"; };
 		AD6B2E791F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD6B2E7A1F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/About.strings; sourceTree = "<group>"; };
 		AD6FD1F924BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = UploadSwitchViewController.storyboard; sourceTree = "<group>"; };
@@ -800,6 +803,7 @@
 			children = (
 				AD38C04324AF724100CDC765 /* pwg.images.setInfo.swift */,
 				ADD79A3C24A9352500428C58 /* pwg.images.upload.swift */,
+				AD6A128A24FAB56A00E3BBED /* pwg.images.uploadAsync.swift */,
 			);
 			path = pwg.images;
 			sourceTree = "<group>";
@@ -1553,6 +1557,7 @@
 				AD11E46124A930B000C8876F /* piwigoWebAPI.swift in Sources */,
 				AD38C04524AF724100CDC765 /* pwg.images.setInfo.swift in Sources */,
 				AD5F64EE24C607FC00660BE3 /* pwg.tags.getList.swift in Sources */,
+				AD6A128C24FAB57300E3BBED /* pwg.images.uploadAsync.swift in Sources */,
 				AD38C04D24AF746000CDC765 /* community.images.uploadCompleted.swift in Sources */,
 				ADD79A3D24A9352500428C58 /* pwg.images.upload.swift in Sources */,
 				AD5F64EA24C6024200660BE3 /* pwg.tags.add.swift in Sources */,
@@ -1599,6 +1604,7 @@
 				ADEC6B052455BC6F0011527C /* LocalAlbumsTableViewCell.swift in Sources */,
 				AD42D08124448B7C00F0BAC1 /* LocalAlbumsViewController.swift in Sources */,
 				AD42D08524449FF000F0BAC1 /* LocalImageCollectionViewCell.swift in Sources */,
+				AD6A128B24FAB56B00E3BBED /* pwg.images.uploadAsync.swift in Sources */,
 				ADC8FAAA244C7307006BDA6A /* LocalImagesFooterReusableView.swift in Sources */,
 				AD45D8AB2444D1CD00CBE206 /* LocalImagesHeaderReusableView.swift in Sources */,
 				ADC8167B244B5EDE00650223 /* LocalImagesViewController.swift in Sources */,

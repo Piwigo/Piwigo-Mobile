@@ -188,11 +188,10 @@ class UploadImageTableViewCell: MGSwipeTableCell {
 
         // Bottom label
         let errorDescription = (userInfo["Error"] ?? "") as! String
-        let photoResize = (userInfo["photoResize"] ?? 100) as! Int16
-        if errorDescription.count == 0,
+        if errorDescription.count == 0, let photoResize = userInfo["photoResize"] as? Int16,
             let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [localIdentifier], options: nil).firstObject {
             imageInfoLabel.text = getImageInfo(from: imageAsset, for: Int(bounds.size.width), scale: photoResize)
-        } else {
+        } else if errorDescription.count > 0 {
             imageInfoLabel.text = errorDescription
         }
     }
