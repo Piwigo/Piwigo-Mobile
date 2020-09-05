@@ -835,6 +835,10 @@ NSString * const kGetImageOrderDescending = @"desc";
     
     // Object "file"
     imageData.fileName = [NetworkHandler UTF8EncodedStringFromString:[imageJson objectForKey:@"file"]];
+    if ([imageData.fileName length] == 0) {
+        // Filename should never be empty. Just in case…
+        imageData.fileName = @"PiwigoImage.jpg";
+    }
     NSString *fileExt = [[imageData.fileName pathExtension] uppercaseString];
     if([fileExt isEqualToString:@"MP4"] || [fileExt isEqualToString:@"M4V"] ||
        [fileExt isEqualToString:@"OGG"] || [fileExt isEqualToString:@"OGV"] ||
