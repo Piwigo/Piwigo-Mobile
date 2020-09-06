@@ -145,6 +145,8 @@ class CategoryImageSort: NSObject {
             })
         case kPiwigoSortManual:                 // Manual i.e. no sort
             newImageList = images
+        case kPiwigoSortRandom:                 // Random order
+            newImageList = images.shuffled()
         case kPiwigoSortCount:
             fallthrough
         default:

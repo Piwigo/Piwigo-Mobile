@@ -1260,7 +1260,9 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
                           inRecursiveMode:[Model sharedInstance].loadAllCategoryInfo
                              OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
                                  self.isCachedAtInit = YES;
-                                 [self.imagesCollection reloadData];
+                                 if (albums != nil) {
+                                     [self.imagesCollection reloadData];
+                                 }
 
                                  // Hide loading HUD
                                  [self hideHUD];

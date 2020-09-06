@@ -52,6 +52,7 @@ typedef enum {
     kPiwigoSortVisitsAscending,             // Visits, low → high
 
     kPiwigoSortManual,                      // Manual order
+    kPiwigoSortRandom,                      // Random order
 //    kPiwigoSortVideoOnly,
 //    kPiwigoSortImageOnly,
     
