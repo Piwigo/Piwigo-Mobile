@@ -937,19 +937,21 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         cell.isUserInteractionEnabled = true
 
         // Cell state
-        if indexedUploadsInQueue.count == fetchedImages.count {
-            // Use indexed data
-            if let state = indexedUploadsInQueue[index]?.1 {
-                switch state {
-                case .waiting, .preparing, .preparingError, .preparingFail, .prepared, .formatError:
-                    cell.cellWaiting = true
-                case .uploading, .uploadingError, .uploaded, .finishing, .finishingError:
-                    cell.cellUploading = true
-                case .finished, .moderated:
-                    cell.cellUploaded = true
+        if queue.operationCount == 0 {
+            if indexedUploadsInQueue.count == fetchedImages.count {
+                // Use indexed data
+                if let state = indexedUploadsInQueue[index]?.1 {
+                    switch state {
+                    case .waiting, .preparing, .preparingError, .preparingFail, .prepared, .formatError:
+                        cell.cellWaiting = true
+                    case .uploading, .uploadingError, .uploaded, .finishing, .finishingError:
+                        cell.cellUploading = true
+                    case .finished, .moderated:
+                        cell.cellUploaded = true
+                    }
+                } else {
+                    cell.cellSelected = selectedImages[index] != nil
                 }
-            } else {
-                cell.cellSelected = selectedImages[index] != nil
             }
         } else {
             // Use non-indexed data
