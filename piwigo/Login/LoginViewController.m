@@ -294,10 +294,13 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 
         // Return immadiately an error in some cases
         switch ([error code]) {
+            case NSURLErrorUserCancelledAuthentication:
+                [self loggingInConnectionError:nil];
+                return;
+                
             case NSURLErrorBadServerResponse:
             case NSURLErrorBadURL:
             case NSURLErrorCallIsActive:
-            case NSURLErrorCannotConnectToHost:
             case NSURLErrorCannotDecodeContentData:
             case NSURLErrorCannotDecodeRawData:
             case NSURLErrorCannotFindHost:
@@ -312,13 +315,23 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
             case NSURLErrorNotConnectedToInternet:
             case NSURLErrorRedirectToNonExistentLocation:
             case NSURLErrorRequestBodyStreamExhausted:
-            case NSURLErrorSecureConnectionFailed:
             case NSURLErrorTimedOut:
             case NSURLErrorUnknown:
             case NSURLErrorUnsupportedURL:
-            case NSURLErrorUserCancelledAuthentication:
             case NSURLErrorZeroByteResource:
                 [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
+                return;
+                
+            case NSURLErrorCannotConnectToHost:
+            case NSURLErrorSecureConnectionFailed:
+                // HTTPS request failed ?
+                if ([[Model sharedInstance].serverProtocol isEqualToString:@"https://"] &&
+                    ![Model sharedInstance].userCancelledCommunication)
+                {
+                    // Suggest HTTP connection if HTTPS attempt failed
+                    [self requestNonSecuredAccessAfterError:error];
+                    return;
+                }
                 return;
                 
             case NSURLErrorClientCertificateRejected:

@@ -14,9 +14,9 @@
 #import "SAMKeychain.h"
 #import "MBProgressHUD.h"
 
-//#ifndef DEBUG_SESSION
-//#define DEBUG_SESSION
-//#endif
+#ifndef DEBUG_SESSION
+#define DEBUG_SESSION
+#endif
 
 // Piwigo URLs:
 NSString * const kReflectionGetMethodList = @"format=json&method=reflection.getMethodList";
