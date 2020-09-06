@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.5.0_text" = "Version 2.5\n\n• Enregistre les demandes de téléchargements\n• Télécharge les photos/vidéos sur le serveur Piwigo lorsque c'est possible\n• Pas de téléchargement lorsque le mode Economie d'Energie est activé\n• Option \"Wi-Fi uniquement\" pour les téléchargements\n• Accès beaucoup plus rapide à la Photothèque\n• Corrections de bugs mineurs et améliorations de l'interface\n• Modernisation du code\n\nLe téléchargement en arrière-plan sera disponible après une mise à jour du serveur.";
+"v2.5.1_text" = "Version 2.5.1\n\n• Nouvelle option de présentation aléatoire des photos et des vidéos\n• Corrections de bugs mineurs et améliorations de l'interface";
+
+"v2.5.0_text" = "Version 2.5\n27 août 2020\n\n• Enregistre les demandes de téléchargements\n• Télécharge les photos/vidéos sur le serveur Piwigo lorsque c'est possible\n• Pas de téléchargement lorsque le mode Economie d'Energie est activé\n• Option \"Wi-Fi uniquement\" pour les téléchargements\n• Accès beaucoup plus rapide à la Photothèque\n• Corrections de bugs mineurs et améliorations de l'interface\n• Modernisation du code\n\nLe téléchargement en arrière-plan sera disponible après une mise à jour du serveur.";
 
 "v2.4.8_text" = "Version 2.4.8\n25 Mars 2020\n\n• Piwigo vous avertit quand :\n - un site web a un certificat qui n'est pas valide,\n - avant d'établir une connexion non sécurisée.\n• Amélioration de la gestion du cache\n• Corrections de bugs mineurs et améliorations de l'interface";
 

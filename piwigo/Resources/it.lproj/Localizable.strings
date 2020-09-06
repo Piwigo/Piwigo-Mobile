@@ -47,17 +47,17 @@
 // ==> CORE DATA
 // ===========================================================================
 "CoreDataStore_WarningTitle" = "Avvertimento";
-"CoreDataStore_WarningMessage" = "A serious application error occurred while Piwigo tried to read the data cache. A new cache has therefore been created.";
-"CoreDataFetch_DigestError" = "Could not digest the fetched data.";
+"CoreDataStore_WarningMessage" = "Si è verificato un grave errore di applicazione mentre Piwigo ha cercato di leggere la cache dei dati. È stata quindi creata una nuova cache.";
+"CoreDataFetch_DigestError" = "Impossibile digerire i dati recuperati.";
 
 // Tag objects
-"CoreDataFetch_TagError" = "Fetch tags error!";
-"CoreDataFetch_TagMissingData" = "Found and will discard a tag missing a valid code or name.";
-"CoreDataFetch_TagCreateFailed" = "Failed to create a new Tag object.";
+"CoreDataFetch_TagError" = "Recupera l'errore dei tag!";
+"CoreDataFetch_TagMissingData" = "Trovato e scarterà un tag mancante di un codice o un nome valido.";
+"CoreDataFetch_TagCreateFailed" = "Impossibile creare un nuovo oggetto tag.";
 
 // Upload objects
-"CoreDataFetch_UploadCreateFailed" = "Failed to create a new Upload object.";
-"CoreDataFetch_UploadMissingAsset" = "Failed to retrieve photo.";
+"CoreDataFetch_UploadCreateFailed" = "Creazione di un nuovo oggetto Upload non riuscita.";
+"CoreDataFetch_UploadMissingAsset" = "Impossibile recuperare la foto.";
 
 // ===========================================================================
 // ==> LOGIN / LOGOUT
@@ -151,6 +151,7 @@
 "categorySort_visitsDescending" = "Visite, alto → basso";
 "categorySort_visitsAscending" = "Visite, basso → alto";
 "categorySort_manual" = "Ordine manuale";
+"categorySort_random" = "Ordine Casuale";
 
 "categorySort_videosOnly" = "Soli Video";
 "categorySort_imagesOnly" = "Solo Immagini";
@@ -167,14 +168,14 @@
 "categoryUpload_chooseAlbum" = "Seleziona un sotto-album per caricare le immagini";
 "categoryUpload_LocalAlbums" = "Album locali";
 "categoryUpload_chooseLocalAlbum" = "Seleziona un album per ottenere immagini";
-"categoryUpload_sharedAlbums" = "Shared Albums";
+"categoryUpload_sharedAlbums" = "Album Condivisi";
 "categoryUpload_iCloudAlbums" = "Album di iCloud";
 "categoryUpload_chooseiCloudAlbum" = "Seleziona un album iCloud per ottenere immagini";
-"categoryUpload_syncedEvents" = "iPhoto Events";
-"categoryUpload_syncedAlbums" = "iPhoto Albums";
+"categoryUpload_syncedEvents" = "Eventi iPhoto";
+"categoryUpload_syncedAlbums" = "Album iPhoto";
 "categoryUpload_syncedFaces" = "iPhoto Faces";
-"categoryUpload_mediaTypes" = "Media Types";
-"categoryUpload_otherAlbums" = "Other Albums";
+"categoryUpload_mediaTypes" = "Tipi Multimediali";
+"categoryUpload_otherAlbums" = "Altri Album";
 
 "categoyUpload_loadSubCategories" = "carica";
 "categoryUpload_images" = "Carica immagini";
@@ -288,8 +289,8 @@
 "imageSortTitle" = "Ordinare le immagini";
 "imageSortMessage" = "Si prega di selezionare come si desidera ordinare le immagini";
 "imageSortingHUD" = "Ordinamento delle immagini";
-"imageSelectingHUD" = "Selecting Photos…";
-"imageDeselectingHUD" = "Deselecting Photos…";
+"imageSelectingHUD" = "Selezione foto…";
+"imageDeselectingHUD" = "Deselezionare le foto…";
 
 // Image options (actions)
 "imageOptions_title" = "Opzioni dell'immagine";
@@ -337,7 +338,7 @@
 "tag" = "Tag";
 "tagsTitle_selectOne" = "Seleziona un Tag";
 "tagsHeader_selected" = "Selezionato";
-"tagsHeader_notSelected" = "Not Selected";
+"tagsHeader_notSelected" = "Non Selezionato";
 "tagsHeader_all" = "Tutto";
 "tagsAdd_title" = "Aggiungi tag";
 "tagsAdd_message" = "Inserisci un nome per questo nuovo tag";
@@ -450,19 +451,19 @@
 
 "imageUploadRemove" = "Rimozione di immagini caricate";
 
-"imageUploadTableCell_waiting" = "Waiting...";
-"imageUploadTableCell_preparing" = "Preparing...";
-"imageUploadTableCell_prepared" = "Ready for upload...";
+"imageUploadTableCell_waiting" = "Attendere...";
+"imageUploadTableCell_preparing" = "Preparazione...";
+"imageUploadTableCell_prepared" = "Pronto per il caricamento...";
 "imageUploadTableCell_uploading" = "Caricamento...";
-"imageUploadTableCell_uploaded" = "Uploaded";
-"imageUploadTableCell_finishing" = "Finishing...";
+"imageUploadTableCell_uploaded" = "Caricato";
+"imageUploadTableCell_finishing" = "Finitura...";
 
-"imageUploadClearFailedSingle" = "Clear Failed Upload";
-"imageUploadClearFailedSeveral" = "Clear %@ Failed Uploads";
-"imageUploadClearCompletedSingle" = "Clear Completed Upload";
-"imageUploadClearCompletedSeveral" = "Clear %@ Completed Uploads";
-"imageUploadResumeSingle" = "Resume Upload";
-"imageUploadResumeSeveral" = "Resume %@ Uploads";
+"imageUploadClearFailedSingle" = "Pulisci Caricamento Fallito";
+"imageUploadClearFailedSeveral" = "Pulisci %@ Caricamento non riuscito";
+"imageUploadClearCompletedSingle" = "Pulisci Caricamento Completato";
+"imageUploadClearCompletedSeveral" = "Pulisci %@ caricamenti completati";
+"imageUploadResumeSingle" = "Riprendi Caricamento";
+"imageUploadResumeSeveral" = "Riprendi %@ caricamenti";
 
 "imageUploadProgressBar_zero" = "Caricamento in corso 0/0";
 "imageUploadProgressBar_nonZero" = "Caricamento di %@/%@";
@@ -476,15 +477,15 @@
 "uploadError_title" = "Errore di caricamento";
 "uploadError_message" = "Impossibile caricare la tua immagine. Errore: %@";
 "uploadCancelled_title" = "Caricamento annullato";
-"uploadNoInternetNetwork" = "No Internet Connection";
-"uploadNoWiFiNetwork" = "No Wi-Fi Connection";
-"uploadLowPowerMode" = "Low Power Mode enabled";
-"uploadSection_impossible" = "Impossible Uploads";
-"uploadSection_resumable" = "Resumable Uploads";
-"uploadSection_queue" = "Uploads Queue";
+"uploadNoInternetNetwork" = "Nessuna Connessione Internet";
+"uploadNoWiFiNetwork" = "Nessuna Connessione Wi-Fi";
+"uploadLowPowerMode" = "Modalità di alimentazione bassa attivata";
+"uploadSection_impossible" = "Caricamenti Impossibili";
+"uploadSection_resumable" = "Caricamenti Riutilizzabili";
+"uploadSection_queue" = "Uploads Coda";
 
 "imageUploadError_title" = "Errore nel caricamento dell'immagine";
-"imageUploadError_format" = "File format not accepted by Piwigo server.";
+"imageUploadError_format" = "Formato di file non accettato dal server Piwigo.";
 "imageUploadError_source" = "non è possibile creare l'origine dell'immagine";
 "imageUploadError_destination" = "non è possibile creare immagine destinazione";
 "imageUploadError_iCloud" = "Impossibile recuperare l'immagine. Errore: %@";
@@ -662,7 +663,7 @@
 "settings_defaultPrefix>320px" = "Prefisso nome file";
 "settings_defaultPrefixPlaceholder" = "Prefisso";
 "settings_deleteImage>375px" = "Elimina l'immagine dopo il caricamento";
-"settings_wifiOnly" = "Wi-Fi Only";
+"settings_wifiOnly" = "Solo Wi-Fi";
 "settings_deleteImage" = "Elimina dopo il caricamento";
 
 // Settings — Cache

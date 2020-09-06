@@ -151,6 +151,7 @@
 "categorySort_visitsDescending" = "訪問回数, 高 → 低";
 "categorySort_visitsAscending" = "訪問回数, 低 → 高";
 "categorySort_manual" = "手動注文";
+"categorySort_random" = "ランダムな順序";
 
 "categorySort_videosOnly" = "動画のみ";
 "categorySort_imagesOnly" = "写真のみ";
@@ -476,12 +477,12 @@
 "uploadError_title" = "アップロードエラー";
 "uploadError_message" = "写真をアップロードできませんでした。エラー: %@";
 "uploadCancelled_title" = "アップロードが取り消されました";
-"uploadNoInternetNetwork" = "No Internet Connection";
-"uploadNoWiFiNetwork" = "No Wi-Fi Connection";
-"uploadLowPowerMode" = "Low Power Mode enabled";
-"uploadSection_impossible" = "Impossible Uploads";
-"uploadSection_resumable" = "Resumable Uploads";
-"uploadSection_queue" = "Uploads Queue";
+"uploadNoInternetNetwork" = "インターネット接続がありません";
+"uploadNoWiFiNetwork" = "Wi-Fi接続がありません";
+"uploadLowPowerMode" = "低消費電力モード有効";
+"uploadSection_impossible" = "アップロード不可";
+"uploadSection_resumable" = "アップロード再開可能";
+"uploadSection_queue" = "アップロードキュー";
 
 "imageUploadError_title" = "写真アップロードエラー";
 "imageUploadError_format" = "Piwigoサーバーでは受け付けられないファイル形式です。";
@@ -662,7 +663,7 @@
 "settings_defaultPrefix>320px" = "ファイル名のプレフィクス";
 "settings_defaultPrefixPlaceholder" = "プレフィクス";
 "settings_deleteImage>375px" = "アップロード後に写真を削除します";
-"settings_wifiOnly" = "Wi-Fi Only";
+"settings_wifiOnly" = "Wi-Fiのみ";
 "settings_deleteImage" = "アップロード後に削除します";
 
 // Settings — Cache

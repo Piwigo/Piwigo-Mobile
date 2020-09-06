@@ -57,7 +57,7 @@
 
 // Upload objects
 "CoreDataFetch_UploadCreateFailed" = "Det gick inte att skapa ett nytt uppladdningsobjekt.";
-"CoreDataFetch_UploadMissingAsset" = "Failed to retrieve photo.";
+"CoreDataFetch_UploadMissingAsset" = "Kunde inte hämta foto.";
 
 // ===========================================================================
 // ==> LOGIN / LOGOUT
@@ -151,6 +151,7 @@
 "categorySort_visitsDescending" = "Besökare, hög → låg";
 "categorySort_visitsAscending" = "Besökare, låg → hög";
 "categorySort_manual" = "Manuell sortering";
+"categorySort_random" = "Slumpmässig ordning";
 
 "categorySort_videosOnly" = "Endast filmer";
 "categorySort_imagesOnly" = "Endast bilder";
@@ -167,14 +168,14 @@
 "categoryUpload_chooseAlbum" = "Välj ett album att ladda upp bilder till";
 "categoryUpload_LocalAlbums" = "Lokala album";
 "categoryUpload_chooseLocalAlbum" = "Välj ett album att hämta bilder från";
-"categoryUpload_sharedAlbums" = "Shared Albums";
+"categoryUpload_sharedAlbums" = "Delade album";
 "categoryUpload_iCloudAlbums" = "iCloudalbum";
 "categoryUpload_chooseiCloudAlbum" = "Välj ett iCloud-album att hämta bilder från";
-"categoryUpload_syncedEvents" = "iPhoto Events";
-"categoryUpload_syncedAlbums" = "iPhoto Albums";
-"categoryUpload_syncedFaces" = "iPhoto Faces";
-"categoryUpload_mediaTypes" = "Media Types";
-"categoryUpload_otherAlbums" = "Other Albums";
+"categoryUpload_syncedEvents" = "iPhoto Händelser";
+"categoryUpload_syncedAlbums" = "iPhoto-album";
+"categoryUpload_syncedFaces" = "iPhoto-Faces";
+"categoryUpload_mediaTypes" = "Mediatyper";
+"categoryUpload_otherAlbums" = "Andra album";
 
 "categoyUpload_loadSubCategories" = "ladda";
 "categoryUpload_images" = "Ladda upp bilder";
@@ -288,8 +289,8 @@
 "imageSortTitle" = "Sortera bilder";
 "imageSortMessage" = "Välj hur du vill sortera bilder";
 "imageSortingHUD" = "Sorterar bilder";
-"imageSelectingHUD" = "Selecting Photos…";
-"imageDeselectingHUD" = "Deselecting Photos…";
+"imageSelectingHUD" = "Väljer foton…";
+"imageDeselectingHUD" = "Avmarkerar foton…";
 
 // Image options (actions)
 "imageOptions_title" = "Bildalternativ";
@@ -337,7 +338,7 @@
 "tag" = "Etikett";
 "tagsTitle_selectOne" = "Välj en Etikett";
 "tagsHeader_selected" = "Valda";
-"tagsHeader_notSelected" = "Not Selected";
+"tagsHeader_notSelected" = "Inte markerad";
 "tagsHeader_all" = "Alla";
 "tagsAdd_title" = "Lägg till etikett";
 "tagsAdd_message" = "Ange ett namn för den nya etiketten";
@@ -450,19 +451,19 @@
 
 "imageUploadRemove" = "Tar bort uppladdade bilder";
 
-"imageUploadTableCell_waiting" = "Waiting...";
-"imageUploadTableCell_preparing" = "Preparing...";
-"imageUploadTableCell_prepared" = "Ready for upload...";
+"imageUploadTableCell_waiting" = "Väntar...";
+"imageUploadTableCell_preparing" = "Förbereder...";
+"imageUploadTableCell_prepared" = "Redo för uppladdning...";
 "imageUploadTableCell_uploading" = "Laddar upp...";
-"imageUploadTableCell_uploaded" = "Uploaded";
-"imageUploadTableCell_finishing" = "Finishing...";
+"imageUploadTableCell_uploaded" = "Uppladdad";
+"imageUploadTableCell_finishing" = "Slutför...";
 
-"imageUploadClearFailedSingle" = "Clear Failed Upload";
-"imageUploadClearFailedSeveral" = "Clear %@ Failed Uploads";
-"imageUploadClearCompletedSingle" = "Clear Completed Upload";
-"imageUploadClearCompletedSeveral" = "Clear %@ Completed Uploads";
-"imageUploadResumeSingle" = "Resume Upload";
-"imageUploadResumeSeveral" = "Resume %@ Uploads";
+"imageUploadClearFailedSingle" = "Rensa misslyckad uppladdning";
+"imageUploadClearFailedSeveral" = "Rensa %@ misslyckade uppladdningar";
+"imageUploadClearCompletedSingle" = "Rensa slutförd uppladdning";
+"imageUploadClearCompletedSeveral" = "Rensa %@ Avslutade uppladdningar";
+"imageUploadResumeSingle" = "Återuppta uppladdning";
+"imageUploadResumeSeveral" = "Återuppta %@ uppladdningar";
 
 "imageUploadProgressBar_zero" = "Laddar upp 0/0";
 "imageUploadProgressBar_nonZero" = "Ladda upp %@/%@";
@@ -476,15 +477,15 @@
 "uploadError_title" = "Uppladdningsfel";
 "uploadError_message" = "Kunde inte ladda upp din bild. Fel: %@";
 "uploadCancelled_title" = "Uppladdning avbruten";
-"uploadNoInternetNetwork" = "No Internet Connection";
-"uploadNoWiFiNetwork" = "No Wi-Fi Connection";
-"uploadLowPowerMode" = "Low Power Mode enabled";
-"uploadSection_impossible" = "Impossible Uploads";
-"uploadSection_resumable" = "Resumable Uploads";
-"uploadSection_queue" = "Uploads Queue";
+"uploadNoInternetNetwork" = "Ingen internetanslutning";
+"uploadNoWiFiNetwork" = "Ingen Wi-Fi-anslutning";
+"uploadLowPowerMode" = "Lågt strömläge aktiverat";
+"uploadSection_impossible" = "Omöjliga uppladdningar";
+"uploadSection_resumable" = "Återuppladdningsbara uppladdningar";
+"uploadSection_queue" = "Uppladdningar kö";
 
 "imageUploadError_title" = "Bilduppladdningsfel";
-"imageUploadError_format" = "File format not accepted by Piwigo server.";
+"imageUploadError_format" = "Filformatet accepteras inte av Piwigo server.";
 "imageUploadError_source" = "kan inte skapa bildkälla";
 "imageUploadError_destination" = "kan inte skapa bild destination";
 "imageUploadError_iCloud" = "Kunde inte att hämta bild. Fel: %@";
@@ -662,7 +663,7 @@
 "settings_defaultPrefix>320px" = "Filnamnsprefix";
 "settings_defaultPrefixPlaceholder" = "Prefix";
 "settings_deleteImage>375px" = "Radera bild efter uppladdning";
-"settings_wifiOnly" = "Wi-Fi Only";
+"settings_wifiOnly" = "Endast Wi-Fi";
 "settings_deleteImage" = "Radera efter uppladdning";
 
 // Settings — Cache
