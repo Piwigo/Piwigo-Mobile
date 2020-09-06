@@ -14,9 +14,9 @@
 #import "SAMKeychain.h"
 #import "MBProgressHUD.h"
 
-#ifndef DEBUG_SESSION
-#define DEBUG_SESSION
-#endif
+//#ifndef DEBUG_SESSION
+//#define DEBUG_SESSION
+//#endif
 
 // Piwigo URLs:
 NSString * const kReflectionGetMethodList = @"format=json&method=reflection.getMethodList";
@@ -200,7 +200,7 @@ NSInteger const loadingViewTag = 899;
                         // Handle the error
                         // See https://www.osstatus.com/search/results?platform=all&framework=all&search=-50
 #if defined(DEBUG_SESSION)
-                        NSLog(@"===>> could not delete certificate from Keychain, error %d", status);
+                        NSLog(@"===>> could not delete certificate from Keychain, error %d", (int)status);
 #endif
                     }
                 }
@@ -218,7 +218,7 @@ NSInteger const loadingViewTag = 899;
                     // Handle the error
                     // See https://www.osstatus.com/search/results?platform=all&framework=all&search=-50
 #if defined(DEBUG_SESSION)
-                    NSLog(@"===>> could not store non-trusted certificate in Keychain, error %d", status);
+                    NSLog(@"===>> could not store non-trusted certificate in Keychain, error %d", (int)status);
 #endif
                 }
 

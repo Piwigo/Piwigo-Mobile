@@ -32,9 +32,9 @@
 #import "SAMKeychain.h"
 #import "SearchImagesViewController.h"
 
-#ifndef DEBUG_LIFECYCLE
-#define DEBUG_LIFECYCLE
-#endif
+//#ifndef DEBUG_LIFECYCLE
+//#define DEBUG_LIFECYCLE
+//#endif
 
 CGFloat const kRadius = 25.0;
 CGFloat const kDeg2Rad = 3.141592654 / 180.0;
