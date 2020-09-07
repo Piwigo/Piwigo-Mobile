@@ -48,11 +48,11 @@
 // ===========================================================================
 "CoreDataStore_WarningTitle" = "Advarsel";
 "CoreDataStore_WarningMessage" = "En alvorlig applikationsfejl opstod under Piwigo forsøgte at læse data-cachen. En ny cache er derfor blevet oprettet.";
-"CoreDataFetch_DigestError" = "Kunne ikke fordøje hentede data.";
+"CoreDataFetch_DigestError" = "Kunne ikke hente data.";
 
 // Tag objects
-"CoreDataFetch_TagError" = "Hent tags fejl!";
-"CoreDataFetch_TagMissingData" = "Fundet og vil kassere et tag mangler en gyldig kode eller navn.";
+"CoreDataFetch_TagError" = "Fejl ved henting af tags!";
+"CoreDataFetch_TagMissingData" = "Fandt et tag der mangler gyldig kode eller navn. Tag kasseres.";
 "CoreDataFetch_TagCreateFailed" = "Kunne ikke oprette et nyt Tag-objekt.";
 
 // Upload objects
@@ -151,7 +151,7 @@
 "categorySort_visitsDescending" = "Besøg, høj → lav";
 "categorySort_visitsAscending" = "Besøg, lav → høj";
 "categorySort_manual" = "Manuel sortering";
-"categorySort_random" = "Tilfældig Ordre";
+"categorySort_random" = "Tilfældig rækkefølge";
 
 "categorySort_videosOnly" = "Kun Videoer";
 "categorySort_imagesOnly" = "Kun Billeder";
@@ -168,7 +168,7 @@
 "categoryUpload_chooseAlbum" = "Vælg et underalbum til upload af billeder";
 "categoryUpload_LocalAlbums" = "Lokale album";
 "categoryUpload_chooseLocalAlbum" = "Vælg et album at hente biller fra";
-"categoryUpload_sharedAlbums" = "Delt Albums";
+"categoryUpload_sharedAlbums" = "Delet Albums";
 "categoryUpload_iCloudAlbums" = "iCloud album";
 "categoryUpload_chooseiCloudAlbum" = "Vælg et iCloud album at hente biller fra";
 "categoryUpload_syncedEvents" = "iPhoto-begivenheder";
@@ -289,8 +289,8 @@
 "imageSortTitle" = "Sorter billeder";
 "imageSortMessage" = "Vælg hvordan du ønsker at sortere billeder";
 "imageSortingHUD" = "Sorterer billeder…";
-"imageSelectingHUD" = "Valg af billeder…";
-"imageDeselectingHUD" = "Fravælg fotos…";
+"imageSelectingHUD" = "Vælger billeder…";
+"imageDeselectingHUD" = "Fravælger fotos…";
 
 // Image options (actions)
 "imageOptions_title" = "Billed Valgmuligheder";
@@ -478,7 +478,7 @@
 "uploadError_message" = "Kunne ikke uploade dit billede. Fejl: %@";
 "uploadCancelled_title" = "Upload annulleret";
 "uploadNoInternetNetwork" = "Ingen Internetforbindelse";
-"uploadNoWiFiNetwork" = "Ingen Wi-Fi-forbindelse";
+"uploadNoWiFiNetwork" = "Ingen Wi-Fi forbindelse";
 "uploadLowPowerMode" = "Lav strømtilstand aktiveret";
 "uploadSection_impossible" = "Umulige Uploads";
 "uploadSection_resumable" = "Genoptagelige Uploads";
