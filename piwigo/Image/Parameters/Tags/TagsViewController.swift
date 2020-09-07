@@ -526,12 +526,40 @@ extension TagsViewController {
 extension TagsViewController: NSFetchedResultsControllerDelegate {
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        // Stores tags index paths before the update
+        selectedTagIdsBeforeUpdate = selectedTags.map({$0.tagId})
+        nonSelectedTagIdsBeforeUpdate = nonSelectedTags.map({$0.tagId})
+        
+        // Begin the update
         tableView.beginUpdates()
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
 
         switch type {
+        case .delete:   // Action performed in priority
+            // Remove tag from the right list of tags
+            guard let tag: Tag = anObject as? Tag else { return }
+            // List of selected tags
+            if let index = selectedTags.firstIndex(where: {$0.tagId == tag.tagId}) {
+                // Remove selected tag from data source
+                selectedTags.remove(at: index)
+                selectedTagIds.removeAll(where: {$0 == tag.tagId})
+                // Delete tag from table view
+                let deleteAtIndexPath = IndexPath.init(row: selectedTagIdsBeforeUpdate.firstIndex(where: {$0 == tag.tagId})!, section: 0)
+                print(".delete =>", deleteAtIndexPath.debugDescription)
+                tagsTableView.deleteRows(at: [deleteAtIndexPath], with: .automatic)
+            }
+            // List of not selected tags
+            else if let index = nonSelectedTags.firstIndex(where: {$0.tagId == tag.tagId}) {
+                // Remove non-selected tag from data source
+                nonSelectedTags.remove(at: index)
+                // Delete tag from table view
+                let deleteAtIndexPath = IndexPath.init(row: nonSelectedTagIdsBeforeUpdate.firstIndex(where: {$0 == tag.tagId})!, section: 1)
+                print(".delete =>", deleteAtIndexPath.debugDescription)
+                tagsTableView.deleteRows(at: [deleteAtIndexPath], with: .automatic)
+            }
+
         case .insert:
             // Add tag to list of non selected tags
             /// We cannot sort the list now to avoid the case where we insert several rows at the same index path.
@@ -541,43 +569,20 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
             // Determine index of added tag and insert tag
             let index = nonSelectedTags.firstIndex(where: {$0.tagId == tag.tagId})
             let addAtIndexPath = IndexPath.init(row: index!, section: 1)
-//            print(".insert =>", addAtIndexPath.debugDescription)
+            print(".insert =>", addAtIndexPath.debugDescription)
             tagsTableView.insertRows(at: [addAtIndexPath], with: .automatic)
-
-        case .delete:
-            // Remove tag from the right list of tags
-            guard let tag: Tag = anObject as? Tag else { return }
-            // List of selected tags
-            if let index = selectedTags.firstIndex(where: {$0.tagId == tag.tagId}) {
-                // Remove selected tag from data source
-                selectedTags.remove(at: index)
-                selectedTagIds.removeAll(where: {$0 == tag.tagId})
-                // Delete tag from table view
-                let deleteAtIndexPath = IndexPath.init(row: index, section: 0)
-//                print(".delete =>", deleteAtIndexPath.debugDescription)
-                tagsTableView.deleteRows(at: [deleteAtIndexPath], with: .automatic)
-            }
-            // List of not selected tags
-            else if let index = nonSelectedTags.firstIndex(where: {$0.tagId == tag.tagId}) {
-                // Remove non-selected tag from data source
-                nonSelectedTags.remove(at: index)
-                // Delete tag from table view
-                let deleteAtIndexPath = IndexPath.init(row: index, section: 1)
-//                print(".delete =>", deleteAtIndexPath.debugDescription)
-                tagsTableView.deleteRows(at: [deleteAtIndexPath], with: .automatic)
-            }
 
         case .move:        // Should never "move"
             // Update tag belonging to the right list
             print("TagsViewController / NSFetchedResultsControllerDelegate: \"move\" should never happen!")
 
-        case .update:        // Will never "move"
+        case .update:      // Will never "move"
             // Update tag belonging to the right list
             guard let tag: Tag = anObject as? Tag else { return }
             // List of selected tags
             if let index = selectedTags.firstIndex(where: {$0.tagId == tag.tagId}) {
                 let updateAtIndexPath = IndexPath.init(row: index, section: 0)
-//                print(".update =>", updateAtIndexPath.debugDescription)
+                print(".update =>", updateAtIndexPath.debugDescription)
                 if let cell = tableView.cellForRow(at: updateAtIndexPath) as? TagTableViewCell {
                     cell.configure(with: tag, andEditOption: .remove)
                 }
@@ -585,7 +590,7 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
             // List of not selected tags
             else if let index = nonSelectedTags.firstIndex(where: {$0.tagId == tag.tagId}) {
                 let updateAtIndexPath = IndexPath.init(row: index, section: 1)
-//                print(".update =>", updateAtIndexPath.debugDescription)
+                print(".update =>", updateAtIndexPath.debugDescription)
                 if let cell = tableView.cellForRow(at: updateAtIndexPath) as? TagTableViewCell {
                     cell.configure(with: tag, andEditOption: .add)
                 }
