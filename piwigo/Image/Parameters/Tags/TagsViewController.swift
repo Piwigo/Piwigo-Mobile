@@ -53,7 +53,9 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
     private var letterIndex: [String] = []
     private var selectedTags = [Tag]()
     private var nonSelectedTags = [Tag]()
-    
+    private var selectedTagIdsBeforeUpdate = [Int32]()
+    private var nonSelectedTagIdsBeforeUpdate = [Int32]()
+
     private var addBarButton: UIBarButtonItem?
     private var addAction: UIAlertAction?
     private var hudViewController: UIViewController?
