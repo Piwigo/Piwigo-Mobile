@@ -213,21 +213,23 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
                             uploadsToResume.append(self.managedObjectContext.object(with: objectId) as! Upload)
                         }
                         // Resume failed uploads
-                        UploadManager.shared.resume(failedUploads: uploadsToResume, completionHandler: { (error) in
-                            if let error = error {
-                                // Inform user
-                                let alert = UIAlertController(title: NSLocalizedString("errorHUD_label", comment: "Error"), message: error.localizedDescription, preferredStyle: .alert)
-                                let cancelAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .destructive, handler: { action in
-                                    })
-                                alert.addAction(cancelAction)
-                                alert.view.tintColor = UIColor.piwigoColorOrange()
-                                alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
-                                self.present(alert, animated: true, completion: {
-                                    // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                        DispatchQueue.global(qos: .background).async {
+                            UploadManager.shared.resume(failedUploads: uploadsToResume, completionHandler: { (error) in
+                                if let error = error {
+                                    // Inform user
+                                    let alert = UIAlertController(title: NSLocalizedString("errorHUD_label", comment: "Error"), message: error.localizedDescription, preferredStyle: .alert)
+                                    let cancelAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .destructive, handler: { action in
+                                        })
+                                    alert.addAction(cancelAction)
                                     alert.view.tintColor = UIColor.piwigoColorOrange()
-                                })
-                            }
-                        })
+                                    alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+                                    self.present(alert, animated: true, completion: {
+                                        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                                        alert.view.tintColor = UIColor.piwigoColorOrange()
+                                    })
+                                }
+                            })
+                        }
                     }
                 })
                 alert.addAction(resumeAction)
