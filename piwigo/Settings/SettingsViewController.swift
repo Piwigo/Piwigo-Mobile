@@ -1614,8 +1614,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     guard let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects else {
                         return
                     }
-                    // Delete all upload requests in main queue
-                    self.uploadsProvider.delete(uploadRequests: allUploads)
+                    // Delete all upload requests in a private queue
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        self.uploadsProvider.delete(uploadRequests: allUploads)
+                    }
                 })
                 #endif
 

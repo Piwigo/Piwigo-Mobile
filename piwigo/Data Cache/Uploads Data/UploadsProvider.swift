@@ -259,13 +259,16 @@ class UploadsProvider: NSObject {
     
     // MARK: - Delete Uploads
     /**
-     Delete a batch of upload requests from the Core Data store on the main queue,
+     Delete a batch of upload requests from the Core Data store on a private queue,
      processing the record in batches to avoid a high memory footprint.
     */
     func delete(uploadRequests: [Upload]) {
         
         guard !uploadRequests.isEmpty else { return }
         
+        // Create a private queue context.
+        let taskContext = DataController.getPrivateContext()
+                
         // Process records in batches to avoid a high memory footprint.
         let batchSize = 256
         let count = uploadRequests.count
@@ -285,8 +288,8 @@ class UploadsProvider: NSObject {
             let uploadsBatch = Array(uploadRequests[range])
             
             // Stop the entire deletion if any batch is unsuccessful.
-            if !deleteOneBatch(uploadsBatch) {
-                return
+            if !deleteOneBatch(uploadsBatch, taskContext: taskContext) {
+                break
             }
         }
 
@@ -311,20 +314,19 @@ class UploadsProvider: NSObject {
 }
     
     /**
-     Delete one batch of uploads on the main queue. After saving,
+     Delete one batch of uploads on a private queue. After saving,
      resets the context to clean up the cache and lower the memory footprint.
      
      NSManagedObjectContext.performAndWait doesn't rethrow so this function
      catches throws within the closure and uses a return value to indicate
      whether the import is successful.
     */
-    private func deleteOneBatch(_ uploadsBatch: [Upload]) -> Bool {
+    private func deleteOneBatch(_ uploadsBatch: [Upload], taskContext: NSManagedObjectContext) -> Bool {
         // Check current queue
         print("•••>> deleteOneBatch()", queueName())
 
         var success = false
-        // taskContext.performAndWait
-        managedObjectContext.performAndWait {
+        taskContext.performAndWait {
             
             // Loop over uploads to delete
             for upload in uploadsBatch {
@@ -334,20 +336,34 @@ class UploadsProvider: NSObject {
                 UploadManager.shared.deleteFilesInUploadsDirectory(with: filenamePrefix)
 
                 // Retrieve object in main context
-                let uploadToDelete = managedObjectContext.object(with: upload.objectID)
+                let uploadToDelete = taskContext.object(with: upload.objectID)
 
                 // Delete upload record
-                managedObjectContext.delete(uploadToDelete)
+                taskContext.delete(uploadToDelete)
             }
             
             // Save all insertions and deletions from the context to the store.
-            if managedObjectContext.hasChanges {
+            if taskContext.hasChanges {
                 do {
-                    try managedObjectContext.save()
+                    try taskContext.save()
+                    
+                    // Performs a task in the main queue and wait until this tasks finishes
+                    DispatchQueue.main.async {
+                        self.managedObjectContext.performAndWait {
+                            do {
+                                // Saves the data from the child to the main context to be stored properly
+                                try self.managedObjectContext.save()
+                            } catch {
+                                fatalError("Failure to save context: \(error)")
+                            }
+                        }
+                    }
                 }
                 catch {
                     fatalError("Failure to save context: \(error)")
                 }
+                // Reset the taskContext to free the cache and lower the memory footprint.
+                taskContext.reset()
             }
 
             success = true

@@ -248,8 +248,10 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
                         uploadIds.forEach { (objectId) in
                             uploadsToDelete.append(self.managedObjectContext.object(with: objectId) as! Upload)
                         }
-                        // Delete failed uploads in background
-                        self.uploadsProvider.delete(uploadRequests: uploadsToDelete)
+                        // Delete failed uploads in a private queue
+                        DispatchQueue.global(qos: .userInitiated).async {
+                            self.uploadsProvider.delete(uploadRequests: uploadsToDelete)
+                        }
                     }
                 })
                 alert.addAction(clearAction)
