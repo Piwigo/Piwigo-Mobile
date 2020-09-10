@@ -98,9 +98,9 @@ typedef enum {
 @property (nonatomic, strong) NSString *certificateInformation;
 @property (nonatomic, assign) BOOL userCancelledCommunication;
 @property (nonatomic, strong) AFHTTPSessionManager *sessionManager;
-@property (nonatomic, strong) NSURLCache *imageCache;
 @property (nonatomic, strong) AFHTTPSessionManager *imagesSessionManager;
-@property (nonatomic, strong) AFImageDownloader *imageDownloader;
+@property (nonatomic, strong) NSURLCache *imageCache;
+@property (nonatomic, strong) AFAutoPurgingImageCache *thumbnailCache;
 
 // Album/category settings
 @property (nonatomic, assign) NSInteger defaultCategory;

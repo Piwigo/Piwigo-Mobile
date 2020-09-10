@@ -81,11 +81,11 @@
     // Display "play" button if video
     self.scrollView.playImage.hidden = !(imageData.isVideo);
 
-    // Thumbnail image may be used as placeholder image
+    // Thumbnail image should be available in cache
     NSString *thumbnailStr = [imageData getURLFromImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultThumbnailSize];
     NSURL *thumbnailURL = [NSURL URLWithString:thumbnailStr];
     UIImageView *thumb = [UIImageView new];
-    thumb.image = [UIImage imageWithData:[[[Model sharedInstance].imageCache cachedResponseForRequest:[NSURLRequest requestWithURL:thumbnailURL]] data]];
+    thumb.image = [[Model sharedInstance].thumbnailCache imageforRequest:[NSURLRequest requestWithURL:thumbnailURL] withAdditionalIdentifier:nil];
     self.scrollView.imageView.image = thumb.image ? thumb.image : [UIImage imageNamed:@"placeholderImage"];
 
     // Previewed image
@@ -107,6 +107,7 @@
         progress:^(NSProgress * _Nonnull progress) {
                     dispatch_async(dispatch_get_main_queue(),
                        ^(void){
+                           // Update progress bar
                            if([weakSelf.imagePreviewDelegate respondsToSelector:@selector(downloadProgress:)])
                        {
                            [weakSelf.imagePreviewDelegate downloadProgress:progress.fractionCompleted];
@@ -116,11 +117,16 @@
          success:^(NSURLSessionTask *task, UIImage *image) {
              if (image != nil) {
                  weakSelf.scrollView.imageView.image = image;
+                 // Update progress bar
                  if([weakSelf.imagePreviewDelegate respondsToSelector:@selector(downloadProgress:)])
                  {
                      [weakSelf.imagePreviewDelegate downloadProgress:1.0];
                  }
-                 weakSelf.imageLoaded = YES;                      // Hide progress bar
+                 // Hide progress bar
+                 weakSelf.imageLoaded = YES;
+                 // Store image in cache
+                 NSCachedURLResponse *cachedResponse = [[NSCachedURLResponse alloc] initWithResponse:task.response data:UIImageJPEGRepresentation(image, 0.9)];
+                 [[Model sharedInstance].imageCache storeCachedResponse:cachedResponse forDataTask:weakSelf.downloadTask];
              }
              else {     // Keep thumbnail or placeholder if image could not be loaded
 #if defined(DEBUG)

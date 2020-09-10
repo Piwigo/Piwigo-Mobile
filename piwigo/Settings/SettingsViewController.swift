@@ -1167,7 +1167,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let value = Float(Model.sharedInstance().memoryCache)
 
                 // Slider configuration
-                let currentMemSize = Float(Model.sharedInstance().imageCache.currentMemoryUsage)
+                let currentMemSize = Float(Model.sharedInstance().thumbnailCache.memoryUsage)
                 let currentMemSizeInMB: Float = currentMemSize / (1024.0 * 1024.0)
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 var prefix:String
@@ -1184,7 +1184,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     Model.sharedInstance().memoryCache = Int(newValue)
                     Model.sharedInstance().saveToDisk()
                     // Update memory cache size
-                    Model.sharedInstance().imageCache.memoryCapacity = Model.sharedInstance().memoryCache * 1024 * 1024
+                    Model.sharedInstance().thumbnailCache.memoryCapacity = UInt64(Model.sharedInstance().memoryCache * 1024 * 1024)
                 }
                 cell.accessibilityIdentifier = "memoryCache"
                 tableViewCell = cell

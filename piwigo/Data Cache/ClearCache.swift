@@ -26,6 +26,7 @@ class ClearCache: NSObject {
         CategoriesData.sharedInstance().clearCache()
 
         // URL requests
-        URLCache.shared.removeAllCachedResponses()
+        Model.sharedInstance()?.imageCache.removeAllCachedResponses()
+        Model.sharedInstance()?.thumbnailCache.removeAllImages()
     }
 }
