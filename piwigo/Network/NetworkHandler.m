@@ -200,7 +200,7 @@ NSInteger const loadingViewTag = 899;
                         // Handle the error
                         // See https://www.osstatus.com/search/results?platform=all&framework=all&search=-50
 #if defined(DEBUG_SESSION)
-                        NSLog(@"===>> could not delete certificate from Keychain, error %d", status);
+                        NSLog(@"===>> could not delete certificate from Keychain, error %d", (int)status);
 #endif
                     }
                 }
@@ -218,7 +218,7 @@ NSInteger const loadingViewTag = 899;
                     // Handle the error
                     // See https://www.osstatus.com/search/results?platform=all&framework=all&search=-50
 #if defined(DEBUG_SESSION)
-                    NSLog(@"===>> could not store non-trusted certificate in Keychain, error %d", status);
+                    NSLog(@"===>> could not store non-trusted certificate in Keychain, error %d", (int)status);
 #endif
                 }
 
@@ -314,12 +314,10 @@ NSInteger const loadingViewTag = 899;
 
 +(void)createImagesSessionManager
 {
-    // See https://github.com/AFNetworking/AFNetworking/pull/4010
-    // Force AFNetworking to NOT use any RAM whatsoever for image downloading
-    // (neither backed by NSURLCache nor imageCache). We will solely rely on NSURLCache backed by disk
-    // (i.e. won't use AFAutoPurgingImageCache and NSURLCache.memoryCapacity=0 disk=xxx)
+    // AFNetworking only uses a memory cache so we store thumbnails in it and
+    // rely on NSURLCache to store shared and previewed images in disk cache.
     [Model sharedInstance].imageCache = [[NSURLCache alloc]
-                             initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024 * 1024
+                             initWithMemoryCapacity:0
                                        diskCapacity:[Model sharedInstance].diskCache * 1024 * 1024
                                            diskPath:@"com.alamofire.imagedownloader"];
     // Configuration
@@ -328,6 +326,7 @@ NSInteger const loadingViewTag = 899;
     config.timeoutIntervalForRequest = 60;          // 60 seconds is the advised default value
     config.HTTPMaximumConnectionsPerHost = 4;       // 4 is the advised default value
     config.URLCache = [Model sharedInstance].imageCache;
+    config.requestCachePolicy = NSURLRequestReturnCacheDataElseLoad;
     if (@available(iOS 11.0, *)) {
         config.multipathServiceType = NSURLSessionMultipathServiceTypeHandover;
     } else {
@@ -338,9 +337,9 @@ NSInteger const loadingViewTag = 899;
     [Model sharedInstance].imagesSessionManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath]] sessionConfiguration:config];
     
     // Create image downloader
-    [Model sharedInstance].imageDownloader = [[AFImageDownloader alloc] initWithSessionManager:[Model sharedInstance].imagesSessionManager downloadPrioritization:AFImageDownloadPrioritizationFIFO maximumActiveDownloads:4 imageCache:nil];
-    [Model sharedInstance].imageDownloader.imageCache = nil;
-    [UIImageView setSharedImageDownloader:[Model sharedInstance].imageDownloader];
+    [Model sharedInstance].thumbnailCache = [[AFAutoPurgingImageCache alloc] initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024 * 1024 preferredMemoryCapacity:[Model sharedInstance].memoryCache * 1024 * 768];
+    AFImageDownloader *imageDownloader = [[AFImageDownloader alloc] initWithSessionManager:[Model sharedInstance].imagesSessionManager downloadPrioritization:AFImageDownloadPrioritizationFIFO maximumActiveDownloads:4 imageCache:[Model sharedInstance].thumbnailCache];
+    [UIImageView setSharedImageDownloader:imageDownloader];
     
     // Security policy
     AFSecurityPolicy *policy = [AFSecurityPolicy defaultPolicy];

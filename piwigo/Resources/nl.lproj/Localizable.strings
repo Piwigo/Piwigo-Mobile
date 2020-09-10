@@ -47,17 +47,17 @@
 // ==> CORE DATA
 // ===========================================================================
 "CoreDataStore_WarningTitle" = "Waarschuwing";
-"CoreDataStore_WarningMessage" = "A serious application error occurred while Piwigo tried to read the data cache. A new cache has therefore been created.";
-"CoreDataFetch_DigestError" = "Could not digest the fetched data.";
+"CoreDataStore_WarningMessage" = "Er is een ernstige toepassingsfout opgetreden toen Piwigo probeerde de gegevenscache te lezen. Er is daarom een nieuwe cache gemaakt.";
+"CoreDataFetch_DigestError" = "Kon de opgehaalde gegevens niet verwerken.";
 
 // Tag objects
-"CoreDataFetch_TagError" = "Fetch tags error!";
-"CoreDataFetch_TagMissingData" = "Found and will discard a tag missing a valid code or name.";
-"CoreDataFetch_TagCreateFailed" = "Failed to create a new Tag object.";
+"CoreDataFetch_TagError" = "Haal tags fout!";
+"CoreDataFetch_TagMissingData" = "Een tag gevonden en zal verwijderd worden zonder geldige code of naam.";
+"CoreDataFetch_TagCreateFailed" = "Aanmaken van nieuw label-object is mislukt.";
 
 // Upload objects
-"CoreDataFetch_UploadCreateFailed" = "Failed to create a new Upload object.";
-"CoreDataFetch_UploadMissingAsset" = "Failed to retrieve photo.";
+"CoreDataFetch_UploadCreateFailed" = "Het maken van een nieuw upload-object is mislukt.";
+"CoreDataFetch_UploadMissingAsset" = "Fout bij ophalen foto.";
 
 // ===========================================================================
 // ==> LOGIN / LOGOUT
@@ -151,6 +151,7 @@
 "categorySort_visitsDescending" = "Bezoeken, hoog → laag";
 "categorySort_visitsAscending" = "Bezoeken, laag → hoog";
 "categorySort_manual" = "Handmatige volgorde";
+"categorySort_random" = "Willekeurige volgorde";
 
 "categorySort_videosOnly" = "Alleen video's";
 "categorySort_imagesOnly" = "Alleen foto's";
@@ -167,14 +168,14 @@
 "categoryUpload_chooseAlbum" = "Selecteer een album om foto's naar up te loaden";
 "categoryUpload_LocalAlbums" = "Lokale albums";
 "categoryUpload_chooseLocalAlbum" = "Selecteer een album om er foto's van op te halen";
-"categoryUpload_sharedAlbums" = "Shared Albums";
+"categoryUpload_sharedAlbums" = "Gedeelde albums";
 "categoryUpload_iCloudAlbums" = "iCloud albums";
 "categoryUpload_chooseiCloudAlbum" = "Selecteer een  iCloud album om er foto's van op te halen";
-"categoryUpload_syncedEvents" = "iPhoto Events";
-"categoryUpload_syncedAlbums" = "iPhoto Albums";
-"categoryUpload_syncedFaces" = "iPhoto Faces";
-"categoryUpload_mediaTypes" = "Media Types";
-"categoryUpload_otherAlbums" = "Other Albums";
+"categoryUpload_syncedEvents" = "iPhoto gebeurtenissen";
+"categoryUpload_syncedAlbums" = "iPhoto albums";
+"categoryUpload_syncedFaces" = "iPhoto vlakken";
+"categoryUpload_mediaTypes" = "Media typen";
+"categoryUpload_otherAlbums" = "Andere albums";
 
 "categoyUpload_loadSubCategories" = "laden";
 "categoryUpload_images" = "Foto's uploaden";
@@ -274,10 +275,10 @@
 "severalVideos" = "Video's";
 "noImages" = "Geen foto's";
 "pullToRefresh" = "Foto's opnieuw laden";
-"andMore" = " & more";
-"Months" = "Months";
-"Weeks" = "Weeks";
-"Days" = "Days";
+"andMore" = " & meer";
+"Months" = "Maanden";
+"Weeks" = "Weken";
+"Days" = "Dagen";
 
 // Errors
 "albumPhotoError_title" = "Haal albumfoto's is mislukt";
@@ -288,8 +289,8 @@
 "imageSortTitle" = "Sorteer foto's";
 "imageSortMessage" = "Selecteer hoe je de foto's wilt sorteren";
 "imageSortingHUD" = "Foto's sorteren";
-"imageSelectingHUD" = "Selecting Photos…";
-"imageDeselectingHUD" = "Deselecting Photos…";
+"imageSelectingHUD" = "Foto's selecteren…";
+"imageDeselectingHUD" = "Foto's deselecteren…";
 
 // Image options (actions)
 "imageOptions_title" = "Foto-opties";
@@ -337,7 +338,7 @@
 "tag" = "Label";
 "tagsTitle_selectOne" = "Selecteer een Label";
 "tagsHeader_selected" = "Geselecteerd";
-"tagsHeader_notSelected" = "Not Selected";
+"tagsHeader_notSelected" = "Niet geselecteerd";
 "tagsHeader_all" = "Alles";
 "tagsAdd_title" = "Voeg label toe";
 "tagsAdd_message" = "Voer een naam in voor dit label";
@@ -450,19 +451,19 @@
 
 "imageUploadRemove" = "Geüploade foto's verwijderen";
 
-"imageUploadTableCell_waiting" = "Waiting...";
-"imageUploadTableCell_preparing" = "Preparing...";
-"imageUploadTableCell_prepared" = "Ready for upload...";
+"imageUploadTableCell_waiting" = "Wachten...";
+"imageUploadTableCell_preparing" = "Voorbereiden...";
+"imageUploadTableCell_prepared" = "Klaar voor upload...";
 "imageUploadTableCell_uploading" = "Bezig met uploaden...";
-"imageUploadTableCell_uploaded" = "Uploaded";
-"imageUploadTableCell_finishing" = "Finishing...";
+"imageUploadTableCell_uploaded" = "Geüpload";
+"imageUploadTableCell_finishing" = "Afronden...";
 
-"imageUploadClearFailedSingle" = "Clear Failed Upload";
-"imageUploadClearFailedSeveral" = "Clear %@ Failed Uploads";
-"imageUploadClearCompletedSingle" = "Clear Completed Upload";
-"imageUploadClearCompletedSeveral" = "Clear %@ Completed Uploads";
-"imageUploadResumeSingle" = "Resume Upload";
-"imageUploadResumeSeveral" = "Resume %@ Uploads";
+"imageUploadClearFailedSingle" = "Wis mislukte upload";
+"imageUploadClearFailedSeveral" = "Wis %@ Mislukte uploads";
+"imageUploadClearCompletedSingle" = "Wis voltooide upload";
+"imageUploadClearCompletedSeveral" = "Wis %@ voltooide uploads";
+"imageUploadResumeSingle" = "Upload hervatten";
+"imageUploadResumeSeveral" = "Hervat %@ Uploads";
 
 "imageUploadProgressBar_zero" = "Bezig met uploaden 0/0";
 "imageUploadProgressBar_nonZero" = "Bezig met uploaden %@/%@";
@@ -476,15 +477,15 @@
 "uploadError_title" = "Upload-fout";
 "uploadError_message" = "Kon je foto niet uploaden. Fout: %@";
 "uploadCancelled_title" = "Uploaden afgebroken";
-"uploadNoInternetNetwork" = "No Internet Connection";
-"uploadNoWiFiNetwork" = "No Wi-Fi Connection";
-"uploadLowPowerMode" = "Low Power Mode enabled";
-"uploadSection_impossible" = "Impossible Uploads";
-"uploadSection_resumable" = "Resumable Uploads";
-"uploadSection_queue" = "Uploads Queue";
+"uploadNoInternetNetwork" = "Geen internetverbinding";
+"uploadNoWiFiNetwork" = "Geen wifi-verbinding";
+"uploadLowPowerMode" = "Lage energie modus ingeschakeld";
+"uploadSection_impossible" = "Onmogelijke uploads";
+"uploadSection_resumable" = "Herzienbare Uploads";
+"uploadSection_queue" = "Uploads wachtrij";
 
 "imageUploadError_title" = "Foto-upload-fout";
-"imageUploadError_format" = "File format not accepted by Piwigo server.";
+"imageUploadError_format" = "Bestandsindeling niet geaccepteerd door de Piwigo-server.";
 "imageUploadError_source" = "kan geen foto-bron maken";
 "imageUploadError_destination" = "kan geen foto-bestemming maken";
 "imageUploadError_iCloud" = "Kon afbeelding niet ophalen. Fout: %@";
@@ -662,7 +663,7 @@
 "settings_defaultPrefix>320px" = "Bestandsnaam voorvoegsel";
 "settings_defaultPrefixPlaceholder" = "Voorvoegsel";
 "settings_deleteImage>375px" = "Verwijder de foto ná het uploaden";
-"settings_wifiOnly" = "Wi-Fi Only";
+"settings_wifiOnly" = "Alleen wifi";
 "settings_deleteImage" = "Verwijder na uploaden";
 
 // Settings — Cache

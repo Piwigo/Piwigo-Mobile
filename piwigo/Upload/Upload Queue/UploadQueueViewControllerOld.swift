@@ -189,8 +189,10 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
             }
             // Get uploads to delete
             let uploadsToDelete = allUploads.filter({ $0.state == .preparingFail})
-            // Delete failed uploads in background
-            self.uploadsProvider.delete(uploadRequests: uploadsToDelete)
+            // Delete failed uploads in a private queue
+            DispatchQueue.global(qos: .userInitiated).async {
+                self.uploadsProvider.delete(uploadRequests: uploadsToDelete)
+            }
         })
         
         // Retry failed uploads
@@ -200,25 +202,27 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
             // Collect list of failed uploads
             if let failedUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects?.filter({$0.state == .preparingError || $0.state == .uploadingError || $0.state == .finishingError }) {
                 // Resume failed uploads
-                UploadManager.shared.resume(failedUploads: failedUploads, completionHandler: { (error) in
-                    if let error = error {
-                        // Inform user
-                        let alert = UIAlertController(title: NSLocalizedString("errorHUD_label", comment: "Error"), message: error.localizedDescription, preferredStyle: .alert)
-                        let cancelAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .destructive, handler: { action in
-                            })
-                        alert.addAction(cancelAction)
-                        alert.view.tintColor = UIColor.piwigoColorOrange()
-                        if #available(iOS 13.0, *) {
-                            alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
-                        } else {
-                            // Fallback on earlier versions
-                        }
-                        self.present(alert, animated: true, completion: {
-                            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                DispatchQueue.global(qos: .background).async {
+                    UploadManager.shared.resume(failedUploads: failedUploads, completionHandler: { (error) in
+                        if let error = error {
+                            // Inform user
+                            let alert = UIAlertController(title: NSLocalizedString("errorHUD_label", comment: "Error"), message: error.localizedDescription, preferredStyle: .alert)
+                            let cancelAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .destructive, handler: { action in
+                                })
+                            alert.addAction(cancelAction)
                             alert.view.tintColor = UIColor.piwigoColorOrange()
-                        })
-                    }
-                })
+                            if #available(iOS 13.0, *) {
+                                alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+                            } else {
+                                // Fallback on earlier versions
+                            }
+                            self.present(alert, animated: true, completion: {
+                                // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                                alert.view.tintColor = UIColor.piwigoColorOrange()
+                            })
+                        }
+                    })
+                }
             }
         })
 

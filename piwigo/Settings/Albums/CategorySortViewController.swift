@@ -51,6 +51,8 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
             name = NSLocalizedString("categorySort_visitsAscending", comment: "Visits, low → high")
         case kPiwigoSortManual:
             name = NSLocalizedString("categorySort_manual", comment: "Manual Order")
+        case kPiwigoSortRandom:
+            name = NSLocalizedString("categorySort_random", comment: "Random Order")
 //		case kPiwigoSortVideoOnly:
 //			name = NSLocalizedString(@"categorySort_videosOnly", @"Videos Only");
 //			break;

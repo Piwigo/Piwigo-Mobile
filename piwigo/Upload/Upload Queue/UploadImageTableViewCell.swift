@@ -71,23 +71,31 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         case .preparingError, .uploadingError, .finishingError:
             rightButtons = [
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeRetry.png"), backgroundColor: UIColor.piwigoColorOrange(), callback: { sender in
-                    UploadManager.shared.resume(failedUploads: [upload], completionHandler: { (_) in })
+                    DispatchQueue.global(qos: .background).async {
+                        UploadManager.shared.resume(failedUploads: [upload], completionHandler: { (_) in })
+                    }
                     return true
                 }),
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeCancel.png"), backgroundColor: UIColor.piwigoColorBrown(), callback: { sender in
-                    self.uploadsProvider.delete(uploadRequests: [upload])
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        self.uploadsProvider.delete(uploadRequests: [upload])
+                    }
                     return true
                 })]
         case .waiting, .preparingFail, .formatError:
             rightButtons = [
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeCancel.png"), backgroundColor: UIColor.piwigoColorBrown(), callback: { sender in
-                    self.uploadsProvider.delete(uploadRequests: [upload])
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        self.uploadsProvider.delete(uploadRequests: [upload])
+                    }
                     return true
                 })]
         case .finished, .moderated:
             rightButtons = [
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeCancel.png"), backgroundColor: UIColor.piwigoColorBrown(), callback: { sender in
-                    self.uploadsProvider.delete(uploadRequests: [upload])
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        self.uploadsProvider.delete(uploadRequests: [upload])
+                    }
                     return true
                 }),
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeTrashSmall.png"), backgroundColor: .red, callback: { sender in

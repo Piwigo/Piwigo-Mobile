@@ -151,6 +151,7 @@
 "categorySort_visitsDescending" = "点击量，高 → 低";
 "categorySort_visitsAscending" = "点击量，低 → 高";
 "categorySort_manual" = "手动排序";
+"categorySort_random" = "随机顺序";
 
 "categorySort_videosOnly" = "仅视频";
 "categorySort_imagesOnly" = "仅图片";

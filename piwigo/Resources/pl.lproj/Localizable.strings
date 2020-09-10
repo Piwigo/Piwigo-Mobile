@@ -151,6 +151,7 @@
 "categorySort_visitsDescending" = "Odwiedzin, mniej → więcej";
 "categorySort_visitsAscending" = "Odwiedzin, mniej → więcej";
 "categorySort_manual" = "Ustaw ręcznie";
+"categorySort_random" = "Kolejność losowa";
 
 "categorySort_videosOnly" = "Tylko Filmy";
 "categorySort_imagesOnly" = "Tylko zdjęcia";

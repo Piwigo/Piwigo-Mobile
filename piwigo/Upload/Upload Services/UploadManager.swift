@@ -543,8 +543,10 @@ class UploadManager: NSObject, URLSessionDelegate {
                 PHAssetChangeRequest.deleteAssets(assetsToDelete as NSFastEnumeration)
             }, completionHandler: { success, error in
                 if success == true {
-                    // Delete upload requests in the main queue
-                    self.uploadsProvider.delete(uploadRequests: uploadedImages)
+                    // Delete upload requests in a private queue
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        self.uploadsProvider.delete(uploadRequests: uploadedImages)
+                    }
                 } else {
                     // User refused to delete the photos
                     var uploadsToUpdate = [UploadProperties]()
@@ -552,7 +554,7 @@ class UploadManager: NSObject, URLSessionDelegate {
                         let uploadProperties = upload.getUploadPropertiesCancellingDeletion()
                         uploadsToUpdate.append(uploadProperties)
                     }
-                    // Update upload requests
+                    // Update upload requests in the background
                     self.uploadsProvider.importUploads(from: uploadsToUpdate) { (_) in
                         // Done ;-)
                     }
