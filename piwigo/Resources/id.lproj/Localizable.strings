@@ -151,6 +151,7 @@
 "categorySort_visitsDescending" = "Visits, high → low";
 "categorySort_visitsAscending" = "Visits, low → high";
 "categorySort_manual" = "Pesanan Manual";
+"categorySort_random" = "Random Order";
 
 "categorySort_videosOnly" = "Hanya Video";
 "categorySort_imagesOnly" = "Hanya Gambar";

@@ -74,7 +74,8 @@
     if (downloadedImageDataCount >= totalImageCount)
 	{
         NSLog(@"loadMoreImagesOnCompletion: we have all image data");
-        self.images = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
+        // We have all the image data, just manually sort it (uploaded images are appended to cache)
+        self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList for:[Model sharedInstance].defaultSort];
 		if(completion)
 		{
 			completion();
@@ -91,7 +92,8 @@
 		{
 			return;
 		}
-        self.images = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
+        // We have all the image data, just manually sort it (uploaded images are appended to cache)
+        self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList for:[Model sharedInstance].defaultSort];
 		if(completion)
 		{
 			completion();
@@ -164,6 +166,7 @@
             break;
             
         case kPiwigoSortManual:                 // Manual order
+        case kPiwigoSortRandom:                 // Random order
             // Empty string
             break;
 

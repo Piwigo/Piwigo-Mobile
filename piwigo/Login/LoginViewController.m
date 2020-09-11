@@ -294,10 +294,13 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 
         // Return immadiately an error in some cases
         switch ([error code]) {
+            case NSURLErrorUserCancelledAuthentication:
+                [self loggingInConnectionError:nil];
+                return;
+                
             case NSURLErrorBadServerResponse:
             case NSURLErrorBadURL:
             case NSURLErrorCallIsActive:
-            case NSURLErrorCannotConnectToHost:
             case NSURLErrorCannotDecodeContentData:
             case NSURLErrorCannotDecodeRawData:
             case NSURLErrorCannotFindHost:
@@ -312,13 +315,23 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
             case NSURLErrorNotConnectedToInternet:
             case NSURLErrorRedirectToNonExistentLocation:
             case NSURLErrorRequestBodyStreamExhausted:
-            case NSURLErrorSecureConnectionFailed:
             case NSURLErrorTimedOut:
             case NSURLErrorUnknown:
             case NSURLErrorUnsupportedURL:
-            case NSURLErrorUserCancelledAuthentication:
             case NSURLErrorZeroByteResource:
                 [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
+                return;
+                
+            case NSURLErrorCannotConnectToHost:
+            case NSURLErrorSecureConnectionFailed:
+                // HTTPS request failed ?
+                if ([[Model sharedInstance].serverProtocol isEqualToString:@"https://"] &&
+                    ![Model sharedInstance].userCancelledCommunication)
+                {
+                    // Suggest HTTP connection if HTTPS attempt failed
+                    [self requestNonSecuredAccessAfterError:error];
+                    return;
+                }
                 return;
                 
             case NSURLErrorClientCertificateRejected:
@@ -1040,15 +1053,19 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 
 -(BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
-    // Disable HTTP login action until user provides infos
+    // Disable HTTP login action until user provides credentials
     if (self.httpAlertController != nil) {
-        if (textField == [self.httpAlertController.textFields objectAtIndex:0]) {
-            if ([self.httpAlertController.textFields objectAtIndex:0].text.length == 0)
-                [self.httpLoginAction setEnabled:NO];
-        }
-        else if (textField == [self.httpAlertController.textFields objectAtIndex:1]) {
-            if ([self.httpAlertController.textFields objectAtIndex:1].text.length == 0)
-                [self.httpLoginAction setEnabled:NO];
+        // Requesting autorisation to access non secure web site
+        // or asking HTTP basic authentication credentials
+        if (self.httpAlertController.textFields.count > 0) {
+            // Being requesting HTTP basic authentication credentials
+            if (textField == [self.httpAlertController.textFields objectAtIndex:0]) {
+                if ([self.httpAlertController.textFields objectAtIndex:0].text.length == 0)
+                    [self.httpLoginAction setEnabled:NO];
+            } else if (textField == [self.httpAlertController.textFields objectAtIndex:1]) {
+                if ([self.httpAlertController.textFields objectAtIndex:1].text.length == 0)
+                    [self.httpLoginAction setEnabled:NO];
+            }
         }
     }
     return YES;
@@ -1061,9 +1078,14 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
         [self.loginButton setEnabled:NO];
     }
     else if (self.httpAlertController != nil) {
-        if ((textField == [self.httpAlertController.textFields objectAtIndex:0]) ||
-            (textField == [self.httpAlertController.textFields objectAtIndex:1])) {
-            [self.httpLoginAction setEnabled:NO];
+        // Requesting autorisation to access non secure web site
+        // or asking HTTP basic authentication credentials
+        if (self.httpAlertController.textFields.count > 0) {
+            // Being requesting HTTP basic authentication credentials
+            if ((textField == [self.httpAlertController.textFields objectAtIndex:0]) ||
+                (textField == [self.httpAlertController.textFields objectAtIndex:1])) {
+                [self.httpLoginAction setEnabled:NO];
+            }
         }
     }
     
@@ -1074,17 +1096,22 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 {
     NSString *finalString = [textField.text stringByReplacingCharactersInRange:range withString:string];
     
-    if (self.httpAlertController != nil) {
-        if ((textField == [self.httpAlertController.textFields objectAtIndex:0]) ||
-            (textField == [self.httpAlertController.textFields objectAtIndex:1])) {
-            // Enable HTTP Login action if field not empty
-            [self.httpLoginAction setEnabled:(finalString.length >= 1)];
-        }
-    }
-    else if (textField == self.serverTextField) {
+    if (textField == self.serverTextField) {
         // Disable Login button if URL invalid
         [self saveServerAddress:finalString andUsername:self.userTextField.text];
         [self.loginButton setEnabled:YES];
+    }
+    else if (self.httpAlertController != nil) {
+        // Requesting autorisation to access non secure web site
+        // or asking HTTP basic authentication credentials
+        if (self.httpAlertController.textFields.count > 0) {
+            // Being requesting HTTP basic authentication credentials
+            if ((textField == [self.httpAlertController.textFields objectAtIndex:0]) ||
+                (textField == [self.httpAlertController.textFields objectAtIndex:1])) {
+                // Enable HTTP Login action if field not empty
+                [self.httpLoginAction setEnabled:(finalString.length >= 1)];
+            }
+        }
     }
     
     return YES;
@@ -1092,7 +1119,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-	if(textField == self.serverTextField) {
+	if (textField == self.serverTextField) {
         // Save server address and username to disk
         BOOL validURL = [self saveServerAddress:self.serverTextField.text andUsername:self.userTextField.text];
         [self.loginButton setEnabled:validURL];

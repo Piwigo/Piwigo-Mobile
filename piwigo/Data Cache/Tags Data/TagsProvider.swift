@@ -75,11 +75,16 @@ class TagsProvider {
     */
     private func importTags(from tagPropertiesArray: [TagProperties]) throws {
         
-        guard !tagPropertiesArray.isEmpty else { return }
-        
         // Create a private queue context.
         let taskContext = DataController.getPrivateContext()
                 
+        // We shall perform at least one import in case where
+        // the user did delete all tags or untag all photos
+        guard !tagPropertiesArray.isEmpty else {
+            _ = importOneBatch([TagProperties](), taskContext: taskContext)
+            return
+        }
+        
         // Process records in batches to avoid a high memory footprint.
         let batchSize = 256
         let count = tagPropertiesArray.count

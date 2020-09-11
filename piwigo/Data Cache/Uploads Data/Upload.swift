@@ -197,7 +197,7 @@ extension Upload {
     func getUploadProperties(with state: kPiwigoUploadState, error: String?) -> UploadProperties {
         return UploadProperties.init(localIdentifier: self.localIdentifier,
             serverPath: self.serverPath, category: Int(self.category),
-            // Upload request date is now and state is waiting
+            // Upload request date, state and error
             requestDate: self.requestDate, requestState: state, requestError: error,
             // Photo creation date and filename
             creationDate: self.creationDate, fileName: self.fileName,

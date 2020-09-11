@@ -46,7 +46,10 @@
 -(void)setupAutoLayout
 {
     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-    self.textFieldHeight = 48 + 8 * (([UIScreen mainScreen].bounds.size.height - 480) / (812 - 480));
+    // Always display login view in portrait mode
+    NSInteger screenWidth = MIN([UIScreen mainScreen].bounds.size.height, [UIScreen mainScreen].bounds.size.width);
+    NSInteger screenHeight = MAX([UIScreen mainScreen].bounds.size.height, [UIScreen mainScreen].bounds.size.width);
+    self.textFieldHeight = 48 + 8 * ((screenHeight - 480) / (812 - 480));
     NSInteger margin = 36;
 
     NSDictionary *views = @{
@@ -63,7 +66,7 @@
                            };
 
     CGFloat logoWidth = self.textFieldHeight * 4.02;
-    CGFloat logoSide = floorf([UIScreen mainScreen].bounds.size.width - logoWidth) / 2.0;
+    CGFloat logoSide = floorf(screenWidth - logoWidth) / 2.0;
     NSDictionary *metrics = @{
                               @"height" : @(self.textFieldHeight),
                               @"logoWidth" : @(logoWidth),
@@ -72,9 +75,9 @@
                               };
     
     // Vertically
-    [self.view addConstraint:[NSLayoutConstraint constraintViewFromTop:self.loginButton amount:([UIScreen mainScreen].bounds.size.height / 2.0 + self.textFieldHeight + 2 * 10.0)]];
+    [self.view addConstraint:[NSLayoutConstraint constraintViewFromTop:self.loginButton amount:(screenHeight / 2.0 + self.textFieldHeight + 2 * 10.0)]];
     
-    if ([UIScreen mainScreen].bounds.size.height > 600) {
+    if (screenHeight > 600) {
         [self.view addConstraints:[NSLayoutConstraint
                 constraintsWithVisualFormat:@"V:|-(>=50,<=100)-[logo(height)]-(>=20)-[url(==logo)]-10-[server(==logo)]-10-[user(==logo)]-10-[password(==logo)]-10-[login(==logo)]-10-[notSecure]-(>=30)-[by1][by2]-3-[usu]-20-|"
                                    options:kNilOptions metrics:metrics views:views]];

@@ -67,6 +67,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
         // Progress bar
 		self.progressBar = [UIProgressView new];
 		self.progressBar.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.progressBar setProgress:0.0 animated:NO];
 		self.progressBar.hidden = NO;
 		[self.view addSubview:self.progressBar];
 		[self.view addConstraints:[NSLayoutConstraint constraintFillWidth:self.progressBar]];
@@ -1287,7 +1288,6 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
 {
 	[self.progressBar setProgress:progress animated:YES];
     self.progressBar.hidden = (progress == 1) ? YES : NO;
-//    NSLog(@"==> setProgress:%.2f", progress);
 }
 
 

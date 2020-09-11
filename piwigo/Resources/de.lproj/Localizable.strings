@@ -151,6 +151,7 @@
 "categorySort_visitsDescending" = "Besuche, hoch → niedrig";
 "categorySort_visitsAscending" = "Besuche, niedrig → hoch";
 "categorySort_manual" = "Manuelle Bestellung";
+"categorySort_random" = "Zufällige Reihenfolge";
 
 "categorySort_videosOnly" = "Nur Videos";
 "categorySort_imagesOnly" = "Nur ";

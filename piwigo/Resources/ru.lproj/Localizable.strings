@@ -151,6 +151,7 @@
 "categorySort_visitsDescending" = "Посещения, высокие → низкие";
 "categorySort_visitsAscending" = "Посещения, низкий → высокий";
 "categorySort_manual" = "Ручная сортировка";
+"categorySort_random" = "Случайный порядок";
 
 "categorySort_videosOnly" = "Только Видео";
 "categorySort_imagesOnly" = "Только Фото";

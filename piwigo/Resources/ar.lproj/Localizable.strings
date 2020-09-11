@@ -151,6 +151,7 @@
 "categorySort_visitsDescending" = "Visits, high → low";
 "categorySort_visitsAscending" = "Visits, low → high";
 "categorySort_manual" = "Manual Order";
+"categorySort_random" = "Random Order";
 
 "categorySort_videosOnly" = "مقاطع الفيديو فقط";
 "categorySort_imagesOnly" = "الصور فقط";

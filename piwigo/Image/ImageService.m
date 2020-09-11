@@ -493,15 +493,25 @@ NSString * const kGetImageOrderDescending = @"desc";
               success:^(NSURLSessionTask *task, id responseObject) {
                   
           if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
-              // Store number of images in cache
-              NSInteger nberImages = [[[[responseObject objectForKey:@"result"] objectForKey:@"paging"] objectForKey:@"count"] integerValue];
-              [[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId].numberOfImages = nberImages;
-              [[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId].totalNumberOfImages = nberImages;
-              
-              // Parse images
-              NSArray *searchedImages = [ImageService parseAlbumImagesJSON:[responseObject objectForKey:@"result"] forCategoryId:kPiwigoFavoritesCategoryId];
-              if(completion) {
-                  completion(task, searchedImages);
+              // Check the presence of favorite images
+              if ([[responseObject objectForKey:@"result"] isKindOfClass:[NSDictionary class]]) {
+                  // Store number of images in cache
+                  NSInteger nberImages = [[[[responseObject objectForKey:@"result"] objectForKey:@"paging"] objectForKey:@"count"] integerValue];
+                  [[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId].numberOfImages = nberImages;
+                  [[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId].totalNumberOfImages = nberImages;
+                  
+                  // Parse images
+                  NSArray *searchedImages = [ImageService parseAlbumImagesJSON:[responseObject objectForKey:@"result"] forCategoryId:kPiwigoFavoritesCategoryId];
+                  if(completion) {
+                      completion(task, searchedImages);
+                  }
+              } else {
+                  // No favorite image in the server database
+                  [[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId].numberOfImages = 0;
+                  [[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId].totalNumberOfImages = 0;
+                  if(completion) {
+                      completion(task, [NSArray new]);
+                  }
               }
           }
           else
@@ -835,6 +845,10 @@ NSString * const kGetImageOrderDescending = @"desc";
     
     // Object "file"
     imageData.fileName = [NetworkHandler UTF8EncodedStringFromString:[imageJson objectForKey:@"file"]];
+    if ([imageData.fileName length] == 0) {
+        // Filename should never be empty. Just in case…
+        imageData.fileName = @"PiwigoImage.jpg";
+    }
     NSString *fileExt = [[imageData.fileName pathExtension] uppercaseString];
     if([fileExt isEqualToString:@"MP4"] || [fileExt isEqualToString:@"M4V"] ||
        [fileExt isEqualToString:@"OGG"] || [fileExt isEqualToString:@"OGV"] ||
