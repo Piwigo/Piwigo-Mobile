@@ -126,8 +126,13 @@ extension UploadManager {
         }
 
         // Update state of upload
-        let uploadProperties = upload.update(with: .uploaded, error: "")
-
+        let uploadProperties: UploadProperties
+        if Model.sharedInstance().usesUploadAsync {
+            uploadProperties = upload.update(with: .uploaded, error: "")
+        } else {
+            uploadProperties = upload.update(with: .finished, error: "")
+        }
+        
         // Update request ready for finish
         print("    > transferred file \(uploadProperties.fileName!)")
         uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
