@@ -21,7 +21,7 @@ import CryptoKit        // Requires iOS 13
 @objc
 class UploadManager: NSObject, URLSessionDelegate {
 
-    @objc static var shared = UploadManager()
+    @objc static let shared = UploadManager()
 
     // MARK: - Initialisation
     override init() {
