@@ -128,9 +128,9 @@ extension UploadManager {
         // Update state of upload
         let uploadProperties: UploadProperties
         if Model.sharedInstance().usesUploadAsync {
-            uploadProperties = upload.update(with: .uploaded, error: "")
-        } else {
             uploadProperties = upload.update(with: .finished, error: "")
+        } else {
+            uploadProperties = upload.update(with: .uploaded, error: "")
         }
         
         // Update request ready for finish
