@@ -120,7 +120,7 @@ extension UploadManager {
             print("    >", error.localizedDescription)
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
                 // Consider next image
-                self.setIsUploading(status: false)
+                self.didEndTransfer()
             })
             return
         }
@@ -137,7 +137,7 @@ extension UploadManager {
         print("    > transferred file \(uploadProperties.fileName!)")
         uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
             // Upload ready for transfer
-            self.setIsUploading(status: false)
+            self.didEndTransfer()
         })
     }
 

@@ -63,7 +63,7 @@ extension UploadManager {
             print("    >", error.localizedDescription)
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
                 // Consider next image
-                self.setIsPreparing(status: false)
+                self.didEndPreparation()
             })
             return
         }
@@ -75,7 +75,7 @@ extension UploadManager {
         print("    > prepared file \(uploadProperties.fileName!)")
         uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
             // Upload ready for transfer
-            self.setIsPreparing(status: false)
+            self.didEndPreparation()
         })
     }
 

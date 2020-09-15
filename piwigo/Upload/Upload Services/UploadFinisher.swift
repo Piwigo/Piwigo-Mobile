@@ -69,7 +69,7 @@ extension UploadManager{
                                 print("•••>> complete ;-)")
                                 
                                 // Any other image in upload queue?
-                                self.setIsFinishing(status: false)
+                                self.didSetParameters()
                             })
                         } else {
                             // Could not set image parameters, upload still ready for finish
@@ -115,7 +115,7 @@ extension UploadManager{
             print("    >", error.localizedDescription)
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
                 // Consider next image
-                self.setIsFinishing(status: false)
+                self.didSetParameters()
             })
             return
         }
@@ -127,7 +127,7 @@ extension UploadManager{
         print("    > finished with \(uploadProperties.fileName!)")
         uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
             // Upload ready for transfer
-            self.setIsFinishing(status: false)
+            self.didSetParameters()
         })
     }
 

@@ -36,6 +36,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         print("•••>> willResignActive")
         appState = UIApplication.State.inactive
     }
+    
 
     // MARK: - Networking
     /// Uploads directory into which image/video files are temporarily stored
@@ -152,13 +153,16 @@ class UploadManager: NSObject, URLSessionDelegate {
     
     // MARK: - Background Tasks Manager
     /** The manager prepares an image for upload and then launches the transfer.
-    - isPreparing tells that an image/video is being prepared for upload.
-    - isUploading tells that an image/video is being transferred to the server.
-    - isFinishing tells that the image/video parameters are being set.
+    - isPreparing is set to true when a photo/video is going to be prepared,
+      and false when the preparation has completed or failed.
+    - isUploading is set to true when a photo/video is going to be transferred to the server,
+      and false when the transfer has completed or failed.
+    - isFinishing is set to true when the photo/video parameters are going to be set,
+      and false when this job has completed or failed.
     */
-    @objc func setIsPreparing(status : Bool) {
-        _isPreparing = status
-        if !status, !isUploading, !isFinishing { findNextImageToUpload() }
+    @objc func didEndPreparation() {
+        _isPreparing = false
+        if !isUploading, !isFinishing { findNextImageToUpload() }
     }
     private var _isPreparing = false
     private var isPreparing: Bool {
@@ -170,9 +174,9 @@ class UploadManager: NSObject, URLSessionDelegate {
         }
     }
 
-    @objc func setIsUploading(status : Bool) {
-        _isUploading = status
-        if !isPreparing, !status, !isFinishing { findNextImageToUpload() }
+    @objc func didEndTransfer() {
+        _isUploading = false
+        if !isPreparing, !isFinishing, !isExecutedInBckgTask { findNextImageToUpload() }
     }
     private var _isUploading = false
     private var isUploading: Bool {
@@ -184,9 +188,9 @@ class UploadManager: NSObject, URLSessionDelegate {
         }
     }
 
-    @objc func setIsFinishing(status : Bool) {
-        _isFinishing = status
-        if !isPreparing, !isUploading, !status { findNextImageToUpload() }
+    @objc func didSetParameters() {
+        _isFinishing = false
+        if !isPreparing, !isUploading { findNextImageToUpload() }
     }
     private var _isFinishing = false
     private var isFinishing: Bool {
