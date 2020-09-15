@@ -428,6 +428,7 @@ extension UploadManager {
                             md5Checksum = self.oldMD5(data: videoData)
                         }
                         newUpload.md5Sum = md5Checksum
+                        print("    > MD5: \(String(describing: md5Checksum))")
 
                         // Upload video with tags and properties
                         self.updateUploadRequestWith(newUpload, error: nil)
