@@ -415,6 +415,9 @@ extension UploadManager {
 
         // Check returned data
         guard let _ = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: AnyObject] else {
+            // Check if this transfer is already known to be failed
+            // because a previous task may have already reported the error
+            if upload.requestState == .uploadingError { return }
             // Update upload request status
             let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.invalidJSONobject.localizedDescription])
             self.updateUploadRequestWith(upload, error: error)
