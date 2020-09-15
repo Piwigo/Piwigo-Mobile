@@ -8,6 +8,7 @@
 
 #import <Photos/Photos.h>
 #import <UserNotifications/UserNotifications.h>
+#import <BackgroundTasks/BackgroundTasks.h>
 
 #import "AppDelegate.h"
 #import "LoginNavigationController.h"
@@ -29,6 +30,8 @@ NSString * const kPiwigoNotificationPaletteChanged = @"kPiwigoNotificationPalett
 NSString * const kPiwigoNotificationNetworkErrorEncountered = @"kPiwigoNotificationNetworkErrorEncountered";
 NSString * const kPiwigoNotificationAddRecentAlbum = @"kPiwigoNotificationAddRecentAlbum";
 NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRemoveRecentAlbum";
+
+NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
 
 @interface AppDelegate ()
 
@@ -249,6 +252,14 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
     // Set Settings Bundle data
     [self setSettingsBundleData];
     
+    // Register launch handlers for tasks if using iOS 13 and if pwg.images.uploadAsync available
+    if (@available(iOS 13.0, *)) {
+        [[BGTaskScheduler sharedScheduler] registerForTaskWithIdentifier:kPiwigoBackgroundTaskUpload usingQueue:nil launchHandler:^(__kindof BGTask * _Nonnull task) {
+            // Downcast the parameter to a processing task as this identifier is used for a processing request.
+            [self handleNextUpload:(BGProcessingTask *)task];
+        }];
+    }
+    
     return YES;
 }
 
@@ -302,6 +313,13 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
     
     // Disable network reachability monitoring
     [[AFNetworkReachabilityManager sharedManager] stopMonitoring];
+    
+    // Schedule background tasks
+//    if (@available(iOS 13.0, *)) {
+//        if ([Model sharedInstance].usesUploadAsync) {
+//            [self scheduleNextUpload];
+//        }
+//    }
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {

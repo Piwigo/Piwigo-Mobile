@@ -15,6 +15,8 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationNetworkErrorEncountered;
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationAddRecentAlbum;
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationRemoveRecentAlbum;
 
+FOUNDATION_EXPORT NSString * const kPiwigoBackgroundTaskUpload;
+
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (nonatomic, strong) UIWindow *window;
