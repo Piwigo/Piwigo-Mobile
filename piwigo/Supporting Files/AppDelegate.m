@@ -81,15 +81,9 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
         }
     }];
 
-    // Create background queue for the Upload Manager
-    dispatch_queue_attr_t qos = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL,
-                                                                        QOS_CLASS_BACKGROUND, -1);
-    dispatch_queue_t uploadManagerQueue = dispatch_queue_create("org.piwigo.upload-thread", qos);
-
     // Resume upload operations in background queue
-    dispatch_async(uploadManagerQueue, ^{
+    dispatch_async([self getUploadManagerQueue], ^{
         NSLog(@"•••>> dispatch queue: %s", dispatch_queue_get_label(nil));
-        NSLog(@"•••>> dispatch queue: %@", uploadManagerQueue.debugDescription);
         [[UploadManager shared] resumeAll];
     });
 }
@@ -356,6 +350,60 @@ NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRem
         [UploadSessionDelegate shared].uploadSessionCompletionHandler = completionHandler;
         NSLog(@"    > Rejoining session %@ with CompletionHandler", session);
     }
+}
+
+
+#pragma mark - Background tasks
+
+-(dispatch_queue_t)getUploadManagerQueue
+{
+    if (self.uploadManagerQueue == nil) {
+        // Create background queue for the Upload Manager
+        dispatch_queue_attr_t qos = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL,
+                                                                            QOS_CLASS_BACKGROUND, -1);
+        [self setUploadManagerQueue: dispatch_queue_create("org.piwigo.upload-thread", qos)];
+    }
+    return self.uploadManagerQueue;
+}
+
+-(void)scheduleNextUpload API_AVAILABLE(ios(13.0))
+{
+    // Schedule upload not earlier than 5 minutes from now
+    BGProcessingTaskRequest *request = [[BGProcessingTaskRequest alloc] initWithIdentifier:kPiwigoBackgroundTaskUpload];
+    [request setEarliestBeginDate:[NSDate dateWithTimeIntervalSinceNow:5 * 60]];
+    request.requiresNetworkConnectivity  = YES;
+    request.requiresExternalPower = YES;
+    
+    // Submit upload request
+    NSError *error = NULL;
+    BOOL success = [[BGTaskScheduler sharedScheduler] submitTaskRequest:request error:&error];
+    if (!success) {
+        NSLog(@"    > Failed to submit upload request: %@",error);
+    } else {
+        NSLog(@"    > Upload request submitted with success");
+    }
+}
+
+-(void)handleNextUpload:(BGProcessingTask *)task API_AVAILABLE(ios(13.0))
+{
+    // Provide an expiration handler for the background task
+    // that cancels the operation
+    [task setExpirationHandler:^{
+        NSLog(@"    > Task expired: Upload operation cancelled.");
+        [UploadManager shared].isExecutedInBckgTask = NO;
+        [task setTaskCompletedWithSuccess:NO];
+        // Invalidate URLSession tasks
+    }];
+
+    // Create an operation which will handle the next upload request
+    NSLog(@"    > Start upload operation in background task...");
+    [UploadManager shared].isExecutedInBckgTask = YES;
+//    [[UploadManager shared] findNextImageToUpload];
+    [task setTaskCompletedWithSuccess:YES];
+
+    // Schedule the next upload
+    NSLog(@"    > Schedule next upload.");
+    [self scheduleNextUpload];
 }
 
 

@@ -19,9 +19,12 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationRemoveRecentAlbum;
 
 @property (nonatomic, strong) UIWindow *window;
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic, strong) dispatch_queue_t uploadManagerQueue;
 
 -(void)loadLoginView;
 -(void)loadNavigation;
 -(void)screenBrightnessChanged;
+-(dispatch_queue_t)getUploadManagerQueue;
+-(void)scheduleNextUpload;
 
 @end
