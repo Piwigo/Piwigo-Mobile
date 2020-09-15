@@ -131,6 +131,8 @@
 		ADE03F3023D4CC6C00F21ED9 /* PiwigoTagData.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045AB1A94654D00A306FE /* PiwigoTagData.m */; };
 		ADE03F3423D4CF1D00F21ED9 /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE03F3323D4CF1D00F21ED9 /* Tag.swift */; };
 		ADE03F3623D4E3BD00F21ED9 /* TagError.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE03F3523D4E3BD00F21ED9 /* TagError.swift */; };
+		ADE216FE250E22F7003AE588 /* pwg.images.getInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE216FD250E22F7003AE588 /* pwg.images.getInfo.swift */; };
+		ADE216FF250E23B0003AE588 /* pwg.images.getInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE216FD250E22F7003AE588 /* pwg.images.getInfo.swift */; };
 		ADE46684242F978F002FEDE5 /* AboutViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADE46683242F978E002FEDE5 /* AboutViewController.storyboard */; };
 		ADE69C052477D9B8002D953F /* UploadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE69C042477D9B8002D953F /* UploadManager.swift */; };
 		ADEC6B032455A3520011527C /* LocalAlbumsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEC6B022455A3520011527C /* LocalAlbumsProvider.swift */; };
@@ -424,6 +426,8 @@
 		ADE03F3223D4CF1D00F21ED9 /* piwigo-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "piwigo-Bridging-Header.h"; sourceTree = "<group>"; };
 		ADE03F3323D4CF1D00F21ED9 /* Tag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
 		ADE03F3523D4E3BD00F21ED9 /* TagError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagError.swift; sourceTree = "<group>"; };
+		ADE216FD250E22F7003AE588 /* pwg.images.getInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.images.getInfo.swift; sourceTree = "<group>"; };
+		ADE21700250E23EC003AE588 /* pwg.images.getinfo.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pwg.images.getinfo.json; sourceTree = "<group>"; };
 		ADE46683242F978E002FEDE5 /* AboutViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AboutViewController.storyboard; sourceTree = "<group>"; };
 		ADE69C042477D9B8002D953F /* UploadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadManager.swift; sourceTree = "<group>"; };
 		ADEC6B022455A3520011527C /* LocalAlbumsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAlbumsProvider.swift; sourceTree = "<group>"; };
@@ -801,6 +805,7 @@
 		AD9A1BE424E03AC700D22C86 /* pwg.images */ = {
 			isa = PBXGroup;
 			children = (
+				ADE216FD250E22F7003AE588 /* pwg.images.getInfo.swift */,
 				AD38C04324AF724100CDC765 /* pwg.images.setInfo.swift */,
 				ADD79A3C24A9352500428C58 /* pwg.images.upload.swift */,
 				AD6A128A24FAB56A00E3BBED /* pwg.images.uploadAsync.swift */,
@@ -889,6 +894,7 @@
 		ADD79A4124A9424900428C58 /* pwg.images */ = {
 			isa = PBXGroup;
 			children = (
+				ADE21700250E23EC003AE588 /* pwg.images.getinfo.json */,
 				AD38C04624AF72E100CDC765 /* pwg.images.setInfo.json */,
 				AD11E46824A9319C00C8876F /* pwg.images.upload.json */,
 				ADD79A3F24A93B5600428C58 /* pwg.images.upload2.json */,
@@ -1561,6 +1567,7 @@
 				AD38C04D24AF746000CDC765 /* community.images.uploadCompleted.swift in Sources */,
 				ADD79A3D24A9352500428C58 /* pwg.images.upload.swift in Sources */,
 				AD5F64EA24C6024200660BE3 /* pwg.tags.add.swift in Sources */,
+				ADE216FF250E23B0003AE588 /* pwg.images.getInfo.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1672,6 +1679,7 @@
 				AD7B4C1620E031B0003E403A /* AlbumTableViewCell.m in Sources */,
 				AD0CC81421EA8AA20009FFF6 /* AsyncImageActivityItemProvider.m in Sources */,
 				ED9A42B51ACAD35300EA4421 /* LoginViewController_iPad.m in Sources */,
+				ADE216FE250E22F7003AE588 /* pwg.images.getInfo.swift in Sources */,
 				D8172E1A1AB7C07E00271DB0 /* MoveCategoryViewController.m in Sources */,
 				D863EECA1A6A484C00C0A6E9 /* PiwigoTextField.m in Sources */,
 				AD82C0482433D1A200F774BA /* main.m in Sources */,

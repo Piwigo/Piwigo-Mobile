@@ -443,9 +443,9 @@ extension UploadManager {
                 let imageData = PiwigoImageData.init()
                 imageData.imageId = uploadJSON.data.imageId!
                 imageData.categoryIds = [upload.category]
-                imageData.imageTitle = NetworkHandler.utf8EncodedString(from: uploadJSON.data.imageTitle ?? upload.imageTitle)
-                imageData.comment = NetworkHandler.utf8EncodedString(from: uploadJSON.data.comment ?? "")
-                imageData.visits = uploadJSON.data.visits ?? 0
+                imageData.imageTitle = NetworkHandler.utf8EncodedString(from: uploadJSON.data.imageTitle )
+                imageData.comment = NetworkHandler.utf8EncodedString(from: uploadJSON.data.comment )
+                imageData.visits = uploadJSON.data.visits 
                 imageData.fileName = uploadJSON.data.fileName ?? upload.fileName
                 imageData.isVideo = upload.isVideo
                 imageData.datePosted = dateFormatter.date(from: uploadJSON.data.datePosted ?? "") ?? Date.init()
@@ -454,33 +454,33 @@ extension UploadManager {
                 imageData.fullResPath = NetworkHandler.encodedImageURL(uploadJSON.data.fullResPath)
                 imageData.fullResWidth = uploadJSON.data.fullResWidth ?? 1
                 imageData.fullResHeight = uploadJSON.data.fullResHeight ?? 1
-                imageData.squarePath = NetworkHandler.encodedImageURL(uploadJSON.data.derivatives?.squareImage?.url)
-                imageData.squareWidth = uploadJSON.data.derivatives?.squareImage?.width ?? 1
-                imageData.squareHeight = uploadJSON.data.derivatives?.squareImage?.height ?? 1
-                imageData.thumbPath = NetworkHandler.encodedImageURL(uploadJSON.data.derivatives?.thumbImage?.url)
-                imageData.thumbWidth = uploadJSON.data.derivatives?.thumbImage?.width ?? 1
-                imageData.thumbHeight = uploadJSON.data.derivatives?.thumbImage?.height ?? 1
-                imageData.mediumPath = NetworkHandler.encodedImageURL(uploadJSON.data.derivatives?.mediumImage?.url)
-                imageData.mediumWidth = uploadJSON.data.derivatives?.mediumImage?.width ?? 1
-                imageData.mediumHeight = uploadJSON.data.derivatives?.mediumImage?.height ?? 1
-                imageData.xxSmallPath = NetworkHandler.encodedImageURL(uploadJSON.data.derivatives?.xxSmallImage?.url)
-                imageData.xxSmallWidth = uploadJSON.data.derivatives?.xxSmallImage?.width ?? 1
-                imageData.xxSmallHeight = uploadJSON.data.derivatives?.xxSmallImage?.height ?? 1
-                imageData.xSmallPath = NetworkHandler.encodedImageURL(uploadJSON.data.derivatives?.xSmallImage?.url)
-                imageData.xSmallWidth = uploadJSON.data.derivatives?.xSmallImage?.width ?? 1
-                imageData.xSmallHeight = uploadJSON.data.derivatives?.xSmallImage?.height ?? 1
-                imageData.smallPath = NetworkHandler.encodedImageURL(uploadJSON.data.derivatives?.smallImage?.url)
-                imageData.smallWidth = uploadJSON.data.derivatives?.smallImage?.width ?? 1
-                imageData.smallHeight = uploadJSON.data.derivatives?.smallImage?.height ?? 1
-                imageData.largePath = NetworkHandler.encodedImageURL(uploadJSON.data.derivatives?.largeImage?.url)
-                imageData.largeWidth = uploadJSON.data.derivatives?.largeImage?.width ?? 1
-                imageData.largeHeight = uploadJSON.data.derivatives?.largeImage?.height ?? 1
-                imageData.xLargePath = NetworkHandler.encodedImageURL(uploadJSON.data.derivatives?.xLargeImage?.url)
-                imageData.xLargeWidth = uploadJSON.data.derivatives?.xLargeImage?.width ?? 1
-                imageData.xLargeHeight = uploadJSON.data.derivatives?.xLargeImage?.height ?? 1
-                imageData.xxLargePath = NetworkHandler.encodedImageURL(uploadJSON.data.derivatives?.xxLargeImage?.url)
-                imageData.xxLargeWidth = uploadJSON.data.derivatives?.xxLargeImage?.width ?? 1
-                imageData.xxLargeHeight = uploadJSON.data.derivatives?.xxLargeImage?.height ?? 1
+                imageData.squarePath = NetworkHandler.encodedImageURL(uploadJSON.derivatives?.squareImage?.url)
+                imageData.squareWidth = uploadJSON.derivatives?.squareImage?.width ?? 1
+                imageData.squareHeight = uploadJSON.derivatives?.squareImage?.height ?? 1
+                imageData.thumbPath = NetworkHandler.encodedImageURL(uploadJSON.derivatives?.thumbImage?.url)
+                imageData.thumbWidth = uploadJSON.derivatives?.thumbImage?.width ?? 1
+                imageData.thumbHeight = uploadJSON.derivatives?.thumbImage?.height ?? 1
+                imageData.mediumPath = NetworkHandler.encodedImageURL(uploadJSON.derivatives?.mediumImage?.url)
+                imageData.mediumWidth = uploadJSON.derivatives?.mediumImage?.width ?? 1
+                imageData.mediumHeight = uploadJSON.derivatives?.mediumImage?.height ?? 1
+                imageData.xxSmallPath = NetworkHandler.encodedImageURL(uploadJSON.derivatives?.xxSmallImage?.url)
+                imageData.xxSmallWidth = uploadJSON.derivatives?.xxSmallImage?.width ?? 1
+                imageData.xxSmallHeight = uploadJSON.derivatives?.xxSmallImage?.height ?? 1
+                imageData.xSmallPath = NetworkHandler.encodedImageURL(uploadJSON.derivatives?.xSmallImage?.url)
+                imageData.xSmallWidth = uploadJSON.derivatives?.xSmallImage?.width ?? 1
+                imageData.xSmallHeight = uploadJSON.derivatives?.xSmallImage?.height ?? 1
+                imageData.smallPath = NetworkHandler.encodedImageURL(uploadJSON.derivatives?.smallImage?.url)
+                imageData.smallWidth = uploadJSON.derivatives?.smallImage?.width ?? 1
+                imageData.smallHeight = uploadJSON.derivatives?.smallImage?.height ?? 1
+                imageData.largePath = NetworkHandler.encodedImageURL(uploadJSON.derivatives?.largeImage?.url)
+                imageData.largeWidth = uploadJSON.derivatives?.largeImage?.width ?? 1
+                imageData.largeHeight = uploadJSON.derivatives?.largeImage?.height ?? 1
+                imageData.xLargePath = NetworkHandler.encodedImageURL(uploadJSON.derivatives?.xLargeImage?.url)
+                imageData.xLargeWidth = uploadJSON.derivatives?.xLargeImage?.width ?? 1
+                imageData.xLargeHeight = uploadJSON.derivatives?.xLargeImage?.height ?? 1
+                imageData.xxLargePath = NetworkHandler.encodedImageURL(uploadJSON.derivatives?.xxLargeImage?.url)
+                imageData.xxLargeWidth = uploadJSON.derivatives?.xxLargeImage?.width ?? 1
+                imageData.xxLargeHeight = uploadJSON.derivatives?.xxLargeImage?.height ?? 1
 
                 imageData.author = uploadJSON.data.author ?? "NSNotFound"
                 if let privacyLevel = uploadJSON.data.privacyLevel {
@@ -500,7 +500,7 @@ extension UploadManager {
                     }
                 }
                 imageData.tags = tagList
-                imageData.ratingScore = uploadJSON.data.ratingScore ?? 0.0
+                imageData.ratingScore = uploadJSON.data.ratingScore 
                 imageData.fileSize = uploadJSON.data.fileSize ?? NSNotFound // will trigger pwg.images.getInfo
                 imageData.md5checksum = uploadJSON.data.md5checksum ?? upload.md5Sum
                 
@@ -534,7 +534,6 @@ extension UploadManager {
     func convertFormField(named name: String, value: String, using boundary: String) -> String {
       var fieldString = "--\(boundary)\r\n"
       fieldString += "Content-Disposition: form-data; name=\"\(name)\"\r\n"
-//      fieldString += "Content-Type: text/plain; charset=UTF-8\r\n"
       fieldString += "\r\n"
       fieldString += "\(value)\r\n"
 
