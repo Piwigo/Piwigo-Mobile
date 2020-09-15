@@ -59,7 +59,7 @@ struct TagAddJSON: Decodable {
  A struct for decoding JSON returned by kPiwigoTagsAdd:
  All members are optional in case they are missing from the data.
 */
-struct TagPropertiesAdd: Codable
+struct TagPropertiesAdd: Decodable
 {
     let id: Int32?                  // 1
     

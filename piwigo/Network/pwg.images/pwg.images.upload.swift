@@ -60,7 +60,7 @@ struct ImagesUploadJSON: Decodable {
 }
 
 // MARK: - Result
-struct ImagesUpload: Codable
+struct ImagesUpload: Decodable
 {
     let image_id: Int?              // 1042
     let square_src: String?         // "https://…-sq.jpg"
@@ -72,7 +72,7 @@ struct ImagesUpload: Codable
 }
 
 // MARK: - Category
-struct Category: Codable {
+struct Category: Decodable {
     let catId: Int?
     let catName: String?
     let nbPhotos: String?
