@@ -198,7 +198,7 @@ extension UploadManager {
         print("    > prepared file \(uploadProperties.fileName!)")
         uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
             // Upload ready for transfer
-            self.setIsPreparing(status: false)
+            self.didEndPreparation()
         })
     }
 
