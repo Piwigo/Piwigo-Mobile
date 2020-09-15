@@ -32,6 +32,10 @@
                   
                   if(completion) {
                       
+                      // Initialise flags
+                      [Model sharedInstance].usesCommunityPluginV29 = NO;
+                      [Model sharedInstance].usesUploadAsync = NO;
+                      
                       // Did the server answer the request? (it should have)
                       if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
                       {
