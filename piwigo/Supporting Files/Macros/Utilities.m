@@ -12,7 +12,7 @@
 
 +(NSString *)deviceNameForCode:(NSString *)deviceCode
 {
-    // See https://everymac.com/ultimate-mac-lookup/?search_keywords=iPhone12%2C3
+    // See https://everyi.com/ipod-iphone-ipad-identification/index-how-to-identify-my-ipod-iphone-ipad.html
     // or https://apps.apple.com/fr/app/mactracker/id430255202?l=en&mt=12
     
     // iPhone
