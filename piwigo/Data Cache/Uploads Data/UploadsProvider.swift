@@ -601,7 +601,7 @@ class UploadsProvider: NSObject {
         fetchRequest.fetchBatchSize = 20
 
         // Sort upload requests by state and date
-        let firstSortDescriptor = NSSortDescriptor(key: "requestSectionKey", ascending: false)
+        let firstSortDescriptor = NSSortDescriptor(key: "requestSectionKey", ascending: true)
         let secondSortDescriptor = NSSortDescriptor(key: "requestDate", ascending: true)
         fetchRequest.sortDescriptors = [firstSortDescriptor, secondSortDescriptor]
         
