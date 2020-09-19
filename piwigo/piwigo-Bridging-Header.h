@@ -26,4 +26,3 @@
 #import "SessionService.h"
 #import "TaggedImagesViewController.h"
 #import "TagsData.h"
-#import "Utilities.h"

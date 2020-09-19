@@ -1689,7 +1689,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     var systemInfo = utsname()
                     uname(&systemInfo)
                     let size = Int(_SYS_NAMELEN) // is 32, but posix AND its init is 256....
-                    let deviceModel: String = Utilities.deviceName(forCode: withUnsafeMutablePointer(to: &systemInfo.machine) {p in
+                    let deviceModel: String = DeviceUtilities.name(forCode: withUnsafeMutablePointer(to: &systemInfo.machine) {p in
                         p.withMemoryRebound(to: CChar.self, capacity: size, {p2 in
                             return String(cString: p2)
                         })

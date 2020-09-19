@@ -18,7 +18,6 @@
 #import "Model.h"
 #import "SAMKeychain.h"
 #import "SessionService.h"
-#import "Utilities.h"
 
 //#ifndef DEBUG_SESSION
 //#define DEBUG_SESSION
@@ -1286,7 +1285,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
         // Collect system and device data
         struct utsname systemInfo;
         uname(&systemInfo);
-        NSString* deviceModel = [Utilities deviceNameForCode:[NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding]];
+        NSString* deviceModel = [DeviceUtilities nameForCode:[NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding]];
         NSString *deviceOS = [[UIDevice currentDevice] systemName];
         NSString *deviceOSversion = [[UIDevice currentDevice] systemVersion];
         
