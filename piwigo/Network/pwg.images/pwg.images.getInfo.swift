@@ -14,7 +14,6 @@ let kPiwigoImagesGetInfo = "format=json&method=pwg.images.getInfo"
 struct ImagesGetInfoJSON: Decodable {
 
     var status: String?
-    var chunks: ImagesUploadAsync!
     var data: ImagesGetInfo!
     var derivatives: Derivatives!
     var errorCode = 0
