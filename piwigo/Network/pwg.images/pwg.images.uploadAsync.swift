@@ -59,133 +59,134 @@ struct ImagesUploadAsyncJSON: Decodable {
             data = try? rootContainer.decode(ImagesGetInfo.self, forKey: .result)
             
             // Did the server returned the image parameters?
-            if data.imageId == nil {
+            guard let _ = data, let _ = data.imageId else {
                 // The server returned the list of uploaded chunks
                 chunks = try rootContainer.decode(ImagesUploadAsync.self, forKey: .result)
                 print("    > \(chunks.message ?? "Done - No message!")")
+                return
             }
-            else {
-                // Result container keyed by ResultCodingKeys
-                let resultContainer = try rootContainer.nestedContainer(keyedBy: ResultCodingKeys.self, forKey: .result)
-//                dump(resultContainer)
 
-                // Decodes derivatives
+            // The server returned pwg.images.getInfo data
+            // Result container keyed by ResultCodingKeys
+            let resultContainer = try rootContainer.nestedContainer(keyedBy: ResultCodingKeys.self, forKey: .result)
+//            dump(resultContainer)
+
+            // Decodes derivatives
+            do {
+                try derivatives = resultContainer.decode(Derivatives.self, forKey: .derivatives)
+            }
+            catch {
+                // Sometimes, width and height are provided as String instead of Int!
+                derivatives = Derivatives()
+                let derivativesContainer = try resultContainer.nestedContainer(keyedBy: DerivativesCodingKeys.self, forKey: .derivatives)
+//                dump(derivativesContainer)
+                
+                // Square image
                 do {
-                    try derivatives = resultContainer.decode(Derivatives.self, forKey: .derivatives)
+                    let square = try derivativesContainer.decode(Derivative.self, forKey: .squareImage)
+                    derivatives?.squareImage = square
                 }
                 catch {
-                    // Sometimes, width and height are provided as String instead of Int!
-                    derivatives = Derivatives()
-                    let derivativesContainer = try resultContainer.nestedContainer(keyedBy: DerivativesCodingKeys.self, forKey: .derivatives)
-//                    dump(derivativesContainer)
-                    
-                    // Square image
-                    do {
-                        let square = try derivativesContainer.decode(Derivative.self, forKey: .squareImage)
-                        derivatives?.squareImage = square
-                    }
-                    catch {
-                        let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .squareImage)
-                        derivatives?.squareImage = Derivative.init(url: square.url,
-                                                                   width: Int(square.width ?? "1"),
-                                                                   height: Int(square.height ?? "1"))
-                    }
+                    let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .squareImage)
+                    derivatives?.squareImage = Derivative.init(url: square.url,
+                                                               width: Int(square.width ?? "1"),
+                                                               height: Int(square.height ?? "1"))
+                }
 
-                    // Thumbnail image
-                    do {
-                        let square = try derivativesContainer.decode(Derivative.self, forKey: .thumbImage)
-                        derivatives?.thumbImage = square
-                    }
-                    catch {
-                        let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .thumbImage)
-                        derivatives?.thumbImage = Derivative.init(url: square.url,
-                                                                  width: Int(square.width ?? "1"),
-                                                                  height: Int(square.height ?? "1"))
-                    }
+                // Thumbnail image
+                do {
+                    let square = try derivativesContainer.decode(Derivative.self, forKey: .thumbImage)
+                    derivatives?.thumbImage = square
+                }
+                catch {
+                    let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .thumbImage)
+                    derivatives?.thumbImage = Derivative.init(url: square.url,
+                                                              width: Int(square.width ?? "1"),
+                                                              height: Int(square.height ?? "1"))
+                }
 
-                    // Medium image
-                    do {
-                        let square = try derivativesContainer.decode(Derivative.self, forKey: .mediumImage)
-                        derivatives?.mediumImage = square
-                    }
-                    catch {
-                        let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .mediumImage)
-                        derivatives?.mediumImage = Derivative.init(url: square.url,
-                                                                   width: Int(square.width ?? "1"),
-                                                                   height: Int(square.height ?? "1"))
-                    }
+                // Medium image
+                do {
+                    let square = try derivativesContainer.decode(Derivative.self, forKey: .mediumImage)
+                    derivatives?.mediumImage = square
+                }
+                catch {
+                    let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .mediumImage)
+                    derivatives?.mediumImage = Derivative.init(url: square.url,
+                                                               width: Int(square.width ?? "1"),
+                                                               height: Int(square.height ?? "1"))
+                }
 
-                    // Small image
-                    do {
-                        let square = try derivativesContainer.decode(Derivative.self, forKey: .smallImage)
-                        derivatives?.smallImage = square
-                    }
-                    catch {
-                        let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .smallImage)
-                        derivatives?.smallImage = Derivative.init(url: square.url,
-                                                                  width: Int(square.width ?? "1"),
-                                                                  height: Int(square.height ?? "1"))
-                    }
+                // Small image
+                do {
+                    let square = try derivativesContainer.decode(Derivative.self, forKey: .smallImage)
+                    derivatives?.smallImage = square
+                }
+                catch {
+                    let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .smallImage)
+                    derivatives?.smallImage = Derivative.init(url: square.url,
+                                                              width: Int(square.width ?? "1"),
+                                                              height: Int(square.height ?? "1"))
+                }
 
-                    // XSmall image
-                    do {
-                        let square = try derivativesContainer.decode(Derivative.self, forKey: .xSmallImage)
-                        derivatives?.xSmallImage = square
-                    }
-                    catch {
-                        let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .xSmallImage)
-                        derivatives?.xSmallImage = Derivative.init(url: square.url,
-                                                                   width: Int(square.width ?? "1"),
-                                                                   height: Int(square.height ?? "1"))
-                    }
+                // XSmall image
+                do {
+                    let square = try derivativesContainer.decode(Derivative.self, forKey: .xSmallImage)
+                    derivatives?.xSmallImage = square
+                }
+                catch {
+                    let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .xSmallImage)
+                    derivatives?.xSmallImage = Derivative.init(url: square.url,
+                                                               width: Int(square.width ?? "1"),
+                                                               height: Int(square.height ?? "1"))
+                }
 
-                    // XXSmall image
-                    do {
-                        let square = try derivativesContainer.decode(Derivative.self, forKey: .xxSmallImage)
-                        derivatives?.xxSmallImage = square
-                    }
-                    catch {
-                        let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .xxSmallImage)
-                        derivatives?.xxSmallImage = Derivative.init(url: square.url,
-                                                                    width: Int(square.width ?? "1"),
-                                                                    height: Int(square.height ?? "1"))
-                    }
+                // XXSmall image
+                do {
+                    let square = try derivativesContainer.decode(Derivative.self, forKey: .xxSmallImage)
+                    derivatives?.xxSmallImage = square
+                }
+                catch {
+                    let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .xxSmallImage)
+                    derivatives?.xxSmallImage = Derivative.init(url: square.url,
+                                                                width: Int(square.width ?? "1"),
+                                                                height: Int(square.height ?? "1"))
+                }
 
-                    // Large image
-                    do {
-                        let square = try derivativesContainer.decode(Derivative.self, forKey: .largeImage)
-                        derivatives?.largeImage = square
-                    }
-                    catch {
-                        let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .largeImage)
-                        derivatives?.largeImage = Derivative.init(url: square.url,
-                                                                  width: Int(square.width ?? "1"),
-                                                                  height: Int(square.height ?? "1"))
-                    }
+                // Large image
+                do {
+                    let square = try derivativesContainer.decode(Derivative.self, forKey: .largeImage)
+                    derivatives?.largeImage = square
+                }
+                catch {
+                    let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .largeImage)
+                    derivatives?.largeImage = Derivative.init(url: square.url,
+                                                              width: Int(square.width ?? "1"),
+                                                              height: Int(square.height ?? "1"))
+                }
 
-                    // XLarge image
-                    do {
-                        let square = try derivativesContainer.decode(Derivative.self, forKey: .xLargeImage)
-                        derivatives?.xLargeImage = square
-                    }
-                    catch {
-                        let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .xLargeImage)
-                        derivatives?.xLargeImage = Derivative.init(url: square.url,
-                                                                   width: Int(square.width ?? "1"),
-                                                                   height: Int(square.height ?? "1"))
-                    }
+                // XLarge image
+                do {
+                    let square = try derivativesContainer.decode(Derivative.self, forKey: .xLargeImage)
+                    derivatives?.xLargeImage = square
+                }
+                catch {
+                    let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .xLargeImage)
+                    derivatives?.xLargeImage = Derivative.init(url: square.url,
+                                                               width: Int(square.width ?? "1"),
+                                                               height: Int(square.height ?? "1"))
+                }
 
-                    // XXLarge image
-                    do {
-                        let square = try derivativesContainer.decode(Derivative.self, forKey: .xxLargeImage)
-                        derivatives?.xxLargeImage = square
-                    }
-                    catch {
-                        let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .xxLargeImage)
-                        derivatives?.xxLargeImage = Derivative.init(url: square.url,
-                                                                    width: Int(square.width ?? "1"),
-                                                                    height: Int(square.height ?? "1"))
-                    }
+                // XXLarge image
+                do {
+                    let square = try derivativesContainer.decode(Derivative.self, forKey: .xxLargeImage)
+                    derivatives?.xxLargeImage = square
+                }
+                catch {
+                    let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .xxLargeImage)
+                    derivatives?.xxLargeImage = Derivative.init(url: square.url,
+                                                                width: Int(square.width ?? "1"),
+                                                                height: Int(square.height ?? "1"))
                 }
             }
         }

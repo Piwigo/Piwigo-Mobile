@@ -437,7 +437,7 @@ extension UploadManager {
             }
 
             // Add image to cache when uploaded by admin users
-            if let imageId = uploadJSON.data.imageId, imageId != NSNotFound,
+            if let getInfos = uploadJSON.data, let imageId = getInfos.imageId, imageId != NSNotFound,
                 Model.sharedInstance()?.hasAdminRights ?? false {
                 // Prepare image for cache
                 let dateFormatter = DateFormatter()
@@ -446,9 +446,9 @@ extension UploadManager {
                 let imageData = PiwigoImageData.init()
                 imageData.imageId = uploadJSON.data.imageId!
                 imageData.categoryIds = [upload.category]
-                imageData.imageTitle = NetworkHandler.utf8EncodedString(from: uploadJSON.data.imageTitle )
-                imageData.comment = NetworkHandler.utf8EncodedString(from: uploadJSON.data.comment )
-                imageData.visits = uploadJSON.data.visits 
+                imageData.imageTitle = NetworkHandler.utf8EncodedString(from: uploadJSON.data.imageTitle ?? "")
+                imageData.comment = NetworkHandler.utf8EncodedString(from: uploadJSON.data.comment ?? "")
+                imageData.visits = uploadJSON.data.visits ?? 0
                 imageData.fileName = uploadJSON.data.fileName ?? upload.fileName
                 imageData.isVideo = upload.isVideo
                 imageData.datePosted = dateFormatter.date(from: uploadJSON.data.datePosted ?? "") ?? Date.init()
@@ -503,7 +503,7 @@ extension UploadManager {
                     }
                 }
                 imageData.tags = tagList
-                imageData.ratingScore = uploadJSON.data.ratingScore 
+                imageData.ratingScore = uploadJSON.data.ratingScore  ?? 0.0
                 imageData.fileSize = uploadJSON.data.fileSize ?? NSNotFound // will trigger pwg.images.getInfo
                 imageData.md5checksum = uploadJSON.data.md5checksum ?? upload.md5Sum
                 

@@ -199,9 +199,9 @@ struct ImagesGetInfoJSON: Decodable {
 struct ImagesGetInfo: Decodable
 {
     let imageId: Int?                   // 1042
-    let imageTitle: String = ""         // "Title"
-    let comment: String = ""            // "No description"
-    let visits: Int = 0                 // 0
+    let imageTitle: String?             // "Title"
+    let comment: String?                // "No description"
+    let visits: Int?                    // 0
     let fileName: String?               // Image.jpg
     let datePosted: String?             // "yyyy-MM-dd HH:mm:ss"
     let dateCreated: String?            // "yyyy-MM-dd HH:mm:ss"
@@ -213,7 +213,7 @@ struct ImagesGetInfo: Decodable
     let author: String?                 // "Eddy"
     let privacyLevel: String?           // "0"
     let tags: [TagProperties]?          // See TagProperties
-    let ratingScore: Float = 0.0        // 0.0
+    let ratingScore: Float?             // 0.0
     let fileSize: Int?                  // 3025
     let md5checksum: String?            // 2141e377254a429be151900e4bedb520
 
