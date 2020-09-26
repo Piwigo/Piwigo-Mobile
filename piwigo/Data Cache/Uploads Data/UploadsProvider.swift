@@ -188,7 +188,7 @@ class UploadsProvider: NSObject {
     */
     func updateRecord(with uploadData: UploadProperties, completionHandler: @escaping (Error?) -> Void) -> (Void) {
         // Check current queue
-        print("•••>> updateRecord() in", queueName())
+        print("•••>> updateRecord() in \(queueName())\r")
 
         // Create a private queue context.
         let taskContext = DataController.getPrivateContext()
