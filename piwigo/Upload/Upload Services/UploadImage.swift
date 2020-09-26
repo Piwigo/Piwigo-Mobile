@@ -62,8 +62,13 @@ extension UploadManager {
             // Update request with error description
             print("    >", error.localizedDescription)
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
-                // Consider next image
-                self.didEndPreparation()
+                // Upload ready for transfer
+                if self.uploadRequestsToPrepare.contains(where: {$0.localIdentifier == uploadProperties.localIdentifier}) {
+                    // In background task
+                } else {
+                    // In foreground, consider next image
+                    self.didEndPreparation()
+                }
             })
             return
         }
@@ -75,7 +80,13 @@ extension UploadManager {
         print("    > prepared file \(uploadProperties.fileName!)")
         uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
             // Upload ready for transfer
-            self.didEndPreparation()
+            if self.uploadRequestsToPrepare.contains(where: {$0.localIdentifier == uploadProperties.localIdentifier}) {
+                // In background task
+                self.transferInBackgroundImage(of: uploadProperties)
+            } else {
+                // In foreground
+                self.didEndPreparation()
+            }
         })
     }
 

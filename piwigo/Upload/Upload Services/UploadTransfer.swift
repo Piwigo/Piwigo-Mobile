@@ -6,6 +6,8 @@
 //  Copyright © 2020 Piwigo.org. All rights reserved.
 //
 
+import BackgroundTasks
+
 extension UploadManager {
     
     // MARK: - Transfer Image in Foreground
@@ -120,7 +122,12 @@ extension UploadManager {
             print("    >", error.localizedDescription)
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
                 // Consider next image
-                self.didEndTransfer()
+                if self.uploadRequestsToPrepare.contains(where: {$0.localIdentifier == uploadProperties.localIdentifier}) {
+                    // In background task
+                } else {
+                    // In foreground, consider next video
+                    self.didEndTransfer()
+                }
             })
             return
         }
@@ -134,10 +141,15 @@ extension UploadManager {
         }
         
         // Update request ready for finish
-        print("    > transferred file \(uploadProperties.fileName!)")
+        print("    > transferred file \(uploadProperties.fileName!)\r")
         uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
-            // Upload ready for transfer
-            self.didEndTransfer()
+            // Job done if performed in background
+            if self.uploadRequestsToPrepare.contains(where: {$0.localIdentifier == uploadProperties.localIdentifier}) {
+                // In background task - NOP
+            } else {
+                // In foreground, upload ready for next step: finishing or next image
+                self.didEndTransfer()
+            }
         })
     }
 
@@ -335,6 +347,7 @@ extension UploadManager {
             httpBody.appendString("--\(boundary)--")
 
             // File name of chunk data stored into Piwigo/Uploads directory
+            // This file will be deleted after a successful upload to be able to reuse it in case of error.
             let chunkFileName = fileName + "." + numberFormatter.string(from: NSNumber(value: chunk))!
             let fileURL = applicationUploadsDirectory.appendingPathComponent(chunkFileName)
             
@@ -360,10 +373,10 @@ extension UploadManager {
             request.setValue(upload.fileName!, forHTTPHeaderField: "filename")
             request.addValue(upload.localIdentifier, forHTTPHeaderField: "identifier")
             request.addValue(String(fileSize), forHTTPHeaderField: "size")
-            // For debugging...
+            request.addValue(upload.md5Sum!, forHTTPHeaderField: "md5sum")
             request.addValue(chunkStr, forHTTPHeaderField: "chunk")
             request.addValue(chunksStr, forHTTPHeaderField: "chunks")
-            request.addValue(upload.md5Sum!, forHTTPHeaderField: "md5sum")
+            request.addValue("1", forHTTPHeaderField: "tries")
 
             // As soon as tasks are created, the timeout counter starts
             let uploadSession: URLSession = UploadSessionDelegate.shared.uploadSession
@@ -380,20 +393,76 @@ extension UploadManager {
             task.resume()
         }
         
-        // Delete files from Piwigo/Uploads directory
-        let filenamePrefix = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
-        deleteFilesInUploadsDirectory(with: filenamePrefix)
+        // Delete main file
+        do {
+            try FileManager.default.removeItem(at: fileURL)
+        } catch {
+            print("Could not delete upload file: \(error)")
+        }
     }
 
     func didCompleteUploadTask(_ task: URLSessionTask, withError error: Error?) {
+        
+        // Get upload info from task
+        guard let identifier = task.originalRequest?.value(forHTTPHeaderField: "identifier"),
+            let chunk = Int((task.originalRequest?.value(forHTTPHeaderField: "chunk"))!),
+            let tries = Int((task.originalRequest?.value(forHTTPHeaderField: "tries"))!) else {
+            print("   > Could not extract HTTP header fields !!!!!!")
+            return
+        }
+
+        // For producing the chunk filename
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .none
+        numberFormatter.minimumIntegerDigits = 5
+
         // Handle the response here
         guard let httpResponse = task.response as? HTTPURLResponse,
             (200...299).contains(httpResponse.statusCode) else {
             if let _ = error {
                 print("\(error!.localizedDescription)")
             }
+
+            // Retry if failed less than twice
+            if tries < 3 {
+                // Prepare URL Request Object
+                var request = task.originalRequest!
+                let triesStr = String(format: "%ld", tries + 1)
+                request.setValue(triesStr, forHTTPHeaderField: "tries")
+
+                // File name of chunk data stored into Piwigo/Uploads directory
+                // This file will be deleted after a successful upload to be able to reuse it in case of error.
+                let fileName = identifier.replacingOccurrences(of: "/", with: "-")
+                let chunkFileName = fileName + "." + numberFormatter.string(from: NSNumber(value: chunk))!
+                let fileURL = applicationUploadsDirectory.appendingPathComponent(chunkFileName)
+                
+                // As soon as tasks are created, the timeout counter starts
+                let uploadSession: URLSession = UploadSessionDelegate.shared.uploadSession
+                uploadSession.configuration.isDiscretionary = false
+                uploadSession.configuration.allowsCellularAccess = !(Model.sharedInstance()?.wifiOnlyUploading ?? false)
+                let repeatedTask = uploadSession.uploadTask(with: request, fromFile: fileURL)
+                if #available(iOS 11.0, *) {
+                    // Tell the system how many bytes are expected to be exchanged
+                    let fileSize = (try! FileManager.default.attributesOfItem(atPath: fileURL.path)[FileAttributeKey.size] as! NSNumber).uint64Value
+                    print("    > Upload repeated task \(repeatedTask.taskIdentifier) will send \(fileSize) bytes")
+                    repeatedTask.countOfBytesClientExpectsToSend = Int64(fileSize)
+                    repeatedTask.countOfBytesClientExpectsToReceive = 600
+                }
+                print("    > Upload repeated task \(repeatedTask.taskIdentifier) resumed at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium))")
+                repeatedTask.resume()
+            } else {
+                // Delete chunk file uploaded successfully from Piwigo/Uploads directory
+                let imageFile = identifier.replacingOccurrences(of: "/", with: "-")
+                let chunkFileName = imageFile + "." + numberFormatter.string(from: NSNumber(value: chunk))!
+                deleteFilesInUploadsDirectory(with: chunkFileName)
+            }
             return
         }
+
+        // Delete chunk file uploaded successfully from Piwigo/Uploads directory
+        let imageFile = identifier.replacingOccurrences(of: "/", with: "-")
+        let chunkFileName = imageFile + "." + numberFormatter.string(from: NSNumber(value: chunk))!
+        deleteFilesInUploadsDirectory(with: chunkFileName)
     }
 
     func didCompleteUploadTask(_ task: URLSessionTask, withData data: Data) {

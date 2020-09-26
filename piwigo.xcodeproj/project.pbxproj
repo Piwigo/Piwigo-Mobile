@@ -116,6 +116,7 @@
 		ADC06AE11F40B15E0081B4FA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = ADC06ADF1F40B15E0081B4FA /* InfoPlist.strings */; };
 		ADC328072480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC328062480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift */; };
 		ADC3280B2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC3280A2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift */; };
+		ADC709C525115943009CA711 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC709C425115943009CA711 /* SceneDelegate.swift */; };
 		ADC80E4823BDCBAA003A6960 /* EditImageThumbCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADC80E4723BDCBAA003A6960 /* EditImageThumbCollectionViewCell.xib */; };
 		ADC80E4B23BDD2DD003A6960 /* EditImageThumbTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ADC80E4A23BDD2DD003A6960 /* EditImageThumbTableViewCell.m */; };
 		ADC8167B244B5EDE00650223 /* LocalImagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC8167A244B5EDE00650223 /* LocalImagesViewController.swift */; };
@@ -403,6 +404,7 @@
 		ADC06AE41F40B2BC0081B4FA /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADC328062480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalAlbumsNoDatesTableViewCell.swift; sourceTree = "<group>"; };
 		ADC3280A2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAlbumsMoreTableViewCell.swift; sourceTree = "<group>"; };
+		ADC709C425115943009CA711 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		ADC80E4723BDCBAA003A6960 /* EditImageThumbCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EditImageThumbCollectionViewCell.xib; sourceTree = "<group>"; };
 		ADC80E4923BDD2D0003A6960 /* EditImageThumbTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EditImageThumbTableViewCell.h; sourceTree = "<group>"; };
 		ADC80E4A23BDD2DD003A6960 /* EditImageThumbTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EditImageThumbTableViewCell.m; sourceTree = "<group>"; };
@@ -1052,6 +1054,7 @@
 				D82B8D2A1A68832C000E47CA /* Model.m */,
 				D82B8CC21A67820A000E47CA /* AppDelegate.h */,
 				D82B8CC31A67820A000E47CA /* AppDelegate.m */,
+				ADC709C425115943009CA711 /* SceneDelegate.swift */,
 				D82B8CC01A67820A000E47CA /* main.m */,
 			);
 			path = "Supporting Files";
@@ -1667,6 +1670,7 @@
 				D8D3F7651A7AF2A100AEA7F1 /* CategoriesData.m in Sources */,
 				D82B8D301A688512000E47CA /* PiwigoImageData.m in Sources */,
 				D86044111A99922F0067E5D1 /* ImageScrollView.m in Sources */,
+				ADC709C525115943009CA711 /* SceneDelegate.swift in Sources */,
 				ADB7A102210B803D006723B9 /* MoveImageViewController.m in Sources */,
 				D863EEBD1A6A440600C0A6E9 /* PiwigoButton.m in Sources */,
 				D89045BF1A950FF700A306FE /* EditImageTagsTableViewCell.m in Sources */,
@@ -2234,7 +2238,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.5.1;
+				MARKETING_VERSION = 2.5.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-all_load",
@@ -2297,7 +2301,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.5.1;
+				MARKETING_VERSION = 2.5.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-all_load",

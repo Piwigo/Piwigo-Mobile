@@ -9,7 +9,6 @@
 
 import Foundation
 import Photos
-import BackgroundTasks
 import var CommonCrypto.CC_MD5_DIGEST_LENGTH
 import func CommonCrypto.CC_MD5
 import typealias CommonCrypto.CC_LONG
@@ -152,7 +151,7 @@ class UploadManager: NSObject, URLSessionDelegate {
     }()
 
     
-    // MARK: - Background Tasks Manager
+    // MARK: - Upload Task Manager
     /** The manager prepares an image for upload and then launches the transfer.
     - isPreparing is set to true when a photo/video is going to be prepared,
       and false when the preparation has completed or failed.
@@ -177,7 +176,7 @@ class UploadManager: NSObject, URLSessionDelegate {
 
     @objc func didEndTransfer() {
         _isUploading = false
-        if !isPreparing, !isFinishing, !isExecutedInBckgTask { findNextImageToUpload() }
+        if !isPreparing, !isFinishing { findNextImageToUpload() }
     }
     private var _isUploading = false
     private var isUploading: Bool {
@@ -203,13 +202,24 @@ class UploadManager: NSObject, URLSessionDelegate {
         }
     }
         
-    private var _isExecutedInBckgTask = false
-    @objc var isExecutedInBckgTask: Bool {
+    // Store number of upload requests to complete
+    // Update app badge and Upload button in root/default album
+    private var _nberOfUploadsToComplete: Int = 0
+    @objc var nberOfUploadsToComplete: Int {
         get {
-            return _isExecutedInBckgTask
+            return _nberOfUploadsToComplete
         }
-        set(isExecutedInBckgTask) {
-            _isExecutedInBckgTask = isExecutedInBckgTask
+        set(requestsToComplete) {
+            // Update value
+            _nberOfUploadsToComplete = requestsToComplete
+            // Update badge and button
+            DispatchQueue.main.async { [self] in
+                // Update app badge
+                UIApplication.shared.applicationIconBadgeNumber = _nberOfUploadsToComplete
+                // Update button of root album (or default album)
+                let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : _nberOfUploadsToComplete]
+                NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationLeftUploads), object: nil, userInfo: uploadInfo)
+            }
         }
     }
 
@@ -227,12 +237,12 @@ class UploadManager: NSObject, URLSessionDelegate {
     func findNextImageToUpload() -> Void {
         // Check current queue
         print("•••>> findNextImageToUpload() in", queueName())
-        print("    > ", isPreparing, "|", isUploading, "|", isFinishing)
+        print("    > \(isPreparing ? "is preparing" : "") \(isUploading ? "is uploading" : "") \(isFinishing ? "is finishing" : "")")
 
         // Get uploads to complete in queue
         // Considers only uploads to the server to which the user is logged in
-        let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
-                                            .preparingFail, .formatError, .prepared,
+        let states: [kPiwigoUploadState] = [.waiting,
+                                            .preparing, .preparingError, .prepared,
                                             .uploading, .uploadingError, .uploaded,
                                             .finishing, .finishingError]
         guard let allUploads = uploadsProvider.getRequestsIn(states: states) else {
@@ -240,13 +250,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         }
         
         // Update app badge and Upload button in root/default album
-        DispatchQueue.main.async {
-            // Update app badge
-            UIApplication.shared.applicationIconBadgeNumber = allUploads.count
-            // Update button of root album (or default album)
-            let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : allUploads.count]
-            NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationLeftUploads), object: nil, userInfo: uploadInfo)
-        }
+        nberOfUploadsToComplete = allUploads.count
         
         // Determine the Power State
         if ProcessInfo.processInfo.isLowPowerModeEnabled {
@@ -312,7 +316,7 @@ class UploadManager: NSObject, URLSessionDelegate {
             let upload = allUploads.first(where: { $0.state == .uploaded } ) {
             
             // Pause upload manager if app not in the foreground
-            // and background task not available
+            // and not executed in a background task
             if appState == .inactive {
                 return
             }
@@ -336,7 +340,7 @@ class UploadManager: NSObject, URLSessionDelegate {
             let upload = allUploads.first(where: { $0.state == .prepared }) {
             
             // Pause upload manager if app not in the foreground
-            // and background task not available
+            // and not executed in a background task
             if appState == .inactive {
                 return
             }
@@ -344,17 +348,7 @@ class UploadManager: NSObject, URLSessionDelegate {
             // Upload ready, so start the transfer
             print("•••>> starting transfer of \(upload.fileName!)…")
             isUploading = true
-            
-            // Update state of upload request
-            let uploadProperties = upload.getUploadProperties(with: .uploading, error: "")
-            uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
-                // Launch transfer if possible
-                if Model.sharedInstance()?.usesUploadAsync ?? false {
-                    self.transferInBackgroundImage(of: uploadProperties)
-                } else {
-                    self.transferImage(of: uploadProperties)
-                }
-            })
+            self.launchTransfer(of: upload)
             return
         }
         
@@ -364,7 +358,7 @@ class UploadManager: NSObject, URLSessionDelegate {
             let nextUpload = allUploads.first(where: { $0.state == .waiting }) {
 
             // Pause upload manager if app not in the foreground
-            // and background task not available
+            // and not executed in a background task
             if appState == .inactive {
                 return
             }
@@ -382,7 +376,7 @@ class UploadManager: NSObject, URLSessionDelegate {
             let finishedUploads = uploadsProvider.getRequestsIn(states: [.finished]), finishedUploads.count > 0 {
 
             // Pause upload manager if app not in the foreground
-            // and background task not available
+            // and not executed in a background task
             if appState == .inactive {
                 return
             }
@@ -400,7 +394,68 @@ class UploadManager: NSObject, URLSessionDelegate {
         }
     }
 
-    private func prepare(nextUpload: Upload) -> Void {
+    // Images are uploaded in parallel with BackgroundTasks.
+    /// - getUploadRequests() returns a series of upload requests to deal with
+    /// - Photos are and videos are prepared in concurrent threads
+    /// - Uploads are launched in the background with the method pwg.images.uploadAsync
+    ///   and the BackgroundTasks farmework (iOS 13+)
+    @objc let maxNberOfUploadsPerBackgroundTask = 10
+    @objc var uploadRequestsToPrepare = [Upload]()
+    @objc var uploadRequestsToTransfer = [Upload]()
+
+    @objc
+    func selectUploadRequestsForBckgTask() -> Void {
+        // Get series of uploads to complete
+        // Considers only uploads to the server to which the user is logged in
+        let states: [kPiwigoUploadState] = [.waiting, .prepared]
+        guard let uploadRequests = uploadsProvider.getRequestsIn(states: states) else {
+            return
+        }
+        
+        // Initialisation
+        uploadRequestsToPrepare = [Upload]()
+        uploadRequestsToTransfer = [Upload]()
+
+        // Get list of upload requests to transfer
+        let requestsToTransfer = uploadRequests.filter({$0.state == .prepared})
+        let nberToTransfer = requestsToTransfer.count
+        if nberToTransfer > 0 {
+            if nberToTransfer > maxNberOfUploadsPerBackgroundTask {
+                uploadRequestsToTransfer = Array(requestsToTransfer[..<maxNberOfUploadsPerBackgroundTask])
+            }
+            else {
+                uploadRequestsToTransfer = requestsToTransfer
+            }
+        }
+        
+        // Get list of upload requests to prepare
+        let nberToPrepare = maxNberOfUploadsPerBackgroundTask - uploadRequestsToTransfer.count
+        let requestsToPrepare = uploadRequests.filter({$0.state == .waiting})
+        if requestsToPrepare.count > nberToPrepare {
+            uploadRequestsToPrepare = Array(requestsToPrepare[..<nberToPrepare])
+        } else {
+            uploadRequestsToPrepare = requestsToPrepare
+        }
+    }
+    
+    @objc
+    func appendTransferToBckgTask() -> Void {
+        if let uploadRequest = uploadRequestsToTransfer.last, !uploadRequestsToTransfer.isEmpty {
+            launchTransfer(of: uploadRequest)
+            uploadRequestsToTransfer.removeLast()
+        }
+    }
+
+    @objc
+    func appendPreparationToBckgTask() -> Void {
+        if let uploadRequest = uploadRequestsToPrepare.last, !uploadRequestsToPrepare.isEmpty {
+            prepare(nextUpload: uploadRequest)
+            uploadRequestsToPrepare.removeLast()
+        }
+    }
+
+    @objc
+    func prepare(nextUpload: Upload) -> Void {
         print("•••>> prepare next upload…")
 
         // Add category to list of recent albums
@@ -549,7 +604,34 @@ class UploadManager: NSObject, URLSessionDelegate {
         }
     }
 
+    @objc
+    func launchTransfer(of nextUpload: Upload) -> Void {
+        
+        // Set upload properties
+        var uploadProperties: UploadProperties
+        if nextUpload.isFault {
+            // The upload request is not fired yet.
+            // Happens after a crash during an upload for example
+            nextUpload.willAccessValue(forKey: nil)
+            uploadProperties = nextUpload.getUploadProperties(with: .prepared, error: "")
+            nextUpload.didAccessValue(forKey: nil)
+        } else {
+            uploadProperties = nextUpload.getUploadProperties(with: nextUpload.state, error: nextUpload.requestError)
+        }
 
+        // Update state of upload request
+        uploadProperties.requestState = .uploading
+        uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
+            // Launch transfer if possible
+            if Model.sharedInstance()?.usesUploadAsync ?? false {
+                self.transferInBackgroundImage(of: uploadProperties)
+            } else {
+                self.transferImage(of: uploadProperties)
+            }
+        })
+    }
+
+    
     // MARK: - Uploaded Images Management
     
     private func moderate(uploadedImages : [Upload]) -> Void {
@@ -621,13 +703,8 @@ class UploadManager: NSObject, URLSessionDelegate {
     // MARK: - Failed Uploads Management
     
     @objc func resumeAll() -> Void {
-        // Cancel pending upload task requests
-        if #available(iOS 13.0, *) {
-            BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: kPiwigoBackgroundTaskUpload)
-        }
-        
         // Reset flags
-        appState = .active; isExecutedInBckgTask = false
+        appState = .active
         isPreparing = false; isUploading = false; isFinishing = false
 
         // Considers only uploads to the server to which the user is logged in
@@ -712,17 +789,6 @@ class UploadManager: NSObject, URLSessionDelegate {
         } catch {
             print("Could not clear upload folder: \(error)")
         }
-    }
-}
-
-
-// Fetches the most recent entry from the Core Data store.
-class UploadOperation: Operation {
-    
-    override func main() {
-        print("    > Start upload operation in background task...")
-        UploadManager.shared.isExecutedInBckgTask = true
-        UploadManager.shared.findNextImageToUpload()
     }
 }
 

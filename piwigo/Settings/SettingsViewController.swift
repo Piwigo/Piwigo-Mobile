@@ -1853,8 +1853,28 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
         // Erase cache
         ClearCache.clearAllCache()
-        let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        appDelegate?.loadLoginView()
+        if #available(iOS 13.0, *) {
+            guard let window = (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.window else {
+                return
+            }
+
+            let loginVC: LoginViewController
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                loginVC = LoginViewController_iPhone.init()
+            } else {
+                loginVC = LoginViewController_iPad.init()
+            }
+            let nav = LoginNavigationController(rootViewController: loginVC)
+            nav.isNavigationBarHidden = true
+            window.rootViewController = nav
+            UIView.transition(with: window, duration: 0.5,
+                              options: .transitionCrossDissolve,
+                              animations: nil, completion: nil)
+        } else {
+            // Fallback on earlier versions
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate
+            appDelegate?.loadLoginView()
+        }
     }
 
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
