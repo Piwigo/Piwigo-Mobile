@@ -306,8 +306,7 @@
 -(void)prepareForReuse
 {
     [super prepareForReuse];
-    
-    self.cellImage.image = nil;
+  self.cellImage.image = nil;
 	self.isSelected = NO;
 	self.playImage.hidden = YES;
 	self.noDataLabel.hidden = YES;
