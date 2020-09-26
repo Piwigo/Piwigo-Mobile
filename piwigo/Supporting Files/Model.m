@@ -54,11 +54,12 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         instance.stringEncoding = NSUTF8StringEncoding; // UTF-8 by default
         instance.username = @"";
         instance.HttpUsername = @"";
-		instance.hasAdminRights = NO;
+        instance.usesCommunityPluginV29 = NO;           // Checked at each new session
+        instance.usesUploadAsync = NO;
+
+        instance.hasAdminRights = NO;
         instance.hasNormalRights = NO;
         instance.hadOpenedSession = NO;
-        instance.hasUploadedImages = NO;
-        instance.usesCommunityPluginV29 = NO;           // Checked at each new session
         instance.didRequestCertificateApproval = NO;
         instance.didRequestHTTPauthentication = NO;
         instance.didApproveCertificate = NO;

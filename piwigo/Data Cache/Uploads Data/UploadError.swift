@@ -15,6 +15,8 @@ enum UploadError: Error {
     case creationError
     case missingData
     case missingAsset
+    case wrongJSONobject
+    case invalidJSONobject
 }
 
 extension UploadError: LocalizedError {
@@ -30,6 +32,10 @@ extension UploadError: LocalizedError {
             return NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object.")
         case .missingAsset:
             return NSLocalizedString("CoreDataFetch_UploadMissingAsset", comment: "Failed to retrieve photo")
+        case .wrongJSONobject:
+            return NSLocalizedString("PiwigoServer_wrongJSONobject", comment: "Could not digest JSON object returned by Piwigo server.")
+        case .invalidJSONobject:
+            return NSLocalizedString("PiwigoServer_invalidJSONobject", comment: "Piwigo server did not return a valid JSON object.")
         }
     }
 }

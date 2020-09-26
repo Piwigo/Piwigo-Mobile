@@ -1689,7 +1689,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     var systemInfo = utsname()
                     uname(&systemInfo)
                     let size = Int(_SYS_NAMELEN) // is 32, but posix AND its init is 256....
-                    let deviceModel: String = Utilities.deviceName(forCode: withUnsafeMutablePointer(to: &systemInfo.machine) {p in
+                    let deviceModel: String = DeviceUtilities.name(forCode: withUnsafeMutablePointer(to: &systemInfo.machine) {p in
                         p.withMemoryRebound(to: CChar.self, capacity: size, {p2 in
                             return String(cString: p2)
                         })
@@ -1853,8 +1853,28 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
         // Erase cache
         ClearCache.clearAllCache()
-        let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        appDelegate?.loadLoginView()
+        if #available(iOS 13.0, *) {
+            guard let window = (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.window else {
+                return
+            }
+
+            let loginVC: LoginViewController
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                loginVC = LoginViewController_iPhone.init()
+            } else {
+                loginVC = LoginViewController_iPad.init()
+            }
+            let nav = LoginNavigationController(rootViewController: loginVC)
+            nav.isNavigationBarHidden = true
+            window.rootViewController = nav
+            UIView.transition(with: window, duration: 0.5,
+                              options: .transitionCrossDissolve,
+                              animations: nil, completion: nil)
+        } else {
+            // Fallback on earlier versions
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate
+            appDelegate?.loadLoginView()
+        }
     }
 
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {

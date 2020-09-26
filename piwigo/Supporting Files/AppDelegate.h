@@ -15,13 +15,18 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationNetworkErrorEncountered;
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationAddRecentAlbum;
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationRemoveRecentAlbum;
 
+FOUNDATION_EXPORT NSString * const kPiwigoBackgroundTaskUpload;
+
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (nonatomic, strong) UIWindow *window;
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic, strong) dispatch_queue_t uploadManagerQueue;
 
 -(void)loadLoginView;
 -(void)loadNavigation;
 -(void)screenBrightnessChanged;
+-(dispatch_queue_t)getUploadManagerQueue;
+-(void)scheduleNextUpload;
 
 @end

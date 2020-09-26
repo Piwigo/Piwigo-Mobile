@@ -188,7 +188,7 @@ class UploadsProvider: NSObject {
     */
     func updateRecord(with uploadData: UploadProperties, completionHandler: @escaping (Error?) -> Void) -> (Void) {
         // Check current queue
-        print("•••>> updateRecord() in", queueName())
+        print("•••>> updateRecord() in \(queueName())\r")
 
         // Create a private queue context.
         let taskContext = DataController.getPrivateContext()
@@ -601,7 +601,7 @@ class UploadsProvider: NSObject {
         fetchRequest.fetchBatchSize = 20
 
         // Sort upload requests by state and date
-        let firstSortDescriptor = NSSortDescriptor(key: "requestSectionKey", ascending: false)
+        let firstSortDescriptor = NSSortDescriptor(key: "requestSectionKey", ascending: true)
         let secondSortDescriptor = NSSortDescriptor(key: "requestDate", ascending: true)
         fetchRequest.sortDescriptors = [firstSortDescriptor, secondSortDescriptor]
         

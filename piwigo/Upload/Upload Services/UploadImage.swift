@@ -7,13 +7,6 @@
 //
 
 import Photos
-import var CommonCrypto.CC_MD5_DIGEST_LENGTH
-import func CommonCrypto.CC_MD5
-import typealias CommonCrypto.CC_LONG
-
-#if canImport(CryptoKit)
-import CryptoKit        // Requires iOS 13
-#endif
 
 extension UploadManager {
 
@@ -69,8 +62,13 @@ extension UploadManager {
             // Update request with error description
             print("    >", error.localizedDescription)
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
-                // Consider next image
-                self.setIsPreparing(status: false)
+                // Upload ready for transfer
+                if self.uploadRequestsToPrepare.contains(where: {$0.localIdentifier == uploadProperties.localIdentifier}) {
+                    // In background task
+                } else {
+                    // In foreground, consider next image
+                    self.didEndPreparation()
+                }
             })
             return
         }
@@ -82,7 +80,13 @@ extension UploadManager {
         print("    > prepared file \(uploadProperties.fileName!)")
         uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
             // Upload ready for transfer
-            self.setIsPreparing(status: false)
+            if self.uploadRequestsToPrepare.contains(where: {$0.localIdentifier == uploadProperties.localIdentifier}) {
+                // In background task
+                self.transferInBackgroundImage(of: uploadProperties)
+            } else {
+                // In foreground
+                self.didEndPreparation()
+            }
         })
     }
 
@@ -306,8 +310,8 @@ extension UploadManager {
             // Fallback on earlier versions
             md5Checksum = oldMD5(data: imageData)
         }
-        print("    > Checksum: \(md5Checksum ?? "No MD5 Checksum!")")
         newUpload.md5Sum = md5Checksum
+        print("    > MD5: \(String(describing: md5Checksum))")
 
         completionHandler(newUpload, nil)
     }
@@ -441,32 +445,5 @@ extension UploadManager {
             return "jp2"
         }
         return nil
-    }
-
-    // MARK: - MD5 Checksum
-    #if canImport(CryptoKit)        // Requires iOS 13
-    @available(iOS 13.0, *)
-    func MD5(data: Data?) -> String {
-        let digest = Insecure.MD5.hash(data: data ?? Data())
-        return digest.map { String(format: "%02hhx", $0) }.joined()
-    }
-    #endif
-
-    func oldMD5(data: Data?) -> String {
-        let length = Int(CC_MD5_DIGEST_LENGTH)
-        let messageData = data ?? Data()
-        var digestData = Data(count: length)
-
-        _ = digestData.withUnsafeMutableBytes { digestBytes -> UInt8 in
-                messageData.withUnsafeBytes { messageBytes -> UInt8 in
-                if let messageBytesBaseAddress = messageBytes.baseAddress,
-                    let digestBytesBlindMemory = digestBytes.bindMemory(to: UInt8.self).baseAddress {
-                    let messageLength = CC_LONG(messageData.count)
-                    CC_MD5(messageBytesBaseAddress, messageLength, digestBytesBlindMemory)
-                }
-                return 0
-            }
-        }
-        return digestData.map { String(format: "%02hhx", $0) }.joined()
     }
 }

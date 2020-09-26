@@ -4,6 +4,7 @@
 
 #import <Availability.h>
 #import <AFNetworking.h>
+#import "AFNetworkActivityIndicatorManager.h"
 #import <MBProgressHUD.h>
 #import <MGSwipeTableCell.h>
 #import <SAMKeychain.h>
@@ -20,10 +21,14 @@
 #import "EditImageTextViewTableViewCell.h"
 #import "ImagesCollection.h"
 #import "ImageService.h"
+#import "KeychainAccess.h"
+#import "LoginNavigationController.h"
+#import "LoginViewController.h"
+#import "LoginViewController_iPhone.h"
+#import "LoginViewController_iPad.h"
 #import "Model.h"
 #import "NetworkHandler.h"
 #import "PiwigoTagData.h"
 #import "SessionService.h"
 #import "TaggedImagesViewController.h"
 #import "TagsData.h"
-#import "Utilities.h"

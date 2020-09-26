@@ -67,6 +67,29 @@ extension UploadManager {
                 } catch {
                 }
 
+                // Determine MD5 checksum
+                var videoData: Data = Data()
+                do {
+                    try videoData = NSData (contentsOf: originalFileURL) as Data
+                    
+                    // Determine MD5 checksum of video file to upload
+                    var md5Checksum: String? = ""
+                    if #available(iOS 13.0, *) {
+                        #if canImport(CryptoKit)        // Requires iOS 13
+                        md5Checksum = self.MD5(data: videoData)
+                        #endif
+                    } else {
+                        // Fallback on earlier versions
+                        md5Checksum = self.oldMD5(data: videoData)
+                    }
+                    newUpload.md5Sum = md5Checksum
+                    print("    > MD5: \(String(describing: md5Checksum))")
+                }
+                catch let error as NSError {
+                    // Upload video with tags and properties
+                    self.updateUploadRequestWith(newUpload, error: error)
+                }
+
                 // Copy video into Piwigo/Upload directory
                 do {
                     try FileManager.default.copyItem(at: originalFileURL, to: fileURL)
@@ -162,8 +185,13 @@ extension UploadManager {
             // Update request with error description
             print("    >", error.localizedDescription)
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
-                // Consider next image
-                self.setIsPreparing(status: false)
+                // Upload ready for transfer
+                if self.uploadRequestsToPrepare.contains(where: {$0.localIdentifier == uploadProperties.localIdentifier}) {
+                    // In background task
+                } else {
+                    // In foreground, consider next video
+                    self.didEndPreparation()
+                }
             })
             return
         }
@@ -175,7 +203,13 @@ extension UploadManager {
         print("    > prepared file \(uploadProperties.fileName!)")
         uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
             // Upload ready for transfer
-            self.setIsPreparing(status: false)
+            if self.uploadRequestsToPrepare.contains(where: {$0.localIdentifier == uploadProperties.localIdentifier}) {
+                // In background task
+                self.transferInBackgroundImage(of: uploadProperties)
+            } else {
+                // In foreground
+                self.didEndPreparation()
+            }
         })
     }
 
@@ -388,8 +422,34 @@ extension UploadManager {
 //                }
                 // <<==== End of code for debugging
 
-                // Upload video with tags and properties
-                self.updateUploadRequestWith(newUpload, error: nil)
+                // MD5 checksum of exported video
+                if let outputURL = exportSession.outputURL {
+                    var videoData: Data = Data()
+                    do {
+                        try videoData = NSData (contentsOf: outputURL) as Data
+                        
+                        // Determine MD5 checksum of video file to upload
+                        var md5Checksum: String? = ""
+                        if #available(iOS 13.0, *) {
+                            #if canImport(CryptoKit)        // Requires iOS 13
+                            md5Checksum = self.MD5(data: videoData)
+                            #endif
+                        } else {
+                            // Fallback on earlier versions
+                            md5Checksum = self.oldMD5(data: videoData)
+                        }
+                        newUpload.md5Sum = md5Checksum
+                        print("    > MD5: \(String(describing: md5Checksum))")
+
+                        // Upload video with tags and properties
+                        self.updateUploadRequestWith(newUpload, error: nil)
+                    }
+                    catch let error as NSError {
+                        // define error !!!!
+                        // Upload video with tags and properties
+                        self.updateUploadRequestWith(newUpload, error: error)
+                    }
+                }
                 return
             
             case .failed:
