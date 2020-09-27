@@ -475,7 +475,8 @@ extension UploadManager {
         // Considers only uploads to the server to which the user is logged in
         let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
                                             .prepared, .uploading, .uploadingError,
-                                            .uploaded, .finishing, .finishingError]
+                                            .uploaded, .finishing, .finishingError,
+                                            .finished, .moderated]
         guard let uploadObject = uploadsProvider.getRequestsIn(states: states)?.filter({$0.localIdentifier == identifier}).first else {
             print("    > Did not find upload object in didCompleteUploadTask() !!!!!!!")
             return
@@ -485,7 +486,7 @@ extension UploadManager {
         // Check returned data
         guard let _ = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: AnyObject] else {
             // Check if this transfer is already known to be failed
-            // because a previous task may have already reported the error
+            // because a previous chunk transfer may have already reported the error
             if upload.requestState == .uploadingError { return }
             // Update upload request status
             let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.invalidJSONobject.localizedDescription])
