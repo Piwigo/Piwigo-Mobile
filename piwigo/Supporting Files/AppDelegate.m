@@ -68,12 +68,6 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     // Cache data in Core Data storage
     [self setManagedObjectContext:[DataController getContext]];
 
-    // Enable network activity indicator
-    [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
-    
-    // Enable network reachability monitoring
-    [[AFNetworkReachabilityManager sharedManager] startMonitoring];
-    
     // Set Settings Bundle data
     [self setSettingsBundleData];
     
