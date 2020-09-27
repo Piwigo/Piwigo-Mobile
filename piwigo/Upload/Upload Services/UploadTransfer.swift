@@ -431,10 +431,14 @@ extension UploadManager {
                 request.setValue(triesStr, forHTTPHeaderField: "tries")
 
                 // File name of chunk data stored into Piwigo/Uploads directory
-                // This file will be deleted after a successful upload to be able to reuse it in case of error.
+                // This file will be deleted after a successful upload so that we can reuse it in case of error.
                 let fileName = identifier.replacingOccurrences(of: "/", with: "-")
                 let chunkFileName = fileName + "." + numberFormatter.string(from: NSNumber(value: chunk))!
                 let fileURL = applicationUploadsDirectory.appendingPathComponent(chunkFileName)
+                if !FileManager.default.fileExists(atPath: fileURL.path) {
+                    // The file does not exist - upload succeeded with reloaded previous chunk
+                    return
+                }
                 
                 // As soon as tasks are created, the timeout counter starts
                 let uploadSession: URLSession = UploadSessionDelegate.shared.uploadSession
@@ -468,7 +472,7 @@ extension UploadManager {
     func didCompleteUploadTask(_ task: URLSessionTask, withData data: Data) {
         // Retrieve task parameters
         guard let identifier = task.originalRequest?.value(forHTTPHeaderField: "identifier") else {
-            fatalError()
+            return
         }
         
         // Retrieve corresponding upload properties
@@ -481,7 +485,19 @@ extension UploadManager {
             print("    > Did not find upload object in didCompleteUploadTask() !!!!!!!")
             return
         }
-        let upload: UploadProperties = uploadObject.getUploadProperties(with: .uploading, error: "")
+
+        // Set upload properties
+        var upload: UploadProperties
+        if uploadObject.isFault {
+            // The upload request is not fired yet.
+            // Happens after a crash during an upload for example
+            uploadObject.willAccessValue(forKey: nil)
+            upload = uploadObject.getUploadProperties(with: .uploading, error: "")
+            uploadObject.didAccessValue(forKey: nil)
+        } else {
+            upload = uploadObject.getUploadProperties(with: uploadObject.state, error: uploadObject.requestError)
+        }
+        upload = uploadObject.getUploadProperties(with: .uploading, error: "")
 
         // Check returned data
         guard let _ = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: AnyObject] else {
