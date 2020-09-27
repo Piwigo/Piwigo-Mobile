@@ -396,7 +396,7 @@ class UploadManager: NSObject, URLSessionDelegate {
 
     // Images are uploaded in parallel with BackgroundTasks.
     /// - getUploadRequests() returns a series of upload requests to deal with
-    /// - Photos are and videos are prepared in concurrent threads
+    /// - Photos and videos are prepared in concurrent threads
     /// - Uploads are launched in the background with the method pwg.images.uploadAsync
     ///   and the BackgroundTasks farmework (iOS 13+)
     @objc let maxNberOfUploadsPerBackgroundTask = 10
