@@ -176,15 +176,15 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
             String(format: "%ld %@", nberOfImagesInQueue, NSLocalizedString("singleImage", comment: "Photo"))
         
         // Action menu
-        var impossibleUploads = 0
+        var hasImpossibleUploadsSection = false
         if let _ = diffableDataSource.snapshot().indexOfSection(SectionKeys.Section1.rawValue) {
-            impossibleUploads = diffableDataSource.snapshot().numberOfItems(inSection: SectionKeys.Section1.rawValue)
+            hasImpossibleUploadsSection = true
         }
-        var failedUploads = 0
+        var hasFailedUploadsSection = false
         if let _ = diffableDataSource.snapshot().indexOfSection(SectionKeys.Section2.rawValue) {
-            failedUploads = diffableDataSource.snapshot().numberOfItems(inSection: SectionKeys.Section2.rawValue)
+            hasFailedUploadsSection = true
         }
-        if impossibleUploads + failedUploads > 0 {
+        if hasImpossibleUploadsSection || hasFailedUploadsSection {
             navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
         } else {
             navigationItem.rightBarButtonItems = nil
