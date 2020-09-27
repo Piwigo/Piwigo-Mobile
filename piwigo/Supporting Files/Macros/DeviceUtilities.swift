@@ -19,7 +19,7 @@ class DeviceUtilities: NSObject {
             return "Unknown device"
         }
         
-        // iPhone
+        // MARK: - iPhone
         if (deviceCode == "iPhone1,1") {
             return "iPhone"
         }
@@ -126,7 +126,7 @@ class DeviceUtilities: NSObject {
             return "iPhone SE (2nd generation)"
         }
 
-        // iPad
+        // MARK: - iPad
         if (deviceCode == "iPad1,1") {
             return "iPad"
         }
@@ -185,7 +185,7 @@ class DeviceUtilities: NSObject {
             return "iPad (8th generation) (Wi-Fi + Cellular)"
         }
 
-        // iPad Air
+        // MARK: - iPad Air
         if (deviceCode == "iPad4,1") {
             return "iPad Air (Wi-Fi)"
         }
@@ -205,7 +205,7 @@ class DeviceUtilities: NSObject {
             return "iPad Air (3rd generation) (Wi-Fi + Cellular)"
         }
 
-        // iPad Pro
+        // MARK: - iPad Pro
         if (deviceCode == "iPad6,3") {
             return "iPad Pro 9.7-inch (Wi-Fi)"
         }
@@ -279,7 +279,7 @@ class DeviceUtilities: NSObject {
             return "iPad Pro 12.9-inch (4th generation) (Wi-Fi + Cellular)"
         }
 
-        // iPad mini
+        // MARK: - iPad mini
         if (deviceCode == "iPad2,5") {
             return "iPad Mini (Wi-Fi)"
         }
@@ -314,7 +314,7 @@ class DeviceUtilities: NSObject {
             return "iPad mini (5th generation) (Wi-Fi + Cellular)"
         }
 
-        // iPod
+        // MARK: - iPod
         if (deviceCode == "iPod1,1") {
             return "iPod touch"
         }
@@ -337,7 +337,7 @@ class DeviceUtilities: NSObject {
             return "iPod touch (7th generation)"
         }
 
-        // Simulator
+        // MARK: - Simulator
         if (deviceCode == "i386") {
             return "Simulator"
         }
