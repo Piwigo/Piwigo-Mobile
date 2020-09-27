@@ -147,6 +147,26 @@ class ReleaseNotesViewController: UIViewController {
         let spacerRange = NSRange(location: 0, length: spacerAttributedString.length)
         spacerAttributedString.addAttribute(.font, value: UIFont.piwigoFontTiny(), range: spacerRange)
 
+        // Release 2.5.3 — Bundle string
+        let v253String = NSLocalizedString("v2.5.3_text", tableName: "ReleaseNotes", bundle: Bundle.main, value: "", comment: "v2.5.3 Release Notes text")
+        let v253AttributedString = NSMutableAttributedString(string: v253String)
+        var v253Range = NSRange(location: 0, length: v253String.count)
+        v253AttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: v253Range)
+        v253Range = NSRange(location: 0, length: (v253String as NSString).range(of: "\n").location)
+        v253AttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: v253Range)
+        notesAttributedString.append(v253AttributedString)
+        notesAttributedString.append(spacerAttributedString)
+
+        // Release 2.5.2 — Bundle string
+        let v252String = NSLocalizedString("v2.5.2_text", tableName: "ReleaseNotes", bundle: Bundle.main, value: "", comment: "v2.5.2 Release Notes text")
+        let v252AttributedString = NSMutableAttributedString(string: v252String)
+        var v252Range = NSRange(location: 0, length: v252String.count)
+        v252AttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: v252Range)
+        v252Range = NSRange(location: 0, length: (v252String as NSString).range(of: "\n").location)
+        v252AttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: v252Range)
+        notesAttributedString.append(v252AttributedString)
+        notesAttributedString.append(spacerAttributedString)
+
         // Release 2.5.1 — Bundle string
         let v251String = NSLocalizedString("v2.5.1_text", tableName: "ReleaseNotes", bundle: Bundle.main, value: "", comment: "v2.5.1 Release Notes text")
         let v251AttributedString = NSMutableAttributedString(string: v251String)

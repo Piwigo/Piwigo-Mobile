@@ -1,0 +1,102 @@
+{
+    "stat": "ok",
+    "result": {
+        "id": 11671,
+        "file": "IMG_0004.JPG",
+        "date_available": "2020-09-12 16:21:58",
+        "date_creation": "2014-05-22 07:03:19",
+        "name": null,
+        "comment": null,
+        "author": null,
+        "hit": 0,
+        "filesize": 141,
+        "width": 640,
+        "height": 1136,
+        "coi": null,
+        "representative_ext": null,
+        "date_metadata_update": "2020-09-12",
+        "rating_score": null,
+        "level": "0",
+        "md5sum": "7870f465dd76af3f0bd6d4f087afa5cd",
+        "added_by": "1",
+        "rotation": "0",
+        "latitude": null,
+        "longitude": null,
+        "lastmodified": "2020-09-12 16:21:58",
+        "page_url": "https://.../picture.php?/11671",
+        "element_url": "https://.../upload/2020/09/12/20200912162158-7870f465.jpg",
+        "derivatives": {
+            "square": {
+                "url": "https://.../i.php?/upload/2020/09/12/20200912162158-7870f465-sq.jpg",
+                "width": 120,
+                "height": 120
+            },
+            "thumb": {
+                "url": "https://...//i.php?/upload/2020/09/12/20200912162158-7870f465-th.jpg",
+                "width": 81,
+                "height": 144
+            },
+            "2small": {
+                "url": "https://.../i.php?/upload/2020/09/12/20200912162158-7870f465-2s.jpg",
+                "width": 135,
+                "height": 240
+            },
+            "xsmall": {
+                "url": "https://.../i.php?/upload/2020/09/12/20200912162158-7870f465-xs.jpg",
+                "width": 182,
+                "height": 324
+            },
+            "small": {
+                "url": "https://.../i.php?/upload/2020/09/12/20200912162158-7870f465-sm.jpg",
+                "width": 243,
+                "height": 432
+            },
+            "medium": {
+                "url": "https://.../_data/i/upload/2020/09/12/20200912162158-7870f465-me.jpg",
+                "width": 334,
+                "height": 594
+            },
+            "large": {
+                "url": "https://.../i.php?/upload/2020/09/12/20200912162158-7870f465-la.jpg",
+                "width": 425,
+                "height": 756
+            },
+            "xlarge": {
+                "url": "https://.../i.php?/upload/2020/09/12/20200912162158-7870f465-xl.jpg",
+                "width": 517,
+                "height": 918
+            },
+            "xxlarge": {
+                "url": "https://.../upload/2020/09/12/20200912162158-7870f465.jpg",
+                "width": "640",
+                "height": "1136"
+            }
+        },
+        "rates": {
+            "score": null,
+            "count": 0,
+            "average": null
+        },
+        "categories": [{
+            "id": 168,
+            "name": "Test uploadAsync",
+            "permalink": null,
+            "uppercats": "168",
+            "global_rank": "1",
+            "url": "https://.../index.php?/category/168",
+            "page_url": "https://.../picture.php?/11671/category/168"
+        }],
+        "tags": [],
+        "comment_post": {
+            "author": "Eddy",
+            "key": "1599927718.9:2:2d5e59b8ac87d848662be71a012dde36"
+        },
+        "comments_paging": {
+            "page": 0,
+            "per_page": "10",
+            "count": 0,
+            "total_count": 0
+        },
+        "comments": []
+    }
+}

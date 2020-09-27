@@ -1,6 +1,6 @@
 //
 //  pwg.images.upload.swift
-//  piwigoWebAPI
+//  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 28/06/2020.
 //  Copyright © 2020 Piwigo.org. All rights reserved.
@@ -40,7 +40,7 @@ struct ImagesUploadJSON: Decodable {
             {
                 // Decodes response from the data and store them in the array
                 data = try rootContainer.decode(ImagesUpload.self, forKey: .data)
-    //            dump(imagesUpload)
+    //            dump(data)
             }
             else if (status == "fail")
             {
@@ -60,7 +60,7 @@ struct ImagesUploadJSON: Decodable {
 }
 
 // MARK: - Result
-struct ImagesUpload: Codable
+struct ImagesUpload: Decodable
 {
     let image_id: Int?              // 1042
     let square_src: String?         // "https://…-sq.jpg"
@@ -72,7 +72,7 @@ struct ImagesUpload: Codable
 }
 
 // MARK: - Category
-struct Category: Codable {
+struct Category: Decodable {
     let catId: Int?
     let catName: String?
     let nbPhotos: String?

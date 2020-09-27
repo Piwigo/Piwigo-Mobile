@@ -78,7 +78,7 @@ struct TagJSON: Decodable {
  A struct for decoding JSON returned by kPiwigoTagsGetList.
  All members are optional in case they are missing from the data.
 */
-struct TagProperties: Codable
+struct TagProperties: Decodable
 {
     let id: Int32?                  // 1
     let name: String?               // "Birthday"
@@ -94,7 +94,7 @@ struct TagProperties: Codable
  A struct for decoding JSON returned by kPiwigoTagsGetAdminList:
  All members are optional in case they are missing from the data.
 */
-struct TagProperties4Admin: Codable
+struct TagProperties4Admin: Decodable
 {
     let id: String?                 // 1 (String instead of Int)
     let name: String?               // "Birthday"

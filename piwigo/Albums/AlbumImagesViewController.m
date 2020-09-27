@@ -926,7 +926,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
             // Resize label to fit number
             [self.nberOfUploadsLabel sizeToFit];
             
-            // Elongate the button if needed
+            // Adapt button width if needed
             CGFloat width = self.nberOfUploadsLabel.bounds.size.width + 20;
             CGFloat height = self.nberOfUploadsLabel.bounds.size.height;
             CGFloat extraWidth = fmax(0, (width - 2*kRadius));
@@ -939,21 +939,21 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
             [path addLineToPoint:CGPointMake(kRadius + extraWidth, 1.5f)];
             self.progressLayer.path = [path CGPath];
 
-            // Show button is needed
+            // Show button if needed
             if (self.uploadQueueButton.hidden) {
                 // Unhide transparent Upload Queue button
                 [self.uploadQueueButton setHidden:NO];
-                        
-                // Animate appearance of Upload Queue button
-                [UIView animateWithDuration:0.3 animations:^{
-                    // Progressive appearance
-                    [self.uploadQueueButton.layer setOpacity:0.8];
-                    CGFloat xPos = self.addButton.frame.origin.x - extraWidth;
-                    CGFloat yPos = self.addButton.frame.origin.y;
-                    self.uploadQueueButton.frame = CGRectMake(xPos - 3*kRadius, yPos, 2*kRadius + extraWidth, 2*kRadius);
-                    [self.uploadQueueButton setNeedsLayout];
-                }];
             }
+                        
+            // Animate appearance / width change of Upload Queue button
+			[UIView animateWithDuration:0.3 animations:^{
+				// Progressive appearance
+				[self.uploadQueueButton.layer setOpacity:0.8];
+				CGFloat xPos = self.addButton.frame.origin.x - extraWidth;
+				CGFloat yPos = self.addButton.frame.origin.y;
+				self.uploadQueueButton.frame = CGRectMake(xPos - 3*kRadius, yPos, 2*kRadius + extraWidth, 2*kRadius);
+				[self.uploadQueueButton setNeedsLayout];
+			}];
         } else {
             // Hide button if not already hidden
             if (!self.uploadQueueButton.hidden) {

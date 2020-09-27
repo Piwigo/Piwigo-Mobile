@@ -5,7 +5,7 @@
 //  Created by Eddy Lelièvre-Berna on 28/06/2020.
 //  Copyright © 2020 Piwigo.org. All rights reserved.
 //
-// See https://app.quicktype.io/?share=2O9jStiO6T444YFJc8F3
+// See https://app.quicktype.io/?share=
 //     https://jsonlint.com/?code=
 
 import Foundation

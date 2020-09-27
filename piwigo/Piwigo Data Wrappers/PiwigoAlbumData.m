@@ -294,8 +294,15 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
         //      file, date_creation, date_available, width, height
         //      element_url, derivatives, (page_url)
         //
-        [newImageList addObject:imageData];
-        [self.imageIds setValue:@(0) forKey:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]];
+        NSInteger indexOfExistingItem = [newImageList indexOfObjectPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            return obj.imageId == imageData.imageId;
+        }];
+        if (indexOfExistingItem == NSNotFound) {
+            [newImageList addObject:imageData];
+            [self.imageIds setValue:@(0) forKey:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]];
+        } else {
+            [newImageList replaceObjectAtIndex:indexOfExistingItem withObject:imageData];
+        }
     }
     
     // Store updated list
@@ -310,12 +317,19 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
         [newImageList addObjectsFromArray:self.imageList];
     }
     
-    // Append uploaded image
+    // Append uploaded image (replace it if it exists)
     // API pwg.images.upload only returns:
     //      image_id, square_src, name, src, (category)
     //
-    [newImageList addObject:imageData];
-    [self.imageIds setValue:@(0) forKey:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]];
+    NSInteger indexOfExistingItem = [newImageList indexOfObjectPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        return obj.imageId == imageData.imageId;
+    }];
+    if (indexOfExistingItem == NSNotFound) {
+		[newImageList addObject:imageData];
+		[self.imageIds setValue:@(0) forKey:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]];
+    } else {
+        [newImageList replaceObjectAtIndex:indexOfExistingItem withObject:imageData];
+    }
     
     // Update image list
     self.imageList = newImageList;

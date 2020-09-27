@@ -188,7 +188,7 @@ class UploadsProvider: NSObject {
     */
     func updateRecord(with uploadData: UploadProperties, completionHandler: @escaping (Error?) -> Void) -> (Void) {
         // Check current queue
-        print("•••>> updateRecord() in", queueName())
+        print("•••>> updateRecord() in \(queueName())\r")
 
         // Create a private queue context.
         let taskContext = DataController.getPrivateContext()
@@ -304,13 +304,7 @@ class UploadsProvider: NSObject {
         }
         
         // Update app badge and Upload button in root/default album
-        DispatchQueue.main.async {
-            // Update app badge
-            UIApplication.shared.applicationIconBadgeNumber = allUploads.count
-            // Update button of root album (or default album)
-            let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : allUploads.count]
-            NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationLeftUploads), object: nil, userInfo: uploadInfo)
-        }
+        UploadManager.shared.nberOfUploadsToComplete = allUploads.count
 }
     
     /**
@@ -601,7 +595,7 @@ class UploadsProvider: NSObject {
         fetchRequest.fetchBatchSize = 20
 
         // Sort upload requests by state and date
-        let firstSortDescriptor = NSSortDescriptor(key: "requestSectionKey", ascending: false)
+        let firstSortDescriptor = NSSortDescriptor(key: "requestSectionKey", ascending: true)
         let secondSortDescriptor = NSSortDescriptor(key: "requestDate", ascending: true)
         fetchRequest.sortDescriptors = [firstSortDescriptor, secondSortDescriptor]
         

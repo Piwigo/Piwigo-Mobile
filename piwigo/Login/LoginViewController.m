@@ -18,7 +18,6 @@
 #import "Model.h"
 #import "SAMKeychain.h"
 #import "SessionService.h"
-#import "Utilities.h"
 
 //#ifndef DEBUG_SESSION
 //#define DEBUG_SESSION
@@ -772,13 +771,9 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                             NSDictionary *userInfo = @{@"NoHUD" : @"NO", @"fromCache" : @"NO", @"albumId" : @(0)};
                             [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
 
-                            // Create background queue
-                            dispatch_queue_attr_t qos = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL,
-                                                                                                QOS_CLASS_BACKGROUND, -1);
-                            dispatch_queue_t uploadManagerQueue = dispatch_queue_create("org.piwigo.upload-thread", qos);
-
                             // Resume upload operations in background queue
-                            dispatch_async(uploadManagerQueue, ^{
+                            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                            dispatch_async([appDelegate getUploadManagerQueue], ^{
                                 [[UploadManager shared] resumeAll];
                             });
                         }
@@ -835,13 +830,9 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                     self.isAlreadyTryingToLogin = NO;
                     [self hideLoading];
 
-                    // Create background queue
-                    dispatch_queue_attr_t qos = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL,
-                                                                                        QOS_CLASS_BACKGROUND, -1);
-                    dispatch_queue_t uploadManagerQueue = dispatch_queue_create("org.piwigo.upload-thread", qos);
-
                     // Resume upload operations in background queue
-                    dispatch_async(uploadManagerQueue, ^{
+                    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                    dispatch_async([appDelegate getUploadManagerQueue], ^{
                         [[UploadManager shared] resumeAll];
                     });
 
@@ -1294,7 +1285,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
         // Collect system and device data
         struct utsname systemInfo;
         uname(&systemInfo);
-        NSString* deviceModel = [Utilities deviceNameForCode:[NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding]];
+        NSString* deviceModel = [DeviceUtilities nameForCode:[NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding]];
         NSString *deviceOS = [[UIDevice currentDevice] systemName];
         NSString *deviceOSversion = [[UIDevice currentDevice] systemVersion];
         
