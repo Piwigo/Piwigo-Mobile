@@ -454,6 +454,8 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     
     // Add operation setting flag and selecting upload requests
     NSBlockOperation *initOperation = [NSBlockOperation blockOperationWithBlock:^{
+        // Start executing background upload task
+        [UploadManager shared].isExecutingBackgroundUploadTask = YES;
         // Select upload requests
         [[UploadManager shared] selectUploadRequestsForBckgTask];
     }];
@@ -461,25 +463,18 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     // Initialise list of operations
     NSMutableArray<NSBlockOperation *> *uploadOperations = [[NSMutableArray alloc] initWithObjects:initOperation, nil];
 
-    // Add image transfer operations
+    // Add image transfer operations first,
+    // then image preparation followed by transfer operations
     NSInteger maxOperations = [UploadManager shared].maxNberOfUploadsPerBackgroundTask;
     for (NSInteger index = 0; index < maxOperations; index++) {
-        NSBlockOperation *transferOperation = [NSBlockOperation blockOperationWithBlock:^{
-            // Transfer image if
-            [[UploadManager shared] appendTransferToBckgTask];
+        NSBlockOperation *uploadOperation = [NSBlockOperation blockOperationWithBlock:^{
+            if (![Model sharedInstance].wifiOnlyUploading) {
+                // Transfer image
+                [[UploadManager shared] appendJobToBckgTask];
+            }
         }];
-        [transferOperation addDependency:uploadOperations.lastObject];
-        [uploadOperations addObject:transferOperation];
-    }
-
-    // Add image preparation and image transfer operations
-    for (NSInteger index = 0; index < maxOperations; index++) {
-        NSBlockOperation *preparationOperation = [NSBlockOperation blockOperationWithBlock:^{
-            // Preparations followed by transfers
-            [[UploadManager shared] appendPreparationToBckgTask];
-        }];
-        [preparationOperation addDependency:uploadOperations.lastObject];
-        [uploadOperations addObject:preparationOperation];
+        [uploadOperation addDependency:uploadOperations.lastObject];
+        [uploadOperations addObject:uploadOperation];
     }
 
     // Schedule new task if needed
@@ -487,6 +482,9 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     [lastOperation setCompletionBlock:^{
         NSLog(@"    > Task completed with success");
         [task setTaskCompletedWithSuccess:YES];
+
+        // Completing background upload task
+        [UploadManager shared].isExecutingBackgroundUploadTask = NO;
 
         // Schedule the next upload if needed
         if ([UploadManager shared].nberOfUploadsToComplete > 0) {
@@ -499,6 +497,10 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     // that cancels the operation
     [task setExpirationHandler:^{
         NSLog(@"    > Task expired: Upload operation cancelled.");
+        // Completing background upload task
+        [UploadManager shared].isExecutingBackgroundUploadTask = NO;
+        
+         // Cancel operations
         [uploadQueue cancelAllOperations];
     }];
     

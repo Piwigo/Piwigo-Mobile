@@ -122,8 +122,8 @@ extension UploadManager {
             print("    >", error.localizedDescription)
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
                 // Consider next image
-                if self.uploadRequestsToPrepare.contains(where: {$0.localIdentifier == uploadProperties.localIdentifier}) {
-                    // In background task
+                if self.isExecutingBackgroundUploadTask {
+                    // Background operation will stop here
                 } else {
                     // In foreground, consider next video
                     self.didEndTransfer()
@@ -144,8 +144,8 @@ extension UploadManager {
         print("    > transferred file \(uploadProperties.fileName!)\r")
         uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
             // Job done if performed in background
-            if self.uploadRequestsToPrepare.contains(where: {$0.localIdentifier == uploadProperties.localIdentifier}) {
-                // In background task - NOP
+            if self.isExecutingBackgroundUploadTask {
+                // Background operation completed successfully
             } else {
                 // In foreground, upload ready for next step: finishing or next image
                 self.didEndTransfer()
