@@ -304,13 +304,7 @@ class UploadsProvider: NSObject {
         }
         
         // Update app badge and Upload button in root/default album
-        DispatchQueue.main.async {
-            // Update app badge
-            UIApplication.shared.applicationIconBadgeNumber = allUploads.count
-            // Update button of root album (or default album)
-            let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : allUploads.count]
-            NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationLeftUploads), object: nil, userInfo: uploadInfo)
-        }
+        UploadManager.shared.nberOfUploadsToComplete = allUploads.count
 }
     
     /**
