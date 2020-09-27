@@ -106,6 +106,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             } catch {
             }
         }
+
+        // Should we resume uploads?
+        if let rootVC = self.window?.rootViewController,
+           let _ = rootVC.children.first as? AlbumImagesViewController {
+            // Resume upload operations in background queue
+            // and update badge, upload button of album navigator
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate
+            appDelegate?.getUploadManagerQueue().async(execute: {
+                UploadManager.shared.resumeAll()
+            })
+        }
     }
 
     @available(iOS 13.0, *)
@@ -127,16 +138,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Enable network reachability monitoring
         AFNetworkReachabilityManager.shared().startMonitoring()
-
-        // Should we reopen the session ?
-        let hadOpenedSession = Model.sharedInstance().hadOpenedSession
-        let server = Model.sharedInstance().serverPath ?? ""
-        let user = Model.sharedInstance().username ?? ""
-        if hadOpenedSession && (server.count > 0) && (user.count > 0) {
-            // Let's see…
-            loginVC.isAlreadyTryingToLogin = false
-            loginVC.checkSessionStatusAndTryRelogin()
-        }
     }
 
     @available(iOS 13.0, *)

@@ -203,32 +203,33 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
         
         // Enable network reachability monitoring
         [[AFNetworkReachabilityManager sharedManager] startMonitoring];
-
-        // Should we reopen the session ?
-        BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;
-        NSString *server = [Model sharedInstance].serverPath;
-        NSString *user = [Model sharedInstance].username;
-        if (hadOpenedSession && (server.length > 0) && (user.length > 0))
-        {
-            // Let's see…
-            self.loginVC.isAlreadyTryingToLogin = NO;
-            [self.loginVC checkSessionStatusAndTryRelogin];
-        }
     }
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
 	// Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     
-    // Piwigo Mobile will play audio even if the Silent switch set to silent or when the screen locks.
-    // Furthermore, it will interrupt any other current audio sessions (no mixing)
     if (@available(iOS 13.0, *)) {
         // Managed by SceneDelegate
     } else {
+        // Piwigo Mobile will play audio even if the Silent switch set to silent or when the screen locks.
+        // Furthermore, it will interrupt any other current audio sessions (no mixing)
         AVAudioSession *audioSession = [AVAudioSession sharedInstance];
         NSArray<NSString *> *availableCategories = [audioSession availableCategories];
         if ([availableCategories containsObject:AVAudioSessionCategoryPlayback]) {
             [audioSession setCategory:AVAudioSessionCategoryPlayback error:nil];
+        }
+
+        // Should we resume uploads?
+        UIViewController *rootVC = self.window.rootViewController;
+        UIViewController *currentVC = rootVC.childViewControllers.firstObject;
+        if ([currentVC isKindOfClass:[AlbumImagesViewController class]]) {
+            // Resume upload operations in background queue
+            // and update badge, upload button of album navigator
+            dispatch_async([self getUploadManagerQueue], ^{
+                NSLog(@"•••>> dispatch queue: %s", dispatch_queue_get_label(nil));
+                [[UploadManager shared] resumeAll];
+            });
         }
     }
 }
