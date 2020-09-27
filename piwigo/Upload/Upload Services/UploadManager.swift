@@ -213,11 +213,11 @@ class UploadManager: NSObject, URLSessionDelegate {
             // Update value
             _nberOfUploadsToComplete = requestsToComplete
             // Update badge and button
-            DispatchQueue.main.async { [self] in
+            DispatchQueue.main.async { [unowned self] in
                 // Update app badge
-                UIApplication.shared.applicationIconBadgeNumber = _nberOfUploadsToComplete
+                UIApplication.shared.applicationIconBadgeNumber = self.nberOfUploadsToComplete
                 // Update button of root album (or default album)
-                let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : _nberOfUploadsToComplete]
+                let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : self.nberOfUploadsToComplete]
                 NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationLeftUploads), object: nil, userInfo: uploadInfo)
             }
         }
