@@ -276,6 +276,7 @@ extension UploadManager {
         print("    > imageInBackgroundForRequest: prepare files...")
         
         // Get URL of file to upload
+        /// This file will be deleted once the transfer completed successfully
         let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
         let fileURL = applicationUploadsDirectory.appendingPathComponent(fileName)
         
@@ -347,7 +348,7 @@ extension UploadManager {
             httpBody.appendString("--\(boundary)--")
 
             // File name of chunk data stored into Piwigo/Uploads directory
-            // This file will be deleted after a successful upload to be able to reuse it in case of error.
+            // This file will be deleted after a successful upload of the chunk
             let chunkFileName = fileName + "." + numberFormatter.string(from: NSNumber(value: chunk))!
             let fileURL = applicationUploadsDirectory.appendingPathComponent(chunkFileName)
             
@@ -391,13 +392,6 @@ extension UploadManager {
             }
             print("    > Upload task \(task.taskIdentifier) resumed at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium))")
             task.resume()
-        }
-        
-        // Delete main file
-        do {
-            try FileManager.default.removeItem(at: fileURL)
-        } catch {
-            print("Could not delete upload file: \(error)")
         }
     }
 
@@ -596,6 +590,15 @@ extension UploadManager {
                 // Add uploaded image to cache and update UI if needed
                 DispatchQueue.main.async {
                     CategoriesData.sharedInstance()?.addImage(imageData)
+                }
+
+                // Delete main file
+                let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
+                let fileURL = applicationUploadsDirectory.appendingPathComponent(fileName)
+                do {
+                    try FileManager.default.removeItem(at: fileURL)
+                } catch {
+                    print("Could not delete upload file: \(error)")
                 }
 
                 // Update state of upload
