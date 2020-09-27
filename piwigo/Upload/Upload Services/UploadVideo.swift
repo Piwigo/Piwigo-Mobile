@@ -186,7 +186,7 @@ extension UploadManager {
             print("    >", error.localizedDescription)
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
                 // Upload ready for transfer
-                if self.uploadRequestsToPrepare.contains(where: {$0.localIdentifier == uploadProperties.localIdentifier}) {
+                if self.isExecutingBackgroundUploadTask {
                     // In background task
                 } else {
                     // In foreground, consider next video
@@ -203,7 +203,7 @@ extension UploadManager {
         print("    > prepared file \(uploadProperties.fileName!)")
         uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
             // Upload ready for transfer
-            if self.uploadRequestsToPrepare.contains(where: {$0.localIdentifier == uploadProperties.localIdentifier}) {
+            if self.isExecutingBackgroundUploadTask {
                 // In background task
                 self.transferInBackgroundImage(of: uploadProperties)
             } else {

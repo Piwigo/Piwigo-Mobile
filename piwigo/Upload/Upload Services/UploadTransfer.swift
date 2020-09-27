@@ -122,8 +122,8 @@ extension UploadManager {
             print("    >", error.localizedDescription)
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
                 // Consider next image
-                if self.uploadRequestsToPrepare.contains(where: {$0.localIdentifier == uploadProperties.localIdentifier}) {
-                    // In background task
+                if self.isExecutingBackgroundUploadTask {
+                    // Background operation will stop here
                 } else {
                     // In foreground, consider next video
                     self.didEndTransfer()
@@ -144,8 +144,8 @@ extension UploadManager {
         print("    > transferred file \(uploadProperties.fileName!)\r")
         uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
             // Job done if performed in background
-            if self.uploadRequestsToPrepare.contains(where: {$0.localIdentifier == uploadProperties.localIdentifier}) {
-                // In background task - NOP
+            if self.isExecutingBackgroundUploadTask {
+                // Background operation completed successfully
             } else {
                 // In foreground, upload ready for next step: finishing or next image
                 self.didEndTransfer()
@@ -276,6 +276,7 @@ extension UploadManager {
         print("    > imageInBackgroundForRequest: prepare files...")
         
         // Get URL of file to upload
+        /// This file will be deleted once the transfer completed successfully
         let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
         let fileURL = applicationUploadsDirectory.appendingPathComponent(fileName)
         
@@ -347,7 +348,7 @@ extension UploadManager {
             httpBody.appendString("--\(boundary)--")
 
             // File name of chunk data stored into Piwigo/Uploads directory
-            // This file will be deleted after a successful upload to be able to reuse it in case of error.
+            // This file will be deleted after a successful upload of the chunk
             let chunkFileName = fileName + "." + numberFormatter.string(from: NSNumber(value: chunk))!
             let fileURL = applicationUploadsDirectory.appendingPathComponent(chunkFileName)
             
@@ -392,13 +393,6 @@ extension UploadManager {
             print("    > Upload task \(task.taskIdentifier) resumed at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium))")
             task.resume()
         }
-        
-        // Delete main file
-        do {
-            try FileManager.default.removeItem(at: fileURL)
-        } catch {
-            print("Could not delete upload file: \(error)")
-        }
     }
 
     func didCompleteUploadTask(_ task: URLSessionTask, withError error: Error?) {
@@ -431,10 +425,14 @@ extension UploadManager {
                 request.setValue(triesStr, forHTTPHeaderField: "tries")
 
                 // File name of chunk data stored into Piwigo/Uploads directory
-                // This file will be deleted after a successful upload to be able to reuse it in case of error.
+                // This file will be deleted after a successful upload so that we can reuse it in case of error.
                 let fileName = identifier.replacingOccurrences(of: "/", with: "-")
                 let chunkFileName = fileName + "." + numberFormatter.string(from: NSNumber(value: chunk))!
                 let fileURL = applicationUploadsDirectory.appendingPathComponent(chunkFileName)
+                if !FileManager.default.fileExists(atPath: fileURL.path) {
+                    // The file does not exist - upload succeeded with reloaded previous chunk
+                    return
+                }
                 
                 // As soon as tasks are created, the timeout counter starts
                 let uploadSession: URLSession = UploadSessionDelegate.shared.uploadSession
@@ -468,24 +466,37 @@ extension UploadManager {
     func didCompleteUploadTask(_ task: URLSessionTask, withData data: Data) {
         // Retrieve task parameters
         guard let identifier = task.originalRequest?.value(forHTTPHeaderField: "identifier") else {
-            fatalError()
+            return
         }
         
         // Retrieve corresponding upload properties
         // Considers only uploads to the server to which the user is logged in
         let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
                                             .prepared, .uploading, .uploadingError,
-                                            .uploaded, .finishing, .finishingError]
+                                            .uploaded, .finishing, .finishingError,
+                                            .finished, .moderated]
         guard let uploadObject = uploadsProvider.getRequestsIn(states: states)?.filter({$0.localIdentifier == identifier}).first else {
             print("    > Did not find upload object in didCompleteUploadTask() !!!!!!!")
             return
         }
-        let upload: UploadProperties = uploadObject.getUploadProperties(with: .uploading, error: "")
+
+        // Set upload properties
+        var upload: UploadProperties
+        if uploadObject.isFault {
+            // The upload request is not fired yet.
+            // Happens after a crash during an upload for example
+            uploadObject.willAccessValue(forKey: nil)
+            upload = uploadObject.getUploadProperties(with: .uploading, error: "")
+            uploadObject.didAccessValue(forKey: nil)
+        } else {
+            upload = uploadObject.getUploadProperties(with: uploadObject.state, error: uploadObject.requestError)
+        }
+        upload = uploadObject.getUploadProperties(with: .uploading, error: "")
 
         // Check returned data
         guard let _ = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: AnyObject] else {
             // Check if this transfer is already known to be failed
-            // because a previous task may have already reported the error
+            // because a previous chunk transfer may have already reported the error
             if upload.requestState == .uploadingError { return }
             // Update upload request status
             let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.invalidJSONobject.localizedDescription])
@@ -579,6 +590,15 @@ extension UploadManager {
                 // Add uploaded image to cache and update UI if needed
                 DispatchQueue.main.async {
                     CategoriesData.sharedInstance()?.addImage(imageData)
+                }
+
+                // Delete main file
+                let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
+                let fileURL = applicationUploadsDirectory.appendingPathComponent(fileName)
+                do {
+                    try FileManager.default.removeItem(at: fileURL)
+                } catch {
+                    print("Could not delete upload file: \(error)")
                 }
 
                 // Update state of upload

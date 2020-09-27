@@ -151,7 +151,7 @@ class UploadManager: NSObject, URLSessionDelegate {
     }()
 
     
-    // MARK: - Upload Task Manager
+    // MARK: - Foreground Upload Task Manager
     /** The manager prepares an image for upload and then launches the transfer.
     - isPreparing is set to true when a photo/video is going to be prepared,
       and false when the preparation has completed or failed.
@@ -394,30 +394,34 @@ class UploadManager: NSObject, URLSessionDelegate {
         }
     }
 
+    
+    // MARK: - Background Upload Task Manager
     // Images are uploaded in parallel with BackgroundTasks.
     /// - getUploadRequests() returns a series of upload requests to deal with
-    /// - Photos and videos are prepared in concurrent threads
-    /// - Uploads are launched in the background with the method pwg.images.uploadAsync
+    /// - photos and videos are prepared sequentially to reduce the memory needs
+    /// - uploads are launched in the background with the method pwg.images.uploadAsync
     ///   and the BackgroundTasks farmework (iOS 13+)
+    /// - transfers failed due to wrong MD5 checksum are retried a certain number of times.
     @objc let maxNberOfUploadsPerBackgroundTask = 10
-    @objc var uploadRequestsToPrepare = [Upload]()
-    @objc var uploadRequestsToTransfer = [Upload]()
+    @objc var uploadRequestsToPrepare = [NSManagedObjectID]()
+    @objc var uploadRequestsToTransfer = [NSManagedObjectID]()
+    @objc var isExecutingBackgroundUploadTask = false
 
     @objc
     func selectUploadRequestsForBckgTask() -> Void {
+        // Initialisation
+        uploadRequestsToPrepare = [NSManagedObjectID]()
+        uploadRequestsToTransfer = [NSManagedObjectID]()
+
         // Get series of uploads to complete
         // Considers only uploads to the server to which the user is logged in
-        let states: [kPiwigoUploadState] = [.waiting, .prepared]
+        let states: [kPiwigoUploadState] = [.waiting, .prepared, .uploadingError]
         guard let uploadRequests = uploadsProvider.getRequestsIn(states: states) else {
             return
         }
         
-        // Initialisation
-        uploadRequestsToPrepare = [Upload]()
-        uploadRequestsToTransfer = [Upload]()
-
         // Get list of upload requests to transfer
-        let requestsToTransfer = uploadRequests.filter({$0.state == .prepared})
+        let requestsToTransfer = uploadRequests.filter({$0.state == .prepared || $0.state == .uploadingError}).map({$0.objectID})
         let nberToTransfer = requestsToTransfer.count
         if nberToTransfer > 0 {
             if nberToTransfer > maxNberOfUploadsPerBackgroundTask {
@@ -430,7 +434,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         
         // Get list of upload requests to prepare
         let nberToPrepare = maxNberOfUploadsPerBackgroundTask - uploadRequestsToTransfer.count
-        let requestsToPrepare = uploadRequests.filter({$0.state == .waiting})
+        let requestsToPrepare = uploadRequests.filter({$0.state == .waiting}).map({$0.objectID})
         if requestsToPrepare.count > nberToPrepare {
             uploadRequestsToPrepare = Array(requestsToPrepare[..<nberToPrepare])
         } else {
@@ -439,21 +443,30 @@ class UploadManager: NSObject, URLSessionDelegate {
     }
     
     @objc
-    func appendTransferToBckgTask() -> Void {
-        if let uploadRequest = uploadRequestsToTransfer.last, !uploadRequestsToTransfer.isEmpty {
+    func appendJobToBckgTask() -> Void {
+        // Initialise taskContext
+        let taskContext = DataController.getPrivateContext()
+        
+        // Add image transfer operations first
+        if let objectId = uploadRequestsToTransfer.last, !uploadRequestsToTransfer.isEmpty {
+            let uploadRequest = taskContext.object(with: objectId) as! Upload
+            // Launch transfer
             launchTransfer(of: uploadRequest)
+            // Delete request from selection
             uploadRequestsToTransfer.removeLast()
         }
-    }
-
-    @objc
-    func appendPreparationToBckgTask() -> Void {
-        if let uploadRequest = uploadRequestsToPrepare.last, !uploadRequestsToPrepare.isEmpty {
+        // then image preparation followed by transfer operations
+        else if let objectId = uploadRequestsToPrepare.last, !uploadRequestsToPrepare.isEmpty {
+            let uploadRequest = taskContext.object(with: objectId) as! Upload
+            // Prepare image for transfer
             prepare(nextUpload: uploadRequest)
+            // Delete request from selection
             uploadRequestsToPrepare.removeLast()
         }
     }
-
+    
+    
+    // MARK: - Prepare and transfer image
     @objc
     func prepare(nextUpload: Upload) -> Void {
         print("•••>> prepare next upload…")
