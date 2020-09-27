@@ -43,7 +43,7 @@
                           id methodsList = [[responseObject objectForKey:@"result"] objectForKey:@"methods"];
                           for (NSString *method in methodsList) {
                               // Check if the Community extension is installed and active (> 2.9a)
-                              if([method isEqualToString:kCommunitySessionGetStatus]) {
+                              if([method isEqualToString:@"community.session.getStatus"]) {
                                   [Model sharedInstance].usesCommunityPluginV29 = YES;
                               }
                               // Check if the pwg.images.uploadAsync method is available
