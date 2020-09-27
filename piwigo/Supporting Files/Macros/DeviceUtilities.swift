@@ -178,6 +178,12 @@ class DeviceUtilities: NSObject {
         if (deviceCode == "iPad7,12") {
             return "iPad (7th generation) (Wi-Fi + Cellular)"
         }
+        if (deviceCode == "iPad11,6") {
+            return "iPad (8th generation) (Wi-Fi)"
+        }
+        if (deviceCode == "iPad11,7") {
+            return "iPad (8th generation) (Wi-Fi + Cellular)"
+        }
 
         // iPad Air
         if (deviceCode == "iPad4,1") {
