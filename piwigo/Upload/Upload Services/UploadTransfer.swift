@@ -338,7 +338,18 @@ extension UploadManager {
             httpBody.appendString(convertFormField(named: "level", value: "\(NSNumber(value: upload.privacyLevel!.rawValue))", using: boundary))
             httpBody.appendString(convertFormField(named: "tag_ids", value: upload.tagIds ?? "", using: boundary))
 
+            // Chunk of data
             let chunkOfData = imageData.subdata(in: chunk * chunkSize..<min((chunk+1)*chunkSize, imageData.count))
+            var md5Checksum: String? = ""
+            if #available(iOS 13.0, *) {
+                #if canImport(CryptoKit)        // Requires iOS 13
+                md5Checksum = MD5(data: chunkOfData)
+                #endif
+            } else {
+                // Fallback on earlier versions
+                md5Checksum = oldMD5(data: chunkOfData)
+            }
+            httpBody.appendString(convertFormField(named: "chunk_sum", value: md5Checksum!, using: boundary))
             httpBody.append(convertFileData(fieldName: "file",
                                             fileName: upload.fileName!,
                                             mimeType: upload.mimeType ?? "image/jpg",
@@ -417,8 +428,8 @@ extension UploadManager {
                 print("\(error!.localizedDescription)")
             }
 
-            // Retry if failed less than twice
-            if tries < 3 {
+            // Retry if failed less than 3 times
+            if tries < 4 {
                 // Prepare URL Request Object
                 var request = task.originalRequest!
                 let triesStr = String(format: "%ld", tries + 1)
@@ -430,7 +441,7 @@ extension UploadManager {
                 let chunkFileName = fileName + "." + numberFormatter.string(from: NSNumber(value: chunk))!
                 let fileURL = applicationUploadsDirectory.appendingPathComponent(chunkFileName)
                 if !FileManager.default.fileExists(atPath: fileURL.path) {
-                    // The file does not exist - upload succeeded with reloaded previous chunk
+                    // The file does not exist, avoid crash
                     return
                 }
                 
@@ -449,7 +460,7 @@ extension UploadManager {
                 print("    > Upload repeated task \(repeatedTask.taskIdentifier) resumed at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium))")
                 repeatedTask.resume()
             } else {
-                // Delete chunk file uploaded successfully from Piwigo/Uploads directory
+                // Failed 3 times already, delete chunk file from Piwigo/Uploads directory
                 let imageFile = identifier.replacingOccurrences(of: "/", with: "-")
                 let chunkFileName = imageFile + "." + numberFormatter.string(from: NSNumber(value: chunk))!
                 deleteFilesInUploadsDirectory(with: chunkFileName)
