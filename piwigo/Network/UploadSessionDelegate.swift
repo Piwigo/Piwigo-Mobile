@@ -14,10 +14,7 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
     @objc static var shared = UploadSessionDelegate()
     @objc let uploadSessionIdentifier:String! = "org.piwigo.uploadBckgSession"
     @objc var uploadSessionCompletionHandler: (() -> Void)?
-    
-    var uploadIds: Array<String> = Array.init()
-    var uploadBytesSent: Array<Int64> = Array.init()
-    
+        
     // Create single instance
     lazy var uploadSession: URLSession = {
         let config = URLSessionConfiguration.background(withIdentifier: uploadSessionIdentifier)
@@ -145,35 +142,13 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
     func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
 
         // Get upload info from task
-        guard let identifier = task.originalRequest?.value(forHTTPHeaderField: "identifier"),
-            let fileSize = Int((task.originalRequest?.value(forHTTPHeaderField: "size"))!),
-            let md5sum = task.originalRequest?.value(forHTTPHeaderField: "md5sum"),
+        guard let md5sum = task.originalRequest?.value(forHTTPHeaderField: "md5sum"),
             let chunk = Int((task.originalRequest?.value(forHTTPHeaderField: "chunk"))!),
             let chunks = Int((task.originalRequest?.value(forHTTPHeaderField: "chunks"))!) else {
                 print("   > Could not extract HTTP header fields !!!!!!")
                 return
         }
         print("    > Upload task \(task.taskIdentifier) did send \(bytesSent) bytes of chunk \(chunk)/\(chunks), i.e. \(totalBytesSent) bytes over \(totalBytesExpectedToSend) at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
-
-        // Adds up bytes sent
-        var progress: Float = 0.0
-        if let index = uploadIds.firstIndex(of: identifier) {
-            uploadBytesSent[index] += bytesSent
-            progress = Float(Double(uploadBytesSent[index]) / Double(fileSize))
-        } else {
-            uploadIds.append(identifier)
-            uploadBytesSent.append(bytesSent)
-            progress = Float(Double(bytesSent) / Double(fileSize))
-        }
-        
-        // Update UI
-        let uploadInfo: [String : Any] = ["localIndentifier" : identifier,
-                                          "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
-                                          "progressFraction" : progress]
-        DispatchQueue.main.async {
-            // Update UploadQueue cell and button shown in root album (or default album)
-            NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationUploadProgress), object: nil, userInfo: uploadInfo)
-        }
     }
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {

@@ -476,7 +476,8 @@ extension UploadManager {
 
     func didCompleteUploadTask(_ task: URLSessionTask, withData data: Data) {
         // Retrieve task parameters
-        guard let identifier = task.originalRequest?.value(forHTTPHeaderField: "identifier") else {
+        guard let identifier = task.originalRequest?.value(forHTTPHeaderField: "identifier"),
+              let chunks = Float((task.originalRequest?.value(forHTTPHeaderField: "chunks"))!) else {
             return
         }
         
@@ -525,6 +526,23 @@ extension UploadManager {
                let error = NSError.init(domain: "Piwigo", code: uploadJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
                self.updateUploadRequestWith(upload, error: error)
                return
+            }
+            
+            // Update progress bar if upload not yet complete
+            if let _ = uploadJSON.chunks, let message = uploadJSON.chunks.message {
+                let nberOfUploadedChunks = message.dropFirst(18).components(separatedBy: ",").count
+                print("    > \(nberOfUploadedChunks) chunks downloaded")
+                if chunks > 0 {
+                    let progress = Float(nberOfUploadedChunks) / chunks
+                    // Update UI
+                    let uploadInfo: [String : Any] = ["localIndentifier" : identifier,
+                                                      "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
+                                                      "progressFraction" : progress]
+                    DispatchQueue.main.async {
+                        // Update UploadQueue cell and button shown in root album (or default album)
+                        NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationUploadProgress), object: nil, userInfo: uploadInfo)
+                    }
+                }
             }
 
             // Add image to cache when uploaded by admin users

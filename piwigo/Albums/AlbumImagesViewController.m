@@ -747,6 +747,11 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
                 if ((self.categoryId != 0) && (self.categoryId != [Model sharedInstance].defaultCategory)) {
                     // Show Home button if not in root or default album
                     [self showHomeAlbumButtonIfNeeded];
+                } else {
+                    // Show UploadQueue button if needed
+                    NSInteger nberOfUploads = [[UIApplication sharedApplication] applicationIconBadgeNumber];
+                    NSDictionary *userInfo = @{@"nberOfUploadsToComplete" : @(nberOfUploads)};
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationLeftUploads object:nil userInfo:userInfo];
                 }
             }];
         } else {
