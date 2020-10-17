@@ -384,8 +384,6 @@ extension UploadManager {
             request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
             request.setValue(upload.fileName!, forHTTPHeaderField: "filename")
             request.addValue(upload.localIdentifier, forHTTPHeaderField: "identifier")
-            request.addValue(String(fileSize), forHTTPHeaderField: "size")
-            request.addValue(upload.md5Sum!, forHTTPHeaderField: "md5sum")
             request.addValue(chunkStr, forHTTPHeaderField: "chunk")
             request.addValue(chunksStr, forHTTPHeaderField: "chunks")
             request.addValue("1", forHTTPHeaderField: "tries")
