@@ -544,7 +544,8 @@ extension UploadManager {
                                                       "progressFraction" : progress]
                     DispatchQueue.main.async {
                         // Update UploadQueue cell and button shown in root album (or default album)
-                        NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationUploadProgress), object: nil, userInfo: uploadInfo)
+                        let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)
+                        NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
                     }
                 }
             }
@@ -552,6 +553,17 @@ extension UploadManager {
             // Add image to cache when uploaded by admin users
             if let getInfos = uploadJSON.data, let imageId = getInfos.imageId, imageId != NSNotFound,
                 Model.sharedInstance()?.hasAdminRights ?? false {
+
+                // Update UI (fill progress bar)
+                let uploadInfo: [String : Any] = ["localIndentifier" : identifier,
+                                                  "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
+                                                  "progressFraction" : Float(1)]
+                DispatchQueue.main.async {
+                    // Update UploadQueue cell and button shown in root album (or default album)
+                    let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)
+                    NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
+                }
+
                 // Prepare image for cache
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
