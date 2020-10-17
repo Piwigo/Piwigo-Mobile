@@ -922,7 +922,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
             ((self.categoryId == 0) || (self.categoryId == [Model sharedInstance].defaultCategory))) {
             // Set number of uploads
             NSString *nber = [NSString stringWithFormat:@"%lu", (unsigned long)nberOfUploads];
-            if ([nber compare:self.nberOfUploadsLabel.text] == NSOrderedSame) {
+            if ([nber compare:self.nberOfUploadsLabel.text] == NSOrderedSame && !self.uploadQueueButton.hidden) {
                 // Number unchanged -> NOP
                 return;
             }
