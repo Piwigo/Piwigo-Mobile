@@ -417,7 +417,7 @@ class UploadManager: NSObject, URLSessionDelegate {
     /// - uploads are launched in the background with the method pwg.images.uploadAsync
     ///   and the BackgroundTasks farmework (iOS 13+)
     /// - transfers failed due to wrong MD5 checksum are retried a certain number of times.
-    @objc let maxNberOfUploadsPerBackgroundTask = 10
+    @objc let maxNberOfUploadsPerBackgroundTask = 20
     @objc var uploadRequestsToPrepare = [NSManagedObjectID]()
     @objc var uploadRequestsToTransfer = [NSManagedObjectID]()
     @objc var isExecutingBackgroundUploadTask = false
@@ -684,6 +684,18 @@ class UploadManager: NSObject, URLSessionDelegate {
 
         // Update state of upload request
         uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
+            // Update UI
+            if !self.isExecutingBackgroundUploadTask {
+                let uploadInfo: [String : Any] = ["localIndentifier" : uploadProperties.localIdentifier,
+                                                  "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
+                                                  "progressFraction" : Float(0)]
+                DispatchQueue.main.async {
+                    // Update UploadQueue cell and button shown in root album (or default album)
+                    let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)
+                    NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
+                }
+            }
+
             // Launch transfer if possible
             if Model.sharedInstance()?.usesUploadAsync ?? false {
                 self.transferInBackgroundImage(of: uploadProperties)
@@ -873,8 +885,8 @@ class UploadManager: NSObject, URLSessionDelegate {
             }
 
             // For debugging
-            let leftFiles = try fileManager.contentsOfDirectory(at: self.applicationUploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
-            print("•••>> Remaining files in cache: \(leftFiles)")
+//            let leftFiles = try fileManager.contentsOfDirectory(at: self.applicationUploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+//            print("•••>> Remaining files in cache: \(leftFiles)")
         } catch {
             print("Could not clear upload folder: \(error)")
         }
