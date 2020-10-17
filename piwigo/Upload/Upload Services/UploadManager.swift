@@ -218,7 +218,8 @@ class UploadManager: NSObject, URLSessionDelegate {
                 UIApplication.shared.applicationIconBadgeNumber = self.nberOfUploadsToComplete
                 // Update button of root album (or default album)
                 let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : self.nberOfUploadsToComplete]
-                NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationLeftUploads), object: nil, userInfo: uploadInfo)
+                let name = NSNotification.Name(rawValue: kPiwigoNotificationLeftUploads)
+                NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
             }
         }
     }
