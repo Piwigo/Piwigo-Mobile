@@ -138,6 +138,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Enable network reachability monitoring
         AFNetworkReachabilityManager.shared().startMonitoring()
+
+        // Should we reopen the session ?
+        let appDelegate = UIApplication.shared.delegate as? AppDelegate
+        appDelegate?.checkSessionStatusAndTryRelogin()
     }
 
     @available(iOS 13.0, *)
