@@ -396,11 +396,11 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
 //              ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
 //#endif
 
-        if ([AFNetworkReachabilityManager sharedManager].reachable) {
-            // Connection changed but again reachable — Login again?
-            [self checkSessionStatusAndTryRelogin];
-        }
-    }];
+//        if ([AFNetworkReachabilityManager sharedManager].reachable) {
+//            // Connection changed but again reachable — Login again?
+//            [self checkSessionStatusAndTryRelogin];
+//        }
+//    }];
 
     // Resume upload operations in background queue
     // and update badge, upload button of album navigator
