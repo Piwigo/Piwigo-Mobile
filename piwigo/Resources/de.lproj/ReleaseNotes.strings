@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.5.1_text" = "Version 2.5.1\n\n• Neue Option für die Darstellung der Fotos und Videos in zufälliger Reihenfolge\n• Kleinere Fehlerbehebungen und Verbesserungen der Benutzeroberfläche";
+"v2.5.2_text" = "Version 2.5.2\n\n• Hochladen des Hintergrunds\n• Kleinere Fehlerbehebungen und Verbesserungen der Benutzeroberfläche";
+
+"v2.5.1_text" = "Version 2.5.1\n10. September 2020\n\n• Neue Option für die Darstellung der Fotos und Videos in zufälliger Reihenfolge\n• Kleinere Fehlerbehebungen und Verbesserungen der Benutzeroberfläche";
 
 "v2.5.0_text" = "Version 2.5\n27. August 2020\n\n• Zeichnet Upload-Anforderungen auf\n• lädt Fotos/Videos hoch, wenn möglich\n• Option \"Nur WLAN\" für Uploads\n• Kein Hochladen im Energiesparmodus\n• Deutlich schnellerer Zugriff auf die Fotobibliothek\n• Kleinere Fehlerbehebungen und Verbesserungen der Schnittstelle\n• Code-Modernisierung\n\nDas Hochladen im Hintergrund wird nach einem Server-Update verfügbar sein.";
 

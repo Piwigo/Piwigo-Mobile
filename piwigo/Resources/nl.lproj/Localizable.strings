@@ -43,6 +43,9 @@
 "internetCancelledConnection_button" = "Verbinding afgebroken";
 "internetCancelledConnection_title" = "Verbindingen afgebroken";
 
+"PiwigoServer_wrongJSONobject" = "Kan JSON object van Piwigo server niet verteren.";
+"PiwigoServer_invalidJSONobject" = "De Piwigo-server heeft geen geldig JSON-object teruggegeven.";
+
 // ===========================================================================
 // ==> CORE DATA
 // ===========================================================================

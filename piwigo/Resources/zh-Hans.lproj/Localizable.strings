@@ -43,6 +43,9 @@
 "internetCancelledConnection_button" = "取消连接";
 "internetCancelledConnection_title" = "连接已取消";
 
+"PiwigoServer_wrongJSONobject" = "Piwigo服务器无法消化JSON对象。";
+"PiwigoServer_invalidJSONobject" = "Piwigo 服务器没有返回一个有效的 JSON 对象。";
+
 // ===========================================================================
 // ==> CORE DATA
 // ===========================================================================

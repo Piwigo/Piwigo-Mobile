@@ -43,6 +43,9 @@
 "internetCancelledConnection_button" = "Avbryt anslutningen";
 "internetCancelledConnection_title" = "Anslutningen avbrutet";
 
+"PiwigoServer_wrongJSONobject" = "Kunde inte smälta JSON-objekt som returneras av Piwigo server.";
+"PiwigoServer_invalidJSONobject" = "Piwigo-servern returnerade inte ett giltigt JSON-objekt.";
+
 // ===========================================================================
 // ==> CORE DATA
 // ===========================================================================

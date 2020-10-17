@@ -43,6 +43,9 @@
 "internetCancelledConnection_button" = "Batalkan Koneksi";
 "internetCancelledConnection_title" = "Koneksi Dibatalkan";
 
+"PiwigoServer_wrongJSONobject" = "Could not digest JSON object returned by Piwigo server.";
+"PiwigoServer_invalidJSONobject" = "Piwigo server did not return a valid JSON object.";
+
 // ===========================================================================
 // ==> CORE DATA
 // ===========================================================================

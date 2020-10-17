@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.5.1_text" = "Versie 2.5.1\n\n• Nieuwe optie voor het presenteren van foto's en video's in willekeurige volgorde\n• Kleine foutjes verbeterd en verbetering van de interface";
+"v2.5.2_text" = "Versie 2.5.2\n\n• Achtergrond uploaden\n• Kleine foutjes gerepareerd en verbetering van de interface";
+
+"v2.5.1_text" = "Versie 2.5.1\n10 September 2020\n\n• Nieuwe optie voor het presenteren van foto's en video's in willekeurige volgorde\n• Kleine foutjes verbeterd en verbetering van de interface";
 
 "v2.5.0_text" = "Versie 2.5\n27 augustus 2020\n\n• Records upload requests\n• Uploaden van foto's/video's indien mogelijk\n• \"Alleen Wi-Fi\" optie voor uploaden\n• Geen upload als in Low Power Modus\n• Veel snellere toegang tot de Photo Library\n• Kleine foutjes hersteld en verbetering van de interface\n• Code modernisatie\n\nAchtergrond uploaden zal beschikbaar zijn na een server update.";
 

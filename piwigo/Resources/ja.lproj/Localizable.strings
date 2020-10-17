@@ -43,6 +43,9 @@
 "internetCancelledConnection_button" = "接続を中止する";
 "internetCancelledConnection_title" = "接続が中止されました";
 
+"PiwigoServer_wrongJSONobject" = "Piwigoサーバが返すJSONオブジェクトを要約できませんでした。";
+"PiwigoServer_invalidJSONobject" = "Piwigoサーバは有効なJSONオブジェクトを返しませんでした。";
+
 // ===========================================================================
 // ==> CORE DATA
 // ===========================================================================

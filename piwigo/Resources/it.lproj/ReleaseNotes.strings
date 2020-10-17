@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.5.1_text" = "Versione 2.5.1\n\n• Nuova opzione per la presentazione di foto e video in ordine casuale\n• Correzioni di bug minori e miglioramenti dell'interfaccia";
+"v2.5.2_text" = "Versione 2.5.2\n\n• Caricamento in background\n• Correzioni di bug minori e miglioramenti dell'interfaccia";
+
+"v2.5.1_text" = "Versione 2.5.1\n10 settembre 2020\n\n• Nuova opzione per la presentazione di foto e video in ordine casuale\n• Correzioni di bug minori e miglioramenti dell'interfaccia";
 
 "v2.5.0_text" = "Versione 2.5\n27 agosto 2020\n\n• Richieste di caricamento delle registrazioni\n• Quando possibile Carica foto/video\n• Opzione \"solo Wi-Fi\" per i caricamenti\n• Nessun caricamento quando in modalità a basso consumo\n• Accesso molto più veloce alla Libreria foto\n• Correzioni di bug minori e miglioramenti dell'interfaccia\n• Modernizzazione del codice\n\nIl caricamento dello sfondo sarà disponibile dopo un aggiornamento del server.";
 

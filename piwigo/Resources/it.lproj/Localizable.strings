@@ -43,6 +43,9 @@
 "internetCancelledConnection_button" = "Annullare la connessione";
 "internetCancelledConnection_title" = "Connessione annullata";
 
+"PiwigoServer_wrongJSONobject" = "Impossibile digerire l'oggetto JSON restituito dal server Piwigo.";
+"PiwigoServer_invalidJSONobject" = "Il server Piwigo non ha restituito un oggetto JSON valido.";
+
 // ===========================================================================
 // ==> CORE DATA
 // ===========================================================================

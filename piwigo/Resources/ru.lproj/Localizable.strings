@@ -43,6 +43,9 @@
 "internetCancelledConnection_button" = "Отменить соединение";
 "internetCancelledConnection_title" = "Соединение отменено";
 
+"PiwigoServer_wrongJSONobject" = "Не удалось оформить объект JSON, возвращённый сервером Piwigo.";
+"PiwigoServer_invalidJSONobject" = "Сервер Piwigo не вернул действительный объект JSON.";
+
 // ===========================================================================
 // ==> CORE DATA
 // ===========================================================================

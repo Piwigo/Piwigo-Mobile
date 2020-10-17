@@ -43,16 +43,19 @@
 "internetCancelledConnection_button" = "إلغاء الإتصال";
 "internetCancelledConnection_title" = "تم إلغاء الإتصال";
 
+"PiwigoServer_wrongJSONobject" = "تعذر استدراج كائن JSON الذي أرسله خادم Piwigo.";
+"PiwigoServer_invalidJSONobject" = "خادم Piwigo لم يعيد كائن JSON صالح.";
+
 // ===========================================================================
 // ==> CORE DATA
 // ===========================================================================
 "CoreDataStore_WarningTitle" = "تحذير";
-"CoreDataStore_WarningMessage" = "A serious application error occurred while Piwigo tried to read the data cache. A new cache has therefore been created.";
+"CoreDataStore_WarningMessage" = "حدث خطأ خطير في التطبيق أثناء محاولة Piwigo قراءة ذاكرة التخزين المؤقت للبيانات. لذلك تم إنشاء ذاكرة التخزين المؤقت الجديدة.";
 "CoreDataFetch_DigestError" = "تعذر استيعاب البياتات التي تم جلبها.";
 
 // Tag objects
 "CoreDataFetch_TagError" = "خطأ في جلب العلامات!";
-"CoreDataFetch_TagMissingData" = "Found and will discard a tag missing a valid code or name.";
+"CoreDataFetch_TagMissingData" = "تم العثور عليه وسوف يتم تجاهل علامة مفقودة رمز أو اسم صالح.";
 "CoreDataFetch_TagCreateFailed" = "فشل في إنشاء عنصر علامة جديد.";
 
 // Upload objects
