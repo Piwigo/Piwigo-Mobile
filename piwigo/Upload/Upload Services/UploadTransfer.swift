@@ -294,7 +294,6 @@ extension UploadManager {
         }
 
         // Calculate number of chunks
-        let fileSize = imageData.count
         let chunkSize = (Model.sharedInstance()?.uploadChunkSize ?? 512) * 1024
         let chunks = Int((Float(imageData.count) / Float(chunkSize)).rounded(.up))
         let chunksStr = String(format: "%ld", chunks)
