@@ -471,11 +471,6 @@ class UploadManager: NSObject, URLSessionDelegate {
     func prepare(nextUpload: Upload) -> Void {
         print("•••>> prepare next upload…")
 
-        // Add category to list of recent albums
-        let userInfo = ["categoryId": String(format: "%ld", Int(nextUpload.category))]
-        let name = NSNotification.Name(rawValue: kPiwigoNotificationAddRecentAlbum)
-        NotificationCenter.default.post(name: name, object: nil, userInfo: userInfo)
-
         // Set upload properties
         var uploadProperties: UploadProperties
         if nextUpload.isFault {
@@ -488,8 +483,27 @@ class UploadManager: NSObject, URLSessionDelegate {
             uploadProperties = nextUpload.getUploadProperties(with: nextUpload.state, error: nextUpload.requestError)
         }
         
+        // Update UI
+        if !self.isExecutingBackgroundUploadTask {
+            let uploadInfo: [String : Any] = ["localIndentifier" : nextUpload.localIdentifier,
+                                              "photoResize" : Int16(nextUpload.photoResize),
+                                              "stateLabel" : kPiwigoUploadState.preparing.stateInfo,
+                                              "Error" : "",
+                                              "progressFraction" : Float(0.0)]
+            DispatchQueue.main.async {
+                // Update UploadQueue cell and button shown in root album (or default album)
+                let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)
+                NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
+            }
+        }
+        
+        // Add category to list of recent albums
+        let userInfo = ["categoryId": String(format: "%ld", Int(uploadProperties.category))]
+        let name = NSNotification.Name(rawValue: kPiwigoNotificationAddRecentAlbum)
+        NotificationCenter.default.post(name: name, object: nil, userInfo: userInfo)
+
         // Retrieve image asset
-        guard let originalAsset = PHAsset.fetchAssets(withLocalIdentifiers: [nextUpload.localIdentifier], options: nil).firstObject else {
+        guard let originalAsset = PHAsset.fetchAssets(withLocalIdentifiers: [uploadProperties.localIdentifier], options: nil).firstObject else {
             // Asset not available… deleted?
             uploadProperties.requestState = .preparingFail
             uploadProperties.requestError = UploadError.missingAsset.errorDescription
