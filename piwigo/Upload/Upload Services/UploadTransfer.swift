@@ -146,6 +146,7 @@ extension UploadManager {
             // Job done if performed in background
             if self.isExecutingBackgroundUploadTask {
                 // Background operation completed successfully
+                self.nberOfUploadsToComplete = self.nberOfUploadsToComplete > 0 ? self.nberOfUploadsToComplete - 1 : 0
             } else {
                 // In foreground, upload ready for next step: finishing or next image
                 self.didEndTransfer()
