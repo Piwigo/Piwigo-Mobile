@@ -125,9 +125,10 @@ extension UploadManager {
                 // Consider next image
                 if self.isExecutingBackgroundUploadTask {
                     // Background operation will stop here
+                    print("    > Background operation will stop here")
                 } else {
                     // In foreground, consider next video
-                    self.didEndTransfer()
+                    self.didEndTransfer(of: uploadProperties.localIdentifier)
                 }
             })
             return
@@ -150,7 +151,7 @@ extension UploadManager {
                 self.nberOfUploadsToComplete = self.nberOfUploadsToComplete > 0 ? self.nberOfUploadsToComplete - 1 : 0
             } else {
                 // In foreground, upload ready for next step: finishing or next image
-                self.didEndTransfer()
+                self.didEndTransfer(of: uploadProperties.localIdentifier)
             }
         })
     }

@@ -155,14 +155,14 @@ class UploadManager: NSObject, URLSessionDelegate {
     /** The manager prepares an image for upload and then launches the transfer.
     - isPreparing is set to true when a photo/video is going to be prepared,
       and false when the preparation has completed or failed.
-    - isUploading is set to true when a photo/video is going to be transferred to the server,
-      and false when the transfer has completed or failed.
+    - isUploading contains the localIdentifier of the photo/video being transferred to the server,
     - isFinishing is set to true when the photo/video parameters are going to be set,
       and false when this job has completed or failed.
     */
+    @objc let maxNberOfTransfers = 4
     @objc func didEndPreparation() {
         _isPreparing = false
-        if !isUploading, !isFinishing { findNextImageToUpload() }
+        if isUploading.count < maxNberOfTransfers, !isFinishing { findNextImageToUpload() }
     }
     private var _isPreparing = false
     private var isPreparing: Bool {
@@ -174,12 +174,12 @@ class UploadManager: NSObject, URLSessionDelegate {
         }
     }
 
-    @objc func didEndTransfer() {
-        _isUploading = false
-        if !isPreparing, !isFinishing { findNextImageToUpload() }
+    @objc func didEndTransfer(of localIdentifier:String) {
+        _isUploading.remove(localIdentifier)
+        if isUploading.count < maxNberOfTransfers, !isFinishing { findNextImageToUpload() }
     }
-    private var _isUploading = false
-    private var isUploading: Bool {
+    private var _isUploading = Set<String>()
+    private var isUploading: Set<String> {
         get {
             return _isUploading
         }
@@ -190,7 +190,7 @@ class UploadManager: NSObject, URLSessionDelegate {
 
     @objc func didSetParameters() {
         _isFinishing = false
-        if !isPreparing, !isUploading { findNextImageToUpload() }
+        if isUploading.count < maxNberOfTransfers, !isFinishing { findNextImageToUpload() }
     }
     private var _isFinishing = false
     private var isFinishing: Bool {
@@ -238,7 +238,7 @@ class UploadManager: NSObject, URLSessionDelegate {
     func findNextImageToUpload() -> Void {
         // Check current queue
         print("•••>> findNextImageToUpload() in", queueName())
-        print("    > \(isPreparing ? "is preparing" : "") \(isUploading ? "is uploading" : "") \(isFinishing ? "is finishing" : "")")
+        print("    > preparing:\(isPreparing ? "Yes" : "No"), uploading:\(isUploading.count), finishing:\(isFinishing ? "Yes" : "No")")
 
         // Get uploads to complete in queue
         // Considers only uploads to the server to which the user is logged in
@@ -290,14 +290,28 @@ class UploadManager: NSObject, URLSessionDelegate {
                 return
             })
         }
-        if !isUploading, let upload = allUploads.first(where: { $0.state == .uploading }) {
-            // Transfer encountered an error
-            let uploadProperties = upload.getUploadProperties(with: .uploadingError, error: UploadError.networkUnavailable.errorDescription)
-            print("    >  Interrupted upload")
-            uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
-                self.findNextImageToUpload()
-                return
-            })
+        let uploading = allUploads.filter( {$0.state == .uploading} )
+        for upload in uploading {
+            if !isUploading.contains(upload.localIdentifier) {
+                // Set upload properties
+                var uploadProperties: UploadProperties
+                if upload.isFault {
+                    // The upload request is not fired yet.
+                    // Happens after a crash during an upload for example
+                    upload.willAccessValue(forKey: nil)
+                    uploadProperties = upload.getUploadProperties(with: .uploadingError, error: "Could not retrieve error message")
+                    upload.didAccessValue(forKey: nil)
+                } else {
+                    uploadProperties = upload.getUploadProperties(with: .uploadingError, error: upload.requestError)
+                }
+
+                // Transfer encountered an error
+                print("    >  Interrupted upload —> \(uploadProperties.fileName!)")
+                uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
+                    self.findNextImageToUpload()
+                    return
+                })
+            }
         }
         if !isPreparing, let upload = allUploads.first(where: { $0.state == .preparing }) {
             // Transfer encountered an error
@@ -337,7 +351,9 @@ class UploadManager: NSObject, URLSessionDelegate {
 
         // Not transferring and file ready for transfer?
         let nberUploadedWithError = allUploads.filter({ $0.state == .uploadingError } ).count
-        if !isUploading, nberFinishedWithError < 2, nberUploadedWithError < 2,
+        let nberPreparedWithError = allUploads.filter({ $0.state == .preparingError } ).count
+        print("•••>> uploading:\(isUploading.count), uploadingWithError:\(nberUploadedWithError), finishedWithError:\(nberFinishedWithError)")
+        if isUploading.count < maxNberOfTransfers, nberFinishedWithError < 2, nberUploadedWithError < 2,
             let upload = allUploads.first(where: { $0.state == .prepared }) {
             
             // Pause upload manager if app not in the foreground
@@ -347,14 +363,12 @@ class UploadManager: NSObject, URLSessionDelegate {
             }
 
             // Upload ready, so start the transfer
-            print("•••>> starting transfer of \(upload.fileName!)…")
-            isUploading = true
             self.launchTransfer(of: upload)
             return
         }
         
         // Not preparing and upload request waiting?
-        let nberPreparedWithError = allUploads.filter({ $0.state == .preparingError } ).count
+        print("•••>> preparedWithError:\(nberPreparedWithError), uploading:\(isUploading.count), uploadingWithError:\(nberUploadedWithError), finishedWithError:\(nberFinishedWithError)")
         if !isPreparing, nberFinishedWithError < 2, nberUploadedWithError < 2, nberPreparedWithError < 2,
             let nextUpload = allUploads.first(where: { $0.state == .waiting }) {
 
@@ -641,20 +655,51 @@ class UploadManager: NSObject, URLSessionDelegate {
             // The upload request is not fired yet.
             // Happens after a crash during an upload for example
             nextUpload.willAccessValue(forKey: nil)
-            uploadProperties = nextUpload.getUploadProperties(with: .prepared, error: "")
+            uploadProperties = nextUpload.getUploadProperties(with: .uploading, error: "")
             nextUpload.didAccessValue(forKey: nil)
         } else {
-            uploadProperties = nextUpload.getUploadProperties(with: nextUpload.state, error: nextUpload.requestError)
+            uploadProperties = nextUpload.getUploadProperties(with: .uploading, error: nextUpload.requestError)
         }
 
+        // Update list of transfers
+        if isUploading.contains(uploadProperties.localIdentifier) { return }
+        print("•••>> starting transfer of \(uploadProperties.fileName!)…")
+        isUploading.insert(uploadProperties.localIdentifier)
+
         // Update state of upload request
-        uploadProperties.requestState = .uploading
         uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
             // Launch transfer if possible
             if Model.sharedInstance()?.usesUploadAsync ?? false {
                 self.transferInBackgroundImage(of: uploadProperties)
             } else {
                 self.transferImage(of: uploadProperties)
+            }
+
+            // Get uploads to complete in queue
+            // Considers only uploads to the server to which the user is logged in
+            let states: [kPiwigoUploadState] = [.waiting, .preparingError, .prepared,
+                                                .uploadingError, .finishingError]
+            guard let nextUploads = uploadsProvider.getRequestsIn(states: states) else {
+                return
+            }
+
+            // Is the next image already prepared?
+            print("•••>> prepared: \(nextUploads.filter( {$0.state == .prepared} ).count), waiting:\(nextUploads.filter( {$0.state == .waiting} ).count)")
+            if nextUploads.filter( {$0.state == .waiting} ).count == 0 { return }
+            if nextUploads.filter( {$0.state == .prepared} ).count > 0 { return }
+
+            // Should we prepare the next image in parallel?
+            let nberFinishedWithError = nextUploads.filter({ $0.state == .finishingError } ).count
+            let nberUploadedWithError = nextUploads.filter({ $0.state == .uploadingError } ).count
+            let nberPreparedWithError = nextUploads.filter({ $0.state == .preparingError } ).count
+            print("•••>> preparedWithError:\(nberPreparedWithError), uploadingWithError:\(nberUploadedWithError), finishedWithError:\(nberFinishedWithError)")
+            if !isPreparing, nberFinishedWithError < 2, nberUploadedWithError < 2, nberPreparedWithError < 2,
+                let nextUpload = nextUploads.first(where: { $0.state == .waiting }) {
+
+                // Prepare the next upload
+                isPreparing = true
+                self.prepare(nextUpload: nextUpload)
+                return
             }
         })
     }
@@ -733,7 +778,7 @@ class UploadManager: NSObject, URLSessionDelegate {
     @objc func resumeAll() -> Void {
         // Reset flags
         appState = .active
-        isPreparing = false; isUploading = false; isFinishing = false
+        isPreparing = false; isUploading = Set<String>(); isFinishing = false
 
         // Considers only uploads to the server to which the user is logged in
         let states: [kPiwigoUploadState] = [.preparingError, .preparingFail, .formatError,
