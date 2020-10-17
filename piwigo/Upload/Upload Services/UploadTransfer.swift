@@ -485,8 +485,12 @@ extension UploadManager {
                                             .prepared, .uploading, .uploadingError,
                                             .uploaded, .finishing, .finishingError,
                                             .finished, .moderated]
-        guard let uploadObject = uploadsProvider.getRequestsIn(states: states)?.filter({$0.localIdentifier == identifier}).first else {
-            print("    > Did not find upload object in didCompleteUploadTask() !!!!!!!")
+        guard let allUploads = uploadsProvider.getRequestsIn(states: states) else {
+            print("    > Empty list of uploads!!!!!!")
+            return
+        }
+        guard let uploadObject = allUploads.filter({$0.localIdentifier == identifier}).first else {
+            print("    > Did not find upload object \(identifier) in didCompleteUploadTask()!!!!!!!")
             return
         }
 
