@@ -284,7 +284,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         if !isFinishing, let upload = allUploads.first(where: { $0.state == .finishing }) {
             // Transfer encountered an error
             let uploadProperties = upload.getUploadProperties(with: .finishingError, error: UploadError.networkUnavailable.errorDescription)
-            print("    >  Interrupted finish")
+            print("    >  Interrupted finish —> \(uploadProperties.fileName!)")
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
                 self.findNextImageToUpload()
                 return
@@ -316,7 +316,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         if !isPreparing, let upload = allUploads.first(where: { $0.state == .preparing }) {
             // Transfer encountered an error
             let uploadProperties = upload.getUploadProperties(with: .preparingError, error:  UploadError.networkUnavailable.errorDescription)
-            print("    >  Interrupted preparation")
+            print("    >  Interrupted preparation —> \(uploadProperties.fileName!)")
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
                 self.findNextImageToUpload()
                 return
