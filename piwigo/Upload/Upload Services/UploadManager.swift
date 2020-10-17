@@ -151,7 +151,7 @@ class UploadManager: NSObject, URLSessionDelegate {
     }()
 
     
-    // MARK: - Foreground Upload Task Manager
+    // MARK: - Foreground Upload Task Manager (pwg.images.upload)
     /** The manager prepares an image for upload and then launches the transfer.
     - isPreparing is set to true when a photo/video is going to be prepared,
       and false when the preparation has completed or failed.
@@ -397,7 +397,7 @@ class UploadManager: NSObject, URLSessionDelegate {
 
     
     // MARK: - Background Upload Task Manager
-    // Images are uploaded in parallel with BackgroundTasks.
+    // Images are uploaded sequentially with BackgroundTasks.
     /// - getUploadRequests() returns a series of upload requests to deal with
     /// - photos and videos are prepared sequentially to reduce the memory needs
     /// - uploads are launched in the background with the method pwg.images.uploadAsync
@@ -549,7 +549,7 @@ class UploadManager: NSObject, URLSessionDelegate {
                 // Try conversion to JPEG
                 if fileExt == "heic" || fileExt == "heif" || fileExt == "avci" {
                     // Will convert HEIC encoded image to JPEG
-                    print("•••>> preparing photo \(uploadProperties.fileName!)…")
+                    print("•••>> converting photo \(uploadProperties.fileName!)…")
                     
                     // Update state of upload
                     uploadProperties.requestState = .preparing
