@@ -233,7 +233,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
             // Resume upload operations in background queue
             // and update badge, upload button of album navigator
             dispatch_async([self getUploadManagerQueue], ^{
-                NSLog(@"•••>> dispatch queue: %s", dispatch_queue_get_label(nil));
+//                NSLog(@"•••>> dispatch queue: %s", dispatch_queue_get_label(nil));
                 [[UploadManager shared] resumeAll];
             });
         }
@@ -387,7 +387,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkSessionWhenLeavingLowPowerMode) name:NSProcessInfoPowerStateDidChangeNotification object:nil];
 
     // Set network reachability status change block
-    [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+//    [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
 //#if defined(DEBUG)
 //        NSLog(@"!!!!!! Network Reachability Changed!");
 //        NSLog(@"       hadOpenedSession=%@, usesCommunityPluginV29=%@, hasAdminRights=%@",
@@ -405,7 +405,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     // Resume upload operations in background queue
     // and update badge, upload button of album navigator
     dispatch_async([self getUploadManagerQueue], ^{
-        NSLog(@"•••>> dispatch queue: %s", dispatch_queue_get_label(nil));
+//        NSLog(@"•••>> dispatch queue: %s", dispatch_queue_get_label(nil));
         [[UploadManager shared] resumeAll];
     });
 }

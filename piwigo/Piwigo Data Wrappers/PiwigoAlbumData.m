@@ -213,7 +213,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     
     // Load more image data…
 	self.isLoadingMoreImages = YES;
-    NSLog(@"loadCategoryImageDataChunkWithSort:%ld page %ld", (long)self.lastImageBulkCount, (long)self.onPage);
+//    NSLog(@"loadCategoryImageDataChunkWithSort:%ld page %ld", (long)self.lastImageBulkCount, (long)self.onPage);
 	[ImageService loadImageChunkForLastChunkCount:self.lastImageBulkCount
                                       forCategory:self.albumId orQuery:self.query
 										   onPage:self.onPage
@@ -231,7 +231,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
                 self.onPage++;
             }
             self.isLoadingMoreImages = NO;
-            NSLog(@"loadCategoryImageDataChunkWithSort:%ld page %ld", (long)self.lastImageBulkCount, (long)self.onPage);
+//            NSLog(@"loadCategoryImageDataChunkWithSort:%ld page %ld", (long)self.lastImageBulkCount, (long)self.onPage);
 
             if(completion)
             {
@@ -444,7 +444,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 	for(NSString *category in self.upperCategories)
 	{
 		[[CategoriesData sharedInstance] getCategoryById:[category integerValue]].totalNumberOfImages++;
-        NSLog(@"•••> incrementImageSizeByOne: catId=%ld, nber:%ld, total:%ld", (long)[category integerValue], (long)self.numberOfImages, (long)self.totalNumberOfImages);
+//        NSLog(@"•••> incrementImageSizeByOne: catId=%ld, nber:%ld, total:%ld", (long)[category integerValue], (long)self.numberOfImages, (long)self.totalNumberOfImages);
 	}
 }
 
@@ -455,7 +455,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 	for(NSString *category in self.upperCategories)
 	{
 		[[CategoriesData sharedInstance] getCategoryById:[category integerValue]].totalNumberOfImages--;
-        NSLog(@"•••> decrementImageSizeByOne: catId=%ld, nber:%ld, total:%ld", (long)[category integerValue], (long)self.numberOfImages, (long)self.totalNumberOfImages);
+//        NSLog(@"•••> decrementImageSizeByOne: catId=%ld, nber:%ld, total:%ld", (long)[category integerValue], (long)self.numberOfImages, (long)self.totalNumberOfImages);
 	}
 }
 

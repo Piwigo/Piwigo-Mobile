@@ -40,7 +40,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
             // Color palette depends on system settings
             Model.sharedInstance().isSystemDarkModeActive = loginVC.traitCollection.userInterfaceStyle == .dark
-            print("•••> iOS mode: \(Model.sharedInstance().isSystemDarkModeActive ? "Dark" : "Light"), app mode: \(Model.sharedInstance().isDarkPaletteModeActive ? "Dark" : "Light"), Brightness: \(lroundf(Float(UIScreen.main.brightness) * 100.0))/\(Model.sharedInstance().switchPaletteThreshold), app: \(Model.sharedInstance().isDarkPaletteActive ? "Dark" : "Light")")
+//            print("•••> iOS mode: \(Model.sharedInstance().isSystemDarkModeActive ? "Dark" : "Light"), app mode: \(Model.sharedInstance().isDarkPaletteModeActive ? "Dark" : "Light"), Brightness: \(lroundf(Float(UIScreen.main.brightness) * 100.0))/\(Model.sharedInstance().switchPaletteThreshold), app: \(Model.sharedInstance().isDarkPaletteActive ? "Dark" : "Light")")
 
             // Apply color palette
             (UIApplication.shared.delegate as! AppDelegate).screenBrightnessChanged()

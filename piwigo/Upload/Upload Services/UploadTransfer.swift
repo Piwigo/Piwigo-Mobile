@@ -389,6 +389,7 @@ extension UploadManager {
             request.addValue(chunkStr, forHTTPHeaderField: "chunk")
             request.addValue(chunksStr, forHTTPHeaderField: "chunks")
             request.addValue("1", forHTTPHeaderField: "tries")
+//            request.addValue(upload.md5Sum!, forHTTPHeaderField: "md5sum")
 
             // As soon as tasks are created, the timeout counter starts
             let uploadSession: URLSession = UploadSessionDelegate.shared.uploadSession

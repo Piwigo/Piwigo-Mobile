@@ -188,7 +188,7 @@ class UploadsProvider: NSObject {
     */
     func updateRecord(with uploadData: UploadProperties, completionHandler: @escaping (Error?) -> Void) -> (Void) {
         // Check current queue
-        print("•••>> updateRecord() in \(queueName())\r")
+        print("•••>> updateRecord() \(uploadData.fileName ?? "no filename") | \(uploadData.stateLabel) in \(queueName())\r")
 
         // Create a private queue context.
         let taskContext = DataController.getPrivateContext()
@@ -452,7 +452,7 @@ class UploadsProvider: NSObject {
         }
         
         // Check current queue
-        print("•••>> getRequestsIn(states:)", queueName())
+//        print("•••>> getRequestsIn(states:)", queueName())
 
         // Initialisation
         var uploads: [Upload]? = nil
@@ -514,7 +514,7 @@ class UploadsProvider: NSObject {
     */
     func clearCompletedUploads() {
         // Check current queue
-        print("•••>> clearCompletedUploads()", queueName())
+//        print("•••>> clearCompletedUploads()", queueName())
 
         // Get completed upload requests
         let completedUploads = getRequestsIn(states: [.finished, .moderated]) ?? []

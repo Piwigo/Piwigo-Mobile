@@ -239,12 +239,12 @@
         if (catId != kPiwigoSearchCategoryId) return;
         
         // Image Id?
-        NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
-        NSLog(@"=> removeImage %ld to Category %ld", (long)imageId, (long)catId);
+//        NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
+//        NSLog(@"=> removeImage %ld to Category %ld", (long)imageId, (long)catId);
         
         // Store current image list
         NSArray *oldImageList = self.albumData.images;
-        NSLog(@"=> category %ld contained %ld images", (long)kPiwigoSearchCategoryId, (long)oldImageList.count);
+//        NSLog(@"=> category %ld contained %ld images", (long)kPiwigoSearchCategoryId, (long)oldImageList.count);
 
         // Load new image (appended to cache) and sort images before updating UI
         [self.albumData loadMoreImagesOnCompletion:^{

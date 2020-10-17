@@ -355,7 +355,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
 
 -(void)retrieveCompleteImageDataOfImage:(PiwigoImageData *)imageData
 {
-    NSLog(@"=> Retrieve complete image data for image #%ld", (long)imageData.imageId);
+//    NSLog(@"=> Retrieve complete image data for image #%ld", (long)imageData.imageId);
 
     // Image data is not complete when retrieved using pwg.categories.getImages
     [self setEnableStateOfButtons:NO];
