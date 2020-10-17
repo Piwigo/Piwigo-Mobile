@@ -66,7 +66,17 @@ extension UploadManager {
                 if self.isExecutingBackgroundUploadTask {
                     // In background task
                 } else {
-                    // In foreground, consider next image
+                    // In foreground, update UI
+                    let uploadInfo: [String : Any] = ["localIndentifier" : upload.localIdentifier,
+                                                      "stateLabel" : kPiwigoUploadState.preparingError.stateInfo,
+                                                      "Error" : "",
+                                                      "progressFraction" : Float(0.0)]
+                    DispatchQueue.main.async {
+                        // Update UploadQueue cell and button shown in root album (or default album)
+                        let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)
+                        NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
+                    }
+                    // Consider next image
                     self.didEndPreparation()
                 }
             })
@@ -84,7 +94,17 @@ extension UploadManager {
                 // In background task
                 self.transferInBackgroundImage(of: uploadProperties)
             } else {
-                // In foreground
+                // In foreground, update UI
+                let uploadInfo: [String : Any] = ["localIndentifier" : upload.localIdentifier,
+                                                  "stateLabel" : kPiwigoUploadState.prepared.stateInfo,
+                                                  "Error" : "",
+                                                  "progressFraction" : Float(0.0)]
+                DispatchQueue.main.async {
+                    // Update UploadQueue cell and button shown in root album (or default album)
+                    let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)
+                    NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
+                }
+                // Consider next image
                 self.didEndPreparation()
             }
         })
