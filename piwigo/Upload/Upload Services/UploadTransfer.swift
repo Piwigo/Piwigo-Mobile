@@ -276,7 +276,7 @@ extension UploadManager {
         print("    > imageInBackgroundForRequest: prepare files...")
         
         // Get URL of file to upload
-        /// This file will be deleted once the transfer completed successfully
+        /// This file will be deleted once the transfer is completed successfully
         let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
         let fileURL = applicationUploadsDirectory.appendingPathComponent(fileName)
         
@@ -434,7 +434,7 @@ extension UploadManager {
                 request.setValue(triesStr, forHTTPHeaderField: "tries")
 
                 // File name of chunk data stored into Piwigo/Uploads directory
-                // This file will be deleted after a successful upload so that we can reuse it in case of error.
+                // This file is deleted after a successful upload so that we can reuse it in case of error.
                 let fileName = identifier.replacingOccurrences(of: "/", with: "-")
                 let chunkFileName = fileName + "." + numberFormatter.string(from: NSNumber(value: chunk))!
                 let fileURL = applicationUploadsDirectory.appendingPathComponent(chunkFileName)
@@ -455,10 +455,11 @@ extension UploadManager {
                     repeatedTask.countOfBytesClientExpectsToSend = Int64(fileSize)
                     repeatedTask.countOfBytesClientExpectsToReceive = 600
                 }
-                print("    > Upload repeated task \(repeatedTask.taskIdentifier) resumed at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium))")
+                print("•••>> Repeat task \(repeatedTask.taskIdentifier) resumed at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium))")
                 repeatedTask.resume()
             } else {
                 // Failed 3 times already, delete chunk file from Piwigo/Uploads directory
+                print("•••>> Upload tasks failed 3 times!!!")
                 let imageFile = identifier.replacingOccurrences(of: "/", with: "-")
                 let chunkFileName = imageFile + "." + numberFormatter.string(from: NSNumber(value: chunk))!
                 deleteFilesInUploadsDirectory(with: chunkFileName)
