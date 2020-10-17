@@ -103,7 +103,8 @@ extension UploadManager {
                         (error.code == 404))          // Not Found
                     {
                         print("…notify kPiwigoNotificationNetworkErrorEncountered!")
-                        NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationNetworkErrorEncountered), object: nil, userInfo: nil)
+                        let name = NSNotification.Name(rawValue: kPiwigoNotificationNetworkErrorEncountered)
+                        NotificationCenter.default.post(name: name, object: nil, userInfo: nil)
                     }
                     // Image still ready for upload
                     self.updateUploadRequestWith(upload, error: error)
