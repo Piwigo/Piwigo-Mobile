@@ -577,9 +577,13 @@ class UploadManager: NSObject, URLSessionDelegate {
             // Image file format cannot be accepted by the Piwigo server
             uploadProperties.requestState = .formatError
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
-                // Investigate next upload request
-                self.isPreparing = false
-                self.findNextImageToUpload()
+                // Investigate next upload request?
+                if self.isExecutingBackgroundUploadTask {
+                    // In background task
+                } else {
+                    // In foreground, consider next image
+                    self.didEndPreparation()
+                }
             })
 //            showError(withTitle: NSLocalizedString("imageUploadError_title", comment: "Image Upload Error"), andMessage: NSLocalizedString("imageUploadError_format", comment: "Sorry, image files with extensions .\(fileExt.uppercased()) and .jpg are not accepted by the Piwigo server."), forRetrying: false, withImage: nextImageToBeUploaded)
 
@@ -617,9 +621,13 @@ class UploadManager: NSObject, URLSessionDelegate {
             // Video file format cannot be accepted by the Piwigo server
             uploadProperties.requestState = .formatError
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
-                // Investigate next upload request
-                self.isPreparing = false
-                self.findNextImageToUpload()
+                // Investigate next upload request?
+                if self.isExecutingBackgroundUploadTask {
+                    // In background task
+                } else {
+                    // In foreground, consider next image
+                    self.didEndPreparation()
+                }
             })
 //                showError(withTitle: NSLocalizedString("videoUploadError_title", comment: "Video Upload Error"), andMessage: NSLocalizedString("videoUploadError_format", comment: "Sorry, video files with extension .\(fileExt.uppercased()) are not accepted by the Piwigo server."), forRetrying: false, withImage: uploadToPrepare)
 
@@ -627,9 +635,13 @@ class UploadManager: NSObject, URLSessionDelegate {
             // Update state of upload: Not managed by Piwigo iOS yet…
             uploadProperties.requestState = .formatError
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
-                // Investigate next upload request
-                self.isPreparing = false
-                self.findNextImageToUpload()
+                // Investigate next upload request?
+                if self.isExecutingBackgroundUploadTask {
+                    // In background task
+                } else {
+                    // In foreground, consider next image
+                    self.didEndPreparation()
+                }
             })
 //            showError(withTitle: NSLocalizedString("audioUploadError_title", comment: "Audio Upload Error"), andMessage: NSLocalizedString("audioUploadError_format", comment: "Sorry, audio files are not supported by Piwigo Mobile yet."), forRetrying: false, withImage: uploadToPrepare)
 
@@ -639,9 +651,13 @@ class UploadManager: NSObject, URLSessionDelegate {
             // Update state of upload request: Unknown format
             uploadProperties.requestState = .formatError
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
-                // Investigate next upload request
-                self.isPreparing = false
-                self.findNextImageToUpload()
+                // Investigate next upload request?
+                if self.isExecutingBackgroundUploadTask {
+                    // In background task
+                } else {
+                    // In foreground, consider next image
+                    self.didEndPreparation()
+                }
             })
         }
     }
