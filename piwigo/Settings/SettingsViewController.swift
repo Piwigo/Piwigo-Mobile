@@ -1831,9 +1831,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 alert.view.tintColor = UIColor.piwigoColorOrange()
             })
         } else {
-            ClearCache.clearAllCache()
-            let appDelegate = UIApplication.shared.delegate as? AppDelegate
-            appDelegate?.loadLoginView()
+            // Clear caches and display login view
+            self.closeSessionAndClearCache()
         }
     }
 
