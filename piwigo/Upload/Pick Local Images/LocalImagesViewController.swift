@@ -314,9 +314,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         let sortOperation = BlockOperation.init(block: {
             // Sort images by months, weeks and days in the background
             (self.indexOfImageSortedByDay, self.indexOfImageSortedByWeek, self.indexOfImageSortedByMonth) = self.sortByMonthWeekDay(images: self.fetchedImages)
-
-            // Initialise buttons of sections for the max number of sections
-            self.selectedSections = .init(repeating: .select, count: self.indexOfImageSortedByDay.count)
         })
         sortOperation.completionBlock = {
             // Allow sort options and refresh section headers
@@ -325,6 +322,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 self.segmentedControl.setEnabled(true, forSegmentAt: SectionType.month.rawValue)
                 self.segmentedControl.setEnabled(true, forSegmentAt: SectionType.week.rawValue)
                 self.segmentedControl.setEnabled(true, forSegmentAt: SectionType.day.rawValue)
+                self.segmentedControl.selectedSegmentIndex = Int(self.sortType.rawValue)
             }
         }
         
@@ -474,22 +472,20 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
     private func indexUploadsAndCacheIDs(of images: PHFetchResult<PHAsset>) -> (Void) {
         // Loop over all images
-//        let start = CFAbsoluteTimeGetCurrent()
-//        print("=> Start indexing uploads…")
-        localIdentifiers = []
-        indexedUploadsInQueue = []
+        let start = CFAbsoluteTimeGetCurrent()
+        print("=> Start indexing uploads… (\(images.count) images)")
+        localIdentifiers = .init(repeating: "", count: fetchedImages.count)
+        indexedUploadsInQueue = .init(repeating: nil, count: fetchedImages.count)
         for index in 0..<images.count {
             // Get image identifier
             let imageId = images[index].localIdentifier
-            localIdentifiers.append(imageId)
+            localIdentifiers[index] = imageId
             if let upload = uploadsInQueue.first(where: { $0?.0 == imageId }) {
-                indexedUploadsInQueue.append(upload)
-            } else {
-                indexedUploadsInQueue.append(nil)
+                indexedUploadsInQueue[index] = upload
             }
         }
-//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-//        print("   indexed \(fetchedImages.count) uploads in \(diff) ms")
+        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+        print("   indexed \(fetchedImages.count) uploads in \(diff) ms")
     }
 
     
@@ -631,16 +627,10 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     
     @objc func cancelSelect() {
         // Clear list of selected sections
-        if indexOfImageSortedByDay.count == 0 {
-            // Sort not yet completed (avoid crash is user upload image before the sort is done)
-            selectedSections = .init(repeating: .select, count: fetchedImages.count)
-        } else {
-            // Sort completed
-            selectedSections = .init(repeating: .select, count: indexOfImageSortedByDay.count)
-        }
+        selectedSections = .init(repeating: .select, count: fetchedImages.count)
 
         // Clear list of selected images
-        selectedImages = Array(repeating: nil, count: fetchedImages.count)
+        selectedImages = .init(repeating: nil, count: fetchedImages.count)
 
         // Update navigation bar
         updateNavBar()
@@ -1108,11 +1098,21 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     if index < self.localIdentifiers.count {
                         self.localIdentifiers.remove(at: index)
                     }
+                    self.selectedSections.removeLast()
                 })
                 changeDetails.insertedIndexes?.forEach({ (index) in
                     // Insert objects
-                    self.selectedImages.insert(nil, at: index)
-                    self.localIdentifiers.insert(changeDetails.fetchResultAfterChanges.object(at: index).localIdentifier, at: index)
+                    if index < self.selectedImages.count {
+                        self.selectedImages.insert(nil, at: index)
+                    } else {
+                        self.selectedImages.append(nil)
+                    }
+                    if index < self.localIdentifiers.count {
+                        self.localIdentifiers.insert(changeDetails.fetchResultAfterChanges.object(at: index).localIdentifier, at: index)
+                    } else {
+                        self.localIdentifiers.append(changeDetails.fetchResultAfterChanges.object(at: index).localIdentifier)
+                    }
+                    self.selectedSections.append(.select)
                 })
                 self.fetchedImages = changeDetails.fetchResultAfterChanges
 
