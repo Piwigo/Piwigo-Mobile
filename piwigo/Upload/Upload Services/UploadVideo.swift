@@ -84,7 +84,7 @@ extension UploadManager {
                         md5Checksum = self.oldMD5(data: videoData)
                     }
                     newUpload.md5Sum = md5Checksum
-                    print("    > MD5: \(String(describing: md5Checksum))")
+                    print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: md5Checksum))")
                 }
                 catch let error as NSError {
                     // Upload video with tags and properties
@@ -184,7 +184,7 @@ extension UploadManager {
             let uploadProperties = upload.update(with: .preparingError, error: error.localizedDescription)
             
             // Update request with error description
-            print("    >", error.localizedDescription)
+            print("\(debugFormatter.string(from: Date())) >", error.localizedDescription)
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
                 // Upload ready for transfer
                 if self.isExecutingBackgroundUploadTask {
@@ -211,7 +211,7 @@ extension UploadManager {
         let uploadProperties = upload.update(with: .prepared, error: "")
 
         // Update request ready for transfer
-        print("    > prepared file \(uploadProperties.fileName!)")
+        print("\(debugFormatter.string(from: Date())) > prepared file \(uploadProperties.fileName!)")
         uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
             // Upload ready for transfer
             if self.isExecutingBackgroundUploadTask {
@@ -280,7 +280,7 @@ extension UploadManager {
     
     private func retrieveVideo(from imageAsset: PHAsset, with options: PHVideoRequestOptions,
                                completionHandler: @escaping (AVAsset?, PHVideoRequestOptions, Error?) -> Void) {
-        print("    > retrieveVideoAssetFrom...")
+        print("\(debugFormatter.string(from: Date())) > retrieveVideoAssetFrom...")
 
         // The block Photos calls periodically while downloading the video.
         options.progressHandler = { progress, error, stop, dict in
@@ -366,7 +366,7 @@ extension UploadManager {
     }
                              
     private func getExportSession(imageAsset: PHAsset, options: PHVideoRequestOptions, exportPreset: String,                                           completionHandler: @escaping (AVAssetExportSession?, Error?) -> Void) {
-        print("    > getExportSession...")
+        print("\(debugFormatter.string(from: Date())) > getExportSession...")
         
         // Requests video with selected export preset…
         PHImageManager.default().requestExportSession(forVideo: imageAsset,
@@ -388,7 +388,7 @@ extension UploadManager {
     // MARK: - Modify Metadata
 
     private func modifyVideo(for upload: UploadProperties, with exportSession: AVAssetExportSession) -> Void {
-    print("    > modifyVideo...")
+    print("\(debugFormatter.string(from: Date())) > modifyVideo...")
     
         // Strips private metadata if user requested it in Settings
         // Apple documentation: 'metadataItemFilterForSharing' removes user-identifying metadata items, such as location information and leaves only metadata releated to commerce or playback itself. For example: playback, copyright, and commercial-related metadata, such as a purchaser’s ID as set by a vendor of digital media, along with metadata either derivable from the media itself or necessary for its proper behavior are all left intact.
@@ -460,7 +460,7 @@ extension UploadManager {
                             md5Checksum = self.oldMD5(data: videoData)
                         }
                         newUpload.md5Sum = md5Checksum
-                        print("    > MD5: \(String(describing: md5Checksum))")
+                        print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: md5Checksum))")
 
                         // Upload video with tags and properties
                         self.updateUploadRequestWith(newUpload, error: nil)

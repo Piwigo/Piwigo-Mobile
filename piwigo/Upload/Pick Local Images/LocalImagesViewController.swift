@@ -355,8 +355,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     private func sortByMonthWeekDay(images: PHFetchResult<PHAsset>) -> (imagesByDay: [IndexSet], imagesByWeek: [IndexSet], imagesByMonth: [IndexSet])  {
 
         // Initialisation
-        let start = CFAbsoluteTimeGetCurrent()
-        print("=> Start sorting images…")
+//        let start = CFAbsoluteTimeGetCurrent()
+//        print("=> Start sorting images…")
         let calendar = Calendar.current
         let byDays: Set<Calendar.Component> = [.year, .month, .day]
         var dayComponents = calendar.dateComponents(byDays, from: images[0].creationDate ?? Date())
@@ -423,8 +423,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         imagesByDay.append(IndexSet.init(integersIn: firstIndexOfSameDay..<images.count))
         imagesByWeek.append(IndexSet.init(integersIn: firstIndexOfSameWeek..<images.count))
         imagesByMonth.append(IndexSet.init(integersIn: firstIndexOfSameMonth..<images.count))
-        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        print("   Sorted \(fetchedImages.count) images by days, weeks and months in \(diff) ms")
+//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+//        print("   Sorted \(fetchedImages.count) images by days, weeks and months in \(diff) ms")
         return (imagesByDay, imagesByWeek, imagesByMonth)
     }
     
@@ -474,8 +474,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
     private func indexUploadsAndCacheIDs(of images: PHFetchResult<PHAsset>) -> (Void) {
         // Loop over all images
-        let start = CFAbsoluteTimeGetCurrent()
-        print("=> Start indexing uploads…")
+//        let start = CFAbsoluteTimeGetCurrent()
+//        print("=> Start indexing uploads…")
         localIdentifiers = []
         indexedUploadsInQueue = []
         for index in 0..<images.count {
@@ -488,8 +488,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 indexedUploadsInQueue.append(nil)
             }
         }
-        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        print("   indexed \(fetchedImages.count) uploads in \(diff) ms")
+//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+//        print("   indexed \(fetchedImages.count) uploads in \(diff) ms")
     }
 
     
@@ -1098,6 +1098,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             if let changeDetails = changeInstance.changeDetails(for: self.fetchedImages) {
                 // Show HUD during update, preventing touches
                 self.showHUD(with: NSLocalizedString("editImageDetailsHUD_updatingPlural", comment: "Updating Photos…"), detail: nil)
+                
                 // Update fetched asset collection
                 changeDetails.removedIndexes?.forEach({ (index) in
                     // Remove objects

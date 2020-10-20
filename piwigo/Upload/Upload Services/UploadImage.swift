@@ -50,7 +50,7 @@ extension UploadManager {
             let uploadProperties = upload.update(with: .preparingError, error: error.localizedDescription)
             
             // Update request with error description
-            print("    >", error.localizedDescription)
+            print("\(debugFormatter.string(from: Date())) >", error.localizedDescription)
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
                 // Upload ready for transfer
                 if self.isExecutingBackgroundUploadTask {
@@ -77,7 +77,7 @@ extension UploadManager {
         let uploadProperties = upload.update(with: .prepared, error: "")
 
         // Update request ready for transfer
-        print("    > prepared file \(uploadProperties.fileName!)")
+        print("\(debugFormatter.string(from: Date())) > prepared file \(uploadProperties.fileName!)")
         uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
             // Upload ready for transfer
             if self.isExecutingBackgroundUploadTask {
@@ -103,7 +103,7 @@ extension UploadManager {
     // MARK: - Retrieve UIImage and Image Data
     
     private func retrieveUIImage(from imageAsset: PHAsset, for upload:UploadProperties) -> (UIImage?, Error?) {
-        print("    > retrieveUIImageFrom...")
+        print("\(debugFormatter.string(from: Date())) > retrieveUIImageFrom...")
 
         // Case of an image…
         let options = PHImageRequestOptions()
@@ -136,7 +136,7 @@ extension UploadManager {
                                               options: options, resultHandler: { imageObject, info in
             // Any error?
             if info?[PHImageErrorKey] != nil || (imageObject?.size.width == 0) || (imageObject?.size.height == 0) {
-//                print("     returned info(\(String(describing: info)))")
+//                print("\(debugFormatter.string(from: Date())) > returned info(\(String(describing: info)))")
                 error = info?[PHImageErrorKey] as? Error
                 return
             }
@@ -156,7 +156,7 @@ extension UploadManager {
     }
 
     private func retrieveFullSizeImageData(from imageAsset: PHAsset) -> (Data?, Error?) {
-        print("    > retrieveFullSizeAssetDataFromImage...")
+        print("\(debugFormatter.string(from: Date())) > retrieveFullSizeAssetDataFromImage...")
 
         // Case of an image…
         let options = PHImageRequestOptions()
@@ -206,7 +206,7 @@ extension UploadManager {
     private func modifyImage(for upload: UploadProperties,
                              with originalData: Data, andObject originalObject: UIImage,
                              completionHandler: @escaping (UploadProperties, Error?) -> Void) {
-        print("    > modifyImage...")
+        print("\(debugFormatter.string(from: Date())) > modifyImage...")
 
         // Create CGI reference from image data (to retrieve complete metadata)
         guard let source: CGImageSource = CGImageSourceCreateWithData((originalData as CFData), nil) else {
@@ -321,7 +321,7 @@ extension UploadManager {
             md5Checksum = oldMD5(data: imageData)
         }
         newUpload.md5Sum = md5Checksum
-        print("    > MD5: \(String(describing: md5Checksum))")
+        print("\(debugFormatter.string(from: Date())) > MD5: \(String(describing: md5Checksum))")
 
         completionHandler(newUpload, nil)
     }

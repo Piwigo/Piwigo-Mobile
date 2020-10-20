@@ -120,15 +120,15 @@ extension UploadManager {
             let uploadProperties = upload.update(with: .uploadingError, error: error.localizedDescription)
             
             // Update request with error description
-            print("    >", error.localizedDescription)
+            print("\(debugFormatter.string(from: Date())) >", error.localizedDescription)
             uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
                 // Consider next image
                 if self.isExecutingBackgroundUploadTask {
                     // Background operation will stop here
-                    print("    > Background operation will stop here")
+                    print("\(debugFormatter.string(from: Date())) > Background operation will stop here")
                 } else {
                     // In foreground, consider next video
-                    self.didEndTransfer(of: uploadProperties.localIdentifier)
+                    self.didEndTransfer()
                 }
             })
             return
@@ -143,7 +143,7 @@ extension UploadManager {
         }
         
         // Update request ready for finish
-        print("    > transferred file \(uploadProperties.fileName!)\r")
+        print("\(debugFormatter.string(from: Date())) > transferred file \(uploadProperties.fileName!)\r")
         uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
             // Job done if performed in background
             if self.isExecutingBackgroundUploadTask {
@@ -151,7 +151,7 @@ extension UploadManager {
                 self.nberOfUploadsToComplete = self.nberOfUploadsToComplete > 0 ? self.nberOfUploadsToComplete - 1 : 0
             } else {
                 // In foreground, upload ready for next step: finishing or next image
-                self.didEndTransfer(of: uploadProperties.localIdentifier)
+                self.didEndTransfer()
             }
         })
     }
@@ -229,7 +229,7 @@ extension UploadManager {
         let length = imageData?.count ?? 0
         let thisChunkSize = length - offset > chunkSize ? chunkSize : length - offset
         let chunk = imageData?.subdata(in: offset..<offset + thisChunkSize)
-        print("    > #\(count) with chunkSize:", chunkSize, "thisChunkSize:", thisChunkSize, "total:", imageData?.count ?? 0)
+        print("\(debugFormatter.string(from: Date())) > #\(count) with chunkSize:", chunkSize, "thisChunkSize:", thisChunkSize, "total:", imageData?.count ?? 0)
 
         parameters[kPiwigoImagesUploadParamChunk] = "\(NSNumber(value: count))"
         parameters[kPiwigoImagesUploadParamChunks] = "\(NSNumber(value: chunks))"
@@ -250,7 +250,7 @@ extension UploadManager {
                 // Continue in background queue!
                 DispatchQueue.global(qos: .background).async {
                     // Continue?
-                    print("    > #\(count) done:", responseObject.debugDescription)
+                    print("\(self.debugFormatter.string(from: Date())) > #\(count) done:", responseObject.debugDescription)
                     if count >= chunks - 1 {
                         // Done, return
                         print("=>> MimeType:", task?.response?.mimeType as Any)
@@ -276,7 +276,7 @@ extension UploadManager {
     // MARK: - Transfer Image in Background
     // See https://tools.ietf.org/html/rfc7578
     func transferInBackgroundImage(of upload: UploadProperties) {
-        print("    > imageInBackgroundForRequest: prepare files...")
+        print("\(debugFormatter.string(from: Date())) > imageInBackgroundForRequest: prepare files...")
         
         // Get URL of file to upload
         /// This file will be deleted once the transfer is completed successfully
@@ -389,7 +389,7 @@ extension UploadManager {
             request.addValue(chunkStr, forHTTPHeaderField: "chunk")
             request.addValue(chunksStr, forHTTPHeaderField: "chunks")
             request.addValue("1", forHTTPHeaderField: "tries")
-//            request.addValue(upload.md5Sum!, forHTTPHeaderField: "md5sum")
+            request.addValue(upload.md5Sum!, forHTTPHeaderField: "md5sum")
 
             // As soon as tasks are created, the timeout counter starts
             let uploadSession: URLSession = UploadSessionDelegate.shared.uploadSession
@@ -398,11 +398,10 @@ extension UploadManager {
             let task = uploadSession.uploadTask(with: request, fromFile: fileURL)
             if #available(iOS 11.0, *) {
                 // Tell the system how many bytes are expected to be exchanged
-                print("    > Upload task \(task.taskIdentifier) will send \(httpBody.count) bytes")
                 task.countOfBytesClientExpectsToSend = Int64(httpBody.count)
                 task.countOfBytesClientExpectsToReceive = 600
             }
-            print("    > Upload task \(task.taskIdentifier) resumed at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium))")
+            print("\(debugFormatter.string(from: Date())) > \(upload.md5Sum!) upload task \(task.taskIdentifier) resumed")
             task.resume()
         }
     }
@@ -411,9 +410,10 @@ extension UploadManager {
         
         // Get upload info from task
         guard let identifier = task.originalRequest?.value(forHTTPHeaderField: "identifier"),
-            let chunk = Int((task.originalRequest?.value(forHTTPHeaderField: "chunk"))!),
-            let tries = Int((task.originalRequest?.value(forHTTPHeaderField: "tries"))!) else {
-            print("   > Could not extract HTTP header fields !!!!!!")
+              let md5sum = task.originalRequest?.value(forHTTPHeaderField: "md5sum"),
+              let chunk = Int((task.originalRequest?.value(forHTTPHeaderField: "chunk"))!),
+              let tries = Int((task.originalRequest?.value(forHTTPHeaderField: "tries"))!) else {
+            print("\(debugFormatter.string(from: Date())) > Could not extract HTTP header fields !!!!!!")
             return
         }
 
@@ -426,7 +426,7 @@ extension UploadManager {
         guard let httpResponse = task.response as? HTTPURLResponse,
             (200...299).contains(httpResponse.statusCode) else {
             if let _ = error {
-                print("\(error!.localizedDescription)")
+                print("\(debugFormatter.string(from: Date())) > \(md5sum) | \(error!.localizedDescription)")
             }
 
             // Retry if failed less than 3 times
@@ -454,15 +454,14 @@ extension UploadManager {
                 if #available(iOS 11.0, *) {
                     // Tell the system how many bytes are expected to be exchanged
                     let fileSize = (try! FileManager.default.attributesOfItem(atPath: fileURL.path)[FileAttributeKey.size] as! NSNumber).uint64Value
-                    print("    > Upload repeated task \(repeatedTask.taskIdentifier) will send \(fileSize) bytes")
                     repeatedTask.countOfBytesClientExpectsToSend = Int64(fileSize)
                     repeatedTask.countOfBytesClientExpectsToReceive = 600
                 }
-                print("•••>> Repeat task \(repeatedTask.taskIdentifier) resumed at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium))")
+                print("\(debugFormatter.string(from: Date())) > \(md5sum) | repeat task \(repeatedTask.taskIdentifier)")
                 repeatedTask.resume()
             } else {
                 // Failed 3 times already, delete chunk file from Piwigo/Uploads directory
-                print("•••>> Upload tasks failed 3 times!!!")
+                print("\(debugFormatter.string(from: Date())) > \(identifier) | upload tasks failed 3 times!!!")
                 let imageFile = identifier.replacingOccurrences(of: "/", with: "-")
                 let chunkFileName = imageFile + "." + numberFormatter.string(from: NSNumber(value: chunk))!
                 deleteFilesInUploadsDirectory(with: chunkFileName)
@@ -479,6 +478,7 @@ extension UploadManager {
     func didCompleteUploadTask(_ task: URLSessionTask, withData data: Data) {
         // Retrieve task parameters
         guard let identifier = task.originalRequest?.value(forHTTPHeaderField: "identifier"),
+              let md5sum = task.originalRequest?.value(forHTTPHeaderField: "md5sum"),
               let chunks = Float((task.originalRequest?.value(forHTTPHeaderField: "chunks"))!) else {
             return
         }
@@ -490,11 +490,11 @@ extension UploadManager {
                                             .uploaded, .finishing, .finishingError,
                                             .finished, .moderated]
         guard let allUploads = uploadsProvider.getRequestsIn(states: states) else {
-            print("    > Empty list of uploads!!!!!!")
+            print("\(debugFormatter.string(from: Date())) > \(md5sum) | empty list of uploads in didCompleteUploadTask()!!!!!!")
             return
         }
         guard let uploadObject = allUploads.filter({$0.localIdentifier == identifier}).first else {
-            print("    > Did not find upload object \(identifier) in didCompleteUploadTask()!!!!!!!")
+            print("\(debugFormatter.string(from: Date())) > \(md5sum) | did not find upload object in didCompleteUploadTask()!!!!!!!")
             return
         }
 
@@ -537,7 +537,7 @@ extension UploadManager {
             // Update progress bar if upload not yet complete
             if let _ = uploadJSON.chunks, let message = uploadJSON.chunks.message {
                 let nberOfUploadedChunks = message.dropFirst(18).components(separatedBy: ",").count
-                print("    > \(nberOfUploadedChunks) chunks downloaded")
+                print("\(debugFormatter.string(from: Date())) > \(md5sum) | \(nberOfUploadedChunks) chunks downloaded")
                 if chunks > 0 {
                     let progress = Float(nberOfUploadedChunks) / chunks
                     // Update UI
@@ -645,7 +645,7 @@ extension UploadManager {
                 do {
                     try FileManager.default.removeItem(at: fileURL)
                 } catch {
-                    print("Could not delete upload file: \(error)")
+                    print("\(debugFormatter.string(from: Date())) > \(md5sum) | could not delete upload file: \(error)")
                 }
 
                 // Update state of upload
@@ -655,10 +655,10 @@ extension UploadManager {
             }
             return
         } catch {
-           // JSON object cannot be digested, image still ready for upload
-           let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongJSONobject.localizedDescription])
-           self.updateUploadRequestWith(upload, error: error)
-           return
+            // JSON object cannot be digested, image still ready for upload
+            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongJSONobject.localizedDescription])
+            self.updateUploadRequestWith(upload, error: error)
+            return
         }
     }
 
@@ -666,7 +666,7 @@ extension UploadManager {
         /// We don't use the UUID to be able to test uploads with a simulator.
         let suffix = identifier.replacingOccurrences(of: "/", with: "").map { $0.lowercased() }.joined()
         let boundary = String(repeating: "-", count: 68 - suffix.count) + suffix
-        print("    > \(boundary)")
+//        print("\(debugFormatter.string(from: Date())) > \(boundary)")
         return boundary
     }
 

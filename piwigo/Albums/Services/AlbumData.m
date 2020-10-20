@@ -73,7 +73,7 @@
     // Return if job done
     if (downloadedImageDataCount >= totalImageCount)
 	{
-        NSLog(@"loadMoreImagesOnCompletion: we have all image data");
+//        NSLog(@"loadMoreImagesOnCompletion: we have all image data");
         // We have all the image data, just manually sort it (uploaded images are appended to cache)
         self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList for:[Model sharedInstance].defaultSort];
 		if(completion)
