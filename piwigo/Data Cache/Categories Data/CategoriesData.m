@@ -11,7 +11,6 @@
 NSString * const kPiwigoNotificationGetCategoryData = @"kPiwigoNotificationGetCategoryData";
 NSString * const kPiwigoNotificationCategoryDataUpdated = @"kPiwigoNotificationCategoryDataUpdated";
 NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificationChangedCurrentCategory";
-NSString * const kPiwigoNotificationDeletedImageFromUploadCache = @"kPiwigoNotificationDeletedImageFromUploadCache";
 
 @interface CategoriesData()
 
@@ -403,10 +402,6 @@ NSString * const kPiwigoNotificationDeletedImageFromUploadCache = @"kPiwigoNotif
     if ([self getImageForCategory:kPiwigoFavoritesCategoryId andId:image.imageId] != nil) {
         [self removeImage:image fromCategory:[NSString stringWithFormat:@"%ld", (long)kPiwigoFavoritesCategoryId]];
     }
-    
-    // Delete image from Upload cache
-    NSDictionary *userInfo = @{@"imageId" : @(image.imageId)};
-    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDeletedImageFromUploadCache object:nil userInfo:userInfo];
 }
 
 -(void)removeImage:(PiwigoImageData*)image fromCategory:(NSString *)category
