@@ -21,13 +21,21 @@ import CryptoKit        // Requires iOS 13
 class UploadManager: NSObject, URLSessionDelegate {
 
     @objc static let shared = UploadManager()
+    
+    let kPiwigoNotificationDidPrepareImage = "kPiwigoNotificationDidPrepareImage"
 
     // MARK: - Initialisation
     override init() {
         super.init()
         
+        // Register app giving up its active status to another app.
         NotificationCenter.default.addObserver(self, selector: #selector(self.willResignActive),
             name: UIApplication.willResignActiveNotification, object: nil)
+
+        // Register app ending image preparation.
+        let name = NSNotification.Name(rawValue: kPiwigoNotificationDidPrepareImage)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.didEndPreparation),
+            name: name, object: nil)
     }
     
     private var appState = UIApplication.State.active
@@ -80,47 +88,6 @@ class UploadManager: NSObject, URLSessionDelegate {
     }
     
 
-    // MARK: - Image Formats
-    // See https://en.wikipedia.org/wiki/List_of_file_signatures
-    // https://mimesniff.spec.whatwg.org/#sniffing-in-an-image-context
-
-    // https://en.wikipedia.org/wiki/BMP_file_format
-    var bmp: [UInt8] = "BM".map { $0.asciiValue! }
-    
-    // https://en.wikipedia.org/wiki/GIF
-    var gif87a: [UInt8] = "GIF87a".map { $0.asciiValue! }
-    var gif89a: [UInt8] = "GIF89a".map { $0.asciiValue! }
-    
-    // https://en.wikipedia.org/wiki/High_Efficiency_Image_File_Format
-    var heic: [UInt8] = [0x00, 0x00, 0x00, 0x18] + "ftypheic".map { $0.asciiValue! }
-    
-    // https://en.wikipedia.org/wiki/ILBM
-    var iff: [UInt8] = "FORM".map { $0.asciiValue! }
-    
-    // https://en.wikipedia.org/wiki/JPEG
-    var jpg: [UInt8] = [0xff, 0xd8, 0xff]
-    
-    // https://en.wikipedia.org/wiki/JPEG_2000
-    var jp2: [UInt8] = [0x00, 0x00, 0x00, 0x0c, 0x6a, 0x50, 0x20, 0x20, 0x0d, 0x0a, 0x87, 0x0a]
-    
-    // https://en.wikipedia.org/wiki/Portable_Network_Graphics
-    var png: [UInt8] = [0x89] + "PNG".map { $0.asciiValue! } + [0x0d, 0x0a, 0x1a, 0x0a]
-    
-    // https://en.wikipedia.org/wiki/Adobe_Photoshop#File_format
-    var psd: [UInt8] = "8BPS".map { $0.asciiValue! }
-    
-    // https://en.wikipedia.org/wiki/TIFF
-    var tif_ii: [UInt8] = "II".map { $0.asciiValue! } + [0x2a, 0x00]
-    var tif_mm: [UInt8] = "MM".map { $0.asciiValue! } + [0x00, 0x2a]
-    
-    // https://en.wikipedia.org/wiki/WebP
-    var webp: [UInt8] = "RIFF".map { $0.asciiValue! }
-    
-    // https://en.wikipedia.org/wiki/ICO_(file_format)
-    var win_ico: [UInt8] = [0x00, 0x00, 0x01, 0x00]
-    var win_cur: [UInt8] = [0x00, 0x00, 0x02, 0x00]
-
-    
     // MARK: - MD5 Checksum
     #if canImport(CryptoKit)        // Requires iOS 13
     @available(iOS 13.0, *)
@@ -169,48 +136,7 @@ class UploadManager: NSObject, URLSessionDelegate {
     - isFinishing is set to true when the photo/video parameters are going to be set,
       and false when this job has completed or failed.
     */
-    @objc func didEndPreparation() {
-        _isPreparing = false
-        if !isUploading, !isFinishing { findNextImageToUpload() }
-    }
-    private var _isPreparing = false
-    private var isPreparing: Bool {
-        get {
-            return _isPreparing
-        }
-        set(isPreparing) {
-            _isPreparing = isPreparing
-        }
-    }
 
-    @objc func didEndTransfer() {
-        _isUploading = false
-        if !isUploading, !isFinishing { findNextImageToUpload() }
-    }
-    private var _isUploading = false
-    private var isUploading: Bool {
-        get {
-            return _isUploading
-        }
-        set(isUploading) {
-            _isUploading = isUploading
-        }
-    }
-
-    @objc func didSetParameters() {
-        _isFinishing = false
-        if !isUploading, !isFinishing { findNextImageToUpload() }
-    }
-    private var _isFinishing = false
-    private var isFinishing: Bool {
-        get {
-            return _isFinishing
-        }
-        set(isFinishing) {
-            _isFinishing = isFinishing
-        }
-    }
-        
     // Store number of upload requests to complete
     // Update app badge and Upload button in root/default album
     private var _nberOfUploadsToComplete: Int = 0
@@ -477,7 +403,17 @@ class UploadManager: NSObject, URLSessionDelegate {
     }
     
     
-    // MARK: - Prepare and transfer image
+    // MARK: - Prepare image
+    private var _isPreparing = false
+    private var isPreparing: Bool {
+        get {
+            return _isPreparing
+        }
+        set(isPreparing) {
+            _isPreparing = isPreparing
+        }
+    }
+
     @objc
     func prepare(nextUpload: Upload) -> Void {
         print("\(debugFormatter.string(from: Date())) > prepare next upload…")
@@ -552,9 +488,9 @@ class UploadManager: NSObject, URLSessionDelegate {
 
                 // Update state of upload
                 uploadProperties.requestState = .preparing
-                uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
+                uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                     // Launch preparation job
-                    self.prepareImage(for: uploadProperties, from: originalAsset)
+                    UploadImage.prepareImage(for: uploadProperties, from: originalAsset)
                 })
                 return
             }
@@ -567,9 +503,9 @@ class UploadManager: NSObject, URLSessionDelegate {
                     
                     // Update state of upload
                     uploadProperties.requestState = .preparing
-                    uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
+                    uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                         // Launch preparation job
-                        self.prepareImage(for: uploadProperties, from: originalAsset)
+                        UploadImage.prepareImage(for: uploadProperties, from: originalAsset)
                     })
                     return
                 }
@@ -662,6 +598,33 @@ class UploadManager: NSObject, URLSessionDelegate {
         }
     }
 
+    @objc func didEndPreparation() {
+        _isPreparing = false
+        if !isUploading, !isFinishing { findNextImageToUpload() }
+    }
+
+    
+    // MARK: - Transfer image
+    private var _isUploading = false
+    private var isUploading: Bool {
+        get {
+            return _isUploading
+        }
+        set(isUploading) {
+            _isUploading = isUploading
+        }
+    }
+
+    private var _isFinishing = false
+    private var isFinishing: Bool {
+        get {
+            return _isFinishing
+        }
+        set(isFinishing) {
+            _isFinishing = isFinishing
+        }
+    }
+        
     @objc
     func launchTransfer(of nextUpload: Upload) -> Void {
         
@@ -701,6 +664,16 @@ class UploadManager: NSObject, URLSessionDelegate {
                 self.transferImage(of: uploadProperties)
             }
         })
+    }
+
+    @objc func didEndTransfer() {
+        _isUploading = false
+        if !isUploading, !isFinishing { findNextImageToUpload() }
+    }
+
+    @objc func didSetParameters() {
+        _isFinishing = false
+        if !isUploading, !isFinishing { findNextImageToUpload() }
     }
 
     

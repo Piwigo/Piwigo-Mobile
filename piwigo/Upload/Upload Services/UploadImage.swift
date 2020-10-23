@@ -8,11 +8,13 @@
 
 import Photos
 
-extension UploadManager {
-
+class UploadImage: NSObject {
+    
     // MARK: - Image preparation
+    class
     func prepareImage(for upload: UploadProperties, from imageAsset: PHAsset) -> Void {
-        
+        print("\(UploadManager.shared.debugFormatter.string(from: Date())) > prepareImage() in ", queueName())
+
         // Retrieve UIImage
         let (fixedImageObject, imageError) = retrieveUIImage(from: imageAsset, for: upload)
         if let _ = imageError {
@@ -36,13 +38,14 @@ extension UploadManager {
         }
         
         // Modify image
-        modifyImage(for: upload, with: imageData, andObject: imageObject) { [unowned self] (newUpload, error) in
+        modifyImage(for: upload, with: imageData, andObject: imageObject) { (newUpload, error) in
             // Update upload request
             self.updateUploadRequestWith(newUpload, error: error)
         }
     }
     
-    private func updateUploadRequestWith(_ upload: UploadProperties, error: Error?) {
+    class
+    func updateUploadRequestWith(_ upload: UploadProperties, error: Error?) {
 
         // Error?
         if let error = error {
@@ -50,16 +53,16 @@ extension UploadManager {
             let uploadProperties = upload.update(with: .preparingError, error: error.localizedDescription)
             
             // Update request with error description
-            print("\(debugFormatter.string(from: Date())) >", error.localizedDescription)
-            uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
+            print("\(UploadManager.shared.debugFormatter.string(from: Date())) > ", error.localizedDescription)
+            UploadManager.shared.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                 // Upload ready for transfer
-                if self.isExecutingBackgroundUploadTask {
+                if UploadManager.shared.isExecutingBackgroundUploadTask {
                     // In background task
                 } else {
                     // In foreground, update UI
                     let uploadInfo: [String : Any] = ["localIndentifier" : upload.localIdentifier,
                                                       "stateLabel" : kPiwigoUploadState.preparingError.stateInfo,
-                                                      "Error" : "",
+                                                      "Error" : error.localizedDescription,
                                                       "progressFraction" : Float(0.0)]
                     DispatchQueue.main.async {
                         // Update UploadQueue cell and button shown in root album (or default album)
@@ -67,7 +70,8 @@ extension UploadManager {
                         NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
                     }
                     // Consider next image
-                    self.didEndPreparation()
+                    let name = NSNotification.Name(rawValue: UploadManager.shared.kPiwigoNotificationDidPrepareImage)
+                    NotificationCenter.default.post(name: name, object: nil, userInfo: nil)
                 }
             })
             return
@@ -77,12 +81,12 @@ extension UploadManager {
         let uploadProperties = upload.update(with: .prepared, error: "")
 
         // Update request ready for transfer
-        print("\(debugFormatter.string(from: Date())) > prepared file \(uploadProperties.fileName!)")
-        uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
+        print("\(UploadManager.shared.debugFormatter.string(from: Date())) > prepared file \(uploadProperties.fileName!)")
+        UploadManager.shared.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
             // Upload ready for transfer
-            if self.isExecutingBackgroundUploadTask {
+            if UploadManager.shared.isExecutingBackgroundUploadTask {
                 // In background task
-                self.transferInBackgroundImage(of: uploadProperties)
+                UploadManager.shared.transferInBackgroundImage(of: uploadProperties)
             } else {
                 // In foreground, update UI
                 let uploadInfo: [String : Any] = ["localIndentifier" : upload.localIdentifier,
@@ -95,15 +99,17 @@ extension UploadManager {
                     NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
                 }
                 // Consider next image
-                self.didEndPreparation()
+                let name = NSNotification.Name(rawValue: UploadManager.shared.kPiwigoNotificationDidPrepareImage)
+                NotificationCenter.default.post(name: name, object: nil, userInfo: nil)
             }
         })
     }
 
-    // MARK: - Retrieve UIImage and Image Data
     
-    private func retrieveUIImage(from imageAsset: PHAsset, for upload:UploadProperties) -> (UIImage?, Error?) {
-        print("\(debugFormatter.string(from: Date())) > retrieveUIImageFrom...")
+    // MARK: - Retrieve UIImage and Image Data
+    class
+    func retrieveUIImage(from imageAsset: PHAsset, for upload:UploadProperties) -> (UIImage?, Error?) {
+        print("\(UploadManager.shared.debugFormatter.string(from: Date())) > retrieveUIImageFrom...")
 
         // Case of an image…
         let options = PHImageRequestOptions()
@@ -155,8 +161,9 @@ extension UploadManager {
         return (fixedImageObject, error)
     }
 
-    private func retrieveFullSizeImageData(from imageAsset: PHAsset) -> (Data?, Error?) {
-        print("\(debugFormatter.string(from: Date())) > retrieveFullSizeAssetDataFromImage...")
+    class
+    func retrieveFullSizeImageData(from imageAsset: PHAsset) -> (Data?, Error?) {
+        print("\(UploadManager.shared.debugFormatter.string(from: Date())) > retrieveFullSizeAssetDataFromImage...")
 
         // Case of an image…
         let options = PHImageRequestOptions()
@@ -203,10 +210,11 @@ extension UploadManager {
     
     // MARK: - Modify Metadata
     
-    private func modifyImage(for upload: UploadProperties,
+    class
+    func modifyImage(for upload: UploadProperties,
                              with originalData: Data, andObject originalObject: UIImage,
                              completionHandler: @escaping (UploadProperties, Error?) -> Void) {
-        print("\(debugFormatter.string(from: Date())) > modifyImage...")
+        print("\(UploadManager.shared.debugFormatter.string(from: Date())) > modifyImage...")
 
         // Create CGI reference from image data (to retrieve complete metadata)
         guard let source: CGImageSource = CGImageSourceCreateWithData((originalData as CFData), nil) else {
@@ -294,7 +302,7 @@ extension UploadManager {
 
         // File name of final image data to be stored into Piwigo/Uploads directory
         let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
-        let fileURL = applicationUploadsDirectory.appendingPathComponent(fileName)
+        let fileURL = UploadManager.shared.applicationUploadsDirectory.appendingPathComponent(fileName)
         
         // Deletes temporary image file if exists (incomplete previous attempt?)
         do {
@@ -314,14 +322,14 @@ extension UploadManager {
         var md5Checksum: String? = ""
         if #available(iOS 13.0, *) {
             #if canImport(CryptoKit)        // Requires iOS 13
-            md5Checksum = MD5(data: imageData)
+            md5Checksum = UploadManager.shared.MD5(data: imageData)
             #endif
         } else {
             // Fallback on earlier versions
-            md5Checksum = oldMD5(data: imageData)
+            md5Checksum = UploadManager.shared.oldMD5(data: imageData)
         }
         newUpload.md5Sum = md5Checksum
-        print("\(debugFormatter.string(from: Date())) > MD5: \(String(describing: md5Checksum))")
+        print("\(UploadManager.shared.debugFormatter.string(from: Date())) > MD5: \(String(describing: md5Checksum))")
 
         completionHandler(newUpload, nil)
     }
@@ -329,7 +337,8 @@ extension UploadManager {
 
     // MARK: - Fix Image Orientation
     
-    private func fixOrientationOf(_ image: UIImage) -> UIImage {
+    class
+    func fixOrientationOf(_ image: UIImage) -> UIImage {
 
         // No-op if the orientation is already correct
         if image.imageOrientation == .up {
@@ -395,65 +404,167 @@ extension UploadManager {
 
     // MARK: - MIME type and file extension sniffing
 
-    private func contentType(forImageData data: Data?) -> String? {
+    class
+    func contentType(forImageData data: Data?) -> String? {
         var bytes: [UInt8] = Array.init(repeating: UInt8(0), count: 12)
         (data! as NSData).getBytes(&bytes, length: 12)
 
-        if memcmp(bytes, &jpg, jpg.count) == 0 {
-            return "image/jpeg"
-        } else if memcmp(bytes, &heic, heic.count) == 0 {
-            return "image/heic"
-        } else if memcmp(bytes, &png, png.count) == 0 {
-            return "image/png"
-        } else if memcmp(bytes, &gif87a, gif87a.count) == 0 || memcmp(bytes, &gif89a, gif89a.count) == 0 {
-            return "image/gif"
-        } else if memcmp(bytes, &bmp, bmp.count) == 0 {
-            return "image/x-ms-bmp"
-        } else if memcmp(bytes, &psd, psd.count) == 0 {
-            return "image/vnd.adobe.photoshop"
-        } else if memcmp(bytes, &iff, iff.count) == 0 {
-            return "image/iff"
-        } else if memcmp(bytes, &webp, webp.count) == 0 {
-            return "image/webp"
-        } else if memcmp(bytes, &win_ico, win_ico.count) == 0 || memcmp(bytes, &win_cur, win_cur.count) == 0 {
-            return "image/x-icon"
-        } else if memcmp(bytes, &tif_ii, tif_ii.count) == 0 || memcmp(bytes, &tif_mm, tif_mm.count) == 0 {
-            return "image/tiff"
-        } else if memcmp(bytes, &jp2, jp2.count) == 0 {
-            return "image/jp2"
-        }
+        var jpg = jpgSignature()
+        if memcmp(bytes, &jpg, jpg.count) == 0 { return "image/jpeg" }
+        
+        var heic = heicSignature()
+        if memcmp(bytes, &heic, heic.count) == 0 { return "image/heic" }
+        
+        var png = pngSignature()
+        if memcmp(bytes, &png, png.count) == 0 { return "image/png" }
+        
+        var gif87a = gif87aSignature()
+        var gif89a = gif89aSignature()
+        if memcmp(bytes, &gif87a, gif87a.count) == 0 ||
+            memcmp(bytes, &gif89a, gif89a.count) == 0 { return "image/gif" }
+        
+        var bmp = bmpSignature()
+        if memcmp(bytes, &bmp, bmp.count) == 0 { return "image/x-ms-bmp" }
+        
+        var psd = psdSignature()
+        if memcmp(bytes, &psd, psd.count) == 0 { return "image/vnd.adobe.photoshop" }
+        
+        var iff = iffSignature()
+        if memcmp(bytes, &iff, iff.count) == 0 { return "image/iff" }
+        
+        var webp = webpSignature()
+        if memcmp(bytes, &webp, webp.count) == 0 { return "image/webp" }
+        
+        var win_ico = win_icoSignature()
+        var win_cur = win_curSignature()
+        if memcmp(bytes, &win_ico, win_ico.count) == 0 ||
+            memcmp(bytes, &win_cur, win_cur.count) == 0 { return "image/x-icon" }
+        
+        var tif_ii = tif_iiSignature()
+        var tif_mm = tif_mmSignature()
+        if memcmp(bytes, &tif_ii, tif_ii.count) == 0 ||
+            memcmp(bytes, &tif_mm, tif_mm.count) == 0 { return "image/tiff" }
+        
+        var jp2 = jp2Signature()
+        if memcmp(bytes, &jp2, jp2.count) == 0 { return "image/jp2" }
+        
         return nil
     }
 
-    private func fileExtension(forImageData data: Data?) -> String? {
+    class
+    func fileExtension(forImageData data: Data?) -> String? {
         var bytes: [UInt8] = Array.init(repeating: UInt8(0), count: 12)
         (data! as NSData).getBytes(&bytes, length: 12)
 
-        if memcmp(bytes, &jpg, jpg.count) == 0 {
-            return "jpg"
-        } else if memcmp(bytes, &heic, heic.count) == 0 {
-            return "heic"
-        } else if memcmp(bytes, &png, png.count) == 0 {
-            return "png"
-        } else if memcmp(bytes, &gif87a, gif87a.count) == 0 || memcmp(bytes, &gif89a, gif89a.count) == 0 {
-            return "gif"
-        } else if memcmp(bytes, &bmp, bmp.count) == 0 {
-            return "bmp"
-        } else if memcmp(bytes, &psd, psd.count) == 0 {
-            return "psd"
-        } else if memcmp(bytes, &iff, iff.count) == 0 {
-            return "iff"
-        } else if memcmp(bytes, &webp, webp.count) == 0 {
-            return "webp"
-        } else if memcmp(bytes, &win_ico, win_ico.count) == 0 {
-            return "ico"
-        } else if memcmp(bytes, &win_cur, win_cur.count) == 0 {
-            return "cur"
-        } else if memcmp(bytes, &tif_ii, tif_ii.count) == 0 || memcmp(bytes, &tif_mm, tif_mm.count) == 0 {
-            return "tif"
-        } else if memcmp(bytes, &jp2, jp2.count) == 0 {
-            return "jp2"
-        }
+        var jpg = jpgSignature()
+        if memcmp(bytes, &jpg, jpg.count) == 0 { return "jpg" }
+        
+        var heic = heicSignature()
+        if memcmp(bytes, &heic, heic.count) == 0 { return "heic" }
+
+        var png = pngSignature()
+        if memcmp(bytes, &png, png.count) == 0 { return "png" }
+        
+        var gif87a = gif87aSignature()
+        var gif89a = gif89aSignature()
+        if memcmp(bytes, &gif87a, gif87a.count) == 0 ||
+            memcmp(bytes, &gif89a, gif89a.count) == 0 { return "gif" }
+        
+        var bmp = bmpSignature()
+        if memcmp(bytes, &bmp, bmp.count) == 0 { return "bmp" }
+
+        var psd = psdSignature()
+        if memcmp(bytes, &psd, psd.count) == 0 { return "psd" }
+        
+        var iff = iffSignature()
+        if memcmp(bytes, &iff, iff.count) == 0 { return "iff" }
+        
+        var webp = webpSignature()
+        if memcmp(bytes, &webp, webp.count) == 0 { return "webp" }
+
+        var win_ico = win_icoSignature()
+        if memcmp(bytes, &win_ico, win_ico.count) == 0 { return "ico" }
+
+        var win_cur = win_curSignature()
+        if memcmp(bytes, &win_cur, win_cur.count) == 0 { return "cur" }
+        
+        var tif_ii = tif_iiSignature()
+        var tif_mm = tif_mmSignature()
+        if memcmp(bytes, &tif_ii, tif_ii.count) == 0 ||
+            memcmp(bytes, &tif_mm, tif_mm.count) == 0 { return "tif" }
+        
+        var jp2 = jp2Signature()
+        if memcmp(bytes, &jp2, jp2.count) == 0 { return "jp2" }
+        
         return nil
+    }
+
+
+    // MARK: - Image Formats
+    // See https://en.wikipedia.org/wiki/List_of_file_signatures
+    // https://mimesniff.spec.whatwg.org/#sniffing-in-an-image-context
+
+    // https://en.wikipedia.org/wiki/BMP_file_format
+    class func bmpSignature() -> [UInt8] {
+        return "BM".map { $0.asciiValue! }
+    }
+    
+    // https://en.wikipedia.org/wiki/GIF
+    class func gif87aSignature() -> [UInt8] {
+        return "GIF87a".map { $0.asciiValue! }
+    }
+    class func gif89aSignature() -> [UInt8] {
+        return "GIF89a".map { $0.asciiValue! }
+    }
+    
+    // https://en.wikipedia.org/wiki/High_Efficiency_Image_File_Format
+    class func heicSignature() -> [UInt8] {
+        return [0x00, 0x00, 0x00, 0x18] + "ftypheic".map { $0.asciiValue! }
+    }
+    
+    // https://en.wikipedia.org/wiki/ILBM
+    class func iffSignature() -> [UInt8] {
+        return "FORM".map { $0.asciiValue! }
+    }
+    
+    // https://en.wikipedia.org/wiki/JPEG
+    class func jpgSignature() -> [UInt8] {
+        return [0xff, 0xd8, 0xff]
+    }
+    
+    // https://en.wikipedia.org/wiki/JPEG_2000
+    class func jp2Signature() -> [UInt8] {
+        return [0x00, 0x00, 0x00, 0x0c, 0x6a, 0x50, 0x20, 0x20, 0x0d, 0x0a, 0x87, 0x0a]
+    }
+    
+    // https://en.wikipedia.org/wiki/Portable_Network_Graphics
+    class func pngSignature() -> [UInt8] {
+        return [0x89] + "PNG".map { $0.asciiValue! } + [0x0d, 0x0a, 0x1a, 0x0a]
+    }
+    
+    // https://en.wikipedia.org/wiki/Adobe_Photoshop#File_format
+    class func psdSignature() -> [UInt8] {
+        return "8BPS".map { $0.asciiValue! }
+    }
+    
+    // https://en.wikipedia.org/wiki/TIFF
+    class func tif_iiSignature() -> [UInt8] {
+        return "II".map { $0.asciiValue! } + [0x2a, 0x00]
+    }
+    class func tif_mmSignature() -> [UInt8] {
+        return "MM".map { $0.asciiValue! } + [0x00, 0x2a]
+    }
+    
+    // https://en.wikipedia.org/wiki/WebP
+    class func webpSignature() -> [UInt8] {
+        return "RIFF".map { $0.asciiValue! }
+    }
+    
+    // https://en.wikipedia.org/wiki/ICO_(file_format)
+    class func win_icoSignature() -> [UInt8] {
+        return [0x00, 0x00, 0x01, 0x00]
+    }
+    class func win_curSignature() -> [UInt8] {
+        return [0x00, 0x00, 0x02, 0x00]
     }
 }
