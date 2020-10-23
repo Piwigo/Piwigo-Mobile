@@ -312,8 +312,14 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
         // Sort all images in one loop i.e. O(n)
         let sortOperation = BlockOperation.init(block: {
-            // Sort images by months, weeks and days in the background
-            (self.indexOfImageSortedByDay, self.indexOfImageSortedByWeek, self.indexOfImageSortedByMonth) = self.sortByMonthWeekDay(images: self.fetchedImages)
+            if self.fetchedImages.count > 0 {
+                // Sort images by months, weeks and days in the background
+                (self.indexOfImageSortedByDay, self.indexOfImageSortedByWeek, self.indexOfImageSortedByMonth) = self.sortByMonthWeekDay(images: self.fetchedImages)
+            } else {
+                self.indexOfImageSortedByDay = []
+                self.indexOfImageSortedByWeek = []
+                self.indexOfImageSortedByMonth = []
+            }
         })
         sortOperation.completionBlock = {
             // Allow sort options and refresh section headers
