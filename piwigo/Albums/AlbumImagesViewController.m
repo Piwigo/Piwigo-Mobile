@@ -2258,8 +2258,8 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
            OnCompletion:^(NSURLSessionTask *task, BOOL updatedSuccessfully) {
                if (updatedSuccessfully)
                {
-                   // Remove image from cache and update UI
-                   [[CategoriesData sharedInstance] removeImage:self.selectedImage];
+                   // Remove image from current category in cache and update UI
+                   [[CategoriesData sharedInstance] removeImage:self.selectedImage fromCategory:[NSString stringWithFormat:@"%ld", self.categoryId]];
 
                    // Next image
                    [self.selectedImagesToRemove removeLastObject];
