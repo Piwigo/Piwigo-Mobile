@@ -12,6 +12,7 @@
 
 #import "AlbumImagesViewController.h"
 #import "AlbumService.h"
+#import "AlbumTableViewCell.h"
 #import "AppDelegate.h"
 #import "CategoriesData.h"
 #import "CategoryTableViewCell.h"
@@ -27,6 +28,7 @@
 #import "LoginViewController_iPhone.h"
 #import "LoginViewController_iPad.h"
 #import "Model.h"
+#import "MoveImageViewController.h"
 #import "NetworkHandler.h"
 #import "PiwigoTagData.h"
 #import "SessionService.h"

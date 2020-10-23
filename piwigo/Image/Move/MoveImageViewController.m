@@ -17,6 +17,7 @@
 #import "PiwigoAlbumData.h"
 
 CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
+NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage";
 
 @class PiwigoAlbumData;
 
@@ -678,6 +679,11 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
 
                         // Notify album/image view of modification
                         [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+                        
+                        // Notify the Upload database that this image has been moved
+                        NSDictionary *userInfo = @{@"albumId" : @(categoryId),
+                                                   @"imageId" : @(self.selectedImage.imageId)};
+                        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationMovedImage object:nil userInfo:userInfo];
                     }
 
                     // When called from image preview, return to image or album

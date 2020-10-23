@@ -18,6 +18,7 @@
 #import "SAMKeychain.h"
 
 NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
+NSString * const kPiwigoNotificationDeletedCategory = @"kPiwigoNotificationDeletedCategory";
 
 @interface AlbumTableViewCell() <UITextFieldDelegate>
 
@@ -579,6 +580,10 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
                             [self hideHUDwithSuccess:YES inView:topViewController.view completion:^{
                                 // Delete category from cache
                                 [[CategoriesData sharedInstance] deleteCategory:self.albumData.albumId];
+
+                                // Notify the Upload database that this category has been deleted
+                                NSDictionary *userInfo = @{@"albumId" : @(self.albumData.albumId)};
+                                [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDeletedCategory object:nil userInfo:userInfo];
                             }];
                         }
                         else

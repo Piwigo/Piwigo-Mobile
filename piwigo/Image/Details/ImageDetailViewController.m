@@ -748,13 +748,20 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
              onProgress:nil
            OnCompletion:^(NSURLSessionTask *task, BOOL updatedSuccessfully) {
                
-               if (updatedSuccessfully)
-               {
+                if (updatedSuccessfully)
+                {
                     // Update image data
                     self.imageData.categoryIds = categoryIds;
 
                     // Remove image from cache and update UI
                     [[CategoriesData sharedInstance] removeImage:self.imageData fromCategory:[NSString stringWithFormat:@"%ld", (long)self.categoryId]];
+
+                    // Notify the Upload database that this image has been removed from this category
+                    if (categoryIds.count > 0) {
+                        NSDictionary *userInfo = @{@"albumId" : @([categoryIds[0] longValue]),
+                                                   @"imageId" : @(self.imageData.imageId)};
+                        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationMovedImage object:nil userInfo:userInfo];
+                    }
 
                     // Hide HUD
                     [self hideHUDwithSuccess:YES completion:^{

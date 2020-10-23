@@ -411,6 +411,7 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     [imageCategory removeImages:@[image]];
 
     // Notify UI that an image has been deleted to refresh the collection view
+    // and notify the Upload database that the image was deleted
     NSDictionary *userInfo = @{@"albumId" : category, @"imageId" : @(image.imageId)};
     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDeletedImage object:nil userInfo:userInfo];
 
