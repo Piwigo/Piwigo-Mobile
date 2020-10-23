@@ -10,9 +10,10 @@ import AVFoundation
 import MobileCoreServices
 import Photos
 
-extension UploadManager {
+class UploadVideo: NSObject {
     
     // MARK: - Video preparation
+    class
     func prepareVideo(for upload: UploadProperties, from imageAsset: PHAsset) -> Void {
 
         // Retrieve video data
@@ -60,7 +61,7 @@ extension UploadManager {
 
                 // Prepare URL of temporary file
                 let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
-                let fileURL = self.applicationUploadsDirectory.appendingPathComponent(fileName)
+                let fileURL = UploadManager.shared.applicationUploadsDirectory.appendingPathComponent(fileName)
 
                 // Deletes temporary video file if it already exists
                 do {
@@ -77,14 +78,14 @@ extension UploadManager {
                     var md5Checksum: String? = ""
                     if #available(iOS 13.0, *) {
                         #if canImport(CryptoKit)        // Requires iOS 13
-                        md5Checksum = self.MD5(data: videoData)
+                        md5Checksum = UploadManager.shared.MD5(data: videoData)
                         #endif
                     } else {
                         // Fallback on earlier versions
-                        md5Checksum = self.oldMD5(data: videoData)
+                        md5Checksum = UploadManager.shared.oldMD5(data: videoData)
                     }
                     newUpload.md5Sum = md5Checksum
-                    print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: md5Checksum))")
+                    print("\(UploadManager.shared.debugFormatter.string(from: Date())) > MD5: \(String(describing: md5Checksum))")
                 }
                 catch let error as NSError {
                     // Upload video with tags and properties
@@ -135,6 +136,7 @@ extension UploadManager {
         }
     }
     
+    class
     func convertVideo(of imageAsset: PHAsset, for upload: UploadProperties) -> Void {
         // Retrieve video data
         let options = getVideoRequestOptions()
@@ -176,7 +178,8 @@ extension UploadManager {
         }
     }
 
-    private func updateUploadRequestWith(_ upload: UploadProperties, error: Error?) {
+    class
+    func updateUploadRequestWith(_ upload: UploadProperties, error: Error?) {
 
         // Error?
         if let error = error {
@@ -184,10 +187,10 @@ extension UploadManager {
             let uploadProperties = upload.update(with: .preparingError, error: error.localizedDescription)
             
             // Update request with error description
-            print("\(debugFormatter.string(from: Date())) >", error.localizedDescription)
-            uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
+            print("\(UploadManager.shared.debugFormatter.string(from: Date())) >", error.localizedDescription)
+            UploadManager.shared.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                 // Upload ready for transfer
-                if self.isExecutingBackgroundUploadTask {
+                if UploadManager.shared.isExecutingBackgroundUploadTask {
                     // In background task
                 } else {
                     // In foreground, update UI
@@ -201,7 +204,8 @@ extension UploadManager {
                         NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
                     }
                     // Consider next video
-                    self.didEndPreparation()
+                    let name = NSNotification.Name(rawValue: UploadManager.shared.kPiwigoNotificationDidPrepareImage)
+                    NotificationCenter.default.post(name: name, object: nil, userInfo: nil)
                 }
             })
             return
@@ -211,12 +215,12 @@ extension UploadManager {
         let uploadProperties = upload.update(with: .prepared, error: "")
 
         // Update request ready for transfer
-        print("\(debugFormatter.string(from: Date())) > prepared file \(uploadProperties.fileName!)")
-        uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
+        print("\(UploadManager.shared.debugFormatter.string(from: Date())) > prepared file \(uploadProperties.fileName!)")
+        UploadManager.shared.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
             // Upload ready for transfer
-            if self.isExecutingBackgroundUploadTask {
+            if UploadManager.shared.isExecutingBackgroundUploadTask {
                 // In background task
-                self.transferInBackgroundImage(of: uploadProperties)
+                UploadManager.shared.transferInBackgroundImage(of: uploadProperties)
             } else {
                 // In foreground, update UI
                 let uploadInfo: [String : Any] = ["localIndentifier" : upload.localIdentifier,
@@ -229,7 +233,8 @@ extension UploadManager {
                     NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
                 }
                 // Consider next video
-                self.didEndPreparation()
+                let name = NSNotification.Name(rawValue: UploadManager.shared.kPiwigoNotificationDidPrepareImage)
+                NotificationCenter.default.post(name: name, object: nil, userInfo: nil)
             }
         })
     }
@@ -237,7 +242,8 @@ extension UploadManager {
     
     // MARK: - Retrieve Video
     
-    private func getVideoRequestOptions() -> PHVideoRequestOptions {
+    class
+    func getVideoRequestOptions() -> PHVideoRequestOptions {
         // Case of a video…
         let options = PHVideoRequestOptions()
         // Requests the most recent version of the image asset
@@ -250,7 +256,8 @@ extension UploadManager {
         return options
     }
     
-    private func getExportPreset(for imageAsset: PHAsset, and avasset: AVAsset) -> String {
+    class
+    func getExportPreset(for imageAsset: PHAsset, and avasset: AVAsset) -> String {
         // Determine available export options (highest quality for device by default)
         var exportPreset = AVAssetExportPresetHighestQuality
         let maxPixels = max(imageAsset.pixelWidth ,imageAsset.pixelHeight)
@@ -278,9 +285,10 @@ extension UploadManager {
         return exportPreset
     }
     
-    private func retrieveVideo(from imageAsset: PHAsset, with options: PHVideoRequestOptions,
+    class
+    func retrieveVideo(from imageAsset: PHAsset, with options: PHVideoRequestOptions,
                                completionHandler: @escaping (AVAsset?, PHVideoRequestOptions, Error?) -> Void) {
-        print("\(debugFormatter.string(from: Date())) > retrieveVideoAssetFrom...")
+        print("\(UploadManager.shared.debugFormatter.string(from: Date())) > retrieveVideoAssetFrom...")
 
         // The block Photos calls periodically while downloading the video.
         options.progressHandler = { progress, error, stop, dict in
@@ -365,8 +373,9 @@ extension UploadManager {
         })
     }
                              
-    private func getExportSession(imageAsset: PHAsset, options: PHVideoRequestOptions, exportPreset: String,                                           completionHandler: @escaping (AVAssetExportSession?, Error?) -> Void) {
-        print("\(debugFormatter.string(from: Date())) > getExportSession...")
+    class
+    func getExportSession(imageAsset: PHAsset, options: PHVideoRequestOptions, exportPreset: String,                                           completionHandler: @escaping (AVAssetExportSession?, Error?) -> Void) {
+        print("\(UploadManager.shared.debugFormatter.string(from: Date())) > getExportSession...")
         
         // Requests video with selected export preset…
         PHImageManager.default().requestExportSession(forVideo: imageAsset,
@@ -387,8 +396,9 @@ extension UploadManager {
 
     // MARK: - Modify Metadata
 
-    private func modifyVideo(for upload: UploadProperties, with exportSession: AVAssetExportSession) -> Void {
-    print("\(debugFormatter.string(from: Date())) > modifyVideo...")
+    class
+    func modifyVideo(for upload: UploadProperties, with exportSession: AVAssetExportSession) -> Void {
+        print("\(UploadManager.shared.debugFormatter.string(from: Date())) > modifyVideo...")
     
         // Strips private metadata if user requested it in Settings
         // Apple documentation: 'metadataItemFilterForSharing' removes user-identifying metadata items, such as location information and leaves only metadata releated to commerce or playback itself. For example: playback, copyright, and commercial-related metadata, such as a purchaser’s ID as set by a vendor of digital media, along with metadata either derivable from the media itself or necessary for its proper behavior are all left intact.
@@ -417,7 +427,7 @@ extension UploadManager {
 
         // File name of final video data to be stored into Piwigo/Uploads directory
         let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
-        exportSession.outputURL = applicationUploadsDirectory.appendingPathComponent(fileName)
+        exportSession.outputURL = UploadManager.shared.applicationUploadsDirectory.appendingPathComponent(fileName)
 
         // Deletes temporary video file if exists (incomplete previous attempt?)
         do {
@@ -453,14 +463,14 @@ extension UploadManager {
                         var md5Checksum: String? = ""
                         if #available(iOS 13.0, *) {
                             #if canImport(CryptoKit)        // Requires iOS 13
-                            md5Checksum = self.MD5(data: videoData)
+                            md5Checksum = UploadManager.shared.MD5(data: videoData)
                             #endif
                         } else {
                             // Fallback on earlier versions
-                            md5Checksum = self.oldMD5(data: videoData)
+                            md5Checksum = UploadManager.shared.oldMD5(data: videoData)
                         }
                         newUpload.md5Sum = md5Checksum
-                        print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: md5Checksum))")
+                        print("\(UploadManager.shared.debugFormatter.string(from: Date())) > MD5: \(String(describing: md5Checksum))")
 
                         // Upload video with tags and properties
                         self.updateUploadRequestWith(newUpload, error: nil)
@@ -509,7 +519,8 @@ extension UploadManager {
         })
     }
 
-    private func FourCCString(_ code: FourCharCode) -> String? {
+    class
+    func FourCCString(_ code: FourCharCode) -> String? {
         let result = "\(Int((code >> 24)) & 0xff)\(Int((code >> 16)) & 0xff)\(Int((code >> 8)) & 0xff)\(code & 0xff)"
         let characterSet = CharacterSet.whitespaces
         return result.trimmingCharacters(in: characterSet)

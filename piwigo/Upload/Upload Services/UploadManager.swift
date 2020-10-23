@@ -532,9 +532,9 @@ class UploadManager: NSObject, URLSessionDelegate {
 
                 // Update state of upload
                 uploadProperties.requestState = .preparing
-                uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
+                uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                     // Launch preparation job
-                    self.prepareVideo(for: uploadProperties, from: originalAsset)
+                    UploadVideo.prepareVideo(for: uploadProperties, from: originalAsset)
                 })
                 return
             }
@@ -547,9 +547,9 @@ class UploadManager: NSObject, URLSessionDelegate {
 
                     // Update state of upload
                     uploadProperties.requestState = .preparing
-                    uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
+                    uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
                         // Launch preparation job
-                        self.convertVideo(of: originalAsset, for: uploadProperties)
+                        UploadVideo.convertVideo(of: originalAsset, for: uploadProperties)
                     })
                     return
                 }
