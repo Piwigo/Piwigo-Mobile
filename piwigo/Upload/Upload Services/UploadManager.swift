@@ -82,6 +82,8 @@ class UploadManager: NSObject, URLSessionDelegate {
     
     deinit {
         NotificationCenter.default.removeObserver(self, name: UIApplication.willResignActiveNotification, object: nil)
+        let name = NSNotification.Name(rawValue: kPiwigoNotificationDidPrepareImage)
+        NotificationCenter.default.removeObserver(self, name: name, object: nil)
 
         // Close upload session
         sessionManager.invalidateSessionCancelingTasks(true, resetSession: true)
