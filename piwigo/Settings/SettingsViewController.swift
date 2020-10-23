@@ -977,7 +977,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     Model.sharedInstance().saveToDisk()
                     // Relaunch uploads in background queue if disabled
                     if switchState == false {
-                        // Launch upload tasks in background queue
+                        // Update upload tasks in background queue
+                        // May not restart the uploads
                         DispatchQueue.global(qos: .background).async {
                             UploadManager.shared.findNextImageToUpload()
                         }
