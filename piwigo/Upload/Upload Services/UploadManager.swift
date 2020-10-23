@@ -663,6 +663,34 @@ class UploadManager: NSObject, URLSessionDelegate {
             } else {
                 self.transferImage(of: uploadProperties)
             }
+
+            // Get uploads to complete in queue
+            // Considers only uploads to the server to which the user is logged in
+            let states: [kPiwigoUploadState] = [.waiting, .preparingError, .prepared,
+                                                .uploadingError, .finishingError]
+            guard let nextUploads = uploadsProvider.getRequestsIn(states: states) else {
+                return
+            }
+
+            // Is the next image already prepared?
+            if nextUploads.filter( {$0.state == .prepared} ).count > 1 { return }
+
+            // Is there any image to prepare?
+            if nextUploads.filter( {$0.state == .waiting} ).count == 0 { return }
+
+            // Should we prepare the next image in parallel?
+            let nberFinishedWithError = nextUploads.filter({ $0.state == .finishingError } ).count
+            let nberUploadedWithError = nextUploads.filter({ $0.state == .uploadingError } ).count
+            let nberPreparedWithError = nextUploads.filter({ $0.state == .preparingError } ).count
+            print("•••>> preparedWithError:\(nberPreparedWithError), uploadingWithError:\(nberUploadedWithError), finishedWithError:\(nberFinishedWithError)")
+            if !isPreparing, nberFinishedWithError < 2, nberUploadedWithError < 2, nberPreparedWithError < 2,
+                let nextUpload = nextUploads.first(where: { $0.state == .waiting }) {
+
+                // Prepare the next upload
+                isPreparing = true
+                self.prepare(nextUpload: nextUpload)
+                return
+            }
         })
     }
 
