@@ -807,11 +807,11 @@ class UploadManager: NSObject, URLSessionDelegate {
             // Create upload properties with no error
             var uploadProperties: UploadProperties
             switch failedUpload.state {
-            case .preparingError, .uploadingError:
-                // -> Will try to re-prepare the image
-                uploadProperties = failedUpload.getUploadProperties(with: .waiting, error: "")
+            case .uploadingError:
+                // -> Will retry to transfer the image
+                uploadProperties = failedUpload.getUploadProperties(with: .prepared, error: "")
             case .finishingError:
-                // -> Will try again to finish the upload
+                // -> Will retry to finish the upload
                 uploadProperties = failedUpload.getUploadProperties(with: .uploaded, error: "")
             default:
                 // —> Will retry from scratch
