@@ -519,9 +519,13 @@ class UploadManager: NSObject, URLSessionDelegate {
             uploadProperties.requestState = .preparingFail
             uploadProperties.requestError = UploadError.missingAsset.errorDescription
             self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
-                // Consider next image
-                self.isPreparing = false
-                self.findNextImageToUpload()
+                // Investigate next upload request?
+                if self.isExecutingBackgroundUploadTask {
+                    // In background task
+                } else {
+                    // In foreground, consider next image
+                    self.didEndPreparation()
+                }
             })
             return
         }
