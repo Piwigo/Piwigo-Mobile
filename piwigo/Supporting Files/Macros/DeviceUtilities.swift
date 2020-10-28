@@ -125,11 +125,17 @@ class DeviceUtilities: NSObject {
         if (deviceCode == "iPhone12,8") {
             return "iPhone SE (2nd generation)"
         }
+        if (deviceCode == "iPhone13,1") {
+            return "iPhone 12 mini"
+        }
         if (deviceCode == "iPhone13,2") {
             return "iPhone 12"
         }
         if (deviceCode == "iPhone13,3") {
             return "iPhone 12 Pro"
+        }
+        if (deviceCode == "iPhone13,4") {
+            return "iPhone 12 Pro Max"
         }
 
         // MARK: - iPad
