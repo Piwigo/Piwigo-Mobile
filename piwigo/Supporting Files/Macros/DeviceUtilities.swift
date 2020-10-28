@@ -125,6 +125,12 @@ class DeviceUtilities: NSObject {
         if (deviceCode == "iPhone12,8") {
             return "iPhone SE (2nd generation)"
         }
+        if (deviceCode == "iPhone13,2") {
+            return "iPhone 12"
+        }
+        if (deviceCode == "iPhone13,3") {
+            return "iPhone 12 Pro"
+        }
 
         // MARK: - iPad
         if (deviceCode == "iPad1,1") {
@@ -203,6 +209,12 @@ class DeviceUtilities: NSObject {
         }
         if (deviceCode == "iPad11,4") {
             return "iPad Air (3rd generation) (Wi-Fi + Cellular)"
+        }
+        if (deviceCode == "iPad13,1") {
+            return "iPad Air (4th generation) (Wi-Fi)"
+        }
+        if (deviceCode == "iPad13,2") {
+            return "iPad Air (4th generation) (Wi-Fi + Cellular)"
         }
 
         // MARK: - iPad Pro
