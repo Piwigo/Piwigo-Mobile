@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.5.2_text" = "Version 2.5.2\n\n• Background uploading\n• Minor bug fixes and improvements of the interface";
+"v2.5.2_text" = "Version 2.5.2\n\n• Background uploading (requires Piwigo 2.11 or later)\n• Minor bug fixes and improvements of the interface";
 
 "v2.5.1_text" = "Version 2.5.1\nSeptember 10, 2020\n\n• New option for presenting the photos and videos in random order\n• Minor bug fixes and improvements of the interface";
 

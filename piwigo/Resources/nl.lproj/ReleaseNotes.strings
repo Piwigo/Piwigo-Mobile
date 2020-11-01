@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.5.2_text" = "Versie 2.5.2\n\n• Achtergrond uploaden\n• Kleine foutjes gerepareerd en verbetering van de interface";
+"v2.5.2_text" = "Versie 2.5.2\n\n• Achtergrond uploaden (vereist Piwigo 2.11 of hoger)\n• Kleine foutjes gerepareerd en verbetering van de interface";
 
 "v2.5.1_text" = "Versie 2.5.1\n10 September 2020\n\n• Nieuwe optie voor het presenteren van foto's en video's in willekeurige volgorde\n• Kleine foutjes verbeterd en verbetering van de interface";
 
