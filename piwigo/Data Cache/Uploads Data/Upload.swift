@@ -98,7 +98,7 @@ class Upload: NSManagedObject {
         requestSectionKey = SectionKeys.init(rawValue: uploadProperties.requestState.sectionKey)!.rawValue
 
         // Error message description
-        requestError = uploadProperties.requestError
+        requestError = uploadProperties.requestError ?? ""
 
         // Photo creation date, filename and MIME type
         creationDate = uploadProperties.creationDate ?? Date.init()
@@ -128,6 +128,19 @@ class Upload: NSManagedObject {
         prefixFileNameBeforeUpload = uploadProperties.prefixFileNameBeforeUpload
         defaultPrefix = uploadProperties.defaultPrefix
         deleteImageAfterUpload = uploadProperties.deleteImageAfterUpload
+    }
+    
+    func updateStatus(with state: kPiwigoUploadState?, error: String?) throws {
+        // Update the upload request only if a new state has a value.
+        guard let newStatus = state else {
+            throw UploadError.missingData
+        }
+        
+        // State of upload request
+        requestState = Int16(newStatus.rawValue)
+
+        // Error message description
+        requestError = error ?? ""
     }
 }
 
@@ -194,7 +207,27 @@ extension Upload {
         }
     }
 
-    func getUploadProperties(with state: kPiwigoUploadState, error: String?) -> UploadProperties {
+    func getProperties() -> UploadProperties {
+        return UploadProperties.init(localIdentifier: self.localIdentifier,
+            serverPath: self.serverPath, category: Int(self.category),
+            // Upload request date, state and error
+            requestDate: self.requestDate, requestState: self.state, requestError: self.requestError,
+            // Photo creation date and filename
+            creationDate: self.creationDate, fileName: self.fileName,
+            mimeType: self.mimeType, md5Sum: self.md5Sum, isVideo: self.isVideo,
+            // Photo author name defaults to name entered in Settings
+            author: self.author, privacyLevel: self.privacy,
+            imageTitle: self.imageName, comment: self.comment,
+            tagIds: self.tagIds, imageId: Int(self.imageId),
+            // Upload settings
+            stripGPSdataOnUpload: self.stripGPSdataOnUpload,
+            resizeImageOnUpload: self.resizeImageOnUpload, photoResize: Int(self.photoResize),
+            compressImageOnUpload: self.compressImageOnUpload, photoQuality: Int(self.photoQuality),
+            prefixFileNameBeforeUpload: self.prefixFileNameBeforeUpload, defaultPrefix: self.defaultPrefix,
+            deleteImageAfterUpload: self.deleteImageAfterUpload)
+    }
+
+    func getProperties(with state: kPiwigoUploadState, error: String?) -> UploadProperties {
         return UploadProperties.init(localIdentifier: self.localIdentifier,
             serverPath: self.serverPath, category: Int(self.category),
             // Upload request date, state and error
@@ -214,7 +247,7 @@ extension Upload {
             deleteImageAfterUpload: self.deleteImageAfterUpload)
     }
 
-    func getUploadPropertiesCancellingDeletion() -> UploadProperties {
+    func getPropertiesCancellingDeletion() -> UploadProperties {
         return UploadProperties.init(localIdentifier: self.localIdentifier,
             serverPath: self.serverPath, category: Int(self.category),
             // Upload request date, state and error

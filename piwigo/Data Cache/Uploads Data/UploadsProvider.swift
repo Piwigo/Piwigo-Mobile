@@ -196,9 +196,11 @@ class UploadsProvider: NSObject {
      and saving it to the persistent store, on a private queue. After saving,
      resets the context to clean up the cache and lower the memory footprint.
     */
-    func updateRecord(with uploadData: UploadProperties, completionHandler: @escaping (Error?) -> Void) -> (Void) {
+    func updatePropertiesOfUpload(with ID: NSManagedObjectID,
+                                  properties: UploadProperties,
+                                  completionHandler: @escaping (Error?) -> Void) -> (Void) {
         // Check current queue
-        print("•••>> updateRecord() \(uploadData.fileName ?? "no filename") | \(uploadData.stateLabel) in \(queueName())\r")
+        print("•••>> updatePropertiesOfUpload() \(properties.fileName ?? "no filename") | \(properties.stateLabel) in \(queueName())\r")
 
         // Create a private queue context.
         let taskContext = DataController.getPrivateContext()
@@ -208,35 +210,75 @@ class UploadsProvider: NSObject {
         taskContext.performAndWait {
             
             // Retrieve existing upload
-            // Create a fetch request for the Upload entity sorted by localIdentifier
-            let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "localIdentifier", ascending: true)]
-            fetchRequest.predicate = NSPredicate(format: "localIdentifier == %@", uploadData.localIdentifier)
-            
-            // Create a fetched results controller and set its fetch request, context, and delegate.
-            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                managedObjectContext: taskContext,
-                                                  sectionNameKeyPath: nil, cacheName: nil)
-            
-            // Perform the fetch.
-            do {
-                try controller.performFetch()
-            } catch {
-                fatalError("Unresolved error \(error)")
-            }
+            let cachedUpload = taskContext.object(with: ID) as! Upload
             
             // Update cached upload
-            if let cachedUpload = controller.fetchedObjects?.first {
+            do {
+                try cachedUpload.update(with: properties)
+            }
+            catch UploadError.missingData {
+                // Could not perform the update
+                print(UploadError.missingData.localizedDescription)
+            }
+            catch {
+                print(error.localizedDescription)
+            }
+            
+            // Save all insertions and deletions from the context to the store.
+            if taskContext.hasChanges {
                 do {
-                    try cachedUpload.update(with: uploadData)
-                }
-                catch UploadError.missingData {
-                    // Could not perform the update
-                    print(UploadError.missingData.localizedDescription)
+                    try taskContext.save()
+                    
+                    // Performs a task in the main queue and wait until this tasks finishes
+                    DispatchQueue.main.async {
+                        self.managedObjectContext.performAndWait {
+                            do {
+                                // Saves the data from the child to the main context to be stored properly
+                                try self.managedObjectContext.save()
+                            } catch {
+                                fatalError("Failure to save context: \(error)")
+                            }
+                        }
+                    }
                 }
                 catch {
-                    print(error.localizedDescription)
+                    fatalError("Failure to save context: \(error)")
                 }
+                // Reset the taskContext to free the cache and lower the memory footprint.
+                taskContext.reset()
+            }
+        }
+        completionHandler(nil)
+    }
+
+    func updateStatusOfUpload(with ID: NSManagedObjectID,
+                              to status: kPiwigoUploadState, error: String?,
+                              completionHandler: @escaping (Error?) -> Void) -> (Void) {
+        // Check current queue
+        print("•••>> updateStatusOfUpload \(ID) to \(status.stateInfo) in \(queueName())\r")
+
+        // Create a private queue context.
+        let taskContext = DataController.getPrivateContext()
+                
+        // taskContext.performAndWait runs on the URLSession's delegate queue
+        // so it won’t block the main thread.
+        taskContext.performAndWait {
+            
+            // Retrieve existing upload
+            let cachedUpload = taskContext.object(with: ID) as! Upload
+            
+            // Update cached upload
+            do {
+                try cachedUpload.updateStatus(with: status, error: error ?? "")
+            }
+            catch UploadError.missingData {
+                // Could not perform the update
+                print(UploadError.missingData.localizedDescription)
+                completionHandler(UploadError.missingData)
+            }
+            catch {
+                print(error.localizedDescription)
+                completionHandler(error)
             }
             
             // Save all insertions and deletions from the context to the store.
@@ -600,7 +642,7 @@ class UploadsProvider: NSObject {
         }
         
         // Check current queue
-//        print("•••>> getRequestsIn(states:)", queueName())
+        print("•••>> getRequestsIn(states:)", queueName())
 
         // Initialisation
         var uploads: [Upload]? = nil

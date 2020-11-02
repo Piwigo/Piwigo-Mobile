@@ -8,118 +8,100 @@
 
 import Photos
 
-class UploadImage: NSObject {
+extension UploadManager {
     
     // MARK: - Image preparation
-    class
-    func prepareImage(for upload: UploadProperties, from imageAsset: PHAsset) -> Void {
-        print("\(UploadManager.shared.debugFormatter.string(from: Date())) > prepareImage() in ", queueName())
+    
+    func prepareImage(for uploadID: NSManagedObjectID,
+                      with uploadProperties: UploadProperties, _ imageAsset: PHAsset) -> Void {
 
         // Retrieve UIImage
-        let (fixedImageObject, imageError) = retrieveUIImage(from: imageAsset, for: upload)
-        if let _ = imageError {
-            updateUploadRequestWith(upload, error: imageError)
-        }
-        guard let imageObject = fixedImageObject else {
-            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-            updateUploadRequestWith(upload, error: error)
-            return
-        }
+        self.retrieveUIImage(from: imageAsset, for: uploadProperties) { (fixedImageObject, imageError) in
+            if let imageError = imageError {
+                self.didPrepareImage(for: uploadID, with: uploadProperties, imageError)
+                return
+            }
+            guard let imageObject = fixedImageObject else {
+                let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                self.didPrepareImage(for: uploadID, with: uploadProperties, error)
+                return
+            }
 
-        // Retrieve image data
-        let (fullSizeData, dataError) = retrieveFullSizeImageData(from: imageAsset)
-        if let _ = dataError {
-            updateUploadRequestWith(upload, error: dataError)
-        }
-        guard let imageData = fullSizeData else {
-            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-            updateUploadRequestWith(upload, error: error)
-            return
-        }
-        
-        // Modify image
-        modifyImage(for: upload, with: imageData, andObject: imageObject) { (newUpload, error) in
-            // Update upload request
-            self.updateUploadRequestWith(newUpload, error: error)
+            // Retrieve image data
+            self.retrieveFullSizeImageData(from: imageAsset) { (fullSizeData, dataError) in
+                if let _ = dataError {
+                    self.didPrepareImage(for: uploadID, with: uploadProperties, dataError)
+                    return
+                }
+                guard let imageData = fullSizeData else {
+                    let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                    self.didPrepareImage(for: uploadID, with: uploadProperties, error)
+                    return
+                }
+
+                // Modify image
+                self.modifyImage(for: uploadProperties, with: imageData, andObject: imageObject) { (newUploadProperties, error) in
+                    // Update upload request
+                    self.didPrepareImage(for: uploadID, with: newUploadProperties, error)
+                    return
+                }
+            }
         }
     }
     
-    class
-    func updateUploadRequestWith(_ upload: UploadProperties, error: Error?) {
-
+    private func didPrepareImage(for uploadID: NSManagedObjectID,
+                                 with properties: UploadProperties, _ error: Error?) {
+        // Initialisation
+        var newProperties = properties
+        newProperties.requestState = .prepared
+        var errorMsg = ""
+        
         // Error?
         if let error = error {
-            // Could not prepare image
-            let uploadProperties = upload.update(with: .preparingError, error: error.localizedDescription)
-            
-            // Update request with error description
-            print("\(UploadManager.shared.debugFormatter.string(from: Date())) > ", error.localizedDescription)
-            UploadManager.shared.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
-                // Upload ready for transfer
-                if UploadManager.shared.isExecutingBackgroundUploadTask {
-                    // In background task
-                } else {
-                    // In foreground, update UI
-                    let uploadInfo: [String : Any] = ["localIndentifier" : upload.localIdentifier,
-                                                      "stateLabel" : kPiwigoUploadState.preparingError.stateInfo,
-                                                      "Error" : error.localizedDescription,
-                                                      "progressFraction" : Float(0.0)]
-                    DispatchQueue.main.async {
-                        // Update UploadQueue cell and button shown in root album (or default album)
-                        let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)
-                        NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
-                    }
-                    // Consider next image
-                    let name = NSNotification.Name(rawValue: UploadManager.shared.kPiwigoNotificationDidPrepareImage)
-                    NotificationCenter.default.post(name: name, object: nil, userInfo: nil)
-                }
-            })
-            return
+            newProperties.requestState = .preparingError
+            errorMsg = error.localizedDescription
         }
 
-        // Update state of upload
-        let uploadProperties = upload.update(with: .prepared, error: "")
+        // Update UI
+        let uploadInfo: [String : Any] = ["localIndentifier" : newProperties.localIdentifier,
+                                          "stateLabel" : newProperties.stateLabel,
+                                          "progressFraction" : Float(0)]
+        DispatchQueue.main.async {
+            // Update UploadQueue cell and button shown in root album (or default album)
+            let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)
+            NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
+        }
 
-        // Update request ready for transfer
-        print("\(UploadManager.shared.debugFormatter.string(from: Date())) > prepared file \(uploadProperties.fileName!)")
-        UploadManager.shared.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { _ in
+        // Update state of upload request
+        print("\(debugFormatter.string(from: Date())) > prepared \(uploadID) i.e. \(properties.fileName!) \(errorMsg)")
+        uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: newProperties) { [unowned self] (_) in
             // Upload ready for transfer
-            if UploadManager.shared.isExecutingBackgroundUploadTask {
+            if self.isExecutingBackgroundUploadTask {
                 // In background task
-                UploadManager.shared.transferInBackgroundImage(of: uploadProperties)
-            } else {
-                // In foreground, update UI
-                let uploadInfo: [String : Any] = ["localIndentifier" : upload.localIdentifier,
-                                                  "stateLabel" : kPiwigoUploadState.prepared.stateInfo,
-                                                  "Error" : "",
-                                                  "progressFraction" : Float(0.0)]
-                DispatchQueue.main.async {
-                    // Update UploadQueue cell and button shown in root album (or default album)
-                    let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)
-                    NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
+                if newProperties.requestState == .prepared {
+                    self.transferInBackgroundImage(for: uploadID, with: newProperties)
                 }
-                // Consider next image
-                let name = NSNotification.Name(rawValue: UploadManager.shared.kPiwigoNotificationDidPrepareImage)
-                NotificationCenter.default.post(name: name, object: nil, userInfo: nil)
+            } else {
+                // Consider next step
+                self.didEndPreparation()
             }
-        })
+        }
     }
 
     
     // MARK: - Retrieve UIImage and Image Data
-    class
-    func retrieveUIImage(from imageAsset: PHAsset, for upload:UploadProperties) -> (UIImage?, Error?) {
-        print("\(UploadManager.shared.debugFormatter.string(from: Date())) > retrieveUIImageFrom...")
+    private func retrieveUIImage(from imageAsset: PHAsset, for upload:UploadProperties,
+                         completionHandler: @escaping (UIImage?, Error?) -> Void) {
 
-        // Case of an image…
+        // Options for retrieving image of requested size
         let options = PHImageRequestOptions()
-        // Does not block the calling thread until image data is ready or an error occurs
-        options.isSynchronous = true
+        // Photos processes the image request synchronously unless when the app is active
+        options.isSynchronous = isExecutingBackgroundUploadTask
         // Requests the most recent version of the image asset
         options.version = .current
         // Requests the highest-quality image available, regardless of how much time it takes to load.
         options.deliveryMode = .highQualityFormat
-        // Photos can download the requested video
+        // Photos can download the requested image
         options.isNetworkAccessAllowed = true
         // Requests Photos to resize the image according to user settings
         var size = PHImageManagerMaximumSize
@@ -140,35 +122,62 @@ class UploadImage: NSObject {
         var fixedImageObject: UIImage?
         PHImageManager.default().requestImage(for: imageAsset, targetSize: size, contentMode: .default,
                                               options: options, resultHandler: { imageObject, info in
-            // Any error?
-            if info?[PHImageErrorKey] != nil || (imageObject?.size.width == 0) || (imageObject?.size.height == 0) {
-//                print("\(debugFormatter.string(from: Date())) > returned info(\(String(describing: info)))")
-                error = info?[PHImageErrorKey] as? Error
-                return
-            }
 
-            // Retrieved UIImage representation for the specified asset
-            if let imageObject = imageObject {
+            // resultHandler redirected to the main thread by default!
+            if self.isExecutingBackgroundUploadTask {
+                // Any error?
+                if info?[PHImageErrorKey] != nil || (imageObject?.size.width == 0) || (imageObject?.size.height == 0) {
+                    completionHandler(nil, info?[PHImageErrorKey] as? Error)
+                    return
+                }
+
+                // Retrieved UIImage representation for the specified asset
+                guard let imageObject = imageObject else {
+                    error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                    completionHandler(nil, error)
+                    return
+                }
+                
                 // Fix orientation if needed
                 fixedImageObject = self.fixOrientationOf(imageObject)
+
+                // Job completed
+                print("\(self.debugFormatter.string(from: Date())) > exits retrieveUIImageFrom in", queueName())
+                completionHandler(fixedImageObject, nil)
                 return
-            }
-            else {
-                error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                return
+            } else {
+                DispatchQueue(label: "prepareImage").async {
+                    // Any error?
+                    if info?[PHImageErrorKey] != nil || (imageObject?.size.width == 0) || (imageObject?.size.height == 0) {
+                        completionHandler(nil, info?[PHImageErrorKey] as? Error)
+                        return
+                    }
+
+                    // Retrieved UIImage representation for the specified asset
+                    guard let imageObject = imageObject else {
+                        error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                        completionHandler(nil, error)
+                        return
+                    }
+                    
+                    // Fix orientation if needed
+                    fixedImageObject = self.fixOrientationOf(imageObject)
+
+                    // Job completed
+                    print("\(self.debugFormatter.string(from: Date())) > exits retrieveUIImageFrom in", queueName())
+                    completionHandler(fixedImageObject, nil)
+                    return
+                }
             }
         })
-        return (fixedImageObject, error)
     }
 
-    class
-    func retrieveFullSizeImageData(from imageAsset: PHAsset) -> (Data?, Error?) {
-        print("\(UploadManager.shared.debugFormatter.string(from: Date())) > retrieveFullSizeAssetDataFromImage...")
-
-        // Case of an image…
+    private func retrieveFullSizeImageData(from imageAsset: PHAsset,
+                                   completionHandler: @escaping (Data?, Error?) -> Void) {
+        // Options for retrieving metadata
         let options = PHImageRequestOptions()
-        // Does not block the calling thread until image data is ready or an error occurs
-        options.isSynchronous = true
+        // Photos processes the image request synchronously unless when the app is active
+        options.isSynchronous = isExecutingBackgroundUploadTask
         // Requests the most recent version of the image asset
         options.version = .current
         // Requests a fast-loading image, possibly sacrificing image quality.
@@ -181,40 +190,62 @@ class UploadImage: NSObject {
             print(String(format: "    > retrieveFullSizeAssetDataFromImage... progress %lf", progress))
         }
 
-        var error: Error?
-        var data: Data?
         autoreleasepool {
             if #available(iOS 13.0, *) {
                 PHImageManager.default().requestImageDataAndOrientation(for: imageAsset, options: options,
                                                                         resultHandler: { imageData, dataUTI, orientation, info in
-                    if info?[PHImageErrorKey] != nil || ((imageData?.count ?? 0) == 0) {
-                        error = info?[PHImageErrorKey] as? Error
+                    // resultHandler redirected to the main thread by default!
+                    if self.isExecutingBackgroundUploadTask {
+                        print("\(self.debugFormatter.string(from: Date())) > exits retrieveFullSizeAssetDataFromImage in", queueName())
+                        if info?[PHImageErrorKey] != nil || ((imageData?.count ?? 0) == 0) {
+                            completionHandler(nil, info?[PHImageErrorKey] as? Error)
+                        } else {
+                            completionHandler(imageData, nil)
+                        }
                     } else {
-                        data = imageData
+                        DispatchQueue(label: "prepareImage").async {
+                            print("\(self.debugFormatter.string(from: Date())) > exits retrieveFullSizeAssetDataFromImage in", queueName())
+                            if info?[PHImageErrorKey] != nil || ((imageData?.count ?? 0) == 0) {
+                                completionHandler(nil, info?[PHImageErrorKey] as? Error)
+                            } else {
+                                completionHandler(imageData, nil)
+                            }
+                        }
                     }
                 })
             } else {
                 PHImageManager.default().requestImageData(for: imageAsset, options: options,
                                                           resultHandler: { imageData, dataUTI, orientation, info in
-                    if info?[PHImageErrorKey] != nil || ((imageData?.count ?? 0) == 0) {
-                        error = info?[PHImageErrorKey] as? Error
+                    // resultHandler performed on main thread!
+                    if self.isExecutingBackgroundUploadTask {
+                        print("\(self.debugFormatter.string(from: Date())) > exits retrieveFullSizeAssetDataFromImage in", queueName())
+                        if info?[PHImageErrorKey] != nil || ((imageData?.count ?? 0) == 0) {
+                            completionHandler(nil, info?[PHImageErrorKey] as? Error)
+                        } else {
+                            completionHandler(imageData, nil)
+                        }
                     } else {
-                        data = imageData
+                        DispatchQueue(label: "prepareImage").async {
+                            print("\(self.debugFormatter.string(from: Date())) > exits retrieveFullSizeAssetDataFromImage in", queueName())
+                            if info?[PHImageErrorKey] != nil || ((imageData?.count ?? 0) == 0) {
+                                completionHandler(nil, info?[PHImageErrorKey] as? Error)
+                            } else {
+                                completionHandler(imageData, nil)
+                            }
+                        }
                     }
                 })
             }
         }
-        return (data, error)
     }
 
     
     // MARK: - Modify Metadata
     
-    class
-    func modifyImage(for upload: UploadProperties,
-                             with originalData: Data, andObject originalObject: UIImage,
-                             completionHandler: @escaping (UploadProperties, Error?) -> Void) {
-        print("\(UploadManager.shared.debugFormatter.string(from: Date())) > modifyImage...")
+    private func modifyImage(for upload: UploadProperties,
+                     with originalData: Data, andObject originalObject: UIImage,
+                     completionHandler: @escaping (UploadProperties, Error?) -> Void) {
+//        print("\(self.debugFormatter.string(from: Date())) > enters modifyImage in", queueName())
 
         // Create CGI reference from image data (to retrieve complete metadata)
         guard let source: CGImageSource = CGImageSourceCreateWithData((originalData as CFData), nil) else {
@@ -302,7 +333,7 @@ class UploadImage: NSObject {
 
         // File name of final image data to be stored into Piwigo/Uploads directory
         let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
-        let fileURL = UploadManager.shared.applicationUploadsDirectory.appendingPathComponent(fileName)
+        let fileURL = self.applicationUploadsDirectory.appendingPathComponent(fileName)
         
         // Deletes temporary image file if exists (incomplete previous attempt?)
         do {
@@ -322,23 +353,21 @@ class UploadImage: NSObject {
         var md5Checksum: String? = ""
         if #available(iOS 13.0, *) {
             #if canImport(CryptoKit)        // Requires iOS 13
-            md5Checksum = UploadManager.shared.MD5(data: imageData)
+            md5Checksum = self.MD5(data: imageData)
             #endif
         } else {
             // Fallback on earlier versions
-            md5Checksum = UploadManager.shared.oldMD5(data: imageData)
+            md5Checksum = self.oldMD5(data: imageData)
         }
         newUpload.md5Sum = md5Checksum
-        print("\(UploadManager.shared.debugFormatter.string(from: Date())) > MD5: \(String(describing: md5Checksum))")
-
+        print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: md5Checksum))")
         completionHandler(newUpload, nil)
     }
 
 
     // MARK: - Fix Image Orientation
     
-    class
-    func fixOrientationOf(_ image: UIImage) -> UIImage {
+    private func fixOrientationOf(_ image: UIImage) -> UIImage {
 
         // No-op if the orientation is already correct
         if image.imageOrientation == .up {
@@ -404,8 +433,7 @@ class UploadImage: NSObject {
 
     // MARK: - MIME type and file extension sniffing
 
-    class
-    func contentType(forImageData data: Data?) -> String? {
+    private func contentType(forImageData data: Data?) -> String? {
         var bytes: [UInt8] = Array.init(repeating: UInt8(0), count: 12)
         (data! as NSData).getBytes(&bytes, length: 12)
 
@@ -451,8 +479,7 @@ class UploadImage: NSObject {
         return nil
     }
 
-    class
-    func fileExtension(forImageData data: Data?) -> String? {
+    private func fileExtension(forImageData data: Data?) -> String? {
         var bytes: [UInt8] = Array.init(repeating: UInt8(0), count: 12)
         (data! as NSData).getBytes(&bytes, length: 12)
 
@@ -505,66 +532,66 @@ class UploadImage: NSObject {
     // https://mimesniff.spec.whatwg.org/#sniffing-in-an-image-context
 
     // https://en.wikipedia.org/wiki/BMP_file_format
-    class func bmpSignature() -> [UInt8] {
+    private func bmpSignature() -> [UInt8] {
         return "BM".map { $0.asciiValue! }
     }
     
     // https://en.wikipedia.org/wiki/GIF
-    class func gif87aSignature() -> [UInt8] {
+    private func gif87aSignature() -> [UInt8] {
         return "GIF87a".map { $0.asciiValue! }
     }
-    class func gif89aSignature() -> [UInt8] {
+    private func gif89aSignature() -> [UInt8] {
         return "GIF89a".map { $0.asciiValue! }
     }
     
     // https://en.wikipedia.org/wiki/High_Efficiency_Image_File_Format
-    class func heicSignature() -> [UInt8] {
+    private func heicSignature() -> [UInt8] {
         return [0x00, 0x00, 0x00, 0x18] + "ftypheic".map { $0.asciiValue! }
     }
     
     // https://en.wikipedia.org/wiki/ILBM
-    class func iffSignature() -> [UInt8] {
+    private func iffSignature() -> [UInt8] {
         return "FORM".map { $0.asciiValue! }
     }
     
     // https://en.wikipedia.org/wiki/JPEG
-    class func jpgSignature() -> [UInt8] {
+    private func jpgSignature() -> [UInt8] {
         return [0xff, 0xd8, 0xff]
     }
     
     // https://en.wikipedia.org/wiki/JPEG_2000
-    class func jp2Signature() -> [UInt8] {
+    private func jp2Signature() -> [UInt8] {
         return [0x00, 0x00, 0x00, 0x0c, 0x6a, 0x50, 0x20, 0x20, 0x0d, 0x0a, 0x87, 0x0a]
     }
     
     // https://en.wikipedia.org/wiki/Portable_Network_Graphics
-    class func pngSignature() -> [UInt8] {
+    private func pngSignature() -> [UInt8] {
         return [0x89] + "PNG".map { $0.asciiValue! } + [0x0d, 0x0a, 0x1a, 0x0a]
     }
     
     // https://en.wikipedia.org/wiki/Adobe_Photoshop#File_format
-    class func psdSignature() -> [UInt8] {
+    private func psdSignature() -> [UInt8] {
         return "8BPS".map { $0.asciiValue! }
     }
     
     // https://en.wikipedia.org/wiki/TIFF
-    class func tif_iiSignature() -> [UInt8] {
+    private func tif_iiSignature() -> [UInt8] {
         return "II".map { $0.asciiValue! } + [0x2a, 0x00]
     }
-    class func tif_mmSignature() -> [UInt8] {
+    private func tif_mmSignature() -> [UInt8] {
         return "MM".map { $0.asciiValue! } + [0x00, 0x2a]
     }
     
     // https://en.wikipedia.org/wiki/WebP
-    class func webpSignature() -> [UInt8] {
+    private func webpSignature() -> [UInt8] {
         return "RIFF".map { $0.asciiValue! }
     }
     
     // https://en.wikipedia.org/wiki/ICO_(file_format)
-    class func win_icoSignature() -> [UInt8] {
+    private func win_icoSignature() -> [UInt8] {
         return [0x00, 0x00, 0x01, 0x00]
     }
-    class func win_curSignature() -> [UInt8] {
+    private func win_curSignature() -> [UInt8] {
         return [0x00, 0x00, 0x02, 0x00]
     }
 }
