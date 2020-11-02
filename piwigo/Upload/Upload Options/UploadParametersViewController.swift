@@ -44,6 +44,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
         view.backgroundColor = UIColor.piwigoColorBackground()
 
         // Table view
+        paramsTableView.separatorColor = UIColor.piwigoColorSeparator()
         paramsTableView.indicatorStyle = Model.sharedInstance().isDarkPaletteActive ? .white : .black
         paramsTableView.reloadData()
     }
