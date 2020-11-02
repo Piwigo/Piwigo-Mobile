@@ -1512,7 +1512,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
                 self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
 
                 // Refresh collection view if needed
-                NSLog(@"=> category %ld now contains %ld images", (long)self.categoryId, (long)self.albumData.images.count);
+//                NSLog(@"=> category %ld now contains %ld images", (long)self.categoryId, (long)self.albumData.images.count);
                 if (oldImageList.count == self.albumData.images.count) {
                     self.loadingImages = NO;
                     return;
@@ -2259,7 +2259,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
                if (updatedSuccessfully)
                {
                    // Remove image from current category in cache and update UI
-                   [[CategoriesData sharedInstance] removeImage:self.selectedImage fromCategory:[NSString stringWithFormat:@"%ld", self.categoryId]];
+                   [[CategoriesData sharedInstance] removeImage:self.selectedImage fromCategory:[NSString stringWithFormat:@"%ld", (long)self.categoryId]];
 
                    // Next image
                    [self.selectedImagesToRemove removeLastObject];

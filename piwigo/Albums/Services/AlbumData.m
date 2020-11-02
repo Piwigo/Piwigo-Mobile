@@ -196,7 +196,7 @@
         self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList for:[Model sharedInstance].defaultSort];
 		if(completion)
 		{
-            NSLog(@"updateImageSort: we have all image data i.e. %ld", (long)self.images.count);
+//            NSLog(@"updateImageSort: we have all image data i.e. %ld", (long)self.images.count);
             completion();
 		}
 		return;
