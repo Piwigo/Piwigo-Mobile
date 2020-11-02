@@ -202,7 +202,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
             // Collect list of failed uploads
             if let failedUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects?.filter({$0.state == .preparingError || $0.state == .uploadingError || $0.state == .finishingError }) {
                 // Resume failed uploads
-                DispatchQueue.global(qos: .background).async {
+                UploadManager.shared.backgroundQueue.async {
                     UploadManager.shared.resume(failedUploads: failedUploads, completionHandler: { (error) in
                         if let error = error {
                             // Inform user

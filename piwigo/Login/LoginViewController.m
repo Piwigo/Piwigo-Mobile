@@ -772,10 +772,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                             [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
 
                             // Resume upload operations in background queue
-                            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                            dispatch_async([appDelegate getUploadManagerQueue], ^{
-                                [[UploadManager shared] resumeAll];
-                            });
+                            [[UploadManager shared] resumeAll];
                         }
                     }];
                 }
@@ -831,10 +828,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                     [self hideLoading];
 
                     // Resume upload operations in background queue
-                    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                    dispatch_async([appDelegate getUploadManagerQueue], ^{
-                        [[UploadManager shared] resumeAll];
-                    });
+                    [[UploadManager shared] resumeAll];
 
 #if defined(DEBUG_SESSION)
                     NSLog(@"=> checkSessionStatusAndTryRelogin: Connection still alive…");

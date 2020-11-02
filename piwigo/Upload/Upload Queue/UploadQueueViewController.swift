@@ -213,7 +213,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
                             uploadsToResume.append(self.managedObjectContext.object(with: objectId) as! Upload)
                         }
                         // Resume failed uploads
-                        DispatchQueue.global(qos: .background).async {
+                        UploadManager.shared.backgroundQueue.async {
                             UploadManager.shared.resume(failedUploads: uploadsToResume, completionHandler: { (error) in
                                 if let error = error {
                                     // Inform user

@@ -169,7 +169,13 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
 //        }
         
         // Handle the response with the Upload Manager
-        UploadManager.shared.didCompleteUploadTask(task, withError: error)
+        if UploadManager.shared.isExecutingBackgroundUploadTask {
+            UploadManager.shared.didCompleteUploadTask(task, withError: error)
+        } else {
+            UploadManager.shared.backgroundQueue.async {
+                UploadManager.shared.didCompleteUploadTask(task, withError: error)
+            }
+        }
     }
 
     //MARK: - Session Data Delegate
@@ -182,7 +188,13 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
 //                return
 //        }
 //        print("    > Upload task \(dataTask.taskIdentifier) of chunk \(chunk)/\(chunks) did receive some data at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
-        UploadManager.shared.didCompleteUploadTask(dataTask, withData: data)
+        if UploadManager.shared.isExecutingBackgroundUploadTask {
+            UploadManager.shared.didCompleteUploadTask(dataTask, withData: data)
+        } else {
+            UploadManager.shared.backgroundQueue.async {
+                UploadManager.shared.didCompleteUploadTask(dataTask, withData: data)
+            }
+        }
     }
 
 

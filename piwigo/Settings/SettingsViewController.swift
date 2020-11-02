@@ -979,7 +979,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     if switchState == false {
                         // Update upload tasks in background queue
                         // May not restart the uploads
-                        DispatchQueue.global(qos: .background).async {
+                        UploadManager.shared.backgroundQueue.async {
                             UploadManager.shared.findNextImageToUpload()
                         }
                     }

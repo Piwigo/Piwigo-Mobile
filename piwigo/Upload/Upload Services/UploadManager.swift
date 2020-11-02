@@ -54,8 +54,11 @@ class UploadManager: NSObject, URLSessionDelegate {
         return formatter
     }()
     
-
-    // MARK: - Networking
+    /// Background queue in which uploads are managed
+    let backgroundQueue: DispatchQueue = {
+        return DispatchQueue(label: "org.piwigo.uploadBckgQueue", qos: .background)
+    }()
+    
     /// Uploads directory into which image/video files are temporarily stored
     let applicationUploadsDirectory: URL = {
         let fm = FileManager.default
@@ -780,18 +783,22 @@ class UploadManager: NSObject, URLSessionDelegate {
     @objc func resumeAll() -> Void {
         // Reset flags
         appState = .active
-        isPreparing = false; isUploading = false; isFinishing = false
-
-        // Considers only uploads to the server to which the user is logged in
-        let states: [kPiwigoUploadState] = [.preparingError, .preparingFail, .formatError,
-                                            .uploadingError, .finishingError]
-        if let failedUploads = uploadsProvider.getRequestsIn(states: states) {
-            if failedUploads.count > 0 {
-                // Resume failed uploads
-                resume(failedUploads: failedUploads) { (_) in }
-            } else {
-                // Continue uploads
-                findNextImageToUpload()
+        isPreparing = false; isFinishing = false
+        isExecutingBackgroundUploadTask = false
+//        isUploading = Set<String>()
+        
+        backgroundQueue.async { [self] in
+            // Considers only uploads to the server to which the user is logged in
+            let states: [kPiwigoUploadState] = [.preparingError, .preparingFail, .formatError,
+                                                .uploadingError, .finishingError]
+            if let failedUploads = self.uploadsProvider.getRequestsIn(states: states) {
+                if failedUploads.count > 0 {
+                    // Resume failed uploads
+                    self.resume(failedUploads: failedUploads) { (_) in }
+                } else {
+                    // Continue uploads
+                    self.findNextImageToUpload()
+                }
             }
         }
         
@@ -832,7 +839,7 @@ class UploadManager: NSObject, URLSessionDelegate {
                 return;
             }
             // Launch uploads
-            DispatchQueue.global(qos: .background).async {
+            self.backgroundQueue.async {
                 self.findNextImageToUpload()
             }
             completionHandler(nil)

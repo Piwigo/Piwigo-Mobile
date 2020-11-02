@@ -112,10 +112,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
            let _ = rootVC.children.first as? AlbumImagesViewController {
             // Resume upload operations in background queue
             // and update badge, upload button of album navigator
-            let appDelegate = UIApplication.shared.delegate as? AppDelegate
-            appDelegate?.getUploadManagerQueue().async(execute: {
-                UploadManager.shared.resumeAll()
-            })
+            UploadManager.shared.resumeAll()
         }
     }
 

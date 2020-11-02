@@ -232,10 +232,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
         if ([currentVC isKindOfClass:[AlbumImagesViewController class]]) {
             // Resume upload operations in background queue
             // and update badge, upload button of album navigator
-            dispatch_async([self getUploadManagerQueue], ^{
-//                NSLog(@"•••>> dispatch queue: %s", dispatch_queue_get_label(nil));
-                [[UploadManager shared] resumeAll];
-            });
+            [[UploadManager shared] resumeAll];
         }
     }
 }
@@ -404,25 +401,11 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
 
     // Resume upload operations in background queue
     // and update badge, upload button of album navigator
-    dispatch_async([self getUploadManagerQueue], ^{
-//        NSLog(@"•••>> dispatch queue: %s", dispatch_queue_get_label(nil));
-        [[UploadManager shared] resumeAll];
-    });
+    [[UploadManager shared] resumeAll];
 }
 
 
 #pragma mark - Background tasks
-
--(dispatch_queue_t)getUploadManagerQueue
-{
-    if (self.uploadManagerQueue == nil) {
-        // Create background queue for the Upload Manager
-        dispatch_queue_attr_t qos = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL,
-                                                                            QOS_CLASS_BACKGROUND, -1);
-        [self setUploadManagerQueue: dispatch_queue_create("org.piwigo.upload-thread", qos)];
-    }
-    return self.uploadManagerQueue;
-}
 
 -(void)registerBgTasks API_AVAILABLE(ios(13.0))
 {

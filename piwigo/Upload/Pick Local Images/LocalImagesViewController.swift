@@ -1242,7 +1242,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 // Show an alert if there was an error.
                 guard let error = error else {
                     // Launch upload tasks in background queue
-                    DispatchQueue.global(qos: .background).async {
+                    UploadManager.shared.backgroundQueue.async {
                         UploadManager.shared.findNextImageToUpload()
                     }
                     return
