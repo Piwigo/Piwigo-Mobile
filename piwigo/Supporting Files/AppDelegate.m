@@ -437,6 +437,15 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
 
 -(void)handleNextUpload:(BGProcessingTask *)task API_AVAILABLE(ios(13.0))
 {
+    // Cancel pending background task before scheduling new tasks
+    [[BGTaskScheduler sharedScheduler] cancelTaskRequestWithIdentifier:kPiwigoBackgroundTaskUpload];
+    
+    // Schedule the next upload if needed
+    if ([UploadManager shared].nberOfUploadsToComplete > 0) {
+        NSLog(@"    > Schedule next uploads.");
+        [self scheduleNextUpload];
+    }
+
     // Create the operation queue
     NSOperationQueue *uploadQueue = [[NSOperationQueue alloc] init];
     uploadQueue.maxConcurrentOperationCount = 1;
@@ -445,6 +454,9 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     NSBlockOperation *initOperation = [NSBlockOperation blockOperationWithBlock:^{
         // Start executing background upload task
         [UploadManager shared].isExecutingBackgroundUploadTask = YES;
+        // Reset indexes
+        [UploadManager shared].indexOfUploadRequestToPrepare = 0;
+        [UploadManager shared].indexOfUploadRequestToTransfer = 0;
         // Select upload requests
         [[UploadManager shared] selectUploadRequestsForBckgTask];
     }];
@@ -457,42 +469,29 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     NSInteger maxOperations = [UploadManager shared].maxNberOfUploadsPerBackgroundTask;
     for (NSInteger index = 0; index < maxOperations; index++) {
         NSBlockOperation *uploadOperation = [NSBlockOperation blockOperationWithBlock:^{
-            if (![Model sharedInstance].wifiOnlyUploading) {
-                // Transfer image
-                [[UploadManager shared] appendJobToBckgTask];
-            }
+            // Transfer image
+            [[UploadManager shared] appendJobToBckgTask];
         }];
         [uploadOperation addDependency:uploadOperations.lastObject];
         [uploadOperations addObject:uploadOperation];
     }
 
-    // Schedule new task if needed
-    NSBlockOperation *lastOperation = uploadOperations.lastObject;
-    [lastOperation setCompletionBlock:^{
-        NSLog(@"    > Task completed with success");
-        [task setTaskCompletedWithSuccess:YES];
-
-        // Completing background upload task
-        [UploadManager shared].isExecutingBackgroundUploadTask = NO;
-
-        // Schedule the next upload if needed
-        if ([UploadManager shared].nberOfUploadsToComplete > 0) {
-            NSLog(@"    > Schedule next upload.");
-            [self scheduleNextUpload];
-        }
-    }];
-
     // Provide an expiration handler for the background task
     // that cancels the operation
     [task setExpirationHandler:^{
         NSLog(@"    > Task expired: Upload operation cancelled.");
-        // Completing background upload task
-        [UploadManager shared].isExecutingBackgroundUploadTask = NO;
-        
          // Cancel operations
         [uploadQueue cancelAllOperations];
     }];
     
+    // Inform the system that the background task is complete
+    // when the operation completes
+    NSBlockOperation *lastOperation = uploadOperations.lastObject;
+    [lastOperation setCompletionBlock:^{
+        NSLog(@"    > Task completed with success");
+        [task setTaskCompletedWithSuccess:YES];
+    }];
+
     // Start the operation
     NSLog(@"    > Start upload operations in background task...");
     [uploadQueue addOperations:uploadOperations waitUntilFinished:NO];

@@ -132,7 +132,7 @@ class UploadManager: NSObject, URLSessionDelegate {
     }()
 
     
-    // MARK: - Foreground Upload Task Manager (pwg.images.upload)
+    // MARK: - Foreground Upload Task Manager
     /** The manager prepares an image for upload and then launches the transfer.
     - isPreparing is set to true when a photo/video is going to be prepared,
       and false when the preparation has completed or failed.
@@ -164,15 +164,16 @@ class UploadManager: NSObject, URLSessionDelegate {
         }
     }
 
-    // Images are uploaded one at a time.
+    // Images are uploaded as follows:
     /// - Photos are prepared with appropriate metadata in a format accepted by the server
     /// - Videos are exported in MP4 fomat and uploaded (VideoJS plugin expected)
-    /// - Images are upload with one of the following methods:
+    /// - Images are uploaded with one of the following methods:
     ///      - pwg.images.upload: old method unable to set the image title
     ///        This requires a call to pwg.images.setInfo to set the title after the transfer.
     ///      - pwg.images.uploadAsync: new method accepting asynchroneous calls
     ///        and setting all parameters like pwg.images.setInfo.
-    /// - Uploads are performed in the background with the method pwg.images.uploadAsync
+    ///
+    /// - Uploads can also be performed in the background with the method pwg.images.uploadAsync
     ///   and the BackgroundTasks farmework (iOS 13+)
     @objc
     func findNextImageToUpload() -> Void {
@@ -344,8 +345,10 @@ class UploadManager: NSObject, URLSessionDelegate {
     /// - uploads are launched in the background with the method pwg.images.uploadAsync
     ///   and the BackgroundTasks farmework (iOS 13+)
     /// - transfers failed due to wrong MD5 checksum are retried a certain number of times.
-    @objc let maxNberOfUploadsPerBackgroundTask = 20
+    @objc let maxNberOfUploadsPerBackgroundTask = 50
+    @objc var indexOfUploadRequestToPrepare = 0
     @objc var uploadRequestsToPrepare = [NSManagedObjectID]()
+    @objc var indexOfUploadRequestToTransfer = 0
     @objc var uploadRequestsToTransfer = [NSManagedObjectID]()
     @objc var isExecutingBackgroundUploadTask = false
 
@@ -386,24 +389,23 @@ class UploadManager: NSObject, URLSessionDelegate {
     
     @objc
     func appendJobToBckgTask() -> Void {
-        // Initialise taskContext
-        let taskContext = DataController.getPrivateContext()
-        
         // Add image transfer operations first
-        if let objectId = uploadRequestsToTransfer.last, !uploadRequestsToTransfer.isEmpty {
-            let uploadRequest = taskContext.object(with: objectId) as! Upload
+        if indexOfUploadRequestToTransfer < uploadRequestsToTransfer.count {
+            // Get objectID of upload request
+            let uploadID = uploadRequestsToTransfer[indexOfUploadRequestToTransfer]
             // Launch transfer
-            launchTransfer(of: uploadRequest)
-            // Delete request from selection
-            uploadRequestsToTransfer.removeLast()
+            launchTransfer(of: uploadID)
+            // Increment index for next call
+            indexOfUploadRequestToTransfer += 1
         }
         // then image preparation followed by transfer operations
-        else if let objectId = uploadRequestsToPrepare.last, !uploadRequestsToPrepare.isEmpty {
-            let uploadRequest = taskContext.object(with: objectId) as! Upload
+        else if indexOfUploadRequestToPrepare < uploadRequestsToPrepare.count {
+            // Get objectID of upload request
+            let uploadID = uploadRequestsToPrepare[indexOfUploadRequestToPrepare]
             // Prepare image for transfer
-            prepare(nextUpload: uploadRequest)
-            // Delete request from selection
-            uploadRequestsToPrepare.removeLast()
+            prepare(for: uploadID)
+            // Increment index for next call
+            indexOfUploadRequestToPrepare += 1
         }
     }
     
