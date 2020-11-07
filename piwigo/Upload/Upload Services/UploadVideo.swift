@@ -56,8 +56,8 @@ extension UploadManager {
             let locationMetadata = AVMetadataItem.metadataItems(from: assetMetadata, filteredByIdentifier: .commonIdentifierLocation)
 
             // Upload original video if metedata matches user's choice
-            if !Model.sharedInstance().stripGPSdataOnUpload ||
-                (Model.sharedInstance().stripGPSdataOnUpload && (locationMetadata.count == 0)) {
+            if !uploadProperties.stripGPSdataOnUpload ||
+                (uploadProperties.stripGPSdataOnUpload && (locationMetadata.count == 0)) {
 
                 // Prepare URL of temporary file
                 let fileName = uploadProperties.localIdentifier.replacingOccurrences(of: "/", with: "-")
@@ -412,7 +412,7 @@ extension UploadManager {
         // Strips private metadata if user requested it in Settings
         // Apple documentation: 'metadataItemFilterForSharing' removes user-identifying metadata items, such as location information and leaves only metadata releated to commerce or playback itself. For example: playback, copyright, and commercial-related metadata, such as a purchaser’s ID as set by a vendor of digital media, along with metadata either derivable from the media itself or necessary for its proper behavior are all left intact.
 //        exportSession.metadata = nil
-        if Model.sharedInstance().stripGPSdataOnUpload {
+        if upload.stripGPSdataOnUpload {
             exportSession.metadataItemFilter = AVMetadataItemFilter.forSharing()
         } else {
             exportSession.metadataItemFilter = nil
