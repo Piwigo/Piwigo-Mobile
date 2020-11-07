@@ -199,9 +199,7 @@ class UploadManager: NSObject, URLSessionDelegate {
             let _ = Model.sharedInstance()?.hasNormalRights,
             let _ = Model.sharedInstance()?.usesCommunityPluginV29,
             let _ = Model.sharedInstance()?.usesUploadAsync,
-            let _ = Model.sharedInstance()?.uploadFileTypes,
-            let _ = Model.sharedInstance()?.stripGPSdataOnUpload,
-            let _ = Model.sharedInstance()?.pwgToken else {
+            let _ = Model.sharedInstance()?.uploadFileTypes else {
             return
         }
         
