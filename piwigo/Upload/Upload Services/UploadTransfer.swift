@@ -315,7 +315,7 @@ extension UploadManager {
 
         // Prepare files, requests and resume tasks
         let username = Model.sharedInstance()?.username ?? ""
-        let password = SAMKeychain.password(forService: Model.sharedInstance().serverPath, account: username) ?? ""
+        let password = SAMKeychain.password(forService: uploadProperties.serverPath, account: username) ?? ""
         let boundary = createBoundary(from: uploadProperties.md5Sum!)
         for chunk in 0..<chunks {
             // Current chunk
