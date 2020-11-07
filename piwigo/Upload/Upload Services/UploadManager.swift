@@ -195,9 +195,6 @@ class UploadManager: NSObject, URLSessionDelegate {
             let _ = Model.sharedInstance()?.username,
             let _ = Model.sharedInstance()?.wifiOnlyUploading,
             let _ = Model.sharedInstance()?.hasAdminRights,
-            let _ = Model.sharedInstance()?.hasNormalRights,
-            let _ = Model.sharedInstance()?.usesCommunityPluginV29,
-            let _ = Model.sharedInstance()?.usesUploadAsync,
             let _ = Model.sharedInstance()?.uploadFileTypes else {
             return
         }
@@ -665,7 +662,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         uploadsProvider.updateStatusOfUpload(with: uploadID, to: .uploading, error: "") { [unowned self] (_) in
 
             // Choose recent method if possible
-            if Model.sharedInstance()?.usesUploadAsync ?? false {
+            if Model.sharedInstance()?.usesUploadAsync ?? false || isExecutingBackgroundUploadTask {
                 self.transferInBackgroundImage(for: uploadID, with: uploadProperties)
             } else {
                 self.transferImage(for: uploadID, with: uploadProperties)
