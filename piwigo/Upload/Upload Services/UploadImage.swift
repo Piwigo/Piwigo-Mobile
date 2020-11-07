@@ -142,7 +142,7 @@ extension UploadManager {
                 fixedImageObject = self.fixOrientationOf(imageObject)
 
                 // Job completed
-                print("\(self.debugFormatter.string(from: Date())) > exits retrieveUIImageFrom in", queueName())
+//                print("\(self.debugFormatter.string(from: Date())) > exits retrieveUIImageFrom in", queueName())
                 completionHandler(fixedImageObject, nil)
                 return
             } else {
@@ -164,7 +164,7 @@ extension UploadManager {
                     fixedImageObject = self.fixOrientationOf(imageObject)
 
                     // Job completed
-                    print("\(self.debugFormatter.string(from: Date())) > exits retrieveUIImageFrom in", queueName())
+//                    print("\(self.debugFormatter.string(from: Date())) > exits retrieveUIImageFrom in", queueName())
                     completionHandler(fixedImageObject, nil)
                     return
                 }
@@ -196,7 +196,7 @@ extension UploadManager {
                                                                         resultHandler: { imageData, dataUTI, orientation, info in
                     // resultHandler redirected to the main thread by default!
                     if self.isExecutingBackgroundUploadTask {
-                        print("\(self.debugFormatter.string(from: Date())) > exits retrieveFullSizeAssetDataFromImage in", queueName())
+//                        print("\(self.debugFormatter.string(from: Date())) > exits retrieveFullSizeAssetDataFromImage in", queueName())
                         if info?[PHImageErrorKey] != nil || ((imageData?.count ?? 0) == 0) {
                             completionHandler(nil, info?[PHImageErrorKey] as? Error)
                         } else {
@@ -204,7 +204,7 @@ extension UploadManager {
                         }
                     } else {
                         DispatchQueue(label: "prepareImage").async {
-                            print("\(self.debugFormatter.string(from: Date())) > exits retrieveFullSizeAssetDataFromImage in", queueName())
+//                            print("\(self.debugFormatter.string(from: Date())) > exits retrieveFullSizeAssetDataFromImage in", queueName())
                             if info?[PHImageErrorKey] != nil || ((imageData?.count ?? 0) == 0) {
                                 completionHandler(nil, info?[PHImageErrorKey] as? Error)
                             } else {
@@ -218,7 +218,7 @@ extension UploadManager {
                                                           resultHandler: { imageData, dataUTI, orientation, info in
                     // resultHandler performed on main thread!
                     if self.isExecutingBackgroundUploadTask {
-                        print("\(self.debugFormatter.string(from: Date())) > exits retrieveFullSizeAssetDataFromImage in", queueName())
+//                        print("\(self.debugFormatter.string(from: Date())) > exits retrieveFullSizeAssetDataFromImage in", queueName())
                         if info?[PHImageErrorKey] != nil || ((imageData?.count ?? 0) == 0) {
                             completionHandler(nil, info?[PHImageErrorKey] as? Error)
                         } else {
@@ -226,7 +226,7 @@ extension UploadManager {
                         }
                     } else {
                         DispatchQueue(label: "prepareImage").async {
-                            print("\(self.debugFormatter.string(from: Date())) > exits retrieveFullSizeAssetDataFromImage in", queueName())
+//                            print("\(self.debugFormatter.string(from: Date())) > exits retrieveFullSizeAssetDataFromImage in", queueName())
                             if info?[PHImageErrorKey] != nil || ((imageData?.count ?? 0) == 0) {
                                 completionHandler(nil, info?[PHImageErrorKey] as? Error)
                             } else {

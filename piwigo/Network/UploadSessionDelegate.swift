@@ -20,8 +20,8 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
         let config = URLSessionConfiguration.background(withIdentifier: uploadSessionIdentifier)
         
         /// Background tasks can be scheduled at the discretion of the system for optimal performance
-        config.isDiscretionary = true
-        
+        config.isDiscretionary = false
+
         /// Indicates whether the app should be resumed or launched in the background when transfers finish
         config.sessionSendsLaunchEvents = true
         

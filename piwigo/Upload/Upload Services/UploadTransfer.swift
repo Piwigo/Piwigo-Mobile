@@ -391,11 +391,8 @@ extension UploadManager {
 
             // As soon as tasks are created, the timeout counter starts
             let uploadSession: URLSession = UploadSessionDelegate.shared.uploadSession
-            if !isExecutingBackgroundUploadTask {
-                uploadSession.configuration.isDiscretionary = false
-                uploadSession.configuration.allowsCellularAccess = !(Model.sharedInstance()?.wifiOnlyUploading ?? false)
-            }
             let task = uploadSession.uploadTask(with: request, fromFile: fileURL)
+            task.taskDescription = uploadID.uriRepresentation().absoluteString
             if #available(iOS 11.0, *) {
                 // Tell the system how many bytes are expected to be exchanged
                 task.countOfBytesClientExpectsToSend = Int64(httpBody.count)
@@ -405,7 +402,7 @@ extension UploadManager {
             task.resume()
 
             // Update UI
-//            if !isExecutingBackgroundUploadTask {
+            if !isExecutingBackgroundUploadTask {
                 let progress = Float(chunk) / Float(chunks) / 2.0
                 // Update UI
                 let uploadInfo: [String : Any] = ["localIndentifier" : uploadProperties.localIdentifier,
@@ -416,7 +413,7 @@ extension UploadManager {
                     let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)
                     NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
                 }
-//            }
+            }
         }
     }
 
@@ -462,9 +459,8 @@ extension UploadManager {
                 
                 // As soon as tasks are created, the timeout counter starts
                 let uploadSession: URLSession = UploadSessionDelegate.shared.uploadSession
-//                uploadSession.configuration.isDiscretionary = false
-//                uploadSession.configuration.allowsCellularAccess = !(Model.sharedInstance()?.wifiOnlyUploading ?? false)
                 let repeatedTask = uploadSession.uploadTask(with: request, fromFile: fileURL)
+                repeatedTask.taskDescription = task.taskDescription
                 if #available(iOS 11.0, *) {
                     // Tell the system how many bytes are expected to be exchanged
                     let fileSize = (try! FileManager.default.attributesOfItem(atPath: fileURL.path)[FileAttributeKey.size] as! NSNumber).uint64Value
@@ -513,8 +509,14 @@ extension UploadManager {
             uploadProperties = try (taskContext.existingObject(with: uploadID) as! Upload).getProperties()
         }
         catch {
-            assertionFailure("\(debugFormatter.string(from: Date())) > \(md5sum) | missing Core Data object!")
+            print("\(debugFormatter.string(from: Date())) > \(md5sum) | missing Core Data object!")
             // Investigate next upload request?
+            if self.isExecutingBackgroundUploadTask {
+                // In background task — stop here
+            } else {
+                // In foreground, consider next image
+                self.findNextImageToUpload()
+            }
             return
         }
 
@@ -545,20 +547,21 @@ extension UploadManager {
             if let _ = uploadJSON.chunks, let message = uploadJSON.chunks.message {
                 let nberOfUploadedChunks = message.dropFirst(18).components(separatedBy: ",").count
                 print("\(debugFormatter.string(from: Date())) > \(md5sum) | \(nberOfUploadedChunks) chunks downloaded")
-//            if !isExecutingBackgroundUploadTask {
-                if chunks > 0 {
-                    let progress = 0.5 + Float(nberOfUploadedChunks) / Float(chunks) / 2.0
-                    // Update UI
-                    let uploadInfo: [String : Any] = ["localIndentifier" : identifier,
-                                                      "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
-                                                      "progressFraction" : progress]
-                    DispatchQueue.main.async {
-                        // Update UploadQueue cell and button shown in root album (or default album)
-                        let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)
-                        NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
+                if !isExecutingBackgroundUploadTask {
+                    if chunks > 0 {
+                        let progress = 0.5 + Float(nberOfUploadedChunks) / Float(chunks) / 2.0
+                        // Update UI
+                        let uploadInfo: [String : Any] = ["localIndentifier" : identifier,
+                                                          "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
+                                                          "progressFraction" : progress]
+                        DispatchQueue.main.async {
+                            // Update UploadQueue cell and button shown in root album (or default album)
+                            let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)
+                            NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
+                        }
                     }
+                    return
                 }
-                return
             }
 
             // Add image to cache when uploaded by admin users
@@ -566,7 +569,7 @@ extension UploadManager {
                 Model.sharedInstance()?.hasAdminRights ?? false {
 
                 // Update UI (fill progress bar)
-//            if !isExecutingBackgroundUploadTask {
+                if !isExecutingBackgroundUploadTask {
                     let uploadInfo: [String : Any] = ["localIndentifier" : identifier,
                                                       "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
                                                       "progressFraction" : Float(1)]
@@ -575,7 +578,7 @@ extension UploadManager {
                         let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)
                         NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
                     }
-//                }
+                }
 
                 // Prepare image for cache
                 let dateFormatter = DateFormatter()

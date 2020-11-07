@@ -217,7 +217,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         if !isFinishing {
             // Transfers encountered an error
             for uploadID in finishingIDs {
-                print("\(debugFormatter.string(from: Date())) >  Interrupted finish —> \(uploadID)")
+                print("\(debugFormatter.string(from: Date())) >  Interrupted finish —> \(uploadID.uriRepresentation())")
                 uploadsProvider.updateStatusOfUpload(with: uploadID, to: .finishingError, error: UploadError.networkUnavailable.errorDescription) { [unowned self] (_) in
                     self.findNextImageToUpload()
                     return
@@ -229,7 +229,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         for uploadID in uploadingIDs {
             if !isUploading.contains(uploadID) {
                 // Transfer encountered an error
-                print("\(debugFormatter.string(from: Date())) >  Interrupted transfer —> \(uploadID)")
+                print("\(debugFormatter.string(from: Date())) >  Interrupted transfer —> \(uploadID.uriRepresentation())")
                 uploadsProvider.updateStatusOfUpload(with: uploadID, to: .uploadingError, error: UploadError.networkUnavailable.errorDescription) { [unowned self] (_) in
                     self.findNextImageToUpload()
                     return
@@ -241,7 +241,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         if !isPreparing {
             // Preparations encountered an error
             for uploadID in preparingIDs {
-                print("\(debugFormatter.string(from: Date())) >  Interrupted preparation —> \(uploadID)")
+                print("\(debugFormatter.string(from: Date())) >  Interrupted preparation —> \(uploadID.uriRepresentation())")
                 uploadsProvider.updateStatusOfUpload(with: uploadID, to: .preparingError, error: UploadError.missingAsset.errorDescription) { [unowned self] (_) in
                     self.findNextImageToUpload()
                     return
@@ -356,13 +356,13 @@ class UploadManager: NSObject, URLSessionDelegate {
 
         // Get series of uploads to complete
         // Considers only uploads to the server to which the user is logged in
-        let states: [kPiwigoUploadState] = [.waiting, .prepared, .uploadingError]
+        let states: [kPiwigoUploadState] = [.waiting, .uploadingError]
         guard let uploadRequests = uploadsProvider.getRequestsIn(states: states) else {
             return
         }
         
-        // Get list of upload requests to transfer
-        let requestsToTransfer = uploadRequests.filter({$0.state == .prepared || $0.state == .uploadingError}).map({$0.objectID})
+        // Get list of upload requests whose transfer did fail
+        let requestsToTransfer = uploadRequests.filter({$0.state == .uploadingError}).map({$0.objectID})
         let nberToTransfer = requestsToTransfer.count
         if nberToTransfer > 0 {
             if nberToTransfer > maxNberOfUploadsPerBackgroundTask {
@@ -804,24 +804,52 @@ class UploadManager: NSObject, URLSessionDelegate {
         appState = .active
         isPreparing = false; isFinishing = false
         isExecutingBackgroundUploadTask = false
-//        isUploading = Set<String>()
+        isUploading = Set<NSManagedObjectID>()
         
-        backgroundQueue.async { [self] in
-            // Considers only uploads to the server to which the user is logged in
-            let states: [kPiwigoUploadState] = [.preparingError, .preparingFail, .formatError,
-                                                .uploadingError, .finishingError]
-            if let failedUploads = self.uploadsProvider.getRequestsIn(states: states) {
-                if failedUploads.count > 0 {
-                    // Resume failed uploads
-                    self.resume(failedUploads: failedUploads) { (_) in }
-                } else {
-                    // Continue uploads
-                    self.findNextImageToUpload()
+        // Get active upload tasks
+        let taskContext = DataController.getPrivateContext()
+        let uploadSession: URLSession = UploadSessionDelegate.shared.uploadSession
+        uploadSession.getTasksWithCompletionHandler { (_, uploadTasks, _) in
+            // Loop over the tasks
+            for task in uploadTasks {
+                switch task.state {
+                case .running:
+                    // Retrieve upload request properties
+//                    print("======>> task \(task.taskIdentifier) - \(task.taskDescription ?? "no description")")
+                    guard let taskDescription = task.taskDescription else { continue }
+                    guard let objectURI = URL.init(string: taskDescription) else {
+                        print("\(self.debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no object URI!")
+                        continue
+                    }
+                    guard let uploadID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
+                        print("\(self.debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no objectID!")
+                        continue
+                    }
+                    self.isUploading.insert(uploadID)
+
+                default:
+                    continue
                 }
             }
-            
-            // Clean cache from completed uploads whose images do not exist in Photos Library
-            self.uploadsProvider.clearCompletedUploads()
+
+            // Resume failed uploads and pursue the work
+            self.backgroundQueue.async { [unowned self] in
+                // Considers only uploads to the server to which the user is logged in
+                let states: [kPiwigoUploadState] = [.preparingError, .preparingFail, .formatError,
+                                                    .uploadingError, .finishingError]
+                if let failedUploads = self.uploadsProvider.getRequestsIn(states: states) {
+                    if failedUploads.count > 0 {
+                        // Resume failed uploads
+                        self.resume(failedUploads: failedUploads) { (_) in }
+                    } else {
+                        // Continue uploads
+                        self.findNextImageToUpload()
+                    }
+                }
+                
+                // Clean cache from completed uploads whose images do not exist in Photos Library
+                self.uploadsProvider.clearCompletedUploads()
+            }
         }
     }
 

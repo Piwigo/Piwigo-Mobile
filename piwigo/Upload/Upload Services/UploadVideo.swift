@@ -345,7 +345,7 @@ extension UploadManager {
             
             // resultHandler performed on another thread!
             if self.isExecutingBackgroundUploadTask {
-                print("\(self.debugFormatter.string(from: Date())) > exits retrieveVideoAssetFrom in", queueName())
+//                print("\(self.debugFormatter.string(from: Date())) > exits retrieveVideoAssetFrom in", queueName())
                 // Any error?
                 if info?[PHImageErrorKey] != nil {
                     completionHandler(nil, options, info?[PHImageErrorKey] as? Error)
@@ -354,7 +354,7 @@ extension UploadManager {
                 completionHandler(avasset, options, nil)
             } else {
                 DispatchQueue(label: "prepareVideo").async {
-                    print("\(self.debugFormatter.string(from: Date())) > exits retrieveVideoAssetFrom in", queueName())
+//                    print("\(self.debugFormatter.string(from: Date())) > exits retrieveVideoAssetFrom in", queueName())
                     // Any error?
                     if info?[PHImageErrorKey] != nil {
                         completionHandler(nil, options, info?[PHImageErrorKey] as? Error)
@@ -377,7 +377,7 @@ extension UploadManager {
 
             // resultHandler performed on main thread!
             if self.isExecutingBackgroundUploadTask {
-                print("\(self.debugFormatter.string(from: Date())) > exits getExportSession in", queueName())
+//                print("\(self.debugFormatter.string(from: Date())) > exits getExportSession in", queueName())
                 // The handler needs to update the user interface => Dispatch to main thread
                 if info?[PHImageErrorKey] != nil {
                     // Inform user and propose to cancel or continue
@@ -388,7 +388,7 @@ extension UploadManager {
                 completionHandler(exportSession, nil)
             } else {
                 DispatchQueue(label: "prepareVideo").async {
-                    print("\(self.debugFormatter.string(from: Date())) > exits getExportSession in", queueName())
+//                    print("\(self.debugFormatter.string(from: Date())) > exits getExportSession in", queueName())
                     // The handler needs to update the user interface => Dispatch to main thread
                     if info?[PHImageErrorKey] != nil {
                         // Inform user and propose to cancel or continue
@@ -481,7 +481,7 @@ extension UploadManager {
                         newUpload.md5Sum = md5Checksum
                         print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: md5Checksum))")
 
-                        print("\(self.debugFormatter.string(from: Date())) > exits modifyVideo in", queueName())
+//                        print("\(self.debugFormatter.string(from: Date())) > exits modifyVideo in", queueName())
                         // Upload video with tags and properties
                         completionHandler(newUpload, nil)
                     }

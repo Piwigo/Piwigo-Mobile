@@ -409,7 +409,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
 
 -(void)registerBgTasks API_AVAILABLE(ios(13.0))
 {
-    // register background upload task
+    // Register background upload task
     [[BGTaskScheduler sharedScheduler] registerForTaskWithIdentifier:kPiwigoBackgroundTaskUpload usingQueue:nil launchHandler:^(__kindof BGTask * _Nonnull task) {
         // Downcast the parameter to a processing task as this identifier is used for a processing request.
         [self handleNextUpload:(BGProcessingTask *)task];
@@ -419,7 +419,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
 -(void)scheduleNextUpload API_AVAILABLE(ios(13.0))
 {
     // Schedule upload not earlier than 1 minute from now
-    // Requires network connectivity and external power
+    // Uploading requires network connectivity and external power
     BGProcessingTaskRequest *request = [[BGProcessingTaskRequest alloc] initWithIdentifier:kPiwigoBackgroundTaskUpload];
     [request setEarliestBeginDate:[NSDate dateWithTimeIntervalSinceNow:1 * 60]];
     request.requiresNetworkConnectivity  = YES;
@@ -482,6 +482,8 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
         NSLog(@"    > Task expired: Upload operation cancelled.");
          // Cancel operations
         [uploadQueue cancelAllOperations];
+        // Save cached data
+        [DataController saveContext];
     }];
     
     // Inform the system that the background task is complete
@@ -490,6 +492,8 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     [lastOperation setCompletionBlock:^{
         NSLog(@"    > Task completed with success");
         [task setTaskCompletedWithSuccess:YES];
+        // Save cached data
+        [DataController saveContext];
     }];
 
     // Start the operation
