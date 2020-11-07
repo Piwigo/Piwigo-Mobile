@@ -192,7 +192,6 @@ class UploadManager: NSObject, URLSessionDelegate {
 
         // Acceptable conditions for treating upload requests?
         guard let _ = Model.sharedInstance()?.serverProtocol,
-            let _ = Model.sharedInstance()?.serverPath,
             let _ = Model.sharedInstance()?.username,
             let _ = Model.sharedInstance()?.wifiOnlyUploading,
             let _ = Model.sharedInstance()?.hasAdminRights,
@@ -309,8 +308,10 @@ class UploadManager: NSObject, URLSessionDelegate {
         // No more image to transfer ;-)
         // Moderate images uploaded by Community regular user
         // Considers only uploads to the server to which the user is logged in
-        if Model.sharedInstance().hasNormalRights, Model.sharedInstance().usesCommunityPluginV29,
-            let finishedUploads = uploadsProvider.getRequestsIn(states: [.finished]), finishedUploads.count > 0 {
+        if Model.sharedInstance()?.hasNormalRights ?? false,
+           Model.sharedInstance()?.usesCommunityPluginV29 ?? false,
+           let finishedUploads = uploadsProvider.getRequestsIn(states: [.finished]),
+           finishedUploads.count > 0 {
 
             // Pause upload manager if app not in the foreground
             // and not executed in a background task
