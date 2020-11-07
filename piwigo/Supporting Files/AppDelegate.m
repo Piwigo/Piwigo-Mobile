@@ -437,9 +437,6 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
 
 -(void)handleNextUpload:(BGProcessingTask *)task API_AVAILABLE(ios(13.0))
 {
-    // Cancel pending background task before scheduling new tasks
-    [[BGTaskScheduler sharedScheduler] cancelTaskRequestWithIdentifier:kPiwigoBackgroundTaskUpload];
-    
     // Schedule the next upload if needed
     if ([UploadManager shared].nberOfUploadsToComplete > 0) {
         NSLog(@"    > Schedule next uploads.");
