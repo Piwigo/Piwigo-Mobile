@@ -1419,8 +1419,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // Any footer text?
         switch activeSection {
         case SettingsSection.logout.rawValue:
-            if (Model.sharedInstance().uploadFileTypes != nil) && (Model.sharedInstance().uploadFileTypes.count > 0) {
-                footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(Model.sharedInstance().uploadFileTypes.replacingOccurrences(of: ",", with: ", "))."
+            if (Model.sharedInstance().serverFileTypes != nil) && (Model.sharedInstance().serverFileTypes.count > 0) {
+                footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(Model.sharedInstance().serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
             }
         case SettingsSection.about.rawValue:
             if nberImages.count > 0 {
@@ -1467,8 +1467,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // Footer text
         switch activeSection {
         case SettingsSection.logout.rawValue:
-            if (Model.sharedInstance().uploadFileTypes != nil) && (Model.sharedInstance().uploadFileTypes.count > 0) {
-                footerLabel.text = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(Model.sharedInstance().uploadFileTypes.replacingOccurrences(of: ",", with: ", "))."
+            if (Model.sharedInstance().serverFileTypes != nil) && (Model.sharedInstance().serverFileTypes.count > 0) {
+                footerLabel.text = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(Model.sharedInstance().serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
             }
         case SettingsSection.about.rawValue:
             if nberImages.count > 0 {

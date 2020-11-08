@@ -220,7 +220,7 @@
                               // Images and videos can be uploaded if their file types are found.
                               // The iPhone creates mov files that will be uploaded in mp4 format.
                               // This string is nil if the server does not provide it.
-                              [Model sharedInstance].uploadFileTypes = [result objectForKey:@"upload_file_types"];
+                              [Model sharedInstance].serverFileTypes = [result objectForKey:@"upload_file_types"];
                               
                               // User rights are determined by Community extension (if installed)
                               if(![Model sharedInstance].usesCommunityPluginV29) {

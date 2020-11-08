@@ -195,7 +195,7 @@ class UploadManager: NSObject, URLSessionDelegate {
             let _ = Model.sharedInstance()?.username,
             let _ = Model.sharedInstance()?.wifiOnlyUploading,
             let _ = Model.sharedInstance()?.hasAdminRights,
-            let _ = Model.sharedInstance()?.uploadFileTypes else {
+            let _ = Model.sharedInstance()?.serverFileTypes else {
             return
         }
         
@@ -486,7 +486,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         case .image:
             uploadProperties.isVideo = false
             // Chek that the image format is accepted by the Piwigo server
-            if Model.sharedInstance().uploadFileTypes.contains(fileExt) {
+            if Model.sharedInstance().serverFileTypes.contains(fileExt) {
                 // Image file format accepted by the Piwigo server
                 print("\(debugFormatter.string(from: Date())) > preparing photo \(uploadProperties.fileName!)…")
 
@@ -499,7 +499,7 @@ class UploadManager: NSObject, URLSessionDelegate {
                 return
             }
             // Convert image if JPEG format is accepted by Piwigo server
-            if Model.sharedInstance().uploadFileTypes.contains("jpg") {
+            if Model.sharedInstance().serverFileTypes.contains("jpg") {
                 // Try conversion to JPEG
                 if fileExt == "heic" || fileExt == "heif" || fileExt == "avci" {
                     // Will convert HEIC encoded image to JPEG
@@ -530,7 +530,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         case .video:
             uploadProperties.isVideo = true
             // Chek that the video format is accepted by the Piwigo server
-            if Model.sharedInstance().uploadFileTypes.contains(fileExt) {
+            if Model.sharedInstance().serverFileTypes.contains(fileExt) {
                 // Video file format accepted by the Piwigo server
                 print("\(debugFormatter.string(from: Date())) > preparing video \(uploadProperties.fileName!)…")
 
@@ -543,7 +543,7 @@ class UploadManager: NSObject, URLSessionDelegate {
                 return
             }
             // Convert video if MP4 format is accepted by Piwigo server
-            if Model.sharedInstance().uploadFileTypes.contains("mp4") {
+            if Model.sharedInstance().serverFileTypes.contains("mp4") {
                 // Try conversion to MP4
                 if fileExt == "mov" {
                     // Will convert MOV encoded video to MP4

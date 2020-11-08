@@ -283,7 +283,7 @@ extension UploadManager {
             // Final image file will be in JPEG format
             newUpload.fileName = URL(fileURLWithPath: upload.fileName!).deletingPathExtension().appendingPathExtension("JPG").lastPathComponent
         }
-        else if !(Model.sharedInstance().uploadFileTypes.contains(fileExt)) {
+        else if !(Model.sharedInstance().serverFileTypes.contains(fileExt)) {
             // Image in unaccepted file format for Piwigo server => convert to JPEG format
             imageCompressed = originalObject.jpegData(compressionQuality: 1.0)
 
