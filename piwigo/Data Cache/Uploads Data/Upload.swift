@@ -43,6 +43,7 @@ class Upload: NSManagedObject {
     
     // The other attributes of an upload.
     @NSManaged var serverPath: String
+    @NSManaged var serverFileTypes: String
     @NSManaged var category: Int64
     @NSManaged var requestDate: Date
     @NSManaged var requestState: Int16
@@ -209,7 +210,9 @@ extension Upload {
 
     func getProperties() -> UploadProperties {
         return UploadProperties.init(localIdentifier: self.localIdentifier,
-            serverPath: self.serverPath, category: Int(self.category),
+            serverPath: self.serverPath, serverFileTypes: self.serverFileTypes,
+            // Category ID of the album to upload to
+            category: Int(self.category),
             // Upload request date, state and error
             requestDate: self.requestDate, requestState: self.state, requestError: self.requestError,
             // Photo creation date and filename
@@ -229,7 +232,9 @@ extension Upload {
 
     func getProperties(with state: kPiwigoUploadState, error: String?) -> UploadProperties {
         return UploadProperties.init(localIdentifier: self.localIdentifier,
-            serverPath: self.serverPath, category: Int(self.category),
+            serverPath: self.serverPath, serverFileTypes: self.serverFileTypes,
+            // Category ID of the album to upload to
+            category: Int(self.category),
             // Upload request date, state and error
             requestDate: self.requestDate, requestState: state, requestError: error,
             // Photo creation date and filename
@@ -249,7 +254,9 @@ extension Upload {
 
     func getPropertiesCancellingDeletion() -> UploadProperties {
         return UploadProperties.init(localIdentifier: self.localIdentifier,
-            serverPath: self.serverPath, category: Int(self.category),
+            serverPath: self.serverPath, serverFileTypes: self.serverFileTypes,
+            // Category ID of the album to upload to
+            category: Int(self.category),
             // Upload request date, state and error
             requestDate: self.requestDate, requestState: self.state, requestError: self.requestError,
             // Photo creation date and filename
@@ -371,6 +378,7 @@ struct UploadProperties
 {
     let localIdentifier: String             // Unique PHAsset identifier
     let serverPath: String                  // URL path of Piwigo server
+    let serverFileTypes: String             // File formats accepted by the server
     let category: Int                       // 8
     let requestDate: Date                   // "2020-08-22 19:18:43"
     var requestState: kPiwigoUploadState    // See enum above
@@ -402,7 +410,10 @@ struct UploadProperties
 extension UploadProperties {
     // Create new upload from localIdentifier and category
     init(localIdentifier: String, serverPath: String, category: Int) {
-        self.init(localIdentifier: localIdentifier, serverPath: serverPath, category: category,
+        self.init(localIdentifier: localIdentifier, serverPath: serverPath,
+            serverFileTypes: Model.sharedInstance()?.serverFileTypes ?? "jpg,jpeg,png,gif",
+            // Category ID of the album to upload to
+            category: category,
             // Upload request date is now and state is waiting
             requestDate: Date.init(), requestState: .waiting, requestError: "",
             // Photo creation date and filename
@@ -427,7 +438,9 @@ extension UploadProperties {
     // Update upload request state and error
     func update(with state: kPiwigoUploadState, error: String?) -> UploadProperties {
         return UploadProperties.init(localIdentifier: self.localIdentifier,
-            serverPath: self.serverPath, category: self.category,
+            serverPath: self.serverPath, serverFileTypes: self.serverFileTypes,
+            // Category ID of the album to upload to
+            category: self.category,
             // Upload request date is now and state is waiting
             requestDate: self.requestDate, requestState: state, requestError: error,
             // Photo creation date and filename

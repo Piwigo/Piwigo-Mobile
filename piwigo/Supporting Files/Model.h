@@ -86,7 +86,7 @@ typedef enum {
 @property (nonatomic, strong) NSString *version;
 @property (nonatomic, strong) NSString *username;
 @property (nonatomic, strong) NSString *HttpUsername;
-@property (nonatomic, strong) NSString *serverFileTypes;
+@property (nonatomic, strong) NSString *serverFileTypes;    // File formats accepted by the Piwigo server
 @property (nonatomic, assign) BOOL usesCommunityPluginV29;
 @property (nonatomic, assign) BOOL usesUploadAsync;
 
