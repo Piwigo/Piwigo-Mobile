@@ -55,7 +55,9 @@
                       }
                       else  // Strange…
                       {
-                          completion(nil);
+                          NSError *error = [NetworkHandler getPiwigoErrorFromResponse:responseObject
+                                                 path:kPiwigoSessionLogin andURLparams:nil];
+                          fail(task, error);
                       }
                   }
               } failure:^(NSURLSessionTask *task, NSError *error) {
@@ -85,26 +87,25 @@
              }
               success:^(NSURLSessionTask *task, id responseObject) {
                   
-                  if(completion) {
-                      if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"] && [[responseObject objectForKey:@"result"] boolValue])
-                      {
-                          [Model sharedInstance].username = user;
-                          [Model sharedInstance].hadOpenedSession = YES;
-                          [[Model sharedInstance] saveToDisk];
+                  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"] &&
+                     [[responseObject objectForKey:@"result"] boolValue])
+                  {
+                      // Login successful
+                      [Model sharedInstance].username = user;
+                      [Model sharedInstance].hadOpenedSession = YES;
+                      [[Model sharedInstance] saveToDisk];
+                      if (completion) {
                           completion(YES, [responseObject objectForKey:@"result"]);
                       }
-                      else
-                      {
-                          // May be this server only uses HTTP authentication
-                          if ([Model sharedInstance].didRequestHTTPauthentication) {
-                              [Model sharedInstance].username = user;
-                              [Model sharedInstance].hadOpenedSession = YES;
-                              [[Model sharedInstance] saveToDisk];
-                             completion(YES, nil);
-                          } else {
-                              [Model sharedInstance].hadOpenedSession = NO;
-                              completion(NO, nil);
-                          }
+                  }
+                  else
+                  {
+                      // Login failed
+                      [Model sharedInstance].hadOpenedSession = NO;
+                      NSError *error = [NetworkHandler getPiwigoErrorFromResponse:responseObject
+                                             path:kPiwigoSessionLogin andURLparams:nil];
+                      if (completion) {
+                          completion(NO, error);
                       }
                   }
               }

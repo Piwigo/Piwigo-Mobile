@@ -59,7 +59,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 
         self.serverTextField = [PiwigoTextField new];
 		self.serverTextField.placeholder = NSLocalizedString(@"login_serverPlaceholder", @"example.com");
-		self.serverTextField.text = [NSString stringWithFormat:@"%@", [Model sharedInstance].serverPath];
+		self.serverTextField.text = [NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath];
 		self.serverTextField.keyboardType = UIKeyboardTypeURL;
 		self.serverTextField.returnKeyType = UIReturnKeyNext;
 		self.serverTextField.delegate = self;
@@ -206,9 +206,6 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     [Model sharedInstance].hasNormalRights = NO;
     [Model sharedInstance].usesCommunityPluginV29 = NO;
     
-    // To remember app received anthentication challenge
-    [Model sharedInstance].didRequestCertificateApproval = NO;
-    [Model sharedInstance].didRequestHTTPauthentication = NO;
 #if defined(DEBUG_SESSION)
     NSLog(@"=> launchLogin: starting with…");
     NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@, hasNormalRights=%@",
@@ -291,8 +288,31 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
         
     } onFailure:^(NSURLSessionTask *task, NSError *error) {
 
-        // Return immadiately an error in some cases
+        // Retrieve the HTTP status code (see http://www.ietf.org/rfc/rfc2616.txt)
+        NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
+
+        // If Piwigo used a non-trusted certificate, ask permission
+        if ([Model sharedInstance].didRejectCertificate) {
+            // The SSL certificate is not trusted
+            [self requestCertificateApprovalAfterError:error];
+            return;
+        }
+        
+        // HTTP Basic authentication required?
+        if (statusCode == 401 || statusCode == 403 || Model.sharedInstance.didFailHTTPauthentication) {
+            // Without prior knowledge, the app already tried Piwigo credentials
+            // but unsuccessfully, so we request HTTP credentials
+            [self requestHttpCredentialsAfterError:error];
+            return;
+        }
+        
         switch ([error code]) {
+            case NSURLErrorUserAuthenticationRequired:
+                // Without prior knowledge, the app already tried Piwigo credentials
+                // but unsuccessfully, so must now request HTTP credentials
+                [self requestHttpCredentialsAfterError:error];
+                return;
+
             case NSURLErrorUserCancelledAuthentication:
                 [self loggingInConnectionError:nil];
                 return;
@@ -322,6 +342,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                 return;
                 
             case NSURLErrorCannotConnectToHost:
+                // Happens when the server does not reply to the request (HTTP or HTTPS)
             case NSURLErrorSecureConnectionFailed:
                 // HTTPS request failed ?
                 if ([[Model sharedInstance].serverProtocol isEqualToString:@"https://"] &&
@@ -342,38 +363,8 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                 [self requestCertificateApprovalAfterError:error];
                 return;
 
-            case NSURLErrorUserAuthenticationRequired:
-                // Without prior knowledge, the app already tried Piwigo credentials
-                // but unsuccessfully, so must now request HTTP credentials
-                [self requestHttpCredentialsAfterError:error];
-                return;
-
             default:
                 break;
-        }
-        
-        // If Piwigo used a non-trusted certificate, ask permission
-        if ([Model sharedInstance].didRequestCertificateApproval) {
-            // The SSL certificate is not trusted
-            [self requestCertificateApprovalAfterError:error];
-            return;
-        }
-        
-        // If Piwigo server requires HTTP basic authentication, ask credentials
-        if ([Model sharedInstance].didRequestHTTPauthentication){
-            // Without prior knowledge, the app already tried Piwigo credentials
-            // but unsuccessfully, so must now request HTTP credentials
-            [self requestHttpCredentialsAfterError:error];
-            return;
-        }
-
-        // HTTPS login request failed ?
-        if ([[Model sharedInstance].serverProtocol isEqualToString:@"https://"] &&
-            ![Model sharedInstance].userCancelledCommunication)
-        {
-            // Suggest HTTP connection if HTTPS attempt failed
-            [self requestNonSecuredAccessAfterError:error];
-            return;
         }
         
         // Display error message
@@ -403,9 +394,11 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
           actionWithTitle:NSLocalizedString(@"alertOkButton", "OK")
           style:UIAlertActionStyleDefault
           handler:^(UIAlertAction * action) {
+                // Cancel task
+                [[Model sharedInstance].sessionManager invalidateSessionCancelingTasks:YES resetSession:YES];
                 // Will accept certificate
                 [Model sharedInstance].didApproveCertificate = YES;
-                // Try logging in with new HTTP credentials
+                // Try logging in with approved certificate
                 [self launchLogin];
           }];
     
@@ -535,13 +528,13 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 
 -(void)tryNonSecuredAccessAfterError:(NSError *)error
 {
-    // Retrieve the HTTP status code (see http://www.ietf.org/rfc/rfc2616.txt)
-//    NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
-
     // Proceed at their own risk
     [Model sharedInstance].serverProtocol = @"http://";
+    
+    // Update URL on UI
+    self.serverTextField.text = [NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath];
 
-    // Display security message below credentials if needed
+    // Display security message below credentials
     self.websiteNotSecure.hidden = NO;
 
     // Collect list of methods supplied by Piwigo server
@@ -573,15 +566,8 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
         }
         
     } onFailure:^(NSURLSessionTask *task, NSError *error) {
-        // If Piwigo server requires HTTP basic authentication, ask credentials
-        if ([Model sharedInstance].didRequestHTTPauthentication){
-            // Without prior knowledge, the app already tried Piwigo credentials
-            // But unsuccessfully, so must now request HTTP credentials
-            [self requestHttpCredentialsAfterError:error];
-        } else {
-            // HTTP(S) login requests failed - display error message
-            [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
-        }
+        // Get Piwigo methods failed
+        [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
     }];
 }
 
@@ -619,19 +605,17 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                          [SAMKeychain deletePasswordForService:[Model sharedInstance].serverPath account:self.userTextField.text];
 
                          // Session could not be opened
-                         NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"loginError_message", @"The username and password don't match on the given server")}];
-                         [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
+                         NSError *pwgError = (NSError *)response;
+                         if (pwgError.code == 999) {
+                             NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"loginError_message", @"The username and password don't match on the given server")}];
+                             [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
+                         } else {
+                             [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : pwgError)];
+                         }
                      }
                  } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                     // HTTPS login request failed ?
-                     if ([[Model sharedInstance].serverProtocol isEqualToString:@"https://"])
-                     {
-                         // Try HTTP connection if HTTPS attempt failed
-                         [self tryNonSecuredAccessAfterError:error];
-                     } else {
-                         // Display message
-                         [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
-                     }
+                     // Login request failed
+                     [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
                  }];
 	}
 	else     // No username or user cancelled communication, get only server status
@@ -680,7 +664,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
             }
             
         } onFailure:^(NSURLSessionTask *task, NSError *error) {
-            // Display error message
+            // Get Community status failed
             [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
             [Model sharedInstance].hadOpenedSession = NO;
             self.isAlreadyTryingToLogin = NO;
@@ -1201,15 +1185,35 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                 [Model sharedInstance].serverProtocol = [NSString stringWithFormat:@"%@://", serverURL.scheme];
                 break;
         }
+
+        // Hide/show warning
+        if ([[Model sharedInstance].serverProtocol isEqual:@"https://"]) {
+            // Hide security message below credentials if needed
+            self.websiteNotSecure.hidden = YES;
+        } else {
+            // Show security message below credentials if needed
+            self.websiteNotSecure.hidden = NO;
+        }
+
+        // Save username, server address and protocol to disk
         [Model sharedInstance].serverPath = [NSString stringWithFormat:@"%@:%@%@", serverURL.host, serverURL.port, serverURL.path];
         [Model sharedInstance].username = user;
         [[Model sharedInstance] saveToDisk];
         return YES;
     }
     
-    // Will try to force HTTPS protocol
-    [Model sharedInstance].serverProtocol = @"https://";
-    
+    // Store scheme
+    [Model sharedInstance].serverProtocol = [NSString stringWithFormat:@"%@://", serverURL.scheme];
+
+    // Hide/show warning
+    if ([[Model sharedInstance].serverProtocol isEqual:@"https://"]) {
+        // Hide security message below credentials if needed
+        self.websiteNotSecure.hidden = YES;
+    } else {
+        // Show security message below credentials if needed
+        self.websiteNotSecure.hidden = NO;
+    }
+
     // Save username, server address and protocol to disk
     [Model sharedInstance].serverPath = [NSString stringWithFormat:@"%@%@", serverURL.host, serverURL.path];
     [Model sharedInstance].username = user;

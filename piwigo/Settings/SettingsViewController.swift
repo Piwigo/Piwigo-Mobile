@@ -450,12 +450,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 let title = NSLocalizedString("settings_server", comment: "Address")
                 var detail: String
-                if view.bounds.size.width > 414 {
-                    // i.e. larger than iPhones 6, 7 screen width
-                    detail = String(format: "%@%@", Model.sharedInstance().serverProtocol, Model.sharedInstance().serverPath)
-                } else {
-                    detail = Model.sharedInstance().serverPath
-                }
+                detail = String(format: "%@%@", Model.sharedInstance().serverProtocol, Model.sharedInstance().serverPath)
                 cell.configure(with: title, detail: detail)
                 cell.accessoryType = UITableViewCell.AccessoryType.none
                 cell.accessibilityIdentifier = "server"

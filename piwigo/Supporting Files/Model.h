@@ -93,8 +93,8 @@ typedef enum {
 @property (nonatomic, assign) BOOL hasAdminRights;
 @property (nonatomic, assign) BOOL hasNormalRights;
 @property (nonatomic, assign) BOOL hadOpenedSession;
-@property (nonatomic, assign) BOOL didRequestCertificateApproval;
-@property (nonatomic, assign) BOOL didRequestHTTPauthentication;
+@property (nonatomic, assign) BOOL didRejectCertificate;
+@property (nonatomic, assign) BOOL didFailHTTPauthentication;
 @property (nonatomic, assign) BOOL didApproveCertificate;
 @property (nonatomic, strong) NSString *certificateInformation;
 @property (nonatomic, assign) BOOL userCancelledCommunication;

@@ -123,145 +123,12 @@ NSInteger const loadingViewTag = 899;
 #endif
         if (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust)
         {
-            // Evaluate the trust the standard way.
-            SecTrustRef trust = challenge.protectionSpace.serverTrust;
-            NSString *strURL = [NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath];
-            NSURL *serverURL = [NSURL URLWithString:strURL];
-            BOOL trusted = [policy evaluateServerTrust:trust forDomain:serverURL.host];
-#if defined(DEBUG_SESSION)
-            NSLog(@"===>> trusted: %@ (%@:%@)", trusted ? @"Yes" : @"No", serverURL.host, serverURL.port);
-#endif
-            // If the standard policy says that it's trusted, allow it right now.
-            if (trusted) {
-                *credential = [NSURLCredential credentialForTrust:trust];
+            NSURLCredential *credentialForTrust = [self didRequestServerTrust:challenge withPolicy:policy];
+            if (credentialForTrust != nil) {
+                *credential = credentialForTrust;
                 return NSURLSessionAuthChallengeUseCredential;
             }
-            
-            // If there is not certificate, report an error (should rarely happen)
-            if (SecTrustGetCertificateCount(trust) == 0) {
-                // No certificate!
-                return NSURLSessionAuthChallengeRejectProtectionSpace;
-            }
-
-            // Retrieve the certificate of the server
-            SecCertificateRef certificate = SecTrustGetCertificateAtIndex(trust, 0);
-
-            // Get certificate in Keychain if it exists
-            // Certificates are stored in the Keychain with label "Piwigo:<host>"
-            SecCertificateRef storedCertificate = NULL;
-            NSDictionary *getQuery = @{ (id)kSecClass:      (id)kSecClassCertificate,
-                                        (id)kSecAttrLabel:  [NSString stringWithFormat:@"Piwigo:%@", serverURL.host],
-                                        (id)kSecMatchLimit: (id)kSecMatchLimitOne,
-                                        (id)kSecReturnRef:  (id)kCFBooleanTrue,
-            };
-            OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)getQuery,
-                                                  (CFTypeRef *)&storedCertificate);
-            if (status == errSecSuccess) {
-                // A certificate exists for that host.
-                // Does it match the one of the server?
-                NSData* certData = (NSData*)CFBridgingRelease( // ARC takes ownership
-                   SecCertificateCopyData(certificate)
-                );
-                NSData* storedData = (NSData*)CFBridgingRelease( // ARC takes ownership
-                   SecCertificateCopyData(storedCertificate)
-                );
-                if ([certData isEqualToData:storedData]) {
-                    // Certificates are identical
-#if defined(DEBUG_SESSION)
-                    NSLog(@"===>> certificate found in Keychain ;-)");
-#endif
-                    // Release certificate after use and trust server
-                    if (storedCertificate) { CFRelease(storedCertificate); }
-                    *credential = [NSURLCredential credentialForTrust:trust];
-                    return NSURLSessionAuthChallengeUseCredential;
-                }
-            }
-
-            // No certificate or different non-trusted certificate found in Keychain for that host
-#if defined(DEBUG_SESSION)
-            NSLog(@"===>> non-trusted certificate of server not found in Keychain ;-)");
-#endif
-            // Does the user trust this server?
-            if ([Model sharedInstance].didApproveCertificate) {
-                // The user trusts this server.
-                if (storedCertificate) {
-                    // Delete certificate in Keychain (updating the certificate data is not sufficient)
-#if defined(DEBUG_SESSION)
-                    NSLog(@"===>> delete certificate from Keychain…");
-#endif
-                    NSDictionary *delQuery = @{ (id)kSecClass:      (id)kSecClassCertificate,
-                                                (id)kSecAttrLabel:  [NSString stringWithFormat:@"Piwigo:%@", serverURL.host],
-                    };
-                    OSStatus status = SecItemDelete((CFDictionaryRef)delQuery);
-//                    NSDictionary *changes = @{(__bridge NSString *)kSecValueData : (__bridge_transfer NSData *)SecCertificateCopyData(storedCertificate)};
-//                    OSStatus status = SecItemUpdate((CFDictionaryRef)delQuery, (CFDictionaryRef)changes);
-                    CFRelease(storedCertificate);
-                    if (status != errSecSuccess) {
-                        // Handle the error
-                        // See https://www.osstatus.com/search/results?platform=all&framework=all&search=-50
-#if defined(DEBUG_SESSION)
-                        NSLog(@"===>> could not delete certificate from Keychain, error %d", (int)status);
-#endif
-                    }
-                }
-
-                // Store server certificate in Keychain with same label "Piwigo:<host>"
-#if defined(DEBUG_SESSION)
-                NSLog(@"===>> store new non-trusted certificate in Keychain…");
-#endif
-                NSDictionary* addquery = @{ (id)kSecValueRef:   (__bridge id)certificate,
-                                            (id)kSecClass:      (id)kSecClassCertificate,
-                                            (id)kSecAttrLabel:  [NSString stringWithFormat:@"Piwigo:%@", serverURL.host],
-                };
-                OSStatus status = SecItemAdd((__bridge CFDictionaryRef)addquery, NULL);
-                if (status != errSecSuccess) {
-                    // Handle the error
-                    // See https://www.osstatus.com/search/results?platform=all&framework=all&search=-50
-#if defined(DEBUG_SESSION)
-                    NSLog(@"===>> could not store non-trusted certificate in Keychain, error %d", (int)status);
-#endif
-                }
-
-                // Will reject a connection if the certificate is changed during a session
-                // but it will still be possible to logout.
-                [Model sharedInstance].didApproveCertificate = NO;
-                
-                // Accept connection
-                *credential = [NSURLCredential credentialForTrust:trust];
-                return NSURLSessionAuthChallengeUseCredential;
-            }
-            
-            // Ask user whether we should trust this server
-            // Compile string that will be presented to the user
-            NSMutableString *certString = [NSMutableString new];
-            [certString appendFormat:@"(%@", serverURL.host];
-
-            // Summary, e.g. "QNAP NAS"
-            NSString* summary = (NSString*)CFBridgingRelease(SecCertificateCopySubjectSummary(certificate));
-            if (summary.length > 0) {
-                [certString appendFormat:@", %@", summary];
-            }
-
-            // Email, e.g. support@qnap.com
-            if (@available(iOS 10.0, *))
-            {
-                CFArrayRef emailAddressesRef;
-                OSStatus status = SecCertificateCopyEmailAddresses(certificate, &emailAddressesRef);
-                if (status == errSecSuccess)
-                {
-                    NSArray *emailAddresses = (__bridge NSArray *)emailAddressesRef;
-                    if ([emailAddresses count]) {
-                        [certString appendFormat:@", %@", [emailAddresses firstObject]];
-                    }
-                    CFRelease(emailAddressesRef);
-                }
-            }
-            [certString appendString:@")"];
-            [Model sharedInstance].certificateInformation = [certString copy];
-            [Model sharedInstance].didRequestCertificateApproval = YES;
-#if defined(DEBUG_SESSION)
-            NSLog(@"===>> Certificate: %@", certString);
-#endif
+            return NSURLSessionAuthChallengeRejectProtectionSpace;
         }
         
         return NSURLSessionAuthChallengeRejectProtectionSpace;
@@ -277,36 +144,11 @@ NSInteger const loadingViewTag = 899;
         if ((challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPBasic) ||
             (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPDigest))
         {
-            // To remember app received anthentication challenge
-            [Model sharedInstance].didRequestHTTPauthentication = YES;
-
-            // HTTP basic authentification credentials
-            NSString *user = [Model sharedInstance].HttpUsername;
-            NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] account:user];
-            
-            // Without HTTP credentials available, tries Piwigo credentials
-            if ((user == nil) || (user.length <= 0) || (password == nil)) {
-                user  = [Model sharedInstance].username;
-                password = [SAMKeychain passwordForService:[Model sharedInstance].serverPath account:user];
-                if (password == nil) password = @"";
-                
-                [Model sharedInstance].HttpUsername = user;
-                [[Model sharedInstance] saveToDisk];
-                [SAMKeychain setPassword:password forService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] account:user];
-            }
-            
-            // Supply requested credentials if not provided yet
-            if (challenge.previousFailureCount == 0) {
-                // Trying HTTP credentials…
-                NSURLCredential *credential = [NSURLCredential credentialWithUser:user
-                                                                         password:password
-                                                  persistence:NSURLCredentialPersistenceSynchronizable];
+            NSURLCredential *credential = [self didRequestHTTPBasicAuthentication:challenge];
+            if (credential != nil) {
                 return credential;
-            } else {
-                // HTTP credentials refused!
-                [SAMKeychain deletePasswordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] account:user];
-                return @(NSURLSessionAuthChallengeRejectProtectionSpace);
             }
+            return @(NSURLSessionAuthChallengeRejectProtectionSpace);
         }
         return @(NSURLSessionAuthChallengeRejectProtectionSpace);
     }];
@@ -360,61 +202,12 @@ NSInteger const loadingViewTag = 899;
 #endif
         if (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust)
         {
-            // Evaluate the trust the standard way.
-            SecTrustRef trust = challenge.protectionSpace.serverTrust;
-            NSString *strURL = [NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath];
-            NSURL *serverURL = [NSURL URLWithString:strURL];
-            BOOL trusted = [policy evaluateServerTrust:trust forDomain:serverURL.host];
-#if defined(DEBUG_SESSION)
-            NSLog(@"===>> trusted: %@ (%@:%@)", trusted ? @"Yes" : @"No", serverURL.host, serverURL.port);
-#endif
-            // If the standard policy says that it's trusted, allow it right now.
-            if (trusted) {
-                *credential = [NSURLCredential credentialForTrust:trust];
+            NSURLCredential *credentialForTrust = [self didRequestServerTrust:challenge withPolicy:policy];
+            if (credentialForTrust != nil) {
+                *credential = credentialForTrust;
                 return NSURLSessionAuthChallengeUseCredential;
             }
-            
-            // If there is not certificate, report an error (should rarely happen)
-            if (SecTrustGetCertificateCount(trust) == 0) {
-                // No certificate!
-                return NSURLSessionAuthChallengeRejectProtectionSpace;
-            }
-
-            // Retrieve the certificate of the server
-            SecCertificateRef certificate = SecTrustGetCertificateAtIndex(trust, 0);
-
-            // Get certificate in Keychain (should exist)
-            // Certificates are stored in the Keychain with label "Piwigo:<host>"
-            SecCertificateRef storedCertificate = NULL;
-            NSDictionary *getQuery = @{ (id)kSecClass:     (id)kSecClassCertificate,
-                                        (id)kSecAttrLabel: [NSString stringWithFormat:@"Piwigo:%@", serverURL.host],
-                                        (id)kSecReturnRef: @YES,
-            };
-            OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)getQuery,
-                                                  (CFTypeRef *)&storedCertificate);
-            if (status == errSecSuccess) {
-                // A certificate exists for that host.
-                // Does it match the one of the server?
-                NSData* certData = (NSData*)CFBridgingRelease( // ARC takes ownership
-                   SecCertificateCopyData(certificate)
-                );
-                NSData* storedData = (NSData*)CFBridgingRelease( // ARC takes ownership
-                   SecCertificateCopyData(storedCertificate)
-                );
-                if ([certData isEqualToData:storedData]) {
-                    // Certificates are identical
-#if defined(DEBUG_SESSION)
-                    NSLog(@"===>> certificate found in Keychain ;-)");
-#endif
-                    // Release certificate after use and trust server
-                    if (storedCertificate) { CFRelease(storedCertificate); }
-                    *credential = [NSURLCredential credentialForTrust:trust];
-                    return NSURLSessionAuthChallengeUseCredential;
-                }
-            }
-
-            // Release potential stored certificate after use
-            if (storedCertificate) { CFRelease(storedCertificate); }
+            return NSURLSessionAuthChallengeRejectProtectionSpace;
         }
         return NSURLSessionAuthChallengeRejectProtectionSpace;
     }];
@@ -430,37 +223,11 @@ NSInteger const loadingViewTag = 899;
         if ((challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPBasic) ||
             (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPDigest))
         {
-            // To remember app received anthentication challenge
-            [Model sharedInstance].didRequestHTTPauthentication = YES;
-
-            // HTTP basic authentification credentials
-            NSString *user = [Model sharedInstance].HttpUsername;
-            NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] account:user];
-
-            // Without HTTP credentials available, tries Piwigo credentials
-            if ((user == nil) || (user.length <= 0) || (password == nil)) {
-                user  = [Model sharedInstance].username;
-                password = [SAMKeychain passwordForService:[Model sharedInstance].serverPath account:user];
-                if (password == nil) password = @"";
-
-                [Model sharedInstance].HttpUsername = user;
-                [[Model sharedInstance] saveToDisk];
-                [SAMKeychain setPassword:password forService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] account:user];
-            }
-
-            // Supply requested credentials if not provided yet
-            if (challenge.previousFailureCount == 0) {
-                // Trying HTTP credentials…
-                NSURLCredential *credential = [NSURLCredential
-                               credentialWithUser:user
-                               password:password
-                               persistence:NSURLCredentialPersistenceSynchronizable];
+            NSURLCredential *credential = [self didRequestHTTPBasicAuthentication:challenge];
+            if (credential != nil) {
                 return credential;
-            } else {
-                // HTTP credentials refused!
-                [SAMKeychain deletePasswordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] account:user];
-                return @(NSURLSessionAuthChallengeRejectProtectionSpace);
             }
+            return @(NSURLSessionAuthChallengeRejectProtectionSpace);
         }
         return @(NSURLSessionAuthChallengeRejectProtectionSpace);
     }];
@@ -503,61 +270,12 @@ NSInteger const loadingViewTag = 899;
 #endif
         if (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust)
         {
-            // Evaluate the trust the standard way.
-            SecTrustRef trust = challenge.protectionSpace.serverTrust;
-            NSString *strURL = [NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath];
-            NSURL *serverURL = [NSURL URLWithString:strURL];
-            BOOL trusted = [policy evaluateServerTrust:trust forDomain:serverURL.host];
-#if defined(DEBUG_SESSION)
-            NSLog(@"===>> trusted: %@ (%@:%@)", trusted ? @"Yes" : @"No", serverURL.host, serverURL.port);
-#endif
-            // If the standard policy says that it's trusted, allow it right now.
-            if (trusted) {
-                *credential = [NSURLCredential credentialForTrust:trust];
+            NSURLCredential *credentialForTrust = [self didRequestServerTrust:challenge withPolicy:policy];
+            if (credentialForTrust != nil) {
+                *credential = credentialForTrust;
                 return NSURLSessionAuthChallengeUseCredential;
             }
-            
-            // If there is not certificate, report an error (should rarely happen)
-            if (SecTrustGetCertificateCount(trust) == 0) {
-                // No certificate!
-                return NSURLSessionAuthChallengeRejectProtectionSpace;
-            }
-
-            // Retrieve the certificate of the server
-            SecCertificateRef certificate = SecTrustGetCertificateAtIndex(trust, 0);
-
-            // Get certificate in Keychain (should exist)
-            // Certificates are stored in the Keychain with label "Piwigo:<host>"
-            SecCertificateRef storedCertificate = NULL;
-            NSDictionary *getQuery = @{ (id)kSecClass:     (id)kSecClassCertificate,
-                                        (id)kSecAttrLabel: [NSString stringWithFormat:@"Piwigo:%@", serverURL.host],
-                                        (id)kSecReturnRef: @YES,
-            };
-            OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)getQuery,
-                                                  (CFTypeRef *)&storedCertificate);
-            if (status == errSecSuccess) {
-                // A certificate exists for that host.
-                // Does it match the one of the server?
-                NSData* certData = (NSData*)CFBridgingRelease( // ARC takes ownership
-                   SecCertificateCopyData(certificate)
-                );
-                NSData* storedData = (NSData*)CFBridgingRelease( // ARC takes ownership
-                   SecCertificateCopyData(storedCertificate)
-                );
-                if ([certData isEqualToData:storedData]) {
-                    // Certificates are identical
-#if defined(DEBUG_SESSION)
-                    NSLog(@"===>> certificate found in Keychain ;-)");
-#endif
-                    // Release certificate after use and trust server
-                    if (storedCertificate) { CFRelease(storedCertificate); }
-                    *credential = [NSURLCredential credentialForTrust:trust];
-                    return NSURLSessionAuthChallengeUseCredential;
-                }
-            }
-
-            // Release potential stored certificate after use
-            if (storedCertificate) { CFRelease(storedCertificate); }
+            return NSURLSessionAuthChallengeRejectProtectionSpace;
         }
         
         return NSURLSessionAuthChallengeRejectProtectionSpace;
@@ -574,41 +292,202 @@ NSInteger const loadingViewTag = 899;
         if ((challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPBasic) ||
             (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPDigest))
         {
-            // To remember app received anthentication challenge
-            [Model sharedInstance].didRequestHTTPauthentication = YES;
-            
-            // HTTP basic authentification credentials
-            NSString *user = [Model sharedInstance].HttpUsername;
-            NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] account:user];
-            
-            // Without HTTP credentials available, tries Piwigo credentials
-            if ((user == nil) || (user.length <= 0) || (password == nil)) {
-                user  = [Model sharedInstance].username;
-                password = [SAMKeychain passwordForService:[Model sharedInstance].serverPath account:user];
-                if (password == nil) password = @"";
-                
-                [Model sharedInstance].HttpUsername = user;
-                [[Model sharedInstance] saveToDisk];
-                [SAMKeychain setPassword:password forService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] account:user];
-            }
-            
-            // Supply requested credentials if not provided yet
-            if (challenge.previousFailureCount == 0) {
-                // Trying HTTP credentials…
-                NSURLCredential *credential = [NSURLCredential
-                               credentialWithUser:user
-                               password:password
-                               persistence:NSURLCredentialPersistenceSynchronizable];
+            NSURLCredential *credential = [self didRequestHTTPBasicAuthentication:challenge];
+            if (credential != nil) {
                 return credential;
-            } else {
-                // HTTP credentials refused!
-                [SAMKeychain deletePasswordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] account:user];
-                return @(NSURLSessionAuthChallengeRejectProtectionSpace);
             }
+            return @(NSURLSessionAuthChallengeRejectProtectionSpace);
         }
         return @(NSURLSessionAuthChallengeRejectProtectionSpace);
     }];
     return imageUploadManager;
+}
+
+
+#pragma mark - Authentication Methods
+
++(NSURLCredential *)didRequestServerTrust:(NSURLAuthenticationChallenge *)challenge
+                               withPolicy:(AFSecurityPolicy *)policy
+{
+    // Initialise SSL certificate approval flag
+    [Model sharedInstance].didRejectCertificate = NO;
+
+    // Evaluate the trust the standard way.
+    SecTrustRef trust = challenge.protectionSpace.serverTrust;
+    NSString *strURL = [NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath];
+    NSURL *serverURL = [NSURL URLWithString:strURL];
+    BOOL trusted = [policy evaluateServerTrust:trust forDomain:serverURL.host];
+#if defined(DEBUG_SESSION)
+    NSLog(@"===>> trusted: %@ (%@:%@)", trusted ? @"Yes" : @"No", serverURL.host, serverURL.port);
+#endif
+    // If the standard policy says that it's trusted, allow it right now.
+    if (trusted) {
+        return [NSURLCredential credentialForTrust:trust];
+    }
+    
+    // If there is no certificate, report an error (should rarely happen)
+    if (SecTrustGetCertificateCount(trust) == 0) {
+        // No certificate!
+        [Model sharedInstance].didRejectCertificate = YES;
+        return nil;
+    }
+
+    // Retrieve the certificate of the server
+    SecCertificateRef certificate = SecTrustGetCertificateAtIndex(trust, 0);
+
+    // Get certificate in Keychain if it exists
+    // Certificates are stored in the Keychain with label "Piwigo:<host>"
+    SecCertificateRef storedCertificate = NULL;
+    NSDictionary *getQuery = @{ (id)kSecClass:      (id)kSecClassCertificate,
+                                (id)kSecAttrLabel:  [NSString stringWithFormat:@"Piwigo:%@", serverURL.host],
+                                (id)kSecMatchLimit: (id)kSecMatchLimitOne,
+                                (id)kSecReturnRef:  (id)kCFBooleanTrue,
+    };
+    OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)getQuery,
+                                          (CFTypeRef *)&storedCertificate);
+    if (status == errSecSuccess) {
+        // A certificate exists for that host.
+        // Does it match the one of the server?
+        NSData* certData = (NSData*)CFBridgingRelease( // ARC takes ownership
+           SecCertificateCopyData(certificate)
+        );
+        NSData* storedData = (NSData*)CFBridgingRelease( // ARC takes ownership
+           SecCertificateCopyData(storedCertificate)
+        );
+        if ([certData isEqualToData:storedData]) {
+            // Certificates are identical
+#if defined(DEBUG_SESSION)
+            NSLog(@"===>> certificate found in Keychain ;-)");
+#endif
+            // Release certificate after use and trust server
+            if (storedCertificate) { CFRelease(storedCertificate); }
+            return [NSURLCredential credentialForTrust:trust];
+        }
+    }
+
+    // No certificate or different non-trusted certificate found in Keychain for that host
+#if defined(DEBUG_SESSION)
+    NSLog(@"===>> non-trusted certificate of server not found in Keychain ;-)");
+#endif
+    // Does the user trust this server?
+    if ([Model sharedInstance].didApproveCertificate) {
+        // The user trusts this server.
+        if (storedCertificate) {
+            // Delete certificate in Keychain (updating the certificate data is not sufficient)
+#if defined(DEBUG_SESSION)
+            NSLog(@"===>> delete certificate from Keychain…");
+#endif
+            NSDictionary *delQuery = @{ (id)kSecClass:      (id)kSecClassCertificate,
+                                        (id)kSecAttrLabel:  [NSString stringWithFormat:@"Piwigo:%@", serverURL.host],
+            };
+            OSStatus status = SecItemDelete((CFDictionaryRef)delQuery);
+//                    NSDictionary *changes = @{(__bridge NSString *)kSecValueData : (__bridge_transfer NSData *)SecCertificateCopyData(storedCertificate)};
+//                    OSStatus status = SecItemUpdate((CFDictionaryRef)delQuery, (CFDictionaryRef)changes);
+            CFRelease(storedCertificate);
+            if (status != errSecSuccess) {
+                // Handle the error
+                // See https://www.osstatus.com/search/results?platform=all&framework=all&search=-50
+#if defined(DEBUG_SESSION)
+                NSLog(@"===>> could not delete certificate from Keychain, error %d", (int)status);
+#endif
+            }
+        }
+
+        // Store server certificate in Keychain with same label "Piwigo:<host>"
+#if defined(DEBUG_SESSION)
+        NSLog(@"===>> store new non-trusted certificate in Keychain…");
+#endif
+        NSDictionary* addquery = @{ (id)kSecValueRef:   (__bridge id)certificate,
+                                    (id)kSecClass:      (id)kSecClassCertificate,
+                                    (id)kSecAttrLabel:  [NSString stringWithFormat:@"Piwigo:%@", serverURL.host],
+        };
+        OSStatus status = SecItemAdd((__bridge CFDictionaryRef)addquery, NULL);
+        if (status != errSecSuccess) {
+            // Handle the error
+            // See https://www.osstatus.com/search/results?platform=all&framework=all&search=-50
+#if defined(DEBUG_SESSION)
+            NSLog(@"===>> could not store non-trusted certificate in Keychain, error %d", (int)status);
+#endif
+        }
+
+        // Will reject a connection if the certificate is changed during a session
+        // but it will still be possible to logout.
+        [Model sharedInstance].didApproveCertificate = NO;
+        
+        // Accept connection
+        return [NSURLCredential credentialForTrust:trust];
+    }
+    
+    // Ask user whether we should trust this server
+    // Compile string that will be presented to the user
+    NSMutableString *certString = [NSMutableString new];
+    [certString appendFormat:@"(%@", serverURL.host];
+
+    // Summary, e.g. "QNAP NAS"
+    NSString* summary = (NSString*)CFBridgingRelease(SecCertificateCopySubjectSummary(certificate));
+    if (summary.length > 0) {
+        [certString appendFormat:@", %@", summary];
+    }
+
+    // Email, e.g. support@qnap.com
+    if (@available(iOS 10.0, *))
+    {
+        CFArrayRef emailAddressesRef;
+        OSStatus status = SecCertificateCopyEmailAddresses(certificate, &emailAddressesRef);
+        if (status == errSecSuccess)
+        {
+            NSArray *emailAddresses = (__bridge NSArray *)emailAddressesRef;
+            if ([emailAddresses count]) {
+                [certString appendFormat:@", %@", [emailAddresses firstObject]];
+            }
+            CFRelease(emailAddressesRef);
+        }
+    }
+    [certString appendString:@")"];
+    [Model sharedInstance].certificateInformation = [certString copy];
+    [Model sharedInstance].didRejectCertificate = YES;
+#if defined(DEBUG_SESSION)
+    NSLog(@"===>> Certificate: %@", certString);
+#endif
+    return nil;
+}
+
++(NSURLCredential *)didRequestHTTPBasicAuthentication:(NSURLAuthenticationChallenge *)challenge
+{
+    // Initialise HTTP authentication flag
+    [Model sharedInstance].didFailHTTPauthentication = NO;
+    
+    // Get HTTP basic authentification credentials
+    NSString *user = [Model sharedInstance].HttpUsername;
+    NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] account:user];
+    
+    // Without HTTP credentials available, tries Piwigo credentials
+    if ((user == nil) || (user.length <= 0) || (password == nil)) {
+        user  = [Model sharedInstance].username;
+        password = [SAMKeychain passwordForService:[Model sharedInstance].serverPath account:user];
+        if (password == nil) password = @"";
+        
+        [Model sharedInstance].HttpUsername = user;
+        [[Model sharedInstance] saveToDisk];
+        [SAMKeychain setPassword:password forService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] account:user];
+    }
+    
+    // Supply requested credentials if not provided yet
+    if (challenge.previousFailureCount == 0) {
+        // Try HTTP credentials…
+        NSURLCredential *credential = [NSURLCredential
+                       credentialWithUser:user
+                       password:password
+                       persistence:NSURLCredentialPersistenceSynchronizable];
+        return credential;
+    }
+    
+    // HTTP credentials refused... delete them in Keychain
+    [SAMKeychain deletePasswordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] account:user];
+
+    // Remember failed HTTP authentication
+    [Model sharedInstance].didFailHTTPauthentication = YES;
+    return nil;
 }
 
 
