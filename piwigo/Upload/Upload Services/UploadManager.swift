@@ -759,7 +759,7 @@ class UploadManager: NSObject, URLSessionDelegate {
 
     func delete(uploadedImages: [Upload]) -> Void {
         // Get local identifiers of uploaded images to delete
-        let uploadedImagesToDelete = uploadedImages.map( { $0.localIdentifier} )
+        let uploadedImagesToDelete = uploadedImages.map({$0.localIdentifier})
         
         // Get image assets of images to delete
         let assetsToDelete = PHAsset.fetchAssets(withLocalIdentifiers: uploadedImagesToDelete, options: nil)
@@ -777,14 +777,10 @@ class UploadManager: NSObject, URLSessionDelegate {
                     }
                 } else {
                     // User refused to delete the photos
-                    var uploadsToUpdate = [UploadProperties]()
-                    for upload in uploadedImages {
-                        let uploadProperties = upload.getPropertiesCancellingDeletion()
-                        uploadsToUpdate.append(uploadProperties)
-                    }
-                    // Update upload requests in the background
-                    self.uploadsProvider.importUploads(from: uploadsToUpdate) { (_) in
-                        // Done ;-)
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        // Remember that user did not want to delete them
+                        let uploadsToUpdate = uploadedImages.map({$0.objectID})
+                        self.uploadsProvider.preventDeletionOfUploads(with: uploadsToUpdate)
                     }
                 }
             })

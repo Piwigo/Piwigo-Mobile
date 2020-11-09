@@ -308,6 +308,50 @@ class UploadsProvider: NSObject {
         completionHandler(nil)
     }
 
+    func preventDeletionOfUploads(with objectIDs:[NSManagedObjectID]) -> (Void) {
+        // Check current queue
+        print("•••>> preventDeletionOfUploads (\(objectIDs.count)) in \(queueName())\r")
+
+        // Create a private queue context.
+        let taskContext = DataController.getPrivateContext()
+                
+        // taskContext.performAndWait runs on the URLSession's delegate queue
+        // so it won’t block the main thread.
+        taskContext.performAndWait {
+            
+            // Loop over all object IDs
+            for objectID in objectIDs {
+                // Update cached upload
+                let cachedUpload = taskContext.object(with: objectID) as! Upload
+                cachedUpload.deleteImageAfterUpload = false
+            }
+            
+            // Save all modifications from the context to the store.
+            if taskContext.hasChanges {
+                do {
+                    try taskContext.save()
+                    
+                    // Performs a task in the main queue and wait until this tasks finishes
+                    DispatchQueue.main.async {
+                        self.managedObjectContext.performAndWait {
+                            do {
+                                // Saves the data from the child to the main context to be stored properly
+                                try self.managedObjectContext.save()
+                            } catch {
+                                fatalError("Failure to save context: \(error)")
+                            }
+                        }
+                    }
+                }
+                catch {
+                    fatalError("Failure to save context: \(error)")
+                }
+                // Reset the taskContext to free the cache and lower the memory footprint.
+                taskContext.reset()
+            }
+        }
+    }
+
     /**
      Update one upload request on the private queue when an image is moved. After saving,
      resets the context to clean up the cache and lower the memory footprint.

@@ -257,29 +257,6 @@ extension Upload {
             deleteImageAfterUpload: self.deleteImageAfterUpload)
     }
 
-    func getPropertiesCancellingDeletion() -> UploadProperties {
-        return UploadProperties.init(localIdentifier: self.localIdentifier,
-            // Category ID of the album to upload to
-            category: Int(self.category),
-            // Server parameters
-            serverPath: self.serverPath, serverFileTypes: self.serverFileTypes,
-            // Upload request date, state and error
-            requestDate: self.requestDate, requestState: self.state, requestError: self.requestError,
-            // Photo creation date and filename
-            creationDate: self.creationDate, fileName: self.fileName,
-            mimeType: self.mimeType, md5Sum: self.md5Sum, isVideo: self.isVideo,
-            // Photo author name defaults to name entered in Settings
-            author: self.author, privacyLevel: self.privacy,
-            imageTitle: self.imageName, comment: self.comment,
-            tagIds: self.tagIds, imageId: Int(self.imageId),
-            // Upload settings
-            stripGPSdataOnUpload: self.stripGPSdataOnUpload,
-            resizeImageOnUpload: self.resizeImageOnUpload, photoResize: Int(self.photoResize),
-            compressImageOnUpload: self.compressImageOnUpload, photoQuality: Int(self.photoQuality),
-            prefixFileNameBeforeUpload: self.prefixFileNameBeforeUpload, defaultPrefix: self.defaultPrefix,
-            deleteImageAfterUpload: false)
-    }
-
     @objc(addUploadsObject:)
     @NSManaged public func addToUploads(_ value: Upload)
 
