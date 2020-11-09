@@ -549,7 +549,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     NSInteger currentIndex = [[[pageViewController viewControllers] firstObject] imageIndex];
     
     // Reached the beginning of the category?
-    if (currentIndex <= 0)
+    if ((currentIndex - 1 < 0) || (currentIndex - 1 >= self.images.count))
     {
         // Crash reported by AppStore here on May 25th, 2017!
         // Should return nil when the user reaches the first image of the album
@@ -569,8 +569,8 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
 //        }
 //    }
 
-    // Retriev data of previous image (may be incomplete)
-    PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex - 1];
+    // Retrieve data of previous image (may be incomplete)
+    PiwigoImageData *imageData = [self.images objectAtIndex:(currentIndex - 1)];
     
     // Create view controller
 //    NSLog(@"=> Create preview view controller for previous image %@", imageData.imageId);
