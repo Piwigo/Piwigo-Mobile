@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.5.2_text" = "Versione 2.5.2\n\n• Caricamento in background (richiede Piwigo 2.11 o successivo)\n• Correzioni di bug minori e miglioramenti dell'interfaccia";
+"v2.5.2_text" = "Versione 2.5.2\n\n• Caricamento in background (richiede l'estensione uploadAsync o Piwigo 2.11 o successivo)\n• Correzioni di bug minori e miglioramenti dell'interfaccia";
 
 "v2.5.1_text" = "Versione 2.5.1\n10 settembre 2020\n\n• Nuova opzione per la presentazione di foto e video in ordine casuale\n• Correzioni di bug minori e miglioramenti dell'interfaccia";
 

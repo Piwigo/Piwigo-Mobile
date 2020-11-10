@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.5.2_text" = "Version 2.5.2\n\n• Hochladen des Hintergrunds (benötigt Piwigo 2.11 oder höher)\n• Kleinere Fehlerbehebungen und Verbesserungen der Benutzeroberfläche";
+"v2.5.2_text" = "Version 2.5.2\n\n• Hochladen des Hintergrunds (erfordert die Erweiterung uploadAsync oder Piwigo 2.11 oder höher)\n• Kleinere Fehlerbehebungen und Verbesserungen der Benutzeroberfläche";
 
 "v2.5.1_text" = "Version 2.5.1\n10. September 2020\n\n• Neue Option für die Darstellung der Fotos und Videos in zufälliger Reihenfolge\n• Kleinere Fehlerbehebungen und Verbesserungen der Benutzeroberfläche";
 

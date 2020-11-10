@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.5.2_text" = "Version 2.5.2\n\n• Bakgrundsuppladdning (kräver Piwigo 2.11 eller senare)\n• Mindre buggfixar och förbättringar av gränssnittet";
+"v2.5.2_text" = "Version 2.5.2\n\n• Bakgrundsuppladdning (kräver uploadAsync-tillägg eller Piwigo 2.11 eller senare)\n• Mindre buggfixar och förbättringar av gränssnittet";
 
 "v2.5.1_text" = "Version 2.5.1\n10 september 2020\n\n• Nytt alternativ för att presentera foton och videor i slumpmässig ordning\n• Mindre buggfixar och förbättringar av gränssnittet";
 
