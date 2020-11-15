@@ -15,7 +15,7 @@
 	self = [super init];
 	if(self)
 	{
-		self.layer.cornerRadius = 10.0;
+		self.layer.cornerRadius = 8.0;
 		self.font = [UIFont piwigoFontNormal];
         self.translatesAutoresizingMaskIntoConstraints = NO;
         self.clearButtonMode = YES;
