@@ -479,8 +479,6 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
         NSLog(@"    > Task expired: Upload operation cancelled.");
          // Cancel operations
         [uploadQueue cancelAllOperations];
-        // Save cached data
-        [DataController saveContext];
     }];
     
     // Inform the system that the background task is complete
