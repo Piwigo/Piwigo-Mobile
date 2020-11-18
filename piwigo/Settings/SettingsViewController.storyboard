@@ -132,8 +132,8 @@
                                     <rect key="frame" x="0.0" y="0.0" width="374" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Name" textAlignment="natural" lineBreakMode="headTruncation" baselineAdjustment="alignBaselines" minimumFontSize="11" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VKN-MW-ylx">
-                                            <rect key="frame" x="20" y="10" width="277" height="24"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VKN-MW-ylx">
+                                            <rect key="frame" x="20" y="10" width="48" height="24"/>
                                             <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -147,11 +147,11 @@
                                         </switch>
                                     </subviews>
                                     <constraints>
+                                        <constraint firstItem="VKN-MW-ylx" firstAttribute="trailing" relation="lessThanOrEqual" secondItem="5yg-ZI-Wsd" secondAttribute="trailing" constant="-71" id="32D-wm-QEx"/>
                                         <constraint firstItem="VKN-MW-ylx" firstAttribute="centerY" secondItem="5yg-ZI-Wsd" secondAttribute="centerY" id="Epr-3K-aJU"/>
                                         <constraint firstItem="SKJ-lW-UVP" firstAttribute="centerY" secondItem="5yg-ZI-Wsd" secondAttribute="centerY" id="MLQ-T7-r5Q"/>
                                         <constraint firstItem="VKN-MW-ylx" firstAttribute="leading" secondItem="5yg-ZI-Wsd" secondAttribute="leading" constant="20" symbolic="YES" id="UjB-oe-TEd"/>
                                         <constraint firstAttribute="trailing" secondItem="SKJ-lW-UVP" secondAttribute="trailing" constant="20" symbolic="YES" id="Vey-Ex-198"/>
-                                        <constraint firstItem="VKN-MW-ylx" firstAttribute="trailing" secondItem="SKJ-lW-UVP" secondAttribute="leading" id="cr5-9p-geX"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>

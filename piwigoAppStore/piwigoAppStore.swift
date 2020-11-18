@@ -35,7 +35,7 @@ public enum Model : String {
     iPadMini2          = "iPad Mini 2",
     iPadMini3          = "iPad Mini 3",
     iPadMini4          = "iPad Mini 4",
-    iPadMini5          = "iPad mini (5th generation)"
+    iPadMini5          = "iPad mini (5th generation)",
     //iPad pro
     iPadPro9_7         = "iPad Pro 9.7\"",
     iPadPro10_5        = "iPad Pro 10.5\"",
@@ -312,11 +312,7 @@ class piwigoAppStore: XCTestCase {
         // Screenshot #4: image previewed
         app.navigationBars.buttons["Cancel"].tap()
         if deviceType == "iPhone SE" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 0).swipeDown()
-            sleep(2)
-            app.collectionViews.children(matching: .cell).element(boundBy: 0).swipeUp()
-            sleep(2)
-            app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
             sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
             app.images.element(boundBy: 0).pinch(withScale: 0.6, velocity: -2.0)
@@ -389,19 +385,19 @@ class piwigoAppStore: XCTestCase {
         app.navigationBars.buttons.element(boundBy: 0).tap()
         sleep(2)                        // Leave time for animation
         if deviceType == "iPhone SE" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 7).tap()
         }
         else if deviceType == "iPhone 8" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 7).tap()
         }
         else if deviceType == "iPhone 8 Plus" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 7).tap()
         }
         else if deviceType == "iPhone 11 Pro" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 7).tap()
         }
         else if deviceType == "iPhone 11 Pro Max" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
+                        app.collectionViews.children(matching: .cell).element(boundBy: 7).tap()
         }
         else if deviceType == "iPad Pro 9.7\"" {
             app.collectionViews.children(matching: .cell).element(boundBy: 21).tap()
@@ -438,7 +434,9 @@ class piwigoAppStore: XCTestCase {
         sleep(2)                        // Leave time for animation
         app.navigationBars.buttons.element(boundBy: 0).tap()
         sleep(2)                        // Leave time for animation
+        app.collectionViews.children(matching: .cell).element(boundBy: 10).swipeUp()
         app.buttons["add"].tap()
+        sleep(2)                        // Leave time for animation
         snapshot("Image06")
         
         // Screenshot #7: local images
@@ -449,6 +447,8 @@ class piwigoAppStore: XCTestCase {
         app.buttons["imageDay"].tap()
         sleep(1)                        // Leave time for animation
         let images = app.collectionViews.matching(identifier: "CameraRoll").children(matching: .cell)
+        images.element(boundBy: 0).children(matching: .other).element.tap()
+        images.element(boundBy: 1).children(matching: .other).element.tap()
         images.element(boundBy: 2).children(matching: .other).element.tap()
         images.element(boundBy: 3).children(matching: .other).element.tap()
         images.element(boundBy: 4).children(matching: .other).element.tap()
@@ -470,7 +470,7 @@ class piwigoAppStore: XCTestCase {
         // Screenshot #10: settings
         app.navigationBars["UploadSwitchView"].buttons["Cancel"].tap()
         let localimagesnavNavigationBar = app.navigationBars["LocalImagesNav"]
-        localimagesnavNavigationBar.buttons.element(boundBy: 0).tap()
+        localimagesnavNavigationBar.buttons.element(boundBy: 0).tap()        
         sleep(1)                        // Leave time for animation
         localimagesnavNavigationBar.buttons.element(boundBy: 0).tap()
         app.navigationBars["LocalAlbumsNav"].buttons["Cancel"].tap()
