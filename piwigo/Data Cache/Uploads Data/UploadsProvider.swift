@@ -165,7 +165,7 @@ class UploadsProvider: NSObject {
                 do {
                     try taskContext.save()
 
-                    // Performs a task in the main queue and wait until this tasks finishes
+                    // Performs a task in the main queue and wait until this task finishes
                     DispatchQueue.main.async {
                         self.managedObjectContext.performAndWait {
                             do {
@@ -229,7 +229,7 @@ class UploadsProvider: NSObject {
                 do {
                     try taskContext.save()
                     
-                    // Performs a task in the main queue and wait until this tasks finishes
+                    // Performs a task in the main queue and wait until this task finishes
                     DispatchQueue.main.async {
                         self.managedObjectContext.performAndWait {
                             do {
@@ -286,7 +286,7 @@ class UploadsProvider: NSObject {
                 do {
                     try taskContext.save()
                     
-                    // Performs a task in the main queue and wait until this tasks finishes
+                    // Performs a task in the main queue and wait until this task finishes
                     DispatchQueue.main.async {
                         self.managedObjectContext.performAndWait {
                             do {
@@ -331,7 +331,7 @@ class UploadsProvider: NSObject {
                 do {
                     try taskContext.save()
                     
-                    // Performs a task in the main queue and wait until this tasks finishes
+                    // Performs a task in the main queue and wait until this task finishes
                     DispatchQueue.main.async {
                         self.managedObjectContext.performAndWait {
                             do {
@@ -799,7 +799,8 @@ class UploadsProvider: NSObject {
         // Create a fetched results controller and set its fetch request, context, and delegate.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
                                             managedObjectContext: self.managedObjectContext,
-                                              sectionNameKeyPath: nil, cacheName: nil)
+                                              sectionNameKeyPath: nil,
+                                                       cacheName: "allUploads")
         controller.delegate = fetchedResultsControllerDelegate
         
         // Perform the fetch.
@@ -842,7 +843,8 @@ class UploadsProvider: NSObject {
         // Create a fetched results controller and set its fetch request, context, and delegate.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
                                             managedObjectContext: self.managedObjectContext,
-                                              sectionNameKeyPath: "requestSectionKey", cacheName: nil)
+                                              sectionNameKeyPath: "requestSectionKey",
+                                                       cacheName: "nonCompletedUploads")
         controller.delegate = fetchedNonCompletedResultsControllerDelegate
         
         // Perform the fetch.
