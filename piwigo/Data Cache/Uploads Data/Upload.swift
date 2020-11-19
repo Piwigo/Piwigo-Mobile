@@ -142,6 +142,9 @@ class Upload: NSManagedObject {
         
         // State of upload request
         requestState = Int16(newStatus.rawValue)
+        
+        // Section into which the upload request belongs to
+        requestSectionKey = SectionKeys.init(rawValue: newStatus.sectionKey)!.rawValue
 
         // Error message description
         requestError = error ?? ""
