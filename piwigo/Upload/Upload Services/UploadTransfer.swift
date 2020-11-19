@@ -119,14 +119,19 @@ extension UploadManager {
     }
 
     private func didEndTransfer(for uploadID: NSManagedObjectID,
-                                with properties: UploadProperties, _ error: Error?) {
+                                with properties: UploadProperties, _ error: NSError?) {
 //        print("\(debugFormatter.string(from: Date())) > enters didEndTransfer in", queueName())
         
         // Error?
         if let error = error {
             // Update state of upload request
             print("\(debugFormatter.string(from: Date())) > transferred \(uploadID.uriRepresentation()) with error:\(error.localizedDescription)")
-            uploadsProvider.updateStatusOfUpload(with: uploadID, to: .uploadingError,  error: error.localizedDescription) { [unowned self] (_) in
+            var requestError: kPiwigoUploadState = .uploadingError
+            if (error.code >= NSFileErrorMinimum) && (error.code <= NSFileErrorMaximum) {
+                // Could not retrieve image file to transfer
+                requestError = .preparingError
+            }
+            uploadsProvider.updateStatusOfUpload(with: uploadID, to: requestError, error: error.localizedDescription) { [unowned self] (_) in
                 // Consider next image?
                 if self.isExecutingBackgroundUploadTask {
                     // In background task: stop operation here
