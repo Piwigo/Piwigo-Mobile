@@ -660,6 +660,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 
                 // Switch status
                 cell.cellSwitch.setOn(Model.sharedInstance().displayImageTitles, animated: true)
+                cell.cellSwitch.accessibilityIdentifier = "switchImageTitles"
                 cell.cellSwitchBlock = { switchState in
                     Model.sharedInstance().displayImageTitles = switchState
                     Model.sharedInstance().saveToDisk()
