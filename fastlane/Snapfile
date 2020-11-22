@@ -4,6 +4,9 @@
 # To launch fastlane:
 #	bundle exec fastlane snapshot --number_of_retries 0 --skip_open_summary
 #
+# To upload screenshots
+#   bundle exec fastlane deliver
+#
 # A list of devices you want to take the screenshots from
 devices([
 #  "iPhone SE (1st generation)",					# 4-inch
@@ -12,8 +15,8 @@ devices([
 #  "iPhone 11 Pro",									# 5.8-inch
 #  "iPhone 11 Pro Max",								# 6.5-inch
 #  "iPad Pro (9.7-inch)",							# 9.7-inch
-#  "iPad Pro (10.5-inch)",							# 10.5-inch
-  "iPad Pro (12.9-inch) (2nd generation)",			# 12.9-inch
+  "iPad Pro (10.5-inch)",							# 10.5-inch
+#  "iPad Pro (12.9-inch) (2nd generation)",			# 12.9-inch
 #  "iPad Pro (11-inch) (2nd generation)",			# 11-inch
 #  "iPad Pro (12.9-inch) (3rd generation)"			# 12.9-inch
 ])
@@ -23,7 +26,7 @@ languages([
 #   "en",
 #   "zh-Hans",
 #   "da",
-   "nl",
+#   "nl",
 #   "fr",
 #   "de",
 #   "id",
@@ -31,7 +34,7 @@ languages([
 #   "ja",
 #   "ru",
 #   "es",
-#   "sv"
+   "sv"
 ])
 
 # The name of the scheme which contains the UI Tests

@@ -6,7 +6,7 @@
 #	sudo gem install fastlane -NV
 #	fastlane init
 #   fastlane init swift
-#
+#	
 #	export LC_ALL=en_US.UTF-8
 #	export LANG=en_US.UTF-8
 # 	Create a ./Gemfile in the root directory of your project
