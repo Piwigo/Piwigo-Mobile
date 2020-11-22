@@ -23,18 +23,18 @@ devices([
 
 #   ["pt", "pt_BR"] # Portuguese with Brazilian locale
 languages([
-#   "en",
-#   "zh-Hans",
+#   "en_US",
+#   "zh_Hans",
 #   "da",
-#   "nl",
-#   "fr",
-#   "de",
+#   "nl_NL",
+#   "fr_FR",
+#   "de_DE",
 #   "id",
 #   "it",
 #   "ja",
 #   "ru",
-#   "es",
-   "sv"
+#   "es_ES",
+#   "sv"
 ])
 
 # The name of the scheme which contains the UI Tests
