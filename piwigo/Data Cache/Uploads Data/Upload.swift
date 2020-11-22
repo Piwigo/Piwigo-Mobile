@@ -396,7 +396,6 @@ struct UploadProperties
 extension UploadProperties {
     // Create new upload from localIdentifier and category
     init(localIdentifier: String, category: Int) {
-        print("••>> \(Model.sharedInstance()?.serverPath ?? "") and \(Model.sharedInstance()?.serverFileTypes ?? "jpg,jpeg,png,gif")")
         self.init(localIdentifier: localIdentifier,
             // Category ID of the album to upload to
             category: category,
