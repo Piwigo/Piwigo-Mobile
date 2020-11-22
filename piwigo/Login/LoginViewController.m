@@ -963,6 +963,12 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
         // Update login HUD
         MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
         if (hud) {
+            // Do not present error message when executing background task
+            if ([UploadManager shared].isExecutingBackgroundUploadTask) {
+                [self hideLoading];
+                return;
+            }
+            
             // Show only text
             hud.mode = MBProgressHUDModeText;
             
