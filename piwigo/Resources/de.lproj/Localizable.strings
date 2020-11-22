@@ -440,6 +440,11 @@
 "copySingleImageError_message" = "Fehler beim Kopieren Ihres Fotos";
 
 // Images upload
+"imageUploadHeaderTitle_images" = "Foto-Parameter";
+"imageUploadHeaderText_images" = "Bitte setzen Sie die Parameter für die Auswahl der Fotos/Videos";
+"imageUploadHeaderTitle_upload" = "Upload Einstellungen";
+"imageUploadHeaderText_upload" = "Bitte legen Sie die Upload-Parameter für die Auswahl von Fotos/Videos fest";
+
 "imageUploadDetails_title" = "Titel:";
 "imageUploadDetails_author" = "Autor:";
 "imageUploadDetails_privacy" = "Sicherheitsstufe:";

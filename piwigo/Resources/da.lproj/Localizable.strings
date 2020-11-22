@@ -440,6 +440,11 @@
 "copySingleImageError_message" = "Kunne ikke kopiere dit billede";
 
 // Images upload
+"imageUploadHeaderTitle_images" = "Parametre For Billeder";
+"imageUploadHeaderText_images" = "Sæt parametrene til at gælde for udvælgelsen af billeder/videoer";
+"imageUploadHeaderTitle_upload" = "Upload Indstillinger";
+"imageUploadHeaderText_upload" = "Indstil venligst upload-parametrene til at gælde for udvælgelsen af billeder/videoer";
+
 "imageUploadDetails_title" = "Titel:";
 "imageUploadDetails_author" = "Forfatter:";
 "imageUploadDetails_privacy" = "Tilladelse:";

@@ -440,6 +440,11 @@
 "copySingleImageError_message" = "写真のコピーに失敗しました";
 
 // Images upload
+"imageUploadHeaderTitle_images" = "写真のパラメータ";
+"imageUploadHeaderText_images" = "写真/動画の選択に適用するパラメータを設定してください";
+"imageUploadHeaderTitle_upload" = "アップロード設定";
+"imageUploadHeaderText_upload" = "写真/動画の選択に適用するアップロードパラメータを設定してください";
+
 "imageUploadDetails_title" = "題名：";
 "imageUploadDetails_author" = "作成者：";
 "imageUploadDetails_privacy" = "プライバシー:";

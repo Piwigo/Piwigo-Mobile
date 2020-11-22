@@ -440,6 +440,11 @@
 "copySingleImageError_message" = "无法复制照片";
 
 // Images upload
+"imageUploadHeaderTitle_images" = "照片参数";
+"imageUploadHeaderText_images" = "请设置用于选择照片/视频的参数";
+"imageUploadHeaderTitle_upload" = "上传设置";
+"imageUploadHeaderText_upload" = "请设置用于选择照片/视频的上传参数";
+
 "imageUploadDetails_title" = "标题：";
 "imageUploadDetails_author" = "作者：";
 "imageUploadDetails_privacy" = "隐私：";

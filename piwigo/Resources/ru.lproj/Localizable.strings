@@ -440,6 +440,11 @@
 "copySingleImageError_message" = "Не удалось скопировать Ваше фотографию";
 
 // Images upload
+"imageUploadHeaderTitle_images" = "Параметры фотографий";
+"imageUploadHeaderText_images" = "Пожалуйста, установите параметры, применимые к выбору фотографий/видео";
+"imageUploadHeaderTitle_upload" = "Настройки загрузки";
+"imageUploadHeaderText_upload" = "Пожалуйста, установите параметры загрузки для применения к выбору фотографий/видео";
+
 "imageUploadDetails_title" = "Заголовок:";
 "imageUploadDetails_author" = "Автор:";
 "imageUploadDetails_privacy" = "Право просмотра:";
