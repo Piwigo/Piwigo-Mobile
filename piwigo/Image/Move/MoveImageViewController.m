@@ -73,7 +73,11 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
         self.categoriesThatShowSubCategories = [NSMutableArray new];
         
         // Table view
-        self.categoriesTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+        if (@available(iOS 13.0, *)) {
+            self.categoriesTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleInsetGrouped];
+        } else {
+            self.categoriesTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+        }
         self.categoriesTableView.translatesAutoresizingMaskIntoConstraints = NO;
         self.categoriesTableView.backgroundColor = [UIColor clearColor];
         self.categoriesTableView.alwaysBounceVertical = YES;
