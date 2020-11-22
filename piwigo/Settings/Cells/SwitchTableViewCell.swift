@@ -41,5 +41,6 @@ class SwitchTableViewCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         switchName.text = ""
+        cellSwitch.isOn = false
     }
 }
