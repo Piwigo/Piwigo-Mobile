@@ -25,8 +25,8 @@ FOUNDATION_EXPORT NSString * const kPiwigoBackgroundTaskUpload;
 
 -(void)loadLoginView;
 -(void)loadNavigation;
+-(void)checkSessionStatusAndTryRelogin;
 -(void)screenBrightnessChanged;
--(dispatch_queue_t)getUploadManagerQueue;
 -(void)scheduleNextUpload;
 
 @end

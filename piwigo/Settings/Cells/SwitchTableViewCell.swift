@@ -28,7 +28,6 @@ class SwitchTableViewCell: UITableViewCell {
         switchName.font = UIFont.piwigoFontNormal()
         switchName.textColor = UIColor.piwigoColorLeftLabel()
         switchName.text = title
-        switchName.preferredMaxLayoutWidth = 150
 
         // Switch appearance and action
         cellSwitch.thumbTintColor = UIColor.piwigoColorThumb()
@@ -42,5 +41,6 @@ class SwitchTableViewCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         switchName.text = ""
+        cellSwitch.isOn = false
     }
 }

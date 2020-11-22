@@ -42,7 +42,7 @@
 -(void)setupAutoLayout
 {
     NSInteger side = 40;
-    self.textFieldHeight = 64;
+    CGFloat textFieldHeight = 64;
     NSInteger textFieldWidth = 500;
     
     NSDictionary *views = @{
@@ -63,12 +63,12 @@
     NSDictionary *metrics = @{
                               @"side" : @(side),
                               @"width" : @(textFieldWidth),
-                              @"logoWidth" : @(self.textFieldHeight * 4.02),
-                              @"height" : @(self.textFieldHeight)
+                              @"logoWidth" : @(textFieldHeight * 4.02),
+                              @"height" : @(textFieldHeight)
                               };
     
     // Vertically
-    [portrait addObject:[NSLayoutConstraint constraintViewFromTop:self.loginButton amount:(fmax([UIScreen mainScreen].bounds.size.height,[UIScreen mainScreen].bounds.size.width) / 2.0 + self.textFieldHeight + 2 * 10.0)]];
+    [portrait addObject:[NSLayoutConstraint constraintViewFromTop:self.loginButton amount:(fmax([UIScreen mainScreen].bounds.size.height,[UIScreen mainScreen].bounds.size.width) / 2.0 + textFieldHeight + 2 * 10.0)]];
 
     [portrait addObjectsFromArray:[NSLayoutConstraint
           constraintsWithVisualFormat:@"V:|-(>=30,<=100)-[logo(height)]-(>=20)-[url(==logo)]-15-[server(==logo)]-15-[user(==logo)]-15-[password(==logo)]-15-[login(==logo)]-15-[notSecure]-(>=30)-[by1][by2]-3-[usu]-20-|"
@@ -114,7 +114,7 @@
 
     
     // ==> Landscape
-    CGFloat logoHeight = self.textFieldHeight + 36.0;
+    CGFloat logoHeight = textFieldHeight + 36.0;
     CGFloat logoWidth = floorf(logoHeight * 4.02);
     CGFloat landscapeSide = floorf([UIScreen mainScreen].bounds.size.width - logoWidth - side - textFieldWidth) / 2.0;
     metrics = @{
@@ -123,13 +123,13 @@
                 @"width" : @(textFieldWidth),
                 @"logoWidth" : @(logoWidth),
                 @"logoHeight" : @(logoHeight),
-                @"height" : @(self.textFieldHeight)
+                @"height" : @(textFieldHeight)
                 };
 
     NSMutableArray *landscape = [NSMutableArray new];
 
     // Vertically
-    [landscape addObject:[NSLayoutConstraint constraintViewFromTop:self.loginButton amount:(fmin([UIScreen mainScreen].bounds.size.height,[UIScreen mainScreen].bounds.size.width) / 2.0 + self.textFieldHeight + 2 * 10.0)]];
+    [landscape addObject:[NSLayoutConstraint constraintViewFromTop:self.loginButton amount:(fmin([UIScreen mainScreen].bounds.size.height,[UIScreen mainScreen].bounds.size.width) / 2.0 + textFieldHeight + 2 * 10.0)]];
 
     [landscape addObjectsFromArray:[NSLayoutConstraint
                                     constraintsWithVisualFormat:@"V:[server(height)]-15-[user(height)]-15-[password(height)]-15-[login(height)]-15-[notSecure]"

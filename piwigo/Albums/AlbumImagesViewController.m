@@ -747,6 +747,11 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
                 if ((self.categoryId != 0) && (self.categoryId != [Model sharedInstance].defaultCategory)) {
                     // Show Home button if not in root or default album
                     [self showHomeAlbumButtonIfNeeded];
+                } else {
+                    // Show UploadQueue button if needed
+                    NSInteger nberOfUploads = [[UIApplication sharedApplication] applicationIconBadgeNumber];
+                    NSDictionary *userInfo = @{@"nberOfUploadsToComplete" : @(nberOfUploads)};
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationLeftUploads object:nil userInfo:userInfo];
                 }
             }];
         } else {
@@ -917,7 +922,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
             ((self.categoryId == 0) || (self.categoryId == [Model sharedInstance].defaultCategory))) {
             // Set number of uploads
             NSString *nber = [NSString stringWithFormat:@"%lu", (unsigned long)nberOfUploads];
-            if ([nber compare:self.nberOfUploadsLabel.text] == NSOrderedSame) {
+            if ([nber compare:self.nberOfUploadsLabel.text] == NSOrderedSame && !self.uploadQueueButton.hidden) {
                 // Number unchanged -> NOP
                 return;
             }
@@ -1318,7 +1323,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
     if (self.categoryId != 0) {
         // Store current image list
         NSArray *oldImageList = self.albumData.images;
-        NSLog(@"=> categoriesUpdated… %ld contained %ld images", (long)self.categoryId, (long)oldImageList.count);
+//        NSLog(@"=> categoriesUpdated… %ld contained %ld images", (long)self.categoryId, (long)oldImageList.count);
 
         // Collect images belonging to the current album
         self.loadingImages = TRUE;
@@ -1326,7 +1331,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
 
             // Sort images
             [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
-                NSLog(@"=> categoriesUpdated… %ld now contains %ld images", (long)self.categoryId, (long)self.albumData.images.count);
+//                NSLog(@"=> categoriesUpdated… %ld now contains %ld images", (long)self.categoryId, (long)self.albumData.images.count);
                 if (oldImageList.count == self.albumData.images.count) {
                     self.loadingImages = NO;
                     [self.imagesCollection reloadData];     // Total number of images may have changed
@@ -1412,12 +1417,12 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
         if (catId != self.categoryId) return;
         
         // Image Id?
-        NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
-        NSLog(@"=> addImage %ld to Category %ld", (long)imageId, (long)catId);
+//        NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
+//        NSLog(@"=> addImage %ld to Category %ld", (long)imageId, (long)catId);
         
         // Store current image list
         NSArray *oldImageList = self.albumData.images;
-        NSLog(@"=> category %ld contained %ld images", (long)self.categoryId, (long)oldImageList.count);
+//        NSLog(@"=> category %ld contained %ld images", (long)self.categoryId, (long)oldImageList.count);
 
         // Load new image (appended to cache) and sort images before updating UI
         self.loadingImages = YES;
@@ -1430,7 +1435,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
                 self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
 
                 // Refresh collection view if needed
-                NSLog(@"=> category %ld now contains %ld images", (long)self.categoryId, (long)self.albumData.images.count);
+//                NSLog(@"=> category %ld now contains %ld images", (long)self.categoryId, (long)self.albumData.images.count);
                 if (oldImageList.count == self.albumData.images.count) {
                     self.loadingImages = NO;
                     return;
@@ -1489,12 +1494,12 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
         if (catId != self.categoryId) return;
         
         // Image Id?
-        NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
-        NSLog(@"=> removeImage %ld to Category %ld", (long)imageId, (long)catId);
+//        NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
+//        NSLog(@"=> removeImage %ld to Category %ld", (long)imageId, (long)catId);
         
         // Store current image list
         NSArray *oldImageList = self.albumData.images;
-        NSLog(@"=> category %ld contained %ld images", (long)self.categoryId, (long)oldImageList.count);
+//        NSLog(@"=> category %ld contained %ld images", (long)self.categoryId, (long)oldImageList.count);
 
         // Remove image (removed from cache) and sort images before updating UI
         self.loadingImages = YES;
@@ -1507,7 +1512,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
                 self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
 
                 // Refresh collection view if needed
-                NSLog(@"=> category %ld now contains %ld images", (long)self.categoryId, (long)self.albumData.images.count);
+//                NSLog(@"=> category %ld now contains %ld images", (long)self.categoryId, (long)self.albumData.images.count);
                 if (oldImageList.count == self.albumData.images.count) {
                     self.loadingImages = NO;
                     return;
@@ -2253,8 +2258,8 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
            OnCompletion:^(NSURLSessionTask *task, BOOL updatedSuccessfully) {
                if (updatedSuccessfully)
                {
-                   // Remove image from cache and update UI
-                   [[CategoriesData sharedInstance] removeImage:self.selectedImage];
+                   // Remove image from current category in cache and update UI
+                   [[CategoriesData sharedInstance] removeImage:self.selectedImage fromCategory:[NSString stringWithFormat:@"%ld", (long)self.categoryId]];
 
                    // Next image
                    [self.selectedImagesToRemove removeLastObject];

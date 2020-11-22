@@ -34,7 +34,7 @@
 
 // Upload rights
 "uploadRights_title" = "Droits Requis";
-"uploadRights_message" = "Vous devez avoir des droits de téléversement pour pouvoir envoyer des photos ou des vidéos.";
+"uploadRights_message" = "Vous devez avoir le droit de télécharger pour pouvoir envoyer des photos ou des vidéos.";
 
 // Errors
 "internetErrorGeneral_title" = "Erreur de Connexion";
@@ -42,6 +42,9 @@
 "internetCancellingConnection_button" = "Annulation de la Connexion…";
 "internetCancelledConnection_button" = "Annuler la Connexion";
 "internetCancelledConnection_title" = "Connexion Annulée";
+
+"PiwigoServer_wrongJSONobject" = "Impossible d'analyser l'objet JSON retourné par le serveur Piwigo.";
+"PiwigoServer_invalidJSONobject" = "Le serveur Piwigo n'a pas renvoyé un objet JSON valide.";
 
 // ===========================================================================
 // ==> CORE DATA
@@ -178,7 +181,7 @@
 "categoryUpload_otherAlbums" = "Autres albums";
 
 "categoyUpload_loadSubCategories" = "télécharge";
-"categoryUpload_images" = "Téléverser des photos";
+"categoryUpload_images" = "Télécharger des photos";
 "categoryUpload_subAlbum" = "Créer un sous-album";
 "categoryUpload_defaultAlbum" = "Définir comme Album par Défaut";
 "categoryUpload_defaultSelect" = "Veuillez sélectionnez l’album ou le sous-album qui deviendra votre album par défaut";
@@ -437,6 +440,11 @@
 "copySingleImageError_message" = "Impossible de copier votre photo";
 
 // Images upload
+"imageUploadHeaderTitle_images" = "Paramètres des photos";
+"imageUploadHeaderText_images" = "Veuillez définir les paramètres à appliquer à la sélection des photos/vidéos";
+"imageUploadHeaderTitle_upload" = "Réglage des téléchargements";
+"imageUploadHeaderText_upload" = "Veuillez définir les paramètres de téléchargement à appliquer à la sélection des photos/vidéos";
+
 "imageUploadDetails_title" = "Titre :";
 "imageUploadDetails_author" = "Auteur :";
 "imageUploadDetails_privacy" = "Qui :";
@@ -445,37 +453,37 @@
 
 "imageUploadDetailsView_title" = "Photos";
 "imageUploadDetailsButton_title" = "Envoyer";
-"imageUploadDetailsEdit_title" = "Éditer les photos à téléverser";
+"imageUploadDetailsEdit_title" = "Éditer les photos à télécharger";
 "imageUploadDetailsUploading_title" = "Images en cours d'envoi";
 "imageUploadDetailsCell_uploadComplete" = "Envoyée ! Vérification...";
 
-"imageUploadRemove" = "Suppression des photos téléversées";
+"imageUploadRemove" = "Suppression des photos téléchargées";
 
 "imageUploadTableCell_waiting" = "En attente...";
 "imageUploadTableCell_preparing" = "En cours de préparation...";
 "imageUploadTableCell_prepared" = "Prêt à télécharger...";
-"imageUploadTableCell_uploading" = "Téléversement...";
-"imageUploadTableCell_uploaded" = "Transféré";
+"imageUploadTableCell_uploading" = "Téléchargement...";
+"imageUploadTableCell_uploaded" = "Téléchargée";
 "imageUploadTableCell_finishing" = "Finalisation...";
 
-"imageUploadClearFailedSingle" = "Effacer télévers. échoué";
+"imageUploadClearFailedSingle" = "Effacer transfert échoué";
 "imageUploadClearFailedSeveral" = "Effacer %@ transferts échoués";
 "imageUploadClearCompletedSingle" = "Effacer transfert terminé";
 "imageUploadClearCompletedSeveral" = "Effacer %@ transferts terminés";
 "imageUploadResumeSingle" = "Relancer le transfert";
 "imageUploadResumeSeveral" = "Relancer %@ transferts";
 
-"imageUploadProgressBar_zero" = "Téléversement 0/0";
-"imageUploadProgressBar_nonZero" = "Téléversement %@/%@";
+"imageUploadProgressBar_zero" = "Téléchargement 0/0";
+"imageUploadProgressBar_nonZero" = "Téléchargement %@/%@";
 "imageUploadProgressBar_completed" = "Terminé";
-"imageUploadCompleted_title" = "Téléversement Terminé";
+"imageUploadCompleted_title" = "Téléchargement Terminé";
 "imageUploadCompleted_message" = "photo envoyée à votre serveur Piwigo.";
 "imageUploadCompleted_message>1" = "photos envoyées à votre serveur Piwigo.";
 
 
 // Image upload — Errors
-"uploadError_title" = "Echec du Téléversement";
-"uploadError_message" = "Echec du téléversement de votre photo. Erreur : %@";
+"uploadError_title" = "Echec du Téléchargement";
+"uploadError_message" = "Echec du téléchargement de votre photo. Erreur : %@";
 "uploadCancelled_title" = "Transfert Annulé";
 "uploadNoInternetNetwork" = "Pas de connexion Internet";
 "uploadNoWiFiNetwork" = "Pas de connexion Wi-Fi";
@@ -484,19 +492,19 @@
 "uploadSection_resumable" = "Transferts réamorçables";
 "uploadSection_queue" = "File d'attente des transferts";
 
-"imageUploadError_title" = "Echec du téléversement";
+"imageUploadError_title" = "Echec du téléchargement";
 "imageUploadError_format" = "Format de fichier non accepté par le serveur Piwigo.";
 "imageUploadError_source" = "impossible de créer le source de la photo";
 "imageUploadError_destination" = "impossible de créer la destination de la photo";
 "imageUploadError_iCloud" = "Echec de la récupération de la photo. Erreur : %@";
 
-"audioUploadError_title" = "Echec du Téléversement";
+"audioUploadError_title" = "Echec du téléchargement";
 "audioUploadError_format" = "Désolé, les fichiers audio ne sont pas encore supportés par Piwigo Mobile.";
 
-"videoUploadError_title" = "Echec du Téléversement";
+"videoUploadError_title" = "Echec du téléchargement";
 "videoUploadError_format" = "Désolé, les fichiers de vidéo ayant comme extension .%@ ne sont pas acceptés par le serveur Piwigo.";
 "videoUploadError_iCloud" = "Echec de la récupération de la vidéo. Erreur : %@";
-"videoUploadError_export" = "Désolé, la vidéo n'a pas pu être récupérée pour le téléversement vers votre Piwigo. Erreur : %@";
+"videoUploadError_export" = "Désolé, la vidéo n'a pas pu être récupérée pour être téléchargée vers votre Piwigo. Erreur : %@";
 "videoUploadError_unknown" = "Désolé, le transfert vers votre Piwigo de la vidéo a échoué pour une erreur inconnue lors de la conversion MP4. Erreur : %@";
 "videoUploadCancelled_message" = "Le transfert de la vidéo vers votre Piwigo a été annulé.";
 
@@ -518,8 +526,8 @@
 "shareActivityCode_Facebook>375px" = "Publier des photos sur Facebook";
 "shareActivityCode_Messenger" = "Envoyer avec Messenger";
 "shareActivityCode_Messenger>375px" = "Envoyer des photos avec l'app Messenger";
-"shareActivityCode_Flickr" = "Téléverser sur Flickr";
-"shareActivityCode_Flickr>375px" = "Téléverser des photos sur Flickr";
+"shareActivityCode_Flickr" = "Télécharger sur Flickr";
+"shareActivityCode_Flickr>375px" = "Télécharger des photos sur Flickr";
 "shareActivityCode_Instagram" = "Publier sur Instagram";
 "shareActivityCode_Instagram>375px" = "Publier des photos sur Instagram";
 "shareActivityCode_Signal" = "Envoyer avec Signal";
@@ -530,8 +538,8 @@
 "shareActivityCode_TencentWeibo>375px" = "Publier des photos sur TencentWeibo";
 "shareActivityCode_Twitter" = "Publier sur Twitter";
 "shareActivityCode_Twitter>375px" = "Publier des photos sur Twitter";
-"shareActivityCode_Vimeo" = "Téléverser sur Vimeo";
-"shareActivityCode_Vimeo>375px" = "Téléverser des vidéos sur Vimeo";
+"shareActivityCode_Vimeo" = "Télécharger sur Vimeo";
+"shareActivityCode_Vimeo>375px" = "Télécharger des vidéos sur Vimeo";
 "shareActivityCode_Weibo" = "Publier sur Weibo";
 "shareActivityCode_Weibo>375px" = "Publier des photos sur Weibo";
 "shareActivityCode_WhatsApp" = "Envoyer avec WhatsApp";
@@ -640,13 +648,13 @@
 "imageSizexFullRes" = "Haute Résolution";
 
 // Settings — Upload
-"settingsHeader_upload" = "Paramètres de Téléversement";
+"settingsHeader_upload" = "Paramètres de Téléchargement";
 "settings_defaultAuthor" = "Auteur";
 "settings_defaultAuthor>320px" = "Nom d'Auteur";
 "settings_defaultAuthorPlaceholder" = "Nom de l'Auteur";
 "settings_defaultPrivacy" = "Qui voit ?";
 "settings_defaultPrivacy>414px" = "Veuillez sélectionner qui pourra visualiser les photos";
-"settings_stripGPSdata" = "Supprimer Métadonnées Privées";
+"settings_stripGPSdata" = "Suppr. Métadonnées Privées";
 "settings_stripGPSdata>375px" = "Supprimer les Métadonnées privées avant Envoi";
 "settings_photoResize" = "Redimensionner avant Envoi";
 "settings_photoResize>375px" = "Redimensionner les photos avant envoi";
@@ -656,9 +664,9 @@
 "settings_photoCompress>375px" = "Compresser la photo avant envoi";
 "settings_photoQuality" = "Qualité";
 "settings_placeholderQuality" = "Entrez une qualité de photo entre 50 et 98";
-"settings_prefixFilename>414px" = "Préfixer le nom du fichier photo avant téléversement";
-"settings_prefixFilename>375px" = "Préfixer le nom du fichier avant téléversement";
-"settings_prefixFilename" = "Préfixer le nom du fichier photo";
+"settings_prefixFilename>414px" = "Préfixer le nom du fichier photo avant téléchargement";
+"settings_prefixFilename>375px" = "Préfixer le nom du fichier avant téléchargement";
+"settings_prefixFilename" = "Préfixer nom du fichier";
 "settings_defaultPrefix" = "Préfixe";
 "settings_defaultPrefix>320px" = "Préfixe du fichier";
 "settings_defaultPrefixPlaceholder" = "Préfixe";
@@ -680,7 +688,7 @@
 // Settings — Colors
 "settingsHeader_colors" = "Couleurs";
 "settings_darkPalette" = "Palette Toujours Sombre";
-"settings_switchPalette" = "Commuter Automatiquement";
+"settings_switchPalette" = "Commutation Auto";
 "settings_brightness" = "Luminosité";
 
 // Settings — Information

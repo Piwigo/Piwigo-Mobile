@@ -17,6 +17,7 @@
 #import "PiwigoAlbumData.h"
 
 CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
+NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage";
 
 @class PiwigoAlbumData;
 
@@ -72,7 +73,11 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
         self.categoriesThatShowSubCategories = [NSMutableArray new];
         
         // Table view
-        self.categoriesTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+        if (@available(iOS 13.0, *)) {
+            self.categoriesTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleInsetGrouped];
+        } else {
+            self.categoriesTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+        }
         self.categoriesTableView.translatesAutoresizingMaskIntoConstraints = NO;
         self.categoriesTableView.backgroundColor = [UIColor clearColor];
         self.categoriesTableView.alwaysBounceVertical = YES;
@@ -678,6 +683,11 @@ CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
 
                         // Notify album/image view of modification
                         [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+                        
+                        // Notify the Upload database that this image has been moved
+                        NSDictionary *userInfo = @{@"albumId" : @(categoryId),
+                                                   @"imageId" : @(self.selectedImage.imageId)};
+                        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationMovedImage object:nil userInfo:userInfo];
                     }
 
                     // When called from image preview, return to image or album

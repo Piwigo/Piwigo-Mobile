@@ -43,6 +43,9 @@
 "internetCancelledConnection_button" = "Anuluj połączenie";
 "internetCancelledConnection_title" = "Połączenie anulowane";
 
+"PiwigoServer_wrongJSONobject" = "Nie można przejąć obiektu JSON zwróconego przez serwer Piwigo.";
+"PiwigoServer_invalidJSONobject" = "Serwer Piwigo nie zwrócił poprawnego obiektu JSON.";
+
 // ===========================================================================
 // ==> CORE DATA
 // ===========================================================================
@@ -437,6 +440,11 @@
 "copySingleImageError_message" = "Nie można skopiować zdjęcia";
 
 // Images upload
+"imageUploadHeaderTitle_images" = "Parametry zdjęć";
+"imageUploadHeaderText_images" = "Proszę ustawić parametry do wyboru zdjęć/filmów";
+"imageUploadHeaderTitle_upload" = "Prześlij ustawienia";
+"imageUploadHeaderText_upload" = "Proszę ustawić parametry przesyłania, aby zastosować do wyboru zdjęć/filmów";
+
 "imageUploadDetails_title" = "Tytuł:";
 "imageUploadDetails_author" = "Autor:";
 "imageUploadDetails_privacy" = "Prywatność:";

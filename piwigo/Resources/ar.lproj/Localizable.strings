@@ -43,16 +43,19 @@
 "internetCancelledConnection_button" = "إلغاء الإتصال";
 "internetCancelledConnection_title" = "تم إلغاء الإتصال";
 
+"PiwigoServer_wrongJSONobject" = "تعذر استدراج كائن JSON الذي أرسله خادم Piwigo.";
+"PiwigoServer_invalidJSONobject" = "خادم Piwigo لم يعيد كائن JSON صالح.";
+
 // ===========================================================================
 // ==> CORE DATA
 // ===========================================================================
 "CoreDataStore_WarningTitle" = "تحذير";
-"CoreDataStore_WarningMessage" = "A serious application error occurred while Piwigo tried to read the data cache. A new cache has therefore been created.";
+"CoreDataStore_WarningMessage" = "حدث خطأ خطير في التطبيق أثناء محاولة Piwigo قراءة ذاكرة التخزين المؤقت للبيانات. لذلك تم إنشاء ذاكرة التخزين المؤقت الجديدة.";
 "CoreDataFetch_DigestError" = "تعذر استيعاب البياتات التي تم جلبها.";
 
 // Tag objects
 "CoreDataFetch_TagError" = "خطأ في جلب العلامات!";
-"CoreDataFetch_TagMissingData" = "Found and will discard a tag missing a valid code or name.";
+"CoreDataFetch_TagMissingData" = "تم العثور عليه وسوف يتم تجاهل علامة مفقودة رمز أو اسم صالح.";
 "CoreDataFetch_TagCreateFailed" = "فشل في إنشاء عنصر علامة جديد.";
 
 // Upload objects
@@ -437,6 +440,11 @@
 "copySingleImageError_message" = "Failed to copy your photo";
 
 // Images upload
+"imageUploadHeaderTitle_images" = "Photos Parameters";
+"imageUploadHeaderText_images" = "Please set the parameters to apply to the selection of photos/videos";
+"imageUploadHeaderTitle_upload" = "Upload Settings";
+"imageUploadHeaderText_upload" = "Please set the upload parameters to apply to the selection of photos/videos";
+
 "imageUploadDetails_title" = "العنوان:";
 "imageUploadDetails_author" = "الكاتب:";
 "imageUploadDetails_privacy" = "الخصوصية:";

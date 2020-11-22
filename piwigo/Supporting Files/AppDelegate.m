@@ -203,6 +203,12 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
         
         // Enable network reachability monitoring
         [[AFNetworkReachabilityManager sharedManager] startMonitoring];
+        
+        // Enable network reachability monitoring
+        [[AFNetworkReachabilityManager sharedManager] startMonitoring];
+
+        // Should we reopen the session ?
+        [self checkSessionStatusAndTryRelogin];
     }
 }
 
@@ -226,10 +232,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
         if ([currentVC isKindOfClass:[AlbumImagesViewController class]]) {
             // Resume upload operations in background queue
             // and update badge, upload button of album navigator
-            dispatch_async([self getUploadManagerQueue], ^{
-                NSLog(@"•••>> dispatch queue: %s", dispatch_queue_get_label(nil));
-                [[UploadManager shared] resumeAll];
-            });
+            [[UploadManager shared] resumeAll];
         }
     }
 }
@@ -381,7 +384,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkSessionWhenLeavingLowPowerMode) name:NSProcessInfoPowerStateDidChangeNotification object:nil];
 
     // Set network reachability status change block
-    [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+//    [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
 //#if defined(DEBUG)
 //        NSLog(@"!!!!!! Network Reachability Changed!");
 //        NSLog(@"       hadOpenedSession=%@, usesCommunityPluginV29=%@, hasAdminRights=%@",
@@ -390,37 +393,23 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
 //              ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
 //#endif
 
-        if ([AFNetworkReachabilityManager sharedManager].reachable) {
-            // Connection changed but again reachable — Login again?
-            [self checkSessionStatusAndTryRelogin];
-        }
-    }];
+//        if ([AFNetworkReachabilityManager sharedManager].reachable) {
+//            // Connection changed but again reachable — Login again?
+//            [self checkSessionStatusAndTryRelogin];
+//        }
+//    }];
 
     // Resume upload operations in background queue
     // and update badge, upload button of album navigator
-    dispatch_async([self getUploadManagerQueue], ^{
-        NSLog(@"•••>> dispatch queue: %s", dispatch_queue_get_label(nil));
-        [[UploadManager shared] resumeAll];
-    });
+    [[UploadManager shared] resumeAll];
 }
 
 
 #pragma mark - Background tasks
 
--(dispatch_queue_t)getUploadManagerQueue
-{
-    if (self.uploadManagerQueue == nil) {
-        // Create background queue for the Upload Manager
-        dispatch_queue_attr_t qos = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL,
-                                                                            QOS_CLASS_BACKGROUND, -1);
-        [self setUploadManagerQueue: dispatch_queue_create("org.piwigo.upload-thread", qos)];
-    }
-    return self.uploadManagerQueue;
-}
-
 -(void)registerBgTasks API_AVAILABLE(ios(13.0))
 {
-    // register background upload task
+    // Register background upload task
     [[BGTaskScheduler sharedScheduler] registerForTaskWithIdentifier:kPiwigoBackgroundTaskUpload usingQueue:nil launchHandler:^(__kindof BGTask * _Nonnull task) {
         // Downcast the parameter to a processing task as this identifier is used for a processing request.
         [self handleNextUpload:(BGProcessingTask *)task];
@@ -430,7 +419,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
 -(void)scheduleNextUpload API_AVAILABLE(ios(13.0))
 {
     // Schedule upload not earlier than 1 minute from now
-    // Requires network connectivity and external power
+    // Uploading requires network connectivity and external power
     BGProcessingTaskRequest *request = [[BGProcessingTaskRequest alloc] initWithIdentifier:kPiwigoBackgroundTaskUpload];
     [request setEarliestBeginDate:[NSDate dateWithTimeIntervalSinceNow:1 * 60]];
     request.requiresNetworkConnectivity  = YES;
@@ -448,6 +437,12 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
 
 -(void)handleNextUpload:(BGProcessingTask *)task API_AVAILABLE(ios(13.0))
 {
+    // Schedule the next upload if needed
+    if ([UploadManager shared].nberOfUploadsToComplete > 0) {
+        NSLog(@"    > Schedule next uploads.");
+        [self scheduleNextUpload];
+    }
+
     // Create the operation queue
     NSOperationQueue *uploadQueue = [[NSOperationQueue alloc] init];
     uploadQueue.maxConcurrentOperationCount = 1;
@@ -456,6 +451,9 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     NSBlockOperation *initOperation = [NSBlockOperation blockOperationWithBlock:^{
         // Start executing background upload task
         [UploadManager shared].isExecutingBackgroundUploadTask = YES;
+        // Reset indexes
+        [UploadManager shared].indexOfUploadRequestToPrepare = 0;
+        [UploadManager shared].indexOfUploadRequestToTransfer = 0;
         // Select upload requests
         [[UploadManager shared] selectUploadRequestsForBckgTask];
     }];
@@ -468,42 +466,31 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     NSInteger maxOperations = [UploadManager shared].maxNberOfUploadsPerBackgroundTask;
     for (NSInteger index = 0; index < maxOperations; index++) {
         NSBlockOperation *uploadOperation = [NSBlockOperation blockOperationWithBlock:^{
-            if (![Model sharedInstance].wifiOnlyUploading) {
-                // Transfer image
-                [[UploadManager shared] appendJobToBckgTask];
-            }
+            // Transfer image
+            [[UploadManager shared] appendJobToBckgTask];
         }];
         [uploadOperation addDependency:uploadOperations.lastObject];
         [uploadOperations addObject:uploadOperation];
     }
 
-    // Schedule new task if needed
-    NSBlockOperation *lastOperation = uploadOperations.lastObject;
-    [lastOperation setCompletionBlock:^{
-        NSLog(@"    > Task completed with success");
-        [task setTaskCompletedWithSuccess:YES];
-
-        // Completing background upload task
-        [UploadManager shared].isExecutingBackgroundUploadTask = NO;
-
-        // Schedule the next upload if needed
-        if ([UploadManager shared].nberOfUploadsToComplete > 0) {
-            NSLog(@"    > Schedule next upload.");
-            [self scheduleNextUpload];
-        }
-    }];
-
     // Provide an expiration handler for the background task
     // that cancels the operation
     [task setExpirationHandler:^{
         NSLog(@"    > Task expired: Upload operation cancelled.");
-        // Completing background upload task
-        [UploadManager shared].isExecutingBackgroundUploadTask = NO;
-        
          // Cancel operations
         [uploadQueue cancelAllOperations];
     }];
     
+    // Inform the system that the background task is complete
+    // when the operation completes
+    NSBlockOperation *lastOperation = uploadOperations.lastObject;
+    [lastOperation setCompletionBlock:^{
+        NSLog(@"    > Task completed with success");
+        [task setTaskCompletedWithSuccess:YES];
+        // Save cached data
+        [DataController saveContext];
+    }];
+
     // Start the operation
     NSLog(@"    > Start upload operations in background task...");
     [uploadQueue addOperations:uploadOperations waitUntilFinished:NO];

@@ -14,17 +14,14 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
     @objc static var shared = UploadSessionDelegate()
     @objc let uploadSessionIdentifier:String! = "org.piwigo.uploadBckgSession"
     @objc var uploadSessionCompletionHandler: (() -> Void)?
-    
-    var uploadIds: Array<String> = Array.init()
-    var uploadBytesSent: Array<Int64> = Array.init()
-    
+        
     // Create single instance
     lazy var uploadSession: URLSession = {
         let config = URLSessionConfiguration.background(withIdentifier: uploadSessionIdentifier)
         
         /// Background tasks can be scheduled at the discretion of the system for optimal performance
         config.isDiscretionary = false
-        
+
         /// Indicates whether the app should be resumed or launched in the background when transfers finish
         config.sessionSendsLaunchEvents = true
         
@@ -78,7 +75,6 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
                 return
         }
 
-        
         // Get state of the server SSL transaction state
         guard let serverTrust = protectionSpace.serverTrust else {
             completionHandler(.performDefaultHandling, nil)
@@ -145,87 +141,59 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
     func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
 
         // Get upload info from task
-        guard let identifier = task.originalRequest?.value(forHTTPHeaderField: "identifier"),
-            let fileSize = Int((task.originalRequest?.value(forHTTPHeaderField: "size"))!),
-            let md5sum = task.originalRequest?.value(forHTTPHeaderField: "md5sum"),
-            let chunk = Int((task.originalRequest?.value(forHTTPHeaderField: "chunk"))!),
-            let chunks = Int((task.originalRequest?.value(forHTTPHeaderField: "chunks"))!) else {
-                print("   > Could not extract HTTP header fields !!!!!!")
-                return
-        }
-        print("    > Upload task \(task.taskIdentifier) did send \(bytesSent) bytes of chunk \(chunk)/\(chunks), i.e. \(totalBytesSent) bytes over \(totalBytesExpectedToSend) at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
-
-        // Adds up bytes sent
-        var progress: Float = 0.0
-        if let index = uploadIds.firstIndex(of: identifier) {
-            uploadBytesSent[index] += bytesSent
-            progress = Float(Double(uploadBytesSent[index]) / Double(fileSize))
-        } else {
-            uploadIds.append(identifier)
-            uploadBytesSent.append(bytesSent)
-            progress = Float(Double(bytesSent) / Double(fileSize))
-        }
-        
-        // Update UI
-        let uploadInfo: [String : Any] = ["localIndentifier" : identifier,
-                                          "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
-                                          "progressFraction" : progress]
-        DispatchQueue.main.async {
-            // Update UploadQueue cell and button shown in root album (or default album)
-            NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationUploadProgress), object: nil, userInfo: uploadInfo)
-        }
+//        guard let md5sum = task.originalRequest?.value(forHTTPHeaderField: "md5sum"),
+//            let chunk = Int((task.originalRequest?.value(forHTTPHeaderField: "chunk"))!),
+//            let chunks = Int((task.originalRequest?.value(forHTTPHeaderField: "chunks"))!) else {
+//                print("   > Could not extract HTTP header fields !!!!!!")
+//                return
+//        }
+//        print("    > Upload task \(task.taskIdentifier) did send \(bytesSent) bytes of chunk \(chunk)/\(chunks), i.e. \(totalBytesSent) bytes over \(totalBytesExpectedToSend) at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
     }
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         
         // Get upload info from task
-        guard let md5sum = task.originalRequest?.value(forHTTPHeaderField: "md5sum"),
-            let chunk = Int((task.originalRequest?.value(forHTTPHeaderField: "chunk"))!),
-            let chunks = Int((task.originalRequest?.value(forHTTPHeaderField: "chunks"))!) else {
-                print("   > Could not extract HTTP header fields !!!!!!")
-                return
-        }
+//        guard let md5sum = task.originalRequest?.value(forHTTPHeaderField: "md5sum"),
+//            let chunk = Int((task.originalRequest?.value(forHTTPHeaderField: "chunk"))!),
+//            let chunks = Int((task.originalRequest?.value(forHTTPHeaderField: "chunks"))!) else {
+//                print("   > Could not extract HTTP header fields !!!!!!")
+//                return
+//        }
 
         // Task did complete without error?
-        if let error = error {
-            print("    > Upload task \(task.taskIdentifier) of chunk \(chunk)/\(chunks) failed with error \(String(describing: error.localizedDescription)) [\(md5sum)]")
-        } else {
-            print("    > Upload task \(task.taskIdentifier) of chunk \(chunk)/\(chunks) finished transferring data at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
-        }
+//        if let error = error {
+//            print("    > Upload task \(task.taskIdentifier) of chunk \(chunk)/\(chunks) failed with error \(String(describing: error.localizedDescription)) [\(md5sum)]")
+//        } else {
+//            print("    > Upload task \(task.taskIdentifier) of chunk \(chunk)/\(chunks) finished transferring data at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
+//        }
         
         // Handle the response with the Upload Manager
-        UploadManager.shared.didCompleteUploadTask(task, withError: error)
-
-        // Get upload info from task
-//        guard let identifier = task.originalRequest?.value(forHTTPHeaderField: "identifier") else {
-//            return
-//        }
-        
-        // Clear progress data if necessary
-//        session.getAllTasks { (tasks) in
-//            // Tasks related with upload with identifier
-//            let tasksWithId = tasks.filter { (task) -> Bool in
-//                return task.originalRequest?.value(forHTTPHeaderField: "identifier") == identifier
-//            }
-//            if tasksWithId.count <= 1,
-//                let index = self.uploadIds.firstIndex(of: identifier) {
-//                self.uploadIds.remove(at: index)
-//                self.uploadBytesSent.remove(at: index)
-//            }
-//        }
+        if UploadManager.shared.isExecutingBackgroundUploadTask {
+            UploadManager.shared.didCompleteUploadTask(task, withError: error)
+        } else {
+            UploadManager.shared.backgroundQueue.async {
+                UploadManager.shared.didCompleteUploadTask(task, withError: error)
+            }
+        }
     }
 
     //MARK: - Session Data Delegate
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         // Get upload info from task
-        guard let md5sum = dataTask.originalRequest?.value(forHTTPHeaderField: "md5sum"),
-            let chunk = Int((dataTask.originalRequest?.value(forHTTPHeaderField: "chunk"))!),
-            let chunks = Int((dataTask.originalRequest?.value(forHTTPHeaderField: "chunks"))!) else {
-                print("   > Could not extract HTTP header fields !!!!!!")
-                return
+//        guard let md5sum = dataTask.originalRequest?.value(forHTTPHeaderField: "md5sum"),
+//            let chunk = Int((dataTask.originalRequest?.value(forHTTPHeaderField: "chunk"))!),
+//            let chunks = Int((dataTask.originalRequest?.value(forHTTPHeaderField: "chunks"))!) else {
+//                print("   > Could not extract HTTP header fields !!!!!!")
+//                return
+//        }
+//        print("    > Upload task \(dataTask.taskIdentifier) of chunk \(chunk)/\(chunks) did receive some data at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
+        if UploadManager.shared.isExecutingBackgroundUploadTask {
+            UploadManager.shared.didCompleteUploadTask(dataTask, withData: data)
+        } else {
+            UploadManager.shared.backgroundQueue.async {
+                UploadManager.shared.didCompleteUploadTask(dataTask, withData: data)
+            }
         }
-        print("    > Upload task \(dataTask.taskIdentifier) of chunk \(chunk)/\(chunks) did receive some data at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
-        UploadManager.shared.didCompleteUploadTask(dataTask, withData: data)
     }
 
 

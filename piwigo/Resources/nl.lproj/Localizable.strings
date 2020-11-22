@@ -43,6 +43,9 @@
 "internetCancelledConnection_button" = "Verbinding afgebroken";
 "internetCancelledConnection_title" = "Verbindingen afgebroken";
 
+"PiwigoServer_wrongJSONobject" = "Kan JSON object van Piwigo server niet verteren.";
+"PiwigoServer_invalidJSONobject" = "De Piwigo-server heeft geen geldig JSON-object teruggegeven.";
+
 // ===========================================================================
 // ==> CORE DATA
 // ===========================================================================
@@ -437,6 +440,11 @@
 "copySingleImageError_message" = "Je foto kopiëren is niet gelukt";
 
 // Images upload
+"imageUploadHeaderTitle_images" = "Foto's parameters";
+"imageUploadHeaderText_images" = "Stel de parameters in om toe te passen op de selectie van fotos/video's";
+"imageUploadHeaderTitle_upload" = "Upload instellingen";
+"imageUploadHeaderText_upload" = "Stel de upload parameters in om toe te passen op de selectie van foto's/video's";
+
 "imageUploadDetails_title" = "Titel:";
 "imageUploadDetails_author" = "Fotograaf:";
 "imageUploadDetails_privacy" = "Privacy:";

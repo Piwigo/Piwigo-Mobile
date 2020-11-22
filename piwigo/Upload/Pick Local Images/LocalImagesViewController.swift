@@ -312,11 +312,14 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
         // Sort all images in one loop i.e. O(n)
         let sortOperation = BlockOperation.init(block: {
-            // Sort images by months, weeks and days in the background
-            (self.indexOfImageSortedByDay, self.indexOfImageSortedByWeek, self.indexOfImageSortedByMonth) = self.sortByMonthWeekDay(images: self.fetchedImages)
-
-            // Initialise buttons of sections for the max number of sections
-            self.selectedSections = .init(repeating: .select, count: self.indexOfImageSortedByDay.count)
+            if self.fetchedImages.count > 0 {
+                // Sort images by months, weeks and days in the background
+                (self.indexOfImageSortedByDay, self.indexOfImageSortedByWeek, self.indexOfImageSortedByMonth) = self.sortByMonthWeekDay(images: self.fetchedImages)
+            } else {
+                self.indexOfImageSortedByDay = []
+                self.indexOfImageSortedByWeek = []
+                self.indexOfImageSortedByMonth = []
+            }
         })
         sortOperation.completionBlock = {
             // Allow sort options and refresh section headers
@@ -325,6 +328,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 self.segmentedControl.setEnabled(true, forSegmentAt: SectionType.month.rawValue)
                 self.segmentedControl.setEnabled(true, forSegmentAt: SectionType.week.rawValue)
                 self.segmentedControl.setEnabled(true, forSegmentAt: SectionType.day.rawValue)
+                self.segmentedControl.selectedSegmentIndex = Int(self.sortType.rawValue)
             }
         }
         
@@ -355,8 +359,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     private func sortByMonthWeekDay(images: PHFetchResult<PHAsset>) -> (imagesByDay: [IndexSet], imagesByWeek: [IndexSet], imagesByMonth: [IndexSet])  {
 
         // Initialisation
-        let start = CFAbsoluteTimeGetCurrent()
-        print("=> Start sorting images…")
+//        let start = CFAbsoluteTimeGetCurrent()
+//        print("=> Start sorting images…")
         let calendar = Calendar.current
         let byDays: Set<Calendar.Component> = [.year, .month, .day]
         var dayComponents = calendar.dateComponents(byDays, from: images[0].creationDate ?? Date())
@@ -423,8 +427,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         imagesByDay.append(IndexSet.init(integersIn: firstIndexOfSameDay..<images.count))
         imagesByWeek.append(IndexSet.init(integersIn: firstIndexOfSameWeek..<images.count))
         imagesByMonth.append(IndexSet.init(integersIn: firstIndexOfSameMonth..<images.count))
-        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        print("   Sorted \(fetchedImages.count) images by days, weeks and months in \(diff) ms")
+//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+//        print("   Sorted \(fetchedImages.count) images by days, weeks and months in \(diff) ms")
         return (imagesByDay, imagesByWeek, imagesByMonth)
     }
     
@@ -475,17 +479,15 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     private func indexUploadsAndCacheIDs(of images: PHFetchResult<PHAsset>) -> (Void) {
         // Loop over all images
         let start = CFAbsoluteTimeGetCurrent()
-        print("=> Start indexing uploads…")
-        localIdentifiers = []
-        indexedUploadsInQueue = []
+        print("=> Start indexing uploads… (\(images.count) images)")
+        localIdentifiers = .init(repeating: "", count: fetchedImages.count)
+        indexedUploadsInQueue = .init(repeating: nil, count: fetchedImages.count)
         for index in 0..<images.count {
             // Get image identifier
             let imageId = images[index].localIdentifier
-            localIdentifiers.append(imageId)
+            localIdentifiers[index] = imageId
             if let upload = uploadsInQueue.first(where: { $0?.0 == imageId }) {
-                indexedUploadsInQueue.append(upload)
-            } else {
-                indexedUploadsInQueue.append(nil)
+                indexedUploadsInQueue[index] = upload
             }
         }
         let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
@@ -511,7 +513,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 for index in 0..<self.selectedImages.count {
                     // Images in the upload queue cannot be selected
                     if self.indexedUploadsInQueue[index] == nil {
-                        self.selectedImages[index] = UploadProperties.init(localIdentifier: self.localIdentifiers[index], serverPath: Model.sharedInstance().serverPath, category: self.categoryId)
+                        self.selectedImages[index] = UploadProperties.init(localIdentifier: self.localIdentifiers[index], category: self.categoryId)
                     }
                 }
                 // Reload collection while updating section buttons
@@ -631,16 +633,10 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     
     @objc func cancelSelect() {
         // Clear list of selected sections
-        if indexOfImageSortedByDay.count == 0 {
-            // Sort not yet completed (avoid crash is user upload image before the sort is done)
-            selectedSections = .init(repeating: .select, count: fetchedImages.count)
-        } else {
-            // Sort completed
-            selectedSections = .init(repeating: .select, count: indexOfImageSortedByDay.count)
-        }
+        selectedSections = .init(repeating: .select, count: fetchedImages.count)
 
         // Clear list of selected images
-        selectedImages = Array(repeating: nil, count: fetchedImages.count)
+        selectedImages = .init(repeating: nil, count: fetchedImages.count)
 
         // Update navigation bar
         updateNavBar()
@@ -707,7 +703,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     }
 
                     // Select the cell
-                    selectedImages[index] = UploadProperties.init(localIdentifier: cell.localIdentifier, serverPath: Model.sharedInstance().serverPath, category: categoryId)
+                    selectedImages[index] = UploadProperties.init(localIdentifier: cell.localIdentifier,
+                                                                  category: categoryId)
                     cell.cellSelected = true
                 }
 
@@ -1013,7 +1010,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             cell.cellSelected = false
         } else {
             // Select the cell
-            selectedImages[index] = UploadProperties.init(localIdentifier: cell.localIdentifier, serverPath: Model.sharedInstance().serverPath, category: categoryId)
+            selectedImages[index] = UploadProperties.init(localIdentifier: cell.localIdentifier,
+                                                          category: categoryId)
             cell.cellSelected = true
         }
 
@@ -1098,6 +1096,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             if let changeDetails = changeInstance.changeDetails(for: self.fetchedImages) {
                 // Show HUD during update, preventing touches
                 self.showHUD(with: NSLocalizedString("editImageDetailsHUD_updatingPlural", comment: "Updating Photos…"), detail: nil)
+                
                 // Update fetched asset collection
                 changeDetails.removedIndexes?.forEach({ (index) in
                     // Remove objects
@@ -1107,11 +1106,21 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     if index < self.localIdentifiers.count {
                         self.localIdentifiers.remove(at: index)
                     }
+                    self.selectedSections.removeLast()
                 })
                 changeDetails.insertedIndexes?.forEach({ (index) in
                     // Insert objects
-                    self.selectedImages.insert(nil, at: index)
-                    self.localIdentifiers.insert(changeDetails.fetchResultAfterChanges.object(at: index).localIdentifier, at: index)
+                    if index < self.selectedImages.count {
+                        self.selectedImages.insert(nil, at: index)
+                    } else {
+                        self.selectedImages.append(nil)
+                    }
+                    if index < self.localIdentifiers.count {
+                        self.localIdentifiers.insert(changeDetails.fetchResultAfterChanges.object(at: index).localIdentifier, at: index)
+                    } else {
+                        self.localIdentifiers.append(changeDetails.fetchResultAfterChanges.object(at: index).localIdentifier)
+                    }
+                    self.selectedSections.append(.select)
                 })
                 self.fetchedImages = changeDetails.fetchResultAfterChanges
 
@@ -1149,7 +1158,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             for index in firstIndex...lastIndex {
                 // Images in the upload queue cannot be selected
                 if indexedUploadsInQueue[index] == nil {
-                    selectedImages[index] = UploadProperties.init(localIdentifier: localIdentifiers[index], serverPath: Model.sharedInstance().serverPath, category: self.categoryId)
+                    selectedImages[index] = UploadProperties.init(localIdentifier: localIdentifiers[index],
+                                                                  category: self.categoryId)
                 }
             }
             // Change section button state
@@ -1235,7 +1245,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 // Show an alert if there was an error.
                 guard let error = error else {
                     // Launch upload tasks in background queue
-                    DispatchQueue.global(qos: .background).async {
+                    UploadManager.shared.backgroundQueue.async {
                         UploadManager.shared.findNextImageToUpload()
                     }
                     return

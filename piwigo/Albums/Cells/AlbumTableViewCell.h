@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 FOUNDATION_EXPORT NSString * const kAlbumTableCell_ID;
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationDeletedCategory;
 
 @protocol AlbumTableViewCellDelegate <NSObject>
 

@@ -43,6 +43,9 @@
 "internetCancelledConnection_button" = "取消连接";
 "internetCancelledConnection_title" = "连接已取消";
 
+"PiwigoServer_wrongJSONobject" = "Piwigo服务器无法消化JSON对象。";
+"PiwigoServer_invalidJSONobject" = "Piwigo 服务器没有返回一个有效的 JSON 对象。";
+
 // ===========================================================================
 // ==> CORE DATA
 // ===========================================================================
@@ -437,6 +440,11 @@
 "copySingleImageError_message" = "无法复制照片";
 
 // Images upload
+"imageUploadHeaderTitle_images" = "照片参数";
+"imageUploadHeaderText_images" = "请设置用于选择照片/视频的参数";
+"imageUploadHeaderTitle_upload" = "上传设置";
+"imageUploadHeaderText_upload" = "请设置用于选择照片/视频的上传参数";
+
 "imageUploadDetails_title" = "标题：";
 "imageUploadDetails_author" = "作者：";
 "imageUploadDetails_privacy" = "隐私：";

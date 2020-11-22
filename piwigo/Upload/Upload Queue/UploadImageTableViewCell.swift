@@ -71,7 +71,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         case .preparingError, .uploadingError, .finishingError:
             rightButtons = [
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeRetry.png"), backgroundColor: UIColor.piwigoColorOrange(), callback: { sender in
-                    DispatchQueue.global(qos: .background).async {
+                    UploadManager.shared.backgroundQueue.async {
                         UploadManager.shared.resume(failedUploads: [upload], completionHandler: { (_) in })
                     }
                     return true

@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 FOUNDATION_EXPORT CGFloat const kMoveImageViewWidth;
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationMovedImage;
 
 @class PiwigoImageData;
 

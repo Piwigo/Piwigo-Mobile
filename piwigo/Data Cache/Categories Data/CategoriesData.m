@@ -11,7 +11,6 @@
 NSString * const kPiwigoNotificationGetCategoryData = @"kPiwigoNotificationGetCategoryData";
 NSString * const kPiwigoNotificationCategoryDataUpdated = @"kPiwigoNotificationCategoryDataUpdated";
 NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificationChangedCurrentCategory";
-NSString * const kPiwigoNotificationDeletedImageFromUploadCache = @"kPiwigoNotificationDeletedImageFromUploadCache";
 
 @interface CategoriesData()
 
@@ -403,10 +402,6 @@ NSString * const kPiwigoNotificationDeletedImageFromUploadCache = @"kPiwigoNotif
     if ([self getImageForCategory:kPiwigoFavoritesCategoryId andId:image.imageId] != nil) {
         [self removeImage:image fromCategory:[NSString stringWithFormat:@"%ld", (long)kPiwigoFavoritesCategoryId]];
     }
-    
-    // Delete image from Upload cache
-    NSDictionary *userInfo = @{@"imageId" : @(image.imageId)};
-    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDeletedImageFromUploadCache object:nil userInfo:userInfo];
 }
 
 -(void)removeImage:(PiwigoImageData*)image fromCategory:(NSString *)category
@@ -416,6 +411,7 @@ NSString * const kPiwigoNotificationDeletedImageFromUploadCache = @"kPiwigoNotif
     [imageCategory removeImages:@[image]];
 
     // Notify UI that an image has been deleted to refresh the collection view
+    // and notify the Upload database that the image was deleted
     NSDictionary *userInfo = @{@"albumId" : category, @"imageId" : @(image.imageId)};
     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDeletedImage object:nil userInfo:userInfo];
 

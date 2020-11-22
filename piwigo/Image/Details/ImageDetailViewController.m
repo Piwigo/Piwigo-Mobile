@@ -355,7 +355,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
 
 -(void)retrieveCompleteImageDataOfImage:(PiwigoImageData *)imageData
 {
-    NSLog(@"=> Retrieve complete image data for image #%ld", (long)imageData.imageId);
+//    NSLog(@"=> Retrieve complete image data for image #%ld", (long)imageData.imageId);
 
     // Image data is not complete when retrieved using pwg.categories.getImages
     [self setEnableStateOfButtons:NO];
@@ -549,7 +549,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     NSInteger currentIndex = [[[pageViewController viewControllers] firstObject] imageIndex];
     
     // Reached the beginning of the category?
-    if (currentIndex <= 0)
+    if ((currentIndex - 1 < 0) || (currentIndex - 1 >= self.images.count))
     {
         // Crash reported by AppStore here on May 25th, 2017!
         // Should return nil when the user reaches the first image of the album
@@ -569,8 +569,8 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
 //        }
 //    }
 
-    // Retriev data of previous image (may be incomplete)
-    PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex - 1];
+    // Retrieve data of previous image (may be incomplete)
+    PiwigoImageData *imageData = [self.images objectAtIndex:(currentIndex - 1)];
     
     // Create view controller
 //    NSLog(@"=> Create preview view controller for previous image %@", imageData.imageId);
@@ -748,13 +748,20 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
              onProgress:nil
            OnCompletion:^(NSURLSessionTask *task, BOOL updatedSuccessfully) {
                
-               if (updatedSuccessfully)
-               {
+                if (updatedSuccessfully)
+                {
                     // Update image data
                     self.imageData.categoryIds = categoryIds;
 
                     // Remove image from cache and update UI
                     [[CategoriesData sharedInstance] removeImage:self.imageData fromCategory:[NSString stringWithFormat:@"%ld", (long)self.categoryId]];
+
+                    // Notify the Upload database that this image has been removed from this category
+                    if (categoryIds.count > 0) {
+                        NSDictionary *userInfo = @{@"albumId" : @([categoryIds[0] longValue]),
+                                                   @"imageId" : @(self.imageData.imageId)};
+                        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationMovedImage object:nil userInfo:userInfo];
+                    }
 
                     // Hide HUD
                     [self hideHUDwithSuccess:YES completion:^{

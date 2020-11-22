@@ -450,12 +450,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 let title = NSLocalizedString("settings_server", comment: "Address")
                 var detail: String
-                if view.bounds.size.width > 414 {
-                    // i.e. larger than iPhones 6, 7 screen width
-                    detail = String(format: "%@%@", Model.sharedInstance().serverProtocol, Model.sharedInstance().serverPath)
-                } else {
-                    detail = Model.sharedInstance().serverPath
-                }
+                detail = String(format: "%@%@", Model.sharedInstance().serverProtocol, Model.sharedInstance().serverPath)
                 cell.configure(with: title, detail: detail)
                 cell.accessoryType = UITableViewCell.AccessoryType.none
                 cell.accessibilityIdentifier = "server"
@@ -665,6 +660,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 
                 // Switch status
                 cell.cellSwitch.setOn(Model.sharedInstance().displayImageTitles, animated: true)
+                cell.cellSwitch.accessibilityIdentifier = "switchImageTitles"
                 cell.cellSwitchBlock = { switchState in
                     Model.sharedInstance().displayImageTitles = switchState
                     Model.sharedInstance().saveToDisk()
@@ -977,8 +973,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     Model.sharedInstance().saveToDisk()
                     // Relaunch uploads in background queue if disabled
                     if switchState == false {
-                        // Launch upload tasks in background queue
-                        DispatchQueue.global(qos: .background).async {
+                        // Update upload tasks in background queue
+                        // May not restart the uploads
+                        UploadManager.shared.backgroundQueue.async {
                             UploadManager.shared.findNextImageToUpload()
                         }
                     }
@@ -1423,8 +1420,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // Any footer text?
         switch activeSection {
         case SettingsSection.logout.rawValue:
-            if (Model.sharedInstance().uploadFileTypes != nil) && (Model.sharedInstance().uploadFileTypes.count > 0) {
-                footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(Model.sharedInstance().uploadFileTypes.replacingOccurrences(of: ",", with: ", "))."
+            if (Model.sharedInstance().serverFileTypes != nil) && (Model.sharedInstance().serverFileTypes.count > 0) {
+                footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(Model.sharedInstance().serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
             }
         case SettingsSection.about.rawValue:
             if nberImages.count > 0 {
@@ -1471,8 +1468,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // Footer text
         switch activeSection {
         case SettingsSection.logout.rawValue:
-            if (Model.sharedInstance().uploadFileTypes != nil) && (Model.sharedInstance().uploadFileTypes.count > 0) {
-                footerLabel.text = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(Model.sharedInstance().uploadFileTypes.replacingOccurrences(of: ",", with: ", "))."
+            if (Model.sharedInstance().serverFileTypes != nil) && (Model.sharedInstance().serverFileTypes.count > 0) {
+                footerLabel.text = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(Model.sharedInstance().serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
             }
         case SettingsSection.about.rawValue:
             if nberImages.count > 0 {
@@ -1831,9 +1828,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 alert.view.tintColor = UIColor.piwigoColorOrange()
             })
         } else {
-            ClearCache.clearAllCache()
-            let appDelegate = UIApplication.shared.delegate as? AppDelegate
-            appDelegate?.loadLoginView()
+            // Clear caches and display login view
+            self.closeSessionAndClearCache()
         }
     }
 

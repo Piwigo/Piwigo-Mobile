@@ -11,7 +11,12 @@ import Photos
 extension UploadManager{
     
     // MARK: - Set Image Info
-    func setImageParameters(with upload: UploadProperties) {
+    func setImageParameters(for uploadID: NSManagedObjectID) {
+        // Retrieve upload request parameters
+        let taskContext = DataController.getPrivateContext()
+        let upload = taskContext.object(with: uploadID) as! Upload
+        print("\(debugFormatter.string(from: Date())) > finishing transfer of \(upload.fileName ?? "Image.jpg")…")
+
         // Prepare creation date
         var creationDate = ""
         if let date = upload.creationDate {
@@ -23,15 +28,15 @@ extension UploadManager{
         // Prepare parameters for uploading image/video (filename key is kPiwigoImagesUploadParamFileName)
         let imageParameters: [String : String] = [
             kPiwigoImagesUploadParamFileName: upload.fileName ?? "Image.jpg",
-            kPiwigoImagesUploadParamTitle: upload.imageTitle ?? "",
+            kPiwigoImagesUploadParamTitle: upload.imageName ?? "",
             kPiwigoImagesUploadParamAuthor: upload.author ?? "",
             kPiwigoImagesUploadParamCreationDate: creationDate,
-            kPiwigoImagesUploadParamPrivacy: "\(NSNumber(value: upload.privacyLevel!.rawValue))",
+            kPiwigoImagesUploadParamPrivacy: "\(NSNumber(value: upload.privacyLevel))",
             kPiwigoImagesUploadParamDescription: upload.comment ?? "",
             kPiwigoImagesUploadParamTags: upload.tagIds ?? "",
         ]
 
-        ImageService.setImageInfoForImageWithId(upload.imageId,
+        ImageService.setImageInfoForImageWithId(Int(upload.imageId),
                                                 information: imageParameters,
                                                 sessionManager: sessionManager,
             onProgress:nil,
@@ -42,7 +47,7 @@ extension UploadManager{
                     guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {
                         // Upload still ready for finish
                         let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.invalidJSONobject.localizedDescription])
-                        self.updateUploadRequestWith(upload, error: error)
+                        self.didSetParameters(for: uploadID, error: error)
                         return
                     }
                     
@@ -54,34 +59,26 @@ extension UploadManager{
                         // Piwigo error?
                         if (uploadJSON.errorCode != 0) {
                             let error = NSError.init(domain: "Piwigo", code: uploadJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
-                            self.updateUploadRequestWith(upload, error: error)
+                            self.didSetParameters(for: uploadID, error: error)
                             return
                         }
 
                         // Successful?
                         if uploadJSON.success {
                             // Image successfully uploaded
-                            var uploadProperties = upload
-                            uploadProperties.requestState = .finished
-                            
-                            // Update upload record, cache and views
-                            self.uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
-                                print("•••>> complete ;-)")
-                                
-                                // Any other image in upload queue?
-                                self.didSetParameters()
-                            })
-                        } else {
+                            self.didSetParameters(for: uploadID, error: nil)
+                        }
+                        else {
                             // Could not set image parameters, upload still ready for finish
                             print("••>> setImageInfoForImageWithId(): no successful")
                             let error = NSError.init(domain: "Piwigo", code: -1, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")])
-                            self.updateUploadRequestWith(upload, error: error)
+                            self.didSetParameters(for: uploadID, error: error)
                             return
                         }
                     } catch {
                         // Data cannot be digested, upload still ready for finish
                         let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongJSONobject.localizedDescription])
-                        self.updateUploadRequestWith(upload, error: error)
+                        self.didSetParameters(for: uploadID, error: error)
                         return
                     }
                 }
@@ -95,40 +92,34 @@ extension UploadManager{
                             (error.code == 404))          // Not Found
                         {
                             print("…notify kPiwigoNotificationNetworkErrorEncountered!")
-                            NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationNetworkErrorEncountered), object: nil, userInfo: nil)
+                            let name = NSNotification.Name(rawValue: kPiwigoNotificationNetworkErrorEncountered)
+                            NotificationCenter.default.post(name: name, object: nil, userInfo: nil)
                         }
                         // Upload still ready for finish
-                        self.updateUploadRequestWith(upload, error: error)
+                        self.didSetParameters(for: uploadID, error: error)
                     }
                 }
             })
     }
 
-    private func updateUploadRequestWith(_ upload: UploadProperties, error: Error?) {
+    private func didSetParameters(for uploadID: NSManagedObjectID, error: Error?) {
 
+        // Initialisation
+        var newState: kPiwigoUploadState = .finished
+        var errorMsg = ""
+        
         // Error?
         if let error = error {
-            // Could not prepare image
-            let uploadProperties = upload.update(with: .finishingError, error: error.localizedDescription)
-            
-            // Update request with error description
-            print("    >", error.localizedDescription)
-            uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
-                // Consider next image
-                self.didSetParameters()
-            })
-            return
+            newState = .finishingError
+            errorMsg = error.localizedDescription
         }
 
-        // Update state of upload
-        let uploadProperties = upload.update(with: .finished, error: "")
-
-        // Update request ready for transfer
-        print("    > finished with \(uploadProperties.fileName!)")
-        uploadsProvider.updateRecord(with: uploadProperties, completionHandler: { [unowned self] _ in
-            // Upload ready for transfer
+        // Update state of finished upload
+        print("\(debugFormatter.string(from: Date())) > finished with \(uploadID) \(errorMsg)")
+        uploadsProvider.updateStatusOfUpload(with: uploadID, to: newState, error: errorMsg) { [unowned self] (_) in
+            // Consider next image
             self.didSetParameters()
-        })
+        }
     }
 
 
@@ -193,10 +184,17 @@ extension UploadManager{
             onCompletion completion: @escaping (_ task: URLSessionTask?, _ response: Any?) -> Void,
             onFailure fail: @escaping (_ task: URLSessionTask?, _ error: Error?) -> Void) -> (Void) {
         
+        // Check that we have a token
+        guard let pwgToken = Model.sharedInstance()?.pwgToken else {
+            fail(nil, UploadError.networkUnavailable)
+            return
+        }
+        
+        // Post request
         NetworkHandler.post(kCommunityImagesUploadCompleted,
                 urlParameters: nil,
                 parameters: [
-                    "pwg_token": Model.sharedInstance().pwgToken!,
+                    "pwg_token": pwgToken,
                     "image_id": imageId ?? "",
                     "category_id": NSNumber(value: categoryId)
                     ],

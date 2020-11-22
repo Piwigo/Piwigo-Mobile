@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -16,10 +16,10 @@
         <scene sceneID="XQ0-Up-UxJ">
             <objects>
                 <viewController storyboardIdentifier="SettingsViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="ax2-8z-JIa" customClass="SettingsViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="preferences" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="1" sectionFooterHeight="1" id="Smd-12-iPe">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="preferences" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="Smd-12-iPe">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <color key="backgroundColor" red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="LabelTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="LabelTableViewCell" id="M77-u0-LTx" customClass="LabelTableViewCell" customModule="piwigo" customModuleProvider="target">
@@ -133,7 +133,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VKN-MW-ylx">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999999999999996" translatesAutoresizingMaskIntoConstraints="NO" id="VKN-MW-ylx">
                                             <rect key="frame" x="20" y="10" width="48" height="23.5"/>
                                             <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
                                             <nil key="textColor"/>
@@ -148,11 +148,11 @@
                                         </switch>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="SKJ-lW-UVP" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="VKN-MW-ylx" secondAttribute="trailing" constant="10" id="613-Ca-1NQ"/>
+                                        <constraint firstItem="VKN-MW-ylx" firstAttribute="trailing" relation="lessThanOrEqual" secondItem="5yg-ZI-Wsd" secondAttribute="trailing" constant="-71" id="32D-wm-QEx"/>
                                         <constraint firstItem="VKN-MW-ylx" firstAttribute="centerY" secondItem="5yg-ZI-Wsd" secondAttribute="centerY" id="Epr-3K-aJU"/>
-                                        <constraint firstItem="SKJ-lW-UVP" firstAttribute="centerY" secondItem="5yg-ZI-Wsd" secondAttribute="centerY" id="PEI-zM-NGb"/>
+                                        <constraint firstItem="SKJ-lW-UVP" firstAttribute="centerY" secondItem="5yg-ZI-Wsd" secondAttribute="centerY" id="MLQ-T7-r5Q"/>
                                         <constraint firstItem="VKN-MW-ylx" firstAttribute="leading" secondItem="5yg-ZI-Wsd" secondAttribute="leading" constant="20" symbolic="YES" id="UjB-oe-TEd"/>
-                                        <constraint firstAttribute="trailing" secondItem="SKJ-lW-UVP" secondAttribute="trailing" constant="20" symbolic="YES" id="gBR-V9-cfG"/>
+                                        <constraint firstAttribute="trailing" secondItem="SKJ-lW-UVP" secondAttribute="trailing" constant="20" symbolic="YES" id="Vey-Ex-198"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>

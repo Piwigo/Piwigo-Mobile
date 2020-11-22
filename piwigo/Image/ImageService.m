@@ -562,7 +562,7 @@ NSString * const kGetImageOrderDescending = @"desc";
 {
     NSInteger downloadedImageDataCount = [[CategoriesData sharedInstance] getCategoryById:categoryId].imageList.count;
     NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:categoryId].numberOfImages;
-    NSLog(@"loadImageChunkForLastChunkCount: %ld / %ld images", (long)downloadedImageDataCount, (long)totalImageCount);
+//    NSLog(@"loadImageChunkForLastChunkCount: %ld / %ld images", (long)downloadedImageDataCount, (long)totalImageCount);
     if (downloadedImageDataCount >= totalImageCount)
     {    // done. don't need anymore
         if(fail)
@@ -583,7 +583,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                                       {
                                           PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:categoryId];
                                           [albumData addImages:searchedImages];
-                                          NSLog(@"loadImageChunkForLastChunkCount: added %ld images", (long)searchedImages.count);
+//                                          NSLog(@"loadImageChunkForLastChunkCount: added %ld images", (long)searchedImages.count);
                                           if (completion) {
                                               completion(task, searchedImages.count);
                                           }
@@ -614,7 +614,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                                       {
                                           PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:categoryId];
                                           [albumData addImages:searchedImages];
-                                          NSLog(@"loadImageChunkForLastChunkCount: added %ld images", (long)searchedImages.count);
+//                                          NSLog(@"loadImageChunkForLastChunkCount: added %ld images", (long)searchedImages.count);
                                           if (completion) {
                                               completion(task, searchedImages.count);
                                           }
@@ -644,7 +644,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                                       {
                                           PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:categoryId];
                                           [albumData addImages:searchedImages];
-                                          NSLog(@"loadImageChunkForLastChunkCount: added %ld images", (long)searchedImages.count);
+//                                          NSLog(@"loadImageChunkForLastChunkCount: added %ld images", (long)searchedImages.count);
                                           if (completion) {
                                               completion(task, searchedImages.count);
                                           }
@@ -671,7 +671,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                                         {
                                             PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:categoryId];
                                             [albumData addImages:searchedImages];
-                                            NSLog(@"loadImageChunkForLastChunkCount: added %ld images", (long)searchedImages.count);
+//                                            NSLog(@"loadImageChunkForLastChunkCount: added %ld images", (long)searchedImages.count);
                                             if (completion) {
                                                 completion(task, searchedImages.count);
                                             }
@@ -701,7 +701,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                                           {
                                               PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:categoryId];
                                               [albumData addImages:albumImages];
-                                              NSLog(@"loadImageChunkForLastChunkCount: added %ld images", (long)albumImages.count);
+//                                              NSLog(@"loadImageChunkForLastChunkCount: added %ld images", (long)albumImages.count);
                                               if (completion) {
                                                   completion(task, albumImages.count);
                                               }

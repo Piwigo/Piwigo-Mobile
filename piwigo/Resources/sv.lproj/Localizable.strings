@@ -43,6 +43,9 @@
 "internetCancelledConnection_button" = "Avbryt anslutningen";
 "internetCancelledConnection_title" = "Anslutningen avbrutet";
 
+"PiwigoServer_wrongJSONobject" = "Kunde inte smälta JSON-objekt som returneras av Piwigo server.";
+"PiwigoServer_invalidJSONobject" = "Piwigo-servern returnerade inte ett giltigt JSON-objekt.";
+
 // ===========================================================================
 // ==> CORE DATA
 // ===========================================================================
@@ -437,6 +440,11 @@
 "copySingleImageError_message" = "Kunde inte kopiera din bild";
 
 // Images upload
+"imageUploadHeaderTitle_images" = "Parametrar för foton";
+"imageUploadHeaderText_images" = "Ställ in de parametrar som ska gälla för valet av bilder/videor";
+"imageUploadHeaderTitle_upload" = "Ladda upp inställningar";
+"imageUploadHeaderText_upload" = "Ställ in de uppladdningsparametrar som ska gälla för valet av bilder/videoklipp";
+
 "imageUploadDetails_title" = "Titel:";
 "imageUploadDetails_author" = "Författare:";
 "imageUploadDetails_privacy" = "Behörighet:";

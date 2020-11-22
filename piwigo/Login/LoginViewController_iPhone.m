@@ -49,7 +49,7 @@
     // Always display login view in portrait mode
     NSInteger screenWidth = MIN([UIScreen mainScreen].bounds.size.height, [UIScreen mainScreen].bounds.size.width);
     NSInteger screenHeight = MAX([UIScreen mainScreen].bounds.size.height, [UIScreen mainScreen].bounds.size.width);
-    self.textFieldHeight = 48 + 8 * ((screenHeight - 480) / (812 - 480));
+    CGFloat textFieldHeight = 48 + 8 * ((screenHeight - 480) / (812 - 480));
     NSInteger margin = 36;
 
     NSDictionary *views = @{
@@ -65,17 +65,17 @@
                             @"usu" : self.versionLabel
                            };
 
-    CGFloat logoWidth = self.textFieldHeight * 4.02;
+    CGFloat logoWidth = textFieldHeight * 4.02;
     CGFloat logoSide = floorf(screenWidth - logoWidth) / 2.0;
     NSDictionary *metrics = @{
-                              @"height" : @(self.textFieldHeight),
+                              @"height" : @(textFieldHeight),
                               @"logoWidth" : @(logoWidth),
                               @"logoSide" : @(logoSide),
                               @"side"   : @(margin)
                               };
     
     // Vertically
-    [self.view addConstraint:[NSLayoutConstraint constraintViewFromTop:self.loginButton amount:(screenHeight / 2.0 + self.textFieldHeight + 2 * 10.0)]];
+    [self.view addConstraint:[NSLayoutConstraint constraintViewFromTop:self.loginButton amount:(screenHeight / 2.0 + textFieldHeight + 2 * 10.0)]];
     
     if (screenHeight > 600) {
         [self.view addConstraints:[NSLayoutConstraint
