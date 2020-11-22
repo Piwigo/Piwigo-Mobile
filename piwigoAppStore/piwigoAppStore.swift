@@ -196,6 +196,9 @@ public extension UIDevice {
             "iPhone11,4" : .iPhoneXsMax,
             "iPhone11,6" : .iPhoneXsMax,
             "iPhone11,8" : .iPhoneXr,
+            "iPhone12,1" : .iPhone11,
+            "iPhone12,3" : .iPhone11Pro,
+            "iPhone12,5" : .iPhone11ProMax,
             "iPhone12,8" : .iPhoneSE2,
             "iPhone13,1" : .iPhone12mini,
             "iPhone13,2" : .iPhone12,
@@ -270,7 +273,7 @@ class piwigoAppStore: XCTestCase {
         tableQuery/*@START_MENU_TOKEN@*/.staticTexts["comment"]/*[[".cells[\"albumName, comment, nberImages\"].staticTexts[\"comment\"]",".staticTexts[\"comment\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.swipeLeft()
         snapshot("Image01")
         
-        // Screenshot #2: collection of images
+        // Screenshot #2: collection of images with titles
         app.collectionViews.children(matching: .cell).element(boundBy: 2).tap()
         sleep(1);
         if deviceType.hasPrefix("iPhone") {
@@ -278,8 +281,22 @@ class piwigoAppStore: XCTestCase {
             sleep(2);
         }
         snapshot("Image02")
-
+        
         // Screenshot #3: collection with selected images
+        app.buttons["rootAlbum"].tap()
+        app.navigationBars["AlbumImagesNav"].buttons["settings"].tap()
+        sleep(2);
+        app.tables["settings"].cells["server"].swipeUp()
+        sleep(2);
+        app.tables["settings"].cells["displayImageTitles"].switches["switchImageTitles"].tap()
+        app.navigationBars.buttons["Done"].tap()
+        sleep(1);
+        app.collectionViews.children(matching: .cell).element(boundBy: 2).tap()
+        sleep(1);
+        if deviceType.hasPrefix("iPhone") {
+            app.collectionViews.children(matching: .cell).element(boundBy: 0).swipeUp()
+            sleep(2);
+        }
         app.collectionViews.children(matching: .cell).element(boundBy: 0).swipeUp()
         sleep(2);
         app.navigationBars.buttons["Select"].tap()
@@ -318,63 +335,51 @@ class piwigoAppStore: XCTestCase {
             app.images.element(boundBy: 0).pinch(withScale: 0.6, velocity: -2.0)
         }
         else if deviceType == "iPhone 8" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 10).swipeDown()
-            sleep(2)
-            app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
             sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
             app.images.element(boundBy: 0).pinch(withScale: 0.52, velocity: -2.0)
         }
         else if deviceType == "iPhone 8 Plus" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 10).swipeDown()
-            sleep(2)
-            app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
             sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
             app.images.element(boundBy: 0).pinch(withScale: 0.59, velocity: -2.0)
         }
         else if deviceType == "iPhone 11 Pro" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 10).swipeDown()
-            sleep(2)
-            app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
             sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
             app.images.element(boundBy: 0).pinch(withScale: 0.733, velocity: -2.0)
         }
         else if deviceType == "iPhone 11 Pro Max" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 10).swipeDown()
-            sleep(2)
-            app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 24).tap()
             sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
             app.images.element(boundBy: 0).pinch(withScale: 0.675, velocity: -2.0)
         }
         else if deviceType == "iPad Pro 9.7\"" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 11).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 32).tap()
             sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
         }
         else if deviceType == "iPad Pro 10.5\"" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 11).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 32).tap()
             sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
         }
         else if deviceType == "iPad Pro 2 11\"" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 11).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 32).tap()
             sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
         }
         else if deviceType == "iPad Pro 2 12.9\"" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 9).swipeDown()
-            sleep(2)
-            app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 26).tap()
             sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
         }
         else if deviceType == "iPad Pro 3 12.9\"" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 9).swipeDown()
-            sleep(2)
-            app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 26).tap()
             sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
         }
@@ -397,30 +402,30 @@ class piwigoAppStore: XCTestCase {
             app.collectionViews.children(matching: .cell).element(boundBy: 7).tap()
         }
         else if deviceType == "iPhone 11 Pro Max" {
-                        app.collectionViews.children(matching: .cell).element(boundBy: 7).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 11).tap()
         }
         else if deviceType == "iPad Pro 9.7\"" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 21).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 19).tap()
             sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
         }
         else if deviceType == "iPad Pro 10.5\"" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 21).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 19).tap()
             sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
         }
         else if deviceType == "iPad Pro 2 11\"" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 21).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 19).tap()
             sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
         }
         else if deviceType == "iPad Pro 2 12.9\"" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 26).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
             sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
         }
         else if deviceType == "iPad Pro 3 12.9\"" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 26).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
             sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
         }
@@ -435,6 +440,7 @@ class piwigoAppStore: XCTestCase {
         app.navigationBars.buttons.element(boundBy: 0).tap()
         sleep(2)                        // Leave time for animation
         app.collectionViews.children(matching: .cell).element(boundBy: 10).swipeUp()
+        app.collectionViews.children(matching: .cell).element(boundBy: 10).swipeUp()
         app.buttons["add"].tap()
         sleep(2)                        // Leave time for animation
         snapshot("Image06")
@@ -443,6 +449,8 @@ class piwigoAppStore: XCTestCase {
         app.buttons["addImages"].tap()
         sleep(1)                        // Leave time for animation
         app.tables.children(matching: .cell).matching(identifier: "Recent").element.tap()
+        sleep(1)                        // Leave time for animation
+        app.buttons["imageWeek"].tap()
         sleep(1)                        // Leave time for animation
         app.buttons["imageDay"].tap()
         sleep(1)                        // Leave time for animation
@@ -479,6 +487,8 @@ class piwigoAppStore: XCTestCase {
         app.buttons["settings"].tap()
         sleep(1)                        // Leave time for animation
         app.tables["settings"].cells["server"].swipeUp()
+        sleep(2)                        // Leave time for animation
+        app.tables["settings"].cells["displayImageTitles"].switches["switchImageTitles"].tap()
         snapshot("Image10")
     }
 }
