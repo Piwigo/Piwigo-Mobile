@@ -351,13 +351,15 @@ class UploadManager: NSObject, URLSessionDelegate {
 
         // Get series of uploads to complete
         // Considers only uploads to the server to which the user is logged in
-        let states: [kPiwigoUploadState] = [.waiting, .uploadingError]
+        let states: [kPiwigoUploadState] = [.waiting, .prepared, .uploadingError]
         guard let uploadRequests = uploadsProvider.getRequestsIn(states: states) else {
             return
         }
         
-        // Get list of upload requests whose transfer did fail
-        let requestsToTransfer = uploadRequests.filter({$0.state == .uploadingError}).map({$0.objectID})
+        // Get list of upload requests rasdy for transfer and whose transfer did fail
+        let requestsToTransfer = uploadRequests.filter({($0.state == .prepared) ||
+                                                        ($0.state == .uploadingError)})
+                                               .map({$0.objectID})
         let nberToTransfer = requestsToTransfer.count
         if nberToTransfer > 0 {
             if nberToTransfer > maxNberOfUploadsPerBackgroundTask {
