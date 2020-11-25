@@ -812,7 +812,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             }
             
             // Configure the header
-            header.configure(with: imageAssets, section: indexPath.section, selectState: selectedSections[indexPath.section])
+            let selectState = queue.operationCount == 0 ? selectedSections[indexPath.section] : .none
+            header.configure(with: imageAssets, section: indexPath.section, selectState: selectState)
             header.headerDelegate = self
             return header
         }
