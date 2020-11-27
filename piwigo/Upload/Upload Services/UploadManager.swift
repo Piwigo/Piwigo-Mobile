@@ -386,6 +386,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         if indexOfUploadRequestToTransfer < uploadRequestsToTransfer.count {
             // Get objectID of upload request
             let uploadID = uploadRequestsToTransfer[indexOfUploadRequestToTransfer]
+            print("\(debugFormatter.string(from: Date())) >•• appendTransfer \(uploadID.uriRepresentation())")
             // Launch transfer
             launchTransfer(of: uploadID)
             // Increment index for next call
@@ -395,6 +396,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         else if indexOfUploadRequestToPrepare < uploadRequestsToPrepare.count {
             // Get objectID of upload request
             let uploadID = uploadRequestsToPrepare[indexOfUploadRequestToPrepare]
+            print("\(debugFormatter.string(from: Date())) >•• appendPrepare \(uploadID.uriRepresentation())")
             // Prepare image for transfer
             prepare(for: uploadID)
             // Increment index for next call
@@ -416,7 +418,7 @@ class UploadManager: NSObject, URLSessionDelegate {
 
     @objc
     func prepare(for uploadID: NSManagedObjectID) -> Void {
-        print("\(debugFormatter.string(from: Date())) > prepare \(uploadID.uriRepresentation())")
+        print("\(debugFormatter.string(from: Date())) >> prepare \(uploadID.uriRepresentation())")
 
         // Retrieve upload request properties
         var uploadProperties: UploadProperties!
@@ -489,8 +491,6 @@ class UploadManager: NSObject, URLSessionDelegate {
             // Chek that the image format is accepted by the Piwigo server
             if uploadProperties.serverFileTypes.contains(fileExt) {
                 // Image file format accepted by the Piwigo server
-                print("\(debugFormatter.string(from: Date())) > preparing photo \(uploadProperties.fileName!)…")
-
                 // Update state of upload
                 uploadProperties.requestState = .preparing
                 uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
@@ -623,7 +623,7 @@ class UploadManager: NSObject, URLSessionDelegate {
 
     @objc
     func launchTransfer(of uploadID: NSManagedObjectID) -> Void {
-        print("\(debugFormatter.string(from: Date())) > launch transfer of \(uploadID.uriRepresentation())")
+        print("\(debugFormatter.string(from: Date())) >> launch transfer of \(uploadID.uriRepresentation())")
 
         // Update list of transfers
         if isUploading.contains(uploadID) { return }

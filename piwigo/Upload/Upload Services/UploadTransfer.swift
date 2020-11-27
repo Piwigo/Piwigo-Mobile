@@ -411,7 +411,7 @@ extension UploadManager {
                 task.countOfBytesClientExpectsToSend = Int64(httpBody.count)
                 task.countOfBytesClientExpectsToReceive = 600
             }
-            print("\(debugFormatter.string(from: Date())) > \(uploadProperties.md5Sum!) upload task \(task.taskIdentifier) resumed")
+            print("\(debugFormatter.string(from: Date())) > \(uploadProperties.md5Sum!) upload task \(task.taskIdentifier) resumed (\(chunk)/\(chunks)")
             task.resume()
 
             // Update UI
@@ -493,6 +493,7 @@ extension UploadManager {
         }
 
         // Delete chunk file uploaded successfully from Piwigo/Uploads directory
+        print("\(debugFormatter.string(from: Date())) > \(md5sum) | delete chunk \(chunk)")
         let imageFile = identifier.replacingOccurrences(of: "/", with: "-")
         let chunkFileName = imageFile + "." + numberFormatter.string(from: NSNumber(value: chunk))!
         deleteFilesInUploadsDirectory(with: chunkFileName)

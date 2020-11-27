@@ -360,7 +360,7 @@ extension UploadManager {
             md5Checksum = self.oldMD5(data: imageData)
         }
         newUpload.md5Sum = md5Checksum
-        print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: md5Checksum))")
+        print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: md5Checksum)) | \(String(describing: newUpload.fileName))")
         completionHandler(newUpload, nil)
     }
 
