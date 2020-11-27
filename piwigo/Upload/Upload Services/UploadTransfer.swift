@@ -532,11 +532,19 @@ extension UploadManager {
             return
         }
 
+        // Filter returned data (PHP may send a warning before the JSON object)
+        let dataStr = String(decoding: data, as: UTF8.self)
+        var filteredData = data
+        if let jsonPos = dataStr.range(of: "{\"stat\":")?.lowerBound {
+            filteredData  = dataStr[jsonPos...].data(using: String.Encoding.utf8)!
+        }
+
         // Check returned data
-        guard let _ = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: AnyObject] else {
+        guard let _ = try? JSONSerialization.jsonObject(with: filteredData, options: []) as? [String: AnyObject] else {
             // Check if this transfer is already known to be failed
             // because a previous chunk transfer may have already reported the error
             if uploadProperties.requestState == .uploadingError { return }
+            
             // Update upload request status
             let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.invalidJSONobject.localizedDescription])
             self.didEndTransfer(for: uploadID, with: uploadProperties, error)
@@ -546,7 +554,7 @@ extension UploadManager {
         // Decode the JSON.
         do {
             // Decode the JSON into codable type ImagesUploadJSON.
-            let uploadJSON = try self.decoder.decode(ImagesUploadAsyncJSON.self, from: data)
+            let uploadJSON = try self.decoder.decode(ImagesUploadAsyncJSON.self, from: filteredData)
 
             // Piwigo error?
             if (uploadJSON.errorCode != 0) {
