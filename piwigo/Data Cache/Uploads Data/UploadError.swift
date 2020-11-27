@@ -17,6 +17,7 @@ enum UploadError: Error {
     case missingAsset
     case wrongJSONobject
     case invalidJSONobject
+    case missingFile
 }
 
 extension UploadError: LocalizedError {
@@ -36,6 +37,8 @@ extension UploadError: LocalizedError {
             return NSLocalizedString("PiwigoServer_wrongJSONobject", comment: "Could not digest JSON object returned by Piwigo server.")
         case .invalidJSONobject:
             return NSLocalizedString("PiwigoServer_invalidJSONobject", comment: "Piwigo server did not return a valid JSON object.")
+        case .missingFile:
+            return ""
         }
     }
 }

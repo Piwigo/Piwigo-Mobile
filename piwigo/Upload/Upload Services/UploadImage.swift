@@ -22,7 +22,7 @@ extension UploadManager {
                 return
             }
             guard let imageObject = fixedImageObject else {
-                let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                 self.didPrepareImage(for: uploadID, with: uploadProperties, error)
                 return
             }
@@ -34,7 +34,7 @@ extension UploadManager {
                     return
                 }
                 guard let imageData = fullSizeData else {
-                    let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                    let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                     self.didPrepareImage(for: uploadID, with: uploadProperties, error)
                     return
                 }
@@ -133,7 +133,7 @@ extension UploadManager {
 
                 // Retrieved UIImage representation for the specified asset
                 guard let imageObject = imageObject else {
-                    error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                    error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                     completionHandler(nil, error)
                     return
                 }
@@ -155,7 +155,7 @@ extension UploadManager {
 
                     // Retrieved UIImage representation for the specified asset
                     guard let imageObject = imageObject else {
-                        error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                        error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                         completionHandler(nil, error)
                         return
                     }
@@ -250,7 +250,7 @@ extension UploadManager {
         // Create CGI reference from image data (to retrieve complete metadata)
         guard let source: CGImageSource = CGImageSourceCreateWithData((originalData as CFData), nil) else {
             // Could not prepare image source
-            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+            let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
             completionHandler(upload, error)
             return
         }
@@ -258,7 +258,7 @@ extension UploadManager {
         // Get metadata from image data
         guard var imageMetadata = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as Dictionary? else {
             // Could not retrieve metadata
-            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+            let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
             completionHandler(upload, error)
             return
         }
@@ -304,7 +304,7 @@ extension UploadManager {
             }
             if let destination = destination {
                 if !CGImageDestinationFinalize(destination) {
-                    let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                    let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                     completionHandler(upload, error)
                     return
                 }

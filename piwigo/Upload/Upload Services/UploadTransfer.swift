@@ -44,7 +44,7 @@ extension UploadManager {
                 // Check returned data
                 guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {
                     // Update upload request status
-                    let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.invalidJSONobject.localizedDescription])
+                    let error = NSError.init(domain: "Piwigo", code: UploadError.invalidJSONobject.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.invalidJSONobject.localizedDescription])
                     self.didEndTransfer(for: uploadID, with: uploadProperties, error)
                     return
                 }
@@ -97,7 +97,7 @@ extension UploadManager {
                     return
                 } catch {
                     // Data cannot be digested, image still ready for upload
-                    let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongJSONobject.localizedDescription])
+                    let error = NSError.init(domain: "Piwigo", code: UploadError.wrongJSONobject.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongJSONobject.localizedDescription])
                     self.didEndTransfer(for: uploadID, with: uploadProperties, error)
                     return
                 }
@@ -127,7 +127,7 @@ extension UploadManager {
             // Update state of upload request
             print("\(debugFormatter.string(from: Date())) > transferred \(uploadID.uriRepresentation()) with error:\(error.localizedDescription)")
             var requestError: kPiwigoUploadState = .uploadingError
-            if (error.code >= NSFileErrorMinimum) && (error.code <= NSFileErrorMaximum) {
+            if (error.code == UploadError.missingFile.hashValue) {
                 // Could not retrieve image file to transfer
                 requestError = .preparingError
             }
@@ -299,7 +299,8 @@ extension UploadManager {
         catch let error as NSError {
             // Could not find the file to upload!
             print(error.localizedDescription)
-            didEndTransfer(for: uploadID, with: uploadProperties, error)
+            let transferError = NSError.init(domain: "Piwigo", code: UploadError.missingFile.hashValue, userInfo: [NSLocalizedDescriptionKey : error.localizedDescription])
+            didEndTransfer(for: uploadID, with: uploadProperties, transferError)
             return
         }
 
@@ -546,7 +547,7 @@ extension UploadManager {
             if uploadProperties.requestState == .uploadingError { return }
             
             // Update upload request status
-            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.invalidJSONobject.localizedDescription])
+            let error = NSError.init(domain: "Piwigo", code: UploadError.invalidJSONobject.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.invalidJSONobject.localizedDescription])
             self.didEndTransfer(for: uploadID, with: uploadProperties, error)
             return
         }
@@ -558,7 +559,8 @@ extension UploadManager {
 
             // Piwigo error?
             if (uploadJSON.errorCode != 0) {
-               let error = NSError.init(domain: "Piwigo", code: uploadJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
+                print("\(debugFormatter.string(from: Date())) > \(md5sum) | Piwigo error \(uploadJSON.errorCode)")
+                let error = NSError.init(domain: "Piwigo", code: uploadJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
                 self.didEndTransfer(for: uploadID, with: uploadProperties, error)
                return
             }
@@ -692,7 +694,8 @@ extension UploadManager {
             return
         } catch {
             // JSON object cannot be digested, image still ready for upload
-            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongJSONobject.localizedDescription])
+            print("\(debugFormatter.string(from: Date())) > \(md5sum) | wrong JSON object!")
+            let error = NSError.init(domain: "Piwigo", code: UploadError.wrongJSONobject.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongJSONobject.localizedDescription])
             self.didEndTransfer(for: uploadID, with: uploadProperties, error)
             return
         }

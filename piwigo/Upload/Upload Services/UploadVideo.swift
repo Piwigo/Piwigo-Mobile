@@ -120,7 +120,7 @@ extension UploadManager {
 
                 // Valid export session?
                 guard let exportSession = exportSession else {
-                    let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                    let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                     self.didPrepareVideo(for: uploadID, with: newUploadProperties, error)
                     return
                 }
@@ -133,7 +133,7 @@ extension UploadManager {
             }
 
             // Could not prepare the video file
-            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+            let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
             self.didPrepareVideo(for: uploadID, with: newUploadProperties, error)
             return
         }
@@ -153,7 +153,7 @@ extension UploadManager {
 
             // Valid AVAsset?
             guard let avasset = avasset else {
-                let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                 self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
                 return
             }
@@ -171,7 +171,7 @@ extension UploadManager {
 
                 // Valid export session?
                 guard let exportSession = exportSession else {
-                    let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                    let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                     self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
                     return
                 }
@@ -499,7 +499,7 @@ extension UploadManager {
                 } catch {
                 }
 
-                let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                 completionHandler(newUpload, error)
                 return
                 
@@ -510,7 +510,7 @@ extension UploadManager {
                 } catch {
                 }
 
-                let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                 completionHandler(newUpload, error)
                 return
             
@@ -521,7 +521,7 @@ extension UploadManager {
                 } catch {
                 }
 
-                let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                 completionHandler(newUpload, error)
                 return
             }
