@@ -149,7 +149,14 @@ extension UploadManager {
             // Consider next image?
             if self.isExecutingBackgroundUploadTask {
                 // In background task
-                self.nberOfUploadsToComplete = self.nberOfUploadsToComplete > 0 ? self.nberOfUploadsToComplete - 1 : 0
+                // Get uploads to complete in queue
+                // Considers only uploads to the server to which the user is logged in
+                let states: [kPiwigoUploadState] = [.waiting,
+                                                    .preparing, .preparingError, .prepared,
+                                                    .uploading, .uploadingError, .uploaded,
+                                                    .finishing, .finishingError]
+                // Update app badge and Upload button in root/default album
+                self.nberOfUploadsToComplete = self.uploadsProvider.getRequestsIn(states: states)?.count ?? 0
             } else {
                 // In foreground, always consider next file
                 self.didEndTransfer(for: uploadID)
