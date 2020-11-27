@@ -687,9 +687,7 @@ extension UploadManager {
                 newUploadProperties.imageId = uploadJSON.data.imageId!
                 newUploadProperties.requestState = .finished
                 newUploadProperties.requestError = ""
-                uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: newUploadProperties) { [unowned self] (_) in
-                    self.didEndTransfer(for: uploadID, with: newUploadProperties, nil)
-                }
+                self.didEndTransfer(for: uploadID, with: newUploadProperties, nil)
             }
             return
         } catch {
