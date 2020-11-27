@@ -169,9 +169,9 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
         self.addButton.layer.cornerRadius = kRadius;
         self.addButton.layer.masksToBounds = NO;
         [self.addButton.layer setOpacity:0.0];
-        [self.addButton.layer setShadowOpacity:1.0];
-        [self.addButton.layer setShadowRadius:1.0];
-        [self.addButton.layer setShadowOffset:CGSizeMake(0.0, 0.0)];
+        [self.addButton.layer setShadowOpacity:0.8];
+        [self.addButton.layer setShadowRadius:3.0];
+        [self.addButton.layer setShadowOffset:CGSizeMake(0.0, 0.5)];
         self.addButton.backgroundColor = [UIColor piwigoColorOrange];
         self.addButton.tintColor = [UIColor whiteColor];
         self.addButton.showsTouchWhenHighlighted = YES;
@@ -191,9 +191,9 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
         self.uploadQueueButton.frame = self.addButton.frame;
         self.uploadQueueButton.layer.cornerRadius = kRadius;
         self.uploadQueueButton.layer.masksToBounds = NO;
-        [self.uploadQueueButton.layer setShadowOpacity:1.0];
-        [self.uploadQueueButton.layer setShadowRadius:1.0];
-        [self.uploadQueueButton.layer setShadowOffset:CGSizeMake(0.0, 0.0)];
+        [self.uploadQueueButton.layer setShadowOpacity:0.8];
+        [self.uploadQueueButton.layer setShadowRadius:3.0];
+        [self.uploadQueueButton.layer setShadowOffset:CGSizeMake(0.0, 0.5)];
         self.uploadQueueButton.showsTouchWhenHighlighted = YES;
         [self.uploadQueueButton addTarget:self action:@selector(didTapUploadQueueButton)
                     forControlEvents:UIControlEventTouchUpInside];
@@ -223,9 +223,9 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
         self.homeAlbumButton.layer.cornerRadius = kRadius;
         self.homeAlbumButton.layer.masksToBounds = NO;
         [self.homeAlbumButton.layer setOpacity:0.0];
-        [self.homeAlbumButton.layer setShadowOpacity:1.0];
-        [self.homeAlbumButton.layer setShadowRadius:1.0];
-        [self.homeAlbumButton.layer setShadowOffset:CGSizeMake(0.0, 0.0)];
+        [self.homeAlbumButton.layer setShadowOpacity:0.8];
+        [self.homeAlbumButton.layer setShadowRadius:3.0];
+        [self.homeAlbumButton.layer setShadowOffset:CGSizeMake(0.0, 0.5)];
         self.homeAlbumButton.showsTouchWhenHighlighted = YES;
         [self.homeAlbumButton setImage:[UIImage imageNamed:@"rootAlbum"] forState:UIControlStateNormal];
         [self.homeAlbumButton addTarget:self action:@selector(returnToDefaultCategory)
@@ -239,9 +239,9 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
         self.createAlbumButton.layer.cornerRadius = 0.86*kRadius;
         self.createAlbumButton.layer.masksToBounds = NO;
         [self.createAlbumButton.layer setOpacity:0.0];
-        [self.createAlbumButton.layer setShadowOpacity:1.0];
-        [self.createAlbumButton.layer setShadowRadius:1.0];
-        [self.createAlbumButton.layer setShadowOffset:CGSizeMake(0.0, 0.0)];
+        [self.createAlbumButton.layer setShadowOpacity:0.8];
+        [self.createAlbumButton.layer setShadowRadius:3.0];
+        [self.createAlbumButton.layer setShadowOffset:CGSizeMake(0.0, 0.5)];
         self.createAlbumButton.backgroundColor = [UIColor piwigoColorOrange];
         self.createAlbumButton.tintColor = [UIColor whiteColor];
         self.createAlbumButton.showsTouchWhenHighlighted = YES;
@@ -258,9 +258,9 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
         self.uploadImagesButton.layer.cornerRadius = 0.86*kRadius;
         self.uploadImagesButton.layer.masksToBounds = NO;
         [self.uploadImagesButton.layer setOpacity:0.0];
-        [self.uploadImagesButton.layer setShadowOpacity:1.0];
-        [self.uploadImagesButton.layer setShadowRadius:1.0];
-        [self.uploadImagesButton.layer setShadowOffset:CGSizeMake(0.0, 0.0)];
+        [self.uploadImagesButton.layer setShadowOpacity:0.8];
+        [self.uploadImagesButton.layer setShadowRadius:3.0];
+        [self.uploadImagesButton.layer setShadowOffset:CGSizeMake(0.0, 0.5)];
         self.uploadImagesButton.backgroundColor = [UIColor piwigoColorOrange];
         self.uploadImagesButton.tintColor = [UIColor whiteColor];
         self.uploadImagesButton.showsTouchWhenHighlighted = YES;
