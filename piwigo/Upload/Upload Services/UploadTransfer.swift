@@ -89,11 +89,9 @@ extension UploadManager {
                     // Update state of upload
                     var newUploadProperties = uploadProperties
                     newUploadProperties.imageId = uploadJSON.data.image_id!
-                    newUploadProperties.requestState = .finished
+                    newUploadProperties.requestState = .uploaded
                     newUploadProperties.requestError = ""
-                    self.uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: newUploadProperties) { [unowned self] (_) in
-                        self.didEndTransfer(for: uploadID, with: newUploadProperties, nil)
-                    }
+                    self.didEndTransfer(for: uploadID, with: newUploadProperties, nil)
                     return
                 } catch {
                     // Data cannot be digested, image still ready for upload
