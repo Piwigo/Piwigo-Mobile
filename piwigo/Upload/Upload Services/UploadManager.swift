@@ -336,7 +336,7 @@ class UploadManager: NSObject, URLSessionDelegate {
     /// - uploads are launched in the background with the method pwg.images.uploadAsync
     ///   and the BackgroundTasks farmework (iOS 13+)
     /// - transfers failed due to wrong MD5 checksum are retried a certain number of times.
-    @objc let maxNberOfUploadsPerBackgroundTask = 50
+    @objc let maxNberOfUploadsPerBackgroundTask = 100
     @objc var indexOfUploadRequestToPrepare = 0
     @objc var uploadRequestsToPrepare = [NSManagedObjectID]()
     @objc var indexOfUploadRequestToTransfer = 0
