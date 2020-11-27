@@ -227,6 +227,9 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
                                         // Bugfix: iOS9 - Tint not fully Applied without Reapplying
                                         alert.view.tintColor = UIColor.piwigoColorOrange()
                                     })
+                                } else {
+                                    // Relaunch uploads
+                                    UploadManager.shared.findNextImageToUpload()
                                 }
                             })
                         }

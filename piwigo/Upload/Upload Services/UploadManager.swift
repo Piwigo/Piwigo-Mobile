@@ -818,6 +818,7 @@ class UploadManager: NSObject, URLSessionDelegate {
                         print("\(self.debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no objectID!")
                         continue
                     }
+                    print("\(self.debugFormatter.string(from: Date())) >> is uploading \(uploadID)")
                     self.isUploading.insert(uploadID)
 
                 default:
@@ -830,18 +831,18 @@ class UploadManager: NSObject, URLSessionDelegate {
                 // Considers only uploads to the server to which the user is logged in
                 let states: [kPiwigoUploadState] = [.preparingError, .preparingFail, .formatError,
                                                     .uploadingError, .finishingError]
-                if let failedUploads = self.uploadsProvider.getRequestsIn(states: states) {
-                    if failedUploads.count > 0 {
-                        // Resume failed uploads
-                        self.resume(failedUploads: failedUploads) { (_) in }
-                    } else {
-                        // Continue uploads
+                if let failedUploads = self.uploadsProvider.getRequestsIn(states: states), failedUploads.count > 0 {
+                    // Resume failed uploads
+                    self.resume(failedUploads: failedUploads) { (_) in
+                        // Pursue the work
                         self.findNextImageToUpload()
                     }
+                } else {
+                    // Clean cache from completed uploads whose images do not exist in Photos Library
+                    self.uploadsProvider.clearCompletedUploads()
+                    // Pursue the work
+                    self.findNextImageToUpload()
                 }
-                
-                // Clean cache from completed uploads whose images do not exist in Photos Library
-                self.uploadsProvider.clearCompletedUploads()
             }
         }
     }
@@ -873,16 +874,8 @@ class UploadManager: NSObject, URLSessionDelegate {
         }
         
         // Update failed uploads
-        self.uploadsProvider.importUploads(from: uploadsToUpdate) { [self] (error) in
-            if let error = error {
-                completionHandler(error)
-                return;
-            }
-            // Launch uploads
-            self.backgroundQueue.async {
-                self.findNextImageToUpload()
-            }
-            completionHandler(nil)
+        self.uploadsProvider.importUploads(from: uploadsToUpdate) { (error) in
+            completionHandler(error)
         }
     }
     
