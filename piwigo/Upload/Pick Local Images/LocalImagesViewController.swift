@@ -555,13 +555,14 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 let indexedUploads = self.indexedUploadsInQueue.compactMap({$0})
                 if let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects {
                     let completedUploads = allUploads.filter({ ($0.state == .finished) || ($0.state == .moderated) })
-                    var uploadsToDelete: [Upload] = []
+                    var uploadIDsToDelete = [NSManagedObjectID](), imagesToDelete = [String]()
                     for index in 0..<indexedUploads.count {
                         if let upload = completedUploads.first(where: {$0.localIdentifier == indexedUploads[index].0}) {
-                            uploadsToDelete.append(upload)
+                            uploadIDsToDelete.append(upload.objectID)
+                            imagesToDelete.append(indexedUploads[index].0!)
                         }
                     }
-                    UploadManager.shared.delete(uploadedImages: uploadsToDelete)
+                    UploadManager.shared.delete(uploadedImages: imagesToDelete, with: uploadIDsToDelete)
                 }
             })
             alert.addAction(deleteAction)

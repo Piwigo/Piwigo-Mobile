@@ -322,14 +322,10 @@ class UploadManager: NSObject, URLSessionDelegate {
 
         // Delete images from Photo Library if user wanted it
         // Considers only uploads to the server to which the user is logged in
-        guard let completedUploads = uploadsProvider.getRequestsIn(states: [.finished, .moderated]) else {
-            return
-        }
-        let completedToDelete = completedUploads.filter({$0.deleteImageAfterUpload == true})
-        print("\(debugFormatter.string(from: Date())) > \(completedUploads.count) completedUploads, among which \(completedToDelete.count) should be deleted")
-        if completedToDelete.count > 0, allUploads.count == 0 {
-            // Delete photos when all upload requests have been completed
-            self.delete(uploadedImages: completedToDelete)
+        let (imageIDs, uploadIDs) = uploadsProvider.getCompletedRequestsToBeDeleted()
+        if !imageIDs.isEmpty, !uploadIDs.isEmpty, allUploads.count == 0 {
+            print("\(debugFormatter.string(from: Date())) > (\(imageIDs.count),\(uploadIDs.count)) should be deleted")
+            self.delete(uploadedImages: imageIDs, with: uploadIDs)
         }
     }
 
@@ -769,12 +765,10 @@ class UploadManager: NSObject, URLSessionDelegate {
         }
     }
 
-    func delete(uploadedImages: [Upload]) -> Void {
-        // Get local identifiers of uploaded images to delete
-        let uploadedImagesToDelete = uploadedImages.map({$0.localIdentifier})
-        
+    func delete(uploadedImages: [String], with uploadIDs: [NSManagedObjectID]) -> Void {
+
         // Get image assets of images to delete
-        let assetsToDelete = PHAsset.fetchAssets(withLocalIdentifiers: uploadedImagesToDelete, options: nil)
+        let assetsToDelete = PHAsset.fetchAssets(withLocalIdentifiers: uploadedImages, options: nil)
         
         // Delete images from Photo Library
         DispatchQueue.main.async(execute: {
@@ -785,14 +779,13 @@ class UploadManager: NSObject, URLSessionDelegate {
                 if success == true {
                     // Delete upload requests in a private queue
                     DispatchQueue.global(qos: .userInitiated).async {
-                        self.uploadsProvider.delete(uploadRequests: uploadedImages)
+                        self.uploadsProvider.delete(uploadRequests: uploadIDs)
                     }
                 } else {
                     // User refused to delete the photos
                     DispatchQueue.global(qos: .userInitiated).async {
                         // Remember that user did not want to delete them
-                        let uploadsToUpdate = uploadedImages.map({$0.objectID})
-                        self.uploadsProvider.preventDeletionOfUploads(with: uploadsToUpdate)
+                        self.uploadsProvider.preventDeletionOfUploads(with: uploadIDs)
                     }
                 }
             })
