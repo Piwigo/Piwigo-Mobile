@@ -463,12 +463,7 @@ class UploadManager: NSObject, URLSessionDelegate {
             // Asset not available… deleted?
             uploadsProvider.updateStatusOfUpload(with: uploadID, to: .preparingFail, error: UploadError.missingAsset.errorDescription) { [unowned self] (_) in
                 // Investigate next upload request?
-                if self.isExecutingBackgroundUploadTask {
-                    // In background task — stop here
-                } else {
-                    // In foreground, consider next image
-                    self.didEndPreparation()
-                }
+                self.didEndPreparation()
             }
             return
         }
@@ -524,12 +519,7 @@ class UploadManager: NSObject, URLSessionDelegate {
             uploadProperties.requestState = .formatError
             uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                 // Investigate next upload request?
-                if self.isExecutingBackgroundUploadTask {
-                    // In background task
-                } else {
-                    // In foreground, consider next image
-                    self.didEndPreparation()
-                }
+                self.didEndPreparation()
             }
 //            showError(withTitle: NSLocalizedString("imageUploadError_title", comment: "Image Upload Error"), andMessage: NSLocalizedString("imageUploadError_format", comment: "Sorry, image files with extensions .\(fileExt.uppercased()) and .jpg are not accepted by the Piwigo server."), forRetrying: false, withImage: nextImageToBeUploaded)
 
@@ -568,12 +558,7 @@ class UploadManager: NSObject, URLSessionDelegate {
             uploadProperties.requestState = .formatError
             uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                 // Investigate next upload request?
-                if self.isExecutingBackgroundUploadTask {
-                    // In background task
-                } else {
-                    // In foreground, consider next image
-                    self.didEndPreparation()
-                }
+                self.didEndPreparation()
             }
 //                showError(withTitle: NSLocalizedString("videoUploadError_title", comment: "Video Upload Error"), andMessage: NSLocalizedString("videoUploadError_format", comment: "Sorry, video files with extension .\(fileExt.uppercased()) are not accepted by the Piwigo server."), forRetrying: false, withImage: uploadToPrepare)
 
@@ -582,12 +567,7 @@ class UploadManager: NSObject, URLSessionDelegate {
             uploadProperties.requestState = .formatError
             uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                 // Investigate next upload request?
-                if self.isExecutingBackgroundUploadTask {
-                    // In background task
-                } else {
-                    // In foreground, consider next image
-                    self.didEndPreparation()
-                }
+                self.didEndPreparation()
             }
 //            showError(withTitle: NSLocalizedString("audioUploadError_title", comment: "Audio Upload Error"), andMessage: NSLocalizedString("audioUploadError_format", comment: "Sorry, audio files are not supported by Piwigo Mobile yet."), forRetrying: false, withImage: uploadToPrepare)
 
@@ -598,18 +578,14 @@ class UploadManager: NSObject, URLSessionDelegate {
             uploadProperties.requestState = .formatError
             uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                 // Investigate next upload request?
-                if self.isExecutingBackgroundUploadTask {
-                    // In background task
-                } else {
-                    // In foreground, consider next image
-                    self.didEndPreparation()
-                }
+                self.didEndPreparation()
             }
         }
     }
 
     @objc func didEndPreparation() {
         _isPreparing = false
+        if isExecutingBackgroundUploadTask { return }
         if isUploading.count <= maxNberOfTransfers, !isFinishing { findNextImageToUpload() }
     }
 
