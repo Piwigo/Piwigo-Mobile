@@ -554,7 +554,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 // Delete uploaded images (fetch on the main queue)
                 let indexedUploads = self.indexedUploadsInQueue.compactMap({$0})
                 if let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects {
-                    let completedUploads = allUploads.filter({ $0.state == .finished })
+                    let completedUploads = allUploads.filter({ ($0.state == .finished) || ($0.state == .moderated) })
                     var uploadsToDelete: [Upload] = []
                     for index in 0..<indexedUploads.count {
                         if let upload = completedUploads.first(where: {$0.localIdentifier == indexedUploads[index].0}) {
