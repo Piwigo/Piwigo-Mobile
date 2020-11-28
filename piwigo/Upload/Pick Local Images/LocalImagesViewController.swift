@@ -973,7 +973,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
     @objc func applyUploadProgress(_ notification: Notification) {
         let localIdentifier =  (notification.userInfo?["localIndentifier"] ?? "") as! String
-        let progressFraction = (notification.userInfo?["progressFraction"] ?? 0.0) as! Float
+        let progressFraction = (notification.userInfo?["progressFraction"] ?? Float(0.0)) as! Float
         let indexPathsForVisibleItems = localImagesCollection.indexPathsForVisibleItems
         for indexPath in indexPathsForVisibleItems {
             let index = getImageIndex(for: indexPath)
