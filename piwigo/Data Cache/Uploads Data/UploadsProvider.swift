@@ -542,7 +542,7 @@ class UploadsProvider: NSObject {
     */
     @objc private func didDeleteImageWithId(_ notification: Notification) {
         // Check current queue
-        print("•••>> didDeleteImageWithId()", queueName())
+//        print("•••>> didDeleteImageWithId()", queueName())
 
         // Collect album ID
         guard let albumId = notification.userInfo?["albumId"] as? Int64 else {
