@@ -322,9 +322,14 @@ class UploadManager: NSObject, URLSessionDelegate {
 
         // Delete images from Photo Library if user wanted it
         // Considers only uploads to the server to which the user is logged in
-        if let completedUploads = uploadsProvider.getRequestsIn(states: [.finished, .moderated]),
-            completedUploads.filter({$0.deleteImageAfterUpload == true}).count > 0, allUploads.count == 0 {
-            self.delete(uploadedImages: completedUploads.filter({$0.deleteImageAfterUpload == true}))
+        guard let completedUploads = uploadsProvider.getRequestsIn(states: [.finished, .moderated]) else {
+            return
+        }
+        let completedToDelete = completedUploads.filter({$0.deleteImageAfterUpload == true})
+        print("\(debugFormatter.string(from: Date())) > \(completedUploads.count) completedUploads, among which \(completedToDelete.count) should be deleted")
+        if completedToDelete.count > 0, allUploads.count == 0 {
+            // Delete photos when all upload requests have been completed
+            self.delete(uploadedImages: completedToDelete)
         }
     }
 
@@ -642,12 +647,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         catch {
             print("\(debugFormatter.string(from: Date())) > missing Core Data object \(uploadID.uriRepresentation())!")
             // Investigate next upload request?
-            if self.isExecutingBackgroundUploadTask {
-                // In background task — stop here
-            } else {
-                // In foreground, consider next image
-                self.findNextImageToUpload()
-            }
+            self.didEndTransfer(for: uploadID)
             return
         }
 
@@ -707,7 +707,13 @@ class UploadManager: NSObject, URLSessionDelegate {
     }
 
     @objc func didEndTransfer(for uploadID: NSManagedObjectID) {
-        _isUploading.remove(uploadID)
+        // Update list of current uploads
+        isUploading.remove(uploadID)
+        
+        // In background task: stop operation here
+        if self.isExecutingBackgroundUploadTask { return }
+        
+        // In foreground, always consider next file
         if !isPreparing, isUploading.count <= maxNberOfTransfers, !isFinishing { findNextImageToUpload() }
     }
 

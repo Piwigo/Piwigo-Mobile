@@ -131,12 +131,7 @@ extension UploadManager {
             }
             uploadsProvider.updateStatusOfUpload(with: uploadID, to: requestError, error: error.localizedDescription) { [unowned self] (_) in
                 // Consider next image?
-                if self.isExecutingBackgroundUploadTask {
-                    // In background task: stop operation here
-                } else {
-                    // In foreground, always consider next file
-                    self.didEndTransfer(for: uploadID)
-                }
+                self.didEndTransfer(for: uploadID)
             }
             return
         }
@@ -144,21 +139,17 @@ extension UploadManager {
         // Update state of upload request
         print("\(debugFormatter.string(from: Date())) > transferred \(uploadID.uriRepresentation())")
         uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: properties) { (_) in
+            // Get uploads to complete in queue
+            // Considers only uploads to the server to which the user is logged in
+            let states: [kPiwigoUploadState] = [.waiting,
+                                                .preparing, .preparingError, .prepared,
+                                                .uploading, .uploadingError, .uploaded,
+                                                .finishing, .finishingError]
+            // Update app badge and Upload button in root/default album
+            self.nberOfUploadsToComplete = self.uploadsProvider.getRequestsIn(states: states)?.count ?? 0
+
             // Consider next image?
-            if self.isExecutingBackgroundUploadTask {
-                // In background task
-                // Get uploads to complete in queue
-                // Considers only uploads to the server to which the user is logged in
-                let states: [kPiwigoUploadState] = [.waiting,
-                                                    .preparing, .preparingError, .prepared,
-                                                    .uploading, .uploadingError, .uploaded,
-                                                    .finishing, .finishingError]
-                // Update app badge and Upload button in root/default album
-                self.nberOfUploadsToComplete = self.uploadsProvider.getRequestsIn(states: states)?.count ?? 0
-            } else {
-                // In foreground, always consider next file
-                self.didEndTransfer(for: uploadID)
-            }
+            self.didEndTransfer(for: uploadID)
         }
     }
 
