@@ -964,6 +964,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
             [path addLineToPoint:CGPointMake(kRadius, 2*kRadius-1.5f)];
             [path addArcWithCenter:CGPointMake(kRadius, kRadius) radius:(kRadius-1.5f) startAngle:M_PI_2 endAngle:M_PI+M_PI_2 clockwise:YES];
             [path addLineToPoint:CGPointMake(kRadius + extraWidth, 1.5f)];
+            [path setLineCapStyle:kCGLineCapRound];
             self.progressLayer.path = [path CGPath];
 
             // Show button if needed
