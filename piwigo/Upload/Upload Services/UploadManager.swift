@@ -443,8 +443,7 @@ class UploadManager: NSObject, URLSessionDelegate {
             let uploadInfo: [String : Any] = ["localIndentifier" : uploadProperties.localIdentifier,
                                               "photoResize" : Int16(uploadProperties.photoResize),
                                               "stateLabel" : kPiwigoUploadState.preparing.stateInfo,
-                                              "Error" : "",
-                                              "progressFraction" : Float(0.0)]
+                                              "Error" : ""]
             DispatchQueue.main.async {
                 // Update UploadQueue cell and button shown in root album (or default album)
                 let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)
