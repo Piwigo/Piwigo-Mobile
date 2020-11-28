@@ -429,12 +429,10 @@ class UploadManager: NSObject, URLSessionDelegate {
         }
         catch {
             print("\(debugFormatter.string(from: Date())) > missing Core Data object \(uploadID)!")
-            // Investigate next upload request?
-            if self.isExecutingBackgroundUploadTask {
-                // In background task — stop here
-            } else {
-                // In foreground, consider next image
-                self.findNextImageToUpload()
+            // Request not available…!?
+            uploadsProvider.updateStatusOfUpload(with: uploadID, to: .preparingFail, error: UploadError.missingData.errorDescription) { [unowned self] (_) in
+                // Investigate next upload request?
+                self.didEndPreparation()
             }
             return
         }
