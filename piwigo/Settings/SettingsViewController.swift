@@ -1622,13 +1622,13 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     nberOfUploads) : "Clear 1 Upload Request"
                 let clearUploadsAction = UIAlertAction(title: titleClearUploadRequests,
                                                        style: .default, handler: { action in
-                    // Get completed uploads
+                    // Get all upload requests
                     guard let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects else {
                         return
                     }
                     // Delete all upload requests in a private queue
                     DispatchQueue.global(qos: .userInitiated).async {
-                        self.uploadsProvider.delete(uploadRequests: allUploads)
+                        self.uploadsProvider.delete(uploadRequests: allUploads.map({$0.objectID}))
                     }
                 })
                 #endif

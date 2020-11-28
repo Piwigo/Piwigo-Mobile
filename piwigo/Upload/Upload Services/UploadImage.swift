@@ -64,8 +64,7 @@ extension UploadManager {
 
         // Update UI
         let uploadInfo: [String : Any] = ["localIndentifier" : newProperties.localIdentifier,
-                                          "stateLabel" : newProperties.stateLabel,
-                                          "progressFraction" : Float(0)]
+                                          "stateLabel" : newProperties.stateLabel]
         DispatchQueue.main.async {
             // Update UploadQueue cell and button shown in root album (or default album)
             let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)

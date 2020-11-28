@@ -248,14 +248,9 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
                     if let _ = self.diffableDataSource.snapshot().indexOfSection(SectionKeys.Section1.rawValue) {
                         // Get IDs of upload requests which won't be possible to perform
                         let uploadIds = self.diffableDataSource.snapshot().itemIdentifiers(inSection: SectionKeys.Section1.rawValue)
-                        // Get uploads to delete
-                        var uploadsToDelete = [Upload]()
-                        uploadIds.forEach { (objectId) in
-                            uploadsToDelete.append(self.managedObjectContext.object(with: objectId) as! Upload)
-                        }
                         // Delete failed uploads in a private queue
                         DispatchQueue.global(qos: .userInitiated).async {
-                            self.uploadsProvider.delete(uploadRequests: uploadsToDelete)
+                            self.uploadsProvider.delete(uploadRequests: uploadIds)
                         }
                     }
                 })

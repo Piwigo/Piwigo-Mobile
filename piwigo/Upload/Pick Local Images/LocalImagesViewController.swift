@@ -554,14 +554,15 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 // Delete uploaded images (fetch on the main queue)
                 let indexedUploads = self.indexedUploadsInQueue.compactMap({$0})
                 if let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects {
-                    let completedUploads = allUploads.filter({ $0.state == .finished })
-                    var uploadsToDelete: [Upload] = []
+                    let completedUploads = allUploads.filter({ ($0.state == .finished) || ($0.state == .moderated) })
+                    var uploadIDsToDelete = [NSManagedObjectID](), imagesToDelete = [String]()
                     for index in 0..<indexedUploads.count {
                         if let upload = completedUploads.first(where: {$0.localIdentifier == indexedUploads[index].0}) {
-                            uploadsToDelete.append(upload)
+                            uploadIDsToDelete.append(upload.objectID)
+                            imagesToDelete.append(indexedUploads[index].0!)
                         }
                     }
-                    UploadManager.shared.delete(uploadedImages: uploadsToDelete)
+                    UploadManager.shared.delete(uploadedImages: imagesToDelete, with: uploadIDsToDelete)
                 }
             })
             alert.addAction(deleteAction)
@@ -973,7 +974,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
     @objc func applyUploadProgress(_ notification: Notification) {
         let localIdentifier =  (notification.userInfo?["localIndentifier"] ?? "") as! String
-        let progressFraction = (notification.userInfo?["progressFraction"] ?? 0.0) as! Float
+        let progressFraction = (notification.userInfo?["progressFraction"] ?? Float(0.0)) as! Float
         let indexPathsForVisibleItems = localImagesCollection.indexPathsForVisibleItems
         for indexPath in indexPathsForVisibleItems {
             let index = getImageIndex(for: indexPath)

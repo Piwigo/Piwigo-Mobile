@@ -188,7 +188,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
                 return
             }
             // Get uploads to delete
-            let uploadsToDelete = allUploads.filter({ $0.state == .preparingFail})
+            let uploadsToDelete = allUploads.filter({ $0.state == .preparingFail}).map({$0.objectID})
             // Delete failed uploads in a private queue
             DispatchQueue.global(qos: .userInitiated).async {
                 self.uploadsProvider.delete(uploadRequests: uploadsToDelete)
