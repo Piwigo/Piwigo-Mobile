@@ -484,6 +484,11 @@ class UploadManager: NSObject, URLSessionDelegate {
         uploadProperties.fileName = fileName
         let fileExt = (URL(fileURLWithPath: fileName).pathExtension).lowercased()
         
+        // Check/update serverFileTypes if possible
+        if let fileTypes = Model.sharedInstance()?.serverFileTypes, fileTypes.count > 0 {
+            uploadProperties.serverFileTypes = fileTypes
+        }
+        
         // Launch preparation job if file format accepted by Piwigo server
         switch originalAsset.mediaType {
         case .image:

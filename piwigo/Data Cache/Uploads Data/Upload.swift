@@ -365,7 +365,7 @@ struct UploadProperties
     let localIdentifier: String             // Unique PHAsset identifier
     let category: Int                       // 8
     let serverPath: String                  // URL path of Piwigo server
-    let serverFileTypes: String             // File formats accepted by the server
+    var serverFileTypes: String             // File formats accepted by the server
     let requestDate: Date                   // "2020-08-22 19:18:43"
     var requestState: kPiwigoUploadState    // See enum above
     var requestError: String?
