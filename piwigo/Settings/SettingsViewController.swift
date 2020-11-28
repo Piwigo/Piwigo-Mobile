@@ -45,6 +45,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     
     private var tableViewBottomConstraint: NSLayoutConstraint?
     private var doneBarButton: UIBarButtonItem?
+    private var helpBarButton: UIBarButtonItem?
     private var nberCategories = ""
     private var nberImages = ""
     private var nberTags = ""
@@ -91,7 +92,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // Button for returning to albums/images
         doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(quitSettings))
         doneBarButton?.accessibilityIdentifier = "Done"
-        
+
+        // Button for displaying help pages
+        helpBarButton = UIBarButtonItem(barButtonSystemItem: .bookmarks, target: self, action: #selector(displayHelp))
+        helpBarButton?.accessibilityIdentifier = "Help"
+
         // Table view identifier
         settingsTableView.accessibilityIdentifier = "settings"
     }
@@ -132,8 +137,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         applyColorPalette()
 
         // Set navigation buttons
-        navigationItem.setRightBarButtonItems([doneBarButton].compactMap { $0 }, animated: true)
-        
+        navigationItem.setLeftBarButtonItems([doneBarButton].compactMap { $0 }, animated: true)
+        navigationItem.setRightBarButtonItems([helpBarButton].compactMap { $0 }, animated: true)
+
         // Register palette changes
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
@@ -212,6 +218,15 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
     @objc func quitSettings() {
         dismiss(animated: true)
+    }
+    
+    @objc func displayHelp() {
+        let helpSB = UIStoryboard(name: "HelpViewController", bundle: nil)
+        let helpVC = helpSB.instantiateViewController(withIdentifier: "HelpViewController") as? HelpViewController
+        if let helpVC = helpVC {
+            helpVC.popoverPresentationController?.permittedArrowDirections = .up
+            navigationController?.present(helpVC, animated:true)
+        }
     }
 
     

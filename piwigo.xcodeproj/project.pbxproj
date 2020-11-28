@@ -64,6 +64,8 @@
 		AD5F64EE24C607FC00660BE3 /* pwg.tags.getList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5F64EC24C607FC00660BE3 /* pwg.tags.getList.swift */; };
 		AD5F64F224C6088600660BE3 /* pwg.tags.getList.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5F64F124C6088600660BE3 /* pwg.tags.getList.json */; };
 		AD5F64F424C6091500660BE3 /* pwg.tags.getAdminList.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5F64F324C6091500660BE3 /* pwg.tags.getAdminList.json */; };
+		AD61D2FA2571555A00B8DEA0 /* HelpViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD61D2F92571555A00B8DEA0 /* HelpViewController.storyboard */; };
+		AD61D3142571598000B8DEA0 /* HelpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD61D3132571598000B8DEA0 /* HelpViewController.swift */; };
 		AD65236B248837D3007E2537 /* UploadFinisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1D5F6A248553710004C8BC /* UploadFinisher.swift */; };
 		AD6A128B24FAB56B00E3BBED /* pwg.images.uploadAsync.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6A128A24FAB56A00E3BBED /* pwg.images.uploadAsync.swift */; };
 		AD6A128C24FAB57300E3BBED /* pwg.images.uploadAsync.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6A128A24FAB56A00E3BBED /* pwg.images.uploadAsync.swift */; };
@@ -310,6 +312,8 @@
 		AD5F64F124C6088600660BE3 /* pwg.tags.getList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pwg.tags.getList.json; sourceTree = "<group>"; };
 		AD5F64F324C6091500660BE3 /* pwg.tags.getAdminList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pwg.tags.getAdminList.json; sourceTree = "<group>"; };
 		AD5FCE2122EC629D00F37B1E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		AD61D2F92571555A00B8DEA0 /* HelpViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = HelpViewController.storyboard; sourceTree = "<group>"; };
+		AD61D3132571598000B8DEA0 /* HelpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpViewController.swift; sourceTree = "<group>"; };
 		AD6A128A24FAB56A00E3BBED /* pwg.images.uploadAsync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.images.uploadAsync.swift; sourceTree = "<group>"; };
 		AD6B2E791F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD6B2E7A1F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/About.strings; sourceTree = "<group>"; };
@@ -878,6 +882,8 @@
 				ADE46683242F978E002FEDE5 /* AboutViewController.storyboard */,
 				ADFC3A4B2401D704004CD337 /* PrivacyPolicyViewController.swift */,
 				AD3207E8240AD93900F00FEB /* PrivacyPolicyViewController.storyboard */,
+				AD61D3132571598000B8DEA0 /* HelpViewController.swift */,
+				AD61D2F92571555A00B8DEA0 /* HelpViewController.storyboard */,
 			);
 			path = Information;
 			sourceTree = "<group>";
@@ -1420,6 +1426,7 @@
 				AD21145A2122D3E4004FFC8C /* AlbumTableViewCell.xib in Resources */,
 				ADE46684242F978F002FEDE5 /* AboutViewController.storyboard in Resources */,
 				AD2B0A1B243D086000AF1FEE /* CategorySortViewController.storyboard in Resources */,
+				AD61D2FA2571555A00B8DEA0 /* HelpViewController.storyboard in Resources */,
 				ADEFBD632074E19000DFAD26 /* CategoryTableViewCell.xib in Resources */,
 				AD2B0A15243D001A00AF1FEE /* DefaultAlbumThumbnailSizeViewController.storyboard in Resources */,
 				ADF1CC77243D132100D75319 /* DefaultCategoryViewController.storyboard in Resources */,
@@ -1704,6 +1711,7 @@
 				D88A685B1AC2323D002A3259 /* CategoryTableViewCell.m in Sources */,
 				D8D3F7241A785E1B00AEA7F1 /* ImageCollectionViewCell.m in Sources */,
 				D8F325171A87F212007CBDAC /* EditImageTextViewTableViewCell.m in Sources */,
+				AD61D3142571598000B8DEA0 /* HelpViewController.swift in Sources */,
 				AD770FD423B4BDA2007DAD50 /* EditImageParamsViewController.m in Sources */,
 				ADF1FCE821F367D100096D35 /* AsyncVideoActivityItemProvider.m in Sources */,
 				D818E9FB1A74C18500733991 /* AlbumService.m in Sources */,

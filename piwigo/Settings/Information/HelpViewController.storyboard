@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="OpenSansRegular.TTF">
+            <string>OpenSans</string>
+        </array>
+    </customFonts>
+    <scenes>
+        <!--Help View Controller-->
+        <scene sceneID="2wE-tZ-dh8">
+            <objects>
+                <viewController storyboardIdentifier="HelpViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="KZo-Xn-8N3" customClass="HelpViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="zne-FB-LOi">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <containerView opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wzx-O6-YNR">
+                                <rect key="frame" x="20" y="64" width="374" height="698"/>
+                                <connections>
+                                    <segue destination="hMF-co-LFw" kind="embed" id="eI5-1L-cR8"/>
+                                </connections>
+                            </containerView>
+                            <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="v2A-0U-1lw">
+                                <rect key="frame" x="146" y="790" width="122.5" height="28"/>
+                                <color key="tintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="pageIndicatorTintColor" systemColor="systemGray5Color"/>
+                                <color key="currentPageIndicatorTintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            </pageControl>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2E7-Uu-mEb">
+                                <rect key="frame" x="183" y="826" width="48" height="36"/>
+                                <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
+                                <state key="normal" title="Got it!">
+                                    <color key="titleColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="dismissHelp:" destination="KZo-Xn-8N3" eventType="touchUpInside" id="T0W-pf-aj3"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="rUj-qf-a6h"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="v2A-0U-1lw" firstAttribute="centerX" secondItem="rUj-qf-a6h" secondAttribute="centerX" id="5Uj-vs-p1n"/>
+                            <constraint firstItem="wzx-O6-YNR" firstAttribute="leading" secondItem="rUj-qf-a6h" secondAttribute="leading" constant="20" id="DXb-9u-330"/>
+                            <constraint firstItem="rUj-qf-a6h" firstAttribute="bottom" secondItem="wzx-O6-YNR" secondAttribute="bottom" constant="100" id="aaN-c6-DcY"/>
+                            <constraint firstItem="2E7-Uu-mEb" firstAttribute="bottom" secondItem="rUj-qf-a6h" secondAttribute="bottom" id="jwx-IR-RCF"/>
+                            <constraint firstItem="wzx-O6-YNR" firstAttribute="top" secondItem="rUj-qf-a6h" secondAttribute="top" constant="20" id="l3i-0r-dR2"/>
+                            <constraint firstItem="2E7-Uu-mEb" firstAttribute="top" secondItem="v2A-0U-1lw" secondAttribute="bottom" constant="8" symbolic="YES" id="nxR-mZ-77V"/>
+                            <constraint firstItem="2E7-Uu-mEb" firstAttribute="centerX" secondItem="rUj-qf-a6h" secondAttribute="centerX" id="rSj-Ph-NN5"/>
+                            <constraint firstItem="rUj-qf-a6h" firstAttribute="trailing" secondItem="wzx-O6-YNR" secondAttribute="trailing" constant="20" id="t2F-xP-vc3"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="container" destination="wzx-O6-YNR" id="ebg-6W-DNm"/>
+                        <outlet property="pageControl" destination="v2A-0U-1lw" id="JgE-nU-Ezd"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="OhU-RE-dQz" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-894.20289855072474" y="-612.05357142857144"/>
+        </scene>
+        <!--Page View Controller-->
+        <scene sceneID="L95-lk-2rL">
+            <objects>
+                <pageViewController autoresizesArchivedViewToFullSize="NO" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="hMF-co-LFw" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Tq7-hr-93c" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-149" y="-612"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="VqZ-Xf-5Fe">
+            <objects>
+                <viewController storyboardIdentifier="help01" useStoryboardIdentifierAsRestorationIdentifier="YES" id="9K6-Cd-KL7" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" id="Ixk-9c-yZM">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="HELP #1" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ge9-Dp-NFm">
+                                <rect key="frame" x="173.5" y="409.5" width="67" height="23.5"/>
+                                <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="ge9-Dp-NFm" firstAttribute="centerY" secondItem="Ixk-9c-yZM" secondAttribute="centerY" id="5we-ft-0KV"/>
+                            <constraint firstItem="ge9-Dp-NFm" firstAttribute="centerX" secondItem="Ixk-9c-yZM" secondAttribute="centerX" id="IxP-Tx-Pye"/>
+                        </constraints>
+                    </view>
+                    <modalPageSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2vZ-Jf-8dT" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="520" y="-612"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="i0s-6G-dnc">
+            <objects>
+                <viewController storyboardIdentifier="help02" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Nez-1y-fpM" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" id="ei3-GT-7fz">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="HELP #2" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="l9P-JY-UtA">
+                                <rect key="frame" x="173.5" y="409" width="67" height="24"/>
+                                <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="l9P-JY-UtA" firstAttribute="centerX" secondItem="ei3-GT-7fz" secondAttribute="centerX" id="6Zo-aP-FtN"/>
+                            <constraint firstItem="l9P-JY-UtA" firstAttribute="centerY" secondItem="ei3-GT-7fz" secondAttribute="centerY" id="WoD-p8-TlT"/>
+                        </constraints>
+                    </view>
+                    <modalPageSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Rze-m4-Hes" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1184" y="-612"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="gV3-mo-HWG">
+            <objects>
+                <viewController storyboardIdentifier="help03" useStoryboardIdentifierAsRestorationIdentifier="YES" id="nGz-BW-XsJ" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" id="DhE-Mp-Wpi">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="HELP #3" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UKU-ae-d6K">
+                                <rect key="frame" x="173.5" y="409" width="67" height="24"/>
+                                <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="UKU-ae-d6K" firstAttribute="centerX" secondItem="DhE-Mp-Wpi" secondAttribute="centerX" id="7Eu-vS-Qm2"/>
+                            <constraint firstItem="UKU-ae-d6K" firstAttribute="centerY" secondItem="DhE-Mp-Wpi" secondAttribute="centerY" id="LGd-pP-aHF"/>
+                        </constraints>
+                    </view>
+                    <modalPageSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="jRl-fe-QLw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1839" y="-612"/>
+        </scene>
+    </scenes>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemGray5Color">
+            <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>
