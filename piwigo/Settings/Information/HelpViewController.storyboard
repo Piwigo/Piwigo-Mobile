@@ -83,24 +83,32 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="HELP #1" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ge9-Dp-NFm">
-                                <rect key="frame" x="173.5" y="409.5" width="67" height="23.5"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" text="HELP #1" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ge9-Dp-NFm">
+                                <rect key="frame" x="173.5" y="724.5" width="67" height="23.5"/>
                                 <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="help01" translatesAutoresizingMaskIntoConstraints="NO" id="G33-FO-oKS">
+                                <rect key="frame" x="20" y="100" width="374" height="564.5"/>
+                            </imageView>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="auU-Jn-ZXe"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="ge9-Dp-NFm" firstAttribute="centerY" secondItem="Ixk-9c-yZM" secondAttribute="centerY" id="5we-ft-0KV"/>
+                            <constraint firstItem="auU-Jn-ZXe" firstAttribute="trailing" secondItem="G33-FO-oKS" secondAttribute="trailing" constant="20" id="9S3-ol-jlG"/>
+                            <constraint firstItem="G33-FO-oKS" firstAttribute="top" secondItem="auU-Jn-ZXe" secondAttribute="top" constant="100" id="DQ0-Z7-K04"/>
+                            <constraint firstItem="G33-FO-oKS" firstAttribute="leading" secondItem="auU-Jn-ZXe" secondAttribute="leading" constant="20" id="DTd-r4-YkR"/>
                             <constraint firstItem="ge9-Dp-NFm" firstAttribute="centerX" secondItem="Ixk-9c-yZM" secondAttribute="centerX" id="IxP-Tx-Pye"/>
+                            <constraint firstItem="G33-FO-oKS" firstAttribute="bottom" secondItem="ge9-Dp-NFm" secondAttribute="top" constant="-60" id="jkg-Bb-Zt7"/>
+                            <constraint firstItem="auU-Jn-ZXe" firstAttribute="bottom" secondItem="ge9-Dp-NFm" secondAttribute="bottom" constant="60" id="yib-xL-Vui"/>
                         </constraints>
                     </view>
                     <modalPageSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2vZ-Jf-8dT" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="520" y="-612"/>
+            <point key="canvasLocation" x="518.84057971014499" y="-612.05357142857144"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="i0s-6G-dnc">
@@ -117,6 +125,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="0dU-Ug-h4q"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="l9P-JY-UtA" firstAttribute="centerX" secondItem="ei3-GT-7fz" secondAttribute="centerX" id="6Zo-aP-FtN"/>
@@ -144,6 +153,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="9Uf-8W-cwq"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="UKU-ae-d6K" firstAttribute="centerX" secondItem="DhE-Mp-Wpi" secondAttribute="centerX" id="7Eu-vS-Qm2"/>
@@ -158,6 +168,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="help01" width="456.5" height="904"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
