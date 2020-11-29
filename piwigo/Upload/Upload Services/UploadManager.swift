@@ -320,10 +320,12 @@ class UploadManager: NSObject, URLSessionDelegate {
             return
         }
 
-        // Delete images from Photo Library if user wanted it
+        // Suggest to delete images from Photo Library if user wanted it
+        // The deletion will only be suggested once and after completion of all uploads
+        if allUploads.count > 0 { return }
         // Considers only uploads to the server to which the user is logged in
         let (imageIDs, uploadIDs) = uploadsProvider.getCompletedRequestsToBeDeleted()
-        if !imageIDs.isEmpty, !uploadIDs.isEmpty, allUploads.count == 0 {
+        if !imageIDs.isEmpty, !uploadIDs.isEmpty {
             print("\(debugFormatter.string(from: Date())) > (\(imageIDs.count),\(uploadIDs.count)) should be deleted")
             self.delete(uploadedImages: imageIDs, with: uploadIDs)
         }
@@ -754,12 +756,6 @@ class UploadManager: NSObject, URLSessionDelegate {
                     // Delete upload requests in a private queue
                     DispatchQueue.global(qos: .userInitiated).async {
                         self.uploadsProvider.delete(uploadRequests: uploadIDs)
-                    }
-                } else {
-                    // User refused to delete the photos
-                    DispatchQueue.global(qos: .userInitiated).async {
-                        // Remember that user did not want to delete them
-                        self.uploadsProvider.preventDeletionOfUploads(with: uploadIDs)
                     }
                 }
             })

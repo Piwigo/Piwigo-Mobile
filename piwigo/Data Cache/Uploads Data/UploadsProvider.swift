@@ -42,7 +42,7 @@ class UploadsProvider: NSObject {
     }()
 
     
-    // MARK: - Add Uploads
+    // MARK: - Add/Update Uploads
     /**
      Imports a batch of upload requests into the Core Data store on a private queue,
      processing the record in batches to avoid a high memory footprint.
@@ -306,50 +306,6 @@ class UploadsProvider: NSObject {
             }
         }
         completionHandler(nil)
-    }
-
-    func preventDeletionOfUploads(with objectIDs:[NSManagedObjectID]) -> (Void) {
-        // Check current queue
-        print("•••>> preventDeletionOfUploads (\(objectIDs.count)) in \(queueName())\r")
-
-        // Create a private queue context.
-        let taskContext = DataController.getPrivateContext()
-                
-        // taskContext.performAndWait runs on the URLSession's delegate queue
-        // so it won’t block the main thread.
-        taskContext.performAndWait {
-            
-            // Loop over all object IDs
-            for objectID in objectIDs {
-                // Update cached upload
-                let cachedUpload = taskContext.object(with: objectID) as! Upload
-                cachedUpload.deleteImageAfterUpload = false
-            }
-            
-            // Save all modifications from the context to the store.
-            if taskContext.hasChanges {
-                do {
-                    try taskContext.save()
-                    
-                    // Performs a task in the main queue and wait until this task finishes
-                    DispatchQueue.main.async {
-                        self.managedObjectContext.performAndWait {
-                            do {
-                                // Saves the data from the child to the main context to be stored properly
-                                try self.managedObjectContext.save()
-                            } catch {
-                                fatalError("Failure to save context: \(error)")
-                            }
-                        }
-                    }
-                }
-                catch {
-                    fatalError("Failure to save context: \(error)")
-                }
-                // Reset the taskContext to free the cache and lower the memory footprint.
-                taskContext.reset()
-            }
-        }
     }
 
     /**
@@ -737,11 +693,36 @@ class UploadsProvider: NSObject {
                 fatalError("Unresolved error \(error)")
             }
             
-            // Return objects
+            // Reset flag of upload requests to prevent another demand for deleting images
             if let uploads = controller.fetchedObjects {
                 for upload in uploads {
+                    // Reset flag
+                    upload.deleteImageAfterUpload = false
+                    // Collect data to return
                     localIdentifiers.append(upload.localIdentifier)
                     uploadIDs.append(upload.objectID)
+                }
+            }
+
+            // Save all modifications from the context to the store.
+            if taskContext.hasChanges {
+                do {
+                    try taskContext.save()
+                    
+                    // Performs a task in the main queue and wait until this task finishes
+                    DispatchQueue.main.async {
+                        self.managedObjectContext.performAndWait {
+                            do {
+                                // Saves the data from the child to the main context to be stored properly
+                                try self.managedObjectContext.save()
+                            } catch {
+                                fatalError("Failure to save context: \(error)")
+                            }
+                        }
+                    }
+                }
+                catch {
+                    fatalError("Failure to save context: \(error)")
                 }
             }
 
