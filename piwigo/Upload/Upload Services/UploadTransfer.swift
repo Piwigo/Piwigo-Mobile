@@ -509,15 +509,7 @@ extension UploadManager {
         }
         var uploadProperties: UploadProperties
         do {
-            let upload = try taskContext.existingObject(with: uploadID) as! Upload
-            if upload.isFault {
-                // The upload request is not fired yet.
-                upload.willAccessValue(forKey: nil)
-                uploadProperties = upload.getProperties()
-                upload.didAccessValue(forKey: nil)
-            } else {
-                uploadProperties = upload.getProperties()
-            }
+            uploadProperties = try (taskContext.existingObject(with: uploadID) as! Upload).getProperties()
         }
         catch {
             print("\(debugFormatter.string(from: Date())) > \(md5sum) | missing Core Data object!")

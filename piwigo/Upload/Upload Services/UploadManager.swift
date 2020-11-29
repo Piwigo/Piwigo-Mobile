@@ -31,7 +31,6 @@ class UploadManager: NSObject, URLSessionDelegate {
             name: UIApplication.willResignActiveNotification, object: nil)
     }
     
-    @objc var isPaused = false
     private var appState = UIApplication.State.active
     @objc func willResignActive() -> Void {
         // Executed in the main queue when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -180,8 +179,8 @@ class UploadManager: NSObject, URLSessionDelegate {
                                             .finishing, .finishingError]
         nberOfUploadsToComplete = uploadsProvider.getRequestsIn(states: states).count
         
-        // Determine the Power State and if it should wait
-        if ProcessInfo.processInfo.isLowPowerModeEnabled || isPaused {
+        // Determine the Power State
+        if ProcessInfo.processInfo.isLowPowerModeEnabled {
             // Low Power Mode is enabled. Stop transferring images.
             return
         }
