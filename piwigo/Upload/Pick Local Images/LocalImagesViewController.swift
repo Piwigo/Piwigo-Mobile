@@ -101,13 +101,17 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Fetch a specific path of the Photos Library to reduce the workload and store the fetched assets for future use
         fetchImagesByCreationDate(assetCollections: PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [self.imageCollectionId], options: nil))
         
-        // Initialise arrays
-        selectedImages = .init(repeating: nil, count: fetchedImages.count)            // At start, there is no image selected
+        // At start, there is no image selected
+        selectedImages = .init(repeating: nil, count: fetchedImages.count)
         selectedSections = .init(repeating: .none, count: fetchedImages.count)
-        if let uploads = uploadsProvider.fetchedResultsController.fetchedObjects {       // We provide a non-indexed list of images in the upload queue
+        
+        // We provide a non-indexed list of images in the upload queue
+        // so that we can at least show images in upload queue at start
+        // and prevent their selection
+        if let uploads = uploadsProvider.fetchedResultsController.fetchedObjects {
             uploadsInQueue = uploads.map {($0.localIdentifier, $0.state)}
-        }                                                                               // so that we can at least show images in upload queue at start
-                                                                                        // and prevent their selection
+        }
+                                                                                        
         // Sort images in background
         DispatchQueue.global(qos: .userInitiated).async {
             self.sortImagesAndIndexUploads()
@@ -360,7 +364,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
         // Initialisation
 //        let start = CFAbsoluteTimeGetCurrent()
-//        print("=> Start sorting images…")
         let calendar = Calendar.current
         let byDays: Set<Calendar.Component> = [.year, .month, .day]
         var dayComponents = calendar.dateComponents(byDays, from: images[0].creationDate ?? Date())
@@ -432,6 +435,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         return (imagesByDay, imagesByWeek, imagesByMonth)
     }
     
+    // Return image index from indexPath
     private func getImageIndex(for indexPath:IndexPath) -> Int {
         switch sortType {
         case .month:
@@ -478,8 +482,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
     private func indexUploadsAndCacheIDs(of images: PHFetchResult<PHAsset>) -> (Void) {
         // Loop over all images
-        let start = CFAbsoluteTimeGetCurrent()
-        print("=> Start indexing uploads… (\(images.count) images)")
+//        let start = CFAbsoluteTimeGetCurrent()
         localIdentifiers = .init(repeating: "", count: fetchedImages.count)
         indexedUploadsInQueue = .init(repeating: nil, count: fetchedImages.count)
         for index in 0..<images.count {
@@ -490,8 +493,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 indexedUploadsInQueue[index] = upload
             }
         }
-        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        print("   indexed \(fetchedImages.count) uploads in \(diff) ms")
+//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+//        print("   indexed \(fetchedImages.count) uploads in \(diff) ms")
     }
 
     
