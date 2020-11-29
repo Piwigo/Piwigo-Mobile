@@ -902,8 +902,12 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
 -(void)showHomeAlbumButtonIfNeeded
 {
     // Present Home Album button if needed
-    if ((self.homeAlbumButton.isHidden) ||
-        CGRectContainsPoint(self.homeAlbumButton.frame, self.addButton.frame.origin))
+    if ((self.homeAlbumButton.isHidden ||
+         CGRectContainsPoint(self.homeAlbumButton.frame, self.addButton.frame.origin)) &&
+        (self.uploadImagesButton.isHidden ||
+         CGRectContainsPoint(self.uploadImagesButton.frame, self.addButton.frame.origin)) &&
+        (self.createAlbumButton.isHidden ||
+         CGRectContainsPoint(self.createAlbumButton.frame, self.addButton.frame.origin)))
     {
         // Unhide transparent Home Album button
         [self.homeAlbumButton setHidden:NO];
