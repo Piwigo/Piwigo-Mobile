@@ -1245,8 +1245,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         }
         
         // Add selected images to upload queue
-        uploadsProvider.importUploads(from: selectedImages.compactMap{ $0 }) { error in
-              DispatchQueue.main.async {
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.uploadsProvider.importUploads(from: self.selectedImages.compactMap{ $0 }) { error in
                 // Show an alert if there was an error.
                 guard let error = error else {
                     // Launch upload tasks in background queue
@@ -1255,21 +1255,23 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     }
                     return
                 }
-                let alert = UIAlertController(title: NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object."),
-                                              message: error.localizedDescription,
-                                              preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: NSLocalizedString("alertOkButton", comment: "OK"),
-                                              style: .default, handler: nil))
-                alert.view.tintColor = UIColor.piwigoColorOrange()
-                if #available(iOS 13.0, *) {
-                    alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
-                } else {
-                    // Fallback on earlier versions
-                }
-                self.present(alert, animated: true, completion: {
-                    // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                DispatchQueue.main.async {
+                    let alert = UIAlertController(title: NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object."),
+                                                  message: error.localizedDescription,
+                                                  preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: NSLocalizedString("alertOkButton", comment: "OK"),
+                                                  style: .default, handler: nil))
                     alert.view.tintColor = UIColor.piwigoColorOrange()
-                })
+                    if #available(iOS 13.0, *) {
+                        alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+                    } else {
+                        // Fallback on earlier versions
+                    }
+                    self.present(alert, animated: true, completion: {
+                        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                        alert.view.tintColor = UIColor.piwigoColorOrange()
+                    })
+                }
             }
         }
         
