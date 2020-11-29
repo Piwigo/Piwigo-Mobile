@@ -146,7 +146,7 @@ extension UploadManager {
                                                 .uploading, .uploadingError, .uploaded,
                                                 .finishing, .finishingError]
             // Update app badge and Upload button in root/default album
-            self.nberOfUploadsToComplete = self.uploadsProvider.getRequestsIn(states: states)?.count ?? 0
+            self.nberOfUploadsToComplete = self.uploadsProvider.getRequestsIn(states: states).count
 
             // Consider next image?
             self.didEndTransfer(for: uploadID)

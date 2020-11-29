@@ -200,7 +200,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         let titleResume = failedUploads > 1 ? String(format: NSLocalizedString("imageUploadResumeSeveral", comment: "Resume %@ Failed Uploads"), NumberFormatter.localizedString(from: NSNumber.init(value: failedUploads), number: .decimal)) : NSLocalizedString("imageUploadResumeSingle", comment: "Resume Failed Upload")
         let resumeAction = UIAlertAction(title: titleResume, style: .default, handler: { action in
             // Collect list of failed uploads
-            if let failedUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects?.filter({$0.state == .preparingError || $0.state == .uploadingError || $0.state == .finishingError }) {
+            if let failedUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects?.filter({$0.state == .preparingError || $0.state == .uploadingError || $0.state == .finishingError }).map({$0.objectID}) {
                 // Resume failed uploads
                 UploadManager.shared.backgroundQueue.async {
                     UploadManager.shared.resume(failedUploads: failedUploads, completionHandler: { (error) in
