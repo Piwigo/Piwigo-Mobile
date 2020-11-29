@@ -93,6 +93,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // Pause UploadManager while sorting images
+        UploadManager.shared.isPaused = true
+
         // Check collection Id
         if imageCollectionId.count == 0 {
             PhotosFetch.sharedInstance().showPhotosLibraryAccessRestricted(in: self)
@@ -190,6 +193,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
+        // Pause UploadManager while sorting images
+        UploadManager.shared.isPaused = true
+
         // Set colors, fonts, etc.
         applyColorPalette()
 
@@ -253,6 +259,14 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Unregister upload progress
         let name2: NSNotification.Name = NSNotification.Name(kPiwigoNotificationUploadProgress)
         NotificationCenter.default.removeObserver(self, name: name2, object: nil)
+
+        // Restart UploadManager activities
+        if UploadManager.shared.isPaused {
+            UploadManager.shared.isPaused = false
+            UploadManager.shared.backgroundQueue.async {
+                UploadManager.shared.findNextImageToUpload()
+            }
+        }
     }
 
     func updateNavBar() {
@@ -342,22 +356,32 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             self.indexUploadsAndCacheIDs(of: self.fetchedImages)
         })
         cacheOperation.completionBlock = {
-            // Allow action button and refresh UI
+            // Allow action button
             DispatchQueue.main.async {
-                // Allow action button
                 self.actionBarButton?.isEnabled = true
-
-                // Hide HUD (displayed when Photo Library motifies changes)
-                self.hideHUDwithSuccess(true) {
-                    // Enable Select buttons
-                    self.localImagesCollection.reloadData()
-                }
             }
         }
         
         // Perform both operations in background and in parallel
         queue.maxConcurrentOperationCount = .max   // Make it a serial queue for debugging with 1
+        queue.qualityOfService = .userInteractive
         queue.addOperations([sortOperation, cacheOperation], waitUntilFinished: true)
+
+        // Hide HUD (displayed when Photo Library motifies changes)
+        self.hideHUDwithSuccess(true) {
+            // Enable Select buttons
+            DispatchQueue.main.async {
+                self.localImagesCollection.reloadData()
+            }
+            // Restart UplaodManager activity if all images are already in the upload queue
+            if self.indexedUploadsInQueue.compactMap({$0}).count == self.fetchedImages.count,
+               UploadManager.shared.isPaused {
+                UploadManager.shared.isPaused = false
+                UploadManager.shared.backgroundQueue.async {
+                    UploadManager.shared.findNextImageToUpload()
+                }
+            }
+        }
     }
 
     private func sortByMonthWeekDay(images: PHFetchResult<PHAsset>) -> (imagesByDay: [IndexSet], imagesByWeek: [IndexSet], imagesByMonth: [IndexSet])  {
@@ -483,8 +507,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     private func indexUploadsAndCacheIDs(of images: PHFetchResult<PHAsset>) -> (Void) {
         // Loop over all images
 //        let start = CFAbsoluteTimeGetCurrent()
-        localIdentifiers = .init(repeating: "", count: fetchedImages.count)
-        indexedUploadsInQueue = .init(repeating: nil, count: fetchedImages.count)
+        localIdentifiers = .init(repeating: "", count: images.count)
+        indexedUploadsInQueue = .init(repeating: nil, count: images.count)
         for index in 0..<images.count {
             // Get image identifier
             let imageId = images[index].localIdentifier
@@ -494,7 +518,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             }
         }
 //        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-//        print("   indexed \(fetchedImages.count) uploads in \(diff) ms")
+//        print("   indexed \(images.count) uploads in \(diff) ms")
     }
 
     
@@ -1245,33 +1269,34 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         }
         
         // Add selected images to upload queue
-        DispatchQueue.global(qos: .userInitiated).async {
-            self.uploadsProvider.importUploads(from: self.selectedImages.compactMap{ $0 }) { error in
-                // Show an alert if there was an error.
-                guard let error = error else {
-                    // Launch upload tasks in background queue
+        self.uploadsProvider.importUploads(from: self.selectedImages.compactMap{ $0 }) { error in
+            // Show an alert if there was an error.
+            guard let error = error else {
+                // Restart UploadManager activities
+                if UploadManager.shared.isPaused {
+                    UploadManager.shared.isPaused = false
                     UploadManager.shared.backgroundQueue.async {
                         UploadManager.shared.findNextImageToUpload()
                     }
-                    return
                 }
-                DispatchQueue.main.async {
-                    let alert = UIAlertController(title: NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object."),
-                                                  message: error.localizedDescription,
-                                                  preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: NSLocalizedString("alertOkButton", comment: "OK"),
-                                                  style: .default, handler: nil))
+                return
+            }
+            DispatchQueue.main.async {
+                let alert = UIAlertController(title: NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object."),
+                                              message: error.localizedDescription,
+                                              preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: NSLocalizedString("alertOkButton", comment: "OK"),
+                                              style: .default, handler: nil))
+                alert.view.tintColor = UIColor.piwigoColorOrange()
+                if #available(iOS 13.0, *) {
+                    alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+                } else {
+                    // Fallback on earlier versions
+                }
+                self.present(alert, animated: true, completion: {
+                    // Bugfix: iOS9 - Tint not fully Applied without Reapplying
                     alert.view.tintColor = UIColor.piwigoColorOrange()
-                    if #available(iOS 13.0, *) {
-                        alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
-                    } else {
-                        // Fallback on earlier versions
-                    }
-                    self.present(alert, animated: true, completion: {
-                        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                        alert.view.tintColor = UIColor.piwigoColorOrange()
-                    })
-                }
+                })
             }
         }
         
