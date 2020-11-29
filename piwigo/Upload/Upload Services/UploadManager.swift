@@ -415,7 +415,15 @@ class UploadManager: NSObject, URLSessionDelegate {
         var uploadProperties: UploadProperties!
         let taskContext = DataController.getPrivateContext()
         do {
-            uploadProperties = try (taskContext.existingObject(with: uploadID) as! Upload).getProperties()
+            let upload = try taskContext.existingObject(with: uploadID) as! Upload
+            if upload.isFault {
+                // The upload request is not fired yet.
+                upload.willAccessValue(forKey: nil)
+                uploadProperties = upload.getProperties()
+                upload.didAccessValue(forKey: nil)
+            } else {
+                uploadProperties = upload.getProperties()
+            }
         }
         catch {
             print("\(debugFormatter.string(from: Date())) > missing Core Data object \(uploadID)!")
@@ -602,7 +610,15 @@ class UploadManager: NSObject, URLSessionDelegate {
         var uploadProperties: UploadProperties!
         let taskContext = DataController.getPrivateContext()
         do {
-            uploadProperties = try (taskContext.existingObject(with: uploadID) as! Upload).getProperties()
+            let upload = try taskContext.existingObject(with: uploadID) as! Upload
+            if upload.isFault {
+                // The upload request is not fired yet.
+                upload.willAccessValue(forKey: nil)
+                uploadProperties = upload.getProperties()
+                upload.didAccessValue(forKey: nil)
+            } else {
+                uploadProperties = upload.getProperties()
+            }
         }
         catch {
             print("\(debugFormatter.string(from: Date())) > missing Core Data object \(uploadID.uriRepresentation())!")
