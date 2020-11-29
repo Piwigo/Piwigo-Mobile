@@ -440,7 +440,7 @@ class UploadsProvider: NSObject {
     */
     private func deleteOneBatch(_ uploadsBatch: [NSManagedObjectID], taskContext: NSManagedObjectContext) -> Bool {
         // Check current queue
-        print("•••>> deleteOneBatch()", queueName())
+//        print("•••>> deleteOneBatch()", queueName())
 
         var success = false
         taskContext.performAndWait {
@@ -496,7 +496,7 @@ class UploadsProvider: NSObject {
         // Always perform this task in background
         DispatchQueue.global(qos: .userInitiated).async {
             // Check current queue
-            print("•••>> didDeleteImageWithId()", queueName())
+//            print("•••>> didDeleteImageWithId()", queueName())
 
             // Collect album ID
             guard let albumId = notification.userInfo?["albumId"] as? Int64 else {
@@ -557,7 +557,7 @@ class UploadsProvider: NSObject {
         // Always perform this task in background
         DispatchQueue.global(qos: .userInitiated).async {
             // Check current queue
-            print("•••>> didDeleteCategoryWithId()", queueName())
+//            print("•••>> didDeleteCategoryWithId()", queueName())
 
             // Collect album ID
             guard let albumId = notification.userInfo?["albumId"] as? Int64 else {
