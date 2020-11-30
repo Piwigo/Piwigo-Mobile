@@ -146,7 +146,7 @@ extension UploadManager {
                                                 .uploading, .uploadingError, .uploaded,
                                                 .finishing, .finishingError]
             // Update app badge and Upload button in root/default album
-            self.nberOfUploadsToComplete = self.uploadsProvider.getRequestsIn(states: states)?.count ?? 0
+            self.nberOfUploadsToComplete = self.uploadsProvider.getRequestsIn(states: states).count
 
             // Consider next image?
             self.didEndTransfer(for: uploadID)
@@ -509,7 +509,15 @@ extension UploadManager {
         }
         var uploadProperties: UploadProperties
         do {
-            uploadProperties = try (taskContext.existingObject(with: uploadID) as! Upload).getProperties()
+            let upload = try taskContext.existingObject(with: uploadID) as! Upload
+            if upload.isFault {
+                // The upload request is not fired yet.
+                upload.willAccessValue(forKey: nil)
+                uploadProperties = upload.getProperties()
+                upload.didAccessValue(forKey: nil)
+            } else {
+                uploadProperties = upload.getProperties()
+            }
         }
         catch {
             print("\(debugFormatter.string(from: Date())) > \(md5sum) | missing Core Data object!")

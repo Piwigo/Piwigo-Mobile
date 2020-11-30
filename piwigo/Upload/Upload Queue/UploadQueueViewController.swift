@@ -207,14 +207,9 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
                     if let _ = self.diffableDataSource.snapshot().indexOfSection(SectionKeys.Section2.rawValue) {
                         // Get IDs of upload requests which can be resumed
                         let uploadIds = self.diffableDataSource.snapshot().itemIdentifiers(inSection: SectionKeys.Section2.rawValue)
-                        // Get uploads to resume
-                        var uploadsToResume = [Upload]()
-                        uploadIds.forEach { (objectId) in
-                            uploadsToResume.append(self.managedObjectContext.object(with: objectId) as! Upload)
-                        }
                         // Resume failed uploads
                         UploadManager.shared.backgroundQueue.async {
-                            UploadManager.shared.resume(failedUploads: uploadsToResume, completionHandler: { (error) in
+                            UploadManager.shared.resume(failedUploads: uploadIds, completionHandler: { (error) in
                                 if let error = error {
                                     // Inform user
                                     let alert = UIAlertController(title: NSLocalizedString("errorHUD_label", comment: "Error"), message: error.localizedDescription, preferredStyle: .alert)

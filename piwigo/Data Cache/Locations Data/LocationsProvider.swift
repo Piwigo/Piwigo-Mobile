@@ -23,6 +23,7 @@ class LocationsProvider: NSObject {
     override init() {
         // Prepare list of operations
         queue.maxConcurrentOperationCount = 1   // Make it a serial queue
+        queue.qualityOfService = .background    // fetch location names in the background
         // Initialise locations in queue
         queuedLocations = []
     }

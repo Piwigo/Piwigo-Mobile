@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.5.2_text" = "Wersja 2.5.2\n\n• Przesyłanie w tle (wymaga rozszerzenia uploadAsync lub Piwigo 11 lub nowszego)\n• Drobne poprawki błędów i ulepszenia interfejsu";
+"v2.5.2_text" = "Wersja 2.5.2\n\n• Przesyłanie w tle (wymaga rozszerzenia uploadAsync lub Piwigo 2.11 lub nowszego)\n• Poprawki drobnych błędów i ulepszenia interfejsu";
 
 "v2.5.1_text" = "Wersja 2.5.1\n10 września 2020\n\n• Nowa opcja prezentowania zdjęć i filmów w losowej kolejności\n• Poprawki drobnych błędów i ulepszenia interfejsu";
 

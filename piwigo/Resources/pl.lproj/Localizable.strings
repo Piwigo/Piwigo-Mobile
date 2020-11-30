@@ -441,9 +441,9 @@
 
 // Images upload
 "imageUploadHeaderTitle_images" = "Parametry zdjęć";
-"imageUploadHeaderText_images" = "Proszę ustawić parametry do wyboru zdjęć/filmów";
-"imageUploadHeaderTitle_upload" = "Prześlij ustawienia";
-"imageUploadHeaderText_upload" = "Proszę ustawić parametry przesyłania, aby zastosować do wyboru zdjęć/filmów";
+"imageUploadHeaderText_images" = "Proszę ustawić parametry dla wybranych zdjęć/filmów";
+"imageUploadHeaderTitle_upload" = "Ustawienia przesyłania";
+"imageUploadHeaderText_upload" = "Proszę ustawić parametry przesyłania, aby zastosować do wybranych zdjęć/filmów";
 
 "imageUploadDetails_title" = "Tytuł:";
 "imageUploadDetails_author" = "Autor:";
