@@ -68,7 +68,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     
     private let queue = OperationQueue()                        // Queue used to sort and cache things
     private var fetchedImages: PHFetchResult<PHAsset>!          // Collection of images in selected non-empty local album
-    private var localIdentifiers = [String]()                   // Cached local identifiers of images
     private var sortType: SectionType = .all                    // [Months, Weeks, Days, All images in one section]
     private var indexOfImageSortedByMonth: [IndexSet] = []      // Indices of images sorted by month
     private var indexOfImageSortedByWeek: [IndexSet] = []       // Indices of images sorted week
@@ -101,8 +100,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             PhotosFetch.sharedInstance().showPhotosLibraryAccessRestricted(in: self)
         }
 
-        // Fetch a specific path of the Photos Library to reduce the workload and store the fetched assets for future use
-        fetchImagesByCreationDate(assetCollections: PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [self.imageCollectionId], options: nil))
+        // Fetch a specific path of the Photos Library to reduce the workload
+        // and store the fetched assets for future use
+        fetchImagesByCreationDate()
         
         // At start, there is no image selected
         selectedImages = .init(repeating: nil, count: fetchedImages.count)
@@ -307,17 +307,23 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     
     // MARK: - Fetch and Sort Images
     
-    func fetchImagesByCreationDate(assetCollections: PHFetchResult<PHAssetCollection>) -> Void {
+    func fetchImagesByCreationDate() -> Void {
         /**
          Fetch non-empty collection previously selected by user.
          We fetch a specific path of the Photos Library to reduce the workload and store the fetched collection for future use.
          The fetch is performed with ascending creation date.
          */
+        // Next line for testing
 //        let start = CFAbsoluteTimeGetCurrent()
+
         let fetchOptions = PHFetchOptions()
         fetchOptions.includeHiddenAssets = false
         fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+
+        let assetCollections = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [self.imageCollectionId], options: nil)
         fetchedImages = PHAsset.fetchAssets(in: assetCollections.firstObject!, options: fetchOptions)
+
+        // Next 2 lines for testing
 //        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
 //        print("=> Fetched \(fetchedImages.count) assets in \(diff) ms")
         // => Fetched 70331 assets in 205.949068069458 ms with hidden assets
@@ -327,6 +333,12 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     // Sorts images by months, weeks and days in the background,
     // initialise the array of selected sections and enable the choices
     private func sortImagesAndIndexUploads() -> Void {
+
+        // Operations are organised to reduce time
+        // Sort 70588 images by days, weeks and months in 5.2 to 6.7 s with iPhone 11 Pro
+        // The above duration is multiplied by 4 when the iPhone is not powered.
+        // and index 70588 uploads in about the same if there is no upload reauest already stored.
+        // but index 70588 uploads in 69.1 s if there are already 520 stored upload requests
 
         // Sort all images in one loop i.e. O(n)
         let sortOperation = BlockOperation.init(block: {
@@ -350,18 +362,26 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             }
         }
         
-        // Cache upload indices and image localIdentifiers
-        let cacheOperation = BlockOperation.init(block: {
-            // Index images in the upload queue and cache localIdentifiers
-            self.indexUploadsAndCacheIDs(of: self.fetchedImages)
-        })
+        // Caching upload request indices
+        let cacheOperation = BlockOperation()
+        if fetchedImages.count > 10 * uploadsInQueue.count {
+            // By iterating uploads in queue
+            cacheOperation.addExecutionBlock {
+                self.cachingUploadIndicesIteratingUploadsInQueue()
+            }
+        } else {
+            // By iterating fetched images
+            cacheOperation.addExecutionBlock {
+                self.cachingUploadIndicesIteratingFetchedImages()
+            }
+        }
         cacheOperation.completionBlock = {
             // Allow action button
             DispatchQueue.main.async {
                 self.actionBarButton?.isEnabled = true
             }
         }
-        
+
         // Perform both operations in background and in parallel
         queue.maxConcurrentOperationCount = .max   // Make it a serial queue for debugging with 1
         queue.qualityOfService = .userInteractive
@@ -387,7 +407,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     private func sortByMonthWeekDay(images: PHFetchResult<PHAsset>) -> (imagesByDay: [IndexSet], imagesByWeek: [IndexSet], imagesByMonth: [IndexSet])  {
 
         // Initialisation
-//        let start = CFAbsoluteTimeGetCurrent()
+        let start = CFAbsoluteTimeGetCurrent()
         let calendar = Calendar.current
         let byDays: Set<Calendar.Component> = [.year, .month, .day]
         var dayComponents = calendar.dateComponents(byDays, from: images[0].creationDate ?? Date())
@@ -405,57 +425,67 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         var imagesByMonth: [IndexSet] = []
         
         // Sort imageAssets
-        for index in 0..<images.count {
-            // Get day of current image
-            let creationDate = images[index].creationDate ?? Date()
-            let newDayComponents = calendar.dateComponents(byDays, from: creationDate)
+        let step = 1_000    // Check if this operation was cancelled every 1000 iterations
+        let iterations = images.count / step
+        for i in 0...iterations {
+            // Continue with this operation?
+            if queue.operations.first!.isCancelled {
+                print("Stop first operation in iteration \(i) ;-)")
+                return ([IndexSet](), [IndexSet](), [IndexSet]())
+            }
 
-            // Image taken the same day?
-            if newDayComponents == dayComponents {
-                // Same date -> Next image
-                continue
-            } else {
-                // Append section to collection by days
-                imagesByDay.append(IndexSet.init(integersIn: firstIndexOfSameDay..<index))
-                                
-                // Initialise for next day
-                firstIndexOfSameDay = index
-                dayComponents = calendar.dateComponents(byDays, from: creationDate)
-                
-                // Get week of year of new image
-                let newWeekComponents = calendar.dateComponents(byWeeks, from: creationDate)
-                
-                // What should we do with this new image?
-                if newWeekComponents != weekComponents {
-                    // Append section to collection by weeks
-                    imagesByWeek.append(IndexSet.init(integersIn: firstIndexOfSameWeek..<index))
-                    
-                    // Initialise for next week
-                    firstIndexOfSameWeek = index
-                    weekComponents = newWeekComponents
-                }
+            for index in i*step..<min((i+1)*step,images.count) {
+                // Get day of current image
+                let creationDate = images[index].creationDate ?? Date()
+                let newDayComponents = calendar.dateComponents(byDays, from: creationDate)
 
-                // Get month of new image
-                let newMonthComponents = calendar.dateComponents(byMonths, from: creationDate)
-                
-                // What should we do with this new image?
-                if newMonthComponents != monthComponents {
-                    // Append section to collection by months
-                    imagesByMonth.append(IndexSet.init(integersIn: firstIndexOfSameMonth..<index))
-                    
-                    // Initialise for next month
-                    firstIndexOfSameMonth = index
-                    monthComponents = newMonthComponents
+                // Image taken the same day?
+                if newDayComponents == dayComponents {
+                    // Same date -> Next image
+                    continue
+                } else {
+                    // Append section to collection by days
+                    imagesByDay.append(IndexSet.init(integersIn: firstIndexOfSameDay..<index))
+
+                    // Initialise for next day
+                    firstIndexOfSameDay = index
+                    dayComponents = calendar.dateComponents(byDays, from: creationDate)
+
+                    // Get week of year of new image
+                    let newWeekComponents = calendar.dateComponents(byWeeks, from: creationDate)
+
+                    // What should we do with this new image?
+                    if newWeekComponents != weekComponents {
+                        // Append section to collection by weeks
+                        imagesByWeek.append(IndexSet.init(integersIn: firstIndexOfSameWeek..<index))
+
+                        // Initialise for next week
+                        firstIndexOfSameWeek = index
+                        weekComponents = newWeekComponents
+                    }
+
+                    // Get month of new image
+                    let newMonthComponents = calendar.dateComponents(byMonths, from: creationDate)
+
+                    // What should we do with this new image?
+                    if newMonthComponents != monthComponents {
+                        // Append section to collection by months
+                        imagesByMonth.append(IndexSet.init(integersIn: firstIndexOfSameMonth..<index))
+
+                        // Initialise for next month
+                        firstIndexOfSameMonth = index
+                        monthComponents = newMonthComponents
+                    }
                 }
             }
         }
-        
+
         // Append last section to collection
         imagesByDay.append(IndexSet.init(integersIn: firstIndexOfSameDay..<images.count))
         imagesByWeek.append(IndexSet.init(integersIn: firstIndexOfSameWeek..<images.count))
         imagesByMonth.append(IndexSet.init(integersIn: firstIndexOfSameMonth..<images.count))
-//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-//        print("   Sorted \(fetchedImages.count) images by days, weeks and months in \(diff) ms")
+        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+        print("   sorted \(fetchedImages.count) images by days, weeks and months in \(diff) ms")
         return (imagesByDay, imagesByWeek, imagesByMonth)
     }
     
@@ -504,21 +534,67 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         }
     }
 
-    private func indexUploadsAndCacheIDs(of images: PHFetchResult<PHAsset>) -> (Void) {
+    private func cachingUploadIndicesIteratingFetchedImages() -> (Void) {
         // Loop over all images
-//        let start = CFAbsoluteTimeGetCurrent()
-        localIdentifiers = .init(repeating: "", count: images.count)
-        indexedUploadsInQueue = .init(repeating: nil, count: images.count)
-        for index in 0..<images.count {
-            // Get image identifier
-            let imageId = images[index].localIdentifier
-            localIdentifiers[index] = imageId
-            if let upload = uploadsInQueue.first(where: { $0?.0 == imageId }) {
-                indexedUploadsInQueue[index] = upload
+        let start = CFAbsoluteTimeGetCurrent()
+        indexedUploadsInQueue = .init(repeating: nil, count: fetchedImages.count)
+        let step = 1_000    // Check if this operation was cancelled every 1000 iterations
+        let iterations = fetchedImages.count / step
+        for i in 0...iterations {
+            // Continue with this operation?
+            if queue.operations.first!.isCancelled {
+                indexedUploadsInQueue = []
+                print("Stop second operation in iteration \(i) ;-)")
+                return
+            }
+
+            for index in i*step..<min((i+1)*step,fetchedImages.count) {
+                // Get image identifier
+                let imageId = fetchedImages[index].localIdentifier
+                if let upload = uploadsInQueue.first(where: { $0?.0 == imageId }) {
+                    indexedUploadsInQueue[index] = upload
+                }
             }
         }
-//        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-//        print("   indexed \(images.count) uploads in \(diff) ms")
+        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+        print("   indexed \(fetchedImages.count) images by iterating fetched images in \(diff) ms")
+    }
+
+    private func cachingUploadIndicesIteratingUploadsInQueue() -> (Void) {
+        // Loop over all images
+        let start = CFAbsoluteTimeGetCurrent()
+        indexedUploadsInQueue = .init(repeating: nil, count: fetchedImages.count)
+
+        // Determine fetched images already in upload queue
+        let fetchOptions = PHFetchOptions()
+        fetchOptions.includeHiddenAssets = false
+
+        // Caching fetched images already in upload queue
+        if uploadsInQueue.count > 0 {
+            let step = 1_00    // Check if this operation was cancelled every 100 iterations
+            let iterations = uploadsInQueue.count / step
+            for i in 0...iterations {
+                // Continue with this operation?
+                if queue.operations.first!.isCancelled {
+                    indexedUploadsInQueue = []
+                    print("Stop second operation in iteration \(i) ;-)")
+                    return
+                }
+
+                for index in i*step..<min((i+1)*step,uploadsInQueue.count) {
+                    // Get image identifier
+                    if let imageId = uploadsInQueue[index]?.0 {
+                        fetchOptions.predicate = NSPredicate(format: "localIdentifier == %@", imageId)
+                        if let asset = PHAsset.fetchAssets(with: fetchOptions).firstObject {
+                            let idx = fetchedImages.index(of: asset)
+                            indexedUploadsInQueue[idx] = uploadsInQueue[index]
+                        }
+                    }
+                }
+            }
+        }
+        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+        print("   cached \(uploadsInQueue.count) images by iterating uploads in queue in \(diff) ms")
     }
 
     
@@ -540,7 +616,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 for index in 0..<self.selectedImages.count {
                     // Images in the upload queue cannot be selected
                     if self.indexedUploadsInQueue[index] == nil {
-                        self.selectedImages[index] = UploadProperties.init(localIdentifier: self.localIdentifiers[index], category: self.categoryId)
+                        self.selectedImages[index] = UploadProperties.init(localIdentifier: self.fetchedImages[index].localIdentifier, category: self.categoryId)
                     }
                 }
                 // Reload collection while updating section buttons
@@ -1132,9 +1208,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     if index < self.selectedImages.count {
                         self.selectedImages.remove(at: index)
                     }
-                    if index < self.localIdentifiers.count {
-                        self.localIdentifiers.remove(at: index)
-                    }
                     self.selectedSections.removeLast()
                 })
                 changeDetails.insertedIndexes?.forEach({ (index) in
@@ -1143,11 +1216,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                         self.selectedImages.insert(nil, at: index)
                     } else {
                         self.selectedImages.append(nil)
-                    }
-                    if index < self.localIdentifiers.count {
-                        self.localIdentifiers.insert(changeDetails.fetchResultAfterChanges.object(at: index).localIdentifier, at: index)
-                    } else {
-                        self.localIdentifiers.append(changeDetails.fetchResultAfterChanges.object(at: index).localIdentifier)
                     }
                     self.selectedSections.append(.select)
                 })
@@ -1187,8 +1255,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             for index in firstIndex...lastIndex {
                 // Images in the upload queue cannot be selected
                 if indexedUploadsInQueue[index] == nil {
-                    selectedImages[index] = UploadProperties.init(localIdentifier: localIdentifiers[index],
-                                                                  category: self.categoryId)
+                    selectedImages[index] = UploadProperties.init(localIdentifier: self.fetchedImages[index].localIdentifier, category: self.categoryId)
                 }
             }
             // Change section button state
