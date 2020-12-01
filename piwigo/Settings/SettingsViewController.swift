@@ -224,8 +224,15 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         let helpSB = UIStoryboard(name: "HelpViewController", bundle: nil)
         let helpVC = helpSB.instantiateViewController(withIdentifier: "HelpViewController") as? HelpViewController
         if let helpVC = helpVC {
-            helpVC.popoverPresentationController?.permittedArrowDirections = .up
-            navigationController?.present(helpVC, animated:true)
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                helpVC.popoverPresentationController?.permittedArrowDirections = .up
+                navigationController?.present(helpVC, animated:true)
+            } else {
+                helpVC.modalPresentationStyle = .popover
+                helpVC.popoverPresentationController?.sourceView = view
+                helpVC.popoverPresentationController?.barButtonItem = helpBarButton
+                navigationController?.present(helpVC, animated: true)
+            }
         }
     }
 

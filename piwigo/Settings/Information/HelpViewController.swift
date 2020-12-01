@@ -12,16 +12,19 @@ class HelpViewController: UIViewController {
     
     @IBOutlet weak var container: UIView!
     @IBOutlet weak var pageControl: UIPageControl!
-
+    @IBOutlet weak var closeButton: UIButton!
+    
     var pages = [UIViewController]()
     var pageCount: Int = 3                    // Change this number after addding/removing pages
     var pageViewController: UIPageViewController?
     var pendingIndex: Int?
 
+    // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Initialise pageControl
+        pageControl.currentPage = 0
         pageControl.numberOfPages = pageCount
 
         // Initialise all pages
