@@ -85,7 +85,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ge9-Dp-NFm" userLabel="HELP #3">
-                                <rect key="frame" x="40" y="0.0" width="334" height="23.5"/>
+                                <rect key="frame" x="30" y="0.0" width="354" height="23.5"/>
                                 <attributedString key="attributedText">
                                     <fragment content="legend">
                                         <attributes>
@@ -105,8 +105,8 @@
                             <constraint firstItem="G33-FO-oKS" firstAttribute="trailing" secondItem="Ixk-9c-yZM" secondAttribute="trailing" id="9S3-ol-jlG"/>
                             <constraint firstItem="G33-FO-oKS" firstAttribute="bottom" secondItem="Ixk-9c-yZM" secondAttribute="bottom" id="DQ0-Z7-K04"/>
                             <constraint firstItem="G33-FO-oKS" firstAttribute="leading" secondItem="Ixk-9c-yZM" secondAttribute="leading" id="DTd-r4-YkR"/>
-                            <constraint firstItem="ge9-Dp-NFm" firstAttribute="leading" secondItem="Ixk-9c-yZM" secondAttribute="leading" constant="40" id="EfG-Eg-u7l"/>
-                            <constraint firstItem="ge9-Dp-NFm" firstAttribute="trailing" secondItem="Ixk-9c-yZM" secondAttribute="trailing" constant="-40" id="LhV-pP-2dx"/>
+                            <constraint firstItem="ge9-Dp-NFm" firstAttribute="leading" secondItem="Ixk-9c-yZM" secondAttribute="leading" constant="30" id="EfG-Eg-u7l"/>
+                            <constraint firstItem="ge9-Dp-NFm" firstAttribute="trailing" secondItem="Ixk-9c-yZM" secondAttribute="trailing" constant="-30" id="LhV-pP-2dx"/>
                             <constraint firstItem="G33-FO-oKS" firstAttribute="top" secondItem="ge9-Dp-NFm" secondAttribute="bottom" constant="16" id="jkg-Bb-Zt7"/>
                             <constraint firstItem="ge9-Dp-NFm" firstAttribute="top" secondItem="Ixk-9c-yZM" secondAttribute="top" id="yib-xL-Vui"/>
                         </constraints>
@@ -129,7 +129,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" usesAttributedText="YES" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bzQ-eN-DYj" userLabel="HELP #1">
-                                <rect key="frame" x="40" y="0.0" width="334" height="23.5"/>
+                                <rect key="frame" x="30" y="0.0" width="354" height="23.5"/>
                                 <color key="tintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <attributedString key="attributedText">
                                     <fragment content="legend">
@@ -148,9 +148,9 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="gTP-ir-xHk" firstAttribute="trailing" secondItem="ei3-GT-7fz" secondAttribute="trailing" id="ATD-oJ-AAG"/>
-                            <constraint firstItem="bzQ-eN-DYj" firstAttribute="leading" secondItem="ei3-GT-7fz" secondAttribute="leading" constant="40" id="Bd4-gf-z3Z"/>
+                            <constraint firstItem="bzQ-eN-DYj" firstAttribute="leading" secondItem="ei3-GT-7fz" secondAttribute="leading" constant="30" id="Bd4-gf-z3Z"/>
                             <constraint firstItem="bzQ-eN-DYj" firstAttribute="top" secondItem="ei3-GT-7fz" secondAttribute="top" id="HfG-ZX-Lwb"/>
-                            <constraint firstItem="bzQ-eN-DYj" firstAttribute="trailing" secondItem="ei3-GT-7fz" secondAttribute="trailing" constant="-40" id="I58-U0-gwW"/>
+                            <constraint firstItem="bzQ-eN-DYj" firstAttribute="trailing" secondItem="ei3-GT-7fz" secondAttribute="trailing" constant="-30" id="I58-U0-gwW"/>
                             <constraint firstItem="gTP-ir-xHk" firstAttribute="top" secondItem="bzQ-eN-DYj" secondAttribute="bottom" constant="16" id="M5f-RA-jyR"/>
                             <constraint firstItem="gTP-ir-xHk" firstAttribute="bottom" secondItem="ei3-GT-7fz" secondAttribute="bottom" id="WzV-xg-Y3E"/>
                             <constraint firstItem="gTP-ir-xHk" firstAttribute="leading" secondItem="ei3-GT-7fz" secondAttribute="leading" id="oBO-b9-Dc2"/>
@@ -174,7 +174,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" preservesSuperviewLayoutMargins="YES" usesAttributedText="YES" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UKU-ae-d6K">
-                                <rect key="frame" x="40" y="0.0" width="334" height="24"/>
+                                <rect key="frame" x="20" y="0.0" width="374" height="24"/>
                                 <attributedString key="attributedText">
                                     <fragment content="legend top">
                                         <attributes>
@@ -198,7 +198,7 @@
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="legendBot" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2RD-k5-pvP">
-                                <rect key="frame" x="40" y="410" width="334" height="242.5"/>
+                                <rect key="frame" x="20" y="410" width="374" height="242.5"/>
                                 <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -214,10 +214,10 @@
                             <constraint firstItem="td4-F8-5Eo" firstAttribute="top" secondItem="UKU-ae-d6K" secondAttribute="bottom" constant="16" id="ab5-nw-GIa"/>
                             <constraint firstItem="td4-F8-5Eo" firstAttribute="centerX" secondItem="DhE-Mp-Wpi" secondAttribute="centerX" id="csK-1o-awk"/>
                             <constraint firstItem="2RD-k5-pvP" firstAttribute="top" secondItem="td4-F8-5Eo" secondAttribute="bottom" constant="8" symbolic="YES" id="g0o-TA-hjQ"/>
-                            <constraint firstItem="UKU-ae-d6K" firstAttribute="leading" secondItem="DhE-Mp-Wpi" secondAttribute="leading" constant="40" id="hRd-tc-TIZ"/>
+                            <constraint firstItem="UKU-ae-d6K" firstAttribute="leading" secondItem="DhE-Mp-Wpi" secondAttribute="leading" constant="20" id="hRd-tc-TIZ"/>
                             <constraint firstItem="td4-F8-5Eo" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="DhE-Mp-Wpi" secondAttribute="leading" id="jlH-ge-uax"/>
                             <constraint firstItem="ohK-97-rdx" firstAttribute="leading" secondItem="td4-F8-5Eo" secondAttribute="leading" id="mmd-dN-D3k"/>
-                            <constraint firstAttribute="trailing" secondItem="UKU-ae-d6K" secondAttribute="trailing" constant="40" id="ncw-YW-tg8"/>
+                            <constraint firstAttribute="trailing" secondItem="UKU-ae-d6K" secondAttribute="trailing" constant="20" id="ncw-YW-tg8"/>
                             <constraint firstItem="UKU-ae-d6K" firstAttribute="top" secondItem="DhE-Mp-Wpi" secondAttribute="top" id="qcH-X3-W3w"/>
                         </constraints>
                     </view>

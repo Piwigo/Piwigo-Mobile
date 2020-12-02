@@ -22,13 +22,13 @@ class Help01ViewController: UIViewController {
         // Title
         let titleString = "\(NSLocalizedString("help01_header", comment: "Multiple Selection"))\n"
         let titleAttributedString = NSMutableAttributedString(string: titleString)
-        titleAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: NSRange(location: 0, length: titleString.count))
+        titleAttributedString.addAttribute(.font, value: view.bounds.size.width > 320 ? UIFont.piwigoFontBold() : UIFont.piwigoFontSemiBold(), range: NSRange(location: 0, length: titleString.count))
         legendAttributedString.append(titleAttributedString)
 
         // Text
         let textString = NSLocalizedString("help01_text", comment: "Slide your finger from left to right (or right to left) then down, etc.")
         let textAttributedString = NSMutableAttributedString(string: textString)
-        textAttributedString.addAttribute(.font, value: UIFont.piwigoFontNormal(), range: NSRange(location: 0, length: textString.count))
+        textAttributedString.addAttribute(.font, value: view.bounds.size.width > 320 ? UIFont.piwigoFontNormal() : UIFont.piwigoFontSmall(), range: NSRange(location: 0, length: textString.count))
         legendAttributedString.append(textAttributedString)
 
         // Set legend
