@@ -228,9 +228,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 helpVC.popoverPresentationController?.permittedArrowDirections = .up
                 navigationController?.present(helpVC, animated:true)
             } else {
-                helpVC.modalPresentationStyle = .popover
+                helpVC.modalPresentationStyle = .currentContext
+                helpVC.modalTransitionStyle = .flipHorizontal
                 helpVC.popoverPresentationController?.sourceView = view
-                helpVC.popoverPresentationController?.barButtonItem = helpBarButton
                 navigationController?.present(helpVC, animated: true)
             }
         }
