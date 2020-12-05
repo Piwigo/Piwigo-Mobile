@@ -123,7 +123,9 @@ class UploadSwitchViewController: UIViewController {
     
     // MARK: - Actions
     @objc func didTapUploadButton() {
-        print("didTapUpload")
+        // Pause UploadManager while adding upload requests
+        UploadManager.shared.isPaused = true
+
         // Retrieve custom image parameters and upload settings from child views
         var imageParameters = [String:Any].init(minimumCapacity: 5)
         var uploadParameters = [String:Any].init(minimumCapacity: 8)

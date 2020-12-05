@@ -365,7 +365,7 @@ struct UploadProperties
     let localIdentifier: String             // Unique PHAsset identifier
     let category: Int                       // 8
     let serverPath: String                  // URL path of Piwigo server
-    let serverFileTypes: String             // File formats accepted by the server
+    var serverFileTypes: String             // File formats accepted by the server
     let requestDate: Date                   // "2020-08-22 19:18:43"
     var requestState: kPiwigoUploadState    // See enum above
     var requestError: String?
@@ -422,31 +422,7 @@ extension UploadProperties {
             defaultPrefix: Model.sharedInstance().defaultPrefix ?? "",
             deleteImageAfterUpload: false)
     }
-    
-    // Update upload request state and error
-    func update(with state: kPiwigoUploadState, error: String?) -> UploadProperties {
-        return UploadProperties.init(localIdentifier: self.localIdentifier,
-            // Category ID of the album to upload to
-            category: self.category,
-            // Server parameters
-            serverPath: self.serverPath, serverFileTypes: self.serverFileTypes,
-            // Upload request date is now and state is waiting
-            requestDate: self.requestDate, requestState: state, requestError: error,
-            // Photo creation date and filename
-            creationDate: self.creationDate, fileName: self.fileName,
-            mimeType: self.mimeType, md5Sum: self.md5Sum, isVideo: self.isVideo,
-            // Photo parameters
-            author: self.author, privacyLevel: self.privacyLevel,
-            imageTitle: self.imageTitle, comment: self.comment,
-            tagIds: self.tagIds, imageId: self.imageId,
-            // Upload settings
-            stripGPSdataOnUpload: self.stripGPSdataOnUpload,
-            resizeImageOnUpload: self.resizeImageOnUpload, photoResize: self.photoResize,
-            compressImageOnUpload: self.compressImageOnUpload, photoQuality: self.photoQuality,
-            prefixFileNameBeforeUpload: self.prefixFileNameBeforeUpload, defaultPrefix: self.defaultPrefix,
-            deleteImageAfterUpload: self.deleteImageAfterUpload)
-    }
-        
+            
     var stateLabel: String {
         return requestState.stateInfo
     }

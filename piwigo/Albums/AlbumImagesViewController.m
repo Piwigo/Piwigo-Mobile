@@ -170,8 +170,6 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
         self.addButton.layer.masksToBounds = NO;
         [self.addButton.layer setOpacity:0.0];
         [self.addButton.layer setShadowOpacity:0.8];
-        [self.addButton.layer setShadowRadius:3.0];
-        [self.addButton.layer setShadowOffset:CGSizeMake(0.0, 0.5)];
         self.addButton.backgroundColor = [UIColor piwigoColorOrange];
         self.addButton.tintColor = [UIColor whiteColor];
         self.addButton.showsTouchWhenHighlighted = YES;
@@ -192,8 +190,6 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
         self.uploadQueueButton.layer.cornerRadius = kRadius;
         self.uploadQueueButton.layer.masksToBounds = NO;
         [self.uploadQueueButton.layer setShadowOpacity:0.8];
-        [self.uploadQueueButton.layer setShadowRadius:3.0];
-        [self.uploadQueueButton.layer setShadowOffset:CGSizeMake(0.0, 0.5)];
         self.uploadQueueButton.showsTouchWhenHighlighted = YES;
         [self.uploadQueueButton addTarget:self action:@selector(didTapUploadQueueButton)
                     forControlEvents:UIControlEventTouchUpInside];
@@ -224,8 +220,6 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
         self.homeAlbumButton.layer.masksToBounds = NO;
         [self.homeAlbumButton.layer setOpacity:0.0];
         [self.homeAlbumButton.layer setShadowOpacity:0.8];
-        [self.homeAlbumButton.layer setShadowRadius:3.0];
-        [self.homeAlbumButton.layer setShadowOffset:CGSizeMake(0.0, 0.5)];
         self.homeAlbumButton.showsTouchWhenHighlighted = YES;
         [self.homeAlbumButton setImage:[UIImage imageNamed:@"rootAlbum"] forState:UIControlStateNormal];
         [self.homeAlbumButton addTarget:self action:@selector(returnToDefaultCategory)
@@ -240,8 +234,6 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
         self.createAlbumButton.layer.masksToBounds = NO;
         [self.createAlbumButton.layer setOpacity:0.0];
         [self.createAlbumButton.layer setShadowOpacity:0.8];
-        [self.createAlbumButton.layer setShadowRadius:3.0];
-        [self.createAlbumButton.layer setShadowOffset:CGSizeMake(0.0, 0.5)];
         self.createAlbumButton.backgroundColor = [UIColor piwigoColorOrange];
         self.createAlbumButton.tintColor = [UIColor whiteColor];
         self.createAlbumButton.showsTouchWhenHighlighted = YES;
@@ -259,8 +251,6 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
         self.uploadImagesButton.layer.masksToBounds = NO;
         [self.uploadImagesButton.layer setOpacity:0.0];
         [self.uploadImagesButton.layer setShadowOpacity:0.8];
-        [self.uploadImagesButton.layer setShadowRadius:3.0];
-        [self.uploadImagesButton.layer setShadowOffset:CGSizeMake(0.0, 0.5)];
         self.uploadImagesButton.backgroundColor = [UIColor piwigoColorOrange];
         self.uploadImagesButton.tintColor = [UIColor whiteColor];
         self.uploadImagesButton.showsTouchWhenHighlighted = YES;
@@ -328,18 +318,50 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
     self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"pullToRefresh", @"Reload Images") attributes:attributesRefresh];
     
     // Buttons
-    [self.addButton.layer setShadowColor:[UIColor piwigoColorLeftLabel].CGColor];
-    [self.createAlbumButton.layer setShadowColor:[UIColor piwigoColorLeftLabel].CGColor];
-    [self.uploadImagesButton.layer setShadowColor:[UIColor piwigoColorLeftLabel].CGColor];
-    [self.homeAlbumButton.layer setShadowColor:[UIColor piwigoColorLeftLabel].CGColor];
-    [self.uploadQueueButton.layer setShadowColor:[UIColor piwigoColorLeftLabel].CGColor];
+    [self.addButton.layer setShadowColor:[UIColor piwigoColorShadow].CGColor];
 
+    [self.createAlbumButton.layer setShadowColor:[UIColor piwigoColorShadow].CGColor];
+    [self.uploadImagesButton.layer setShadowColor:[UIColor piwigoColorShadow].CGColor];
+
+    [self.uploadQueueButton.layer setShadowColor:[UIColor piwigoColorShadow].CGColor];
     self.uploadQueueButton.backgroundColor = [UIColor piwigoColorRightLabel];
     self.nberOfUploadsLabel.textColor = [UIColor piwigoColorBackground];
     self.progressLayer.strokeColor = [[UIColor piwigoColorBackground] CGColor];
+
+    [self.homeAlbumButton.layer setShadowColor:[UIColor piwigoColorLeftLabel].CGColor];
     self.homeAlbumButton.backgroundColor = [UIColor piwigoColorRightLabel];
     self.homeAlbumButton.tintColor = [UIColor piwigoColorBackground];
 
+    if ([Model sharedInstance].isDarkPaletteActive) {
+        [self.addButton.layer setShadowRadius:1.0];
+        [self.addButton.layer setShadowOffset:CGSizeMake(0.0, 0.0)];
+
+        [self.createAlbumButton.layer setShadowRadius:1.0];
+        [self.createAlbumButton.layer setShadowOffset:CGSizeMake(0.0, 0.0)];
+        [self.uploadImagesButton.layer setShadowRadius:1.0];
+        [self.uploadImagesButton.layer setShadowOffset:CGSizeMake(0.0, 0.0)];
+
+        [self.uploadQueueButton.layer setShadowRadius:1.0];
+        [self.uploadQueueButton.layer setShadowOffset:CGSizeMake(0.0, 0.0)];
+
+        [self.homeAlbumButton.layer setShadowRadius:1.0];
+        [self.homeAlbumButton.layer setShadowOffset:CGSizeMake(0.0, 0.0)];
+    } else {
+        [self.addButton.layer setShadowRadius:3.0];
+        [self.addButton.layer setShadowOffset:CGSizeMake(0.0, 0.5)];
+
+        [self.createAlbumButton.layer setShadowRadius:3.0];
+        [self.createAlbumButton.layer setShadowOffset:CGSizeMake(0.0, 0.5)];
+        [self.uploadImagesButton.layer setShadowRadius:3.0];
+        [self.uploadImagesButton.layer setShadowOffset:CGSizeMake(0.0, 0.5)];
+
+        [self.uploadQueueButton.layer setShadowRadius:3.0];
+        [self.uploadQueueButton.layer setShadowOffset:CGSizeMake(0.0, 0.5)];
+
+        [self.homeAlbumButton.layer setShadowRadius:3.0];
+        [self.homeAlbumButton.layer setShadowOffset:CGSizeMake(0.0, 0.5)];
+    }
+    
     // Navigation bar appearence
     NSDictionary *attributes = @{
                                  NSForegroundColorAttributeName: [UIColor piwigoColorWhiteCream],
@@ -880,8 +902,12 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
 -(void)showHomeAlbumButtonIfNeeded
 {
     // Present Home Album button if needed
-    if ((self.homeAlbumButton.isHidden) ||
-        CGRectContainsPoint(self.homeAlbumButton.frame, self.addButton.frame.origin))
+    if ((self.homeAlbumButton.isHidden ||
+         CGRectContainsPoint(self.homeAlbumButton.frame, self.addButton.frame.origin)) &&
+        (self.uploadImagesButton.isHidden ||
+         CGRectContainsPoint(self.uploadImagesButton.frame, self.addButton.frame.origin)) &&
+        (self.createAlbumButton.isHidden ||
+         CGRectContainsPoint(self.createAlbumButton.frame, self.addButton.frame.origin)))
     {
         // Unhide transparent Home Album button
         [self.homeAlbumButton setHidden:NO];
@@ -942,6 +968,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
             [path addLineToPoint:CGPointMake(kRadius, 2*kRadius-1.5f)];
             [path addArcWithCenter:CGPointMake(kRadius, kRadius) radius:(kRadius-1.5f) startAngle:M_PI_2 endAngle:M_PI+M_PI_2 clockwise:YES];
             [path addLineToPoint:CGPointMake(kRadius + extraWidth, 1.5f)];
+            [path setLineCapStyle:kCGLineCapRound];
             self.progressLayer.path = [path CGPath];
 
             // Show button if needed

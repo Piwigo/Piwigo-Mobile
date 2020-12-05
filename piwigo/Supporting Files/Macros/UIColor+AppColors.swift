@@ -31,6 +31,16 @@ extension UIColor {
         }
     }
 
+    // Shadow Color of Buttons
+    @objc
+    class func piwigoColorShadow() -> UIColor {
+        if Model.sharedInstance().isDarkPaletteActive {
+            return UIColor.white
+        } else {
+            return UIColor.black
+        }
+    }
+
     // MARK: - Piwigo Logo Colors
     @objc
     class func piwigoColorBrown() -> UIColor {
