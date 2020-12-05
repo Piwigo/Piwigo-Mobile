@@ -14,27 +14,35 @@ class HelpViewController: UIViewController {
     @IBOutlet weak var pageControl: UIPageControl!
     @IBOutlet weak var closeButton: UIButton!
     
-    var pages = [UIViewController]()
-    var pageCount: Int = 3                    // Change this number after addding/removing pages
-    var pageViewController: UIPageViewController?
-    var pendingIndex: Int?
+    @objc var onlyWhatsNew = false
+    private var pages = [UIViewController]()
+    private var pageCount: Int = 3    // Update this value after deleting/creating Help##ViewControllers
+    private var pageViewController: UIPageViewController?
+    private var pendingIndex: Int?
 
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Initialise pageControl
-        pageControl.currentPage = 0
-        pageControl.numberOfPages = pageCount
-
         // Initialise all pages
+        let didWatchHelpViews = Model.sharedInstance()?.didWatchHelpViews ?? 0
         for i in 0 ..< pageCount {
             // Loop over the storyboards
             let pageID = String(format: "help%02ld", i+1)
-            if let page = storyboard?.instantiateViewController(withIdentifier: pageID) {
+            let alreadyDidWatchPageID: Bool = ((didWatchHelpViews & Int(pow(2.0, Float(i)))) != 0)
+            let shouldShowPageID = onlyWhatsNew ? !alreadyDidWatchPageID : true
+            if shouldShowPageID, let page = storyboard?.instantiateViewController(withIdentifier: pageID) {
                 pages.append(page)
             }
         }
+        
+        // Quit if  there is nothing to present
+        if pages.count == 0 { return }
+
+        // Initialise pageControl
+        pageControl.currentPage = 0
+        pageControl.numberOfPages = pages.count
+        pageControl.hidesForSinglePage = true
 
         // Initialise pageViewController
         pageViewController = self.children[0] as? UIPageViewController

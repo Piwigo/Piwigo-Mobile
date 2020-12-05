@@ -140,6 +140,9 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 		instance.diskCache = kPiwigoDiskCacheMin * 4;       // i.e. 512 MB
 		instance.memoryCache = kPiwigoMemoryCacheInc * 2;   // i.e. 16 MB
 		
+        // Remember which help views were watched
+        instance.didWatchHelpViews = 0;
+
         // Request help for translating Piwigo every 2 weeks or so
         instance.dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate] - k2WeeksInDays;
 
@@ -269,6 +272,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         self.defaultPrefix = modelData.defaultPrefix;
         self.localImagesSort = modelData.localImagesSort;
         self.wifiOnlyUploading = modelData.wifiOnlyUploading;
+        self.didWatchHelpViews = modelData.didWatchHelpViews;
 	}
 }
 
@@ -350,6 +354,8 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     // Added in 2.5.0…
     [saveObject addObject:@(self.localImagesSort)];
     [saveObject addObject:[NSNumber numberWithBool:self.wifiOnlyUploading]];
+    // Added in 2.5.3…
+    [saveObject addObject:[NSNumber numberWithInteger:self.didWatchHelpViews]];
 
     [encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -651,6 +657,11 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
         self.wifiOnlyUploading = [[savedData objectAtIndex:53] boolValue];
     } else {
         self.wifiOnlyUploading = NO;    // Wi-Fi not required for uploading
+    }
+    if(savedData.count > 54) {
+        self.didWatchHelpViews = [[savedData objectAtIndex:54] integerValue];
+    } else {
+        self.didWatchHelpViews = 0;
     }
 	return self;
 }

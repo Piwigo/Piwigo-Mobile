@@ -33,6 +33,10 @@ class Help01ViewController: UIViewController {
 
         // Set legend
         legend.attributedText = legendAttributedString
+        
+        // Remeber that this view was watched
+        Model.sharedInstance().didWatchHelpViews = Model.sharedInstance().didWatchHelpViews | 1
+        Model.sharedInstance().saveToDisk()
     }
 
     @objc func applyColorPalette() {

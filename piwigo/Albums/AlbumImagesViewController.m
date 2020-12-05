@@ -630,6 +630,17 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addImageToCategory:) name:kPiwigoNotificationUploadedImage object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeImageFromCategory:) name:kPiwigoNotificationDeletedImage object:nil];
+    
+    // Present What's New views i.e. Help views if needed
+//    [Model sharedInstance].didWatchHelpViews = 3;       // Line for testing
+    if ([Model sharedInstance].didWatchHelpViews != 1 + 2 + 4) {
+        UIStoryboard *helpSB = [UIStoryboard storyboardWithName:@"HelpViewController" bundle:nil];
+        HelpViewController *helpVC = [helpSB instantiateViewControllerWithIdentifier:@"HelpViewController"];
+        helpVC.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+        helpVC.modalPresentationStyle = UIModalPresentationFormSheet;
+        helpVC.onlyWhatsNew = YES;
+        [self presentViewController:helpVC animated:YES completion:nil];
+    }
 }
 
 -(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
@@ -3346,7 +3357,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
 
 -(void)pushView:(UIViewController *)viewController
 {
-    // Push sub-album or Discover album
+    // Push sub-album, Discover or Favorites album
     if (([viewController isKindOfClass:[AlbumImagesViewController class]])    ||
         ([viewController isKindOfClass:[DiscoverImagesViewController class]]) ||
         ([viewController isKindOfClass:[FavoritesImagesViewController class]]) ) {
