@@ -161,5 +161,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if Model.sharedInstance()?.usesUploadAsync ?? false {
             (UIApplication.shared.delegate as! AppDelegate).scheduleNextUpload()
         }
+
+        // Clean up /tmp directory
+        let appDelegate = UIApplication.shared.delegate as? AppDelegate
+        appDelegate?.cleanUpTemporaryDirectory()
     }
 }

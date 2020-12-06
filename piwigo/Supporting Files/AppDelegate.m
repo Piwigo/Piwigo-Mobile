@@ -150,11 +150,8 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     // Disable network reachability monitoring
     [[AFNetworkReachabilityManager sharedManager] stopMonitoring];
     
-    // Empty /tmp directory
-    NSArray* tmpDirectory = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:NSTemporaryDirectory() error:NULL];
-    for (NSString *file in tmpDirectory) {
-        [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), file] error:NULL];
-    }
+    // Clean up /tmp directory
+    [self cleanUpTemporaryDirectory];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -179,6 +176,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
         // Delegate to SceneDelegate
         /// - Save cached data
         /// - Schedule background tasks
+        /// - Delete files stored in /tmp directory
     } else {
         // Save cached data
         [DataController saveContext];
@@ -188,6 +186,9 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
         
         // Disable network reachability monitoring
         [[AFNetworkReachabilityManager sharedManager] stopMonitoring];
+
+        // Clean up /tmp directory
+        [self cleanUpTemporaryDirectory];
     }
 }
 
@@ -263,6 +264,22 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     // Called when the user discards a scene session.
     // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
     // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
+}
+
+
+#pragma mark - Cleaning
+
+-(void)cleanUpTemporaryDirectory
+{
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSArray* tmpDirectory = [fm contentsOfDirectoryAtPath:NSTemporaryDirectory() error:NULL];
+    for (NSString *file in tmpDirectory) {
+        NSString *path = [NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), file];
+        NSDictionary* attrs = [fm attributesOfItemAtPath:path error:nil];
+        if ([[attrs fileCreationDate] timeIntervalSinceReferenceDate] + k1WeekInDays < [NSDate timeIntervalSinceReferenceDate]) {
+            [[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
+        }
+    }
 }
 
 
