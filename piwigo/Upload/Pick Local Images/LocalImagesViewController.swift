@@ -798,12 +798,12 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     cell.cellSelected = false
                 } else {
                     // Can we select this image?
-                    if indexedUploadsInQueue.count < index {
-                        // Use non-indexed data (might be quite slow)
-                        if let _ = uploadsInQueue.firstIndex(where: { $0?.0 == cell.localIdentifier }) { return }
-                    } else {
+                    if queue.operationCount == 0 {
                         // Indexed uploads available
                         if indexedUploadsInQueue[index] != nil { return }
+                    } else {
+                        // Use non-indexed data (might be quite slow)
+                        if let _ = uploadsInQueue.firstIndex(where: { $0?.0 == cell.localIdentifier }) { return }
                     }
 
                     // Select the cell
@@ -859,7 +859,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         }
 
         // Can we calculate the number of images already in the upload queue?
-        if indexedUploadsInQueue.count < lastIndex + 1 {
+        if queue.operationCount != 0 {
             // Keep Select button disabled
             if selectedSections[section] != .none {
                 selectedSections[section] = .none
@@ -1040,20 +1040,18 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
         // Cell state
         if queue.operationCount == 0 {
-            if indexedUploadsInQueue.count == fetchedImages.count {
-                // Use indexed data
-                if let state = indexedUploadsInQueue[index]?.1 {
-                    switch state {
-                    case .waiting, .preparing, .preparingError, .preparingFail, .prepared, .formatError:
-                        cell.cellWaiting = true
-                    case .uploading, .uploadingError, .uploaded, .finishing, .finishingError:
-                        cell.cellUploading = true
-                    case .finished, .moderated:
-                        cell.cellUploaded = true
-                    }
-                } else {
-                    cell.cellSelected = selectedImages[index] != nil
+            // Use indexed data
+            if let state = indexedUploadsInQueue[index]?.1 {
+                switch state {
+                case .waiting, .preparing, .preparingError, .preparingFail, .prepared, .formatError:
+                    cell.cellWaiting = true
+                case .uploading, .uploadingError, .uploaded, .finishing, .finishingError:
+                    cell.cellUploading = true
+                case .finished, .moderated:
+                    cell.cellUploaded = true
                 }
+            } else {
+                cell.cellSelected = selectedImages[index] != nil
             }
         } else {
             // Use non-indexed data
@@ -1100,12 +1098,12 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
         // Images in the upload queue cannot be selected
         let index = getImageIndex(for: indexPath)
-        if indexedUploadsInQueue.count < index {
-            // Use non-indexed data (might be quite slow)
-            if let _ = uploadsInQueue.first(where: { $0?.0 == cell.localIdentifier }) { return }
-        } else {
+        if queue.operationCount == 0 {
             // Indexed uploads available
             if indexedUploadsInQueue[index] != nil { return }
+        } else {
+            // Use non-indexed data (might be quite slow)
+            if let _ = uploadsInQueue.first(where: { $0?.0 == cell.localIdentifier }) { return }
         }
 
         // Update cell and selection
