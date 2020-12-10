@@ -50,6 +50,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
         
         // Use the LocalAlbumsProvider to fetch albums data.
+        LocalAlbumsProvider.sharedInstance().fetchedLocalAlbumsDelegate = self
         LocalAlbumsProvider.sharedInstance().fetchLocalAlbums {
             self.localAlbumsTableView.reloadData()
         }
@@ -313,11 +314,11 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     
     // MARK: - LocalAlbumsProviderDelegate Methods
     
-    func didChangePhotoLibrary(section: Int) {
+    func didChangePhotoLibrary() {
         // Change notifications may be made on a background queue. Re-dispatch to the
         // main queue before updating the UI.
         DispatchQueue.main.sync {
-            localAlbumsTableView.reloadSections(IndexSet(integer: section), with: .automatic)
+            localAlbumsTableView.reloadData()
         }
     }
 }
