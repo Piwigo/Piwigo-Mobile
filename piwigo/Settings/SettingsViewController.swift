@@ -94,7 +94,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         doneBarButton?.accessibilityIdentifier = "Done"
 
         // Button for displaying help pages
-        helpBarButton = UIBarButtonItem(barButtonSystemItem: .bookmarks, target: self, action: #selector(displayHelp))
+        let helpButton = UIButton(type: .infoLight)
+        helpButton.addTarget(self, action: #selector(displayHelp), for: .touchUpInside)
+        helpBarButton = UIBarButtonItem(customView: helpButton)
         helpBarButton?.accessibilityIdentifier = "Help"
 
         // Table view identifier
