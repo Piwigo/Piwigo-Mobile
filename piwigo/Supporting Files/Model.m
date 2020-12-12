@@ -141,8 +141,9 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 		instance.memoryCache = kPiwigoMemoryCacheInc * 2;   // i.e. 16 MB
 		
         // Remember which help views were watched
-        instance.didWatchHelpViews = 0;
-
+        instance.didWatchHelpViews = 0b0000000000000000;
+        instance.didPresentHelpViewsInCurrentSession = NO;
+        
         // Request help for translating Piwigo every 2 weeks or so
         instance.dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate] - k2WeeksInDays;
 

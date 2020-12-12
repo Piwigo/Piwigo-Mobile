@@ -28,10 +28,12 @@ class HelpViewController: UIViewController {
         let didWatchHelpViews = Model.sharedInstance()?.didWatchHelpViews ?? 0
         for i in 0 ..< pageCount {
             // Loop over the storyboards
-            let pageID = String(format: "help%02ld", i+1)
-            let alreadyDidWatchPageID: Bool = ((didWatchHelpViews & Int(pow(2.0, Float(i)))) != 0)
+            let pageIDstr = String(format: "help%02ld", i+1)
+            let pageID: UInt16 = UInt16(pow(2.0, Float(i)))
+            let alreadyDidWatchPageID: Bool = (didWatchHelpViews & pageID) != 0
             let shouldShowPageID = onlyWhatsNew ? !alreadyDidWatchPageID : true
-            if shouldShowPageID, let page = storyboard?.instantiateViewController(withIdentifier: pageID) {
+            if shouldShowPageID,
+               let page = storyboard?.instantiateViewController(withIdentifier: pageIDstr) {
                 pages.append(page)
             }
         }

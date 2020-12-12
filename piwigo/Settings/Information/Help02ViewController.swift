@@ -12,7 +12,8 @@ class Help02ViewController: UIViewController {
     
     @IBOutlet weak var legendTop: UILabel!
     @IBOutlet weak var legendBot: UILabel!
-    
+    private let helpID: UInt16 = 0b00000000_00000010
+
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,9 +52,12 @@ class Help02ViewController: UIViewController {
         // Set legend
         legendBot.attributedText = legendBotAttributedString
         
-        // Remeber that this view was watched
-        Model.sharedInstance().didWatchHelpViews = Model.sharedInstance().didWatchHelpViews | 2
+        // Remember that this view was watched
+        Model.sharedInstance().didWatchHelpViews = Model.sharedInstance().didWatchHelpViews | helpID
         Model.sharedInstance().saveToDisk()
+        
+        // Remember that help views were presented in the current session
+        Model.sharedInstance()?.didPresentHelpViewsInCurrentSession = true
     }
 
     @objc func applyColorPalette() {
