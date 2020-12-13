@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.5.3_text" = "Version 2.5.3\n\n• Control which photos and videos Piwigo can access\n• Tip and tricks for better exploiting the app\n• Bug fixes";
+"v2.5.3_text" = "Version 2.5.3\n\n• Control which photos and videos Piwigo can access\n• Tips and tricks for better exploiting the app\n• Bug fixes";
 
 "v2.5.2_text" = "Версия 2.5.2\n3 февраля 2020\n\n• Загрузка фона (требуется расширение uploadAsync или Piwigo 11 или новее)\n• Исправления мелких ошибок и улучшения интерфейса";
 
