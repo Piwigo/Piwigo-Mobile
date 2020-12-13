@@ -19,7 +19,7 @@ enum SectionType: Int {
 }
 
 @objc
-class LocalImagesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIScrollViewDelegate, PHPhotoLibraryChangeObserver, LocalImagesHeaderDelegate, UploadSwitchDelegate {
+class LocalImagesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIScrollViewDelegate, LocalImagesHeaderDelegate, UploadSwitchDelegate {
     
     // MARK: - Core Data
     /**
@@ -131,7 +131,12 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         navigationController?.navigationBar.accessibilityIdentifier = "LocalImagesNav"
 
         // Bar buttons
-        actionBarButton = UIBarButtonItem(image: UIImage(named: "list"), landscapeImagePhone: UIImage(named: "listCompact"), style: .plain, target: self, action: #selector(didTapActionButton))
+        if #available(iOS 14.0, *) {
+            actionBarButton = UIBarButtonItem(image: UIImage(systemName: "photo.on.rectangle.angled"), style: .plain, target: self, action: #selector(didTapActionButton))
+        } else {
+            // Fallback on earlier versions
+            actionBarButton = UIBarButtonItem(image: UIImage(named: "list"), landscapeImagePhone: UIImage(named: "listCompact"), style: .plain, target: self, action: #selector(didTapActionButton))
+        }
         actionBarButton?.accessibilityIdentifier = "Sort"
         actionBarButton?.isEnabled = false
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelSelect))
@@ -342,13 +347,16 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
         // Sort all images in one loop i.e. O(n)
         let sortOperation = BlockOperation.init(block: {
+            self.indexOfImageSortedByDay = []
+            self.indexOfImageSortedByWeek = []
+            self.indexOfImageSortedByMonth = []
             if self.fetchedImages.count > 0 {
                 // Sort images by months, weeks and days in the background
-                (self.indexOfImageSortedByDay, self.indexOfImageSortedByWeek, self.indexOfImageSortedByMonth) = self.sortByMonthWeekDay(images: self.fetchedImages)
-            } else {
-                self.indexOfImageSortedByDay = []
-                self.indexOfImageSortedByWeek = []
-                self.indexOfImageSortedByMonth = []
+                if self.selectedImages.compactMap({$0}).count == 0 {
+                    self.sortByMonthWeekDay(images: self.fetchedImages)
+                } else {
+                    self.sortByMonthWeekDayAndUpdateSelection(images: self.fetchedImages)
+                }
             }
         })
         sortOperation.completionBlock = {
@@ -404,7 +412,10 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         }
     }
 
-    private func sortByMonthWeekDay(images: PHFetchResult<PHAsset>) -> (imagesByDay: [IndexSet], imagesByWeek: [IndexSet], imagesByMonth: [IndexSet])  {
+    private func sortByMonthWeekDay(images: PHFetchResult<PHAsset>) -> (Void)  {
+
+        // Empty selection, re-initialise cache for managing selected images
+        selectedImages = .init(repeating: nil, count: images.count)
 
         // Initialisation
         let start = CFAbsoluteTimeGetCurrent()
@@ -412,17 +423,14 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         let byDays: Set<Calendar.Component> = [.year, .month, .day]
         var dayComponents = calendar.dateComponents(byDays, from: images[0].creationDate ?? Date())
         var firstIndexOfSameDay = 0
-        var imagesByDay: [IndexSet] = []
 
         let byWeeks: Set<Calendar.Component> = [.year, .weekOfYear]
         var weekComponents = calendar.dateComponents(byWeeks, from: images[0].creationDate ?? Date())
         var firstIndexOfSameWeek = 0
-        var imagesByWeek: [IndexSet] = []
 
         let byMonths: Set<Calendar.Component> = [.year, .month]
         var monthComponents = calendar.dateComponents(byMonths, from: images[0].creationDate ?? Date())
         var firstIndexOfSameMonth = 0
-        var imagesByMonth: [IndexSet] = []
         
         // Sort imageAssets
         let step = 1_000    // Check if this operation was cancelled every 1000 iterations
@@ -431,7 +439,10 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             // Continue with this operation?
             if queue.operations.first!.isCancelled {
                 print("Stop first operation in iteration \(i) ;-)")
-                return ([IndexSet](), [IndexSet](), [IndexSet]())
+                indexOfImageSortedByDay = [IndexSet]()
+                indexOfImageSortedByWeek = [IndexSet]()
+                indexOfImageSortedByMonth = [IndexSet]()
+                return
             }
 
             for index in i*step..<min((i+1)*step,images.count) {
@@ -445,7 +456,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     continue
                 } else {
                     // Append section to collection by days
-                    imagesByDay.append(IndexSet.init(integersIn: firstIndexOfSameDay..<index))
+                    indexOfImageSortedByDay.append(IndexSet.init(integersIn: firstIndexOfSameDay..<index))
 
                     // Initialise for next day
                     firstIndexOfSameDay = index
@@ -457,7 +468,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     // What should we do with this new image?
                     if newWeekComponents != weekComponents {
                         // Append section to collection by weeks
-                        imagesByWeek.append(IndexSet.init(integersIn: firstIndexOfSameWeek..<index))
+                        indexOfImageSortedByWeek.append(IndexSet.init(integersIn: firstIndexOfSameWeek..<index))
 
                         // Initialise for next week
                         firstIndexOfSameWeek = index
@@ -470,7 +481,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     // What should we do with this new image?
                     if newMonthComponents != monthComponents {
                         // Append section to collection by months
-                        imagesByMonth.append(IndexSet.init(integersIn: firstIndexOfSameMonth..<index))
+                        indexOfImageSortedByMonth.append(IndexSet.init(integersIn: firstIndexOfSameMonth..<index))
 
                         // Initialise for next month
                         firstIndexOfSameMonth = index
@@ -481,12 +492,105 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         }
 
         // Append last section to collection
-        imagesByDay.append(IndexSet.init(integersIn: firstIndexOfSameDay..<images.count))
-        imagesByWeek.append(IndexSet.init(integersIn: firstIndexOfSameWeek..<images.count))
-        imagesByMonth.append(IndexSet.init(integersIn: firstIndexOfSameMonth..<images.count))
+        indexOfImageSortedByDay.append(IndexSet.init(integersIn: firstIndexOfSameDay..<images.count))
+        indexOfImageSortedByWeek.append(IndexSet.init(integersIn: firstIndexOfSameWeek..<images.count))
+        indexOfImageSortedByMonth.append(IndexSet.init(integersIn: firstIndexOfSameMonth..<images.count))
         let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
         print("   sorted \(fetchedImages.count) images by days, weeks and months in \(diff) ms")
-        return (imagesByDay, imagesByWeek, imagesByMonth)
+    }
+    
+    private func sortByMonthWeekDayAndUpdateSelection(images: PHFetchResult<PHAsset>) -> (Void)  {
+
+        // Store current selection and re-select images after data source change
+        let oldSelection = selectedImages.compactMap({$0})
+        selectedImages = .init(repeating: nil, count: fetchedImages.count)
+
+        // Initialisation
+        let start = CFAbsoluteTimeGetCurrent()
+        let calendar = Calendar.current
+        let byDays: Set<Calendar.Component> = [.year, .month, .day]
+        var dayComponents = calendar.dateComponents(byDays, from: images[0].creationDate ?? Date())
+        var firstIndexOfSameDay = 0
+
+        let byWeeks: Set<Calendar.Component> = [.year, .weekOfYear]
+        var weekComponents = calendar.dateComponents(byWeeks, from: images[0].creationDate ?? Date())
+        var firstIndexOfSameWeek = 0
+
+        let byMonths: Set<Calendar.Component> = [.year, .month]
+        var monthComponents = calendar.dateComponents(byMonths, from: images[0].creationDate ?? Date())
+        var firstIndexOfSameMonth = 0
+        
+        // Sort imageAssets
+        let step = 1_000    // Check if this operation was cancelled every 1000 iterations
+        let iterations = images.count / step
+        for i in 0...iterations {
+            // Continue with this operation?
+            if queue.operations.first!.isCancelled {
+                print("Stop first operation in iteration \(i) ;-)")
+                indexOfImageSortedByDay = [IndexSet]()
+                indexOfImageSortedByWeek = [IndexSet]()
+                indexOfImageSortedByMonth = [IndexSet]()
+                return
+            }
+
+            for index in i*step..<min((i+1)*step,images.count) {
+                // Get localIdentifier of current image
+                let imageID = images[index].localIdentifier
+                if let indexOfSelection = oldSelection.firstIndex(where: {$0.localIdentifier == imageID}) {
+                    selectedImages[index] = oldSelection[indexOfSelection]
+                }
+                
+                // Get day of current image
+                let creationDate = images[index].creationDate ?? Date()
+                let newDayComponents = calendar.dateComponents(byDays, from: creationDate)
+
+                // Image taken the same day?
+                if newDayComponents == dayComponents {
+                    // Same date -> Next image
+                    continue
+                } else {
+                    // Append section to collection by days
+                    indexOfImageSortedByDay.append(IndexSet.init(integersIn: firstIndexOfSameDay..<index))
+
+                    // Initialise for next day
+                    firstIndexOfSameDay = index
+                    dayComponents = calendar.dateComponents(byDays, from: creationDate)
+
+                    // Get week of year of new image
+                    let newWeekComponents = calendar.dateComponents(byWeeks, from: creationDate)
+
+                    // What should we do with this new image?
+                    if newWeekComponents != weekComponents {
+                        // Append section to collection by weeks
+                        indexOfImageSortedByWeek.append(IndexSet.init(integersIn: firstIndexOfSameWeek..<index))
+
+                        // Initialise for next week
+                        firstIndexOfSameWeek = index
+                        weekComponents = newWeekComponents
+                    }
+
+                    // Get month of new image
+                    let newMonthComponents = calendar.dateComponents(byMonths, from: creationDate)
+
+                    // What should we do with this new image?
+                    if newMonthComponents != monthComponents {
+                        // Append section to collection by months
+                        indexOfImageSortedByMonth.append(IndexSet.init(integersIn: firstIndexOfSameMonth..<index))
+
+                        // Initialise for next month
+                        firstIndexOfSameMonth = index
+                        monthComponents = newMonthComponents
+                    }
+                }
+            }
+        }
+
+        // Append last section to collection
+        indexOfImageSortedByDay.append(IndexSet.init(integersIn: firstIndexOfSameDay..<images.count))
+        indexOfImageSortedByWeek.append(IndexSet.init(integersIn: firstIndexOfSameWeek..<images.count))
+        indexOfImageSortedByMonth.append(IndexSet.init(integersIn: firstIndexOfSameMonth..<images.count))
+        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+        print("   sorted \(fetchedImages.count) images by days, weeks and months and updated selection in \(diff) ms")
     }
     
     // Return image index from indexPath
@@ -535,10 +639,14 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     }
 
     private func cachingUploadIndicesIteratingFetchedImages() -> (Void) {
-        // Loop over all images
+        // For debugging purposes
         let start = CFAbsoluteTimeGetCurrent()
+        
+        // Initialise cached indexed uploads
         indexedUploadsInQueue = .init(repeating: nil, count: fetchedImages.count)
-        let step = 1_000    // Check if this operation was cancelled every 1000 iterations
+
+        // Check if this operation was cancelled every 1000 iterations
+        let step = 1_000
         let iterations = fetchedImages.count / step
         for i in 0...iterations {
             // Continue with this operation?
@@ -547,7 +655,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 print("Stop second operation in iteration \(i) ;-)")
                 return
             }
-
+            
+            // Caching indexed uploads and resetting image selection
             for index in i*step..<min((i+1)*step,fetchedImages.count) {
                 // Get image identifier
                 let imageId = fetchedImages[index].localIdentifier
@@ -561,17 +670,20 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     }
 
     private func cachingUploadIndicesIteratingUploadsInQueue() -> (Void) {
-        // Loop over all images
+        // For debugging purposes
         let start = CFAbsoluteTimeGetCurrent()
+        
+        // Initialise cached indexed uploads
         indexedUploadsInQueue = .init(repeating: nil, count: fetchedImages.count)
 
         // Determine fetched images already in upload queue
         let fetchOptions = PHFetchOptions()
         fetchOptions.includeHiddenAssets = false
 
-        // Caching fetched images already in upload queue
+        // Operation done if no stored upload requests
         if uploadsInQueue.count > 0 {
-            let step = 1_00    // Check if this operation was cancelled every 100 iterations
+            // Check if this operation was cancelled every 100 iterations
+            let step = 1_00
             let iterations = uploadsInQueue.count / step
             for i in 0...iterations {
                 // Continue with this operation?
@@ -581,6 +693,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     return
                 }
 
+                // Caching fetched images already in upload queue
                 for index in i*step..<min((i+1)*step,uploadsInQueue.count) {
                     // Get image identifier
                     if let imageId = uploadsInQueue[index]?.0 {
@@ -669,6 +782,16 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 }
             })
             alert.addAction(deleteAction)
+        }
+
+        if #available(iOS 14, *) {
+            if PHPhotoLibrary.authorizationStatus(for: .readWrite) == .limited {
+                let selectItemsInPhotoLibrary = UIAlertAction(title: NSLocalizedString("localAlbums", comment: "Photo Library"), style: .default, handler: { action in
+                    // Proposes to change the Photo Library selection
+                    PHPhotoLibrary.shared().presentLimitedLibraryPicker(from: self)
+                })
+                alert.addAction(selectItemsInPhotoLibrary)
+            }
         }
 
         // Present list of actions
@@ -846,7 +969,14 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             firstIndex = getImageIndex(for: IndexPath.init(item: nberOfImagesInSection - 1, section: section))
             lastIndex = getImageIndex(for: IndexPath.init(item: 0, section: section))
         }
-
+        
+        // Job done if there is no image presented
+        if lastIndex < firstIndex {
+            selectedSections[section] = .none
+            completion()
+            return
+        }
+        
         // Number of selected images
         let nberOfSelectedImagesInSection = selectedImages[firstIndex...lastIndex].compactMap{ $0 }.count
         if nberOfImagesInSection == nberOfSelectedImagesInSection {
@@ -1188,51 +1318,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             completion()
         })
     }
-
-
-    // MARK: - Changes occured in the Photo library
-
-    func photoLibraryDidChange(_ changeInstance: PHChange) {
-        // Check each of the fetches for changes,
-        // and update the cached fetch results, and reload the table sections to match.
-        DispatchQueue.main.async(execute: {
-            if let changeDetails = changeInstance.changeDetails(for: self.fetchedImages) {
-                // Show HUD during update, preventing touches
-                self.showHUD(with: NSLocalizedString("editImageDetailsHUD_updatingPlural", comment: "Updating Photos…"), detail: nil)
-                
-                // Update fetched asset collection
-                changeDetails.removedIndexes?.forEach({ (index) in
-                    // Remove objects
-                    if index < self.selectedImages.count {
-                        self.selectedImages.remove(at: index)
-                    }
-                    self.selectedSections.removeLast()
-                })
-                changeDetails.insertedIndexes?.forEach({ (index) in
-                    // Insert objects
-                    if index < self.selectedImages.count {
-                        self.selectedImages.insert(nil, at: index)
-                    } else {
-                        self.selectedImages.append(nil)
-                    }
-                    self.selectedSections.append(.select)
-                })
-                self.fetchedImages = changeDetails.fetchResultAfterChanges
-
-                // Disable sort options and action menu before sort
-                self.actionBarButton?.isEnabled = false
-                self.segmentedControl.setEnabled(false, forSegmentAt: SectionType.month.rawValue)
-                self.segmentedControl.setEnabled(false, forSegmentAt: SectionType.week.rawValue)
-                self.segmentedControl.setEnabled(false, forSegmentAt: SectionType.day.rawValue)
-
-                // Sort images in background
-                DispatchQueue.global(qos: .userInitiated).async {
-                    self.sortImagesAndIndexUploads()
-                }
-            }
-        })
-    }
-
+    
     
     // MARK: - LocalImagesHeaderReusableView Delegate Methods
     
@@ -1376,8 +1462,39 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 }
 
 
-// MARK: - Uploads Provider NSFetchedResultsControllerDelegate
+// MARK: - Changes occured in the Photo library
+/// Changes are not returned as expected (iOS 14.3 provides objects, not their indexes).
+/// The image selection is therefore updated during the sort.
+extension LocalImagesViewController: PHPhotoLibraryChangeObserver {
+    func photoLibraryDidChange(_ changeInstance: PHChange) {
+        // Check each of the fetches for changes
+        guard let changes = changeInstance.changeDetails(for: self.fetchedImages)
+            else { return }
 
+        // This method may be called on a background queue; use the main queue to update the UI.
+        DispatchQueue.main.async {
+            // Show HUD during update, preventing touches
+            self.showHUD(with: NSLocalizedString("editImageDetailsHUD_updatingPlural", comment: "Updating Photos…"), detail: nil)
+
+            // Update fetched asset collection
+            self.fetchedImages = changes.fetchResultAfterChanges
+
+            // Disable sort options and action menu before sort
+            self.actionBarButton?.isEnabled = false
+            self.segmentedControl.setEnabled(false, forSegmentAt: SectionType.month.rawValue)
+            self.segmentedControl.setEnabled(false, forSegmentAt: SectionType.week.rawValue)
+            self.segmentedControl.setEnabled(false, forSegmentAt: SectionType.day.rawValue)
+
+            // Sort images in background, reset cache and image selection
+            DispatchQueue.global(qos: .userInitiated).async {
+                self.sortImagesAndIndexUploads()
+            }
+        }
+    }
+}
+
+
+// MARK: - Uploads Provider NSFetchedResultsControllerDelegate
 extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {

@@ -9,6 +9,7 @@
 //
 
 import Photos
+import PhotosUI
 import UIKit
 
 @objc
@@ -31,6 +32,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
 
+    private var selectPhotoLibraryItemsButton: UIBarButtonItem?
     private var cancelBarButton: UIBarButtonItem?
 
     
@@ -40,6 +42,11 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
 
         // Title
         title = NSLocalizedString("localAlbums", comment: "Photos library")
+        
+        // Button for selecting Photo Library items (.limited access mode)
+        if #available(iOS 14.0, *) {
+            selectPhotoLibraryItemsButton = UIBarButtonItem(image: UIImage(systemName: "photo.on.rectangle.angled"), style: .plain, target: self, action: #selector(selectPhotoLibraryItems))
+        }
         
         // Button for returning to albums/images
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(quitUpload))
@@ -56,6 +63,12 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
 
+    @available(iOS 14, *)
+    @objc func selectPhotoLibraryItems() {
+        // Proposes to change the Photo Library selection
+        PHPhotoLibrary.shared().presentLimitedLibraryPicker(from: self)
+    }
+    
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = UIColor.piwigoColorBackground()
@@ -86,9 +99,16 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         // Set colors, fonts, etc.
         applyColorPalette()
 
-        // Navigation bar button and identifier
-        navigationItem.setLeftBarButtonItems([cancelBarButton].compactMap { $0 }, animated: true)
+        // Navigation "Cancel" button and identifier
+        navigationItem.setLeftBarButton(cancelBarButton, animated: true)
         navigationController?.navigationBar.accessibilityIdentifier = "LocalAlbumsNav"
+
+        // Navigation "Select Photo Library items" button
+        if #available(iOS 14, *) {
+            if PHPhotoLibrary.authorizationStatus(for: .readWrite) == .limited {
+                navigationItem.setRightBarButton(selectPhotoLibraryItemsButton, animated: true)
+            }
+        }
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {

@@ -37,6 +37,8 @@
 	</dict>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>so that it will be able to download images to Photos and upload images to your Piwigo.</string>
+	<key>PHPhotoLibraryPreventAutomaticLimitedAccessAlert</key>
+	<true/>
 	<key>UIAppFonts</key>
 	<array>
 		<string>LacunaRegular.TTF</string>

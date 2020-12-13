@@ -1267,7 +1267,26 @@
 -(void)checkPhotoLibraryAccessBeforeShare
 {
     // Check autorisation to access Photo Library (camera roll)
-    [[PhotosFetch sharedInstance] checkPhotoLibraryAccessForViewController:nil
+    // Check autorisation to access Photo Library (camera roll)
+    if (@available(iOS 14, *)) {
+        [[PhotosFetch sharedInstance] checkPhotoLibraryAuthorizationStatusFor:PHAccessLevelAddOnly for:self
+            onAccess:^{
+            // User allowed to save image in camera roll
+            [self presentShareImageViewControllerWithCameraRollAccess:YES];
+        } onDeniedAccess:^{
+            // User not allowed to save image in camera roll
+            if ([NSThread isMainThread]) {
+                [self presentShareImageViewControllerWithCameraRollAccess:NO];
+            }
+            else{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self presentShareImageViewControllerWithCameraRollAccess:NO];
+                });
+            }
+        }];
+    } else {
+        // Fallback on earlier versions
+        [[PhotosFetch sharedInstance] checkPhotoLibraryAccessForViewController:nil
                 onAuthorizedAccess:^{
                     // User allowed to save image in camera roll
                     [self presentShareImageViewControllerWithCameraRollAccess:YES];
@@ -1283,6 +1302,8 @@
                             });
                         }
                     }];
+        
+    }
 }
 
 -(void)presentShareImageViewControllerWithCameraRollAccess:(BOOL)hasCameraRollAccess

@@ -1651,19 +1651,33 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
 -(void)didTapUploadImagesButton
 {
     // Check autorisation to access Photo Library before uploading
-    [[PhotosFetch sharedInstance] checkPhotoLibraryAccessForViewController:self
-            onAuthorizedAccess:^{
-                // Open local albums view controller in new navigation controlelr
-                UIStoryboard *localAlbumsSB = [UIStoryboard storyboardWithName:@"LocalAlbumsViewController" bundle:nil];
-                LocalAlbumsViewController *localAlbumsVC = [localAlbumsSB instantiateViewControllerWithIdentifier:@"LocalAlbumsViewController"];
-                localAlbumsVC.categoryId = self.categoryId;
-                UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:localAlbumsVC];
-                navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-                navController.modalPresentationStyle = UIModalPresentationPageSheet;
-                [self presentViewController:navController animated:YES completion:nil];
-            }
-            onDeniedAccess:^{}
-     ];
+    if (@available(iOS 14, *)) {
+        [[PhotosFetch sharedInstance] checkPhotoLibraryAuthorizationStatusFor:PHAccessLevelReadWrite for:self onAccess:^{
+            // Open local albums view controller in new navigation controlelr
+            UIStoryboard *localAlbumsSB = [UIStoryboard storyboardWithName:@"LocalAlbumsViewController" bundle:nil];
+            LocalAlbumsViewController *localAlbumsVC = [localAlbumsSB instantiateViewControllerWithIdentifier:@"LocalAlbumsViewController"];
+            localAlbumsVC.categoryId = self.categoryId;
+            UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:localAlbumsVC];
+            navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+            navController.modalPresentationStyle = UIModalPresentationPageSheet;
+            [self presentViewController:navController animated:YES completion:nil];
+        } onDeniedAccess:^{}];
+    } else {
+        // Fallback on earlier versions
+        [[PhotosFetch sharedInstance] checkPhotoLibraryAccessForViewController:self
+                onAuthorizedAccess:^{
+                    // Open local albums view controller in new navigation controlelr
+                    UIStoryboard *localAlbumsSB = [UIStoryboard storyboardWithName:@"LocalAlbumsViewController" bundle:nil];
+                    LocalAlbumsViewController *localAlbumsVC = [localAlbumsSB instantiateViewControllerWithIdentifier:@"LocalAlbumsViewController"];
+                    localAlbumsVC.categoryId = self.categoryId;
+                    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:localAlbumsVC];
+                    navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+                    navController.modalPresentationStyle = UIModalPresentationPageSheet;
+                    [self presentViewController:navController animated:YES completion:nil];
+                }
+                onDeniedAccess:^{}
+         ];
+    }
 
     // Hide CreateAlbum and UploadImages buttons
     [self didCancelTapAddButton];
@@ -2521,7 +2535,25 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
 -(void)checkPhotoLibraryAccessBeforeShare
 {
     // Check autorisation to access Photo Library (camera roll)
-    [[PhotosFetch sharedInstance] checkPhotoLibraryAccessForViewController:nil
+    if (@available(iOS 14, *)) {
+        [[PhotosFetch sharedInstance] checkPhotoLibraryAuthorizationStatusFor:PHAccessLevelAddOnly for:self
+            onAccess:^{
+            // User allowed to save image in camera roll
+            [self presentShareImageViewControllerWithCameraRollAccess:YES];
+        } onDeniedAccess:^{
+            // User not allowed to save image in camera roll
+            if ([NSThread isMainThread]) {
+                [self presentShareImageViewControllerWithCameraRollAccess:NO];
+            }
+            else{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self presentShareImageViewControllerWithCameraRollAccess:NO];
+                });
+            }
+        }];
+    } else {
+        // Fallback on earlier versions
+        [[PhotosFetch sharedInstance] checkPhotoLibraryAccessForViewController:nil
                 onAuthorizedAccess:^{
                     // User allowed to save image in camera roll
                     [self presentShareImageViewControllerWithCameraRollAccess:YES];
@@ -2537,6 +2569,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
                             });
                         }
                     }];
+    }
 }
 
 -(void)presentShareImageViewControllerWithCameraRollAccess:(BOOL)hasCameraRollAccess
