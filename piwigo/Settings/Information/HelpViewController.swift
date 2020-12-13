@@ -20,6 +20,13 @@ class HelpViewController: UIViewController {
     private var pageViewController: UIPageViewController?
     private var pendingIndex: Int?
 
+    /// Page view sizes of:
+    ///     375 x 667 pixels on iPhone SE (2nd generation)
+    ///     1024 x 1366 pixels on iPad 12.9" (4th generation)
+    /// => adopt images of:
+    ///     1020 max width i.e. 340 @1x, 680 @ 2x and 1020 @3x
+    ///     1365 max height i.e. 455 @1x, 910 @2x and 1365 @3x
+
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
