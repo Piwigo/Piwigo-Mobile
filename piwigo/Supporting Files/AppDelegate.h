@@ -21,7 +21,6 @@ FOUNDATION_EXPORT NSString * const kPiwigoBackgroundTaskUpload;
 
 @property (nonatomic, strong) UIWindow *window;
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
-@property (nonatomic, strong) dispatch_queue_t uploadManagerQueue;
 
 -(void)loadLoginView;
 -(void)loadNavigation;

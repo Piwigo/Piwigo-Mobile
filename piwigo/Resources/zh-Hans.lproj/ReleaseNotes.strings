@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.5.2_text" = "版本 2.5.2\n\n• 后台上传（需要uploadAsync扩展或Piwigo 11或更高版本）\n• 小错误修复和界面改进";
+"v2.5.3_text" = "Version 2.5.3\n\n• Control which photos and videos Piwigo can access\n• Tips and tricks for better exploiting the app\n• Bug fixes";
+
+"v2.5.2_text" = "版本 2.5.2\n2020年12月3日\n\n• 后台上传（需要uploadAsync扩展或Piwigo 11或更高版本）\n• 小错误修复和界面改进";
 
 "v2.5.1_text" = "版本 2.5.1\n2020年9月10日\n\n• 以随机顺序展示照片和视频的新选项\n• 小错误修复和界面改进";
 
@@ -42,7 +44,7 @@
 
 "v2.3.0_text" = "版本 2.3\n2019年2月2日\n\n• 支持共享照片和视频\n• 增加缓存大小限制\n• 错误修复和界面改进\n• 改进翻译";
 
-"v2.2.7_text" = "版本2.2.7\n2019年2月29日\n\n• 错误修复和界面改进\n• 改进翻译";
+"v2.2.7_text" = "版本2.2.7\n2019年12月29日\n\n• 错误修复和界面改进\n• 改进翻译";
 
 "v2.2.6_text" = "版本2.2.6\n2018年12月20日\n\n• 改进翻译和 iOS 12 兼容性\n• 错误修复和界面改进\n• 新增意大利翻译";
 
