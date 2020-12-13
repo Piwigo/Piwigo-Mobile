@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v2.5.3_text" = "Version 2.5.3\n\n• Control which photos and videos Piwigo can access\n• Tip and tricks for better exploiting the app\n• Bug fixes";
+
 "v2.5.2_text" = "Version 2.5.2\n\n• Baggrund uploader (kræver uploadAsync-udvidelse eller Piwigo 11 eller nyere)\n• Mindre fejlrettelser og forbedringer af brugerflade";
 
 "v2.5.1_text" = "Version 2.5.1\n10 september 2020\n\n• Ny mulighed for at præsentere fotos og videoer i tilfældig rækkefølge\n• Mindre fejlrettelser og forbedringer af brugerflade";
