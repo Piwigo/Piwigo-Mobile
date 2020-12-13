@@ -149,6 +149,8 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         
         // Retrieve images in pasteboard if any
         if #available(iOS 10.0, *) {
+            // Don't notify the user when getting general pasteboard content
+            // that originated in a different app if there is no available image
             if UIPasteboard.general.hasImages {
                 imagesInPasteboard = UIPasteboard.general.images ?? []
             }
