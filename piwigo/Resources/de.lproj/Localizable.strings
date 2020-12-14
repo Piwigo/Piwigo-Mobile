@@ -709,11 +709,11 @@
 "settings_groups" = "Gruppen";
 
 // Settings — Help
-"help01_header" = "Multiple Selection";
-"help01_text" = "Slide your finger from left to right (or right to left) then down, etc.";
-"help02_header" = "Background Uploading";
-"help02_text" = "Select photos/videos, set parameters and tap Upload.";
-"help02_text2" = "Plug the device to its charger and let iOS launch the uploads whenever appropriate.";
-"help02_text3" = "(requires the uploadAsync extension or Piwigo 11)";
-"help03_header" = "Administrators";
-"help03_text" = "Create, delete, move and rename albums.";
+"help01_header" = "Mehrfachauswahl";
+"help01_text" = "Schieben Sie den Finger von links nach rechts (oder rechts nach links) dann nach unten, etc.";
+"help02_header" = "Hochladen im \nHintergrund";
+"help02_text" = "Wählen Sie Fotos/Videos, setzen Sie Parameter und tippen Sie auf Hochladen.";
+"help02_text2" = "Schließen Sie das Gerät an sein Ladegerät an und lassen Sie iOS das Hochladen starten, wann immer es angebracht ist.";
+"help02_text3" = "(erfordert die UploadAsync-Erweiterung oder Piwigo 11)";
+"help03_header" = "Administratoren";
+"help03_text" = "Alben erstellen, löschen, verschieben und umbenennen.";
