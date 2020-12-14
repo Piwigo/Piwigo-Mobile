@@ -437,7 +437,7 @@ class UploadManager: NSObject, URLSessionDelegate {
 
         // Update UI
         if !self.isExecutingBackgroundUploadTask {
-            let uploadInfo: [String : Any] = ["localIndentifier" : uploadProperties.localIdentifier,
+            let uploadInfo: [String : Any] = ["localIdentifier" : uploadProperties.localIdentifier,
                                               "photoResize" : Int16(uploadProperties.photoResize),
                                               "stateLabel" : kPiwigoUploadState.preparing.stateInfo,
                                               "Error" : ""]
@@ -629,7 +629,7 @@ class UploadManager: NSObject, URLSessionDelegate {
 
         // Update UI
         if !self.isExecutingBackgroundUploadTask {
-            let uploadInfo: [String : Any] = ["localIndentifier" : uploadProperties.localIdentifier,
+            let uploadInfo: [String : Any] = ["localIdentifier" : uploadProperties.localIdentifier,
                                               "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
                                               "progressFraction" : Float(0)]
             DispatchQueue.main.async {

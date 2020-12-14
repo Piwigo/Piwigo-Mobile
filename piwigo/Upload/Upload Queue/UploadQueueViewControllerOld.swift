@@ -353,7 +353,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
     }
 
     @objc func applyUploadProgress(_ notification: Notification) {
-        let localIdentifier =  (notification.userInfo?["localIndentifier"] ?? "") as! String
+        let localIdentifier =  (notification.userInfo?["localIdentifier"] ?? "") as! String
         let visibleCells = queueTableView.visibleCells as! [UploadImageTableViewCell]
         for cell in visibleCells {
             if cell.localIdentifier == localIdentifier {
@@ -435,19 +435,19 @@ extension UploadQueueViewControllerOld: NSFetchedResultsControllerDelegate {
         var uploadInfo: [String : Any]
         switch upload.state {
         case .waiting, .preparing, .prepared, .formatError, .uploadingError:
-            uploadInfo = ["localIndentifier" : upload.localIdentifier,
+            uploadInfo = ["localIdentifier" : upload.localIdentifier,
                           "photoResize" : upload.photoResize,
                           "stateLabel" : upload.stateLabel,
                           "Error" : upload.requestError ?? "",
                           "progressFraction" : Float(0.0)]
         case .uploaded, .finishing, .finishingError, .finished:
-            uploadInfo = ["localIndentifier" : upload.localIdentifier,
+            uploadInfo = ["localIdentifier" : upload.localIdentifier,
                           "photoResize" : upload.photoResize,
                           "stateLabel" : upload.stateLabel,
                           "Error" : upload.requestError ?? "",
                           "progressFraction" : Float(1.0)]
         default:
-            uploadInfo = ["localIndentifier" : upload.localIdentifier,
+            uploadInfo = ["localIdentifier" : upload.localIdentifier,
                           "photoResize" : upload.photoResize,
                           "stateLabel" : upload.stateLabel,
                           "Error" : upload.requestError ?? ""]

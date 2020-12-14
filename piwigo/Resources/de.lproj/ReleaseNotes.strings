@@ -6,9 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.5.3_text" = "Version 2.5.3\n\n• Control which photos and videos Piwigo can access\n• Tips and tricks for better exploiting the app\n• Bug fixes";
+"v2.5.3_text" = "Version 2.5.\n\n• Kontrollieren Sie, auf welche Fotos und Videos Piwigo zugreifen kann\n• Tipps und Tricks zur besseren Nutzung der App\n• Fehlerbehebungen";
 
-"v2.5.2_text" = "Version 2.5.2\n3. Dezember 2020\n\n• Hochladen des Hintergrunds (erfordert die Erweiterung uploadAsync oder Piwigo 11 oder höher)\n• Kleinere Fehlerbehebungen und Verbesserungen der Benutzeroberfläche";
+"v2.5.2_text" = "Version 2.5.2\n3. Dezember 2020\n\n• Hochladen im Hintergrund (erfordert die Erweiterung uploadAsync oder Piwigo 11 und höher)\n• Kleinere Fehlerbehebungen und Verbesserungen der Benutzeroberfläche";
 
 "v2.5.1_text" = "Version 2.5.1\n10. September 2020\n\n• Neue Option für die Darstellung der Fotos und Videos in zufälliger Reihenfolge\n• Kleinere Fehlerbehebungen und Verbesserungen der Benutzeroberfläche";
 

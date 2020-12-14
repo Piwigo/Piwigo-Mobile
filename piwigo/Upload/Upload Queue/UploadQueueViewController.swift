@@ -369,7 +369,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
     }
 
     @objc func applyUploadProgress(_ notification: Notification) {
-        let localIdentifier =  (notification.userInfo?["localIndentifier"] ?? "") as! String
+        let localIdentifier =  (notification.userInfo?["localIdentifier"] ?? "") as! String
         let visibleCells = queueTableView.visibleCells as! [UploadImageTableViewCell]
         for cell in visibleCells {
             if cell.localIdentifier == localIdentifier {
