@@ -34,7 +34,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
 
     private var selectPhotoLibraryItemsButton: UIBarButtonItem?
     private var cancelBarButton: UIBarButtonItem?
-    private var imagesInPasteboard = [UIImage]()
+    private var hasImagesInPasteboard: Bool = false
 
     
     // MARK: - View Lifecycle
@@ -61,14 +61,9 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         name = NSNotification.Name(UIApplication.willEnterForegroundNotification.rawValue)
         NotificationCenter.default.addObserver(self, selector: #selector(checkPasteboard), name: name, object: nil)
 
-        // Retrieve images in pasteboard if any
-        if #available(iOS 10.0, *) {
-            if UIPasteboard.general.hasImages {
-                imagesInPasteboard = UIPasteboard.general.images ?? []
-            }
-        } else {
-            // Fallback on earlier versions
-            imagesInPasteboard = UIPasteboard.general.images ?? []
+        // Are there images in the pasteboard?
+        if UIPasteboard.general.contains(pasteboardTypes: ["public.image", "public.movie"]) {
+            hasImagesInPasteboard = true
         }
 
         // Use the LocalAlbumsProvider to fetch albums data.
@@ -144,25 +139,14 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     }
 
     @objc func checkPasteboard() {
-        // Initialise list of images in pasteboard
-        imagesInPasteboard = []
-        
-        // Retrieve images in pasteboard if any
-        if #available(iOS 10.0, *) {
-            // Don't notify the user when getting general pasteboard content
-            // that originated in a different app if there is no available image
-            if UIPasteboard.general.hasImages {
-                imagesInPasteboard = UIPasteboard.general.images ?? []
-            }
-        } else {
-            // Fallback on earlier versions
-            imagesInPasteboard = UIPasteboard.general.images ?? []
+        hasImagesInPasteboard = false
+        // Are there images in the pasteboard?
+        if UIPasteboard.general.contains(pasteboardTypes: ["public.image", "public.movie"]) {
+            hasImagesInPasteboard = true
         }
-        
-        // Reload tableView if necessary
-        if imagesInPasteboard.count > 0 {
-            localAlbumsTableView.reloadData()
-        }
+
+        // Reload tableView
+        localAlbumsTableView.reloadData()
     }
 
     @objc func quitUpload() {
@@ -170,7 +154,9 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         dismiss(animated: true)
     }
 
-    deinit {
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
         // Unregister palette changes
         var name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
         NotificationCenter.default.removeObserver(self, name: name, object: nil)
@@ -190,7 +176,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         
         // First section added for pasteboard?
         var activeSection = section
-        if imagesInPasteboard.count > 0 {
+        if hasImagesInPasteboard {
             switch activeSection {
             case 0:
                 return nil
@@ -233,7 +219,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
 
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         // First section added for pasteboard?
-        if (imagesInPasteboard.count > 0) && (section == 0) { return }
+        if hasImagesInPasteboard && (section == 0) { return }
         view.layer.zPosition = 0
     }
 
@@ -242,13 +228,13 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     func numberOfSections(in tableView: UITableView) -> Int {
         // First section added for pasteboard if necessary
         return LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums.count +
-            (imagesInPasteboard.count > 0 ? 1 : 0)
+            (hasImagesInPasteboard ? 1 : 0)
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // First section added for pasteboard?
         var activeSection = section
-        if imagesInPasteboard.count > 0 {
+        if hasImagesInPasteboard {
             switch activeSection {
             case 0:
                 return 1
@@ -262,7 +248,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // First section added for pasteboard?
         var activeSection = indexPath.section
-        if imagesInPasteboard.count > 0 {
+        if hasImagesInPasteboard {
             switch activeSection {
             case 0:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LocalAlbumsNoDatesTableViewCell", for: indexPath) as? LocalAlbumsNoDatesTableViewCell else {
@@ -270,7 +256,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
                     return LocalAlbumsNoDatesTableViewCell()
                 }
                 let title = "Pasteboard"
-                let nberPhotos = imagesInPasteboard.count
+                let nberPhotos = UIPasteboard.general.itemSet(withPasteboardTypes: ["public.image", "public.movie"])?.count ?? NSNotFound
                 cell.configure(with: title, nberPhotos: nberPhotos)
                 cell.isAccessibilityElement = true
                 return cell
@@ -326,7 +312,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         // First section added for pasteboard?
         var activeSection = indexPath.section
-        if imagesInPasteboard.count > 0 {
+        if hasImagesInPasteboard {
             switch activeSection {
             case 0:
                 return 44.0
@@ -355,7 +341,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         // First section added for pasteboard?
         var activeSection = section
-        if imagesInPasteboard.count > 0 {
+        if hasImagesInPasteboard {
             switch activeSection {
             case 0:
                 return 0.0
@@ -381,7 +367,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         // First section added for pasteboard?
         var activeSection = section
-        if imagesInPasteboard.count > 0 {
+        if hasImagesInPasteboard {
             switch activeSection {
             case 0:
                 return nil
@@ -426,13 +412,12 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
 
         // First section added for pasteboard?
         var activeSection = indexPath.section
-        if imagesInPasteboard.count > 0 {
+        if hasImagesInPasteboard {
             switch activeSection {
             case 0:
                 let pasteboardImagesSB = UIStoryboard(name: "PasteboardImagesViewController", bundle: nil)
                 let localImagesVC = pasteboardImagesSB.instantiateViewController(withIdentifier: "PasteboardImagesViewController") as? PasteboardImagesViewController
                 localImagesVC?.setCategoryId(categoryId)
-                localImagesVC?.setPasteBoardImages(imagesInPasteboard)
                 if let localImagesVC = localImagesVC {
                     navigationController?.pushViewController(localImagesVC, animated: true)
                 }
