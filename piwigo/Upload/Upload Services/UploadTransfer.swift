@@ -30,7 +30,7 @@ extension UploadManager {
         startUploading(fileURL: fileURL, with: imageParameters,
             onProgress: { (progress, currentChunk, totalChunks) in
                 let chunkProgress: Float = Float(currentChunk) / Float(totalChunks)
-                let uploadInfo: [String : Any] = ["localIndentifier" : uploadProperties.localIdentifier,
+                let uploadInfo: [String : Any] = ["localIdentifier" : uploadProperties.localIdentifier,
                                                   "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
                                                   "Error" : uploadProperties.requestError ?? "",
                                                   "progressFraction" : chunkProgress]
@@ -407,7 +407,7 @@ extension UploadManager {
             if !isExecutingBackgroundUploadTask {
                 let progress = Float(chunk) / Float(chunks) / 2.0
                 // Update UI
-                let uploadInfo: [String : Any] = ["localIndentifier" : uploadProperties.localIdentifier,
+                let uploadInfo: [String : Any] = ["localIdentifier" : uploadProperties.localIdentifier,
                                                   "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
                                                   "progressFraction" : progress]
                 DispatchQueue.main.async {
@@ -571,7 +571,7 @@ extension UploadManager {
                     if chunks > 0 {
                         let progress = 0.5 + Float(nberOfUploadedChunks) / Float(chunks) / 2.0
                         // Update UI
-                        let uploadInfo: [String : Any] = ["localIndentifier" : identifier,
+                        let uploadInfo: [String : Any] = ["localIdentifier" : identifier,
                                                           "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
                                                           "progressFraction" : progress]
                         DispatchQueue.main.async {
@@ -590,7 +590,7 @@ extension UploadManager {
 
                 // Update UI (fill progress bar)
                 if !isExecutingBackgroundUploadTask {
-                    let uploadInfo: [String : Any] = ["localIndentifier" : identifier,
+                    let uploadInfo: [String : Any] = ["localIdentifier" : identifier,
                                                       "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
                                                       "progressFraction" : Float(1)]
                     DispatchQueue.main.async {

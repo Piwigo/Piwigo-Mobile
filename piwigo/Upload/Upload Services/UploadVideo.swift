@@ -198,7 +198,7 @@ extension UploadManager {
         }
 
         // Update UI
-        let uploadInfo: [String : Any] = ["localIndentifier" : newProperties.localIdentifier,
+        let uploadInfo: [String : Any] = ["localIdentifier" : newProperties.localIdentifier,
                                           "stateLabel" : newProperties.stateLabel,
                                           "progressFraction" : Float(0)]
         DispatchQueue.main.async {
