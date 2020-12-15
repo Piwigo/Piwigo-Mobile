@@ -709,11 +709,11 @@
 "settings_groups" = "群组";
 
 // Settings — Help
-"help01_header" = "Multiple Selection";
-"help01_text" = "Slide your finger from left to right (or right to left) then down, etc.";
-"help02_header" = "Background Uploading";
-"help02_text" = "Select photos/videos, set parameters and tap Upload.";
-"help02_text2" = "Plug the device to its charger and let iOS launch the uploads whenever appropriate.";
-"help02_text3" = "(requires the uploadAsync extension or Piwigo 11)";
-"help03_header" = "Administrators";
-"help03_text" = "Create, delete, move and rename albums.";
+"help01_header" = "多选";
+"help01_text" = "将您的手指从左向右滑动(或向右滑动)，然后向下滑动等。";
+"help02_header" = "后台上传";
+"help02_text" = "选择照片/视频，设置参数并点击上传。";
+"help02_text2" = "将设备插入充电器，让iOS在适当时启动上传。";
+"help02_text3" = "(需要 uploadAsync 扩展或 Piwigo 11)";
+"help03_header" = "管理员";
+"help03_text" = "创建、删除、移动和重命名相册。";
