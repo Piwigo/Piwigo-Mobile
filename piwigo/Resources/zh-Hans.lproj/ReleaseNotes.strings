@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.5.3_text" = "Version 2.5.3\n\n• Control which photos and videos Piwigo can access\n• Tips and tricks for better exploiting the app\n• Bug fixes";
+"v2.5.3_text" = "版本2.5.3\n\n• 控制Piwigo可以访问哪些照片和视频\n• 更好地利用应用程序的提示和技巧\n• Bug修复";
 
 "v2.5.2_text" = "版本 2.5.2\n2020年12月3日\n\n• 后台上传（需要uploadAsync扩展或Piwigo 11或更高版本）\n• 小错误修复和界面改进";
 

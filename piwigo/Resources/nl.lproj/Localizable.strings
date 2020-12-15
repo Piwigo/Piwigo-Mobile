@@ -709,11 +709,11 @@
 "settings_groups" = "Groepen";
 
 // Settings — Help
-"help01_header" = "Multiple Selection";
-"help01_text" = "Slide your finger from left to right (or right to left) then down, etc.";
-"help02_header" = "Background Uploading";
-"help02_text" = "Select photos/videos, set parameters and tap Upload.";
-"help02_text2" = "Plug the device to its charger and let iOS launch the uploads whenever appropriate.";
-"help02_text3" = "(requires the uploadAsync extension or Piwigo 11)";
-"help03_header" = "Administrators";
-"help03_text" = "Create, delete, move and rename albums.";
+"help01_header" = "Meerdere selecties";
+"help01_text" = "Schuif je vinger van links naar rechts (of van rechts naar links) dan naar beneden, enz.";
+"help02_header" = "Achtergrond Uploaden";
+"help02_text" = "Selecteer foto's/video's, stel parameters in en tik op uploaden.";
+"help02_text2" = "Sluit het apparaat aan op de lader en laat iOS de uploads starten wanneer dat nodig is.";
+"help02_text3" = "(vereist de uploadAsync extensie of Piwigo 11)";
+"help03_header" = "Beheerders";
+"help03_text" = "Maak, verwijder, verplaats en hernoem albums.";
