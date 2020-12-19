@@ -19,6 +19,7 @@ class HelpViewController: UIViewController {
     private var pageCount: Int = 3    // Update this value after deleting/creating Help##ViewControllers
     private var pageViewController: UIPageViewController?
     private var pendingIndex: Int?
+    private var pageDisplayed: Int = 0
 
     /// Page view sizes of:
     ///     375 x 667 pixels on iPhone SE (2nd generation)
@@ -59,6 +60,7 @@ class HelpViewController: UIViewController {
         pageViewController!.dataSource = self
         
         // Display first page
+        pageDisplayed = 0
         pageViewController!.setViewControllers([pages[0]], direction: .forward, animated: true, completion: nil)
     }
 
@@ -78,6 +80,20 @@ class HelpViewController: UIViewController {
         view.backgroundColor = UIColor.piwigoColorBackground()
     }
 
+    @IBAction func didSelectPage(_ sender: UIPageControl) {
+        let page = sender.currentPage
+        
+        // Direction depends on requested page
+        if page > pageDisplayed {
+            pageViewController?.setViewControllers([pages[page]], direction: .forward, animated: true, completion: nil)
+        } else if page < pageDisplayed{
+            pageViewController?.setViewControllers([pages[page]], direction: .reverse, animated: true, completion: nil)
+        }
+        
+        // Update displayed page
+        pageDisplayed = page
+    }
+    
     @IBAction func dismissHelp(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
@@ -111,6 +127,7 @@ extension HelpViewController: UIPageViewControllerDataSource, UIPageViewControll
         if completed {
             if let pendingIndex = pendingIndex {
                 pageControl.currentPage = pendingIndex
+                pageDisplayed = pendingIndex
             }
         }
     }
