@@ -43,6 +43,17 @@ class Help01ViewController: UIViewController {
         Model.sharedInstance()?.didPresentHelpViewsInCurrentSession = true
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        // Set colors, fonts, etc.
+        applyColorPalette()
+
+        // Register palette changes
+        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+    }
+
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = UIColor.piwigoColorBackground()

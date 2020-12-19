@@ -62,6 +62,22 @@ class HelpViewController: UIViewController {
         pageViewController!.setViewControllers([pages[0]], direction: .forward, animated: true, completion: nil)
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        // Set colors, fonts, etc.
+        applyColorPalette()
+
+        // Register palette changes
+        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+    }
+
+    @objc func applyColorPalette() {
+        // Background color of the view
+        view.backgroundColor = UIColor.piwigoColorBackground()
+    }
+
     @IBAction func dismissHelp(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
