@@ -79,6 +79,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     private var selectedSections = [LocalImagesHeaderReusableView.SelectButtonState]()  // State of Select buttons
     private var imagesBeingTouched = [IndexPath]()                                      // Array of indexPaths of touched images
     
+    private var uploadIDsToDelete = [NSManagedObjectID]()
+    private var imagesToDelete = [String]()
+    
     private var actionBarButton: UIBarButtonItem?
     private var cancelBarButton: UIBarButtonItem?
     private var uploadBarButton: UIBarButtonItem?
@@ -762,26 +765,25 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         })
         alert.addAction(sortAction)
 
-        // Delete uploaded photos
-        let completedUploads = indexedUploadsInQueue.compactMap({$0}).count
-        if completedUploads > 0 {
-            let titleDelete = completedUploads > 1 ? String(format: NSLocalizedString("deleteCategory_allImages", comment: "Delete %@ Photos"), NumberFormatter.localizedString(from: NSNumber.init(value: completedUploads), number: .decimal)) : NSLocalizedString("deleteSingleImage_title", comment: "Delete Photo")
-            let deleteAction = UIAlertAction(title: titleDelete, style: .destructive, handler: { action in
-                // Delete uploaded images (fetch on the main queue)
-                let indexedUploads = self.indexedUploadsInQueue.compactMap({$0})
-                if let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects {
-                    let completedUploads = allUploads.filter({ ($0.state == .finished) || ($0.state == .moderated) })
-                    var uploadIDsToDelete = [NSManagedObjectID](), imagesToDelete = [String]()
-                    for index in 0..<indexedUploads.count {
-                        if let upload = completedUploads.first(where: {$0.localIdentifier == indexedUploads[index].0}) {
-                            uploadIDsToDelete.append(upload.objectID)
-                            imagesToDelete.append(indexedUploads[index].0!)
-                        }
-                    }
-                    UploadManager.shared.delete(uploadedImages: imagesToDelete, with: uploadIDsToDelete)
+        // Delete uploaded images (fetch on the main queue)
+        uploadIDsToDelete = [NSManagedObjectID](); imagesToDelete = [String]()
+        let indexedUploads = self.indexedUploadsInQueue.compactMap({$0})
+        if let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects {
+            let completedUploads = allUploads.filter({ ($0.state == .finished) || ($0.state == .moderated) })
+            for index in 0..<indexedUploads.count {
+                if let upload = completedUploads.first(where: {$0.localIdentifier == indexedUploads[index].0}) {
+                    uploadIDsToDelete.append(upload.objectID)
+                    imagesToDelete.append(indexedUploads[index].0!)
                 }
-            })
-            alert.addAction(deleteAction)
+            }
+            if imagesToDelete.count > 0 {
+                let titleDelete = imagesToDelete.count > 1 ? String(format: NSLocalizedString("deleteCategory_allImages", comment: "Delete %@ Photos"), NumberFormatter.localizedString(from: NSNumber.init(value: imagesToDelete.count), number: .decimal)) : NSLocalizedString("deleteSingleImage_title", comment: "Delete Photo")
+                let deleteAction = UIAlertAction(title: titleDelete, style: .destructive, handler: { action in
+                    // Delete uploaded images
+                    UploadManager.shared.delete(uploadedImages: self.imagesToDelete, with: self.uploadIDsToDelete)
+                })
+                alert.addAction(deleteAction)
+            }
         }
 
         if #available(iOS 14, *) {
@@ -1173,12 +1175,14 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             // Use indexed data
             if let state = indexedUploadsInQueue[index]?.1 {
                 switch state {
-                case .waiting, .preparing, .preparingError, .preparingFail, .prepared, .formatError:
+                case .waiting, .preparing, .prepared:
                     cell.cellWaiting = true
-                case .uploading, .uploadingError, .uploaded, .finishing, .finishingError:
+                case .uploading, .uploaded, .finishing:
                     cell.cellUploading = true
                 case .finished, .moderated:
                     cell.cellUploaded = true
+                case .preparingFail, .preparingError, .formatError, .uploadingError, .finishingError:
+                    cell.cellFailed = true
                 }
             } else {
                 cell.cellSelected = selectedImages[index] != nil
@@ -1187,12 +1191,14 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             // Use non-indexed data
             if let upload = uploadsInQueue.first(where: { $0?.0 == imageAsset.localIdentifier }) {
                 switch upload?.1 {
-                case .waiting, .preparing, .preparingError, .preparingFail, .prepared, .formatError:
+                case .waiting, .preparing, .prepared:
                     cell.cellWaiting = true
-                case .uploading, .uploadingError, .uploaded, .finishing, .finishingError:
+                case .uploading, .uploaded, .finishing:
                     cell.cellUploading = true
                 case .finished, .moderated:
                     cell.cellUploaded = true
+                case .preparingFail, .preparingError, .formatError, .uploadingError, .finishingError:
+                    cell.cellFailed = true
                 case .none:
                     cell.cellSelected = false
                 }
@@ -1584,12 +1590,14 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
                 if let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell {
                     cell.selectedImage.isHidden = true
                     switch upload.state {
-                    case .waiting, .preparing, .preparingError, .preparingFail, .prepared, .formatError:
+                    case .waiting, .preparing, .prepared:
                         cell.cellWaiting = true
-                    case .uploading, .uploadingError, .uploaded, .finishing, .finishingError:
+                    case .uploading, .uploaded, .finishing:
                         cell.cellUploading = true
                     case .finished, .moderated:
                         cell.cellUploaded = true
+                    case .preparingFail, .preparingError, .formatError, .uploadingError, .finishingError:
+                        cell.cellFailed = true
                     }
                     cell.reloadInputViews()
                     return
