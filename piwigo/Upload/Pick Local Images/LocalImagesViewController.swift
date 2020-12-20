@@ -103,7 +103,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             PhotosFetch.sharedInstance().showPhotosLibraryAccessRestricted(in: self)
         }
 
-        // Fetch a specific path of the Photos Library to reduce the workload
+        // Fetch a specific path of the Photo Library to reduce the workload
         // and store the fetched assets for future use
         fetchImagesByCreationDate()
         
@@ -318,7 +318,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     func fetchImagesByCreationDate() -> Void {
         /**
          Fetch non-empty collection previously selected by user.
-         We fetch a specific path of the Photos Library to reduce the workload and store the fetched collection for future use.
+         We fetch a specific path of the Photo Library to reduce the workload and store the fetched collection for future use.
          The fetch is performed with ascending creation date.
          */
         // Next line for testing

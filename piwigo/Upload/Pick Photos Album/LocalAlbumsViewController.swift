@@ -42,7 +42,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         super.viewDidLoad()
 
         // Title
-        title = NSLocalizedString("localAlbums", comment: "Photos library")
+        title = NSLocalizedString("localAlbums", comment: "Photo Library")
         
         // Button for selecting Photo Library items (.limited access mode)
         if #available(iOS 14.0, *) {

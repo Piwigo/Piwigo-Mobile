@@ -163,7 +163,7 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
 
     // MARK: - Fetch Local Albums
     /**
-     Fetches the local albums from the Photos library
+     Fetches the local albums from the Photo Library
      Empty albums are not presented, left albums are sorted by localized title
     */
     func fetchLocalAlbums(completion: @escaping () -> Void) {
