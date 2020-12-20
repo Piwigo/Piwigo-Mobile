@@ -23,7 +23,7 @@ class PasteboardImagesHeaderReusableView: UICollectionReusableView {
 
         // Data label used when place name known
         headerLabel.textColor = UIColor.piwigoColorHeader()
-        headerLabel.text = "Pasteboard"
+        headerLabel.text = NSLocalizedString("imageUploadPasteboard", comment: "Clipboard")
     }
 
     override func prepareForReuse() {
