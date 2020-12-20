@@ -19,6 +19,7 @@ class HelpViewController: UIViewController {
     private var pageCount: Int = 3    // Update this value after deleting/creating Help##ViewControllers
     private var pageViewController: UIPageViewController?
     private var pendingIndex: Int?
+    private var pageDisplayed: Int = 0
 
     /// Page view sizes of:
     ///     375 x 667 pixels on iPhone SE (2nd generation)
@@ -57,11 +58,45 @@ class HelpViewController: UIViewController {
         pageViewController = self.children[0] as? UIPageViewController
         pageViewController!.delegate = self
         pageViewController!.dataSource = self
+        if #available(iOS 14.0, *) {
+            pageControl.allowsContinuousInteraction = true
+        }
         
         // Display first page
+        pageDisplayed = 0
         pageViewController!.setViewControllers([pages[0]], direction: .forward, animated: true, completion: nil)
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        // Set colors, fonts, etc.
+        applyColorPalette()
+
+        // Register palette changes
+        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+    }
+
+    @objc func applyColorPalette() {
+        // Background color of the view
+        view.backgroundColor = UIColor.piwigoColorBackground()
+    }
+
+    @IBAction func didSelectPage(_ sender: UIPageControl) {
+        let page = sender.currentPage
+        
+        // Direction depends on requested page
+        if page > pageDisplayed {
+            pageViewController?.setViewControllers([pages[page]], direction: .forward, animated: true, completion: nil)
+        } else if page < pageDisplayed{
+            pageViewController?.setViewControllers([pages[page]], direction: .reverse, animated: true, completion: nil)
+        }
+        
+        // Update displayed page
+        pageDisplayed = page
+    }
+    
     @IBAction func dismissHelp(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
@@ -95,6 +130,7 @@ extension HelpViewController: UIPageViewControllerDataSource, UIPageViewControll
         if completed {
             if let pendingIndex = pendingIndex {
                 pageControl.currentPage = pendingIndex
+                pageDisplayed = pendingIndex
             }
         }
     }
