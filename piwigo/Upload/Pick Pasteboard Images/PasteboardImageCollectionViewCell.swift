@@ -133,9 +133,9 @@ class PasteboardImageCollectionViewCell: UICollectionViewCell {
         // Image: retrieve data of right size and crop image
         let retinaScale = Int(UIScreen.main.scale)
         self.cellImage.image = cropImage(image, viewWidth: thumbnailSize * CGFloat(retinaScale), viewHeight: thumbnailSize * CGFloat(retinaScale))
-//        if imageAsset.mediaType == .video {
-//            self.playImage?.isHidden = false
-//        }
+        if identifier.contains("mov") {
+            self.playImage?.isHidden = false
+        }
     }
     
     func setProgress(_ progress: Float, withAnimation animate: Bool) {

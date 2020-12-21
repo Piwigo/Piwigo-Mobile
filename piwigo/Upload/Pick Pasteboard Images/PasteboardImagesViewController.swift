@@ -42,9 +42,10 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
     @IBOutlet weak var collectionFlowLayout: UICollectionViewFlowLayout!
         
     // Collection of images in the pasteboard
-    private var pasteBoardIndexSet = IndexSet()                             // IndexSet of objects in pasteboard
-    private var pasteBoardTypes = [[String]]()                              // Types of objects in pasteboard
-    private var pasteBoardIdentifiers = [String]()                          // Identifiers of objects in pasteboard
+    private var pbIndexSet = IndexSet()             // IndexSet of objects in pasteboard
+    private var pbTypes = [[String]]()              // Types of objects in pasteboard
+    private var pbIdentifiers = [String]()          // Identifiers (see below)
+    private var pbFileExtensions = [String]()       // Extension of filenames
 
     private let queue = OperationQueue()                                    // Queue used to cache things
     private var uploadsInQueue = [(String?,kPiwigoUploadState?)?]()         // Array of uploads in queue at start
@@ -67,20 +68,19 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
 
         // Pause UploadManager while sorting images
         UploadManager.shared.isPaused = true
-
-        // Get images and videos in pasteboard
+        
+        // Retrieve pasteboard object indexes and types, then create identifiers
         if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: ["public.image", "public.movie"]),
            let types = UIPasteboard.general.types(forItemSet: indexSet) {
-            pasteBoardIndexSet = indexSet
-            pasteBoardTypes = types
+            setPasteboardIDs(from: indexSet, types: types)
         } else {
-            pasteBoardIndexSet = IndexSet.init()
-            pasteBoardTypes = [[String]]()
+            pbIndexSet = IndexSet.init()
+            pbTypes = [[String]]()
+            pbIdentifiers = [String]()
         }
 
-        // At start, there is no image selected and iDs are not known
-        pasteBoardIdentifiers = .init(repeating: "", count: pasteBoardIndexSet.count)
-        selectedImages = .init(repeating: nil, count: pasteBoardIndexSet.count)
+        // At start, there is no image selected
+        selectedImages = .init(repeating: nil, count: pbIndexSet.count)
         
         // We provide a non-indexed list of images in the upload queue
         // so that we can at least show images in upload queue at start
@@ -192,23 +192,6 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         }
     }
 
-    @objc func checkPasteboard() {
-        // Get images and videos in pasteboard
-        if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: ["public.image", "public.movie"]),
-           let types = UIPasteboard.general.types(forItemSet: indexSet) {
-            pasteBoardIndexSet = indexSet
-            pasteBoardTypes = types
-        } else {
-            pasteBoardIndexSet = IndexSet.init()
-            pasteBoardTypes = [[String]]()
-        }
-
-        // Prepare images for upload and cache images in upload queue in background
-        DispatchQueue.global(qos: .userInitiated).async {
-            self.prepareImagesAndIndexUploads()
-        }
-    }
-
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
@@ -275,13 +258,57 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
     }
 
     
+    // MARK: - Check pasteboard content
+    /// Called by the notification center when the pasteboard content is updated
+    @objc func checkPasteboard() {
+        // Do nothing if the clipboard was emptied
+        if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: ["public.image", "public.movie"]),
+           let types = UIPasteboard.general.types(forItemSet: indexSet) {
+            // Retrieve pasteboard object indexes and types, then create identifiers
+            setPasteboardIDs(from: indexSet, types: types)
+
+            // Prepare images for upload and cache images in upload queue in background
+            DispatchQueue.global(qos: .userInitiated).async {
+                self.prepareImagesAndIndexUploads()
+            }
+        }
+    }
+    
+    /// Pasteboard images are identified with identifiers of the type "pasteboard-yyyyMMdd-HHmmssSSSS-typ-#" where:
+    /// - "pasteboard" is a header telling that the image/video comes from the pasteboard
+    /// - "yyyyMMdd-HHmmssSSSS" is the date at which the objects were retrieved
+    /// - "typ" is "img" or "mov" depending on the nature of the object
+    /// - "#" is the index of the object in the pasteboard
+    private func setPasteboardIDs(from indexSet: IndexSet, types: [[String]]) {
+        // Get date of retrieve
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyyMMdd-HHmmssSSSS"
+        let pbDateTime = dateFormatter.string(from: Date())
+
+        // Retrieve pasteboard object indexes and types, then create identifiers
+        pbIndexSet = indexSet       // e.g. 0..<4
+        pbTypes = types             // e.g. [["public.jpeg", "public.png"], ["public.jpeg"], ...]
+        pbIdentifiers = [String]()
+        for idx in indexSet {
+            if UIPasteboard.general.contains(pasteboardTypes: ["public.image"], inItemSet: IndexSet.init(integer: idx)) {
+                pbIdentifiers.append(String(format: "pasteboard-%@-img-%ld", pbDateTime, idx))
+            } else {
+                pbIdentifiers.append(String(format: "pasteboard-%@-mov-%ld", pbDateTime, idx))
+            }
+        }
+    }
+
+    
     // MARK: - Prepare Image files and cache of upload requests
-    // Prepare image files for upload
     private func prepareImagesAndIndexUploads() -> Void {
 
-        // Identify pasteboard images in one loop i.e. O(n)
+        // Store pasteboard images in one loop i.e. O(n)
         let prepareOperation = BlockOperation.init(block: {
-            self.preparePasteBoardImages()
+            // (Re-)initialise file extensions
+            self.pbFileExtensions = .init(repeating: "", count: self.pbIndexSet.count)
+
+            // Retrieve objects from pasteboard
+            self.preparePasteboardImages()
         })
 
         // Caching upload request indices
@@ -296,17 +323,17 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         }
 
         // Perform both operations in background and in parallel
-        queue.maxConcurrentOperationCount = .max   // Make it a serial queue for debugging with 1
+        queue.maxConcurrentOperationCount = 1   // Make it a serial queue with 1
         queue.qualityOfService = .userInteractive
         queue.addOperations([prepareOperation, cacheOperation], waitUntilFinished: true)
 
-        // Enable Select buttons
+        // Reload image collection
         DispatchQueue.main.async {
             self.localImagesCollection.reloadData()
         }
         
         // Restart UplaodManager activity if all images are already in the upload queue
-        if self.indexedUploadsInQueue.compactMap({$0}).count == self.pasteBoardIndexSet.count,
+        if self.indexedUploadsInQueue.compactMap({$0}).count == self.pbIndexSet.count,
            UploadManager.shared.isPaused {
             UploadManager.shared.isPaused = false
             UploadManager.shared.backgroundQueue.async {
@@ -315,16 +342,13 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         }
     }
 
-    private func preparePasteBoardImages() -> (Void) {
+    private func preparePasteboardImages() -> (Void) {
         // For debugging purposes
         let start = CFAbsoluteTimeGetCurrent()
 
-        // (Re-)initialise the identifiers
-        pasteBoardIdentifiers = .init(repeating: "", count: pasteBoardIndexSet.count)
-        
         // Check if this operation was cancelled every 1000 iterations
         let step = 1_000    // Check if this operation was cancelled every 1000 iterations
-        let iterations = pasteBoardIndexSet.count / step
+        let iterations = pbIndexSet.count / step
         for i in 0...iterations {
             // Continue with this operation?
             if queue.operations.first!.isCancelled {
@@ -333,272 +357,159 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
             }
 
             // Get types of all objects in pasteboard
-            let firstIndex = i*step
-            let lastIndex = min((i+1)*step, pasteBoardIndexSet.count)
+            let firstIndex = pbIndexSet.first! + i*step
+            let lastIndex = min(pbIndexSet.first! + (i+1)*step, pbIndexSet.count)
             for index in firstIndex..<lastIndex {
                 // IndexSet of current image
                 let indexSet = IndexSet.init(integer: index)
 
-                // Create pasteboard image identifier
-                pasteBoardIdentifiers[index] = getIdentifierOfPasteBoardImage(at: index)
+                // Get image data and file extension
+                guard let (imageData, fileExt) = getDataOfPasteboardImage(at: indexSet) else {
+                    // Forget that image… to be coded
+                    continue
+                }
 
-                // Save image/video data in Upload directory
-                savePasteBoardImage(ofTypes: pasteBoardTypes[index], at:indexSet,
-                                    withId: pasteBoardIdentifiers[index])
+                // Store file extension
+                pbFileExtensions[index] = fileExt
+                
+                // Set file URL
+                let fileURL = UploadManager.shared.applicationUploadsDirectory
+                    .appendingPathComponent(pbIdentifiers[index]).appendingPathExtension(fileExt)
+
+                // Delete file if it already exists (incomplete previous attempt?)
+                do {
+                    try FileManager.default.removeItem(at: fileURL)
+                } catch {
+                }
+
+                // Store pasteboard image/video data into Piwigo/Uploads directory
+                do {
+                    print("==>> Write imageData to \(fileURL)")
+                    try imageData.write(to: fileURL)
+                }
+                catch let error as NSError {
+                    // Disk full? —> to be managed…
+                    print("could not save image file")
+                }
             }
         }
         let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        print("   cached \(uploadsInQueue.count) images by iterating uploads in queue in \(diff) ms")
+        print("   stored \(pbIndexSet.count) images on disk in \(diff) ms")
     }
     
-    private func getIdentifierOfPasteBoardImage(at index:Int) -> String {
-        let fileName = PhotosFetch.sharedInstance().getFileNameFomImageAsset(nil)
-        return String(format: "PasteBoard-%@-%ld", fileName, index + 1)
-    }
-    
-    private func savePasteBoardImage(ofTypes imageTypes:[String], at indexSet:IndexSet,
-                                     withId identifier:String) -> (Void) {
+    private func getDataOfPasteboardImage(at indexSet:IndexSet) -> (imageData: Data, fileExt: String)? {
         // PNG format in priority in case where JPEG is also available
-        if imageTypes.contains("public.png"),
+        if pbTypes[indexSet.first!].contains("public.png"),
            let imageData = UIPasteboard.general.data(forPasteboardType: "public.png", inItemSet: indexSet)?.first {
-            do {
-                try savePasteBoard(imageData: imageData, withId: identifier, fileExt: "png")
-            } catch {
-                return
-            }
+            return (imageData, "png")
         }
-        else if imageTypes.contains("public.tiff"),
+        else if pbTypes[indexSet.first!].contains("public.tiff"),
                let imageData = UIPasteboard.general.data(forPasteboardType: "public.tiff", inItemSet: indexSet)?.first {
-            do {
-                try savePasteBoard(imageData: imageData, withId: identifier, fileExt: "tiff")
-            } catch {
-                return
-            }
+            return (imageData, "tiff")
         }
-        else if imageTypes.contains("public.jpeg-2000"),
+        else if pbTypes[indexSet.first!].contains("public.jpeg-2000"),
                let imageData = UIPasteboard.general.data(forPasteboardType: "public.jpeg-2000", inItemSet: indexSet)?.first {
-            do {
-                try savePasteBoard(imageData: imageData, withId: identifier, fileExt: "jp2")
-            } catch {
-                return
-            }
+            return (imageData, "jp2")
         }
-        else if imageTypes.contains("public.jpeg"),
+        else if pbTypes[indexSet.first!].contains("public.jpeg"),
             let imageData = UIPasteboard.general.data(forPasteboardType: "public.jpeg", inItemSet: indexSet)?.first {
-            do {
-                try savePasteBoard(imageData: imageData, withId: identifier, fileExt: "jpg")
-            } catch {
-                return
-            }
+            return (imageData, "jpg")
         }
-        else if imageTypes.contains("com.adobe.photoshop-​image"),
+        else if pbTypes[indexSet.first!].contains("com.adobe.photoshop-​image"),
             let imageData = UIPasteboard.general.data(forPasteboardType: "com.adobe.photoshop-​image", inItemSet: indexSet)?.first {
-            do {
-                try savePasteBoard(imageData: imageData, withId: identifier, fileExt: "psd")
-            } catch {
-                return
-            }
+            return (imageData, "psd")
         }
-        else if imageTypes.contains("com.apple.quicktime-image"),
+        else if pbTypes[indexSet.first!].contains("com.apple.quicktime-image"),
                let imageData = UIPasteboard.general.data(forPasteboardType: "com.apple.quicktime-image", inItemSet: indexSet)?.first {
-            do {
-                try savePasteBoard(imageData: imageData, withId: identifier, fileExt: "qtif")
-            } catch {
-                return
-            }
+            return (imageData, "qtif")
         }
-        else if imageTypes.contains("com.apple.icns"),
+        else if pbTypes[indexSet.first!].contains("com.apple.icns"),
                let imageData = UIPasteboard.general.data(forPasteboardType: "com.apple.icns", inItemSet: indexSet)?.first {
-            do {
-                try savePasteBoard(imageData: imageData, withId: identifier, fileExt: "icns")
-            } catch {
-                return
-            }
+            return (imageData, "icns")
         }
-        else if imageTypes.contains("com.apple.pict"),
+        else if pbTypes[indexSet.first!].contains("com.apple.pict"),
                let imageData = UIPasteboard.general.data(forPasteboardType: "com.apple.pict", inItemSet: indexSet)?.first {
-            do {
-                try savePasteBoard(imageData: imageData, withId: identifier, fileExt: "pict")
-            } catch {
-                return
-            }
+            return (imageData, "pict")
         }
-        else if imageTypes.contains("com.apple.macpaint-image"),
+        else if pbTypes[indexSet.first!].contains("com.apple.macpaint-image"),
                let imageData = UIPasteboard.general.data(forPasteboardType: "com.apple.macpaint-image", inItemSet: indexSet)?.first {
-            do {
-                try savePasteBoard(imageData: imageData, withId: identifier, fileExt: "pntg")
-            } catch {
-                return
-            }
+            return (imageData, "pntg")
         }
-        else if imageTypes.contains("public.xbitmap-image"),
+        else if pbTypes[indexSet.first!].contains("public.xbitmap-image"),
                let imageData = UIPasteboard.general.data(forPasteboardType: "public.xbitmap-image", inItemSet: indexSet)?.first {
-            do {
-                try savePasteBoard(imageData: imageData, withId: identifier, fileExt: "xbm")
-            } catch {
-                return
-            }
+            return (imageData, "xbm")
         }
-        else if imageTypes.contains("com.compuserve.gif"),
+        else if pbTypes[indexSet.first!].contains("com.compuserve.gif"),
                let imageData = UIPasteboard.general.data(forPasteboardType: "com.compuserve.gif", inItemSet: indexSet)?.first {
-            do {
-                try savePasteBoard(imageData: imageData, withId: identifier, fileExt: "gif")
-            } catch {
-                return
-            }
+            return (imageData, "gif")
         }
-        else if imageTypes.contains("com.microsoft.bmp"),
+        else if pbTypes[indexSet.first!].contains("com.microsoft.bmp"),
                let imageData = UIPasteboard.general.data(forPasteboardType: "com.microsoft.bmp", inItemSet: indexSet)?.first {
-            do {
-                try savePasteBoard(imageData: imageData, withId: identifier, fileExt: "bmp")
-            } catch {
-                return
-            }
+            return (imageData, "bmp")
         }
-        else if imageTypes.contains("com.microsoft.ico"),
+        else if pbTypes[indexSet.first!].contains("com.microsoft.ico"),
                let imageData = UIPasteboard.general.data(forPasteboardType: "com.microsoft.ico", inItemSet: indexSet)?.first {
-            do {
-                try savePasteBoard(imageData: imageData, withId: identifier, fileExt: "ico")
-            } catch {
-                return
-            }
+            return (imageData, "ico")
         }
-        else if imageTypes.contains("com.truevision.tga-image"),
+        else if pbTypes[indexSet.first!].contains("com.truevision.tga-image"),
                let imageData = UIPasteboard.general.data(forPasteboardType: "com.truevision.tga-image", inItemSet: indexSet)?.first {
-            do {
-                try savePasteBoard(imageData: imageData, withId: identifier, fileExt: "tga")
-            } catch {
-                return
-            }
+            return (imageData, "tga")
         }
-        else if imageTypes.contains("com.sgi.sgi-image"),
+        else if pbTypes[indexSet.first!].contains("com.sgi.sgi-image"),
                let imageData = UIPasteboard.general.data(forPasteboardType: "com.sgi.sgi-image", inItemSet: indexSet)?.first {
-            do {
-                try savePasteBoard(imageData: imageData, withId: identifier, fileExt: "sgi")
-            } catch {
-                return
-            }
+            return (imageData, "sgi")
         }
-        else if imageTypes.contains("com.ilm.openexr-image"),
+        else if pbTypes[indexSet.first!].contains("com.ilm.openexr-image"),
                let imageData = UIPasteboard.general.data(forPasteboardType: "com.ilm.openexr-image", inItemSet: indexSet)?.first {
-            do {
-                try savePasteBoard(imageData: imageData, withId: identifier, fileExt: "exr")
-            } catch {
-                return
-            }
+            return (imageData, "exr")
         }
-        else if imageTypes.contains("com.kodak.flashpix.image"),
+        else if pbTypes[indexSet.first!].contains("com.kodak.flashpix.image"),
                let imageData = UIPasteboard.general.data(forPasteboardType: "com.kodak.flashpix.image", inItemSet: indexSet)?.first {
-            do {
-                try savePasteBoard(imageData: imageData, withId: identifier, fileExt: "fpx")
-            } catch {
-                return
-            }
+            return (imageData, "fpx")
         }
-        else if imageTypes.contains("com.apple.quicktime-movie"),
+        else if pbTypes[indexSet.first!].contains("com.apple.quicktime-movie"),
                let imageData = UIPasteboard.general.data(forPasteboardType: "com.apple.quicktime-movie", inItemSet: indexSet)?.first {
-            do {
-                try savePasteBoard(imageData: imageData, withId: identifier, fileExt: "mov")
-            } catch {
-                return
-            }
+            return (imageData, "mov")
         }
-        else if imageTypes.contains("public.avi"),
+        else if pbTypes[indexSet.first!].contains("public.avi"),
                let imageData = UIPasteboard.general.data(forPasteboardType: "public.avi", inItemSet: indexSet)?.first {
-            do {
-                try savePasteBoard(imageData: imageData, withId: identifier, fileExt: "avi")
-            } catch {
-                return
-            }
+            return (imageData, "avi")
         }
-        else if imageTypes.contains("public.mpeg"),
+        else if pbTypes[indexSet.first!].contains("public.mpeg"),
                let imageData = UIPasteboard.general.data(forPasteboardType: "public.mpeg", inItemSet: indexSet)?.first {
-            do {
-                try savePasteBoard(imageData: imageData, withId: identifier, fileExt: "mpeg")
-            } catch {
-                return
-            }
+            return (imageData, "mpeg")
         }
-        else if imageTypes.contains("public.mpeg-4"),
+        else if pbTypes[indexSet.first!].contains("public.mpeg-4"),
                let imageData = UIPasteboard.general.data(forPasteboardType: "public.mpeg-4", inItemSet: indexSet)?.first {
-            do {
-                try savePasteBoard(imageData: imageData, withId: identifier, fileExt: "mp4")
-            } catch {
-                return
-            }
+            return (imageData, "mp4")
         }
-        else if imageTypes.contains("public.3gpp"),
+        else if pbTypes[indexSet.first!].contains("public.3gpp"),
                let imageData = UIPasteboard.general.data(forPasteboardType: "public.3gpp", inItemSet: indexSet)?.first {
-            do {
-                try savePasteBoard(imageData: imageData, withId: identifier, fileExt: "3gp")
-            } catch {
-                return
-            }
+            return (imageData, "3gp")
         }
-        else if imageTypes.contains("public.3gpp2"),
+        else if pbTypes[indexSet.first!].contains("public.3gpp2"),
                let imageData = UIPasteboard.general.data(forPasteboardType: "public.3gpp2", inItemSet: indexSet)?.first {
-            do {
-                try savePasteBoard(imageData: imageData, withId: identifier, fileExt: "3g2")
-            } catch {
-                return
-            }
+            return (imageData, "3g2")
         }
-        else if imageTypes.contains("com.microsoft.windows-​media-wm"),
+        else if pbTypes[indexSet.first!].contains("com.microsoft.windows-​media-wm"),
                let imageData = UIPasteboard.general.data(forPasteboardType: "com.microsoft.windows-​media-wm", inItemSet: indexSet)?.first {
-            do {
-                try savePasteBoard(imageData: imageData, withId: identifier, fileExt: "wm")
-            } catch {
-                return
-            }
+            return (imageData, fileExt: "wm")
         }
-        else if imageTypes.contains("com.microsoft.windows-​media-wmv"),
+        else if pbTypes[indexSet.first!].contains("com.microsoft.windows-​media-wmv"),
                let imageData = UIPasteboard.general.data(forPasteboardType: "com.microsoft.windows-​media-wmv", inItemSet: indexSet)?.first {
-            do {
-                try savePasteBoard(imageData: imageData, withId: identifier, fileExt: "wmv")
-            } catch {
-                return
-            }
+            return (imageData, fileExt: "wmv")
         }
-        else if imageTypes.contains("com.microsoft.windows-​media-wmp"),
+        else if pbTypes[indexSet.first!].contains("com.microsoft.windows-​media-wmp"),
                let imageData = UIPasteboard.general.data(forPasteboardType: "com.microsoft.windows-​media-wmp", inItemSet: indexSet)?.first {
-            do {
-                try savePasteBoard(imageData: imageData, withId: identifier, fileExt: "wmp")
-            } catch {
-                return
-            }
+            return (imageData, fileExt: "wmp")
         }
-        else if imageTypes.contains("com.real.realmedia"),
+        else if pbTypes[indexSet.first!].contains("com.real.realmedia"),
                let imageData = UIPasteboard.general.data(forPasteboardType: "com.real.realmedia", inItemSet: indexSet)?.first {
-            do {
-                try savePasteBoard(imageData: imageData, withId: identifier, fileExt: "rm")
-            } catch {
-                return
-            }
+            return (imageData, fileExt: "rm")
         }
         else {
-            // Unsupported image/video format
-            
-        }
-    }
-    
-    private func savePasteBoard(imageData: Data, withId identifier:String, fileExt: String) throws {
-        // Set file URL
-        let fileURL = UploadManager.shared.applicationUploadsDirectory
-            .appendingPathComponent(identifier).appendingPathExtension(fileExt)
-
-        // Deletes temporary image file if exists (incomplete previous attempt?)
-        do {
-            try FileManager.default.removeItem(at: fileURL)
-        } catch {
-        }
-
-        // Store pasteboard image/video data into Piwigo/Uploads directory
-        do {
-            print("==>> Write imageData to \(fileURL)")
-            try imageData.write(to: fileURL)
-        } catch let error as NSError {
-            // Disk full? —> to be managed…
-            throw error
+            // Unknown image/video format
+            return nil
         }
     }
     
@@ -607,11 +518,11 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         let start = CFAbsoluteTimeGetCurrent()
 
         // Initialise cached indexed uploads
-        indexedUploadsInQueue = .init(repeating: nil, count: pasteBoardIndexSet.count)
+        indexedUploadsInQueue = .init(repeating: nil, count: pbIndexSet.count)
 
         // Check if this operation was cancelled every 1000 iterations
         let step = 1_000    // Check if this operation was cancelled every 1000 iterations
-        let iterations = pasteBoardIndexSet.count / step
+        let iterations = pbIndexSet.count / step
         for i in 0...iterations {
             // Continue with this operation?
             if queue.operations.first!.isCancelled {
@@ -620,16 +531,16 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                 return
             }
 
-            for index in i*step..<min((i+1)*step,pasteBoardIndexSet.count) {
+            for index in i*step..<min((i+1)*step,pbIndexSet.count) {
                 // Get image identifier
-                let imageId = getIdentifierOfPasteBoardImage(at: index)
+                let imageId = pbIdentifiers[i]
                 if let upload = uploadsInQueue.first(where: { $0?.0 == imageId }) {
                     indexedUploadsInQueue[index] = upload
                 }
             }
         }
         let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        print("   indexed \(pasteBoardIndexSet.count) images by iterating fetched images in \(diff) ms")
+        print("   indexed \(pbIndexSet.count) images by iterating pasteboard images in \(diff) ms")
     }
 
     
@@ -644,14 +555,14 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         alert.addAction(cancelAction)
 
         // Select all images
-        if selectedImages.compactMap({$0}).count + indexedUploadsInQueue.compactMap({$0}).count < pasteBoardIndexSet.count {
+        if selectedImages.compactMap({$0}).count + indexedUploadsInQueue.compactMap({$0}).count < pbIndexSet.count {
             let selectAction = UIAlertAction(title: NSLocalizedString("selectAll", comment: "Select All"), style: .default) { (action) in
                 // Loop over all images in section to select them
                 // Here, we exploit the cached local IDs
                 for index in 0..<self.selectedImages.count {
                     // Images in the upload queue cannot be selected
                     if self.indexedUploadsInQueue[index] == nil {
-                        self.selectedImages[index] = UploadProperties.init(localIdentifier: self.pasteBoardIdentifiers[index], category: self.categoryId)
+                        self.selectedImages[index] = UploadProperties.init(localIdentifier: self.pbIdentifiers[index], category: self.categoryId)
                     }
                 }
                 // Reload collection while updating section buttons
@@ -711,7 +622,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
     
     @objc func cancelSelect() {
         // Clear list of selected images
-        selectedImages = .init(repeating: nil, count: pasteBoardIndexSet.count)
+        selectedImages = .init(repeating: nil, count: pbIndexSet.count)
 
         // Update navigation bar
         updateNavBar()
@@ -853,7 +764,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // Number of items depends on image sort type and date order
-        return pasteBoardIndexSet.count
+        return pbIndexSet.count
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -870,16 +781,48 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
             return PasteboardImageCollectionViewCell()
         }
         
-        // Configure cell with image in pasteboard (!!!!!!!!!!! or stored in Uploads directory!!!!!!!!!!!!!!!!!)
-        let identifier = pasteBoardIdentifiers[indexPath.item]
-        let indexSet = IndexSet.init(integer: indexPath.item)
-        if let imageData: Data = UIPasteboard.general.data(forPasteboardType: "public.image", inItemSet: indexSet)?.first, let image = UIImage.init(data: imageData) {
-            cell.configure(with: image, identifier: identifier, thumbnailSize: CGFloat(ImagesCollection.imageSize(for: collectionView, imagesPerRowInPortrait: Model.sharedInstance().thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup)))
+        // Configure cell with image in pasteboard or stored in Uploads directory
+        // (the content of the pasteboard may not last forever)
+        let identifier = pbIdentifiers[indexPath.item]
+        var image: UIImage!
+        if queue.operationCount == 0 {
+            // Did complete preparation of images => get content of file to upload
+            let fileURL = UploadManager.shared.applicationUploadsDirectory
+                .appendingPathComponent(pbIdentifiers[indexPath.item])
+                .appendingPathExtension(pbFileExtensions[indexPath.item])
+            
+            // Photo or video?
+            if identifier.contains("img") {
+                do {
+                    try image = UIImage(data:(NSData (contentsOf: fileURL) as Data))
+                }
+                catch {
+                    image = UIImage(named: "placeholder")!
+                }
+            }
+            else {
+                let asset = AVURLAsset(url: fileURL, options: nil)
+                let imageGenerator = AVAssetImageGenerator(asset: asset)
+                imageGenerator.appliesPreferredTrackTransform = true
+                do {
+                    image = UIImage(cgImage: try imageGenerator.copyCGImage(at: CMTimeMake(value: 0, timescale: 1), actualTime: nil))
+                } catch {
+                    image = UIImage(named: "placeholder")!
+                }
+            }
+        } else {
+            // Did not complete preparation of images => get pasteboard content
+            let indexSet = IndexSet.init(integer: indexPath.item)
+            if let imageData: Data = UIPasteboard.general.data(forPasteboardType: "public.image", inItemSet: indexSet)?.first {
+                image = UIImage.init(data: imageData) ?? UIImage(named: "placeholder")!
+            }
+            else {
+                // The thumbnail of the video will later be extracted from the stored file
+                image = UIImage(named: "placeholder")!
+            }
         }
-        else
-        if let imageData: Data = UIPasteboard.general.data(forPasteboardType: "public.movie", inItemSet: indexSet)?.first, let image = UIImage.init(data: imageData) {
-            cell.configure(with: image, identifier: identifier, thumbnailSize: CGFloat(ImagesCollection.imageSize(for: collectionView, imagesPerRowInPortrait: Model.sharedInstance().thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup)))
-        }
+        cell.configure(with: image, identifier: identifier,
+                       thumbnailSize: CGFloat(ImagesCollection.imageSize(for: collectionView, imagesPerRowInPortrait: Model.sharedInstance().thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup)))
         
         // Add pan gesture recognition
         let imageSeriesRocognizer = UIPanGestureRecognizer(target: self, action: #selector(touchedImages(_:)))
@@ -892,7 +835,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
 
         // Cell state
         if queue.operationCount == 0,
-           indexedUploadsInQueue.count == pasteBoardIndexSet.count {
+           indexedUploadsInQueue.count == pbIndexSet.count {
             // Use indexed data
             if let state = indexedUploadsInQueue[indexPath.item]?.1 {
                 switch state {
@@ -931,7 +874,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         let progressFraction = (notification.userInfo?["progressFraction"] ?? Float(0.0)) as! Float
         let indexPathsForVisibleItems = localImagesCollection.indexPathsForVisibleItems
         for indexPath in indexPathsForVisibleItems {
-            let imageId = pasteBoardIdentifiers[indexPath.item] // Don't use the cache which might not be ready
+            let imageId = pbIdentifiers[indexPath.item] // Don't use the cache which might not be ready
             if imageId == localIdentifier {
                 if let cell = localImagesCollection.cellForItem(at: indexPath) as? PasteboardImageCollectionViewCell {
                     cell.setProgress(progressFraction, withAnimation: true)
@@ -1160,7 +1103,7 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate {
         for indexPath in indexPathsForVisibleItems {
             
             // Get the corresponding index and local identifier
-            let imageId = pasteBoardIdentifiers[indexPath.item] // Don't use the cache which might not be ready
+            let imageId = pbIdentifiers[indexPath.item] // Don't use the cache which might not be ready
             
             // Identify cell to be updated (if presented)
             if imageId == upload.localIdentifier {
