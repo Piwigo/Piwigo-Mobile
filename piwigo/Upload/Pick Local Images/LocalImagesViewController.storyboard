@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17126"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
@@ -69,6 +69,12 @@
                                                         <constraint firstAttribute="width" secondItem="ysu-Dv-NrU" secondAttribute="height" multiplier="1:1" id="aWL-Zo-pBK"/>
                                                     </constraints>
                                                 </imageView>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="warning" translatesAutoresizingMaskIntoConstraints="NO" id="pAP-qX-WvV">
+                                                    <rect key="frame" x="58" y="58" width="116" height="116"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" secondItem="pAP-qX-WvV" secondAttribute="height" multiplier="1:1" id="SKG-l0-wvI"/>
+                                                    </constraints>
+                                                </imageView>
                                                 <activityIndicatorView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="1wT-ty-LCP">
                                                     <rect key="frame" x="58" y="58" width="116" height="116"/>
                                                     <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
@@ -87,6 +93,7 @@
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
+                                                <constraint firstItem="pAP-qX-WvV" firstAttribute="centerX" secondItem="NBu-dR-mRZ" secondAttribute="centerX" id="5DJ-b2-gY2"/>
                                                 <constraint firstAttribute="trailing" secondItem="Mg6-75-nMT" secondAttribute="trailing" constant="10" id="CB0-P6-zyF"/>
                                                 <constraint firstItem="1wT-ty-LCP" firstAttribute="width" secondItem="Ma4-DR-i0O" secondAttribute="width" multiplier="0.5" id="DSP-Tt-h4v"/>
                                                 <constraint firstItem="QVv-FQ-QhA" firstAttribute="top" secondItem="NBu-dR-mRZ" secondAttribute="top" constant="5" id="E5a-Y5-V6z"/>
@@ -95,16 +102,19 @@
                                                 <constraint firstItem="Mg6-75-nMT" firstAttribute="leading" secondItem="NBu-dR-mRZ" secondAttribute="leading" constant="10" id="TBf-VZ-HLK"/>
                                                 <constraint firstAttribute="trailing" secondItem="QVv-FQ-QhA" secondAttribute="trailing" constant="3" id="UHp-Wr-2nX"/>
                                                 <constraint firstAttribute="bottom" secondItem="Mg6-75-nMT" secondAttribute="bottom" constant="10" id="Ynf-sO-Av2"/>
+                                                <constraint firstItem="pAP-qX-WvV" firstAttribute="width" secondItem="NBu-dR-mRZ" secondAttribute="width" multiplier="0.5" id="ZZe-6y-xFg"/>
                                                 <constraint firstItem="u8O-P0-eq0" firstAttribute="top" secondItem="NBu-dR-mRZ" secondAttribute="top" constant="5" id="g1B-0c-qmM"/>
                                                 <constraint firstAttribute="trailing" secondItem="ysu-Dv-NrU" secondAttribute="trailing" constant="5" id="jsf-Hq-Qiq"/>
                                                 <constraint firstItem="1wT-ty-LCP" firstAttribute="centerY" secondItem="NBu-dR-mRZ" secondAttribute="centerY" id="xYI-pO-N5Y"/>
                                                 <constraint firstAttribute="bottom" secondItem="ysu-Dv-NrU" secondAttribute="bottom" constant="5" id="xq6-t9-9y2"/>
+                                                <constraint firstItem="pAP-qX-WvV" firstAttribute="centerY" secondItem="NBu-dR-mRZ" secondAttribute="centerY" id="yg5-tf-940"/>
                                             </constraints>
                                         </collectionViewCellContentView>
                                         <size key="customSize" width="232" height="232"/>
                                         <connections>
                                             <outlet property="cellImage" destination="Ma4-DR-i0O" id="xJT-3t-tAn"/>
                                             <outlet property="darkenView" destination="i4Y-ZG-9Gz" id="3sC-lx-o4l"/>
+                                            <outlet property="failedUploadImage" destination="pAP-qX-WvV" id="BhM-D6-e3j"/>
                                             <outlet property="playImage" destination="u8O-P0-eq0" id="RCO-cU-K5u"/>
                                             <outlet property="selectedImage" destination="QVv-FQ-QhA" id="ZB9-o4-Anw"/>
                                             <outlet property="uploadedImage" destination="ysu-Dv-NrU" id="9Gp-cS-YWy"/>
@@ -121,13 +131,13 @@
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="placeLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IuZ-Ot-NeB">
-                                                    <rect key="frame" x="20" y="2" width="88" height="23.5"/>
+                                                    <rect key="frame" x="20" y="9" width="83" height="20"/>
                                                     <fontDescription key="fontDescription" name="OpenSans-Semibold" family="Open Sans" pointSize="17"/>
                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="dateLabel" textAlignment="natural" lineBreakMode="tailTruncation" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="NIO-n9-bqf">
-                                                    <rect key="frame" x="20" y="26" width="60" height="18"/>
+                                                    <rect key="frame" x="20" y="28.5" width="58" height="15.5"/>
                                                     <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                     <nil key="highlightedColor"/>
@@ -185,7 +195,7 @@
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2 Photos" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="u7N-dh-tIi">
-                                            <rect key="frame" x="172.5" y="0.0" width="69.5" height="23.5"/>
+                                            <rect key="frame" x="173" y="0.0" width="68.5" height="20"/>
                                             <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -264,6 +274,7 @@
         <image name="piwigo" width="25" height="25"/>
         <image name="placeholderImage" width="512" height="512"/>
         <image name="video" width="25" height="16"/>
+        <image name="warning" width="37" height="37"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

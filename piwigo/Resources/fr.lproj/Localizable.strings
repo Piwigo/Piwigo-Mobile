@@ -707,3 +707,13 @@
 "settings_privacy" = "Politique de Confidentialité";
 "settings_users" = "Utilisateurs";
 "settings_groups" = "Groupes";
+
+// Settings — Help
+"help01_header" = "Sélection multiple";
+"help01_text" = "Faites glisser votre doigt de gauche à droite (ou de droite à gauche) puis vers le bas, etc.";
+"help02_header" = "Téléchargement en arrière-plan";
+"help02_text" = "Sélectionnez les photos/vidéos, définissez les paramètres et appuyez sur Envoyer.";
+"help02_text2" = "Branchez l'appareil à son chargeur et laissez iOS lancer les téléchargements quand cela est approprié.";
+"help02_text3" = "(nécessite l'extension uploadAsync ou Piwigo 11)";
+"help03_header" = "Administrateurs";
+"help03_text" = "Créer, supprimer, déplacer et renommer des albums.";

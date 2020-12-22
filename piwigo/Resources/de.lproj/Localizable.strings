@@ -707,3 +707,13 @@
 "settings_privacy" = "Datenschutzerklärung";
 "settings_users" = "Benutzer";
 "settings_groups" = "Gruppen";
+
+// Settings — Help
+"help01_header" = "Mehrfachauswahl";
+"help01_text" = "Schieben Sie den Finger von links nach rechts (oder rechts nach links) dann nach unten, etc.";
+"help02_header" = "Hochladen im \nHintergrund";
+"help02_text" = "Wählen Sie Fotos/Videos, setzen Sie Parameter und tippen Sie auf Hochladen.";
+"help02_text2" = "Schließen Sie das Gerät an sein Ladegerät an und lassen Sie iOS das Hochladen starten, wann immer es angebracht ist.";
+"help02_text3" = "(erfordert die UploadAsync-Erweiterung oder Piwigo 11)";
+"help03_header" = "Administratoren";
+"help03_text" = "Alben erstellen, löschen, verschieben und umbenennen.";

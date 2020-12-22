@@ -707,3 +707,13 @@
 "settings_privacy" = "Integritetspolicy";
 "settings_users" = "Användare";
 "settings_groups" = "Grupper";
+
+// Settings — Help
+"help01_header" = "Multipla val";
+"help01_text" = "Skjut fingret från vänster till höger (eller höger till vänster) sedan ner, etc.";
+"help02_header" = "Uppladdning av bakgrund";
+"help02_text" = "Välj foton/video, ange parametrar och tryck på Ladda upp.";
+"help02_text2" = "Anslut enheten till sin laddare och låt iOS starta uppladdningar när så är lämpligt.";
+"help02_text3" = "(kräver tillägget uploadAsync eller Piwigo 11)";
+"help03_header" = "Administratörer";
+"help03_text" = "Skapa, ta bort, flytta och döpa om album.";

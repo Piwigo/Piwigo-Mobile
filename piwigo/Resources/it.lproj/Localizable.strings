@@ -707,3 +707,13 @@
 "settings_privacy" = "Informativa sulla privacy";
 "settings_users" = "Utenti";
 "settings_groups" = "Gruppi";
+
+// Settings — Help
+"help01_header" = "Selezione Multipla";
+"help01_text" = "Scorri il dito da sinistra a destra (o da destra a sinistra) poi giù, ecc.";
+"help02_header" = "Caricamento In Sfondo";
+"help02_text" = "Seleziona foto/video, imposta i parametri e tocca Carica.";
+"help02_text2" = "Collega il dispositivo al suo caricabatterie e lascia che iOS avvii i caricamenti quando appropriato.";
+"help02_text3" = "(richiede l'estensione uploadAsync o Piwigo 11)";
+"help03_header" = "Amministratori";
+"help03_text" = "Creare, eliminare, spostare e rinominare gli album.";

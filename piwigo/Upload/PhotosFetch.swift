@@ -25,6 +25,120 @@ class PhotosFetch: NSObject {
     }
     
     // MARK: - Photo Library Access
+    /// Called before saving photos to the Photo Library or uploading photo of the Library
+    @available(iOS 14, *)
+    @objc
+    func checkPhotoLibraryAuthorizationStatus(for accessLevel: PHAccessLevel,
+                                              for viewController: UIViewController?,
+                                              onAccess doWithAccess: @escaping () -> Void,
+                                              onDeniedAccess doWithoutAccess: @escaping () -> Void) {
+        let status = PHPhotoLibrary.authorizationStatus(for: accessLevel)
+        switch status {
+        case .notDetermined:
+            // Request authorization to access photos
+            PHPhotoLibrary.requestAuthorization(for: accessLevel) { (status) in
+                // Created "Photos access" in Settings app for Piwigo, returned user's choice
+                switch status {
+                    case .restricted:
+                        switch accessLevel {
+                        case .addOnly:
+                            // User wishes to share photos
+                            // => Will not allow to save photos in the Photo Library
+                            doWithoutAccess()
+                        default:
+                            // Inform user that he/she cannot access the Photo library
+                            if viewController != nil {
+                                if Thread.isMainThread {
+                                    self.showPhotosLibraryAccessRestricted(in: viewController)
+                                } else {
+                                    DispatchQueue.main.async(execute: {
+                                        self.showPhotosLibraryAccessRestricted(in: viewController)
+                                    })
+                                }
+                            }
+                            doWithoutAccess()
+                        }
+                    case .denied:
+                        switch accessLevel {
+                        case .addOnly:
+                            // User wishes to share photos
+                            // => Will not allow to save photos in the Photo Library
+                            doWithoutAccess()
+                        default:
+                            // Invite user to provide access to the Photo library
+                            if viewController != nil {
+                                if Thread.isMainThread {
+                                    self.requestPhotoLibraryAccess(in: viewController)
+                                } else {
+                                    DispatchQueue.main.async(execute: {
+                                        self.requestPhotoLibraryAccess(in: viewController)
+                                    })
+                                }
+                            }
+                        }
+                    default:
+                        // Allowed to read and add photos with limitations or not
+                        if Thread.isMainThread {
+                            doWithAccess()
+                        } else {
+                            DispatchQueue.main.async(execute: {
+                                doWithAccess()
+                            })
+                        }
+                }
+            }
+        case .restricted:
+            switch accessLevel {
+            case .addOnly:
+                // User wishes to share photos
+                // => Will not allow to save photos in the Photo Library
+                doWithoutAccess()
+            default:
+                // Inform user that he/she cannot access the Photo library
+                if viewController != nil {
+                    if Thread.isMainThread {
+                        showPhotosLibraryAccessRestricted(in: viewController)
+                    } else {
+                        DispatchQueue.main.async(execute: {
+                            self.showPhotosLibraryAccessRestricted(in: viewController)
+                        })
+                    }
+                }
+                doWithoutAccess()
+            }
+        case .denied:
+            switch accessLevel {
+            case .addOnly:
+                // User wishes to share photos
+                // => Will not allow to save photos in the Photo Library
+                doWithoutAccess()
+            default:
+                // Invite user to provide access to the Photo library
+                if viewController != nil {
+                    if Thread.isMainThread {
+                        requestPhotoLibraryAccess(in: viewController)
+                    } else {
+                        DispatchQueue.main.async(execute: {
+                            self.requestPhotoLibraryAccess(in: viewController)
+                        })
+                    }
+                }
+            }
+        case .limited, .authorized:
+            // Allowed to read and add photos with limitations or not
+            if Thread.isMainThread {
+                doWithAccess()
+            } else {
+                DispatchQueue.main.async(execute: {
+                    doWithAccess()
+                })
+            }
+        @unknown default:
+            print("unknown Photo Library authorization status")
+        }
+    }
+
+    /// Used up to iOS 13
     @objc
     func checkPhotoLibraryAccessForViewController(_ viewController: UIViewController?,
                                                   onAuthorizedAccess doWithAccess: @escaping () -> Void,
@@ -102,7 +216,7 @@ class PhotosFetch: NSObject {
                 // Exceute next steps
                 doWithoutAccess()
             default:
-                // Retry as this should be fine
+                // Should be fine
                 if Thread.isMainThread {
                     doWithAccess()
                 } else {

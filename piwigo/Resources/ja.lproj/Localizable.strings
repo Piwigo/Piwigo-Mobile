@@ -707,3 +707,13 @@
 "settings_privacy" = "プライバシーポリシー";
 "settings_users" = "ユーザー";
 "settings_groups" = "グループ";
+
+// Settings — Help
+"help01_header" = "複数選択";
+"help01_text" = "指を左から右(または右から左) にスライドさせてから下などします。";
+"help02_header" = "バックグラウンドアップロード中";
+"help02_text" = "写真/ビデオを選択し、パラメータを設定し、format@@0をタップします。";
+"help02_text2" = "デバイスを充電器に差し込み、必要に応じてiOSにアップロードを開始させます。";
+"help02_text3" = "(uploadAsyncエクステンションまたはPiwigo11が必要です)";
+"help03_header" = "管理者";
+"help03_text" = "アルバムを作成、削除、移動、名前変更します。";

@@ -707,3 +707,13 @@
 "settings_privacy" = "Polityka prywatności";
 "settings_users" = "Użytkownicy";
 "settings_groups" = "Grupy";
+
+// Settings — Help
+"help01_header" = "Wybór wielokrotny";
+"help01_text" = "Przesuń palcem od lewej do prawej (lub od prawej do lewej), a następnie w dół, itp.";
+"help02_header" = "Przesyłanie w tle";
+"help02_text" = "Wybierz zdjęcia/filmy, ustaw parametry i naciśnij Prześlij.";
+"help02_text2" = "Podłącz urządzenie do ładowarki i pozwól, aby w razie potrzeby iOS uruchomił przesyłanie.";
+"help02_text3" = "(wymaga rozszerzenia uploadAsync lub Piwigo 11)";
+"help03_header" = "Administratorzy";
+"help03_text" = "Tworzenie, usuwanie, przesuwanie i zmiana nazwy albumów.";

@@ -707,3 +707,13 @@
 "settings_privacy" = "Política de privacidad";
 "settings_users" = "Usuarios";
 "settings_groups" = "Grupos";
+
+// Settings — Help
+"help01_header" = "Selección Múltiple";
+"help01_text" = "Desliza el dedo de izquierda a derecha (o de derecha a izquierda) luego abajo, etc.";
+"help02_header" = "Subiendo en \nsegundo plano";
+"help02_text" = "Selecciona fotos/vídeos, establece parámetros y pulsa Subir.";
+"help02_text2" = "Conecta el dispositivo a su cargador y deja que iOS inicie las subidas cuando sea oportuno.";
+"help02_text3" = "(requiere la extensión uploadAsync o Piwigo 11)";
+"help03_header" = "Administradores";
+"help03_text" = "Crear, eliminar, mover y renombrar álbumes.";
