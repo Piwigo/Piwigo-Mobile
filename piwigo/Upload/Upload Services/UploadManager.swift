@@ -453,6 +453,109 @@ class UploadManager: NSObject, URLSessionDelegate {
         let name = NSNotification.Name(rawValue: kPiwigoNotificationAddRecentAlbum)
         NotificationCenter.default.post(name: name, object: nil, userInfo: userInfo)
 
+        // Determine from where the file comes from:
+        // => Photo Library: use PHAsset local identifier
+        // => UIPasteborad: use identifier of type "Clipboard-yyyyMMdd-HHmmssSSSS-typ-#"
+        //    where "typ" is "img" (photo) or "mov" (video).
+        if uploadProperties.localIdentifier.contains("Clipboard-") {
+            // Case of an image retrieved from the pasteboard
+            prepareImageInPasteboard(for: uploadID, with: uploadProperties)
+        } else {
+            // Case of an image from the local Photo Library
+            prepareImageInPhotoLibrary(for: uploadID, with: uploadProperties)
+        }
+    }
+    
+    private func prepareImageInPasteboard(for uploadID: NSManagedObjectID, with properties: UploadProperties) {
+        // Will update upload properties
+        var uploadProperties = properties
+
+        // Determine non-empty unique file name and extension from identifier
+        var files = [URL]()
+        do {
+            // Get complete filename by searching in the Uploads directory
+            files = try FileManager.default.contentsOfDirectory(at: applicationUploadsDirectory,
+                        includingPropertiesForKeys: nil,
+                        options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+        }
+        catch {
+            print("\(debugFormatter.string(from: Date())) > could not perform a shallow search of the Uploads directory: \(error)")
+        }
+        guard let fileURL = files.filter({$0.absoluteString.contains(uploadProperties.localIdentifier)}).first else {
+            // File not available… deleted?
+            uploadsProvider.updateStatusOfUpload(with: uploadID, to: .preparingFail, error: UploadError.missingAsset.errorDescription) { [unowned self] (_) in
+                // Investigate next upload request?
+                self.didEndPreparation()
+            }
+            return
+        }
+        var fileName = fileURL.lastPathComponent
+        if uploadProperties.prefixFileNameBeforeUpload, let prefix = uploadProperties.defaultPrefix {
+            if !fileName.hasPrefix(prefix) { fileName = prefix + fileName }
+        }
+
+        // Check/update serverFileTypes if possible
+        if let fileTypes = Model.sharedInstance()?.serverFileTypes, fileTypes.count > 0 {
+            uploadProperties.serverFileTypes = fileTypes
+        }
+
+        // Launch preparation job if file format accepted by Piwigo server
+        let fileExt = (URL(fileURLWithPath: fileName).pathExtension).lowercased()
+        if fileName.contains("img") {
+            uploadProperties.isVideo = false
+
+            // Set filename after removing "SSSS-img-#" suffix
+            if let range = fileName.range(of: "-img") {
+                uploadProperties.fileName = String(fileName[..<range.lowerBound].dropLast(4))
+            }
+
+            // Chek that the image format is accepted by the Piwigo server
+            if uploadProperties.serverFileTypes.contains(fileExt) {
+                // Image file format accepted by the Piwigo server
+                // Update state of upload
+                uploadProperties.requestState = .preparing
+                uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+                    // Launch preparation job
+                    self.prepareImage(for: uploadID, with: uploadProperties, atURL: fileURL)
+                }
+                return
+            }
+            // Convert image if JPEG format is accepted by Piwigo server
+            if uploadProperties.serverFileTypes.contains("jpg") {
+                // Try conversion to JPEG
+                if fileExt == "heic" || fileExt == "heif" || fileExt == "avci" {
+                    // Will convert HEIC encoded image to JPEG
+                    print("\(debugFormatter.string(from: Date())) > converting photo \(uploadProperties.fileName!)…")
+                    
+                    // Update state of upload
+                    uploadProperties.requestState = .preparing
+                    uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+                        // Launch preparation job
+                        self.prepareImage(for: uploadID, with: uploadProperties, atURL: fileURL)
+                    }
+                    return
+                }
+            }
+            // Image file format cannot be accepted by the Piwigo server
+            uploadProperties.requestState = .formatError
+            uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+                // Investigate next upload request?
+                self.didEndPreparation()
+            }
+        }
+        else if fileName.contains("mov") {
+            uploadProperties.isVideo = true
+
+        }
+        else {
+            
+        }
+    }
+    
+    private func prepareImageInPhotoLibrary(for uploadID: NSManagedObjectID, with properties: UploadProperties) {
+        // Will update upload properties
+        var uploadProperties = properties
+
         // Retrieve image asset
         let assets = PHAsset.fetchAssets(withLocalIdentifiers: [uploadProperties.localIdentifier], options: nil)
         guard assets.count > 0, let originalAsset = assets.firstObject else {
@@ -473,7 +576,6 @@ class UploadManager: NSObject, URLSessionDelegate {
             if !fileName.hasPrefix(prefix) { fileName = prefix + fileName }
         }
         uploadProperties.fileName = fileName
-        let fileExt = (URL(fileURLWithPath: fileName).pathExtension).lowercased()
         
         // Check/update serverFileTypes if possible
         if let fileTypes = Model.sharedInstance()?.serverFileTypes, fileTypes.count > 0 {
@@ -481,6 +583,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         }
         
         // Launch preparation job if file format accepted by Piwigo server
+        let fileExt = (URL(fileURLWithPath: fileName).pathExtension).lowercased()
         switch originalAsset.mediaType {
         case .image:
             uploadProperties.isVideo = false
@@ -491,7 +594,7 @@ class UploadManager: NSObject, URLSessionDelegate {
                 uploadProperties.requestState = .preparing
                 uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                     // Launch preparation job
-                    self.prepareImage(for: uploadID, with: uploadProperties, originalAsset)
+                    self.prepareImage(for: uploadID, with: uploadProperties, asset: originalAsset)
                 }
                 return
             }
@@ -506,7 +609,7 @@ class UploadManager: NSObject, URLSessionDelegate {
                     uploadProperties.requestState = .preparing
                     uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                         // Launch preparation job
-                        self.prepareImage(for: uploadID, with: uploadProperties, originalAsset)
+                        self.prepareImage(for: uploadID, with: uploadProperties, asset: originalAsset)
                     }
                     return
                 }
@@ -889,7 +992,7 @@ class UploadManager: NSObject, URLSessionDelegate {
 //            let leftFiles = try fileManager.contentsOfDirectory(at: self.applicationUploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
 //            print("\(debugFormatter.string(from: Date())) > Remaining files in cache: \(leftFiles)")
         } catch {
-            print("\(debugFormatter.string(from: Date())) > could not clear upload folder: \(error)")
+            print("\(debugFormatter.string(from: Date())) > could not clear the Uploads folder: \(error)")
         }
     }
 }

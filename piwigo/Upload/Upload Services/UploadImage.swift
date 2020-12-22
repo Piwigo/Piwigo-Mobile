@@ -11,9 +11,41 @@ import Photos
 extension UploadManager {
     
     // MARK: - Image preparation
-    
+    /// Case of an image from the pasteboard
     func prepareImage(for uploadID: NSManagedObjectID,
-                      with uploadProperties: UploadProperties, _ imageAsset: PHAsset) -> Void {
+                      with uploadProperties: UploadProperties, atURL fileURL: URL) -> Void {
+        
+        // Retrieve image data from file stored in the Uploads directory
+        var imageData: Data = Data()
+        do {
+            try imageData = NSData (contentsOf: fileURL) as Data
+        }
+        catch let error as NSError {
+            // Could not find the file to upload!
+            print(error.localizedDescription)
+            let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+            self.didPrepareImage(for: uploadID, with: uploadProperties, error)
+            return
+        }
+        
+        // Retrieve UIImage from imageData
+        guard let imageObject = UIImage(data: imageData) else {
+            let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+            self.didPrepareImage(for: uploadID, with: uploadProperties, error)
+            return
+        }
+
+        // Modify image
+        self.modifyImage(for: uploadProperties, with: imageData, andObject: imageObject) { (newUploadProperties, error) in
+            // Update upload request
+            self.didPrepareImage(for: uploadID, with: newUploadProperties, error)
+            return
+        }
+    }
+    
+    /// Case of an image from the Photo Library
+    func prepareImage(for uploadID: NSManagedObjectID,
+                      with uploadProperties: UploadProperties, asset imageAsset: PHAsset) -> Void {
 
         // Retrieve UIImage
         self.retrieveUIImage(from: imageAsset, for: uploadProperties) { (fixedImageObject, imageError) in
@@ -270,9 +302,26 @@ extension UploadManager {
         // Fix image metadata (size, type, etc.)
         imageMetadata = ImageService.fixMetadata(imageMetadata, of: originalObject)! as Dictionary<NSObject, AnyObject>
 
+        // Check Piwigo creation date from EXIF metadata if possible
+        var newUpload = upload
+        if let EXIFdictionary = imageMetadata[kCGImagePropertyExifDictionary] {
+            let EXIFdateFormatter = DateFormatter()
+            EXIFdateFormatter.dateFormat = "yyyy:MM:dd HH:mm:ss"
+            if let EXIFdateTimeOriginal = EXIFdictionary[kCGImagePropertyExifDateTimeOriginal] as? String {
+                if let creationDate = EXIFdateFormatter.date(from: EXIFdateTimeOriginal),
+                   newUpload.creationDate ?? Date() > creationDate {
+                    newUpload.creationDate = creationDate
+                }
+            } else if let EXIFdateTimeDigitized = EXIFdictionary[kCGImagePropertyExifDateTimeDigitized] as? String {
+                if let creationDate = EXIFdateFormatter.date(from: EXIFdateTimeDigitized),
+                   newUpload.creationDate ?? Date() > creationDate {
+                    newUpload.creationDate = creationDate
+                }
+            }
+        }
+        
         // Apply compression if user requested it in Settings, or convert to JPEG if necessary
         var imageCompressed: Data? = nil
-        var newUpload = upload
         let fileExt = (URL(fileURLWithPath: upload.fileName!).pathExtension).lowercased()
         if upload.compressImageOnUpload && (CGFloat(upload.photoQuality) < 100.0) {
             // Compress image (only possible in JPEG)
@@ -280,14 +329,14 @@ extension UploadManager {
             imageCompressed = originalObject.jpegData(compressionQuality: compressionQuality)
 
             // Final image file will be in JPEG format
-            newUpload.fileName = URL(fileURLWithPath: upload.fileName!).deletingPathExtension().appendingPathExtension("JPG").lastPathComponent
+            newUpload.fileName = URL(fileURLWithPath: upload.fileName!).deletingPathExtension().appendingPathExtension("jpg").lastPathComponent
         }
         else if !(upload.serverFileTypes.contains(fileExt)) {
             // Image in unaccepted file format for Piwigo server => convert to JPEG format
             imageCompressed = originalObject.jpegData(compressionQuality: 1.0)
 
             // Final image file will be in JPEG format
-            newUpload.fileName = URL(fileURLWithPath: upload.fileName!).deletingPathExtension().appendingPathExtension("JPG").lastPathComponent
+            newUpload.fileName = URL(fileURLWithPath: upload.fileName!).deletingPathExtension().appendingPathExtension("jpg").lastPathComponent
         }
 
         // If compression failed or imageCompressed is nil, try to use original image
