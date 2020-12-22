@@ -174,8 +174,8 @@ class UploadManager: NSObject, URLSessionDelegate {
 
         // Update app badge and Upload button in root/default album
         // Considers only uploads to the server to which the user is logged in
-        let states: [kPiwigoUploadState] = [.waiting,
-                                            .preparing, .preparingError, .prepared,
+        let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
+                                            .preparingFail, .formatError, .prepared,
                                             .uploading, .uploadingError, .uploaded,
                                             .finishing, .finishingError]
         nberOfUploadsToComplete = uploadsProvider.getRequestsIn(states: states).count

@@ -141,8 +141,8 @@ extension UploadManager {
         uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: properties) { (_) in
             // Get uploads to complete in queue
             // Considers only uploads to the server to which the user is logged in
-            let states: [kPiwigoUploadState] = [.waiting,
-                                                .preparing, .preparingError, .prepared,
+            let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
+                                                .preparingFail, .formatError, .prepared,
                                                 .uploading, .uploadingError, .uploaded,
                                                 .finishing, .finishingError]
             // Update app badge and Upload button in root/default album
