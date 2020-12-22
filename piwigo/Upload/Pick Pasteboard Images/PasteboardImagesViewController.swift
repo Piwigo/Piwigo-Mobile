@@ -274,8 +274,8 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         }
     }
     
-    /// Pasteboard images are identified with identifiers of the type "pasteboard-yyyyMMdd-HHmmssSSSS-typ-#" where:
-    /// - "pasteboard" is a header telling that the image/video comes from the pasteboard
+    /// Pasteboard images are identified with identifiers of the type "Clipboard-yyyyMMdd-HHmmssSSSS-typ-#" where:
+    /// - "Clipboard" is a header telling that the image/video comes from the pasteboard
     /// - "yyyyMMdd-HHmmssSSSS" is the date at which the objects were retrieved
     /// - "typ" is "img" or "mov" depending on the nature of the object
     /// - "#" is the index of the object in the pasteboard
@@ -291,9 +291,9 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         pbIdentifiers = [String]()
         for idx in indexSet {
             if UIPasteboard.general.contains(pasteboardTypes: ["public.image"], inItemSet: IndexSet.init(integer: idx)) {
-                pbIdentifiers.append(String(format: "pasteboard-%@-img-%ld", pbDateTime, idx))
+                pbIdentifiers.append(String(format: "Clipboard-%@-img-%ld", pbDateTime, idx))
             } else {
-                pbIdentifiers.append(String(format: "pasteboard-%@-mov-%ld", pbDateTime, idx))
+                pbIdentifiers.append(String(format: "Clipboard-%@-mov-%ld", pbDateTime, idx))
             }
         }
     }
