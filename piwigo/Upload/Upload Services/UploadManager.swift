@@ -124,7 +124,7 @@ class UploadManager: NSObject, URLSessionDelegate {
     }()
 
     
-    // MARK: - Foreground Upload Task Manager
+    // MARK: - Upload Request States
     /** The manager prepares an image for upload and then launches the transfer.
     - isPreparing is set to true when a photo/video is going to be prepared,
       and false when the preparation has completed or failed.
@@ -154,7 +154,28 @@ class UploadManager: NSObject, URLSessionDelegate {
             }
         }
     }
+    
+    // Update cell displaying an upload request
+    func updateCell(with identifier:String, stateLabel: String,
+                    photoResize: Int16?, progress: Float?, errorMsg: String?) {
+        
+        var uploadInfo: [String : Any] = ["localIdentifier" : identifier,
+                                          "stateLabel" : stateLabel]
+        if let photoResize = photoResize {
+            uploadInfo.updateValue(photoResize, forKey: "photoResize")
+        }
+        if let progress = progress {
+            uploadInfo.updateValue(progress, forKey: "progressFraction")
+        }
+        DispatchQueue.main.async {
+            // Update UploadQueue cell and button shown in root album (or default album)
+            let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)
+            NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
+        }
+    }
 
+    
+    // MARK: - Foreground Upload Task Manager
     // Images are uploaded as follows:
     /// - Photos are prepared with appropriate metadata in a format accepted by the server
     /// - Videos are exported in MP4 fomat and uploaded (VideoJS plugin expected)
@@ -437,15 +458,10 @@ class UploadManager: NSObject, URLSessionDelegate {
 
         // Update UI
         if !self.isExecutingBackgroundUploadTask {
-            let uploadInfo: [String : Any] = ["localIdentifier" : uploadProperties.localIdentifier,
-                                              "photoResize" : Int16(uploadProperties.photoResize),
-                                              "stateLabel" : kPiwigoUploadState.preparing.stateInfo,
-                                              "Error" : ""]
-            DispatchQueue.main.async {
-                // Update UploadQueue cell and button shown in root album (or default album)
-                let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)
-                NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
-            }
+            updateCell(with: uploadProperties.localIdentifier,
+                       stateLabel: kPiwigoUploadState.preparing.stateInfo,
+                       photoResize: Int16(uploadProperties.photoResize),
+                       progress: Float(0.0), errorMsg: "")
         }
         
         // Add category to list of recent albums
@@ -484,6 +500,11 @@ class UploadManager: NSObject, URLSessionDelegate {
         guard let fileURL = files.filter({$0.absoluteString.contains(uploadProperties.localIdentifier)}).first else {
             // File not available… deleted?
             uploadsProvider.updateStatusOfUpload(with: uploadID, to: .preparingFail, error: UploadError.missingAsset.errorDescription) { [unowned self] (_) in
+
+                // Update UI
+                updateCell(with: uploadProperties.localIdentifier, stateLabel: uploadProperties.stateLabel,
+                           photoResize: nil, progress: nil, errorMsg: kPiwigoUploadState.preparingFail.stateInfo)
+ 
                 // Investigate next upload request?
                 self.didEndPreparation()
             }
@@ -538,6 +559,12 @@ class UploadManager: NSObject, URLSessionDelegate {
             }
             // Image file format cannot be accepted by the Piwigo server
             uploadProperties.requestState = .formatError
+
+            // Update UI
+            updateCell(with: uploadProperties.localIdentifier, stateLabel: uploadProperties.stateLabel,
+                       photoResize: nil, progress: nil, errorMsg: kPiwigoUploadState.formatError.stateInfo)
+            
+            // Update upload request
             uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                 // Investigate next upload request?
                 self.didEndPreparation()
@@ -614,8 +641,15 @@ class UploadManager: NSObject, URLSessionDelegate {
                     return
                 }
             }
+
             // Image file format cannot be accepted by the Piwigo server
             uploadProperties.requestState = .formatError
+
+            // Update UI
+            updateCell(with: uploadProperties.localIdentifier, stateLabel: uploadProperties.stateLabel,
+                       photoResize: nil, progress: nil, errorMsg: kPiwigoUploadState.formatError.stateInfo)
+            
+            // Update upload request
             uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                 // Investigate next upload request?
                 self.didEndPreparation()
@@ -732,14 +766,9 @@ class UploadManager: NSObject, URLSessionDelegate {
 
         // Update UI
         if !self.isExecutingBackgroundUploadTask {
-            let uploadInfo: [String : Any] = ["localIdentifier" : uploadProperties.localIdentifier,
-                                              "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
-                                              "progressFraction" : Float(0)]
-            DispatchQueue.main.async {
-                // Update UploadQueue cell and button shown in root album (or default album)
-                let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)
-                NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
-            }
+            updateCell(with: uploadProperties.localIdentifier,
+                       stateLabel: kPiwigoUploadState.uploading.stateInfo,
+                       photoResize: nil, progress: Float(0), errorMsg: nil)
         }
 
         // Update state of upload request

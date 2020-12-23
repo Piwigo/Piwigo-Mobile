@@ -198,14 +198,7 @@ extension UploadManager {
         }
 
         // Update UI
-        let uploadInfo: [String : Any] = ["localIdentifier" : newProperties.localIdentifier,
-                                          "stateLabel" : newProperties.stateLabel,
-                                          "progressFraction" : Float(0)]
-        DispatchQueue.main.async {
-            // Update UploadQueue cell and button shown in root album (or default album)
-            let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)
-            NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
-        }
+        updateCell(with: newProperties.localIdentifier, stateLabel: newProperties.stateLabel)
 
         // Update state of upload request
         print("\(debugFormatter.string(from: Date())) > prepared \(uploadID) \(errorMsg)")
