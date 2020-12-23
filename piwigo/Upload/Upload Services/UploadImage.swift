@@ -39,7 +39,6 @@ extension UploadManager {
         self.modifyImage(for: uploadProperties, with: imageData, andObject: imageObject) { (newUploadProperties, error) in
             // Update upload request
             self.didPrepareImage(for: uploadID, with: newUploadProperties, error)
-            return
         }
     }
     
@@ -75,7 +74,6 @@ extension UploadManager {
                 self.modifyImage(for: uploadProperties, with: imageData, andObject: imageObject) { (newUploadProperties, error) in
                     // Update upload request
                     self.didPrepareImage(for: uploadID, with: newUploadProperties, error)
-                    return
                 }
             }
         }
@@ -170,7 +168,6 @@ extension UploadManager {
                 // Job completed
 //                print("\(self.debugFormatter.string(from: Date())) > exits retrieveUIImageFrom in", queueName())
                 completionHandler(fixedImageObject, nil)
-                return
             } else {
                 DispatchQueue(label: "prepareImage").async {
                     // Any error?
@@ -192,7 +189,6 @@ extension UploadManager {
                     // Job completed
 //                    print("\(self.debugFormatter.string(from: Date())) > exits retrieveUIImageFrom in", queueName())
                     completionHandler(fixedImageObject, nil)
-                    return
                 }
             }
         })
