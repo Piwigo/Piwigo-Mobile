@@ -198,7 +198,8 @@ extension UploadManager {
         }
 
         // Update UI
-        updateCell(with: newProperties.localIdentifier, stateLabel: newProperties.stateLabel)
+        updateCell(with: newProperties.localIdentifier, stateLabel: newProperties.stateLabel,
+                   photoResize: nil, progress: Float(0.0), errorMsg: errorMsg)
 
         // Update state of upload request
         print("\(debugFormatter.string(from: Date())) > prepared \(uploadID) \(errorMsg)")
