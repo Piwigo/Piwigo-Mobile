@@ -398,47 +398,37 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         print("   stored \(pbIndexSet.count) images on disk in \(diff) ms")
     }
     
+    /// https://developer.apple.com/documentation/uniformtypeidentifiers/uttype/system_declared_types
     private func getDataOfPasteboardImage(at indexSet:IndexSet) -> (imageData: Data, fileExt: String)? {
+        // Images
         // PNG format in priority in case where JPEG is also available
         if pbTypes[indexSet.first!].contains("public.png"),
            let imageData = UIPasteboard.general.data(forPasteboardType: "public.png", inItemSet: indexSet)?.first {
             return (imageData, "png")
         }
+        else if pbTypes[indexSet.first!].contains("public.heic"),
+               let imageData = UIPasteboard.general.data(forPasteboardType: "public.heic", inItemSet: indexSet)?.first {
+            return (imageData, "heic")
+        }
+        else if pbTypes[indexSet.first!].contains("public.heif"),
+               let imageData = UIPasteboard.general.data(forPasteboardType: "public.heif", inItemSet: indexSet)?.first {
+            return (imageData, "heif")
+        }
         else if pbTypes[indexSet.first!].contains("public.tiff"),
                let imageData = UIPasteboard.general.data(forPasteboardType: "public.tiff", inItemSet: indexSet)?.first {
             return (imageData, "tiff")
-        }
-        else if pbTypes[indexSet.first!].contains("public.jpeg-2000"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "public.jpeg-2000", inItemSet: indexSet)?.first {
-            return (imageData, "jp2")
         }
         else if pbTypes[indexSet.first!].contains("public.jpeg"),
             let imageData = UIPasteboard.general.data(forPasteboardType: "public.jpeg", inItemSet: indexSet)?.first {
             return (imageData, "jpg")
         }
-        else if pbTypes[indexSet.first!].contains("com.adobe.photoshop-​image"),
-            let imageData = UIPasteboard.general.data(forPasteboardType: "com.adobe.photoshop-​image", inItemSet: indexSet)?.first {
-            return (imageData, "psd")
+        else if pbTypes[indexSet.first!].contains("public.camera-raw-image"),
+            let imageData = UIPasteboard.general.data(forPasteboardType: "public.camera-raw-image", inItemSet: indexSet)?.first {
+            return (imageData, "raw")
         }
-        else if pbTypes[indexSet.first!].contains("com.apple.quicktime-image"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "com.apple.quicktime-image", inItemSet: indexSet)?.first {
-            return (imageData, "qtif")
-        }
-        else if pbTypes[indexSet.first!].contains("com.apple.icns"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "com.apple.icns", inItemSet: indexSet)?.first {
-            return (imageData, "icns")
-        }
-        else if pbTypes[indexSet.first!].contains("com.apple.pict"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "com.apple.pict", inItemSet: indexSet)?.first {
-            return (imageData, "pict")
-        }
-        else if pbTypes[indexSet.first!].contains("com.apple.macpaint-image"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "com.apple.macpaint-image", inItemSet: indexSet)?.first {
-            return (imageData, "pntg")
-        }
-        else if pbTypes[indexSet.first!].contains("public.xbitmap-image"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "public.xbitmap-image", inItemSet: indexSet)?.first {
-            return (imageData, "xbm")
+        else if pbTypes[indexSet.first!].contains("com.google.webp"),
+               let imageData = UIPasteboard.general.data(forPasteboardType: "com.google.webp", inItemSet: indexSet)?.first {
+            return (imageData, "webp")
         }
         else if pbTypes[indexSet.first!].contains("com.compuserve.gif"),
                let imageData = UIPasteboard.general.data(forPasteboardType: "com.compuserve.gif", inItemSet: indexSet)?.first {
@@ -452,61 +442,26 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                let imageData = UIPasteboard.general.data(forPasteboardType: "com.microsoft.ico", inItemSet: indexSet)?.first {
             return (imageData, "ico")
         }
-        else if pbTypes[indexSet.first!].contains("com.truevision.tga-image"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "com.truevision.tga-image", inItemSet: indexSet)?.first {
-            return (imageData, "tga")
-        }
-        else if pbTypes[indexSet.first!].contains("com.sgi.sgi-image"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "com.sgi.sgi-image", inItemSet: indexSet)?.first {
-            return (imageData, "sgi")
-        }
-        else if pbTypes[indexSet.first!].contains("com.ilm.openexr-image"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "com.ilm.openexr-image", inItemSet: indexSet)?.first {
-            return (imageData, "exr")
-        }
-        else if pbTypes[indexSet.first!].contains("com.kodak.flashpix.image"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "com.kodak.flashpix.image", inItemSet: indexSet)?.first {
-            return (imageData, "fpx")
-        }
+        // Movies
         else if pbTypes[indexSet.first!].contains("com.apple.quicktime-movie"),
                let imageData = UIPasteboard.general.data(forPasteboardType: "com.apple.quicktime-movie", inItemSet: indexSet)?.first {
             return (imageData, "mov")
-        }
-        else if pbTypes[indexSet.first!].contains("public.avi"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "public.avi", inItemSet: indexSet)?.first {
-            return (imageData, "avi")
         }
         else if pbTypes[indexSet.first!].contains("public.mpeg"),
                let imageData = UIPasteboard.general.data(forPasteboardType: "public.mpeg", inItemSet: indexSet)?.first {
             return (imageData, "mpeg")
         }
+        else if pbTypes[indexSet.first!].contains("public.mpeg-2-video"),
+               let imageData = UIPasteboard.general.data(forPasteboardType: "public.mpeg-2-video", inItemSet: indexSet)?.first {
+            return (imageData, "mpeg2")
+        }
         else if pbTypes[indexSet.first!].contains("public.mpeg-4"),
                let imageData = UIPasteboard.general.data(forPasteboardType: "public.mpeg-4", inItemSet: indexSet)?.first {
             return (imageData, "mp4")
         }
-        else if pbTypes[indexSet.first!].contains("public.3gpp"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "public.3gpp", inItemSet: indexSet)?.first {
-            return (imageData, "3gp")
-        }
-        else if pbTypes[indexSet.first!].contains("public.3gpp2"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "public.3gpp2", inItemSet: indexSet)?.first {
-            return (imageData, "3g2")
-        }
-        else if pbTypes[indexSet.first!].contains("com.microsoft.windows-​media-wm"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "com.microsoft.windows-​media-wm", inItemSet: indexSet)?.first {
-            return (imageData, fileExt: "wm")
-        }
-        else if pbTypes[indexSet.first!].contains("com.microsoft.windows-​media-wmv"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "com.microsoft.windows-​media-wmv", inItemSet: indexSet)?.first {
-            return (imageData, fileExt: "wmv")
-        }
-        else if pbTypes[indexSet.first!].contains("com.microsoft.windows-​media-wmp"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "com.microsoft.windows-​media-wmp", inItemSet: indexSet)?.first {
-            return (imageData, fileExt: "wmp")
-        }
-        else if pbTypes[indexSet.first!].contains("com.real.realmedia"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "com.real.realmedia", inItemSet: indexSet)?.first {
-            return (imageData, fileExt: "rm")
+        else if pbTypes[indexSet.first!].contains("public.avi"),
+               let imageData = UIPasteboard.general.data(forPasteboardType: "public.avi", inItemSet: indexSet)?.first {
+            return (imageData, "avi")
         }
         else {
             // Unknown image/video format
