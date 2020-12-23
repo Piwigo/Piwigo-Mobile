@@ -85,34 +85,6 @@ class UploadManager: NSObject, URLSessionDelegate {
     }
     
 
-    // MARK: - MD5 Checksum
-    #if canImport(CryptoKit)        // Requires iOS 13
-    @available(iOS 13.0, *)
-    func MD5(data: Data?) -> String {
-        let digest = Insecure.MD5.hash(data: data ?? Data())
-        return digest.map { String(format: "%02hhx", $0) }.joined()
-    }
-    #endif
-
-    func oldMD5(data: Data?) -> String {
-        let length = Int(CC_MD5_DIGEST_LENGTH)
-        let messageData = data ?? Data()
-        var digestData = Data(count: length)
-
-        _ = digestData.withUnsafeMutableBytes { digestBytes -> UInt8 in
-                messageData.withUnsafeBytes { messageBytes -> UInt8 in
-                if let messageBytesBaseAddress = messageBytes.baseAddress,
-                    let digestBytesBlindMemory = digestBytes.bindMemory(to: UInt8.self).baseAddress {
-                    let messageLength = CC_LONG(messageData.count)
-                    CC_MD5(messageBytesBaseAddress, messageLength, digestBytesBlindMemory)
-                }
-                return 0
-            }
-        }
-        return digestData.map { String(format: "%02hhx", $0) }.joined()
-    }
-
-
     // MARK: - Core Data
     /**
      The UploadsProvider that collects upload data, saves it to Core Data,
@@ -418,6 +390,36 @@ class UploadManager: NSObject, URLSessionDelegate {
     
     
     // MARK: - Prepare image
+    /// https://developer.apple.com/documentation/uniformtypeidentifiers/uttype/system_declared_types
+    private let acceptedImageFormats = "png,heic,heif,tif,tiff,jpg,jpeg,raw,webp,gif,bmp,ico"
+    private let acceptedMovieFormats = "mov,mpg,mpeg,mpeg2,mp4,avi"
+
+    #if canImport(CryptoKit)        // Requires iOS 13
+    @available(iOS 13.0, *)
+    func MD5(data: Data?) -> String {
+        let digest = Insecure.MD5.hash(data: data ?? Data())
+        return digest.map { String(format: "%02hhx", $0) }.joined()
+    }
+    #endif
+
+    func oldMD5(data: Data?) -> String {
+        let length = Int(CC_MD5_DIGEST_LENGTH)
+        let messageData = data ?? Data()
+        var digestData = Data(count: length)
+
+        _ = digestData.withUnsafeMutableBytes { digestBytes -> UInt8 in
+                messageData.withUnsafeBytes { messageBytes -> UInt8 in
+                if let messageBytesBaseAddress = messageBytes.baseAddress,
+                    let digestBytesBlindMemory = digestBytes.bindMemory(to: UInt8.self).baseAddress {
+                    let messageLength = CC_LONG(messageData.count)
+                    CC_MD5(messageBytesBaseAddress, messageLength, digestBytesBlindMemory)
+                }
+                return 0
+            }
+        }
+        return digestData.map { String(format: "%02hhx", $0) }.joined()
+    }
+
     private var _isPreparing = false
     private var isPreparing: Bool {
         get {
@@ -541,21 +543,18 @@ class UploadManager: NSObject, URLSessionDelegate {
                 }
                 return
             }
-            // Convert image if JPEG format is accepted by Piwigo server
-            if uploadProperties.serverFileTypes.contains("jpg") {
+            // Try to convert image if JPEG format is accepted by Piwigo server
+            if uploadProperties.serverFileTypes.contains("jpg"), acceptedImageFormats.contains(fileExt) {
                 // Try conversion to JPEG
-                if fileExt == "heic" || fileExt == "heif" || fileExt == "avci" {
-                    // Will convert HEIC encoded image to JPEG
-                    print("\(debugFormatter.string(from: Date())) > converting photo \(uploadProperties.fileName!)…")
-                    
-                    // Update state of upload
-                    uploadProperties.requestState = .preparing
-                    uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
-                        // Launch preparation job
-                        self.prepareImage(for: uploadID, with: uploadProperties, atURL: fileURL)
-                    }
-                    return
+                print("\(debugFormatter.string(from: Date())) > converting photo \(uploadProperties.fileName!)…")
+                
+                // Update state of upload
+                uploadProperties.requestState = .preparing
+                uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+                    // Launch preparation job
+                    self.prepareImage(for: uploadID, with: uploadProperties, atURL: fileURL)
                 }
+                return
             }
             // Image file format cannot be accepted by the Piwigo server
             uploadProperties.requestState = .formatError
@@ -626,20 +625,17 @@ class UploadManager: NSObject, URLSessionDelegate {
                 return
             }
             // Convert image if JPEG format is accepted by Piwigo server
-            if uploadProperties.serverFileTypes.contains("jpg") {
+            if uploadProperties.serverFileTypes.contains("jpg"), acceptedImageFormats.contains(fileExt) {
                 // Try conversion to JPEG
-                if fileExt == "heic" || fileExt == "heif" || fileExt == "avci" {
-                    // Will convert HEIC encoded image to JPEG
-                    print("\(debugFormatter.string(from: Date())) > converting photo \(uploadProperties.fileName!)…")
-                    
-                    // Update state of upload
-                    uploadProperties.requestState = .preparing
-                    uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
-                        // Launch preparation job
-                        self.prepareImage(for: uploadID, with: uploadProperties, asset: originalAsset)
-                    }
-                    return
+                print("\(debugFormatter.string(from: Date())) > converting photo \(uploadProperties.fileName!)…")
+                
+                // Update state of upload
+                uploadProperties.requestState = .preparing
+                uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+                    // Launch preparation job
+                    self.prepareImage(for: uploadID, with: uploadProperties, asset: originalAsset)
                 }
+                return
             }
 
             // Image file format cannot be accepted by the Piwigo server
@@ -672,20 +668,17 @@ class UploadManager: NSObject, URLSessionDelegate {
                 return
             }
             // Convert video if MP4 format is accepted by Piwigo server
-            if uploadProperties.serverFileTypes.contains("mp4") {
+            if uploadProperties.serverFileTypes.contains("mp4"), acceptedMovieFormats.contains(fileExt) {
                 // Try conversion to MP4
-                if fileExt == "mov" {
-                    // Will convert MOV encoded video to MP4
-                    print("\(debugFormatter.string(from: Date())) > converting video \(uploadProperties.fileName!)…")
+                print("\(debugFormatter.string(from: Date())) > converting video \(uploadProperties.fileName!)…")
 
-                    // Update state of upload
-                    uploadProperties.requestState = .preparing
-                    uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
-                        // Launch preparation job
-                        self.convertVideo(for: uploadID, with: uploadProperties, originalAsset)
-                    }
-                    return
+                // Update state of upload
+                uploadProperties.requestState = .preparing
+                uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+                    // Launch preparation job
+                    self.convertVideo(for: uploadID, with: uploadProperties, originalAsset)
                 }
+                return
             }
             // Video file format cannot be accepted by the Piwigo server
             uploadProperties.requestState = .formatError
