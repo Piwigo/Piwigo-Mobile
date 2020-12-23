@@ -29,6 +29,7 @@ extension UploadManager {
         // Launch transfer
         startUploading(fileURL: fileURL, with: imageParameters,
             onProgress: { (progress, currentChunk, totalChunks) in
+                // Update UI
                 let chunkProgress: Float = Float(currentChunk) / Float(totalChunks)
                 self.updateCell(with: uploadProperties.localIdentifier,
                                 stateLabel: kPiwigoUploadState.uploading.stateInfo,
@@ -401,6 +402,7 @@ extension UploadManager {
 
             // Update UI
             if !isExecutingBackgroundUploadTask {
+                // Update UI
                 let progress = Float(chunk) / Float(chunks) / 2.0
                 updateCell(with: uploadProperties.localIdentifier,
                            stateLabel: kPiwigoUploadState.uploading.stateInfo,
