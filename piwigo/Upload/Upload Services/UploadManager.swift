@@ -572,6 +572,49 @@ class UploadManager: NSObject, URLSessionDelegate {
         else if fileName.contains("mov") {
             uploadProperties.isVideo = true
 
+            // Set filename after removing "SSSS-mov-#" suffix
+            if let range = fileName.range(of: "-mov") {
+                uploadProperties.fileName = String(fileName[..<range.lowerBound].dropLast(4))
+            }
+
+            // Chek that the video format is accepted by the Piwigo server
+            if uploadProperties.serverFileTypes.contains(fileExt) {
+                // Video file format accepted by the Piwigo server
+                print("\(debugFormatter.string(from: Date())) > preparing video \(uploadProperties.fileName!)…")
+
+                // Update state of upload
+                uploadProperties.requestState = .preparing
+                uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+                    // Launch preparation job
+                    self.prepareVideo(atURL: fileURL, for: uploadID, with: uploadProperties)
+                }
+                return
+            }
+            // Convert video if MP4 format is accepted by Piwigo server
+            if uploadProperties.serverFileTypes.contains("mp4"), acceptedMovieFormats.contains(fileExt) {
+                // Try conversion to MP4
+                print("\(debugFormatter.string(from: Date())) > converting video \(uploadProperties.fileName!)…")
+
+                // Update state of upload
+                uploadProperties.requestState = .preparing
+                uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+                    // Launch preparation job
+                    self.convertVideo(atURL: fileURL, for: uploadID, with: uploadProperties)
+                }
+                return
+            }
+            // Video file format cannot be accepted by the Piwigo server
+            uploadProperties.requestState = .formatError
+
+            // Update UI
+            updateCell(with: uploadProperties.localIdentifier, stateLabel: uploadProperties.stateLabel,
+                       photoResize: nil, progress: nil, errorMsg: kPiwigoUploadState.formatError.stateInfo)
+            
+            // Update upload request
+            uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+                // Investigate next upload request?
+                self.didEndPreparation()
+            }
         }
         else {
             
@@ -663,7 +706,7 @@ class UploadManager: NSObject, URLSessionDelegate {
                 uploadProperties.requestState = .preparing
                 uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                     // Launch preparation job
-                    self.prepareVideo(for: uploadID, with: uploadProperties, originalAsset)
+                    self.prepareVideo(ofAsset: originalAsset, for: uploadID, with: uploadProperties)
                 }
                 return
             }
@@ -676,12 +719,18 @@ class UploadManager: NSObject, URLSessionDelegate {
                 uploadProperties.requestState = .preparing
                 uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                     // Launch preparation job
-                    self.convertVideo(for: uploadID, with: uploadProperties, originalAsset)
+                    self.convertVideo(ofAsset: originalAsset, for: uploadID, with: uploadProperties)
                 }
                 return
             }
             // Video file format cannot be accepted by the Piwigo server
             uploadProperties.requestState = .formatError
+
+            // Update UI
+            updateCell(with: uploadProperties.localIdentifier, stateLabel: uploadProperties.stateLabel,
+                       photoResize: nil, progress: nil, errorMsg: kPiwigoUploadState.formatError.stateInfo)
+            
+            // Update upload request
             uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                 // Investigate next upload request?
                 self.didEndPreparation()
