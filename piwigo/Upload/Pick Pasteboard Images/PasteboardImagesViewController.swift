@@ -366,6 +366,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                 // Get image data and file extension
                 guard let (imageData, fileExt) = getDataOfPasteboardImage(at: indexSet) else {
                     // Forget that image… to be coded
+                    pbFileExtensions[index] = "unknown"
                     continue
                 }
 
@@ -821,6 +822,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                 image = UIImage(named: "placeholder")!
             }
         }
+        if image == nil { image = UIImage(named: "placeholder")! }
         cell.configure(with: image, identifier: identifier,
                        thumbnailSize: CGFloat(ImagesCollection.imageSize(for: collectionView, imagesPerRowInPortrait: Model.sharedInstance().thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup)))
         
