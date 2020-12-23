@@ -539,7 +539,7 @@ class UploadManager: NSObject, URLSessionDelegate {
                 uploadProperties.requestState = .preparing
                 uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                     // Launch preparation job
-                    self.prepareImage(for: uploadID, with: uploadProperties, atURL: fileURL)
+                    self.prepareImage(atURL: fileURL, for: uploadID, with: uploadProperties)
                 }
                 return
             }
@@ -552,7 +552,7 @@ class UploadManager: NSObject, URLSessionDelegate {
                 uploadProperties.requestState = .preparing
                 uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                     // Launch preparation job
-                    self.prepareImage(for: uploadID, with: uploadProperties, atURL: fileURL)
+                    self.prepareImage(atURL: fileURL, for: uploadID, with: uploadProperties)
                 }
                 return
             }
@@ -620,7 +620,7 @@ class UploadManager: NSObject, URLSessionDelegate {
                 uploadProperties.requestState = .preparing
                 uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                     // Launch preparation job
-                    self.prepareImage(for: uploadID, with: uploadProperties, asset: originalAsset)
+                    self.prepareImage(asset: originalAsset, for: uploadID, with: uploadProperties)
                 }
                 return
             }
@@ -633,7 +633,7 @@ class UploadManager: NSObject, URLSessionDelegate {
                 uploadProperties.requestState = .preparing
                 uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                     // Launch preparation job
-                    self.prepareImage(for: uploadID, with: uploadProperties, asset: originalAsset)
+                    self.prepareImage(asset: originalAsset, for: uploadID, with: uploadProperties)
                 }
                 return
             }

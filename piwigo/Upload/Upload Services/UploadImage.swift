@@ -12,8 +12,8 @@ extension UploadManager {
     
     // MARK: - Image preparation
     /// Case of an image from the pasteboard
-    func prepareImage(for uploadID: NSManagedObjectID,
-                      with uploadProperties: UploadProperties, atURL fileURL: URL) -> Void {
+    func prepareImage(atURL fileURL: URL,
+                      for uploadID: NSManagedObjectID, with uploadProperties: UploadProperties) -> Void {
         
         // Retrieve image data from file stored in the Uploads directory
         var imageData: Data = Data()
@@ -43,8 +43,8 @@ extension UploadManager {
     }
     
     /// Case of an image from the Photo Library
-    func prepareImage(for uploadID: NSManagedObjectID,
-                      with uploadProperties: UploadProperties, asset imageAsset: PHAsset) -> Void {
+    func prepareImage(asset imageAsset: PHAsset,
+                      for uploadID: NSManagedObjectID, with uploadProperties: UploadProperties) -> Void {
 
         // Retrieve UIImage
         self.retrieveUIImage(from: imageAsset, for: uploadProperties) { (fixedImageObject, imageError) in
@@ -115,7 +115,7 @@ extension UploadManager {
     
     // MARK: - Retrieve UIImage and Image Data
     private func retrieveUIImage(from imageAsset: PHAsset, for upload:UploadProperties,
-                         completionHandler: @escaping (UIImage?, Error?) -> Void) {
+                                 completionHandler: @escaping (UIImage?, Error?) -> Void) {
 
         // Options for retrieving image of requested size
         let options = PHImageRequestOptions()
@@ -195,7 +195,7 @@ extension UploadManager {
     }
 
     private func retrieveFullSizeImageData(from imageAsset: PHAsset,
-                                   completionHandler: @escaping (Data?, Error?) -> Void) {
+                                           completionHandler: @escaping (Data?, Error?) -> Void) {
         // Options for retrieving metadata
         let options = PHImageRequestOptions()
         // Photos processes the image request synchronously unless when the app is active
@@ -265,8 +265,8 @@ extension UploadManager {
     // MARK: - Modify Metadata
     
     private func modifyImage(for upload: UploadProperties,
-                     with originalData: Data, andObject originalObject: UIImage,
-                     completionHandler: @escaping (UploadProperties, Error?) -> Void) {
+                             with originalData: Data, andObject originalObject: UIImage,
+                             completionHandler: @escaping (UploadProperties, Error?) -> Void) {
 //        print("\(self.debugFormatter.string(from: Date())) > enters modifyImage in", queueName())
 
         // Create CGI reference from image data (to retrieve complete metadata)
