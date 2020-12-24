@@ -69,6 +69,8 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         setLabelsFromDatesAndLocation(location: location)
 
         // Select/deselect button
+        selectButton.layer.cornerRadius = 9.0
+        selectButton.backgroundColor = UIColor.piwigoColorCellBackground()
         setButtonTitle(for: selectState)
     }
 
@@ -88,17 +90,16 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
     // MARK: Utilities
     
     private func setButtonTitle(for state:SelectButtonState) {
-        tintColor = UIColor.piwigoColorOrange()
         let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorOrange(),
-            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
+            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
+            NSAttributedString.Key.font: UIFont.piwigoFontSmall()
         ]
         let title:String
         switch state {
         case .select:
-            title = NSLocalizedString("categoryImageList_selectButton", comment: "Select")
+            title = String(format: "  %@  ", NSLocalizedString("selectAll", comment: "Select All"))
         case .deselect:
-            title = NSLocalizedString("categoryImageList_deselectButton", comment: "Deselect")
+            title = String(format: "  %@  ", NSLocalizedString("categoryImageList_deselectButton", comment: "Deselect"))
         case .none:
             title = ""
         }

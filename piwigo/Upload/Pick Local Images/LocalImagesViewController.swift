@@ -726,29 +726,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             })
         alert.addAction(cancelAction)
 
-        // Select all images
-        if selectedImages.compactMap({$0}).count + indexedUploadsInQueue.compactMap({$0}).count < fetchedImages.count {
-            let selectAction = UIAlertAction(title: NSLocalizedString("selectAll", comment: "Select All"), style: .default) { (action) in
-                // Loop over all images in section to select them (Select 70356 images of section 0 took 150.6 ms)
-                // Here, we exploit the cached local IDs
-                for index in 0..<self.selectedImages.count {
-                    // Images in the upload queue cannot be selected
-                    if self.indexedUploadsInQueue[index] == nil {
-                        self.selectedImages[index] = UploadProperties.init(localIdentifier: self.fetchedImages[index].localIdentifier, category: self.categoryId)
-                    }
-                }
-                // Reload collection while updating section buttons
-                self.updateNavBar()
-                self.localImagesCollection.reloadData()
-            }
-            alert.addAction(selectAction)
-        } else {
-            let deselectAction = UIAlertAction(title: NSLocalizedString("categoryImageList_deselectButton", comment: "Deselect"), style: .default) { (action) in
-                self.cancelSelect()
-            }
-            alert.addAction(deselectAction)
-        }
-        
         // Change sort option
         let sortOption = Model.sharedInstance().localImagesSort == kPiwigoSortDateCreatedDescending ? kPiwigoSortDateCreatedAscending : kPiwigoSortDateCreatedDescending
         let sortAction = UIAlertAction(title: CategorySortViewController.getNameForCategorySortType(sortOption), style: .default, handler: { action in

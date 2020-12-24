@@ -131,33 +131,25 @@
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="placeLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IuZ-Ot-NeB">
-                                                    <rect key="frame" x="20" y="9" width="83" height="20"/>
+                                                    <rect key="frame" x="8" y="9" width="83" height="20"/>
                                                     <fontDescription key="fontDescription" name="OpenSans-Semibold" family="Open Sans" pointSize="17"/>
                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="dateLabel" textAlignment="natural" lineBreakMode="tailTruncation" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="NIO-n9-bqf">
-                                                    <rect key="frame" x="20" y="28.5" width="58" height="15.5"/>
+                                                    <rect key="frame" x="8" y="28.5" width="58" height="15.5"/>
                                                     <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" hasAttributedTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Lfe-Kd-abT">
-                                                    <rect key="frame" x="348" y="20" width="46" height="24"/>
+                                                <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lfe-Kd-abT">
+                                                    <rect key="frame" x="347" y="26" width="55" height="18"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="height" constant="24" id="KZS-Bg-0n9"/>
+                                                        <constraint firstAttribute="height" constant="18" id="taE-Zp-gph"/>
                                                     </constraints>
-                                                    <state key="normal">
-                                                        <attributedString key="attributedTitle">
-                                                            <fragment content="select">
-                                                                <attributes>
-                                                                    <color key="NSColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                                                    <font key="NSFont" size="17" name="OpenSans"/>
-                                                                    <font key="NSOriginalFont" metaFont="system" size="17"/>
-                                                                    <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
-                                                                </attributes>
-                                                            </fragment>
-                                                        </attributedString>
+                                                    <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
+                                                    <state key="normal" title="Select All">
+                                                        <color key="titleColor" systemColor="labelColor"/>
                                                     </state>
                                                     <connections>
                                                         <action selector="tappedSelectButton:" destination="80M-ek-Ose" eventType="touchUpInside" id="RUO-Gh-Bfs"/>
@@ -168,12 +160,11 @@
                                             <color key="tintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <constraints>
                                                 <constraint firstAttribute="bottom" secondItem="Lfe-Kd-abT" secondAttribute="bottom" id="8gB-0u-eKB"/>
-                                                <constraint firstItem="IuZ-Ot-NeB" firstAttribute="leading" secondItem="QkP-DX-w4M" secondAttribute="leadingMargin" id="E5G-dL-Ipw"/>
-                                                <constraint firstItem="NIO-n9-bqf" firstAttribute="leading" secondItem="QkP-DX-w4M" secondAttribute="leadingMargin" id="H2a-jo-2YV"/>
+                                                <constraint firstItem="IuZ-Ot-NeB" firstAttribute="leading" secondItem="QkP-DX-w4M" secondAttribute="leading" constant="8" id="E5G-dL-Ipw"/>
+                                                <constraint firstItem="NIO-n9-bqf" firstAttribute="leading" secondItem="QkP-DX-w4M" secondAttribute="leading" constant="8" id="H2a-jo-2YV"/>
                                                 <constraint firstAttribute="bottom" secondItem="NIO-n9-bqf" secondAttribute="bottom" id="cdc-8q-Liq"/>
-                                                <constraint firstItem="NIO-n9-bqf" firstAttribute="firstBaseline" secondItem="IuZ-Ot-NeB" secondAttribute="baseline" constant="16" symbolType="layoutAnchor" id="fIM-xg-ADB"/>
-                                                <constraint firstItem="Lfe-Kd-abT" firstAttribute="trailing" secondItem="QkP-DX-w4M" secondAttribute="trailingMargin" id="n8v-KW-Fd2"/>
-                                                <constraint firstItem="Lfe-Kd-abT" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="IuZ-Ot-NeB" secondAttribute="trailing" constant="10" id="pAn-ka-Tj4"/>
+                                                <constraint firstItem="NIO-n9-bqf" firstAttribute="firstBaseline" secondItem="IuZ-Ot-NeB" secondAttribute="baseline" constant="20" symbolType="layoutAnchor" id="fIM-xg-ADB"/>
+                                                <constraint firstItem="Lfe-Kd-abT" firstAttribute="trailing" secondItem="QkP-DX-w4M" secondAttribute="trailingMargin" constant="8" id="n8v-KW-Fd2"/>
                                                 <constraint firstItem="Lfe-Kd-abT" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="NIO-n9-bqf" secondAttribute="trailing" constant="10" id="wpv-JQ-p9X"/>
                                             </constraints>
                                         </view>
@@ -275,6 +266,9 @@
         <image name="placeholderImage" width="512" height="512"/>
         <image name="video" width="25" height="16"/>
         <image name="warning" width="37" height="37"/>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
