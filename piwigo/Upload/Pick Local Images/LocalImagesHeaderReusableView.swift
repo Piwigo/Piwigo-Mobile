@@ -83,16 +83,14 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
 
         dateLabel.text = ""
         placeLabel.text = ""
+        selectButton.setTitle("", for: .normal)
+        selectButton.backgroundColor = UIColor.piwigoColorBackground()
     }
 
     
     // MARK: Utilities
     
     private func setButtonTitle(for state:SelectButtonState) {
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.piwigoFontSmall()
-        ]
         let title: String, bckgColor: UIColor
         switch state {
         case .select:
@@ -105,9 +103,9 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
             title = ""
             bckgColor = UIColor.piwigoColorBackground()
         }
-        let buttonTitle = NSAttributedString(string: title, attributes: attributes)
         selectButton.backgroundColor = bckgColor
-        selectButton.setAttributedTitle(buttonTitle, for: .normal)
+        selectButton.setTitle(title, for: .normal)
+        selectButton.setTitleColor(UIColor.piwigoColorWhiteCream(), for: .normal)
     }
 
     @objc private func setLabelsFromDatesAndLocation(location: CLLocation) {
