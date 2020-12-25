@@ -157,7 +157,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
         self.deleteBarButton.tintColor = [UIColor redColor];
         self.shareBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(shareSelection)];
         self.shareBarButton.tintColor = [UIColor piwigoColorOrange];
-        self.moveBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageMove"] landscapeImagePhone:[UIImage imageNamed:@"imageMoveCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addImagesToCategory)];
+        self.moveBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply target:self action:@selector(addImagesToCategory)];
         self.moveBarButton.tintColor = [UIColor piwigoColorOrange];
         self.navigationController.toolbarHidden = YES;
 
@@ -1158,7 +1158,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
     self.deleteBarButton.tintColor = [UIColor redColor];
     self.shareBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(shareSelection)];
     self.shareBarButton.tintColor = [UIColor piwigoColorOrange];
-    self.moveBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageMove"] landscapeImagePhone:[UIImage imageNamed:@"imageMoveCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addImagesToCategory)];
+    self.moveBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply target:self action:@selector(addImagesToCategory)];
     self.moveBarButton.tintColor = [UIColor piwigoColorOrange];
 
     // User can delete images/videos if he/she has:

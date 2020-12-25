@@ -93,7 +93,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
         self.setThumbnailBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imagePaperclip"] landscapeImagePhone:[UIImage imageNamed:@"imagePaperclipCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(setAsAlbumImage)];
         self.setThumbnailBarButton.tintColor = [UIColor piwigoColorOrange];
         [self.setThumbnailBarButton setAccessibilityIdentifier:@"albumThumbnail"];
-        self.moveBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageMove"] landscapeImagePhone:[UIImage imageNamed:@"imageMoveCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addImageToCategory)];
+        self.moveBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply target:self action:@selector(addImageToCategory)];
         self.moveBarButton.tintColor = [UIColor piwigoColorOrange];
         [self.moveBarButton setAccessibilityIdentifier:@"move"];
 //        self.favoriteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageNotFavorite"] landscapeImagePhone:[UIImage imageNamed:@"imageNotFavoriteCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addImageToFavorites)];
@@ -240,7 +240,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     self.setThumbnailBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imagePaperclip"] landscapeImagePhone:[UIImage imageNamed:@"imagePaperclipCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(setAsAlbumImage)];
     self.setThumbnailBarButton.tintColor = [UIColor piwigoColorOrange];
     [self.setThumbnailBarButton setAccessibilityIdentifier:@"albumThumbnail"];
-    self.moveBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageMove"] landscapeImagePhone:[UIImage imageNamed:@"imageMoveCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addImageToCategory)];
+    self.moveBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply target:self action:@selector(addImageToCategory)];
     self.moveBarButton.tintColor = [UIColor piwigoColorOrange];
     [self.moveBarButton setAccessibilityIdentifier:@"move"];
 //        self.favoriteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageNotFavorite"] landscapeImagePhone:[UIImage imageNamed:@"imageNotFavoriteCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addImageToFavorites)];
