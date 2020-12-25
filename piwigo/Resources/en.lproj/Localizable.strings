@@ -550,9 +550,9 @@
 "shareActivityCode_Other>375px" = "Share photos with other apps";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS / PHOTOS LIBRARY
+// ==> LOCAL ALBUMS / Photo Library
 // ===========================================================================
-"localAlbums" = "Photos library";
+"localAlbums" = "Photo Library";
 
 "localImageSort_newest" = "Newest";
 "localImageSort_oldest" = "Oldest";

@@ -813,7 +813,7 @@ class UploadManager: NSObject, URLSessionDelegate {
                         self.findNextImageToUpload()
                     }
                 } else {
-                    // Clean cache from completed uploads whose images do not exist in Photos Library
+                    // Clean cache from completed uploads whose images do not exist in Photo Library
                     self.uploadsProvider.clearCompletedUploads()
                     // Pursue the work
                     self.findNextImageToUpload()
