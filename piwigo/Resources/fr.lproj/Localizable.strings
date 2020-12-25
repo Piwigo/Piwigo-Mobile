@@ -356,7 +356,7 @@
 "selectImages" = "Sélectionnez";
 "selectImageSelected" = "1 photo";
 "selectImagesSelected" = "%@ photos";
-"selectAll" = "Tout";
+"selectAll" = "Tout Sélectionner";
 
 // Image rename (filename)
 "renameImage_title" = "Fichier d'origine";
