@@ -703,11 +703,13 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                         fetchOptions.predicate = NSPredicate(format: "localIdentifier == %@", imageId)
                         if let asset = PHAsset.fetchAssets(with: fetchOptions).firstObject {
                             let idx = fetchedImages.index(of: asset)
-                            indexedUploadsInQueue[idx] = uploadsInQueue[index]
-                        }
-                    }
-                }
-            }
+                            if idx != NSNotFound {
+                            	indexedUploadsInQueue[idx] = uploadsInQueue[index]
+							}
+						}
+					}
+				}
+        	}
         }
         let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
         print("   cached \(uploadsInQueue.count) images by iterating uploads in queue in \(diff) ms")
