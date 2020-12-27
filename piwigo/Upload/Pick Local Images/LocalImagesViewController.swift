@@ -257,6 +257,16 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Allow device to sleep
         UIApplication.shared.isIdleTimerDisabled = false
 
+        // Restart UploadManager activities
+        if UploadManager.shared.isPaused {
+            UploadManager.shared.isPaused = false
+            UploadManager.shared.backgroundQueue.async {
+                UploadManager.shared.findNextImageToUpload()
+            }
+        }
+    }
+    
+    deinit {
         // Unregister Photo Library changes
         PHPhotoLibrary.shared().unregisterChangeObserver(self)
 
@@ -267,14 +277,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Unregister upload progress
         let name2: NSNotification.Name = NSNotification.Name(kPiwigoNotificationUploadProgress)
         NotificationCenter.default.removeObserver(self, name: name2, object: nil)
-
-        // Restart UploadManager activities
-        if UploadManager.shared.isPaused {
-            UploadManager.shared.isPaused = false
-            UploadManager.shared.backgroundQueue.async {
-                UploadManager.shared.findNextImageToUpload()
-            }
-        }
     }
 
     func updateNavBar() {
