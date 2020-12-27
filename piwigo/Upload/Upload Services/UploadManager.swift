@@ -768,7 +768,7 @@ class UploadManager: NSObject, URLSessionDelegate {
     
     @objc func resumeAll() -> Void {
         // Reset flags
-        appState = .active
+        appState = .active; isPaused = false
         isPreparing = false; isFinishing = false
         isExecutingBackgroundUploadTask = false
         isUploading = Set<NSManagedObjectID>()
