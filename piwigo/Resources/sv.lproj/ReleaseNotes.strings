@@ -6,9 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.5.4_text" = "Version 2.5.4\n\n• Minor bug fixes and improvements of the interface";
+"v2.5.4_text" = "Version 2.5.4\n\n• Mindre buggfixar och förbättringar av gränssnittet";
 
-"v2.5.3_text" = "Version 2.5.3\n\n• Kontrollera vilka foton och videor Piwigo kan komma åt\n• Tips och tricks för att bättre utnyttja appen\n• Felrättelser";
+"v2.5.3_text" = "Version 2.5.3\n21 december 2020\n\n• Kontrollera vilka foton och videor Piwigo kan komma åt\n• Tips och tricks för att bättre utnyttja appen\n• Felrättelser";
 
 "v2.5.2_text" = "Version 2.5.2\n3 december 2020\n\n• Bakgrundsuppladdning (kräver uploadAsync-tillägg eller Piwigo 11 eller senare)\n• Mindre buggfixar och förbättringar av gränssnittet";
 

@@ -6,9 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.5.4_text" = "Version 2.5.4\n\n• Minor bug fixes and improvements of the interface";
+"v2.5.4_text" = "バージョン 2.5.4\n\n• 軽微なバグの修正とインタフェースの改善";
 
-"v2.5.3_text" = "バージョン 2.5.3\n\n• Piwigoがアクセスできる写真やビデオを制御する\n• アプリを悪用するためのヒントとトリック\n• バグ修正";
+"v2.5.3_text" = "バージョン 2.5.3\n2020年12月21日\n\n• Piwigoがアクセスできる写真やビデオを制御する\n• アプリを悪用するためのヒントとトリック\n• バグ修正";
 
 "v2.5.2_text" = "バージョン 2.5.2\n2020年12月3日\n\n• 背景のアップロード（uploadAsync拡張機能またはPiwigo 11以降が必要）\n• 軽微なバグの修正とインタフェースの改善";
 
