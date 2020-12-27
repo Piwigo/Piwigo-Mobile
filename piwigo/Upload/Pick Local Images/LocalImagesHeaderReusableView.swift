@@ -69,7 +69,7 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         setLabelsFromDatesAndLocation(location: location)
 
         // Select/deselect button
-        selectButton.layer.cornerRadius = 9.0
+        selectButton.layer.cornerRadius = 13.0
         setButtonTitle(for: selectState)
     }
 
