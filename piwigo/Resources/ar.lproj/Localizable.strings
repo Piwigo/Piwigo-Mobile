@@ -275,6 +275,7 @@
 "singleVideo" = "فيديو";
 "singleAudio" = "الصوت";
 "severalImages" = "الصور";
+"All Photos" = "All Photos";
 "severalVideos" = "Videos";
 "noImages" = "لا توجد صور";
 "pullToRefresh" = "إعادة تحميل الصور";
@@ -282,6 +283,7 @@
 "Months" = "Months";
 "Weeks" = "Weeks";
 "Days" = "Days";
+"Date" = "Date";
 
 // Errors
 "albumPhotoError_title" = "احصل على خطأ صور الألبوم";
@@ -550,14 +552,10 @@
 "shareActivityCode_Other>375px" = "Share photos with other apps";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS / Photo Library
+// ==> LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "Photo Library";
-
-"localImageSort_newest" = "الأحدث";
-"localImageSort_oldest" = "الأقدم";
-"localImageSort_notUploaded" = "لم يتم تحميلها";
-"localImageSort_undefined" = "غير محدد";
+"localAlbums_accessible" = "Accessible Photos";
 
 // Local albums — Access not Authorized
 "localAlbums_photosNotAuthorized_title" = "ممنوع الدخول";
@@ -566,6 +564,10 @@
 
 // Local albums — Tell user to change settings, how
 "localAlbums_photosNotAuthorized_msg" = "لا يمكن فتح مكتبة الصور المحلية. يرجى الدخول إلى إعدادات التطبيق، وتمكين الوصول ل Piwigo.";
+
+// Local images — Explain
+"localImages_deleteTitle" = "Remove from Camera Roll";
+"localImages_deleteMessage" = "Do you wish to delete the uploaded photos or videos from the camera roll? The deleted photos or videos will still be available in the iOS Photos Trash for 30 days.";
 
 // ===========================================================================
 // ==> SETTINGS

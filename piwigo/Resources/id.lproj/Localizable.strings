@@ -275,6 +275,7 @@
 "singleVideo" = "Video";
 "singleAudio" = "Audio";
 "severalImages" = "Gambar";
+"All Photos" = "All Photos";
 "severalVideos" = "Videos";
 "noImages" = "Tidak Ada Gambar";
 "pullToRefresh" = "Muat Ulang Gambar";
@@ -282,6 +283,7 @@
 "Months" = "Months";
 "Weeks" = "Weeks";
 "Days" = "Days";
+"Date" = "Date";
 
 // Errors
 "albumPhotoError_title" = "Galat dalam Mendapatkan Foto Album";
@@ -550,14 +552,10 @@
 "shareActivityCode_Other>375px" = "Share photos with other apps";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS / Photo Library
+// ==> LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "Galeri foto";
-
-"localImageSort_newest" = "Terbaru";
-"localImageSort_oldest" = "Terlama";
-"localImageSort_notUploaded" = "Tidak Diunggah";
-"localImageSort_undefined" = "Tidak Ditentukan";
+"localAlbums_accessible" = "Accessible Photos";
 
 // Local albums — Access not Authorized
 "localAlbums_photosNotAuthorized_title" = "Akses Ditolak";
@@ -566,6 +564,10 @@
 
 // Local albums — Tell user to change settings, how
 "localAlbums_photosNotAuthorized_msg" = "Tidak dapat membuka pustaka lokal foto. Silakan masuk ke Pengaturan aplikasi dan izinkan akses untuk Piwigo.";
+
+// Local images — Explain
+"localImages_deleteTitle" = "Remove from Camera Roll";
+"localImages_deleteMessage" = "Do you wish to delete the uploaded photos or videos from the camera roll? The deleted photos or videos will still be available in the iOS Photos Trash for 30 days.";
 
 // ===========================================================================
 // ==> SETTINGS

@@ -275,6 +275,7 @@
 "singleVideo" = "视频";
 "singleAudio" = "音频";
 "severalImages" = "照片";
+"All Photos" = "All Photos";
 "severalVideos" = "视频";
 "noImages" = "没有照片";
 "pullToRefresh" = "刷新照片";
@@ -282,6 +283,7 @@
 "Months" = "月";
 "Weeks" = "周";
 "Days" = "天";
+"Date" = "Date";
 
 // Errors
 "albumPhotoError_title" = "无法获取相册中的照片";
@@ -550,14 +552,10 @@
 "shareActivityCode_Other>375px" = "使用其他应用共享照片";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS / Photo Library
+// ==> LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "照片库";
-
-"localImageSort_newest" = "最新的";
-"localImageSort_oldest" = "最早的";
-"localImageSort_notUploaded" = "未上传的";
-"localImageSort_undefined" = "未定义的";
+"localAlbums_accessible" = "Accessible Photos";
 
 // Local albums — Access not Authorized
 "localAlbums_photosNotAuthorized_title" = "无访问权限";
@@ -566,6 +564,10 @@
 
 // Local albums — Tell user to change settings, how
 "localAlbums_photosNotAuthorized_msg" = "无法读取本地照片库，请进入设备设置菜单，为Piwigo授予相应权限";
+
+// Local images — Explain
+"localImages_deleteTitle" = "Remove from Camera Roll";
+"localImages_deleteMessage" = "Do you wish to delete the uploaded photos or videos from the camera roll? The deleted photos or videos will still be available in the iOS Photos Trash for 30 days.";
 
 // ===========================================================================
 // ==> SETTINGS

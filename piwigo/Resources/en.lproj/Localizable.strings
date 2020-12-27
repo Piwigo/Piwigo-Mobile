@@ -275,6 +275,7 @@
 "singleVideo" = "Video";
 "singleAudio" = "Audio";
 "severalImages" = "Photos";
+"All Photos" = "All Photos";
 "severalVideos" = "Videos";
 "noImages" = "No Photos";
 "pullToRefresh" = "Reload Photos";
@@ -282,6 +283,7 @@
 "Months" = "Months";
 "Weeks" = "Weeks";
 "Days" = "Days";
+"Date" = "Date";
 
 // Errors
 "albumPhotoError_title" = "Get Album Photos Error";

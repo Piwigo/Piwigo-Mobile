@@ -275,6 +275,7 @@
 "singleVideo" = "Video";
 "singleAudio" = "Audio";
 "severalImages" = "Fotos";
+"All Photos" = "All Photos";
 "severalVideos" = "Videos";
 "noImages" = "Keine Fotos";
 "pullToRefresh" = "Fotos erneut laden";
@@ -282,6 +283,7 @@
 "Months" = "Monate";
 "Weeks" = "Wochen";
 "Days" = "Tage";
+"Date" = "Date";
 
 // Errors
 "albumPhotoError_title" = "Fotofehler im Album";
@@ -550,14 +552,10 @@
 "shareActivityCode_Other>375px" = "Fotos mit anderen Apps teilen";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS / Photo Library
+// ==> LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "Foto-Bibliothek";
-
-"localImageSort_newest" = "Neueste";
-"localImageSort_oldest" = "Älteste";
-"localImageSort_notUploaded" = "Nicht hochgeladen";
-"localImageSort_undefined" = "Undefiniert";
+"localAlbums_accessible" = "Accessible Photos";
 
 // Local albums — Access not Authorized
 "localAlbums_photosNotAuthorized_title" = "Kein Zugriff";
@@ -566,6 +564,10 @@
 
 // Local albums — Tell user to change settings, how
 "localAlbums_photosNotAuthorized_msg" = "Konnte die lokale Foto Bibliothek nicht öffnen. Bitte gehen Sie in die Einstellungen und ermöglichen den Zugriff für Piwigo.";
+
+// Local images — Explain
+"localImages_deleteTitle" = "Remove from Camera Roll";
+"localImages_deleteMessage" = "Do you wish to delete the uploaded photos or videos from the camera roll? The deleted photos or videos will still be available in the iOS Photos Trash for 30 days.";
 
 // ===========================================================================
 // ==> SETTINGS

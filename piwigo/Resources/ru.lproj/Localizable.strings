@@ -275,6 +275,7 @@
 "singleVideo" = "Видео";
 "singleAudio" = "Аудио";
 "severalImages" = "Фото";
+"All Photos" = "All Photos";
 "severalVideos" = "Видео";
 "noImages" = "Нет фото";
 "pullToRefresh" = "Перезагрузить фотографии";
@@ -282,6 +283,7 @@
 "Months" = "Месяца(-ев)";
 "Weeks" = "неделя(-ль)";
 "Days" = "дней";
+"Date" = "Date";
 
 // Errors
 "albumPhotoError_title" = "Ошибка установки фотографий альбома";
@@ -550,14 +552,10 @@
 "shareActivityCode_Other>375px" = "Поделиться фотографиями с другими приложениями";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS / Photo Library
+// ==> LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "Библиотека фотографий";
-
-"localImageSort_newest" = "Новейшие";
-"localImageSort_oldest" = "Старейшие";
-"localImageSort_notUploaded" = "Не загружено";
-"localImageSort_undefined" = "Не определено";
+"localAlbums_accessible" = "Accessible Photos";
 
 // Local albums — Access not Authorized
 "localAlbums_photosNotAuthorized_title" = "Нет доступа";
@@ -566,6 +564,10 @@
 
 // Local albums — Tell user to change settings, how
 "localAlbums_photosNotAuthorized_msg" = "Невозможно открыть локальную библиотеку изображений. Пожалуйста, установите в \"Настройках\" право доступа для Piwigo.";
+
+// Local images — Explain
+"localImages_deleteTitle" = "Remove from Camera Roll";
+"localImages_deleteMessage" = "Do you wish to delete the uploaded photos or videos from the camera roll? The deleted photos or videos will still be available in the iOS Photos Trash for 30 days.";
 
 // ===========================================================================
 // ==> SETTINGS

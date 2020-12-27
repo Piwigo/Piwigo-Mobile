@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v2.5.4_text" = "Version 2.5.4\n\n• Minor bug fixes and improvements of the interface";
+
 "v2.5.3_text" = "Wersja 2.5.\n\n• Kontroluj, do których zdjęć i filmów Piwigo ma dostęp\n• Wskazówki i porady, aby lepiej wykorzystywać aplikację\n• Poprawki błędów";
 
 "v2.5.2_text" = "Wersja 2.5.2\n3 grudnia 2020\n\n• Przesyłanie w tle (wymaga rozszerzenia uploadAsync lub Piwigo 2.11 lub nowszego)\n• Poprawki drobnych błędów i ulepszenia interfejsu";
