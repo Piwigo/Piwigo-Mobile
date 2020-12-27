@@ -1342,7 +1342,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         self.updateNavBar()
 
         // Update collection
-        self.localImagesCollection.reloadData()
+        self.localImagesCollection.reloadSections(IndexSet.init(integer: section))
     }
 
 
