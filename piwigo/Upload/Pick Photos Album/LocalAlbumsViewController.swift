@@ -45,7 +45,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         
         // Button for selecting Photo Library items (.limited access mode)
         if #available(iOS 14.0, *) {
-            selectPhotoLibraryItemsButton = UIBarButtonItem(image: UIImage(systemName: "photo.on.rectangle.angled"), style: .plain, target: self, action: #selector(selectPhotoLibraryItems))
+            selectPhotoLibraryItemsButton = UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(selectPhotoLibraryItems))
         }
         
         // Button for returning to albums/images
