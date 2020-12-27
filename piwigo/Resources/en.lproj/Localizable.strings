@@ -553,7 +553,7 @@
 // ==> LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "Photo Library";
-"localAlbums_recents" = "Camera Roll";
+"localAlbums_accessible" = "Accessible Photos";
 
 // Local albums — Access not Authorized
 "localAlbums_photosNotAuthorized_title" = "No Access";
