@@ -275,7 +275,7 @@
 "singleVideo" = "Vidéo";
 "singleAudio" = "Audio";
 "severalImages" = "Photos";
-"All Photos" = "All Photos";
+"All Photos" = "Toutes les photos";
 "severalVideos" = "Vidéos";
 "noImages" = "Pas de photos";
 "pullToRefresh" = "Rechargement des photos";
@@ -555,7 +555,7 @@
 // ==> LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "Bibliothèque de Photos";
-"localAlbums_accessible" = "Accessible Photos";
+"localAlbums_accessible" = "Photos accessibles";
 
 // Local albums — Access not Authorized
 "localAlbums_photosNotAuthorized_title" = "Accès Refusé";
@@ -566,8 +566,8 @@
 "localAlbums_photosNotAuthorized_msg" = "Impossible d’ouvrir la photothèque locale. Allez dans l’application Réglages et activez l’accès pour Piwigo.";
 
 // Local images — Explain
-"localImages_deleteTitle" = "Remove from Camera Roll";
-"localImages_deleteMessage" = "Do you wish to delete the uploaded photos or videos from the camera roll? The deleted photos or videos will still be available in the iOS Photos Trash for 30 days.";
+"localImages_deleteTitle" = "Retirer de la pellicule";
+"localImages_deleteMessage" = "Voulez-vous supprimer les photos ou vidéos téléchargées de la pellicule ? Les photos ou vidéos supprimées seront toujours disponibles dans la corbeille de l'app Photos pendant 30 jours.";
 
 // ===========================================================================
 // ==> SETTINGS
