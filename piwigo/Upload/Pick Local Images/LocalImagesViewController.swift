@@ -883,7 +883,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
     
     // MARK: - Sort Images
-    
+    /// Icons used on iPhone and iPad on iOS 13 and earlier
     private func getSwapSortImage() -> UIImage {
         switch Model.sharedInstance()?.localImagesSort {
         case kPiwigoSortDateCreatedAscending:
@@ -903,6 +903,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         }
     }
 
+    /// Icons used on iPhone and iPad on iOS 13 and earlier
     private func getSwapSortCompactImage() -> UIImage {
         switch Model.sharedInstance()?.localImagesSort {
         case kPiwigoSortDateCreatedAscending:
@@ -925,9 +926,18 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     @available(iOS 14, *)
     private func getMenuForSorting() -> UIMenu {
         // Initialise menu items
-        let swapOrder = UIAction(title: NSLocalizedString("Date", comment: "Date"),
-                                 image: getSwapSortImage(),
-                                 handler: { _ in self.swapSortOrder()})
+        let swapOrder: UIAction!
+        switch Model.sharedInstance()?.localImagesSort {
+        case kPiwigoSortDateCreatedAscending:
+            swapOrder = UIAction(title: NSLocalizedString("Date", comment: "Date"),
+                                 image: UIImage(systemName: "arrow.up"), handler: { _ in self.swapSortOrder()})
+        case kPiwigoSortDateCreatedDescending:
+            swapOrder = UIAction(title: NSLocalizedString("Date", comment: "Date"),
+                                 image: UIImage(systemName: "arrow.down"), handler: { _ in self.swapSortOrder()})
+        default:
+            swapOrder = UIAction(title: NSLocalizedString("Date", comment: "Date"),
+                                 image: nil, handler: { _ in self.swapSortOrder()})
+        }
         let sortByDay = UIAction(title: NSLocalizedString("Days", comment: "Days"),
                                  image: UIImage(named: "imageDay"), handler: { _ in
             // Did select new sort option "Days"
