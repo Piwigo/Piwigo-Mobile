@@ -99,6 +99,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                                                         //  - for reversing the sort order
                                                         //  - for sorting by day, week or month (or not)
                                                         //  - for selecting images in the Photo Library
+    private var legendLabel = UILabel.init()            // Legend presented in the toolbar on iPhone/iOS 14+
 
     private var removeUploadedImages = false
     private var hudViewController: UIViewController?
@@ -161,7 +162,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             // Hide the segmented control
             sortOptionsView.isHidden = true
 
-            // Initialise buttons and segmented control
+            // Initialise buttons, toolbar and segmented control
             if UIDevice.current.userInterfaceIdiom == .pad {
                 // The action button proposes:
                 /// - to swap between ascending and descending sort orders,
@@ -184,6 +185,13 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                                                         getMenuForSelectingPhotos(),
                                                         getMenuForDeletingPhotos()].compactMap({$0}))
                 actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
+
+                // Presents the number of photos selected and the Upload button in the toolbar
+                navigationController?.isToolbarHidden = false
+                legendLabel.text = NSLocalizedString("selectImages", comment: "Select Photos")
+                legendLabel.tintColor = UIColor.piwigoColorOrange()
+                let legendBarItem = UIBarButtonItem.init(customView: legendLabel)
+                toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
             }
         } else {
             // Fallback on earlier versions.
@@ -239,8 +247,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
 
+        // Segmented control
         if #available(iOS 14, *) {
-            // NOP
+            // Toolbar
+            navigationController?.toolbar.barTintColor = UIColor.piwigoColorBackground()
+            navigationController?.toolbar.barStyle = Model.sharedInstance().isDarkPaletteActive ? .black : .default
         }
         else {
             // Fallback on earlier versions
@@ -344,9 +355,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         let nberOfSelectedImages = selectedImages.compactMap{ $0 }.count
         switch nberOfSelectedImages {
         case 0:
-            // Title
-            title = NSLocalizedString("selectImages", comment: "Select Photos")
-
             // Buttons
             cancelBarButton.isEnabled = false
             actionBarButton.isEnabled = (queue.operationCount == 0)
@@ -360,7 +368,15 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 if #available(iOS 14, *) {
                     // Presents a single action menu
                     navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
+                    
+                    // Present the "Upload" button in the toolbar
+                    legendLabel.text = NSLocalizedString("selectImages", comment: "Select Photos")
+                    let legendBarItem = UIBarButtonItem.init(customView: legendLabel)
+                    toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
                 } else {
+                    // Title
+                    title = NSLocalizedString("selectImages", comment: "Select Photos")
+
                     // Present buttons according to the context
                     if canDeleteUploadedImages() {
                         trashBarButton.isEnabled = true
@@ -378,9 +394,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             }
         
         default:
-            // Title
-            title = nberOfSelectedImages == 1 ? NSLocalizedString("selectImageSelected", comment: "1 Photo Selected") : String(format:NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), NSNumber(value: nberOfSelectedImages))
-
             // Buttons
             cancelBarButton.isEnabled = true
             actionBarButton.isEnabled = (queue.operationCount == 0)
@@ -391,13 +404,29 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
             // Set buttons on the right side on iPhone
             if UIDevice.current.userInterfaceIdiom == .phone {
-                // Presents a single action menu
-                navigationItem.rightBarButtonItems = [uploadBarButton].compactMap { $0 }
+                if #available(iOS 14, *) {
+                    // Update the number of selected photos in the toolbar
+                    legendLabel.text = nberOfSelectedImages == 1 ? NSLocalizedString("selectImageSelected", comment: "1 Photo Selected") : String(format:NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), NSNumber(value: nberOfSelectedImages))
+                    let legendBarItem = UIBarButtonItem.init(customView: legendLabel)
+                    toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
+
+                    // Presents a single action menu
+                    navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
+                } else {
+                    // Update the number of selected photos in the navigation bar
+                    title = nberOfSelectedImages == 1 ? NSLocalizedString("selectImageSelected", comment: "1 Photo Selected") : String(format:NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), NSNumber(value: nberOfSelectedImages))
+
+                    // Presents a single action menu
+                    navigationItem.rightBarButtonItems = [uploadBarButton].compactMap { $0 }
+                }
             }
         }
 
         // Set buttons on the right side on iPad
         if UIDevice.current.userInterfaceIdiom == .pad {
+            // Update the number of selected photos in the navigation bar
+            title = nberOfSelectedImages == 1 ? NSLocalizedString("selectImageSelected", comment: "1 Photo Selected") : String(format:NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), NSNumber(value: nberOfSelectedImages))
+
             if canDeleteUploadedImages() {
                 trashBarButton.isEnabled = true
                 navigationItem.rightBarButtonItems = [uploadBarButton,
@@ -492,6 +521,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 } else {
                     self.sortByMonthWeekDayAndUpdateSelection(images: self.fetchedImages)
                 }
+            } else {
+                self.selectedImages = []
+                self.selectedSections = []
             }
         })
         sortOperation.completionBlock = {
