@@ -202,7 +202,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             actionBarButton = UIBarButtonItem(image: getSwapSortImage(),
                                               landscapeImagePhone: getSwapSortCompactImage(),
                                               style: .plain, target: self, action: #selector(self.swapSortOrder))
-            actionBarButton.accessibilityIdentifier = "Sort"
             actionBarButton.isEnabled = false
 
             // The deletion of photos already uploaded to a Piwigo server is requested with this trash button.
@@ -223,7 +222,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             segmentedControl.superview?.layer.cornerRadius = segmentedControl.layer.cornerRadius
             segmentedControl.accessibilityIdentifier = "sort";
         }
-        
+        actionBarButton.accessibilityIdentifier = "Action"
+
         // Show images in upload queue by default
         removeUploadedImages = false
     }
@@ -938,6 +938,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             swapOrder = UIAction(title: NSLocalizedString("Date", comment: "Date"),
                                  image: nil, handler: { _ in self.swapSortOrder()})
         }
+        swapOrder.accessibilityIdentifier = "Date"
         let sortByDay = UIAction(title: NSLocalizedString("Days", comment: "Days"),
                                  image: UIImage(named: "imageDay"), handler: { _ in
             // Did select new sort option "Days"
@@ -949,6 +950,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 self.localImagesCollection.reloadData()
             }
         })
+        sortByDay.accessibilityIdentifier = "Days"
         let sortByWeek = UIAction(title: NSLocalizedString("Weeks", comment: "Weeks"),
                                   image: UIImage(named: "imageWeek"), handler: { _ in
             // Did select new sort option "Weeks""
@@ -960,6 +962,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 self.localImagesCollection.reloadData()
             }
         })
+        sortByWeek.accessibilityIdentifier = "Weeks"
         let sortByMonth = UIAction(title: NSLocalizedString("Months", comment: "Months"),
                                    image: UIImage(named: "imageMonth"), handler: { _ in
             // Did select new sort option "Months""
@@ -971,6 +974,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 self.localImagesCollection.reloadData()
             }
         })
+        sortByMonth.accessibilityIdentifier = "Months"
         let noSort = UIAction(title: NSLocalizedString("All Photos", comment: "All Photos"),
                               image: nil, handler: { _ in
             // Did select new sort option "All""
