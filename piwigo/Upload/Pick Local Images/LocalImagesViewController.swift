@@ -190,7 +190,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 // Presents the number of photos selected and the Upload button in the toolbar
                 navigationController?.isToolbarHidden = false
                 legendLabel.text = NSLocalizedString("selectImages", comment: "Select Photos")
-                legendLabel.tintColor = UIColor.piwigoColorOrange()
                 let legendBarItem = UIBarButtonItem.init(customView: legendLabel)
                 toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
             }
