@@ -275,7 +275,7 @@
 "singleVideo" = "Video";
 "singleAudio" = "Ljud";
 "severalImages" = "Bilder";
-"All Photos" = "All Photos";
+"All Photos" = "Alla foton";
 "severalVideos" = "Videor";
 "noImages" = "Inga bilder";
 "pullToRefresh" = "Ladda om bilderna";
@@ -283,7 +283,7 @@
 "Months" = "Månader";
 "Weeks" = "Veckor";
 "Days" = "Dagar";
-"Date" = "Date";
+"Date" = "Datum";
 
 // Errors
 "albumPhotoError_title" = "Hämta albumets bildfel";
@@ -555,7 +555,7 @@
 // ==> LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "Bildbibliotek";
-"localAlbums_accessible" = "Accessible Photos";
+"localAlbums_accessible" = "Tillgängliga foton";
 
 // Local albums — Access not Authorized
 "localAlbums_photosNotAuthorized_title" = "Ingen behörighet";
@@ -566,8 +566,8 @@
 "localAlbums_photosNotAuthorized_msg" = "Kan inte öppna det lokala bildbiblioteket. Gå in på appen Inställningar och aktivera åtkomst för Piwigo.";
 
 // Local images — Explain
-"localImages_deleteTitle" = "Remove from Camera Roll";
-"localImages_deleteMessage" = "Do you wish to delete the uploaded photos or videos from the camera roll? The deleted photos or videos will still be available in the iOS Photos Trash for 30 days.";
+"localImages_deleteTitle" = "Ta bort från kamerarullen";
+"localImages_deleteMessage" = "Vill du ta bort uppladdade foton eller videor från kamerarullen? De raderade bilderna eller videoklippen kommer fortfarande att finnas tillgängliga i iOS Bilder papperskorgen i 30 dagar.";
 
 // ===========================================================================
 // ==> SETTINGS

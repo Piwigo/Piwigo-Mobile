@@ -275,7 +275,7 @@
 "singleVideo" = "Video";
 "singleAudio" = "Audio";
 "severalImages" = "Immagini";
-"All Photos" = "All Photos";
+"All Photos" = "Tutte Le Foto";
 "severalVideos" = "Videos";
 "noImages" = "Nessuna immagine";
 "pullToRefresh" = "Carica immagini";
@@ -283,7 +283,7 @@
 "Months" = "Mesi";
 "Weeks" = "Settimane";
 "Days" = "Giorni";
-"Date" = "Date";
+"Date" = "Data";
 
 // Errors
 "albumPhotoError_title" = "Ottieni l'errore di foto dell'album";
@@ -555,7 +555,7 @@
 // ==> LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "Galleria foto";
-"localAlbums_accessible" = "Accessible Photos";
+"localAlbums_accessible" = "Foto Accessibili";
 
 // Local albums — Access not Authorized
 "localAlbums_photosNotAuthorized_title" = "Accesso negato";
@@ -566,8 +566,8 @@
 "localAlbums_photosNotAuthorized_msg" = "Impossibile aprire la libreria di foto locale. Accedi all'app Impostazioni e attiva l'accesso per Piwigo.";
 
 // Local images — Explain
-"localImages_deleteTitle" = "Remove from Camera Roll";
-"localImages_deleteMessage" = "Do you wish to delete the uploaded photos or videos from the camera roll? The deleted photos or videos will still be available in the iOS Photos Trash for 30 days.";
+"localImages_deleteTitle" = "Rimuovi dal rullo fotocamera";
+"localImages_deleteMessage" = "Vuoi eliminare le foto o i video caricati dal rullino della fotocamera? Le foto o i video eliminati saranno ancora disponibili nel cestino foto iOS per 30 giorni.";
 
 // ===========================================================================
 // ==> SETTINGS

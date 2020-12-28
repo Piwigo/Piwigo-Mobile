@@ -275,7 +275,7 @@
 "singleVideo" = "Video";
 "singleAudio" = "Audio";
 "severalImages" = "Foto's";
-"All Photos" = "All Photos";
+"All Photos" = "Alle foto's";
 "severalVideos" = "Video's";
 "noImages" = "Geen foto's";
 "pullToRefresh" = "Foto's opnieuw laden";
@@ -283,7 +283,7 @@
 "Months" = "Maanden";
 "Weeks" = "Weken";
 "Days" = "Dagen";
-"Date" = "Date";
+"Date" = "Datum";
 
 // Errors
 "albumPhotoError_title" = "Haal albumfoto's is mislukt";
@@ -555,7 +555,7 @@
 // ==> LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "Fotobibliotheek";
-"localAlbums_accessible" = "Accessible Photos";
+"localAlbums_accessible" = "Toegankelijke foto's";
 
 // Local albums — Access not Authorized
 "localAlbums_photosNotAuthorized_title" = "Geen toegang";
@@ -566,8 +566,8 @@
 "localAlbums_photosNotAuthorized_msg" = "Kan de lokale fotobibliotheek niet openen. Ga naar Instellingen en activeer Piwigo toegang.";
 
 // Local images — Explain
-"localImages_deleteTitle" = "Remove from Camera Roll";
-"localImages_deleteMessage" = "Do you wish to delete the uploaded photos or videos from the camera roll? The deleted photos or videos will still be available in the iOS Photos Trash for 30 days.";
+"localImages_deleteTitle" = "Verwijderen uit filmrol";
+"localImages_deleteMessage" = "Wilt u de geüploade foto's of video's van de filmrol verwijderen? De verwijderde foto's of video's zullen nog steeds 30 dagen beschikbaar zijn in de Foto's Prullenbak.";
 
 // ===========================================================================
 // ==> SETTINGS

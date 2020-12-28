@@ -275,7 +275,7 @@
 "singleVideo" = "動画";
 "singleAudio" = "音声";
 "severalImages" = "写真";
-"All Photos" = "All Photos";
+"All Photos" = "すべての写真";
 "severalVideos" = "ビデオ";
 "noImages" = "写真がありません";
 "pullToRefresh" = "写真の再読み込み";
@@ -283,7 +283,7 @@
 "Months" = "ヶ月間";
 "Weeks" = "週間";
 "Days" = "日間";
-"Date" = "Date";
+"Date" = "日付";
 
 // Errors
 "albumPhotoError_title" = "アルバム写真の取得エラー";
@@ -555,7 +555,7 @@
 // ==> LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "写真ライブラリ";
-"localAlbums_accessible" = "Accessible Photos";
+"localAlbums_accessible" = "アクセス可能な写真";
 
 // Local albums — Access not Authorized
 "localAlbums_photosNotAuthorized_title" = "アクセスなし";
@@ -566,8 +566,8 @@
 "localAlbums_photosNotAuthorized_msg" = "ローカル写真ライブラリを開けませんでした。設定アプリのプライバシー、写真を開いてPiwigoにアクセスを許可してください。";
 
 // Local images — Explain
-"localImages_deleteTitle" = "Remove from Camera Roll";
-"localImages_deleteMessage" = "Do you wish to delete the uploaded photos or videos from the camera roll? The deleted photos or videos will still be available in the iOS Photos Trash for 30 days.";
+"localImages_deleteTitle" = "カメラロールから削除";
+"localImages_deleteMessage" = "アップロードした写真や動画をカメラロールから削除しますか？ 削除された写真やビデオは、iOSの写真のゴミ箱で30日間利用可能になります。";
 
 // ===========================================================================
 // ==> SETTINGS
