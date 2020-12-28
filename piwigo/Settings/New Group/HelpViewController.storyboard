@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -191,15 +191,15 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" image="help02-top" translatesAutoresizingMaskIntoConstraints="NO" id="td4-F8-5Eo">
-                                <rect key="frame" x="77" y="39.333333333333343" width="274" height="360"/>
+                                <rect key="frame" x="44" y="39.333333333333343" width="340" height="360"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" secondItem="td4-F8-5Eo" secondAttribute="height" multiplier="1370:1800" id="kAr-A0-aPV"/>
+                                    <constraint firstAttribute="width" secondItem="td4-F8-5Eo" secondAttribute="height" multiplier="13700:14506" id="kAr-A0-aPV"/>
                                 </constraints>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" image="help02-bot" translatesAutoresizingMaskIntoConstraints="NO" id="ohK-97-rdx">
-                                <rect key="frame" x="77" y="752" width="274" height="120"/>
+                                <rect key="frame" x="44" y="752" width="340" height="120"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" secondItem="ohK-97-rdx" secondAttribute="height" multiplier="1370:600" id="FGp-Mb-oV0"/>
+                                    <constraint firstAttribute="width" secondItem="ohK-97-rdx" secondAttribute="height" multiplier="13700:4835" id="FGp-Mb-oV0"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="legendBot" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2RD-k5-pvP">
@@ -237,12 +237,58 @@
             </objects>
             <point key="canvasLocation" x="1208.4112149532709" y="-612.31101511879058"/>
         </scene>
+        <!--Help04 View Controller-->
+        <scene sceneID="uMX-Gh-rVa">
+            <objects>
+                <viewController storyboardIdentifier="help04" useStoryboardIdentifierAsRestorationIdentifier="YES" id="VGV-yb-lKK" customClass="Help04ViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" id="j2I-3A-AD5">
+                        <rect key="frame" x="0.0" y="0.0" width="428" height="872"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="1000" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zhb-FF-P3o" userLabel="HELP #3">
+                                <rect key="frame" x="30" y="0.0" width="368" height="23.333333333333332"/>
+                                <attributedString key="attributedText">
+                                    <fragment content="legend">
+                                        <attributes>
+                                            <font key="NSFont" size="17" name="OpenSans"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" image="help04" translatesAutoresizingMaskIntoConstraints="NO" id="cz8-At-lX0">
+                                <rect key="frame" x="0.0" y="39.333333333333314" width="428" height="832.66666666666674"/>
+                            </imageView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="7Ot-jA-MMS"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="Zhb-FF-P3o" firstAttribute="top" secondItem="j2I-3A-AD5" secondAttribute="top" id="0B1-Qu-VRQ"/>
+                            <constraint firstItem="cz8-At-lX0" firstAttribute="trailing" secondItem="j2I-3A-AD5" secondAttribute="trailing" id="1sh-WJ-JCW"/>
+                            <constraint firstItem="Zhb-FF-P3o" firstAttribute="leading" secondItem="j2I-3A-AD5" secondAttribute="leading" constant="30" id="AWQ-L9-ZkH"/>
+                            <constraint firstItem="cz8-At-lX0" firstAttribute="bottom" secondItem="j2I-3A-AD5" secondAttribute="bottom" id="RrC-Mc-KnN"/>
+                            <constraint firstItem="cz8-At-lX0" firstAttribute="leading" secondItem="j2I-3A-AD5" secondAttribute="leading" id="glf-wc-jEL"/>
+                            <constraint firstItem="cz8-At-lX0" firstAttribute="top" secondItem="Zhb-FF-P3o" secondAttribute="bottom" constant="16" id="iNn-yi-3Q3"/>
+                            <constraint firstItem="Zhb-FF-P3o" firstAttribute="trailing" secondItem="j2I-3A-AD5" secondAttribute="trailing" constant="-30" id="kwB-4Q-1Up"/>
+                        </constraints>
+                    </view>
+                    <modalPageSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <connections>
+                        <outlet property="legend" destination="Zhb-FF-P3o" id="06Z-5y-pA9"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dci-bb-thf" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2525" y="-612"/>
+        </scene>
     </scenes>
     <resources>
         <image name="help01" width="229.66667175292969" height="455"/>
         <image name="help02-bot" width="340" height="120"/>
-        <image name="help02-top" width="340" height="360"/>
+        <image name="help02-top" width="340" height="446.66665649414062"/>
         <image name="help03" width="229.66667175292969" height="455"/>
+        <image name="help04" width="229.66667175292969" height="455"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

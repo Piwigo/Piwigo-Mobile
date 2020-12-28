@@ -85,6 +85,7 @@
 		AD82C0482433D1A200F774BA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CC01A67820A000E47CA /* main.m */; };
 		AD82C04C2433DB0E00F774BA /* SelectPrivacyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD82C04A2433D71C00F774BA /* SelectPrivacyViewController.swift */; };
 		AD84E60523BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD84E60423BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib */; };
+		AD8709AB259A8E66008C4E4C /* Help04ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8709AA259A8E66008C4E4C /* Help04ViewController.swift */; };
 		AD870CD71F54AE110015BFA1 /* ImagesCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = AD870CD61F54AE110015BFA1 /* ImagesCollection.m */; };
 		AD8A4521247714EF002360EA /* UploadImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8A4520247714EF002360EA /* UploadImage.swift */; };
 		AD8A452324771618002360EA /* UploadTransfer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8A452224771618002360EA /* UploadTransfer.swift */; };
@@ -315,7 +316,7 @@
 		AD5F64F124C6088600660BE3 /* pwg.tags.getList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pwg.tags.getList.json; sourceTree = "<group>"; };
 		AD5F64F324C6091500660BE3 /* pwg.tags.getAdminList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pwg.tags.getAdminList.json; sourceTree = "<group>"; };
 		AD5FCE2122EC629D00F37B1E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		AD61D2F92571555A00B8DEA0 /* HelpViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = HelpViewController.storyboard; sourceTree = "<group>"; };
+		AD61D2F92571555A00B8DEA0 /* HelpViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = HelpViewController.storyboard; path = "../New Group/HelpViewController.storyboard"; sourceTree = "<group>"; };
 		AD61D3132571598000B8DEA0 /* HelpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpViewController.swift; sourceTree = "<group>"; };
 		AD6A128A24FAB56A00E3BBED /* pwg.images.uploadAsync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.images.uploadAsync.swift; sourceTree = "<group>"; };
 		AD6B2E791F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -349,6 +350,7 @@
 		AD8549331FE98CE300155BA1 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
 		AD8549341FE98CE300155BA1 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/AppStore.strings; sourceTree = "<group>"; };
 		AD8549351FE98CE300155BA1 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		AD8709AA259A8E66008C4E4C /* Help04ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help04ViewController.swift; sourceTree = "<group>"; };
 		AD870CD61F54AE110015BFA1 /* ImagesCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagesCollection.m; sourceTree = "<group>"; };
 		AD870CD81F54AE230015BFA1 /* ImagesCollection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImagesCollection.h; sourceTree = "<group>"; };
 		AD8A4520247714EF002360EA /* UploadImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadImage.swift; sourceTree = "<group>"; };
@@ -793,6 +795,19 @@
 			path = "Pick Photos Album";
 			sourceTree = "<group>";
 		};
+		AD8709B0259A8F83008C4E4C /* Help */ = {
+			isa = PBXGroup;
+			children = (
+				AD61D3132571598000B8DEA0 /* HelpViewController.swift */,
+				ADE4C23325755E660060A203 /* Help01ViewController.swift */,
+				ADE4C23D25756BC80060A203 /* Help02ViewController.swift */,
+				ADE4C22525754B420060A203 /* Help03ViewController.swift */,
+				AD8709AA259A8E66008C4E4C /* Help04ViewController.swift */,
+				AD61D2F92571555A00B8DEA0 /* HelpViewController.storyboard */,
+			);
+			path = Help;
+			sourceTree = "<group>";
+		};
 		AD8A451F247713A0002360EA /* Upload Services */ = {
 			isa = PBXGroup;
 			children = (
@@ -888,11 +903,6 @@
 				ADE46683242F978E002FEDE5 /* AboutViewController.storyboard */,
 				ADFC3A4B2401D704004CD337 /* PrivacyPolicyViewController.swift */,
 				AD3207E8240AD93900F00FEB /* PrivacyPolicyViewController.storyboard */,
-				AD61D3132571598000B8DEA0 /* HelpViewController.swift */,
-				ADE4C23325755E660060A203 /* Help01ViewController.swift */,
-				ADE4C23D25756BC80060A203 /* Help02ViewController.swift */,
-				ADE4C22525754B420060A203 /* Help03ViewController.swift */,
-				AD61D2F92571555A00B8DEA0 /* HelpViewController.storyboard */,
 			);
 			path = Information;
 			sourceTree = "<group>";
@@ -1224,6 +1234,7 @@
 				ADD714512301E0B000A1B7B2 /* Images */,
 				ADD714532301E10300A1B7B2 /* Upload */,
 				ADD714552301E1C600A1B7B2 /* Information */,
+				AD8709B0259A8F83008C4E4C /* Help */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -1717,6 +1728,7 @@
 				D82B8D331A688E8F000E47CA /* ImageDetailViewController.m in Sources */,
 				D8E4D6211ABE34DF0057EB95 /* LoginNavigationController.m in Sources */,
 				ADAA57D122DD00B700EB4EAA /* DiscoverImagesViewController.m in Sources */,
+				AD8709AB259A8E66008C4E4C /* Help04ViewController.swift in Sources */,
 				ADC80E4B23BDD2DD003A6960 /* EditImageThumbTableViewCell.m in Sources */,
 				D88A685B1AC2323D002A3259 /* CategoryTableViewCell.m in Sources */,
 				D8D3F7241A785E1B00AEA7F1 /* ImageCollectionViewCell.m in Sources */,

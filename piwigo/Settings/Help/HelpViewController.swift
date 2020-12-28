@@ -15,8 +15,9 @@ class HelpViewController: UIViewController {
     @IBOutlet weak var closeButton: UIButton!
     
     @objc var onlyWhatsNew = false
+    // Update this list after deleting/creating Help##ViewControllers
+    private let indexesOfPagesInOrder = [0,1,3,2]
     private var pages = [UIViewController]()
-    private var pageCount: Int = 3    // Update this value after deleting/creating Help##ViewControllers
     private var pageViewController: UIPageViewController?
     private var pendingIndex: Int?
     private var pageDisplayed: Int = 0
@@ -34,7 +35,7 @@ class HelpViewController: UIViewController {
         
         // Initialise all pages
         let didWatchHelpViews = Model.sharedInstance()?.didWatchHelpViews ?? 0
-        for i in 0 ..< pageCount {
+        for i in indexesOfPagesInOrder {
             // Loop over the storyboards
             let pageIDstr = String(format: "help%02ld", i+1)
             let pageID: UInt16 = UInt16(pow(2.0, Float(i)))
