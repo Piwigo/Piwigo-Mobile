@@ -90,7 +90,12 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
         self.shareBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(shareImage)];
         self.shareBarButton.tintColor = [UIColor piwigoColorOrange];
         [self.shareBarButton setAccessibilityIdentifier:@"share"];
-        self.setThumbnailBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imagePaperclip"] landscapeImagePhone:[UIImage imageNamed:@"imagePaperclipCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(setAsAlbumImage)];
+        if (@available(iOS 13.0, *)) {
+            self.setThumbnailBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage systemImageNamed:@"rectangle.and.paperclip"] style:UIBarButtonItemStylePlain target:self action:@selector(setAsAlbumImage)];
+        } else {
+            // Fallback on earlier versions
+            self.setThumbnailBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imagePaperclip"] landscapeImagePhone:[UIImage imageNamed:@"imagePaperclipCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(setAsAlbumImage)];
+        }
         self.setThumbnailBarButton.tintColor = [UIColor piwigoColorOrange];
         [self.setThumbnailBarButton setAccessibilityIdentifier:@"albumThumbnail"];
         self.moveBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply target:self action:@selector(addImageToCategory)];
@@ -237,7 +242,12 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     self.shareBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(shareImage)];
     self.shareBarButton.tintColor = [UIColor piwigoColorOrange];
     [self.shareBarButton setAccessibilityIdentifier:@"share"];
-    self.setThumbnailBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imagePaperclip"] landscapeImagePhone:[UIImage imageNamed:@"imagePaperclipCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(setAsAlbumImage)];
+    if (@available(iOS 13.0, *)) {
+        self.setThumbnailBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage systemImageNamed:@"rectangle.and.paperclip"] style:UIBarButtonItemStylePlain target:self action:@selector(setAsAlbumImage)];
+    } else {
+        // Fallback on earlier versions
+        self.setThumbnailBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imagePaperclip"] landscapeImagePhone:[UIImage imageNamed:@"imagePaperclipCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(setAsAlbumImage)];
+    }
     self.setThumbnailBarButton.tintColor = [UIColor piwigoColorOrange];
     [self.setThumbnailBarButton setAccessibilityIdentifier:@"albumThumbnail"];
     self.moveBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply target:self action:@selector(addImageToCategory)];
