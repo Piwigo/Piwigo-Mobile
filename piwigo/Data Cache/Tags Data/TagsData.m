@@ -128,7 +128,11 @@
         // id, lastmodified, name e.g. "Médicaments", (url_name) e.g. "divers_medicaments"
         PiwigoTagData *newTagData = [PiwigoTagData new];
         newTagData.tagId = [[tagData objectForKey:@"id"] integerValue];
-        newTagData.tagName = [NetworkHandler UTF8EncodedStringFromString:[tagData objectForKey:@"name"]];
+        if (![[tagData objectForKey:@"name"] isKindOfClass:[NSNull class]]) {
+            newTagData.tagName = [NetworkUtilities utf8mb4StringFrom:[tagData objectForKey:@"name"]];
+        } else {
+            newTagData.tagName = @"";
+        }
         NSDateFormatter *dateFormat = [NSDateFormatter new];
         [dateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
         NSString *lastModifiedString = [tagData objectForKey:@"lastmodified"];
