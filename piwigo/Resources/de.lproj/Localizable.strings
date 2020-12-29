@@ -719,3 +719,4 @@
 "help02_text3" = "(erfordert die UploadAsync-Erweiterung oder Piwigo 11)";
 "help03_header" = "Administratoren";
 "help03_text" = "Alben erstellen, löschen, verschieben und umbenennen.";
+"help04_text" = "Hochgeladene Fotos, die aus der Kamerarolle entfernt werden, bleiben 30 Tage lang im Papierkorb von iOS Fotos verfügbar.";

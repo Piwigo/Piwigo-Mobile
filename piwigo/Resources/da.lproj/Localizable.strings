@@ -719,3 +719,4 @@
 "help02_text3" = "(kræver uploadAsync udvidelsen eller Piwigo 11)";
 "help03_header" = "Administratorer";
 "help03_text" = "Opret, slet, flyt og omdøb albummer.";
+"help04_text" = "Uploadede fotos fjernet fra kameravullen forbliver tilgængelig i iOS Billeder papirkurven i 30 dage.";

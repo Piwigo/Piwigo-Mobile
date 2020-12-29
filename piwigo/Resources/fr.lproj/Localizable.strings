@@ -719,3 +719,4 @@
 "help02_text3" = "(nécessite l'extension uploadAsync ou Piwigo 11)";
 "help03_header" = "Administrateurs";
 "help03_text" = "Créer, supprimer, déplacer et renommer des albums.";
+"help04_text" = "Les photos téléchargées retirées de la pellicule restent disponibles dans la corbeille de l'app iOS Photos pendant 30 jours.";

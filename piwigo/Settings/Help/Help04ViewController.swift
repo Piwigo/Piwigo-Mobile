@@ -27,7 +27,7 @@ class Help04ViewController: UIViewController {
         legendAttributedString.append(titleAttributedString)
 
         // Text
-        let textString = NSLocalizedString("localImages_deleteMessage", comment: "Message explaining what happens")
+        let textString = NSLocalizedString("help04_text", comment: "Message explaining what happens")
         let textAttributedString = NSMutableAttributedString(string: textString)
         textAttributedString.addAttribute(.font, value: view.bounds.size.width > 320 ? UIFont.piwigoFontNormal() : UIFont.piwigoFontSmall(), range: NSRange(location: 0, length: textString.count))
         legendAttributedString.append(textAttributedString)

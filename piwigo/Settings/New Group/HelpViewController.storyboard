@@ -286,7 +286,7 @@
     <resources>
         <image name="help01" width="229.66667175292969" height="455"/>
         <image name="help02-bot" width="340" height="120"/>
-        <image name="help02-top" width="340" height="446.66665649414062"/>
+        <image name="help02-top" width="340" height="360"/>
         <image name="help03" width="229.66667175292969" height="455"/>
         <image name="help04" width="229.66667175292969" height="455"/>
         <systemColor name="systemBackgroundColor">

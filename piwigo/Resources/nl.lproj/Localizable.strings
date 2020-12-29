@@ -719,3 +719,4 @@
 "help02_text3" = "(vereist de uploadAsync extensie of Piwigo 11)";
 "help03_header" = "Beheerders";
 "help03_text" = "Maak, verwijder, verplaats en hernoem albums.";
+"help04_text" = "Geüploade foto's verwijderd van de camerarol blijven 30 dagen beschikbaar in de iOS Foto's prullenbak.";

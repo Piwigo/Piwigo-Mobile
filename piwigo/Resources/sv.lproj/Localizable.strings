@@ -719,3 +719,4 @@
 "help02_text3" = "(kräver tillägget uploadAsync eller Piwigo 11)";
 "help03_header" = "Administratörer";
 "help03_text" = "Skapa, ta bort, flytta och döpa om album.";
+"help04_text" = "Uppladdade foton borttagna från kamerarullen är fortfarande tillgängliga i iOS Bilder papperskorgen i 30 dagar.";

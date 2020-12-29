@@ -719,3 +719,4 @@
 "help02_text3" = "(需要 uploadAsync 扩展或 Piwigo 11)";
 "help03_header" = "管理员";
 "help03_text" = "创建、删除、移动和重命名相册。";
+"help04_text" = "从相机卷中删除的上传照片仍可在 iOS 照片回收站中使用30天。";

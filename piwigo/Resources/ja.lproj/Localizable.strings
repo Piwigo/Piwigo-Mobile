@@ -719,3 +719,4 @@
 "help02_text3" = "(uploadAsyncエクステンションまたはPiwigo11が必要です)";
 "help03_header" = "管理者";
 "help03_text" = "アルバムを作成、削除、移動、名前変更します。";
+"help04_text" = "カメラロールから削除された写真は、iOS Photosのゴミ箱に30日間保存されます。";

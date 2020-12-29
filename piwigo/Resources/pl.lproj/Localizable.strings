@@ -719,3 +719,4 @@
 "help02_text3" = "(wymaga rozszerzenia uploadAsync lub Piwigo 11)";
 "help03_header" = "Administratorzy";
 "help03_text" = "Tworzenie, usuwanie, przesuwanie i zmiana nazwy albumów.";
+"help04_text" = "Przesłane zdjęcia usunięte z rolki aparatu pozostają dostępne w koszu zdjęć iOS przez 30 dni.";

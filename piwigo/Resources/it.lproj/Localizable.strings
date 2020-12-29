@@ -719,3 +719,4 @@
 "help02_text3" = "(richiede l'estensione uploadAsync o Piwigo 11)";
 "help03_header" = "Amministratori";
 "help03_text" = "Creare, eliminare, spostare e rinominare gli album.";
+"help04_text" = "Le foto caricate rimosse dal rullo della fotocamera rimangono disponibili nel cestino foto iOS per 30 giorni.";

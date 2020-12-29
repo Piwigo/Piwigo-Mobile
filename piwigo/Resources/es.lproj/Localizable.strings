@@ -719,3 +719,4 @@
 "help02_text3" = "(requiere la extensión uploadAsync o Piwigo 11)";
 "help03_header" = "Administradores";
 "help03_text" = "Crear, eliminar, mover y renombrar álbumes.";
+"help04_text" = "Las fotos subidas eliminadas del rollo de la cámara permanecen disponibles en la papelera iOS Photos durante 30 días.";
