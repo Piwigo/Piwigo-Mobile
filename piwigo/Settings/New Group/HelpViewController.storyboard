@@ -282,6 +282,73 @@
             </objects>
             <point key="canvasLocation" x="2525" y="-612"/>
         </scene>
+        <!--Help05 View Controller-->
+        <scene sceneID="0MC-Mw-Df1">
+            <objects>
+                <viewController storyboardIdentifier="help05" useStoryboardIdentifierAsRestorationIdentifier="YES" id="2Hv-Mu-PEH" customClass="Help05ViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" id="DUM-Ph-jeJ">
+                        <rect key="frame" x="0.0" y="0.0" width="428" height="872"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" preservesSuperviewLayoutMargins="YES" usesAttributedText="YES" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ubK-e5-1Rt">
+                                <rect key="frame" x="20" y="0.0" width="388" height="23.333333333333332"/>
+                                <attributedString key="attributedText">
+                                    <fragment content="legend top">
+                                        <attributes>
+                                            <font key="NSFont" size="17" name="OpenSans"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" image="help05-top" translatesAutoresizingMaskIntoConstraints="NO" id="Qc7-uf-mw7">
+                                <rect key="frame" x="44" y="39.333333333333343" width="340" height="360"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="Qc7-uf-mw7" secondAttribute="height" multiplier="13700:14506" id="zPg-KV-Sqa"/>
+                                </constraints>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" image="help05-bot" translatesAutoresizingMaskIntoConstraints="NO" id="l3h-Mi-qdc">
+                                <rect key="frame" x="44" y="752" width="340" height="120"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="l3h-Mi-qdc" secondAttribute="height" multiplier="13700:4835" id="dPo-ba-w5M"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="legendBot" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MCO-fs-FAJ">
+                                <rect key="frame" x="20" y="407.33333333333326" width="388" height="336.66666666666674"/>
+                                <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="Ji8-QI-AJt"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="Qc7-uf-mw7" firstAttribute="top" secondItem="ubK-e5-1Rt" secondAttribute="bottom" constant="16" id="2YO-bt-XIU"/>
+                            <constraint firstItem="MCO-fs-FAJ" firstAttribute="trailing" secondItem="ubK-e5-1Rt" secondAttribute="trailing" id="5q3-qY-Rm4"/>
+                            <constraint firstAttribute="trailing" secondItem="ubK-e5-1Rt" secondAttribute="trailing" constant="20" id="9zU-Ft-F1H"/>
+                            <constraint firstItem="Qc7-uf-mw7" firstAttribute="centerX" secondItem="DUM-Ph-jeJ" secondAttribute="centerX" id="LQX-uM-KeC"/>
+                            <constraint firstItem="l3h-Mi-qdc" firstAttribute="trailing" secondItem="Qc7-uf-mw7" secondAttribute="trailing" id="MVP-8d-pTa"/>
+                            <constraint firstItem="l3h-Mi-qdc" firstAttribute="top" secondItem="MCO-fs-FAJ" secondAttribute="bottom" constant="8" symbolic="YES" id="UyW-bm-qVM"/>
+                            <constraint firstAttribute="bottom" secondItem="l3h-Mi-qdc" secondAttribute="bottom" id="VhD-zb-2Sd"/>
+                            <constraint firstItem="ubK-e5-1Rt" firstAttribute="leading" secondItem="DUM-Ph-jeJ" secondAttribute="leading" constant="20" id="bTV-Na-9Hi"/>
+                            <constraint firstItem="Qc7-uf-mw7" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="DUM-Ph-jeJ" secondAttribute="leading" id="cQd-tW-SUy"/>
+                            <constraint firstItem="ubK-e5-1Rt" firstAttribute="top" secondItem="DUM-Ph-jeJ" secondAttribute="top" id="mAB-aH-FRe"/>
+                            <constraint firstItem="l3h-Mi-qdc" firstAttribute="leading" secondItem="Qc7-uf-mw7" secondAttribute="leading" id="prf-eG-6bm"/>
+                            <constraint firstItem="MCO-fs-FAJ" firstAttribute="top" secondItem="Qc7-uf-mw7" secondAttribute="bottom" constant="8" symbolic="YES" id="sGn-I5-TNy"/>
+                            <constraint firstItem="MCO-fs-FAJ" firstAttribute="leading" secondItem="ubK-e5-1Rt" secondAttribute="leading" id="zm3-sq-vY5"/>
+                        </constraints>
+                    </view>
+                    <modalPageSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <connections>
+                        <outlet property="legendBot" destination="MCO-fs-FAJ" id="iX9-0Y-2dz"/>
+                        <outlet property="legendTop" destination="ubK-e5-1Rt" id="vC5-wP-yVu"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="aJQ-Aa-rI9" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3185" y="-612"/>
+        </scene>
     </scenes>
     <resources>
         <image name="help01" width="229.66667175292969" height="455"/>
@@ -289,6 +356,8 @@
         <image name="help02-top" width="340" height="360"/>
         <image name="help03" width="229.66667175292969" height="455"/>
         <image name="help04" width="229.66667175292969" height="455"/>
+        <image name="help05-bot" width="340" height="119.66666412353516"/>
+        <image name="help05-top" width="340" height="360"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
