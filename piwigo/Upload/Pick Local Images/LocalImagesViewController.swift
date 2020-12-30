@@ -491,7 +491,15 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         fetchOptions.includeHiddenAssets = false
         fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
 
+        // Fetch image collection
         let assetCollections = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [self.imageCollectionId], options: nil)
+        
+        // Display album name on iPhone as from iOS 14
+        if #available(iOS 14.0, *), UIDevice.current.userInterfaceIdiom == .phone {
+            title = assetCollections.firstObject!.localizedTitle
+        }
+        
+        // Fetch images in album
         fetchedImages = PHAsset.fetchAssets(in: assetCollections.firstObject!, options: fetchOptions)
 
         // Next 2 lines for testing
