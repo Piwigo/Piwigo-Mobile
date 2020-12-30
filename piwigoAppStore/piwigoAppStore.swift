@@ -486,7 +486,7 @@ class piwigoAppStore: XCTestCase {
         // Screenshot #10: settings
         app.navigationBars["UploadSwitchView"].buttons["Cancel"].tap()
         let localimagesnavNavigationBar = app.navigationBars["LocalImagesNav"]
-        localimagesnavNavigationBar.buttons.element(boundBy: 0).tap()        
+        localimagesnavNavigationBar.buttons.element(boundBy: 0).tap()
         sleep(1)                        // Leave time for animation
         localimagesnavNavigationBar.buttons.element(boundBy: 0).tap()
         app.navigationBars["LocalAlbumsNav"].buttons["Cancel"].tap()

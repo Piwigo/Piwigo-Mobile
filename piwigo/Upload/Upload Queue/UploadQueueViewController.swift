@@ -198,7 +198,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in })
         alert.addAction(cancelAction)
 
-        // Resume uploads
+        // Resume upload requests in section 2 (preparingError, uploadingError, finishingError)
         if let _ = diffableDataSource.snapshot().indexOfSection(SectionKeys.Section2.rawValue) {
             let failedUploads = diffableDataSource.snapshot().numberOfItems(inSection: SectionKeys.Section2.rawValue)
             if failedUploads > 0 {
@@ -234,7 +234,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
             }
         }
 
-        // Clear impossible uploads
+        // Clear impossible upload request in section 1 (preparingFail, formatError)
         if let _ = diffableDataSource.snapshot().indexOfSection(SectionKeys.Section1.rawValue) {
             let impossibleUploads = diffableDataSource.snapshot().numberOfItems(inSection: SectionKeys.Section1.rawValue)
             if impossibleUploads > 0 {

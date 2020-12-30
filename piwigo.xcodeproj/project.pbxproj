@@ -865,10 +865,10 @@
 		ADC019722471A6D500532A81 /* Upload Queue */ = {
 			isa = PBXGroup;
 			children = (
+				AD5B498024E5C02300BDF5B4 /* UploadQueueViewController.swift */,
 				AD9A1BE724E04F0000D22C86 /* UploadQueueHeaderView.swift */,
 				AD58F77E24EFC62F00ECF6BD /* UploadImageHeaderView.swift */,
 				ADC019752471AA5200532A81 /* UploadImageTableViewCell.swift */,
-				AD5B498024E5C02300BDF5B4 /* UploadQueueViewController.swift */,
 				ADC019732471A70F00532A81 /* UploadQueueViewController.storyboard */,
 				ADC019772471ABA000532A81 /* UploadQueueViewControllerOld.swift */,
 				AD5B498624E6FCF000BDF5B4 /* UploadQueueViewControllerOld.storyboard */,
