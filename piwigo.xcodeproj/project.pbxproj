@@ -121,6 +121,7 @@
 		ADC3280B2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC3280A2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift */; };
 		ADC709C525115943009CA711 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC709C425115943009CA711 /* SceneDelegate.swift */; };
 		ADC74CB2259BDE7600581ADE /* NetworkUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC74CB1259BDE7600581ADE /* NetworkUtilities.swift */; };
+		ADC74CCE259C9E9C00581ADE /* Help05ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC74CCD259C9E9C00581ADE /* Help05ViewController.swift */; };
 		ADC80E4823BDCBAA003A6960 /* EditImageThumbCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADC80E4723BDCBAA003A6960 /* EditImageThumbCollectionViewCell.xib */; };
 		ADC80E4B23BDD2DD003A6960 /* EditImageThumbTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ADC80E4A23BDD2DD003A6960 /* EditImageThumbTableViewCell.m */; };
 		ADC8167B244B5EDE00650223 /* LocalImagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC8167A244B5EDE00650223 /* LocalImagesViewController.swift */; };
@@ -416,6 +417,7 @@
 		ADC3280A2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAlbumsMoreTableViewCell.swift; sourceTree = "<group>"; };
 		ADC709C425115943009CA711 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		ADC74CB1259BDE7600581ADE /* NetworkUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkUtilities.swift; sourceTree = "<group>"; };
+		ADC74CCD259C9E9C00581ADE /* Help05ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help05ViewController.swift; sourceTree = "<group>"; };
 		ADC80E4723BDCBAA003A6960 /* EditImageThumbCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EditImageThumbCollectionViewCell.xib; sourceTree = "<group>"; };
 		ADC80E4923BDD2D0003A6960 /* EditImageThumbTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EditImageThumbTableViewCell.h; sourceTree = "<group>"; };
 		ADC80E4A23BDD2DD003A6960 /* EditImageThumbTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EditImageThumbTableViewCell.m; sourceTree = "<group>"; };
@@ -805,6 +807,7 @@
 				ADE4C23D25756BC80060A203 /* Help02ViewController.swift */,
 				ADE4C22525754B420060A203 /* Help03ViewController.swift */,
 				AD8709AA259A8E66008C4E4C /* Help04ViewController.swift */,
+				ADC74CCD259C9E9C00581ADE /* Help05ViewController.swift */,
 				AD61D2F92571555A00B8DEA0 /* HelpViewController.storyboard */,
 			);
 			path = Help;
@@ -1713,6 +1716,7 @@
 				ED9A42B51ACAD35300EA4421 /* LoginViewController_iPad.m in Sources */,
 				ADE216FE250E22F7003AE588 /* pwg.images.getInfo.swift in Sources */,
 				D8172E1A1AB7C07E00271DB0 /* MoveCategoryViewController.m in Sources */,
+				ADC74CCE259C9E9C00581ADE /* Help05ViewController.swift in Sources */,
 				D863EECA1A6A484C00C0A6E9 /* PiwigoTextField.m in Sources */,
 				ADF3EC0C2516515500379E53 /* DeviceUtilities.swift in Sources */,
 				AD82C0482433D1A200F774BA /* main.m in Sources */,

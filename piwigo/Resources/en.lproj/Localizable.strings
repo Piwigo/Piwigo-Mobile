@@ -720,3 +720,6 @@
 "help03_header" = "Administrators";
 "help03_text" = "Create, delete, move and rename albums.";
 "help04_text" = "Uploaded photos removed from the camera roll remain available in the iOS Photos trash for 30 days.";
+"help05_header" = "Upload Management";
+"help05_text" = "Once upload requests are submitted, you can browse albums, submit other upload requests or leave the app.";
+"help05_text2" = "Tap the grey button presented in the root album to manage upload requests.";

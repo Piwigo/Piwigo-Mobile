@@ -633,7 +633,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
     
     // Present What's New views i.e. Help views if needed
 //    [Model sharedInstance].didWatchHelpViews = 0b0000000000000000;       // Lines for testing
-    if (([Model sharedInstance].didWatchHelpViews < 0b0000000000001111) &&
+    if (([Model sharedInstance].didWatchHelpViews < 0b0000000000011111) &&
         ![Model sharedInstance].didPresentHelpViewsInCurrentSession ){
         UIStoryboard *helpSB = [UIStoryboard storyboardWithName:@"HelpViewController" bundle:nil];
         HelpViewController *helpVC = [helpSB instantiateViewControllerWithIdentifier:@"HelpViewController"];
