@@ -100,6 +100,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                                                         //  - for sorting by day, week or month (or not)
                                                         //  - for selecting images in the Photo Library
     private var legendLabel = UILabel.init()            // Legend presented in the toolbar on iPhone/iOS 14+
+    private var legendBarItem: UIBarButtonItem!
 
     private var removeUploadedImages = false
     private var hudViewController: UIViewController?
@@ -190,8 +191,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 // Presents the number of photos selected and the Upload button in the toolbar
                 navigationController?.isToolbarHidden = false
                 legendLabel.text = NSLocalizedString("selectImages", comment: "Select Photos")
-                let legendBarItem = UIBarButtonItem.init(customView: legendLabel)
-                toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
             }
         } else {
             // Fallback on earlier versions.
@@ -250,6 +249,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Segmented control
         if #available(iOS 14, *) {
             // Toolbar
+            legendLabel.textColor = UIColor.piwigoColorText()
+            legendBarItem = UIBarButtonItem.init(customView: legendLabel)
+            toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
             navigationController?.toolbar.barTintColor = UIColor.piwigoColorBackground()
             navigationController?.toolbar.barStyle = Model.sharedInstance().isDarkPaletteActive ? .black : .default
         }
@@ -371,7 +373,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     
                     // Present the "Upload" button in the toolbar
                     legendLabel.text = NSLocalizedString("selectImages", comment: "Select Photos")
-                    let legendBarItem = UIBarButtonItem.init(customView: legendLabel)
+                    legendBarItem = UIBarButtonItem.init(customView: legendLabel)
                     toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
                 } else {
                     // Title
@@ -407,7 +409,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 if #available(iOS 14, *) {
                     // Update the number of selected photos in the toolbar
                     legendLabel.text = nberOfSelectedImages == 1 ? NSLocalizedString("selectImageSelected", comment: "1 Photo Selected") : String(format:NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), NSNumber(value: nberOfSelectedImages))
-                    let legendBarItem = UIBarButtonItem.init(customView: legendLabel)
+                    legendBarItem = UIBarButtonItem.init(customView: legendLabel)
                     toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
 
                     // Presents a single action menu
