@@ -204,9 +204,6 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
         
         // Enable network reachability monitoring
         [[AFNetworkReachabilityManager sharedManager] startMonitoring];
-        
-        // Enable network reachability monitoring
-        [[AFNetworkReachabilityManager sharedManager] startMonitoring];
 
         // Should we reopen the session ?
         [self checkSessionStatusAndTryRelogin];
