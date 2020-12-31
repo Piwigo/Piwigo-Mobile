@@ -234,7 +234,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
             }
         }
 
-        // Clear impossible upload request in section 1 (preparingFail, formatError)
+        // Clear impossible upload requests in section 1 (preparingFail, formatError)
         if let _ = diffableDataSource.snapshot().indexOfSection(SectionKeys.Section1.rawValue) {
             let impossibleUploads = diffableDataSource.snapshot().numberOfItems(inSection: SectionKeys.Section1.rawValue)
             if impossibleUploads > 0 {
