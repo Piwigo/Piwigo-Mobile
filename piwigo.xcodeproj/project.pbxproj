@@ -48,6 +48,7 @@
 		AD38C04C24AF746000CDC765 /* community.images.uploadCompleted.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD38C04B24AF746000CDC765 /* community.images.uploadCompleted.swift */; };
 		AD38C04D24AF746000CDC765 /* community.images.uploadCompleted.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD38C04B24AF746000CDC765 /* community.images.uploadCompleted.swift */; };
 		AD39165E22A126CA00414E4B /* SearchImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD39165922A06FDF00414E4B /* SearchImagesViewController.m */; };
+		AD3CD63A259DE34C000C26ED /* Help06ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3CD639259DE34C000C26ED /* Help06ViewController.swift */; };
 		AD42D08124448B7C00F0BAC1 /* LocalAlbumsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD42D08024448B7C00F0BAC1 /* LocalAlbumsViewController.swift */; };
 		AD42D08324448F2400F0BAC1 /* LocalAlbumsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD42D08224448F2400F0BAC1 /* LocalAlbumsViewController.storyboard */; };
 		AD42D08524449FF000F0BAC1 /* LocalImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD42D08424449FF000F0BAC1 /* LocalImageCollectionViewCell.swift */; };
@@ -284,6 +285,7 @@
 		AD38C04B24AF746000CDC765 /* community.images.uploadCompleted.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = community.images.uploadCompleted.swift; sourceTree = "<group>"; };
 		AD39165922A06FDF00414E4B /* SearchImagesViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchImagesViewController.m; sourceTree = "<group>"; };
 		AD39165B22A06FF200414E4B /* SearchImagesViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SearchImagesViewController.h; sourceTree = "<group>"; };
+		AD3CD639259DE34C000C26ED /* Help06ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help06ViewController.swift; sourceTree = "<group>"; };
 		AD3FDDE81F2E23F700F71C81 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD3FDDE91F2E23F700F71C81 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/About.strings; sourceTree = "<group>"; };
 		AD3FDDEA1F2E23F700F71C81 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
@@ -808,6 +810,7 @@
 				ADE4C22525754B420060A203 /* Help03ViewController.swift */,
 				AD8709AA259A8E66008C4E4C /* Help04ViewController.swift */,
 				ADC74CCD259C9E9C00581ADE /* Help05ViewController.swift */,
+				AD3CD639259DE34C000C26ED /* Help06ViewController.swift */,
 				AD61D2F92571555A00B8DEA0 /* HelpViewController.storyboard */,
 			);
 			path = Help;
@@ -1738,6 +1741,7 @@
 				ADAA57D122DD00B700EB4EAA /* DiscoverImagesViewController.m in Sources */,
 				AD8709AB259A8E66008C4E4C /* Help04ViewController.swift in Sources */,
 				ADC80E4B23BDD2DD003A6960 /* EditImageThumbTableViewCell.m in Sources */,
+				AD3CD63A259DE34C000C26ED /* Help06ViewController.swift in Sources */,
 				D88A685B1AC2323D002A3259 /* CategoryTableViewCell.m in Sources */,
 				D8D3F7241A785E1B00AEA7F1 /* ImageCollectionViewCell.m in Sources */,
 				D8F325171A87F212007CBDAC /* EditImageTextViewTableViewCell.m in Sources */,

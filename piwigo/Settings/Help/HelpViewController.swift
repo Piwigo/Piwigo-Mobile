@@ -16,7 +16,7 @@ class HelpViewController: UIViewController {
     
     @objc var onlyWhatsNew = false
     // Update this list after deleting/creating Help##ViewControllers
-    private let indexesOfPagesInOrder = [0,4,1,3,2]
+    private let indexesOfPagesInOrder = [0,4,5,1,3,2]
     private var pages = [UIViewController]()
     private var pageViewController: UIPageViewController?
     private var pendingIndex: Int?

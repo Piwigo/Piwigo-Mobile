@@ -280,7 +280,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dci-bb-thf" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2525" y="-612"/>
+            <point key="canvasLocation" x="2529" y="-612"/>
         </scene>
         <!--Help05 View Controller-->
         <scene sceneID="0MC-Mw-Df1">
@@ -347,7 +347,52 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="aJQ-Aa-rI9" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3185" y="-612"/>
+            <point key="canvasLocation" x="3181" y="-612"/>
+        </scene>
+        <!--Help06 View Controller-->
+        <scene sceneID="OgU-Se-AXR">
+            <objects>
+                <viewController storyboardIdentifier="help06" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Ca1-cO-DVb" customClass="Help06ViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" id="EeM-2S-WB6">
+                        <rect key="frame" x="0.0" y="0.0" width="428" height="872"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="1000" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xqr-EG-5O7" userLabel="HELP #3">
+                                <rect key="frame" x="30" y="0.0" width="368" height="23.333333333333332"/>
+                                <attributedString key="attributedText">
+                                    <fragment content="legend">
+                                        <attributes>
+                                            <font key="NSFont" size="17" name="OpenSans"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" image="help06" translatesAutoresizingMaskIntoConstraints="NO" id="Dm6-5K-Ngx">
+                                <rect key="frame" x="0.0" y="39.333333333333314" width="428" height="832.66666666666674"/>
+                            </imageView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="nFz-al-chT"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="Xqr-EG-5O7" firstAttribute="top" secondItem="EeM-2S-WB6" secondAttribute="top" id="7ew-47-soV"/>
+                            <constraint firstItem="Dm6-5K-Ngx" firstAttribute="top" secondItem="Xqr-EG-5O7" secondAttribute="bottom" constant="16" id="IpA-GU-1o1"/>
+                            <constraint firstItem="Dm6-5K-Ngx" firstAttribute="trailing" secondItem="EeM-2S-WB6" secondAttribute="trailing" id="Jf7-ny-RYS"/>
+                            <constraint firstItem="Dm6-5K-Ngx" firstAttribute="bottom" secondItem="EeM-2S-WB6" secondAttribute="bottom" id="S3A-y4-KV6"/>
+                            <constraint firstItem="Xqr-EG-5O7" firstAttribute="trailing" secondItem="EeM-2S-WB6" secondAttribute="trailing" constant="-30" id="Snv-aw-etf"/>
+                            <constraint firstItem="Dm6-5K-Ngx" firstAttribute="leading" secondItem="EeM-2S-WB6" secondAttribute="leading" id="jny-a2-SgA"/>
+                            <constraint firstItem="Xqr-EG-5O7" firstAttribute="leading" secondItem="EeM-2S-WB6" secondAttribute="leading" constant="30" id="wGz-yV-Hw4"/>
+                        </constraints>
+                    </view>
+                    <modalPageSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <connections>
+                        <outlet property="legend" destination="Xqr-EG-5O7" id="M2g-SS-v5R"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="U7p-lx-uPP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3817" y="-612"/>
         </scene>
     </scenes>
     <resources>
@@ -358,6 +403,7 @@
         <image name="help04" width="229.66667175292969" height="455"/>
         <image name="help05-bot" width="340" height="119.66666412353516"/>
         <image name="help05-top" width="340" height="360"/>
+        <image name="help06" width="229.66667175292969" height="455"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
