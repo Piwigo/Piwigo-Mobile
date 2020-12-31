@@ -523,7 +523,13 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 if Model.sharedInstance().defaultCategory == 0 {
                     detail = NSLocalizedString("categorySelection_root", comment: "Root Album")
                 } else {
-                    detail = CategoriesData.sharedInstance().getCategoryById(Model.sharedInstance().defaultCategory).name
+                    if let albumName = CategoriesData.sharedInstance().getCategoryById(Model.sharedInstance().defaultCategory).name {
+                        detail = albumName
+                    } else {
+                        detail = NSLocalizedString("categorySelection_root", comment: "Root Album")
+                        Model.sharedInstance().defaultCategory = 0
+                        Model.sharedInstance()?.saveToDisk()
+                    }
                 }
                 cell.configure(with: title, detail: detail)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
