@@ -118,7 +118,18 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         applyColorPaletteToInitialViews()
 
         // Table view items
-        queueTableView.reloadData()
+        let visibleCells = queueTableView.visibleCells as? [UploadImageTableViewCell] ?? []
+        visibleCells.forEach { (cell) in
+            cell.backgroundColor = UIColor.piwigoColorCellBackground()
+            cell.uploadInfoLabel.textColor = UIColor.piwigoColorLeftLabel()
+            cell.swipeBackgroundColor = UIColor.piwigoColorCellBackground()
+            cell.imageInfoLabel.textColor = UIColor.piwigoColorRightLabel()
+        }
+        for section in 0..<queueTableView.numberOfSections {
+            let header = queueTableView.headerView(forSection: section) as? UploadImageHeaderView
+            header?.headerLabel.textColor = UIColor.piwigoColorHeader()
+            header?.headerBckg.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.75)
+        }
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -147,7 +158,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
         NotificationCenter.default.removeObserver(self, name: name, object: nil)
 
-        // Unregister palette changes
+        // Unregister upload progress
         let name2: NSNotification.Name = NSNotification.Name(kPiwigoNotificationUploadProgress)
         NotificationCenter.default.removeObserver(self, name: name2, object: nil)
     }
@@ -178,64 +189,68 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
 
         // Cancel action
         let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in })
-        
-        // Clear impossible uploads
-        let impossibleUploads = uploadsProvider.fetchedResultsController.fetchedObjects?.map({ ($0.state == .preparingFail) ? 1 : 0}).reduce(0, +) ?? 0
-        let titleClear = impossibleUploads > 1 ? String(format: NSLocalizedString("imageUploadClearFailedSeveral", comment: "Clear %@ Failed"), NumberFormatter.localizedString(from: NSNumber.init(value: impossibleUploads), number: .decimal)) : NSLocalizedString("imageUploadClearFailedSingle", comment: "Clear 1 Failed")
-        let clearAction = UIAlertAction(title: titleClear, style: .default, handler: { action in
-            // Get completed uploads
-            guard let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects else {
-                return
-            }
-            // Get uploads to delete
-            let uploadsToDelete = allUploads.filter({ $0.state == .preparingFail}).map({$0.objectID})
-            // Delete failed uploads in a private queue
-            DispatchQueue.global(qos: .userInitiated).async {
-                self.uploadsProvider.delete(uploadRequests: uploadsToDelete)
-            }
-        })
-        
-        // Retry failed uploads
-        let failedUploads = uploadsProvider.fetchedResultsController.fetchedObjects?.map({ ($0.state == .preparingError) || ($0.state == .uploadingError) || ($0.state == .finishingError) ? 1 : 0}).reduce(0, +) ?? 0
-        let titleResume = failedUploads > 1 ? String(format: NSLocalizedString("imageUploadResumeSeveral", comment: "Resume %@ Failed Uploads"), NumberFormatter.localizedString(from: NSNumber.init(value: failedUploads), number: .decimal)) : NSLocalizedString("imageUploadResumeSingle", comment: "Resume Failed Upload")
-        let resumeAction = UIAlertAction(title: titleResume, style: .default, handler: { action in
-            // Collect list of failed uploads
-            if let failedUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects?.filter({$0.state == .preparingError || $0.state == .uploadingError || $0.state == .finishingError }).map({$0.objectID}) {
-                // Resume failed uploads
-                UploadManager.shared.backgroundQueue.async {
-                    UploadManager.shared.resume(failedUploads: failedUploads, completionHandler: { (error) in
-                        if let error = error {
-                            // Inform user
-                            let alert = UIAlertController(title: NSLocalizedString("errorHUD_label", comment: "Error"), message: error.localizedDescription, preferredStyle: .alert)
-                            let cancelAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .destructive, handler: { action in
-                                })
-                            alert.addAction(cancelAction)
-                            alert.view.tintColor = UIColor.piwigoColorOrange()
-                            if #available(iOS 13.0, *) {
-                                alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
-                            } else {
-                                // Fallback on earlier versions
-                            }
-                            self.present(alert, animated: true, completion: {
-                                // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                                alert.view.tintColor = UIColor.piwigoColorOrange()
-                            })
-                        } else {
-                            // Relaunch uploads
-                            UploadManager.shared.findNextImageToUpload()
-                        }
-                    })
-                }
-            }
-        })
-
-        // Add actions
         alert.addAction(cancelAction)
-        if failedUploads > 0 {
+        
+        // Resume upload requests in section 2 (preparingError, uploadingError, finishingError)
+        let failedUploads = uploadsProvider.fetchedResultsController.fetchedObjects?.map({ ($0.state == .preparingError) || ($0.state == .uploadingError) || ($0.state == .finishingError) ? 1 : 0}).reduce(0, +) ?? 0
+            if failedUploads > 0 {
+			let titleResume = failedUploads > 1 ? String(format: NSLocalizedString("imageUploadResumeSeveral", comment: "Resume %@ Failed Uploads"), NumberFormatter.localizedString(from: NSNumber.init(value: failedUploads), number: .decimal)) : NSLocalizedString("imageUploadResumeSingle", comment: "Resume Failed Upload")
+			let resumeAction = UIAlertAction(title: titleResume, style: .default, handler: { action in
+				// Collect list of failed uploads
+				if let uploadIds = self.uploadsProvider.fetchedResultsController.fetchedObjects?.filter({$0.state == .preparingError || $0.state == .uploadingError || $0.state == .finishingError }).map({$0.objectID}) {
+					// Resume failed uploads
+					UploadManager.shared.backgroundQueue.async {
+						UploadManager.shared.resume(failedUploads: uploadIds, completionHandler: { (error) in
+							if let error = error {
+								// Inform user
+								let alert = UIAlertController(title: NSLocalizedString("errorHUD_label", comment: "Error"), message: error.localizedDescription, preferredStyle: .alert)
+								let cancelAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .destructive, handler: { action in
+									})
+								alert.addAction(cancelAction)
+								alert.view.tintColor = UIColor.piwigoColorOrange()
+								if #available(iOS 13.0, *) {
+									alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+								} else {
+									// Fallback on earlier versions
+								}
+								self.present(alert, animated: true, completion: {
+									// Bugfix: iOS9 - Tint not fully Applied without Reapplying
+									alert.view.tintColor = UIColor.piwigoColorOrange()
+								})
+							} else {
+								// Relaunch uploads
+								UploadManager.shared.findNextImageToUpload()
+							}
+						})
+					}
+				}
+			})
             alert.addAction(resumeAction)
-        }
-        if impossibleUploads > 0 {
-            alert.addAction(clearAction)
+		}
+
+        // Clear impossible upload requests in section 1 (preparingFail, formatError)
+        let impossibleUploads = uploadsProvider.fetchedResultsController.fetchedObjects?.map({ (($0.state == .preparingFail) || ($0.state == .formatError)) ? 1 : 0}).reduce(0, +) ?? 0
+    	if impossibleUploads > 0 {
+	        let titleClear = impossibleUploads > 1 ? String(format: NSLocalizedString("imageUploadClearFailedSeveral", comment: "Clear %@ Failed"), NumberFormatter.localizedString(from: NSNumber.init(value: impossibleUploads), number: .decimal)) : NSLocalizedString("imageUploadClearFailedSingle", comment: "Clear 1 Failed")
+			let clearAction = UIAlertAction(title: titleClear, style: .default, handler: { action in
+			   // Get completed uploads
+				guard let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects else {
+					return
+				}
+				// Get uploads to delete
+				let uploadIds = allUploads.filter({ (($0.state == .preparingFail) || ($0.state == .formatError))}).map({$0.objectID})
+				// Delete failed uploads in a private queue
+				DispatchQueue.global(qos: .userInitiated).async {
+					self.uploadsProvider.delete(uploadRequests: uploadIds)
+				}
+			})
+			alert.addAction(clearAction)
+		}
+        
+        // Don't present the alert if there is only "Cancel"
+        if alert.actions.count == 1 {
+            updateNavBar()
+            return
         }
 
         // Present list of actions
