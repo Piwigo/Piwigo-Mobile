@@ -136,7 +136,7 @@ NSString * const kPiwigoNotificationCancelDownloadImage = @"kPiwigoNotificationC
     
     // Retrieve image from downloaded file
     UIImage *image;
-    NSMutableData *imageDataFile = [NSMutableData new];
+    NSData *imageDataFile = [NSData new];
     if ((cachedImageData == nil) || (cachedImageData.bytes == 0)) {
         // Prepare image data
         image = [[UIImage alloc] initWithContentsOfFile:[self.imageFilePath path]];
@@ -212,7 +212,7 @@ NSString * const kPiwigoNotificationCancelDownloadImage = @"kPiwigoNotificationC
     sema = nil;
 }
 
--(void)modifyImage:(UIImage *)originalImage withData:(NSMutableData *)originalDataFile
+-(void)modifyImage:(UIImage *)originalImage withData:(NSData *)originalDataFile
 {
     // Return immediately if no image (user tapped Cancel for example)
     if (!originalImage || !originalDataFile) {
