@@ -135,23 +135,21 @@ NSString * const kPiwigoNotificationCancelDownloadImage = @"kPiwigoNotificationC
     }
     
     // Retrieve image from downloaded file
+    UIImage *image;
+    NSMutableData *imageDataFile = [NSMutableData new];
     if ((cachedImageData == nil) || (cachedImageData.bytes == 0)) {
         // Prepare image data
-        UIImage *image = [[UIImage alloc] initWithContentsOfFile:[self.imageFilePath path]];
-        NSMutableData *imageDataFile = [NSMutableData dataWithContentsOfURL:self.imageFilePath];
-
-        // Prepare file before sharing
-        [self modifyImage:image withData:imageDataFile];
+        image = [[UIImage alloc] initWithContentsOfFile:[self.imageFilePath path]];
+        imageDataFile = [NSMutableData dataWithContentsOfURL:self.imageFilePath];
     }
     else {
         // Prepare image data
-        UIImage *image = [[UIImage alloc] initWithData:cachedImageData];
-        NSMutableData *imageDataFile = [cachedImageData mutableCopy];
-
-        // Prepare file before sharing
-        [self modifyImage:image withData:imageDataFile];
+        image = [[UIImage alloc] initWithData:cachedImageData];
+        imageDataFile = [cachedImageData mutableCopy];
     }
     
+    // Prepare file before sharing
+    [self modifyImage:image withData:imageDataFile];
 
     // Cancel item task if image preparation failed
     if (self.alertTitle) {
@@ -249,96 +247,115 @@ NSString * const kPiwigoNotificationCancelDownloadImage = @"kPiwigoNotificationC
 #endif
     
     // Strip GPS metadata if user requested it in Settings
+    BOOL keepOriginalFile = TRUE;
     if (imageMetadata != nil)
     {
         if (@available(iOS 10, *)) {
             if ([self.activityType isEqualToString:UIActivityTypeAirDrop]) {
                 if (![Model sharedInstance].shareMetadataTypeAirDrop) {
                     imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                    keepOriginalFile = FALSE;
                 }
             }
             else if ([self.activityType isEqualToString:UIActivityTypeAssignToContact]) {
                      if (![Model sharedInstance].shareMetadataTypeAssignToContact) {
                          imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                         keepOriginalFile = FALSE;
                      }
             }
             else if ([self.activityType isEqualToString:UIActivityTypeCopyToPasteboard]) {
                      if (![Model sharedInstance].shareMetadataTypeCopyToPasteboard) {
                          imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                         keepOriginalFile = FALSE;
                      }
             }
             else if ([self.activityType isEqualToString:UIActivityTypeMail]) {
                      if (![Model sharedInstance].shareMetadataTypeMail) {
                          imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                         keepOriginalFile = FALSE;
                      }
             }
             else if ([self.activityType isEqualToString:UIActivityTypeMessage]) {
                      if (![Model sharedInstance].shareMetadataTypeMessage) {
                          imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                         keepOriginalFile = FALSE;
                      }
             }
             else if ([self.activityType isEqualToString:UIActivityTypePostToFacebook]) {
                      if (![Model sharedInstance].shareMetadataTypePostToFacebook) {
                          imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                         keepOriginalFile = FALSE;
                      }
             }
             else if ([self.activityType isEqualToString:kPiwigoActivityTypeMessenger]) {
                      if (![Model sharedInstance].shareMetadataTypeMessenger) {
                          imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                         keepOriginalFile = FALSE;
                      }
             }
             else if ([self.activityType isEqualToString:UIActivityTypePostToFlickr]) {
                      if (![Model sharedInstance].shareMetadataTypePostToFlickr) {
                          imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                         keepOriginalFile = FALSE;
                      }
             }
             else if ([self.activityType isEqualToString:kPiwigoActivityTypePostInstagram]) {
                      if (![Model sharedInstance].shareMetadataTypePostInstagram) {
                          imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                         keepOriginalFile = FALSE;
                      }
             }
             else if ([self.activityType isEqualToString:kPiwigoActivityTypePostToSignal]) {
                      if (![Model sharedInstance].shareMetadataTypePostToSignal) {
                          imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                         keepOriginalFile = FALSE;
                      }
             }
             else if ([self.activityType isEqualToString:kPiwigoActivityTypePostToSnapchat]) {
                      if (![Model sharedInstance].shareMetadataTypePostToSnapchat) {
                          imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                         keepOriginalFile = FALSE;
                      }
             }
             else if ([self.activityType isEqualToString:UIActivityTypePostToTencentWeibo]) {
                      if (![Model sharedInstance].shareMetadataTypePostToTencentWeibo) {
                          imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                         keepOriginalFile = FALSE;
                      }
             }
             else if ([self.activityType isEqualToString:UIActivityTypePostToTwitter]) {
                      if (![Model sharedInstance].shareMetadataTypePostToTwitter) {
                          imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                         keepOriginalFile = FALSE;
                      }
             }
             else if ([self.activityType isEqualToString:UIActivityTypePostToVimeo]) {
                      if (![Model sharedInstance].shareMetadataTypePostToVimeo) {
                          imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                         keepOriginalFile = FALSE;
                      }
             }
             else if ([self.activityType isEqualToString:UIActivityTypePostToWeibo]) {
                      if (![Model sharedInstance].shareMetadataTypePostToWeibo) {
                          imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                         keepOriginalFile = FALSE;
                      }
             }
             else if ([self.activityType isEqualToString:kPiwigoActivityTypePostToWhatsApp]) {
                      if (![Model sharedInstance].shareMetadataTypePostToWhatsApp) {
                          imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                         keepOriginalFile = FALSE;
                      }
             }
             else if ([self.activityType isEqualToString:UIActivityTypeSaveToCameraRoll]) {
                      if (![Model sharedInstance].shareMetadataTypeSaveToCameraRoll) {
                          imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                         keepOriginalFile = FALSE;
                      }
             }
             else if (![Model sharedInstance].shareMetadataTypeOther) {
                 imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                keepOriginalFile = FALSE;
             }
         }
         else {
@@ -346,8 +363,22 @@ NSString * const kPiwigoNotificationCancelDownloadImage = @"kPiwigoNotificationC
             if(![Model sharedInstance].shareMetadataTypeAirDrop)
             {
                 imageMetadata = [ImageService stripGPSdataFromImageMetadata:imageMetadata];
+                keepOriginalFile = FALSE;
             }
         }
+    }
+    
+    // Keep original file if metadata can be shared
+    if (keepOriginalFile) {
+        // No metadata -> release memory
+        CFRelease(source);
+
+        // Notify the delegate on the main thread to show how it makes progress.
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.delegate imageActivityItemProvider:self preprocessingProgressDidUpdate:0.85];
+        });
+        
+        return;
     }
     
     // Notify the delegate on the main thread to show how it makes progress.
