@@ -567,7 +567,7 @@
 
 // Local images — Explain
 "localImages_deleteTitle" = "Retirer de la pellicule";
-"localImages_deleteMessage" = "Voulez-vous supprimer les photos ou vidéos téléchargées de la pellicule ? Les photos ou vidéos supprimées seront toujours disponibles dans la corbeille de l'app Photos pendant 30 jours.";
+"localImages_deleteMessage" = "Voulez-vous supprimer les photos ou vidéos téléchargées de la pellicule ? Les photos ou vidéos supprimées resteront disponibles dans la corbeille de l'app Photos pendant 30 jours.";
 
 // ===========================================================================
 // ==> SETTINGS
@@ -720,3 +720,8 @@
 "help03_header" = "Administrateurs";
 "help03_text" = "Créer, supprimer, déplacer et renommer des albums.";
 "help04_text" = "Les photos téléchargées retirées de la pellicule restent disponibles dans la corbeille de l'app iOS Photos pendant 30 jours.";
+"help05_header" = "Téléchargement des photos";
+"help05_text" = "Une fois les demandes de téléchargement soumises, vous pouvez parcourir les albums, soumettre d'autres demandes ou quitter l'app.";
+"help05_text2" = "Appuyez sur le bouton gris présenté dans l'album racine pour gérer les téléchargements.";
+"help06_header" = "Gestion des téléchargements";
+"help06_text" = "Surveillez, annulez et relancez les demandes de téléchargement globalement ou individuellement.";
