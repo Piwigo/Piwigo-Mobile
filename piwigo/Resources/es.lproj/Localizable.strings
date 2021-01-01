@@ -720,8 +720,8 @@
 "help03_header" = "Administradores";
 "help03_text" = "Crear, eliminar, mover y renombrar álbumes.";
 "help04_text" = "Las fotos subidas eliminadas del carrete de la cámara permanecen disponibles en la papelera de iOS Photos durante 30 días.";
-"help05_header" = "Uploading Photos";
-"help05_text" = "Once upload requests are submitted, you can browse albums, submit other requests or leave the app.";
-"help05_text2" = "Tap the grey button presented in the root album to manage uploads.";
-"help06_header" = "Upload Management";
-"help06_text" = "Monitor, cancel and resume upload requests globally or individually.";
+"help05_header" = "Cargando fotos";
+"help05_text" = "Una vez enviadas las solicitudes de subida, puede navegar por los álbumes, enviar otras solicitudes o salir de la aplicación.";
+"help05_text2" = "Pulse el botón gris que aparece en el álbum raíz para gestionar las subidas.";
+"help06_header" = "Gestión de subidas";
+"help06_text" = "Supervise, cancele y reanude las solicitudes de subida de forma global o individual.";
