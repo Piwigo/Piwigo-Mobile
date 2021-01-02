@@ -518,8 +518,8 @@
 "shareActivityCode_AirDrop>375px" = "Transfer photos with AirDrop";
 "shareActivityCode_AssignToContact" = "Assign to Contact";
 "shareActivityCode_AssignToContact>375px" = "Assign photo to Contact";
-"shareActivityCode_CopyToPasteboard" = "Copy to Pasteboard";
-"shareActivityCode_CopyToPasteboard>375px" = "Copy photos to Pasteboard";
+"shareActivityCode_CopyToPasteboard" = "Copy to Clipboard";
+"shareActivityCode_CopyToPasteboard>375px" = "Copy photos to Clipboard";
 "shareActivityCode_Mail" = "Post by Email";
 "shareActivityCode_Mail>375px" = "Post photos by Email";
 "shareActivityCode_Message" = "Post with Message";

@@ -29,15 +29,12 @@ extension UploadManager {
         // Launch transfer
         startUploading(fileURL: fileURL, with: imageParameters,
             onProgress: { (progress, currentChunk, totalChunks) in
+                // Update UI
                 let chunkProgress: Float = Float(currentChunk) / Float(totalChunks)
-                let uploadInfo: [String : Any] = ["localIdentifier" : uploadProperties.localIdentifier,
-                                                  "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
-                                                  "Error" : uploadProperties.requestError ?? "",
-                                                  "progressFraction" : chunkProgress]
-                DispatchQueue.main.async {
-                    // Update UploadQueue cell and button shown in root album (or default album)
-                    NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationUploadProgress), object: nil, userInfo: uploadInfo)
-                }
+                self.updateCell(with: uploadProperties.localIdentifier,
+                                stateLabel: kPiwigoUploadState.uploading.stateInfo,
+                                photoResize: nil, progress: chunkProgress,
+                                errorMsg: uploadProperties.requestError ?? "")
             },
             onCompletion: { [unowned self] (task, jsonData) in
 //                    print("•••> completion: \(String(describing: jsonData))")
@@ -141,8 +138,8 @@ extension UploadManager {
         uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: properties) { (_) in
             // Get uploads to complete in queue
             // Considers only uploads to the server to which the user is logged in
-            let states: [kPiwigoUploadState] = [.waiting,
-                                                .preparing, .preparingError, .prepared,
+            let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
+                                                .preparingFail, .formatError, .prepared,
                                                 .uploading, .uploadingError, .uploaded,
                                                 .finishing, .finishingError]
             // Update app badge and Upload button in root/default album
@@ -408,16 +405,11 @@ extension UploadManager {
 
             // Update UI
             if !isExecutingBackgroundUploadTask {
-                let progress = Float(chunk) / Float(chunks) / 2.0
                 // Update UI
-                let uploadInfo: [String : Any] = ["localIdentifier" : uploadProperties.localIdentifier,
-                                                  "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
-                                                  "progressFraction" : progress]
-                DispatchQueue.main.async {
-                    // Update UploadQueue cell and button shown in root album (or default album)
-                    let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)
-                    NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
-                }
+                let progress = Float(chunk) / Float(chunks) / 2.0
+                updateCell(with: uploadProperties.localIdentifier,
+                           stateLabel: kPiwigoUploadState.uploading.stateInfo,
+                           photoResize: nil, progress: progress, errorMsg: "")
             }
         }
     }
@@ -572,16 +564,11 @@ extension UploadManager {
                 print("\(debugFormatter.string(from: Date())) > \(md5sum) | \(nberOfUploadedChunks) chunks downloaded")
                 if !isExecutingBackgroundUploadTask {
                     if chunks > 0 {
-                        let progress = 0.5 + Float(nberOfUploadedChunks) / Float(chunks) / 2.0
                         // Update UI
-                        let uploadInfo: [String : Any] = ["localIdentifier" : identifier,
-                                                          "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
-                                                          "progressFraction" : progress]
-                        DispatchQueue.main.async {
-                            // Update UploadQueue cell and button shown in root album (or default album)
-                            let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)
-                            NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
-                        }
+                        let progress = 0.5 + Float(nberOfUploadedChunks) / Float(chunks) / 2.0
+                        updateCell(with: identifier,
+                                   stateLabel: kPiwigoUploadState.uploading.stateInfo,
+                                   photoResize: nil, progress: progress, errorMsg: nil)
                     }
                     return
                 }
@@ -593,14 +580,9 @@ extension UploadManager {
 
                 // Update UI (fill progress bar)
                 if !isExecutingBackgroundUploadTask {
-                    let uploadInfo: [String : Any] = ["localIdentifier" : identifier,
-                                                      "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
-                                                      "progressFraction" : Float(1)]
-                    DispatchQueue.main.async {
-                        // Update UploadQueue cell and button shown in root album (or default album)
-                        let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)
-                        NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
-                    }
+                    updateCell(with: identifier,
+                               stateLabel: kPiwigoUploadState.uploading.stateInfo,
+                               photoResize: nil, progress: Float(1), errorMsg: nil)
                 }
 
                 // Prepare image for cache

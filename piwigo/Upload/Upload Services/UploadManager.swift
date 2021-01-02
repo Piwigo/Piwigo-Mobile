@@ -85,34 +85,6 @@ class UploadManager: NSObject, URLSessionDelegate {
     }
     
 
-    // MARK: - MD5 Checksum
-    #if canImport(CryptoKit)        // Requires iOS 13
-    @available(iOS 13.0, *)
-    func MD5(data: Data?) -> String {
-        let digest = Insecure.MD5.hash(data: data ?? Data())
-        return digest.map { String(format: "%02hhx", $0) }.joined()
-    }
-    #endif
-
-    func oldMD5(data: Data?) -> String {
-        let length = Int(CC_MD5_DIGEST_LENGTH)
-        let messageData = data ?? Data()
-        var digestData = Data(count: length)
-
-        _ = digestData.withUnsafeMutableBytes { digestBytes -> UInt8 in
-                messageData.withUnsafeBytes { messageBytes -> UInt8 in
-                if let messageBytesBaseAddress = messageBytes.baseAddress,
-                    let digestBytesBlindMemory = digestBytes.bindMemory(to: UInt8.self).baseAddress {
-                    let messageLength = CC_LONG(messageData.count)
-                    CC_MD5(messageBytesBaseAddress, messageLength, digestBytesBlindMemory)
-                }
-                return 0
-            }
-        }
-        return digestData.map { String(format: "%02hhx", $0) }.joined()
-    }
-
-
     // MARK: - Core Data
     /**
      The UploadsProvider that collects upload data, saves it to Core Data,
@@ -124,7 +96,7 @@ class UploadManager: NSObject, URLSessionDelegate {
     }()
 
     
-    // MARK: - Foreground Upload Task Manager
+    // MARK: - Upload Request States
     /** The manager prepares an image for upload and then launches the transfer.
     - isPreparing is set to true when a photo/video is going to be prepared,
       and false when the preparation has completed or failed.
@@ -154,7 +126,28 @@ class UploadManager: NSObject, URLSessionDelegate {
             }
         }
     }
+    
+    // Update cell displaying an upload request
+    func updateCell(with identifier:String, stateLabel: String,
+                    photoResize: Int16?, progress: Float?, errorMsg: String?) {
+        
+        var uploadInfo: [String : Any] = ["localIdentifier" : identifier,
+                                          "stateLabel" : stateLabel]
+        if let photoResize = photoResize {
+            uploadInfo.updateValue(photoResize, forKey: "photoResize")
+        }
+        if let progress = progress {
+            uploadInfo.updateValue(progress, forKey: "progressFraction")
+        }
+        DispatchQueue.main.async {
+            // Update UploadQueue cell and button shown in root album (or default album)
+            let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)
+            NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
+        }
+    }
 
+    
+    // MARK: - Foreground Upload Task Manager
     // Images are uploaded as follows:
     /// - Photos are prepared with appropriate metadata in a format accepted by the server
     /// - Videos are exported in MP4 fomat and uploaded (VideoJS plugin expected)
@@ -174,8 +167,8 @@ class UploadManager: NSObject, URLSessionDelegate {
 
         // Update app badge and Upload button in root/default album
         // Considers only uploads to the server to which the user is logged in
-        let states: [kPiwigoUploadState] = [.waiting,
-                                            .preparing, .preparingError, .prepared,
+        let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
+                                            .preparingFail, .formatError, .prepared,
                                             .uploading, .uploadingError, .uploaded,
                                             .finishing, .finishingError]
         nberOfUploadsToComplete = uploadsProvider.getRequestsIn(states: states).count
@@ -397,6 +390,36 @@ class UploadManager: NSObject, URLSessionDelegate {
     
     
     // MARK: - Prepare image
+    /// https://developer.apple.com/documentation/uniformtypeidentifiers/uttype/system_declared_types
+    private let acceptedImageFormats = "png,heic,heif,tif,tiff,jpg,jpeg,raw,webp,gif,bmp,ico"
+    private let acceptedMovieFormats = "mov,mpg,mpeg,mpeg2,mp4,avi"
+
+    #if canImport(CryptoKit)        // Requires iOS 13
+    @available(iOS 13.0, *)
+    func MD5(data: Data?) -> String {
+        let digest = Insecure.MD5.hash(data: data ?? Data())
+        return digest.map { String(format: "%02hhx", $0) }.joined()
+    }
+    #endif
+
+    func oldMD5(data: Data?) -> String {
+        let length = Int(CC_MD5_DIGEST_LENGTH)
+        let messageData = data ?? Data()
+        var digestData = Data(count: length)
+
+        _ = digestData.withUnsafeMutableBytes { digestBytes -> UInt8 in
+                messageData.withUnsafeBytes { messageBytes -> UInt8 in
+                if let messageBytesBaseAddress = messageBytes.baseAddress,
+                    let digestBytesBlindMemory = digestBytes.bindMemory(to: UInt8.self).baseAddress {
+                    let messageLength = CC_LONG(messageData.count)
+                    CC_MD5(messageBytesBaseAddress, messageLength, digestBytesBlindMemory)
+                }
+                return 0
+            }
+        }
+        return digestData.map { String(format: "%02hhx", $0) }.joined()
+    }
+
     private var _isPreparing = false
     private var isPreparing: Bool {
         get {
@@ -437,21 +460,170 @@ class UploadManager: NSObject, URLSessionDelegate {
 
         // Update UI
         if !self.isExecutingBackgroundUploadTask {
-            let uploadInfo: [String : Any] = ["localIdentifier" : uploadProperties.localIdentifier,
-                                              "photoResize" : Int16(uploadProperties.photoResize),
-                                              "stateLabel" : kPiwigoUploadState.preparing.stateInfo,
-                                              "Error" : ""]
-            DispatchQueue.main.async {
-                // Update UploadQueue cell and button shown in root album (or default album)
-                let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)
-                NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
-            }
+            updateCell(with: uploadProperties.localIdentifier,
+                       stateLabel: kPiwigoUploadState.preparing.stateInfo,
+                       photoResize: Int16(uploadProperties.photoResize),
+                       progress: Float(0.0), errorMsg: "")
         }
         
         // Add category to list of recent albums
         let userInfo = ["categoryId": String(format: "%ld", Int(uploadProperties.category))]
         let name = NSNotification.Name(rawValue: kPiwigoNotificationAddRecentAlbum)
         NotificationCenter.default.post(name: name, object: nil, userInfo: userInfo)
+
+        // Determine from where the file comes from:
+        // => Photo Library: use PHAsset local identifier
+        // => UIPasteborad: use identifier of type "Clipboard-yyyyMMdd-HHmmssSSSS-typ-#"
+        //    where "typ" is "img" (photo) or "mov" (video).
+        if uploadProperties.localIdentifier.contains("Clipboard-") {
+            // Case of an image retrieved from the pasteboard
+            prepareImageInPasteboard(for: uploadID, with: uploadProperties)
+        } else {
+            // Case of an image from the local Photo Library
+            prepareImageInPhotoLibrary(for: uploadID, with: uploadProperties)
+        }
+    }
+    
+    private func prepareImageInPasteboard(for uploadID: NSManagedObjectID, with properties: UploadProperties) {
+        // Will update upload properties
+        var uploadProperties = properties
+
+        // Determine non-empty unique file name and extension from identifier
+        var files = [URL]()
+        do {
+            // Get complete filename by searching in the Uploads directory
+            files = try FileManager.default.contentsOfDirectory(at: applicationUploadsDirectory,
+                        includingPropertiesForKeys: nil,
+                        options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+        }
+        catch {
+            print("\(debugFormatter.string(from: Date())) > could not perform a shallow search of the Uploads directory: \(error)")
+        }
+        guard let fileURL = files.filter({$0.absoluteString.contains(uploadProperties.localIdentifier)}).first else {
+            // File not available… deleted?
+            uploadsProvider.updateStatusOfUpload(with: uploadID, to: .preparingFail, error: UploadError.missingAsset.errorDescription) { [unowned self] (_) in
+
+                // Update UI
+                updateCell(with: uploadProperties.localIdentifier, stateLabel: uploadProperties.stateLabel,
+                           photoResize: nil, progress: nil, errorMsg: kPiwigoUploadState.preparingFail.stateInfo)
+ 
+                // Investigate next upload request?
+                self.didEndPreparation()
+            }
+            return
+        }
+        var fileName = fileURL.lastPathComponent
+        if uploadProperties.prefixFileNameBeforeUpload, let prefix = uploadProperties.defaultPrefix {
+            if !fileName.hasPrefix(prefix) { fileName = prefix + fileName }
+        }
+
+        // Check/update serverFileTypes if possible
+        if let fileTypes = Model.sharedInstance()?.serverFileTypes, fileTypes.count > 0 {
+            uploadProperties.serverFileTypes = fileTypes
+        }
+
+        // Launch preparation job if file format accepted by Piwigo server
+        let fileExt = (URL(fileURLWithPath: fileName).pathExtension).lowercased()
+        if fileName.contains("img") {
+            uploadProperties.isVideo = false
+
+            // Set filename after removing "SSSS-img-#" suffix
+            if let range = fileName.range(of: "-img") {
+                uploadProperties.fileName = String(fileName[..<range.lowerBound].dropLast(4))
+            }
+
+            // Chek that the image format is accepted by the Piwigo server
+            if uploadProperties.serverFileTypes.contains(fileExt) {
+                // Image file format accepted by the Piwigo server
+                // Update state of upload
+                uploadProperties.requestState = .preparing
+                uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+                    // Launch preparation job
+                    self.prepareImage(atURL: fileURL, for: uploadID, with: uploadProperties)
+                }
+                return
+            }
+            // Try to convert image if JPEG format is accepted by Piwigo server
+            if uploadProperties.serverFileTypes.contains("jpg"), acceptedImageFormats.contains(fileExt) {
+                // Try conversion to JPEG
+                print("\(debugFormatter.string(from: Date())) > converting photo \(uploadProperties.fileName!)…")
+                
+                // Update state of upload
+                uploadProperties.requestState = .preparing
+                uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+                    // Launch preparation job
+                    self.prepareImage(atURL: fileURL, for: uploadID, with: uploadProperties)
+                }
+                return
+            }
+            // Image file format cannot be accepted by the Piwigo server
+            uploadProperties.requestState = .formatError
+
+            // Update UI
+            updateCell(with: uploadProperties.localIdentifier, stateLabel: uploadProperties.stateLabel,
+                       photoResize: nil, progress: nil, errorMsg: kPiwigoUploadState.formatError.stateInfo)
+            
+            // Update upload request
+            uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+                // Investigate next upload request?
+                self.didEndPreparation()
+            }
+        }
+        else if fileName.contains("mov") {
+            uploadProperties.isVideo = true
+
+            // Set filename after removing "SSSS-mov-#" suffix
+            if let range = fileName.range(of: "-mov") {
+                uploadProperties.fileName = String(fileName[..<range.lowerBound].dropLast(4))
+            }
+
+            // Chek that the video format is accepted by the Piwigo server
+            if uploadProperties.serverFileTypes.contains(fileExt) {
+                // Video file format accepted by the Piwigo server
+                print("\(debugFormatter.string(from: Date())) > preparing video \(uploadProperties.fileName!)…")
+
+                // Update state of upload
+                uploadProperties.requestState = .preparing
+                uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+                    // Launch preparation job
+                    self.prepareVideo(atURL: fileURL, for: uploadID, with: uploadProperties)
+                }
+                return
+            }
+            // Convert video if MP4 format is accepted by Piwigo server
+            if uploadProperties.serverFileTypes.contains("mp4"), acceptedMovieFormats.contains(fileExt) {
+                // Try conversion to MP4
+                print("\(debugFormatter.string(from: Date())) > converting video \(uploadProperties.fileName!)…")
+
+                // Update state of upload
+                uploadProperties.requestState = .preparing
+                uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+                    // Launch preparation job
+                    self.convertVideo(atURL: fileURL, for: uploadID, with: uploadProperties)
+                }
+                return
+            }
+            // Video file format cannot be accepted by the Piwigo server
+            uploadProperties.requestState = .formatError
+
+            // Update UI
+            updateCell(with: uploadProperties.localIdentifier, stateLabel: uploadProperties.stateLabel,
+                       photoResize: nil, progress: nil, errorMsg: kPiwigoUploadState.formatError.stateInfo)
+            
+            // Update upload request
+            uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+                // Investigate next upload request?
+                self.didEndPreparation()
+            }
+        }
+        else {
+            
+        }
+    }
+    
+    private func prepareImageInPhotoLibrary(for uploadID: NSManagedObjectID, with properties: UploadProperties) {
+        // Will update upload properties
+        var uploadProperties = properties
 
         // Retrieve image asset
         let assets = PHAsset.fetchAssets(withLocalIdentifiers: [uploadProperties.localIdentifier], options: nil)
@@ -473,7 +645,6 @@ class UploadManager: NSObject, URLSessionDelegate {
             if !fileName.hasPrefix(prefix) { fileName = prefix + fileName }
         }
         uploadProperties.fileName = fileName
-        let fileExt = (URL(fileURLWithPath: fileName).pathExtension).lowercased()
         
         // Check/update serverFileTypes if possible
         if let fileTypes = Model.sharedInstance()?.serverFileTypes, fileTypes.count > 0 {
@@ -481,6 +652,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         }
         
         // Launch preparation job if file format accepted by Piwigo server
+        let fileExt = (URL(fileURLWithPath: fileName).pathExtension).lowercased()
         switch originalAsset.mediaType {
         case .image:
             uploadProperties.isVideo = false
@@ -491,28 +663,32 @@ class UploadManager: NSObject, URLSessionDelegate {
                 uploadProperties.requestState = .preparing
                 uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                     // Launch preparation job
-                    self.prepareImage(for: uploadID, with: uploadProperties, originalAsset)
+                    self.prepareImage(asset: originalAsset, for: uploadID, with: uploadProperties)
                 }
                 return
             }
             // Convert image if JPEG format is accepted by Piwigo server
-            if uploadProperties.serverFileTypes.contains("jpg") {
+            if uploadProperties.serverFileTypes.contains("jpg"), acceptedImageFormats.contains(fileExt) {
                 // Try conversion to JPEG
-                if fileExt == "heic" || fileExt == "heif" || fileExt == "avci" {
-                    // Will convert HEIC encoded image to JPEG
-                    print("\(debugFormatter.string(from: Date())) > converting photo \(uploadProperties.fileName!)…")
-                    
-                    // Update state of upload
-                    uploadProperties.requestState = .preparing
-                    uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
-                        // Launch preparation job
-                        self.prepareImage(for: uploadID, with: uploadProperties, originalAsset)
-                    }
-                    return
+                print("\(debugFormatter.string(from: Date())) > converting photo \(uploadProperties.fileName!)…")
+                
+                // Update state of upload
+                uploadProperties.requestState = .preparing
+                uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+                    // Launch preparation job
+                    self.prepareImage(asset: originalAsset, for: uploadID, with: uploadProperties)
                 }
+                return
             }
+
             // Image file format cannot be accepted by the Piwigo server
             uploadProperties.requestState = .formatError
+
+            // Update UI
+            updateCell(with: uploadProperties.localIdentifier, stateLabel: uploadProperties.stateLabel,
+                       photoResize: nil, progress: nil, errorMsg: kPiwigoUploadState.formatError.stateInfo)
+            
+            // Update upload request
             uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                 // Investigate next upload request?
                 self.didEndPreparation()
@@ -530,28 +706,31 @@ class UploadManager: NSObject, URLSessionDelegate {
                 uploadProperties.requestState = .preparing
                 uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                     // Launch preparation job
-                    self.prepareVideo(for: uploadID, with: uploadProperties, originalAsset)
+                    self.prepareVideo(ofAsset: originalAsset, for: uploadID, with: uploadProperties)
                 }
                 return
             }
             // Convert video if MP4 format is accepted by Piwigo server
-            if uploadProperties.serverFileTypes.contains("mp4") {
+            if uploadProperties.serverFileTypes.contains("mp4"), acceptedMovieFormats.contains(fileExt) {
                 // Try conversion to MP4
-                if fileExt == "mov" {
-                    // Will convert MOV encoded video to MP4
-                    print("\(debugFormatter.string(from: Date())) > converting video \(uploadProperties.fileName!)…")
+                print("\(debugFormatter.string(from: Date())) > converting video \(uploadProperties.fileName!)…")
 
-                    // Update state of upload
-                    uploadProperties.requestState = .preparing
-                    uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
-                        // Launch preparation job
-                        self.convertVideo(for: uploadID, with: uploadProperties, originalAsset)
-                    }
-                    return
+                // Update state of upload
+                uploadProperties.requestState = .preparing
+                uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+                    // Launch preparation job
+                    self.convertVideo(ofAsset: originalAsset, for: uploadID, with: uploadProperties)
                 }
+                return
             }
             // Video file format cannot be accepted by the Piwigo server
             uploadProperties.requestState = .formatError
+
+            // Update UI
+            updateCell(with: uploadProperties.localIdentifier, stateLabel: uploadProperties.stateLabel,
+                       photoResize: nil, progress: nil, errorMsg: kPiwigoUploadState.formatError.stateInfo)
+            
+            // Update upload request
             uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
                 // Investigate next upload request?
                 self.didEndPreparation()
@@ -629,14 +808,9 @@ class UploadManager: NSObject, URLSessionDelegate {
 
         // Update UI
         if !self.isExecutingBackgroundUploadTask {
-            let uploadInfo: [String : Any] = ["localIdentifier" : uploadProperties.localIdentifier,
-                                              "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
-                                              "progressFraction" : Float(0)]
-            DispatchQueue.main.async {
-                // Update UploadQueue cell and button shown in root album (or default album)
-                let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)
-                NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
-            }
+            updateCell(with: uploadProperties.localIdentifier,
+                       stateLabel: kPiwigoUploadState.uploading.stateInfo,
+                       photoResize: nil, progress: Float(0), errorMsg: nil)
         }
 
         // Update state of upload request
@@ -889,7 +1063,7 @@ class UploadManager: NSObject, URLSessionDelegate {
 //            let leftFiles = try fileManager.contentsOfDirectory(at: self.applicationUploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
 //            print("\(debugFormatter.string(from: Date())) > Remaining files in cache: \(leftFiles)")
         } catch {
-            print("\(debugFormatter.string(from: Date())) > could not clear upload folder: \(error)")
+            print("\(debugFormatter.string(from: Date())) > could not clear the Uploads folder: \(error)")
         }
     }
 }

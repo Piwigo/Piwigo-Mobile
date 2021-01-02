@@ -316,6 +316,8 @@ class PhotosFetch: NSObject {
             dateFormatter.dateFormat = "yyyyMMdd-HHmmssSSSS"
             if let creation = imageAsset?.creationDate {
                 utf8mb3Filename = dateFormatter.string(from: creation)
+            } else {
+                utf8mb3Filename = dateFormatter.string(from: Date())
             }
 
             // Filename extension required by Piwigo so that it knows how to deal with it

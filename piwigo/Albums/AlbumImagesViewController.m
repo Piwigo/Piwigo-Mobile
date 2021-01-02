@@ -328,7 +328,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
     self.nberOfUploadsLabel.textColor = [UIColor piwigoColorBackground];
     self.progressLayer.strokeColor = [[UIColor piwigoColorBackground] CGColor];
 
-    [self.homeAlbumButton.layer setShadowColor:[UIColor piwigoColorLeftLabel].CGColor];
+    [self.homeAlbumButton.layer setShadowColor:[UIColor piwigoColorShadow].CGColor];
     self.homeAlbumButton.backgroundColor = [UIColor piwigoColorRightLabel];
     self.homeAlbumButton.tintColor = [UIColor piwigoColorBackground];
 

@@ -881,10 +881,10 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                             if idx != NSNotFound {
                                 let cachedObject = (imageId, uploadsInQueue[index]!.1, asset.canPerform(.delete))
                             	indexedUploadsInQueue[idx] = cachedObject
-							}
-						}
-					}
-				}
+							      }
+						    }
+					    }
+				    }
         	}
         }
         let diff = (CFAbsoluteTimeGetCurrent() - start)*1000

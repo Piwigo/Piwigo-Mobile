@@ -460,6 +460,7 @@
 "imageUploadDetailsCell_uploadComplete" = "Completed! Finishing up...";
 
 "imageUploadRemove" = "Removing uploaded photos";
+"imageUploadPasteboard" = "Clipboard";
 
 "imageUploadTableCell_waiting" = "Waiting...";
 "imageUploadTableCell_preparing" = "Preparing...";
