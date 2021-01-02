@@ -252,7 +252,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
                     print("Error: tableView.dequeueReusableCell does not return a LocalAlbumsNoDatesTableViewCell!")
                     return LocalAlbumsNoDatesTableViewCell()
                 }
-                let title = "Pasteboard"
+                let title = NSLocalizedString("categoryUpload_pasteboard", comment: "Clipboard")
                 let nberPhotos = UIPasteboard.general.itemSet(withPasteboardTypes: ["public.image", "public.movie"])?.count ?? NSNotFound
                 cell.configure(with: title, nberPhotos: nberPhotos)
                 cell.isAccessibilityElement = true

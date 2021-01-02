@@ -179,6 +179,7 @@
 "categoryUpload_syncedFaces" = "iPhoto Faces";
 "categoryUpload_mediaTypes" = "Media Types";
 "categoryUpload_otherAlbums" = "Other Albums";
+"categoryUpload_pasteboard" = "Clipboard";
 
 "categoyUpload_loadSubCategories" = "load";
 "categoryUpload_images" = "Upload Photos";
