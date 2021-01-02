@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
@@ -35,7 +35,7 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFill" restorationIdentifier="PasteboardImageCollectionViewCell" reuseIdentifier="PasteboardImageCollectionViewCell" translatesAutoresizingMaskIntoConstraints="NO" id="ozN-Td-be9" customClass="PasteboardImageCollectionViewCell" customModule="piwigo" customModuleProvider="target">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFill" fixedFrame="YES" restorationIdentifier="PasteboardImageCollectionViewCell" reuseIdentifier="PasteboardImageCollectionViewCell" translatesAutoresizingMaskIntoConstraints="NO" id="ozN-Td-be9" customClass="PasteboardImageCollectionViewCell" customModule="piwigo" customModuleProvider="target">
                                         <rect key="frame" x="91" y="44" width="232" height="232"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" id="NBu-dR-mRZ">
@@ -126,12 +126,28 @@
                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hRn-6r-LMN">
+                                                    <rect key="frame" x="352" y="17" width="54" height="27"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="27" id="SHs-0p-xac"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
+                                                    <state key="normal" title="Select All">
+                                                        <color key="titleColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="tappedSelectButton:" destination="80M-ek-Ose" eventType="touchUpInside" id="b87-R3-KDR"/>
+                                                    </connections>
+                                                </button>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <color key="tintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <constraints>
+                                                <constraint firstAttribute="bottom" secondItem="IuZ-Ot-NeB" secondAttribute="bottom" id="6M8-gv-co4"/>
+                                                <constraint firstItem="hRn-6r-LMN" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="IuZ-Ot-NeB" secondAttribute="trailing" constant="10" id="Dtz-PH-agE"/>
+                                                <constraint firstAttribute="trailing" secondItem="hRn-6r-LMN" secondAttribute="trailing" constant="8" id="J4Q-Mm-4ri"/>
                                                 <constraint firstItem="IuZ-Ot-NeB" firstAttribute="leading" secondItem="QkP-DX-w4M" secondAttribute="leading" constant="4" id="dKY-bR-06J"/>
-                                                <constraint firstAttribute="bottom" secondItem="IuZ-Ot-NeB" secondAttribute="bottom" id="xgo-Vd-cm6"/>
+                                                <constraint firstItem="IuZ-Ot-NeB" firstAttribute="bottom" secondItem="hRn-6r-LMN" secondAttribute="bottom" id="t6W-s7-Ojn"/>
                                             </constraints>
                                         </view>
                                     </subviews>
@@ -143,6 +159,7 @@
                                     </constraints>
                                     <connections>
                                         <outlet property="headerLabel" destination="IuZ-Ot-NeB" id="gxU-W0-esP"/>
+                                        <outlet property="selectButton" destination="hRn-6r-LMN" id="q06-Hw-0Mh"/>
                                     </connections>
                                 </collectionReusableView>
                                 <collectionReusableView key="sectionFooterView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" restorationIdentifier="LocalImagesFooterReusableView" reuseIdentifier="LocalImagesFooterReusableView" id="abx-zd-WA3" customClass="LocalImagesFooterReusableView" customModule="piwigo" customModuleProvider="target">
