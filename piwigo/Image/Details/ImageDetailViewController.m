@@ -84,16 +84,21 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
         // Bar buttons
         self.editBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editImage)];
         [self.editBarButton setAccessibilityIdentifier:@"edit"];
-        self.deleteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageTrash"] landscapeImagePhone:[UIImage imageNamed:@"imageTrashCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(deleteImage)];
+        self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImage)];
         self.deleteBarButton.tintColor = [UIColor redColor];
         [self.deleteBarButton setAccessibilityIdentifier:@"delete"];
-        self.shareBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageShare"] landscapeImagePhone:[UIImage imageNamed:@"imageShareCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(shareImage)];
+        self.shareBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(shareImage)];
         self.shareBarButton.tintColor = [UIColor piwigoColorOrange];
         [self.shareBarButton setAccessibilityIdentifier:@"share"];
-        self.setThumbnailBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imagePaperclip"] landscapeImagePhone:[UIImage imageNamed:@"imagePaperclipCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(setAsAlbumImage)];
+        if (@available(iOS 13.0, *)) {
+            self.setThumbnailBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage systemImageNamed:@"rectangle.and.paperclip"] style:UIBarButtonItemStylePlain target:self action:@selector(setAsAlbumImage)];
+        } else {
+            // Fallback on earlier versions
+            self.setThumbnailBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imagePaperclip"] landscapeImagePhone:[UIImage imageNamed:@"imagePaperclipCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(setAsAlbumImage)];
+        }
         self.setThumbnailBarButton.tintColor = [UIColor piwigoColorOrange];
         [self.setThumbnailBarButton setAccessibilityIdentifier:@"albumThumbnail"];
-        self.moveBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageMove"] landscapeImagePhone:[UIImage imageNamed:@"imageMoveCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addImageToCategory)];
+        self.moveBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply target:self action:@selector(addImageToCategory)];
         self.moveBarButton.tintColor = [UIColor piwigoColorOrange];
         [self.moveBarButton setAccessibilityIdentifier:@"move"];
 //        self.favoriteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageNotFavorite"] landscapeImagePhone:[UIImage imageNamed:@"imageNotFavoriteCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addImageToFavorites)];
@@ -231,16 +236,21 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     // Redefine bar buttons (definition lost after rotation of device)
     self.editBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editImage)];
     [self.editBarButton setAccessibilityIdentifier:@"edit"];
-    self.deleteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageTrash"] landscapeImagePhone:[UIImage imageNamed:@"imageTrashCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(deleteImage)];
+    self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteImage)];
     self.deleteBarButton.tintColor = [UIColor redColor];
     [self.deleteBarButton setAccessibilityIdentifier:@"delete"];
-    self.shareBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageShare"] landscapeImagePhone:[UIImage imageNamed:@"imageShareCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(shareImage)];
+    self.shareBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(shareImage)];
     self.shareBarButton.tintColor = [UIColor piwigoColorOrange];
     [self.shareBarButton setAccessibilityIdentifier:@"share"];
-    self.setThumbnailBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imagePaperclip"] landscapeImagePhone:[UIImage imageNamed:@"imagePaperclipCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(setAsAlbumImage)];
+    if (@available(iOS 13.0, *)) {
+        self.setThumbnailBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage systemImageNamed:@"rectangle.and.paperclip"] style:UIBarButtonItemStylePlain target:self action:@selector(setAsAlbumImage)];
+    } else {
+        // Fallback on earlier versions
+        self.setThumbnailBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imagePaperclip"] landscapeImagePhone:[UIImage imageNamed:@"imagePaperclipCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(setAsAlbumImage)];
+    }
     self.setThumbnailBarButton.tintColor = [UIColor piwigoColorOrange];
     [self.setThumbnailBarButton setAccessibilityIdentifier:@"albumThumbnail"];
-    self.moveBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageMove"] landscapeImagePhone:[UIImage imageNamed:@"imageMoveCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addImageToCategory)];
+    self.moveBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply target:self action:@selector(addImageToCategory)];
     self.moveBarButton.tintColor = [UIColor piwigoColorOrange];
     [self.moveBarButton setAccessibilityIdentifier:@"move"];
 //        self.favoriteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageNotFavorite"] landscapeImagePhone:[UIImage imageNamed:@"imageNotFavoriteCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addImageToFavorites)];

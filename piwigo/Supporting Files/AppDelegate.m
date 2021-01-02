@@ -151,7 +151,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     [[AFNetworkReachabilityManager sharedManager] stopMonitoring];
     
     // Clean up /tmp directory
-    [self cleanUpTemporaryDirectory];
+    [self cleanUpTemporaryDirectoryImmediately:NO];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -188,7 +188,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
         [[AFNetworkReachabilityManager sharedManager] stopMonitoring];
 
         // Clean up /tmp directory
-        [self cleanUpTemporaryDirectory];
+        [self cleanUpTemporaryDirectoryImmediately:NO];
     }
 }
 
@@ -201,9 +201,6 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     } else {
         // Enable network activity indicator
         [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
-        
-        // Enable network reachability monitoring
-        [[AFNetworkReachabilityManager sharedManager] startMonitoring];
         
         // Enable network reachability monitoring
         [[AFNetworkReachabilityManager sharedManager] startMonitoring];
@@ -270,14 +267,15 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
 
 #pragma mark - Cleaning
 
--(void)cleanUpTemporaryDirectory
+-(void)cleanUpTemporaryDirectoryImmediately:(BOOL)immediately
 {
     NSFileManager *fm = [NSFileManager defaultManager];
     NSArray* tmpDirectory = [fm contentsOfDirectoryAtPath:NSTemporaryDirectory() error:NULL];
     for (NSString *file in tmpDirectory) {
         NSString *path = [NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), file];
         NSDictionary* attrs = [fm attributesOfItemAtPath:path error:nil];
-        if ([[attrs fileCreationDate] timeIntervalSinceReferenceDate] + k1WeekInDays < [NSDate timeIntervalSinceReferenceDate]) {
+        if (([[attrs fileCreationDate] timeIntervalSinceReferenceDate] + k1WeekInDays < [NSDate timeIntervalSinceReferenceDate])
+            || (immediately)) {
             [[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
         }
     }

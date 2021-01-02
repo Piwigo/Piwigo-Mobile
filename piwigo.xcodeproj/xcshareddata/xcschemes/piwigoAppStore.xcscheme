@@ -47,8 +47,7 @@
       userAttachmentLifetime = "keepAlways">
       <Testables>
          <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
+            skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "AD30FD3321316DA7009AA30E"

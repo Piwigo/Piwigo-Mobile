@@ -259,7 +259,6 @@ class LocationsProvider: NSObject {
 
 
     // MARK: - Get Place Names
-    
     /**
      Routine returning the place name of a location
      This routine adds an operation fetching the place name if necessary
@@ -371,4 +370,29 @@ class LocationsProvider: NSObject {
         deltaLong = deltaLong / num * den
         return (deltaLong * 180.0 / Double.pi) as CLLocationDegrees
     }
+
+    /**
+     A fetched results controller to fetch Location records sorted by name.
+     */
+    lazy var fetchedResultsController: NSFetchedResultsController<Location> = {
+        
+        // Create a fetch request for the Tag entity sorted by name.
+        let fetchRequest = NSFetchRequest<Location>(entityName: "Location")
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "latitude", ascending: true),
+                                        NSSortDescriptor(key: "longitude", ascending: true)]
+
+        // Create a fetched results controller and set its fetch request, context, and delegate.
+        let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                            managedObjectContext: self.managedObjectContext,
+                                              sectionNameKeyPath: nil, cacheName: nil)
+        
+        // Perform the fetch.
+        do {
+            try controller.performFetch()
+        } catch {
+            fatalError("Unresolved error \(error)")
+        }
+        
+        return controller
+    }()
 }

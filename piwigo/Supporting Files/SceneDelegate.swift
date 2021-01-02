@@ -164,6 +164,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Clean up /tmp directory
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        appDelegate?.cleanUpTemporaryDirectory()
+        appDelegate?.cleanUpTemporaryDirectoryImmediately(false)
     }
 }

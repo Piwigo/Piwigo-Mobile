@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
@@ -142,14 +142,14 @@
                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lfe-Kd-abT">
-                                                    <rect key="frame" x="347" y="26" width="55" height="18"/>
+                                                <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lfe-Kd-abT">
+                                                    <rect key="frame" x="351" y="14" width="55" height="27"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="height" constant="18" id="taE-Zp-gph"/>
+                                                        <constraint firstAttribute="height" constant="27" id="bdo-M7-fBu"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
                                                     <state key="normal" title="Select All">
-                                                        <color key="titleColor" systemColor="labelColor"/>
+                                                        <color key="titleColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                     </state>
                                                     <connections>
                                                         <action selector="tappedSelectButton:" destination="80M-ek-Ose" eventType="touchUpInside" id="RUO-Gh-Bfs"/>
@@ -159,12 +159,13 @@
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <color key="tintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <constraints>
-                                                <constraint firstAttribute="bottom" secondItem="Lfe-Kd-abT" secondAttribute="bottom" id="8gB-0u-eKB"/>
+                                                <constraint firstItem="Lfe-Kd-abT" firstAttribute="bottom" secondItem="NIO-n9-bqf" secondAttribute="baseline" id="8gB-0u-eKB"/>
                                                 <constraint firstItem="IuZ-Ot-NeB" firstAttribute="leading" secondItem="QkP-DX-w4M" secondAttribute="leading" constant="8" id="E5G-dL-Ipw"/>
                                                 <constraint firstItem="NIO-n9-bqf" firstAttribute="leading" secondItem="QkP-DX-w4M" secondAttribute="leading" constant="8" id="H2a-jo-2YV"/>
                                                 <constraint firstAttribute="bottom" secondItem="NIO-n9-bqf" secondAttribute="bottom" id="cdc-8q-Liq"/>
                                                 <constraint firstItem="NIO-n9-bqf" firstAttribute="firstBaseline" secondItem="IuZ-Ot-NeB" secondAttribute="baseline" constant="20" symbolType="layoutAnchor" id="fIM-xg-ADB"/>
-                                                <constraint firstItem="Lfe-Kd-abT" firstAttribute="trailing" secondItem="QkP-DX-w4M" secondAttribute="trailingMargin" constant="8" id="n8v-KW-Fd2"/>
+                                                <constraint firstAttribute="trailing" secondItem="Lfe-Kd-abT" secondAttribute="trailing" constant="8" id="n8v-KW-Fd2"/>
+                                                <constraint firstItem="Lfe-Kd-abT" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="IuZ-Ot-NeB" secondAttribute="trailing" constant="10" id="pAn-ka-Tj4"/>
                                                 <constraint firstItem="Lfe-Kd-abT" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="NIO-n9-bqf" secondAttribute="trailing" constant="10" id="wpv-JQ-p9X"/>
                                             </constraints>
                                         </view>

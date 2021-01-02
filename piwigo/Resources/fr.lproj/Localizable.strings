@@ -275,6 +275,7 @@
 "singleVideo" = "Vidéo";
 "singleAudio" = "Audio";
 "severalImages" = "Photos";
+"All Photos" = "Toutes les photos";
 "severalVideos" = "Vidéos";
 "noImages" = "Pas de photos";
 "pullToRefresh" = "Rechargement des photos";
@@ -282,6 +283,7 @@
 "Months" = "Mois";
 "Weeks" = "Semaines";
 "Days" = "Jours";
+"Date" = "Date";
 
 // Errors
 "albumPhotoError_title" = "Photos d'Album Non Récupérées";
@@ -356,7 +358,7 @@
 "selectImages" = "Sélectionnez";
 "selectImageSelected" = "1 photo";
 "selectImagesSelected" = "%@ photos";
-"selectAll" = "Tout";
+"selectAll" = "Tout Sélectionner";
 
 // Image rename (filename)
 "renameImage_title" = "Fichier d'origine";
@@ -550,14 +552,10 @@
 "shareActivityCode_Other>375px" = "Partager des photos avec d'autres Apps";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS / Photo Library
+// ==> LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "Bibliothèque de Photos";
-
-"localImageSort_newest" = "Plus Récentes";
-"localImageSort_oldest" = "Plus Anciennes";
-"localImageSort_notUploaded" = "Pas Encore Envoyées";
-"localImageSort_undefined" = "Non Défini";
+"localAlbums_accessible" = "Photos accessibles";
 
 // Local albums — Access not Authorized
 "localAlbums_photosNotAuthorized_title" = "Accès Refusé";
@@ -566,6 +564,10 @@
 
 // Local albums — Tell user to change settings, how
 "localAlbums_photosNotAuthorized_msg" = "Impossible d’ouvrir la photothèque locale. Allez dans l’application Réglages et activez l’accès pour Piwigo.";
+
+// Local images — Explain
+"localImages_deleteTitle" = "Retirer de la pellicule";
+"localImages_deleteMessage" = "Voulez-vous supprimer les photos ou vidéos téléchargées de la pellicule ? Les photos ou vidéos supprimées resteront disponibles dans la corbeille de l'app Photos pendant 30 jours.";
 
 // ===========================================================================
 // ==> SETTINGS
@@ -717,3 +719,9 @@
 "help02_text3" = "(nécessite l'extension uploadAsync ou Piwigo 11)";
 "help03_header" = "Administrateurs";
 "help03_text" = "Créer, supprimer, déplacer et renommer des albums.";
+"help04_text" = "Les photos téléchargées retirées de la pellicule restent disponibles dans la corbeille de l'app iOS Photos pendant 30 jours.";
+"help05_header" = "Téléchargement des photos";
+"help05_text" = "Une fois les demandes de téléchargement soumises, vous pouvez parcourir les albums, soumettre d'autres demandes ou quitter l'app.";
+"help05_text2" = "Appuyez sur le bouton gris présenté dans l'album racine pour gérer les téléchargements.";
+"help06_header" = "Gestion des téléchargements";
+"help06_text" = "Surveillez, annulez et relancez les demandes de téléchargement globalement ou individuellement.";

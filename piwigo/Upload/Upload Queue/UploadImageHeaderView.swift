@@ -49,22 +49,4 @@ class UploadImageHeaderView: UITableViewHeaderFooterView {
                 "header": headerLabel
             ]))
     }
-
-//    func sectionNameFor(_ sectionKey: String) -> String {
-//        var sectionName = "—?—"
-//        let section = SectionKeys.init(rawValue: sectionKey)
-//        switch section {
-//        case .Section1:
-//            sectionName = NSLocalizedString("uploadSection_impossible", comment: "Impossible Uploads")
-//        case .Section2:
-//            sectionName = NSLocalizedString("uploadSection_resumable", comment: "Resumable Uploads")
-//        case .Section3:
-//            sectionName = NSLocalizedString("uploadSection_queue", comment: "Uploads Queue")
-//        case .Section4:
-//            fallthrough
-//        default:
-//            sectionName = "—?—"
-//        }
-//        return sectionName
-//    }
 }

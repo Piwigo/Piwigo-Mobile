@@ -275,6 +275,7 @@
 "singleVideo" = "视频";
 "singleAudio" = "音频";
 "severalImages" = "照片";
+"All Photos" = "所有照片";
 "severalVideos" = "视频";
 "noImages" = "没有照片";
 "pullToRefresh" = "刷新照片";
@@ -282,6 +283,7 @@
 "Months" = "月";
 "Weeks" = "周";
 "Days" = "天";
+"Date" = "日期";
 
 // Errors
 "albumPhotoError_title" = "无法获取相册中的照片";
@@ -550,14 +552,10 @@
 "shareActivityCode_Other>375px" = "使用其他应用共享照片";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS / Photo Library
+// ==> LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "照片库";
-
-"localImageSort_newest" = "最新的";
-"localImageSort_oldest" = "最早的";
-"localImageSort_notUploaded" = "未上传的";
-"localImageSort_undefined" = "未定义的";
+"localAlbums_accessible" = "可访问照片";
 
 // Local albums — Access not Authorized
 "localAlbums_photosNotAuthorized_title" = "无访问权限";
@@ -566,6 +564,10 @@
 
 // Local albums — Tell user to change settings, how
 "localAlbums_photosNotAuthorized_msg" = "无法读取本地照片库，请进入设备设置菜单，为Piwigo授予相应权限";
+
+// Local images — Explain
+"localImages_deleteTitle" = "从相机卷删除";
+"localImages_deleteMessage" = "您想要从相机卷中删除上传的照片或视频吗？ 已删除的照片或视频仍可在 iOS 照片回收站中使用 30 天。";
 
 // ===========================================================================
 // ==> SETTINGS
@@ -717,3 +719,9 @@
 "help02_text3" = "(需要 uploadAsync 扩展或 Piwigo 11)";
 "help03_header" = "管理员";
 "help03_text" = "创建、删除、移动和重命名相册。";
+"help04_text" = "从相机卷中删除的上传照片仍可在 iOS 照片回收站中使用30天。";
+"help05_header" = "上传照片";
+"help05_text" = "上传请求一旦提交，您可以浏览相册，提交其他请求或离开应用程序。";
+"help05_text2" = "点击根相册中的灰色按钮来管理上传。";
+"help06_header" = "上传管理";
+"help06_text" = "全局或单独监测、取消和恢复上传请求。";

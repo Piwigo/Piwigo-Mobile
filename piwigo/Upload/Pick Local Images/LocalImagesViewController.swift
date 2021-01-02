@@ -73,8 +73,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     private var indexOfImageSortedByWeek: [IndexSet] = []       // Indices of images sorted week
     private var indexOfImageSortedByDay: [IndexSet] = []        // Indices of images sorted day
 
-    private var uploadsInQueue = [(String?,kPiwigoUploadState?)?]()         // Array of uploads in queue at start
-    private var indexedUploadsInQueue = [(String?,kPiwigoUploadState?)?]()  // Arrays of uploads at indices of corresponding image
+    private var uploadsInQueue = [(String,kPiwigoUploadState)?]()         // Array of uploads in queue at start
+    private var indexedUploadsInQueue = [(String,kPiwigoUploadState,Bool)?]()  // Arrays of uploads at indices of fetched image
     private var selectedImages = [UploadProperties?]()                                  // Array of images to upload
     private var selectedSections = [LocalImagesHeaderReusableView.SelectButtonState]()  // State of Select buttons
     private var imagesBeingTouched = [IndexPath]()                                      // Array of indexPaths of touched images
@@ -82,10 +82,26 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     private var uploadIDsToDelete = [NSManagedObjectID]()
     private var imagesToDelete = [String]()
     
-    private var actionBarButton: UIBarButtonItem?
-    private var cancelBarButton: UIBarButtonItem?
-    private var uploadBarButton: UIBarButtonItem?
-    
+    private var cancelBarButton: UIBarButtonItem!       // For cancelling the selection of images
+    private var uploadBarButton: UIBarButtonItem!       // for uploading selected images
+    private var trashBarButton: UIBarButtonItem!        // For deleting uploaded images on iPhone until iOS 13
+                                                        //                              on iPad (all iOS)
+    private var actionBarButton: UIBarButtonItem!       // iPhone until iOS 13:
+                                                        //  - for reversing the sort order
+                                                        // iPhone as from iOS 14:
+                                                        //  - for reversing the sort order
+                                                        //  - for sorting by day, week or month (or not)
+                                                        //  - for deleting uploaded images
+                                                        //  - for selecting images in the Photo Library
+                                                        // iPad until iOS 13:
+                                                        //  - for reversing the sort order
+                                                        // iPad as from iOS 14:
+                                                        //  - for reversing the sort order
+                                                        //  - for sorting by day, week or month (or not)
+                                                        //  - for selecting images in the Photo Library
+    private var legendLabel = UILabel.init()            // Legend presented in the toolbar on iPhone/iOS 14+
+    private var legendBarItem: UIBarButtonItem!
+
     private var removeUploadedImages = false
     private var hudViewController: UIViewController?
 
@@ -131,36 +147,82 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         localImagesCollection.accessibilityIdentifier = "CameraRoll"
         
         // Navigation bar
+        navigationController?.toolbar.tintColor = UIColor.piwigoColorOrange()
         navigationController?.navigationBar.accessibilityIdentifier = "LocalImagesNav"
 
-        // Bar buttons
-        if #available(iOS 14.0, *) {
-            actionBarButton = UIBarButtonItem(image: UIImage(systemName: "photo.on.rectangle.angled"), style: .plain, target: self, action: #selector(didTapActionButton))
-        } else {
-            // Fallback on earlier versions
-            actionBarButton = UIBarButtonItem(image: UIImage(named: "list"), landscapeImagePhone: UIImage(named: "listCompact"), style: .plain, target: self, action: #selector(didTapActionButton))
-        }
-        actionBarButton?.accessibilityIdentifier = "Sort"
-        actionBarButton?.isEnabled = false
+        // The cancel button is used to cancel the selection of images to upload
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelSelect))
-        cancelBarButton?.accessibilityIdentifier = "Cancel"
+        cancelBarButton.accessibilityIdentifier = "Cancel"
+        
+        // The upload button is available after having selecting images
         uploadBarButton = UIBarButtonItem(title: NSLocalizedString("tabBar_upload", comment: "Upload"), style: .done, target: self, action: #selector(didTapUploadButton))
-        uploadBarButton?.isEnabled = false
-        uploadBarButton?.accessibilityIdentifier = "Upload"
+        uploadBarButton.isEnabled = false
+        uploadBarButton.accessibilityIdentifier = "Upload"
         
-        // Segmented control (choice for presenting images by month, week, day or in a single collection)
-        if #available(iOS 13.0, *) {
-            segmentedControl.selectedSegmentTintColor = UIColor.piwigoColorOrange()
+        // Configure menus, segmented control, etc.
+        if #available(iOS 14, *) {
+            // Hide the segmented control
+            sortOptionsView.isHidden = true
+
+            // Initialise buttons, toolbar and segmented control
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                // The action button proposes:
+                /// - to swap between ascending and descending sort orders,
+                /// - to choose one of the 4 sort options,
+                /// - to select new photos in the Photo Library if the user did not grant full access to the Photo Library (iOS 14+).
+                let menu = UIMenu(title: "", children: [getMenuForSorting(),
+                                                        getMenuForSelectingPhotos()].compactMap({$0}))
+                actionBarButton = UIBarButtonItem(image: UIImage(systemName: "square.grid.2x2"), menu: menu)
+
+                // The deletion of photos already uploaded to a Piwigo server is requested with this trash button.
+                trashBarButton = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(self.deleteUploadedImages))
+                trashBarButton.isEnabled = false
+            } else {
+                // The action button proposes:
+                /// - to swap between ascending and descending sort orders,
+                /// - to choose one of the 4 sort options,
+                /// - to select new photos in the Photo Library if the user did not grant full access to the Photo Library (iOS 14+).
+                /// - to delete photos already uploaded to the Piwigo server.
+                let menu = UIMenu(title: "", children: [getMenuForSorting(),
+                                                        getMenuForSelectingPhotos(),
+                                                        getMenuForDeletingPhotos()].compactMap({$0}))
+                actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
+
+                // Presents the number of photos selected and the Upload button in the toolbar
+                navigationController?.isToolbarHidden = false
+                legendLabel.text = NSLocalizedString("selectImages", comment: "Select Photos")
+            }
         } else {
-            segmentedControl.tintColor = UIColor.piwigoColorOrange()
+            // Fallback on earlier versions.
+            // The action button simply proposes to swap between the two following sort options:
+            ///     • "Date Created: old -> new"
+            ///     • "Date Created: new -> old"
+            /// It is presented with an icon which changes with the available option.
+            actionBarButton = UIBarButtonItem(image: getSwapSortImage(),
+                                              landscapeImagePhone: getSwapSortCompactImage(),
+                                              style: .plain, target: self, action: #selector(self.swapSortOrder))
+            actionBarButton.isEnabled = false
+
+            // The deletion of photos already uploaded to a Piwigo server is requested with this trash button.
+            trashBarButton = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(self.deleteUploadedImages))
+            trashBarButton.isEnabled = false
+
+            // The sort options are presented in a segmented bar on iPhone & iPad.
+            // Segmented control (choice for presenting images by month, week, day or in a single collection)
+            if #available(iOS 13.0, *) {
+                segmentedControl.selectedSegmentTintColor = UIColor.piwigoColorOrange()
+            } else {
+                segmentedControl.tintColor = UIColor.piwigoColorOrange()
+            }
+            segmentedControl.selectedSegmentIndex = Int(sortType.rawValue)
+            segmentedControl.setEnabled(false, forSegmentAt: SectionType.month.rawValue)
+            segmentedControl.setEnabled(false, forSegmentAt: SectionType.week.rawValue)
+            segmentedControl.setEnabled(false, forSegmentAt: SectionType.day.rawValue)
+            segmentedControl.superview?.layer.cornerRadius = segmentedControl.layer.cornerRadius
+            segmentedControl.accessibilityIdentifier = "sort";
         }
-        segmentedControl.selectedSegmentIndex = Int(sortType.rawValue)
-        segmentedControl.setEnabled(false, forSegmentAt: SectionType.month.rawValue)
-        segmentedControl.setEnabled(false, forSegmentAt: SectionType.week.rawValue)
-        segmentedControl.setEnabled(false, forSegmentAt: SectionType.day.rawValue)
-        segmentedControl.superview?.layer.cornerRadius = segmentedControl.layer.cornerRadius
-        segmentedControl.accessibilityIdentifier = "sort";
-        
+        actionBarButton.accessibilityIdentifier = "Action"
+
         // Show images in upload queue by default
         removeUploadedImages = false
     }
@@ -185,12 +247,24 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
 
         // Segmented control
-        segmentedControl.superview?.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.8)
-        if #available(iOS 13.0, *) {
-            // Keep standard background color
-            segmentedControl.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
-        } else {
-            segmentedControl.backgroundColor = UIColor(red: 0.0, green: 0.0, blue: 0.08, alpha: 0.06666)
+        if #available(iOS 14, *) {
+            // Toolbar
+            legendLabel.textColor = UIColor.piwigoColorText()
+            legendBarItem = UIBarButtonItem.init(customView: legendLabel)
+            toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
+            navigationController?.toolbar.barTintColor = UIColor.piwigoColorBackground()
+            navigationController?.toolbar.barStyle = Model.sharedInstance().isDarkPaletteActive ? .black : .default
+        }
+        else {
+            // Fallback on earlier versions
+            // Segmented control
+            segmentedControl.superview?.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.8)
+            if #available(iOS 13.0, *) {
+                // Keep standard background color
+                segmentedControl.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+            } else {
+                segmentedControl.backgroundColor = UIColor(red: 0.0, green: 0.0, blue: 0.08, alpha: 0.06666)
+            }
         }
 
         // Collection view
@@ -257,6 +331,16 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Allow device to sleep
         UIApplication.shared.isIdleTimerDisabled = false
 
+        // Restart UploadManager activities
+        if UploadManager.shared.isPaused {
+            UploadManager.shared.isPaused = false
+            UploadManager.shared.backgroundQueue.async {
+                UploadManager.shared.findNextImageToUpload()
+            }
+        }
+    }
+    
+    deinit {
         // Unregister Photo Library changes
         PHPhotoLibrary.shared().unregisterChangeObserver(self)
 
@@ -267,48 +351,127 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Unregister upload progress
         let name2: NSNotification.Name = NSNotification.Name(kPiwigoNotificationUploadProgress)
         NotificationCenter.default.removeObserver(self, name: name2, object: nil)
-
-        // Restart UploadManager activities
-        if UploadManager.shared.isPaused {
-            UploadManager.shared.isPaused = false
-            UploadManager.shared.backgroundQueue.async {
-                UploadManager.shared.findNextImageToUpload()
-            }
-        }
     }
 
     func updateNavBar() {
         let nberOfSelectedImages = selectedImages.compactMap{ $0 }.count
         switch nberOfSelectedImages {
-            case 0:
-                navigationItem.leftBarButtonItems = []
-                // Do not show two buttons to provide enough space for title
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                if view.bounds.size.width <= 414 {
-                    // i.e. smaller than iPhones 6,7 Plus screen width
+        case 0:
+            // Buttons
+            cancelBarButton.isEnabled = false
+            actionBarButton.isEnabled = (queue.operationCount == 0)
+            uploadBarButton.isEnabled = false
+
+            // Display "Back" button on the left side
+            navigationItem.leftBarButtonItems = []
+
+            // Set buttons on the right side on iPhone
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                if #available(iOS 14, *) {
+                    // Presents a single action menu
+                    navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
+                    
+                    // Present the "Upload" button in the toolbar
+                    legendLabel.text = NSLocalizedString("selectImages", comment: "Select Photos")
+                    legendBarItem = UIBarButtonItem.init(customView: legendLabel)
+                    toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
+                } else {
+                    // Title
+                    title = NSLocalizedString("selectImages", comment: "Select Photos")
+
+                    // Present buttons according to the context
+                    if canDeleteUploadedImages() {
+                        trashBarButton.isEnabled = true
+                        navigationItem.rightBarButtonItems = [actionBarButton, trashBarButton].compactMap { $0 }
+                    } else {
+                        trashBarButton.isEnabled = false
+                        if (UIDevice.current.orientation == .landscapeLeft) ||
+                            (UIDevice.current.orientation == .landscapeRight) {
+                            navigationItem.rightBarButtonItems = [actionBarButton, trashBarButton].compactMap { $0 }
+                        } else {
+                            navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
+                        }
+                    }
+                }
+            }
+        
+        default:
+            // Buttons
+            cancelBarButton.isEnabled = true
+            actionBarButton.isEnabled = (queue.operationCount == 0)
+            uploadBarButton.isEnabled = true
+
+            // Display "Cancel" button on the left side
+            navigationItem.leftBarButtonItems = [cancelBarButton].compactMap { $0 }
+
+            // Set buttons on the right side on iPhone
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                if #available(iOS 14, *) {
+                    // Update the number of selected photos in the toolbar
+                    legendLabel.text = nberOfSelectedImages == 1 ? NSLocalizedString("selectImageSelected", comment: "1 Photo Selected") : String(format:NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), NSNumber(value: nberOfSelectedImages))
+                    legendBarItem = UIBarButtonItem.init(customView: legendLabel)
+                    toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
+
+                    // Presents a single action menu
                     navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
                 } else {
-                    navigationItem.rightBarButtonItems = [actionBarButton, uploadBarButton].compactMap { $0 }
-                    uploadBarButton?.isEnabled = false
-                }
-                cancelBarButton?.isEnabled = false
-                actionBarButton?.isEnabled = (queue.operationCount == 0)
-                uploadBarButton?.isEnabled = false
-                title = NSLocalizedString("selectImages", comment: "Select Photos")
-            default:
-                navigationItem.leftBarButtonItems = [cancelBarButton].compactMap { $0 }
-                // Do not show two buttons to provide enough space for title
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                if view.bounds.size.width <= 414 {
-                    // i.e. smaller than iPhones 6,7 Plus screen width
+                    // Update the number of selected photos in the navigation bar
+                    title = nberOfSelectedImages == 1 ? NSLocalizedString("selectImageSelected", comment: "1 Photo Selected") : String(format:NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), NSNumber(value: nberOfSelectedImages))
+
+                    // Presents a single action menu
                     navigationItem.rightBarButtonItems = [uploadBarButton].compactMap { $0 }
-                } else {
-                    navigationItem.rightBarButtonItems = [actionBarButton, uploadBarButton].compactMap { $0 }
                 }
-                cancelBarButton?.isEnabled = true
-                actionBarButton?.isEnabled = (queue.operationCount == 0)
-                uploadBarButton?.isEnabled = true
-                title = nberOfSelectedImages == 1 ? NSLocalizedString("selectImageSelected", comment: "1 Photo Selected") : String(format:NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), NSNumber(value: nberOfSelectedImages))
+            }
+        }
+
+        // Set buttons on the right side on iPad
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            // Update the number of selected photos in the navigation bar
+            title = nberOfSelectedImages == 1 ? NSLocalizedString("selectImageSelected", comment: "1 Photo Selected") : String(format:NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), NSNumber(value: nberOfSelectedImages))
+
+            if canDeleteUploadedImages() {
+                trashBarButton.isEnabled = true
+                navigationItem.rightBarButtonItems = [uploadBarButton,
+                                                      actionBarButton,
+                                                      trashBarButton].compactMap { $0 }
+            } else {
+                trashBarButton.isEnabled = false
+                navigationItem.rightBarButtonItems = [uploadBarButton,
+                                                      actionBarButton].compactMap { $0 }
+            }
+        }
+    }
+    
+    private func updateActionButton() {
+        // Change button icon or content
+        if #available(iOS 14, *) {
+            // Update action button
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                // The action button proposes:
+                /// - to swap between ascending and descending sort orders,
+                /// - to choose one of the 4 sort options
+                /// - to select new photos in the Photo Library if the user did not grant full access to the Photo Library (iOS 14+).
+                actionBarButton.menu = UIMenu(title: "", children: [getMenuForSorting(),
+                                                                    getMenuForSelectingPhotos()].compactMap({$0}))
+            } else {
+                // The action button proposes:
+                /// - to swap between ascending and descending sort orders,
+                /// - to choose one of the 4 sort options
+                /// - to select new photos in the Photo Library if the user did not grant full access to the Photo Library (iOS 14+).
+                /// - to delete photos already uploaded to the Piwigo server.
+                actionBarButton.menu = UIMenu(title: "", children: [getMenuForSorting(),
+                                                                    getMenuForSelectingPhotos(),
+                                                                    getMenuForDeletingPhotos()].compactMap({$0}))
+            }
+        } else {
+            // Fallback on earlier versions.
+            // The action button simply proposes to swap between the two following sort options:
+            ///     • "Date Created: old -> new"
+            ///     • "Date Created: new -> old"
+            /// It is presented with an icon which changes with the available option.
+            actionBarButton = UIBarButtonItem(image: getSwapSortImage(),
+                                              landscapeImagePhone: getSwapSortCompactImage(),
+                                              style: .plain, target: self, action: #selector(self.swapSortOrder))
         }
     }
 
@@ -328,7 +491,15 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         fetchOptions.includeHiddenAssets = false
         fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
 
+        // Fetch image collection
         let assetCollections = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [self.imageCollectionId], options: nil)
+        
+        // Display album name on iPhone as from iOS 14
+        if #available(iOS 14.0, *), UIDevice.current.userInterfaceIdiom == .phone {
+            title = assetCollections.firstObject!.localizedTitle
+        }
+        
+        // Fetch images in album
         fetchedImages = PHAsset.fetchAssets(in: assetCollections.firstObject!, options: fetchOptions)
 
         // Next 2 lines for testing
@@ -360,16 +531,23 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 } else {
                     self.sortByMonthWeekDayAndUpdateSelection(images: self.fetchedImages)
                 }
+            } else {
+                self.selectedImages = []
+                self.selectedSections = []
             }
         })
         sortOperation.completionBlock = {
             // Allow sort options and refresh section headers
             DispatchQueue.main.async {
-                // Enable segments
-                self.segmentedControl.setEnabled(true, forSegmentAt: SectionType.month.rawValue)
-                self.segmentedControl.setEnabled(true, forSegmentAt: SectionType.week.rawValue)
-                self.segmentedControl.setEnabled(true, forSegmentAt: SectionType.day.rawValue)
-                self.segmentedControl.selectedSegmentIndex = Int(self.sortType.rawValue)
+                if #available(iOS 14, *) {
+                    // NOP
+                } else {
+                    // Enable segments
+                    self.segmentedControl.setEnabled(true, forSegmentAt: SectionType.month.rawValue)
+                    self.segmentedControl.setEnabled(true, forSegmentAt: SectionType.week.rawValue)
+                    self.segmentedControl.setEnabled(true, forSegmentAt: SectionType.day.rawValue)
+                    self.segmentedControl.selectedSegmentIndex = Int(self.sortType.rawValue)
+                }
             }
         }
         
@@ -386,12 +564,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 self.cachingUploadIndicesIteratingFetchedImages()
             }
         }
-        cacheOperation.completionBlock = {
-            // Allow action button
-            DispatchQueue.main.async {
-                self.actionBarButton?.isEnabled = true
-            }
-        }
 
         // Perform both operations in background and in parallel
         queue.maxConcurrentOperationCount = .max   // Make it a serial queue for debugging with 1
@@ -402,6 +574,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         self.hideHUDwithSuccess(true) {
             // Enable Select buttons
             DispatchQueue.main.async {
+                self.updateActionButton()
+                self.updateNavBar()
                 self.localImagesCollection.reloadData()
             }
             // Restart UplaodManager activity if all images are already in the upload queue
@@ -664,7 +838,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 // Get image identifier
                 let imageId = fetchedImages[index].localIdentifier
                 if let upload = uploadsInQueue.first(where: { $0?.0 == imageId }) {
-                    indexedUploadsInQueue[index] = upload
+                    let cachedObject = (upload!.0, upload!.1, fetchedImages[index].canPerform(.delete))
+                    indexedUploadsInQueue[index] = cachedObject
                 }
             }
         }
@@ -704,91 +879,147 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                         if let asset = PHAsset.fetchAssets(with: fetchOptions).firstObject {
                             let idx = fetchedImages.index(of: asset)
                             if idx != NSNotFound {
-                                indexedUploadsInQueue[idx] = uploadsInQueue[index]
-                            }
-                        }
-                    }
-                }
-            }
+                                let cachedObject = (imageId, uploadsInQueue[index]!.1, asset.canPerform(.delete))
+                            	indexedUploadsInQueue[idx] = cachedObject
+							      }
+						    }
+					    }
+				    }
+        	}
         }
         let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
         print("   cached \(uploadsInQueue.count) images by iterating uploads in queue in \(diff) ms")
     }
 
     
-    // MARK: - Action Menu
-    
-    @objc func didTapActionButton() {
-        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-
-        // Cancel action
-        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in
-            })
-        alert.addAction(cancelAction)
-
-        // Change sort option
-        let sortOption = Model.sharedInstance().localImagesSort == kPiwigoSortDateCreatedDescending ? kPiwigoSortDateCreatedAscending : kPiwigoSortDateCreatedDescending
-        let sortAction = UIAlertAction(title: CategorySortViewController.getNameForCategorySortType(sortOption), style: .default, handler: { action in
-            switch Model.sharedInstance().localImagesSort {
-            case kPiwigoSortDateCreatedDescending:
-                Model.sharedInstance().localImagesSort = kPiwigoSortDateCreatedAscending
-            case kPiwigoSortDateCreatedAscending:
-                Model.sharedInstance().localImagesSort = kPiwigoSortDateCreatedDescending
-            default:
-                break
+    // MARK: - Sort Images
+    /// Icons used on iPhone and iPad on iOS 13 and earlier
+    private func getSwapSortImage() -> UIImage {
+        switch Model.sharedInstance()?.localImagesSort {
+        case kPiwigoSortDateCreatedAscending:
+            if #available(iOS 13.0, *) {
+                return UIImage(named: "dateDescending")!
+            } else {
+                return UIImage(named: "dateDescendingLight")!
             }
-            Model.sharedInstance()?.saveToDisk()
-
-            // Sort images
-            self.localImagesCollection.reloadData()
-        })
-        alert.addAction(sortAction)
-
-        // Delete uploaded images (fetch on the main queue)
-        uploadIDsToDelete = [NSManagedObjectID](); imagesToDelete = [String]()
-        let indexedUploads = self.indexedUploadsInQueue.compactMap({$0})
-        if let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects {
-            let completedUploads = allUploads.filter({ ($0.state == .finished) || ($0.state == .moderated) })
-            for index in 0..<indexedUploads.count {
-                if let upload = completedUploads.first(where: {$0.localIdentifier == indexedUploads[index].0}) {
-                    uploadIDsToDelete.append(upload.objectID)
-                    imagesToDelete.append(indexedUploads[index].0!)
-                }
+        case kPiwigoSortDateCreatedDescending:
+            if #available(iOS 13.0, *) {
+                return UIImage(named: "dateAscending")!
+            } else {
+                return UIImage(named: "dateAscendingLight")!
             }
-            if imagesToDelete.count > 0 {
-                let titleDelete = imagesToDelete.count > 1 ? String(format: NSLocalizedString("deleteCategory_allImages", comment: "Delete %@ Photos"), NumberFormatter.localizedString(from: NSNumber.init(value: imagesToDelete.count), number: .decimal)) : NSLocalizedString("deleteSingleImage_title", comment: "Delete Photo")
-                let deleteAction = UIAlertAction(title: titleDelete, style: .destructive, handler: { action in
-                    // Delete uploaded images
-                    UploadManager.shared.delete(uploadedImages: self.imagesToDelete, with: self.uploadIDsToDelete)
-                })
-                alert.addAction(deleteAction)
-            }
-        }
-
-        if #available(iOS 14, *) {
-            if PHPhotoLibrary.authorizationStatus(for: .readWrite) == .limited {
-                let selectItemsInPhotoLibrary = UIAlertAction(title: NSLocalizedString("localAlbums", comment: "Photo Library"), style: .default, handler: { action in
-                    // Proposes to change the Photo Library selection
-                    PHPhotoLibrary.shared().presentLimitedLibraryPicker(from: self)
-                })
-                alert.addAction(selectItemsInPhotoLibrary)
-            }
-        }
-
-        // Present list of actions
-        alert.view.tintColor = UIColor.piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
-        alert.popoverPresentationController?.barButtonItem = actionBarButton
-        present(alert, animated: true) {
-            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange()
+        default:
+            return UIImage(named: "action")!
         }
     }
 
+    /// Icons used on iPhone and iPad on iOS 13 and earlier
+    private func getSwapSortCompactImage() -> UIImage {
+        switch Model.sharedInstance()?.localImagesSort {
+        case kPiwigoSortDateCreatedAscending:
+            if #available(iOS 13.0, *) {
+                return UIImage(named: "dateDescendingCompact")!
+            } else {
+                return UIImage(named: "dateDescendingLightCompact")!
+            }
+        case kPiwigoSortDateCreatedDescending:
+            if #available(iOS 13.0, *) {
+                return UIImage(named: "dateAscendingCompact")!
+            } else {
+                return UIImage(named: "dateAscendingLightCompact")!
+            }
+        default:
+            return UIImage(named: "actionCompact")!
+        }
+    }
+
+    @available(iOS 14, *)
+    private func getMenuForSorting() -> UIMenu {
+        // Initialise menu items
+        let swapOrder: UIAction!
+        switch Model.sharedInstance()?.localImagesSort {
+        case kPiwigoSortDateCreatedAscending:
+            swapOrder = UIAction(title: NSLocalizedString("Date", comment: "Date"),
+                                 image: UIImage(systemName: "arrow.up"), handler: { _ in self.swapSortOrder()})
+        case kPiwigoSortDateCreatedDescending:
+            swapOrder = UIAction(title: NSLocalizedString("Date", comment: "Date"),
+                                 image: UIImage(systemName: "arrow.down"), handler: { _ in self.swapSortOrder()})
+        default:
+            swapOrder = UIAction(title: NSLocalizedString("Date", comment: "Date"),
+                                 image: nil, handler: { _ in self.swapSortOrder()})
+        }
+        swapOrder.accessibilityIdentifier = "Date"
+        let sortByDay = UIAction(title: NSLocalizedString("Days", comment: "Days"),
+                                 image: UIImage(named: "imageDay"), handler: { _ in
+            // Did select new sort option "Days"
+            self.sortType = .day
+            
+            // Refresh collection (may be called from background queue)
+            DispatchQueue.main.async {
+                // Refresh collection view
+                self.localImagesCollection.reloadData()
+            }
+        })
+        sortByDay.accessibilityIdentifier = "Days"
+        let sortByWeek = UIAction(title: NSLocalizedString("Weeks", comment: "Weeks"),
+                                  image: UIImage(named: "imageWeek"), handler: { _ in
+            // Did select new sort option "Weeks""
+            self.sortType = .week
+            
+            // Refresh collection (may be called from background queue)
+            DispatchQueue.main.async {
+                // Refresh collection view
+                self.localImagesCollection.reloadData()
+            }
+        })
+        sortByWeek.accessibilityIdentifier = "Weeks"
+        let sortByMonth = UIAction(title: NSLocalizedString("Months", comment: "Months"),
+                                   image: UIImage(named: "imageMonth"), handler: { _ in
+            // Did select new sort option "Months""
+            self.sortType = .month
+            
+            // Refresh collection (may be called from background queue)
+            DispatchQueue.main.async {
+                // Refresh collection view
+                self.localImagesCollection.reloadData()
+            }
+        })
+        sortByMonth.accessibilityIdentifier = "Months"
+        let noSort = UIAction(title: NSLocalizedString("All Photos", comment: "All Photos"),
+                              image: nil, handler: { _ in
+            // Did select new sort option "All""
+            self.sortType = .all
+            
+            // Refresh collection (may be called from background queue)
+            DispatchQueue.main.async {
+                // Refresh collection view
+                self.localImagesCollection.reloadData()
+            }
+        })
+        return UIMenu.init(title: "", image: nil,
+                           identifier: UIMenu.Identifier("org.piwigo.localImages.action"),
+                           options: .displayInline,
+                           children: [swapOrder, sortByDay, sortByWeek, sortByMonth, noSort])
+    }
+
+    @objc func swapSortOrder() {
+        // Swap between the two sort options
+        switch Model.sharedInstance()?.localImagesSort {
+        case kPiwigoSortDateCreatedDescending:
+            Model.sharedInstance()?.localImagesSort = kPiwigoSortDateCreatedAscending
+        case kPiwigoSortDateCreatedAscending:
+            Model.sharedInstance()?.localImagesSort = kPiwigoSortDateCreatedDescending
+        default:
+            return
+        }
+        Model.sharedInstance()?.saveToDisk()
+
+        // Change button icon and refresh collection
+        updateActionButton()
+        updateNavBar()
+        localImagesCollection.reloadData()
+    }
+    
     @IBAction func didChangeSortOption(_ sender: UISegmentedControl) {
         // Did select new sort option [Months, Weeks, Days, All in one section]
         sortType = SectionType(rawValue: sender.selectedSegmentIndex) ?? .all
@@ -800,14 +1031,116 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         }
     }
         
+
+    // MARK: - Select Camera Roll Images
+
+    @available(iOS 14, *)
+    private func getMenuForSelectingPhotos() -> UIMenu? {
+        if PHPhotoLibrary.authorizationStatus(for: .readWrite) == .limited {
+            // Proposes to change the Photo Library selection
+            let selector = UIAction(title: NSLocalizedString("localAlbums_accessible", comment: "Accessible Photos"),
+                                    image: UIImage(systemName: "camera"), handler: { _ in
+                // Proposes to change the Photo Library selection
+                PHPhotoLibrary.shared().presentLimitedLibraryPicker(from: self)
+            })
+            return UIMenu.init(title: "", image: nil,
+                               identifier: UIMenu.Identifier("org.piwigo.localImages.selector"),
+                               options: .displayInline,
+                               children: [selector])
+        }
+        return nil
+    }
+    
+
+    // MARK: - Delete Camera Roll Images
+
+    @available(iOS 14, *)
+    private func getMenuForDeletingPhotos() -> UIMenu? {
+        if canDeleteUploadedImages() {
+            // Proposes to change the Photo Library selection
+            let delete = UIAction(title: NSLocalizedString("localImages_deleteTitle", comment: "Remove from Camera Roll"),
+                                  image: UIImage(systemName: "trash"), attributes: .destructive, handler: { _ in
+                // Delete uploaded photos from the camera roll
+                self.deleteUploadedImages()
+            })
+            return UIMenu.init(title: "", image: nil,
+                               identifier: UIMenu.Identifier("org.piwigo.localImages.delete"),
+                               options: .displayInline,
+                               children: [delete])
+        }
+        return nil
+    }
+    
+    private func canDeleteUploadedImages() -> Bool {
+        // Don't provide access to the Trash button until the preparation work is not done
+        if queue.operationCount > 0 { return false }
+        
+        // Check if there are uploaded photos to delete
+        let indexedUploads = self.indexedUploadsInQueue.compactMap({$0})
+        if let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects {
+            let completedUploads = allUploads.filter({ ($0.state == .finished) || ($0.state == .moderated) })
+            for index in 0..<indexedUploads.count {
+                if let _ = completedUploads.first(where: {$0.localIdentifier == indexedUploads[index].0}),
+                   indexedUploads[index].2 {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+    
+    @objc func deleteUploadedImages() {
+        // Delete uploaded images (fetched on the main queue)
+        uploadIDsToDelete = [NSManagedObjectID](); imagesToDelete = [String]()
+        let indexedUploads = self.indexedUploadsInQueue.compactMap({$0})
+        if let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects {
+            let completedUploads = allUploads.filter({ ($0.state == .finished) || ($0.state == .moderated) })
+            for index in 0..<indexedUploads.count {
+                if let upload = completedUploads.first(where: {$0.localIdentifier == indexedUploads[index].0}),
+                   indexedUploads[index].2 {
+                    uploadIDsToDelete.append(upload.objectID)
+                    imagesToDelete.append(indexedUploads[index].0)
+                }
+            }
+            if imagesToDelete.count > 0 {
+                // Are you sure?
+                let title = NSLocalizedString("localImages_deleteTitle", comment: "Remove from Camera Roll")
+                let message = NSLocalizedString("localImages_deleteMessage", comment: "Message explaining what will happen")
+                let alert = UIAlertController(title: "", message: message, preferredStyle: .alert)
+                let defaultAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
+                    style: .cancel, handler: { action in })
+                let deleteAction = UIAlertAction(title: title, style: .destructive, handler: { action in
+                    // Delete uploaded images
+                    UploadManager.shared.delete(uploadedImages: self.imagesToDelete, with: self.uploadIDsToDelete)
+                })
+                alert.addAction(defaultAction)
+                alert.addAction(deleteAction)
+                alert.view.tintColor = UIColor.piwigoColorOrange()
+                if #available(iOS 13.0, *) {
+                    alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+                } else {
+                    // Fallback on earlier versions
+                }
+                self.present(alert, animated: true) {
+                    // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                    alert.view.tintColor = UIColor.piwigoColorOrange()
+                }
+            }
+        }
+    }
+    
+
+    // MARK: - Upload Images
+
     @objc func didTapUploadButton() {
         // Avoid potential crash (should never happen, but…)
         if selectedImages.compactMap({ $0 }).count == 0 { return }
         
-        // Disable button
+        // Disable buttons
         cancelBarButton?.isEnabled = false
         uploadBarButton?.isEnabled = false
         actionBarButton?.isEnabled = false
+        trashBarButton?.isEnabled = false
         
         // Show upload parameter views
         let uploadSwitchSB = UIStoryboard(name: "UploadSwitchViewController", bundle: nil)
@@ -1342,7 +1675,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         self.updateNavBar()
 
         // Update collection
-        self.localImagesCollection.reloadData()
+        self.localImagesCollection.reloadSections(IndexSet.init(integer: section))
     }
 
 
@@ -1464,11 +1797,17 @@ extension LocalImagesViewController: PHPhotoLibraryChangeObserver {
             // Update fetched asset collection
             self.fetchedImages = changes.fetchResultAfterChanges
 
-            // Disable sort options and action menu before sort
+            // Disable sort options and actions before sorting and caching
             self.actionBarButton?.isEnabled = false
-            self.segmentedControl.setEnabled(false, forSegmentAt: SectionType.month.rawValue)
-            self.segmentedControl.setEnabled(false, forSegmentAt: SectionType.week.rawValue)
-            self.segmentedControl.setEnabled(false, forSegmentAt: SectionType.day.rawValue)
+            self.uploadBarButton?.isEnabled = false
+            if #available(iOS 14, *) {
+                // NOP
+            } else {
+                // Disable segmented control
+                self.segmentedControl.setEnabled(false, forSegmentAt: SectionType.month.rawValue)
+                self.segmentedControl.setEnabled(false, forSegmentAt: SectionType.week.rawValue)
+                self.segmentedControl.setEnabled(false, forSegmentAt: SectionType.day.rawValue)
+            }
 
             // Sort images in background, reset cache and image selection
             DispatchQueue.global(qos: .userInitiated).async {
@@ -1489,18 +1828,27 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
 //            print("••• LocalImagesViewController controller:insert...")
             // Image added to upload queue
             if let upload:Upload = anObject as? Upload {
-                // Append upload to non-indexed upload queue
+                // Update or append upload to non-indexed upload queue
                 if let index = uploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
-                    uploadsInQueue[index] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState))
+                    uploadsInQueue[index] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState)!)
                 } else {
-                    uploadsInQueue.append((upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState)))
+                    uploadsInQueue.append((upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState)!))
                 }
-                // Get index of uploaded image
+                // Get index of uploaded image if it exists
                 if let indexOfUploadedImage = selectedImages.firstIndex(where: { $0?.localIdentifier == upload.localIdentifier }) {
                     // Deselect image
                     selectedImages[indexOfUploadedImage] = nil
                     // Add image to indexed upload queue
-                    indexedUploadsInQueue[indexOfUploadedImage] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState))
+                    let fetchOptions = PHFetchOptions()
+                    fetchOptions.includeHiddenAssets = false
+                    fetchOptions.predicate = NSPredicate(format: "localIdentifier == %@", upload.localIdentifier)
+                    if let asset = PHAsset.fetchAssets(with: fetchOptions).firstObject {
+                        let idx = fetchedImages.index(of: asset)
+                        if idx != NSNotFound {
+                            let cachedObject = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState)!, asset.canPerform(.delete))
+                            self.indexedUploadsInQueue[idx] = Optional(cachedObject)
+                        }
+                    }
                 }
                 // Update corresponding cell
                 updateCell(for: upload)
@@ -1532,11 +1880,11 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
             if let upload:Upload = anObject as? Upload {
                 // Update upload in non-indexed upload queue
                 if let indexInQueue = uploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
-                    uploadsInQueue[indexInQueue] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState))
+                    uploadsInQueue[indexInQueue] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState)!)
                 }
                 // Update image in indexed upload queue
                 if let indexInIndexedQueue = indexedUploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
-                    indexedUploadsInQueue[indexInIndexedQueue] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState))
+                    indexedUploadsInQueue[indexInIndexedQueue]?.1 = kPiwigoUploadState(rawValue: upload.requestState)!
                 }
                 // Update corresponding cell
                 updateCell(for: upload)
@@ -1549,6 +1897,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
 //        print("••• LocalImagesViewController controller:didChangeContent...")
         // Update navigation bar
+        updateActionButton()
         updateNavBar()
     }
 

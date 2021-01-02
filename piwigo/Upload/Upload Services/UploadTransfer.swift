@@ -232,7 +232,7 @@ extension UploadManager {
         offset += thisChunkSize
 
         // Check current queue
-        print("•••>> sendChunk() before portMultipart •••>>", queueName())
+        print("•••>> sendChunk() before portMultipart in ", queueName())
         NetworkHandler.postMultiPart(kPiwigoImagesUpload, data: chunk, parameters: parameters,
                                      sessionManager: sessionManager,
            progress: { progress in
@@ -329,9 +329,12 @@ extension UploadManager {
             httpBody.appendString(convertFormField(named: "original_sum", value: uploadProperties.md5Sum!, using: boundary))
             httpBody.appendString(convertFormField(named: "category", value: "\(uploadProperties.category)", using: boundary))
             httpBody.appendString(convertFormField(named: "filename", value: uploadProperties.fileName ?? "Image.jpg", using: boundary))
-            httpBody.appendString(convertFormField(named: "name", value: uploadProperties.imageTitle ?? "", using: boundary))
-            httpBody.appendString(convertFormField(named: "author", value: uploadProperties.author ?? "", using: boundary))
-            httpBody.appendString(convertFormField(named: "comment", value: uploadProperties.comment ?? "", using: boundary))
+            let imageTitle = NetworkUtilities.utf8mb3String(from: uploadProperties.imageTitle)
+            httpBody.appendString(convertFormField(named: "name", value: imageTitle ?? "", using: boundary))
+            let author = NetworkUtilities.utf8mb3String(from: uploadProperties.author)
+            httpBody.appendString(convertFormField(named: "author", value: author ?? "", using: boundary))
+            let comment = NetworkUtilities.utf8mb3String(from: uploadProperties.comment)
+            httpBody.appendString(convertFormField(named: "comment", value: comment ?? "", using: boundary))
             httpBody.appendString(convertFormField(named: "date_creation", value: creationDate, using: boundary))
             httpBody.appendString(convertFormField(named: "level", value: "\(NSNumber(value: uploadProperties.privacyLevel!.rawValue))", using: boundary))
             httpBody.appendString(convertFormField(named: "tag_ids", value: uploadProperties.tagIds ?? "", using: boundary))
@@ -589,8 +592,8 @@ extension UploadManager {
                 let imageData = PiwigoImageData.init()
                 imageData.imageId = uploadJSON.data.imageId!
                 imageData.categoryIds = [uploadProperties.category]
-                imageData.imageTitle = NetworkHandler.utf8EncodedString(from: uploadJSON.data.imageTitle ?? "")
-                imageData.comment = NetworkHandler.utf8EncodedString(from: uploadJSON.data.comment ?? "")
+                imageData.imageTitle = NetworkUtilities.utf8mb4String(from: uploadJSON.data.imageTitle ?? "")
+                imageData.comment = NetworkUtilities.utf8mb4String(from: uploadJSON.data.comment ?? "")
                 imageData.visits = uploadJSON.data.visits ?? 0
                 imageData.fileName = uploadJSON.data.fileName ?? uploadProperties.fileName
                 imageData.isVideo = uploadProperties.isVideo
@@ -628,7 +631,7 @@ extension UploadManager {
                 imageData.xxLargeWidth = uploadJSON.derivatives?.xxLargeImage?.width ?? 1
                 imageData.xxLargeHeight = uploadJSON.derivatives?.xxLargeImage?.height ?? 1
 
-                imageData.author = uploadJSON.data.author ?? "NSNotFound"
+                imageData.author = NetworkUtilities.utf8mb4String(from: uploadJSON.data.author) ?? "NSNotFound"
                 if let privacyLevel = uploadJSON.data.privacyLevel {
                     imageData.privacyLevel = kPiwigoPrivacy(rawValue: UInt32(privacyLevel) ?? kPiwigoPrivacyUnknown.rawValue)
                 }

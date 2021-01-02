@@ -468,6 +468,13 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
 
         // Save modified settings
         Model.sharedInstance().saveToDisk()
+        
+        // Clear URL requests to force reload images before sharing
+        Model.sharedInstance()?.imageCache.removeAllCachedResponses()
+
+        // Clean up /tmp directory where shared files are temporarily stored
+        let appDelegate = UIApplication.shared.delegate as? AppDelegate
+        appDelegate?.cleanUpTemporaryDirectoryImmediately(true)
     }
 
     private func getNameForShareActivity(_ activity: String?, forWidth width: CGFloat) -> String? {

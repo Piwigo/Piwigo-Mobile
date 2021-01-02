@@ -831,23 +831,31 @@ NSString * const kGetImageOrderDescending = @"desc";
     categoryIds = nil;
 
     // Object "name"
-    imageData.imageTitle = [NetworkHandler UTF8EncodedStringFromString:[imageJson objectForKey:@"name"]];
-    if (imageData.imageTitle == nil) imageData.imageTitle = @"";
+    if (![[imageJson objectForKey:@"name"] isKindOfClass:[NSNull class]]) {
+        imageData.imageTitle = [NetworkUtilities utf8mb4StringFrom:[imageJson objectForKey:@"name"]];
+    } else {
+        imageData.imageTitle = @"";
+    }
     
     // Object "comment"
-    imageData.comment = [NetworkHandler UTF8EncodedStringFromString:[imageJson objectForKey:@"comment"]];
-    if (imageData.comment == nil) imageData.comment = @"";
+    if (![[imageJson objectForKey:@"comment"] isKindOfClass:[NSNull class]]) {
+        imageData.comment = [NetworkUtilities utf8mb4StringFrom:[imageJson objectForKey:@"comment"]];
+    } else {
+        imageData.comment = @"";
+    }
     
     // Object "hit"
     if (![[imageJson objectForKey:@"hit"] isKindOfClass:[NSNull class]]) {
         imageData.visits = [[imageJson objectForKey:@"hit"] integerValue];
+    } else {
+        imageData.visits = 0;
     }
     
     // Object "file"
-    imageData.fileName = [NetworkHandler UTF8EncodedStringFromString:[imageJson objectForKey:@"file"]];
-    if ([imageData.fileName length] == 0) {
-        // Filename should never be empty. Just in case…
-        imageData.fileName = @"PiwigoImage.jpg";
+    if (![[imageJson objectForKey:@"file"] isKindOfClass:[NSNull class]]) {
+        imageData.fileName = [NetworkUtilities utf8mb4StringFrom:[imageJson objectForKey:@"file"]];
+    } else {
+        imageData.fileName = @"NoName.jpg";    // Filename should never be empty. Just in case…
     }
     NSString *fileExt = [[imageData.fileName pathExtension] uppercaseString];
     if([fileExt isEqualToString:@"MP4"] || [fileExt isEqualToString:@"M4V"] ||
@@ -1060,8 +1068,9 @@ NSString * const kGetImageOrderDescending = @"desc";
     //
     
     // Object "author"
-    imageData.author = [NetworkHandler UTF8EncodedStringFromString:[imageJson objectForKey:@"author"]];
-    if(imageData.author.length == 0) {
+    if (![[imageJson objectForKey:@"author"] isKindOfClass:[NSNull class]]) {
+        imageData.author = [NetworkUtilities utf8mb4StringFrom:[imageJson objectForKey:@"author"]];
+    } else {
         imageData.author = @"NSNotFound";
     }
 
@@ -1082,7 +1091,11 @@ NSString * const kGetImageOrderDescending = @"desc";
         {
             PiwigoTagData *tagData = [PiwigoTagData new];
             tagData.tagId = [[tag objectForKey:@"id"] integerValue];
-            tagData.tagName = [NetworkHandler UTF8EncodedStringFromString:[tag objectForKey:@"name"]];
+            if (![[tag objectForKey:@"name"] isKindOfClass:[NSNull class]]) {
+                tagData.tagName = [NetworkUtilities utf8mb4StringFrom:[tag objectForKey:@"name"]];
+            } else {
+                tagData.tagName = @"";
+            }
             NSDateFormatter *dateFormat = [NSDateFormatter new];
             [dateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
             NSString *lastModifiedString = [tag objectForKey:@"lastmodified"];
@@ -1115,8 +1128,9 @@ NSString * const kGetImageOrderDescending = @"desc";
     }
     
     // Object "md5sum"
-    imageData.MD5checksum = [NetworkHandler UTF8EncodedStringFromString:[imageJson objectForKey:@"md5sum"]];
-    if(imageData.MD5checksum.length == 0) {
+    if (![[imageJson objectForKey:@"md5sum"] isKindOfClass:[NSNull class]]) {
+        imageData.MD5checksum = [NetworkUtilities utf8mb4StringFrom:[imageJson objectForKey:@"md5sum"]];
+    } else {
         imageData.MD5checksum = @"";
     }
 

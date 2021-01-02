@@ -48,6 +48,7 @@
 		AD38C04C24AF746000CDC765 /* community.images.uploadCompleted.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD38C04B24AF746000CDC765 /* community.images.uploadCompleted.swift */; };
 		AD38C04D24AF746000CDC765 /* community.images.uploadCompleted.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD38C04B24AF746000CDC765 /* community.images.uploadCompleted.swift */; };
 		AD39165E22A126CA00414E4B /* SearchImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD39165922A06FDF00414E4B /* SearchImagesViewController.m */; };
+		AD3CD63A259DE34C000C26ED /* Help06ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3CD639259DE34C000C26ED /* Help06ViewController.swift */; };
 		AD42D08124448B7C00F0BAC1 /* LocalAlbumsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD42D08024448B7C00F0BAC1 /* LocalAlbumsViewController.swift */; };
 		AD42D08324448F2400F0BAC1 /* LocalAlbumsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD42D08224448F2400F0BAC1 /* LocalAlbumsViewController.storyboard */; };
 		AD42D08524449FF000F0BAC1 /* LocalImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD42D08424449FF000F0BAC1 /* LocalImageCollectionViewCell.swift */; };
@@ -85,6 +86,7 @@
 		AD82C0482433D1A200F774BA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CC01A67820A000E47CA /* main.m */; };
 		AD82C04C2433DB0E00F774BA /* SelectPrivacyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD82C04A2433D71C00F774BA /* SelectPrivacyViewController.swift */; };
 		AD84E60523BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD84E60423BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib */; };
+		AD8709AB259A8E66008C4E4C /* Help04ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8709AA259A8E66008C4E4C /* Help04ViewController.swift */; };
 		AD870CD71F54AE110015BFA1 /* ImagesCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = AD870CD61F54AE110015BFA1 /* ImagesCollection.m */; };
 		AD8953C2257D581A003EEA94 /* PasteboardImagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8953BD257D4F09003EEA94 /* PasteboardImagesViewController.swift */; };
 		AD8953C7257D5829003EEA94 /* PasteboardImagesViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD8953B8257D4EC6003EEA94 /* PasteboardImagesViewController.storyboard */; };
@@ -123,6 +125,8 @@
 		ADC328072480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC328062480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift */; };
 		ADC3280B2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC3280A2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift */; };
 		ADC709C525115943009CA711 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC709C425115943009CA711 /* SceneDelegate.swift */; };
+		ADC74CB2259BDE7600581ADE /* NetworkUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC74CB1259BDE7600581ADE /* NetworkUtilities.swift */; };
+		ADC74CCE259C9E9C00581ADE /* Help05ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC74CCD259C9E9C00581ADE /* Help05ViewController.swift */; };
 		ADC80E4823BDCBAA003A6960 /* EditImageThumbCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADC80E4723BDCBAA003A6960 /* EditImageThumbCollectionViewCell.xib */; };
 		ADC80E4B23BDD2DD003A6960 /* EditImageThumbTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ADC80E4A23BDD2DD003A6960 /* EditImageThumbTableViewCell.m */; };
 		ADC8167B244B5EDE00650223 /* LocalImagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC8167A244B5EDE00650223 /* LocalImagesViewController.swift */; };
@@ -285,6 +289,7 @@
 		AD38C04B24AF746000CDC765 /* community.images.uploadCompleted.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = community.images.uploadCompleted.swift; sourceTree = "<group>"; };
 		AD39165922A06FDF00414E4B /* SearchImagesViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchImagesViewController.m; sourceTree = "<group>"; };
 		AD39165B22A06FF200414E4B /* SearchImagesViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SearchImagesViewController.h; sourceTree = "<group>"; };
+		AD3CD639259DE34C000C26ED /* Help06ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help06ViewController.swift; sourceTree = "<group>"; };
 		AD3FDDE81F2E23F700F71C81 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD3FDDE91F2E23F700F71C81 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/About.strings; sourceTree = "<group>"; };
 		AD3FDDEA1F2E23F700F71C81 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
@@ -319,7 +324,7 @@
 		AD5F64F124C6088600660BE3 /* pwg.tags.getList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pwg.tags.getList.json; sourceTree = "<group>"; };
 		AD5F64F324C6091500660BE3 /* pwg.tags.getAdminList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pwg.tags.getAdminList.json; sourceTree = "<group>"; };
 		AD5FCE2122EC629D00F37B1E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		AD61D2F92571555A00B8DEA0 /* HelpViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = HelpViewController.storyboard; sourceTree = "<group>"; };
+		AD61D2F92571555A00B8DEA0 /* HelpViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = HelpViewController.storyboard; path = "../New Group/HelpViewController.storyboard"; sourceTree = "<group>"; };
 		AD61D3132571598000B8DEA0 /* HelpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpViewController.swift; sourceTree = "<group>"; };
 		AD6A128A24FAB56A00E3BBED /* pwg.images.uploadAsync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.images.uploadAsync.swift; sourceTree = "<group>"; };
 		AD6B2E791F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -353,6 +358,7 @@
 		AD8549331FE98CE300155BA1 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
 		AD8549341FE98CE300155BA1 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/AppStore.strings; sourceTree = "<group>"; };
 		AD8549351FE98CE300155BA1 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		AD8709AA259A8E66008C4E4C /* Help04ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help04ViewController.swift; sourceTree = "<group>"; };
 		AD870CD61F54AE110015BFA1 /* ImagesCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagesCollection.m; sourceTree = "<group>"; };
 		AD870CD81F54AE230015BFA1 /* ImagesCollection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImagesCollection.h; sourceTree = "<group>"; };
 		AD8953B8257D4EC6003EEA94 /* PasteboardImagesViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = PasteboardImagesViewController.storyboard; sourceTree = "<group>"; };
@@ -420,6 +426,8 @@
 		ADC328062480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalAlbumsNoDatesTableViewCell.swift; sourceTree = "<group>"; };
 		ADC3280A2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAlbumsMoreTableViewCell.swift; sourceTree = "<group>"; };
 		ADC709C425115943009CA711 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		ADC74CB1259BDE7600581ADE /* NetworkUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkUtilities.swift; sourceTree = "<group>"; };
+		ADC74CCD259C9E9C00581ADE /* Help05ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help05ViewController.swift; sourceTree = "<group>"; };
 		ADC80E4723BDCBAA003A6960 /* EditImageThumbCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EditImageThumbCollectionViewCell.xib; sourceTree = "<group>"; };
 		ADC80E4923BDD2D0003A6960 /* EditImageThumbTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EditImageThumbTableViewCell.h; sourceTree = "<group>"; };
 		ADC80E4A23BDD2DD003A6960 /* EditImageThumbTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EditImageThumbTableViewCell.m; sourceTree = "<group>"; };
@@ -801,6 +809,19 @@
 			path = "Pick Photos Album";
 			sourceTree = "<group>";
 		};
+		AD8709B0259A8F83008C4E4C /* Help */ = {
+			isa = PBXGroup;
+			children = (
+				AD61D3132571598000B8DEA0 /* HelpViewController.swift */,
+				ADE4C23325755E660060A203 /* Help01ViewController.swift */,
+				ADE4C23D25756BC80060A203 /* Help02ViewController.swift */,
+				ADE4C22525754B420060A203 /* Help03ViewController.swift */,
+				AD8709AA259A8E66008C4E4C /* Help04ViewController.swift */,
+				ADC74CCD259C9E9C00581ADE /* Help05ViewController.swift */,
+				AD3CD639259DE34C000C26ED /* Help06ViewController.swift */,
+				AD61D2F92571555A00B8DEA0 /* HelpViewController.storyboard */,
+			);
+			path = Help;
 		AD8953B3257D4450003EEA94 /* Pick Pasteboard Images */ = {
 			isa = PBXGroup;
 			children = (
@@ -864,10 +885,10 @@
 		ADC019722471A6D500532A81 /* Upload Queue */ = {
 			isa = PBXGroup;
 			children = (
+				AD5B498024E5C02300BDF5B4 /* UploadQueueViewController.swift */,
 				AD9A1BE724E04F0000D22C86 /* UploadQueueHeaderView.swift */,
 				AD58F77E24EFC62F00ECF6BD /* UploadImageHeaderView.swift */,
 				ADC019752471AA5200532A81 /* UploadImageTableViewCell.swift */,
-				AD5B498024E5C02300BDF5B4 /* UploadQueueViewController.swift */,
 				ADC019732471A70F00532A81 /* UploadQueueViewController.storyboard */,
 				ADC019772471ABA000532A81 /* UploadQueueViewControllerOld.swift */,
 				AD5B498624E6FCF000BDF5B4 /* UploadQueueViewControllerOld.storyboard */,
@@ -907,11 +928,6 @@
 				ADE46683242F978E002FEDE5 /* AboutViewController.storyboard */,
 				ADFC3A4B2401D704004CD337 /* PrivacyPolicyViewController.swift */,
 				AD3207E8240AD93900F00FEB /* PrivacyPolicyViewController.storyboard */,
-				AD61D3132571598000B8DEA0 /* HelpViewController.swift */,
-				ADE4C23325755E660060A203 /* Help01ViewController.swift */,
-				ADE4C23D25756BC80060A203 /* Help02ViewController.swift */,
-				ADE4C22525754B420060A203 /* Help03ViewController.swift */,
-				AD61D2F92571555A00B8DEA0 /* HelpViewController.storyboard */,
 			);
 			path = Information;
 			sourceTree = "<group>";
@@ -1176,6 +1192,7 @@
 				D82B8CE41A678ED2000E47CA /* NetworkHandler.h */,
 				D82B8CE51A678ED2000E47CA /* NetworkHandler.m */,
 				AD76906724D1957D00EE7EC0 /* UploadSessionDelegate.swift */,
+				ADC74CB1259BDE7600581ADE /* NetworkUtilities.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -1244,6 +1261,7 @@
 				ADD714512301E0B000A1B7B2 /* Images */,
 				ADD714532301E10300A1B7B2 /* Upload */,
 				ADD714552301E1C600A1B7B2 /* Information */,
+				AD8709B0259A8F83008C4E4C /* Help */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -1360,9 +1378,7 @@
 					};
 					AD30FD3321316DA7009AA30E = {
 						CreatedOnToolsVersion = 9.4.1;
-						DevelopmentTeam = ZEC3W885H6;
 						LastSwiftMigration = 1020;
-						ProvisioningStyle = Manual;
 						TestTargetID = D82B8CBA1A67820A000E47CA;
 					};
 					D82B8CBA1A67820A000E47CA = {
@@ -1654,6 +1670,7 @@
 				ADE4C22625754B420060A203 /* Help03ViewController.swift in Sources */,
 				AD45D8AB2444D1CD00CBE206 /* LocalImagesHeaderReusableView.swift in Sources */,
 				ADC8167B244B5EDE00650223 /* LocalImagesViewController.swift in Sources */,
+				ADC74CB2259BDE7600581ADE /* NetworkUtilities.swift in Sources */,
 				ADBE4529244A1A0E00AE0001 /* Location.swift in Sources */,
 				ADBE452B244A1AF400AE0001 /* LocationError.swift in Sources */,
 				ADBE452D244A1F0000AE0001 /* LocationsProvider.swift in Sources */,
@@ -1722,6 +1739,7 @@
 				ED9A42B51ACAD35300EA4421 /* LoginViewController_iPad.m in Sources */,
 				ADE216FE250E22F7003AE588 /* pwg.images.getInfo.swift in Sources */,
 				D8172E1A1AB7C07E00271DB0 /* MoveCategoryViewController.m in Sources */,
+				ADC74CCE259C9E9C00581ADE /* Help05ViewController.swift in Sources */,
 				D863EECA1A6A484C00C0A6E9 /* PiwigoTextField.m in Sources */,
 				ADF3EC0C2516515500379E53 /* DeviceUtilities.swift in Sources */,
 				AD82C0482433D1A200F774BA /* main.m in Sources */,
@@ -1742,7 +1760,9 @@
 				D82B8D331A688E8F000E47CA /* ImageDetailViewController.m in Sources */,
 				D8E4D6211ABE34DF0057EB95 /* LoginNavigationController.m in Sources */,
 				ADAA57D122DD00B700EB4EAA /* DiscoverImagesViewController.m in Sources */,
+				AD8709AB259A8E66008C4E4C /* Help04ViewController.swift in Sources */,
 				ADC80E4B23BDD2DD003A6960 /* EditImageThumbTableViewCell.m in Sources */,
+				AD3CD63A259DE34C000C26ED /* Help06ViewController.swift in Sources */,
 				D88A685B1AC2323D002A3259 /* CategoryTableViewCell.m in Sources */,
 				D8D3F7241A785E1B00AEA7F1 /* ImageCollectionViewCell.m in Sources */,
 				D8F325171A87F212007CBDAC /* EditImageTextViewTableViewCell.m in Sources */,
@@ -2011,6 +2031,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "1db8c18e-75fc-4fdf-b2c9-2aa2c895e936";
 				PROVISIONING_PROFILE_SPECIFIER = "Dev profile for Piwigo";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -2047,6 +2068,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "1db8c18e-75fc-4fdf-b2c9-2aa2c895e936";
 				PROVISIONING_PROFILE_SPECIFIER = "Dev profile for Piwigo";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
@@ -2066,7 +2088,8 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = ZEC3W885H6;
@@ -2082,6 +2105,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "d3e37774-f832-404f-b43e-ee87b83b503b";
 				PROVISIONING_PROFILE_SPECIFIER = "Dev profile for Piwigo";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -2101,11 +2125,11 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = ZEC3W885H6;
+				DEVELOPMENT_TEAM = ZU5THW8T5W;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = piwigoAppStore/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
@@ -2117,7 +2141,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo.piwigoAppStore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "d3e37774-f832-404f-b43e-ee87b83b503b";
-				PROVISIONING_PROFILE_SPECIFIER = "Dev profile for Piwigo";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;

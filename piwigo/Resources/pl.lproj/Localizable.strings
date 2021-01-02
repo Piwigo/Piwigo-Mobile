@@ -275,6 +275,7 @@
 "singleVideo" = "Wideo";
 "singleAudio" = "Audio";
 "severalImages" = "Zdjęcia";
+"All Photos" = "Wszystkie zdjęcia";
 "severalVideos" = "Filmy";
 "noImages" = "Brak zdjęć";
 "pullToRefresh" = "Wczytaj zdjęcia ponownie";
@@ -282,6 +283,7 @@
 "Months" = "miesięcy";
 "Weeks" = "tygodni";
 "Days" = "dni";
+"Date" = "Data";
 
 // Errors
 "albumPhotoError_title" = "Błąd Pobierania Zdjęć Albumu";
@@ -550,14 +552,10 @@
 "shareActivityCode_Other>375px" = "Udostępnij zdjęcia innym aplikacjom";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS / Photo Library
+// ==> LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "Biblioteka zdjęć";
-
-"localImageSort_newest" = "Najnowsze";
-"localImageSort_oldest" = "Najstarsze";
-"localImageSort_notUploaded" = "Nieprzesłane";
-"localImageSort_undefined" = "Niezdefiniowany";
+"localAlbums_accessible" = "Dostępne zdjęcia";
 
 // Local albums — Access not Authorized
 "localAlbums_photosNotAuthorized_title" = "Brak Dostępu";
@@ -566,6 +564,10 @@
 
 // Local albums — Tell user to change settings, how
 "localAlbums_photosNotAuthorized_msg" = "Nie można otworzyć lokalnej biblioteki zdjęć. Przejdź do aplikacji Ustawienia i włącz dostęp dla Piwigo.";
+
+// Local images — Explain
+"localImages_deleteTitle" = "Usuń z Rolki Aparatu";
+"localImages_deleteMessage" = "Czy chcesz usunąć przesłane zdjęcia lub filmy z rolki aparatu? Usunięte zdjęcia lub filmy będą nadal dostępne w koszu zdjęć iOS przez 30 dni.";
 
 // ===========================================================================
 // ==> SETTINGS
@@ -717,3 +719,9 @@
 "help02_text3" = "(wymaga rozszerzenia uploadAsync lub Piwigo 11)";
 "help03_header" = "Administratorzy";
 "help03_text" = "Tworzenie, usuwanie, przesuwanie i zmiana nazwy albumów.";
+"help04_text" = "Przesłane zdjęcia usunięte z rolki aparatu pozostają dostępne w koszu zdjęć iOS przez 30 dni.";
+"help05_header" = "Przesyłanie zdjęć";
+"help05_text" = "Po wysłaniu żądań przesyłania, możesz przeglądać albumy, wysyłać inne żądania lub opuścić aplikację.";
+"help05_text2" = "Dotknij szarego przycisku w głównym albumie, aby zarządzać przesyłaniami.";
+"help06_header" = "Zarządzanie przesyłaniem";
+"help06_text" = "Monitoruj, anuluj i wznawiaj żądania przesyłania globalnie lub pojedynczo.";

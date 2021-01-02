@@ -275,6 +275,7 @@
 "singleVideo" = "Video";
 "singleAudio" = "Audio";
 "severalImages" = "Foto's";
+"All Photos" = "Alle foto's";
 "severalVideos" = "Video's";
 "noImages" = "Geen foto's";
 "pullToRefresh" = "Foto's opnieuw laden";
@@ -282,6 +283,7 @@
 "Months" = "Maanden";
 "Weeks" = "Weken";
 "Days" = "Dagen";
+"Date" = "Datum";
 
 // Errors
 "albumPhotoError_title" = "Haal albumfoto's is mislukt";
@@ -550,14 +552,10 @@
 "shareActivityCode_Other>375px" = "Deel foto's met andere apps";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS / Photo Library
+// ==> LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "Fotobibliotheek";
-
-"localImageSort_newest" = "Nieuwste";
-"localImageSort_oldest" = "Oudste";
-"localImageSort_notUploaded" = "Niet geüpload";
-"localImageSort_undefined" = "Ongedefineerd";
+"localAlbums_accessible" = "Toegankelijke foto's";
 
 // Local albums — Access not Authorized
 "localAlbums_photosNotAuthorized_title" = "Geen toegang";
@@ -566,6 +564,10 @@
 
 // Local albums — Tell user to change settings, how
 "localAlbums_photosNotAuthorized_msg" = "Kan de lokale fotobibliotheek niet openen. Ga naar Instellingen en activeer Piwigo toegang.";
+
+// Local images — Explain
+"localImages_deleteTitle" = "Verwijderen uit filmrol";
+"localImages_deleteMessage" = "Wilt u de geüploade foto's of video's van de filmrol verwijderen? De verwijderde foto's of video's zullen nog steeds 30 dagen beschikbaar zijn in de Foto's Prullenbak.";
 
 // ===========================================================================
 // ==> SETTINGS
@@ -717,3 +719,9 @@
 "help02_text3" = "(vereist de uploadAsync extensie of Piwigo 11)";
 "help03_header" = "Beheerders";
 "help03_text" = "Maak, verwijder, verplaats en hernoem albums.";
+"help04_text" = "Geüploade foto's verwijderd van de camerarol blijven 30 dagen beschikbaar in de iOS Foto's prullenbak.";
+"help05_header" = "Foto's uploaden";
+"help05_text" = "Nadat de upload is ingediend, kunt u door albums bladeren, andere aanvragen indienen of de app verlaten.";
+"help05_text2" = "Tik op de grijze knop gepresenteerd in het hoofdalbum om de upload te beheren.";
+"help06_header" = "Upload beheer";
+"help06_text" = "Monitoren, annuleren en hervatten upload verzoeken globaal of individueel.";
