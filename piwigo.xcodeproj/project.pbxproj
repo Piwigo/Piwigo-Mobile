@@ -55,6 +55,10 @@
 		AD435824246FF21C00AC7D9C /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = AD435821246FF21C00AC7D9C /* DataModel.xcdatamodeld */; };
 		AD45D8AB2444D1CD00CBE206 /* LocalImagesHeaderReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD45D8AA2444D1CD00CBE206 /* LocalImagesHeaderReusableView.swift */; };
 		AD4902E324C2142800A96066 /* TagsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD4902E224C2142800A96066 /* TagsViewController.storyboard */; };
+		AD4AAFB625A0A1E4007DCD54 /* PasteboardImagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD4AAFB225A0A1E4007DCD54 /* PasteboardImagesViewController.swift */; };
+		AD4AAFB725A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD4AAFB325A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard */; };
+		AD4AAFB825A0A1E4007DCD54 /* PasteboardImagesHeaderReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD4AAFB425A0A1E4007DCD54 /* PasteboardImagesHeaderReusableView.swift */; };
+		AD4AAFB925A0A1E4007DCD54 /* PasteboardImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD4AAFB525A0A1E4007DCD54 /* PasteboardImageCollectionViewCell.swift */; };
 		AD58F77F24EFC62F00ECF6BD /* UploadImageHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD58F77E24EFC62F00ECF6BD /* UploadImageHeaderView.swift */; };
 		AD5B498124E5C02300BDF5B4 /* UploadQueueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5B498024E5C02300BDF5B4 /* UploadQueueViewController.swift */; };
 		AD5B498724E6FCF000BDF5B4 /* UploadQueueViewControllerOld.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD5B498624E6FCF000BDF5B4 /* UploadQueueViewControllerOld.storyboard */; };
@@ -88,10 +92,6 @@
 		AD84E60523BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD84E60423BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib */; };
 		AD8709AB259A8E66008C4E4C /* Help04ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8709AA259A8E66008C4E4C /* Help04ViewController.swift */; };
 		AD870CD71F54AE110015BFA1 /* ImagesCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = AD870CD61F54AE110015BFA1 /* ImagesCollection.m */; };
-		AD8953C2257D581A003EEA94 /* PasteboardImagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8953BD257D4F09003EEA94 /* PasteboardImagesViewController.swift */; };
-		AD8953C7257D5829003EEA94 /* PasteboardImagesViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD8953B8257D4EC6003EEA94 /* PasteboardImagesViewController.storyboard */; };
-		AD8953CD257D6741003EEA94 /* PasteboardImagesHeaderReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8953CC257D6741003EEA94 /* PasteboardImagesHeaderReusableView.swift */; };
-		AD8953D7257D6D4B003EEA94 /* PasteboardImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8953D6257D6D4B003EEA94 /* PasteboardImageCollectionViewCell.swift */; };
 		AD8A4521247714EF002360EA /* UploadImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8A4520247714EF002360EA /* UploadImage.swift */; };
 		AD8A452324771618002360EA /* UploadTransfer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8A452224771618002360EA /* UploadTransfer.swift */; };
 		AD8F4B8B23F04B8C009483B6 /* TagSelectorViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD3369BE23F035F700F3FA80 /* TagSelectorViewController.storyboard */; };
@@ -309,6 +309,10 @@
 		AD45D8AA2444D1CD00CBE206 /* LocalImagesHeaderReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalImagesHeaderReusableView.swift; sourceTree = "<group>"; };
 		AD4768852440BA720099651E /* piwigo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = piwigo.entitlements; sourceTree = "<group>"; };
 		AD4902E224C2142800A96066 /* TagsViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TagsViewController.storyboard; sourceTree = "<group>"; };
+		AD4AAFB225A0A1E4007DCD54 /* PasteboardImagesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PasteboardImagesViewController.swift; sourceTree = "<group>"; };
+		AD4AAFB325A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = PasteboardImagesViewController.storyboard; sourceTree = "<group>"; };
+		AD4AAFB425A0A1E4007DCD54 /* PasteboardImagesHeaderReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PasteboardImagesHeaderReusableView.swift; sourceTree = "<group>"; };
+		AD4AAFB525A0A1E4007DCD54 /* PasteboardImageCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PasteboardImageCollectionViewCell.swift; sourceTree = "<group>"; };
 		AD58F77E24EFC62F00ECF6BD /* UploadImageHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadImageHeaderView.swift; sourceTree = "<group>"; };
 		AD591A391F9116F9008D02B6 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD591A3A1F9116FA008D02B6 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/About.strings; sourceTree = "<group>"; };
@@ -361,10 +365,6 @@
 		AD8709AA259A8E66008C4E4C /* Help04ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help04ViewController.swift; sourceTree = "<group>"; };
 		AD870CD61F54AE110015BFA1 /* ImagesCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagesCollection.m; sourceTree = "<group>"; };
 		AD870CD81F54AE230015BFA1 /* ImagesCollection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImagesCollection.h; sourceTree = "<group>"; };
-		AD8953B8257D4EC6003EEA94 /* PasteboardImagesViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = PasteboardImagesViewController.storyboard; sourceTree = "<group>"; };
-		AD8953BD257D4F09003EEA94 /* PasteboardImagesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasteboardImagesViewController.swift; sourceTree = "<group>"; };
-		AD8953CC257D6741003EEA94 /* PasteboardImagesHeaderReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasteboardImagesHeaderReusableView.swift; sourceTree = "<group>"; };
-		AD8953D6257D6D4B003EEA94 /* PasteboardImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasteboardImageCollectionViewCell.swift; sourceTree = "<group>"; };
 		AD8A4520247714EF002360EA /* UploadImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadImage.swift; sourceTree = "<group>"; };
 		AD8A452224771618002360EA /* UploadTransfer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadTransfer.swift; sourceTree = "<group>"; };
 		AD92B9011F200092006E5B63 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
@@ -698,6 +698,17 @@
 			path = Move;
 			sourceTree = "<group>";
 		};
+		AD4AAFB125A0A1E4007DCD54 /* Pick Pasteboard Images */ = {
+			isa = PBXGroup;
+			children = (
+				AD4AAFB225A0A1E4007DCD54 /* PasteboardImagesViewController.swift */,
+				AD4AAFB425A0A1E4007DCD54 /* PasteboardImagesHeaderReusableView.swift */,
+				AD4AAFB525A0A1E4007DCD54 /* PasteboardImageCollectionViewCell.swift */,
+				AD4AAFB325A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard */,
+			);
+			path = "Pick Pasteboard Images";
+			sourceTree = "<group>";
+		};
 		AD5F64E624C601B500660BE3 /* pwg.tags */ = {
 			isa = PBXGroup;
 			children = (
@@ -822,15 +833,6 @@
 				AD61D2F92571555A00B8DEA0 /* HelpViewController.storyboard */,
 			);
 			path = Help;
-		AD8953B3257D4450003EEA94 /* Pick Pasteboard Images */ = {
-			isa = PBXGroup;
-			children = (
-				AD8953BD257D4F09003EEA94 /* PasteboardImagesViewController.swift */,
-				AD8953D6257D6D4B003EEA94 /* PasteboardImageCollectionViewCell.swift */,
-				AD8953CC257D6741003EEA94 /* PasteboardImagesHeaderReusableView.swift */,
-				AD8953B8257D4EC6003EEA94 /* PasteboardImagesViewController.storyboard */,
-			);
-			path = "Pick Pasteboard Images";
 			sourceTree = "<group>";
 		};
 		AD8A451F247713A0002360EA /* Upload Services */ = {
@@ -1242,8 +1244,8 @@
 			children = (
 				ADBE45262449969C00AE0001 /* PhotosFetch.swift */,
 				AD7B4C2520E36328003E403A /* Pick Photos Album */,
-				AD8953B3257D4450003EEA94 /* Pick Pasteboard Images */,
 				D8A5014E1A7B432600C04C17 /* Pick Local Images */,
+				AD4AAFB125A0A1E4007DCD54 /* Pick Pasteboard Images */,
 				AD6FD1F824BEFEFE009AA3B7 /* Upload Options */,
 				ADC019722471A6D500532A81 /* Upload Queue */,
 				AD8A451F247713A0002360EA /* Upload Services */,
@@ -1496,7 +1498,7 @@
 				AD4902E324C2142800A96066 /* TagsViewController.storyboard in Resources */,
 				ADAEED8822E2665000CB1B12 /* LaunchScreen.storyboard in Resources */,
 				AD35CA3A1E9C1EBC00E3B897 /* Images.xcassets in Resources */,
-				AD8953C7257D5829003EEA94 /* PasteboardImagesViewController.storyboard in Resources */,
+				AD4AAFB725A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard in Resources */,
 				D863EEC71A6A45E800C0A6E9 /* LacunaRegular.TTF in Resources */,
 				ADF88E7B2066DAE700D1CE26 /* OpenSansLight.TTF in Resources */,
 				AD7823072061BE7F00D5CA70 /* OpenSansRegular.TTF in Resources */,
@@ -1711,7 +1713,6 @@
 				AD35A16B2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift in Sources */,
 				AD11BDA22402C7E7003347BE /* UIColor+AppColors.swift in Sources */,
 				ADFC3A4E2401DA4F004CD337 /* UIFont+AppFonts.swift in Sources */,
-				AD8953C2257D581A003EEA94 /* PasteboardImagesViewController.swift in Sources */,
 				AD435824246FF21C00AC7D9C /* DataModel.xcdatamodeld in Sources */,
 				AD38C04C24AF746000CDC765 /* community.images.uploadCompleted.swift in Sources */,
 				AD38C04424AF724100CDC765 /* pwg.images.setInfo.swift in Sources */,
@@ -1720,6 +1721,7 @@
 				AD5F64ED24C607FC00660BE3 /* pwg.tags.getList.swift in Sources */,
 				ADF26FBC24C1FE860036E778 /* TagsService.m in Sources */,
 				ADE03F3023D4CC6C00F21ED9 /* PiwigoTagData.m in Sources */,
+				AD4AAFB625A0A1E4007DCD54 /* PasteboardImagesViewController.swift in Sources */,
 				D8A59EF31ACE45BC00D2EBF0 /* AlbumData.m in Sources */,
 				AD77109D22F49A6000E64797 /* TaggedImagesViewController.m in Sources */,
 				D82B8CC41A67820A000E47CA /* AppDelegate.m in Sources */,
@@ -1727,6 +1729,7 @@
 				D82B8D301A688512000E47CA /* PiwigoImageData.m in Sources */,
 				D86044111A99922F0067E5D1 /* ImageScrollView.m in Sources */,
 				ADC709C525115943009CA711 /* SceneDelegate.swift in Sources */,
+				AD4AAFB925A0A1E4007DCD54 /* PasteboardImageCollectionViewCell.swift in Sources */,
 				ADB7A102210B803D006723B9 /* MoveImageViewController.m in Sources */,
 				D863EEBD1A6A440600C0A6E9 /* PiwigoButton.m in Sources */,
 				D89045BF1A950FF700A306FE /* EditImageTagsTableViewCell.m in Sources */,
@@ -1736,6 +1739,7 @@
 				AD7B4C1620E031B0003E403A /* AlbumTableViewCell.m in Sources */,
 				ADE4C23425755E660060A203 /* Help01ViewController.swift in Sources */,
 				AD0CC81421EA8AA20009FFF6 /* AsyncImageActivityItemProvider.m in Sources */,
+				AD4AAFB825A0A1E4007DCD54 /* PasteboardImagesHeaderReusableView.swift in Sources */,
 				ED9A42B51ACAD35300EA4421 /* LoginViewController_iPad.m in Sources */,
 				ADE216FE250E22F7003AE588 /* pwg.images.getInfo.swift in Sources */,
 				D8172E1A1AB7C07E00271DB0 /* MoveCategoryViewController.m in Sources */,
@@ -1748,7 +1752,6 @@
 				D87C5A9A1A6F4FB0001763BC /* SessionService.m in Sources */,
 				AD9A1BE824E04F0000D22C86 /* UploadQueueHeaderView.swift in Sources */,
 				D82B8D2B1A68832C000E47CA /* Model.m in Sources */,
-				AD8953D7257D6D4B003EEA94 /* PasteboardImageCollectionViewCell.swift in Sources */,
 				D863EECD1A6A495700C0A6E9 /* LoginViewController.m in Sources */,
 				D87C5A961A6F4C43001763BC /* KeychainItemWrapper.m in Sources */,
 				ADBCFE87235B7603001D6EE7 /* FavoritesImagesViewController.m in Sources */,
@@ -1769,7 +1772,6 @@
 				AD61D3142571598000B8DEA0 /* HelpViewController.swift in Sources */,
 				AD770FD423B4BDA2007DAD50 /* EditImageParamsViewController.m in Sources */,
 				ADF1FCE821F367D100096D35 /* AsyncVideoActivityItemProvider.m in Sources */,
-				AD8953CD257D6741003EEA94 /* PasteboardImagesHeaderReusableView.swift in Sources */,
 				D818E9FB1A74C18500733991 /* AlbumService.m in Sources */,
 				ADDB396F23BF574400AB584B /* EditImageShiftPickerTableViewCell.m in Sources */,
 				D8083A551A7D66CD00A95605 /* ImageService.m in Sources */,
@@ -2308,7 +2310,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.6;
+				MARKETING_VERSION = 2.5.4;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-all_load",
@@ -2371,7 +2373,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.6;
+				MARKETING_VERSION = 2.5.4;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-all_load",

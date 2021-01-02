@@ -10,7 +10,7 @@ import Photos
 import UIKit
 
 @objc
-class PasteboardImagesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIScrollViewDelegate, UploadSwitchDelegate {
+class PasteboardImagesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIScrollViewDelegate, PasteboardImagesHeaderDelegate, UploadSwitchDelegate {
     
     // MARK: - Core Data
     /**
@@ -51,12 +51,14 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
     private var uploadsInQueue = [(String?,kPiwigoUploadState?)?]()         // Array of uploads in queue at start
     private var indexedUploadsInQueue = [(String?,kPiwigoUploadState?)?]()  // Arrays of uploads at indices of corresponding image
     private var selectedImages = [UploadProperties?]()                      // Array of images to upload
+    private var sectionState: SelectButtonState = .none                     // To remember the state of the section
     private var imagesBeingTouched = [IndexPath]()                          // Array of indexPaths of touched images
     
-    private var actionBarButton: UIBarButtonItem?
-    private var cancelBarButton: UIBarButtonItem?
-    private var uploadBarButton: UIBarButtonItem?
-    
+    private var cancelBarButton: UIBarButtonItem!       // For cancelling the selection of images
+    private var uploadBarButton: UIBarButtonItem!       // for uploading selected images
+    private var legendLabel = UILabel.init()            // Legend presented in the toolbar on iPhone/iOS 14+
+    private var legendBarItem: UIBarButtonItem!
+
     private var removeUploadedImages = false
     private var hudViewController: UIViewController?
 
@@ -99,20 +101,40 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         collectionFlowLayout.sectionHeadersPinToVisibleBounds = true
 
         // Collection view identifier
-        localImagesCollection.accessibilityIdentifier = "CameraRoll"
+        localImagesCollection.accessibilityIdentifier = "Pasteboard"
         
         // Navigation bar
-        navigationController?.navigationBar.accessibilityIdentifier = "LocalImagesNav"
+        navigationController?.toolbar.tintColor = UIColor.piwigoColorOrange()
+        navigationController?.navigationBar.accessibilityIdentifier = "PasteboardImagesNav"
 
-        // Bar buttons
-        actionBarButton = UIBarButtonItem(image: UIImage(named: "list"), landscapeImagePhone: UIImage(named: "listCompact"), style: .plain, target: self, action: #selector(didTapActionButton))
-        actionBarButton?.accessibilityIdentifier = "Sort"
-        actionBarButton?.isEnabled = false
+        // The cancel button is used to cancel the selection of images to upload
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelSelect))
-        cancelBarButton?.accessibilityIdentifier = "Cancel"
+        cancelBarButton.accessibilityIdentifier = "Cancel"
+        
+        // The upload button is available after having selecting images
         uploadBarButton = UIBarButtonItem(title: NSLocalizedString("tabBar_upload", comment: "Upload"), style: .done, target: self, action: #selector(didTapUploadButton))
-        uploadBarButton?.isEnabled = false
-        uploadBarButton?.accessibilityIdentifier = "Upload"
+        uploadBarButton.isEnabled = false
+        uploadBarButton.accessibilityIdentifier = "Upload"
+        
+        // Configure menus, segmented control, etc.
+        if #available(iOS 14, *) {
+            // Initialise buttons, toolbar and segmented control
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                // Title
+                title = NSLocalizedString("categoryUpload_pasteboard", comment: "Clipboard")
+
+                // Presents the number of photos selected and the Upload button in the toolbar
+                navigationController?.isToolbarHidden = false
+                legendLabel.text = NSLocalizedString("selectImages", comment: "Select Photos")
+            }
+        } else {
+            // Fallback on earlier versions.
+        }
+
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            // Title
+            title = NSLocalizedString("categoryUpload_pasteboard", comment: "Clipboard")
+        }
         
         // Show images in upload queue by default
         removeUploadedImages = false
@@ -135,6 +157,19 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
+
+        // Case of an iPhone
+        if #available(iOS 14, *) {
+            // Toolbar
+            legendLabel.textColor = UIColor.piwigoColorText()
+            legendBarItem = UIBarButtonItem.init(customView: legendLabel)
+            toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
+            navigationController?.toolbar.barTintColor = UIColor.piwigoColorBackground()
+            navigationController?.toolbar.barStyle = Model.sharedInstance().isDarkPaletteActive ? .black : .default
+        }
+        else {
+            // Fallback on earlier versions
+        }
 
         // Collection view
         localImagesCollection.indicatorStyle = Model.sharedInstance().isDarkPaletteActive ? .white : .black
@@ -201,6 +236,16 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         // Allow device to sleep
         UIApplication.shared.isIdleTimerDisabled = false
 
+        // Restart UploadManager activities
+        if UploadManager.shared.isPaused {
+            UploadManager.shared.isPaused = false
+            UploadManager.shared.backgroundQueue.async {
+                UploadManager.shared.findNextImageToUpload()
+            }
+        }
+    }
+
+    deinit {
         // Unregister palette changes
         var name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
         NotificationCenter.default.removeObserver(self, name: name, object: nil)
@@ -212,48 +257,64 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         // Unregister app entering foreground for updating the pasteboard
         name = NSNotification.Name(UIApplication.willEnterForegroundNotification.rawValue)
         NotificationCenter.default.removeObserver(self, name: name, object: nil)
-
-        // Restart UploadManager activities
-        if UploadManager.shared.isPaused {
-            UploadManager.shared.isPaused = false
-            UploadManager.shared.backgroundQueue.async {
-                UploadManager.shared.findNextImageToUpload()
-            }
-        }
     }
 
     func updateNavBar() {
         let nberOfSelectedImages = selectedImages.compactMap{ $0 }.count
         switch nberOfSelectedImages {
-            case 0:
-                navigationItem.leftBarButtonItems = []
-                // Do not show two buttons to provide enough space for title
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                if view.bounds.size.width <= 414 {
-                    // i.e. smaller than iPhones 6,7 Plus screen width
-                    navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
+        case 0:
+            // Buttons
+            cancelBarButton.isEnabled = false
+            uploadBarButton.isEnabled = false
+
+            // Display "Back" button on the left side
+            navigationItem.leftBarButtonItems = []
+
+            // Set buttons on the right side on iPhone
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                if #available(iOS 14, *) {
+                    // Present the "Upload" button in the toolbar
+                    legendLabel.text = NSLocalizedString("selectImages", comment: "Select Photos")
+                    legendBarItem = UIBarButtonItem.init(customView: legendLabel)
+                    toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
                 } else {
-                    navigationItem.rightBarButtonItems = [actionBarButton, uploadBarButton].compactMap { $0 }
-                    uploadBarButton?.isEnabled = false
+                    // Title
+                    title = NSLocalizedString("selectImages", comment: "Select Photos")
                 }
-                cancelBarButton?.isEnabled = false
-                actionBarButton?.isEnabled = (queue.operationCount == 0)
-                uploadBarButton?.isEnabled = false
-                title = NSLocalizedString("selectImages", comment: "Select Photos")
-            default:
-                navigationItem.leftBarButtonItems = [cancelBarButton].compactMap { $0 }
-                // Do not show two buttons to provide enough space for title
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                if view.bounds.size.width <= 414 {
-                    // i.e. smaller than iPhones 6,7 Plus screen width
+            }
+
+        default:
+            // Buttons
+            cancelBarButton.isEnabled = true
+            uploadBarButton.isEnabled = true
+
+            // Display "Cancel" button on the left side
+            navigationItem.leftBarButtonItems = [cancelBarButton].compactMap { $0 }
+
+            // Set buttons on the right side on iPhone
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                if #available(iOS 14, *) {
+                    // Update the number of selected photos in the toolbar
+                    legendLabel.text = nberOfSelectedImages == 1 ? NSLocalizedString("selectImageSelected", comment: "1 Photo Selected") : String(format:NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), NSNumber(value: nberOfSelectedImages))
+                    legendBarItem = UIBarButtonItem.init(customView: legendLabel)
+                    toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
+                } else {
+                    // Update the number of selected photos in the navigation bar
+                    title = nberOfSelectedImages == 1 ? NSLocalizedString("selectImageSelected", comment: "1 Photo Selected") : String(format:NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), NSNumber(value: nberOfSelectedImages))
+
+                    // Presents a single action menu
                     navigationItem.rightBarButtonItems = [uploadBarButton].compactMap { $0 }
-                } else {
-                    navigationItem.rightBarButtonItems = [actionBarButton, uploadBarButton].compactMap { $0 }
                 }
-                cancelBarButton?.isEnabled = true
-                actionBarButton?.isEnabled = (queue.operationCount == 0)
-                uploadBarButton?.isEnabled = true
+            }
+            
+            // Set buttons on the right side on iPad
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                // Update the number of selected photos in the navigation bar
                 title = nberOfSelectedImages == 1 ? NSLocalizedString("selectImageSelected", comment: "1 Photo Selected") : String(format:NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), NSNumber(value: nberOfSelectedImages))
+
+                // Update status of buttons
+                navigationItem.rightBarButtonItems = [uploadBarButton].compactMap { $0 }
+            }
         }
     }
 
@@ -315,12 +376,6 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         let cacheOperation = BlockOperation.init(block: {
             self.cachingUploadIndicesIteratingPasteBoardImages()
         })
-        cacheOperation.completionBlock = {
-            // Allow action button
-            DispatchQueue.main.async {
-                self.actionBarButton?.isEnabled = true
-            }
-        }
 
         // Perform both operations in background and in parallel
         queue.maxConcurrentOperationCount = 1   // Make it a serial queue with 1
@@ -390,7 +445,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                 }
                 catch let error as NSError {
                     // Disk full? —> to be managed…
-                    print("could not save image file")
+                    print("could not save image file: \(error)")
                 }
             }
         }
@@ -500,7 +555,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
     }
 
     
-    // MARK: - Action Menu
+    // MARK: - Actions Menu
     
     @objc func didTapActionButton() {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
@@ -540,12 +595,15 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         } else {
             // Fallback on earlier versions
         }
-        alert.popoverPresentationController?.barButtonItem = actionBarButton
+//        alert.popoverPresentationController?.barButtonItem = actionBarButton
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             alert.view.tintColor = UIColor.piwigoColorOrange()
         }
     }
+
+    
+    // MARK: - Upload Images
 
     @objc func didTapUploadButton() {
         // Avoid potential crash (should never happen, but…)
@@ -554,7 +612,6 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         // Disable button
         cancelBarButton?.isEnabled = false
         uploadBarButton?.isEnabled = false
-        actionBarButton?.isEnabled = false
         
         // Show upload parameter views
         let uploadSwitchSB = UIStoryboard(name: "UploadSwitchViewController", bundle: nil)
@@ -662,6 +719,64 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         }
     }
 
+    func updateSelectButton(completion: @escaping () -> Void) {
+        
+        // Number of images in section
+        let nberOfImagesInSection = localImagesCollection.numberOfItems(inSection: 0)
+
+        // Job done if there is no image presented
+        if nberOfImagesInSection == 0 {
+            sectionState = .none
+            completion()
+            return
+        }
+        
+        // Number of selected images
+        let nberOfSelectedImagesInSection = selectedImages[0..<nberOfImagesInSection].compactMap{ $0 }.count
+        if nberOfImagesInSection == nberOfSelectedImagesInSection {
+            // All images are selected
+            if sectionState != .deselect {
+                sectionState = .deselect
+                completion()
+            }
+            return
+        }
+
+        // Can we calculate the number of images already in the upload queue?
+        if queue.operationCount != 0 {
+            // Keep Select button disabled
+            if sectionState != .none {
+                sectionState = .none
+                completion()
+            }
+            return
+        }
+
+        // Number of images already in the upload queue
+        let nberOfImagesOfSectionInUploadQueue = indexedUploadsInQueue[0..<nberOfImagesInSection].compactMap{ $0 }.count
+
+        // Update state of Select button only if needed
+        if nberOfImagesInSection == nberOfImagesOfSectionInUploadQueue {
+            // All images are in the upload queue or already downloaded
+            if sectionState != .none {
+                sectionState = .none
+                completion()
+            }
+        } else if nberOfImagesInSection == nberOfSelectedImagesInSection + nberOfImagesOfSectionInUploadQueue {
+            // All images are either selected or in the upload queue
+            if sectionState != .deselect {
+                sectionState = .deselect
+                completion()
+            }
+        } else {
+            // Not all images are either selected or in the upload queue
+            if sectionState != .select {
+                sectionState = .select
+                completion()
+            }
+        }
+    }
+
     
     // MARK: - UICollectionView - Headers & Footers
         
@@ -673,7 +788,14 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                 let view = UICollectionReusableView(frame: CGRect.zero)
                 return view
             }
-            header.configure()
+            
+            // Update section if available data
+            updateSelectButton(completion: {})
+            
+            // Configure the header
+            let selectState = queue.operationCount == 0 ? sectionState : .none
+            header.configure(with: selectState)
+            header.headerDelegate = self
             return header
         }
         else if kind == UICollectionView.elementKindSectionFooter {
@@ -874,6 +996,36 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
 
         // Refresh cell
         cell.reloadInputViews()
+    }
+
+
+    // MARK: - PasteboardImagesHeaderReusableView Delegate Methods
+    
+    func didSelectImagesOfSection() {
+        let nberOfImagesInSection = localImagesCollection.numberOfItems(inSection: 0)
+        if sectionState == .select {
+            // Loop over all images in section to select them (70356 images takes 150.6 ms with iPhone 11 Pro)
+            // Here, we exploit the cached local IDs
+            for index in 0..<nberOfImagesInSection {
+                // Images in the upload queue cannot be selected
+                if indexedUploadsInQueue[index] == nil {
+                    selectedImages[index] = UploadProperties.init(localIdentifier: pbIdentifiers[index], category: self.categoryId)
+                }
+            }
+            // Change section button state
+            sectionState = .deselect
+        } else {
+            // Deselect images of section (70356 images takes 52.2 ms with iPhone 11 Pro)
+            selectedImages[0..<nberOfImagesInSection] = .init(repeating: nil, count: nberOfImagesInSection)
+            // Change section button state
+            sectionState = .select
+        }
+
+        // Update navigation bar
+        self.updateNavBar()
+
+        // Update collection
+        self.localImagesCollection.reloadSections(IndexSet.init(integer: 0))
     }
 
 
