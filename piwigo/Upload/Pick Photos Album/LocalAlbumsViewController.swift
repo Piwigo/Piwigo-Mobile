@@ -426,7 +426,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         }
 
         // Did tap [+] button at the bottom of section —> release remaining albums
-        if LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums[indexPath.section] == true &&
+        if LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums[activeSection] == true &&
             indexPath.row == LocalAlbumsProvider.sharedInstance().maxNberOfAlbumsInSection {
             // Release album list
             LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums[activeSection] = false
