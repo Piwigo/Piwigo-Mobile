@@ -275,6 +275,7 @@
 "singleVideo" = "動画";
 "singleAudio" = "音声";
 "severalImages" = "写真";
+"All Photos" = "すべての写真";
 "severalVideos" = "ビデオ";
 "noImages" = "写真がありません";
 "pullToRefresh" = "写真の再読み込み";
@@ -282,6 +283,7 @@
 "Months" = "ヶ月間";
 "Weeks" = "週間";
 "Days" = "日間";
+"Date" = "日付";
 
 // Errors
 "albumPhotoError_title" = "アルバム写真の取得エラー";
@@ -488,8 +490,8 @@
 "uploadNoInternetNetwork" = "インターネット接続がありません";
 "uploadNoWiFiNetwork" = "Wi-Fi接続がありません";
 "uploadLowPowerMode" = "低消費電力モード有効";
-"uploadSection_impossible" = "アップロード不可";
-"uploadSection_resumable" = "アップロード再開可能";
+"uploadSection_impossible" = "不可なアップロード";
+"uploadSection_resumable" = "再開可能なアップロード";
 "uploadSection_queue" = "アップロードキュー";
 
 "imageUploadError_title" = "写真アップロードエラー";
@@ -550,14 +552,10 @@
 "shareActivityCode_Other>375px" = "写真を他のアプリと共有する";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS / PHOTOS LIBRARY
+// ==> LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "写真ライブラリ";
-
-"localImageSort_newest" = "最新";
-"localImageSort_oldest" = "最古";
-"localImageSort_notUploaded" = "アップロードされていない";
-"localImageSort_undefined" = "定義されていない";
+"localAlbums_accessible" = "アクセス可能な写真";
 
 // Local albums — Access not Authorized
 "localAlbums_photosNotAuthorized_title" = "アクセスなし";
@@ -566,6 +564,10 @@
 
 // Local albums — Tell user to change settings, how
 "localAlbums_photosNotAuthorized_msg" = "ローカル写真ライブラリを開けませんでした。設定アプリのプライバシー、写真を開いてPiwigoにアクセスを許可してください。";
+
+// Local images — Explain
+"localImages_deleteTitle" = "カメラロールから削除する";
+"localImages_deleteMessage" = "アップロードした写真や動画をカメラロールから削除しますか？ 削除された写真やビデオは、iOSの写真のゴミ箱で30日間は引き続き利用可能です。";
 
 // ===========================================================================
 // ==> SETTINGS
@@ -712,8 +714,14 @@
 "help01_header" = "複数選択";
 "help01_text" = "指を左から右(または右から左) にスライドさせてから下などします。";
 "help02_header" = "バックグラウンドアップロード中";
-"help02_text" = "写真/ビデオを選択し、パラメータを設定し、format@@0をタップします。";
-"help02_text2" = "デバイスを充電器に差し込み、必要に応じてiOSにアップロードを開始させます。";
+"help02_text" = "写真/ビデオを選択し、パラメータを設定し、アップロードをタップします。";
+"help02_text2" = "デバイスを充電器に差し込み、必要に応じてiOSにアップロードを開始させてください。";
 "help02_text3" = "(uploadAsyncエクステンションまたはPiwigo11が必要です)";
 "help03_header" = "管理者";
 "help03_text" = "アルバムを作成、削除、移動、名前変更します。";
+"help04_text" = "カメラロールから削除された写真は、iOS Photosのゴミ箱に30日間保存されます。";
+"help05_header" = "写真をアップロード中";
+"help05_text" = "アップロードリクエストが送信されると、アルバムを閲覧したり、他のリクエストを送信したり、アプリから退出したりできます。";
+"help05_text2" = "アップロードを管理するには、ルートアルバムに表示されているグレーのボタンをタップします。";
+"help06_header" = "アップロード管理";
+"help06_text" = "監視、キャンセル、およびグローバルまたは個別にアップロードリクエストを再開します。";

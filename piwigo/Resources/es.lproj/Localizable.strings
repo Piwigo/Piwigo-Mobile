@@ -275,6 +275,7 @@
 "singleVideo" = "Vídeo";
 "singleAudio" = "Audio";
 "severalImages" = "Fotos";
+"All Photos" = "Todas las fotos";
 "severalVideos" = "Vídeos";
 "noImages" = "No hay fotos";
 "pullToRefresh" = "Recargar fotos";
@@ -282,6 +283,7 @@
 "Months" = "Meses";
 "Weeks" = "Semanas";
 "Days" = "Días";
+"Date" = "Fecha";
 
 // Errors
 "albumPhotoError_title" = "Error al obtener las fotos del álbum";
@@ -550,14 +552,10 @@
 "shareActivityCode_Other>375px" = "Compartir las fotos con otras aplicaciones";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS / PHOTOS LIBRARY
+// ==> LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "Biblioteca de fotografías";
-
-"localImageSort_newest" = "Más reciente";
-"localImageSort_oldest" = "Más antiguo";
-"localImageSort_notUploaded" = "No cargado";
-"localImageSort_undefined" = "No definido";
+"localAlbums_accessible" = "Fotos accesibles";
 
 // Local albums — Access not Authorized
 "localAlbums_photosNotAuthorized_title" = "Sin acceso";
@@ -566,6 +564,10 @@
 
 // Local albums — Tell user to change settings, how
 "localAlbums_photosNotAuthorized_msg" = "No se puede abrir la biblioteca local de fotos. Por favor, vaya a la aplicación de configuración y habilite el acceso para Piwigo.";
+
+// Local images — Explain
+"localImages_deleteTitle" = "Eliminar del carrete de cámara";
+"localImages_deleteMessage" = "¿Desea eliminar las fotos o vídeos subidos del carrete de la cámara? Las fotos o vídeos eliminados seguirán estando disponibles en la papelera de fotos de iOS durante 30 días.";
 
 // ===========================================================================
 // ==> SETTINGS
@@ -717,3 +719,9 @@
 "help02_text3" = "(requiere la extensión uploadAsync o Piwigo 11)";
 "help03_header" = "Administradores";
 "help03_text" = "Crear, eliminar, mover y renombrar álbumes.";
+"help04_text" = "Las fotos subidas eliminadas del carrete de la cámara permanecen disponibles en la papelera de iOS Photos durante 30 días.";
+"help05_header" = "Cargando fotos";
+"help05_text" = "Una vez enviadas las solicitudes de subida, puede navegar por los álbumes, enviar otras solicitudes o salir de la aplicación.";
+"help05_text2" = "Pulse el botón gris que aparece en el álbum raíz para gestionar las subidas.";
+"help06_header" = "Gestión de subidas";
+"help06_text" = "Supervise, cancele y reanude las solicitudes de subida de forma global o individual.";

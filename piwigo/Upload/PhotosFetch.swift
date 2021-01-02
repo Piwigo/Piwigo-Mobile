@@ -306,29 +306,32 @@ class PhotosFetch: NSObject {
             }
         }
         
-        // If filename is empty, build one from the current date
-        if fileName.count == 0 {
+        // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
+        var utf8mb3Filename = NetworkUtilities.utf8mb3String(from: fileName) ?? ""
+
+        // If encodedFileName is empty, build one from the current date
+        if utf8mb3Filename.count == 0 {
             // No filename => Build filename from creation date
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyyMMdd-HHmmssSSSS"
             if let creation = imageAsset?.creationDate {
-                fileName = dateFormatter.string(from: creation)
+                utf8mb3Filename = dateFormatter.string(from: creation)
             }
 
             // Filename extension required by Piwigo so that it knows how to deal with it
             if imageAsset?.mediaType == .image {
                 // Adopt JPEG photo format by default, will be rechecked
-                fileName = URL(fileURLWithPath: fileName).appendingPathExtension("jpg").lastPathComponent
+                utf8mb3Filename = URL(fileURLWithPath: utf8mb3Filename).appendingPathExtension("jpg").lastPathComponent
             } else if imageAsset?.mediaType == .video {
                 // Videos are exported in MP4 format
-                fileName = URL(fileURLWithPath: fileName).appendingPathExtension("mp4").lastPathComponent
+                utf8mb3Filename = URL(fileURLWithPath: utf8mb3Filename).appendingPathExtension("mp4").lastPathComponent
             } else if imageAsset?.mediaType == .audio {
                 // Arbitrary extension, not managed yet
-                fileName = URL(fileURLWithPath: fileName).appendingPathExtension("m4a").lastPathComponent
+                utf8mb3Filename = URL(fileURLWithPath: utf8mb3Filename).appendingPathExtension("m4a").lastPathComponent
             }
         }
 
-//        print("=> filename = \(fileName)")
-        return fileName
+//        print("=> adopted filename = \(utf8mb3Filename)")
+        return utf8mb3Filename
     }
 }

@@ -75,7 +75,6 @@ FOUNDATION_EXPORT NSInteger const loadingViewTag;
 
 +(NSString*)encodedImageURL:(NSString*)originalURL;
 +(NSString*)getURLWithPath:(NSString*)originalURL withURLParams:(NSDictionary*)params;
-+(NSString*)UTF8EncodedStringFromString:(NSString *)string;
 
 +(NSURLSessionTask*)post:(NSString*)path
            URLParameters:(NSDictionary*)urlParams

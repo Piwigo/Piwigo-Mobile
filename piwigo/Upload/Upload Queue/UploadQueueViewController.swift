@@ -44,7 +44,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         super.viewDidLoad()
 
         // Buttons
-        actionBarButton = UIBarButtonItem(image: UIImage(named: "list"), landscapeImagePhone: UIImage(named: "listCompact"), style: .plain, target: self, action: #selector(didTapActionButton))
+        actionBarButton = UIBarButtonItem(image: UIImage(named: "action"), landscapeImagePhone: UIImage(named: "actionCompact"), style: .plain, target: self, action: #selector(didTapActionButton))
         doneBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(quitUpload))
         doneBarButton?.accessibilityIdentifier = "Done"
 
@@ -198,7 +198,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .cancel, handler: { action in })
         alert.addAction(cancelAction)
 
-        // Resume uploads
+        // Resume upload requests in section 2 (preparingError, uploadingError, finishingError)
         if let _ = diffableDataSource.snapshot().indexOfSection(SectionKeys.Section2.rawValue) {
             let failedUploads = diffableDataSource.snapshot().numberOfItems(inSection: SectionKeys.Section2.rawValue)
             if failedUploads > 0 {
@@ -234,7 +234,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
             }
         }
 
-        // Clear impossible uploads
+        // Clear impossible upload requests in section 1 (preparingFail, formatError)
         if let _ = diffableDataSource.snapshot().indexOfSection(SectionKeys.Section1.rawValue) {
             let impossibleUploads = diffableDataSource.snapshot().numberOfItems(inSection: SectionKeys.Section1.rawValue)
             if impossibleUploads > 0 {

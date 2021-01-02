@@ -275,6 +275,7 @@
 "singleVideo" = "Video";
 "singleAudio" = "Ljud";
 "severalImages" = "Bilder";
+"All Photos" = "Alla foton";
 "severalVideos" = "Videor";
 "noImages" = "Inga bilder";
 "pullToRefresh" = "Ladda om bilderna";
@@ -282,6 +283,7 @@
 "Months" = "Månader";
 "Weeks" = "Veckor";
 "Days" = "Dagar";
+"Date" = "Datum";
 
 // Errors
 "albumPhotoError_title" = "Hämta albumets bildfel";
@@ -550,14 +552,10 @@
 "shareActivityCode_Other>375px" = "Dela bilder med andra appar";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS / PHOTOS LIBRARY
+// ==> LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "Bildbibliotek";
-
-"localImageSort_newest" = "Nyaste";
-"localImageSort_oldest" = "Äldst";
-"localImageSort_notUploaded" = "Inte uppladdat";
-"localImageSort_undefined" = "Odefinierad";
+"localAlbums_accessible" = "Tillgängliga foton";
 
 // Local albums — Access not Authorized
 "localAlbums_photosNotAuthorized_title" = "Ingen behörighet";
@@ -566,6 +564,10 @@
 
 // Local albums — Tell user to change settings, how
 "localAlbums_photosNotAuthorized_msg" = "Kan inte öppna det lokala bildbiblioteket. Gå in på appen Inställningar och aktivera åtkomst för Piwigo.";
+
+// Local images — Explain
+"localImages_deleteTitle" = "Ta bort från kamerarullen";
+"localImages_deleteMessage" = "Vill du ta bort uppladdade foton eller videor från kamerarullen? De raderade bilderna eller videoklippen kommer fortfarande att finnas tillgängliga i iOS Bilder papperskorgen i 30 dagar.";
 
 // ===========================================================================
 // ==> SETTINGS
@@ -717,3 +719,9 @@
 "help02_text3" = "(kräver tillägget uploadAsync eller Piwigo 11)";
 "help03_header" = "Administratörer";
 "help03_text" = "Skapa, ta bort, flytta och döpa om album.";
+"help04_text" = "Uppladdade foton borttagna från kamerarullen är fortfarande tillgängliga i iOS Bilder papperskorgen i 30 dagar.";
+"help05_header" = "Laddar upp foton";
+"help05_text" = "När uppladdningsförfrågningar har skickats in kan du bläddra bland album, skicka in andra förfrågningar eller lämna appen.";
+"help05_text2" = "Tryck på den grå knappen som visas i rotalbumet för att hantera uppladdningar.";
+"help06_header" = "Ladda upp hantering";
+"help06_text" = "Övervaka, avbryta och återuppta uppladdningsförfrågningar globalt eller individuellt.";

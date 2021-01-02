@@ -26,13 +26,16 @@ extension UploadManager{
         }
 
         // Prepare parameters for uploading image/video (filename key is kPiwigoImagesUploadParamFileName)
+        let imageTitle = NetworkUtilities.utf8mb3String(from: upload.imageName)
+        let author = NetworkUtilities.utf8mb3String(from: upload.author)
+        let comment = NetworkUtilities.utf8mb3String(from: upload.comment)
         let imageParameters: [String : String] = [
             kPiwigoImagesUploadParamFileName: upload.fileName ?? "Image.jpg",
-            kPiwigoImagesUploadParamTitle: upload.imageName ?? "",
-            kPiwigoImagesUploadParamAuthor: upload.author ?? "",
+            kPiwigoImagesUploadParamTitle: imageTitle ?? "",
+            kPiwigoImagesUploadParamAuthor: author ?? "",
             kPiwigoImagesUploadParamCreationDate: creationDate,
             kPiwigoImagesUploadParamPrivacy: "\(NSNumber(value: upload.privacyLevel))",
-            kPiwigoImagesUploadParamDescription: upload.comment ?? "",
+            kPiwigoImagesUploadParamDescription: comment ?? "",
             kPiwigoImagesUploadParamTags: upload.tagIds ?? "",
         ]
 

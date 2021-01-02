@@ -275,6 +275,7 @@
 "singleVideo" = "Video";
 "singleAudio" = "Audio";
 "severalImages" = "Immagini";
+"All Photos" = "Tutte Le Foto";
 "severalVideos" = "Videos";
 "noImages" = "Nessuna immagine";
 "pullToRefresh" = "Carica immagini";
@@ -282,6 +283,7 @@
 "Months" = "Mesi";
 "Weeks" = "Settimane";
 "Days" = "Giorni";
+"Date" = "Data";
 
 // Errors
 "albumPhotoError_title" = "Ottieni l'errore di foto dell'album";
@@ -550,14 +552,10 @@
 "shareActivityCode_Other>375px" = "Condividi le immagini con altre app";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS / PHOTOS LIBRARY
+// ==> LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "Galleria foto";
-
-"localImageSort_newest" = "Più recente";
-"localImageSort_oldest" = "Meno recente";
-"localImageSort_notUploaded" = "Non caricato";
-"localImageSort_undefined" = "Indefinito";
+"localAlbums_accessible" = "Foto Accessibili";
 
 // Local albums — Access not Authorized
 "localAlbums_photosNotAuthorized_title" = "Accesso negato";
@@ -566,6 +564,10 @@
 
 // Local albums — Tell user to change settings, how
 "localAlbums_photosNotAuthorized_msg" = "Impossibile aprire la libreria di foto locale. Accedi all'app Impostazioni e attiva l'accesso per Piwigo.";
+
+// Local images — Explain
+"localImages_deleteTitle" = "Rimuovi dal rullo fotocamera";
+"localImages_deleteMessage" = "Vuoi eliminare le foto o i video caricati dal rullino della fotocamera? Le foto o i video eliminati saranno ancora disponibili nel cestino foto iOS per 30 giorni.";
 
 // ===========================================================================
 // ==> SETTINGS
@@ -717,3 +719,9 @@
 "help02_text3" = "(richiede l'estensione uploadAsync o Piwigo 11)";
 "help03_header" = "Amministratori";
 "help03_text" = "Creare, eliminare, spostare e rinominare gli album.";
+"help04_text" = "Le foto caricate rimosse dal rullo della fotocamera rimangono disponibili nel cestino foto iOS per 30 giorni.";
+"help05_header" = "Caricamento Foto";
+"help05_text" = "Una volta che le richieste di caricamento vengono inviate, è possibile sfogliare gli album, inviare altre richieste o lasciare l'app.";
+"help05_text2" = "Tocca il pulsante grigio presentato nell'album di root per gestire i caricamenti.";
+"help06_header" = "Gestione Upload";
+"help06_text" = "Monitora, cancella e riprendi le richieste di upload a livello globale o individuale.";

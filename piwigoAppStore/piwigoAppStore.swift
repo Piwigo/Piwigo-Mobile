@@ -328,7 +328,7 @@ class piwigoAppStore: XCTestCase {
 
         // Screenshot #4: image previewed
         app.navigationBars.buttons["Cancel"].tap()
-        if deviceType == "iPhone SE" {
+        if deviceType.contains("iPhone SE") {
             app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
             sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
@@ -389,7 +389,7 @@ class piwigoAppStore: XCTestCase {
         // Screenshot #5: Edit parameters
         app.navigationBars.buttons.element(boundBy: 0).tap()
         sleep(2)                        // Leave time for animation
-        if deviceType == "iPhone SE" {
+        if deviceType.contains("iPhone SE") {
             app.collectionViews.children(matching: .cell).element(boundBy: 7).tap()
         }
         else if deviceType == "iPhone 8" {
@@ -450,10 +450,6 @@ class piwigoAppStore: XCTestCase {
         sleep(1)                        // Leave time for animation
         app.tables.children(matching: .cell).matching(identifier: "Recent").element.tap()
         sleep(1)                        // Leave time for animation
-        app.buttons["imageWeek"].tap()
-        sleep(1)                        // Leave time for animation
-        app.buttons["imageDay"].tap()
-        sleep(1)                        // Leave time for animation
         let images = app.collectionViews.matching(identifier: "CameraRoll").children(matching: .cell)
         images.element(boundBy: 0).children(matching: .other).element.tap()
         images.element(boundBy: 1).children(matching: .other).element.tap()
@@ -463,10 +459,22 @@ class piwigoAppStore: XCTestCase {
         images.element(boundBy: 5).children(matching: .other).element.tap()
         images.element(boundBy: 6).children(matching: .other).element.tap()
         images.element(boundBy: 8).children(matching: .other).element.tap()
+        let moreButton = app.navigationBars["LocalImagesNav"].buttons["Action"]
+        moreButton.tap()
+        app.collectionViews.buttons["Days"].tap()
+        sleep(1)                        // Leave time for animation
+        moreButton.tap()
+        sleep(1)                        // Leave time for animation
         snapshot("Image07")
                         
         // Screenshot #8: upload images, parameters
-        app.navigationBars["LocalImagesNav"].buttons["Upload"].tap()
+        app.collectionViews.buttons["Days"].tap()
+        sleep(1)                        // Leave time for animation
+        if deviceType.contains("iPhone") {
+            app.toolbars.buttons["Upload"].tap()
+        } else {
+            app.navigationBars["LocalImagesNav"].buttons["Upload"].tap()
+        }
         sleep(1)
         snapshot("Image08")
         
@@ -478,7 +486,7 @@ class piwigoAppStore: XCTestCase {
         // Screenshot #10: settings
         app.navigationBars["UploadSwitchView"].buttons["Cancel"].tap()
         let localimagesnavNavigationBar = app.navigationBars["LocalImagesNav"]
-        localimagesnavNavigationBar.buttons.element(boundBy: 0).tap()        
+        localimagesnavNavigationBar.buttons.element(boundBy: 0).tap()
         sleep(1)                        // Leave time for animation
         localimagesnavNavigationBar.buttons.element(boundBy: 0).tap()
         app.navigationBars["LocalAlbumsNav"].buttons["Cancel"].tap()

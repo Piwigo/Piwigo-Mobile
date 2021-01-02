@@ -58,6 +58,14 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     #if DEBUG
     // MARK: - Core Data
     /**
+     The LocationsProvider that fetches location data, saves it to Core Data,
+     and serves it to this table view.
+     */
+    private lazy var locationsProvider: LocationsProvider = {
+        let provider : LocationsProvider = LocationsProvider()
+        return provider
+    }()
+    /**
      The TagsProvider that fetches tag data, saves it to Core Data,
      and serves it to this table view.
      */
@@ -523,7 +531,13 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 if Model.sharedInstance().defaultCategory == 0 {
                     detail = NSLocalizedString("categorySelection_root", comment: "Root Album")
                 } else {
-                    detail = CategoriesData.sharedInstance().getCategoryById(Model.sharedInstance().defaultCategory).name
+                    if let albumName = CategoriesData.sharedInstance().getCategoryById(Model.sharedInstance().defaultCategory).name {
+                        detail = albumName
+                    } else {
+                        detail = NSLocalizedString("categorySelection_root", comment: "Root Album")
+                        Model.sharedInstance().defaultCategory = 0
+                        Model.sharedInstance()?.saveToDisk()
+                    }
                 }
                 cell.configure(with: title, detail: detail)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
@@ -1610,50 +1624,66 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             switch indexPath.row {
             case 0 /* Clear cache */:
                 #if DEBUG
-                let alert = UIAlertController(title: "", message:"", preferredStyle: .actionSheet)
+                let alert = UIAlertController(title: "", message:NSLocalizedString("settings_cacheClearMsg", comment: "Are you sure you want to clear the cache? This will make albums and images take a while to load again."), preferredStyle: .actionSheet)
                 #else
-                let alert = UIAlertController(title: NSLocalizedString("settings_cacheClear", comment: "Clear Cache"), message: NSLocalizedString("settings_cacheClearMsg", comment: "Are you sure you want to clear the image cache? This will make albums and images take a while to load again."), preferredStyle: .alert)
+                let alert = UIAlertController(title: NSLocalizedString("settings_cacheClear", comment: "Clear Cache"), message: NSLocalizedString("settings_cacheClearMsg", comment: "Are you sure you want to clear the cache? This will make albums and images take a while to load again."), preferredStyle: .alert)
                 #endif
 
                 let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .cancel, handler: nil)
 
                 #if DEBUG
                 let nberOfTags = tagsProvider.fetchedResultsController.fetchedObjects?.count ?? 0
-                let titleClearTags = nberOfTags > 1 ? String(format: "Clear %ld Tags", nberOfTags) : "Clear 1 Tag"
-                let clearTagsAction = UIAlertAction(title: titleClearTags,
-                                                    style: .default, handler: { action in
-                    // Delete all tags in background queue
-                    self.tagsProvider.clearTags()
-                    TagsData.sharedInstance().clearCache()
-                })
-
+                if nberOfTags > 0 {
+                    let titleClearTags = nberOfTags > 1 ? String(format: "Clear %ld Tags", nberOfTags) : "Clear 1 Tag"
+                    let clearTagsAction = UIAlertAction(title: titleClearTags,
+                                                        style: .default, handler: { action in
+                        // Delete all tags in background queue
+                        self.tagsProvider.clearTags()
+                        TagsData.sharedInstance().clearCache()
+                    })
+                    alert.addAction(clearTagsAction)
+                }
+                
+                let nberOfLocations = locationsProvider.fetchedResultsController.fetchedObjects?.count ?? 0
+                if nberOfLocations > 0 {
+                    let titleClearLocations = nberOfTags > 1 ? String(format: "Clear %ld Locations", nberOfTags) : "Clear 1 location"
+                    let clearLocationsAction = UIAlertAction(title: titleClearLocations,
+                                                             style: .default, handler: { action in
+                        // Delete all locations in background queue
+                        self.locationsProvider.clearLocations()
+                    })
+                    alert.addAction(clearLocationsAction)
+                }
+                
                 let nberOfUploads = uploadsProvider.fetchedResultsController.fetchedObjects?.count ?? 0
-                let titleClearUploadRequests = nberOfUploads > 1 ? String(format: "Clear %ld Upload Requests",
-                    nberOfUploads) : "Clear 1 Upload Request"
-                let clearUploadsAction = UIAlertAction(title: titleClearUploadRequests,
-                                                       style: .default, handler: { action in
-                    // Get all upload requests
-                    guard let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects else {
-                        return
-                    }
-                    // Delete all upload requests in a private queue
-                    DispatchQueue.global(qos: .userInitiated).async {
-                        self.uploadsProvider.delete(uploadRequests: allUploads.map({$0.objectID}))
-                    }
-                })
+                if nberOfUploads > 0 {
+                    let titleClearUploadRequests = nberOfUploads > 1 ? String(format: "Clear %ld Upload Requests",
+                        nberOfUploads) : "Clear 1 Upload Request"
+                    let clearUploadsAction = UIAlertAction(title: titleClearUploadRequests,
+                                                           style: .default, handler: { action in
+                        // Get all upload requests
+                        guard let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects else {
+                            return
+                        }
+                        // Delete all upload requests in a private queue
+                        DispatchQueue.global(qos: .userInitiated).async {
+                            self.uploadsProvider.delete(uploadRequests: allUploads.map({$0.objectID}))
+                        }
+                    })
+                    alert.addAction(clearUploadsAction)
+                }
                 #endif
 
                 let clearAction = UIAlertAction(title: NSLocalizedString("alertClearButton", comment: "Clear"), style: .destructive, handler: { action in
-                        Model.sharedInstance().imageCache.removeAllCachedResponses()
+                    // Delete image cache
+                    ClearCache.clearAllCache(exceptCategories: true) {
+                        // Reload tableView
                         self.settingsTableView?.reloadData()
-                    })
+                    }
+                })
 
                 // Add actions
                 alert.addAction(dismissAction)
-                #if DEBUG
-                alert.addAction(clearUploadsAction)
-                alert.addAction(clearTagsAction)
-                #endif
                 alert.addAction(clearAction)
 
                 // Determine position of cell in table view
@@ -1873,29 +1903,31 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         Model.sharedInstance().saveToDisk()
 
         // Erase cache
-        ClearCache.clearAllCache()
-        if #available(iOS 13.0, *) {
-            guard let window = (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.window else {
-                return
-            }
+        ClearCache.clearAllCache(exceptCategories: false,
+                                 completionHandler: {
+            if #available(iOS 13.0, *) {
+                guard let window = (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.window else {
+                    return
+                }
 
-            let loginVC: LoginViewController
-            if UIDevice.current.userInterfaceIdiom == .phone {
-                loginVC = LoginViewController_iPhone.init()
+                let loginVC: LoginViewController
+                if UIDevice.current.userInterfaceIdiom == .phone {
+                    loginVC = LoginViewController_iPhone.init()
+                } else {
+                    loginVC = LoginViewController_iPad.init()
+                }
+                let nav = LoginNavigationController(rootViewController: loginVC)
+                nav.isNavigationBarHidden = true
+                window.rootViewController = nav
+                UIView.transition(with: window, duration: 0.5,
+                                  options: .transitionCrossDissolve,
+                                  animations: nil, completion: nil)
             } else {
-                loginVC = LoginViewController_iPad.init()
+                // Fallback on earlier versions
+                let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                appDelegate?.loadLoginView()
             }
-            let nav = LoginNavigationController(rootViewController: loginVC)
-            nav.isNavigationBarHidden = true
-            window.rootViewController = nav
-            UIView.transition(with: window, duration: 0.5,
-                              options: .transitionCrossDissolve,
-                              animations: nil, completion: nil)
-        } else {
-            // Fallback on earlier versions
-            let appDelegate = UIApplication.shared.delegate as? AppDelegate
-            appDelegate?.loadLoginView()
-        }
+        })
     }
 
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {

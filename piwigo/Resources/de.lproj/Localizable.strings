@@ -275,6 +275,7 @@
 "singleVideo" = "Video";
 "singleAudio" = "Audio";
 "severalImages" = "Fotos";
+"All Photos" = "Alle Fotos";
 "severalVideos" = "Videos";
 "noImages" = "Keine Fotos";
 "pullToRefresh" = "Fotos erneut laden";
@@ -282,6 +283,7 @@
 "Months" = "Monate";
 "Weeks" = "Wochen";
 "Days" = "Tage";
+"Date" = "Datum";
 
 // Errors
 "albumPhotoError_title" = "Fotofehler im Album";
@@ -550,14 +552,10 @@
 "shareActivityCode_Other>375px" = "Fotos mit anderen Apps teilen";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS / PHOTOS LIBRARY
+// ==> LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "Foto-Bibliothek";
-
-"localImageSort_newest" = "Neueste";
-"localImageSort_oldest" = "Älteste";
-"localImageSort_notUploaded" = "Nicht hochgeladen";
-"localImageSort_undefined" = "Undefiniert";
+"localAlbums_accessible" = "Zugängliche Fotos";
 
 // Local albums — Access not Authorized
 "localAlbums_photosNotAuthorized_title" = "Kein Zugriff";
@@ -566,6 +564,10 @@
 
 // Local albums — Tell user to change settings, how
 "localAlbums_photosNotAuthorized_msg" = "Konnte die lokale Foto Bibliothek nicht öffnen. Bitte gehen Sie in die Einstellungen und ermöglichen den Zugriff für Piwigo.";
+
+// Local images — Explain
+"localImages_deleteTitle" = "Aus Fotos entfernen";
+"localImages_deleteMessage" = "Möchten Sie die hochgeladenen Fotos oder Videos aus der Kamerarolle löschen? Die gelöschten Fotos oder Videos sind noch 30 Tage lang im iOS-Fotopapierkorb verfügbar.";
 
 // ===========================================================================
 // ==> SETTINGS
@@ -717,3 +719,9 @@
 "help02_text3" = "(erfordert die UploadAsync-Erweiterung oder Piwigo 11)";
 "help03_header" = "Administratoren";
 "help03_text" = "Alben erstellen, löschen, verschieben und umbenennen.";
+"help04_text" = "Hochgeladene Fotos, die aus der Kamerarolle entfernt werden, bleiben 30 Tage lang im Papierkorb von iOS Fotos verfügbar.";
+"help05_header" = "Foto-Upload";
+"help05_text" = "Sobald Upload-Anfragen eingereicht wurden, können Sie Alben durchsuchen, andere Anfragen einreichen oder die App verlassen.";
+"help05_text2" = "Tippen Sie auf die graue Schaltfläche, die im Root-Album angezeigt wird, um Uploads zu verwalten.";
+"help06_header" = "Uploadverwaltung";
+"help06_text" = "Upload-Anfragen global oder einzeln überwachen, abbrechen und fortsetzen.";

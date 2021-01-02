@@ -299,8 +299,16 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 		
 		albumData.nearestUpperCategory = albumData.upperCategories.count > 2 ? [[albumData.upperCategories objectAtIndex:albumData.upperCategories.count - 2] integerValue] : [[albumData.upperCategories objectAtIndex:0] integerValue];
 		
-		albumData.name = [NetworkHandler UTF8EncodedStringFromString:[category objectForKey:@"name"]];
-		albumData.comment = [NetworkHandler UTF8EncodedStringFromString:[category objectForKey:@"comment"]];
+        if (![[category objectForKey:@"name"] isKindOfClass:[NSNull class]]) {
+            albumData.name = [NetworkUtilities utf8mb4StringFrom:[category objectForKey:@"name"]];
+        } else {
+            albumData.name = @"Error…";
+        }
+        if (![[category objectForKey:@"comment"] isKindOfClass:[NSNull class]]) {
+            albumData.comment = [NetworkUtilities utf8mb4StringFrom:[category objectForKey:@"comment"]];
+        } else {
+            albumData.comment = @"";
+        }
 		albumData.globalRank = [[category objectForKey:@"global_rank"] floatValue];
 		albumData.numberOfImages = [[category objectForKey:@"nb_images"] integerValue];
 		albumData.totalNumberOfImages = [[category objectForKey:@"total_nb_images"] integerValue];

@@ -41,11 +41,11 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         super.viewDidLoad()
 
         // Title
-        title = NSLocalizedString("localAlbums", comment: "Photos library")
+        title = NSLocalizedString("localAlbums", comment: "Photo Library")
         
         // Button for selecting Photo Library items (.limited access mode)
         if #available(iOS 14.0, *) {
-            selectPhotoLibraryItemsButton = UIBarButtonItem(image: UIImage(systemName: "photo.on.rectangle.angled"), style: .plain, target: self, action: #selector(selectPhotoLibraryItems))
+            selectPhotoLibraryItemsButton = UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(selectPhotoLibraryItems))
         }
         
         // Button for returning to albums/images
@@ -196,7 +196,8 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         // Display [+] button at the bottom of section presenting a limited number of albums
-        if LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums[indexPath.section] == true &&
+        if indexPath.section < LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums.count,
+           LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums[indexPath.section] == true,
             indexPath.row == LocalAlbumsProvider.sharedInstance().maxNberOfAlbumsInSection {
             
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "LocalAlbumsMoreTableViewCell", for: indexPath) as? LocalAlbumsMoreTableViewCell else {

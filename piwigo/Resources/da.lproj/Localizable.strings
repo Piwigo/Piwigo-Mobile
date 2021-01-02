@@ -275,6 +275,7 @@
 "singleVideo" = "Video";
 "singleAudio" = "Lyd";
 "severalImages" = "Billeder";
+"All Photos" = "Alle Fotos";
 "severalVideos" = "Videoer";
 "noImages" = "Ingen Billeder";
 "pullToRefresh" = "Genindlæs Billeder";
@@ -282,6 +283,7 @@
 "Months" = "Måneder";
 "Weeks" = "Uger";
 "Days" = "Dage";
+"Date" = "Dato";
 
 // Errors
 "albumPhotoError_title" = "Hent Albummets Fotofejl";
@@ -550,14 +552,10 @@
 "shareActivityCode_Other>375px" = "Del billeder med andre apps";
 
 // ===========================================================================
-// ==> LOCAL ALBUMS / PHOTOS LIBRARY
+// ==> LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "Billedarkiv";
-
-"localImageSort_newest" = "Nyeste";
-"localImageSort_oldest" = "Ældste";
-"localImageSort_notUploaded" = "Ikke Uploadet";
-"localImageSort_undefined" = "Udefineret";
+"localAlbums_accessible" = "Tilgængelige billeder";
 
 // Local albums — Access not Authorized
 "localAlbums_photosNotAuthorized_title" = "Ingen Adgang";
@@ -566,6 +564,10 @@
 
 // Local albums — Tell user to change settings, how
 "localAlbums_photosNotAuthorized_msg" = "Kan ikke åbne det lokale fotobibliotek. Gå venligst ind i indstillinger og aktiver adgang for Piwigo.";
+
+// Local images — Explain
+"localImages_deleteTitle" = "Fjern fra kamerarulle";
+"localImages_deleteMessage" = "Ønsker du at slette de uploadede fotos eller videoer fra kamerarullen? De slettede billeder eller videoer vil stadig være tilgængelige i iOS-billeder papirkurven i 30 dage.";
 
 // ===========================================================================
 // ==> SETTINGS
@@ -717,3 +719,9 @@
 "help02_text3" = "(kræver uploadAsync udvidelsen eller Piwigo 11)";
 "help03_header" = "Administratorer";
 "help03_text" = "Opret, slet, flyt og omdøb albummer.";
+"help04_text" = "Uploadede fotos fjernet fra kameravullen forbliver tilgængelig i iOS Billeder papirkurven i 30 dage.";
+"help05_header" = "Upload fotos";
+"help05_text" = "Når upload anmodninger er indsendt, kan du gennemse album, indsende andre anmodninger eller forlade appen.";
+"help05_text2" = "Tryk på den grå knap i rodalbummet for at administrere uploads.";
+"help06_header" = "Upload Håndtering";
+"help06_text" = "Overvåg, annullere og genoptage upload anmodninger globalt eller individuelt.";

@@ -12,7 +12,8 @@ import Foundation
 class ClearCache: NSObject {
     
     @objc
-    class func clearAllCache() {
+    class func clearAllCache(exceptCategories: Bool,
+                             completionHandler: @escaping () -> Void) {
         
         // Tags
         let tagsProvider : TagsProvider = TagsProvider()
@@ -23,10 +24,17 @@ class ClearCache: NSObject {
 
         // Data
         TagsData.sharedInstance().clearCache()
-        CategoriesData.sharedInstance().clearCache()
+        if !exceptCategories { CategoriesData.sharedInstance().clearCache() }
 
         // URL requests
         Model.sharedInstance()?.imageCache.removeAllCachedResponses()
         Model.sharedInstance()?.thumbnailCache.removeAllImages()
+        
+        // Clean up /tmp directory
+        let appDelegate = UIApplication.shared.delegate as? AppDelegate
+        appDelegate?.cleanUpTemporaryDirectoryImmediately(true)
+        
+        // Job done
+        completionHandler()
     }
 }
