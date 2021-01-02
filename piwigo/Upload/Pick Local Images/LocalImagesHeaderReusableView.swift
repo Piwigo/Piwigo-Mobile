@@ -11,6 +11,12 @@
 import Photos
 import UIKit
 
+enum SelectButtonState : Int {
+    case none
+    case select
+    case deselect
+}
+
 @objc protocol LocalImagesHeaderDelegate: NSObjectProtocol {
     func didSelectImagesOfSection(_ section: Int)
 }
@@ -18,12 +24,6 @@ import UIKit
 @objc
 class LocalImagesHeaderReusableView: UICollectionReusableView {
     
-    @objc enum SelectButtonState : Int {
-        case none
-        case select
-        case deselect
-    }
-
     private var dateLabelText: String = ""
     private var optionalDateLabelText: String = ""
     private var section = 0
@@ -36,7 +36,6 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
     @IBOutlet weak var selectButton: UIButton!
     @IBOutlet weak var placeLabel: UILabel!
 
-    @objc
     func configure(with images: [PHAsset], section: Int, selectState: SelectButtonState) {
         
         // General settings
