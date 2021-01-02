@@ -75,9 +75,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
     private var uploadsInQueue = [(String,kPiwigoUploadState)?]()         // Array of uploads in queue at start
     private var indexedUploadsInQueue = [(String,kPiwigoUploadState,Bool)?]()  // Arrays of uploads at indices of fetched image
-    private var selectedImages = [UploadProperties?]()                                  // Array of images to upload
-    private var selectedSections = [LocalImagesHeaderReusableView.SelectButtonState]()  // State of Select buttons
-    private var imagesBeingTouched = [IndexPath]()                                      // Array of indexPaths of touched images
+    private var selectedImages = [UploadProperties?]()                         // Array of images to upload
+    private var selectedSections = [SelectButtonState]()                       // State of Select buttons
+    private var imagesBeingTouched = [IndexPath]()                             // Array of indexPaths of touched images
     
     private var uploadIDsToDelete = [NSManagedObjectID]()
     private var imagesToDelete = [String]()
