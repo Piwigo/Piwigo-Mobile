@@ -10,6 +10,13 @@
 
 import UIKit
 
+let kPiwigoActivityTypeMessenger = UIActivity.ActivityType(rawValue: "com.facebook.Messenger.ShareExtension")
+let kPiwigoActivityTypePostInstagram = UIActivity.ActivityType(rawValue: "com.burbn.instagram.shareextension")
+let kPiwigoActivityTypePostToSignal = UIActivity.ActivityType(rawValue: "org.whispersystems.signal.shareextension")
+let kPiwigoActivityTypePostToSnapchat = UIActivity.ActivityType(rawValue: "com.toyopagroup.picaboo.share")
+let kPiwigoActivityTypePostToWhatsApp = UIActivity.ActivityType(rawValue: "net.whatsapp.WhatsApp.ShareExtension")
+let kPiwigoActivityTypeOther = UIActivity.ActivityType(rawValue: "undefined.ShareExtension")
+
 @objc
 class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 

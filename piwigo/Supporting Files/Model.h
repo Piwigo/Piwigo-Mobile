@@ -23,13 +23,6 @@ FOUNDATION_EXPORT NSTimeInterval const k1WeekInDays;
 FOUNDATION_EXPORT NSTimeInterval const k2WeeksInDays;
 FOUNDATION_EXPORT NSTimeInterval const k3WeeksInDays;
 
-FOUNDATION_EXPORT NSString *kPiwigoActivityTypeMessenger;
-FOUNDATION_EXPORT NSString *kPiwigoActivityTypePostInstagram;
-FOUNDATION_EXPORT NSString *kPiwigoActivityTypePostToSignal;
-FOUNDATION_EXPORT NSString *kPiwigoActivityTypePostToSnapchat;
-FOUNDATION_EXPORT NSString *kPiwigoActivityTypePostToWhatsApp;
-FOUNDATION_EXPORT NSString *kPiwigoActivityTypeOther;
-
 @class PHPhotoLibrary;
 
 typedef enum {

@@ -25,13 +25,6 @@ NSTimeInterval const k1WeekInDays  = 60 * 60 * 24 *  7.0;
 NSTimeInterval const k2WeeksInDays = 60 * 60 * 24 * 14.0;
 NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
 
-NSString *kPiwigoActivityTypeMessenger = @"com.facebook.Messenger.ShareExtension";
-NSString *kPiwigoActivityTypePostInstagram = @"com.burbn.instagram.shareextension";
-NSString *kPiwigoActivityTypePostToSignal = @"org.whispersystems.signal.shareextension";
-NSString *kPiwigoActivityTypePostToSnapchat = @"com.toyopagroup.picaboo.share";
-NSString *kPiwigoActivityTypePostToWhatsApp = @"net.whatsapp.WhatsApp.ShareExtension";
-NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
-
 @interface Model()
 
 @end
