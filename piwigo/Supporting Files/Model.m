@@ -421,7 +421,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 	}
     if(savedData.count > 13) {
         if(savedData.count > 47) {
-            self.defaultThumbnailSize = [[savedData objectAtIndex:13] integerValue];
+            self.defaultThumbnailSize = (kPiwigoImageSize)[[savedData objectAtIndex:13] integerValue];
         } else {
             // Just updated to 2.4.2…
             self.defaultThumbnailSize = [PiwigoImageData optimumImageThumbnailSizeForDevice];

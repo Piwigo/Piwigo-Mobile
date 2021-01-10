@@ -33,6 +33,20 @@ FOUNDATION_EXPORT NSString *kPiwigoActivityTypeOther;
 @class PHPhotoLibrary;
 
 typedef enum {
+    kPiwigoImageSizeSquare,
+    kPiwigoImageSizeThumb,
+    kPiwigoImageSizeXXSmall,
+    kPiwigoImageSizeXSmall,
+    kPiwigoImageSizeSmall,
+    kPiwigoImageSizeMedium,
+    kPiwigoImageSizeLarge,
+    kPiwigoImageSizeXLarge,
+    kPiwigoImageSizeXXLarge,
+    kPiwigoImageSizeFullRes,
+    kPiwigoImageSizeEnumCount
+} kPiwigoImageSize;
+
+typedef enum {
     kPiwigoSortNameAscending,               // Photo title, A → Z
     kPiwigoSortNameDescending,              // Photo title, Z → A
     
@@ -128,7 +142,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL hasXXLargeSizeImages;
 
 // Default thumbnail size and number per row in portrait mode
-@property (nonatomic, assign) NSInteger defaultThumbnailSize;
+@property (nonatomic, assign) kPiwigoImageSize defaultThumbnailSize;
 @property (nonatomic, assign) NSInteger thumbnailsPerRowInPortrait;
 
 // Default image settings

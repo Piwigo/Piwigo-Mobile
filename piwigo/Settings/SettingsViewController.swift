@@ -629,7 +629,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let defaultSize = PiwigoImageData.name(forImageThumbnailSizeType: kPiwigoImageSize(rawValue: kPiwigoImageSize.RawValue(Model.sharedInstance().defaultThumbnailSize)) as kPiwigoImageSize, withInfo: false)!
+                let defaultSize = PiwigoImageData.name(forImageThumbnailSizeType: Model.sharedInstance().defaultThumbnailSize, withInfo: false)!
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 var title: String
                 if view.bounds.size.width > 375 {
@@ -652,7 +652,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     return SliderTableViewCell()
                 }
                 // Min/max number of thumbnails per row depends on selected file
-                let defaultWidth = PiwigoImageData.width(forImageSizeType: kPiwigoImageSize(rawValue: kPiwigoImageSize.RawValue(Model.sharedInstance().defaultThumbnailSize)) as kPiwigoImageSize)
+                let defaultWidth = PiwigoImageData.width(forImageSizeType: Model.sharedInstance().defaultThumbnailSize)
                 let minNberOfImages = ImagesCollection.imagesPerRowInPortrait(for: nil, maxWidth: defaultWidth)
 
                 // Slider value, chek that default number fits inside selected range

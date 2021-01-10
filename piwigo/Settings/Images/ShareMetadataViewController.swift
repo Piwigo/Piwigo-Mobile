@@ -15,8 +15,8 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
 
     @IBOutlet var shareMetadataTableView: UITableView!
     
-    private var activitiesSharingMetadata = [String]()
-    private var activitiesNotSharingMetadata = [String]()
+    private var activitiesSharingMetadata = [UIActivity.ActivityType]()
+    private var activitiesNotSharingMetadata = [UIActivity.ActivityType]()
 
     private var editBarButton: UIBarButtonItem?
     private var doneBarButton: UIBarButtonItem?
@@ -233,11 +233,11 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
         switch indexPath.section {
             case 0:
                 let activity = activitiesSharingMetadata[indexPath.row]
-                let activityName = getNameForShareActivity(activity, forWidth: width)
+                let activityName = getName(forActivity: activity, forWidth: width)
                 cell.configure(with: activityName, andEditOption: cellIconType.remove)
             case 1:
                 let activity = activitiesNotSharingMetadata[indexPath.row]
-                let activityName = getNameForShareActivity(activity, forWidth: width)
+                let activityName = getName(forActivity: activity, forWidth: width)
                 cell.configure(with: activityName, andEditOption: cellIconType.add)
             default:
                 break
@@ -253,8 +253,8 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        var activitiesSharing:[String] = self.activitiesSharingMetadata
-        var activitiesNotSharing:[String] = self.activitiesNotSharingMetadata
+        var activitiesSharing = self.activitiesSharingMetadata
+        var activitiesNotSharing = self.activitiesNotSharingMetadata
 
         switch indexPath.section {
         case 0: // Actions sharing photos with private metadata
@@ -264,7 +264,7 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
             // Update icon of tapped cell
             let cell = tableView.cellForRow(at: indexPath) as! ShareMetadataCell
             let width = view.bounds.size.width
-            let activityName = getNameForShareActivity(activity, forWidth: width)
+            let activityName = getName(forActivity: activity, forWidth: width)
             cell.configure(with: activityName, andEditOption: cellIconType.add)
 
             // Switch activity state
@@ -292,7 +292,7 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
             // Update icon of tapped cell
             let cell = tableView.cellForRow(at: indexPath) as! ShareMetadataCell
             let width = view.bounds.size.width
-            let activityName = getNameForShareActivity(activity, forWidth: width)
+            let activityName = getName(forActivity: activity, forWidth: width)
             cell.configure(with: activityName, andEditOption: cellIconType.remove)
 
             // Switch activity setting
@@ -324,39 +324,39 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
     private func setDataSourceFromSettings() {
         
         // Empty lists
-        var activitiesSharing = [String]()
-        var activitiesNotSharing = [String]()
+        var activitiesSharing = [UIActivity.ActivityType]()
+        var activitiesNotSharing = [UIActivity.ActivityType]()
         
         // Prepare data source from actual settings
         if Model.sharedInstance().shareMetadataTypeAirDrop {
-            activitiesSharing.append(UIActivity.ActivityType.airDrop.rawValue)
+            activitiesSharing.append(.airDrop)
         } else {
-            activitiesNotSharing.append(UIActivity.ActivityType.airDrop.rawValue)
+            activitiesNotSharing.append(.airDrop)
         }
         if Model.sharedInstance().shareMetadataTypeAssignToContact {
-            activitiesSharing.append(UIActivity.ActivityType.assignToContact.rawValue)
+            activitiesSharing.append(.assignToContact)
         } else {
-            activitiesNotSharing.append(UIActivity.ActivityType.assignToContact.rawValue)
+            activitiesNotSharing.append(.assignToContact)
         }
         if Model.sharedInstance().shareMetadataTypeCopyToPasteboard {
-            activitiesSharing.append(UIActivity.ActivityType.copyToPasteboard.rawValue)
+            activitiesSharing.append(.copyToPasteboard)
         } else {
-            activitiesNotSharing.append(UIActivity.ActivityType.copyToPasteboard.rawValue)
+            activitiesNotSharing.append(.copyToPasteboard)
         }
         if Model.sharedInstance().shareMetadataTypeMail {
-            activitiesSharing.append(UIActivity.ActivityType.mail.rawValue)
+            activitiesSharing.append(.mail)
         } else {
-            activitiesNotSharing.append(UIActivity.ActivityType.mail.rawValue)
+            activitiesNotSharing.append(.mail)
         }
         if Model.sharedInstance().shareMetadataTypeMessage {
-            activitiesSharing.append(UIActivity.ActivityType.message.rawValue)
+            activitiesSharing.append(.message)
         } else {
-            activitiesNotSharing.append(UIActivity.ActivityType.message.rawValue)
+            activitiesNotSharing.append(.message)
         }
         if Model.sharedInstance().shareMetadataTypePostToFacebook {
-            activitiesSharing.append(UIActivity.ActivityType.postToFacebook.rawValue)
+            activitiesSharing.append(.postToFacebook)
         } else {
-            activitiesNotSharing.append(UIActivity.ActivityType.postToFacebook.rawValue)
+            activitiesNotSharing.append(.postToFacebook)
         }
         if Model.sharedInstance().shareMetadataTypeMessenger {
             activitiesSharing.append(kPiwigoActivityTypeMessenger)
@@ -364,9 +364,9 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
             activitiesNotSharing.append(kPiwigoActivityTypeMessenger)
         }
         if Model.sharedInstance().shareMetadataTypePostToFlickr {
-            activitiesSharing.append(UIActivity.ActivityType.postToFlickr.rawValue)
+            activitiesSharing.append(.postToFlickr)
         } else {
-            activitiesNotSharing.append(UIActivity.ActivityType.postToFlickr.rawValue)
+            activitiesNotSharing.append(.postToFlickr)
         }
         if Model.sharedInstance().shareMetadataTypePostInstagram {
             activitiesSharing.append(kPiwigoActivityTypePostInstagram)
@@ -384,24 +384,24 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
             activitiesNotSharing.append(kPiwigoActivityTypePostToSnapchat)
         }
         if Model.sharedInstance().shareMetadataTypePostToTencentWeibo {
-            activitiesSharing.append(UIActivity.ActivityType.postToTencentWeibo.rawValue)
+            activitiesSharing.append(.postToTencentWeibo)
         } else {
-            activitiesNotSharing.append(UIActivity.ActivityType.postToTencentWeibo.rawValue)
+            activitiesNotSharing.append(.postToTencentWeibo)
         }
         if Model.sharedInstance().shareMetadataTypePostToTwitter {
-            activitiesSharing.append(UIActivity.ActivityType.postToTwitter.rawValue)
+            activitiesSharing.append(.postToTwitter)
         } else {
-            activitiesNotSharing.append(UIActivity.ActivityType.postToTwitter.rawValue)
+            activitiesNotSharing.append(.postToTwitter)
         }
         if Model.sharedInstance().shareMetadataTypePostToVimeo {
-            activitiesSharing.append(UIActivity.ActivityType.postToVimeo.rawValue)
+            activitiesSharing.append(.postToVimeo)
         } else {
-            activitiesNotSharing.append(UIActivity.ActivityType.postToVimeo.rawValue)
+            activitiesNotSharing.append(.postToVimeo)
         }
         if Model.sharedInstance().shareMetadataTypePostToWeibo {
-            activitiesSharing.append(UIActivity.ActivityType.postToWeibo.rawValue)
+            activitiesSharing.append(.postToWeibo)
         } else {
-            activitiesNotSharing.append(UIActivity.ActivityType.postToWeibo.rawValue)
+            activitiesNotSharing.append(.postToWeibo)
         }
         if Model.sharedInstance().shareMetadataTypePostToWhatsApp {
             activitiesSharing.append(kPiwigoActivityTypePostToWhatsApp)
@@ -409,9 +409,9 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
             activitiesNotSharing.append(kPiwigoActivityTypePostToWhatsApp)
         }
         if Model.sharedInstance().shareMetadataTypeSaveToCameraRoll {
-            activitiesSharing.append(UIActivity.ActivityType.saveToCameraRoll.rawValue)
+            activitiesSharing.append(.saveToCameraRoll)
         } else {
-            activitiesNotSharing.append(UIActivity.ActivityType.saveToCameraRoll.rawValue)
+            activitiesNotSharing.append(.saveToCameraRoll)
         }
         if Model.sharedInstance().shareMetadataTypeOther {
             activitiesSharing.append(kPiwigoActivityTypeOther)
@@ -423,24 +423,24 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
         activitiesNotSharingMetadata = activitiesNotSharing.sorted()
     }
     
-    private func switchActivity(_ activity: String?, toState newState: Bool) {
+    private func switchActivity(_ activity: UIActivity.ActivityType, toState newState: Bool) {
         // Change the boolean status of the selected activity
         switch activity {
-        case UIActivity.ActivityType.airDrop.rawValue:
+        case .airDrop:
             Model.sharedInstance().shareMetadataTypeAirDrop = newState
-        case UIActivity.ActivityType.assignToContact.rawValue:
+        case .assignToContact:
             Model.sharedInstance().shareMetadataTypeAssignToContact = newState
-        case UIActivity.ActivityType.copyToPasteboard.rawValue:
+        case .copyToPasteboard:
             Model.sharedInstance().shareMetadataTypeCopyToPasteboard = newState
-        case UIActivity.ActivityType.mail.rawValue:
+        case .mail:
             Model.sharedInstance().shareMetadataTypeMail = newState
-        case UIActivity.ActivityType.message.rawValue:
+        case .message:
             Model.sharedInstance().shareMetadataTypeMessage = newState
-        case UIActivity.ActivityType.postToFacebook.rawValue:
+        case .postToFacebook:
             Model.sharedInstance().shareMetadataTypePostToFacebook = newState
         case kPiwigoActivityTypeMessenger:
             Model.sharedInstance().shareMetadataTypeMessenger = newState
-        case UIActivity.ActivityType.postToFlickr.rawValue:
+        case .postToFlickr:
             Model.sharedInstance().shareMetadataTypePostToFlickr = newState
         case kPiwigoActivityTypePostInstagram:
             Model.sharedInstance().shareMetadataTypePostInstagram = newState
@@ -448,17 +448,17 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
             Model.sharedInstance().shareMetadataTypePostToSignal = newState
         case kPiwigoActivityTypePostToSnapchat:
             Model.sharedInstance().shareMetadataTypePostToSnapchat = newState
-        case UIActivity.ActivityType.postToTencentWeibo.rawValue:
+        case .postToTencentWeibo:
             Model.sharedInstance().shareMetadataTypePostToTencentWeibo = newState
-        case UIActivity.ActivityType.postToTwitter.rawValue:
+        case .postToTwitter:
             Model.sharedInstance().shareMetadataTypePostToTwitter = newState
-        case UIActivity.ActivityType.postToVimeo.rawValue:
+        case .postToVimeo:
             Model.sharedInstance().shareMetadataTypePostToVimeo = newState
-        case UIActivity.ActivityType.postToWeibo.rawValue:
+        case .postToWeibo:
             Model.sharedInstance().shareMetadataTypePostToWeibo = newState
         case kPiwigoActivityTypePostToWhatsApp:
             Model.sharedInstance().shareMetadataTypePostToWhatsApp = newState
-        case UIActivity.ActivityType.saveToCameraRoll.rawValue:
+        case .saveToCameraRoll:
             Model.sharedInstance().shareMetadataTypeSaveToCameraRoll = newState
         case kPiwigoActivityTypeOther:
             Model.sharedInstance().shareMetadataTypeOther = newState
@@ -477,32 +477,32 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
         appDelegate?.cleanUpTemporaryDirectoryImmediately(true)
     }
 
-    private func getNameForShareActivity(_ activity: String?, forWidth width: CGFloat) -> String? {
+    private func getName(forActivity activity: UIActivity.ActivityType, forWidth width: CGFloat) -> String? {
         var name = ""
         // Return activity name of appropriate lentgh
         switch activity {
-        case UIActivity.ActivityType.airDrop.rawValue:
+        case .airDrop:
             name = width > 375 ? NSLocalizedString("shareActivityCode_AirDrop>375px", comment: "Transfer images with AirDrop")
                                : NSLocalizedString("shareActivityCode_AirDrop", comment: "Transfer with AirDrop")
-        case UIActivity.ActivityType.assignToContact.rawValue:
+        case .assignToContact:
             name = width > 375 ? NSLocalizedString("shareActivityCode_AssignToContact>375px", comment: "Assign image to contact")
                                : NSLocalizedString("shareActivityCode_AssignToContact", comment: "Assign to contact")
-        case UIActivity.ActivityType.copyToPasteboard.rawValue:
+        case .copyToPasteboard:
             name = width > 375 ? NSLocalizedString("shareActivityCode_CopyToPasteboard>375px", comment: "Copy images to Pasteboard")
                                : NSLocalizedString("shareActivityCode_CopyToPasteboard", comment: "Copy to Pasteboard")
-        case UIActivity.ActivityType.mail.rawValue:
+        case .mail:
             name = width > 375 ? NSLocalizedString("shareActivityCode_Mail>375px", comment: "Post images by email")
                                : NSLocalizedString("shareActivityCode_Mail", comment: "Post by email")
-        case UIActivity.ActivityType.message.rawValue:
+        case .message:
             name = width > 375 ? NSLocalizedString("shareActivityCode_Message>375px", comment: "Post images with the Message app")
                                : NSLocalizedString("shareActivityCode_Message", comment: "Post with Message")
-        case UIActivity.ActivityType.postToFacebook.rawValue:
+        case .postToFacebook:
             name = width > 375 ? NSLocalizedString("shareActivityCode_Facebook>375px", comment: "Post images to Facebook")
                                : NSLocalizedString("shareActivityCode_Facebook", comment: "Post to Facebook")
         case kPiwigoActivityTypeMessenger:
             name = width > 375 ? NSLocalizedString("shareActivityCode_Messenger>375px", comment: "Post images with the Messenger app")
                                : NSLocalizedString("shareActivityCode_Messenger", comment: "Post with Messenger")
-        case UIActivity.ActivityType.postToFlickr.rawValue:
+        case .postToFlickr:
             name = width > 375 ? NSLocalizedString("shareActivityCode_Flickr>375px", comment: "Post images to Flickr")
                                : NSLocalizedString("shareActivityCode_Flickr", comment: "Post to Flickr")
         case kPiwigoActivityTypePostInstagram:
@@ -514,22 +514,22 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
         case kPiwigoActivityTypePostToSnapchat:
             name = width > 375 ? NSLocalizedString("shareActivityCode_Snapchat>375px", comment: "Post images to Snapchat app")
                                : NSLocalizedString("shareActivityCode_Snapchat", comment: "Post to Snapchat")
-        case UIActivity.ActivityType.postToTencentWeibo.rawValue:
+        case .postToTencentWeibo:
             name = width > 375 ? NSLocalizedString("shareActivityCode_TencentWeibo>375px", comment: "Post images to TencentWeibo")
                                : NSLocalizedString("shareActivityCode_TencentWeibo", comment: "Post to TencentWeibo")
-        case UIActivity.ActivityType.postToTwitter.rawValue:
+        case .postToTwitter:
             name = width > 375 ? NSLocalizedString("shareActivityCode_Twitter>375px", comment: "Post images to Twitter")
                                : NSLocalizedString("shareActivityCode_Twitter", comment: "Post to Twitter")
-        case UIActivity.ActivityType.postToVimeo.rawValue:
+        case .postToVimeo:
             name = width > 375 ? NSLocalizedString("shareActivityCode_Vimeo>375px", comment: "Post videos to Vimeo")
                                : NSLocalizedString("shareActivityCode_Vimeo", comment: "Post to Vimeo")
-        case UIActivity.ActivityType.postToWeibo.rawValue:
+        case .postToWeibo:
             name = width > 375 ? NSLocalizedString("shareActivityCode_Weibo>375px", comment: "Post images to Weibo")
                                : NSLocalizedString("shareActivityCode_Weibo", comment: "Post to Weibo")
         case kPiwigoActivityTypePostToWhatsApp:
             name = width > 375 ? NSLocalizedString("shareActivityCode_WhatsApp>375px", comment: "Post images with the WhatsApp app")
                                : NSLocalizedString("shareActivityCode_WhatsApp", comment: "Post with WhatsApp")
-        case UIActivity.ActivityType.saveToCameraRoll.rawValue:
+        case .saveToCameraRoll:
             name = width > 375 ? NSLocalizedString("shareActivityCode_CameraRoll>375px", comment: "Save images to Camera Roll")
                                : NSLocalizedString("shareActivityCode_CameraRoll", comment: "Save to Camera Roll")
         case kPiwigoActivityTypeOther:
