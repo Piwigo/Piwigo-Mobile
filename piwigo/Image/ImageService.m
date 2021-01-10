@@ -1193,54 +1193,6 @@ NSString * const kGetImageOrderDescending = @"desc";
     return [NSURLRequest requestWithURL:[NSURL URLWithString:URLRequest]];
 }
 
-+(NSURL *)getFileUrlOfImage:(PiwigoImageData*)image withURLrequest:(NSURLRequest *)urlRequest
-{
-    // Get filename from URL request
-    NSString *fileName = [[urlRequest URL] lastPathComponent];
-    
-    // Check filename
-    if ([fileName containsString:@".php"]) {
-        // The URL does not contain a unique file name but a PHP request
-        // Might happen with full resolution images, try with medium resolution file
-        fileName = [[NSURL URLWithString:image.MediumPath] lastPathComponent];
-        if ([fileName containsString:@".php"]) {
-            // The URL does not contain a unique file name but a PHP request
-            if ([image.fileName length] > 0) {
-                // Use the image file name returned by Piwigo
-                fileName = image.fileName;
-            } else {
-                // Should never reach this point
-                fileName = @"PiwigoImage.jpg";
-            }
-        }
-    }
-    
-    // Shared files are saved in the /tmp directory and will be deleted:
-    // - by the app if the user kills it
-    // - by the system after a certain amount of time
-    NSURL *tempDirectoryUrl = [NSURL fileURLWithPath:NSTemporaryDirectory()];
-    return [tempDirectoryUrl URLByAppendingPathComponent:fileName];
-}
-
-+(NSURLSessionDownloadTask*)downloadImage:(PiwigoImageData*)imageData
-           withUrlRequest:(NSURLRequest*)urlRequest
-               onProgress:(void (^)(NSProgress *))progress
-        completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler
-{
-    // Download and save image
-    NSURLSessionDownloadTask *task = [[Model sharedInstance].imagesSessionManager
-                downloadTaskWithRequest:urlRequest
-                               progress:progress
-                            destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
-                                return [self getFileUrlOfImage:imageData withURLrequest:urlRequest];
-                            }
-                      completionHandler:completionHandler
-         ];
-    [task resume];
-
-    return task;
-}
-
 +(NSURLSessionTask*)downloadVideo:(PiwigoImageData*)video
                    withUrlRequest:(NSURLRequest*)urlRequest
                        onProgress:(void (^)(NSProgress *))progress

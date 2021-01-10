@@ -9,7 +9,6 @@
 #import "AlbumData.h"
 #import "AlbumService.h"
 #import "AppDelegate.h"
-#import "AsyncImageActivityItemProvider.h"
 #import "AsyncVideoActivityItemProvider.h"
 #import "CategoriesData.h"
 #import "DiscoverImagesViewController.h"

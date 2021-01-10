@@ -12,7 +12,6 @@
 #import "AlbumData.h"
 #import "AlbumImagesViewController.h"
 #import "AlbumService.h"
-#import "AsyncImageActivityItemProvider.h"
 #import "AsyncVideoActivityItemProvider.h"
 #import "AppDelegate.h"
 #import "CategoriesData.h"
@@ -44,6 +43,9 @@ NSString * const kPiwigoNotificationUploadProgress = @"kPiwigoNotificationUpload
 NSString * const kPiwigoNotificationUploadedImage = @"kPiwigoNotificationUploadedImage";
 NSString * const kPiwigoNotificationDeletedImage = @"kPiwigoNotificationDeletedImage";
 NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChangedAlbumData";
+
+NSString * const kPiwigoNotificationDidShareImage = @"kPiwigoNotificationDidShareImage";
+NSString * const kPiwigoNotificationCancelDownloadImage = @"kPiwigoNotificationCancelDownloadImage";
 
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, UITextFieldDelegate, ImageDetailDelegate, EditImageParamsDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, AsyncImageActivityItemProviderDelegate, TagSelectorViewDelegate, ChangedSettingsDelegate>
 

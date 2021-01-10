@@ -9,7 +9,6 @@
 #import <Photos/Photos.h>
 
 #import "ThumbnailCategoryViewController.h"
-#import "AsyncImageActivityItemProvider.h"
 #import "AsyncVideoActivityItemProvider.h"
 #import "AppDelegate.h"
 #import "CategoriesData.h"
@@ -1383,7 +1382,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
 }
 
 
-#pragma mark - SetAlbumImageDelegate methods
+#pragma mark - SetAlbumImageDelegate Methods
 
 -(void)didSetImageAsAlbumThumbnail
 {
