@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 
 #import "PiwigoImageData.h"
-#import "AsyncImageActivityItemProvider.h"
 
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationDidShareVideo;
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationCancelDownloadVideo;
