@@ -10,6 +10,7 @@ import Foundation
 
 class ShareUtilities {
     
+    // MARK: - URL Request of Image to Download
     class func urlRequest(forImage image: PiwigoImageData,
                           withMnimumSize minSize: CGFloat) -> URLRequest? {
 
@@ -66,6 +67,7 @@ class ShareUtilities {
         return nil
     }
     
+    // MARK: - URL of Image File Stored in /tmp before Share
     class func getFileUrl(ofImage image: PiwigoImageData?,
                           withURLrequest urlRequest: URLRequest?) -> URL {
         // Get filename from URL request
@@ -118,7 +120,8 @@ class ShareUtilities {
         return tempDirectoryUrl.appendingPathComponent(fileName ?? "PiwigoImage.jpg")
     }
 
-    class func downloadImage(with piwigoData: PiwigoImageData, and urlRequest: URLRequest,
+    // MARK: - Image Downloader
+    class func downloadImage(with piwigoData: PiwigoImageData, at urlRequest: URLRequest,
                              onProgress progress: @escaping (Progress?) -> Void,
                              completionHandler: @escaping (_ response: URLResponse?, _ filePath: URL?, _ error: Error?) -> Void
                              ) -> URLSessionDownloadTask? {
@@ -135,6 +138,8 @@ class ShareUtilities {
     }
 }
 
+
+// MARK: - UIActivityType Extension
 extension UIActivity.ActivityType: Comparable {
     public static func < (lhs: UIActivity.ActivityType, rhs: UIActivity.ActivityType) -> Bool {
         lhs.rawValue < rhs.rawValue

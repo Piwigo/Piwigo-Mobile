@@ -12,7 +12,6 @@
 #import "AlbumData.h"
 #import "AlbumImagesViewController.h"
 #import "AlbumService.h"
-#import "AsyncVideoActivityItemProvider.h"
 #import "AppDelegate.h"
 #import "CategoriesData.h"
 #import "CategoryCollectionViewCell.h"
@@ -46,8 +45,10 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
 
 NSString * const kPiwigoNotificationDidShareImage = @"kPiwigoNotificationDidShareImage";
 NSString * const kPiwigoNotificationCancelDownloadImage = @"kPiwigoNotificationCancelDownloadImage";
+NSString * const kPiwigoNotificationDidShareVideo = @"kPiwigoNotificationDidShareVideo";
+NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationCancelDownloadVideo";
 
-@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, UITextFieldDelegate, ImageDetailDelegate, EditImageParamsDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, AsyncImageActivityItemProviderDelegate, TagSelectorViewDelegate, ChangedSettingsDelegate>
+@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, UITextFieldDelegate, ImageDetailDelegate, EditImageParamsDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, ShareImageActivityItemProviderDelegate, TagSelectorViewDelegate, ChangedSettingsDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
@@ -2582,7 +2583,7 @@ NSString * const kPiwigoNotificationCancelDownloadImage = @"kPiwigoNotificationC
     for (PiwigoImageData *imageData in self.selectedImagesToShare) {
         if (imageData.isVideo) {
             // Case of a video
-            AsyncVideoActivityItemProvider *videoItemProvider = [[AsyncVideoActivityItemProvider alloc]  initWithPlaceholderImage:imageData];
+            ShareVideoActivityItemProvider *videoItemProvider = [[ShareVideoActivityItemProvider alloc]  initWithPlaceholderImage:imageData];
             
             // Use delegation to monitor the progress of the item method
             videoItemProvider.delegate = self;
@@ -2592,7 +2593,7 @@ NSString * const kPiwigoNotificationCancelDownloadImage = @"kPiwigoNotificationC
         }
         else {
             // Case of an image
-            AsyncImageActivityItemProvider *imageItemProvider = [[AsyncImageActivityItemProvider alloc]  initWithPlaceholderImage:imageData];
+            ShareImageActivityItemProvider *imageItemProvider = [[ShareImageActivityItemProvider alloc]  initWithPlaceholderImage:imageData];
             
             // Use delegation to monitor the progress of the item method
             imageItemProvider.delegate = self;
@@ -2603,7 +2604,7 @@ NSString * const kPiwigoNotificationCancelDownloadImage = @"kPiwigoNotificationC
     }
 
     // Create an activity view controller with the activity provider item.
-    // AsyncImageActivityItemProvider's superclass conforms to the UIActivityItemSource protocol
+    // ShareImageActivityItemProvider's superclass conforms to the UIActivityItemSource protocol
     UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:itemsToShare applicationActivities:nil];
     
     // Set HUD view controller for displaying progress
@@ -3441,7 +3442,7 @@ NSString * const kPiwigoNotificationCancelDownloadImage = @"kPiwigoNotificationC
 }
 
 
-#pragma mark - AsyncImageActivityItemProviderDelegate
+#pragma mark - ShareImageActivityItemProviderDelegate
 
 -(void)imageActivityItemProviderPreprocessingDidBegin:(UIActivityItemProvider *)imageActivityItemProvider withTitle:(NSString *)title
 {

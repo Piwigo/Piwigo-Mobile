@@ -9,7 +9,6 @@
 #import <Photos/Photos.h>
 
 #import "ThumbnailCategoryViewController.h"
-#import "AsyncVideoActivityItemProvider.h"
 #import "AppDelegate.h"
 #import "CategoriesData.h"
 #import "EditImageParamsViewController.h"
@@ -26,7 +25,7 @@
 NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedImage";
 NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationUpdateImageFileName";
 
-@interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate, EditImageParamsDelegate, SetAlbumImageDelegate, MoveImageDelegate, AsyncImageActivityItemProviderDelegate, UIToolbarDelegate>
+@interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate, EditImageParamsDelegate, SetAlbumImageDelegate, MoveImageDelegate, ShareImageActivityItemProviderDelegate, UIToolbarDelegate>
 
 @property (nonatomic, assign) NSInteger categoryId;
 @property (nonatomic, strong) PiwigoImageData *imageData;
@@ -915,7 +914,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     NSMutableArray *itemsToShare = [NSMutableArray new];
     if (self.imageData.isVideo) {
         // Case of a video
-        AsyncVideoActivityItemProvider *videoItemProvider = [[AsyncVideoActivityItemProvider alloc]  initWithPlaceholderImage:self.imageData];
+        ShareVideoActivityItemProvider *videoItemProvider = [[ShareVideoActivityItemProvider alloc] initWithPlaceholderImage:self.imageData];
 
         // Use delegation to monitor the progress of the item method
         videoItemProvider.delegate = self;
@@ -925,7 +924,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     }
     else {
         // Case of an image
-        AsyncImageActivityItemProvider *imageItemProvider = [[AsyncImageActivityItemProvider alloc]  initWithPlaceholderImage:self.imageData];
+        ShareImageActivityItemProvider *imageItemProvider = [[ShareImageActivityItemProvider alloc]  initWithPlaceholderImage:self.imageData];
 
         // Use delegation to monitor the progress of the item method
         imageItemProvider.delegate = self;
@@ -935,7 +934,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     }
     
     // Create an activity view controller with the activity provider item.
-    // AsyncImageActivityItemProvider's superclass conforms to the UIActivityItemSource protocol
+    // ShareImageActivityItemProvider's superclass conforms to the UIActivityItemSource protocol
     UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:itemsToShare applicationActivities:nil];
 
     // Set HUD view controller for displaying progress
@@ -1417,7 +1416,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
 }
 
 
-#pragma mark - AsyncImageActivityItemProviderDelegate
+#pragma mark - ShareImageActivityItemProviderDelegate
 
 -(void)imageActivityItemProviderPreprocessingDidBegin:(UIActivityItemProvider *)imageActivityItemProvider withTitle:(NSString *)title
 {

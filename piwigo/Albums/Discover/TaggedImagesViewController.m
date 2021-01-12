@@ -9,7 +9,6 @@
 #import "AlbumData.h"
 #import "AlbumService.h"
 #import "AppDelegate.h"
-#import "AsyncVideoActivityItemProvider.h"
 #import "CategoriesData.h"
 #import "DiscoverImagesViewController.h"
 #import "EditImageParamsViewController.h"
@@ -22,7 +21,7 @@
 #import "MoveImageViewController.h"
 #import "TaggedImagesViewController.h"
 
-@interface TaggedImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UIGestureRecognizerDelegate, ImageDetailDelegate, EditImageParamsDelegate, AsyncImageActivityItemProviderDelegate, MoveImagesDelegate>
+@interface TaggedImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UIGestureRecognizerDelegate, ImageDetailDelegate, EditImageParamsDelegate, ShareImageActivityItemProviderDelegate, MoveImagesDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, assign) NSInteger tagId;
@@ -1313,7 +1312,7 @@
     for (PiwigoImageData *imageData in self.selectedImagesToShare) {
         if (imageData.isVideo) {
             // Case of a video
-            AsyncVideoActivityItemProvider *videoItemProvider = [[AsyncVideoActivityItemProvider alloc]  initWithPlaceholderImage:imageData];
+            ShareVideoActivityItemProvider *videoItemProvider = [[ShareVideoActivityItemProvider alloc]  initWithPlaceholderImage:imageData];
             
             // Use delegation to monitor the progress of the item method
             videoItemProvider.delegate = self;
@@ -1323,7 +1322,7 @@
         }
         else {
             // Case of an image
-            AsyncImageActivityItemProvider *imageItemProvider = [[AsyncImageActivityItemProvider alloc]  initWithPlaceholderImage:imageData];
+            ShareImageActivityItemProvider *imageItemProvider = [[ShareImageActivityItemProvider alloc]  initWithPlaceholderImage:imageData];
             
             // Use delegation to monitor the progress of the item method
             imageItemProvider.delegate = self;
@@ -1334,7 +1333,7 @@
     }
 
     // Create an activity view controller with the activity provider item.
-    // AsyncImageActivityItemProvider's superclass conforms to the UIActivityItemSource protocol
+    // ShareImageActivityItemProvider's superclass conforms to the UIActivityItemSource protocol
     UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:itemsToShare applicationActivities:nil];
     
     // Set HUD view controller for displaying progress
@@ -1503,7 +1502,7 @@
 }
 
 
-#pragma mark - AsyncImageActivityItemProviderDelegate
+#pragma mark - ShareImageActivityItemProviderDelegate
 
 -(void)imageActivityItemProviderPreprocessingDidBegin:(UIActivityItemProvider *)imageActivityItemProvider withTitle:(NSString *)title
 {

@@ -1,11 +1,11 @@
 //
-//  AsyncImageActivityItemProvider.swift
+//  ShareImageActivityItemProvider.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 12/01/2019.
 //  Copyright © 2019 Piwigo.org. All rights reserved.
 //
-//  Converted to Swift 5.2 by Eddy Lelièvre-Berna on 10/01/2021
+//  Converted to Swift 5.2 by Eddy Lelièvre-Berna on 10/01/2021.
 //
 
 import Photos
@@ -16,16 +16,16 @@ import LinkPresentation
 //let kPiwigoNotificationCancelDownloadImage = "kPiwigoNotificationCancelDownloadImage"
 
 @objc
-class AsyncImageActivityItemProvider: UIActivityItemProvider {
+class ShareImageActivityItemProvider: UIActivityItemProvider {
     
     // MARK: - Initialisation
-    @objc weak var delegate: AsyncImageActivityItemProviderDelegate?
+    @objc weak var delegate: ShareImageActivityItemProviderDelegate?
 
     private var imageData: PiwigoImageData              // Piwigo image data
     private var task: URLSessionDownloadTask?           // Download task
     private var alertTitle: String?                     // Used if task cancels or fails
     private var alertMessage: String?
-    private var imageFileURL: URL                       // Shared image file path
+    private var imageFileURL: URL                       // Shared image file URL
     private var imageFileData: Data                     // Content of the shared image file
 
     
@@ -178,9 +178,9 @@ class AsyncImageActivityItemProvider: UIActivityItemProvider {
         return imageFileURL
     }
 
-    private func downloadSynchronouslyImage(with urlRequest: URLRequest){
+    private func downloadSynchronouslyImage(with urlRequest: URLRequest) {
         let sema = DispatchSemaphore(value: 0)
-        task = ShareUtilities.downloadImage(with: imageData, and: urlRequest,
+        task = ShareUtilities.downloadImage(with: imageData, at: urlRequest,
             onProgress: { progress in
                 // Notify the delegate on the main thread to show how it makes progress.
                 DispatchQueue.main.async(execute: {
@@ -189,7 +189,7 @@ class AsyncImageActivityItemProvider: UIActivityItemProvider {
             },
             completionHandler: { response, fileURL, error in
                 // Any error ?
-                if let error = error{
+                if let error = error {
                     // Failed
                     self.alertTitle = NSLocalizedString("downloadImageFail_title", comment: "Download Fail")
                     self.alertMessage = String.localizedStringWithFormat(NSLocalizedString("downloadImageFail_message", comment: "Failed to download image!\n%@"), error.localizedDescription)
@@ -199,7 +199,7 @@ class AsyncImageActivityItemProvider: UIActivityItemProvider {
                     // Get response
                     if let fileURL = fileURL, let response = response {
                         do {
-                            // Get file content (file URL defined by ImageService.getFileUrl(ofImage:withUrlRequest)
+                            // Get file content (file URL defined by ShareUtilities.getFileUrl(ofImage:withUrlRequest)
                             let data = try Data(contentsOf: fileURL)
 
                             // Check content
@@ -233,7 +233,6 @@ class AsyncImageActivityItemProvider: UIActivityItemProvider {
     }
 
     func checkMetadata() {
-        
         // Create CGI reference from image data (to retrieve complete metadata)
         guard let sourceRef = CGImageSourceCreateWithURL(imageFileURL as CFURL, nil) else {
             // Error
@@ -429,7 +428,7 @@ class AsyncImageActivityItemProvider: UIActivityItemProvider {
 
         // Inform user in case of error after dismissing activity view controller
         if let alertTitle = alertTitle {
-            if delegate?.responds(to: #selector(AsyncImageActivityItemProviderDelegate.showError(withTitle:andMessage:))) ?? false {
+            if delegate?.responds(to: #selector(ShareImageActivityItemProviderDelegate.showError(withTitle:andMessage:))) ?? false {
                 delegate?.showError(withTitle: alertTitle, andMessage: alertMessage)
             }
         }
@@ -471,8 +470,8 @@ class AsyncImageActivityItemProvider: UIActivityItemProvider {
 }
 
 
-// MARK: - AsyncImageActivityItemProvider Delegate
-@objc protocol AsyncImageActivityItemProviderDelegate: NSObjectProtocol {
+// MARK: - ShareImageActivityItemProvider Delegate
+@objc protocol ShareImageActivityItemProviderDelegate: NSObjectProtocol {
     func imageActivityItemProviderPreprocessingDidBegin(_ imageActivityItemProvider: UIActivityItemProvider?,
                                                         withTitle title: String?)
     func imageActivityItemProvider(_ imageActivityItemProvider: UIActivityItemProvider?,
