@@ -350,7 +350,14 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
 #if defined(DEBUG)
         NSLog(@"       Connection changed but again reachable: Login in again");
 #endif
-        [self.loginVC checkSessionStatusAndTryRelogin];
+        if ([NSThread isMainThread]) {
+            [self.loginVC checkSessionStatusAndTryRelogin];
+        }
+        else{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.loginVC checkSessionStatusAndTryRelogin];
+            });
+        }
     }
 }
 
