@@ -1285,7 +1285,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         }
         
         // Job done if there is no image presented
-        if lastIndex < firstIndex {
+        if lastIndex < firstIndex, section < selectedSections.count {
             selectedSections[section] = .none
             completion()
             return
