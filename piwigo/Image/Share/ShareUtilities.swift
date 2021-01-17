@@ -10,64 +10,190 @@ import Foundation
 
 class ShareUtilities {
     
-    // MARK: - URL Request of Image to Download
-    class func urlRequest(forImage image: PiwigoImageData,
-                          withMnimumSize minSize: CGFloat) -> URLRequest? {
+    // MARK: - Image Download
+    /// - Get the URL of the image file stored on the Piwigo server whose resolution matches the one expected by the activity type
+    /// - Get the URL of image file that will be stored temporarily on the device before the share
+    /// - Download the image file and store it in /tmp.
+    
+    // URL request of image to download
+    class func getUrlRequest(forImage image: PiwigoImageData,
+                             withMaxSize wantedSize: Int) -> URLRequest? {
 
-        // Download image of optimum size (depends on availability)
-        // Note: image.width and .height are always > 1
-        var anURLRequest = ""
-        var scaleFactor = CGFloat.greatestFiniteMagnitude
-        if let thumbPath = image.thumbPath {
-            // Path should always be provided (thumbnail size)
-            anURLRequest = thumbPath
-            scaleFactor = minSize / CGFloat(min(image.xxSmallWidth, image.xxSmallHeight))
-        }
-        if let xxSmallPath = image.xxSmallPath, scaleFactor > 1.0 {
-            anURLRequest = xxSmallPath
-            scaleFactor = minSize / CGFloat(min(image.xxSmallWidth, image.xxSmallHeight))
-        }
-        if let xSmallPath = image.xSmallPath, scaleFactor > 1.0 {
-            anURLRequest = xSmallPath
-            scaleFactor = minSize / CGFloat(min(image.xSmallWidth, image.xSmallHeight))
-        }
-        if let smallPath = image.smallPath, scaleFactor > 1.0 {
-            anURLRequest = smallPath
-            scaleFactor = minSize / CGFloat(min(image.smallWidth, image.smallHeight))
-        }
-        if let mediumPath = image.mediumPath, scaleFactor > 1.0 {
-            // Path should always be provided (medium size)
-            anURLRequest = mediumPath
-            scaleFactor = minSize / CGFloat(min(image.mediumWidth, image.mediumHeight))
-        }
-        if let largePath = image.largePath, scaleFactor > 1.0 {
-            anURLRequest = largePath
-            scaleFactor = minSize / CGFloat(min(image.largeWidth, image.largeHeight))
-        }
-        if let xLargePath = image.xLargePath, scaleFactor > 1.0 {
-            anURLRequest = xLargePath
-            scaleFactor = minSize / CGFloat(min(image.xLargeWidth, image.xLargeHeight))
-        }
-        if let xxLargePath = image.xxLargePath, scaleFactor > 1.0 {
-            anURLRequest = xxLargePath
-            scaleFactor = minSize / CGFloat(min(image.xxLargeWidth, image.xxLargeHeight))
-        }
-        if let fullResPath = image.fullResPath, (scaleFactor > 1.0) || (anURLRequest.count == 0) {
-            anURLRequest = fullResPath
+        // Download image of optimum size (depends on Piwigo server settings)
+        /// - Check available image sizes from the smallest to the highest resolution
+        /// - Note: image.width and .height are always > 1
+        var selectedURLRequest = ""
+        var selectedSize = Int.zero
+
+        // Square Size (should always be available)
+        if let squarePath = image.squarePath, !squarePath.isEmpty {
+            // Max dimension of this image
+            let size = max(image.squareWidth, image.squareHeight)
+            // Ensure that at least an URL will be returned
+            if selectedURLRequest.isEmpty {
+                selectedURLRequest = squarePath
+                selectedSize = size
+            }
         }
 
-        // NOP if image cannot be downloaded
-        if anURLRequest.count == 0 {
+        // Thumbnail Size (should always be available)
+        if let thumbPath = image.thumbPath, !thumbPath.isEmpty {
+            // Max dimension of this image
+            let size = max(image.thumbWidth, image.thumbHeight)
+            // Ensure that at least an URL will be returned
+            if selectedURLRequest.isEmpty {
+                selectedURLRequest = thumbPath
+                selectedSize = size
+            }
+            // Is this resolution more appropriate?
+            if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
+                selectedURLRequest = thumbPath
+                selectedSize = size
+            }
+        }
+
+        // XX Small Size
+        if let xxSmallPath = image.xxSmallPath, !xxSmallPath.isEmpty {
+            // Max dimension of this image
+            let size = max(image.xxSmallWidth, image.xxSmallHeight)
+            // Ensure that at least an URL will be returned
+            if selectedURLRequest.isEmpty {
+                selectedURLRequest = xxSmallPath
+                selectedSize = size
+            }
+            // Is this resolution more appropriate?
+            if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
+                selectedURLRequest = xxSmallPath
+                selectedSize = size
+            }
+        }
+
+        // X Small Size
+        if let xSmallPath = image.xSmallPath, !xSmallPath.isEmpty {
+            // Max dimension of this image
+            let size = max(image.xSmallWidth, image.xSmallHeight)
+            // Ensure that at least an URL will be returned
+            if selectedURLRequest.isEmpty {
+                selectedURLRequest = xSmallPath
+                selectedSize = size
+            }
+            // Is this resolution more appropriate?
+            if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
+                selectedURLRequest = xSmallPath
+                selectedSize = size
+            }
+        }
+
+        // Small Size
+        if let smallPath = image.smallPath, !smallPath.isEmpty {
+            // Max dimension of this image
+            let size = max(image.smallWidth, image.smallHeight)
+            // Ensure that at least an URL will be returned
+            if selectedURLRequest.isEmpty {
+                selectedURLRequest = smallPath
+                selectedSize = size
+            }
+            // Is this resolution more appropriate?
+            if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
+                selectedURLRequest = smallPath
+                selectedSize = size
+            }
+        }
+
+        // Medium Size (should always be available)
+        if let mediumPath = image.mediumPath, !mediumPath.isEmpty {
+            // Max dimension of this image
+            let size = max(image.mediumWidth, image.mediumHeight)
+            // Ensure that at least an URL will be returned
+            if selectedURLRequest.isEmpty {
+                selectedURLRequest = mediumPath
+                selectedSize = size
+            }
+            // Is this resolution more appropriate?
+            if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
+                selectedURLRequest = mediumPath
+                selectedSize = size
+            }
+        }
+
+        // Large Size
+        if let largePath = image.largePath, !largePath.isEmpty {
+            // Max dimension of this image
+            let size = max(image.largeWidth, image.largeHeight)
+            // Ensure that at least an URL will be returned
+            if selectedURLRequest.isEmpty {
+                selectedURLRequest = largePath
+                selectedSize = size
+            }
+            // Is this resolution more appropriate?
+            if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
+                selectedURLRequest = largePath
+                selectedSize = size
+            }
+        }
+
+        // X Large Size
+        if let xLargePath = image.xLargePath, !xLargePath.isEmpty {
+            // Max dimension of this image
+            let size = max(image.xLargeWidth, image.xLargeHeight)
+            // Ensure that at least an URL will be returned
+            if selectedURLRequest.isEmpty {
+                selectedURLRequest = xLargePath
+                selectedSize = size
+            }
+            // Is this resolution more appropriate?
+            if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
+                selectedURLRequest = xLargePath
+                selectedSize = size
+            }
+        }
+
+        // XX Large Size
+        if let xxLargePath = image.xxLargePath, !xxLargePath.isEmpty {
+            // Max dimension of this image
+            let size = max(image.xxLargeWidth, image.xxLargeHeight)
+            // Ensure that at least an URL will be returned
+            if selectedURLRequest.isEmpty {
+                selectedURLRequest = xxLargePath
+                selectedSize = size
+            }
+            // Is this resolution more appropriate?
+            if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
+                selectedURLRequest = xxLargePath
+                selectedSize = size
+            }
+        }
+
+        // Full Resolution
+        if let fullResPath = image.fullResPath, !fullResPath.isEmpty {
+            // Max dimension of this image
+            let size = max(image.fullResWidth, image.fullResHeight)
+            // Ensure that at least an URL will be returned
+            if selectedURLRequest.isEmpty {
+                selectedURLRequest = fullResPath
+                selectedSize = size
+            }
+            // Is this resolution more appropriate?
+            if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
+                selectedURLRequest = fullResPath
+                selectedSize = size
+            }
+        }
+
+        // NOP if no image can be downloaded
+        if selectedURLRequest.isEmpty {
             return nil
         }
 
-        if let url = URL(string: anURLRequest) {
+        if let url = URL(string: selectedURLRequest) {
             return URLRequest(url: url)
         }
+        
         return nil
     }
     
-    // MARK: - URL of Image File Stored in /tmp before Share
+    
+    // URL of the image file stored in /tmp before the share
     class func getFileUrl(ofImage image: PiwigoImageData?,
                           withURLrequest urlRequest: URLRequest?) -> URL {
         // Get filename from URL request
@@ -120,7 +246,8 @@ class ShareUtilities {
         return tempDirectoryUrl.appendingPathComponent(fileName ?? "PiwigoImage.jpg")
     }
 
-    // MARK: - Image Downloader
+    
+    // Download image from the Piwigo server
     class func downloadImage(with piwigoData: PiwigoImageData, at urlRequest: URLRequest,
                              onProgress progress: @escaping (Progress?) -> Void,
                              completionHandler: @escaping (_ response: URLResponse?, _ filePath: URL?, _ error: Error?) -> Void
@@ -136,12 +263,135 @@ class ShareUtilities {
         task.resume()
         return task
     }
+    
 }
 
 
-// MARK: - UIActivityType Extension
+// MARK: - UIActivityType Extensions
 extension UIActivity.ActivityType: Comparable {
+    
+    // Allows to compare and sort activity types
     public static func < (lhs: UIActivity.ActivityType, rhs: UIActivity.ActivityType) -> Bool {
         lhs.rawValue < rhs.rawValue
+    }
+
+    // Return the maximum resolution accepted for some activity types
+    func imageMaxSize() -> Int {
+        // Get the maximum image size according to the activity type (infinity if no limit)
+        /// - See https://makeawebsitehub.com/social-media-image-sizes-cheat-sheet/
+        /// - High resolution for: AirDrop, Copy, Mail, Message, iBooks, Flickr, Print, SaveToCameraRoll
+        var maxSize = Int.max
+        if #available(iOS 10, *) {
+            switch self {
+            case .assignToContact:
+                maxSize = 1024
+            case .postToFacebook:
+                maxSize = 1200
+            case .postToTencentWeibo:
+                maxSize = 640 // 9 images max + 1 video
+            case .postToTwitter:
+                maxSize = 880 // 4 images max
+            case .postToWeibo:
+                maxSize = 640 // 9 images max + 1 video
+            case kPiwigoActivityTypePostToWhatsApp:
+                maxSize = 1920
+            case kPiwigoActivityTypePostToSignal:
+                maxSize = 1920
+            case kPiwigoActivityTypeMessenger:
+                maxSize = 1920
+            case kPiwigoActivityTypePostInstagram:
+                maxSize = 1080
+            default:
+                maxSize = Int.max
+            }
+        }
+        return maxSize
+    }
+
+    func shouldStripMetadata() -> Bool {
+        // Return whether the user wants to strip metadata
+        /// - The flag are set in Settings / Images / Share Metadata
+        if #available(iOS 10, *) {
+            switch self {
+            case .airDrop:
+                if !Model.sharedInstance().shareMetadataTypeAirDrop {
+                    return true
+                }
+            case .assignToContact:
+                if !Model.sharedInstance().shareMetadataTypeAssignToContact {
+                    return true
+                }
+            case .copyToPasteboard:
+                if !Model.sharedInstance().shareMetadataTypeCopyToPasteboard {
+                    return true
+                }
+            case .mail:
+                if !Model.sharedInstance().shareMetadataTypeMail {
+                    return true
+                }
+            case .message:
+                if !Model.sharedInstance().shareMetadataTypeMessage {
+                    return true
+                }
+            case .postToFacebook:
+                if !Model.sharedInstance().shareMetadataTypePostToFacebook {
+                    return true
+                }
+            case kPiwigoActivityTypeMessenger:
+                if !Model.sharedInstance().shareMetadataTypeMessenger {
+                    return true
+                }
+            case .postToFlickr:
+                if !Model.sharedInstance().shareMetadataTypePostToFlickr {
+                    return true
+                }
+            case kPiwigoActivityTypePostInstagram:
+                if !Model.sharedInstance().shareMetadataTypePostInstagram {
+                    return true
+                }
+            case kPiwigoActivityTypePostToSignal:
+                if !Model.sharedInstance().shareMetadataTypePostToSignal {
+                    return true
+                }
+            case kPiwigoActivityTypePostToSnapchat:
+                if !Model.sharedInstance().shareMetadataTypePostToSnapchat {
+                    return true
+                }
+            case .postToTencentWeibo:
+                if !Model.sharedInstance().shareMetadataTypePostToTencentWeibo {
+                    return true
+                }
+            case .postToTwitter:
+                if !Model.sharedInstance().shareMetadataTypePostToTwitter {
+                    return true
+                }
+            case .postToVimeo:
+                if !Model.sharedInstance().shareMetadataTypePostToVimeo {
+                    return true
+                }
+            case .postToWeibo:
+                if !Model.sharedInstance().shareMetadataTypePostToWeibo {
+                    return true
+                }
+            case kPiwigoActivityTypePostToWhatsApp:
+                if !Model.sharedInstance().shareMetadataTypePostToWhatsApp {
+                    return true
+                }
+            case .saveToCameraRoll:
+                if !Model.sharedInstance().shareMetadataTypeSaveToCameraRoll {
+                    return true
+                }
+            default:
+                if !Model.sharedInstance().shareMetadataTypeOther {
+                    return true
+                }
+            }
+        } else {
+            // Single On/Off share metadata option (use first boolean)
+            if !Model.sharedInstance().shareMetadataTypeAirDrop {
+                return true
+            }
+        }
+        return false
     }
 }
