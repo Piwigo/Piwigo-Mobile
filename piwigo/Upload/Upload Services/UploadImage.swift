@@ -163,7 +163,7 @@ extension UploadManager {
                 }
                 
                 // Fix orientation if needed
-                fixedImageObject = self.fixOrientationOf(imageObject)
+                fixedImageObject = imageObject.fixedOrientation()
 
                 // Job completed
 //                print("\(self.debugFormatter.string(from: Date())) > exits retrieveUIImageFrom in", queueName())
@@ -184,7 +184,7 @@ extension UploadManager {
                     }
                     
                     // Fix orientation if needed
-                    fixedImageObject = self.fixOrientationOf(imageObject)
+                    fixedImageObject = imageObject.fixedOrientation()
 
                     // Job completed
 //                    print("\(self.debugFormatter.string(from: Date())) > exits retrieveUIImageFrom in", queueName())
@@ -401,72 +401,6 @@ extension UploadManager {
         newUpload.md5Sum = md5Checksum
         print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: md5Checksum)) | \(String(describing: newUpload.fileName))")
         completionHandler(newUpload, nil)
-    }
-
-
-    // MARK: - Fix Image Orientation
-    
-    private func fixOrientationOf(_ image: UIImage) -> UIImage {
-
-        // No-op if the orientation is already correct
-        if image.imageOrientation == .up {
-            return image
-        }
-
-        // We need to calculate the proper transformation to make the image upright.
-        // We do it in 2 steps: Rotate if Left/Right/Down, and then flip if Mirrored.
-        var transform: CGAffineTransform = .identity
-
-        switch image.imageOrientation {
-            case .down, .downMirrored:
-                transform = transform.translatedBy(x: image.size.width, y: image.size.height)
-                transform = transform.rotated(by: .pi)
-            case .left, .leftMirrored:
-                transform = transform.translatedBy(x: image.size.width, y: 0)
-                transform = transform.rotated(by: .pi / 2)
-            case .right, .rightMirrored:
-                transform = transform.translatedBy(x: 0, y: image.size.height)
-                transform = transform.rotated(by: -.pi / 2)
-            case .up, .upMirrored:
-                break
-            @unknown default:
-                break
-        }
-
-        switch image.imageOrientation {
-            case .upMirrored, .downMirrored:
-                transform = transform.translatedBy(x: image.size.width, y: 0)
-                transform = transform.scaledBy(x: -1, y: 1)
-            case .leftMirrored, .rightMirrored:
-                transform = transform.translatedBy(x: image.size.height, y: 0)
-                transform = transform.scaledBy(x: -1, y: 1)
-            case .up, .down, .left, .right:
-                break
-            @unknown default:
-                break
-        }
-
-        // Now we draw the underlying CGImage into a new context,
-        // applying the transform calculated above.
-        let ctx = CGContext(data: nil, width: Int(image.size.width), height: Int(image.size.height),
-                            bitsPerComponent: image.cgImage!.bitsPerComponent, bytesPerRow: 0,
-                            space: image.cgImage!.colorSpace!, bitmapInfo: image.cgImage!.bitmapInfo.rawValue)
-        ctx?.concatenate(transform)
-        switch image.imageOrientation {
-            case .left, .leftMirrored, .right, .rightMirrored:
-                // Grr...
-                ctx?.draw(image.cgImage!, in: CGRect(x: 0, y: 0, width: image.size.height , height: image.size.width ))
-            default:
-                ctx?.draw(image.cgImage!, in: CGRect(x: 0, y: 0, width: image.size.width , height: image.size.height ))
-        }
-
-        // And now we just create a new UIImage from the drawing context
-        let cgimg = ctx?.makeImage()
-        var img: UIImage? = nil
-        if let cgimg = cgimg {
-            img = UIImage(cgImage: cgimg)
-        }
-        return img!
     }
 
 
