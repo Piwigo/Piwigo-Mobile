@@ -40,13 +40,13 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         guard let thumbnailRL = URL(string: imageData.getURLFromImageSizeType(alreadyLoadedSize)) else {
             imageFileData = Data()
             imageFileURL = URL.init(string: "")!
-            super.init(placeholderItem: UIImage(named: "AppIcon")!)
+            super.init(placeholderItem: UIImage(named: "AppIconShare")!)
             return
         }
         
         // Retrieve thumbnail image
         let thumb = UIImageView()
-        thumb.setImageWith(thumbnailRL, placeholderImage: UIImage(named: "AppIcon"))
+        thumb.setImageWith(thumbnailRL, placeholderImage: UIImage(named: "AppIconShare"))
         if let thumbnailImage = thumb.image {
             imageFileURL = thumbnailRL
             imageFileData = thumbnailImage.jpegData(compressionQuality: 1.0) ?? Data()
@@ -54,7 +54,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         } else {
             imageFileData = Data()
             imageFileURL = URL.init(string: "")!
-            super.init(placeholderItem: UIImage(named: "AppIcon")!)
+            super.init(placeholderItem: UIImage(named: "AppIconShare")!)
         }
     }
 
@@ -454,11 +454,11 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         if let thumbnailRL = URL(string: imageData.getURLFromImageSizeType(alreadyLoadedSize)) {
             // Retrieve thumbnail image
             let thumb = UIImageView()
-            thumb.setImageWith(thumbnailRL, placeholderImage: UIImage(named: "AppIcon"))
+            thumb.setImageWith(thumbnailRL, placeholderImage: UIImage(named: "AppIconShare"))
             if let thumbnailImage = thumb.image {
                 linkMetaData.imageProvider = NSItemProvider(object: thumbnailImage)
             } else {
-                linkMetaData.imageProvider = NSItemProvider(object: UIImage(named: "AppIcon")!)
+                linkMetaData.imageProvider = NSItemProvider(object: UIImage(named: "AppIconShare")!)
             }
         }
         
