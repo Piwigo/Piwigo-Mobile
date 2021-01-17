@@ -910,6 +910,9 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
 
 -(void)presentShareImageViewControllerWithCameraRollAccess:(BOOL)hasCameraRollAccess
 {
+    // To exclude some activity types
+    NSMutableSet *excludedActivityTypes = [NSMutableSet new];
+
     // Create new activity provider item to pass to the activity view controller
     NSMutableArray *itemsToShare = [NSMutableArray new];
     if (self.imageData.isVideo) {
@@ -921,6 +924,9 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
         
         // Add to list of items to share
         [itemsToShare addObject:videoItemProvider];
+
+        // Exclude "assign to contact" activity
+        [excludedActivityTypes addObject:UIActivityTypeAssignToContact];
     }
     else {
         // Case of an image
@@ -940,10 +946,12 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     // Set HUD view controller for displaying progress
     self.hudViewController = activityViewController;
     
-    // Exclude camera roll activity if needed
+    // Exclude some activity types if needed
     if (!hasCameraRollAccess) {
-        activityViewController.excludedActivityTypes = @[UIActivityTypeSaveToCameraRoll];
+        // Exclude "camera roll" activity when the Photo Library is not accessible
+        [excludedActivityTypes addObject:UIActivityTypeSaveToCameraRoll];
     }
+    activityViewController.excludedActivityTypes = [excludedActivityTypes allObjects];
     
     // Delete image/video file and remove observers after dismissing activity view controller
     [activityViewController setCompletionWithItemsHandler:^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError){

@@ -2577,6 +2577,9 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
 
 -(void)presentShareImageViewControllerWithCameraRollAccess:(BOOL)hasCameraRollAccess
 {
+    // To exclude some activity types
+    NSMutableSet *excludedActivityTypes = [NSMutableSet new];
+
     // Create new activity provider items to pass to the activity view controller
     self.totalNumberOfImages = self.selectedImagesToShare.count;
     NSMutableArray *itemsToShare = [NSMutableArray new];
@@ -2590,6 +2593,9 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
             
             // Add to list of items to share
             [itemsToShare addObject:videoItemProvider];
+
+            // Exclude "assign to contact" activity
+            [excludedActivityTypes addObject:UIActivityTypeAssignToContact];
         }
         else {
             // Case of an image
@@ -2612,8 +2618,10 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
     
     // Exclude camera roll activity if needed
     if (!hasCameraRollAccess) {
-        activityViewController.excludedActivityTypes = @[UIActivityTypeSaveToCameraRoll];
+        // Exclude "camera roll" activity when the Photo Library is not accessible
+        [excludedActivityTypes addObject:UIActivityTypeSaveToCameraRoll];
     }
+    activityViewController.excludedActivityTypes = [excludedActivityTypes allObjects];
 
     // Delete image/video files and remove observers after dismissing activity view controller
     [activityViewController setCompletionWithItemsHandler:^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError){
