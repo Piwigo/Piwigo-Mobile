@@ -34,13 +34,9 @@ extension UploadManager {
         var newUploadProperties = uploadProperties
         newUploadProperties.mimeType = mimeType as String
 
-        // Determine if metadata contains private data
-        let assetMetadata = originalVideo.commonMetadata
-        let locationMetadata = AVMetadataItem.metadataItems(from: assetMetadata, filteredByIdentifier: .commonIdentifierLocation)
-
         // Upload original video if metadata matches user's choice
         if !uploadProperties.stripGPSdataOnUpload ||
-            (uploadProperties.stripGPSdataOnUpload && (locationMetadata.count == 0)) {
+            (uploadProperties.stripGPSdataOnUpload && !originalVideo.metadata.containsPrivateMetadata()) {
 
             // Determine MD5 checksum
             var videoData: Data = Data()
@@ -69,28 +65,44 @@ extension UploadManager {
             }
         }
         else {
-            // Determine optimal export options (highest quality for device by default)
-            let exportPreset = self.getExportPreset(for: originalVideo)
+            // We cannot remove the private metadata if the video cannot be exported
+            if !originalVideo.isExportable {
+                let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("shareMetadataError_message", comment: "Cannot strip private metadata")])
+                self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
+                return
+            }
+            else {
+                // Determine optimal export options (highest quality for device by default)
+                let exportPreset = self.getExportPreset(for: originalVideo)
 
-            // Remove private metadata by exporting a new video in MP4 format
-            self.export(videoAsset: originalVideo, with: exportPreset,
-                        for: uploadID, with: newUploadProperties)
+                // Remove private metadata by exporting a new video in MP4 format
+                self.export(videoAsset: originalVideo, with: exportPreset,
+                            for: uploadID, with: newUploadProperties)
+            }
         }
     }
 
-    /// Case of a video from the Pasteboard which is in a format not accepted by the Piwigo server
+    /// Case of a video which is in a format not accepted by the Piwigo server
     func convertVideo(atURL originalFileURL: URL,
                       for uploadID: NSManagedObjectID, with uploadProperties: UploadProperties) -> Void {
 
         // Retrieve video data
         let originalVideo = AVAsset.init(url: originalFileURL)
 
-        // Determine optimal export options (highest quality for device by default)
-        let exportPreset = self.getExportPreset(for: originalVideo)
+        // We cannot convert the video if it is not exportable
+        if !originalVideo.isExportable {
+            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : String(format: NSLocalizedString("videoUploadError_format", comment: "Sorry, video files with extension .%@ are not accepted by the Piwigo server."), originalFileURL.pathExtension)])
+            self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
+            return
+        }
+        else {
+            // Determine optimal export options (highest quality for device by default)
+            let exportPreset = self.getExportPreset(for: originalVideo)
 
-        // Remove private metadata by exporting a new video in MP4 format
-        self.export(videoAsset: originalVideo, with: exportPreset,
-                    for: uploadID, with: uploadProperties)
+            // Remove private metadata by exporting a new video in MP4 format
+            self.export(videoAsset: originalVideo, with: exportPreset,
+                        for: uploadID, with: uploadProperties)
+        }
     }
 
     /// Case of a video from the Photo Library which is in a format accepted by the Piwigo server
@@ -382,7 +394,9 @@ extension UploadManager {
         // Determine available export options (highest quality for device by default)
         let presets = AVAssetExportSession.exportPresets(compatibleWith: videoAsset)
 
-        // Adopt highest quality by default
+        // Produce QuickTime movie file with video size appropriate to the current device by default
+        /// - The export will not scale the video up from a smaller size.
+        /// - Compression for video uses H.264; compression for audio uses AAC.
         var exportPreset = AVAssetExportPresetHighestQuality
         
         // Determine video size
@@ -390,7 +404,6 @@ extension UploadManager {
         let maxPixels = max(videoSize.width, videoSize.height)
                                                 
         // The 'presets' array never contains AVAssetExportPresetPassthrough,
-        // so we use determineCompatibilityOfExportPreset.
         if (maxPixels <= 640) && presets.contains(AVAssetExportPreset640x480) {
             // Encode in 640x480 pixels — metadata will be lost
             exportPreset = AVAssetExportPreset640x480

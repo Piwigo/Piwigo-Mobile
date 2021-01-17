@@ -553,6 +553,9 @@
 "shareActivityCode_Other" = "Share with other apps";
 "shareActivityCode_Other>375px" = "Share photos with other apps";
 
+"shareFailError_title" = "Share Fail";
+"shareMetadataError_message" = "Cannot strip private metadata";
+
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
