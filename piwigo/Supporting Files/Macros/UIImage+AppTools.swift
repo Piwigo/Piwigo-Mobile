@@ -51,7 +51,7 @@ extension UIImage {
         return newImage
     }
     
-    func fixedOrientation() -> UIImage {
+    func fixOrientation() -> UIImage {
 
         // No-op if the orientation is already correct
         if self.imageOrientation == .up {

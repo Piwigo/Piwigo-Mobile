@@ -163,7 +163,7 @@ extension UploadManager {
                 }
                 
                 // Fix orientation if needed
-                fixedImageObject = imageObject.fixedOrientation()
+                fixedImageObject = imageObject.fixOrientation()
 
                 // Job completed
 //                print("\(self.debugFormatter.string(from: Date())) > exits retrieveUIImageFrom in", queueName())
@@ -184,7 +184,7 @@ extension UploadManager {
                     }
                     
                     // Fix orientation if needed
-                    fixedImageObject = imageObject.fixedOrientation()
+                    fixedImageObject = imageObject.fixOrientation()
 
                     // Job completed
 //                    print("\(self.debugFormatter.string(from: Date())) > exits retrieveUIImageFrom in", queueName())
