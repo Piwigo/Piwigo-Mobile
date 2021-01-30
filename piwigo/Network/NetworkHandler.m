@@ -96,6 +96,8 @@ NSInteger const loadingViewTag = 899;
     config.allowsCellularAccess = YES;
     config.timeoutIntervalForRequest = 30;          // 60 seconds is the advised default value
     config.HTTPMaximumConnectionsPerHost = 4;       // 4 is the advised default value
+    config.HTTPShouldSetCookies = YES;
+    config.HTTPCookieAcceptPolicy = NSHTTPCookieAcceptPolicyAlways;
     if (@available(iOS 11.0, *)) {
         config.multipathServiceType = NSURLSessionMultipathServiceTypeHandover;
     } else {
@@ -167,6 +169,8 @@ NSInteger const loadingViewTag = 899;
     config.allowsCellularAccess = YES;
     config.timeoutIntervalForRequest = 60;          // 60 seconds is the advised default value
     config.HTTPMaximumConnectionsPerHost = 4;       // 4 is the advised default value
+    config.HTTPShouldSetCookies = YES;
+    config.HTTPCookieAcceptPolicy = NSHTTPCookieAcceptPolicyAlways;
     config.URLCache = [Model sharedInstance].imageCache;
     config.requestCachePolicy = NSURLRequestReturnCacheDataElseLoad;
     if (@available(iOS 11.0, *)) {
@@ -242,6 +246,8 @@ NSInteger const loadingViewTag = 899;
     config.timeoutIntervalForResource = 60;         // Maximum amount of time that a resource request is allowed to take
     config.HTTPMaximumConnectionsPerHost = 2;       // 4 is the advised default value
     config.requestCachePolicy = NSURLRequestReloadIgnoringCacheData;
+    config.HTTPShouldSetCookies = YES;
+    config.HTTPCookieAcceptPolicy = NSHTTPCookieAcceptPolicyAlways;
     config.URLCache = nil;
     if (@available(iOS 11.0, *)) {
         config.multipathServiceType = NSURLSessionMultipathServiceTypeHandover;

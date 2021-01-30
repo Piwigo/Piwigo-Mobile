@@ -41,8 +41,10 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
         config.httpMaximumConnectionsPerHost = 4
         
         /// Do not return a response from the cache
-        config.requestCachePolicy = .reloadIgnoringCacheData
         config.urlCache = nil
+        config.requestCachePolicy = .reloadIgnoringLocalCacheData
+        config.httpShouldSetCookies = false         // So that the session is not updated
+        config.httpCookieAcceptPolicy = .never
         
         /// Allows a seamless handover from Wi-Fi to cellular
         if #available(iOS 11.0, *) {
@@ -71,7 +73,7 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
         let protectionSpace = challenge.protectionSpace
         guard protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
             protectionSpace.host.contains(domain) else {
-                completionHandler(.performDefaultHandling, nil)
+                completionHandler(.rejectProtectionSpace, nil)
                 return
         }
 
