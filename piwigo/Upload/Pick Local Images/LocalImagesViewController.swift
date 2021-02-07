@@ -1273,6 +1273,14 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         
         // Number of images in section
         let nberOfImagesInSection = localImagesCollection.numberOfItems(inSection: section)
+        if nberOfImagesInSection == 0 {
+            // Job done if there is no image
+            if selectedSections[section] != .none {
+                selectedSections[section] = .none
+                completion()
+            }
+            return
+        }
 
         // Get start and last indices of section
         let firstIndex: Int, lastIndex: Int
@@ -1282,13 +1290,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         } else {
             firstIndex = getImageIndex(for: IndexPath.init(item: nberOfImagesInSection - 1, section: section))
             lastIndex = getImageIndex(for: IndexPath.init(item: 0, section: section))
-        }
-        
-        // Job done if there is no image presented
-        if lastIndex < firstIndex, section < selectedSections.count {
-            selectedSections[section] = .none
-            completion()
-            return
         }
         
         // Number of selected images
