@@ -154,6 +154,13 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
 
         // Does the file contain private metadata?
         let asset = AVAsset(url: imageFileURL)
+
+        // For debugging
+//        let commonMetadata = asset.commonMetadata
+//        print("===>> Common Metadata: \(commonMetadata)")
+//        let allMetadata = asset.metadata
+//        print("===>> All Metadata: \(allMetadata)")
+
         if !asset.metadata.containsPrivateMetadata() {
             // Notify the delegate on the main thread to show how it makes progress.
             progressFraction = 1.0
@@ -316,7 +323,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         }
         
         exportSession = session
-        session.outputFileType = AVFileType.mp4
+        session.outputFileType = .mp4
         session.shouldOptimizeForNetworkUse = true
         session.outputURL = imageFileURL
         session.metadataItemFilter = .forSharing()
