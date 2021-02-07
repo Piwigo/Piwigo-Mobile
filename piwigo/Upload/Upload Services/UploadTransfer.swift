@@ -341,16 +341,8 @@ extension UploadManager {
 
             // Chunk of data
             let chunkOfData = imageData.subdata(in: chunk * chunkSize..<min((chunk+1)*chunkSize, imageData.count))
-            var md5Checksum: String? = ""
-            if #available(iOS 13.0, *) {
-                #if canImport(CryptoKit)        // Requires iOS 13
-                md5Checksum = MD5(data: chunkOfData)
-                #endif
-            } else {
-                // Fallback on earlier versions
-                md5Checksum = oldMD5(data: chunkOfData)
-            }
-            httpBody.appendString(convertFormField(named: "chunk_sum", value: md5Checksum!, using: boundary))
+            let md5Checksum = chunkOfData.MD5checksum()
+            httpBody.appendString(convertFormField(named: "chunk_sum", value: md5Checksum, using: boundary))
             httpBody.append(convertFileData(fieldName: "file",
                                             fileName: uploadProperties.fileName!,
                                             mimeType: uploadProperties.mimeType ?? "image/jpg",
@@ -392,6 +384,7 @@ extension UploadManager {
             request.addValue(uploadProperties.md5Sum!, forHTTPHeaderField: "md5sum")
 
             // As soon as tasks are created, the timeout counter starts
+            request.httpShouldHandleCookies = false
             let uploadSession: URLSession = UploadSessionDelegate.shared.uploadSession
             let task = uploadSession.uploadTask(with: request, fromFile: fileURL)
             task.taskDescription = uploadID.uriRepresentation().absoluteString
@@ -464,11 +457,11 @@ extension UploadManager {
                     repeatedTask.countOfBytesClientExpectsToSend = Int64(fileSize)
                     repeatedTask.countOfBytesClientExpectsToReceive = 600
                 }
-                print("\(debugFormatter.string(from: Date())) > \(md5sum) | repeat task \(repeatedTask.taskIdentifier)")
+                print("\(debugFormatter.string(from: Date())) > \(md5sum) | repeat task \(task.taskIdentifier) (\(repeatedTask.taskIdentifier))")
                 repeatedTask.resume()
             } else {
                 // Failed 3 times already, delete chunk file from Piwigo/Uploads directory
-                print("\(debugFormatter.string(from: Date())) > \(identifier) | upload tasks failed 3 times!!!")
+                print("\(debugFormatter.string(from: Date())) > \(md5sum) | upload tasks failed 3 times!!!")
                 let imageFile = identifier.replacingOccurrences(of: "/", with: "-")
                 let chunkFileName = imageFile + "." + numberFormatter.string(from: NSNumber(value: chunk))!
                 deleteFilesInUploadsDirectory(with: chunkFileName)
