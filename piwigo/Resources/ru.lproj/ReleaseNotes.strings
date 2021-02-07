@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v2.6.0_text" = "Version 2.6.0\n\n• Paste/upload photos and videos from clipboard\nFixes compatibity with Piwigo 11\n• Minor bug fixes and improvements of the interface";
+
 "v2.5.4_text" = "Версия 2.5.4\n\n• Незначительные исправления ошибок и улучшения интерфейса";
 
 "v2.5.3_text" = "Версия 2.5.3\n21 февраля 2020\n\n• Контролируйте доступ к фотографиям и видео Piwigo\n• Советы и трюки для лучшего использования приложения\n• Исправления ошибок";

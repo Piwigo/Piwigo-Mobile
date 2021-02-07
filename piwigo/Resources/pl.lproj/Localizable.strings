@@ -179,6 +179,7 @@
 "categoryUpload_syncedFaces" = "Twarze iPhoto";
 "categoryUpload_mediaTypes" = "Typy mediów";
 "categoryUpload_otherAlbums" = "Inne albumy";
+"categoryUpload_pasteboard" = "Clipboard";
 
 "categoyUpload_loadSubCategories" = "ładowanie";
 "categoryUpload_images" = "Prześlij zdjęcia";
@@ -550,6 +551,9 @@
 "shareActivityCode_CameraRoll>375px" = "Zapisz zdjęcia w Rolce aparatu";
 "shareActivityCode_Other" = "Udostępnianie innym aplikacjom";
 "shareActivityCode_Other>375px" = "Udostępnij zdjęcia innym aplikacjom";
+
+"shareFailError_title" = "Share Fail";
+"shareMetadataError_message" = "Cannot strip private metadata";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library

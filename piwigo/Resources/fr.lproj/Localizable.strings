@@ -179,6 +179,7 @@
 "categoryUpload_syncedFaces" = "Visages iPhoto";
 "categoryUpload_mediaTypes" = "Types de média";
 "categoryUpload_otherAlbums" = "Autres albums";
+"categoryUpload_pasteboard" = "Presse-papier";
 
 "categoyUpload_loadSubCategories" = "télécharge";
 "categoryUpload_images" = "Télécharger des photos";
@@ -550,6 +551,9 @@
 "shareActivityCode_CameraRoll>375px" = "Enregistrer des photos dans Photos";
 "shareActivityCode_Other" = "Partager avec d'autres Apps";
 "shareActivityCode_Other>375px" = "Partager des photos avec d'autres Apps";
+
+"shareFailError_title" = "Échec du partage";
+"shareMetadataError_message" = "Impossible de supprimer les métadonnées privées";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library

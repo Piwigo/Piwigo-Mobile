@@ -179,6 +179,7 @@
 "categoryUpload_syncedFaces" = "iPhoto Faces";
 "categoryUpload_mediaTypes" = "Media Types";
 "categoryUpload_otherAlbums" = "Other Albums";
+"categoryUpload_pasteboard" = "Clipboard";
 
 "categoyUpload_loadSubCategories" = "muat";
 "categoryUpload_images" = "Unggah gambar";
@@ -518,8 +519,8 @@
 "shareActivityCode_AirDrop>375px" = "Transfer photos with AirDrop";
 "shareActivityCode_AssignToContact" = "Assign to Contact";
 "shareActivityCode_AssignToContact>375px" = "Assign photo to Contact";
-"shareActivityCode_CopyToPasteboard" = "Copy to Clipboard";
-"shareActivityCode_CopyToPasteboard>375px" = "Copy photos to Clipboard";
+"shareActivityCode_CopyToPasteboard" = "Copy to Pasteboard";
+"shareActivityCode_CopyToPasteboard>375px" = "Copy photos to Pasteboard";
 "shareActivityCode_Mail" = "Post by Email";
 "shareActivityCode_Mail>375px" = "Post photos by Email";
 "shareActivityCode_Message" = "Post with Message";
@@ -550,6 +551,9 @@
 "shareActivityCode_CameraRoll>375px" = "Save photos to Camera Roll";
 "shareActivityCode_Other" = "Share with other apps";
 "shareActivityCode_Other>375px" = "Share photos with other apps";
+
+"shareFailError_title" = "Share Fail";
+"shareMetadataError_message" = "Cannot strip private metadata";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library

@@ -179,6 +179,7 @@
 "categoryUpload_syncedFaces" = "iPhoto vlakken";
 "categoryUpload_mediaTypes" = "Media typen";
 "categoryUpload_otherAlbums" = "Andere albums";
+"categoryUpload_pasteboard" = "Clipboard";
 
 "categoyUpload_loadSubCategories" = "laden";
 "categoryUpload_images" = "Foto's uploaden";
@@ -550,6 +551,9 @@
 "shareActivityCode_CameraRoll>375px" = "Save foto's naar Camero Roll";
 "shareActivityCode_Other" = "Deel met andere apps";
 "shareActivityCode_Other>375px" = "Deel foto's met andere apps";
+
+"shareFailError_title" = "Share Fail";
+"shareMetadataError_message" = "Cannot strip private metadata";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library
