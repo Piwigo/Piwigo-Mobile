@@ -1,5 +1,5 @@
 //
-//  ImageUtilities.swift
+//  ImageMetadata.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 09/01/2021.
@@ -8,31 +8,249 @@
 
 import Foundation
 
-class ImageUtilities {
+class ImageMetadata {
+        
+    // MARK: - Private metadata properties
+    // Exif private metadata properties
+    /// See https://www.exiftool.org/TagNames/EXIF.html
+    let exifPrivateProperties: [CFString] = {
+        let properties = [kCGImagePropertyExifUserComment,          // User's comment
+                          kCGImagePropertyExifSubjectLocation,      // Image’s primary subject
+                          kCGImagePropertyExifMakerNote             // Information specified by the camera manufacturer
+        ]
+        return properties
+    }()
+
+    // ExifEx private metadata properties
+    /// See https://www.exiftool.org/TagNames/EXIF.html
+    let exifExPrivateProperties: [CFString] = {
+        let properties = [kCGImagePropertyExifCameraOwnerName,      // Owner's name
+                          kCGImagePropertyExifBodySerialNumber,     // Serial numbers
+                          kCGImagePropertyExifLensSerialNumber      // Lens serial number
+        ]
+        return properties
+    }()
+
+    // ExifAux private metadata properties
+    /// See https://www.exiftool.org/TagNames/EXIF.html
+    let exifAuxPrivateProperties: [CFString] = {
+        let properties = [kCGImagePropertyExifAuxSerialNumber,      // Serial number
+                          kCGImagePropertyExifAuxLensSerialNumber,  // Lens serial number
+                          kCGImagePropertyExifAuxOwnerName          // Owner's name
+        ]
+        return properties
+    }()
+        
+    // IPTC private metadata properties
+    /// See https://www.exiftool.org/TagNames/IPTC.html
+    /// See https://www.iptc.org/std/photometadata/specification/IPTC-PhotoMetadata
+    let iptcPrivateProperties: [CFString] = {
+        let properties = [kCGImagePropertyIPTCContentLocationCode,  // Content location code
+                          kCGImagePropertyIPTCContentLocationName,  // Content location name
+                          kCGImagePropertyIPTCByline,               // Name of the person who created the image
+                          kCGImagePropertyIPTCBylineTitle,          // Title of the person who created the image
+                          kCGImagePropertyIPTCCity,                 // City where the image was created
+                          kCGImagePropertyIPTCSubLocation,          // Location within the city where the image was created
+                          kCGImagePropertyIPTCProvinceState,        // Province or state
+                          kCGImagePropertyIPTCCountryPrimaryLocationCode,   // Country primary location code
+                          kCGImagePropertyIPTCCountryPrimaryLocationName,   // Country primary location name
+                          kCGImagePropertyIPTCOriginalTransmissionReference,// Call letter/number combination
+                          kCGImagePropertyIPTCHeadline,             // Summary of the contents of the image
+                          kCGImagePropertyIPTCCredit,               // Name of the service that provided the image
+                          kCGImagePropertyIPTCSource,               // Original owner of the image
+                          kCGImagePropertyIPTCContact,              // Contact information for further information
+                          kCGImagePropertyIPTCWriterEditor,         // Name of the person who wrote or edited the description
+                          kCGImagePropertyIPTCCreatorContactInfo,   // Creator’s contact info (dictionary)
+        ]
+        return properties
+    }()
+        
+    // PNG private metadata properties
+    /// See https://www.exiftool.org/TagNames/PNG.html
+    let pngPrivateProperties: [CFString] = {
+        let properties = [kCGImagePropertyPNGAuthor                 // String that identifies the author
+        ]
+        return properties
+    }()
+        
+    // TIFF private metadata properties
+    let tiffPrivateProperties: [CFString] = {
+        let properties = [kCGImagePropertyTIFFArtist                // Artist who created the image
+        ]
+        return properties
+    }()
+        
+    // DNG private metadata properties
+    let dngPrivateProperties: [CFString] = {
+        let properties = [kCGImagePropertyDNGCameraSerialNumber     // Camera serial number
+        ]
+        return properties
+    }()
+        
+    // CIFF private metadata properties
+    let ciffPrivateProperties: [CFString] = {
+        let properties = [kCGImagePropertyCIFFOwnerName,            // Camera’s owner
+                          kCGImagePropertyCIFFRecordID,             // Number of images taken since the camera shipped
+                          kCGImagePropertyCIFFCameraSerialNumber    // Camera serial number
+        ]
+        return properties
+    }()
+        
+    // Canon private metadata properties
+    let canonPrivateProperties: [CFString] = {
+        let properties = [kCGImagePropertyMakerCanonOwnerName,      // Camera’s owner
+                          kCGImagePropertyMakerCanonCameraSerialNumber // Camera serial number
+        ]
+        return properties
+    }()
+        
+    // Nikon private metadata properties
+    let nikonPrivateProperties: [CFString] = {
+        let properties = [kCGImagePropertyMakerNikonCameraSerialNumber  // Camera’s owner
+        ]
+        return properties
+    }()    
+
+}
+
+extension CGImageMetadata {
+    // Remove CGImage private metadata
+    // The GPS metadata will be removed using the kCGImageMetadataShouldExcludeGPS option
+    func stripPrivateMetadata() -> CGImageMetadata {
+        guard let metadata = CGImageMetadataCreateMutableCopy(self) else {
+            return self
+        }
+
+        // Get prefixes and keys of privata metadata
+        var dictOfKeys = [CFString : [CFString]]()
+        dictOfKeys[kCGImageMetadataPrefixExif] = ImageMetadata().exifPrivateProperties
+        dictOfKeys[kCGImageMetadataPrefixExifEX] = ImageMetadata().exifExPrivateProperties
+        dictOfKeys[kCGImageMetadataPrefixExifAux] = ImageMetadata().exifAuxPrivateProperties
+        dictOfKeys[kCGImageMetadataPrefixIPTCCore] = ImageMetadata().iptcPrivateProperties
+        dictOfKeys[kCGImageMetadataPrefixTIFF] = ImageMetadata().tiffPrivateProperties
+        if #available(iOS 11.3, *) {
+            dictOfKeys[kCGImageMetadataPrefixIPTCExtension] = ImageMetadata().iptcPrivateProperties
+        }
+        dictOfKeys[kCGImageMetadataPrefixXMPBasic] = ImageMetadata().pngPrivateProperties
+
+        // Loop over all tags
+        CGImageMetadataEnumerateTagsUsingBlock(self, nil, nil) { _, tag in
+            // Retrieve path
+            let prefix = CGImageMetadataTagCopyPrefix(tag)!
+            let name = CGImageMetadataTagCopyName(tag)!
+            let path = ((prefix as String) + ":" + (name as String)) as CFString
+            print("=> Tag: \(prefix):\(name)")
+
+            // Check presence of dictionary
+            if let properties = dictOfKeys[prefix] {
+                // Remove tag if it contains private data
+                if properties.contains(name as CFString) {
+                    let result = CGImageMetadataRemoveTagWithPath(metadata, nil, path as CFString)
+                    print("=> removed tag at path:\(path) -> \(result)")
+                    return true
+                }
+            }
+            
+            // Check remaining names
+            if ImageMetadata().pngPrivateProperties.contains(name) {
+                let result = CGImageMetadataRemoveTagWithPath(metadata, nil, path as CFString)
+                print("=> removed tag at path:\(path) -> \(result)")
+                return true
+            }
+            if ImageMetadata().dngPrivateProperties.contains(name) {
+                let result = CGImageMetadataRemoveTagWithPath(metadata, nil, path as CFString)
+                print("=> removed tag at path:\(path) -> \(result)")
+                return true
+            }
+            if ImageMetadata().ciffPrivateProperties.contains(name) {
+                let result = CGImageMetadataRemoveTagWithPath(metadata, nil, path as CFString)
+                print("=> removed tag at path:\(path) -> \(result)")
+                return true
+            }
+            if ImageMetadata().canonPrivateProperties.contains(name) {
+                let result = CGImageMetadataRemoveTagWithPath(metadata, nil, path as CFString)
+                print("=> removed tag at path:\(path) -> \(result)")
+                return true
+            }
+            if ImageMetadata().nikonPrivateProperties.contains(name) {
+                let result = CGImageMetadataRemoveTagWithPath(metadata, nil, path as CFString)
+                print("=> removed tag at path:\(path) -> \(result)")
+                return true
+            }
+            return true
+        }
+        return metadata
+    }
+}
+
+extension Dictionary where Key == CFString, Value == Any {
+    // Remove CGImage properties w/o GPS and other private data
+    func stripPrivateProperties() -> [CFString:Any] {
+        var properties = self as [CFString:Any]
+        
+        // Remove GPS dictionary
+        if let GPSdata = properties[kCGImagePropertyGPSDictionary] as? [CFString:Any] {
+            properties.removeValue(forKey: kCGImagePropertyGPSDictionary)
+            print("=> removed GPS metadata = \(GPSdata)")
+        }
+        
+        // Get other dictionaries with keys of privata data
+        var dictOfKeys = [CFString : [CFString]]()
+        var exifPrivateProperties = ImageMetadata().exifPrivateProperties
+        exifPrivateProperties.append(contentsOf: ImageMetadata().exifExPrivateProperties)
+        dictOfKeys[kCGImagePropertyExifDictionary] = exifPrivateProperties
+        dictOfKeys[kCGImagePropertyExifAuxDictionary] = ImageMetadata().exifAuxPrivateProperties
+        dictOfKeys[kCGImagePropertyIPTCDictionary] = ImageMetadata().iptcPrivateProperties
+        dictOfKeys[kCGImagePropertyPNGDictionary] = ImageMetadata().pngPrivateProperties
+        dictOfKeys[kCGImagePropertyTIFFDictionary] = ImageMetadata().tiffPrivateProperties
+        dictOfKeys[kCGImagePropertyDNGDictionary] = ImageMetadata().dngPrivateProperties
+        dictOfKeys[kCGImagePropertyCIFFDictionary] = ImageMetadata().ciffPrivateProperties
+        dictOfKeys[kCGImagePropertyMakerCanonDictionary] = ImageMetadata().canonPrivateProperties
+        dictOfKeys[kCGImagePropertyMakerNikonDictionary] = ImageMetadata().nikonPrivateProperties
+
+        // Loop over the dictionaries
+        for dict in dictOfKeys {
+            // Check presence of dictionary
+            if var dictData = properties[dict.key] as? [CFString:Any] {
+                // Loop over the keys of private data
+                for key in dict.value {
+                    // Remove private metadata if any
+                    if let value = dictData[key] {
+                        dictData.removeValue(forKey: key)
+                        print("=> removed private metadata [\(key) : \(value)]")
+                    }
+                }
+                // Update properties
+                properties[dict.key] = dictData
+            }
+        }
+        return properties
+    }
     
-    class func fixContents(of originalMetadata:[CFString : Any], from image:UIImage) -> [CFString : Any] {
-        var metadata = originalMetadata
+    // Fix image container properties from UIImage
+    func fixContents(from image:UIImage) -> [CFString : Any] {
+        var metadata = self
 
         // Extract image data from UIImage object
         guard let imageData = image.jpegData(compressionQuality: 1.0) else {
-            return originalMetadata
+            return self
         }
         
         // Create image source from image data
         guard let source = CGImageSourceCreateWithData(imageData as CFData, nil) else {
-            return originalMetadata
+            return self
         }
 
         // Extract image source container properties
         if let sourceMetadata = CGImageSourceCopyProperties(source, nil) as? [CFString : Any] {
             // Update TIFF, GIF, etc. metadata from properties found in the container
-            metadata = fixProperties(of: metadata, from: sourceMetadata)
+            metadata = metadata.fixProperties(from: sourceMetadata)
         }
 
         // Extract image properties from image data
         if let imageMetadata = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString : Any] {
             // Update TIFF, GIF, etc. metadata from properties found in the image
-            metadata = fixProperties(of: metadata, from: imageMetadata)
+            metadata = metadata.fixProperties(from: imageMetadata)
         
             // Update/add DPI height from image properties
             if let DPIheight = imageMetadata[kCGImagePropertyDPIHeight] {
@@ -95,10 +313,10 @@ class ImageUtilities {
         
         return metadata
     }
-    
-    class func fixProperties(of originalMetadata: [CFString : Any],
-                             from imageMetadata : [CFString : Any]) -> [CFString : Any] {
-        var metadata = originalMetadata
+
+    // Fix image properties from (resized) imaga metadata
+    func fixProperties(from imageMetadata: [CFString:Any]) -> [CFString:Any] {
+        var metadata = self
 
         // Update TIFF dictionary from image metadata
         if let imageTIFFDictionary = imageMetadata[kCGImagePropertyTIFFDictionary] as? [CFString : Any] {
@@ -257,43 +475,5 @@ class ImageUtilities {
         }
 
         return metadata
-    }
-    
-    class func stripGPSdata(from originalMetadata:[CFString:Any]) -> (Bool, [CFString:Any]) {
-        var metadata = originalMetadata
-        var didChangeMetadata = false
-
-        // GPS dictionary
-        if let GPSdata = metadata[kCGImagePropertyGPSDictionary] as? [CFString:Any] {
-            print("=> remove GPS metadata = \(GPSdata)")
-            metadata.removeValue(forKey: kCGImagePropertyGPSDictionary)
-            didChangeMetadata = true
-        }
-
-        // EXIF dictionary
-        if var EXIFdata = metadata[kCGImagePropertyExifDictionary] as? [CFString:Any] {
-            var didChangeEXIFMetadata = false
-            
-            // Remove user's comment
-            if let value = EXIFdata[kCGImagePropertyExifUserComment] {
-                print("remove EXIF User Comment metadata = \(value)")
-                EXIFdata.removeValue(forKey: kCGImagePropertyExifUserComment)
-                didChangeEXIFMetadata = true
-            }
-            // Remove location data
-            if let value = EXIFdata[kCGImagePropertyExifSubjectLocation] {
-                print("remove EXIF Subject Location metadata = \(value)")
-                EXIFdata.removeValue(forKey: kCGImagePropertyExifSubjectLocation)
-                didChangeEXIFMetadata = true
-            }
-        
-            // Update metadata
-            if didChangeEXIFMetadata {
-                metadata[kCGImagePropertyExifDictionary] = EXIFdata
-                didChangeMetadata = true
-            }
-        }
-
-        return (didChangeMetadata, metadata)
     }
 }
