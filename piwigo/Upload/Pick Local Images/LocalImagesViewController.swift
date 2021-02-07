@@ -874,7 +874,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 // Caching fetched images already in upload queue
                 for index in i*step..<min((i+1)*step,uploadsInQueue.count) {
                     // Get image identifier
-                    if let imageId = uploadsInQueue[index]?.0 {
+                    if index < uploadsInQueue.count, let imageId = uploadsInQueue[index]?.0 {
                         fetchOptions.predicate = NSPredicate(format: "localIdentifier == %@", imageId)
                         if let asset = PHAsset.fetchAssets(with: fetchOptions).firstObject {
                             let idx = fetchedImages.index(of: asset)
