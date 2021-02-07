@@ -179,7 +179,7 @@
 "categoryUpload_syncedFaces" = "Caras de iPhoto";
 "categoryUpload_mediaTypes" = "Tipos de medios";
 "categoryUpload_otherAlbums" = "Otros álbumes";
-"categoryUpload_pasteboard" = "Clipboard";
+"categoryUpload_pasteboard" = "Portapapeles";
 
 "categoyUpload_loadSubCategories" = "cargar";
 "categoryUpload_images" = "Subir fotos";
@@ -552,8 +552,8 @@
 "shareActivityCode_Other" = "Compartir con otras aplicaciones";
 "shareActivityCode_Other>375px" = "Compartir las fotos con otras aplicaciones";
 
-"shareFailError_title" = "Share Fail";
-"shareMetadataError_message" = "Cannot strip private metadata";
+"shareFailError_title" = "Error de compartición";
+"shareMetadataError_message" = "No se pueden eliminar los metadatos privados";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library
