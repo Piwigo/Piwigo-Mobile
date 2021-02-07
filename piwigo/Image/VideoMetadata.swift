@@ -1,5 +1,5 @@
 //
-//  VideoUtilities.swift
+//  VideoMetadata.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 13/01/2021.
@@ -9,7 +9,7 @@
 import AVFoundation
 
 extension Array where Element == AVMetadataItem {
-    
+    // Return whether metadata contains private data
     func containsPrivateMetadata() -> Bool {
         let metadata = self as [AVMetadataItem]
 
@@ -89,16 +89,15 @@ extension Array where Element == AVMetadataItem {
 }
 
 extension AVAssetTrack {
+    // Return media format description
     var mediaFormat: String {
         var format = ""
         let descriptions = self.formatDescriptions as! [CMFormatDescription]
         for (index, formatDesc) in descriptions.enumerated() {
             // Get String representation of media type (vide, soun, sbtl, etc.)
-            let type =
-                CMFormatDescriptionGetMediaType(formatDesc).toString()
+            let type = CMFormatDescriptionGetMediaType(formatDesc).toString()
             // Get String representation media subtype (avc1, aac, tx3g, etc.)
-            let subType =
-                CMFormatDescriptionGetMediaSubType(formatDesc).toString()
+            let subType = CMFormatDescriptionGetMediaSubType(formatDesc).toString()
             // Format string as type/subType
             format += "\(type)/\(subType)"
             // Comma separate if more than one format description
