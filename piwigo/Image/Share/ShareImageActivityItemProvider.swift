@@ -156,46 +156,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
             return imageFileURL
         }
 
-        // Create CGI reference from image data (to retrieve complete metadata)
-        guard let sourceRef = CGImageSourceCreateWithURL(imageFileURL as CFURL, nil) else {
-            // Cancel task
-            cancel()
-            // Notify the delegate on the main thread that the processing is cancelled.
-            alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-            alertMessage = NSLocalizedString("shareMetadataError_message", comment: "Private metadata cannot be removed")
-            preprocessingDidEnd()
-            return placeholderItem!
-        }
-
-        // Notify the delegate on the main thread to show how it makes progress.
-        progressFraction = 0.80
-
-        // Get metadata from image data
-        guard var imageMetadata = CGImageSourceCopyPropertiesAtIndex(sourceRef, 0, nil) as? [CFString:Any] else {
-            // Cancel task
-            cancel()
-            // Notify the delegate on the main thread that the processing is cancelled.
-            alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
-            alertMessage = NSLocalizedString("shareMetadataError_message", comment: "Private metadata cannot be removed")
-            preprocessingDidEnd()
-            return placeholderItem!
-        }
-
-        // Strip GPS metadata if necessary
-        var didChangeMetadata = false
-        (didChangeMetadata, imageMetadata) = ImageUtilities.stripGPSdata(from: imageMetadata)
-
-        // Notify the delegate on the main thread to show how it makes progress.
-        progressFraction = 0.85
-
-        // Have we removed private metadata?
-        if !didChangeMetadata {
-            // Notify the delegate on the main thread that the processing has finished.
-            preprocessingDidEnd()
-            // Share the file immediately
-            return imageFileURL
-        }
-
+        // We now need to remove private metadata…
         // Create new file from original one because one cannot modify metadata of existing file
         // Shared files are saved in the /tmp directory and will be deleted:
         // - by the app if the user kills it
@@ -226,10 +187,10 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         }
         
         // Notify the delegate on the main thread to show how it makes progress.
-        progressFraction = 0.90
+        progressFraction = 0.80
 
         // Create CGI reference from moved source file
-        guard let source2Ref = CGImageSourceCreateWithURL(newSourceURL as CFURL, nil) else {
+        guard let sourceRef = CGImageSourceCreateWithURL(newSourceURL as CFURL, nil) else {
             // Cancel task
             cancel()
             // Notify the delegate on the main thread that the processing is cancelled.
@@ -240,7 +201,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         }
 
         // Prepare destination file of same type
-        guard let UTI = CGImageSourceGetType(source2Ref),
+        guard let UTI = CGImageSourceGetType(sourceRef),
               let destinationRef = CGImageDestinationCreateWithURL(imageFileURL as CFURL, UTI, 1, nil) else {
             // Cancel task
             cancel()
@@ -251,8 +212,53 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
             return placeholderItem!
         }
 
-        // Add image from source to destination with new properties
-        CGImageDestinationAddImageFromSource(destinationRef, sourceRef, 0, imageMetadata as CFDictionary)
+        // Copy source to destination without private data
+        /// See https://developer.apple.com/library/archive/qa/qa1895/_index.html
+        /// Try to copy source into destination w/o recompression
+        /// One of kCGImageDestinationMetadata, kCGImageDestinationOrientation, or kCGImageDestinationDateTime is required.
+        if var metadata = CGImageSourceCopyMetadataAtIndex(sourceRef, 0, nil) {
+            // Strip private metadata
+            metadata = metadata.stripPrivateMetadata()
+            
+            // Set destination options
+            let options = [kCGImageDestinationMetadata      : metadata,
+                           kCGImageMetadataShouldExcludeGPS : true
+            ] as CFDictionary
+            
+            // Copy image source w/o private metadata
+            if CGImageDestinationCopyImageSource(destinationRef, sourceRef, options, nil) {
+                // Notify the delegate on the main thread to show how it makes progress.
+                progressFraction = 1.0
+
+                // Notify the delegate on the main thread that the processing has finished.
+                preprocessingDidEnd()
+
+                // Return image to share
+                return imageFileURL
+            }
+        }
+        
+        // We could not copy source into destination, so we try by recompressing the image
+        guard var imageProperties = CGImageSourceCopyPropertiesAtIndex(sourceRef, 0, nil) as? [CFString:Any] else {
+            // Cancel task
+            cancel()
+            // Notify the delegate on the main thread that the processing is cancelled.
+            alertTitle = NSLocalizedString("shareFailError_title", comment: "Share Fail")
+            alertMessage = NSLocalizedString("shareMetadataError_message", comment: "Private metadata cannot be removed")
+            preprocessingDidEnd()
+            return placeholderItem!
+        }
+
+        // Strip private properties
+        imageProperties = imageProperties.stripPrivateProperties()
+
+        // Copy source into destination with unavoidable recompression
+        CGImageDestinationSetProperties(destinationRef, imageProperties as CFDictionary)
+        let nberOfImages = CGImageSourceGetCount(sourceRef)
+        for index in 0..<nberOfImages {
+            // Add image at index
+            CGImageDestinationAddImageFromSource(destinationRef, sourceRef, index, imageProperties as CFDictionary)
+        }
 
         // Save destination
         guard CGImageDestinationFinalize(destinationRef) else {
