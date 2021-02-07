@@ -7,6 +7,7 @@
 //
 
 import Photos
+import MobileCoreServices
 
 extension UploadManager {
     
@@ -16,9 +17,10 @@ extension UploadManager {
                       for uploadID: NSManagedObjectID, with uploadProperties: UploadProperties) -> Void {
         
         // Retrieve image data from file stored in the Uploads directory
-        var imageData: Data = Data()
+        /// The full resolution image contains all metadata
+        var fullResImageData: Data = Data()
         do {
-            try imageData = NSData (contentsOf: fileURL) as Data
+            try fullResImageData = NSData (contentsOf: fileURL) as Data
         }
         catch let error as NSError {
             // Could not find the file to upload!
@@ -28,15 +30,31 @@ extension UploadManager {
             return
         }
         
+        // Did the user request a resize?
+        if !uploadProperties.resizeImageOnUpload || (uploadProperties.photoResize == 100) {
+            // No -> Upload full resolution image
+            exportFullResolutionImage(from: fullResImageData,
+                                      for: uploadID, with: uploadProperties) { (newUploadProperties, error) in
+                // Update upload request
+                self.didPrepareImage(for: uploadID, with: newUploadProperties, error)
+            }
+            return
+        }
+        
         // Retrieve UIImage from imageData
-        guard let imageObject = UIImage(data: imageData) else {
+        guard var resizedImage = UIImage(data: fullResImageData) else {
             let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
             self.didPrepareImage(for: uploadID, with: uploadProperties, error)
             return
         }
 
-        // Modify image
-        self.modifyImage(for: uploadProperties, with: imageData, andObject: imageObject) { (newUploadProperties, error) in
+        // Resize image
+        let dimension: CGFloat = CGFloat(uploadProperties.photoResize) / 100.0
+        resizedImage = resizedImage.resize(to: dimension, opaque: false)
+
+        // Export resized image
+        self.exportResizedImage(for: uploadProperties,
+                                with: fullResImageData, andResized: resizedImage) { (newUploadProperties, error) in
             // Update upload request
             self.didPrepareImage(for: uploadID, with: newUploadProperties, error)
         }
@@ -46,32 +64,44 @@ extension UploadManager {
     func prepareImage(asset imageAsset: PHAsset,
                       for uploadID: NSManagedObjectID, with uploadProperties: UploadProperties) -> Void {
 
-        // Retrieve UIImage
-        self.retrieveUIImage(from: imageAsset, for: uploadProperties) { (fixedImageObject, imageError) in
-            if let imageError = imageError {
-                self.didPrepareImage(for: uploadID, with: uploadProperties, imageError)
+        // Retrieve image data
+        self.retrieveFullSizeImageData(from: imageAsset) { (fullSizeData, dataError) in
+            if let _ = dataError {
+                self.didPrepareImage(for: uploadID, with: uploadProperties, dataError)
                 return
             }
-            guard let imageObject = fixedImageObject else {
+            guard let fullResImageData = fullSizeData else {
                 let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                 self.didPrepareImage(for: uploadID, with: uploadProperties, error)
                 return
             }
 
-            // Retrieve image data
-            self.retrieveFullSizeImageData(from: imageAsset) { (fullSizeData, dataError) in
-                if let _ = dataError {
-                    self.didPrepareImage(for: uploadID, with: uploadProperties, dataError)
+            // Did the user request a resize?
+            if !uploadProperties.resizeImageOnUpload || (uploadProperties.photoResize == 100) {
+                // No -> Upload full resolution image
+                self.exportFullResolutionImage(from: fullResImageData,
+                                               for:uploadID, with: uploadProperties) { (newUploadProperties, error) in
+                    // Update upload request
+                    self.didPrepareImage(for: uploadID, with: newUploadProperties, error)
+                }
+                return
+            }
+            
+            // Retrieve UIImage
+            self.retrieveScaledUIImage(from: imageAsset, for: uploadProperties) { (scaledUIImage, imageError) in
+                if let imageError = imageError {
+                    self.didPrepareImage(for: uploadID, with: uploadProperties, imageError)
                     return
                 }
-                guard let imageData = fullSizeData else {
+                guard let resizedImage = scaledUIImage else {
                     let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                     self.didPrepareImage(for: uploadID, with: uploadProperties, error)
                     return
                 }
 
-                // Modify image
-                self.modifyImage(for: uploadProperties, with: imageData, andObject: imageObject) { (newUploadProperties, error) in
+                // Export image
+                self.exportResizedImage(for: uploadProperties,
+                                        with: fullResImageData, andResized: resizedImage) { (newUploadProperties, error) in
                     // Update upload request
                     self.didPrepareImage(for: uploadID, with: newUploadProperties, error)
                 }
@@ -113,9 +143,237 @@ extension UploadManager {
     }
 
     
-    // MARK: - Retrieve UIImage and Image Data
-    private func retrieveUIImage(from imageAsset: PHAsset, for upload:UploadProperties,
-                                 completionHandler: @escaping (UIImage?, Error?) -> Void) {
+    // MARK: - Full Resolution Image
+    /// Request the full resolution image data with all metadata
+    private func retrieveFullSizeImageData(from imageAsset: PHAsset,
+                                           completionHandler: @escaping (Data?, Error?) -> Void) {
+        // Options for retrieving metadata
+        let options = PHImageRequestOptions()
+        // Photos processes the image request synchronously unless when the app is active
+        options.isSynchronous = isExecutingBackgroundUploadTask
+        // Requests the most recent version of the image asset
+        options.version = .current
+        // Requests a fast-loading image, possibly sacrificing image quality.
+        options.deliveryMode = .fastFormat
+        // Photos can download the requested video from iCloud
+        options.isNetworkAccessAllowed = true
+
+        // The block Photos calls periodically while downloading the photo
+        options.progressHandler = { progress, error, stop, info in
+            print(String(format: "    > retrieveFullSizeAssetDataFromImage... progress %lf", progress))
+        }
+
+        autoreleasepool {
+            if #available(iOS 13.0, *) {
+                PHImageManager.default().requestImageDataAndOrientation(for: imageAsset, options: options,
+                                                                        resultHandler: { imageData, dataUTI, orientation, info in
+                    // resultHandler redirected to the main thread by default!
+                    if self.isExecutingBackgroundUploadTask {
+//                        print("\(self.debugFormatter.string(from: Date())) > exits retrieveFullSizeAssetDataFromImage in", queueName())
+                        if info?[PHImageErrorKey] != nil || ((imageData?.count ?? 0) == 0) {
+                            completionHandler(nil, info?[PHImageErrorKey] as? Error)
+                        } else {
+                            completionHandler(imageData, nil)
+                        }
+                    } else {
+                        DispatchQueue(label: "prepareImage").async {
+//                            print("\(self.debugFormatter.string(from: Date())) > exits retrieveFullSizeAssetDataFromImage in", queueName())
+                            if info?[PHImageErrorKey] != nil || ((imageData?.count ?? 0) == 0) {
+                                completionHandler(nil, info?[PHImageErrorKey] as? Error)
+                            } else {
+                                completionHandler(imageData, nil)
+                            }
+                        }
+                    }
+                })
+            } else {
+                PHImageManager.default().requestImageData(for: imageAsset, options: options,
+                                                          resultHandler: { imageData, dataUTI, orientation, info in
+                    // resultHandler performed on main thread!
+                    if self.isExecutingBackgroundUploadTask {
+//                        print("\(self.debugFormatter.string(from: Date())) > exits retrieveFullSizeAssetDataFromImage in", queueName())
+                        if info?[PHImageErrorKey] != nil || ((imageData?.count ?? 0) == 0) {
+                            completionHandler(nil, info?[PHImageErrorKey] as? Error)
+                        } else {
+                            completionHandler(imageData, nil)
+                        }
+                    } else {
+                        DispatchQueue(label: "prepareImage").async {
+//                            print("\(self.debugFormatter.string(from: Date())) > exits retrieveFullSizeAssetDataFromImage in", queueName())
+                            if info?[PHImageErrorKey] != nil || ((imageData?.count ?? 0) == 0) {
+                                completionHandler(nil, info?[PHImageErrorKey] as? Error)
+                            } else {
+                                completionHandler(imageData, nil)
+                            }
+                        }
+                    }
+                })
+            }
+        }
+    }
+
+    /// Export the full resolution image file to be uploaded
+    /// - Private metadata are removed if requested by the user
+    /// - The format is converted to JPEG if the server does not accept the original format
+    private func exportFullResolutionImage(from fullResImageData: Data,
+                                           for uploadID: NSManagedObjectID, with upload: UploadProperties,
+                                           completionHandler: @escaping (UploadProperties, Error?) -> Void) {
+        print("\(self.debugFormatter.string(from: Date())) > enters exportFullResolutionImage in", queueName())
+        // Initialisation
+        var newUpload = upload
+        
+        // Proceed immadiately if:
+        /// - the image container format is accepted by the server
+        /// - the user did not request a compression
+        let fileExt = (URL(fileURLWithPath: upload.fileName!).pathExtension).lowercased()
+        if upload.serverFileTypes.contains(fileExt), !upload.compressImageOnUpload {
+            // Get MIME type
+            guard let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExt as NSString, nil)?.takeRetainedValue() else {
+                let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                completionHandler(upload, error)
+                return
+            }
+            guard let mimeType = UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue() else  {
+                let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                completionHandler(upload, error)
+                return
+            }
+            newUpload.mimeType = mimeType as String
+
+            // File name of final image data to be stored into Piwigo/Uploads directory
+            let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
+            let fileURL = self.applicationUploadsDirectory.appendingPathComponent(fileName)
+
+            // Deletes temporary image file if exists (incomplete previous attempt?)
+            do {
+                try FileManager.default.removeItem(at: fileURL)
+            } catch {
+            }
+
+            // Should we strip GPS metadata?
+            if !upload.stripGPSdataOnUpload {
+                // No need to remove private metadata
+                // Export full resolution image file into Piwigo/Uploads directory
+                do {
+                    try fullResImageData.write(to: fileURL)
+                } catch let error as NSError {
+                    completionHandler(newUpload, error)
+                    return
+                }
+                
+                // Determine MD5 checksum of image file to upload
+                newUpload.md5Sum = fullResImageData.MD5checksum()
+                print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUpload.md5Sum))")
+                completionHandler(newUpload, nil)
+                return
+            }
+            
+            // Remove private metadata
+            // Create CGI reference from full resolution image data
+            guard let sourceRef: CGImageSource = CGImageSourceCreateWithData((fullResImageData as CFData), nil) else {
+                // Could not prepare image source
+                let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                completionHandler(upload, error)
+                return
+            }
+
+            // Prepare destination file of same type
+            guard let UTI = CGImageSourceGetType(sourceRef),
+                  let destinationRef = CGImageDestinationCreateWithURL(fileURL as CFURL, UTI, 1, nil) else {
+                // Could not prepare image source
+                let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                completionHandler(upload, error)
+                return
+            }
+
+            // Copy source to destination without private data
+            /// See https://developer.apple.com/library/archive/qa/qa1895/_index.html
+            /// Try to copy source into destination w/o recompression
+            /// One of kCGImageDestinationMetadata, kCGImageDestinationOrientation, or kCGImageDestinationDateTime is required.
+            if var metadata = CGImageSourceCopyMetadataAtIndex(sourceRef, 0, nil) {
+                // Strip private metadata
+                metadata = metadata.stripPrivateMetadata()
+                
+                // Set destination options
+                let options = [kCGImageDestinationMetadata      : metadata,
+                               kCGImageMetadataShouldExcludeGPS : true
+                ] as CFDictionary
+                
+                // Copy image source w/o private metadata
+                if CGImageDestinationCopyImageSource(destinationRef, sourceRef, options, nil) {
+                    // Determine MD5 checksum of image file to upload
+                    let error: NSError?
+                    (newUpload.md5Sum, error) = fileURL.MD5checksum()
+                    print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUpload.md5Sum))")
+                    if error != nil {
+                        completionHandler(upload, error)
+                        return
+                    }
+                    completionHandler(newUpload, nil)
+                    return
+                }
+            }
+
+            // We could not copy source into destination, so we try by recompressing the image
+            guard var imageProperties = CGImageSourceCopyPropertiesAtIndex(sourceRef, 0, nil) as? [CFString:Any] else {
+                // Could not prepare image source
+                let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                completionHandler(upload, error)
+                return
+            }
+
+            // Strip private properties
+            imageProperties = imageProperties.stripPrivateProperties()
+
+            // Copy source into destination with unavoidable recompression
+            CGImageDestinationSetProperties(destinationRef, imageProperties as CFDictionary)
+            let nberOfImages = CGImageSourceGetCount(sourceRef)
+            for index in 0..<nberOfImages {
+                // Add image at index
+                CGImageDestinationAddImageFromSource(destinationRef, sourceRef, index, imageProperties as CFDictionary)
+            }
+
+            // Save destination
+            guard CGImageDestinationFinalize(destinationRef) else {
+                // Could not prepare full resolution image file
+                let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                completionHandler(upload, error)
+                return
+            }
+
+            // Determine MD5 checksum of image file to upload
+            let error: NSError?
+            (newUpload.md5Sum, error) = fileURL.MD5checksum()
+            print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUpload.md5Sum))")
+            if error != nil {
+                completionHandler(newUpload, error)
+                return
+            }
+            completionHandler(newUpload, nil)
+            return
+        }
+        
+        // Image container format refused by server and/or compression requested
+        // => retrieve UIImage from imageData
+        guard let imageData = UIImage(data: fullResImageData) else {
+            let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+            completionHandler(newUpload, error)
+            return
+        }
+        
+        // Convert and/or compress image, check metadata
+        exportResizedImage(for: upload,
+                           with: fullResImageData, andResized: imageData) { (newUploadProperties, error) in
+            // Update upload request
+            self.didPrepareImage(for: uploadID, with: newUploadProperties, error)
+        }
+    }
+
+
+    // MARK: - Resized Image
+    /// Request a resized version of the image stored in the Photo Library
+    private func retrieveScaledUIImage(from imageAsset: PHAsset, for upload:UploadProperties,
+                                       completionHandler: @escaping (UIImage?, Error?) -> Void) {
 
         // Options for retrieving image of requested size
         let options = PHImageRequestOptions()
@@ -194,83 +452,16 @@ extension UploadManager {
         })
     }
 
-    private func retrieveFullSizeImageData(from imageAsset: PHAsset,
-                                           completionHandler: @escaping (Data?, Error?) -> Void) {
-        // Options for retrieving metadata
-        let options = PHImageRequestOptions()
-        // Photos processes the image request synchronously unless when the app is active
-        options.isSynchronous = isExecutingBackgroundUploadTask
-        // Requests the most recent version of the image asset
-        options.version = .current
-        // Requests a fast-loading image, possibly sacrificing image quality.
-        options.deliveryMode = .fastFormat
-        // Photos can download the requested video from iCloud
-        options.isNetworkAccessAllowed = true
+    /// Export a resized version of the image
+    /// - Private metadata are removed if requested by the user
+    /// - The format is converted to JPEG if the server does not accept the original format
+    private func exportResizedImage(for upload: UploadProperties,
+                                    with fullResImageData: Data, andResized resizedImage: UIImage,
+                                    completionHandler: @escaping (UploadProperties, Error?) -> Void) {
+        print("\(self.debugFormatter.string(from: Date())) > enters exportResizedImage in", queueName())
 
-        // The block Photos calls periodically while downloading the photo
-        options.progressHandler = { progress, error, stop, info in
-            print(String(format: "    > retrieveFullSizeAssetDataFromImage... progress %lf", progress))
-        }
-
-        autoreleasepool {
-            if #available(iOS 13.0, *) {
-                PHImageManager.default().requestImageDataAndOrientation(for: imageAsset, options: options,
-                                                                        resultHandler: { imageData, dataUTI, orientation, info in
-                    // resultHandler redirected to the main thread by default!
-                    if self.isExecutingBackgroundUploadTask {
-//                        print("\(self.debugFormatter.string(from: Date())) > exits retrieveFullSizeAssetDataFromImage in", queueName())
-                        if info?[PHImageErrorKey] != nil || ((imageData?.count ?? 0) == 0) {
-                            completionHandler(nil, info?[PHImageErrorKey] as? Error)
-                        } else {
-                            completionHandler(imageData, nil)
-                        }
-                    } else {
-                        DispatchQueue(label: "prepareImage").async {
-//                            print("\(self.debugFormatter.string(from: Date())) > exits retrieveFullSizeAssetDataFromImage in", queueName())
-                            if info?[PHImageErrorKey] != nil || ((imageData?.count ?? 0) == 0) {
-                                completionHandler(nil, info?[PHImageErrorKey] as? Error)
-                            } else {
-                                completionHandler(imageData, nil)
-                            }
-                        }
-                    }
-                })
-            } else {
-                PHImageManager.default().requestImageData(for: imageAsset, options: options,
-                                                          resultHandler: { imageData, dataUTI, orientation, info in
-                    // resultHandler performed on main thread!
-                    if self.isExecutingBackgroundUploadTask {
-//                        print("\(self.debugFormatter.string(from: Date())) > exits retrieveFullSizeAssetDataFromImage in", queueName())
-                        if info?[PHImageErrorKey] != nil || ((imageData?.count ?? 0) == 0) {
-                            completionHandler(nil, info?[PHImageErrorKey] as? Error)
-                        } else {
-                            completionHandler(imageData, nil)
-                        }
-                    } else {
-                        DispatchQueue(label: "prepareImage").async {
-//                            print("\(self.debugFormatter.string(from: Date())) > exits retrieveFullSizeAssetDataFromImage in", queueName())
-                            if info?[PHImageErrorKey] != nil || ((imageData?.count ?? 0) == 0) {
-                                completionHandler(nil, info?[PHImageErrorKey] as? Error)
-                            } else {
-                                completionHandler(imageData, nil)
-                            }
-                        }
-                    }
-                })
-            }
-        }
-    }
-
-    
-    // MARK: - Modify Metadata
-    
-    private func modifyImage(for upload: UploadProperties,
-                             with originalData: Data, andObject originalObject: UIImage,
-                             completionHandler: @escaping (UploadProperties, Error?) -> Void) {
-//        print("\(self.debugFormatter.string(from: Date())) > enters modifyImage in", queueName())
-
-        // Create CGI reference from image data (to retrieve complete metadata)
-        guard let source: CGImageSource = CGImageSourceCreateWithData((originalData as CFData), nil) else {
+        // Create CGImage reference from full resolution image data
+        guard let sourceFullRef: CGImageSource = CGImageSourceCreateWithData((fullResImageData as CFData), nil) else {
             // Could not prepare image source
             let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
             completionHandler(upload, error)
@@ -278,7 +469,7 @@ extension UploadManager {
         }
 
         // Get metadata from image data
-        guard var imageMetadata = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as Dictionary? else {
+        guard var imageProperties = CGImageSourceCopyPropertiesAtIndex(sourceFullRef, 0, nil) as! Dictionary<CFString,Any>? else {
             // Could not retrieve metadata
             let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
             completionHandler(upload, error)
@@ -287,15 +478,15 @@ extension UploadManager {
 
         // Strip GPS metadata if user requested it in Settings
         if upload.stripGPSdataOnUpload {
-            imageMetadata = ImageService.stripGPSdata(fromImageMetadata: imageMetadata)! as Dictionary<NSObject, AnyObject>
+            imageProperties = imageProperties.stripPrivateProperties()
         }
 
         // Fix image metadata (size, type, etc.)
-        imageMetadata = ImageService.fixMetadata(imageMetadata, of: originalObject)! as Dictionary<NSObject, AnyObject>
+        imageProperties = imageProperties.fixContents(from: resizedImage) as Dictionary<CFString,Any>
 
         // Check Piwigo creation date from EXIF metadata if possible
         var newUpload = upload
-        if let EXIFdictionary = imageMetadata[kCGImagePropertyExifDictionary] {
+        if let EXIFdictionary = imageProperties[kCGImagePropertyExifDictionary] as? Dictionary<CFString,Any> {
             let EXIFdateFormatter = DateFormatter()
             EXIFdateFormatter.dateFormat = "yyyy:MM:dd HH:mm:ss"
             if let EXIFdateTimeOriginal = EXIFdictionary[kCGImagePropertyExifDateTimeOriginal] as? String {
@@ -317,14 +508,14 @@ extension UploadManager {
         if upload.compressImageOnUpload && (CGFloat(upload.photoQuality) < 100.0) {
             // Compress image (only possible in JPEG)
             let compressionQuality: CGFloat = CGFloat(upload.photoQuality) / 100.0
-            imageCompressed = originalObject.jpegData(compressionQuality: compressionQuality)
+            imageCompressed = resizedImage.jpegData(compressionQuality: compressionQuality)
 
             // Final image file will be in JPEG format
             newUpload.fileName = URL(fileURLWithPath: upload.fileName!).deletingPathExtension().appendingPathExtension("jpg").lastPathComponent
         }
         else if !(upload.serverFileTypes.contains(fileExt)) {
             // Image in unaccepted file format for Piwigo server => convert to JPEG format
-            imageCompressed = originalObject.jpegData(compressionQuality: 1.0)
+            imageCompressed = resizedImage.jpegData(compressionQuality: 1.0)
 
             // Final image file will be in JPEG format
             newUpload.fileName = URL(fileURLWithPath: upload.fileName!).deletingPathExtension().appendingPathExtension("jpg").lastPathComponent
@@ -332,38 +523,18 @@ extension UploadManager {
 
         // If compression failed or imageCompressed is nil, try to use original image
         if imageCompressed == nil {
-            let UTI: CFString? = CGImageSourceGetType(source)
-            let imageDataRef = CFDataCreateMutable(nil, CFIndex(0))
-            var destination: CGImageDestination? = nil
-            if let imageDataRef = imageDataRef, let UTI = UTI {
-                destination = CGImageDestinationCreateWithData(imageDataRef, UTI, 1, nil)
-            }
-            if let destination = destination, let CGImage = originalObject.cgImage {
-                CGImageDestinationAddImage(destination, CGImage, nil)
-            }
-            if let destination = destination {
-                if !CGImageDestinationFinalize(destination) {
-                    let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                    completionHandler(upload, error)
-                    return
-                }
-            }
-            imageCompressed = imageDataRef as Data?
+            imageCompressed = fullResImageData
         }
-
-        // Add metadata to final image
-        let imageData = ImageService.writeMetadata(imageMetadata, intoImageData: imageCompressed)
-        imageCompressed = nil
-
-        // Try to determine MIME type from image data
+        
+        // Determine MIME type from image data, check file extension
         newUpload.mimeType = "image/jpeg"
-        if let type = contentType(forImageData: imageData) {
+        if let type = imageCompressed!.contentType() {
             if type.count > 0  {
                 // Adopt determined Mime type
                 newUpload.mimeType = type
                 // Re-check filename extension if MIME type known
                 let fileExt = (URL(fileURLWithPath: newUpload.fileName ?? "").pathExtension).lowercased()
-                let expectedFileExtension = fileExtension(forImageData: imageData)
+                let expectedFileExtension = imageCompressed!.fileExtension()
                 if !(fileExt == expectedFileExtension) {
                     newUpload.fileName = URL(fileURLWithPath: upload.fileName ?? "file").deletingPathExtension().appendingPathExtension(expectedFileExtension ?? "").lastPathComponent
                 }
@@ -380,191 +551,47 @@ extension UploadManager {
         } catch {
         }
 
-        // Store final image data into Piwigo/Uploads directory
-        do {
-            try imageData?.write(to: fileURL)
-        } catch let error as NSError {
-            completionHandler(newUpload, error)
+        // Create CGImage reference from full resolution image data
+        guard let sourceRef: CGImageSource = CGImageSourceCreateWithData((imageCompressed! as CFData), nil) else {
+            // Could not create source reference
+            let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+            completionHandler(upload, error)
             return
         }
-        
-        // Determine MD5 checksum of image file to upload
-        var md5Checksum: String? = ""
-        if #available(iOS 13.0, *) {
-            #if canImport(CryptoKit)        // Requires iOS 13
-            md5Checksum = self.MD5(data: imageData)
-            #endif
-        } else {
-            // Fallback on earlier versions
-            md5Checksum = self.oldMD5(data: imageData)
+
+        // Prepare destination file of same type
+        guard let UTI = CGImageSourceGetType(sourceRef),
+              let destinationRef = CGImageDestinationCreateWithURL(fileURL as CFURL, UTI, 1, nil) else {
+            // Could not prepare image source
+            let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+            completionHandler(upload, error)
+            return
         }
-        newUpload.md5Sum = md5Checksum
-        print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: md5Checksum)) | \(String(describing: newUpload.fileName))")
+
+        // Copy source into destination with unavoidable recompression
+        CGImageDestinationSetProperties(destinationRef, imageProperties as CFDictionary)
+        let nberOfImages = CGImageSourceGetCount(sourceRef)
+        for index in 0..<nberOfImages {
+            // Add image at index
+            CGImageDestinationAddImageFromSource(destinationRef, sourceRef, index, imageProperties as CFDictionary)
+        }
+
+        // Save destination
+        guard CGImageDestinationFinalize(destinationRef) else {
+            // Could not prepare full resolution image file
+            let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+            completionHandler(upload, error)
+            return
+        }
+
+        // Determine MD5 checksum of image file to upload
+        let error: NSError?
+        (newUpload.md5Sum, error) = fileURL.MD5checksum()
+        print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUpload.md5Sum))")
+        if error != nil {
+            completionHandler(upload, error)
+            return
+        }
         completionHandler(newUpload, nil)
-    }
-
-
-    // MARK: - MIME type and file extension sniffing
-
-    private func contentType(forImageData data: Data?) -> String? {
-        var bytes: [UInt8] = Array.init(repeating: UInt8(0), count: 12)
-        (data! as NSData).getBytes(&bytes, length: 12)
-
-        var jpg = jpgSignature()
-        if memcmp(bytes, &jpg, jpg.count) == 0 { return "image/jpeg" }
-        
-        var heic = heicSignature()
-        if memcmp(bytes, &heic, heic.count) == 0 { return "image/heic" }
-        
-        var png = pngSignature()
-        if memcmp(bytes, &png, png.count) == 0 { return "image/png" }
-        
-        var gif87a = gif87aSignature()
-        var gif89a = gif89aSignature()
-        if memcmp(bytes, &gif87a, gif87a.count) == 0 ||
-            memcmp(bytes, &gif89a, gif89a.count) == 0 { return "image/gif" }
-        
-        var bmp = bmpSignature()
-        if memcmp(bytes, &bmp, bmp.count) == 0 { return "image/x-ms-bmp" }
-        
-        var psd = psdSignature()
-        if memcmp(bytes, &psd, psd.count) == 0 { return "image/vnd.adobe.photoshop" }
-        
-        var iff = iffSignature()
-        if memcmp(bytes, &iff, iff.count) == 0 { return "image/iff" }
-        
-        var webp = webpSignature()
-        if memcmp(bytes, &webp, webp.count) == 0 { return "image/webp" }
-        
-        var win_ico = win_icoSignature()
-        var win_cur = win_curSignature()
-        if memcmp(bytes, &win_ico, win_ico.count) == 0 ||
-            memcmp(bytes, &win_cur, win_cur.count) == 0 { return "image/x-icon" }
-        
-        var tif_ii = tif_iiSignature()
-        var tif_mm = tif_mmSignature()
-        if memcmp(bytes, &tif_ii, tif_ii.count) == 0 ||
-            memcmp(bytes, &tif_mm, tif_mm.count) == 0 { return "image/tiff" }
-        
-        var jp2 = jp2Signature()
-        if memcmp(bytes, &jp2, jp2.count) == 0 { return "image/jp2" }
-        
-        return nil
-    }
-
-    private func fileExtension(forImageData data: Data?) -> String? {
-        var bytes: [UInt8] = Array.init(repeating: UInt8(0), count: 12)
-        (data! as NSData).getBytes(&bytes, length: 12)
-
-        var jpg = jpgSignature()
-        if memcmp(bytes, &jpg, jpg.count) == 0 { return "jpg" }
-        
-        var heic = heicSignature()
-        if memcmp(bytes, &heic, heic.count) == 0 { return "heic" }
-
-        var png = pngSignature()
-        if memcmp(bytes, &png, png.count) == 0 { return "png" }
-        
-        var gif87a = gif87aSignature()
-        var gif89a = gif89aSignature()
-        if memcmp(bytes, &gif87a, gif87a.count) == 0 ||
-            memcmp(bytes, &gif89a, gif89a.count) == 0 { return "gif" }
-        
-        var bmp = bmpSignature()
-        if memcmp(bytes, &bmp, bmp.count) == 0 { return "bmp" }
-
-        var psd = psdSignature()
-        if memcmp(bytes, &psd, psd.count) == 0 { return "psd" }
-        
-        var iff = iffSignature()
-        if memcmp(bytes, &iff, iff.count) == 0 { return "iff" }
-        
-        var webp = webpSignature()
-        if memcmp(bytes, &webp, webp.count) == 0 { return "webp" }
-
-        var win_ico = win_icoSignature()
-        if memcmp(bytes, &win_ico, win_ico.count) == 0 { return "ico" }
-
-        var win_cur = win_curSignature()
-        if memcmp(bytes, &win_cur, win_cur.count) == 0 { return "cur" }
-        
-        var tif_ii = tif_iiSignature()
-        var tif_mm = tif_mmSignature()
-        if memcmp(bytes, &tif_ii, tif_ii.count) == 0 ||
-            memcmp(bytes, &tif_mm, tif_mm.count) == 0 { return "tif" }
-        
-        var jp2 = jp2Signature()
-        if memcmp(bytes, &jp2, jp2.count) == 0 { return "jp2" }
-        
-        return nil
-    }
-
-
-    // MARK: - Image Formats
-    // See https://en.wikipedia.org/wiki/List_of_file_signatures
-    // https://mimesniff.spec.whatwg.org/#sniffing-in-an-image-context
-
-    // https://en.wikipedia.org/wiki/BMP_file_format
-    private func bmpSignature() -> [UInt8] {
-        return "BM".map { $0.asciiValue! }
-    }
-    
-    // https://en.wikipedia.org/wiki/GIF
-    private func gif87aSignature() -> [UInt8] {
-        return "GIF87a".map { $0.asciiValue! }
-    }
-    private func gif89aSignature() -> [UInt8] {
-        return "GIF89a".map { $0.asciiValue! }
-    }
-    
-    // https://en.wikipedia.org/wiki/High_Efficiency_Image_File_Format
-    private func heicSignature() -> [UInt8] {
-        return [0x00, 0x00, 0x00, 0x18] + "ftypheic".map { $0.asciiValue! }
-    }
-    
-    // https://en.wikipedia.org/wiki/ILBM
-    private func iffSignature() -> [UInt8] {
-        return "FORM".map { $0.asciiValue! }
-    }
-    
-    // https://en.wikipedia.org/wiki/JPEG
-    private func jpgSignature() -> [UInt8] {
-        return [0xff, 0xd8, 0xff]
-    }
-    
-    // https://en.wikipedia.org/wiki/JPEG_2000
-    private func jp2Signature() -> [UInt8] {
-        return [0x00, 0x00, 0x00, 0x0c, 0x6a, 0x50, 0x20, 0x20, 0x0d, 0x0a, 0x87, 0x0a]
-    }
-    
-    // https://en.wikipedia.org/wiki/Portable_Network_Graphics
-    private func pngSignature() -> [UInt8] {
-        return [0x89] + "PNG".map { $0.asciiValue! } + [0x0d, 0x0a, 0x1a, 0x0a]
-    }
-    
-    // https://en.wikipedia.org/wiki/Adobe_Photoshop#File_format
-    private func psdSignature() -> [UInt8] {
-        return "8BPS".map { $0.asciiValue! }
-    }
-    
-    // https://en.wikipedia.org/wiki/TIFF
-    private func tif_iiSignature() -> [UInt8] {
-        return "II".map { $0.asciiValue! } + [0x2a, 0x00]
-    }
-    private func tif_mmSignature() -> [UInt8] {
-        return "MM".map { $0.asciiValue! } + [0x00, 0x2a]
-    }
-    
-    // https://en.wikipedia.org/wiki/WebP
-    private func webpSignature() -> [UInt8] {
-        return "RIFF".map { $0.asciiValue! }
-    }
-    
-    // https://en.wikipedia.org/wiki/ICO_(file_format)
-    private func win_icoSignature() -> [UInt8] {
-        return [0x00, 0x00, 0x01, 0x00]
-    }
-    private func win_curSignature() -> [UInt8] {
-        return [0x00, 0x00, 0x02, 0x00]
     }
 }
