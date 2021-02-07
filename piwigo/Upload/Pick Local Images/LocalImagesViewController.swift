@@ -872,6 +872,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 }
 
                 // Caching fetched images already in upload queue
+                if i*step >= min((i+1)*step,uploadsInQueue.count) { break }
                 for index in i*step..<min((i+1)*step,uploadsInQueue.count) {
                     // Get image identifier
                     if index < uploadsInQueue.count, let imageId = uploadsInQueue[index]?.0 {
