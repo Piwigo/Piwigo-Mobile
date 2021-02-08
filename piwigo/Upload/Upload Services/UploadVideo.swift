@@ -20,6 +20,17 @@ extension UploadManager {
         // Retrieve video data
         let originalVideo = AVAsset.init(url: originalFileURL)
 
+        // Check if the user wants to:
+        /// - reduce the frame size
+        /// - remove the private metadata
+        if uploadProperties.resizeImageOnUpload ||
+            (uploadProperties.stripGPSdataOnUpload && originalVideo.metadata.containsPrivateMetadata()) {
+            // Check that the video can be exported
+            self.checkVideoExportability(of: originalVideo,
+                                         for: uploadID, with: uploadProperties)
+            return
+        }
+        
         // Get MIME type
         guard let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, originalFileURL.pathExtension as NSString, nil)?.takeRetainedValue() else {
             let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
@@ -34,39 +45,18 @@ extension UploadManager {
         var newUploadProperties = uploadProperties
         newUploadProperties.mimeType = mimeType as String
 
-        // Upload original video if metadata matches user's choice
-        if !uploadProperties.stripGPSdataOnUpload ||
-            (uploadProperties.stripGPSdataOnUpload && !originalVideo.metadata.containsPrivateMetadata()) {
-
-            // Determine MD5 checksum
-            let error: NSError?
-            (newUploadProperties.md5Sum, error) = originalFileURL.MD5checksum()
-            print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUploadProperties.md5Sum))")
-            if error != nil {
-                // Could not determine the MD5 checksum
-                self.didPrepareVideo(for: uploadID, with: newUploadProperties, error)
-                return
-            }
-
-            // Upload video with tags and properties
-            self.didPrepareVideo(for: uploadID, with: newUploadProperties, nil)
+        // Determine MD5 checksum
+        let error: NSError?
+        (newUploadProperties.md5Sum, error) = originalFileURL.MD5checksum()
+        print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUploadProperties.md5Sum))")
+        if error != nil {
+            // Could not determine the MD5 checksum
+            self.didPrepareVideo(for: uploadID, with: newUploadProperties, error)
+            return
         }
-        else {
-            // We cannot remove the private metadata if the video cannot be exported
-            if !originalVideo.isExportable {
-                let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("shareMetadataError_message", comment: "Cannot strip private metadata")])
-                self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
-                return
-            }
-            else {
-                // Determine optimal export options (highest quality for device by default)
-                let exportPreset = self.getExportPreset(for: originalVideo)
 
-                // Remove private metadata by exporting a new video in MP4 format
-                self.export(videoAsset: originalVideo, with: exportPreset,
-                            for: uploadID, with: newUploadProperties)
-            }
-        }
+        // Upload video with tags and properties
+        self.didPrepareVideo(for: uploadID, with: newUploadProperties, nil)
     }
 
     // Case of a video from the Pasteboard which is in a format not accepted by the Piwigo server
@@ -76,20 +66,9 @@ extension UploadManager {
         // Retrieve video data
         let originalVideo = AVAsset.init(url: originalFileURL)
 
-        // We cannot convert the video if it is not exportable
-        if !originalVideo.isExportable {
-            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : String(format: NSLocalizedString("videoUploadError_format", comment: "Sorry, video files with extension .%@ are not accepted by the Piwigo server."), originalFileURL.pathExtension)])
-            self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
-            return
-        }
-        else {
-            // Determine optimal export options (highest quality for device by default)
-            let exportPreset = self.getExportPreset(for: originalVideo)
-
-            // Export new video in MP4 format w/ or w/o private metadata
-            self.export(videoAsset: originalVideo, with: exportPreset,
-                        for: uploadID, with: uploadProperties)
-        }
+        // Check that the video can be exported
+        self.checkVideoExportability(of: originalVideo,
+                                     for: uploadID, with: uploadProperties)
     }
 
     
@@ -114,6 +93,17 @@ extension UploadManager {
                 return
             }
             
+            // Check if the user wants to:
+            /// - reduce the frame size
+            /// - remove the private metadata
+            if uploadProperties.resizeImageOnUpload ||
+                (uploadProperties.stripGPSdataOnUpload && originalVideo.metadata.containsPrivateMetadata()) {
+                // Check that the video can be exported
+                self.checkVideoExportability(of: originalVideo,
+                                             for: uploadID, with: uploadProperties)
+                return
+            }
+            
             // Get original fileURL
             guard let originalFileURL = (originalVideo as? AVURLAsset)?.url else {
                 let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
@@ -135,57 +125,36 @@ extension UploadManager {
             var newUploadProperties = uploadProperties
             newUploadProperties.mimeType = mimeType as String
 
-            // Upload original video if metadata matches user's choice
-            if !uploadProperties.stripGPSdataOnUpload ||
-                (uploadProperties.stripGPSdataOnUpload && !originalVideo.metadata.containsPrivateMetadata()) {
+            // Prepare URL of temporary file
+            let fileName = uploadProperties.localIdentifier.replacingOccurrences(of: "/", with: "-")
+            let fileURL = self.applicationUploadsDirectory.appendingPathComponent(fileName)
 
-                // Prepare URL of temporary file
-                let fileName = uploadProperties.localIdentifier.replacingOccurrences(of: "/", with: "-")
-                let fileURL = self.applicationUploadsDirectory.appendingPathComponent(fileName)
-
-                // Deletes temporary video file if it already exists
-                do {
-                    try FileManager.default.removeItem(at: fileURL)
-                } catch {
-                }
-
-                // Determine MD5 checksum
-                let error: NSError?
-                (newUploadProperties.md5Sum, error) = originalFileURL.MD5checksum()
-                print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUploadProperties.md5Sum))")
-                if error != nil {
-                    // Could not determine the MD5 checksum
-                    self.didPrepareVideo(for: uploadID, with: newUploadProperties, error)
-                    return
-                }
-
-                // Copy video file into Piwigo/Uploads directory
-                do {
-                    try FileManager.default.copyItem(at: originalFileURL, to: fileURL)
-                    // Upload video with tags and properties
-                    self.didPrepareVideo(for: uploadID, with: newUploadProperties, nil)
-                    return
-                }
-                catch let error as NSError {
-                    // Could not copy the video file
-                    self.didPrepareVideo(for: uploadID, with: newUploadProperties, error)
-                }
+            // Deletes temporary video file if it already exists
+            do {
+                try FileManager.default.removeItem(at: fileURL)
+            } catch {
             }
-            else {
-                // We cannot remove the private metadata if the video cannot be exported
-                if !originalVideo.isExportable {
-                    let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("shareMetadataError_message", comment: "Cannot strip private metadata")])
-                    self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
-                    return
-                }
-                else {
-                    // Determine optimal export options (highest quality for device by default)
-                    let exportPreset = self.getExportPreset(for: originalVideo)
 
-                    // Remove private metadata by exporting a new video in MP4 format
-                    self.export(videoAsset: originalVideo, with: exportPreset,
-                                for: uploadID, with: uploadProperties)
-                }
+            // Determine MD5 checksum
+            let error: NSError?
+            (newUploadProperties.md5Sum, error) = originalFileURL.MD5checksum()
+            print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUploadProperties.md5Sum))")
+            if error != nil {
+                // Could not determine the MD5 checksum
+                self.didPrepareVideo(for: uploadID, with: newUploadProperties, error)
+                return
+            }
+
+            // Copy video file into Piwigo/Uploads directory
+            do {
+                try FileManager.default.copyItem(at: originalFileURL, to: fileURL)
+                // Upload video with tags and properties
+                self.didPrepareVideo(for: uploadID, with: newUploadProperties, nil)
+                return
+            }
+            catch let error as NSError {
+                // Could not copy the video file
+                self.didPrepareVideo(for: uploadID, with: newUploadProperties, error)
             }
         }
     }
@@ -210,20 +179,9 @@ extension UploadManager {
                 return
             }
             
-            // We cannot convert the video if it is not exportable
-            if !originalVideo.isExportable {
-                let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("shareMetadataError_message", comment: "Cannot strip private metadata")])
-                self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
-                return
-            }
-            else {
-                // Determine optimal export options (highest quality for device by default)
-                let exportPreset = self.getExportPreset(for: originalVideo)
-
-                // Export new video in MP4 format w/ or w/o private metadata
-                self.export(videoAsset: originalVideo, with: exportPreset,
-                            for: uploadID, with: uploadProperties)
-            }
+            // Check that the video can be exported
+            self.checkVideoExportability(of: originalVideo,
+                                         for: uploadID, with: uploadProperties)
         }
     }
     
@@ -377,8 +335,27 @@ extension UploadManager {
                              
     
     // MARK: - Export Video
+    /// - Determine video size and reduce it if requested
+    private func checkVideoExportability(of originalVideo: AVAsset,
+                                         for uploadID: NSManagedObjectID, with uploadProperties: UploadProperties) {
+        // We cannot convert the video if it is not exportable
+        if !originalVideo.isExportable {
+            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("shareMetadataError_message", comment: "Cannot strip private metadata")])
+            self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
+            return
+        }
+        else {
+            // Determine optimal export options (highest quality for device by default)
+            let exportPreset = self.getExportPreset(for: originalVideo, and: uploadProperties)
+
+            // Export new video in MP4 format w/ or w/o private metadata
+            self.export(videoAsset: originalVideo, with: exportPreset,
+                        for: uploadID, with: uploadProperties)
+        }
+    }
     
-    private func getExportPreset(for videoAsset: AVAsset) -> String {
+    private func getExportPreset(for videoAsset: AVAsset,
+                                 and uploadProperties: UploadProperties) -> String {
         // Determine available export options (highest quality for device by default)
         let presets = AVAssetExportSession.exportPresets(compatibleWith: videoAsset)
 
@@ -389,8 +366,14 @@ extension UploadManager {
         
         // Determine video size
         let videoSize = videoAsset.tracks(withMediaType: .video).first?.naturalSize ?? CGSize.init(width: 640, height: 480)
-        let maxPixels = max(videoSize.width, videoSize.height)
+        var maxPixels = max(videoSize.width, videoSize.height)
                                                 
+        // Resize frames
+        if uploadProperties.resizeImageOnUpload {
+            let dimension = CGFloat(uploadProperties.photoResize) / 100.0
+            maxPixels *= dimension
+        }
+
         // The 'presets' array never contains AVAssetExportPresetPassthrough,
         if (maxPixels <= 640) && presets.contains(AVAssetExportPreset640x480) {
             // Encode in 640x480 pixels — metadata will be lost
@@ -431,7 +414,7 @@ extension UploadManager {
         if uploadProperties.stripGPSdataOnUpload {
             exportSession.metadataItemFilter = AVMetadataItemFilter.forSharing()
         } else {
-            exportSession.metadataItemFilter = nil
+            exportSession.metadata = videoAsset.metadata
         }
 
 //        let commonMetadata = videoAsset.commonMetadata
