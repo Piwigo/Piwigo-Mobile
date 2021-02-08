@@ -18,7 +18,16 @@ class ShareUtilities {
     // URL request of image to download
     class func getUrlRequest(forImage image: PiwigoImageData,
                              withMaxSize wantedSize: Int) -> URLRequest? {
-
+        // If this is a video, always select the full resolution file, i.e. the video.
+        if image.isVideo {
+            // NOP if no image can be downloaded
+            if image.fullResPath.isEmpty { return nil }
+            if let url = URL(string: image.fullResPath) {
+                return URLRequest(url: url)
+            }
+            return nil
+        }
+        
         // Download image of optimum size (depends on Piwigo server settings)
         /// - Check available image sizes from the smallest to the highest resolution
         /// - Note: image.width and .height are always > 1
@@ -26,156 +35,156 @@ class ShareUtilities {
         var selectedSize = Int.zero
 
         // Square Size (should always be available)
-        if let squarePath = image.squarePath, !squarePath.isEmpty {
+        if !image.squarePath.isEmpty {
             // Max dimension of this image
             let size = max(image.squareWidth, image.squareHeight)
             // Ensure that at least an URL will be returned
             if selectedURLRequest.isEmpty {
-                selectedURLRequest = squarePath
+                selectedURLRequest = image.squarePath
                 selectedSize = size
             }
         }
 
         // Thumbnail Size (should always be available)
-        if let thumbPath = image.thumbPath, !thumbPath.isEmpty {
+        if !image.thumbPath.isEmpty {
             // Max dimension of this image
             let size = max(image.thumbWidth, image.thumbHeight)
             // Ensure that at least an URL will be returned
             if selectedURLRequest.isEmpty {
-                selectedURLRequest = thumbPath
+                selectedURLRequest = image.thumbPath
                 selectedSize = size
             }
             // Is this resolution more appropriate?
             if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
-                selectedURLRequest = thumbPath
+                selectedURLRequest = image.thumbPath
                 selectedSize = size
             }
         }
 
         // XX Small Size
-        if let xxSmallPath = image.xxSmallPath, !xxSmallPath.isEmpty {
+        if !image.xxSmallPath.isEmpty {
             // Max dimension of this image
             let size = max(image.xxSmallWidth, image.xxSmallHeight)
             // Ensure that at least an URL will be returned
             if selectedURLRequest.isEmpty {
-                selectedURLRequest = xxSmallPath
+                selectedURLRequest = image.xxSmallPath
                 selectedSize = size
             }
             // Is this resolution more appropriate?
             if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
-                selectedURLRequest = xxSmallPath
+                selectedURLRequest = image.xxSmallPath
                 selectedSize = size
             }
         }
 
         // X Small Size
-        if let xSmallPath = image.xSmallPath, !xSmallPath.isEmpty {
+        if !image.xSmallPath.isEmpty {
             // Max dimension of this image
             let size = max(image.xSmallWidth, image.xSmallHeight)
             // Ensure that at least an URL will be returned
             if selectedURLRequest.isEmpty {
-                selectedURLRequest = xSmallPath
+                selectedURLRequest = image.xSmallPath
                 selectedSize = size
             }
             // Is this resolution more appropriate?
             if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
-                selectedURLRequest = xSmallPath
+                selectedURLRequest = image.xSmallPath
                 selectedSize = size
             }
         }
 
         // Small Size
-        if let smallPath = image.smallPath, !smallPath.isEmpty {
+        if !image.smallPath.isEmpty {
             // Max dimension of this image
             let size = max(image.smallWidth, image.smallHeight)
             // Ensure that at least an URL will be returned
             if selectedURLRequest.isEmpty {
-                selectedURLRequest = smallPath
+                selectedURLRequest = image.smallPath
                 selectedSize = size
             }
             // Is this resolution more appropriate?
             if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
-                selectedURLRequest = smallPath
+                selectedURLRequest = image.smallPath
                 selectedSize = size
             }
         }
 
         // Medium Size (should always be available)
-        if let mediumPath = image.mediumPath, !mediumPath.isEmpty {
+        if !image.mediumPath.isEmpty {
             // Max dimension of this image
             let size = max(image.mediumWidth, image.mediumHeight)
             // Ensure that at least an URL will be returned
             if selectedURLRequest.isEmpty {
-                selectedURLRequest = mediumPath
+                selectedURLRequest = image.mediumPath
                 selectedSize = size
             }
             // Is this resolution more appropriate?
             if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
-                selectedURLRequest = mediumPath
+                selectedURLRequest = image.mediumPath
                 selectedSize = size
             }
         }
 
         // Large Size
-        if let largePath = image.largePath, !largePath.isEmpty {
+        if !image.largePath.isEmpty {
             // Max dimension of this image
             let size = max(image.largeWidth, image.largeHeight)
             // Ensure that at least an URL will be returned
             if selectedURLRequest.isEmpty {
-                selectedURLRequest = largePath
+                selectedURLRequest = image.largePath
                 selectedSize = size
             }
             // Is this resolution more appropriate?
             if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
-                selectedURLRequest = largePath
+                selectedURLRequest = image.largePath
                 selectedSize = size
             }
         }
 
         // X Large Size
-        if let xLargePath = image.xLargePath, !xLargePath.isEmpty {
+        if !image.xLargePath.isEmpty {
             // Max dimension of this image
             let size = max(image.xLargeWidth, image.xLargeHeight)
             // Ensure that at least an URL will be returned
             if selectedURLRequest.isEmpty {
-                selectedURLRequest = xLargePath
+                selectedURLRequest = image.xLargePath
                 selectedSize = size
             }
             // Is this resolution more appropriate?
             if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
-                selectedURLRequest = xLargePath
+                selectedURLRequest = image.xLargePath
                 selectedSize = size
             }
         }
 
         // XX Large Size
-        if let xxLargePath = image.xxLargePath, !xxLargePath.isEmpty {
+        if !image.xxLargePath.isEmpty {
             // Max dimension of this image
             let size = max(image.xxLargeWidth, image.xxLargeHeight)
             // Ensure that at least an URL will be returned
             if selectedURLRequest.isEmpty {
-                selectedURLRequest = xxLargePath
+                selectedURLRequest = image.xxLargePath
                 selectedSize = size
             }
             // Is this resolution more appropriate?
             if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
-                selectedURLRequest = xxLargePath
+                selectedURLRequest = image.xxLargePath
                 selectedSize = size
             }
         }
 
         // Full Resolution
-        if let fullResPath = image.fullResPath, !fullResPath.isEmpty {
+        if !image.fullResPath.isEmpty {
             // Max dimension of this image
             let size = max(image.fullResWidth, image.fullResHeight)
             // Ensure that at least an URL will be returned
             if selectedURLRequest.isEmpty {
-                selectedURLRequest = fullResPath
+                selectedURLRequest = image.fullResPath
                 selectedSize = size
             }
             // Is this resolution more appropriate?
             if size < wantedSize, abs(wantedSize - size) < abs(wantedSize - selectedSize) {
-                selectedURLRequest = fullResPath
+                selectedURLRequest = image.fullResPath
                 selectedSize = size
             }
         }
