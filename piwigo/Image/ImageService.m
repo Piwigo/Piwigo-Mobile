@@ -230,7 +230,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                        @"recursive"             : @"true",
                        @"per_page"              : @(imagesPerPage),
                        @"page"                  : @(page),
-                       @"order"                 : @"hit desc, id desc",
+                       @"order"                 : order,     // Percent-encoded should not be used here!
                        @"f_min_hit"             : @"1"
                      };
     } else if (categoryId == kPiwigoBestCategoryId) {
@@ -238,7 +238,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                        @"recursive"             : @"true",
                        @"per_page"              : @(imagesPerPage),
                        @"page"                  : @(page),
-                       @"order"                 : @"rating_score desc, id desc",
+                       @"order"                 : order,     // Percent-encoded should not be used here!
                        @"f_min_rate"            : @"1"
                        };
     } else if (categoryId == kPiwigoRecentCategoryId) {
@@ -250,7 +250,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                        @"recursive"             : @"true",
                        @"per_page"              : @(imagesPerPage),
                        @"page"                  : @(page),
-                       @"order"                 : @"date_available desc",
+                       @"order"                 : order,     // Percent-encoded should not be used here!
                        @"f_min_date_available"  : dateAvailableString
                        };
     } else {

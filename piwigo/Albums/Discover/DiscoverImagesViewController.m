@@ -70,9 +70,17 @@
         self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:0];
         
         self.albumData = [[AlbumData alloc] initWithCategoryId:categoryId andQuery:@""];
-        self.currentSortCategory = [Model sharedInstance].defaultSort;
         self.displayImageTitles = [Model sharedInstance].displayImageTitles;
-        
+        if (categoryId == kPiwigoVisitsCategoryId) {
+            self.currentSortCategory = kPiwigoSortVisitsDescending;
+        } else if (categoryId == kPiwigoBestCategoryId) {
+            self.currentSortCategory = kPiwigoSortRatingScoreDescending;
+        } else if (categoryId == kPiwigoRecentCategoryId) {
+            self.currentSortCategory = kPiwigoSortDatePostedDescending;
+        } else {
+            self.currentSortCategory = [Model sharedInstance].defaultSort;
+        }
+
         // Initialise selection mode
         self.isSelect = NO;
         self.touchedImageIds = [NSMutableArray new];

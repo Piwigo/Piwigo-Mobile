@@ -93,7 +93,7 @@
 			return;
 		}
         // We have all the image data, just manually sort it (uploaded images are appended to cache)
-        self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList for:[Model sharedInstance].defaultSort];
+        self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList for:self.sortType];
 		if(completion)
 		{
 			completion();
@@ -193,7 +193,7 @@
 //    NSLog(@"updateImageSort: catId=%ld, downloaded:%ld, total:%ld", (long)self.categoryId, (long)downloadedImageDataCount, (long)totalImageCount);
 	if (downloadedImageDataCount >= totalImageCount)
 	{	// We have all the image data, just manually sort it (uploaded images are appended to cache)
-        self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList for:[Model sharedInstance].defaultSort];
+        self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList for:imageSort];
 		if(completion)
 		{
 //            NSLog(@"updateImageSort: we have all image data i.e. %ld", (long)self.images.count);
