@@ -384,7 +384,6 @@ extension UploadManager {
             request.addValue(uploadProperties.md5Sum!, forHTTPHeaderField: "md5sum")
 
             // As soon as tasks are created, the timeout counter starts
-            request.httpShouldHandleCookies = false
             let uploadSession: URLSession = UploadSessionDelegate.shared.uploadSession
             let task = uploadSession.uploadTask(with: request, fromFile: fileURL)
             task.taskDescription = uploadID.uriRepresentation().absoluteString
