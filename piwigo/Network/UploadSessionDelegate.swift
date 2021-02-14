@@ -43,7 +43,10 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
         /// Do not return a response from the cache
         config.urlCache = nil
         config.requestCachePolicy = .reloadIgnoringLocalCacheData
-        config.httpShouldSetCookies = false         // So that the session is not updated
+        
+        /// Do not send upload requests with cookie so that each upload session remains ephemeral.
+        /// The user session, if it exists, remains untouched and kept alive until it expires.
+        config.httpShouldSetCookies = false
         config.httpCookieAcceptPolicy = .never
         
         /// Allows a seamless handover from Wi-Fi to cellular
@@ -168,7 +171,31 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
 //        } else {
 //            print("    > Upload task \(task.taskIdentifier) of chunk \(chunk)/\(chunks) finished transferring data at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
 //        }
-        
+
+        // The below code updates the stored cookie with the pwg_id returned by the server.
+        // This allows to check that the upload session was well closed by the server.
+        // For example by requesting image properties or an image deletion.
+//        print("\(task.response.debugDescription)")
+//        if let requestURL = task.originalRequest?.url,
+//           let cookies = HTTPCookieStorage.shared.cookies(for: requestURL), cookies.count > 0,
+//           var properties = cookies[0].properties {
+//            let oldPwgID = cookies[0].value
+//            print("oldPwgID => \(oldPwgID)")
+//
+//            if let response = task.response as? HTTPURLResponse,
+//               let setCookie = response.allHeaderFields["Set-Cookie"] as? String {
+//                let strPart2 = setCookie.components(separatedBy: "pwg_id=")
+//                if strPart2.count > 1 {
+//                    let newPwgID = strPart2[1].components(separatedBy: " ")[0].drop(while: {$0 == ";"})
+//                    properties.updateValue(newPwgID, forKey: .value)
+//                    if let cookie = HTTPCookie.init(properties: properties) {
+//                        print("newPwgID => \(newPwgID)")
+//                        HTTPCookieStorage.shared.setCookie(cookie)
+//                    }
+//                }
+//            }
+//        }
+
         // Handle the response with the Upload Manager
         if UploadManager.shared.isExecutingBackgroundUploadTask {
             UploadManager.shared.didCompleteUploadTask(task, withError: error)
