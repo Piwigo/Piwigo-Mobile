@@ -20,15 +20,22 @@ extension UIImage {
         let aspectRatio =  size.width/size.height
 
         switch contentMode {
-            case .scaleAspectFit:
-                if aspectRatio > 1 {                            // Landscape image
-                    width = dimension
-                    height = dimension / aspectRatio
-                } else {                                        // Portrait image
-                    height = dimension
-                    width = dimension * aspectRatio
-                }
-
+        case .scaleAspectFit:
+            if aspectRatio > 1 {                            // Landscape image
+                width = dimension
+                height = dimension / aspectRatio
+            } else {                                        // Portrait image
+                height = dimension
+                width = dimension * aspectRatio
+            }
+        case .scaleAspectFill:
+            if aspectRatio > 1 {                            // Landscape image
+                width = dimension * aspectRatio
+                height = dimension
+            } else {                                        // Portrait image
+                width = dimension
+                height = dimension / aspectRatio
+            }
         default:
             fatalError("UIIMage.resizeToFit(): FATAL: Unimplemented ContentMode")
         }
@@ -52,7 +59,6 @@ extension UIImage {
     }
     
     func fixOrientation() -> UIImage {
-
         // No-op if the orientation is already correct
         if self.imageOrientation == .up {
             return self
@@ -112,5 +118,26 @@ extension UIImage {
             img = UIImage(cgImage: cgimg)
         }
         return img!
+    }
+    
+    func crop(to viewWidth: CGFloat, viewHeight: CGFloat) -> UIImage?
+    {
+        let imageViewScale = max(self.size.width / viewWidth,
+                                 self.size.height / viewHeight)
+
+        // Handle images larger than shown-on-screen size
+        let cropZone = CGRect(x:0.0, y:0.0,
+                              width: self.size.width * imageViewScale,
+                              height: self.size.height * imageViewScale)
+
+        // Perform cropping in Core Graphics
+        guard let cutImageRef: CGImage = self.cgImage?.cropping(to:cropZone)
+        else {
+            return nil
+        }
+
+        // Return image to UIImage
+        let croppedImage: UIImage = UIImage(cgImage: cutImageRef)
+        return croppedImage
     }
 }
