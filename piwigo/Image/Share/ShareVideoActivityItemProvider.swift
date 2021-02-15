@@ -65,7 +65,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         thumb.setImageWith(thumbnailRL, placeholderImage: UIImage(named: "AppIconShare"))
         if let thumbnailImage = thumb.image {
             imageFileURL = thumbnailRL
-            let resizedImage = thumbnailImage.resize(to: CGFloat.init(70.0), opaque: true)
+            let resizedImage = thumbnailImage.resize(to: CGFloat(70.0), opaque: true)
             super.init(placeholderItem: resizedImage)
         } else {
             imageFileURL = URL.init(string: "")!

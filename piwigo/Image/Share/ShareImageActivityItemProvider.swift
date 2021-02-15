@@ -66,7 +66,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         thumb.setImageWith(thumbnailRL, placeholderImage: UIImage(named: "AppIconShare"))
         if let thumbnailImage = thumb.image {
             imageFileURL = thumbnailRL
-            let resizedImage = thumbnailImage.resize(to: CGFloat.init(70.0), opaque: true)
+            let resizedImage = thumbnailImage.resize(to: CGFloat(70.0), opaque: true)
             imageFileData = resizedImage.jpegData(compressionQuality: 1.0) ?? Data()
             super.init(placeholderItem: thumbnailImage)
         } else {
