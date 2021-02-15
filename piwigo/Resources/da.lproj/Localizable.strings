@@ -179,7 +179,7 @@
 "categoryUpload_syncedFaces" = "iPhoto Faces";
 "categoryUpload_mediaTypes" = "Medie Typer";
 "categoryUpload_otherAlbums" = "Andre Albummer";
-"categoryUpload_pasteboard" = "Clipboard";
+"categoryUpload_pasteboard" = "Udklipsholder";
 
 "categoyUpload_loadSubCategories" = "indlæs";
 "categoryUpload_images" = "Upload billeder";
@@ -552,8 +552,8 @@
 "shareActivityCode_Other" = "Del med andre programmer";
 "shareActivityCode_Other>375px" = "Del billeder med andre apps";
 
-"shareFailError_title" = "Share Fail";
-"shareMetadataError_message" = "Cannot strip private metadata";
+"shareFailError_title" = "Del Mislykkedes";
+"shareMetadataError_message" = "Kan ikke strippe private metadata";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library

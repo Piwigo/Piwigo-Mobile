@@ -43,7 +43,7 @@
 "internetCancelledConnection_button" = "Verbinding afgebroken";
 "internetCancelledConnection_title" = "Verbindingen afgebroken";
 
-"PiwigoServer_wrongJSONobject" = "Kan JSON object van Piwigo server niet verteren.";
+"PiwigoServer_wrongJSONobject" = "Kan JSON object van Piwigo server niet verwerken.";
 "PiwigoServer_invalidJSONobject" = "De Piwigo-server heeft geen geldig JSON-object teruggegeven.";
 
 // ===========================================================================
@@ -54,13 +54,13 @@
 "CoreDataFetch_DigestError" = "Kon de opgehaalde gegevens niet verwerken.";
 
 // Tag objects
-"CoreDataFetch_TagError" = "Haal tags fout!";
-"CoreDataFetch_TagMissingData" = "Een tag gevonden en zal verwijderd worden zonder geldige code of naam.";
+"CoreDataFetch_TagError" = "Fout bij het ophalen van tags!";
+"CoreDataFetch_TagMissingData" = "Een tag zonder geldige code of naam gevonden welke verwijderd zal worden.";
 "CoreDataFetch_TagCreateFailed" = "Aanmaken van nieuw label-object is mislukt.";
 
 // Upload objects
 "CoreDataFetch_UploadCreateFailed" = "Het maken van een nieuw upload-object is mislukt.";
-"CoreDataFetch_UploadMissingAsset" = "Fout bij ophalen foto.";
+"CoreDataFetch_UploadMissingAsset" = "Fout bij het ophalen van de foto.";
 
 // ===========================================================================
 // ==> LOGIN / LOGOUT
@@ -176,10 +176,10 @@
 "categoryUpload_chooseiCloudAlbum" = "Selecteer een  iCloud album om er foto's van op te halen";
 "categoryUpload_syncedEvents" = "iPhoto gebeurtenissen";
 "categoryUpload_syncedAlbums" = "iPhoto albums";
-"categoryUpload_syncedFaces" = "iPhoto vlakken";
-"categoryUpload_mediaTypes" = "Media typen";
+"categoryUpload_syncedFaces" = "iPhoto gezichten";
+"categoryUpload_mediaTypes" = "Typen media";
 "categoryUpload_otherAlbums" = "Andere albums";
-"categoryUpload_pasteboard" = "Clipboard";
+"categoryUpload_pasteboard" = "Klembord";
 
 "categoyUpload_loadSubCategories" = "laden";
 "categoryUpload_images" = "Foto's uploaden";
@@ -247,7 +247,7 @@
 "moveCategory" = "Album verplaatsen";
 "moveCategory_selectParent" = "Selecteer een album om het verplaatsen \"%@\" naar";
 "moveCategory_selectRecent" = "Selecteer een recent album om het album \"%@\" naar te verplaatsen";
-"moveCategory_selectRecentOther" = "Of selecteer een ander album om het%@naar te verplaatsen";
+"moveCategory_selectRecentOther" = "Of selecteer een ander album om het album \"%@\" naar te verplaatsen";
 "moveCategory_message" = "Weet je zeker dat je \"%@\" wilt verplaatsen naar album \"%@\"?";
 "moveCategoryHUD_moving" = "Bezig album te verplaatsen…";
 
@@ -306,15 +306,15 @@
 
 // Image details
 "imageDetailsView_title" = "Eigenschappen";
-"editImageDetails_title" = "Titel:";
-"editImageDetails_titlePlaceholder" = "Titel";
-"editImageDetails_author" = "Fotograaf:";
-"editImageDetails_tags" = "Labels:";
+"editImageDetails_title" = "Titel";
+"editImageDetails_titlePlaceholder" = "Foto titel";
+"editImageDetails_author" = "Auteur";
+"editImageDetails_tags" = "Labels";
 "editImageDetails_privacyLevel" = "Wie mag deze foto zien?";
 "editImageDetails_description" = "Omschrijving";
 "editImageDetails_comments" = "Opmerkingen";
 "editImageDetails_dateCreation" = "Aanmaakdatum";
-"editImageDetails_dateUnset" = "Verwijderen";
+"editImageDetails_dateUnset" = "Uitzetten";
 "editImageDetails_dateToday" = "Vandaag";
 "editImageDetails_dateMonthInc" = "+1 Maand";
 "editImageDetails_dateMonthDec" = "-1 Maand";
@@ -552,8 +552,8 @@
 "shareActivityCode_Other" = "Deel met andere apps";
 "shareActivityCode_Other>375px" = "Deel foto's met andere apps";
 
-"shareFailError_title" = "Share Fail";
-"shareMetadataError_message" = "Cannot strip private metadata";
+"shareFailError_title" = "Delen mislukt";
+"shareMetadataError_message" = "Kan metadata niet verwijderen";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library

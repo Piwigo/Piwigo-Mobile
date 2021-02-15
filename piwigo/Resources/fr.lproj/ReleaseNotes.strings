@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.6.0_text" = "Version 2.6\n\n• Paste/upload photos and videos from clipboard\n• Fixes a compatibility issue with Piwigo 11\n• Minor bug fixes and improvements of the interface";
+"v2.6.0_text" = "Version 2.6\n\n• Coller/télécharger des photos et des vidéos depuis le presse-papiers\n• Corrige un problème de compatibilité avec Piwigo 11\n• Corrections de bugs mineurs et améliorations de l'interface";
 
 "v2.5.4_text" = "Version 2.5.4\n\n• Corrige des bugs mineurs et améliore l'interface";
 
