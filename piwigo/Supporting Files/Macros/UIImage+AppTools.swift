@@ -10,7 +10,7 @@ import Foundation
 
 extension UIImage {
     
-    func resize(to dimension: CGFloat, opaque: Bool,
+    func resize(to dimension: CGFloat, opaque: Bool, scale: CGFloat = UIScreen.main.scale,
                 contentMode: UIView.ContentMode = .scaleAspectFit) -> UIImage {
         var width: CGFloat
         var height: CGFloat
@@ -43,9 +43,9 @@ extension UIImage {
         if #available(iOS 10.0, *) {
             let renderFormat = UIGraphicsImageRendererFormat.default()
             renderFormat.opaque = opaque
+            renderFormat.scale = scale
             let renderer = UIGraphicsImageRenderer(size: CGSize(width: width, height: height), format: renderFormat)
-            newImage = renderer.image {
-                (context) in
+            newImage = renderer.image { (context) in
                 self.draw(in: CGRect(x: 0, y: 0, width: width, height: height))
             }
         } else {
