@@ -131,8 +131,7 @@ class PasteboardImageCollectionViewCell: UICollectionViewCell {
         }
         
         // Image: retrieve data of right size and crop image
-        let retinaScale = Int(UIScreen.main.scale)
-        self.cellImage.image = cropImage(image, viewWidth: thumbnailSize * CGFloat(retinaScale), viewHeight: thumbnailSize * CGFloat(retinaScale))
+        self.cellImage.image = image.crop(width: 1.0, height: 1.0)?.resize(to: thumbnailSize, opaque: true)
         if identifier.contains("mov") {
             self.playImage?.isHidden = false
         }
@@ -147,26 +146,5 @@ class PasteboardImageCollectionViewCell: UICollectionViewCell {
         playImage.isHidden = true
         cellSelected = false
         setProgress(0, withAnimation: false)
-    }
-
-    func cropImage(_ inputImage: UIImage, viewWidth: CGFloat, viewHeight: CGFloat) -> UIImage?
-    {
-        let imageViewScale = max(inputImage.size.width / viewWidth,
-                                 inputImage.size.height / viewHeight)
-
-        // Handle images larger than shown-on-screen size
-        let cropZone = CGRect(x:0.0, y:0.0,
-                              width:inputImage.size.width * imageViewScale,
-                              height:inputImage.size.height * imageViewScale)
-
-        // Perform cropping in Core Graphics
-        guard let cutImageRef: CGImage = inputImage.cgImage?.cropping(to:cropZone)
-        else {
-            return nil
-        }
-
-        // Return image to UIImage
-        let croppedImage: UIImage = UIImage(cgImage: cutImageRef)
-        return croppedImage
     }
 }
