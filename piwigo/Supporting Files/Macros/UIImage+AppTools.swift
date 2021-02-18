@@ -120,20 +120,22 @@ extension UIImage {
         return img!
     }
     
-    func crop(to viewWidth: CGFloat, viewHeight: CGFloat) -> UIImage?
+    func crop(width: CGFloat, height: CGFloat) -> UIImage?
     {
-        let imageViewScale = max(self.size.width / viewWidth,
-                                 self.size.height / viewHeight)
+        // Call crop(1.0,1.0) for obtaining a square image
+        let imageScale = min(self.size.width / width,
+                             self.size.height / height)
 
         // Handle images larger than shown-on-screen size
-        let cropZone = CGRect(x:0.0, y:0.0,
-                              width: self.size.width * imageViewScale,
-                              height: self.size.height * imageViewScale)
+        let cropZone = CGRect(x:self.size.width/2.0 - (width / 2.0) * imageScale,
+                              y:self.size.height/2.0 - (height / 2.0) * imageScale,
+                              width: width * imageScale,
+                              height: height * imageScale)
 
         // Perform cropping in Core Graphics
-        guard let cutImageRef: CGImage = self.cgImage?.cropping(to:cropZone)
-        else {
-            return nil
+        guard let cutImageRef: CGImage = self.cgImage?.cropping(to:cropZone) else {
+            // Return original image if failed
+            return self
         }
 
         // Return image to UIImage
