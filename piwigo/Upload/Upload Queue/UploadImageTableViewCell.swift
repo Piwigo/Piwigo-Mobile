@@ -193,6 +193,9 @@ class UploadImageTableViewCell: MGSwipeTableCell {
 
             // Retrieve UIImage from imageData
             image = UIImage(data: fullResImageData) ?? UIImage(named: "placeholder")!
+
+            // Fix orientation if needed
+            image = image.fixOrientation()
         }
         else if fileURL.lastPathComponent.contains("mov") {
             // Case of a movie

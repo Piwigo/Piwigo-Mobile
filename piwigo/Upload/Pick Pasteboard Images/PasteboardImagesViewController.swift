@@ -877,6 +877,9 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                 do {
                     try fullResImageData = NSData (contentsOf: fileURL) as Data
                     image = UIImage(data: fullResImageData) ?? UIImage(named: "placeholder")
+
+                    // Fix orientation if needed
+                    image = image.fixOrientation()
                 }
                 catch {
                     // Could not find the file!
