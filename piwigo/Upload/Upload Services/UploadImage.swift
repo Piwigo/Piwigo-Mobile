@@ -42,15 +42,16 @@ extension UploadManager {
         }
         
         // Retrieve UIImage from imageData
-        guard var resizedImage = UIImage(data: fullResImageData) else {
+        guard let originalImage = UIImage(data: fullResImageData) else {
             let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
             self.didPrepareImage(for: uploadID, with: uploadProperties, error)
             return
         }
 
         // Resize image
-        let dimension: CGFloat = CGFloat(uploadProperties.photoResize) / 100.0
-        resizedImage = resizedImage.resize(to: dimension, opaque: false)
+        let originalSize = max(originalImage.size.width, originalImage.size.height)
+        let dimension: CGFloat = CGFloat(uploadProperties.photoResize) / 100.0 * originalSize
+        let resizedImage = originalImage.resize(to: dimension, opaque: false, scale: 1.0)
 
         // Export resized image
         self.exportResizedImage(for: uploadProperties,
