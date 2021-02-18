@@ -584,7 +584,18 @@ class UploadManager: NSObject, URLSessionDelegate {
             }
         }
         else {
+            // Unknown type
+            uploadProperties.requestState = .formatError
+
+            // Update UI
+            updateCell(with: uploadProperties.localIdentifier, stateLabel: uploadProperties.stateLabel,
+                       photoResize: nil, progress: nil, errorMsg: kPiwigoUploadState.formatError.stateInfo)
             
+            // Update upload request
+            uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+                // Investigate next upload request?
+                self.didEndPreparation()
+            }
         }
     }
     
