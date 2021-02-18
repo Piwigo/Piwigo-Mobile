@@ -284,7 +284,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
                 return UploadImageTableViewCell()
             }
             let upload = self.managedObjectContext.object(with: objectID) as! Upload
-            cell.configure(with: upload, width: Int(tableView.bounds.size.width))
+            cell.configure(with: upload, availableWidth: Int(tableView.bounds.size.width))
             return cell
         }
         return dataSource

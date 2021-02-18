@@ -359,7 +359,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
             return UploadImageTableViewCell()
         }
         let upload = uploadsProvider.fetchedNonCompletedResultsController.object(at: indexPath)
-        cell.configure(with: upload, width: Int(tableView.bounds.size.width))
+        cell.configure(with: upload, availableWidth: Int(tableView.bounds.size.width))
         return cell
     }
     
