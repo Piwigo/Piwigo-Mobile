@@ -464,9 +464,9 @@ class UploadManager: NSObject, URLSessionDelegate {
                         options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
         }
         catch {
-            print("\(debugFormatter.string(from: Date())) > could not perform a shallow search of the Uploads directory: \(error)")
+            files = []
         }
-        guard let fileURL = files.filter({$0.absoluteString.contains(uploadProperties.localIdentifier)}).first else {
+        guard files.count > 0, let fileURL = files.filter({$0.absoluteString.contains(uploadProperties.localIdentifier)}).first else {
             // File not available… deleted?
             uploadsProvider.updateStatusOfUpload(with: uploadID, to: .preparingFail, error: UploadError.missingAsset.errorDescription) { [unowned self] (_) in
 
