@@ -869,16 +869,22 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                 .appendingPathComponent(pbIdentifiers[indexPath.item])
                 .appendingPathExtension(pbFileExtensions[indexPath.item])
             
-            // Photo or video?
+            // Photo, video,…?
             if identifier.contains("img") {
+                // Case of a photo
+                // Retrieve image data from file stored in the Uploads directory
+                var fullResImageData: Data = Data()
                 do {
-                    try image = UIImage(data:(NSData (contentsOf: fileURL) as Data))
+                    try fullResImageData = NSData (contentsOf: fileURL) as Data
+                    image = UIImage(data: fullResImageData) ?? UIImage(named: "placeholder")
                 }
                 catch {
+                    // Could not find the file!
                     image = UIImage(named: "placeholder")!
                 }
             }
-            else {
+            else if identifier.contains("mov") {
+                // Case of a movie
                 let asset = AVURLAsset(url: fileURL, options: nil)
                 let imageGenerator = AVAssetImageGenerator(asset: asset)
                 imageGenerator.appliesPreferredTrackTransform = true
@@ -887,6 +893,9 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                 } catch {
                     image = UIImage(named: "placeholder")!
                 }
+            } else {
+                // Unknown type
+                image = UIImage(named: "placeholder")!
             }
         } else {
             // Did not complete preparation of images => get pasteboard content
