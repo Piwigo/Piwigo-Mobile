@@ -40,20 +40,25 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
 
     @IBOutlet weak var localImagesCollection: UICollectionView!
     @IBOutlet weak var collectionFlowLayout: UICollectionViewFlowLayout!
+    
+    private let imagePlaceholder = UIImage(named: "placeholder")!
         
     // Collection of images in the pasteboard
     private var pbIndexSet = IndexSet()             // IndexSet of objects in pasteboard
     private var pbTypes = [[String]]()              // Types of objects in pasteboard
     private var pbIdentifiers = [String]()          // Identifiers (see below)
-    private var pbFileExtensions = [String]()       // Extension of filenames
 
+    // Cached data
     private let queue = OperationQueue()                                    // Queue used to cache things
     private var uploadsInQueue = [(String?,kPiwigoUploadState?)?]()         // Array of uploads in queue at start
     private var indexedUploadsInQueue = [(String?,kPiwigoUploadState?)?]()  // Arrays of uploads at indices of corresponding image
+    
+    // Selection data
     private var selectedImages = [UploadProperties?]()                      // Array of images to upload
     private var sectionState: SelectButtonState = .none                     // To remember the state of the section
     private var imagesBeingTouched = [IndexPath]()                          // Array of indexPaths of touched images
     
+    // Buttons
     private var cancelBarButton: UIBarButtonItem!       // For cancelling the selection of images
     private var uploadBarButton: UIBarButtonItem!       // for uploading selected images
     private var legendLabel = UILabel.init()            // Legend presented in the toolbar on iPhone/iOS 14+
@@ -116,7 +121,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         uploadBarButton.isEnabled = false
         uploadBarButton.accessibilityIdentifier = "Upload"
         
-        // Configure menus, segmented control, etc.
+        // Configure toolbar
         if #available(iOS 14, *) {
             // Initialise buttons, toolbar and segmented control
             if UIDevice.current.userInterfaceIdiom == .phone {
@@ -319,7 +324,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
     }
 
     
-    // MARK: - Check pasteboard content
+    // MARK: - Check Pasteboard Content
     /// Called by the notification center when the pasteboard content is updated
     @objc func checkPasteboard() {
         // Do nothing if the clipboard was emptied
@@ -351,36 +356,93 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         pbTypes = types             // e.g. [["public.jpeg", "public.png"], ["public.jpeg"], ...]
         pbIdentifiers = [String]()
         for idx in indexSet {
-            if UIPasteboard.general.contains(pasteboardTypes: ["public.image"], inItemSet: IndexSet.init(integer: idx)) {
-                pbIdentifiers.append(String(format: "Clipboard-%@-img-%ld", pbDateTime, idx))
-            } else {
+            // Movies first because movies may contain images
+            if UIPasteboard.general.contains(pasteboardTypes: ["public.movie"], inItemSet: IndexSet(integer: idx)) {
                 pbIdentifiers.append(String(format: "Clipboard-%@-mov-%ld", pbDateTime, idx))
+            } else {
+                pbIdentifiers.append(String(format: "Clipboard-%@-img-%ld", pbDateTime, idx))
             }
         }
     }
 
     
-    // MARK: - Prepare Image files and cache of upload requests
+    // MARK: - Prepare Image Files and Cache of Upload Requests
     private func prepareImagesAndIndexUploads() -> Void {
-
-        // Store pasteboard images in one loop i.e. O(n)
-        let prepareOperation = BlockOperation.init(block: {
-            // (Re-)initialise file extensions
-            self.pbFileExtensions = .init(repeating: "", count: self.pbIndexSet.count)
-
-            // Retrieve objects from pasteboard
-            self.preparePasteboardImages()
-        })
-
-        // Caching upload request indices
+        var operations = [BlockOperation]()
+        
+        // Will cache upload request indices once all objects are prepared
         let cacheOperation = BlockOperation.init(block: {
             self.cachingUploadIndicesIteratingPasteBoardImages()
         })
 
+        // Store pasteboard objects in one loop i.e. O(n)
+        for index in pbIndexSet {
+            let prepareObjectOperation = BlockOperation.init(block: {
+                // Continue with this operation?
+                if self.queue.operations.first!.isCancelled {
+                    print("Stop preparePasteboardObject(at index:\(index))")
+                    return
+                }
+
+                // Movies first because movies may contain images
+                if self.pbTypes[index].contains("public.movie") {
+                    // Get movie data and file extension
+                    guard let (movieData, fileExt) = self.getDataOfPasteboardImage(at: index) else {
+                        return
+                    }
+                    
+                    // Store movie data
+                    self.storePasteboardObject(at: index, data: movieData, fileExt: fileExt) { fileURL in
+                        guard let fileURL = fileURL else {
+                            // Could not store pasteboard movie
+                            return
+                        }
+                        
+                        // Update the corresponding cell
+                        DispatchQueue.main.async {
+                            let indexPathOfCelltoUpdate = IndexPath(item: index, section: 0)
+                            if let cell = self.localImagesCollection.cellForItem(at: indexPathOfCelltoUpdate) as? PasteboardImageCollectionViewCell {
+                                let thumbnailSize = ImagesCollection.imageSize(for: self.localImagesCollection, imagesPerRowInPortrait: Model.sharedInstance().thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup)
+                                cell.cellImage.image = AVURLAsset(url: fileURL)
+                                    .extractedImage()
+                                    .crop(width: 1.0, height: 1.0)?.resize(to: CGFloat(thumbnailSize), opaque: true)
+                            }
+                        }
+                    }
+                } else {
+                    // Get movie data and file extension
+                    guard let (imageData, fileExt) = self.getDataOfPasteboardImage(at: index) else {
+                        return
+                    }
+
+                    // Store movie data
+                    self.storePasteboardObject(at: index, data: imageData, fileExt: fileExt) { fileURL in
+                        guard let _ = fileURL else {
+                            // Could not store pasteboard movie
+                            return
+                        }
+                        
+                        // Update the corresponding cell
+                        DispatchQueue.main.async {
+                            let indexPathOfCelltoUpdate = IndexPath(item: index, section: 0)
+                            if let cell = self.localImagesCollection.cellForItem(at: indexPathOfCelltoUpdate) as? PasteboardImageCollectionViewCell {
+                                let thumbnailSize = ImagesCollection.imageSize(for: self.localImagesCollection, imagesPerRowInPortrait: Model.sharedInstance().thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup)
+                                cell.cellImage.image = (UIImage(data: imageData) ?? self.imagePlaceholder)
+                                    .crop(width: 1.0, height: 1.0)?.resize(to: CGFloat(thumbnailSize), opaque: true)
+                            }
+                        }
+                    }
+                }
+            })
+            operations.append(prepareObjectOperation)
+            cacheOperation.addDependency(prepareObjectOperation)
+        }
+        operations.append(cacheOperation)
+
         // Perform both operations in background and in parallel
-        queue.maxConcurrentOperationCount = 1   // Make it a serial queue with 1
+        queue.maxConcurrentOperationCount = .max   // Make it a serial queue for debugging with 1
         queue.qualityOfService = .userInteractive
-        queue.addOperations([prepareOperation, cacheOperation], waitUntilFinished: true)
+        queue.addOperations(operations, waitUntilFinished: true)
 
         // Reload image collection
         DispatchQueue.main.async {
@@ -397,65 +459,42 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         }
     }
 
-    private func preparePasteboardImages() -> (Void) {
-        // For debugging purposes
-        let start = CFAbsoluteTimeGetCurrent()
-
-        // Check if this operation was cancelled every 1000 iterations
-        let step = 1_000    // Check if this operation was cancelled every 1000 iterations
-        let iterations = pbIndexSet.count / step
-        for i in 0...iterations {
-            // Continue with this operation?
-            if queue.operations.first!.isCancelled {
-                print("Stop second operation in iteration \(i) ;-)")
-                return
-            }
-
-            // Get types of all objects in pasteboard
-            let firstIndex = pbIndexSet.first! + i*step
-            let lastIndex = min(pbIndexSet.first! + (i+1)*step, pbIndexSet.count)
-            for index in firstIndex..<lastIndex {
-                // IndexSet of current image
-                let indexSet = IndexSet.init(integer: index)
-
-                // Get image data and file extension
-                guard let (imageData, fileExt) = getDataOfPasteboardImage(at: indexSet) else {
-                    // Forget that image… to be coded
-                    pbFileExtensions[index] = "unknown"
-                    continue
-                }
-
-                // Store file extension
-                pbFileExtensions[index] = fileExt
-                
-                // Set file URL
-                let fileURL = UploadManager.shared.applicationUploadsDirectory
-                    .appendingPathComponent(pbIdentifiers[index]).appendingPathExtension(fileExt)
-
-                // Delete file if it already exists (incomplete previous attempt?)
-                do {
-                    try FileManager.default.removeItem(at: fileURL)
-                } catch {
-                }
-
-                // Store pasteboard image/video data into Piwigo/Uploads directory
-                do {
-                    print("==>> Write imageData to \(fileURL)")
-                    try imageData.write(to: fileURL)
-                }
-                catch let error as NSError {
-                    // Disk full? —> to be managed…
-                    print("could not save image file: \(error)")
-                }
-            }
+    /// https://developer.apple.com/documentation/uniformtypeidentifiers/uttype/system_declared_types
+    private func getDataOfPasteboardMovie(at index:Int) -> (movieData: Data, fileExt: String)? {
+        // IndexSet of current image
+        let indexSet = IndexSet.init(integer: index)
+        // Movie type?
+        if pbTypes[indexSet.first!].contains("com.apple.quicktime-movie"),
+               let imageData = UIPasteboard.general.data(forPasteboardType: "com.apple.quicktime-movie", inItemSet: indexSet)?.first {
+            return (imageData, "mov")
         }
-        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
-        print("   stored \(pbIndexSet.count) images on disk in \(diff) ms")
+        else if pbTypes[indexSet.first!].contains("public.mpeg"),
+               let imageData = UIPasteboard.general.data(forPasteboardType: "public.mpeg", inItemSet: indexSet)?.first {
+            return (imageData, "mpeg")
+        }
+        else if pbTypes[indexSet.first!].contains("public.mpeg-2-video"),
+               let imageData = UIPasteboard.general.data(forPasteboardType: "public.mpeg-2-video", inItemSet: indexSet)?.first {
+            return (imageData, "mpeg2")
+        }
+        else if pbTypes[indexSet.first!].contains("public.mpeg-4"),
+               let imageData = UIPasteboard.general.data(forPasteboardType: "public.mpeg-4", inItemSet: indexSet)?.first {
+            return (imageData, "mp4")
+        }
+        else if pbTypes[indexSet.first!].contains("public.avi"),
+               let imageData = UIPasteboard.general.data(forPasteboardType: "public.avi", inItemSet: indexSet)?.first {
+            return (imageData, "avi")
+        }
+        else {
+            // Unknown movie format
+            return nil
+        }
     }
     
-    /// https://developer.apple.com/documentation/uniformtypeidentifiers/uttype/system_declared_types
-    private func getDataOfPasteboardImage(at indexSet:IndexSet) -> (imageData: Data, fileExt: String)? {
-        // Images
+    private func getDataOfPasteboardImage(at index:Int) -> (imageData: Data, fileExt: String)? {
+        // IndexSet of current image
+        let indexSet = IndexSet.init(integer: index)
+
+        // Image type?
         // PNG format in priority in case where JPEG is also available
         if pbTypes[indexSet.first!].contains("public.png"),
            let imageData = UIPasteboard.general.data(forPasteboardType: "public.png", inItemSet: indexSet)?.first {
@@ -497,31 +536,43 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                let imageData = UIPasteboard.general.data(forPasteboardType: "com.microsoft.ico", inItemSet: indexSet)?.first {
             return (imageData, "ico")
         }
-        // Movies
-        else if pbTypes[indexSet.first!].contains("com.apple.quicktime-movie"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "com.apple.quicktime-movie", inItemSet: indexSet)?.first {
-            return (imageData, "mov")
-        }
-        else if pbTypes[indexSet.first!].contains("public.mpeg"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "public.mpeg", inItemSet: indexSet)?.first {
-            return (imageData, "mpeg")
-        }
-        else if pbTypes[indexSet.first!].contains("public.mpeg-2-video"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "public.mpeg-2-video", inItemSet: indexSet)?.first {
-            return (imageData, "mpeg2")
-        }
-        else if pbTypes[indexSet.first!].contains("public.mpeg-4"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "public.mpeg-4", inItemSet: indexSet)?.first {
-            return (imageData, "mp4")
-        }
-        else if pbTypes[indexSet.first!].contains("public.avi"),
-               let imageData = UIPasteboard.general.data(forPasteboardType: "public.avi", inItemSet: indexSet)?.first {
-            return (imageData, "avi")
-        }
         else {
-            // Unknown image/video format
+            // Unknown image format
             return nil
         }
+    }
+
+    private func storePasteboardObject(at index: Int, data: Data, fileExt: String,
+                                       onCompletion: @escaping (URL?) -> Void) -> Void {
+        // For debugging purposes
+        let start = CFAbsoluteTimeGetCurrent()
+
+        // Set file URL
+        let fileURL = UploadManager.shared.applicationUploadsDirectory
+            .appendingPathComponent(pbIdentifiers[index])
+            .appendingPathExtension(fileExt)
+        pbIdentifiers[index].append(".\(fileExt)")
+
+        // Delete file if it already exists (incomplete previous attempt?)
+        do {
+            try FileManager.default.removeItem(at: fileURL)
+        } catch {
+        }
+
+        // Store pasteboard image/video data into Piwigo/Uploads directory
+        do {
+            print("==>> Write data to \(fileURL)")
+            try data.write(to: fileURL)
+            onCompletion(fileURL)
+        }
+        catch let error as NSError {
+            // Disk full?
+            print("could not save image file: \(error)")
+            onCompletion(nil)
+        }
+        
+        let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+        print("   did try to write clipboard object at index \(index) on disk in \(diff) ms")
     }
     
     private func cachingUploadIndicesIteratingPasteBoardImages() -> (Void) {
@@ -531,23 +582,18 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         // Initialise cached indexed uploads
         indexedUploadsInQueue = .init(repeating: nil, count: pbIndexSet.count)
 
-        // Check if this operation was cancelled every 1000 iterations
-        let step = 1_000    // Check if this operation was cancelled every 1000 iterations
-        let iterations = pbIndexSet.count / step
-        for i in 0...iterations {
+        // Every iteration, check if this operation was cancelled
+        for index in pbIndexSet.first!...pbIndexSet.last! {
             // Continue with this operation?
             if queue.operations.first!.isCancelled {
-                indexedUploadsInQueue = []
-                print("Stop second operation in iteration \(i) ;-)")
+                print("Stop preparePasteboardObjects() at index \(index) ;-)")
                 return
             }
 
-            for index in i*step..<min((i+1)*step,pbIndexSet.count) {
-                // Get image identifier
-                let imageId = pbIdentifiers[i]
-                if let upload = uploadsInQueue.first(where: { $0?.0 == imageId }) {
-                    indexedUploadsInQueue[index] = upload
-                }
+            // Get image identifier
+            let imageId = pbIdentifiers[index]
+            if let upload = uploadsInQueue.first(where: { $0?.0 == imageId }) {
+                indexedUploadsInQueue[index] = upload
             }
         }
         let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
@@ -862,58 +908,36 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         // Configure cell with image in pasteboard or stored in Uploads directory
         // (the content of the pasteboard may not last forever)
         let identifier = pbIdentifiers[indexPath.item]
-        var image: UIImage!
-        if queue.operationCount == 0 {
-            // Did complete preparation of images => get content of file to upload
-            let fileURL = UploadManager.shared.applicationUploadsDirectory
-                .appendingPathComponent(pbIdentifiers[indexPath.item])
-                .appendingPathExtension(pbFileExtensions[indexPath.item])
-            
-            // Photo, video,…?
-            if identifier.contains("img") {
-                // Case of a photo
-                // Retrieve image data from file stored in the Uploads directory
-                var fullResImageData: Data = Data()
-                do {
-                    try fullResImageData = NSData (contentsOf: fileURL) as Data
-                    image = UIImage(data: fullResImageData) ?? UIImage(named: "placeholder")
 
-                    // Fix orientation if needed
-                    image = image.fixOrientation()
-                }
-                catch {
-                    // Could not find the file!
-                    image = UIImage(named: "placeholder")!
-                }
+        // Get content of file to upload if available
+        var image: UIImage! = imagePlaceholder
+        let fileURL = UploadManager.shared.applicationUploadsDirectory
+            .appendingPathComponent(pbIdentifiers[indexPath.item])
+        
+        // Photo, video,…?
+        if identifier.contains("img") {
+            // Case of a photo
+            var fullResImageData: Data = Data()
+            do {
+                try fullResImageData = NSData (contentsOf: fileURL) as Data
+                image = UIImage(data: fullResImageData) ?? imagePlaceholder
+
+                // Fix orientation if needed
+                image = image.fixOrientation()
             }
-            else if identifier.contains("mov") {
-                // Case of a movie
-                let asset = AVURLAsset(url: fileURL, options: nil)
-                let imageGenerator = AVAssetImageGenerator(asset: asset)
-                imageGenerator.appliesPreferredTrackTransform = true
-                do {
-                    image = UIImage(cgImage: try imageGenerator.copyCGImage(at: CMTimeMake(value: 0, timescale: 1), actualTime: nil))
-                } catch {
-                    image = UIImage(named: "placeholder")!
-                }
-            } else {
-                // Unknown type
-                image = UIImage(named: "placeholder")!
-            }
-        } else {
-            // Did not complete preparation of images => get pasteboard content
-            let indexSet = IndexSet.init(integer: indexPath.item)
-            if let imageData: Data = UIPasteboard.general.data(forPasteboardType: "public.image", inItemSet: indexSet)?.first {
-                image = UIImage.init(data: imageData) ?? UIImage(named: "placeholder")!
-            }
-            else {
-                // The thumbnail of the video will later be extracted from the stored file
-                image = UIImage(named: "placeholder")!
+            catch {
+                // Could not find the file!
+                image = imagePlaceholder
             }
         }
-        if image == nil { image = UIImage(named: "placeholder")! }
-        cell.configure(with: image, identifier: identifier,
-                       thumbnailSize: CGFloat(ImagesCollection.imageSize(for: collectionView, imagesPerRowInPortrait: Model.sharedInstance().thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup)))
+        else if identifier.contains("mov") {
+            // Case of a movie
+            image = AVURLAsset(url: fileURL, options: nil).extractedImage()
+        }
+
+        // Configure cell
+        let thumbnailSize = ImagesCollection.imageSize(for: self.localImagesCollection, imagesPerRowInPortrait: Model.sharedInstance().thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup)
+        cell.configure(with: image, identifier: identifier, thumbnailSize: CGFloat(thumbnailSize))
         
         // Add pan gesture recognition
         let imageSeriesRocognizer = UIPanGestureRecognizer(target: self, action: #selector(touchedImages(_:)))
@@ -1244,5 +1268,20 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate {
                 }
             }
         }
+    }
+}
+
+
+extension AVURLAsset {
+    func extractedImage() -> UIImage! {
+        var image: UIImage! = UIImage(named: "placeholder")!
+        let imageGenerator = AVAssetImageGenerator(asset: self)
+        imageGenerator.appliesPreferredTrackTransform = true
+        do {
+            image = UIImage(cgImage: try imageGenerator.copyCGImage(at: CMTimeMake(value: 0, timescale: 1), actualTime: nil))
+        } catch {
+            // Could not extract frame
+        }
+        return image
     }
 }

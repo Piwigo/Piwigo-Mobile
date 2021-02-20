@@ -152,27 +152,8 @@ class UploadImageTableViewCell: MGSwipeTableCell {
     /// Case of an image from the pasteboard
     private func prepareThumbnailFromFile(for upload:Upload, availableWidth:Int) {
         // Get file URL from identifier
-        var files = [URL]()
-        let applicationUploadsDirectory = UploadManager.shared.applicationUploadsDirectory
-        do {
-            // Get complete filename by searching in the Uploads directory
-            files = try FileManager.default.contentsOfDirectory(at: applicationUploadsDirectory,
-                        includingPropertiesForKeys: nil,
-                        options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
-        }
-        catch let error as NSError {
-            print(error.localizedDescription)
-            files = []
-        }
-        guard files.count > 0, let fileURL = files.filter({$0.absoluteString.contains(upload.localIdentifier)}).first else {
-            // File not available… deleted?
-            let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-            cellImage.image = UIImage(named: "placeholder")
-            imageInfoLabel.text = errorDescription(for: upload)
-            uploadingProgress?.setProgress(0.0, animated: false)
-            playImage.isHidden = true
-            return
-        }
+        let fileURL = UploadManager.shared.applicationUploadsDirectory
+            .appendingPathComponent(upload.localIdentifier)
         
         // Task depends on file type
         var image: UIImage!
