@@ -24,6 +24,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
 
 
     // MARK: - Variables
+    private let imagePlaceholder = UIImage(named: "placeholder")!
     private var _localIdentifier = ""
     @objc var localIdentifier: String {
         get {
@@ -139,7 +140,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
     }
     
     override func prepareForReuse() {
-        cellImage.image = UIImage(named: "placeholder")
+        cellImage.image = imagePlaceholder
         playImage.isHidden = true
         uploadInfoLabel.text = ""
         uploadingProgress?.setProgress(0, animated: false)
@@ -192,7 +193,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
             }
 
             // Retrieve UIImage from imageData
-            image = UIImage(data: fullResImageData) ?? UIImage(named: "placeholder")!
+            image = UIImage(data: fullResImageData) ?? imagePlaceholder
 
             // Fix orientation if needed
             image = image.fixOrientation()
@@ -205,12 +206,12 @@ class UploadImageTableViewCell: MGSwipeTableCell {
             do {
                 image = UIImage(cgImage: try imageGenerator.copyCGImage(at: CMTimeMake(value: 0, timescale: 1), actualTime: nil))
             } catch {
-                image = UIImage(named: "placeholder")!
+                image = imagePlaceholder
             }
         }
         else {
             // Unknown type
-            image = UIImage(named: "placeholder")!
+            image = imagePlaceholder
         }
 
         // Scale/crop image
@@ -226,7 +227,9 @@ class UploadImageTableViewCell: MGSwipeTableCell {
             }
         } else {
             // Display image information
-            imageInfoLabel.text = getImageInfo(from: cellImage.image ?? UIImage(named: "placeholder")!, for: availableWidth - 2*Int(indentationWidth), scale: upload.photoResize)
+            imageInfoLabel.text = getImageInfo(from: image ?? imagePlaceholder,
+                                               for: availableWidth - 2*Int(indentationWidth),
+                                               scale: upload.photoResize)
         }
     }
 
@@ -234,7 +237,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
     private func prepareThumbnailFromAsset(for upload:Upload, availableWidth:Int) {
         // Get corresponding image asset
         guard let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [upload.localIdentifier], options: nil).firstObject else {
-            cellImage.image = UIImage(named: "placeholder")
+            cellImage.image = imagePlaceholder
             imageInfoLabel.text = errorDescription(for: upload)
             uploadingProgress?.setProgress(0.0, animated: false)
             playImage.isHidden = true
@@ -272,7 +275,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
                     if let description = error?.localizedDescription {
                         print("=> Error : \(description)")
                     }
-                    self.cellImage.image = UIImage(named: "placeholder")
+                    self.cellImage.image = self.imagePlaceholder
                 } else {
                     self.cellImage.image = result
                 }
