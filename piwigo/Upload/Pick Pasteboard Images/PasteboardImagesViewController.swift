@@ -427,8 +427,9 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                             let indexPathOfCelltoUpdate = IndexPath(item: index, section: 0)
                             if let cell = self.localImagesCollection.cellForItem(at: indexPathOfCelltoUpdate) as? PasteboardImageCollectionViewCell {
                                 let thumbnailSize = ImagesCollection.imageSize(for: self.localImagesCollection, imagesPerRowInPortrait: Model.sharedInstance().thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup)
-                                cell.cellImage.image = (UIImage(data: imageData) ?? self.imagePlaceholder)
-                                    .crop(width: 1.0, height: 1.0)?.resize(to: CGFloat(thumbnailSize), opaque: true)
+                                // Fix orientation if needed
+                                let image = (UIImage(data: imageData) ?? self.imagePlaceholder).fixOrientation()
+                                cell.cellImage.image = image.crop(width: 1.0, height: 1.0)?.resize(to: CGFloat(thumbnailSize), opaque: true)
                             }
                         }
                     }
