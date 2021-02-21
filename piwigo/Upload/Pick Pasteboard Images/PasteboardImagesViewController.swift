@@ -202,7 +202,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress), name: name, object: nil)
         
         // Register app entering foreground for updating the pasteboard
-        name = NSNotification.Name(UIApplication.willEnterForegroundNotification.rawValue)
+        name = NSNotification.Name(UIApplication.didBecomeActiveNotification.rawValue)
         NotificationCenter.default.addObserver(self, selector: #selector(checkPasteboard), name: name, object: nil)
 
         // Prevent device from sleeping if uploads are in progress
