@@ -62,8 +62,9 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         NotificationCenter.default.addObserver(self, selector: #selector(checkPasteboard), name: name, object: nil)
 
         // Are there images in the pasteboard?
-        hasImagesInPasteboard = UIPasteboard.general
-            .contains(pasteboardTypes: ["public.image", "public.movie"]) ? true : false
+        let testTypes = UIPasteboard.general.contains(pasteboardTypes: ["public.image", "public.movie"]) ? true : false
+        let nberPhotos = UIPasteboard.general.itemSet(withPasteboardTypes: ["public.image", "public.movie"])?.count ?? 0
+        hasImagesInPasteboard = testTypes && (nberPhotos > 0)
 
         // Use the LocalAlbumsProvider to fetch albums data.
         LocalAlbumsProvider.sharedInstance().fetchedLocalAlbumsDelegate = self
@@ -139,8 +140,9 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
 
     @objc func checkPasteboard() {
         // Are there images in the pasteboard?
-        hasImagesInPasteboard = UIPasteboard.general
-            .contains(pasteboardTypes: ["public.image", "public.movie"]) ? true : false
+        let testTypes = UIPasteboard.general.contains(pasteboardTypes: ["public.image", "public.movie"]) ? true : false
+        let nberPhotos = UIPasteboard.general.itemSet(withPasteboardTypes: ["public.image", "public.movie"])?.count ?? 0
+        hasImagesInPasteboard = testTypes && (nberPhotos > 0)
 
         // Reload tableView
         localAlbumsTableView.reloadData()
