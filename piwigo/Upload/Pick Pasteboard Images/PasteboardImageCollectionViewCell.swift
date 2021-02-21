@@ -131,7 +131,7 @@ class PasteboardImageCollectionViewCell: UICollectionViewCell {
         }
         
         // Image: retrieve data of right size and crop image
-        self.cellImage.image = image.crop(width: 1.0, height: 1.0)?.resize(to: thumbnailSize, opaque: true)
+        self.cellImage.image = image
         if identifier.contains("mov") {
             self.playImage?.isHidden = false
         }
