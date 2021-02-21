@@ -9,6 +9,10 @@
 import Photos
 import UIKit
 
+let kClipboardPrefix = "Clipboard-"
+let kClipboardImageSuffix = "-img-"
+let kClipboardMovieSuffix = "-mov-"
+
 @objc
 class PasteboardImagesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIScrollViewDelegate, PasteboardImagesHeaderDelegate, UploadSwitchDelegate {
     
@@ -105,9 +109,9 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                 var identifier = ""
                 // Movies first because movies may contain images
                 if UIPasteboard.general.contains(pasteboardTypes: ["public.movie"], inItemSet: indexSet) {
-                    identifier = String(format: "Clipboard-%@-mov-%ld", pbDateTime, idx)
+                    identifier = String(format: "%@%@%@%ld", kClipboardPrefix, pbDateTime, kClipboardMovieSuffix, idx)
                 } else {
-                    identifier = String(format: "Clipboard-%@-img-%ld", pbDateTime, idx)
+                    identifier = String(format: "%@%@%@%ld", kClipboardPrefix, pbDateTime, kClipboardImageSuffix, idx)
                 }
                 let newObject = PasteboardObject(identifier: identifier, types: types[idx])
                 pbObjects.append(newObject)
@@ -371,9 +375,9 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                 var identifier = ""
                 // Movies first because objects may contain both movies and images
                 if UIPasteboard.general.contains(pasteboardTypes: ["public.movie"], inItemSet: indexSet) {
-                    identifier = String(format: "Clipboard-%@-mov-%ld", pbDateTime, idx)
+                    identifier = String(format: "%@%@%@%ld", kClipboardPrefix, pbDateTime, kClipboardMovieSuffix, idx)
                 } else {
-                    identifier = String(format: "Clipboard-%@-img-%ld", pbDateTime, idx)
+                    identifier = String(format: "%@%@%@%ld", kClipboardPrefix, pbDateTime, kClipboardImageSuffix, idx)
                 }
                 let newObject = PasteboardObject(identifier: identifier, types: types[idx])
                 pbObjects.append(newObject)

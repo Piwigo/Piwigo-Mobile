@@ -442,7 +442,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         // => Photo Library: use PHAsset local identifier
         // => UIPasteborad: use identifier of type "Clipboard-yyyyMMdd-HHmmssSSSS-typ-#"
         //    where "typ" is "img" (photo) or "mov" (video).
-        if uploadProperties.localIdentifier.contains("Clipboard-") {
+        if uploadProperties.localIdentifier.contains(kClipboardPrefix) {
             // Case of an image retrieved from the pasteboard
             prepareImageInPasteboard(for: uploadID, with: uploadProperties)
         } else {
@@ -494,9 +494,13 @@ class UploadManager: NSObject, URLSessionDelegate {
         if fileName.contains("img") {
             uploadProperties.isVideo = false
 
-            // Set filename after removing "SSSS-img-#" suffix
-            if let range = fileName.range(of: "-img") {
-                uploadProperties.fileName = String(fileName[..<range.lowerBound].dropLast(4))
+            // Set filename by
+            /// - removing the "Clipboard-" prefix i.e. kClipboardPrefix
+            /// - removing the "SSSS-img-#" suffix i.e. "SSSS%@-#" where %@ is kClipboardImageSuffix
+            /// - adding the file extension
+            if let prefixRange = fileName.range(of: kClipboardPrefix),
+               let suffixRange = fileName.range(of: kClipboardImageSuffix) {
+                uploadProperties.fileName = String(fileName[prefixRange.upperBound..<suffixRange.lowerBound].dropLast(4)) + ".\(fileExt)"
             }
 
             // Chek that the image format is accepted by the Piwigo server
@@ -510,6 +514,7 @@ class UploadManager: NSObject, URLSessionDelegate {
                 }
                 return
             }
+            
             // Try to convert image if JPEG format is accepted by Piwigo server
             if uploadProperties.serverFileTypes.contains("jpg"), acceptedImageFormats.contains(fileExt) {
                 // Try conversion to JPEG
@@ -523,6 +528,7 @@ class UploadManager: NSObject, URLSessionDelegate {
                 }
                 return
             }
+            
             // Image file format cannot be accepted by the Piwigo server
             uploadProperties.requestState = .formatError
 
@@ -539,9 +545,13 @@ class UploadManager: NSObject, URLSessionDelegate {
         else if fileName.contains("mov") {
             uploadProperties.isVideo = true
 
-            // Set filename after removing "SSSS-mov-#" suffix
-            if let range = fileName.range(of: "-mov") {
-                uploadProperties.fileName = String(fileName[..<range.lowerBound].dropLast(4))
+            // Set filename by
+            /// - removing the "Clipboard-" prefix i.e. kClipboardPrefix
+            /// - removing the "SSSS-mov-#" suffix i.e. "SSSS%@-#" where %@ is kClipboardMovieSuffix
+            /// - adding the file extension
+            if let prefixRange = fileName.range(of: kClipboardPrefix),
+               let suffixRange = fileName.range(of: kClipboardMovieSuffix) {
+                uploadProperties.fileName = String(fileName[prefixRange.upperBound..<suffixRange.lowerBound].dropLast(4)) + ".\(fileExt)"
             }
 
             // Chek that the video format is accepted by the Piwigo server
@@ -557,6 +567,7 @@ class UploadManager: NSObject, URLSessionDelegate {
                 }
                 return
             }
+            
             // Convert video if MP4 format is accepted by Piwigo server
             if uploadProperties.serverFileTypes.contains("mp4"), acceptedMovieFormats.contains(fileExt) {
                 // Try conversion to MP4
@@ -570,6 +581,7 @@ class UploadManager: NSObject, URLSessionDelegate {
                 }
                 return
             }
+            
             // Video file format cannot be accepted by the Piwigo server
             uploadProperties.requestState = .formatError
 
