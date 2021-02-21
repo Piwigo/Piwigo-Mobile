@@ -81,7 +81,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         // so that we can at least show images in upload queue at start
         // and prevent their selection
         if let uploads = uploadsProvider.fetchedResultsController.fetchedObjects {
-            uploadsInQueue = uploads.map {($0.localIdentifier, $0.state)}
+            uploadsInQueue = uploads.map {($0.md5Sum, $0.state)}
         }
                                                                                         
         // Retrieve pasteboard object indexes and types, then create identifiers
@@ -417,7 +417,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
             self.pendingOperations.preparationsInProgress.removeValue(forKey: indexPath)
 
             // Update upload cache
-            if let upload = self.uploadsInQueue.first(where: { $0?.0 == pbObject.identifier }) {
+            if let upload = self.uploadsInQueue.first(where: { $0?.0 == pbObject.md5Sum }) {
                 self.indexedUploadsInQueue[indexPath.row] = upload
             }
 
@@ -611,7 +611,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                     // Can we select this image?
                     if indexedUploadsInQueue.count < indexPath.item + 1 {
                         // Use non-indexed data (might be quite slow)
-                        if let _ = uploadsInQueue.firstIndex(where: { $0?.0 == cell.localIdentifier }) { return }
+                        if let _ = uploadsInQueue.firstIndex(where: { $0?.0 == cell.md5sum }) { return }
                     } else {
                         // Indexed uploads available
                         if indexedUploadsInQueue[indexPath.item] != nil { return }
@@ -786,9 +786,12 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         var image: UIImage! = imagePlaceholder
         if [.stored, .ready].contains(pbObjects[indexPath.row].state) {
             image = pbObjects[indexPath.row].image
-        } else if let data = UIPasteboard.general.data(forPasteboardType: "public.image",
+            cell.md5sum = pbObjects[indexPath.row].md5Sum
+        }
+        else if let data = UIPasteboard.general.data(forPasteboardType: "public.image",
                                                        inItemSet: IndexSet.init(integer: indexPath.row))?.first {
             image = UIImage.init(data: data) ?? imagePlaceholder
+            cell.md5sum = ""
         }
 
         // Configure cell
@@ -822,7 +825,8 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
             }
         } else {
             // Use non-indexed data
-            if let upload = uploadsInQueue.first(where: { $0?.0 == identifier }) {
+            let md5Sum = pbObjects[indexPath.item].md5Sum
+            if let upload = uploadsInQueue.first(where: { $0?.0 == md5Sum }) {
                 switch upload?.1 {
                 case .waiting, .preparing, .preparingError, .preparingFail, .prepared, .formatError:
                     cell.cellWaiting = true

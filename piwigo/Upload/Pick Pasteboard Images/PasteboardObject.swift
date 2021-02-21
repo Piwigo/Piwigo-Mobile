@@ -16,11 +16,13 @@ enum PasteboardObjectState {
 
 class PasteboardObject {
     let types: [String]
+    var md5Sum: String
     var identifier: String
     var state = PasteboardObjectState.new
     var image: UIImage! = UIImage(named: "placeholder")!
     
     init(identifier: String, types: [String]) {
+        self.md5Sum = ""
         self.identifier = identifier
         self.types = types
     }
@@ -59,21 +61,29 @@ class ObjectPreparation : Operation {
         if pbObject.identifier.contains("mov") {
             // Get movie data and file extension
             guard let (movieData, fileExt) = self.getDataOfPasteboardMovie(at: index) else {
+                pbObject.state = .failed
                 return
             }
             
-            // Store movie data
+            // Update object
+            pbObject.md5Sum = movieData.MD5checksum()
             pbObject.identifier.append(".\(fileExt)")
+
+            // Store movie data
             storePasteboardObject(movieData)
         }
         else {
             // Get image data and file extension
             guard let (imageData, fileExt) = self.getDataOfPasteboardImage(at: index) else {
+                pbObject.state = .failed
                 return
             }
 
-            // Store image data
+            // Update object
+            pbObject.md5Sum = imageData.MD5checksum()
             pbObject.identifier.append(".\(fileExt)")
+
+            // Store image data
             storePasteboardObject(imageData)
         }
     }

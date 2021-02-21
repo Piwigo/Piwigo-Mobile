@@ -22,6 +22,16 @@ class PasteboardImageCollectionViewCell: UICollectionViewCell {
         }
     }
 
+    private var _md5sum = ""
+    @objc var md5sum: String {
+        get {
+            _md5sum
+        }
+        set(md5sum) {
+            _md5sum = md5sum
+        }
+    }
+
     private var _cellSelected = false
     @objc var cellSelected: Bool {
         get {
