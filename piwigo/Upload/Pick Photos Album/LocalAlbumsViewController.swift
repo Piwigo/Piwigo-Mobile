@@ -57,7 +57,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         var name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
         
-        // Register app entering foreground for updating the pasteboard
+        // Register app becoming active for updating the pasteboard
         name = NSNotification.Name(UIApplication.didBecomeActiveNotification.rawValue)
         NotificationCenter.default.addObserver(self, selector: #selector(checkPasteboard), name: name, object: nil)
 
@@ -158,8 +158,8 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         var name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
         NotificationCenter.default.removeObserver(self, name: name, object: nil)
 
-        // Unregister app entering foreground for updating the pasteboard
-        name = NSNotification.Name(UIApplication.willEnterForegroundNotification.rawValue)
+        // Unregister app becoming active for updating the pasteboard
+        name = NSNotification.Name(UIApplication.didBecomeActiveNotification.rawValue)
         NotificationCenter.default.removeObserver(self, name: name, object: nil)
     }
 
