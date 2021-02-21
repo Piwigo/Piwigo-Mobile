@@ -137,7 +137,8 @@ class PasteboardImageCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    func setProgress(_ progress: Float, withAnimation animate: Bool) {
+    func setProgress(_ progressFraction: Float, withAnimation animate: Bool) {
+        let progress = max(uploadingProgress.progress, progressFraction)
         uploadingProgress?.setProgress(progress, animated: animate)
     }
 
