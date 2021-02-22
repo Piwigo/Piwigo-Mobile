@@ -19,8 +19,8 @@ extension Location {
 
     @NSManaged public var latitude: Double
     @NSManaged public var longitude: Double
-    @NSManaged public var placeName: String?
+    @NSManaged public var placeName: String
     @NSManaged public var radius: Double
-    @NSManaged public var streetName: String?
+    @NSManaged public var streetName: String
 
 }

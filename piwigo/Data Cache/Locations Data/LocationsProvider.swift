@@ -309,12 +309,12 @@ class LocationsProvider: NSObject {
             // Do we know the place of this location?
             if location.distance(from: knownLocation) <= knownPlace.radius {
                 // Retrieve non-empty cached strings
-                if let name = knownPlace.placeName, name.count > 0 {
+                if knownPlace.placeName.count > 0 {
                     placeNames["placeLabel"] = knownPlace.placeName
                 } else {
                     placeNames["placeLabel"] = ""
                 }
-                if let streetName = knownPlace.streetName, streetName.count > 0 {
+                if knownPlace.streetName.count > 0 {
                     placeNames["dateLabel"] = knownPlace.streetName
                 } else {
                     placeNames["dateLabel"] = ""

@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:piwigo/Data Cache/Locations Data/Location+CoreDataProperties.swift">
+   </FileRef>
+   <FileRef
       location = "group:piwigo.xcodeproj">
    </FileRef>
    <FileRef

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19E287" minimumToolsVersion="Xcode 8.0" sourceLanguage="Swift" userDefinedModelVersionIdentifier="DataModel">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="18153" systemVersion="20D64" minimumToolsVersion="Xcode 8.0" sourceLanguage="Swift" userDefinedModelVersionIdentifier="DataModel">
     <entity name="Tag" representedClassName=".Tag" syncable="YES">
-        <attribute name="lastModified" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="numberOfImagesUnderTag" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="tagId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="tagName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lastModified" attributeType="Date" defaultDateTimeInterval="-3187296561" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="numberOfImagesUnderTag" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="tagId" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="tagName" attributeType="String" defaultValueString="" syncable="YES"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="tagId"/>
@@ -12,6 +12,6 @@
         </uniquenessConstraints>
     </entity>
     <elements>
-        <element name="Tag" positionX="-54" positionY="18" width="128" height="103"/>
+        <element name="Tag" positionX="-54" positionY="18" width="128" height="89"/>
     </elements>
 </model>

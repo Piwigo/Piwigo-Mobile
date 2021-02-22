@@ -1,34 +1,18 @@
 //
-//  Tag.swift
+//  Tag+CoreDataClass.swift
 //  piwigo
 //
-//  Created by Eddy Lelièvre-Berna on 19/01/2020.
-//  Copyright © 2020 Piwigo.org. All rights reserved.
+//  Created by Eddy Lelièvre-Berna on 22/02/2021.
+//  Copyright © 2021 Piwigo.org. All rights reserved.
 //
 //  An NSManagedObject subclass for the Tag entity.
+//
 
+import Foundation
 import CoreData
 
-// MARK: - Core Data
-/**
- Managed object subclass for the Tag entity.
- */
+public class Tag: NSManagedObject {
 
-@objc
-class Tag: NSManagedObject {
-
-    // A unique identifier for removing duplicates. Constrain
-    // the Piwigo Tag entity on this attribute in the data model editor.
-    @NSManaged var tagId: Int32
-    
-    // The other attributes of a tag.
-    @NSManaged var tagName: String
-    @NSManaged var lastModified: Date
-    @NSManaged var numberOfImagesUnderTag : Int64
-
-    // Singleton
-    @objc static let sharedInstance: Tag = Tag()
-    
     /**
      Updates a Tag instance with the values from a TagProperties.
      */
