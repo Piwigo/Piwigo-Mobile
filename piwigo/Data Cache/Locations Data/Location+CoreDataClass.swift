@@ -3,6 +3,7 @@
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 22/02/2021.
+//  Copyright © 2021 Piwigo.org. All rights reserved.
 //
 //  An NSManagedObject subclass for the Location entity.
 //
