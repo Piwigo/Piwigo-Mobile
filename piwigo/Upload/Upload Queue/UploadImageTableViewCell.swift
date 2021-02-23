@@ -296,7 +296,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
     private func errorDescription(for upload:Upload) -> String {
         // Display error message
         let error: String?
-        if upload.requestError?.count ?? 0 > 0 {
+        if upload.requestError.count > 0 {
             error = upload.requestError
         } else {
             switch upload.state {
