@@ -61,11 +61,6 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         name = NSNotification.Name(UIApplication.didBecomeActiveNotification.rawValue)
         NotificationCenter.default.addObserver(self, selector: #selector(checkPasteboard), name: name, object: nil)
 
-        // Are there images in the pasteboard?
-        let testTypes = UIPasteboard.general.contains(pasteboardTypes: ["public.image", "public.movie"]) ? true : false
-        let nberPhotos = UIPasteboard.general.itemSet(withPasteboardTypes: ["public.image", "public.movie"])?.count ?? 0
-        hasImagesInPasteboard = testTypes && (nberPhotos > 0)
-
         // Use the LocalAlbumsProvider to fetch albums data.
         LocalAlbumsProvider.sharedInstance().fetchedLocalAlbumsDelegate = self
         LocalAlbumsProvider.sharedInstance().fetchLocalAlbums {
@@ -108,6 +103,11 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
 
         // Set colors, fonts, etc.
         applyColorPalette()
+
+        // Are there images in the pasteboard?
+        let testTypes = UIPasteboard.general.contains(pasteboardTypes: ["public.image", "public.movie"]) ? true : false
+        let nberPhotos = UIPasteboard.general.itemSet(withPasteboardTypes: ["public.image", "public.movie"])?.count ?? 0
+        hasImagesInPasteboard = testTypes && (nberPhotos > 0)
 
         // Navigation "Cancel" button and identifier
         navigationItem.setLeftBarButton(cancelBarButton, animated: true)
