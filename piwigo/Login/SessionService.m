@@ -138,9 +138,10 @@
                       if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
                       {
                           NSDictionary *result = [responseObject objectForKey:@"result"];
+                          // Retrieve a potentially new token (required since the use of uploadAsync)
+                          [Model sharedInstance].pwgToken = [result objectForKey:@"pwg_token"];
 
                           if (isLogginIn) {
-                              [Model sharedInstance].pwgToken = [result objectForKey:@"pwg_token"];
                               [Model sharedInstance].language = [result objectForKey:@"language"];
                               
                               // Piwigo server version should be of format 1.2.3

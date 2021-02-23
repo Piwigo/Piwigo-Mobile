@@ -794,7 +794,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     self.isAlreadyTryingToLogin = YES;
     [SessionService getPiwigoStatusAtLogin:NO
                               OnCompletion:^(NSDictionary *responseObject) {
-            if(responseObject) {
+            if (responseObject != nil) {
                 
                 // When the session is closed, user becomes guest
                 NSString *userName = [responseObject objectForKey:@"username"];
