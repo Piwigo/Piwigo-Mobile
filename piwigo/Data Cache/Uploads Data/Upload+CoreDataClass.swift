@@ -18,6 +18,11 @@ public class Upload: NSManagedObject {
      */
     func update(with uploadProperties: UploadProperties) throws {
         
+        // Update the upload request only if the Id and category properties have values.
+        guard uploadProperties.localIdentifier.count > 0,
+              Int64(uploadProperties.category) != 0 else {
+                throw UploadError.missingData
+        }
         // Local identifier of the image to upload
         localIdentifier = uploadProperties.localIdentifier
         
@@ -37,16 +42,16 @@ public class Upload: NSManagedObject {
         requestState = Int16(uploadProperties.requestState.rawValue)
         
         // Section key corresponding to the request state
-        requestSectionKey = SectionKeys.init(rawValue: uploadProperties.requestState.sectionKey)!.rawValue
+        requestSectionKey = uploadProperties.requestState.sectionKey
 
         // Error message description
         requestError = uploadProperties.requestError ?? ""
 
         // Photo creation date, filename and MIME type
         creationDate = uploadProperties.creationDate ?? Date.init()
-        fileName = uploadProperties.fileName ?? ""
-        mimeType = uploadProperties.mimeType ?? ""
-        md5Sum = uploadProperties.md5Sum ?? ""
+        fileName = uploadProperties.fileName ?? "Image.jpg"
+        mimeType = uploadProperties.mimeType ?? "public.jpeg"
+        md5Sum = uploadProperties.md5Sum ?? "A1B2C3D4E5F6G7H8I9"
         isVideo = uploadProperties.isVideo
 
         // Photo author name is empty if not provided
@@ -68,7 +73,7 @@ public class Upload: NSManagedObject {
         compressImageOnUpload = uploadProperties.compressImageOnUpload
         photoQuality = Int16(uploadProperties.photoQuality)
         prefixFileNameBeforeUpload = uploadProperties.prefixFileNameBeforeUpload
-        defaultPrefix = uploadProperties.defaultPrefix
+        defaultPrefix = uploadProperties.defaultPrefix ?? Model.sharedInstance()?.defaultPrefix ?? ""
         deleteImageAfterUpload = uploadProperties.deleteImageAfterUpload
     }
     
