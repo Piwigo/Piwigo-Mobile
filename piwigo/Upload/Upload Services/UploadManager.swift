@@ -480,9 +480,6 @@ class UploadManager: NSObject, URLSessionDelegate {
             return
         }
         var fileName = fileURL.lastPathComponent
-        if uploadProperties.prefixFileNameBeforeUpload, let prefix = uploadProperties.defaultPrefix {
-            if !fileName.hasPrefix(prefix) { fileName = prefix + fileName }
-        }
 
         // Check/update serverFileTypes if possible
         if let fileTypes = Model.sharedInstance()?.serverFileTypes, fileTypes.count > 0 {
@@ -500,8 +497,14 @@ class UploadManager: NSObject, URLSessionDelegate {
             /// - adding the file extension
             if let prefixRange = fileName.range(of: kClipboardPrefix),
                let suffixRange = fileName.range(of: kClipboardImageSuffix) {
-                uploadProperties.fileName = String(fileName[prefixRange.upperBound..<suffixRange.lowerBound].dropLast(4)) + ".\(fileExt)"
+                fileName = String(fileName[prefixRange.upperBound..<suffixRange.lowerBound].dropLast(4)) + ".\(fileExt)"
             }
+
+            // Add prefix if requested by user
+            if uploadProperties.prefixFileNameBeforeUpload, let prefix = uploadProperties.defaultPrefix {
+                if !fileName.hasPrefix(prefix) { fileName = prefix + fileName }
+            }
+            uploadProperties.fileName = fileName
 
             // Chek that the image format is accepted by the Piwigo server
             if uploadProperties.serverFileTypes.contains(fileExt) {
@@ -551,8 +554,14 @@ class UploadManager: NSObject, URLSessionDelegate {
             /// - adding the file extension
             if let prefixRange = fileName.range(of: kClipboardPrefix),
                let suffixRange = fileName.range(of: kClipboardMovieSuffix) {
-                uploadProperties.fileName = String(fileName[prefixRange.upperBound..<suffixRange.lowerBound].dropLast(4)) + ".\(fileExt)"
+                fileName = String(fileName[prefixRange.upperBound..<suffixRange.lowerBound].dropLast(4)) + ".\(fileExt)"
             }
+
+            // Add prefix if requested by user
+            if uploadProperties.prefixFileNameBeforeUpload, let prefix = uploadProperties.defaultPrefix {
+                if !fileName.hasPrefix(prefix) { fileName = prefix + fileName }
+            }
+            uploadProperties.fileName = fileName
 
             // Chek that the video format is accepted by the Piwigo server
             if uploadProperties.serverFileTypes.contains(fileExt) {
