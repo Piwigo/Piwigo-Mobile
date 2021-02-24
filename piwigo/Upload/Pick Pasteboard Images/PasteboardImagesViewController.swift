@@ -984,35 +984,46 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         }
         
         // Add selected images to upload queue
-        self.uploadsProvider.importUploads(from: self.selectedImages.compactMap{ $0 }) { error in
-            // Show an alert if there was an error.
-            guard let error = error else {
-                // Restart UploadManager activities
-                if UploadManager.shared.isPaused {
-                    UploadManager.shared.isPaused = false
-                    UploadManager.shared.backgroundQueue.async {
-                        UploadManager.shared.findNextImageToUpload()
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.uploadsProvider.importUploads(from: self.selectedImages.compactMap{ $0 }) { error in
+                // Show an alert if there was an error.
+                guard let error = error else {
+                    // Restart UploadManager activities
+                    if UploadManager.shared.isPaused {
+                        UploadManager.shared.isPaused = false
+                        UploadManager.shared.backgroundQueue.async {
+                            UploadManager.shared.findNextImageToUpload()
+                        }
                     }
+                    return
                 }
-                return
-            }
-            DispatchQueue.main.async {
-                let alert = UIAlertController(title: NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object."),
-                                              message: error.localizedDescription,
-                                              preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: NSLocalizedString("alertOkButton", comment: "OK"),
-                                              style: .default, handler: nil))
-                alert.view.tintColor = UIColor.piwigoColorOrange()
-                if #available(iOS 13.0, *) {
-                    alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
-                } else {
-                    // Fallback on earlier versions
-                }
-                self.present(alert, animated: true, completion: {
-                    // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                DispatchQueue.main.async {
+                    let alert = UIAlertController(title: NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object."),
+                                                  message: error.localizedDescription,
+                                                  preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: NSLocalizedString("alertOkButton", comment: "OK"),
+                                                  style: .default, handler: nil))
                     alert.view.tintColor = UIColor.piwigoColorOrange()
-                })
+                    if #available(iOS 13.0, *) {
+                        alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+                    } else {
+                        // Fallback on earlier versions
+                    }
+                    self.present(alert, animated: true, completion: {
+                        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                        alert.view.tintColor = UIColor.piwigoColorOrange()
+                    })
+                }
             }
+        }
+        
+        // Set cache so that cells are immediately presented
+        // The cache will be fully set after the creation of the upload requests
+        for index in 0..<indexedUploadsInQueue.count {
+            if selectedImages[index] == nil { continue }
+            guard let imageId = selectedImages[index]?.localIdentifier else { continue }
+            let temporaryObject = (imageId, kPiwigoUploadState.waiting)
+            indexedUploadsInQueue[index] = Optional(temporaryObject)
         }
         
         // Clear selection
