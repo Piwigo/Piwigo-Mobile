@@ -234,7 +234,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         let helpSB = UIStoryboard(name: "HelpViewController", bundle: nil)
         let helpVC = helpSB.instantiateViewController(withIdentifier: "HelpViewController") as? HelpViewController
         if let helpVC = helpVC {
-            helpVC.onlyWhatsNew = false
+            // Update this list after deleting/creating Help##ViewControllers
+            helpVC.displayHelpPagesWithIndex = [0,4,5,1,3,2]
             if UIDevice.current.userInterfaceIdiom == .phone {
                 helpVC.popoverPresentationController?.permittedArrowDirections = .up
                 navigationController?.present(helpVC, animated:true)
@@ -1900,6 +1901,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         Model.sharedInstance().usesCommunityPluginV29 = false
         Model.sharedInstance().hasAdminRights = false
         Model.sharedInstance().recentCategories = "0"
+        Model.sharedInstance().didPresentHelpViewsInCurrentSession = false
         Model.sharedInstance().saveToDisk()
 
         // Erase cache

@@ -588,6 +588,34 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
         }
     }
 
+    // Present help pages if this is the first time that we show help pages in this session
+//    [Model sharedInstance].didWatchHelpViews = 0b0000000000000000;       // Line for testing
+    if (![Model sharedInstance].didPresentHelpViewsInCurrentSession) {
+        // Determine which pages should be presented
+        NSMutableArray *displayHelpPagesWithIndex = [[NSMutableArray alloc] initWithCapacity:2];
+        if ((self.categoryId != 0) && ([self.albumData.images count] > 2)) {
+            [displayHelpPagesWithIndex addObject:@0];   // i.e. multiple selection of images
+        }
+        NSInteger numberOfAlbums = [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count;
+        if ((self.categoryId != 0) && (numberOfAlbums > 2) && [Model sharedInstance].hasAdminRights) {
+            [displayHelpPagesWithIndex addObject:@2];   // i.e. management of albums
+        }
+        if (displayHelpPagesWithIndex.count > 0) {
+            // Present unseen upload management help views
+            UIStoryboard *helpSB = [UIStoryboard storyboardWithName:@"HelpViewController" bundle:nil];
+            HelpViewController *helpVC = [helpSB instantiateViewControllerWithIdentifier:@"HelpViewController"];
+            helpVC.displayHelpPagesWithIndex = displayHelpPagesWithIndex;
+            if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+                helpVC.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
+                [self presentViewController:helpVC animated:YES completion:nil];
+            } else {
+                helpVC.modalPresentationStyle = UIModalPresentationFormSheet;
+                helpVC.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+                [self presentViewController:helpVC animated:YES completion:nil];
+            }
+        }
+    }
+    
     // Replace iRate as from v2.1.5 (75) — See https://github.com/nicklockwood/iRate
     // Tells StoreKit to ask the user to rate or review the app, if appropriate.
 //#if !defined(DEBUG)
@@ -633,18 +661,6 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addImageToCategory:) name:kPiwigoNotificationUploadedImage object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeImageFromCategory:) name:kPiwigoNotificationDeletedImage object:nil];
-    
-    // Present What's New views i.e. Help views if needed
-//    [Model sharedInstance].didWatchHelpViews = 0b0000000000000000;       // Lines for testing
-    if (([Model sharedInstance].didWatchHelpViews < 0b0000000000111111) &&
-        ![Model sharedInstance].didPresentHelpViewsInCurrentSession ){
-        UIStoryboard *helpSB = [UIStoryboard storyboardWithName:@"HelpViewController" bundle:nil];
-        HelpViewController *helpVC = [helpSB instantiateViewControllerWithIdentifier:@"HelpViewController"];
-        helpVC.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-        helpVC.modalPresentationStyle = UIModalPresentationFormSheet;
-        helpVC.onlyWhatsNew = YES;
-        [self presentViewController:helpVC animated:YES completion:nil];
-    }
 }
 
 -(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {

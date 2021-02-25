@@ -14,9 +14,7 @@ class HelpViewController: UIViewController {
     @IBOutlet weak var pageControl: UIPageControl!
     @IBOutlet weak var closeButton: UIButton!
     
-    @objc var onlyWhatsNew = false
-    // Update this list after deleting/creating Help##ViewControllers
-    private let indexesOfPagesInOrder = [0,4,5,1,3,2]
+    @objc var displayHelpPagesWithIndex: [Int] = []
     private var pages = [UIViewController]()
     private var pageViewController: UIPageViewController?
     private var pendingIndex: Int?
@@ -33,16 +31,11 @@ class HelpViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Initialise all pages
-        let didWatchHelpViews = Model.sharedInstance()?.didWatchHelpViews ?? 0
-        for i in indexesOfPagesInOrder {
+        // Initialise pages
+        for i in displayHelpPagesWithIndex {
             // Loop over the storyboards
             let pageIDstr = String(format: "help%02ld", i+1)
-            let pageID: UInt16 = UInt16(pow(2.0, Float(i)))
-            let alreadyDidWatchPageID: Bool = (didWatchHelpViews & pageID) != 0
-            let shouldShowPageID = onlyWhatsNew ? !alreadyDidWatchPageID : true
-            if shouldShowPageID,
-               let page = storyboard?.instantiateViewController(withIdentifier: pageIDstr) {
+            if let page = storyboard?.instantiateViewController(withIdentifier: pageIDstr) {
                 pages.append(page)
             }
         }
