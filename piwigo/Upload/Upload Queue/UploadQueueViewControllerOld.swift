@@ -453,19 +453,19 @@ extension UploadQueueViewControllerOld: NSFetchedResultsControllerDelegate {
             uploadInfo = ["localIdentifier" : upload.localIdentifier,
                           "photoResize" : upload.photoResize,
                           "stateLabel" : upload.stateLabel,
-                          "Error" : upload.requestError ?? "",
+                          "Error" : upload.requestError,
                           "progressFraction" : Float(0.0)]
         case .uploaded, .finishing, .finishingError, .finished:
             uploadInfo = ["localIdentifier" : upload.localIdentifier,
                           "photoResize" : upload.photoResize,
                           "stateLabel" : upload.stateLabel,
-                          "Error" : upload.requestError ?? "",
+                          "Error" : upload.requestError,
                           "progressFraction" : Float(1.0)]
         default:
             uploadInfo = ["localIdentifier" : upload.localIdentifier,
                           "photoResize" : upload.photoResize,
                           "stateLabel" : upload.stateLabel,
-                          "Error" : upload.requestError ?? ""]
+                          "Error" : upload.requestError]
         }
         cell.update(with: uploadInfo)
     }

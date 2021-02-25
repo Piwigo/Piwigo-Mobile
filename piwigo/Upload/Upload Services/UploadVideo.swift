@@ -37,13 +37,13 @@ extension UploadManager {
             self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
             return
         }
-        guard let mimeType = UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue() else  {
+        guard let mimeType = (UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue()) as String? else  {
             let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
             self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
             return
         }
         var newUploadProperties = uploadProperties
-        newUploadProperties.mimeType = mimeType as String
+        newUploadProperties.mimeType = mimeType
 
         // Determine MD5 checksum
         let error: NSError?
@@ -117,13 +117,13 @@ extension UploadManager {
                 self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
                 return
             }
-            guard let mimeType = UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue() else  {
+            guard let mimeType = (UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue()) as String? else  {
                 let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                 self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
                 return
             }
             var newUploadProperties = uploadProperties
-            newUploadProperties.mimeType = mimeType as String
+            newUploadProperties.mimeType = mimeType
 
             // Prepare URL of temporary file
             let fileName = uploadProperties.localIdentifier.replacingOccurrences(of: "/", with: "-")
@@ -444,7 +444,7 @@ extension UploadManager {
         // Prepare MIME type
         var newUploadProperties = uploadProperties
         newUploadProperties.mimeType = "video/mp4"
-        newUploadProperties.fileName = URL(fileURLWithPath: uploadProperties.fileName ?? "file").deletingPathExtension().appendingPathExtension("MP4").lastPathComponent
+        newUploadProperties.fileName = URL(fileURLWithPath: uploadProperties.fileName).deletingPathExtension().appendingPathExtension("MP4").lastPathComponent
 
         // File name of final video data to be stored into Piwigo/Uploads directory
         let fileName = uploadProperties.localIdentifier.replacingOccurrences(of: "/", with: "-")
@@ -478,6 +478,7 @@ extension UploadManager {
             (newUploadProperties.md5Sum, error) = outputURL.MD5checksum()
             print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUploadProperties.md5Sum))")
             if error != nil {
+                // Could not determine the MD5 checksum
                 self.didPrepareVideo(for: uploadID, with: newUploadProperties, error)
                 return
             }

@@ -45,25 +45,25 @@ public class Upload: NSManagedObject {
         requestSectionKey = uploadProperties.requestState.sectionKey
 
         // Error message description
-        requestError = uploadProperties.requestError ?? ""
+        requestError = uploadProperties.requestError
 
         // Photo creation date, filename and MIME type
-        creationDate = uploadProperties.creationDate ?? Date.init()
-        fileName = uploadProperties.fileName ?? "Image.jpg"
-        mimeType = uploadProperties.mimeType ?? "public.jpeg"
-        md5Sum = uploadProperties.md5Sum ?? "A1B2C3D4E5F6G7H8I9"
+        creationDate = uploadProperties.creationDate
+        fileName = uploadProperties.fileName
+        mimeType = uploadProperties.mimeType
+        md5Sum = uploadProperties.md5Sum
         isVideo = uploadProperties.isVideo
 
         // Photo author name is empty if not provided
-        author = uploadProperties.author ?? ""
+        author = uploadProperties.author
         
         // Privacy level is the lowest one if not provided
-        privacyLevel = Int16(uploadProperties.privacyLevel?.rawValue ?? kPiwigoPrivacyEverybody.rawValue)
+        privacyLevel = Int16(uploadProperties.privacyLevel.rawValue)
 
         // Other image properties
-        imageName = uploadProperties.imageTitle ?? ""
-        comment = uploadProperties.comment ?? ""
-        tagIds = uploadProperties.tagIds ?? ""
+        imageName = uploadProperties.imageTitle
+        comment = uploadProperties.comment
+        tagIds = uploadProperties.tagIds
         imageId = Int64(uploadProperties.imageId)
         
         // Upload settings
@@ -73,7 +73,7 @@ public class Upload: NSManagedObject {
         compressImageOnUpload = uploadProperties.compressImageOnUpload
         photoQuality = Int16(uploadProperties.photoQuality)
         prefixFileNameBeforeUpload = uploadProperties.prefixFileNameBeforeUpload
-        defaultPrefix = uploadProperties.defaultPrefix ?? Model.sharedInstance()?.defaultPrefix ?? ""
+        defaultPrefix = uploadProperties.defaultPrefix
         deleteImageAfterUpload = uploadProperties.deleteImageAfterUpload
     }
     
@@ -180,7 +180,7 @@ extension Upload {
             deleteImageAfterUpload: self.deleteImageAfterUpload)
     }
 
-    func getProperties(with state: kPiwigoUploadState, error: String?) -> UploadProperties {
+    func getProperties(with state: kPiwigoUploadState, error: String) -> UploadProperties {
         return UploadProperties.init(localIdentifier: self.localIdentifier,
             // Category ID of the album to upload to
             category: Int(self.category),
@@ -334,19 +334,19 @@ struct UploadProperties
     var serverFileTypes: String             // File formats accepted by the server
     let requestDate: Date                   // "2020-08-22 19:18:43"
     var requestState: kPiwigoUploadState    // See enum above
-    var requestError: String?
+    var requestError: String
 
-    var creationDate: Date?                 // "2012-08-23 09:18:43"
-    var fileName: String?                   // "IMG123.JPG"
-    var mimeType: String?                   // "image/png"
-    var md5Sum: String?                     // "8b1a9953c4611296a827abf8c47804d7"
+    var creationDate: Date                  // "2012-08-23 09:18:43"
+    var fileName: String                    // "IMG123.JPG"
+    var mimeType: String                    // "image/png"
+    var md5Sum: String                      // "8b1a9953c4611296a827abf8c47804d7"
     var isVideo: Bool                       // true/false
     
-    var author: String?                     // "Author"
-    var privacyLevel: kPiwigoPrivacy?       // 0
-    var imageTitle: String?                 // "Image title"
-    var comment: String?                    // "A comment…"
-    var tagIds: String?                     // List of tag IDs
+    var author: String                      // "Author"
+    var privacyLevel: kPiwigoPrivacy        // 0
+    var imageTitle: String                  // "Image title"
+    var comment: String                     // "A comment…"
+    var tagIds: String                      // List of tag IDs
     var imageId: Int                        // 1042
 
     var stripGPSdataOnUpload: Bool
@@ -355,7 +355,7 @@ struct UploadProperties
     var compressImageOnUpload: Bool
     var photoQuality: Int
     var prefixFileNameBeforeUpload: Bool
-    var defaultPrefix: String?
+    var defaultPrefix: String
     var deleteImageAfterUpload: Bool
 }
 

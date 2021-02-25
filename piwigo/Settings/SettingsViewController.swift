@@ -1953,11 +1953,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     func textFieldDidEndEditing(_ textField: UITextField) {
         switch textField.tag {
         case kImageUploadSetting.author.rawValue:
-            Model.sharedInstance().defaultAuthor = textField.text
-            Model.sharedInstance().saveToDisk()
+            Model.sharedInstance()?.defaultAuthor = textField.text
+            Model.sharedInstance()?.saveToDisk()
         case kImageUploadSetting.prefix.rawValue:
-            Model.sharedInstance().defaultPrefix = textField.text
-            Model.sharedInstance().saveToDisk()
+            Model.sharedInstance()?.defaultPrefix = textField.text
+            Model.sharedInstance()?.saveToDisk()
         default:
             break
         }
@@ -1967,8 +1967,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 // MARK: - DefaultCategoryDelegate Methods
     func didChangeDefaultCategory(_ categoryId: Int) {
         // Save new choice
-        Model.sharedInstance().defaultCategory = categoryId
-        Model.sharedInstance().saveToDisk()
+        Model.sharedInstance()?.defaultCategory = categoryId
+        Model.sharedInstance()?.saveToDisk()
 
         // Will load default album view when dismissing this view
         didChangeDefaultAlbum = true
@@ -1978,16 +1978,16 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 // MARK: - SelectedPrivacyDelegate Methods
     func didSelectPrivacyLevel(_ privacyLevel: kPiwigoPrivacy) {
         // Save new choice
-        Model.sharedInstance().defaultPrivacyLevel = privacyLevel
-        Model.sharedInstance().saveToDisk()
+        Model.sharedInstance()?.defaultPrivacyLevel = privacyLevel
+        Model.sharedInstance()?.saveToDisk()
     }
 
     
 // MARK: - CategorySortDelegate Methods
     func didSelectCategorySortType(_ sortType: kPiwigoSort) {
         // Save new choice
-        Model.sharedInstance().defaultSort = sortType
-        Model.sharedInstance().saveToDisk()
+        Model.sharedInstance()?.defaultSort = sortType
+        Model.sharedInstance()?.saveToDisk()
     }
 
     

@@ -128,7 +128,7 @@ extension UploadManager {
                    photoResize: nil, progress: Float(0.0), errorMsg: errorMsg)
 
         // Update state of upload request
-        print("\(debugFormatter.string(from: Date())) > prepared \(uploadID) i.e. \(properties.fileName!) \(errorMsg)")
+        print("\(debugFormatter.string(from: Date())) > prepared \(uploadID) i.e. \(properties.fileName) \(errorMsg)")
         uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: newProperties) { [unowned self] (_) in
             // Upload ready for transfer
             if self.isExecutingBackgroundUploadTask {
@@ -226,7 +226,7 @@ extension UploadManager {
         // Proceed immadiately if:
         /// - the image container format is accepted by the server
         /// - the user did not request a compression
-        let fileExt = (URL(fileURLWithPath: upload.fileName!).pathExtension).lowercased()
+        let fileExt = (URL(fileURLWithPath: upload.fileName).pathExtension).lowercased()
         if upload.serverFileTypes.contains(fileExt), !upload.compressImageOnUpload {
             // Get MIME type
             guard let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExt as NSString, nil)?.takeRetainedValue() else {
@@ -234,12 +234,12 @@ extension UploadManager {
                 completionHandler(upload, error)
                 return
             }
-            guard let mimeType = UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue() else  {
+            guard let mimeType = (UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue()) as String? else  {
                 let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                 completionHandler(upload, error)
                 return
             }
-            newUpload.mimeType = mimeType as String
+            newUpload.mimeType = mimeType
 
             // File name of final image data to be stored into Piwigo/Uploads directory
             let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
@@ -307,6 +307,7 @@ extension UploadManager {
                     (newUpload.md5Sum, error) = fileURL.MD5checksum()
                     print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUpload.md5Sum))")
                     if error != nil {
+                        // Could not determine the MD5 checksum
                         completionHandler(upload, error)
                         return
                     }
@@ -347,6 +348,7 @@ extension UploadManager {
             (newUpload.md5Sum, error) = fileURL.MD5checksum()
             print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUpload.md5Sum))")
             if error != nil {
+                // Could not determine the MD5 checksum
                 completionHandler(newUpload, error)
                 return
             }
@@ -492,12 +494,12 @@ extension UploadManager {
             EXIFdateFormatter.dateFormat = "yyyy:MM:dd HH:mm:ss"
             if let EXIFdateTimeOriginal = EXIFdictionary[kCGImagePropertyExifDateTimeOriginal] as? String {
                 if let creationDate = EXIFdateFormatter.date(from: EXIFdateTimeOriginal),
-                   newUpload.creationDate ?? Date() > creationDate {
+                   newUpload.creationDate > creationDate {
                     newUpload.creationDate = creationDate
                 }
             } else if let EXIFdateTimeDigitized = EXIFdictionary[kCGImagePropertyExifDateTimeDigitized] as? String {
                 if let creationDate = EXIFdateFormatter.date(from: EXIFdateTimeDigitized),
-                   newUpload.creationDate ?? Date() > creationDate {
+                   newUpload.creationDate > creationDate {
                     newUpload.creationDate = creationDate
                 }
             }
@@ -505,21 +507,21 @@ extension UploadManager {
         
         // Apply compression if user requested it in Settings, or convert to JPEG if necessary
         var imageCompressed: Data? = nil
-        let fileExt = (URL(fileURLWithPath: upload.fileName!).pathExtension).lowercased()
+        let fileExt = (URL(fileURLWithPath: upload.fileName).pathExtension).lowercased()
         if upload.compressImageOnUpload && (CGFloat(upload.photoQuality) < 100.0) {
             // Compress image (only possible in JPEG)
             let compressionQuality: CGFloat = CGFloat(upload.photoQuality) / 100.0
             imageCompressed = resizedImage.jpegData(compressionQuality: compressionQuality)
 
             // Final image file will be in JPEG format
-            newUpload.fileName = URL(fileURLWithPath: upload.fileName!).deletingPathExtension().appendingPathExtension("jpg").lastPathComponent
+            newUpload.fileName = URL(fileURLWithPath: upload.fileName).deletingPathExtension().appendingPathExtension("jpg").lastPathComponent
         }
         else if !(upload.serverFileTypes.contains(fileExt)) {
             // Image in unaccepted file format for Piwigo server => convert to JPEG format
             imageCompressed = resizedImage.jpegData(compressionQuality: 1.0)
 
             // Final image file will be in JPEG format
-            newUpload.fileName = URL(fileURLWithPath: upload.fileName!).deletingPathExtension().appendingPathExtension("jpg").lastPathComponent
+            newUpload.fileName = URL(fileURLWithPath: upload.fileName).deletingPathExtension().appendingPathExtension("jpg").lastPathComponent
         }
 
         // If compression failed or imageCompressed is nil, try to use original image
@@ -534,10 +536,10 @@ extension UploadManager {
                 // Adopt determined Mime type
                 newUpload.mimeType = type
                 // Re-check filename extension if MIME type known
-                let fileExt = (URL(fileURLWithPath: newUpload.fileName ?? "").pathExtension).lowercased()
+                let fileExt = (URL(fileURLWithPath: newUpload.fileName).pathExtension).lowercased()
                 let expectedFileExtension = imageCompressed!.fileExtension()
                 if !(fileExt == expectedFileExtension) {
-                    newUpload.fileName = URL(fileURLWithPath: upload.fileName ?? "file").deletingPathExtension().appendingPathExtension(expectedFileExtension ?? "").lastPathComponent
+                    newUpload.fileName = URL(fileURLWithPath: upload.fileName).deletingPathExtension().appendingPathExtension(expectedFileExtension ?? "").lastPathComponent
                 }
             }
         }
@@ -590,6 +592,7 @@ extension UploadManager {
         (newUpload.md5Sum, error) = fileURL.MD5checksum()
         print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUpload.md5Sum))")
         if error != nil {
+            // Could not determine the MD5 checksum
             completionHandler(upload, error)
             return
         }

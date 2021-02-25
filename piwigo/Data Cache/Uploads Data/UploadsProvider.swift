@@ -200,7 +200,7 @@ class UploadsProvider: NSObject {
                                   properties: UploadProperties,
                                   completionHandler: @escaping (Error?) -> Void) -> (Void) {
         // Check current queue
-        print("•••>> updatePropertiesOfUpload() \(properties.fileName ?? "no filename") | \(properties.stateLabel) in \(queueName())\r")
+        print("•••>> updatePropertiesOfUpload() \(properties.fileName) | \(properties.stateLabel) in \(queueName())\r")
 
         // Create a private queue context.
         let taskContext = DataController.getPrivateContext()

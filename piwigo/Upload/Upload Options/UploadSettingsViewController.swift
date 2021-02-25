@@ -10,13 +10,13 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
     
     @IBOutlet var settingsTableView: UITableView!
     
-    var stripGPSdataOnUpload = Model.sharedInstance().stripGPSdataOnUpload
-    var resizeImageOnUpload = Model.sharedInstance().resizeImageOnUpload
-    var photoResize = Model.sharedInstance().photoResize
-    var compressImageOnUpload = Model.sharedInstance().compressImageOnUpload
-    var photoQuality = Model.sharedInstance().photoQuality
-    var prefixFileNameBeforeUpload = Model.sharedInstance().prefixFileNameBeforeUpload
-    var defaultPrefix = Model.sharedInstance().defaultPrefix ?? ""
+    var stripGPSdataOnUpload = Model.sharedInstance()?.stripGPSdataOnUpload ?? false
+    var resizeImageOnUpload = Model.sharedInstance()?.resizeImageOnUpload ?? false
+    var photoResize = Model.sharedInstance()?.photoResize ?? 100
+    var compressImageOnUpload = Model.sharedInstance()?.compressImageOnUpload ?? false
+    var photoQuality = Model.sharedInstance()?.photoQuality ?? 98
+    var prefixFileNameBeforeUpload = Model.sharedInstance()?.prefixFileNameBeforeUpload ?? false
+    var defaultPrefix = Model.sharedInstance()?.defaultPrefix ?? ""
     private var shouldUpdateDefaultPrefix = false
     private var canDeleteImages = false
     var deleteImageAfterUpload = false

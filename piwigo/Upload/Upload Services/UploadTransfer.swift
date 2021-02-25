@@ -16,10 +16,10 @@ extension UploadManager {
 
         // Prepare image parameters
         let imageParameters: [String : String] = [
-            kPiwigoImagesUploadParamFileName: uploadProperties.fileName ?? "Image.jpg",
+            kPiwigoImagesUploadParamFileName: uploadProperties.fileName,
             kPiwigoImagesUploadParamCategory: "\(NSNumber(value: uploadProperties.category))",
-            kPiwigoImagesUploadParamPrivacy: "\(NSNumber(value: uploadProperties.privacyLevel!.rawValue))",
-            kPiwigoImagesUploadParamMimeType: uploadProperties.mimeType ?? ""
+            kPiwigoImagesUploadParamPrivacy: "\(NSNumber(value: uploadProperties.privacyLevel.rawValue))",
+            kPiwigoImagesUploadParamMimeType: uploadProperties.mimeType
         ]
 
         // Get URL of file to upload
@@ -34,7 +34,7 @@ extension UploadManager {
                 self.updateCell(with: uploadProperties.localIdentifier,
                                 stateLabel: kPiwigoUploadState.uploading.stateInfo,
                                 photoResize: nil, progress: chunkProgress,
-                                errorMsg: uploadProperties.requestError ?? "")
+                                errorMsg: uploadProperties.requestError)
             },
             onCompletion: { [unowned self] (task, jsonData) in
 //                    print("•••> completion: \(String(describing: jsonData))")
@@ -70,7 +70,7 @@ extension UploadManager {
                         imageData.isVideo = uploadProperties.isVideo
                         imageData.dateCreated = uploadProperties.creationDate
                         imageData.author = uploadProperties.author
-                        imageData.privacyLevel = uploadProperties.privacyLevel ?? kPiwigoPrivacy(rawValue: 0)
+                        imageData.privacyLevel = uploadProperties.privacyLevel
 
                         // Add data returned by server
                         imageData.imageId = uploadJSON.data.image_id!
@@ -305,17 +305,14 @@ extension UploadManager {
         guard let validUrl = url else { fatalError() }
         
         // Prepare creation date
-        var creationDate = ""
-        if let date = uploadProperties.creationDate {
-            let dateFormat = DateFormatter()
-            dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
-            creationDate = dateFormat.string(from: date)
-        }
+        let dateFormat = DateFormatter()
+        dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let creationDate = dateFormat.string(from: uploadProperties.creationDate)
 
         // Prepare files, requests and resume tasks
         let username = Model.sharedInstance()?.username ?? ""
         let password = SAMKeychain.password(forService: uploadProperties.serverPath, account: username) ?? ""
-        let boundary = createBoundary(from: uploadProperties.md5Sum!)
+        let boundary = createBoundary(from: uploadProperties.md5Sum)
         for chunk in 0..<chunks {
             // Current chunk
             let chunkStr = String(format: "%ld", chunk)
@@ -326,9 +323,9 @@ extension UploadManager {
             httpBody.appendString(convertFormField(named: "password", value: password, using: boundary))
             httpBody.appendString(convertFormField(named: "chunk", value: chunkStr, using: boundary))
             httpBody.appendString(convertFormField(named: "chunks", value: chunksStr, using: boundary))
-            httpBody.appendString(convertFormField(named: "original_sum", value: uploadProperties.md5Sum!, using: boundary))
+            httpBody.appendString(convertFormField(named: "original_sum", value: uploadProperties.md5Sum, using: boundary))
             httpBody.appendString(convertFormField(named: "category", value: "\(uploadProperties.category)", using: boundary))
-            httpBody.appendString(convertFormField(named: "filename", value: uploadProperties.fileName ?? "Image.jpg", using: boundary))
+            httpBody.appendString(convertFormField(named: "filename", value: uploadProperties.fileName, using: boundary))
             let imageTitle = NetworkUtilities.utf8mb3String(from: uploadProperties.imageTitle)
             httpBody.appendString(convertFormField(named: "name", value: imageTitle ?? "", using: boundary))
             let author = NetworkUtilities.utf8mb3String(from: uploadProperties.author)
@@ -336,16 +333,16 @@ extension UploadManager {
             let comment = NetworkUtilities.utf8mb3String(from: uploadProperties.comment)
             httpBody.appendString(convertFormField(named: "comment", value: comment ?? "", using: boundary))
             httpBody.appendString(convertFormField(named: "date_creation", value: creationDate, using: boundary))
-            httpBody.appendString(convertFormField(named: "level", value: "\(NSNumber(value: uploadProperties.privacyLevel!.rawValue))", using: boundary))
-            httpBody.appendString(convertFormField(named: "tag_ids", value: uploadProperties.tagIds ?? "", using: boundary))
+            httpBody.appendString(convertFormField(named: "level", value: "\(NSNumber(value: uploadProperties.privacyLevel.rawValue))", using: boundary))
+            httpBody.appendString(convertFormField(named: "tag_ids", value: uploadProperties.tagIds, using: boundary))
 
             // Chunk of data
             let chunkOfData = imageData.subdata(in: chunk * chunkSize..<min((chunk+1)*chunkSize, imageData.count))
             let md5Checksum = chunkOfData.MD5checksum()
             httpBody.appendString(convertFormField(named: "chunk_sum", value: md5Checksum, using: boundary))
             httpBody.append(convertFileData(fieldName: "file",
-                                            fileName: uploadProperties.fileName!,
-                                            mimeType: uploadProperties.mimeType ?? "image/jpg",
+                                            fileName: uploadProperties.fileName,
+                                            mimeType: uploadProperties.mimeType,
                                             fileData: chunkOfData,
                                             using: boundary))
 
@@ -375,13 +372,13 @@ extension UploadManager {
             var request = URLRequest(url: validUrl)
             request.httpMethod = "POST"
             request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-            request.setValue(uploadProperties.fileName!, forHTTPHeaderField: "filename")
+            request.setValue(uploadProperties.fileName, forHTTPHeaderField: "filename")
             request.addValue(uploadID.uriRepresentation().absoluteString, forHTTPHeaderField: "objectURI")
             request.addValue(uploadProperties.localIdentifier, forHTTPHeaderField: "identifier")
             request.addValue(chunkStr, forHTTPHeaderField: "chunk")
             request.addValue(chunksStr, forHTTPHeaderField: "chunks")
             request.addValue("1", forHTTPHeaderField: "tries")
-            request.addValue(uploadProperties.md5Sum!, forHTTPHeaderField: "md5sum")
+            request.addValue(uploadProperties.md5Sum, forHTTPHeaderField: "md5sum")
 
             // As soon as tasks are created, the timeout counter starts
             let uploadSession: URLSession = UploadSessionDelegate.shared.uploadSession
@@ -392,7 +389,7 @@ extension UploadManager {
                 task.countOfBytesClientExpectsToSend = Int64(httpBody.count)
                 task.countOfBytesClientExpectsToReceive = 600
             }
-            print("\(debugFormatter.string(from: Date())) > \(uploadProperties.md5Sum!) upload task \(task.taskIdentifier) resumed (\(chunk)/\(chunks)")
+            print("\(debugFormatter.string(from: Date())) > \(uploadProperties.md5Sum) upload task \(task.taskIdentifier) resumed (\(chunk)/\(chunks)")
             task.resume()
 
             // Update UI

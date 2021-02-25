@@ -972,8 +972,8 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                 if let prefixFileNameBeforeUpload = uploadParameters["prefixFileNameBeforeUpload"] as? Bool {
                     updatedRequest.prefixFileNameBeforeUpload = prefixFileNameBeforeUpload
                 }
-                if let defaultPrefix = uploadParameters["defaultPrefix"] {
-                    updatedRequest.defaultPrefix = defaultPrefix as? String
+                if let defaultPrefix = uploadParameters["defaultPrefix"] as? String {
+                    updatedRequest.defaultPrefix = defaultPrefix
                 }
                 if let deleteImageAfterUpload = uploadParameters["deleteImageAfterUpload"] as? Bool {
                     updatedRequest.deleteImageAfterUpload = deleteImageAfterUpload
