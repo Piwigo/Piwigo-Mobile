@@ -369,9 +369,10 @@ extension UploadProperties {
             serverPath: Model.sharedInstance()?.serverPath ?? "",
             serverFileTypes: Model.sharedInstance()?.serverFileTypes ?? "jpg,jpeg,png,gif",
             // Upload request date is now and state is waiting
-            requestDate: Date.init(), requestState: .waiting, requestError: "",
+            requestDate: Date(), requestState: .waiting, requestError: "",
             // Photo creation date and filename
-            creationDate: Date.init(), fileName: "", mimeType: "", md5Sum: "", isVideo: false,
+            creationDate: Date(), fileName: "",
+            mimeType: "", md5Sum: "", isVideo: false,
             // Photo author name defaults to name entered in Settings
             author: Model.sharedInstance()?.defaultAuthor ?? "",
             // Privacy level defaults to level selected in Settings
@@ -379,16 +380,16 @@ extension UploadProperties {
             // No title, comment, tag, filename by default, image ID unknown
             imageTitle: "", comment: "", tagIds: "", imageId: NSNotFound,
             // Upload settings
-            stripGPSdataOnUpload: Model.sharedInstance().stripGPSdataOnUpload,
-            resizeImageOnUpload: Model.sharedInstance().resizeImageOnUpload,
-            photoResize: Model.sharedInstance().photoResize,
-            compressImageOnUpload: Model.sharedInstance().compressImageOnUpload,
-            photoQuality: Model.sharedInstance().photoQuality,
-            prefixFileNameBeforeUpload: Model.sharedInstance().prefixFileNameBeforeUpload,
-            defaultPrefix: Model.sharedInstance().defaultPrefix ?? "",
+            stripGPSdataOnUpload: Model.sharedInstance()?.stripGPSdataOnUpload ?? false,
+            resizeImageOnUpload: Model.sharedInstance()?.resizeImageOnUpload ?? false,
+            photoResize: Model.sharedInstance()?.photoResize ?? 100,
+            compressImageOnUpload: Model.sharedInstance()?.compressImageOnUpload ?? false,
+            photoQuality: Model.sharedInstance()?.photoQuality ?? 98,
+            prefixFileNameBeforeUpload: Model.sharedInstance()?.prefixFileNameBeforeUpload ?? false,
+            defaultPrefix: Model.sharedInstance()?.defaultPrefix ?? "",
             deleteImageAfterUpload: false)
     }
-            
+    
     var stateLabel: String {
         return requestState.stateInfo
     }

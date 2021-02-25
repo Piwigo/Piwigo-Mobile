@@ -26,14 +26,14 @@
         <attribute name="creationDate" attributeType="Date" defaultDateTimeInterval="-3187296561" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="defaultPrefix" attributeType="String" defaultValueString="" syncable="YES"/>
         <attribute name="deleteImageAfterUpload" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="fileName" attributeType="String" defaultValueString="Image.jpg" syncable="YES"/>
-        <attribute name="imageId" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="fileName" attributeType="String" defaultValueString="" syncable="YES"/>
+        <attribute name="imageId" attributeType="Integer 64" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="imageName" attributeType="String" defaultValueString="" syncable="YES"/>
         <attribute name="isVideo" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="localIdentifier" attributeType="String" defaultValueString="" syncable="YES"/>
-        <attribute name="md5Sum" attributeType="String" defaultValueString="A1B2C3D4E5F6G7H8I9" syncable="YES"/>
-        <attribute name="mimeType" attributeType="String" defaultValueString="public.jpeg" syncable="YES"/>
-        <attribute name="photoQuality" attributeType="Integer 16" defaultValueString="100" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="localIdentifier" attributeType="String" syncable="YES"/>
+        <attribute name="md5Sum" attributeType="String" defaultValueString="" syncable="YES"/>
+        <attribute name="mimeType" attributeType="String" defaultValueString="" syncable="YES"/>
+        <attribute name="photoQuality" attributeType="Integer 16" defaultValueString="98" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="photoResize" attributeType="Integer 16" defaultValueString="100" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="prefixFileNameBeforeUpload" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="privacyLevel" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
