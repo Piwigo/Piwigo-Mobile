@@ -662,6 +662,16 @@ extension UploadManager {
                 newUploadProperties.requestState = .finished
                 newUploadProperties.requestError = ""
                 self.didEndTransfer(for: uploadID, with: newUploadProperties, nil)
+                
+                // Cancel remaining tasks related with this request
+                // to prevent duplicates after upload failures/retries
+                let uploadSession: URLSession = UploadSessionDelegate.shared.uploadSession
+                uploadSession.getAllTasks { uploadTasks in
+                    // Select tasks related with this request
+                    let tasksToCancel = uploadTasks.filter({ $0.taskDescription == objectURIstr })
+                    print("\(self.debugFormatter.string(from: Date())) > \(md5sum) | Delete task \(task.taskIdentifier)")
+                    tasksToCancel.forEach({ $0.cancel() })
+                }
             }
             return
         } catch {
