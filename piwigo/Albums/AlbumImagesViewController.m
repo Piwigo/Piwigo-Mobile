@@ -588,31 +588,29 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
         }
     }
 
-    // Present help pages if this is the first time that we show help pages in this session
-//    [Model sharedInstance].didWatchHelpViews = 0b0000000000000000;       // Line for testing
-    if (![Model sharedInstance].didPresentHelpViewsInCurrentSession) {
-        // Determine which pages should be presented
-        NSMutableArray *displayHelpPagesWithIndex = [[NSMutableArray alloc] initWithCapacity:2];
-        if ((self.categoryId != 0) && ([self.albumData.images count] > 2)) {
-            [displayHelpPagesWithIndex addObject:@0];   // i.e. multiple selection of images
-        }
-        NSInteger numberOfAlbums = [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count;
-        if ((self.categoryId != 0) && (numberOfAlbums > 2) && [Model sharedInstance].hasAdminRights) {
-            [displayHelpPagesWithIndex addObject:@2];   // i.e. management of albums
-        }
-        if (displayHelpPagesWithIndex.count > 0) {
-            // Present unseen upload management help views
-            UIStoryboard *helpSB = [UIStoryboard storyboardWithName:@"HelpViewController" bundle:nil];
-            HelpViewController *helpVC = [helpSB instantiateViewControllerWithIdentifier:@"HelpViewController"];
-            helpVC.displayHelpPagesWithIndex = displayHelpPagesWithIndex;
-            if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-                helpVC.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
-                [self presentViewController:helpVC animated:YES completion:nil];
-            } else {
-                helpVC.modalPresentationStyle = UIModalPresentationFormSheet;
-                helpVC.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-                [self presentViewController:helpVC animated:YES completion:nil];
-            }
+    // Determine which help pages should be presented
+    NSMutableArray *displayHelpPagesWithIndex = [[NSMutableArray alloc] initWithCapacity:2];
+    if ((self.categoryId != 0) && ([self.albumData.images count] > 2) &&
+        (([Model sharedInstance].didWatchHelpViews & 0b0000000000000001) == 0)) {
+        [displayHelpPagesWithIndex addObject:@0];   // i.e. multiple selection of images
+    }
+    NSInteger numberOfAlbums = [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count;
+    if ((self.categoryId != 0) && (numberOfAlbums > 2) && [Model sharedInstance].hasAdminRights &&
+        (([Model sharedInstance].didWatchHelpViews & 0b0000000000000100) == 0)) {
+        [displayHelpPagesWithIndex addObject:@2];   // i.e. management of albums
+    }
+    if (displayHelpPagesWithIndex.count > 0) {
+        // Present unseen upload management help views
+        UIStoryboard *helpSB = [UIStoryboard storyboardWithName:@"HelpViewController" bundle:nil];
+        HelpViewController *helpVC = [helpSB instantiateViewControllerWithIdentifier:@"HelpViewController"];
+        helpVC.displayHelpPagesWithIndex = displayHelpPagesWithIndex;
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+            helpVC.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
+            [self presentViewController:helpVC animated:YES completion:nil];
+        } else {
+            helpVC.modalPresentationStyle = UIModalPresentationFormSheet;
+            helpVC.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+            [self presentViewController:helpVC animated:YES completion:nil];
         }
     }
     

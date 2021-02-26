@@ -1790,37 +1790,34 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Update the navigation bar
         updateNavBar()
         
-        // Present help pages if this is the first time that we show help pages in this session
-        if !Model.sharedInstance().didPresentHelpViewsInCurrentSession {
-            // Determine which pages should be presented
-            var displayHelpPagesWithIndex: [Int] = []
-            if (Model.sharedInstance().didWatchHelpViews & 0b00000000_00010000) == 0 {
-                displayHelpPagesWithIndex.append(4)     // i.e. submit upload requests and let it go
-            }
-            if (Model.sharedInstance().didWatchHelpViews & 0b00000000_00001000) == 0 {
-                displayHelpPagesWithIndex.append(3)     // i.e. remove images from camera roll
-            }
-            if (Model.sharedInstance().didWatchHelpViews & 0b00000000_00100000) == 0 {
-                displayHelpPagesWithIndex.append(5)     // i.e. manage upload requests in queue
-            }
-            if (Model.sharedInstance().didWatchHelpViews & 0b00000000_00000010) == 0 {
-                displayHelpPagesWithIndex.append(1)     // i.e. use background uploading
-            }
-            if displayHelpPagesWithIndex.count > 0 {
-                // Present unseen upload management help views
-                let helpSB = UIStoryboard(name: "HelpViewController", bundle: nil)
-                let helpVC = helpSB.instantiateViewController(withIdentifier: "HelpViewController") as? HelpViewController
-                if let helpVC = helpVC {
-                    helpVC.displayHelpPagesWithIndex = displayHelpPagesWithIndex
-                    if UIDevice.current.userInterfaceIdiom == .phone {
-                        helpVC.popoverPresentationController?.permittedArrowDirections = .up
-                        navigationController?.present(helpVC, animated:true)
-                    } else {
-                        helpVC.modalPresentationStyle = .formSheet
-                        helpVC.modalTransitionStyle = .coverVertical
-                        helpVC.popoverPresentationController?.sourceView = view
-                        navigationController?.present(helpVC, animated: true)
-                    }
+        // Determine which help pages should be presented
+        var displayHelpPagesWithIndex: [Int] = []
+        if (Model.sharedInstance().didWatchHelpViews & 0b00000000_00010000) == 0 {
+            displayHelpPagesWithIndex.append(4)     // i.e. submit upload requests and let it go
+        }
+        if (Model.sharedInstance().didWatchHelpViews & 0b00000000_00001000) == 0 {
+            displayHelpPagesWithIndex.append(3)     // i.e. remove images from camera roll
+        }
+        if (Model.sharedInstance().didWatchHelpViews & 0b00000000_00100000) == 0 {
+            displayHelpPagesWithIndex.append(5)     // i.e. manage upload requests in queue
+        }
+        if (Model.sharedInstance().didWatchHelpViews & 0b00000000_00000010) == 0 {
+            displayHelpPagesWithIndex.append(1)     // i.e. use background uploading
+        }
+        if displayHelpPagesWithIndex.count > 0 {
+            // Present unseen upload management help views
+            let helpSB = UIStoryboard(name: "HelpViewController", bundle: nil)
+            let helpVC = helpSB.instantiateViewController(withIdentifier: "HelpViewController") as? HelpViewController
+            if let helpVC = helpVC {
+                helpVC.displayHelpPagesWithIndex = displayHelpPagesWithIndex
+                if UIDevice.current.userInterfaceIdiom == .phone {
+                    helpVC.popoverPresentationController?.permittedArrowDirections = .up
+                    navigationController?.present(helpVC, animated:true)
+                } else {
+                    helpVC.modalPresentationStyle = .formSheet
+                    helpVC.modalTransitionStyle = .coverVertical
+                    helpVC.popoverPresentationController?.sourceView = view
+                    navigationController?.present(helpVC, animated: true)
                 }
             }
         }

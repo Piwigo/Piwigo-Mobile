@@ -189,7 +189,6 @@ typedef enum {
 
 // Remember which help views were watched
 @property (nonatomic, assign) UInt16 didWatchHelpViews;
-@property (nonatomic, assign) BOOL didPresentHelpViewsInCurrentSession;
 
 // Request help for translating Piwigo every month or so
 @property (nonatomic, assign) NSTimeInterval dateOfLastTranslationRequest;

@@ -1901,7 +1901,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         Model.sharedInstance().usesCommunityPluginV29 = false
         Model.sharedInstance().hasAdminRights = false
         Model.sharedInstance().recentCategories = "0"
-        Model.sharedInstance().didPresentHelpViewsInCurrentSession = false
         Model.sharedInstance().saveToDisk()
 
         // Erase cache

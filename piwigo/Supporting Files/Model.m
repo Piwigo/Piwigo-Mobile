@@ -135,7 +135,6 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
 		
         // Remember which help views were watched
         instance.didWatchHelpViews = 0b0000000000000000;
-        instance.didPresentHelpViewsInCurrentSession = NO;
         
         // Request help for translating Piwigo every 2 weeks or so
         instance.dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate] - k2WeeksInDays;
@@ -654,6 +653,7 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
     }
     if(savedData.count > 54) {
         self.didWatchHelpViews = [[savedData objectAtIndex:54] integerValue];
+//        self.didWatchHelpViews = 0; // for debugging
     } else {
         self.didWatchHelpViews = 0;
     }
