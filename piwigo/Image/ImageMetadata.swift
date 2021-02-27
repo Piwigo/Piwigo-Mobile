@@ -139,42 +139,36 @@ extension CGImageMetadata {
             let prefix = CGImageMetadataTagCopyPrefix(tag)!
             let name = CGImageMetadataTagCopyName(tag)!
             let path = ((prefix as String) + ":" + (name as String)) as CFString
-            print("=> Tag: \(prefix):\(name)")
+//            print("=> Tag: \(prefix):\(name)")
 
             // Check presence of dictionary
             if let properties = dictOfKeys[prefix] {
                 // Remove tag if it contains private data
                 if properties.contains(name as CFString) {
-                    let result = CGImageMetadataRemoveTagWithPath(metadata, nil, path as CFString)
-                    print("=> removed tag at path:\(path) -> \(result)")
+                    CGImageMetadataRemoveTagWithPath(metadata, nil, path as CFString)
                     return true
                 }
             }
             
             // Check remaining names
             if ImageMetadata().pngPrivateProperties.contains(name) {
-                let result = CGImageMetadataRemoveTagWithPath(metadata, nil, path as CFString)
-                print("=> removed tag at path:\(path) -> \(result)")
+                CGImageMetadataRemoveTagWithPath(metadata, nil, path as CFString)
                 return true
             }
             if ImageMetadata().dngPrivateProperties.contains(name) {
-                let result = CGImageMetadataRemoveTagWithPath(metadata, nil, path as CFString)
-                print("=> removed tag at path:\(path) -> \(result)")
+                CGImageMetadataRemoveTagWithPath(metadata, nil, path as CFString)
                 return true
             }
             if ImageMetadata().ciffPrivateProperties.contains(name) {
-                let result = CGImageMetadataRemoveTagWithPath(metadata, nil, path as CFString)
-                print("=> removed tag at path:\(path) -> \(result)")
+                CGImageMetadataRemoveTagWithPath(metadata, nil, path as CFString)
                 return true
             }
             if ImageMetadata().canonPrivateProperties.contains(name) {
-                let result = CGImageMetadataRemoveTagWithPath(metadata, nil, path as CFString)
-                print("=> removed tag at path:\(path) -> \(result)")
+                CGImageMetadataRemoveTagWithPath(metadata, nil, path as CFString)
                 return true
             }
             if ImageMetadata().nikonPrivateProperties.contains(name) {
-                let result = CGImageMetadataRemoveTagWithPath(metadata, nil, path as CFString)
-                print("=> removed tag at path:\(path) -> \(result)")
+                CGImageMetadataRemoveTagWithPath(metadata, nil, path as CFString)
                 return true
             }
             return true
