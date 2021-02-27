@@ -988,6 +988,20 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
             self.uploadsProvider.importUploads(from: self.selectedImages.compactMap{ $0 }) { error in
                 // Show an alert if there was an error.
                 guard let error = error else {
+                    // Set cache so that cells are immediately presented
+                    // The cache will be fully set after the launch of the uploads
+                    for index in 0..<self.indexedUploadsInQueue.count {
+                        if self.selectedImages[index] == nil { continue }
+                        guard let imageId = self.selectedImages[index]?.localIdentifier else { continue }
+                        let temporaryObject = (imageId, kPiwigoUploadState.waiting)
+                        self.indexedUploadsInQueue[index] = Optional(temporaryObject)
+                    }
+                    
+                    // Clear selection
+                    DispatchQueue.main.async {
+                        self.cancelSelect()
+                    }
+
                     // Restart UploadManager activities
                     if UploadManager.shared.isPaused {
                         UploadManager.shared.isPaused = false
@@ -1016,18 +1030,6 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                 }
             }
         }
-        
-        // Set cache so that cells are immediately presented
-        // The cache will be fully set after the creation of the upload requests
-        for index in 0..<indexedUploadsInQueue.count {
-            if selectedImages[index] == nil { continue }
-            guard let imageId = selectedImages[index]?.localIdentifier else { continue }
-            let temporaryObject = (imageId, kPiwigoUploadState.waiting)
-            indexedUploadsInQueue[index] = Optional(temporaryObject)
-        }
-        
-        // Clear selection
-        cancelSelect()
     }
     
     @objc func uploadSettingsDidDisappear() {
