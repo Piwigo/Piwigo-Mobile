@@ -35,7 +35,6 @@
 		AD2B0A17243D00CD00AF1FEE /* DefaultAlbumThumbnailSizeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2B0A16243D00CD00AF1FEE /* DefaultAlbumThumbnailSizeViewController.swift */; };
 		AD2B0A19243D063E00AF1FEE /* CategorySortViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2B0A18243D063E00AF1FEE /* CategorySortViewController.swift */; };
 		AD2B0A1B243D086000AF1FEE /* CategorySortViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD2B0A1A243D086000AF1FEE /* CategorySortViewController.storyboard */; };
-		AD2BC90925EA468E00EF335F /* UploadToUploadMigrationPolicyV3toV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2BC90825EA468E00EF335F /* UploadToUploadMigrationPolicyV3toV4.swift */; };
 		AD2FEA5825AFA1470072596A /* VideoMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2FEA5725AFA1470072596A /* VideoMetadata.swift */; };
 		AD30FD3721316DA8009AA30E /* piwigoAppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD30FD3621316DA8009AA30E /* piwigoAppStore.swift */; };
 		AD31F5F5242FA75C00BD65FC /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD31F5F4242FA75C00BD65FC /* AboutViewController.swift */; };
@@ -155,7 +154,6 @@
 		ADE03F3623D4E3BD00F21ED9 /* TagError.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE03F3523D4E3BD00F21ED9 /* TagError.swift */; };
 		ADE216FE250E22F7003AE588 /* pwg.images.getInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE216FD250E22F7003AE588 /* pwg.images.getInfo.swift */; };
 		ADE216FF250E23B0003AE588 /* pwg.images.getInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE216FD250E22F7003AE588 /* pwg.images.getInfo.swift */; };
-		ADE2F74425EAB83C00476DCE /* DataModel 3 to 4.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = AD2BC90725EA405C00EF335F /* DataModel 3 to 4.xcmappingmodel */; };
 		ADE46684242F978F002FEDE5 /* AboutViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADE46683242F978E002FEDE5 /* AboutViewController.storyboard */; };
 		ADE4C22625754B420060A203 /* Help03ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE4C22525754B420060A203 /* Help03ViewController.swift */; };
 		ADE4C23425755E660060A203 /* Help01ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE4C23325755E660060A203 /* Help01ViewController.swift */; };
@@ -276,8 +274,6 @@
 		AD2B0A18243D063E00AF1FEE /* CategorySortViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategorySortViewController.swift; sourceTree = "<group>"; };
 		AD2B0A1A243D086000AF1FEE /* CategorySortViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = CategorySortViewController.storyboard; sourceTree = "<group>"; };
 		AD2BC90625E9721B00EF335F /* DataModel 4 (Upload).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 4 (Upload).xcdatamodel"; sourceTree = "<group>"; };
-		AD2BC90725EA405C00EF335F /* DataModel 3 to 4.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; name = "DataModel 3 to 4.xcmappingmodel"; path = "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/piwigo/Data Cache/DataModel 3 to 4.xcmappingmodel"; sourceTree = "<absolute>"; };
-		AD2BC90825EA468E00EF335F /* UploadToUploadMigrationPolicyV3toV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadToUploadMigrationPolicyV3toV4.swift; sourceTree = "<group>"; };
 		AD2FEA5725AFA1470072596A /* VideoMetadata.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoMetadata.swift; sourceTree = "<group>"; };
 		AD30FD3421316DA7009AA30E /* piwigoAppStore.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = piwigoAppStore.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD30FD3621316DA8009AA30E /* piwigoAppStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = piwigoAppStore.swift; sourceTree = "<group>"; };
@@ -1305,8 +1301,6 @@
 				AD074F6523F8498A00D6016A /* ClearCache.swift */,
 				ADB433F523FB3CCB00A873A9 /* DataController.swift */,
 				AD435821246FF21C00AC7D9C /* DataModel.xcdatamodeld */,
-				AD2BC90725EA405C00EF335F /* DataModel 3 to 4.xcmappingmodel */,
-				AD2BC90825EA468E00EF335F /* UploadToUploadMigrationPolicyV3toV4.swift */,
 				ADABACB92235A68E0095C4D0 /* Categories Data */,
 				AD41BEC8223E9BB200A5DEE3 /* Locations Data */,
 				D89045B31A9469FF00A306FE /* Tags Data */,
@@ -1698,7 +1692,6 @@
 				AD61D3142571598000B8DEA0 /* HelpViewController.swift in Sources */,
 				ADE4C23425755E660060A203 /* Help01ViewController.swift in Sources */,
 				ADE4C23E25756BC80060A203 /* Help02ViewController.swift in Sources */,
-				ADE2F74425EAB83C00476DCE /* DataModel 3 to 4.xcmappingmodel in Sources */,
 				AD8709AB259A8E66008C4E4C /* Help04ViewController.swift in Sources */,
 				ADC74CCE259C9E9C00581ADE /* Help05ViewController.swift in Sources */,
 				AD3CD63A259DE34C000C26ED /* Help06ViewController.swift in Sources */,
@@ -1780,7 +1773,6 @@
 				AD2FEA5825AFA1470072596A /* VideoMetadata.swift in Sources */,
 				AD77109D22F49A6000E64797 /* TaggedImagesViewController.m in Sources */,
 				D82B8CC41A67820A000E47CA /* AppDelegate.m in Sources */,
-				AD2BC90925EA468E00EF335F /* UploadToUploadMigrationPolicyV3toV4.swift in Sources */,
 				D8D3F7651A7AF2A100AEA7F1 /* CategoriesData.m in Sources */,
 				D82B8D301A688512000E47CA /* PiwigoImageData.m in Sources */,
 				AD460F9B25E446CE00B09AFE /* Tag+CoreDataClass.swift in Sources */,
