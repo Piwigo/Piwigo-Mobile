@@ -332,11 +332,11 @@ struct UploadProperties
     let category: Int                       // 8
     let serverPath: String                  // URL path of Piwigo server
     var serverFileTypes: String             // File formats accepted by the server
-    let requestDate: Date                   // "2020-08-22 19:18:43"
+    let requestDate: TimeInterval           // "2020-08-22 19:18:43" as a number of seconds
     var requestState: kPiwigoUploadState    // See enum above
     var requestError: String
 
-    var creationDate: Date                  // "2012-08-23 09:18:43"
+    var creationDate: TimeInterval          // "2012-08-23 09:18:43" as a number of seconds
     var fileName: String                    // "IMG123.JPG"
     var mimeType: String                    // "image/png"
     var md5Sum: String                      // "8b1a9953c4611296a827abf8c47804d7"
@@ -369,9 +369,10 @@ extension UploadProperties {
             serverPath: Model.sharedInstance()?.serverPath ?? "",
             serverFileTypes: Model.sharedInstance()?.serverFileTypes ?? "jpg,jpeg,png,gif",
             // Upload request date is now and state is waiting
-            requestDate: Date(), requestState: .waiting, requestError: "",
+            requestDate: Date().timeIntervalSinceReferenceDate,
+            requestState: .waiting, requestError: "",
             // Photo creation date and filename
-            creationDate: Date(), fileName: "",
+            creationDate: Date().timeIntervalSinceReferenceDate, fileName: "",
             mimeType: "", md5Sum: "", isVideo: false,
             // Photo author name defaults to name entered in Settings
             author: Model.sharedInstance()?.defaultAuthor ?? "",

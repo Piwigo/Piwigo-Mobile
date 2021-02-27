@@ -640,7 +640,11 @@ class UploadManager: NSObject, URLSessionDelegate {
         }
 
         // Retrieve creation date
-        uploadProperties.creationDate = originalAsset.creationDate ?? Date.init()
+        if let creationDate = originalAsset.creationDate {
+            uploadProperties.creationDate = creationDate.timeIntervalSinceReferenceDate
+        } else {
+            uploadProperties.creationDate = Date().timeIntervalSinceReferenceDate
+        }
         
         // Determine non-empty unique file name and extension from asset
         var fileName = PhotosFetch.sharedInstance().getFileNameFomImageAsset(originalAsset)

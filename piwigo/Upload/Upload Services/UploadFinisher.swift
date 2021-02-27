@@ -20,7 +20,8 @@ extension UploadManager{
         // Prepare creation date
         let dateFormat = DateFormatter()
         dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        let creationDate = dateFormat.string(from: upload.creationDate)
+        let date = Date(timeIntervalSinceReferenceDate: upload.creationDate)
+        let creationDate = dateFormat.string(from: date)
 
         // Prepare parameters for uploading image/video (filename key is kPiwigoImagesUploadParamFileName)
         let imageTitle = NetworkUtilities.utf8mb3String(from: upload.imageName)

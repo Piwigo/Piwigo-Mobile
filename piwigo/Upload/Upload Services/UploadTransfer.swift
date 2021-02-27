@@ -68,7 +68,7 @@ extension UploadManager {
                         imageData.categoryIds = [uploadProperties.category]
                         imageData.fileName = uploadProperties.fileName
                         imageData.isVideo = uploadProperties.isVideo
-                        imageData.dateCreated = uploadProperties.creationDate
+                        imageData.dateCreated = Date(timeIntervalSinceReferenceDate: uploadProperties.creationDate)
                         imageData.author = uploadProperties.author
                         imageData.privacyLevel = uploadProperties.privacyLevel
 
@@ -307,7 +307,8 @@ extension UploadManager {
         // Prepare creation date
         let dateFormat = DateFormatter()
         dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        let creationDate = dateFormat.string(from: uploadProperties.creationDate)
+        let date = Date(timeIntervalSinceReferenceDate: uploadProperties.creationDate)
+        let creationDate = dateFormat.string(from: date)
 
         // Prepare files, requests and resume tasks
         let username = Model.sharedInstance()?.username ?? ""
@@ -587,7 +588,7 @@ extension UploadManager {
                 imageData.fileName = uploadJSON.data.fileName ?? uploadProperties.fileName
                 imageData.isVideo = uploadProperties.isVideo
                 imageData.datePosted = dateFormatter.date(from: uploadJSON.data.datePosted ?? "") ?? Date.init()
-                imageData.dateCreated = dateFormatter.date(from: uploadJSON.data.dateCreated ?? "") ?? uploadProperties.creationDate
+                imageData.dateCreated = dateFormatter.date(from: uploadJSON.data.dateCreated ?? "") ?? Date(timeIntervalSinceReferenceDate: uploadProperties.creationDate)
 
                 imageData.fullResPath = NetworkHandler.encodedImageURL(uploadJSON.data.fullResPath)
                 imageData.fullResWidth = uploadJSON.data.fullResWidth ?? 1

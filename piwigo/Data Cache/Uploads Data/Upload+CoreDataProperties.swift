@@ -2,7 +2,7 @@
 //  Upload+CoreDataProperties.swift
 //  piwigo
 //
-//  Created by Eddy Lelièvre-Berna on 22/02/2021.
+//  Created by Eddy Lelièvre-Berna on 26/02/2021.
 //  Copyright © 2021 Piwigo.org. All rights reserved.
 //
 //  Properties of the Upload entity.
@@ -21,7 +21,7 @@ extension Upload {
     @NSManaged public var category: Int64
     @NSManaged public var comment: String
     @NSManaged public var compressImageOnUpload: Bool
-    @NSManaged public var creationDate: Date
+    @NSManaged public var creationDate: TimeInterval
     @NSManaged public var defaultPrefix: String
     @NSManaged public var deleteImageAfterUpload: Bool
     @NSManaged public var fileName: String
@@ -35,7 +35,7 @@ extension Upload {
     @NSManaged public var photoResize: Int16
     @NSManaged public var prefixFileNameBeforeUpload: Bool
     @NSManaged public var privacyLevel: Int16
-    @NSManaged public var requestDate: Date
+    @NSManaged public var requestDate: TimeInterval
     @NSManaged public var requestError: String
     @NSManaged public var requestSectionKey: String
     @NSManaged public var requestState: Int16

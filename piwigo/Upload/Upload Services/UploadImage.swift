@@ -494,13 +494,13 @@ extension UploadManager {
             EXIFdateFormatter.dateFormat = "yyyy:MM:dd HH:mm:ss"
             if let EXIFdateTimeOriginal = EXIFdictionary[kCGImagePropertyExifDateTimeOriginal] as? String {
                 if let creationDate = EXIFdateFormatter.date(from: EXIFdateTimeOriginal),
-                   newUpload.creationDate > creationDate {
-                    newUpload.creationDate = creationDate
+                   newUpload.creationDate > creationDate.timeIntervalSinceReferenceDate {
+                    newUpload.creationDate = creationDate.timeIntervalSinceReferenceDate
                 }
             } else if let EXIFdateTimeDigitized = EXIFdictionary[kCGImagePropertyExifDateTimeDigitized] as? String {
                 if let creationDate = EXIFdateFormatter.date(from: EXIFdateTimeDigitized),
-                   newUpload.creationDate > creationDate {
-                    newUpload.creationDate = creationDate
+                   newUpload.creationDate > creationDate.timeIntervalSinceReferenceDate {
+                    newUpload.creationDate = creationDate.timeIntervalSinceReferenceDate
                 }
             }
         }
