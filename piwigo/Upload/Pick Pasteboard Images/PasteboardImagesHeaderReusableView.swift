@@ -63,7 +63,7 @@ class PasteboardImagesHeaderReusableView: UICollectionReusableView {
             bckgColor = UIColor.piwigoColorCellBackground()
         case .none:
             title = ""
-            bckgColor = UIColor.piwigoColorBackground()
+            bckgColor = UIColor.clear
         }
         selectButton.backgroundColor = bckgColor
         selectButton.setTitle(title, for: .normal)
