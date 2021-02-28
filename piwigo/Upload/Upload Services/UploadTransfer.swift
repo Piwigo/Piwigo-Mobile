@@ -393,13 +393,16 @@ extension UploadManager {
             print("\(debugFormatter.string(from: Date())) > \(uploadProperties.md5Sum) upload task \(task.taskIdentifier) resumed (\(chunk)/\(chunks)")
             task.resume()
 
-            // Update UI
-            if !isExecutingBackgroundUploadTask {
+            // Update upload request state and UI
+            uploadsProvider.updateStatusOfUpload(with: uploadID, to: .uploading, error: "") { [unowned self] (_) in
                 // Update UI
-                let progress = Float(chunk) / Float(chunks) / 2.0
-                updateCell(with: uploadProperties.localIdentifier,
-                           stateLabel: kPiwigoUploadState.uploading.stateInfo,
-                           photoResize: nil, progress: progress, errorMsg: "")
+                if !self.isExecutingBackgroundUploadTask {
+                    // Update UI
+                    let progress = Float(chunk) / Float(chunks) / 2.0
+                    self.updateCell(with: uploadProperties.localIdentifier,
+                                    stateLabel: kPiwigoUploadState.uploading.stateInfo,
+                                    photoResize: nil, progress: progress, errorMsg: "")
+                }
             }
         }
     }

@@ -335,7 +335,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         uploadRequestsToPrepare = [NSManagedObjectID]()
         uploadRequestsToTransfer = [NSManagedObjectID]()
 
-        // Get list of upload requests rasdy for transfer and whose transfer did fail
+        // Get list of upload requests ready for transfer and whose transfer did fail
         let requestsToTransfer = uploadsProvider.getRequestsIn(states: [.prepared, .uploadingError])
         let nberToTransfer = requestsToTransfer.count
         if nberToTransfer > 0 {
@@ -822,27 +822,22 @@ class UploadManager: NSObject, URLSessionDelegate {
                        photoResize: nil, progress: Float(0), errorMsg: nil)
         }
 
-        // Update state of upload request
-        uploadsProvider.updateStatusOfUpload(with: uploadID, to: .uploading, error: "") { [unowned self] (_) in
-
-            // Choose recent method if possible
-            if Model.sharedInstance()?.usesUploadAsync ?? false || isExecutingBackgroundUploadTask {
-                self.transferInBackgroundImage(for: uploadID, with: uploadProperties)
-            } else {
-                self.transferImage(for: uploadID, with: uploadProperties)
-            }
+        // Choose recent method if possible
+        if Model.sharedInstance()?.usesUploadAsync ?? false || isExecutingBackgroundUploadTask {
+            // Prepare transfer
+            self.transferInBackgroundImage(for: uploadID, with: uploadProperties)
 
             // Do not prepare next image in background task (already scheduled)
             if self.isExecutingBackgroundUploadTask { return }
-            
+
             // Stop here if there no image to prepare
             if uploadsProvider.getRequestsIn(states: [.waiting]).count == 0 { return }
 
             // Should we prepare the next image in parallel?
+            let uploadIDsToPrepare = uploadsProvider.getRequestsIn(states: [.waiting])
             let nberFinishedWithError = uploadsProvider.getRequestsIn(states: [.finishingError]).count
             let nberUploadedWithError = uploadsProvider.getRequestsIn(states: [.uploadingError]).count
             let nberPreparedWithError = uploadsProvider.getRequestsIn(states: [.preparingError]).count
-            let uploadIDsToPrepare = uploadsProvider.getRequestsIn(states: [.waiting])
             if !self.isPreparing, let uploadID = uploadIDsToPrepare.first,
                nberFinishedWithError < 2, nberUploadedWithError < 2, nberPreparedWithError < 2 {
 
@@ -850,6 +845,30 @@ class UploadManager: NSObject, URLSessionDelegate {
                 self.isPreparing = true
                 self.prepare(for: uploadID)
                 return
+            }
+        }
+        else {
+            // Update state of upload request and start transfer
+            uploadsProvider.updateStatusOfUpload(with: uploadID, to: .uploading, error: "") { [unowned self] (_) in
+                // Transfer image
+                self.transferImage(for: uploadID, with: uploadProperties)
+
+                // Stop here if there no image to prepare
+                if uploadsProvider.getRequestsIn(states: [.waiting]).count == 0 { return }
+
+                // Should we prepare the next image in parallel?
+                let uploadIDsToPrepare = uploadsProvider.getRequestsIn(states: [.waiting])
+                let nberFinishedWithError = uploadsProvider.getRequestsIn(states: [.finishingError]).count
+                let nberUploadedWithError = uploadsProvider.getRequestsIn(states: [.uploadingError]).count
+                let nberPreparedWithError = uploadsProvider.getRequestsIn(states: [.preparingError]).count
+                if !self.isPreparing, let uploadID = uploadIDsToPrepare.first,
+                   nberFinishedWithError < 2, nberUploadedWithError < 2, nberPreparedWithError < 2 {
+
+                    // Prepare the next upload
+                    self.isPreparing = true
+                    self.prepare(for: uploadID)
+                    return
+                }
             }
         }
     }
