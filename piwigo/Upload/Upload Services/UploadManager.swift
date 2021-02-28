@@ -978,7 +978,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         // Get active upload tasks
         let taskContext = DataController.getPrivateContext()
         let uploadSession: URLSession = UploadSessionDelegate.shared.uploadSession
-        uploadSession.getTasksWithCompletionHandler { (_, uploadTasks, _) in
+        uploadSession.getAllTasks { uploadTasks in
             // Loop over the tasks
             for task in uploadTasks {
                 switch task.state {

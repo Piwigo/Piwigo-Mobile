@@ -1712,7 +1712,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 if let resizeImageOnUpload = uploadParameters["resizeImageOnUpload"] as? Bool {
                     updatedRequest.resizeImageOnUpload = resizeImageOnUpload
                     if resizeImageOnUpload {
-                        if let photoResize = uploadParameters["photoResize"] as? Int {
+                        if let photoResize = uploadParameters["photoResize"] as? Int16 {
                             updatedRequest.photoResize = photoResize
                         }
                     } else {
@@ -1722,7 +1722,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 if let compressImageOnUpload = uploadParameters["compressImageOnUpload"] as? Bool {
                     updatedRequest.compressImageOnUpload = compressImageOnUpload
                 }
-                if let photoQuality = uploadParameters["photoQuality"] as? Int {
+                if let photoQuality = uploadParameters["photoQuality"] as? Int16 {
                     updatedRequest.photoQuality = photoQuality
                 }
                 if let prefixFileNameBeforeUpload = uploadParameters["prefixFileNameBeforeUpload"] as? Bool {

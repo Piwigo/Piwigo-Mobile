@@ -174,8 +174,8 @@ extension Upload {
             tagIds: self.tagIds, imageId: Int(self.imageId),
             // Upload settings
             stripGPSdataOnUpload: self.stripGPSdataOnUpload,
-            resizeImageOnUpload: self.resizeImageOnUpload, photoResize: Int(self.photoResize),
-            compressImageOnUpload: self.compressImageOnUpload, photoQuality: Int(self.photoQuality),
+            resizeImageOnUpload: self.resizeImageOnUpload, photoResize: self.photoResize,
+            compressImageOnUpload: self.compressImageOnUpload, photoQuality: self.photoQuality,
             prefixFileNameBeforeUpload: self.prefixFileNameBeforeUpload, defaultPrefix: self.defaultPrefix,
             deleteImageAfterUpload: self.deleteImageAfterUpload)
     }
@@ -197,8 +197,8 @@ extension Upload {
             tagIds: self.tagIds, imageId: Int(self.imageId),
             // Upload settings
             stripGPSdataOnUpload: self.stripGPSdataOnUpload,
-            resizeImageOnUpload: self.resizeImageOnUpload, photoResize: Int(self.photoResize),
-            compressImageOnUpload: self.compressImageOnUpload, photoQuality: Int(self.photoQuality),
+            resizeImageOnUpload: self.resizeImageOnUpload, photoResize: self.photoResize,
+            compressImageOnUpload: self.compressImageOnUpload, photoQuality: self.photoQuality,
             prefixFileNameBeforeUpload: self.prefixFileNameBeforeUpload, defaultPrefix: self.defaultPrefix,
             deleteImageAfterUpload: self.deleteImageAfterUpload)
     }
@@ -351,9 +351,9 @@ struct UploadProperties
 
     var stripGPSdataOnUpload: Bool
     var resizeImageOnUpload: Bool
-    var photoResize: Int
+    var photoResize: Int16
     var compressImageOnUpload: Bool
-    var photoQuality: Int
+    var photoQuality: Int16
     var prefixFileNameBeforeUpload: Bool
     var defaultPrefix: String
     var deleteImageAfterUpload: Bool
@@ -383,9 +383,9 @@ extension UploadProperties {
             // Upload settings
             stripGPSdataOnUpload: Model.sharedInstance()?.stripGPSdataOnUpload ?? false,
             resizeImageOnUpload: Model.sharedInstance()?.resizeImageOnUpload ?? false,
-            photoResize: Model.sharedInstance()?.photoResize ?? 100,
+            photoResize: Int16(Model.sharedInstance()?.photoResize ?? 100),
             compressImageOnUpload: Model.sharedInstance()?.compressImageOnUpload ?? false,
-            photoQuality: Model.sharedInstance()?.photoQuality ?? 98,
+            photoQuality: Int16(Model.sharedInstance()?.photoQuality ?? 98),
             prefixFileNameBeforeUpload: Model.sharedInstance()?.prefixFileNameBeforeUpload ?? false,
             defaultPrefix: Model.sharedInstance()?.defaultPrefix ?? "",
             deleteImageAfterUpload: false)

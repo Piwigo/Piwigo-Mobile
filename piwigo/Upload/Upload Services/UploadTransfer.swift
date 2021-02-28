@@ -374,7 +374,6 @@ extension UploadManager {
             request.httpMethod = "POST"
             request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
             request.setValue(uploadProperties.fileName, forHTTPHeaderField: "filename")
-            request.addValue(uploadID.uriRepresentation().absoluteString, forHTTPHeaderField: "objectURI")
             request.addValue(uploadProperties.localIdentifier, forHTTPHeaderField: "identifier")
             request.addValue(chunkStr, forHTTPHeaderField: "chunk")
             request.addValue(chunksStr, forHTTPHeaderField: "chunks")
@@ -478,7 +477,7 @@ extension UploadManager {
 
     func didCompleteUploadTask(_ task: URLSessionTask, withData data: Data) {
         // Retrieve task parameters
-        guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: "objectURI"),
+        guard let objectURIstr = task.taskDescription,
               let identifier = task.originalRequest?.value(forHTTPHeaderField: "identifier"),
               let md5sum = task.originalRequest?.value(forHTTPHeaderField: "md5sum"),
               let chunks = Float((task.originalRequest?.value(forHTTPHeaderField: "chunks"))!) else {
@@ -574,7 +573,7 @@ extension UploadManager {
                 // Select remaining tasks related with this request if any
                 let tasksToCancel = uploadTasks.filter({ $0.taskDescription == objectURIstr })
                                                .filter({ $0.taskIdentifier != task.taskIdentifier})
-                print("\(self.debugFormatter.string(from: Date())) > \(md5sum) | Delete task \(task.taskIdentifier)")
+                print("\(self.debugFormatter.string(from: Date())) > \(md5sum) | delete task \(task.taskIdentifier)")
                 tasksToCancel.forEach({ $0.cancel() })
             }
 

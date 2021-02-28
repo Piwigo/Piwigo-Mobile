@@ -12,9 +12,9 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
     
     var stripGPSdataOnUpload = Model.sharedInstance()?.stripGPSdataOnUpload ?? false
     var resizeImageOnUpload = Model.sharedInstance()?.resizeImageOnUpload ?? false
-    var photoResize = Model.sharedInstance()?.photoResize ?? 100
+    var photoResize: Int16 = Int16(Model.sharedInstance()?.photoResize ?? 100)
     var compressImageOnUpload = Model.sharedInstance()?.compressImageOnUpload ?? false
-    var photoQuality = Model.sharedInstance()?.photoQuality ?? 98
+    var photoQuality: Int16 = Int16(Model.sharedInstance()?.photoQuality ?? 98)
     var prefixFileNameBeforeUpload = Model.sharedInstance()?.prefixFileNameBeforeUpload ?? false
     var defaultPrefix = Model.sharedInstance()?.defaultPrefix ?? ""
     private var shouldUpdateDefaultPrefix = false
@@ -215,7 +215,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
             cell.configure(with: title, value: value, increment: 1, minValue: 5, maxValue: 100, prefix: "", suffix: "%")
             cell.cellSliderBlock = { newValue in
                 // Update settings
-                self.photoResize = Int(newValue)
+                self.photoResize = Int16(newValue)
             }
             cell.accessibilityIdentifier = "maxNberRecentAlbums"
             tableViewCell = cell
@@ -262,7 +262,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
             cell.configure(with: title, value: value, increment: 1, minValue: 50, maxValue: 98, prefix: "", suffix: "%")
             cell.cellSliderBlock = { newValue in
                 // Update settings
-                self.photoQuality = Int(newValue)
+                self.photoQuality = Int16(newValue)
             }
             cell.accessibilityIdentifier = "compressionRatio"
             tableViewCell = cell
