@@ -113,6 +113,9 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         navigationItem.setLeftBarButton(cancelBarButton, animated: true)
         navigationController?.navigationBar.accessibilityIdentifier = "LocalAlbumsNav"
 
+        // Hide toolbar when returning from the LocalImages / PasteboardImages views
+        navigationController?.isToolbarHidden = true
+
         // Navigation "Select Photo Library items" button
         if #available(iOS 14, *) {
             if PHPhotoLibrary.authorizationStatus(for: .readWrite) == .limited {
