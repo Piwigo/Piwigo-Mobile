@@ -1106,7 +1106,20 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate {
                 // Identify cell to be updated (if presented)
                 if let cell = self.localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell,
                    cell.localIdentifier == upload.localIdentifier {
-                    // Update cell and section header
+                    // Update cell
+                    cell.selectedImage.isHidden = true
+                    switch upload.state {
+                    case .waiting, .preparing, .prepared:
+                        cell.cellWaiting = true
+                    case .uploading, .uploaded, .finishing:
+                        cell.cellUploading = true
+                    case .finished, .moderated:
+                        cell.cellUploaded = true
+                    case .preparingFail, .preparingError, .formatError, .uploadingError, .finishingError:
+                        cell.cellFailed = true
+                    }
+                    cell.reloadInputViews()
+                    // The section will be refreshed only if the button content needs to be changed
                     self.updateSelectButton(completion: {
                         self.localImagesCollection.reloadSections(IndexSet(integer: indexPath.section))
                     })
