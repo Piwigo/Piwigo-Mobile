@@ -1265,7 +1265,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
             // Update state of Select button if needed
             updateSelectButton(ofSection: indexPath.section, completion: {
-                self.localImagesCollection.reloadSections(NSIndexSet(index: indexPath.section) as IndexSet)
+                self.localImagesCollection.reloadSections(IndexSet(integer: indexPath.section))
             })
         }
     }
@@ -1932,27 +1932,21 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
     }
 
     func updateCell(for upload: Upload) {
-        // Get indices of visible items
-        let indexPathsForVisibleItems = localImagesCollection.indexPathsForVisibleItems
-        
-        // Loop over the visible items
-        for indexPath in indexPathsForVisibleItems {
-            // Identify cell to be updated (if presented)
-            if let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell,
-               cell.localIdentifier == upload.localIdentifier {
-                cell.selectedImage.isHidden = true
-                switch upload.state {
-                case .waiting, .preparing, .prepared:
-                    cell.cellWaiting = true
-                case .uploading, .uploaded, .finishing:
-                    cell.cellUploading = true
-                case .finished, .moderated:
-                    cell.cellUploaded = true
-                case .preparingFail, .preparingError, .formatError, .uploadingError, .finishingError:
-                    cell.cellFailed = true
+        DispatchQueue.main.async {
+            // Get indices of visible items
+            let indexPathsForVisibleItems = self.localImagesCollection.indexPathsForVisibleItems
+            
+            // Loop over the visible items
+            for indexPath in indexPathsForVisibleItems {
+                // Identify cell to be updated (if presented)
+                if let cell = self.localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell,
+                   cell.localIdentifier == upload.localIdentifier {
+                    // Update cell and section header
+                    self.updateSelectButton(ofSection: indexPath.section, completion: {
+                        self.localImagesCollection.reloadSections(IndexSet(integer: indexPath.section))
+                    })
+                    return
                 }
-                cell.reloadInputViews()
-                return
             }
         }
     }

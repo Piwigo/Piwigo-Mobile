@@ -1097,29 +1097,19 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate {
     }
 
     func updateCell(for upload: Upload) {
-        // Get indices of visible items
-        let indexPathsForVisibleItems = localImagesCollection.indexPathsForVisibleItems
-        
-        // Loop over the visible items
-        for indexPath in indexPathsForVisibleItems {
+        DispatchQueue.main.async {
+            // Get indices of visible items
+            let indexPathsForVisibleItems = self.localImagesCollection.indexPathsForVisibleItems
             
-            // Get the corresponding index and local identifier
-            let imageId = pbObjects[indexPath.item].identifier // Don't use the cache which might not be ready
-            
-            // Identify cell to be updated (if presented)
-            if imageId == upload.localIdentifier {
-                // Update visible cell
-                if let cell = localImagesCollection.cellForItem(at: indexPath) as? PasteboardImageCollectionViewCell {
-                    cell.selectedImage.isHidden = true
-                    switch upload.state {
-                    case .waiting, .preparing, .preparingError, .preparingFail, .prepared, .formatError:
-                        cell.cellWaiting = true
-                    case .uploading, .uploadingError, .uploaded, .finishing, .finishingError:
-                        cell.cellUploading = true
-                    case .finished, .moderated:
-                        cell.cellUploaded = true
-                    }
-                    cell.reloadInputViews()
+            // Loop over the visible items
+            for indexPath in indexPathsForVisibleItems {
+                // Identify cell to be updated (if presented)
+                if let cell = self.localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell,
+                   cell.localIdentifier == upload.localIdentifier {
+                    // Update cell and section header
+                    self.updateSelectButton(completion: {
+                        self.localImagesCollection.reloadSections(IndexSet(integer: indexPath.section))
+                    })
                     return
                 }
             }
