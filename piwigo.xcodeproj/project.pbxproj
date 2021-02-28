@@ -1244,8 +1244,8 @@
 			isa = PBXGroup;
 			children = (
 				ADC8167A244B5EDE00650223 /* LocalImagesViewController.swift */,
-				AD42D08424449FF000F0BAC1 /* LocalImageCollectionViewCell.swift */,
 				AD45D8AA2444D1CD00CBE206 /* LocalImagesHeaderReusableView.swift */,
+				AD42D08424449FF000F0BAC1 /* LocalImageCollectionViewCell.swift */,
 				ADC8FAA9244C7307006BDA6A /* LocalImagesFooterReusableView.swift */,
 				ADC8167C244B5FA800650223 /* LocalImagesViewController.storyboard */,
 			);

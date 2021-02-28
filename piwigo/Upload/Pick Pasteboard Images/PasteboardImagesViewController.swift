@@ -849,12 +849,10 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         let progressFraction = (notification.userInfo?["progressFraction"] ?? Float(0.0)) as! Float
         let indexPathsForVisibleItems = localImagesCollection.indexPathsForVisibleItems
         for indexPath in indexPathsForVisibleItems {
-            let imageId = pbObjects[indexPath.item].identifier // Don't use the cache which might not be ready
-            if imageId == localIdentifier {
-                if let cell = localImagesCollection.cellForItem(at: indexPath) as? PasteboardImageCollectionViewCell {
-                    cell.setProgress(progressFraction, withAnimation: true)
-                    break
-                }
+            if let cell = localImagesCollection.cellForItem(at: indexPath) as? PasteboardImageCollectionViewCell,
+               cell.localIdentifier == localIdentifier {
+                cell.setProgress(progressFraction, withAnimation: true)
+                return
             }
         }
     }
@@ -988,20 +986,6 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
             self.uploadsProvider.importUploads(from: self.selectedImages.compactMap{ $0 }) { error in
                 // Show an alert if there was an error.
                 guard let error = error else {
-                    // Set cache so that cells are immediately presented
-                    // The cache will be fully set after the launch of the uploads
-                    for index in 0..<self.indexedUploadsInQueue.count {
-                        if self.selectedImages[index] == nil { continue }
-                        guard let imageId = self.selectedImages[index]?.localIdentifier else { continue }
-                        let temporaryObject = (imageId, kPiwigoUploadState.waiting)
-                        self.indexedUploadsInQueue[index] = Optional(temporaryObject)
-                    }
-                    
-                    // Clear selection
-                    DispatchQueue.main.async {
-                        self.cancelSelect()
-                    }
-
                     // Restart UploadManager activities
                     if UploadManager.shared.isPaused {
                         UploadManager.shared.isPaused = false
@@ -1048,7 +1032,7 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate {
         switch type {
         case .insert:
 //            print("••• LocalImagesViewController controller:insert...")
-            // Image added to upload queue
+            // Add upload request to cache and update cell
             if let upload:Upload = anObject as? Upload {
                 // Append upload to non-indexed upload queue
                 if let index = uploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
@@ -1056,29 +1040,28 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate {
                 } else {
                     uploadsInQueue.append((upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState)))
                 }
-                // Get index of uploaded image
+                
+                // Get index of selected image, deselect it and add request to cache
                 if let indexOfUploadedImage = selectedImages.firstIndex(where: { $0?.localIdentifier == upload.localIdentifier }) {
                     // Deselect image
                     selectedImages[indexOfUploadedImage] = nil
-                    // Add image to indexed upload queue
+                    // Add upload request to cache
                     indexedUploadsInQueue[indexOfUploadedImage] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState))
                 }
+                
                 // Update corresponding cell
                 updateCell(for: upload)
             }
         case .delete:
 //            print("••• LocalImagesViewController controller:delete...")
-            // Image removed from upload queue
+            // Delete upload request from cache and update cell
             if let upload:Upload = anObject as? Upload {
                 // Remove upload from non-indexed upload queue
                 if let index = uploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
                     uploadsInQueue.remove(at: index)
                 }
-                // Get index of uploaded image
-                if let indexOfUploadedImage = selectedImages.firstIndex(where: { $0?.localIdentifier == upload.localIdentifier }) {
-                    // Deselect image
-                    selectedImages[indexOfUploadedImage] = nil
-                    // Remove image from indexed upload queue
+                // Remove image from indexed upload queue
+                if let indexOfUploadedImage = indexedUploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
                     indexedUploadsInQueue[indexOfUploadedImage] = nil
                 }
                 // Update corresponding cell
@@ -1089,13 +1072,13 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate {
             break
         case .update:
 //            print("••• LocalImagesViewController controller:update...")
-            // Image removed from upload queue
+            // Update upload request and cell
             if let upload:Upload = anObject as? Upload {
                 // Update upload in non-indexed upload queue
                 if let indexInQueue = uploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
                     uploadsInQueue[indexInQueue] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState))
                 }
-                // Update image in indexed upload queue
+                // Update upload in indexed upload queue
                 if let indexInIndexedQueue = indexedUploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
                     indexedUploadsInQueue[indexInIndexedQueue] = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState))
                 }
