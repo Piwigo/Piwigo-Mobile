@@ -551,20 +551,31 @@ extension UploadManager {
                return
             }
             
-            // Update progress bar if upload not yet complete
+            // Upload completed?
             if let _ = uploadJSON.chunks, let message = uploadJSON.chunks.message {
+                // Upload not completed -> update progress bars if necessary
                 let nberOfUploadedChunks = message.dropFirst(18).components(separatedBy: ",").count
                 print("\(debugFormatter.string(from: Date())) > \(md5sum) | \(nberOfUploadedChunks) chunks downloaded")
-                if !isExecutingBackgroundUploadTask {
-                    if chunks > 0 {
-                        // Update UI
-                        let progress = 0.5 + Float(nberOfUploadedChunks) / Float(chunks) / 2.0
-                        updateCell(with: identifier,
-                                   stateLabel: kPiwigoUploadState.uploading.stateInfo,
-                                   photoResize: nil, progress: progress, errorMsg: nil)
-                    }
-                    return
+                if !isExecutingBackgroundUploadTask, chunks > 0 {
+                    // Update UI
+                    let progress = 0.5 + Float(nberOfUploadedChunks) / Float(chunks) / 2.0
+                    updateCell(with: identifier,
+                               stateLabel: kPiwigoUploadState.uploading.stateInfo,
+                               photoResize: nil, progress: progress, errorMsg: nil)
                 }
+                // Task done but upload not completed yet
+                return
+            }
+            
+            // Upload completed
+            // Cancel other remaining tasks related with this request to any
+            let uploadSession: URLSession = UploadSessionDelegate.shared.uploadSession
+            uploadSession.getAllTasks { uploadTasks in
+                // Select remaining tasks related with this request if any
+                let tasksToCancel = uploadTasks.filter({ $0.taskDescription == objectURIstr })
+                                               .filter({ $0.taskIdentifier != task.taskIdentifier})
+                print("\(self.debugFormatter.string(from: Date())) > \(md5sum) | Delete task \(task.taskIdentifier)")
+                tasksToCancel.forEach({ $0.cancel() })
             }
 
             // Add image to cache when uploaded by admin users
@@ -650,33 +661,23 @@ extension UploadManager {
                 DispatchQueue.main.async {
                     CategoriesData.sharedInstance()?.addImage(imageData)
                 }
-
-                // Delete main file
-                let fileName = uploadProperties.localIdentifier.replacingOccurrences(of: "/", with: "-")
-                let fileURL = applicationUploadsDirectory.appendingPathComponent(fileName)
-                do {
-                    try FileManager.default.removeItem(at: fileURL)
-                } catch {
-                    print("\(debugFormatter.string(from: Date())) > \(md5sum) | could not delete upload file: \(error)")
-                }
-
-                // Update state of upload
-                var newUploadProperties = uploadProperties
-                newUploadProperties.imageId = uploadJSON.data.imageId!
-                newUploadProperties.requestState = .finished
-                newUploadProperties.requestError = ""
-                self.didEndTransfer(for: uploadID, with: newUploadProperties, nil)
-                
-                // Cancel remaining tasks related with this request
-                // to prevent duplicates after upload failures/retries
-                let uploadSession: URLSession = UploadSessionDelegate.shared.uploadSession
-                uploadSession.getAllTasks { uploadTasks in
-                    // Select tasks related with this request
-                    let tasksToCancel = uploadTasks.filter({ $0.taskDescription == objectURIstr })
-                    print("\(self.debugFormatter.string(from: Date())) > \(md5sum) | Delete task \(task.taskIdentifier)")
-                    tasksToCancel.forEach({ $0.cancel() })
-                }
             }
+
+            // Delete uploaded file
+            let fileName = uploadProperties.localIdentifier.replacingOccurrences(of: "/", with: "-")
+            let fileURL = applicationUploadsDirectory.appendingPathComponent(fileName)
+            do {
+                try FileManager.default.removeItem(at: fileURL)
+            } catch {
+                print("\(debugFormatter.string(from: Date())) > \(md5sum) | could not delete upload file: \(error)")
+            }
+
+            // Update state of upload
+            var newUploadProperties = uploadProperties
+            newUploadProperties.imageId = uploadJSON.data.imageId!
+            newUploadProperties.requestState = .finished
+            newUploadProperties.requestError = ""
+            self.didEndTransfer(for: uploadID, with: newUploadProperties, nil)
             return
         } catch {
             // JSON object cannot be digested, image still ready for upload
