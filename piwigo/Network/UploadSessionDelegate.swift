@@ -14,6 +14,10 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
     @objc static var shared = UploadSessionDelegate()
     @objc let uploadSessionIdentifier:String! = "org.piwigo.uploadBckgSession"
     @objc var uploadSessionCompletionHandler: (() -> Void)?
+    
+    // Counters for updating the progress bars of the UI
+    // are set with: (localIdentifier, bytesSent, fileSize)
+    lazy var bytesSentToPiwigoServer: [(String, Float, Float)] = []
         
     // Create single instance
     lazy var uploadSession: URLSession = {
@@ -62,6 +66,11 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
         return URL(string: strURL)?.host ?? ""
     }()
 
+    func removeCounter(for localIdentifier: String) {
+        if let indexOfUpload = bytesSentToPiwigoServer.firstIndex(where: { $0.0 == localIdentifier}) {
+            bytesSentToPiwigoServer.remove(at: indexOfUpload)
+        }
+    }
     
     // MARK: - Session Delegate
     func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
@@ -145,14 +154,39 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
 
-        // Get upload info from task
-//        guard let md5sum = task.originalRequest?.value(forHTTPHeaderField: "md5sum"),
-//            let chunk = Int((task.originalRequest?.value(forHTTPHeaderField: "chunk"))!),
-//            let chunks = Int((task.originalRequest?.value(forHTTPHeaderField: "chunks"))!) else {
-//                print("   > Could not extract HTTP header fields !!!!!!")
-//                return
-//        }
-//        print("    > Upload task \(task.taskIdentifier) did send \(bytesSent) bytes of chunk \(chunk)/\(chunks), i.e. \(totalBytesSent) bytes over \(totalBytesExpectedToSend) at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
+        // Get upload info from the task
+        // The size of the uploaded image is set in the Content-Length field.
+        guard let identifier = task.originalRequest?.value(forHTTPHeaderField: "identifier"),
+              let fileSizeStr = task.originalRequest?.value(forHTTPHeaderField: "fileSize"),
+              let fileSize = Float(fileSizeStr)
+               else {
+                print("   > Could not extract HTTP header fields !!!!!!")
+                return
+        }
+        
+        // Update counter
+        let progressFraction: Float
+        if let indexOfUpload = bytesSentToPiwigoServer.firstIndex(where: { $0.0 == identifier}) {
+            // Update counter
+            bytesSentToPiwigoServer[indexOfUpload].1 += Float(bytesSent)
+            progressFraction = bytesSentToPiwigoServer[indexOfUpload].1 / bytesSentToPiwigoServer[indexOfUpload].2
+            print("    > Upload task \(task.taskIdentifier), progressFraction = \(bytesSentToPiwigoServer[indexOfUpload].1) / \(bytesSentToPiwigoServer[indexOfUpload].2) i.e. \(progressFraction)")
+        } else {
+            // Add counter for this image
+            bytesSentToPiwigoServer.append((identifier, Float(bytesSent), fileSize))
+            progressFraction = Float(bytesSent) / fileSize
+            print("    > Upload task \(task.taskIdentifier), progressFraction = \(bytesSent) / \(fileSize) i.e. \(progressFraction)")
+        }
+        
+        // Update UI
+        let uploadInfo: [String : Any] = ["localIdentifier" : identifier,
+                                          "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
+                                          "progressFraction" : progressFraction]
+        DispatchQueue.main.async {
+            // Update UploadQueue cell and button shown in root album (or default album)
+            let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)
+            NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
+        }
     }
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {

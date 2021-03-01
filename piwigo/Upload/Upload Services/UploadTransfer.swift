@@ -379,6 +379,7 @@ extension UploadManager {
             request.addValue(chunksStr, forHTTPHeaderField: "chunks")
             request.addValue("1", forHTTPHeaderField: "tries")
             request.addValue(uploadProperties.md5Sum, forHTTPHeaderField: "md5sum")
+            request.addValue(String(imageData.count + chunks * 2170), forHTTPHeaderField: "fileSize")
 
             // As soon as tasks are created, the timeout counter starts
             let uploadSession: URLSession = UploadSessionDelegate.shared.uploadSession
@@ -394,13 +395,14 @@ extension UploadManager {
 
             // Update upload request state and UI
             uploadsProvider.updateStatusOfUpload(with: uploadID, to: .uploading, error: "") { [unowned self] (_) in
+                // Reset counter of progress bar in case the upload is relaunched
+                UploadSessionDelegate.shared.removeCounter(for: uploadProperties.localIdentifier)
                 // Update UI
                 if !self.isExecutingBackgroundUploadTask {
                     // Update UI
-                    let progress = Float(chunk) / Float(chunks) / 2.0
                     self.updateCell(with: uploadProperties.localIdentifier,
                                     stateLabel: kPiwigoUploadState.uploading.stateInfo,
-                                    photoResize: nil, progress: progress, errorMsg: "")
+                                    photoResize: nil, progress: 0.0, errorMsg: "")
                 }
             }
         }
@@ -479,8 +481,7 @@ extension UploadManager {
         // Retrieve task parameters
         guard let objectURIstr = task.taskDescription,
               let identifier = task.originalRequest?.value(forHTTPHeaderField: "identifier"),
-              let md5sum = task.originalRequest?.value(forHTTPHeaderField: "md5sum"),
-              let chunks = Float((task.originalRequest?.value(forHTTPHeaderField: "chunks"))!) else {
+              let md5sum = task.originalRequest?.value(forHTTPHeaderField: "md5sum") else {
             return
         }
         
@@ -532,6 +533,7 @@ extension UploadManager {
             if uploadProperties.requestState == .uploadingError { return }
             
             // Update upload request status
+            print("\(debugFormatter.string(from: Date())) > Invalid JSON object: \(dataStr)")
             let error = NSError.init(domain: "Piwigo", code: UploadError.invalidJSONobject.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.invalidJSONobject.localizedDescription])
             self.didEndTransfer(for: uploadID, with: uploadProperties, error)
             return
@@ -551,23 +553,16 @@ extension UploadManager {
             }
             
             // Upload completed?
-            if let _ = uploadJSON.chunks, let message = uploadJSON.chunks.message {
-                // Upload not completed -> update progress bars if necessary
-                let nberOfUploadedChunks = message.dropFirst(18).components(separatedBy: ",").count
-                print("\(debugFormatter.string(from: Date())) > \(md5sum) | \(nberOfUploadedChunks) chunks downloaded")
-                if !isExecutingBackgroundUploadTask, chunks > 0 {
-                    // Update UI
-                    let progress = 0.5 + Float(nberOfUploadedChunks) / Float(chunks) / 2.0
-                    updateCell(with: identifier,
-                               stateLabel: kPiwigoUploadState.uploading.stateInfo,
-                               photoResize: nil, progress: progress, errorMsg: nil)
-                }
-                // Task done but upload not completed yet
+            if let _ = uploadJSON.chunks, let _ = uploadJSON.chunks.message {
+                // Upload not completed
+//                let nberOfUploadedChunks = message.dropFirst(18).components(separatedBy: ",").count
+//                print("\(debugFormatter.string(from: Date())) > \(md5sum) | \(nberOfUploadedChunks) chunks downloaded")
                 return
             }
             
             // Upload completed
             // Cancel other remaining tasks related with this request to any
+            UploadSessionDelegate.shared.removeCounter(for: identifier)
             let uploadSession: URLSession = UploadSessionDelegate.shared.uploadSession
             uploadSession.getAllTasks { uploadTasks in
                 // Select remaining tasks related with this request if any
