@@ -524,9 +524,13 @@ extension UploadManager {
             newUpload.fileName = URL(fileURLWithPath: upload.fileName).deletingPathExtension().appendingPathExtension("jpg").lastPathComponent
         }
 
-        // If compression failed or imageCompressed is nil, try to use original image
+        // If compression failed or imageCompressed is still nil, use resized image
         if imageCompressed == nil {
-            imageCompressed = fullResImageData
+            // Retrieve resized image data in JPEG format
+            imageCompressed = resizedImage.jpegData(compressionQuality: 1.0)
+
+            // Final image file will be in JPEG format
+            newUpload.fileName = URL(fileURLWithPath: upload.fileName).deletingPathExtension().appendingPathExtension("jpg").lastPathComponent
         }
         
         // Determine MIME type from image data, check file extension
