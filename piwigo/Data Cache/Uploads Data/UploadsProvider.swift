@@ -117,14 +117,20 @@ class UploadsProvider: NSObject {
 
             // Loop over new uploads
             for uploadData in uploadsBatch {
-            
                 // Index of this new upload in cache
-                let index = cachedUploads.firstIndex { (item) -> Bool in
-                    item.localIdentifier == uploadData.localIdentifier
-                }
-                
-                // Is this upload already cached?
-                if index == nil {
+                if let index = cachedUploads.firstIndex( where: { $0.localIdentifier == uploadData.localIdentifier }) {
+                    // Update the update's properties using the raw data
+                    do {
+                        try cachedUploads[index].update(with: uploadData)
+                    }
+                    catch UploadError.missingData {
+                        // Could not perform the update
+                        print(UploadError.missingData.localizedDescription)
+                    }
+                    catch {
+                        print(error.localizedDescription)
+                    }
+                } else {
                     // Create an Upload managed object on the private queue context.
                     guard let upload = NSEntityDescription.insertNewObject(forEntityName: "Upload", into: taskContext) as? Upload else {
                         print(UploadError.creationError.localizedDescription)
@@ -143,20 +149,6 @@ class UploadsProvider: NSObject {
                     catch {
                         print(error.localizedDescription)
                     }
-                }
-                else {
-                    // Update the update's properties using the raw data
-                    do {
-                        try cachedUploads[index!].update(with: uploadData)
-                    }
-                    catch UploadError.missingData {
-                        // Could not perform the update
-                        print(UploadError.missingData.localizedDescription)
-                    }
-                    catch {
-                        print(error.localizedDescription)
-                    }
-
                 }
             }
             
