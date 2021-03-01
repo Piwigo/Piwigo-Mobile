@@ -890,6 +890,11 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
 
         // Refresh cell
         cell.reloadInputViews()
+
+        // Update state of Select button if needed
+        updateSelectButton(completion: {
+            self.localImagesCollection.reloadSections(IndexSet(integer: 0))
+        })
     }
 
 
