@@ -41,10 +41,10 @@ class PasteboardImageCollectionViewCell: UICollectionViewCell {
             _cellSelected = cellSelected
             selectedImage?.isHidden = !cellSelected
             darkenView?.isHidden = !cellSelected
-            waitingActivity?.isHidden = true
             uploadingProgress?.isHidden = true
             uploadedImage?.isHidden = true
             failedUploadImage?.isHidden = true
+            waitingActivity?.isHidden = true
         }
     }
 
@@ -56,10 +56,10 @@ class PasteboardImageCollectionViewCell: UICollectionViewCell {
         set(waiting) {
             _cellUploading = waiting
             darkenView?.isHidden = !waiting
-            waitingActivity?.isHidden = !waiting
             uploadingProgress?.isHidden = !waiting
             uploadedImage?.isHidden = waiting
             failedUploadImage?.isHidden = true
+            waitingActivity?.isHidden = !waiting
         }
     }
 
@@ -71,10 +71,10 @@ class PasteboardImageCollectionViewCell: UICollectionViewCell {
         set(uploading) {
             _cellUploading = uploading
             darkenView?.isHidden = !uploading
-            waitingActivity?.isHidden = uploading
             uploadingProgress?.isHidden = !uploading
             uploadedImage?.isHidden = uploading
             failedUploadImage?.isHidden = true
+            waitingActivity?.isHidden = uploading
         }
     }
 
@@ -86,10 +86,10 @@ class PasteboardImageCollectionViewCell: UICollectionViewCell {
         set(uploaded) {
             _cellUploaded = uploaded
             darkenView?.isHidden = !uploaded
-            waitingActivity?.isHidden = uploaded
             uploadingProgress?.isHidden = uploaded
             uploadedImage?.isHidden = !uploaded
             failedUploadImage?.isHidden = true
+            waitingActivity?.isHidden = uploaded
         }
     }
 
@@ -101,10 +101,10 @@ class PasteboardImageCollectionViewCell: UICollectionViewCell {
         set(failed) {
             _cellUploaded = false
             darkenView?.isHidden = !failed
-            waitingActivity?.isHidden = true
             uploadingProgress?.isHidden = true
             uploadedImage?.isHidden = true
             failedUploadImage?.isHidden = !failed
+            waitingActivity?.isHidden = true
         }
     }
 
@@ -175,8 +175,10 @@ class PasteboardImageCollectionViewCell: UICollectionViewCell {
     override func prepareForReuse() {
         cellImage.image = UIImage(named: "placeholder")
         playImage.isHidden = true
-        failedUploadImage.isHidden = true
         cellSelected = false
         setProgress(0, withAnimation: false)
+        uploadingProgress?.isHidden = true
+        failedUploadImage.isHidden = true
+        waitingActivity?.isHidden = true
     }
 }
