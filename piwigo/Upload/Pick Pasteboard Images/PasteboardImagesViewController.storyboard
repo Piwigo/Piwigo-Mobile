@@ -69,6 +69,12 @@
                                                         <constraint firstAttribute="width" secondItem="ysu-Dv-NrU" secondAttribute="height" multiplier="1:1" id="aWL-Zo-pBK"/>
                                                     </constraints>
                                                 </imageView>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="warning" translatesAutoresizingMaskIntoConstraints="NO" id="m2i-yk-TlC">
+                                                    <rect key="frame" x="58" y="58" width="116" height="116"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" secondItem="m2i-yk-TlC" secondAttribute="height" multiplier="1:1" id="qhg-8e-u3B"/>
+                                                    </constraints>
+                                                </imageView>
                                                 <activityIndicatorView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="1wT-ty-LCP">
                                                     <rect key="frame" x="58" y="58" width="116" height="116"/>
                                                     <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
@@ -90,11 +96,14 @@
                                                 <constraint firstAttribute="trailing" secondItem="Mg6-75-nMT" secondAttribute="trailing" constant="10" id="CB0-P6-zyF"/>
                                                 <constraint firstItem="1wT-ty-LCP" firstAttribute="width" secondItem="Ma4-DR-i0O" secondAttribute="width" multiplier="0.5" id="DSP-Tt-h4v"/>
                                                 <constraint firstItem="QVv-FQ-QhA" firstAttribute="top" secondItem="NBu-dR-mRZ" secondAttribute="top" constant="5" id="E5a-Y5-V6z"/>
+                                                <constraint firstItem="m2i-yk-TlC" firstAttribute="centerY" secondItem="NBu-dR-mRZ" secondAttribute="centerY" id="HxW-IA-NQC"/>
                                                 <constraint firstItem="1wT-ty-LCP" firstAttribute="centerX" secondItem="NBu-dR-mRZ" secondAttribute="centerX" id="Ivm-yR-wrk"/>
                                                 <constraint firstItem="u8O-P0-eq0" firstAttribute="leading" secondItem="NBu-dR-mRZ" secondAttribute="leading" constant="5" id="RHr-6Y-fd5"/>
+                                                <constraint firstItem="m2i-yk-TlC" firstAttribute="centerX" secondItem="NBu-dR-mRZ" secondAttribute="centerX" id="SnJ-lo-QYH"/>
                                                 <constraint firstItem="Mg6-75-nMT" firstAttribute="leading" secondItem="NBu-dR-mRZ" secondAttribute="leading" constant="10" id="TBf-VZ-HLK"/>
                                                 <constraint firstAttribute="trailing" secondItem="QVv-FQ-QhA" secondAttribute="trailing" constant="3" id="UHp-Wr-2nX"/>
                                                 <constraint firstAttribute="bottom" secondItem="Mg6-75-nMT" secondAttribute="bottom" constant="10" id="Ynf-sO-Av2"/>
+                                                <constraint firstItem="m2i-yk-TlC" firstAttribute="width" secondItem="NBu-dR-mRZ" secondAttribute="width" multiplier="0.5" id="aXg-qC-ijb"/>
                                                 <constraint firstItem="u8O-P0-eq0" firstAttribute="top" secondItem="NBu-dR-mRZ" secondAttribute="top" constant="5" id="g1B-0c-qmM"/>
                                                 <constraint firstAttribute="trailing" secondItem="ysu-Dv-NrU" secondAttribute="trailing" constant="5" id="jsf-Hq-Qiq"/>
                                                 <constraint firstItem="1wT-ty-LCP" firstAttribute="centerY" secondItem="NBu-dR-mRZ" secondAttribute="centerY" id="xYI-pO-N5Y"/>
@@ -105,6 +114,7 @@
                                         <connections>
                                             <outlet property="cellImage" destination="Ma4-DR-i0O" id="19n-5Y-jIy"/>
                                             <outlet property="darkenView" destination="i4Y-ZG-9Gz" id="YMC-Ns-gtj"/>
+                                            <outlet property="failedUploadImage" destination="m2i-yk-TlC" id="aSq-Aj-38p"/>
                                             <outlet property="playImage" destination="u8O-P0-eq0" id="yOh-8L-3q3"/>
                                             <outlet property="selectedImage" destination="QVv-FQ-QhA" id="iUn-kr-Jnv"/>
                                             <outlet property="uploadedImage" destination="ysu-Dv-NrU" id="nmj-JY-jfW"/>
@@ -213,6 +223,7 @@
         <image name="piwigo" width="25" height="25"/>
         <image name="placeholderImage" width="512" height="512"/>
         <image name="video" width="25" height="16"/>
+        <image name="warning" width="37" height="37"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

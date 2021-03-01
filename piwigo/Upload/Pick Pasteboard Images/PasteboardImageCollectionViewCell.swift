@@ -44,6 +44,7 @@ class PasteboardImageCollectionViewCell: UICollectionViewCell {
             waitingActivity?.isHidden = true
             uploadingProgress?.isHidden = true
             uploadedImage?.isHidden = true
+            failedUploadImage?.isHidden = true
         }
     }
 
@@ -58,6 +59,7 @@ class PasteboardImageCollectionViewCell: UICollectionViewCell {
             waitingActivity?.isHidden = !waiting
             uploadingProgress?.isHidden = !waiting
             uploadedImage?.isHidden = waiting
+            failedUploadImage?.isHidden = true
         }
     }
 
@@ -72,6 +74,7 @@ class PasteboardImageCollectionViewCell: UICollectionViewCell {
             waitingActivity?.isHidden = uploading
             uploadingProgress?.isHidden = !uploading
             uploadedImage?.isHidden = uploading
+            failedUploadImage?.isHidden = true
         }
     }
 
@@ -86,6 +89,22 @@ class PasteboardImageCollectionViewCell: UICollectionViewCell {
             waitingActivity?.isHidden = uploaded
             uploadingProgress?.isHidden = uploaded
             uploadedImage?.isHidden = !uploaded
+            failedUploadImage?.isHidden = true
+        }
+    }
+
+    private var _cellFailed = false
+    @objc var cellFailed: Bool {
+        get {
+            _cellFailed
+        }
+        set(failed) {
+            _cellUploaded = false
+            darkenView?.isHidden = !failed
+            waitingActivity?.isHidden = true
+            uploadingProgress?.isHidden = true
+            uploadedImage?.isHidden = true
+            failedUploadImage?.isHidden = !failed
         }
     }
 
@@ -106,6 +125,7 @@ class PasteboardImageCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var waitingActivity: UIActivityIndicatorView!
     @IBOutlet weak var uploadingProgress: UIProgressView!
     @IBOutlet weak var uploadedImage: UIImageView!
+    @IBOutlet weak var failedUploadImage: UIImageView!
     
     @objc
     func configure(with image: UIImage, identifier: String, thumbnailSize: CGFloat) {
@@ -155,6 +175,7 @@ class PasteboardImageCollectionViewCell: UICollectionViewCell {
     override func prepareForReuse() {
         cellImage.image = UIImage(named: "placeholder")
         playImage.isHidden = true
+        failedUploadImage.isHidden = true
         cellSelected = false
         setProgress(0, withAnimation: false)
     }
