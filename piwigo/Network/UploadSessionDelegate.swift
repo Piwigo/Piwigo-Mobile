@@ -17,7 +17,7 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
     
     // Counters for updating the progress bars of the UI
     // are set with: (localIdentifier, bytesSent, fileSize)
-    lazy var bytesSentToPiwigoServer: [(String, Float, Float)] = []
+    var bytesSentToPiwigoServer: [(String, Float, Float)] = []
         
     // Create single instance
     lazy var uploadSession: URLSession = {
