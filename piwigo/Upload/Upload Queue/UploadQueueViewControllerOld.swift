@@ -277,13 +277,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
     
     @objc func mainHeader() {
         DispatchQueue.main.async {
-            if !AFNetworkReachabilityManager.shared().isReachable {
-                // No network access
-                let headerView = UploadQueueHeaderView(frame: .zero)
-                headerView.configure(text: NSLocalizedString("uploadNoInternetNetwork", comment: "No Internet Connection"))
-                self.queueTableView.tableHeaderView = headerView
-            }
-            else if AFNetworkReachabilityManager.shared().isReachableViaWWAN && Model.sharedInstance().wifiOnlyUploading {
+            if AFNetworkReachabilityManager.shared().isReachableViaWWAN && Model.sharedInstance().wifiOnlyUploading {
                 // No Wi-Fi and user wishes to upload only on Wi-Fi
                 let headerView = UploadQueueHeaderView(frame: .zero)
                 headerView.configure(text: NSLocalizedString("uploadNoWiFiNetwork", comment: "No Wi-Fi Connection"))

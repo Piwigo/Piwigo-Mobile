@@ -181,8 +181,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         }
         
         // Check network access and status
-        if !AFNetworkReachabilityManager.shared().isReachable ||
-            (AFNetworkReachabilityManager.shared().isReachableViaWWAN && Model.sharedInstance().wifiOnlyUploading) {
+        if AFNetworkReachabilityManager.shared().isReachableViaWWAN && Model.sharedInstance().wifiOnlyUploading {
             return
         }
 
