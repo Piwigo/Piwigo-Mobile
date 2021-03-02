@@ -105,9 +105,10 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         applyColorPalette()
 
         // Are there images in the pasteboard?
-        let testTypes = UIPasteboard.general.contains(pasteboardTypes: ["public.image", "public.movie"]) ? true : false
-        let nberPhotos = UIPasteboard.general.itemSet(withPasteboardTypes: ["public.image", "public.movie"])?.count ?? 0
-        hasImagesInPasteboard = testTypes && (nberPhotos > 0)
+        if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: ["public.image", "public.movie"]),
+           indexSet.count > 0, let _ = UIPasteboard.general.types(forItemSet: indexSet) {
+            hasImagesInPasteboard = true
+        }
 
         // Navigation "Cancel" button and identifier
         navigationItem.setLeftBarButton(cancelBarButton, animated: true)
