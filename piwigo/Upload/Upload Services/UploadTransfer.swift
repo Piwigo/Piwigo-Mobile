@@ -396,7 +396,7 @@ extension UploadManager {
             // Update upload request state and UI
             uploadsProvider.updateStatusOfUpload(with: uploadID, to: .uploading, error: "") { [unowned self] (_) in
                 // Reset counter of progress bar in case the upload is relaunched
-                UploadSessionDelegate.shared.removeCounter(for: uploadProperties.localIdentifier)
+                UploadSessionDelegate.shared.clearCounter(withID: uploadProperties.localIdentifier)
                 // Update UI
                 if !self.isExecutingBackgroundUploadTask {
                     // Update UI
@@ -562,7 +562,6 @@ extension UploadManager {
             
             // Upload completed
             // Cancel other remaining tasks related with this request to any
-            UploadSessionDelegate.shared.removeCounter(for: identifier)
             let uploadSession: URLSession = UploadSessionDelegate.shared.uploadSession
             uploadSession.getAllTasks { uploadTasks in
                 // Select remaining tasks related with this request if any
@@ -570,6 +569,7 @@ extension UploadManager {
                                                .filter({ $0.taskIdentifier != task.taskIdentifier})
                 print("\(self.debugFormatter.string(from: Date())) > \(md5sum) | delete task \(task.taskIdentifier)")
                 tasksToCancel.forEach({ $0.cancel() })
+                UploadSessionDelegate.shared.removeCounter(withID: identifier)
             }
 
             // Add image to cache when uploaded by admin users

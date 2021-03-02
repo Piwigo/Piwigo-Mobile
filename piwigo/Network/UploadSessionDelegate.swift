@@ -14,11 +14,7 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
     @objc static var shared = UploadSessionDelegate()
     @objc let uploadSessionIdentifier:String! = "org.piwigo.uploadBckgSession"
     @objc var uploadSessionCompletionHandler: (() -> Void)?
-    
-    // Counters for updating the progress bars of the UI
-    // are set with: (localIdentifier, bytesSent, fileSize)
-    var bytesSentToPiwigoServer: [(String, Float, Float)] = []
-        
+            
     // Create single instance
     lazy var uploadSession: URLSession = {
         let config = URLSessionConfiguration.background(withIdentifier: uploadSessionIdentifier)
@@ -66,7 +62,19 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
         return URL(string: strURL)?.host ?? ""
     }()
 
-    func removeCounter(for localIdentifier: String) {
+    
+    // MARK: - Byte Counters
+    // Counters for updating the progress bars of the UI
+    // are set with: (localIdentifier, bytesSent, fileSize)
+    lazy var bytesSentToPiwigoServer: [(String, Float, Float)] = []
+
+    func clearCounter(withID localIdentifier: String) {
+        if let indexOfUpload = bytesSentToPiwigoServer.firstIndex(where: { $0.0 == localIdentifier}) {
+            bytesSentToPiwigoServer[indexOfUpload].1 = 0.0
+        }
+    }
+
+    func removeCounter(withID localIdentifier: String) {
         if let indexOfUpload = bytesSentToPiwigoServer.firstIndex(where: { $0.0 == localIdentifier}) {
             bytesSentToPiwigoServer.remove(at: indexOfUpload)
         }
