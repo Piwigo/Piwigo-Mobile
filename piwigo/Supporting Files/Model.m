@@ -25,13 +25,6 @@ NSTimeInterval const k1WeekInDays  = 60 * 60 * 24 *  7.0;
 NSTimeInterval const k2WeeksInDays = 60 * 60 * 24 * 14.0;
 NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
 
-NSString *kPiwigoActivityTypeMessenger = @"com.facebook.Messenger.ShareExtension";
-NSString *kPiwigoActivityTypePostInstagram = @"com.burbn.instagram.shareextension";
-NSString *kPiwigoActivityTypePostToSignal = @"org.whispersystems.signal.shareextension";
-NSString *kPiwigoActivityTypePostToSnapchat = @"com.toyopagroup.picaboo.share";
-NSString *kPiwigoActivityTypePostToWhatsApp = @"net.whatsapp.WhatsApp.ShareExtension";
-NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
-
 @interface Model()
 
 @end
@@ -142,7 +135,6 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 		
         // Remember which help views were watched
         instance.didWatchHelpViews = 0b0000000000000000;
-        instance.didPresentHelpViewsInCurrentSession = NO;
         
         // Request help for translating Piwigo every 2 weeks or so
         instance.dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate] - k2WeeksInDays;
@@ -421,7 +413,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
 	}
     if(savedData.count > 13) {
         if(savedData.count > 47) {
-            self.defaultThumbnailSize = [[savedData objectAtIndex:13] integerValue];
+            self.defaultThumbnailSize = (kPiwigoImageSize)[[savedData objectAtIndex:13] integerValue];
         } else {
             // Just updated to 2.4.2…
             self.defaultThumbnailSize = [PiwigoImageData optimumImageThumbnailSizeForDevice];
@@ -661,6 +653,7 @@ NSString *kPiwigoActivityTypeOther = @"undefined.ShareExtension";
     }
     if(savedData.count > 54) {
         self.didWatchHelpViews = [[savedData objectAtIndex:54] integerValue];
+//        self.didWatchHelpViews = 0; // for debugging
     } else {
         self.didWatchHelpViews = 0;
     }

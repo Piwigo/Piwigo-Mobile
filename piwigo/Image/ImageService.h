@@ -63,18 +63,6 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
                         OnCompletion:(void (^)(NSURLSessionTask *task, PiwigoImageData *imageData))completion
                            onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(NSURLRequest*)urlRequestForImage:(PiwigoImageData*)image withMnimumSize:(CGFloat)minSize;
-+(NSURL *)getFileUrlOfImage:(PiwigoImageData*)image withURLrequest:(NSURLRequest *)urlRequest;
-+(NSURLSessionDownloadTask*)downloadImage:(PiwigoImageData*)imageData
-                   withUrlRequest:(NSURLRequest*)urlRequest
-                       onProgress:(void (^)(NSProgress *))progress
-                completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler;
-
-+(NSURLSessionDownloadTask*)downloadVideo:(PiwigoImageData*)video
-                   withUrlRequest:(NSURLRequest*)urlRequest
-                       onProgress:(void (^)(NSProgress *))progress
-                completionHandler:(void (^)(NSURLResponse *response, NSURL *filePath, NSError *error))completionHandler;
-
 +(NSURLSessionTask*)deleteImage:(PiwigoImageData*)image
                ListOnCompletion:(void (^)(NSURLSessionTask *task))completion
                       onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
@@ -116,9 +104,5 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
                                   onProgress:(void (^)(NSProgress *))progress
                                 OnCompletion:(void (^)(NSURLSessionTask *task, BOOL removedSuccessfully))completion
                                    onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
-
-+(NSMutableDictionary *)stripGPSdataFromImageMetadata:(NSDictionary *)metadata;
-+(NSMutableDictionary *)fixMetadata:(NSDictionary *)originalMetadata ofImage:(UIImage*)image;
-+(NSData*)writeMetadata:(NSDictionary*)metadata intoImageData:(NSData *)imageData;
 
 @end

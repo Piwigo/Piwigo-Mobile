@@ -12,8 +12,6 @@
 #import "AlbumData.h"
 #import "AlbumImagesViewController.h"
 #import "AlbumService.h"
-#import "AsyncImageActivityItemProvider.h"
-#import "AsyncVideoActivityItemProvider.h"
 #import "AppDelegate.h"
 #import "CategoriesData.h"
 #import "CategoryCollectionViewCell.h"
@@ -45,7 +43,12 @@ NSString * const kPiwigoNotificationUploadedImage = @"kPiwigoNotificationUploade
 NSString * const kPiwigoNotificationDeletedImage = @"kPiwigoNotificationDeletedImage";
 NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChangedAlbumData";
 
-@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, UITextFieldDelegate, ImageDetailDelegate, EditImageParamsDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, AsyncImageActivityItemProviderDelegate, TagSelectorViewDelegate, ChangedSettingsDelegate>
+NSString * const kPiwigoNotificationDidShareImage = @"kPiwigoNotificationDidShareImage";
+NSString * const kPiwigoNotificationCancelDownloadImage = @"kPiwigoNotificationCancelDownloadImage";
+NSString * const kPiwigoNotificationDidShareVideo = @"kPiwigoNotificationDidShareVideo";
+NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationCancelDownloadVideo";
+
+@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, UITextFieldDelegate, ImageDetailDelegate, EditImageParamsDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, ShareImageActivityItemProviderDelegate, TagSelectorViewDelegate, ChangedSettingsDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
@@ -328,7 +331,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
     self.nberOfUploadsLabel.textColor = [UIColor piwigoColorBackground];
     self.progressLayer.strokeColor = [[UIColor piwigoColorBackground] CGColor];
 
-    [self.homeAlbumButton.layer setShadowColor:[UIColor piwigoColorLeftLabel].CGColor];
+    [self.homeAlbumButton.layer setShadowColor:[UIColor piwigoColorShadow].CGColor];
     self.homeAlbumButton.backgroundColor = [UIColor piwigoColorRightLabel];
     self.homeAlbumButton.tintColor = [UIColor piwigoColorBackground];
 
@@ -585,6 +588,32 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
         }
     }
 
+    // Determine which help pages should be presented
+    NSMutableArray *displayHelpPagesWithIndex = [[NSMutableArray alloc] initWithCapacity:2];
+    if ((self.categoryId != 0) && ([self.albumData.images count] > 2) &&
+        (([Model sharedInstance].didWatchHelpViews & 0b0000000000000001) == 0)) {
+        [displayHelpPagesWithIndex addObject:@0];   // i.e. multiple selection of images
+    }
+    NSInteger numberOfAlbums = [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count;
+    if ((self.categoryId != 0) && (numberOfAlbums > 2) && [Model sharedInstance].hasAdminRights &&
+        (([Model sharedInstance].didWatchHelpViews & 0b0000000000000100) == 0)) {
+        [displayHelpPagesWithIndex addObject:@2];   // i.e. management of albums
+    }
+    if (displayHelpPagesWithIndex.count > 0) {
+        // Present unseen upload management help views
+        UIStoryboard *helpSB = [UIStoryboard storyboardWithName:@"HelpViewController" bundle:nil];
+        HelpViewController *helpVC = [helpSB instantiateViewControllerWithIdentifier:@"HelpViewController"];
+        helpVC.displayHelpPagesWithIndex = displayHelpPagesWithIndex;
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+            helpVC.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
+            [self presentViewController:helpVC animated:YES completion:nil];
+        } else {
+            helpVC.modalPresentationStyle = UIModalPresentationFormSheet;
+            helpVC.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+            [self presentViewController:helpVC animated:YES completion:nil];
+        }
+    }
+    
     // Replace iRate as from v2.1.5 (75) — See https://github.com/nicklockwood/iRate
     // Tells StoreKit to ask the user to rate or review the app, if appropriate.
 //#if !defined(DEBUG)
@@ -630,18 +659,6 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addImageToCategory:) name:kPiwigoNotificationUploadedImage object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeImageFromCategory:) name:kPiwigoNotificationDeletedImage object:nil];
-    
-    // Present What's New views i.e. Help views if needed
-//    [Model sharedInstance].didWatchHelpViews = 0b0000000000000000;       // Lines for testing
-    if (([Model sharedInstance].didWatchHelpViews < 0b0000000000111111) &&
-        ![Model sharedInstance].didPresentHelpViewsInCurrentSession ){
-        UIStoryboard *helpSB = [UIStoryboard storyboardWithName:@"HelpViewController" bundle:nil];
-        HelpViewController *helpVC = [helpSB instantiateViewControllerWithIdentifier:@"HelpViewController"];
-        helpVC.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-        helpVC.modalPresentationStyle = UIModalPresentationFormSheet;
-        helpVC.onlyWhatsNew = YES;
-        [self presentViewController:helpVC animated:YES completion:nil];
-    }
 }
 
 -(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
@@ -2574,23 +2591,29 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
 
 -(void)presentShareImageViewControllerWithCameraRollAccess:(BOOL)hasCameraRollAccess
 {
+    // To exclude some activity types
+    NSMutableSet *excludedActivityTypes = [NSMutableSet new];
+
     // Create new activity provider items to pass to the activity view controller
     self.totalNumberOfImages = self.selectedImagesToShare.count;
     NSMutableArray *itemsToShare = [NSMutableArray new];
     for (PiwigoImageData *imageData in self.selectedImagesToShare) {
         if (imageData.isVideo) {
             // Case of a video
-            AsyncVideoActivityItemProvider *videoItemProvider = [[AsyncVideoActivityItemProvider alloc]  initWithPlaceholderImage:imageData];
+            ShareVideoActivityItemProvider *videoItemProvider = [[ShareVideoActivityItemProvider alloc]  initWithPlaceholderImage:imageData];
             
             // Use delegation to monitor the progress of the item method
             videoItemProvider.delegate = self;
             
             // Add to list of items to share
             [itemsToShare addObject:videoItemProvider];
+
+            // Exclude "assign to contact" activity
+            [excludedActivityTypes addObject:UIActivityTypeAssignToContact];
         }
         else {
             // Case of an image
-            AsyncImageActivityItemProvider *imageItemProvider = [[AsyncImageActivityItemProvider alloc]  initWithPlaceholderImage:imageData];
+            ShareImageActivityItemProvider *imageItemProvider = [[ShareImageActivityItemProvider alloc]  initWithPlaceholderImage:imageData];
             
             // Use delegation to monitor the progress of the item method
             imageItemProvider.delegate = self;
@@ -2601,7 +2624,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
     }
 
     // Create an activity view controller with the activity provider item.
-    // AsyncImageActivityItemProvider's superclass conforms to the UIActivityItemSource protocol
+    // ShareImageActivityItemProvider's superclass conforms to the UIActivityItemSource protocol
     UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:itemsToShare applicationActivities:nil];
     
     // Set HUD view controller for displaying progress
@@ -2609,8 +2632,10 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
     
     // Exclude camera roll activity if needed
     if (!hasCameraRollAccess) {
-        activityViewController.excludedActivityTypes = @[UIActivityTypeSaveToCameraRoll];
+        // Exclude "camera roll" activity when the Photo Library is not accessible
+        [excludedActivityTypes addObject:UIActivityTypeSaveToCameraRoll];
     }
+    activityViewController.excludedActivityTypes = [excludedActivityTypes allObjects];
 
     // Delete image/video files and remove observers after dismissing activity view controller
     [activityViewController setCompletionWithItemsHandler:^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError){
@@ -3439,7 +3464,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
 }
 
 
-#pragma mark - AsyncImageActivityItemProviderDelegate
+#pragma mark - ShareImageActivityItemProviderDelegate
 
 -(void)imageActivityItemProviderPreprocessingDidBegin:(UIActivityItemProvider *)imageActivityItemProvider withTitle:(NSString *)title
 {

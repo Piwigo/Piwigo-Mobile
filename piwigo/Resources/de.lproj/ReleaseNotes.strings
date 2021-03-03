@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v2.6.0_text" = "Version 2.\n\n• Einfügen/Hochladen von Fotos und Videos aus der Zwischenablage\n• Behebt ein Kompatibilitätsproblem mit Piwigo 11\n• Kleinere Fehlerbehebungen und Verbesserungen der Schnittstelle";
+
 "v2.5.4_text" = "Version 2.5.4\n\n• Kleinere Fehlerbehebungen und Verbesserungen der Benutzeroberfläche";
 
 "v2.5.3_text" = "Version 2.5.\n21. Dezember 2020\n\n• Kontrollieren Sie, auf welche Fotos und Videos Piwigo zugreifen kann\n• Tipps und Tricks zur besseren Nutzung der App\n• Fehlerbehebungen";

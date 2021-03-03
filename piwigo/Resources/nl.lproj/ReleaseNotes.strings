@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v2.6.0_text" = "Versie 2.6\n\n• Kopiëren/plakken van foto's en video's vanaf het klembord\n• Compatibiliteitsproblemen met Piwigo 11 opgelost\n• Kleine bugfixes en verbeteringen aan de interface";
+
 "v2.5.4_text" = "Versie 2.5.4\n\n• Kleine foutjes verbeterd en verbetering van de interface";
 
 "v2.5.3_text" = "Versie 2.5.3\n21 December 2020\n\n• Bepaal welke foto's en video's Piwigo toegang hebben tot\n• Tips en trucs voor een betere exploitatie van de app\n• Foutjes verbeterd";
@@ -86,10 +88,10 @@
 
 "v2.0.3_text" = "Versie 2.0.3\n26 Mei 2017\n\n• Optie toegevoegd om GPS-metadata te strippen op de pagina Instellingen\n• Huidige cache-gebruik toevoegen op de pagina Instellingen\n• Verbeterde cache-instellingen soms vergeten ‎/ opnieuw instellen\n• Verbeterde upload beeldinstellingen soms verloren ‎/ opnieuw instellen";
 
-"v2.0.2_text" = "Versie 2.0.2\n8 Mei 2017\n\n• Sorteercriteria zijn nu identiek aan die van de Web-app\n• Sorteerproblemen opgelost\n• Een crash verholpen die optrad bij het toevoegen van labels aan een foto vóór het uploaden\n• Verbeterde situaties waarin het verwijderen van een selectie van afbeeldingen niet werkte\n• Verbeterde situaties waarin een album niet te zien was na verplaatsing\n• Verbeterd een compatibiliteitsprobleem op met iOS 10 - verouderde code";
+"v2.0.2_text" = "Versie 2.0.2\n8 Mei 2017\n\n• Sorteercriteria zijn nu identiek aan die van de Web-app\n• Sorteerproblemen opgelost\n• Een crash verholpen die optrad bij het toevoegen van labels aan een foto vóór het uploaden\n• Verbeterde situaties waarin het verwijderen van een selectie van afbeeldingen niet werkte\n• Verbeterde situaties waarin een album niet te zien was na verplaatsing\n• Verbeterd een compatibiliteitsprobleem op iOS 10 - verouderde code";
 
 "v2.0.1_text" = "Versie 2.0.1\n26 Juni 2015\n\nNieuwe instellingen‎:\n - Optie om het formaat van afbeeldingen te wijzigen bij het uploaden\n   + De beeldkwaliteit is van een bereik van 50 - 98%\n - Mogelijkheid om een standaardfotovoorbeeld in te stellen\nFoutjes verbeterd";
 
-"v2.0.0_text" = "Versie 2.0\n24 April 2015\n\nNieuw land toepassing met‎:\n - Mogelijkheid om albums te beheren\n - Bekijk je foto's\n - Bulk foto's uploaden\n - Video uploaden en afspelen ‎(VideoJS-plug-in moet zijn geïnstalleerd)";
+"v2.0.0_text" = "Versie 2.0\n24 April 2015\n\nNieuwe native applicatie met‎:\n - Mogelijkheid om albums te beheren\n - Bekijk je foto's\n - Bulk foto's uploaden\n - Video uploaden en afspelen ‎(VideoJS-plug-in moet zijn geïnstalleerd)";
 
 "v1.0.0_text" = "Versie 1.0\n17 Oktober 2011";

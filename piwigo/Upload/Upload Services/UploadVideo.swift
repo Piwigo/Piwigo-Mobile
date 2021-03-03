@@ -12,9 +12,70 @@ import Photos
 
 extension UploadManager {
     
-    // MARK: - Video preparation
-    func prepareVideo(for uploadID: NSManagedObjectID,
-                      with uploadProperties: UploadProperties, _ imageAsset: PHAsset) -> Void {
+    // MARK: - Prepare Video From Pasteboard
+    // Case of a video from the Pasteboard which is in a format accepted by the Piwigo server
+    func prepareVideo(atURL originalFileURL: URL,
+                      for uploadID: NSManagedObjectID, with uploadProperties: UploadProperties) -> Void {
+        
+        // Retrieve video data
+        let originalVideo = AVAsset.init(url: originalFileURL)
+
+        // Check if the user wants to:
+        /// - reduce the frame size
+        /// - remove the private metadata
+        if uploadProperties.resizeImageOnUpload ||
+            (uploadProperties.stripGPSdataOnUpload && originalVideo.metadata.containsPrivateMetadata()) {
+            // Check that the video can be exported
+            self.checkVideoExportability(of: originalVideo,
+                                         for: uploadID, with: uploadProperties)
+            return
+        }
+        
+        // Get MIME type
+        guard let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, originalFileURL.pathExtension as NSString, nil)?.takeRetainedValue() else {
+            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+            self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
+            return
+        }
+        guard let mimeType = (UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue()) as String? else  {
+            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+            self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
+            return
+        }
+        var newUploadProperties = uploadProperties
+        newUploadProperties.mimeType = mimeType
+
+        // Determine MD5 checksum
+        let error: NSError?
+        (newUploadProperties.md5Sum, error) = originalFileURL.MD5checksum()
+        print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUploadProperties.md5Sum))")
+        if error != nil {
+            // Could not determine the MD5 checksum
+            self.didPrepareVideo(for: uploadID, with: newUploadProperties, error)
+            return
+        }
+
+        // Upload video with tags and properties
+        self.didPrepareVideo(for: uploadID, with: newUploadProperties, nil)
+    }
+
+    // Case of a video from the Pasteboard which is in a format not accepted by the Piwigo server
+    func convertVideo(atURL originalFileURL: URL,
+                      for uploadID: NSManagedObjectID, with uploadProperties: UploadProperties) -> Void {
+
+        // Retrieve video data
+        let originalVideo = AVAsset.init(url: originalFileURL)
+
+        // Check that the video can be exported
+        self.checkVideoExportability(of: originalVideo,
+                                     for: uploadID, with: uploadProperties)
+    }
+
+    
+    // MARK: - Prepare Video From Photo Library
+    // Case of a video from the Photo Library which is in a format accepted by the Piwigo server
+    func prepareVideo(ofAsset imageAsset: PHAsset,
+                      for uploadID: NSManagedObjectID, with uploadProperties: UploadProperties) -> Void {
 
         // Retrieve video data
         let options = getVideoRequestOptions()
@@ -27,120 +88,80 @@ extension UploadManager {
 
             // Valid AVAsset?
             guard let originalVideo = avasset else {
-                // define error !!!!
+                let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                 self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
                 return
             }
             
-            // Get MIME type
+            // Check if the user wants to:
+            /// - reduce the frame size
+            /// - remove the private metadata
+            if uploadProperties.resizeImageOnUpload ||
+                (uploadProperties.stripGPSdataOnUpload && originalVideo.metadata.containsPrivateMetadata()) {
+                // Check that the video can be exported
+                self.checkVideoExportability(of: originalVideo,
+                                             for: uploadID, with: uploadProperties)
+                return
+            }
+            
+            // Get original fileURL
             guard let originalFileURL = (originalVideo as? AVURLAsset)?.url else {
                 let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                 self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
                 return
             }
+
+            // Get MIME type
             guard let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, originalFileURL.pathExtension as NSString, nil)?.takeRetainedValue() else {
                 let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                 self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
                 return
             }
-            guard let mimeType = UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue() else  {
+            guard let mimeType = (UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue()) as String? else  {
                 let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                 self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
                 return
             }
             var newUploadProperties = uploadProperties
-            newUploadProperties.mimeType = mimeType as String
+            newUploadProperties.mimeType = mimeType
 
-            // Determine if metadata contains private data
-            let assetMetadata = originalVideo.commonMetadata
-            let locationMetadata = AVMetadataItem.metadataItems(from: assetMetadata, filteredByIdentifier: .commonIdentifierLocation)
+            // Prepare URL of temporary file
+            let fileName = uploadProperties.localIdentifier.replacingOccurrences(of: "/", with: "-")
+            let fileURL = self.applicationUploadsDirectory.appendingPathComponent(fileName)
 
-            // Upload original video if metedata matches user's choice
-            if !uploadProperties.stripGPSdataOnUpload ||
-                (uploadProperties.stripGPSdataOnUpload && (locationMetadata.count == 0)) {
-
-                // Prepare URL of temporary file
-                let fileName = uploadProperties.localIdentifier.replacingOccurrences(of: "/", with: "-")
-                let fileURL = self.applicationUploadsDirectory.appendingPathComponent(fileName)
-
-                // Deletes temporary video file if it already exists
-                do {
-                    try FileManager.default.removeItem(at: fileURL)
-                } catch {
-                }
-
-                // Determine MD5 checksum
-                var videoData: Data = Data()
-                do {
-                    try videoData = NSData (contentsOf: originalFileURL) as Data
-                    
-                    // Determine MD5 checksum of video file to upload
-                    var md5Checksum: String? = ""
-                    if #available(iOS 13.0, *) {
-                        #if canImport(CryptoKit)        // Requires iOS 13
-                        md5Checksum = self.MD5(data: videoData)
-                        #endif
-                    } else {
-                        // Fallback on earlier versions
-                        md5Checksum = self.oldMD5(data: videoData)
-                    }
-                    newUploadProperties.md5Sum = md5Checksum
-                    print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: md5Checksum))")
-                }
-                catch let error as NSError {
-                    // Could not determine the MD5 checksum
-                    self.didPrepareVideo(for: uploadID, with: newUploadProperties, error)
-                }
-
-                // Copy video into Piwigo/Upload directory
-                do {
-                    try FileManager.default.copyItem(at: originalFileURL, to: fileURL)
-                    // Upload video with tags and properties
-                    self.didPrepareVideo(for: uploadID, with: newUploadProperties, nil)
-                    return
-                }
-                catch let error as NSError {
-                    // Could not copy the video file
-                    self.didPrepareVideo(for: uploadID, with: newUploadProperties, error)
-                    return
-                }
+            // Deletes temporary video file if it already exists
+            do {
+                try FileManager.default.removeItem(at: fileURL)
+            } catch {
             }
-            
-            // Remove metadata by exporting a new video in MP4 format
-            // Determine optimal export options (highest quality for device by default)
-            let exportPreset = self.getExportPreset(for: imageAsset, and: originalVideo)
-            
-            // Get export session
-            self.getExportSession(imageAsset: imageAsset, options: options, exportPreset: exportPreset) { (exportSession, error) in
-                // Error?
-                if let error = error {
-                    self.didPrepareVideo(for: uploadID, with: newUploadProperties, error)
-                    return
-                }
 
-                // Valid export session?
-                guard let exportSession = exportSession else {
-                    let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                    self.didPrepareVideo(for: uploadID, with: newUploadProperties, error)
-                    return
-                }
-                
-                // Export video in MP4 format
-                self.modifyVideo(for: uploadProperties, with: exportSession) { (newUploadProperties, error) in
-                    self.didPrepareVideo(for: uploadID, with: newUploadProperties, error)
-                }
+            // Determine MD5 checksum
+            let error: NSError?
+            (newUploadProperties.md5Sum, error) = originalFileURL.MD5checksum()
+            print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUploadProperties.md5Sum))")
+            if error != nil {
+                // Could not determine the MD5 checksum
+                self.didPrepareVideo(for: uploadID, with: newUploadProperties, error)
                 return
             }
 
-            // Could not prepare the video file
-            let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-            self.didPrepareVideo(for: uploadID, with: newUploadProperties, error)
-            return
+            // Copy video file into Piwigo/Uploads directory
+            do {
+                try FileManager.default.copyItem(at: originalFileURL, to: fileURL)
+                // Upload video with tags and properties
+                self.didPrepareVideo(for: uploadID, with: newUploadProperties, nil)
+                return
+            }
+            catch let error as NSError {
+                // Could not copy the video file
+                self.didPrepareVideo(for: uploadID, with: newUploadProperties, error)
+            }
         }
     }
     
-    func convertVideo(for uploadID: NSManagedObjectID,
-                      with uploadProperties: UploadProperties, _ imageAsset: PHAsset) -> Void {
+    // Case of a video from the Photo Library which is in a format not accepted by the Piwigo server
+    func convertVideo(ofAsset imageAsset: PHAsset,
+                      for uploadID: NSManagedObjectID, with uploadProperties: UploadProperties) -> Void {
 
         // Retrieve video data
         let options = getVideoRequestOptions()
@@ -152,38 +173,18 @@ extension UploadManager {
             }
 
             // Valid AVAsset?
-            guard let avasset = avasset else {
+            guard let originalVideo = avasset else {
                 let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                 self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
                 return
             }
             
-            // Determine optimal export options (highest quality for device by default)
-            let exportPreset = self.getExportPreset(for: imageAsset, and: avasset)
-
-            // Get export session
-            self.getExportSession(imageAsset: imageAsset, options: options, exportPreset: exportPreset) { (exportSession, error) in
-                // Error?
-                if let error = error {
-                    self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
-                    return
-                }
-
-                // Valid export session?
-                guard let exportSession = exportSession else {
-                    let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                    self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
-                    return
-                }
-                
-                // Export video in MP4 format
-                self.modifyVideo(for: uploadProperties, with: exportSession) { (newUploadProperties, error) in
-                    self.didPrepareVideo(for: uploadID, with: newUploadProperties, error)
-                }
-            }
+            // Check that the video can be exported
+            self.checkVideoExportability(of: originalVideo,
+                                         for: uploadID, with: uploadProperties)
         }
     }
-
+    
     private func didPrepareVideo(for uploadID: NSManagedObjectID,
                                  with properties: UploadProperties, _ error: Error?) {
         // Initialisation
@@ -198,14 +199,8 @@ extension UploadManager {
         }
 
         // Update UI
-        let uploadInfo: [String : Any] = ["localIdentifier" : newProperties.localIdentifier,
-                                          "stateLabel" : newProperties.stateLabel,
-                                          "progressFraction" : Float(0)]
-        DispatchQueue.main.async {
-            // Update UploadQueue cell and button shown in root album (or default album)
-            let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)
-            NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
-        }
+        updateCell(with: newProperties.localIdentifier, stateLabel: newProperties.stateLabel,
+                   photoResize: nil, progress: Float(0.0), errorMsg: errorMsg)
 
         // Update state of upload request
         print("\(debugFormatter.string(from: Date())) > prepared \(uploadID) \(errorMsg)")
@@ -225,7 +220,7 @@ extension UploadManager {
 
     
     // MARK: - Retrieve Video
-    
+    /// Used to retrieve video data from the PhotoLibrary
     private func getVideoRequestOptions() -> PHVideoRequestOptions {
         // Case of a video…
         let options = PHVideoRequestOptions()
@@ -237,34 +232,6 @@ extension UploadManager {
         options.isNetworkAccessAllowed = true
         
         return options
-    }
-    
-    private func getExportPreset(for imageAsset: PHAsset, and avasset: AVAsset) -> String {
-        // Determine available export options (highest quality for device by default)
-        var exportPreset = AVAssetExportPresetHighestQuality
-        let maxPixels = max(imageAsset.pixelWidth ,imageAsset.pixelHeight)
-        var presets: [String]? = nil
-        presets = AVAssetExportSession.exportPresets(compatibleWith: avasset)
-                                                
-        // The 'presets' array never contains AVAssetExportPresetPassthrough,
-        // so we use determineCompatibilityOfExportPreset.
-        if (maxPixels <= 640) && (presets?.contains(AVAssetExportPreset640x480)) ?? false {
-            // Encode in 640x480 pixels — metadata will be lost
-            exportPreset = AVAssetExportPreset640x480
-        } else if (maxPixels <= 960) && (presets?.contains(AVAssetExportPreset960x540)) ?? false {
-            // Encode in 960x540 pixels — metadata will be lost
-            exportPreset = AVAssetExportPreset960x540
-        } else if (maxPixels <= 1280) && (presets?.contains(AVAssetExportPreset1280x720)) ?? false {
-            // Encode in 1280x720 pixels — metadata will be lost
-            exportPreset = AVAssetExportPreset1280x720
-        } else if (maxPixels <= 1920) && (presets?.contains(AVAssetExportPreset1920x1080)) ?? false {
-            // Encode in 1920x1080 pixels — metadata will be lost
-            exportPreset = AVAssetExportPreset1920x1080
-        } else if (maxPixels <= 3840) && (presets?.contains(AVAssetExportPreset1920x1080)) ?? false {
-            // Encode in 1920x1080 pixels — metadata will be lost
-            exportPreset = AVAssetExportPreset3840x2160
-        }
-        return exportPreset
     }
     
     private func retrieveVideo(from imageAsset: PHAsset, with options: PHVideoRequestOptions,
@@ -366,76 +333,121 @@ extension UploadManager {
         })
     }
                              
-    private func getExportSession(imageAsset: PHAsset, options: PHVideoRequestOptions, exportPreset: String,                                           completionHandler: @escaping (AVAssetExportSession?, Error?) -> Void) {
-        print("\(self.debugFormatter.string(from: Date())) > enters getExportSession in", queueName())
-        
-        // Requests video with selected export preset…
-        PHImageManager.default().requestExportSession(forVideo: imageAsset,
-                                                      options: options,
-                                                      exportPreset: exportPreset,
-                                                      resultHandler: { exportSession, info in
-
-            // resultHandler performed on main thread!
-            if self.isExecutingBackgroundUploadTask {
-//                print("\(self.debugFormatter.string(from: Date())) > exits getExportSession in", queueName())
-                // The handler needs to update the user interface => Dispatch to main thread
-                if info?[PHImageErrorKey] != nil {
-                    // Inform user and propose to cancel or continue
-                    let error = info?[PHImageErrorKey] as? Error
-                    completionHandler(nil, error)
-                    return
-                }
-                completionHandler(exportSession, nil)
-            } else {
-                DispatchQueue(label: "prepareVideo").async {
-//                    print("\(self.debugFormatter.string(from: Date())) > exits getExportSession in", queueName())
-                    // The handler needs to update the user interface => Dispatch to main thread
-                    if info?[PHImageErrorKey] != nil {
-                        // Inform user and propose to cancel or continue
-                        let error = info?[PHImageErrorKey] as? Error
-                        completionHandler(nil, error)
-                        return
-                    }
-                    completionHandler(exportSession, nil)
-                }
-            }
-        })
-    }
-
-
-    // MARK: - Modify Metadata
-
-    private func modifyVideo(for upload: UploadProperties, with exportSession: AVAssetExportSession,
-                             completionHandler: @escaping (UploadProperties, Error?) -> Void) {
-        print("\(self.debugFormatter.string(from: Date())) > enters modifyVideo in", queueName())
     
-        // Strips private metadata if user requested it in Settings
-        // Apple documentation: 'metadataItemFilterForSharing' removes user-identifying metadata items, such as location information and leaves only metadata releated to commerce or playback itself. For example: playback, copyright, and commercial-related metadata, such as a purchaser’s ID as set by a vendor of digital media, along with metadata either derivable from the media itself or necessary for its proper behavior are all left intact.
-//        exportSession.metadata = nil
-        if upload.stripGPSdataOnUpload {
-            exportSession.metadataItemFilter = AVMetadataItemFilter.forSharing()
-        } else {
-            exportSession.metadataItemFilter = nil
+    // MARK: - Export Video
+    /// - Determine video size and reduce it if requested
+    private func checkVideoExportability(of originalVideo: AVAsset,
+                                         for uploadID: NSManagedObjectID, with uploadProperties: UploadProperties) {
+        // We cannot convert the video if it is not exportable
+        if !originalVideo.isExportable {
+            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("shareMetadataError_message", comment: "Cannot strip private metadata")])
+            self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
+            return
+        }
+        else {
+            // Determine optimal export options (highest quality for device by default)
+            let exportPreset = self.getExportPreset(for: originalVideo, and: uploadProperties)
+
+            // Export new video in MP4 format w/ or w/o private metadata
+            self.export(videoAsset: originalVideo, with: exportPreset,
+                        for: uploadID, with: uploadProperties)
+        }
+    }
+    
+    private func getExportPreset(for videoAsset: AVAsset,
+                                 and uploadProperties: UploadProperties) -> String {
+        // Determine available export options (highest quality for device by default)
+        let presets = AVAssetExportSession.exportPresets(compatibleWith: videoAsset)
+
+        // Produce QuickTime movie file with video size appropriate to the current device by default
+        /// - The export will not scale the video up from a smaller size.
+        /// - Compression for video uses H.264; compression for audio uses AAC.
+        var exportPreset = AVAssetExportPresetHighestQuality
+        
+        // Determine video size
+        let videoSize = videoAsset.tracks(withMediaType: .video).first?.naturalSize ?? CGSize.init(width: 640, height: 480)
+        var maxPixels = max(videoSize.width, videoSize.height)
+                                                
+        // Resize frames
+        if uploadProperties.resizeImageOnUpload {
+            let dimension = CGFloat(uploadProperties.photoResize) / 100.0
+            maxPixels *= dimension
         }
 
-        // Select complete video range
-        exportSession.timeRange = CMTimeRangeMake(start: .zero, duration: .positiveInfinity)
-
-        // Video formats — Always export video in MP4 format
+        // The 'presets' array never contains AVAssetExportPresetPassthrough,
+        if (maxPixels <= 640) && presets.contains(AVAssetExportPreset640x480) {
+            // Encode in 640x480 pixels — metadata will be lost
+            exportPreset = AVAssetExportPreset640x480
+        } else if (maxPixels <= 960) && presets.contains(AVAssetExportPreset960x540) {
+            // Encode in 960x540 pixels — metadata will be lost
+            exportPreset = AVAssetExportPreset960x540
+        } else if (maxPixels <= 1280) && presets.contains(AVAssetExportPreset1280x720) {
+            // Encode in 1280x720 pixels — metadata will be lost
+            exportPreset = AVAssetExportPreset1280x720
+        } else if (maxPixels <= 1920) && presets.contains(AVAssetExportPreset1920x1080) {
+            // Encode in 1920x1080 pixels — metadata will be lost
+            exportPreset = AVAssetExportPreset1920x1080
+        } else if (maxPixels <= 3840) && presets.contains(AVAssetExportPreset1920x1080) {
+            // Encode in 3840x2160 pixels — metadata will be lost
+            exportPreset = AVAssetExportPreset3840x2160
+        }
+        return exportPreset
+    }
+    
+    private func export(videoAsset: AVAsset, with exportPreset:String,
+                        for uploadID: NSManagedObjectID, with uploadProperties: UploadProperties) {
+        // Get export session
+        guard let exportSession = AVAssetExportSession(asset: videoAsset,
+                                                       presetName: exportPreset) else {
+            let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+            self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
+            return
+        }
+        
+        // Set parameters
         exportSession.outputFileType = .mp4
         exportSession.shouldOptimizeForNetworkUse = true
-        // ====>> For debugging…
-//        print("Supported file types: \(exportSession.supportedFileTypes)")
-//        print("Description: \(exportSession.description)")
-        // <<==== End of code for debugging
+        exportSession.timeRange = CMTimeRangeMake(start: .zero, duration: .positiveInfinity)
+
+        // Strips private metadata if user requested it in Settings
+        // Apple documentation: 'metadataItemFilterForSharing' removes user-identifying metadata items, such as location information and leaves only metadata releated to commerce or playback itself. For example: playback, copyright, and commercial-related metadata, such as a purchaser’s ID as set by a vendor of digital media, along with metadata either derivable from the media itself or necessary for its proper behavior are all left intact.
+        if uploadProperties.stripGPSdataOnUpload {
+            exportSession.metadataItemFilter = AVMetadataItemFilter.forSharing()
+        } else {
+            exportSession.metadata = videoAsset.metadata
+        }
+
+//        let commonMetadata = videoAsset.commonMetadata
+//        print("===>> Common Metadata: \(commonMetadata)")
+//
+//        let allMetadata = videoAsset.metadata
+//        print("===>> All Metadata: \(allMetadata)")
+//
+//        let makeItem =  AVMutableMetadataItem()
+//        makeItem.identifier = AVMetadataIdentifier.iTunesMetadataArtist
+//        makeItem.keySpace = AVMetadataKeySpace.iTunes
+//        makeItem.key = AVMetadataKey.iTunesMetadataKeyArtist as NSCopying & NSObjectProtocol
+//        makeItem.value = "Piwigo Artist" as NSCopying & NSObjectProtocol
+//
+//        let anotherItem =  AVMutableMetadataItem()
+//        anotherItem.identifier = AVMetadataIdentifier.iTunesMetadataAuthor
+//        anotherItem.keySpace = AVMetadataKeySpace.iTunes
+//        anotherItem.key = AVMetadataKey.iTunesMetadataKeyAuthor as NSCopying & NSObjectProtocol
+//        anotherItem.value = "Piwigo Author" as NSCopying & NSObjectProtocol
+//
+//        var newMetadata = commonMetadata
+//        newMetadata.append(makeItem)
+//        newMetadata.append(anotherItem)
+//        print("===>> new Metadata: \(newMetadata)")
+//        exportSession.metadata = newMetadata
 
         // Prepare MIME type
-        var newUpload = upload
-        newUpload.mimeType = "video/mp4"
-        newUpload.fileName = URL(fileURLWithPath: upload.fileName ?? "file").deletingPathExtension().appendingPathExtension("MP4").lastPathComponent
+        var newUploadProperties = uploadProperties
+        newUploadProperties.mimeType = "video/mp4"
+        newUploadProperties.fileName = URL(fileURLWithPath: uploadProperties.fileName).deletingPathExtension().appendingPathExtension("MP4").lastPathComponent
 
         // File name of final video data to be stored into Piwigo/Uploads directory
-        let fileName = upload.localIdentifier.replacingOccurrences(of: "/", with: "-")
+        let fileName = uploadProperties.localIdentifier.replacingOccurrences(of: "/", with: "-")
         exportSession.outputURL = self.applicationUploadsDirectory.appendingPathComponent(fileName)
 
         // Deletes temporary video file if exists (incomplete previous attempt?)
@@ -448,89 +460,36 @@ extension UploadManager {
 
         // Export temporary video for upload
         exportSession.exportAsynchronously(completionHandler: {
-            switch exportSession.status {
-            case .completed:
-                // ====>> For debugging…
-//                var videoAsset: AVAsset? = nil
-//                if let outputURL = exportSession.outputURL {
-//                    videoAsset = AVAsset(url: outputURL)
-//                }
-//                let assetMetadata = videoAsset?.commonMetadata
-//                print("Export sucess :-)")
-//                if let assetMetadata = assetMetadata {
-//                    print("Video metadata: \(assetMetadata)")
-//                }
-                // <<==== End of code for debugging
-
-                // MD5 checksum of exported video
-                if let outputURL = exportSession.outputURL {
-                    var videoData: Data = Data()
-                    do {
-                        try videoData = NSData (contentsOf: outputURL) as Data
-                        
-                        // Determine MD5 checksum of video file to upload
-                        var md5Checksum: String? = ""
-                        if #available(iOS 13.0, *) {
-                            #if canImport(CryptoKit)        // Requires iOS 13
-                            md5Checksum = self.MD5(data: videoData)
-                            #endif
-                        } else {
-                            // Fallback on earlier versions
-                            md5Checksum = self.oldMD5(data: videoData)
-                        }
-                        newUpload.md5Sum = md5Checksum
-                        print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: md5Checksum))")
-
-//                        print("\(self.debugFormatter.string(from: Date())) > exits modifyVideo in", queueName())
-                        // Upload video with tags and properties
-                        completionHandler(newUpload, nil)
-                    }
-                    catch let error as NSError {
-                        // Upload video with tags and properties
-                        completionHandler(newUpload, error)
-                    }
-                }
-                return
-            
-            case .failed:
+            guard exportSession.status == .completed,
+                  let outputURL = exportSession.outputURL else {
                 // Deletes temporary video file if any
                 do {
                     try FileManager.default.removeItem(at: exportSession.outputURL!)
                 } catch {
                 }
-
+                // Report error
                 let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                completionHandler(newUpload, error)
-                return
-                
-            case .cancelled:
-                // Deletes temporary video file
-                do {
-                    try FileManager.default.removeItem(at: exportSession.outputURL!)
-                } catch {
-                }
-
-                let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                completionHandler(newUpload, error)
-                return
-            
-            default:
-                // Deletes temporary video files
-                do {
-                    try FileManager.default.removeItem(at: exportSession.outputURL!)
-                } catch {
-                }
-
-                let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                completionHandler(newUpload, error)
+                self.didPrepareVideo(for: uploadID, with: newUploadProperties, error)
                 return
             }
+
+            // MD5 checksum of exported video
+            let error: NSError?
+            (newUploadProperties.md5Sum, error) = outputURL.MD5checksum()
+            print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUploadProperties.md5Sum))")
+            if error != nil {
+                // Could not determine the MD5 checksum
+                self.didPrepareVideo(for: uploadID, with: newUploadProperties, error)
+                return
+            }
+            self.didPrepareVideo(for: uploadID, with: newUploadProperties, nil)
+            return
         })
     }
 
-    private func FourCCString(_ code: FourCharCode) -> String? {
-        let result = "\(Int((code >> 24)) & 0xff)\(Int((code >> 16)) & 0xff)\(Int((code >> 8)) & 0xff)\(code & 0xff)"
-        let characterSet = CharacterSet.whitespaces
-        return result.trimmingCharacters(in: characterSet)
-    }
+//    private func FourCCString(_ code: FourCharCode) -> String? {
+//        let result = "\(Int((code >> 24)) & 0xff)\(Int((code >> 16)) & 0xff)\(Int((code >> 8)) & 0xff)\(code & 0xff)"
+//        let characterSet = CharacterSet.whitespaces
+//        return result.trimmingCharacters(in: characterSet)
+//    }
 }

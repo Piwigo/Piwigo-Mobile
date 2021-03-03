@@ -179,6 +179,7 @@
 "categoryUpload_syncedFaces" = "iPhotoの顔";
 "categoryUpload_mediaTypes" = "メディアの種類";
 "categoryUpload_otherAlbums" = "その他のアルバム";
+"categoryUpload_pasteboard" = "クリップボード";
 
 "categoyUpload_loadSubCategories" = "読み込む";
 "categoryUpload_images" = "写真をアップロードする";
@@ -550,6 +551,9 @@
 "shareActivityCode_CameraRoll>375px" = "写真をカメラロールに保存する";
 "shareActivityCode_Other" = "他のアプリと共有する";
 "shareActivityCode_Other>375px" = "写真を他のアプリと共有する";
+
+"shareFailError_title" = "共有に失敗しました";
+"shareMetadataError_message" = "プライベートメタデータを取り除くことはできません";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library

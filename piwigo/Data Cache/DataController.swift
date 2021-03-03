@@ -113,6 +113,7 @@ class DataController: NSObject {
             // The persistent store coordinator for the application. This implementation creates and returns a coordinator, having added the store for the application to it. This property is optional since there are legitimate error conditions that could cause the creation of the store to fail.
             // Create the coordinator
             let coordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
+            // Move the database to the new folder if needed
             let oldURL = applicationDocumentsDirectory.appendingPathComponent("DataModel.sqlite")
             let storeURL = applicationStoresDirectory.appendingPathComponent("DataModel.sqlite")
             let fm = FileManager.default
@@ -131,14 +132,17 @@ class DataController: NSObject {
                 }
             }
 
-            // See https://code.tutsplus.com/tutorials/core-data-from-scratch-migrations--cms-21844 for migrating to a new data model
+            // Define options for performing an automatic migration
+            // See https://code.tutsplus.com/tutorials/core-data-from-scratch-migrations--cms-21844
+            // for migrating to a new data model
             var failureReason = "There was an error creating or loading the application's saved data."
             let options = [
                 NSMigratePersistentStoresAutomaticallyOption: NSNumber(value: true),
                 NSInferMappingModelAutomaticallyOption: NSNumber(value: true)
             ]
             do {
-                try coordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeURL, options: options)
+                try coordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil,
+                                                   at: storeURL, options: options)
             } catch {
                 // Report any error we got.
                 var dict = [String: AnyObject]()
@@ -174,7 +178,7 @@ class DataController: NSObject {
                 // Crash!
                 abort()
             }
-
+            
             return coordinator
         }()
 

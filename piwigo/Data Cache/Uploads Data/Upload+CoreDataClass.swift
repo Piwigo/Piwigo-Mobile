@@ -1,85 +1,28 @@
 //
-//  Upload.swift
+//  Upload+CoreDataClass.swift
 //  piwigo
 //
-//  Created by Eddy Lelièvre-Berna on 22/03/2020.
-//  Copyright © 2020 Piwigo.org. All rights reserved.
+//  Created by Eddy Lelièvre-Berna on 22/02/2021.
+//  Copyright © 2021 Piwigo.org. All rights reserved.
 //
-//  An NSManagedObject subclass for the Tag entity.
+//  An NSManagedObject subclass for the Upload entity.
+//
 
+import Foundation
 import CoreData
 
-// MARK: - Core Data
-/**
- Managed object subclass for the Upload entity.
- */
-enum SectionKeys: String {
-    case Section1, Section2, Section3, Section4
-}
+public class Upload: NSManagedObject {
 
-extension SectionKeys {
-    var name: String {
-        switch self {
-        case .Section1:
-            return NSLocalizedString("uploadSection_impossible", comment: "Impossible Uploads")
-        case .Section2:
-            return NSLocalizedString("uploadSection_resumable", comment: "Resumable Uploads")
-        case .Section3:
-            return NSLocalizedString("uploadSection_queue", comment: "Uploads Queue")
-        case .Section4:
-            fallthrough
-        default:
-            return "—?—"
-        }
-    }
-}
-
-@objc
-class Upload: NSManagedObject {
-
-    // A unique identifier for removing duplicates. Constrain
-    // the Piwigo Upload entity on this attribute in the data model editor.
-    @NSManaged var localIdentifier: String
-    
-    // The other attributes of an upload.
-    @NSManaged var category: Int64
-    @NSManaged var serverPath: String
-    @NSManaged var serverFileTypes: String
-    @NSManaged var requestDate: Date
-    @NSManaged var requestState: Int16
-    @NSManaged var requestSectionKey: String
-    @NSManaged var requestError: String?
-
-    @NSManaged var creationDate: Date?
-    @NSManaged var fileName: String?
-    @NSManaged var mimeType: String?
-    @NSManaged var md5Sum: String?
-    @NSManaged var isVideo: Bool
-    
-    @NSManaged var author: String?
-    @NSManaged var privacyLevel: Int16
-    @NSManaged var imageName: String?
-    @NSManaged var comment: String?
-    @NSManaged var tagIds: String?
-    @NSManaged var imageId: Int64
-
-    @NSManaged var stripGPSdataOnUpload: Bool
-    @NSManaged var resizeImageOnUpload: Bool
-    @NSManaged var photoResize: Int16
-    @NSManaged var compressImageOnUpload: Bool
-    @NSManaged var photoQuality: Int16
-    @NSManaged var prefixFileNameBeforeUpload: Bool
-    @NSManaged var defaultPrefix: String?
-    @NSManaged var deleteImageAfterUpload: Bool
-
-    // Singleton
-    @objc static let sharedInstance: Upload = Upload()
-    
     /**
      Updates an Upload instance with the values from a UploadProperties.
      */
     func update(with uploadProperties: UploadProperties) throws {
         
+        // Update the upload request only if the Id and category properties have values.
+        guard uploadProperties.localIdentifier.count > 0,
+              Int64(uploadProperties.category) != 0 else {
+                throw UploadError.missingData
+        }
         // Local identifier of the image to upload
         localIdentifier = uploadProperties.localIdentifier
         
@@ -99,28 +42,28 @@ class Upload: NSManagedObject {
         requestState = Int16(uploadProperties.requestState.rawValue)
         
         // Section key corresponding to the request state
-        requestSectionKey = SectionKeys.init(rawValue: uploadProperties.requestState.sectionKey)!.rawValue
+        requestSectionKey = uploadProperties.requestState.sectionKey
 
         // Error message description
-        requestError = uploadProperties.requestError ?? ""
+        requestError = uploadProperties.requestError
 
         // Photo creation date, filename and MIME type
-        creationDate = uploadProperties.creationDate ?? Date.init()
-        fileName = uploadProperties.fileName ?? ""
-        mimeType = uploadProperties.mimeType ?? ""
-        md5Sum = uploadProperties.md5Sum ?? ""
+        creationDate = uploadProperties.creationDate
+        fileName = uploadProperties.fileName
+        mimeType = uploadProperties.mimeType
+        md5Sum = uploadProperties.md5Sum
         isVideo = uploadProperties.isVideo
 
         // Photo author name is empty if not provided
-        author = uploadProperties.author ?? ""
+        author = uploadProperties.author
         
         // Privacy level is the lowest one if not provided
-        privacyLevel = Int16(uploadProperties.privacyLevel?.rawValue ?? kPiwigoPrivacyEverybody.rawValue)
+        privacyLevel = Int16(uploadProperties.privacyLevel.rawValue)
 
         // Other image properties
-        imageName = uploadProperties.imageTitle ?? ""
-        comment = uploadProperties.comment ?? ""
-        tagIds = uploadProperties.tagIds ?? ""
+        imageName = uploadProperties.imageTitle
+        comment = uploadProperties.comment
+        tagIds = uploadProperties.tagIds
         imageId = Int64(uploadProperties.imageId)
         
         // Upload settings
@@ -231,13 +174,13 @@ extension Upload {
             tagIds: self.tagIds, imageId: Int(self.imageId),
             // Upload settings
             stripGPSdataOnUpload: self.stripGPSdataOnUpload,
-            resizeImageOnUpload: self.resizeImageOnUpload, photoResize: Int(self.photoResize),
-            compressImageOnUpload: self.compressImageOnUpload, photoQuality: Int(self.photoQuality),
+            resizeImageOnUpload: self.resizeImageOnUpload, photoResize: self.photoResize,
+            compressImageOnUpload: self.compressImageOnUpload, photoQuality: self.photoQuality,
             prefixFileNameBeforeUpload: self.prefixFileNameBeforeUpload, defaultPrefix: self.defaultPrefix,
             deleteImageAfterUpload: self.deleteImageAfterUpload)
     }
 
-    func getProperties(with state: kPiwigoUploadState, error: String?) -> UploadProperties {
+    func getProperties(with state: kPiwigoUploadState, error: String) -> UploadProperties {
         return UploadProperties.init(localIdentifier: self.localIdentifier,
             // Category ID of the album to upload to
             category: Int(self.category),
@@ -254,8 +197,8 @@ extension Upload {
             tagIds: self.tagIds, imageId: Int(self.imageId),
             // Upload settings
             stripGPSdataOnUpload: self.stripGPSdataOnUpload,
-            resizeImageOnUpload: self.resizeImageOnUpload, photoResize: Int(self.photoResize),
-            compressImageOnUpload: self.compressImageOnUpload, photoQuality: Int(self.photoQuality),
+            resizeImageOnUpload: self.resizeImageOnUpload, photoResize: self.photoResize,
+            compressImageOnUpload: self.compressImageOnUpload, photoQuality: self.photoQuality,
             prefixFileNameBeforeUpload: self.prefixFileNameBeforeUpload, defaultPrefix: self.defaultPrefix,
             deleteImageAfterUpload: self.deleteImageAfterUpload)
     }
@@ -274,7 +217,30 @@ extension Upload {
 }
 
 
-// MARK: - Upload properties
+// MARK: - Section Keys
+enum SectionKeys: String {
+    case Section1, Section2, Section3, Section4
+}
+
+extension SectionKeys {
+    var name: String {
+        switch self {
+        case .Section1:
+            return NSLocalizedString("uploadSection_impossible", comment: "Impossible Uploads")
+        case .Section2:
+            return NSLocalizedString("uploadSection_resumable", comment: "Resumable Uploads")
+        case .Section3:
+            return NSLocalizedString("uploadSection_queue", comment: "Uploads Queue")
+        case .Section4:
+            fallthrough
+        default:
+            return "—?—"
+        }
+    }
+}
+
+
+// MARK: - Upload Properties
 /**
  A struct for managing upload requests
 */
@@ -366,30 +332,30 @@ struct UploadProperties
     let category: Int                       // 8
     let serverPath: String                  // URL path of Piwigo server
     var serverFileTypes: String             // File formats accepted by the server
-    let requestDate: Date                   // "2020-08-22 19:18:43"
+    let requestDate: TimeInterval           // "2020-08-22 19:18:43" as a number of seconds
     var requestState: kPiwigoUploadState    // See enum above
-    var requestError: String?
+    var requestError: String
 
-    var creationDate: Date?                 // "2012-08-23 09:18:43"
-    var fileName: String?                   // "IMG123.JPG"
-    var mimeType: String?                   // "image/png"
-    var md5Sum: String?                     // "8b1a9953c4611296a827abf8c47804d7"
+    var creationDate: TimeInterval          // "2012-08-23 09:18:43" as a number of seconds
+    var fileName: String                    // "IMG123.JPG"
+    var mimeType: String                    // "image/png"
+    var md5Sum: String                      // "8b1a9953c4611296a827abf8c47804d7"
     var isVideo: Bool                       // true/false
     
-    var author: String?                     // "Author"
-    var privacyLevel: kPiwigoPrivacy?       // 0
-    var imageTitle: String?                 // "Image title"
-    var comment: String?                    // "A comment…"
-    var tagIds: String?                     // List of tag IDs
+    var author: String                      // "Author"
+    var privacyLevel: kPiwigoPrivacy        // 0
+    var imageTitle: String                  // "Image title"
+    var comment: String                     // "A comment…"
+    var tagIds: String                      // List of tag IDs
     var imageId: Int                        // 1042
 
     var stripGPSdataOnUpload: Bool
     var resizeImageOnUpload: Bool
-    var photoResize: Int
+    var photoResize: Int16
     var compressImageOnUpload: Bool
-    var photoQuality: Int
+    var photoQuality: Int16
     var prefixFileNameBeforeUpload: Bool
-    var defaultPrefix: String?
+    var defaultPrefix: String
     var deleteImageAfterUpload: Bool
 }
 
@@ -403,9 +369,11 @@ extension UploadProperties {
             serverPath: Model.sharedInstance()?.serverPath ?? "",
             serverFileTypes: Model.sharedInstance()?.serverFileTypes ?? "jpg,jpeg,png,gif",
             // Upload request date is now and state is waiting
-            requestDate: Date.init(), requestState: .waiting, requestError: "",
+            requestDate: Date().timeIntervalSinceReferenceDate,
+            requestState: .waiting, requestError: "",
             // Photo creation date and filename
-            creationDate: Date.init(), fileName: "", mimeType: "", md5Sum: "", isVideo: false,
+            creationDate: Date().timeIntervalSinceReferenceDate, fileName: "",
+            mimeType: "", md5Sum: "", isVideo: false,
             // Photo author name defaults to name entered in Settings
             author: Model.sharedInstance()?.defaultAuthor ?? "",
             // Privacy level defaults to level selected in Settings
@@ -413,16 +381,16 @@ extension UploadProperties {
             // No title, comment, tag, filename by default, image ID unknown
             imageTitle: "", comment: "", tagIds: "", imageId: NSNotFound,
             // Upload settings
-            stripGPSdataOnUpload: Model.sharedInstance().stripGPSdataOnUpload,
-            resizeImageOnUpload: Model.sharedInstance().resizeImageOnUpload,
-            photoResize: Model.sharedInstance().photoResize,
-            compressImageOnUpload: Model.sharedInstance().compressImageOnUpload,
-            photoQuality: Model.sharedInstance().photoQuality,
-            prefixFileNameBeforeUpload: Model.sharedInstance().prefixFileNameBeforeUpload,
-            defaultPrefix: Model.sharedInstance().defaultPrefix ?? "",
+            stripGPSdataOnUpload: Model.sharedInstance()?.stripGPSdataOnUpload ?? false,
+            resizeImageOnUpload: Model.sharedInstance()?.resizeImageOnUpload ?? false,
+            photoResize: Int16(Model.sharedInstance()?.photoResize ?? 100),
+            compressImageOnUpload: Model.sharedInstance()?.compressImageOnUpload ?? false,
+            photoQuality: Int16(Model.sharedInstance()?.photoQuality ?? 98),
+            prefixFileNameBeforeUpload: Model.sharedInstance()?.prefixFileNameBeforeUpload ?? false,
+            defaultPrefix: Model.sharedInstance()?.defaultPrefix ?? "",
             deleteImageAfterUpload: false)
     }
-            
+    
     var stateLabel: String {
         return requestState.stateInfo
     }

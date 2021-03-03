@@ -11,20 +11,6 @@
 #import "Model.h"
 #import "PiwigoTagData.h"
 
-typedef enum {
-	kPiwigoImageSizeSquare,
-	kPiwigoImageSizeThumb,
-	kPiwigoImageSizeXXSmall,
-	kPiwigoImageSizeXSmall,
-	kPiwigoImageSizeSmall,
-	kPiwigoImageSizeMedium,
-	kPiwigoImageSizeLarge,
-	kPiwigoImageSizeXLarge,
-	kPiwigoImageSizeXXLarge,
-	kPiwigoImageSizeFullRes,
-	kPiwigoImageSizeEnumCount
-} kPiwigoImageSize;
-
 @interface PiwigoImageData : NSObject
 
 // API pwg.categories.getList returns:
@@ -98,14 +84,14 @@ typedef enum {
 -(NSString*)getURLFromImageSizeType:(kPiwigoImageSize)imageSize;
 +(float)widthForImageSizeType:(kPiwigoImageSize)imageSize;
 
-+(NSInteger)optimumAlbumThumbnailSizeForDevice;
++(kPiwigoImageSize)optimumAlbumThumbnailSizeForDevice;
 +(NSString*)nameForAlbumThumbnailSizeType:(kPiwigoImageSize)imageSize withInfo:(BOOL)addInfo;
 
-+(NSInteger)optimumImageThumbnailSizeForDevice;
++(kPiwigoImageSize)optimumImageThumbnailSizeForDevice;
 +(NSString*)nameForImageThumbnailSizeType:(kPiwigoImageSize)imageSize withInfo:(BOOL)addInfo;
 
 +(kPiwigoImageSize)getImageSizeForRow:(NSInteger)row;
-+(NSInteger)optimumImageSizeForDevice;
++(kPiwigoImageSize)optimumImageSizeForDevice;
 +(NSString*)nameForImageSizeType:(kPiwigoImageSize)imageSize withInfo:(BOOL)addInfo;
 
 @end

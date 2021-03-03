@@ -284,7 +284,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
                 return UploadImageTableViewCell()
             }
             let upload = self.managedObjectContext.object(with: objectID) as! Upload
-            cell.configure(with: upload, width: Int(tableView.bounds.size.width))
+            cell.configure(with: upload, availableWidth: Int(tableView.bounds.size.width))
             return cell
         }
         return dataSource
@@ -310,13 +310,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
     
     @objc func mainHeader() {
         DispatchQueue.main.async {
-            if !AFNetworkReachabilityManager.shared().isReachable {
-                // No network access
-                let headerView = UploadQueueHeaderView(frame: .zero)
-                headerView.configure(text: NSLocalizedString("uploadNoInternetNetwork", comment: "No Internet Connection"))
-                self.queueTableView.tableHeaderView = headerView
-            }
-            else if AFNetworkReachabilityManager.shared().isReachableViaWWAN && Model.sharedInstance().wifiOnlyUploading {
+            if AFNetworkReachabilityManager.shared().isReachableViaWWAN && Model.sharedInstance().wifiOnlyUploading {
                 // No Wi-Fi and user wishes to upload only on Wi-Fi
                 let headerView = UploadQueueHeaderView(frame: .zero)
                 headerView.configure(text: NSLocalizedString("uploadNoWiFiNetwork", comment: "No Wi-Fi Connection"))
@@ -386,7 +380,6 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
 extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
-        print("•••>> didChangeContentWith…")
         // Update UI
         let snapshot = snapshot as NSDiffableDataSourceSnapshot<String,NSManagedObjectID>
         DispatchQueue.main.async {

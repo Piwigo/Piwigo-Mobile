@@ -34,6 +34,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
 
     private var selectPhotoLibraryItemsButton: UIBarButtonItem?
     private var cancelBarButton: UIBarButtonItem?
+    private var hasImagesInPasteboard: Bool = false
 
     
     // MARK: - View Lifecycle
@@ -53,9 +54,13 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         cancelBarButton?.accessibilityIdentifier = "Cancel"
         
         // Register palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
+        var name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
         
+        // Register app becoming active for updating the pasteboard
+        name = NSNotification.Name(UIApplication.didBecomeActiveNotification.rawValue)
+        NotificationCenter.default.addObserver(self, selector: #selector(checkPasteboard), name: name, object: nil)
+
         // Use the LocalAlbumsProvider to fetch albums data.
         LocalAlbumsProvider.sharedInstance().fetchedLocalAlbumsDelegate = self
         LocalAlbumsProvider.sharedInstance().fetchLocalAlbums {
@@ -99,9 +104,18 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         // Set colors, fonts, etc.
         applyColorPalette()
 
+        // Are there images in the pasteboard?
+        if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: ["public.image", "public.movie"]),
+           indexSet.count > 0, let _ = UIPasteboard.general.types(forItemSet: indexSet) {
+            hasImagesInPasteboard = true
+        }
+
         // Navigation "Cancel" button and identifier
         navigationItem.setLeftBarButton(cancelBarButton, animated: true)
         navigationController?.navigationBar.accessibilityIdentifier = "LocalAlbumsNav"
+
+        // Hide toolbar when returning from the LocalImages / PasteboardImages views
+        navigationController?.isToolbarHidden = true
 
         // Navigation "Select Photo Library items" button
         if #available(iOS 14, *) {
@@ -128,14 +142,30 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
 
+    @objc func checkPasteboard() {
+        // Are there images in the pasteboard?
+        let testTypes = UIPasteboard.general.contains(pasteboardTypes: ["public.image", "public.movie"]) ? true : false
+        let nberPhotos = UIPasteboard.general.itemSet(withPasteboardTypes: ["public.image", "public.movie"])?.count ?? 0
+        hasImagesInPasteboard = testTypes && (nberPhotos > 0)
+
+        // Reload tableView
+        localAlbumsTableView.reloadData()
+    }
+
     @objc func quitUpload() {
         // Leave Upload action and return to Albums and Images
         dismiss(animated: true)
     }
 
-    deinit {
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
         // Unregister palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
+        var name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
+        NotificationCenter.default.removeObserver(self, name: name, object: nil)
+
+        // Unregister app becoming active for updating the pasteboard
+        name = NSNotification.Name(UIApplication.didBecomeActiveNotification.rawValue)
         NotificationCenter.default.removeObserver(self, name: name, object: nil)
     }
 
@@ -147,8 +177,19 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
+        // First section added for pasteboard?
+        var activeSection = section
+        if hasImagesInPasteboard {
+            switch activeSection {
+            case 0:
+                return nil
+            default:
+                activeSection -= 1
+            }
+        }
+
         // Title
-        let titleString = LocalAlbumsProvider.sharedInstance().localAlbumHeaders[section]
+        let titleString = LocalAlbumsProvider.sharedInstance().localAlbumHeaders[activeSection]
         let titleAttributedString = NSMutableAttributedString(string: titleString)
         titleAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: NSRange(location: 0, length: titleString.count))
 
@@ -180,21 +221,53 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     }
 
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        // First section added for pasteboard?
+        if hasImagesInPasteboard && (section == 0) { return }
         view.layer.zPosition = 0
     }
 
     
     // MARK: - UITableView - Rows
     func numberOfSections(in tableView: UITableView) -> Int {
-        return LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums.count
+        // First section added for pasteboard if necessary
+        return LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums.count +
+            (hasImagesInPasteboard ? 1 : 0)
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums[section] ? min(LocalAlbumsProvider.sharedInstance().maxNberOfAlbumsInSection, LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[section].count) + 1 : LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[section].count
+        // First section added for pasteboard?
+        var activeSection = section
+        if hasImagesInPasteboard {
+            switch activeSection {
+            case 0:
+                return 1
+            default:
+                activeSection -= 1
+            }
+        }
+        return LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums[activeSection] ? min(LocalAlbumsProvider.sharedInstance().maxNberOfAlbumsInSection, LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[activeSection].count) + 1 : LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[activeSection].count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
+        // First section added for pasteboard?
+        var activeSection = indexPath.section
+        if hasImagesInPasteboard {
+            switch activeSection {
+            case 0:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LocalAlbumsNoDatesTableViewCell", for: indexPath) as? LocalAlbumsNoDatesTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a LocalAlbumsNoDatesTableViewCell!")
+                    return LocalAlbumsNoDatesTableViewCell()
+                }
+                let title = NSLocalizedString("categoryUpload_pasteboard", comment: "Clipboard")
+                let nberPhotos = UIPasteboard.general.itemSet(withPasteboardTypes: ["public.image", "public.movie"])?.count ?? NSNotFound
+                cell.configure(with: title, nberPhotos: nberPhotos)
+                cell.isAccessibilityElement = true
+                return cell
+            default:
+                activeSection -= 1
+            }
+        }
+
         // Display [+] button at the bottom of section presenting a limited number of albums
         if indexPath.section < LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums.count,
            LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums[indexPath.section] == true,
@@ -210,7 +283,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         }
         
         // Case of an album
-        let assetCollection = LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[indexPath.section][indexPath.row]
+        let assetCollection = LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[activeSection][indexPath.row]
         let title = assetCollection.localizedTitle ?? "—> ? <——"
         let nberPhotos = assetCollection.estimatedAssetCount
 
@@ -241,15 +314,25 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        // First section added for pasteboard?
+        var activeSection = indexPath.section
+        if hasImagesInPasteboard {
+            switch activeSection {
+            case 0:
+                return 44.0
+            default:
+                activeSection -= 1
+            }
+        }
 
         // Display [+] button at the bottom of section presenting a limited number of albums
-        if LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums[indexPath.section] == true &&
+        if LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums[activeSection] == true &&
             indexPath.row == LocalAlbumsProvider.sharedInstance().maxNberOfAlbumsInSection {
             return 36.0
         }
         
         // Case of an album
-        let assetCollection = LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[indexPath.section][indexPath.row]
+        let assetCollection = LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[activeSection][indexPath.row]
         if let _ = assetCollection.startDate, let _ = assetCollection.endDate {
             return 53.0
         } else {
@@ -260,8 +343,19 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     
     // MARK: - UITableView - Footer
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        // First section added for pasteboard?
+        var activeSection = section
+        if hasImagesInPasteboard {
+            switch activeSection {
+            case 0:
+                return 0.0
+            default:
+                activeSection -= 1
+            }
+        }
+
         // No footer by default (nil => 0 point)
-        let footer = LocalAlbumsProvider.sharedInstance().localAlbumsFooters[section]
+        let footer = LocalAlbumsProvider.sharedInstance().localAlbumsFooters[activeSection]
 
         // Footer height?
         let attributes = [
@@ -275,6 +369,17 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        // First section added for pasteboard?
+        var activeSection = section
+        if hasImagesInPasteboard {
+            switch activeSection {
+            case 0:
+                return nil
+            default:
+                activeSection -= 1
+            }
+        }
+
         // Footer label
         let footerLabel = UILabel()
         footerLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -284,7 +389,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         footerLabel.numberOfLines = 0
         footerLabel.adjustsFontSizeToFitWidth = false
         footerLabel.lineBreakMode = .byWordWrapping
-        footerLabel.text = LocalAlbumsProvider.sharedInstance().localAlbumsFooters[section]
+        footerLabel.text = LocalAlbumsProvider.sharedInstance().localAlbumsFooters[activeSection]
 
         // Footer view
         let footer = UIView()
@@ -309,13 +414,30 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
+        // First section added for pasteboard?
+        var activeSection = indexPath.section
+        if hasImagesInPasteboard {
+            switch activeSection {
+            case 0:
+                let pasteboardImagesSB = UIStoryboard(name: "PasteboardImagesViewController", bundle: nil)
+                let localImagesVC = pasteboardImagesSB.instantiateViewController(withIdentifier: "PasteboardImagesViewController") as? PasteboardImagesViewController
+                localImagesVC?.setCategoryId(categoryId)
+                if let localImagesVC = localImagesVC {
+                    navigationController?.pushViewController(localImagesVC, animated: true)
+                }
+                return
+            default:
+                activeSection -= 1
+            }
+        }
+
         // Did tap [+] button at the bottom of section —> release remaining albums
-        if LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums[indexPath.section] == true &&
+        if LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums[activeSection] == true &&
             indexPath.row == LocalAlbumsProvider.sharedInstance().maxNberOfAlbumsInSection {
             // Release album list
-            LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums[indexPath.section] = false
+            LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums[activeSection] = false
             // Add remaining albums
-            let indexPaths: [IndexPath] = Array(LocalAlbumsProvider.sharedInstance().maxNberOfAlbumsInSection+1..<LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[indexPath.section].count).map { IndexPath.init(row: $0, section: indexPath.section)}
+            let indexPaths: [IndexPath] = Array(LocalAlbumsProvider.sharedInstance().maxNberOfAlbumsInSection+1..<LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[activeSection].count).map { IndexPath.init(row: $0, section: activeSection)}
             tableView.insertRows(at: indexPaths, with: .automatic)
             // Replace button
             tableView.reloadRows(at: [indexPath], with: .automatic)
@@ -326,7 +448,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         let localImagesSB = UIStoryboard(name: "LocalImagesViewController", bundle: nil)
         let localImagesVC = localImagesSB.instantiateViewController(withIdentifier: "LocalImagesViewController") as? LocalImagesViewController
         localImagesVC?.setCategoryId(categoryId)
-        localImagesVC?.setImageCollectionId(LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[indexPath.section][indexPath.row].localIdentifier)
+        localImagesVC?.setImageCollectionId(LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[activeSection][indexPath.row].localIdentifier)
         if let localImagesVC = localImagesVC {
             navigationController?.pushViewController(localImagesVC, animated: true)
         }

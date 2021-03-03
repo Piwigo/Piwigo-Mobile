@@ -16,10 +16,10 @@ extension UploadManager {
 
         // Prepare image parameters
         let imageParameters: [String : String] = [
-            kPiwigoImagesUploadParamFileName: uploadProperties.fileName ?? "Image.jpg",
+            kPiwigoImagesUploadParamFileName: uploadProperties.fileName,
             kPiwigoImagesUploadParamCategory: "\(NSNumber(value: uploadProperties.category))",
-            kPiwigoImagesUploadParamPrivacy: "\(NSNumber(value: uploadProperties.privacyLevel!.rawValue))",
-            kPiwigoImagesUploadParamMimeType: uploadProperties.mimeType ?? ""
+            kPiwigoImagesUploadParamPrivacy: "\(NSNumber(value: uploadProperties.privacyLevel.rawValue))",
+            kPiwigoImagesUploadParamMimeType: uploadProperties.mimeType
         ]
 
         // Get URL of file to upload
@@ -29,15 +29,12 @@ extension UploadManager {
         // Launch transfer
         startUploading(fileURL: fileURL, with: imageParameters,
             onProgress: { (progress, currentChunk, totalChunks) in
+                // Update UI
                 let chunkProgress: Float = Float(currentChunk) / Float(totalChunks)
-                let uploadInfo: [String : Any] = ["localIdentifier" : uploadProperties.localIdentifier,
-                                                  "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
-                                                  "Error" : uploadProperties.requestError ?? "",
-                                                  "progressFraction" : chunkProgress]
-                DispatchQueue.main.async {
-                    // Update UploadQueue cell and button shown in root album (or default album)
-                    NotificationCenter.default.post(name: NSNotification.Name(kPiwigoNotificationUploadProgress), object: nil, userInfo: uploadInfo)
-                }
+                self.updateCell(with: uploadProperties.localIdentifier,
+                                stateLabel: kPiwigoUploadState.uploading.stateInfo,
+                                photoResize: nil, progress: chunkProgress,
+                                errorMsg: uploadProperties.requestError)
             },
             onCompletion: { [unowned self] (task, jsonData) in
 //                    print("•••> completion: \(String(describing: jsonData))")
@@ -71,9 +68,9 @@ extension UploadManager {
                         imageData.categoryIds = [uploadProperties.category]
                         imageData.fileName = uploadProperties.fileName
                         imageData.isVideo = uploadProperties.isVideo
-                        imageData.dateCreated = uploadProperties.creationDate
+                        imageData.dateCreated = Date(timeIntervalSinceReferenceDate: uploadProperties.creationDate)
                         imageData.author = uploadProperties.author
-                        imageData.privacyLevel = uploadProperties.privacyLevel ?? kPiwigoPrivacy(rawValue: 0)
+                        imageData.privacyLevel = uploadProperties.privacyLevel
 
                         // Add data returned by server
                         imageData.imageId = uploadJSON.data.image_id!
@@ -141,8 +138,8 @@ extension UploadManager {
         uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: properties) { (_) in
             // Get uploads to complete in queue
             // Considers only uploads to the server to which the user is logged in
-            let states: [kPiwigoUploadState] = [.waiting,
-                                                .preparing, .preparingError, .prepared,
+            let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
+                                                .preparingFail, .formatError, .prepared,
                                                 .uploading, .uploadingError, .uploaded,
                                                 .finishing, .finishingError]
             // Update app badge and Upload button in root/default album
@@ -308,17 +305,15 @@ extension UploadManager {
         guard let validUrl = url else { fatalError() }
         
         // Prepare creation date
-        var creationDate = ""
-        if let date = uploadProperties.creationDate {
-            let dateFormat = DateFormatter()
-            dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
-            creationDate = dateFormat.string(from: date)
-        }
+        let dateFormat = DateFormatter()
+        dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let date = Date(timeIntervalSinceReferenceDate: uploadProperties.creationDate)
+        let creationDate = dateFormat.string(from: date)
 
         // Prepare files, requests and resume tasks
         let username = Model.sharedInstance()?.username ?? ""
         let password = SAMKeychain.password(forService: uploadProperties.serverPath, account: username) ?? ""
-        let boundary = createBoundary(from: uploadProperties.md5Sum!)
+        let boundary = createBoundary(from: uploadProperties.md5Sum)
         for chunk in 0..<chunks {
             // Current chunk
             let chunkStr = String(format: "%ld", chunk)
@@ -329,9 +324,9 @@ extension UploadManager {
             httpBody.appendString(convertFormField(named: "password", value: password, using: boundary))
             httpBody.appendString(convertFormField(named: "chunk", value: chunkStr, using: boundary))
             httpBody.appendString(convertFormField(named: "chunks", value: chunksStr, using: boundary))
-            httpBody.appendString(convertFormField(named: "original_sum", value: uploadProperties.md5Sum!, using: boundary))
+            httpBody.appendString(convertFormField(named: "original_sum", value: uploadProperties.md5Sum, using: boundary))
             httpBody.appendString(convertFormField(named: "category", value: "\(uploadProperties.category)", using: boundary))
-            httpBody.appendString(convertFormField(named: "filename", value: uploadProperties.fileName ?? "Image.jpg", using: boundary))
+            httpBody.appendString(convertFormField(named: "filename", value: uploadProperties.fileName, using: boundary))
             let imageTitle = NetworkUtilities.utf8mb3String(from: uploadProperties.imageTitle)
             httpBody.appendString(convertFormField(named: "name", value: imageTitle ?? "", using: boundary))
             let author = NetworkUtilities.utf8mb3String(from: uploadProperties.author)
@@ -339,24 +334,16 @@ extension UploadManager {
             let comment = NetworkUtilities.utf8mb3String(from: uploadProperties.comment)
             httpBody.appendString(convertFormField(named: "comment", value: comment ?? "", using: boundary))
             httpBody.appendString(convertFormField(named: "date_creation", value: creationDate, using: boundary))
-            httpBody.appendString(convertFormField(named: "level", value: "\(NSNumber(value: uploadProperties.privacyLevel!.rawValue))", using: boundary))
-            httpBody.appendString(convertFormField(named: "tag_ids", value: uploadProperties.tagIds ?? "", using: boundary))
+            httpBody.appendString(convertFormField(named: "level", value: "\(NSNumber(value: uploadProperties.privacyLevel.rawValue))", using: boundary))
+            httpBody.appendString(convertFormField(named: "tag_ids", value: uploadProperties.tagIds, using: boundary))
 
             // Chunk of data
             let chunkOfData = imageData.subdata(in: chunk * chunkSize..<min((chunk+1)*chunkSize, imageData.count))
-            var md5Checksum: String? = ""
-            if #available(iOS 13.0, *) {
-                #if canImport(CryptoKit)        // Requires iOS 13
-                md5Checksum = MD5(data: chunkOfData)
-                #endif
-            } else {
-                // Fallback on earlier versions
-                md5Checksum = oldMD5(data: chunkOfData)
-            }
-            httpBody.appendString(convertFormField(named: "chunk_sum", value: md5Checksum!, using: boundary))
+            let md5Checksum = chunkOfData.MD5checksum()
+            httpBody.appendString(convertFormField(named: "chunk_sum", value: md5Checksum, using: boundary))
             httpBody.append(convertFileData(fieldName: "file",
-                                            fileName: uploadProperties.fileName!,
-                                            mimeType: uploadProperties.mimeType ?? "image/jpg",
+                                            fileName: uploadProperties.fileName,
+                                            mimeType: uploadProperties.mimeType,
                                             fileData: chunkOfData,
                                             using: boundary))
 
@@ -386,13 +373,13 @@ extension UploadManager {
             var request = URLRequest(url: validUrl)
             request.httpMethod = "POST"
             request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-            request.setValue(uploadProperties.fileName!, forHTTPHeaderField: "filename")
-            request.addValue(uploadID.uriRepresentation().absoluteString, forHTTPHeaderField: "objectURI")
+            request.setValue(uploadProperties.fileName, forHTTPHeaderField: "filename")
             request.addValue(uploadProperties.localIdentifier, forHTTPHeaderField: "identifier")
             request.addValue(chunkStr, forHTTPHeaderField: "chunk")
             request.addValue(chunksStr, forHTTPHeaderField: "chunks")
             request.addValue("1", forHTTPHeaderField: "tries")
-            request.addValue(uploadProperties.md5Sum!, forHTTPHeaderField: "md5sum")
+            request.addValue(uploadProperties.md5Sum, forHTTPHeaderField: "md5sum")
+            request.addValue(String(imageData.count + chunks * 2170), forHTTPHeaderField: "fileSize")
 
             // As soon as tasks are created, the timeout counter starts
             let uploadSession: URLSession = UploadSessionDelegate.shared.uploadSession
@@ -403,20 +390,19 @@ extension UploadManager {
                 task.countOfBytesClientExpectsToSend = Int64(httpBody.count)
                 task.countOfBytesClientExpectsToReceive = 600
             }
-            print("\(debugFormatter.string(from: Date())) > \(uploadProperties.md5Sum!) upload task \(task.taskIdentifier) resumed (\(chunk)/\(chunks)")
+            print("\(debugFormatter.string(from: Date())) > \(uploadProperties.md5Sum) upload task \(task.taskIdentifier) resumed (\(chunk)/\(chunks)")
             task.resume()
 
-            // Update UI
-            if !isExecutingBackgroundUploadTask {
-                let progress = Float(chunk) / Float(chunks) / 2.0
+            // Update upload request state and UI
+            uploadsProvider.updateStatusOfUpload(with: uploadID, to: .uploading, error: "") { [unowned self] (_) in
+                // Reset counter of progress bar in case the upload is relaunched
+                UploadSessionDelegate.shared.clearCounter(withID: uploadProperties.localIdentifier)
                 // Update UI
-                let uploadInfo: [String : Any] = ["localIdentifier" : uploadProperties.localIdentifier,
-                                                  "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
-                                                  "progressFraction" : progress]
-                DispatchQueue.main.async {
-                    // Update UploadQueue cell and button shown in root album (or default album)
-                    let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)
-                    NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
+                if !self.isExecutingBackgroundUploadTask {
+                    // Update UI
+                    self.updateCell(with: uploadProperties.localIdentifier,
+                                    stateLabel: kPiwigoUploadState.uploading.stateInfo,
+                                    photoResize: nil, progress: 0.0, errorMsg: "")
                 }
             }
         }
@@ -472,11 +458,11 @@ extension UploadManager {
                     repeatedTask.countOfBytesClientExpectsToSend = Int64(fileSize)
                     repeatedTask.countOfBytesClientExpectsToReceive = 600
                 }
-                print("\(debugFormatter.string(from: Date())) > \(md5sum) | repeat task \(repeatedTask.taskIdentifier)")
+                print("\(debugFormatter.string(from: Date())) > \(md5sum) | repeat task \(task.taskIdentifier) (\(repeatedTask.taskIdentifier))")
                 repeatedTask.resume()
             } else {
                 // Failed 3 times already, delete chunk file from Piwigo/Uploads directory
-                print("\(debugFormatter.string(from: Date())) > \(identifier) | upload tasks failed 3 times!!!")
+                print("\(debugFormatter.string(from: Date())) > \(md5sum) | upload tasks failed 3 times!!!")
                 let imageFile = identifier.replacingOccurrences(of: "/", with: "-")
                 let chunkFileName = imageFile + "." + numberFormatter.string(from: NSNumber(value: chunk))!
                 deleteFilesInUploadsDirectory(with: chunkFileName)
@@ -493,10 +479,9 @@ extension UploadManager {
 
     func didCompleteUploadTask(_ task: URLSessionTask, withData data: Data) {
         // Retrieve task parameters
-        guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: "objectURI"),
+        guard let objectURIstr = task.taskDescription,
               let identifier = task.originalRequest?.value(forHTTPHeaderField: "identifier"),
-              let md5sum = task.originalRequest?.value(forHTTPHeaderField: "md5sum"),
-              let chunks = Float((task.originalRequest?.value(forHTTPHeaderField: "chunks"))!) else {
+              let md5sum = task.originalRequest?.value(forHTTPHeaderField: "md5sum") else {
             return
         }
         
@@ -548,6 +533,7 @@ extension UploadManager {
             if uploadProperties.requestState == .uploadingError { return }
             
             // Update upload request status
+            print("\(debugFormatter.string(from: Date())) > Invalid JSON object: \(dataStr)")
             let error = NSError.init(domain: "Piwigo", code: UploadError.invalidJSONobject.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.invalidJSONobject.localizedDescription])
             self.didEndTransfer(for: uploadID, with: uploadProperties, error)
             return
@@ -566,25 +552,24 @@ extension UploadManager {
                return
             }
             
-            // Update progress bar if upload not yet complete
-            if let _ = uploadJSON.chunks, let message = uploadJSON.chunks.message {
-                let nberOfUploadedChunks = message.dropFirst(18).components(separatedBy: ",").count
-                print("\(debugFormatter.string(from: Date())) > \(md5sum) | \(nberOfUploadedChunks) chunks downloaded")
-                if !isExecutingBackgroundUploadTask {
-                    if chunks > 0 {
-                        let progress = 0.5 + Float(nberOfUploadedChunks) / Float(chunks) / 2.0
-                        // Update UI
-                        let uploadInfo: [String : Any] = ["localIdentifier" : identifier,
-                                                          "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
-                                                          "progressFraction" : progress]
-                        DispatchQueue.main.async {
-                            // Update UploadQueue cell and button shown in root album (or default album)
-                            let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)
-                            NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
-                        }
-                    }
-                    return
-                }
+            // Upload completed?
+            if let _ = uploadJSON.chunks, let _ = uploadJSON.chunks.message {
+                // Upload not completed
+//                let nberOfUploadedChunks = message.dropFirst(18).components(separatedBy: ",").count
+//                print("\(debugFormatter.string(from: Date())) > \(md5sum) | \(nberOfUploadedChunks) chunks downloaded")
+                return
+            }
+            
+            // Upload completed
+            // Cancel other remaining tasks related with this request to any
+            let uploadSession: URLSession = UploadSessionDelegate.shared.uploadSession
+            uploadSession.getAllTasks { uploadTasks in
+                // Select remaining tasks related with this request if any
+                let tasksToCancel = uploadTasks.filter({ $0.taskDescription == objectURIstr })
+                                               .filter({ $0.taskIdentifier != task.taskIdentifier})
+                print("\(self.debugFormatter.string(from: Date())) > \(md5sum) | delete task \(task.taskIdentifier)")
+                tasksToCancel.forEach({ $0.cancel() })
+                UploadSessionDelegate.shared.removeCounter(withID: identifier)
             }
 
             // Add image to cache when uploaded by admin users
@@ -593,14 +578,9 @@ extension UploadManager {
 
                 // Update UI (fill progress bar)
                 if !isExecutingBackgroundUploadTask {
-                    let uploadInfo: [String : Any] = ["localIdentifier" : identifier,
-                                                      "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
-                                                      "progressFraction" : Float(1)]
-                    DispatchQueue.main.async {
-                        // Update UploadQueue cell and button shown in root album (or default album)
-                        let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)
-                        NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
-                    }
+                    updateCell(with: identifier,
+                               stateLabel: kPiwigoUploadState.uploading.stateInfo,
+                               photoResize: nil, progress: Float(1), errorMsg: nil)
                 }
 
                 // Prepare image for cache
@@ -616,7 +596,7 @@ extension UploadManager {
                 imageData.fileName = uploadJSON.data.fileName ?? uploadProperties.fileName
                 imageData.isVideo = uploadProperties.isVideo
                 imageData.datePosted = dateFormatter.date(from: uploadJSON.data.datePosted ?? "") ?? Date.init()
-                imageData.dateCreated = dateFormatter.date(from: uploadJSON.data.dateCreated ?? "") ?? uploadProperties.creationDate
+                imageData.dateCreated = dateFormatter.date(from: uploadJSON.data.dateCreated ?? "") ?? Date(timeIntervalSinceReferenceDate: uploadProperties.creationDate)
 
                 imageData.fullResPath = NetworkHandler.encodedImageURL(uploadJSON.data.fullResPath)
                 imageData.fullResWidth = uploadJSON.data.fullResWidth ?? 1
@@ -675,23 +655,23 @@ extension UploadManager {
                 DispatchQueue.main.async {
                     CategoriesData.sharedInstance()?.addImage(imageData)
                 }
-
-                // Delete main file
-                let fileName = uploadProperties.localIdentifier.replacingOccurrences(of: "/", with: "-")
-                let fileURL = applicationUploadsDirectory.appendingPathComponent(fileName)
-                do {
-                    try FileManager.default.removeItem(at: fileURL)
-                } catch {
-                    print("\(debugFormatter.string(from: Date())) > \(md5sum) | could not delete upload file: \(error)")
-                }
-
-                // Update state of upload
-                var newUploadProperties = uploadProperties
-                newUploadProperties.imageId = uploadJSON.data.imageId!
-                newUploadProperties.requestState = .finished
-                newUploadProperties.requestError = ""
-                self.didEndTransfer(for: uploadID, with: newUploadProperties, nil)
             }
+
+            // Delete uploaded file
+            let fileName = uploadProperties.localIdentifier.replacingOccurrences(of: "/", with: "-")
+            let fileURL = applicationUploadsDirectory.appendingPathComponent(fileName)
+            do {
+                try FileManager.default.removeItem(at: fileURL)
+            } catch {
+                print("\(debugFormatter.string(from: Date())) > \(md5sum) | could not delete upload file: \(error)")
+            }
+
+            // Update state of upload
+            var newUploadProperties = uploadProperties
+            newUploadProperties.imageId = uploadJSON.data.imageId!
+            newUploadProperties.requestState = .finished
+            newUploadProperties.requestError = ""
+            self.didEndTransfer(for: uploadID, with: newUploadProperties, nil)
             return
         } catch {
             // JSON object cannot be digested, image still ready for upload

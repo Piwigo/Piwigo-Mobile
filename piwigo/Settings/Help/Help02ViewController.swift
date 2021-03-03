@@ -55,9 +55,6 @@ class Help02ViewController: UIViewController {
         // Remember that this view was watched
         Model.sharedInstance().didWatchHelpViews = Model.sharedInstance().didWatchHelpViews | helpID
         Model.sharedInstance().saveToDisk()
-        
-        // Remember that help views were presented in the current session
-        Model.sharedInstance()?.didPresentHelpViewsInCurrentSession = true
     }
 
     override func viewWillAppear(_ animated: Bool) {

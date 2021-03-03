@@ -234,7 +234,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         let helpSB = UIStoryboard(name: "HelpViewController", bundle: nil)
         let helpVC = helpSB.instantiateViewController(withIdentifier: "HelpViewController") as? HelpViewController
         if let helpVC = helpVC {
-            helpVC.onlyWhatsNew = false
+            // Update this list after deleting/creating Help##ViewControllers
+            helpVC.displayHelpPagesWithIndex = [0,4,5,1,3,2]
             if UIDevice.current.userInterfaceIdiom == .phone {
                 helpVC.popoverPresentationController?.permittedArrowDirections = .up
                 navigationController?.present(helpVC, animated:true)
@@ -629,7 +630,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let defaultSize = PiwigoImageData.name(forImageThumbnailSizeType: kPiwigoImageSize(rawValue: kPiwigoImageSize.RawValue(Model.sharedInstance().defaultThumbnailSize)) as kPiwigoImageSize, withInfo: false)!
+                let defaultSize = PiwigoImageData.name(forImageThumbnailSizeType: Model.sharedInstance().defaultThumbnailSize, withInfo: false)!
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 var title: String
                 if view.bounds.size.width > 375 {
@@ -652,7 +653,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     return SliderTableViewCell()
                 }
                 // Min/max number of thumbnails per row depends on selected file
-                let defaultWidth = PiwigoImageData.width(forImageSizeType: kPiwigoImageSize(rawValue: kPiwigoImageSize.RawValue(Model.sharedInstance().defaultThumbnailSize)) as kPiwigoImageSize)
+                let defaultWidth = PiwigoImageData.width(forImageSizeType: Model.sharedInstance().defaultThumbnailSize)
                 let minNberOfImages = ImagesCollection.imagesPerRowInPortrait(for: nil, maxWidth: defaultWidth)
 
                 // Slider value, chek that default number fits inside selected range
@@ -1951,11 +1952,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     func textFieldDidEndEditing(_ textField: UITextField) {
         switch textField.tag {
         case kImageUploadSetting.author.rawValue:
-            Model.sharedInstance().defaultAuthor = textField.text
-            Model.sharedInstance().saveToDisk()
+            Model.sharedInstance()?.defaultAuthor = textField.text
+            Model.sharedInstance()?.saveToDisk()
         case kImageUploadSetting.prefix.rawValue:
-            Model.sharedInstance().defaultPrefix = textField.text
-            Model.sharedInstance().saveToDisk()
+            Model.sharedInstance()?.defaultPrefix = textField.text
+            Model.sharedInstance()?.saveToDisk()
         default:
             break
         }
@@ -1965,8 +1966,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 // MARK: - DefaultCategoryDelegate Methods
     func didChangeDefaultCategory(_ categoryId: Int) {
         // Save new choice
-        Model.sharedInstance().defaultCategory = categoryId
-        Model.sharedInstance().saveToDisk()
+        Model.sharedInstance()?.defaultCategory = categoryId
+        Model.sharedInstance()?.saveToDisk()
 
         // Will load default album view when dismissing this view
         didChangeDefaultAlbum = true
@@ -1976,16 +1977,16 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 // MARK: - SelectedPrivacyDelegate Methods
     func didSelectPrivacyLevel(_ privacyLevel: kPiwigoPrivacy) {
         // Save new choice
-        Model.sharedInstance().defaultPrivacyLevel = privacyLevel
-        Model.sharedInstance().saveToDisk()
+        Model.sharedInstance()?.defaultPrivacyLevel = privacyLevel
+        Model.sharedInstance()?.saveToDisk()
     }
 
     
 // MARK: - CategorySortDelegate Methods
     func didSelectCategorySortType(_ sortType: kPiwigoSort) {
         // Save new choice
-        Model.sharedInstance().defaultSort = sortType
-        Model.sharedInstance().saveToDisk()
+        Model.sharedInstance()?.defaultSort = sortType
+        Model.sharedInstance()?.saveToDisk()
     }
 
     

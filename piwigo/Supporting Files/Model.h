@@ -23,14 +23,21 @@ FOUNDATION_EXPORT NSTimeInterval const k1WeekInDays;
 FOUNDATION_EXPORT NSTimeInterval const k2WeeksInDays;
 FOUNDATION_EXPORT NSTimeInterval const k3WeeksInDays;
 
-FOUNDATION_EXPORT NSString *kPiwigoActivityTypeMessenger;
-FOUNDATION_EXPORT NSString *kPiwigoActivityTypePostInstagram;
-FOUNDATION_EXPORT NSString *kPiwigoActivityTypePostToSignal;
-FOUNDATION_EXPORT NSString *kPiwigoActivityTypePostToSnapchat;
-FOUNDATION_EXPORT NSString *kPiwigoActivityTypePostToWhatsApp;
-FOUNDATION_EXPORT NSString *kPiwigoActivityTypeOther;
-
 @class PHPhotoLibrary;
+
+typedef enum {
+    kPiwigoImageSizeSquare,
+    kPiwigoImageSizeThumb,
+    kPiwigoImageSizeXXSmall,
+    kPiwigoImageSizeXSmall,
+    kPiwigoImageSizeSmall,
+    kPiwigoImageSizeMedium,
+    kPiwigoImageSizeLarge,
+    kPiwigoImageSizeXLarge,
+    kPiwigoImageSizeXXLarge,
+    kPiwigoImageSizeFullRes,
+    kPiwigoImageSizeEnumCount
+} kPiwigoImageSize;
 
 typedef enum {
     kPiwigoSortNameAscending,               // Photo title, A → Z
@@ -128,7 +135,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL hasXXLargeSizeImages;
 
 // Default thumbnail size and number per row in portrait mode
-@property (nonatomic, assign) NSInteger defaultThumbnailSize;
+@property (nonatomic, assign) kPiwigoImageSize defaultThumbnailSize;
 @property (nonatomic, assign) NSInteger thumbnailsPerRowInPortrait;
 
 // Default image settings
@@ -182,7 +189,6 @@ typedef enum {
 
 // Remember which help views were watched
 @property (nonatomic, assign) UInt16 didWatchHelpViews;
-@property (nonatomic, assign) BOOL didPresentHelpViewsInCurrentSession;
 
 // Request help for translating Piwigo every month or so
 @property (nonatomic, assign) NSTimeInterval dateOfLastTranslationRequest;

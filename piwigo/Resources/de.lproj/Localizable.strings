@@ -179,6 +179,7 @@
 "categoryUpload_syncedFaces" = "iPhoto Gesichter";
 "categoryUpload_mediaTypes" = "Medientypen";
 "categoryUpload_otherAlbums" = "Andere Alben";
+"categoryUpload_pasteboard" = "Zwischenablage";
 
 "categoyUpload_loadSubCategories" = "Laden";
 "categoryUpload_images" = "Lade Fotos hoch";
@@ -550,6 +551,9 @@
 "shareActivityCode_CameraRoll>375px" = "Fotos in der  App speichern";
 "shareActivityCode_Other" = "Mit anderen Apps teilen";
 "shareActivityCode_Other>375px" = "Fotos mit anderen Apps teilen";
+
+"shareFailError_title" = "Teilen fehlgeschlagen";
+"shareMetadataError_message" = "Private Metadaten können nicht entfernt werden";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library

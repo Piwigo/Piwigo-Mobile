@@ -154,7 +154,7 @@ class DefaultImageThumbnailSizeViewController: UIViewController, UITableViewData
         cell.textLabel?.adjustsFontSizeToFitWidth = false
 
         // Add checkmark in front of selected item
-        if Model.sharedInstance().defaultThumbnailSize == indexPath.row {
+        if Model.sharedInstance().defaultThumbnailSize.rawValue == indexPath.row {
             cell.accessoryType = .checkmark
         } else {
             cell.accessoryType = .none
@@ -311,7 +311,7 @@ class DefaultImageThumbnailSizeViewController: UIViewController, UITableViewData
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        Model.sharedInstance().defaultThumbnailSize = indexPath.row
+        Model.sharedInstance().defaultThumbnailSize = kPiwigoImageSize(UInt32(indexPath.row))
         Model.sharedInstance().saveToDisk()
         tableView.reloadData()
 

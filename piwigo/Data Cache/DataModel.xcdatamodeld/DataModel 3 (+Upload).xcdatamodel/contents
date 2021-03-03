@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17192" systemVersion="20B5022a" minimumToolsVersion="Xcode 8.0" sourceLanguage="Swift" userDefinedModelVersionIdentifier="DataModel">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="18153" systemVersion="20D64" minimumToolsVersion="Xcode 8.0" sourceLanguage="Swift" userDefinedModelVersionIdentifier="DataModel">
     <entity name="Location" representedClassName=".Location" syncable="YES">
-        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="placeName" optional="YES" attributeType="String" defaultValueString="" syncable="YES"/>
-        <attribute name="radius" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="streetName" optional="YES" attributeType="String" defaultValueString="" syncable="YES"/>
+        <attribute name="latitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="longitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="placeName" attributeType="String" defaultValueString="" syncable="YES"/>
+        <attribute name="radius" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="streetName" attributeType="String" defaultValueString="" syncable="YES"/>
     </entity>
     <entity name="Tag" representedClassName=".Tag" syncable="YES">
-        <attribute name="lastModified" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="numberOfImagesUnderTag" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="tagId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="tagName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lastModified" attributeType="Date" defaultDateTimeInterval="-3187296561" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="numberOfImagesUnderTag" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="tagId" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="tagName" attributeType="String" defaultValueString="" syncable="YES"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="tagId"/>
@@ -19,33 +19,33 @@
         </uniquenessConstraints>
     </entity>
     <entity name="Upload" representedClassName=".Upload" syncable="YES">
-        <attribute name="author" optional="YES" attributeType="String" defaultValueString="" syncable="YES"/>
-        <attribute name="category" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="comment" optional="YES" attributeType="String" defaultValueString="" syncable="YES"/>
-        <attribute name="compressImageOnUpload" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="creationDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="defaultPrefix" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="deleteImageAfterUpload" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="fileName" optional="YES" attributeType="String" defaultValueString="" syncable="YES"/>
-        <attribute name="imageId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="imageName" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="isVideo" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="localIdentifier" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="md5Sum" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="mimeType" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="photoQuality" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="photoResize" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="prefixFileNameBeforeUpload" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="privacyLevel" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="requestDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="requestError" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="requestSectionKey" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="requestState" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="resizeImageOnUpload" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="serverFileTypes" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="serverPath" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="stripGPSdataOnUpload" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="tagIds" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="author" attributeType="String" defaultValueString="" syncable="YES"/>
+        <attribute name="category" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="comment" attributeType="String" defaultValueString="" syncable="YES"/>
+        <attribute name="compressImageOnUpload" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="creationDate" attributeType="Date" defaultDateTimeInterval="-3187296561" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="defaultPrefix" attributeType="String" defaultValueString="" syncable="YES"/>
+        <attribute name="deleteImageAfterUpload" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="fileName" attributeType="String" defaultValueString="" syncable="YES"/>
+        <attribute name="imageId" attributeType="Integer 64" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="imageName" attributeType="String" defaultValueString="" syncable="YES"/>
+        <attribute name="isVideo" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="localIdentifier" attributeType="String" syncable="YES"/>
+        <attribute name="md5Sum" attributeType="String" defaultValueString="" syncable="YES"/>
+        <attribute name="mimeType" attributeType="String" defaultValueString="" syncable="YES"/>
+        <attribute name="photoQuality" attributeType="Integer 16" defaultValueString="98" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="photoResize" attributeType="Integer 16" defaultValueString="100" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="prefixFileNameBeforeUpload" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="privacyLevel" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="requestDate" attributeType="Date" defaultDateTimeInterval="-3187296561" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="requestError" attributeType="String" defaultValueString="" syncable="YES"/>
+        <attribute name="requestSectionKey" attributeType="String" defaultValueString="" syncable="YES"/>
+        <attribute name="requestState" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="resizeImageOnUpload" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="serverFileTypes" attributeType="String" defaultValueString="jpg,jpeg,png,gif" syncable="YES"/>
+        <attribute name="serverPath" attributeType="String" defaultValueString="" syncable="YES"/>
+        <attribute name="stripGPSdataOnUpload" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="tagIds" attributeType="String" defaultValueString="" syncable="YES"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="localIdentifier"/>
@@ -53,8 +53,8 @@
         </uniquenessConstraints>
     </entity>
     <elements>
-        <element name="Location" positionX="-60.984375" positionY="-122.5" width="128" height="118"/>
-        <element name="Tag" positionX="-61.69140625" positionY="-237.2265625" width="128" height="103"/>
+        <element name="Location" positionX="-60.984375" positionY="-122.5" width="128" height="104"/>
+        <element name="Tag" positionX="-61.69140625" positionY="-237.2265625" width="128" height="89"/>
         <element name="Upload" positionX="-403.19921875" positionY="-201.09375" width="128" height="434"/>
     </elements>
 </model>

@@ -14,7 +14,7 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
     @objc static var shared = UploadSessionDelegate()
     @objc let uploadSessionIdentifier:String! = "org.piwigo.uploadBckgSession"
     @objc var uploadSessionCompletionHandler: (() -> Void)?
-        
+            
     // Create single instance
     lazy var uploadSession: URLSession = {
         let config = URLSessionConfiguration.background(withIdentifier: uploadSessionIdentifier)
@@ -41,8 +41,13 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
         config.httpMaximumConnectionsPerHost = 4
         
         /// Do not return a response from the cache
-        config.requestCachePolicy = .reloadIgnoringCacheData
         config.urlCache = nil
+        config.requestCachePolicy = .reloadIgnoringLocalCacheData
+        
+        /// Do not send upload requests with cookie so that each upload session remains ephemeral.
+        /// The user session, if it exists, remains untouched and kept alive until it expires.
+        config.httpShouldSetCookies = false
+        config.httpCookieAcceptPolicy = .never
         
         /// Allows a seamless handover from Wi-Fi to cellular
         if #available(iOS 11.0, *) {
@@ -58,6 +63,23 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
     }()
 
     
+    // MARK: - Byte Counters
+    // Counters for updating the progress bars of the UI
+    // are set with: (localIdentifier, bytesSent, fileSize)
+    lazy var bytesSentToPiwigoServer: [(String, Float, Float)] = []
+
+    func clearCounter(withID localIdentifier: String) {
+        if let indexOfUpload = bytesSentToPiwigoServer.firstIndex(where: { $0.0 == localIdentifier}) {
+            bytesSentToPiwigoServer[indexOfUpload].1 = 0.0
+        }
+    }
+
+    func removeCounter(withID localIdentifier: String) {
+        if let indexOfUpload = bytesSentToPiwigoServer.firstIndex(where: { $0.0 == localIdentifier}) {
+            bytesSentToPiwigoServer.remove(at: indexOfUpload)
+        }
+    }
+    
     // MARK: - Session Delegate
     func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
         print("    > The upload session has been invalidated")
@@ -71,7 +93,7 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
         let protectionSpace = challenge.protectionSpace
         guard protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
             protectionSpace.host.contains(domain) else {
-                completionHandler(.performDefaultHandling, nil)
+                completionHandler(.rejectProtectionSpace, nil)
                 return
         }
 
@@ -140,14 +162,39 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
 
-        // Get upload info from task
-//        guard let md5sum = task.originalRequest?.value(forHTTPHeaderField: "md5sum"),
-//            let chunk = Int((task.originalRequest?.value(forHTTPHeaderField: "chunk"))!),
-//            let chunks = Int((task.originalRequest?.value(forHTTPHeaderField: "chunks"))!) else {
-//                print("   > Could not extract HTTP header fields !!!!!!")
-//                return
-//        }
-//        print("    > Upload task \(task.taskIdentifier) did send \(bytesSent) bytes of chunk \(chunk)/\(chunks), i.e. \(totalBytesSent) bytes over \(totalBytesExpectedToSend) at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
+        // Get upload info from the task
+        // The size of the uploaded image is set in the Content-Length field.
+        guard let identifier = task.originalRequest?.value(forHTTPHeaderField: "identifier"),
+              let fileSizeStr = task.originalRequest?.value(forHTTPHeaderField: "fileSize"),
+              let fileSize = Float(fileSizeStr)
+               else {
+                print("   > Could not extract HTTP header fields !!!!!!")
+                return
+        }
+        
+        // Update counter
+        let progressFraction: Float
+        if let indexOfUpload = bytesSentToPiwigoServer.firstIndex(where: { $0.0 == identifier}) {
+            // Update counter
+            bytesSentToPiwigoServer[indexOfUpload].1 += Float(bytesSent)
+            progressFraction = bytesSentToPiwigoServer[indexOfUpload].1 / bytesSentToPiwigoServer[indexOfUpload].2
+            print("    > Upload task \(task.taskIdentifier), progressFraction = \(bytesSentToPiwigoServer[indexOfUpload].1) / \(bytesSentToPiwigoServer[indexOfUpload].2) i.e. \(progressFraction)")
+        } else {
+            // Add counter for this image
+            bytesSentToPiwigoServer.append((identifier, Float(bytesSent), fileSize))
+            progressFraction = Float(bytesSent) / fileSize
+            print("    > Upload task \(task.taskIdentifier), progressFraction = \(bytesSent) / \(fileSize) i.e. \(progressFraction)")
+        }
+        
+        // Update UI
+        let uploadInfo: [String : Any] = ["localIdentifier" : identifier,
+                                          "stateLabel" : kPiwigoUploadState.uploading.stateInfo,
+                                          "progressFraction" : progressFraction]
+        DispatchQueue.main.async {
+            // Update UploadQueue cell and button shown in root album (or default album)
+            let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)
+            NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
+        }
     }
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
@@ -166,7 +213,31 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
 //        } else {
 //            print("    > Upload task \(task.taskIdentifier) of chunk \(chunk)/\(chunks) finished transferring data at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
 //        }
-        
+
+        // The below code updates the stored cookie with the pwg_id returned by the server.
+        // This allows to check that the upload session was well closed by the server.
+        // For example by requesting image properties or an image deletion.
+//        print("\(task.response.debugDescription)")
+//        if let requestURL = task.originalRequest?.url,
+//           let cookies = HTTPCookieStorage.shared.cookies(for: requestURL), cookies.count > 0,
+//           var properties = cookies[0].properties {
+//            let oldPwgID = cookies[0].value
+//            print("oldPwgID => \(oldPwgID)")
+//
+//            if let response = task.response as? HTTPURLResponse,
+//               let setCookie = response.allHeaderFields["Set-Cookie"] as? String {
+//                let strPart2 = setCookie.components(separatedBy: "pwg_id=")
+//                if strPart2.count > 1 {
+//                    let newPwgID = strPart2[1].components(separatedBy: " ")[0].drop(while: {$0 == ";"})
+//                    properties.updateValue(newPwgID, forKey: .value)
+//                    if let cookie = HTTPCookie.init(properties: properties) {
+//                        print("newPwgID => \(newPwgID)")
+//                        HTTPCookieStorage.shared.setCookie(cookie)
+//                    }
+//                }
+//            }
+//        }
+
         // Handle the response with the Upload Manager
         if UploadManager.shared.isExecutingBackgroundUploadTask {
             UploadManager.shared.didCompleteUploadTask(task, withError: error)

@@ -15,6 +15,11 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationUploadedImage;
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationDeletedImage;
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationChangedAlbumData;
 
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationDidShareImage;
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationCancelDownloadImage;
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationDidShareVideo;
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationCancelDownloadVideo;
+
 @interface AlbumImagesViewController : UIViewController
 
 @property (nonatomic, assign) NSInteger categoryId;

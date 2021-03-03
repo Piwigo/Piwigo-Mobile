@@ -1,33 +1,18 @@
 //
-//  Location.swift
+//  Location+CoreDataClass.swift
 //  piwigo
 //
-//  Created by Eddy Lelièvre-Berna on 17/04/2020.
-//  Copyright © 2020 Piwigo.org. All rights reserved.
+//  Created by Eddy Lelièvre-Berna on 22/02/2021.
+//  Copyright © 2021 Piwigo.org. All rights reserved.
 //
 //  An NSManagedObject subclass for the Location entity.
+//
 
+import Foundation
 import CoreData
-import CoreLocation
 
+public class Location: NSManagedObject {
 
-// MARK: - Core Data
-/**
- Managed object subclass for the Tag entity.
- */
-
-class Location: NSManagedObject {
-
-    // The attributes of a location.
-    @NSManaged var latitude: Double
-    @NSManaged var longitude: Double
-    @NSManaged var radius: Double
-    @NSManaged var placeName: String
-    @NSManaged var streetName: String
-
-    // Singleton
-    static let sharedInstance: Location = Location()
-    
     /**
      Updates a Location instance with the values from a LocationProperties.
      */

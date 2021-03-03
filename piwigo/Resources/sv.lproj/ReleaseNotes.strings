@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v2.6.0_text" = "Version 2.6\n\n• Klistra in/ladda upp foton och videor från urklipp\n• Fixar ett kompatibilitetsproblem med Piwigo 11\n• Mindre buggfixar och förbättring av gränssnittet";
+
 "v2.5.4_text" = "Version 2.5.4\n\n• Mindre buggfixar och förbättringar av gränssnittet";
 
 "v2.5.3_text" = "Version 2.5.3\n21 december 2020\n\n• Kontrollera vilka foton och videor Piwigo kan komma åt\n• Tips och tricks för att bättre utnyttja appen\n• Felrättelser";

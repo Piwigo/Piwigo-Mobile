@@ -15,28 +15,26 @@ extension UploadManager{
         // Retrieve upload request parameters
         let taskContext = DataController.getPrivateContext()
         let upload = taskContext.object(with: uploadID) as! Upload
-        print("\(debugFormatter.string(from: Date())) > finishing transfer of \(upload.fileName ?? "Image.jpg")…")
+        print("\(debugFormatter.string(from: Date())) > finishing transfer of \(upload.fileName)…")
 
         // Prepare creation date
-        var creationDate = ""
-        if let date = upload.creationDate {
-            let dateFormat = DateFormatter()
-            dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
-            creationDate = dateFormat.string(from: date)
-        }
+        let dateFormat = DateFormatter()
+        dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let date = Date(timeIntervalSinceReferenceDate: upload.creationDate)
+        let creationDate = dateFormat.string(from: date)
 
         // Prepare parameters for uploading image/video (filename key is kPiwigoImagesUploadParamFileName)
         let imageTitle = NetworkUtilities.utf8mb3String(from: upload.imageName)
         let author = NetworkUtilities.utf8mb3String(from: upload.author)
         let comment = NetworkUtilities.utf8mb3String(from: upload.comment)
         let imageParameters: [String : String] = [
-            kPiwigoImagesUploadParamFileName: upload.fileName ?? "Image.jpg",
+            kPiwigoImagesUploadParamFileName: upload.fileName,
             kPiwigoImagesUploadParamTitle: imageTitle ?? "",
             kPiwigoImagesUploadParamAuthor: author ?? "",
             kPiwigoImagesUploadParamCreationDate: creationDate,
             kPiwigoImagesUploadParamPrivacy: "\(NSNumber(value: upload.privacyLevel))",
             kPiwigoImagesUploadParamDescription: comment ?? "",
-            kPiwigoImagesUploadParamTags: upload.tagIds ?? "",
+            kPiwigoImagesUploadParamTags: upload.tagIds,
         ]
 
         ImageService.setImageInfoForImageWithId(Int(upload.imageId),

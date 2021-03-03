@@ -179,6 +179,7 @@
 "categoryUpload_syncedFaces" = "iPhoto人脸";
 "categoryUpload_mediaTypes" = "媒体类型";
 "categoryUpload_otherAlbums" = "其他相册";
+"categoryUpload_pasteboard" = "剪切板";
 
 "categoyUpload_loadSubCategories" = "加载";
 "categoryUpload_images" = "上传图片";
@@ -550,6 +551,9 @@
 "shareActivityCode_CameraRoll>375px" = "保存照片到相册";
 "shareActivityCode_Other" = "使用其他应用共享";
 "shareActivityCode_Other>375px" = "使用其他应用共享照片";
+
+"shareFailError_title" = "分享失败";
+"shareMetadataError_message" = "无法删除私有元数据";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library

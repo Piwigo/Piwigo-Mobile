@@ -148,7 +148,7 @@
 
 #pragma mark - Album thumbnails
 
-+(NSInteger)optimumAlbumThumbnailSizeForDevice
++(kPiwigoImageSize)optimumAlbumThumbnailSizeForDevice
 {
     // Size of album thumbnails is 144x144 points (see AlbumTableViewCell.xib)
     float albumThumbnailSize = 144.0;
@@ -301,7 +301,7 @@
 
 #pragma mark - Image thumbnails
 
-+(NSInteger)optimumImageThumbnailSizeForDevice
++(kPiwigoImageSize)optimumImageThumbnailSizeForDevice
 {
     // Get optimum number of images per row
     float nberThumbnailsPerRow = [ImagesCollection minNberOfImagesPerRow];
@@ -505,7 +505,7 @@
     return imageSize;
 }
 
-+(NSInteger)optimumImageSizeForDevice
++(kPiwigoImageSize)optimumImageSizeForDevice
 {
     // Determine the resolution of the screen
     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions

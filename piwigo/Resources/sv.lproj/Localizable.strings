@@ -179,6 +179,7 @@
 "categoryUpload_syncedFaces" = "iPhoto-Faces";
 "categoryUpload_mediaTypes" = "Mediatyper";
 "categoryUpload_otherAlbums" = "Andra album";
+"categoryUpload_pasteboard" = "Urklipp";
 
 "categoyUpload_loadSubCategories" = "ladda";
 "categoryUpload_images" = "Ladda upp bilder";
@@ -550,6 +551,9 @@
 "shareActivityCode_CameraRoll>375px" = "Spara bilder i kamerarullen";
 "shareActivityCode_Other" = "Dela med andra appar";
 "shareActivityCode_Other>375px" = "Dela bilder med andra appar";
+
+"shareFailError_title" = "Dela misslyckades";
+"shareMetadataError_message" = "Kan inte ta bort privata metadata";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library
