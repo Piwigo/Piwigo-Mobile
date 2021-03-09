@@ -17,7 +17,7 @@ enum SettingsSection : Int {
     case albums
     case images
     case imageUpload
-    case color
+    case appearance
     case cache
     case clear
     case about
@@ -286,8 +286,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             titleString = NSLocalizedString("settingsHeader_images", comment: "Images")
         case SettingsSection.imageUpload.rawValue:
             titleString = NSLocalizedString("settingsHeader_upload", comment: "Default Upload Settings")
-        case SettingsSection.color.rawValue:
-            titleString = NSLocalizedString("settingsHeader_colors", comment: "Colors")
+        case SettingsSection.appearance.rawValue:
+            titleString = NSLocalizedString("settingsHeader_appearance", comment: "Appearance")
         case SettingsSection.cache.rawValue:
             titleString = NSLocalizedString("settingsHeader_cache", comment: "Cache Settings (Used/Total)")
         case SettingsSection.about.rawValue:
@@ -354,8 +354,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             titleString = NSLocalizedString("settingsHeader_images", comment: "Images")
         case SettingsSection.imageUpload.rawValue:
             titleString = NSLocalizedString("settingsHeader_upload", comment: "Default Upload Settings")
-        case SettingsSection.color.rawValue:
-            titleString = NSLocalizedString("settingsHeader_colors", comment: "Colors")
+        case SettingsSection.appearance.rawValue:
+            titleString = NSLocalizedString("settingsHeader_appearance", comment: "Appearance")
         case SettingsSection.cache.rawValue:
             titleString = NSLocalizedString("settingsHeader_cache", comment: "Cache Settings (Used/Total)")
         case SettingsSection.about.rawValue:
@@ -439,7 +439,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                            + (Model.sharedInstance().resizeImageOnUpload ? 1 : 0)
                            + (Model.sharedInstance().compressImageOnUpload ? 1 : 0)
                            + (Model.sharedInstance().prefixFileNameBeforeUpload ? 1 : 0)
-        case SettingsSection.color.rawValue:
+        case SettingsSection.appearance.rawValue:
             nberOfRows = 2
         case SettingsSection.cache.rawValue:
             nberOfRows = 3
@@ -1047,8 +1047,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 break
         }
         
-        // MARK: Colors
-        case SettingsSection.color.rawValue /* Colors */:
+        // MARK: Appearance
+        case SettingsSection.appearance.rawValue /* Appearance */:
             let sectionOffset = !(Model.sharedInstance().hasAdminRights ||
                                   Model.sharedInstance().usesCommunityPluginV29) ||
                                 !Model.sharedInstance().hadOpenedSession ? 1 : 0
@@ -1074,7 +1074,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     Model.sharedInstance().saveToDisk()
 
                     // Position of the row that should be added/removed
-                    let rowAtIndexPath = IndexPath(row: 1, section: SettingsSection.color.rawValue - sectionOffset)
+                    let rowAtIndexPath = IndexPath(row: 1, section: SettingsSection.appearance.rawValue - sectionOffset)
                     self.settingsTableView?.reloadRows(at: [rowAtIndexPath], with: .automatic)
 
                     // Notify palette change
@@ -1414,8 +1414,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 break
             }
 
-        // MARK: Colors
-        case SettingsSection.color.rawValue /* Colors */:
+        // MARK: Appearance
+        case SettingsSection.appearance.rawValue /* Appearance */:
             result = false
 
         // MARK: Cache Settings
