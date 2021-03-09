@@ -114,13 +114,20 @@ extension UploadManager {
     }
 
     private func didEndTransfer(for uploadID: NSManagedObjectID,
-                                with properties: UploadProperties, _ error: NSError?) {
-//        print("\(debugFormatter.string(from: Date())) > enters didEndTransfer in", queueName())
+                                with properties: UploadProperties, _ error: NSError?, taskID: Int = Int.max) {
+        print("\(debugFormatter.string(from: Date())) > didEndTransfer in", queueName())
         
         // Error?
         if let error = error {
+            print("\(self.debugFormatter.string(from: Date())) > task \(taskID) returned \(error.localizedDescription)")
+            // Cancel related tasks
+            if taskID != Int.max {
+                let objectURIstr = uploadID.uriRepresentation().absoluteString
+                UploadSessionDelegate.shared.cancelTasks(taskDescription: objectURIstr,
+                                                         exceptedTaskIdentifier: taskID)
+            }
+
             // Update state of upload request
-            print("\(debugFormatter.string(from: Date())) > transferred \(uploadID.uriRepresentation()) with error:\(error.localizedDescription)")
             var requestError: kPiwigoUploadState = .uploadingError
             if (error.code == UploadError.missingFile.hashValue) {
                 // Could not retrieve image file to transfer
@@ -535,7 +542,7 @@ extension UploadManager {
             // Update upload request status
             print("\(debugFormatter.string(from: Date())) > Invalid JSON object: \(dataStr)")
             let error = NSError.init(domain: "Piwigo", code: UploadError.invalidJSONobject.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.invalidJSONobject.localizedDescription])
-            self.didEndTransfer(for: uploadID, with: uploadProperties, error)
+            self.didEndTransfer(for: uploadID, with: uploadProperties, error, taskID: task.taskIdentifier)
             return
         }
 
@@ -548,7 +555,7 @@ extension UploadManager {
             if (uploadJSON.errorCode != 0) {
                 print("\(debugFormatter.string(from: Date())) > \(md5sum) | Piwigo error \(uploadJSON.errorCode)")
                 let error = NSError.init(domain: "Piwigo", code: uploadJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
-                self.didEndTransfer(for: uploadID, with: uploadProperties, error)
+                self.didEndTransfer(for: uploadID, with: uploadProperties, error, taskID: task.taskIdentifier)
                return
             }
             
@@ -561,16 +568,12 @@ extension UploadManager {
             }
             
             // Upload completed
-            // Cancel other remaining tasks related with this request to any
-            let uploadSession: URLSession = UploadSessionDelegate.shared.uploadSession
-            uploadSession.getAllTasks { uploadTasks in
-                // Select remaining tasks related with this request if any
-                let tasksToCancel = uploadTasks.filter({ $0.taskDescription == objectURIstr })
-                                               .filter({ $0.taskIdentifier != task.taskIdentifier})
-                print("\(self.debugFormatter.string(from: Date())) > \(md5sum) | delete task \(task.taskIdentifier)")
-                tasksToCancel.forEach({ $0.cancel() })
-                UploadSessionDelegate.shared.removeCounter(withID: identifier)
-            }
+            // Cancel other tasks related with this request if any
+            UploadSessionDelegate.shared.cancelTasks(taskDescription: objectURIstr,
+                                                     exceptedTaskIdentifier: task.taskIdentifier)
+            
+            // Clear byte counter of progress bars
+            UploadSessionDelegate.shared.removeCounter(withID: identifier)
 
             // Add image to cache when uploaded by admin users
             if let getInfos = uploadJSON.data, let imageId = getInfos.imageId, imageId != NSNotFound,
@@ -677,7 +680,7 @@ extension UploadManager {
             // JSON object cannot be digested, image still ready for upload
             print("\(debugFormatter.string(from: Date())) > \(md5sum) | wrong JSON object!")
             let error = NSError.init(domain: "Piwigo", code: UploadError.wrongJSONobject.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongJSONobject.localizedDescription])
-            self.didEndTransfer(for: uploadID, with: uploadProperties, error)
+            self.didEndTransfer(for: uploadID, with: uploadProperties, error, taskID: task.taskIdentifier)
             return
         }
     }

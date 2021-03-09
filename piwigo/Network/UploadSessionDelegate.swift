@@ -328,4 +328,20 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
         return URLCredential(user: username, password: password,
                              persistence: .forSession)
     }
+    
+    
+    // MARK: - Cancel Tasks Related to a Specific Upload Request
+    func cancelTasks(taskDescription: String, exceptedTaskIdentifier: Int) -> Void {
+        // Loop over all tasks
+        uploadSession.getAllTasks { uploadTasks in
+            // Select remaining tasks related with this request if any
+            let tasksToCancel = uploadTasks.filter({ $0.taskDescription == taskDescription })
+                                           .filter({ $0.taskIdentifier != exceptedTaskIdentifier})
+            // Cancel remaining tasks related with this completed upload request
+            tasksToCancel.forEach({
+                print("\(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) > Cancel upload task \($0.taskIdentifier)")
+                $0.cancel()
+            })
+        }
+    }
 }
