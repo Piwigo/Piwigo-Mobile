@@ -320,8 +320,14 @@ class UploadManager: NSObject, URLSessionDelegate {
     /// - photos and videos are prepared sequentially to reduce the memory needs
     /// - uploads are launched in the background with the method pwg.images.uploadAsync
     ///   and the BackgroundTasks farmework (iOS 13+)
-    /// - transfers failed due to wrong MD5 checksum are retried a certain number of times.
-    @objc let maxNberOfUploadsPerBackgroundTask = 100
+    /// - The number of bytes to be transferred is calculated and limited.
+    /// - A delay is set between series of upload tasks to prevent server overloads
+    /// - Failing tasks are automatically retried by iOS
+    @objc let maxNberOfUploadsPerBackgroundTask = 100       // i.e. 100 requests
+    @objc var countOfBytesToUpload = 0                      // Total amount of bytes to be sent
+    @objc let maxCountOfBytesToUpload = 50 * 1024 * 1024    // i.e. 50 MB
+    let delayBetweenUploads = TimeInterval(10)              // Seconds between each series of tasks
+    @objc var accumulatedDelay = TimeInterval(0)            // Delay added before resuming a series of tasks
     @objc var indexOfUploadRequestToPrepare = 0
     @objc var uploadRequestsToPrepare = [NSManagedObjectID]()
     @objc var indexOfUploadRequestToTransfer = 0
@@ -334,32 +340,29 @@ class UploadManager: NSObject, URLSessionDelegate {
         uploadRequestsToPrepare = [NSManagedObjectID]()
         uploadRequestsToTransfer = [NSManagedObjectID]()
 
-        // Get list of upload requests ready for transfer and whose transfer did fail
-        let requestsToTransfer = uploadsProvider.getRequestsIn(states: [.prepared, .uploadingError])
-        let nberToTransfer = requestsToTransfer.count
-        if nberToTransfer > 0 {
-            if nberToTransfer > maxNberOfUploadsPerBackgroundTask {
-                uploadRequestsToTransfer = Array(requestsToTransfer[..<maxNberOfUploadsPerBackgroundTask])
-            }
-            else {
-                uploadRequestsToTransfer = requestsToTransfer
-            }
-        }
+        // First, retry to upload requests whose transfer did fail
+        let failedUploads = uploadsProvider.getRequestsIn(states: [.uploadingError])
+        uploadRequestsToTransfer = Array(failedUploads[..<min(failedUploads.count, maxNberOfUploadsPerBackgroundTask)])
+
+        // Second, append upload requests ready for transfer
+        var diff = maxNberOfUploadsPerBackgroundTask - uploadRequestsToTransfer.count
+        if diff == 0 { return }
+        let preparedUploads = uploadsProvider.getRequestsIn(states: [.prepared])
+        uploadRequestsToTransfer.append(contentsOf: preparedUploads[..<min(diff, preparedUploads.count)])
         
-        // Get list of upload requests to prepare
-        let nberToPrepare = maxNberOfUploadsPerBackgroundTask - uploadRequestsToTransfer.count
+        // Finally, get list of upload requests to prepare
+        diff = maxNberOfUploadsPerBackgroundTask - uploadRequestsToTransfer.count
+        if diff == 0 { return }
         let requestsToPrepare = uploadsProvider.getRequestsIn(states: [.waiting])
-        if requestsToPrepare.count > nberToPrepare {
-            uploadRequestsToPrepare = Array(requestsToPrepare[..<nberToPrepare])
-        } else {
-            uploadRequestsToPrepare = requestsToPrepare
-        }
+        uploadRequestsToPrepare = Array(requestsToPrepare[..<min(diff, requestsToPrepare.count)])
     }
     
     @objc
     func appendJobToBckgTask() -> Void {
         // Add image transfer operations first
-        if indexOfUploadRequestToTransfer < uploadRequestsToTransfer.count {
+        print("\(debugFormatter.string(from: Date())) >•• countOfBytesToUpload: \(countOfBytesToUpload)")
+        if indexOfUploadRequestToTransfer < uploadRequestsToTransfer.count,
+           countOfBytesToUpload < maxCountOfBytesToUpload {
             // Get objectID of upload request
             let uploadID = uploadRequestsToTransfer[indexOfUploadRequestToTransfer]
             print("\(debugFormatter.string(from: Date())) >•• appendTransfer \(uploadID.uriRepresentation())")
@@ -369,7 +372,8 @@ class UploadManager: NSObject, URLSessionDelegate {
             indexOfUploadRequestToTransfer += 1
         }
         // then image preparation followed by transfer operations
-        else if indexOfUploadRequestToPrepare < uploadRequestsToPrepare.count {
+        else if indexOfUploadRequestToPrepare < uploadRequestsToPrepare.count,
+                countOfBytesToUpload < maxCountOfBytesToUpload {
             // Get objectID of upload request
             let uploadID = uploadRequestsToPrepare[indexOfUploadRequestToPrepare]
             print("\(debugFormatter.string(from: Date())) >•• appendPrepare \(uploadID.uriRepresentation())")
@@ -814,8 +818,12 @@ class UploadManager: NSObject, URLSessionDelegate {
             return
         }
 
+        // Reset counter of progress bar in case we repeat the transfer
+        UploadSessionDelegate.shared.clearCounter(withID: uploadProperties.localIdentifier)
+
         // Update UI
         if !self.isExecutingBackgroundUploadTask {
+            // Initialise the progress bar
             updateCell(with: uploadProperties.localIdentifier,
                        stateLabel: kPiwigoUploadState.uploading.stateInfo,
                        photoResize: nil, progress: Float(0), errorMsg: nil)

@@ -477,6 +477,9 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
         // Reset indexes
         [UploadManager shared].indexOfUploadRequestToPrepare = 0;
         [UploadManager shared].indexOfUploadRequestToTransfer = 0;
+        // Reset byte counter and delay
+        [UploadManager shared].countOfBytesToUpload = 0;
+        [UploadManager shared].accumulatedDelay = 0;
         // Select upload requests
         [[UploadManager shared] selectUploadRequestsForBckgTask];
     }];

@@ -323,7 +323,7 @@ extension UploadManager {
         let date = Date(timeIntervalSinceReferenceDate: uploadProperties.creationDate)
         let creationDate = dateFormat.string(from: date)
 
-        // Prepare files, requests and resume tasks
+        // Initialise credentials, boundary and upload session
         let username = Model.sharedInstance()?.username ?? ""
         let password = SAMKeychain.password(forService: uploadProperties.serverPath, account: username) ?? ""
         let boundary = createBoundary(from: uploadProperties.md5Sum)
@@ -402,23 +402,26 @@ extension UploadManager {
                 // Tell the system how many bytes are expected to be exchanged
                 task.countOfBytesClientExpectsToSend = Int64(httpBody.count)
                 task.countOfBytesClientExpectsToReceive = 600
-            }
-            print("\(debugFormatter.string(from: Date())) > \(uploadProperties.md5Sum) upload task \(task.taskIdentifier) resumed (\(chunk)/\(chunks)")
-            task.resume()
-
-            // Update upload request state and UI
-            uploadsProvider.updateStatusOfUpload(with: uploadID, to: .uploading, error: "") { [unowned self] (_) in
-                // Reset counter of progress bar in case the upload is relaunched
-                UploadSessionDelegate.shared.clearCounter(withID: uploadProperties.localIdentifier)
-                // Update UI
-                if !self.isExecutingBackgroundUploadTask {
-                    // Update UI
-                    self.updateCell(with: uploadProperties.localIdentifier,
-                                    stateLabel: kPiwigoUploadState.uploading.stateInfo,
-                                    photoResize: nil, progress: 0.0, errorMsg: "")
+                if isExecutingBackgroundUploadTask {
+                    task.earliestBeginDate = Date.init(timeIntervalSinceNow: self.accumulatedDelay)
                 }
             }
+            
+            // Adds bytes expected to be sent to counter
+            if isExecutingBackgroundUploadTask {
+                countOfBytesToUpload += httpBody.count
+            }
+            
+            // Resume task
+            print("\(debugFormatter.string(from: Date())) > \(uploadProperties.md5Sum) upload task \(task.taskIdentifier) resumed (\(chunk)/\(chunks)")
+            task.resume()
         }
+
+        // All tasks are now resumed -> Add delay for next upload request, update upload request status
+        if isExecutingBackgroundUploadTask {
+            accumulatedDelay += delayBetweenUploads
+        }
+        uploadsProvider.updateStatusOfUpload(with: uploadID, to: .uploading, error: "") { (_) in }
     }
 
     func didCompleteUploadTask(_ task: URLSessionTask, withError error: Error?) {
