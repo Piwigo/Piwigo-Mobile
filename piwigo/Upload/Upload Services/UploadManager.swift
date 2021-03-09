@@ -325,7 +325,7 @@ class UploadManager: NSObject, URLSessionDelegate {
     /// - Failing tasks are automatically retried by iOS
     @objc let maxNberOfUploadsPerBackgroundTask = 100       // i.e. 100 requests
     @objc var countOfBytesToUpload = 0                      // Total amount of bytes to be sent
-    @objc let maxCountOfBytesToUpload = 50 * 1024 * 1024    // i.e. 50 MB
+    @objc let maxCountOfBytesToUpload = 50 * 1024 * 1024    // i.e. 50 MB every 30 min (100 MB/hour)
     let delayBetweenUploads = TimeInterval(10)              // Seconds between each series of tasks
     @objc var accumulatedDelay = TimeInterval(0)            // Delay added before resuming a series of tasks
     @objc var indexOfUploadRequestToPrepare = 0
@@ -340,19 +340,23 @@ class UploadManager: NSObject, URLSessionDelegate {
         uploadRequestsToPrepare = [NSManagedObjectID]()
         uploadRequestsToTransfer = [NSManagedObjectID]()
 
+        // Check if uploads are still in progress
+        let nberOfUploadsInProgress = uploadsProvider.getRequestsIn(states: [.uploading]).count
+        if nberOfUploadsInProgress > 0 { return }   // i.e. Avoids upload requests build-up in queue
+        
         // First, retry to upload requests whose transfer did fail
         let failedUploads = uploadsProvider.getRequestsIn(states: [.uploadingError])
         uploadRequestsToTransfer = Array(failedUploads[..<min(failedUploads.count, maxNberOfUploadsPerBackgroundTask)])
 
         // Second, append upload requests ready for transfer
         var diff = maxNberOfUploadsPerBackgroundTask - uploadRequestsToTransfer.count
-        if diff == 0 { return }
+        if diff <= 0 { return }
         let preparedUploads = uploadsProvider.getRequestsIn(states: [.prepared])
         uploadRequestsToTransfer.append(contentsOf: preparedUploads[..<min(diff, preparedUploads.count)])
         
         // Finally, get list of upload requests to prepare
         diff = maxNberOfUploadsPerBackgroundTask - uploadRequestsToTransfer.count
-        if diff == 0 { return }
+        if diff <= 0 { return }
         let requestsToPrepare = uploadsProvider.getRequestsIn(states: [.waiting])
         uploadRequestsToPrepare = Array(requestsToPrepare[..<min(diff, requestsToPrepare.count)])
     }
