@@ -34,7 +34,7 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
         /// How long a task should wait for additional data to arrive before giving up (1 hour)
         config.timeoutIntervalForRequest = 1 * 60 * 60
         
-        /// How long an upload task should be allowed to be retried or transferred (7 days by default).
+        /// How long an upload task should be allowed to be retried or transferred (7 days).
         config.timeoutIntervalForResource = 7 * 24 * 60 * 60
         
         /// Determines the maximum number of simultaneous connections made to the host by tasks (4 by default)
