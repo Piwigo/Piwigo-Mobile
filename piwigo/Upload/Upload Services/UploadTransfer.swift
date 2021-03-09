@@ -299,8 +299,14 @@ extension UploadManager {
 
         // Calculate number of chunks
         let chunkSize = (Model.sharedInstance()?.uploadChunkSize ?? 512) * 1024
-        let chunks = Int((Float(imageData.count) / Float(chunkSize)).rounded(.up))
+        let chunksDiv : Float = Float(imageData.count) / Float(chunkSize)
+        let chunks = Int(chunksDiv.rounded(.up))
         let chunksStr = String(format: "%ld", chunks)
+        if chunks == 0, uploadProperties.fileName.isEmpty,
+           uploadProperties.md5Sum.isEmpty, uploadProperties.category == 0 {
+            let error = NSError.init(domain: "Piwigo", code: UploadError.missingFile.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingFile.localizedDescription])
+            didEndTransfer(for: uploadID, with: uploadProperties, error)
+        }
         
         // For producing filename suffixes
         let numberFormatter = NumberFormatter()
