@@ -423,11 +423,11 @@ extension UploadManager {
 
     func didCompleteUploadTask(_ task: URLSessionTask, withError error: Error?) {
         
-        // Get upload info from task
-        guard let identifier = task.originalRequest?.value(forHTTPHeaderField: "identifier"),
+        // Retrieve task parameters
+        guard let objectURIstr = task.taskDescription,
+              let identifier = task.originalRequest?.value(forHTTPHeaderField: "identifier"),
               let md5sum = task.originalRequest?.value(forHTTPHeaderField: "md5sum"),
-              let chunk = Int((task.originalRequest?.value(forHTTPHeaderField: "chunk"))!),
-              let tries = Int((task.originalRequest?.value(forHTTPHeaderField: "tries"))!) else {
+              let chunk = Int((task.originalRequest?.value(forHTTPHeaderField: "chunk"))!) else {
             print("\(debugFormatter.string(from: Date())) > Could not extract HTTP header fields !!!!!!")
             return
         }
@@ -440,45 +440,48 @@ extension UploadManager {
         // Handle the response here
         guard let httpResponse = task.response as? HTTPURLResponse,
             (200...299).contains(httpResponse.statusCode) else {
-            if let _ = error {
-                print("\(debugFormatter.string(from: Date())) > \(md5sum) | \(error!.localizedDescription)")
+            
+            // Retrieve upload request properties
+            guard let objectURI = URL.init(string: objectURIstr) else {
+                print("\(debugFormatter.string(from: Date())) > \(md5sum) | no object URI!")
+                return
+            }
+            let taskContext = DataController.getPrivateContext()
+            guard let uploadID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
+                print("\(debugFormatter.string(from: Date())) > \(md5sum) | no objectID!")
+                return
+            }
+            var uploadProperties: UploadProperties
+            do {
+                let upload = try taskContext.existingObject(with: uploadID) as! Upload
+                if upload.isFault {
+                    // The upload request is not fired yet.
+                    upload.willAccessValue(forKey: nil)
+                    uploadProperties = upload.getProperties()
+                    upload.didAccessValue(forKey: nil)
+                } else {
+                    uploadProperties = upload.getProperties()
+                }
+            }
+            catch {
+                print("\(debugFormatter.string(from: Date())) > \(md5sum) | missing Core Data object!")
+                // Investigate next upload request?
+                if self.isExecutingBackgroundUploadTask {
+                    // In background task — stop here
+                } else {
+                    // In foreground, consider next image
+                    self.findNextImageToUpload()
+                }
+                return
             }
 
-            // Retry if failed less than 3 times
-            if tries < 4 {
-                // Prepare URL Request Object
-                var request = task.originalRequest!
-                let triesStr = String(format: "%ld", tries + 1)
-                request.setValue(triesStr, forHTTPHeaderField: "tries")
-
-                // File name of chunk data stored into Piwigo/Uploads directory
-                // This file is deleted after a successful upload so that we can reuse it in case of error.
-                let fileName = identifier.replacingOccurrences(of: "/", with: "-")
-                let chunkFileName = fileName + "." + numberFormatter.string(from: NSNumber(value: chunk))!
-                let fileURL = applicationUploadsDirectory.appendingPathComponent(chunkFileName)
-                if !FileManager.default.fileExists(atPath: fileURL.path) {
-                    // The file does not exist, avoid crash
-                    return
-                }
-                
-                // As soon as tasks are created, the timeout counter starts
-                let uploadSession: URLSession = UploadSessionDelegate.shared.uploadSession
-                let repeatedTask = uploadSession.uploadTask(with: request, fromFile: fileURL)
-                repeatedTask.taskDescription = task.taskDescription
-                if #available(iOS 11.0, *) {
-                    // Tell the system how many bytes are expected to be exchanged
-                    let fileSize = (try! FileManager.default.attributesOfItem(atPath: fileURL.path)[FileAttributeKey.size] as! NSNumber).uint64Value
-                    repeatedTask.countOfBytesClientExpectsToSend = Int64(fileSize)
-                    repeatedTask.countOfBytesClientExpectsToReceive = 600
-                }
-                print("\(debugFormatter.string(from: Date())) > \(md5sum) | repeat task \(task.taskIdentifier) (\(repeatedTask.taskIdentifier))")
-                repeatedTask.resume()
+            // Update upload request status
+            if let error = error as NSError? {
+//                print("\(debugFormatter.string(from: Date())) > \(md5sum) | \(error.localizedDescription)")
+                self.didEndTransfer(for: uploadID, with: uploadProperties, error, taskID: task.taskIdentifier)
             } else {
-                // Failed 3 times already, delete chunk file from Piwigo/Uploads directory
-                print("\(debugFormatter.string(from: Date())) > \(md5sum) | upload tasks failed 3 times!!!")
-                let imageFile = identifier.replacingOccurrences(of: "/", with: "-")
-                let chunkFileName = imageFile + "." + numberFormatter.string(from: NSNumber(value: chunk))!
-                deleteFilesInUploadsDirectory(with: chunkFileName)
+                let error = NSError.init(domain: "Piwigo", code: UploadError.networkUnavailable.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.networkUnavailable.localizedDescription])
+                self.didEndTransfer(for: uploadID, with: uploadProperties, error, taskID: task.taskIdentifier)
             }
             return
         }
