@@ -31,8 +31,8 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
         /// Indicates whether the request is allowed to use the built-in cellular radios to satisfy the request.
         config.allowsCellularAccess = !(Model.sharedInstance()?.wifiOnlyUploading ?? false)
         
-        /// How long a task should wait for additional data to arrive before giving up (60s by default)
-        config.timeoutIntervalForRequest = 60
+        /// How long a task should wait for additional data to arrive before giving up (1 hour)
+        config.timeoutIntervalForRequest = 1 * 60 * 60
         
         /// How long an upload task should be allowed to be retried or transferred (7 days by default).
         config.timeoutIntervalForResource = 7 * 24 * 60 * 60
