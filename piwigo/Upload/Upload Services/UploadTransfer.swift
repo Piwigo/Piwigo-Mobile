@@ -544,10 +544,6 @@ extension UploadManager {
 
         // Check returned data
         guard let _ = try? JSONSerialization.jsonObject(with: filteredData, options: []) as? [String: AnyObject] else {
-            // Check if this transfer is already known to be failed
-            // because a previous chunk transfer may have already reported the error
-            if uploadProperties.requestState == .uploadingError { return }
-            
             // Update upload request status
             print("\(debugFormatter.string(from: Date())) > Invalid JSON object: \(dataStr)")
             let error = NSError.init(domain: "Piwigo", code: UploadError.invalidJSONobject.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.invalidJSONobject.localizedDescription])
