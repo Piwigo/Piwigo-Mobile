@@ -13,7 +13,7 @@ import CoreData
 
 @objc
 protocol TagsViewControllerDelegate: NSObjectProtocol {
-    func didSelectTags(_ selectedTags: [Tag]?)
+    func didSelectTags(_ selectedTags: [Tag])
 }
 
 @objc
@@ -67,11 +67,7 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
         // handle general UI updates and error alerts on the main queue.
         dataProvider.fetchTags(asAdmin: Model.sharedInstance()?.hasAdminRights ?? false) { error in
             DispatchQueue.main.async {
-
-                guard let error = error else {
-                    
-                    return
-                }
+                guard let error = error else { return }     // Done if no error
 
                 // Show an alert if there was an error.
                 let alert = UIAlertController(title: NSLocalizedString("CoreDataFetch_TagError", comment: "Fetch tags error!"),
@@ -565,7 +561,7 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
         case .insert:
             // Add tag to list of non selected tags
             /// We cannot sort the list now to avoid the case where we insert several rows at the same index path.
-            /// The sort is performed after the data source updates.
+            /// The sort is performed after the data source update.
             guard let tag: Tag = anObject as? Tag else { return }
             nonSelectedTags.append(tag)
             // Determine index of added tag and insert tag
