@@ -422,19 +422,15 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
     
     
     // MARK: - TagsViewControllerDelegate Methods
-    func didSelectTags(_ tags: [Tag]?) {
+    func didSelectTags(_ selectedTags: [Tag]) {
         // Update image parameter
-        if let selectedTags = tags {
-            commonTags = selectedTags
-        } else {
-            commonTags = [Tag]()
-        }
+        commonTags = selectedTags
 
         // Remember to update image info
         shouldUpdateTags = true
 
         // Update cell
-        let indexPath = IndexPath.init(row: EditImageDetailsOrder.privacy.rawValue, section: 0)
+        let indexPath = IndexPath.init(row: EditImageDetailsOrder.tags.rawValue, section: 0)
         paramsTableView.reloadRows(at: [indexPath], with: .automatic)
     }
 }
