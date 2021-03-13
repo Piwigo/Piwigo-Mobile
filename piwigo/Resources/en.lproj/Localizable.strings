@@ -691,11 +691,14 @@
 "settings_cacheClearAll" = "Clear Photo Cache";
 "settings_cacheClearMsg" = "Are you sure you want to clear the photo cache? This will make albums and photos take a while to load again.";
 
-// Settings — Colors
+// Settings — Appearance
 "settingsHeader_appearance" = "Appearance";
-"settings_darkPalette" = "Always Dark Palette";
-"settings_switchPalette" = "Switch Automatically";
+"settingsHeader_colorPalette" = "Color Palette";
+"settings_lightColor" = "Light";
+"settings_darkColor" = "Dark";
+"settings_switchPalette" = "Automatic";
 "settings_brightness" = "Brightness";
+"settings_brightnessHelp" = "In low ambient brightness, the Automatic option uses a darker color palette to make photos stand out against darker backgrounds.";
 
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";
