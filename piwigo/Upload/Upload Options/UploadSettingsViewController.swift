@@ -359,14 +359,36 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
         let tag = kImageUploadSetting(rawValue: textField.tag)
         switch tag {
         case .prefix:
-            // Title
             shouldUpdateDefaultPrefix = true
         default:
             break
         }
     }
 
-    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
+        let newString = NetworkUtilities.utf8mb3String(from: string) ?? ""
+        guard let finalString = (textField.text as NSString?)?.replacingCharacters(in: range, with: newString) else {
+            return true
+        }
+        let tag = kImageUploadSetting(rawValue: textField.tag)
+        switch tag {
+        case .prefix:
+            defaultPrefix = finalString
+        default:
+            break
+        }
+        return true
+    }
+
+    func textFieldShouldClear(_ textField: UITextField) -> Bool {
+        let tag = kImageUploadSetting(rawValue: textField.tag)
+        switch tag {
+        case .prefix:
+            defaultPrefix = ""
+        default:
+            break
+        }
         return true
     }
 
@@ -379,7 +401,9 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
         let tag = kImageUploadSetting(rawValue: textField.tag)
         switch tag {
         case .prefix:
-            defaultPrefix = textField.text!
+            // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
+            defaultPrefix = NetworkUtilities.utf8mb3String(from: textField.text) ?? ""
+            if defaultPrefix.isEmpty { shouldUpdateDefaultPrefix = false }
         default:
             break
         }
