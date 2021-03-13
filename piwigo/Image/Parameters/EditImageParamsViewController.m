@@ -286,14 +286,11 @@ typedef enum {
     if ((self.commonParameters.dateCreated != nil) && (self.oldCreationDate != nil)) {
         timeInterval = [self.commonParameters.dateCreated timeIntervalSinceDate:self.oldCreationDate];
     }
-    NSMutableArray *updatedImages = [[NSMutableArray alloc] init];
+    NSMutableArray<PiwigoImageData *> *updatedImages = [NSMutableArray<PiwigoImageData *> new];
 
     // Update all images
-    for (NSInteger index = 0; index < self.images.count; index++)
+    for (PiwigoImageData *imageData in self.images)
     {
-        // Next image
-        PiwigoImageData *imageData = [self.images objectAtIndex:index];
-        
         // Update image title?
         if (self.commonParameters.imageTitle && self.shouldUpdateTitle) {
             imageData.imageTitle = self.commonParameters.imageTitle;
@@ -318,11 +315,6 @@ typedef enum {
         // Update image privacy level?
         if ((self.commonParameters.privacyLevel != kPiwigoPrivacyUnknown) && self.shouldUpdatePrivacyLevel) {
             imageData.privacyLevel = self.commonParameters.privacyLevel;
-        }
-
-        // Update image tags?
-        if (self.shouldUpdateTags) {
-            imageData.tags = self.commonParameters.tags;
         }
 
         // Update image description?
@@ -822,7 +814,7 @@ typedef enum {
             [self.editImageParamsTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
         }
         
-        // Show date of hide picker
+        // Show date or hide picker
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:EditImageParamsOrderDatePicker inSection:0];
         if (self.hasDatePicker) {
             // Found a picker, so remove it
@@ -1113,32 +1105,81 @@ typedef enum {
 
 -(void)didSelectTags:(NSArray<Tag *> *)selectedTags
 {
-    // Update image tags
-    if (selectedTags.count == self.commonParameters.tags.count) {
-        // Same number of tags - identical?
-        NSInteger count = 0;
-        for (NSInteger index = 0; index < selectedTags.count; index++) {
-            if (self.commonParameters.tags[index].tagId == selectedTags[index].tagId) {
-                count++;
-            }
+    // Build new list of common tags (i.e. Tag -> PiwigoTagData)
+    NSMutableArray<PiwigoTagData *>* newCommonTags = [NSMutableArray new];
+    for (Tag *selectedTag in selectedTags) {
+        PiwigoTagData *newTag = [PiwigoTagData new];
+        newTag.tagId = selectedTag.tagId;
+        newTag.tagName = selectedTag.tagName;
+        newTag.lastModified = selectedTag.lastModified;
+        newTag.numberOfImagesUnderTag = selectedTag.numberOfImagesUnderTag;
+        [newCommonTags addObject:newTag];
+        NSLog(@"==> %@", newTag);
+    }
+
+    // Build list of added tags
+    NSMutableArray<PiwigoTagData *>* addedTags = [NSMutableArray new];
+    for (PiwigoTagData *tag in newCommonTags) {
+        NSInteger indexOfExistingTag = [self.commonParameters.tags indexOfObjectPassingTest:^BOOL(PiwigoTagData * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            return obj.tagId == tag.tagId;
+        }];
+        if (indexOfExistingTag == NSNotFound) {
+            [addedTags addObject:tag];
         }
-        if (count == selectedTags.count) return;
+    }
+
+    // Build list of removed tags
+    NSMutableArray<PiwigoTagData *>* removedTags = [NSMutableArray new];
+    for (PiwigoTagData *tag in self.commonParameters.tags) {
+        NSInteger indexOfExistingTag = [newCommonTags indexOfObjectPassingTest:^BOOL(PiwigoTagData * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            return obj.tagId == tag.tagId;
+        }];
+        if (indexOfExistingTag == NSNotFound) {
+            [removedTags addObject:tag];
+        }
     }
     
-    // Update image tags
-    NSMutableArray <PiwigoTagData *>* newListOfTags = [NSMutableArray new];
-    for (Tag *selectedTag in selectedTags) {
-        PiwigoTagData *oldTag = [PiwigoTagData new];
-        oldTag.tagId = selectedTag.tagId;
-        oldTag.tagName = selectedTag.tagName;
-        oldTag.lastModified = selectedTag.lastModified;
-        oldTag.numberOfImagesUnderTag = selectedTag.numberOfImagesUnderTag;
-        [newListOfTags addObject:oldTag];
+    // Do we need to update images?
+    if (addedTags.count > 0 || removedTags.count > 0) {
+        // Will change colour of tags
+        self.shouldUpdateTags = YES;
+
+        // Update all images
+        NSMutableArray *updatedImages = [[NSMutableArray alloc] init];
+        for (PiwigoImageData *imageData in self.images)
+        {
+            // Retrieve tags of current image
+            NSMutableArray<PiwigoTagData *> *imageTags = [imageData.tags mutableCopy];
+            
+            // Loop over the removed tags
+            for (PiwigoTagData *tag in removedTags) {
+                NSInteger indexOfExistingItem = [imageTags indexOfObjectPassingTest:^BOOL(PiwigoTagData * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                    return obj.tagId == tag.tagId;
+                }];
+                if (indexOfExistingItem != NSNotFound) {
+                    [imageTags removeObjectAtIndex:indexOfExistingItem];
+                }
+            }
+
+            // Loop over the added tags
+            for (PiwigoTagData *tag in addedTags) {
+                NSInteger indexOfExistingItem = [imageTags indexOfObjectPassingTest:^BOOL(PiwigoTagData * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                    return obj.tagId == tag.tagId;
+                }];
+                if (indexOfExistingItem == NSNotFound) {
+                    [imageTags addObject:tag];
+                }
+            }
+
+            // Append image data
+            imageData.tags = [imageTags copy];
+            [updatedImages addObject:imageData];
+        }
+        self.images = updatedImages;
     }
 
     // Update common tag list and remember to update image info
-    self.shouldUpdateTags = YES;
-    self.commonParameters.tags = newListOfTags;
+    self.commonParameters.tags = newCommonTags;
 }
 
 
