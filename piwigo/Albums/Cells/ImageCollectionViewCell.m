@@ -71,7 +71,6 @@
         // Banners at bottom of thumbnails
 		self.bottomLayer = [UIView new];
 		self.bottomLayer.translatesAutoresizingMaskIntoConstraints = NO;
-		self.bottomLayer.backgroundColor = [UIColor piwigoColorBackground];
 		self.bottomLayer.alpha = 0.7;
 		[self.contentView addSubview:self.bottomLayer];
 		[self.contentView addConstraints:[NSLayoutConstraint constraintFillWidth:self.bottomLayer]];
@@ -81,7 +80,6 @@
 		self.nameLabel = [UILabel new];
 		self.nameLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		self.nameLabel.font = [UIFont piwigoFontTiny];
-		self.nameLabel.textColor = [UIColor piwigoColorLeftLabel];
 		self.nameLabel.adjustsFontSizeToFitWidth = YES;
 		self.nameLabel.minimumScaleFactor = 0.7;
         self.nameLabel.numberOfLines = 1;
@@ -280,7 +278,9 @@
         (categoryId == kPiwigoBestCategoryId)       ||
         (categoryId == kPiwigoRecentCategoryId)) {
         self.bottomLayer.hidden = NO;
+        self.bottomLayer.backgroundColor = [UIColor piwigoColorBackground];
         self.nameLabel.hidden = NO;
+        self.nameLabel.textColor = [UIColor piwigoColorLeftLabel];
         if (categoryId == kPiwigoVisitsCategoryId) {
             self.nameLabel.text = [NSString stringWithFormat:@"%ld %@", (long)imageData.visits, NSLocalizedString(@"categoryDiscoverVisits_legend", @"hits")];
         } else if (categoryId == kPiwigoBestCategoryId) {
@@ -306,7 +306,7 @@
 -(void)prepareForReuse
 {
     [super prepareForReuse];
-  self.cellImage.image = nil;
+    self.cellImage.image = nil;
 	self.isSelected = NO;
 	self.playImage.hidden = YES;
 	self.noDataLabel.hidden = YES;
