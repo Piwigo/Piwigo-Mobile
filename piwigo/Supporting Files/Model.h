@@ -174,11 +174,12 @@ typedef enum {
 @property (nonatomic, assign) kPiwigoSort localImagesSort;
 @property (nonatomic, assign) BOOL wifiOnlyUploading;
 
-// Default palette mode
+// Default color palette (adopts light/dark modes as from iOS 13)
 @property (nonatomic, assign) BOOL isDarkPaletteActive;
 @property (nonatomic, assign) BOOL switchPaletteAutomatically;
 @property (nonatomic, assign) NSInteger switchPaletteThreshold;
 @property (nonatomic, assign) BOOL isDarkPaletteModeActive;
+@property (nonatomic, assign) BOOL isLightPaletteModeActive;
 @property (nonatomic, assign) BOOL isSystemDarkModeActive;
 
 // Default cache settings

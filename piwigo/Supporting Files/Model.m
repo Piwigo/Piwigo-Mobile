@@ -123,8 +123,9 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
 
         // Default palette mode
         instance.isDarkPaletteActive = NO;
-        instance.switchPaletteAutomatically = NO;
-        instance.switchPaletteThreshold = 50;
+        instance.switchPaletteAutomatically = YES;
+        instance.switchPaletteThreshold = 40;
+        instance.isLightPaletteModeActive = NO;
         instance.isDarkPaletteModeActive = NO;
         instance.isSystemDarkModeActive = NO;
         
@@ -473,12 +474,12 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
     if(savedData.count > 20) {
         self.switchPaletteAutomatically = [[savedData objectAtIndex:20] boolValue];
     } else {
-        self.switchPaletteAutomatically = NO;
+        self.switchPaletteAutomatically = YES;
     }
     if(savedData.count > 21) {
         self.switchPaletteThreshold = [[savedData objectAtIndex:21] integerValue];
     } else {
-        self.switchPaletteThreshold = 50;
+        self.switchPaletteThreshold = 40;
     }
     if(savedData.count > 22) {
         self.isDarkPaletteModeActive = [[savedData objectAtIndex:22] boolValue];
@@ -656,6 +657,11 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
 //        self.didWatchHelpViews = 0; // for debugging
     } else {
         self.didWatchHelpViews = 0;
+    }
+    if(savedData.count > 55) {
+        self.isLightPaletteModeActive = [[savedData objectAtIndex:55] boolValue];
+    } else {
+        self.isLightPaletteModeActive = NO;
     }
 	return self;
 }
