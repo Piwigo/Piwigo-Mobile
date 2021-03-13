@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_0" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18092"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="OpenSansRegular.TTF">
+            <string>OpenSans</string>
+        </array>
+    </customFonts>
+    <scenes>
+        <!--Color Palette View Controller-->
+        <scene sceneID="s0d-6b-0kx">
+            <objects>
+                <viewController storyboardIdentifier="ColorPaletteViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Y6W-OH-hqX" customClass="ColorPaletteViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="5qi-2z-Ngd">
+                        <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="DeviceTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="DeviceTableViewCell" rowHeight="207" id="msY-Kk-nKM" customClass="DeviceTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="49" width="390" height="207"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="msY-Kk-nKM" translatesAutoresizingMaskIntoConstraints="NO" id="jPv-g2-vgW">
+                                    <rect key="frame" x="0.0" y="0.0" width="390" height="207"/>
+                                    <subviews>
+                                        <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="btT-Of-PqE">
+                                            <rect key="frame" x="238" y="11" width="60" height="130"/>
+                                            <state key="normal" image="light"/>
+                                            <connections>
+                                                <action selector="didTapLightMode:" destination="msY-Kk-nKM" eventType="touchUpInside" id="Yrb-LS-2Yv"/>
+                                            </connections>
+                                        </button>
+                                        <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kXw-QF-2Ta">
+                                            <rect key="frame" x="208" y="141" width="120" height="30"/>
+                                            <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
+                                            <state key="normal" title="Light">
+                                                <color key="titleColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            </state>
+                                            <connections>
+                                                <action selector="didTapLightMode:" destination="msY-Kk-nKM" eventType="touchUpInside" id="KYj-jX-n86"/>
+                                            </connections>
+                                        </button>
+                                        <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="acd-Ef-Tf9">
+                                            <rect key="frame" x="258" y="171" width="20" height="22"/>
+                                            <color key="tintColor" red="0.98877537250000003" green="0.37905481460000001" blue="0.034007694569999997" alpha="1" colorSpace="calibratedRGB"/>
+                                            <state key="normal" image="checkmark.circle.fill" catalog="system"/>
+                                            <connections>
+                                                <action selector="didTapLightMode:" destination="msY-Kk-nKM" eventType="touchUpInside" id="Te5-Zg-9MJ"/>
+                                            </connections>
+                                        </button>
+                                        <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gg7-9S-Q2I">
+                                            <rect key="frame" x="458" y="11" width="60" height="130"/>
+                                            <state key="normal" image="Dark"/>
+                                            <connections>
+                                                <action selector="didTapDarkMode:" destination="msY-Kk-nKM" eventType="touchUpInside" id="JKh-9q-93n"/>
+                                            </connections>
+                                        </button>
+                                        <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dzy-dy-8A4">
+                                            <rect key="frame" x="473" y="141" width="30" height="30"/>
+                                            <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="13"/>
+                                            <state key="normal" title="Dark">
+                                                <color key="titleColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            </state>
+                                            <connections>
+                                                <action selector="didTapDarkMode:" destination="msY-Kk-nKM" eventType="touchUpInside" id="00v-0y-jGT"/>
+                                            </connections>
+                                        </button>
+                                        <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vX1-IS-IRw">
+                                            <rect key="frame" x="478" y="171" width="20" height="22"/>
+                                            <color key="tintColor" systemColor="systemGrayColor"/>
+                                            <state key="normal" image="circle" catalog="system"/>
+                                            <connections>
+                                                <action selector="didTapDarkMode:" destination="msY-Kk-nKM" eventType="touchUpInside" id="ZUE-i1-GrD"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="kXw-QF-2Ta" firstAttribute="top" secondItem="btT-Of-PqE" secondAttribute="bottom" id="JCy-M2-5vF"/>
+                                        <constraint firstItem="Gg7-9S-Q2I" firstAttribute="leading" secondItem="jPv-g2-vgW" secondAttribute="centerX" constant="40" id="TcS-US-LBk">
+                                            <variation key="heightClass=compact" constant="80"/>
+                                        </constraint>
+                                        <constraint firstItem="acd-Ef-Tf9" firstAttribute="centerX" secondItem="btT-Of-PqE" secondAttribute="centerX" id="Ve2-fQ-RP9"/>
+                                        <constraint firstItem="Gg7-9S-Q2I" firstAttribute="top" secondItem="jPv-g2-vgW" secondAttribute="top" constant="11" id="Vjh-uQ-1UN"/>
+                                        <constraint firstItem="acd-Ef-Tf9" firstAttribute="top" secondItem="kXw-QF-2Ta" secondAttribute="bottom" id="XGS-Ac-Xei"/>
+                                        <constraint firstItem="btT-Of-PqE" firstAttribute="top" secondItem="jPv-g2-vgW" secondAttribute="top" constant="11" id="Z40-vl-hgo"/>
+                                        <constraint firstItem="dzy-dy-8A4" firstAttribute="top" secondItem="Gg7-9S-Q2I" secondAttribute="bottom" id="aZH-Bp-hmH"/>
+                                        <constraint firstItem="vX1-IS-IRw" firstAttribute="centerX" secondItem="Gg7-9S-Q2I" secondAttribute="centerX" id="eTb-IU-CUr"/>
+                                        <constraint firstItem="dzy-dy-8A4" firstAttribute="centerX" secondItem="Gg7-9S-Q2I" secondAttribute="centerX" id="f7h-H4-xLK"/>
+                                        <constraint firstItem="kXw-QF-2Ta" firstAttribute="centerX" secondItem="btT-Of-PqE" secondAttribute="centerX" id="h8D-lC-SXp"/>
+                                        <constraint firstItem="vX1-IS-IRw" firstAttribute="top" secondItem="dzy-dy-8A4" secondAttribute="bottom" id="pwy-X6-6la"/>
+                                        <constraint firstItem="btT-Of-PqE" firstAttribute="trailing" secondItem="jPv-g2-vgW" secondAttribute="centerX" constant="-40" id="tBa-Jo-0Lq">
+                                            <variation key="heightClass=compact" constant="-80"/>
+                                        </constraint>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="darkButton" destination="vX1-IS-IRw" id="Bjs-0Z-UKJ"/>
+                                    <outlet property="darkImage" destination="Gg7-9S-Q2I" id="msZ-bX-jcf"/>
+                                    <outlet property="darkLabel" destination="dzy-dy-8A4" id="e7o-Xu-jUY"/>
+                                    <outlet property="lightButton" destination="acd-Ef-Tf9" id="KmY-T8-g4g"/>
+                                    <outlet property="lightImage" destination="btT-Of-PqE" id="v6e-Lf-OY2"/>
+                                    <outlet property="lightLabel" destination="kXw-QF-2Ta" id="QMi-N4-2ag"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="SwitchTableViewCell" id="XeI-aw-MtI" customClass="SwitchTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="256" width="390" height="43.666667938232422"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="XeI-aw-MtI" id="dTK-lb-dlc">
+                                    <rect key="frame" x="0.0" y="0.0" width="390" height="43.666667938232422"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999998807907104" translatesAutoresizingMaskIntoConstraints="NO" id="3Vv-yX-3xP">
+                                            <rect key="frame" x="19.999999999999996" y="10.333333333333334" width="47.666666666666657" height="23.333333333333329"/>
+                                            <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2Eh-zQ-1fn">
+                                            <rect key="frame" x="321" y="6.3333333333333321" width="51" height="30.999999999999996"/>
+                                            <color key="onTintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                            <connections>
+                                                <action selector="switchChanged:" destination="XeI-aw-MtI" eventType="valueChanged" id="EWb-Lf-CRI"/>
+                                            </connections>
+                                        </switch>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="trailing" secondItem="2Eh-zQ-1fn" secondAttribute="trailing" constant="20" symbolic="YES" id="4TB-Yg-D57"/>
+                                        <constraint firstItem="2Eh-zQ-1fn" firstAttribute="centerY" secondItem="dTK-lb-dlc" secondAttribute="centerY" id="A7E-vd-a7K"/>
+                                        <constraint firstItem="3Vv-yX-3xP" firstAttribute="centerY" secondItem="dTK-lb-dlc" secondAttribute="centerY" id="xRL-o5-Vu1"/>
+                                        <constraint firstItem="3Vv-yX-3xP" firstAttribute="trailing" relation="lessThanOrEqual" secondItem="dTK-lb-dlc" secondAttribute="trailing" constant="-71" id="xU7-K9-X0h"/>
+                                        <constraint firstItem="3Vv-yX-3xP" firstAttribute="leading" secondItem="dTK-lb-dlc" secondAttribute="leading" constant="20" symbolic="YES" id="yBW-lY-Vx1"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="cellSwitch" destination="2Eh-zQ-1fn" id="MDW-ic-lt1"/>
+                                    <outlet property="switchName" destination="3Vv-yX-3xP" id="v5W-Ap-waS"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="Y6W-OH-hqX" id="ewp-Lm-UF1"/>
+                            <outlet property="delegate" destination="Y6W-OH-hqX" id="ozA-0W-Qnt"/>
+                        </connections>
+                    </tableView>
+                    <connections>
+                        <outlet property="tableView" destination="5qi-2z-Ngd" id="1FN-xj-HcM"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="79.710144927536234" y="-27.455357142857142"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="Dark" width="60" height="129.66667175292969"/>
+        <image name="checkmark.circle.fill" catalog="system" width="128" height="121"/>
+        <image name="circle" catalog="system" width="128" height="121"/>
+        <image name="light" width="60" height="129.66667175292969"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemGrayColor">
+            <color red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>
