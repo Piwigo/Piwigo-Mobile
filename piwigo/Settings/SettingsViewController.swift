@@ -1396,7 +1396,12 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             }
         // MARK: Default Upload Settings
         case SettingsSection.imageUpload.rawValue /* Default Upload Settings */:
-            switch indexPath.row {
+            var row = indexPath.row
+            row += (!Model.sharedInstance().hasAdminRights && (row > 0)) ? 1 : 0
+            row += (!Model.sharedInstance().resizeImageOnUpload && (row > 3)) ? 1 : 0
+            row += (!Model.sharedInstance().compressImageOnUpload && (row > 5)) ? 1 : 0
+            row += (!Model.sharedInstance().prefixFileNameBeforeUpload && (row > 7)) ? 1 : 0
+            switch row {
             case 0 /* Author Name */,
                  2 /* Strip private Metadata */,
                  3 /* Resize Before Upload */,
@@ -1609,7 +1614,12 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 break
             }
         case SettingsSection.imageUpload.rawValue /* Default upload Settings */:
-            switch indexPath.row {
+            var row = indexPath.row
+            row += (!Model.sharedInstance().hasAdminRights && (row > 0)) ? 1 : 0
+            row += (!Model.sharedInstance().resizeImageOnUpload && (row > 3)) ? 1 : 0
+            row += (!Model.sharedInstance().compressImageOnUpload && (row > 5)) ? 1 : 0
+            row += (!Model.sharedInstance().prefixFileNameBeforeUpload && (row > 7)) ? 1 : 0
+            switch row {
             case 1 /* Default privacy selection */:
                 let privacySB = UIStoryboard(name: "SelectPrivacyViewController", bundle: nil)
                 let privacyVC = privacySB.instantiateViewController(withIdentifier: "SelectPrivacyViewController") as? SelectPrivacyViewController
