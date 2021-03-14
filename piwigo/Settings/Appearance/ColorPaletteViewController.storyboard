@@ -30,7 +30,7 @@
                                     <subviews>
                                         <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gg7-9S-Q2I">
                                             <rect key="frame" x="247" y="11" width="60" height="130"/>
-                                            <state key="normal" image="Dark"/>
+                                            <state key="normal" image="darkPhone"/>
                                             <connections>
                                                 <action selector="didTapDarkMode:" destination="msY-Kk-nKM" eventType="touchUpInside" id="JKh-9q-93n"/>
                                             </connections>
@@ -59,7 +59,7 @@
                                         </button>
                                         <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="btT-Of-PqE">
                                             <rect key="frame" x="95" y="11" width="60" height="130"/>
-                                            <state key="normal" image="light"/>
+                                            <state key="normal" image="lightPhone"/>
                                             <connections>
                                                 <action selector="didTapLightMode:" destination="msY-Kk-nKM" eventType="touchUpInside" id="Yrb-LS-2Yv"/>
                                             </connections>
@@ -165,10 +165,10 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Dark" width="60" height="129.66667175292969"/>
         <image name="checkmark.circle.fill" catalog="system" width="128" height="121"/>
         <image name="circle" catalog="system" width="128" height="121"/>
-        <image name="light" width="60" height="129.66667175292969"/>
+        <image name="darkPhone" width="60" height="129.66667175292969"/>
+        <image name="lightPhone" width="60" height="129.66667175292969"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
