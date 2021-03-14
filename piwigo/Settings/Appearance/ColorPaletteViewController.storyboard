@@ -58,14 +58,14 @@
                                             </connections>
                                         </button>
                                         <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="btT-Of-PqE">
-                                            <rect key="frame" x="107" y="11" width="60" height="130"/>
+                                            <rect key="frame" x="95" y="11" width="60" height="130"/>
                                             <state key="normal" image="light"/>
                                             <connections>
                                                 <action selector="didTapLightMode:" destination="msY-Kk-nKM" eventType="touchUpInside" id="Yrb-LS-2Yv"/>
                                             </connections>
                                         </button>
                                         <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kXw-QF-2Ta">
-                                            <rect key="frame" x="77" y="141" width="120" height="30"/>
+                                            <rect key="frame" x="65" y="141" width="120" height="30"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="120" id="C6F-e5-SNh"/>
                                                 <constraint firstAttribute="height" constant="30" id="zE0-YM-m96"/>
@@ -79,7 +79,7 @@
                                             </connections>
                                         </button>
                                         <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="acd-Ef-Tf9">
-                                            <rect key="frame" x="128" y="171" width="17" height="17"/>
+                                            <rect key="frame" x="117" y="171" width="17" height="17"/>
                                             <color key="tintColor" red="0.98877537250000003" green="0.37905481460000001" blue="0.034007694569999997" alpha="1" colorSpace="calibratedRGB"/>
                                             <state key="normal" image="checkmark.circle.fill" catalog="system"/>
                                             <connections>
