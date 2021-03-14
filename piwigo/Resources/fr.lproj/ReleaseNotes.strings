@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v2.6.1_text" = "Version 2.6.\n• Corrige l'attribution de tags à une sélection de photos\n• Paramètres d'apparence repensés\n• Améliore la fiabilité du téléchargement en arrière-plan\n• Corrections de bugs mineurs et améliorations de l'interface";
+
 "v2.6.0_text" = "Version 2.6\n\n• Coller/télécharger des photos et des vidéos depuis le presse-papiers\n• Corrige un problème de compatibilité avec Piwigo 11\n• Corrections de bugs mineurs et améliorations de l'interface";
 
 "v2.5.4_text" = "Version 2.5.4\n\n• Corrige des bugs mineurs et améliore l'interface";

@@ -691,11 +691,14 @@
 "settings_cacheClearAll" = "Zwischenspeicher für Fotos leeren";
 "settings_cacheClearMsg" = "Sind Sie sicher, dass Sie den Foto-Cache löschen möchten? Alben und Fotos werden eine Weile benötigen, um erneut geladen zu werden.";
 
-// Settings — Colors
-"settingsHeader_colors" = "Farben";
-"settings_darkPalette" = "Immer dunkle Palette";
-"settings_switchPalette" = "Automatisch umschalten";
+// Settings — Appearance
+"settingsHeader_appearance" = "Appearance";
+"settingsHeader_colorPalette" = "Color Palette";
+"settings_lightColor" = "Light";
+"settings_darkColor" = "Dark";
+"settings_switchPalette" = "Automatic";
 "settings_brightness" = "Helligkeit";
+"settings_brightnessHelp" = "In low ambient brightness, the Automatic option uses a darker color palette to make photos stand out against darker backgrounds.";
 
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";

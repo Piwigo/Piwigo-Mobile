@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v2.6.1_text" = "Version 2.6.1\n• Fixes the attribution of tags to a selection of photos\n• Redesigned Appearance settings\n• Improves background uploading reliability\n• Minor bug fixes and improvements of the interface";
+
 "v2.6.0_text" = "Version 2.6\n\n• クリップボードから写真やビデオを貼り付け/アップロードする\n• Piwigo 11との互換性の問題を修正する\n• 軽微なバグの修正とインタフェースの改善";
 
 "v2.5.4_text" = "バージョン 2.5.4\n\n• 軽微なバグの修正とインタフェースの改善";
