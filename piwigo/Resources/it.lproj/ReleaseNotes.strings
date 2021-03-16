@@ -6,11 +6,11 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.6.1_text" = "Version 2.6.1\n• Fixes the attribution of tags to a selection of photos\n• Redesigned Appearance settings\n• Improves background uploading reliability\n• Minor bug fixes and improvements of the interface";
+"v2.6.1_text" = "Version 2.6.1\n\n• Fixes the attribution of tags to a selection of photos\n• Redesigned Appearance settings\n• Improves background uploading reliability\n• Minor bug fixes and improvements of the interface";
 
-"v2.6.0_text" = "Versione 2.\n\n• Incolla/carica foto e video dagli appunti\n• Risolve un problema di compatibilità con Piwigo 11\n• Correzioni di bug minori e miglioramento dell'interfaccia";
+"v2.6.0_text" = "Versione 2.\n3 marzo 2021\n\n• Incolla/carica foto e video dagli appunti\n• Risolve un problema di compatibilità con Piwigo 11\n• Correzioni di bug minori e miglioramento dell'interfaccia";
 
-"v2.5.4_text" = "Versione 2.5.4\n\n• Correzioni di bug minori e miglioramenti dell'interfaccia";
+"v2.5.4_text" = "Versione 2.5.4\n2 gennaio 2021\n\n• Correzioni di bug minori e miglioramenti dell'interfaccia";
 
 "v2.5.3_text" = "Versione 2.5.3\n21 dicembre 2020\n\n• Controlla quali foto e video Piwigo può accedere a\n• Suggerimenti e trucchi per sfruttare al meglio l'app\n• Correzioni di bug";
 

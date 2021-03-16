@@ -6,11 +6,11 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.6.1_text" = "Version 2.6.1\n• Fixes the attribution of tags to a selection of photos\n• Redesigned Appearance settings\n• Improves background uploading reliability\n• Minor bug fixes and improvements of the interface";
+"v2.6.1_text" = "Version 2.6.1\n\n• Fixes the attribution of tags to a selection of photos\n• Redesigned Appearance settings\n• Improves background uploading reliability\n• Minor bug fixes and improvements of the interface";
 
-"v2.6.0_text" = "版本 2.6\n\n• 从剪贴板粘贴/上传照片和视频\n• 修复与 Piwigo 11 的兼容性问题\n• 错误修复和界面改进";
+"v2.6.0_text" = "版本 2.6\n2021年3月3日\n\n• 从剪贴板粘贴/上传照片和视频\n• 修复与 Piwigo 11 的兼容性问题\n• 错误修复和界面改进";
 
-"v2.5.4_text" = "版本 2.5.4\n\n• 小错误修复和界面改进";
+"v2.5.4_text" = "版本 2.5.4\n2021年1月2日\n\n• 小错误修复和界面改进";
 
 "v2.5.3_text" = "版本2.5.3\n2020年12月21日\n\n• 控制Piwigo可以访问哪些照片和视频\n• 更好地利用应用程序的提示和技巧\n• Bug修复";
 

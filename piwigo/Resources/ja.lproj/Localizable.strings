@@ -692,13 +692,13 @@
 "settings_cacheClearMsg" = "イメージキャッシュをオフにしますか。これは、アルバムと写真を再度読み込むために時間がかかるようになります。";
 
 // Settings — Appearance
-"settingsHeader_appearance" = "Appearance";
-"settingsHeader_colorPalette" = "Color Palette";
-"settings_lightColor" = "Light";
-"settings_darkColor" = "Dark";
-"settings_switchPalette" = "Automatic";
+"settingsHeader_appearance" = "外観";
+"settingsHeader_colorPalette" = "カラーパレット";
+"settings_lightColor" = "明るい";
+"settings_darkColor" = "暗い";
+"settings_switchPalette" = "自動";
 "settings_brightness" = "明度";
-"settings_brightnessHelp" = "In low ambient brightness, the Automatic option uses a darker color palette to make photos stand out against darker backgrounds.";
+"settings_brightnessHelp" = "環境光が暗い場合、自動オプションは暗いカラーパレットを使用して写真を暗い背景から目立たせます。";
 
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";

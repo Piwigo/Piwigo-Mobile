@@ -6,11 +6,11 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.6.1_text" = "Version 2.6.1\n• Fixes the attribution of tags to a selection of photos\n• Redesigned Appearance settings\n• Improves background uploading reliability\n• Minor bug fixes and improvements of the interface";
+"v2.6.1_text" = "Version 2.6.1\n\n• Lost een probleem op met het toekennen van tags aan een selectie van foto's\n• Hernieuwt ontwerp van de Uiterlijk instellingen\n• Verbetert betrouwbaarheid van het uploaden op de achtergrond\n• Kleine bugfixes en verbeteringen van het uiterlijk";
 
-"v2.6.0_text" = "Versie 2.6\n\n• Kopiëren/plakken van foto's en video's vanaf het klembord\n• Compatibiliteitsproblemen met Piwigo 11 opgelost\n• Kleine bugfixes en verbeteringen aan de interface";
+"v2.6.0_text" = "Versie 2.6\n3 maart 2021\n\n• Kopiëren/plakken van foto's en video's vanaf het klembord\n• Compatibiliteitsproblemen met Piwigo 11 opgelost\n• Kleine bugfixes en verbeteringen aan de interface";
 
-"v2.5.4_text" = "Versie 2.5.4\n\n• Kleine foutjes verbeterd en verbetering van de interface";
+"v2.5.4_text" = "Versie 2.5.4\n2 januari 2021\n\n• Kleine foutjes verbeterd en verbetering van de interface";
 
 "v2.5.3_text" = "Versie 2.5.3\n21 December 2020\n\n• Bepaal welke foto's en video's Piwigo toegang hebben tot\n• Tips en trucs voor een betere exploitatie van de app\n• Foutjes verbeterd";
 

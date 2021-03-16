@@ -6,11 +6,11 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.6.1_text" = "Version 2.6.1\n• Fixes the attribution of tags to a selection of photos\n• Redesigned Appearance settings\n• Improves background uploading reliability\n• Minor bug fixes and improvements of the interface";
+"v2.6.1_text" = "Wersja 2.6.1\n\n• Naprawia przypisywanie tagów wybranym zdjęciom\n• Przeprojektowane ustawienia wyglądu\n• Poprawia niezawodność przesyłania w tle\n• Poprawki drobnych błędów i ulepszenia interfejsu";
 
-"v2.6.0_text" = "Wersja 2.6\n\n• Wklejanie/przesyłanie zdjęć i filmów ze schowka\n• Rozwiązanie problemu z kompatybilnością z Piwigo 11\n• Poprawki drobnych błędów i ulepszenia interfejsu";
+"v2.6.0_text" = "Wersja 2.6\n3 marca 2021\n\n• Wklejanie/przesyłanie zdjęć i filmów ze schowka\n• Rozwiązanie problemu z kompatybilnością z Piwigo 11\n• Poprawki drobnych błędów i ulepszenia interfejsu";
 
-"v2.5.4_text" = "Wersja 2.5.4\n\n• Poprawki drobnych błędów i ulepszenia interfejsu";
+"v2.5.4_text" = "Wersja 2.5.4\n2 stycznia 2021\n\n• Poprawki drobnych błędów i ulepszenia interfejsu";
 
 "v2.5.3_text" = "Wersja 2.5.\n21 grudnia 2020\n\n• Kontroluj, do których zdjęć i filmów Piwigo ma dostęp\n• Wskazówki i porady, aby lepiej wykorzystywać aplikację\n• Poprawki błędów";
 
