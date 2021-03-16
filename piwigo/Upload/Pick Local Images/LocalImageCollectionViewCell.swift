@@ -35,6 +35,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             darkenView?.isHidden = !cellSelected
             waitingActivity?.isHidden = true
             uploadingProgress?.isHidden = true
+            uploadingProgress?.setProgress(0, animated: false)
             uploadedImage?.isHidden = true
             failedUploadImage?.isHidden = true
         }
@@ -50,6 +51,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             darkenView?.isHidden = !waiting
             uploadingProgress?.isHidden = !waiting
             uploadedImage?.isHidden = waiting
+            uploadingProgress?.setProgress(0, animated: false)
             failedUploadImage?.isHidden = true
             waitingActivity?.isHidden = !waiting
         }
@@ -65,6 +67,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             darkenView?.isHidden = !uploading
             uploadingProgress?.isHidden = !uploading
             uploadedImage?.isHidden = uploading
+            uploadingProgress?.setProgress(_progress, animated: false)
             failedUploadImage?.isHidden = true
             waitingActivity?.isHidden = uploading
         }
@@ -79,6 +82,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             _cellUploaded = uploaded
             darkenView?.isHidden = !uploaded
             uploadingProgress?.isHidden = uploaded
+            uploadingProgress?.setProgress(1, animated: false)
             uploadedImage?.isHidden = !uploaded
             failedUploadImage?.isHidden = true
             waitingActivity?.isHidden = uploaded
@@ -94,6 +98,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
             _cellUploaded = false
             darkenView?.isHidden = !failed
             uploadingProgress?.isHidden = true
+            uploadingProgress?.setProgress(_progress, animated: false)
             uploadedImage?.isHidden = true
             failedUploadImage?.isHidden = !failed
             waitingActivity?.isHidden = true
@@ -190,8 +195,8 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         cellImage.image = UIImage(named: "placeholder")
         playImage.isHidden = true
         cellSelected = false
-        setProgress(0, withAnimation: false)
         uploadingProgress?.isHidden = true
+        uploadingProgress?.setProgress(0, animated: false)
         failedUploadImage.isHidden = true
         waitingActivity?.isHidden = true
     }
