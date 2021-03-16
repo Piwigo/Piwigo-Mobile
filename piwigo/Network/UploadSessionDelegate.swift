@@ -31,8 +31,8 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
         /// Indicates whether the request is allowed to use the built-in cellular radios to satisfy the request.
         config.allowsCellularAccess = !(Model.sharedInstance()?.wifiOnlyUploading ?? false)
         
-        /// How long a task should wait for additional data to arrive before giving up (1 hour)
-        config.timeoutIntervalForRequest = 1 * 60 * 60
+        /// How long a task should wait for additional data to arrive before giving up (1 day)
+        config.timeoutIntervalForRequest = 1 * 24 * 60 * 60
         
         /// How long an upload task should be allowed to be retried or transferred (7 days).
         config.timeoutIntervalForResource = 7 * 24 * 60 * 60
@@ -178,12 +178,12 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
             // Update counter
             bytesSentToPiwigoServer[indexOfUpload].1 += Float(bytesSent)
             progressFraction = bytesSentToPiwigoServer[indexOfUpload].1 / bytesSentToPiwigoServer[indexOfUpload].2
-            print("    > Upload task \(task.taskIdentifier), progressFraction = \(bytesSentToPiwigoServer[indexOfUpload].1) / \(bytesSentToPiwigoServer[indexOfUpload].2) i.e. \(progressFraction)")
+//            print("    > Upload task \(task.taskIdentifier), progressFraction = \(bytesSentToPiwigoServer[indexOfUpload].1) / \(bytesSentToPiwigoServer[indexOfUpload].2) i.e. \(progressFraction)")
         } else {
             // Add counter for this image
             bytesSentToPiwigoServer.append((identifier, Float(bytesSent), fileSize))
             progressFraction = Float(bytesSent) / fileSize
-            print("    > Upload task \(task.taskIdentifier), progressFraction = \(bytesSent) / \(fileSize) i.e. \(progressFraction)")
+//            print("    > Upload task \(task.taskIdentifier), progressFraction = \(bytesSent) / \(fileSize) i.e. \(progressFraction)")
         }
         
         // Update UI
