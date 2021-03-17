@@ -320,6 +320,9 @@ class UploadManager: NSObject, URLSessionDelegate {
     /// - The number of bytes to be transferred is calculated and limited.
     /// - A delay is set between series of upload tasks to prevent server overloads
     /// - Failing tasks are automatically retried by iOS
+    /// Use the following command to test the background task:
+    /// - e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"org.piwigo.uploadManager"]
+    /// - e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateExpirationForTaskWithIdentifier:@"org.piwigo.uploadManager"]
     @objc var isExecutingBackgroundUploadTask = false
     @objc let maxNberOfUploadsPerBckgTask = 100             // i.e. 100 requests to be considered
     var countOfBytesPrepared = UInt64(0)                    // Total amount of bytes of prepared files
