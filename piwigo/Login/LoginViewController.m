@@ -754,9 +754,6 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                             // Refresh category data
                             NSDictionary *userInfo = @{@"NoHUD" : @"NO", @"fromCache" : @"NO", @"albumId" : @(0)};
                             [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
-
-                            // Resume upload operations in background queue
-                            [[UploadManager shared] resumeAll];
                         }
                     }];
                 }
@@ -810,9 +807,6 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                     // Connection still alive. Close HUD
                     self.isAlreadyTryingToLogin = NO;
                     [self hideLoading];
-
-                    // Resume upload operations in background queue
-                    [[UploadManager shared] resumeAll];
 
 #if defined(DEBUG_SESSION)
                     NSLog(@"=> checkSessionStatusAndTryRelogin: Connection still alive…");
