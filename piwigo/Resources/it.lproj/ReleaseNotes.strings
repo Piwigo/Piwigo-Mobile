@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.6.1_text" = "Version 2.6.1\n\n• Fixes the attribution of tags to a selection of photos\n• Redesigned Appearance settings\n• Improves background uploading reliability\n• Minor bug fixes and improvements of the interface";
+"v2.6.1_text" = "Versione 2.6.1\n\n• Corregge l'attribuzione dei tag a una selezione di foto\n• Impostazioni di aspetto ridisegnate\n• Migliora l'affidabilità del caricamento in background\n• Correzioni di bug minori e miglioramento dell'interfaccia";
 
 "v2.6.0_text" = "Versione 2.\n3 marzo 2021\n\n• Incolla/carica foto e video dagli appunti\n• Risolve un problema di compatibilità con Piwigo 11\n• Correzioni di bug minori e miglioramento dell'interfaccia";
 
