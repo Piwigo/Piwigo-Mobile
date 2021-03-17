@@ -692,13 +692,13 @@
 "settings_cacheClearMsg" = "Вы уверены, что хотите очистить кэш изображений? Это остановит загрузку альбомов и изображений на некоторое время.";
 
 // Settings — Appearance
-"settingsHeader_appearance" = "Appearance";
-"settingsHeader_colorPalette" = "Color Palette";
-"settings_lightColor" = "Light";
-"settings_darkColor" = "Dark";
-"settings_switchPalette" = "Automatic";
+"settingsHeader_appearance" = "Внешний вид";
+"settingsHeader_colorPalette" = "Цветовая палитра";
+"settings_lightColor" = "Светлый";
+"settings_darkColor" = "Тёмная";
+"settings_switchPalette" = "Автоматический";
 "settings_brightness" = "Яркость";
-"settings_brightnessHelp" = "In low ambient brightness, the Automatic option uses a darker color palette to make photos stand out against darker backgrounds.";
+"settings_brightnessHelp" = "При низкой яркости окружающей среды параметр «Автоматически» использует более темную цветовую палитру, чтобы фотографии выделялись на более темном фоне.";
 
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";
