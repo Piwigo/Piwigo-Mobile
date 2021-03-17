@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.6.1_text" = "• Retter tildelingen af tags til et udvalg af fotos\n• Nydesignede indstillinger for udseende\n• Forbedrer pålideligheden af upload af baggrunden\n• Mindre fejlrettelser og forbedringer af grænsefladen";
+"v2.6.1_text" = "Version 2.6.1\n\n• Retter tildelingen af tags til et udvalg af fotos\n• Nydesignede indstillinger for udseende\n• Forbedrer pålideligheden af upload af baggrunden\n• Mindre fejlrettelser og forbedringer af grænsefladen";
 
 "v2.6.0_text" = "Version 2.6\n3 marts 2021\n\n• Indsæt / upload fotos og videoer fra udklipsholder\n• Løser et kompatibilitetsproblem med Piwigo 11\n• Mindre fejl rettet og forbedringer af brugerflade";
 
