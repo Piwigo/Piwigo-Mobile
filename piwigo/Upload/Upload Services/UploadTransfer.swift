@@ -402,14 +402,12 @@ extension UploadManager {
                 // Tell the system how many bytes are expected to be exchanged
                 task.countOfBytesClientExpectsToSend = Int64(httpBody.count)
                 task.countOfBytesClientExpectsToReceive = 600
-                if isExecutingBackgroundUploadTask {
-                    task.earliestBeginDate = Date.init(timeIntervalSinceNow: self.accumulatedDelay)
-                }
             }
             
             // Adds bytes expected to be sent to counter
             if isExecutingBackgroundUploadTask {
                 countOfBytesToUpload += httpBody.count
+                print("\(debugFormatter.string(from: Date())) >•• countOfBytesToUpload: \(countOfBytesToUpload)")
             }
             
             // Resume task
@@ -418,9 +416,6 @@ extension UploadManager {
         }
 
         // All tasks are now resumed -> Add delay for next upload request, update upload request status
-        if isExecutingBackgroundUploadTask {
-            accumulatedDelay += delayBetweenUploads
-        }
         uploadsProvider.updateStatusOfUpload(with: uploadID, to: .uploading, error: "") { (_) in }
     }
 
@@ -471,6 +466,8 @@ extension UploadManager {
                 // Investigate next upload request?
                 if self.isExecutingBackgroundUploadTask {
                     // In background task — stop here
+                    let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.networkUnavailable.localizedDescription])
+                    self.didEndTransfer(for: uploadID, with: UploadProperties.init(localIdentifier: "Unknown", category: 0), error, taskID: task.taskIdentifier)
                 } else {
                     // In foreground, consider next image
                     self.findNextImageToUpload()
@@ -531,6 +528,8 @@ extension UploadManager {
             // Investigate next upload request?
             if self.isExecutingBackgroundUploadTask {
                 // In background task — stop here
+                let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.networkUnavailable.localizedDescription])
+                self.didEndTransfer(for: uploadID, with: UploadProperties.init(localIdentifier: "Unknown", category: 0), error, taskID: task.taskIdentifier)
             } else {
                 // In foreground, consider next image
                 self.findNextImageToUpload()

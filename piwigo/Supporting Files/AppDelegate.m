@@ -472,28 +472,27 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     
     // Add operation setting flag and selecting upload requests
     NSBlockOperation *initOperation = [NSBlockOperation blockOperationWithBlock:^{
-        // Start executing background upload task
-        [UploadManager shared].isExecutingBackgroundUploadTask = YES;
-        // Reset indexes
-        [UploadManager shared].indexOfUploadRequestToPrepare = 0;
-        [UploadManager shared].indexOfUploadRequestToTransfer = 0;
-        // Reset byte counter and delay
-        [UploadManager shared].countOfBytesToUpload = 0;
-        [UploadManager shared].accumulatedDelay = 0;
-        // Select upload requests
-        [[UploadManager shared] selectUploadRequestsForBckgTask];
+        // Initialse variables and determine upload requests to prepare and transfer
+        [[UploadManager shared] initialiseBckgTask];
     }];
 
     // Initialise list of operations
     NSMutableArray<NSBlockOperation *> *uploadOperations = [[NSMutableArray alloc] initWithObjects:initOperation, nil];
 
-    // Add image transfer operations first,
-    // then image preparation followed by transfer operations
-    NSInteger maxOperations = [UploadManager shared].maxNberOfUploadsPerBackgroundTask;
+    // Resume transfers
+    NSBlockOperation *resumeOperation = [NSBlockOperation blockOperationWithBlock:^{
+        // Transfer image
+        [[UploadManager shared] resumeTransfersOfBckgTask];
+    }];
+    [resumeOperation addDependency:uploadOperations.lastObject];
+    [uploadOperations addObject:resumeOperation];
+
+    // Add image preparation which will be followed by transfer operations
+    NSInteger maxOperations = [UploadManager shared].maxNberOfUploadsPerBckgTask;
     for (NSInteger index = 0; index < maxOperations; index++) {
         NSBlockOperation *uploadOperation = [NSBlockOperation blockOperationWithBlock:^{
             // Transfer image
-            [[UploadManager shared] appendJobToBckgTask];
+            [[UploadManager shared] appendUploadRequestsToPrepareToBckgTask];
         }];
         [uploadOperation addDependency:uploadOperations.lastObject];
         [uploadOperations addObject:uploadOperation];

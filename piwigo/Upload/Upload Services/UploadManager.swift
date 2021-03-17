@@ -165,7 +165,12 @@ class UploadManager: NSObject, URLSessionDelegate {
                                             .uploading, .uploadingError, .uploaded,
                                             .finishing, .finishingError]
         nberOfUploadsToComplete = uploadsProvider.getRequestsIn(states: states).count
-        
+        return // for debugging background tasks
+
+        // Pause upload manager if app not in the foreground
+        // and not executed in a background task
+        if appState == .inactive || isExecutingBackgroundUploadTask { return }
+
         // Determine the Power State and if it should wait
         if ProcessInfo.processInfo.isLowPowerModeEnabled || isPaused {
             // Low Power Mode is enabled. Stop transferring images.
@@ -232,9 +237,7 @@ class UploadManager: NSObject, URLSessionDelegate {
             
             // Pause upload manager if app not in the foreground
             // and not executed in a background task
-            if appState == .inactive {
-                return
-            }
+            if appState == .inactive { return }
             
             // Update state of upload resquest and finish upload
             uploadsProvider.updateStatusOfUpload(with: uploadID, to: .finishing, error: "") {
@@ -253,9 +256,7 @@ class UploadManager: NSObject, URLSessionDelegate {
 
             // Pause upload manager if app not in the foreground
             // and not executed in a background task
-            if appState == .inactive {
-                return
-            }
+            if appState == .inactive { return }
 
             // Upload file ready, so we start the transfer
             self.launchTransfer(of: uploadID)
@@ -272,9 +273,7 @@ class UploadManager: NSObject, URLSessionDelegate {
 
             // Pause upload manager if app not in the foreground
             // and not executed in a background task
-            if appState == .inactive {
-                return
-            }
+            if appState == .inactive { return }
 
             // Prepare the next upload
             isPreparing = true
@@ -291,9 +290,7 @@ class UploadManager: NSObject, URLSessionDelegate {
 
             // Pause upload manager if app not in the foreground
             // and not executed in a background task
-            if appState == .inactive {
-                return
-            }
+            if appState == .inactive { return }
 
             // Moderate uploaded images
             self.moderate(completedRequests: finishedUploads)
@@ -323,68 +320,109 @@ class UploadManager: NSObject, URLSessionDelegate {
     /// - The number of bytes to be transferred is calculated and limited.
     /// - A delay is set between series of upload tasks to prevent server overloads
     /// - Failing tasks are automatically retried by iOS
-    @objc let maxNberOfUploadsPerBackgroundTask = 100       // i.e. 100 requests
-    @objc var countOfBytesToUpload = 0                      // Total amount of bytes to be sent
-    @objc let maxCountOfBytesToUpload = 50 * 1024 * 1024    // i.e. 50 MB every 30 min (100 MB/hour)
-    let delayBetweenUploads = TimeInterval(10)              // Seconds between each series of tasks
-    @objc var accumulatedDelay = TimeInterval(0)            // Delay added before resuming a series of tasks
-    @objc var indexOfUploadRequestToPrepare = 0
-    @objc var uploadRequestsToPrepare = [NSManagedObjectID]()
-    @objc var indexOfUploadRequestToTransfer = 0
-    @objc var uploadRequestsToTransfer = [NSManagedObjectID]()
     @objc var isExecutingBackgroundUploadTask = false
+    @objc let maxNberOfUploadsPerBckgTask = 100             // i.e. 100 requests to be considered
+    var countOfBytesPrepared = UInt64(0)                    // Total amount of bytes of prepared files
+    var countOfBytesToUpload = 0                            // Total amount of bytes to be sent
+    let maxCountOfBytesToUpload = 50 * 1024 * 1024          // i.e. 50 MB every 30 min (100 MB/hour)
+    var uploadRequestsToPrepare = Set<NSManagedObjectID>()
+    var uploadRequestsToTransfer = Set<NSManagedObjectID>()
 
     @objc
-    func selectUploadRequestsForBckgTask() -> Void {
-        // Initialisation
-        uploadRequestsToPrepare = [NSManagedObjectID]()
-        uploadRequestsToTransfer = [NSManagedObjectID]()
-
-        // Check if uploads are still in progress
-        let nberOfUploadsInProgress = uploadsProvider.getRequestsIn(states: [.uploading]).count
-        if nberOfUploadsInProgress > 0 { return }   // i.e. Avoids upload requests build-up in queue
+    func initialiseBckgTask() -> Void {
+        // UIApplication.shared.state must be called on the main thread
+        isExecutingBackgroundUploadTask = true
         
-        // First, retry to upload requests whose transfer did fail
-        let failedUploads = uploadsProvider.getRequestsIn(states: [.uploadingError])
-        uploadRequestsToTransfer = Array(failedUploads[..<min(failedUploads.count, maxNberOfUploadsPerBackgroundTask)])
+        // Reset variables
+        countOfBytesPrepared = 0
+        countOfBytesToUpload = 0
 
-        // Second, append upload requests ready for transfer
-        var diff = maxNberOfUploadsPerBackgroundTask - uploadRequestsToTransfer.count
-        if diff <= 0 { return }
+        // Reset flags and requests to prepare and transfer
+        isUploading = Set<NSManagedObjectID>()
+        uploadRequestsToPrepare = Set<NSManagedObjectID>()
+        uploadRequestsToTransfer = Set<NSManagedObjectID>()
+
+        // First, find upload requests whose transfer did fail
+        let failedUploads = uploadsProvider.getRequestsIn(states: [.uploadingError])
+        if failedUploads.count > 0, failedUploads.count < 2 {
+            // Will relaunch transfers with one which failed
+            uploadRequestsToTransfer = Set(failedUploads[..<min(maxNberOfUploadsPerBckgTask, failedUploads.count)])
+            print("\(debugFormatter.string(from: Date())) >•• collected \(uploadRequestsToTransfer.count) failed uploads")
+        }
+        
+        // Second, find upload requests ready for transfer
         let preparedUploads = uploadsProvider.getRequestsIn(states: [.prepared])
-        uploadRequestsToTransfer.append(contentsOf: preparedUploads[..<min(diff, preparedUploads.count)])
+        if uploadRequestsToTransfer.count == 0, preparedUploads.count > 0 {
+            // Will relaunch transfers with a prepared upload
+            uploadRequestsToTransfer = uploadRequestsToTransfer
+                .union(Set(preparedUploads[..<min(maxNberOfUploadsPerBckgTask,preparedUploads.count)]))
+            print("\(debugFormatter.string(from: Date())) >•• collected \(min(maxNberOfUploadsPerBckgTask,preparedUploads.count)) prepared uploads)")
+        }
         
         // Finally, get list of upload requests to prepare
-        diff = maxNberOfUploadsPerBackgroundTask - uploadRequestsToTransfer.count
+        let diff = maxNberOfUploadsPerBckgTask - uploadRequestsToTransfer.count
         if diff <= 0 { return }
         let requestsToPrepare = uploadsProvider.getRequestsIn(states: [.waiting])
-        uploadRequestsToPrepare = Array(requestsToPrepare[..<min(diff, requestsToPrepare.count)])
+        print("\(debugFormatter.string(from: Date())) >•• collected \(min(diff, requestsToPrepare.count)) uploads to prepare")
+        uploadRequestsToPrepare = Set(requestsToPrepare[..<min(diff, requestsToPrepare.count)])
     }
     
     @objc
-    func appendJobToBckgTask() -> Void {
-        // Add image transfer operations first
-        print("\(debugFormatter.string(from: Date())) >•• countOfBytesToUpload: \(countOfBytesToUpload)")
-        if indexOfUploadRequestToTransfer < uploadRequestsToTransfer.count,
-           countOfBytesToUpload < maxCountOfBytesToUpload {
-            // Get objectID of upload request
-            let uploadID = uploadRequestsToTransfer[indexOfUploadRequestToTransfer]
-            print("\(debugFormatter.string(from: Date())) >•• appendTransfer \(uploadID.uriRepresentation())")
-            // Launch transfer
-            launchTransfer(of: uploadID)
-            // Increment index for next call
-            indexOfUploadRequestToTransfer += 1
+    func resumeTransfersOfBckgTask() -> Void {
+        // Get active upload tasks and initialise isUploading
+        let taskContext = DataController.getPrivateContext()
+        let uploadSession: URLSession = UploadSessionDelegate.shared.uploadSession
+        uploadSession.getAllTasks { [unowned self] uploadTasks in
+            // Loop over the tasks
+            for task in uploadTasks {
+                switch task.state {
+                case .running:
+                    // Retrieve upload request properties
+                    guard let taskDescription = task.taskDescription else { continue }
+                    guard let objectURI = URL.init(string: taskDescription) else {
+                        print("\(self.debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no object URI!")
+                        continue
+                    }
+                    guard let uploadID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
+                        print("\(self.debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no objectID!")
+                        continue
+                    }
+                    // Remembers that this upload request is being dealt with
+                    print("\(self.debugFormatter.string(from: Date())) >> is uploading: \(uploadID)")
+                    // Remembers that this upload request is being dealt with
+                    self.isUploading.insert(uploadID)
+                    
+                    // Avoids duplicates
+                    uploadRequestsToTransfer.remove(uploadID)
+                    uploadRequestsToPrepare.remove(uploadID)
+
+                default:
+                    continue
+                }
+            }
+
+            // Relaunch transfers if necessary and possible
+            if self.isUploading.count < maxNberOfTransfers,
+               let uploadID = self.uploadRequestsToTransfer.first {
+                // Launch transfer
+                print("\(self.debugFormatter.string(from: Date())) >•• launch transfer \(uploadID.uriRepresentation())")
+                self.launchTransfer(of: uploadID)
+            } else {
+                print("\(self.debugFormatter.string(from: Date())) >•• no transfer to launch")
+            }
         }
-        // then image preparation followed by transfer operations
-        else if indexOfUploadRequestToPrepare < uploadRequestsToPrepare.count,
-                countOfBytesToUpload < maxCountOfBytesToUpload {
-            // Get objectID of upload request
-            let uploadID = uploadRequestsToPrepare[indexOfUploadRequestToPrepare]
-            print("\(debugFormatter.string(from: Date())) >•• appendPrepare \(uploadID.uriRepresentation())")
+    }
+        
+    @objc
+    func appendUploadRequestsToPrepareToBckgTask() -> Void {
+        // Add image preparation followed by transfer operations
+        if countOfBytesPrepared < UInt64(maxCountOfBytesToUpload),
+           let uploadID = uploadRequestsToPrepare.first {
+            print("\(debugFormatter.string(from: Date())) >•• prepare \(uploadID.uriRepresentation())")
             // Prepare image for transfer
             prepare(for: uploadID)
-            // Increment index for next call
-            indexOfUploadRequestToPrepare += 1
+            // Remove objectID
+            uploadRequestsToPrepare.removeFirst()
         }
     }
     
@@ -433,7 +471,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         }
 
         // Update UI
-        if !self.isExecutingBackgroundUploadTask {
+        if !isExecutingBackgroundUploadTask {
             updateCell(with: uploadProperties.localIdentifier,
                        stateLabel: kPiwigoUploadState.preparing.stateInfo,
                        photoResize: Int16(uploadProperties.photoResize),
@@ -776,8 +814,20 @@ class UploadManager: NSObject, URLSessionDelegate {
 
     @objc func didEndPreparation() {
         _isPreparing = false
-        if isExecutingBackgroundUploadTask { return }
-        if isUploading.count <= maxNberOfTransfers, !isFinishing { findNextImageToUpload() }
+        if isExecutingBackgroundUploadTask {
+            if countOfBytesToUpload < maxCountOfBytesToUpload {
+                // In background task, launch a transfer if possible
+                let preparedUploadRequests = uploadsProvider.getRequestsIn(states: [.prepared])
+                if isUploading.count < maxNberOfTransfers,
+                   let uploadID = preparedUploadRequests.first {
+                    launchTransfer(of: uploadID)
+                }
+            }
+        } else {
+            // In foreground, always consider next file
+            if isUploading.count <= maxNberOfTransfers,
+               !isFinishing { findNextImageToUpload() }
+        }
     }
 
     
@@ -826,7 +876,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         UploadSessionDelegate.shared.clearCounter(withID: uploadProperties.localIdentifier)
 
         // Update UI
-        if !self.isExecutingBackgroundUploadTask {
+        if !isExecutingBackgroundUploadTask {
             // Initialise the progress bar
             updateCell(with: uploadProperties.localIdentifier,
                        stateLabel: kPiwigoUploadState.uploading.stateInfo,
@@ -886,13 +936,27 @@ class UploadManager: NSObject, URLSessionDelegate {
 
     @objc func didEndTransfer(for uploadID: NSManagedObjectID) {
         // Update list of current uploads
-        isUploading.remove(uploadID)
+        if let index = isUploading.firstIndex(where: {$0 == uploadID}) {
+            isUploading.remove(at: index)
+        }
         
-        // In background task: stop operation here
-        if self.isExecutingBackgroundUploadTask { return }
-        
-        // In foreground, always consider next file
-        if !isPreparing, isUploading.count <= maxNberOfTransfers, !isFinishing { findNextImageToUpload() }
+        // Pursue the work…
+        if isExecutingBackgroundUploadTask {
+            if countOfBytesToUpload < maxCountOfBytesToUpload {
+                // In background task, launch a transfer if possible
+                let preparedUploadRequests = uploadsProvider.getRequestsIn(states: [.prepared])
+                if isUploading.count < maxNberOfTransfers,
+                   let uploadID = preparedUploadRequests.first {
+                    launchTransfer(of: uploadID)
+                }
+            } else {
+                print("\(debugFormatter.string(from: Date())) >•• didEndTransfer | STOP (\(countOfBytesToUpload) transferred)")
+            }
+        } else {
+            // In foreground, always consider next file
+            if !isPreparing, isUploading.count <= maxNberOfTransfers,
+               !isFinishing { findNextImageToUpload() }
+        }
     }
 
     
