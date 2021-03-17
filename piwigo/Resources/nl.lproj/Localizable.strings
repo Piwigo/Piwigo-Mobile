@@ -691,11 +691,14 @@
 "settings_cacheClearAll" = "Wis foto-cache";
 "settings_cacheClearMsg" = "Weet je zeker dat je de foto-cache wilt verwijderen? Dit zorgt er voor dat het opnieuw laden van albums en foto's een tijd duurt.";
 
-// Settings — Colors
-"settingsHeader_colors" = "Kleuren";
-"settings_darkPalette" = "Altijd donker palet";
-"settings_switchPalette" = "Schakel automatisch";
+// Settings — Appearance
+"settingsHeader_appearance" = "Uiterlijk";
+"settingsHeader_colorPalette" = "Kleurenpalet";
+"settings_lightColor" = "Licht";
+"settings_darkColor" = "Donker";
+"settings_switchPalette" = "Automatisch";
 "settings_brightness" = "Helderheid";
+"settings_brightnessHelp" = "Bij een lage helderheid zal de automatische optie gebruik maken van een donker kleurenpalet zodat foto's duidelijker zichtbaar zijn.";
 
 // Settings — Information
 "settings_appName" = "Piwigo Mobiel";

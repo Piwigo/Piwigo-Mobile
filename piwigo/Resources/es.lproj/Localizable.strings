@@ -691,11 +691,14 @@
 "settings_cacheClearAll" = "Borrar caché de fotos";
 "settings_cacheClearMsg" = "¿Estás seguro de querer borrar la caché de fotos? Esto hará que los álbumes y las fotos tarden un tiempo en volver a cargarse.";
 
-// Settings — Colors
-"settingsHeader_colors" = "Colores";
-"settings_darkPalette" = "Paleta siempre oscura";
-"settings_switchPalette" = "Cambiar automáticamente";
+// Settings — Appearance
+"settingsHeader_appearance" = "Apariencia";
+"settingsHeader_colorPalette" = "Paleta de colores";
+"settings_lightColor" = "Claro";
+"settings_darkColor" = "Oscuro";
+"settings_switchPalette" = "Automático";
 "settings_brightness" = "Brillo";
+"settings_brightnessHelp" = "En ambientes poco iluminados, la opción Automático utiliza una paleta de colores más oscura para hacer que las fotos destaquen contra los fondos más oscuros.";
 
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";

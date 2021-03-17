@@ -56,6 +56,7 @@ extension UploadManager {
         }
 
         // Upload video with tags and properties
+        self.countOfBytesPrepared += originalFileURL.fileSize
         self.didPrepareVideo(for: uploadID, with: newUploadProperties, nil)
     }
 
@@ -149,6 +150,7 @@ extension UploadManager {
             do {
                 try FileManager.default.copyItem(at: originalFileURL, to: fileURL)
                 // Upload video with tags and properties
+                self.countOfBytesPrepared += fileURL.fileSize
                 self.didPrepareVideo(for: uploadID, with: newUploadProperties, nil)
                 return
             }
@@ -206,15 +208,7 @@ extension UploadManager {
         print("\(debugFormatter.string(from: Date())) > prepared \(uploadID) \(errorMsg)")
         uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: newProperties) { [unowned self] (_) in
             // Upload ready for transfer
-            if self.isExecutingBackgroundUploadTask {
-                // In background task
-                if newProperties.requestState == .prepared {
-                    self.transferInBackgroundImage(for: uploadID, with: newProperties)
-                }
-            } else {
-                // Consider next step
-                self.didEndPreparation()
-            }
+            self.didEndPreparation()
         }
     }
 
@@ -482,6 +476,7 @@ extension UploadManager {
                 self.didPrepareVideo(for: uploadID, with: newUploadProperties, error)
                 return
             }
+            self.countOfBytesPrepared += outputURL.fileSize
             self.didPrepareVideo(for: uploadID, with: newUploadProperties, nil)
             return
         })

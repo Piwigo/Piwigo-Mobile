@@ -691,11 +691,14 @@
 "settings_cacheClearAll" = "清除图像缓存";
 "settings_cacheClearMsg" = "您确定要清除图像缓存吗？这将使相册和图像需要一段时间才能再次加载。";
 
-// Settings — Colors
-"settingsHeader_colors" = "颜色";
-"settings_darkPalette" = "始终使用暗色主题";
-"settings_switchPalette" = "自动切换";
+// Settings — Appearance
+"settingsHeader_appearance" = "外观";
+"settingsHeader_colorPalette" = "色板";
+"settings_lightColor" = "暲";
+"settings_darkColor" = "黑";
+"settings_switchPalette" = "自动的";
 "settings_brightness" = "亮度";
+"settings_brightnessHelp" = "在环境亮度低的情况下，自动选项会使用黑色色调色板来使照片在黑暗背景下显露出来。";
 
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";

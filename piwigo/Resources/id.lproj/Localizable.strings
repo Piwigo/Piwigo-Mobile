@@ -691,11 +691,14 @@
 "settings_cacheClearAll" = "Bersihkan Cache Gambar";
 "settings_cacheClearMsg" = "Apakah anda ingin membersihkan cache gambar? Hal ini membuat album dan gambar memerlukan waktu untuk memuat lagi.";
 
-// Settings — Colors
-"settingsHeader_colors" = "Warna";
-"settings_darkPalette" = "Palet Selalu Gelap";
-"settings_switchPalette" = "Beralih secara otomatis";
+// Settings — Appearance
+"settingsHeader_appearance" = "Appearance";
+"settingsHeader_colorPalette" = "Color Palette";
+"settings_lightColor" = "Light";
+"settings_darkColor" = "Dark";
+"settings_switchPalette" = "Automatic";
 "settings_brightness" = "Kecerahan";
+"settings_brightnessHelp" = "In low ambient brightness, the Automatic option uses a darker color palette to make photos stand out against darker backgrounds.";
 
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";

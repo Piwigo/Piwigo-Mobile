@@ -472,25 +472,27 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     
     // Add operation setting flag and selecting upload requests
     NSBlockOperation *initOperation = [NSBlockOperation blockOperationWithBlock:^{
-        // Start executing background upload task
-        [UploadManager shared].isExecutingBackgroundUploadTask = YES;
-        // Reset indexes
-        [UploadManager shared].indexOfUploadRequestToPrepare = 0;
-        [UploadManager shared].indexOfUploadRequestToTransfer = 0;
-        // Select upload requests
-        [[UploadManager shared] selectUploadRequestsForBckgTask];
+        // Initialse variables and determine upload requests to prepare and transfer
+        [[UploadManager shared] initialiseBckgTask];
     }];
 
     // Initialise list of operations
     NSMutableArray<NSBlockOperation *> *uploadOperations = [[NSMutableArray alloc] initWithObjects:initOperation, nil];
 
-    // Add image transfer operations first,
-    // then image preparation followed by transfer operations
-    NSInteger maxOperations = [UploadManager shared].maxNberOfUploadsPerBackgroundTask;
+    // Resume transfers
+    NSBlockOperation *resumeOperation = [NSBlockOperation blockOperationWithBlock:^{
+        // Transfer image
+        [[UploadManager shared] resumeTransfersOfBckgTask];
+    }];
+    [resumeOperation addDependency:uploadOperations.lastObject];
+    [uploadOperations addObject:resumeOperation];
+
+    // Add image preparation which will be followed by transfer operations
+    NSInteger maxOperations = [UploadManager shared].maxNberOfUploadsPerBckgTask;
     for (NSInteger index = 0; index < maxOperations; index++) {
         NSBlockOperation *uploadOperation = [NSBlockOperation blockOperationWithBlock:^{
             // Transfer image
-            [[UploadManager shared] appendJobToBckgTask];
+            [[UploadManager shared] appendUploadRequestsToPrepareToBckgTask];
         }];
         [uploadOperation addDependency:uploadOperations.lastObject];
         [uploadOperations addObject:uploadOperation];
@@ -526,7 +528,17 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
 // and by traitCollectionDidChange: when the system switches between Light and Dark modes
 -(void)screenBrightnessChanged
 {
-    if ([Model sharedInstance].isDarkPaletteModeActive || [Model sharedInstance].isSystemDarkModeActive)
+    if ([Model sharedInstance].isLightPaletteModeActive)
+    {
+        if (![Model sharedInstance].isDarkPaletteActive) {
+            // Already in light mode
+            return;
+        } else {
+            // "Always Light Mode" selected
+            [Model sharedInstance].isDarkPaletteActive = NO;
+        }
+    }
+    else if ([Model sharedInstance].isDarkPaletteModeActive)
     {
         if ([Model sharedInstance].isDarkPaletteActive) {
             // Already showing dark palette
@@ -538,39 +550,58 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     }
     else if ([Model sharedInstance].switchPaletteAutomatically)
     {
-        // Dynamic palette mode chosen and iOS Light Mode active
-        NSInteger currentBrightness = lroundf([[UIScreen mainScreen] brightness] * 100.0);
-        if ([Model sharedInstance].isDarkPaletteActive) {
-            // Dark palette displayed
-            if (currentBrightness > [Model sharedInstance].switchPaletteThreshold)
-            {
-                // Screen brightness > thereshold, switch to light palette
-                [Model sharedInstance].isDarkPaletteActive = NO;
+        // Dynamic palette mode chosen
+        if (@available(iOS 13.0, *)) {
+            if ([Model sharedInstance].isSystemDarkModeActive) {
+                // System-wide dark mode active
+                if ([Model sharedInstance].isDarkPaletteActive) {
+                    // Keep dark palette
+                    return;
+                } else {
+                    // Switch to dark mode
+                    [Model sharedInstance].isDarkPaletteActive = YES;
+                }
             } else {
-                // Keep dark palette
-                return;
+                // System-wide light mode active
+                if ([Model sharedInstance].isDarkPaletteActive) {
+                    // Switch to light mode
+                    [Model sharedInstance].isDarkPaletteActive = NO;
+                } else {
+                    // Keep light palette
+                    return;
+                }
             }
-        } else {
-            // Light palette displayed
-            if (currentBrightness < [Model sharedInstance].switchPaletteThreshold)
-            {
-                // Screen brightness < threshold, switch to dark palette
-                [Model sharedInstance].isDarkPaletteActive = YES;
+        }
+        else {
+            // Option managed by screen brightness
+            NSInteger currentBrightness = lroundf([[UIScreen mainScreen] brightness] * 100.0);
+            if ([Model sharedInstance].isDarkPaletteActive) {
+                // Dark palette displayed
+                if (currentBrightness > [Model sharedInstance].switchPaletteThreshold)
+                {
+                    // Screen brightness > thereshold, switch to light palette
+                    [Model sharedInstance].isDarkPaletteActive = NO;
+                } else {
+                    // Keep dark palette
+                    return;
+                }
             } else {
-                // Keep light palette
-                return;
+                // Light palette displayed
+                if (currentBrightness < [Model sharedInstance].switchPaletteThreshold)
+                {
+                    // Screen brightness < threshold, switch to dark palette
+                    [Model sharedInstance].isDarkPaletteActive = YES;
+                } else {
+                    // Keep light palette
+                    return;
+                }
             }
         }
     } else {
-        // Static light palette mode
-        if ([Model sharedInstance].isDarkPaletteActive)
-        {
-            // Switch to light palette
-            [Model sharedInstance].isDarkPaletteActive = NO;
-        } else {
-            // Keep light palette
-            return;
-        }
+        // Return to either static Light or Dark mode
+        [Model sharedInstance].isLightPaletteModeActive = ![Model sharedInstance].isSystemDarkModeActive;
+        [Model sharedInstance].isDarkPaletteModeActive = [Model sharedInstance].isSystemDarkModeActive;
+        [Model sharedInstance].isDarkPaletteActive = [Model sharedInstance].isSystemDarkModeActive;
     }
     
     // Store modified settings

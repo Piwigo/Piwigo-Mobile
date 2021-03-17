@@ -752,6 +752,18 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationCategoryDataUpdated object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationUploadedImage object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationDeletedImage object:nil];
+
+    // Unregister palette changes
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationPaletteChanged object:nil];
+
+    // Unregister root album changes
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationBackToDefaultAlbum object:nil];
+    
+    // Unregister upload manager changes
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationLeftUploads object:nil];
+
+    // Unregister upload progress
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationUploadProgress object:nil];
 }
 
 -(void)viewDidDisappear:(BOOL)animated

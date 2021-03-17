@@ -691,11 +691,14 @@
 "settings_cacheClearAll" = "Ryd foto cache";
 "settings_cacheClearMsg" = "Er du sikker på du vil slette billedcache? Dette vil bevirke at albums og billeder skal genindlæses ved næste visning.";
 
-// Settings — Colors
-"settingsHeader_colors" = "Farver";
-"settings_darkPalette" = "Altid mørkt tema";
-"settings_switchPalette" = "Skift automatisk";
+// Settings — Appearance
+"settingsHeader_appearance" = "Udseende";
+"settingsHeader_colorPalette" = "Farve Palet";
+"settings_lightColor" = "Lys";
+"settings_darkColor" = "Mørk";
+"settings_switchPalette" = "Automatisk";
 "settings_brightness" = "Lysstyrke";
+"settings_brightnessHelp" = "I lav omgivende lysstyrke bruger Automatisk indstilling en mørkere farvepalet til at få billeder til at skille sig ud mod mørkere baggrunde.";
 
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";

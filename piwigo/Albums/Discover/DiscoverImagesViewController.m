@@ -121,9 +121,6 @@
         self.moveBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply target:self action:@selector(addImagesToCategory)];
         self.moveBarButton.tintColor = [UIColor piwigoColorOrange];
         self.navigationController.toolbarHidden = YES;
-
-        // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
     }
     return self;
 }
@@ -250,6 +247,9 @@
         }
     }
     
+    // Register palette changes
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
+
     // Register category data updates
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addImageToCategory:) name:kPiwigoNotificationUploadedImage object:nil];
@@ -280,6 +280,23 @@
     }
 }
 
+-(void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
+{
+    [super traitCollectionDidChange:previousTraitCollection];
+    
+    // Should we update user interface based on the appearance?
+    if (@available(iOS 13.0, *)) {
+        BOOL hasUserInterfaceStyleChanged = (previousTraitCollection.userInterfaceStyle != self.traitCollection.userInterfaceStyle);
+        if (hasUserInterfaceStyleChanged) {
+            [Model sharedInstance].isSystemDarkModeActive = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            [appDelegate screenBrightnessChanged];
+        }
+    } else {
+        // Fallback on earlier versions
+    }
+}
+
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
@@ -294,6 +311,9 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationCategoryDataUpdated object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationUploadedImage object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationDeletedImage object:nil];
+
+    // Unregister palette changes
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationPaletteChanged object:nil];
 }
 
 -(void)updateBarButtons

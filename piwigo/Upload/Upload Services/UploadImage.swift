@@ -131,15 +131,7 @@ extension UploadManager {
         print("\(debugFormatter.string(from: Date())) > prepared \(uploadID) i.e. \(properties.fileName) \(errorMsg)")
         uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: newProperties) { [unowned self] (_) in
             // Upload ready for transfer
-            if self.isExecutingBackgroundUploadTask {
-                // In background task
-                if newProperties.requestState == .prepared {
-                    self.transferInBackgroundImage(for: uploadID, with: newProperties)
-                }
-            } else {
-                // Consider next step
-                self.didEndPreparation()
-            }
+            self.didEndPreparation()
         }
     }
 
@@ -150,7 +142,7 @@ extension UploadManager {
                                            completionHandler: @escaping (Data?, Error?) -> Void) {
         // Options for retrieving metadata
         let options = PHImageRequestOptions()
-        // Photos processes the image request synchronously unless when the app is active
+        // Photos processes the image request synchronously when called by the background task
         options.isSynchronous = isExecutingBackgroundUploadTask
         // Requests the most recent version of the image asset
         options.version = .current
@@ -265,6 +257,7 @@ extension UploadManager {
                 // Determine MD5 checksum of image file to upload
                 newUpload.md5Sum = fullResImageData.MD5checksum()
                 print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUpload.md5Sum))")
+                countOfBytesPrepared += UInt64(fileURL.fileSize)
                 completionHandler(newUpload, nil)
                 return
             }
@@ -311,6 +304,7 @@ extension UploadManager {
                         completionHandler(upload, error)
                         return
                     }
+                    countOfBytesPrepared += UInt64(fileURL.fileSize)
                     completionHandler(newUpload, nil)
                     return
                 }
@@ -352,6 +346,7 @@ extension UploadManager {
                 completionHandler(newUpload, error)
                 return
             }
+            countOfBytesPrepared += UInt64(fileURL.fileSize)
             completionHandler(newUpload, nil)
             return
         }
@@ -380,7 +375,7 @@ extension UploadManager {
 
         // Options for retrieving image of requested size
         let options = PHImageRequestOptions()
-        // Photos processes the image request synchronously unless when the app is active
+        // Photos processes the image request synchronously when called in the background task
         options.isSynchronous = isExecutingBackgroundUploadTask
         // Requests the most recent version of the image asset
         options.version = .current
@@ -600,6 +595,7 @@ extension UploadManager {
             completionHandler(upload, error)
             return
         }
+        countOfBytesPrepared += UInt64(fileURL.fileSize)
         completionHandler(newUpload, nil)
     }
 }

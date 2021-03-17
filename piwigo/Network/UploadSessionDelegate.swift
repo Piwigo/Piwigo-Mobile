@@ -31,10 +31,10 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
         /// Indicates whether the request is allowed to use the built-in cellular radios to satisfy the request.
         config.allowsCellularAccess = !(Model.sharedInstance()?.wifiOnlyUploading ?? false)
         
-        /// How long a task should wait for additional data to arrive before giving up (60s by default)
-        config.timeoutIntervalForRequest = 60
+        /// How long a task should wait for additional data to arrive before giving up (1 day)
+        config.timeoutIntervalForRequest = 1 * 24 * 60 * 60
         
-        /// How long an upload task should be allowed to be retried or transferred (7 days by default).
+        /// How long an upload task should be allowed to be retried or transferred (7 days).
         config.timeoutIntervalForResource = 7 * 24 * 60 * 60
         
         /// Determines the maximum number of simultaneous connections made to the host by tasks (4 by default)
@@ -178,12 +178,12 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
             // Update counter
             bytesSentToPiwigoServer[indexOfUpload].1 += Float(bytesSent)
             progressFraction = bytesSentToPiwigoServer[indexOfUpload].1 / bytesSentToPiwigoServer[indexOfUpload].2
-            print("    > Upload task \(task.taskIdentifier), progressFraction = \(bytesSentToPiwigoServer[indexOfUpload].1) / \(bytesSentToPiwigoServer[indexOfUpload].2) i.e. \(progressFraction)")
+//            print("    > Upload task \(task.taskIdentifier), progressFraction = \(bytesSentToPiwigoServer[indexOfUpload].1) / \(bytesSentToPiwigoServer[indexOfUpload].2) i.e. \(progressFraction)")
         } else {
             // Add counter for this image
             bytesSentToPiwigoServer.append((identifier, Float(bytesSent), fileSize))
             progressFraction = Float(bytesSent) / fileSize
-            print("    > Upload task \(task.taskIdentifier), progressFraction = \(bytesSent) / \(fileSize) i.e. \(progressFraction)")
+//            print("    > Upload task \(task.taskIdentifier), progressFraction = \(bytesSent) / \(fileSize) i.e. \(progressFraction)")
         }
         
         // Update UI
@@ -327,5 +327,21 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
         }
         return URLCredential(user: username, password: password,
                              persistence: .forSession)
+    }
+    
+    
+    // MARK: - Cancel Tasks Related to a Specific Upload Request
+    func cancelTasks(taskDescription: String, exceptedTaskIdentifier: Int) -> Void {
+        // Loop over all tasks
+        uploadSession.getAllTasks { uploadTasks in
+            // Select remaining tasks related with this request if any
+            let tasksToCancel = uploadTasks.filter({ $0.taskDescription == taskDescription })
+                                           .filter({ $0.taskIdentifier != exceptedTaskIdentifier})
+            // Cancel remaining tasks related with this completed upload request
+            tasksToCancel.forEach({
+                print("\(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) > Cancel upload task \($0.taskIdentifier)")
+                $0.cancel()
+            })
+        }
     }
 }

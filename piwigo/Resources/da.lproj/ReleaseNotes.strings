@@ -6,9 +6,11 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.6.0_text" = "Version 2.6\n\n• Indsæt / upload fotos og videoer fra udklipsholder\n• Løser et kompatibilitetsproblem med Piwigo 11\n• Mindre fejl rettet og forbedringer af brugerflade";
+"v2.6.1_text" = "Version 2.6.1\n\n• Retter tildelingen af tags til et udvalg af fotos\n• Nydesignede indstillinger for udseende\n• Forbedrer pålideligheden af upload af baggrunden\n• Mindre fejlrettelser og forbedringer af grænsefladen";
 
-"v2.5.4_text" = "Version 2.5.4\n\n• Mindre fejlrettelser og forbedringer af brugerflade";
+"v2.6.0_text" = "Version 2.6\n3 marts 2021\n\n• Indsæt / upload fotos og videoer fra udklipsholder\n• Løser et kompatibilitetsproblem med Piwigo 11\n• Mindre fejl rettet og forbedringer af brugerflade";
+
+"v2.5.4_text" = "Version 2.5.4\n2 januar 2021\n\n• Mindre fejlrettelser og forbedringer af brugerflade";
 
 "v2.5.3_text" = "Version 2.5.\n21 december 2020\n\n• Kontrollér, hvilke billeder og videoer Piwigo kan tilgå\n• Tips og tricks for bedre at udnytte appen\n• Fejlrettelser";
 

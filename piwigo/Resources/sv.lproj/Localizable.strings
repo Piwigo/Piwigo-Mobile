@@ -691,11 +691,14 @@
 "settings_cacheClearAll" = "Töm bildcache";
 "settings_cacheClearMsg" = "Är du säker på att du vill rensa bild-cacheminnet? Detta betyder att album och bilder kommer att ta en stund att ladda igen.";
 
-// Settings — Colors
-"settingsHeader_colors" = "Färger";
-"settings_darkPalette" = "Alltid mörk palett";
-"settings_switchPalette" = "Växla automatiskt";
+// Settings — Appearance
+"settingsHeader_appearance" = "Utseende";
+"settingsHeader_colorPalette" = "Färgpalett";
+"settings_lightColor" = "Ljus";
+"settings_darkColor" = "Mörk";
+"settings_switchPalette" = "Automatisk";
 "settings_brightness" = "Ljusstyrka";
+"settings_brightnessHelp" = "I låg omgivande ljusstyrka, Automatiska alternativet använder en mörkare färgpalett för att göra bilder sticker ut mot mörkare bakgrunder.";
 
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";

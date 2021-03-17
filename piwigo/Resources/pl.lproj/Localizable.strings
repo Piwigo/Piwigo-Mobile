@@ -691,11 +691,14 @@
 "settings_cacheClearAll" = "Wyczyść pamięć podręczną zdjęć";
 "settings_cacheClearMsg" = "Na pewno chcesz wyczyścić pamięć podręczną zdjęć? Spowoduje to, że albumy i zdjęcia będą się dłużej wczytywały.";
 
-// Settings — Colors
-"settingsHeader_colors" = "Kolory";
-"settings_darkPalette" = "Ciemny motyw";
-"settings_switchPalette" = "Przełącz automatycznie";
+// Settings — Appearance
+"settingsHeader_appearance" = "Wygląd";
+"settingsHeader_colorPalette" = "Paleta kolorów";
+"settings_lightColor" = "Jasna";
+"settings_darkColor" = "Ciemna";
+"settings_switchPalette" = "Automatycznie";
 "settings_brightness" = "Jasność";
+"settings_brightnessHelp" = "Przy niskiej jasności otoczenia opcja Automatycznie użyje ciemnej palety kolorów, aby zdjęcia wyróżniały się na ciemniejszym tle.";
 
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";

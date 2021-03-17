@@ -62,9 +62,6 @@
         } else {
             // Fallback on earlier versions
         }
-
-        // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
     }
     return self;
 }
@@ -111,6 +108,9 @@
 {
     [super viewDidAppear:animated];
     
+    // Register palette changes
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
+
     // Register category data updates
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeImageFromCategory:) name:kPiwigoNotificationDeletedImage object:nil];
 }
@@ -208,12 +208,32 @@
     }
 }
 
+-(void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
+{
+    [super traitCollectionDidChange:previousTraitCollection];
+    
+    // Should we update user interface based on the appearance?
+    if (@available(iOS 13.0, *)) {
+        BOOL hasUserInterfaceStyleChanged = (previousTraitCollection.userInterfaceStyle != self.traitCollection.userInterfaceStyle);
+        if (hasUserInterfaceStyleChanged) {
+            [Model sharedInstance].isSystemDarkModeActive = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            [appDelegate screenBrightnessChanged];
+        }
+    } else {
+        // Fallback on earlier versions
+    }
+}
+
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
     
     // Unregister category data updates
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationDeletedImage object:nil];
+
+    // Unregister palette changes
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationPaletteChanged object:nil];
 }
 
 

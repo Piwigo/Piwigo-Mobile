@@ -17,7 +17,7 @@ enum SettingsSection : Int {
     case albums
     case images
     case imageUpload
-    case color
+    case appearance
     case cache
     case clear
     case about
@@ -286,8 +286,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             titleString = NSLocalizedString("settingsHeader_images", comment: "Images")
         case SettingsSection.imageUpload.rawValue:
             titleString = NSLocalizedString("settingsHeader_upload", comment: "Default Upload Settings")
-        case SettingsSection.color.rawValue:
-            titleString = NSLocalizedString("settingsHeader_colors", comment: "Colors")
+        case SettingsSection.appearance.rawValue:
+            titleString = NSLocalizedString("settingsHeader_appearance", comment: "Appearance")
         case SettingsSection.cache.rawValue:
             titleString = NSLocalizedString("settingsHeader_cache", comment: "Cache Settings (Used/Total)")
         case SettingsSection.about.rawValue:
@@ -354,8 +354,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             titleString = NSLocalizedString("settingsHeader_images", comment: "Images")
         case SettingsSection.imageUpload.rawValue:
             titleString = NSLocalizedString("settingsHeader_upload", comment: "Default Upload Settings")
-        case SettingsSection.color.rawValue:
-            titleString = NSLocalizedString("settingsHeader_colors", comment: "Colors")
+        case SettingsSection.appearance.rawValue:
+            titleString = NSLocalizedString("settingsHeader_appearance", comment: "Appearance")
         case SettingsSection.cache.rawValue:
             titleString = NSLocalizedString("settingsHeader_cache", comment: "Cache Settings (Used/Total)")
         case SettingsSection.about.rawValue:
@@ -439,8 +439,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                            + (Model.sharedInstance().resizeImageOnUpload ? 1 : 0)
                            + (Model.sharedInstance().compressImageOnUpload ? 1 : 0)
                            + (Model.sharedInstance().prefixFileNameBeforeUpload ? 1 : 0)
-        case SettingsSection.color.rawValue:
-            nberOfRows = 2
+        case SettingsSection.appearance.rawValue:
+            nberOfRows = 1
         case SettingsSection.cache.rawValue:
             nberOfRows = 3
         case SettingsSection.clear.rawValue:
@@ -773,7 +773,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 break
             }
         
-        // MARK: Default Upload Settings
+        // MARK: Upload Settings
         case SettingsSection.imageUpload.rawValue /* Default Upload Settings */:
             var row = indexPath.row
             row += (!Model.sharedInstance().hasAdminRights && (row > 0)) ? 1 : 0
@@ -1047,95 +1047,25 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 break
         }
         
-        // MARK: Colors
-        case SettingsSection.color.rawValue /* Colors */:
-            let sectionOffset = !(Model.sharedInstance().hasAdminRights ||
-                                  Model.sharedInstance().usesCommunityPluginV29) ||
-                                !Model.sharedInstance().hadOpenedSession ? 1 : 0
-            switch indexPath.row {
-            case 0 /* Switch automatically? */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
-                    return SwitchTableViewCell()
-                }
-                cell.configure(with: NSLocalizedString("settings_switchPalette", comment: "Switch Automatically"))
-                cell.cellSwitch.setOn(Model.sharedInstance().switchPaletteAutomatically, animated: true)
-                cell.cellSwitchBlock = { switchState in
-
-                    // Number of rows will change accordingly
-                    Model.sharedInstance().switchPaletteAutomatically = switchState
-
-                    // Switch off Dark Palette mode if dynamic palette mode enabled
-                    if switchState {
-                        Model.sharedInstance().isDarkPaletteModeActive = false
-                    }
-
-                    // Store modified setting
-                    Model.sharedInstance().saveToDisk()
-
-                    // Position of the row that should be added/removed
-                    let rowAtIndexPath = IndexPath(row: 1, section: SettingsSection.color.rawValue - sectionOffset)
-                    self.settingsTableView?.reloadRows(at: [rowAtIndexPath], with: .automatic)
-
-                    // Notify palette change
-                    let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                    appDelegate?.screenBrightnessChanged()
-                }
-                cell.accessibilityIdentifier = "switchColourAuto"
-                tableViewCell = cell
-                
-            case 1 /* Switch at Brightness? */:
-                if Model.sharedInstance().switchPaletteAutomatically {
-                    // Switch at Brightness ?
-                    guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell else {
-                        print("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!")
-                        return SliderTableViewCell()
-                    }
-                    // Slider value
-                    let value = Float(Model.sharedInstance().switchPaletteThreshold)
-
-                    // Slider configuration
-                    let currentBrightness = UIScreen.main.brightness * 100
-                    let prefix = String(format: "%ld/", lroundf(Float(currentBrightness)))
-                    cell.configure(with: NSLocalizedString("settings_brightness", comment: "Brightness"), value: value, increment: 1, minValue: 0, maxValue: 100, prefix: prefix, suffix: "%")
-                    cell.cellSliderBlock = { newThreshold in
-                        // Update settings
-                        Model.sharedInstance().switchPaletteThreshold = Int(newThreshold)
-                        Model.sharedInstance().saveToDisk()
-                        // Update palette if needed
-                        let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                        appDelegate?.screenBrightnessChanged()
-                    }
-                    cell.accessibilityIdentifier = "brightnessLevel"
-                    tableViewCell = cell
-                    
-                } else {
-                    // Always use Dark Palette
-                    guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
-                        print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
-                        return SwitchTableViewCell()
-                    }
-                    cell.configure(with: NSLocalizedString("settings_darkPalette", comment: "Always Dark Palette"))
-                    cell.cellSwitch.setOn(Model.sharedInstance().isDarkPaletteModeActive, animated: true)
-                    cell.cellSwitchBlock = { switchState in
-
-                        // Number of rows will change accordingly
-                        Model.sharedInstance().isDarkPaletteModeActive = switchState
-
-                        // Store modified setting
-                        Model.sharedInstance().saveToDisk()
-
-                        // Notify palette change
-                        let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                        appDelegate?.screenBrightnessChanged()
-                    }
-                    cell.accessibilityIdentifier = "alwaysDark"
-                    tableViewCell = cell
-                    
-                }
-            default:
-                break
+        // MARK: Appearance
+        case SettingsSection.appearance.rawValue /* Appearance */:
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
+                print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
+                return LabelTableViewCell()
             }
+            let title = NSLocalizedString("settingsHeader_colorPalette", comment: "Color Palette")
+            let detail: String
+            if Model.sharedInstance()?.isLightPaletteModeActive == true {
+                detail = NSLocalizedString("settings_lightColor", comment: "Light")
+            } else if Model.sharedInstance()?.isDarkPaletteModeActive == true {
+                detail = NSLocalizedString("settings_darkColor", comment: "Dark")
+            } else {
+                detail = NSLocalizedString("settings_switchPalette", comment: "Automatic")
+            }
+            cell.configure(with: title, detail: detail)
+            cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+            cell.accessibilityIdentifier = "colorPalette"
+            tableViewCell = cell
 
         // MARK: Cache Settings
         case SettingsSection.cache.rawValue /* Cache Settings */:
@@ -1394,9 +1324,15 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             default:
                 break
             }
-        // MARK: Default Upload Settings
+            
+        // MARK: Upload Settings
         case SettingsSection.imageUpload.rawValue /* Default Upload Settings */:
-            switch indexPath.row {
+            var row = indexPath.row
+            row += (!Model.sharedInstance().hasAdminRights && (row > 0)) ? 1 : 0
+            row += (!Model.sharedInstance().resizeImageOnUpload && (row > 3)) ? 1 : 0
+            row += (!Model.sharedInstance().compressImageOnUpload && (row > 5)) ? 1 : 0
+            row += (!Model.sharedInstance().prefixFileNameBeforeUpload && (row > 7)) ? 1 : 0
+            switch row {
             case 0 /* Author Name */,
                  2 /* Strip private Metadata */,
                  3 /* Resize Before Upload */,
@@ -1414,9 +1350,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 break
             }
 
-        // MARK: Colors
-        case SettingsSection.color.rawValue /* Colors */:
-            result = false
+        // MARK: Appearance
+        case SettingsSection.appearance.rawValue /* Appearance */:
+            result = true
 
         // MARK: Cache Settings
         case SettingsSection.cache.rawValue /* Cache Settings */:
@@ -1554,10 +1490,16 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         }
 
         switch activeSection {
+
+        // MARK: Server
         case SettingsSection.server.rawValue /* Piwigo Server */:
             break
+
+        // MARK: Logout
         case SettingsSection.logout.rawValue /* Logout */:
             loginLogout()
+
+        // MARK: Albums
         case SettingsSection.albums.rawValue /* Albums */:
             switch indexPath.row {
             case 0 /* Default album */:
@@ -1585,6 +1527,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             default:
                 break
             }
+
+        // MARK: Images
         case SettingsSection.images.rawValue /* Images */:
             switch indexPath.row {
             case 0 /* Thumbnail file selection */:
@@ -1608,8 +1552,15 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             default:
                 break
             }
+
+        // MARK: Upload Settings
         case SettingsSection.imageUpload.rawValue /* Default upload Settings */:
-            switch indexPath.row {
+            var row = indexPath.row
+            row += (!Model.sharedInstance().hasAdminRights && (row > 0)) ? 1 : 0
+            row += (!Model.sharedInstance().resizeImageOnUpload && (row > 3)) ? 1 : 0
+            row += (!Model.sharedInstance().compressImageOnUpload && (row > 5)) ? 1 : 0
+            row += (!Model.sharedInstance().prefixFileNameBeforeUpload && (row > 7)) ? 1 : 0
+            switch row {
             case 1 /* Default privacy selection */:
                 let privacySB = UIStoryboard(name: "SelectPrivacyViewController", bundle: nil)
                 let privacyVC = privacySB.instantiateViewController(withIdentifier: "SelectPrivacyViewController") as? SelectPrivacyViewController
@@ -1621,6 +1572,24 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             default:
                 break
             }
+
+        // MARK: Appearance
+        case SettingsSection.appearance.rawValue /* Appearance */:
+            if #available(iOS 13.0, *) {
+                let colorPaletteSB = UIStoryboard(name: "ColorPaletteViewController", bundle: nil)
+                guard let colorPaletteVC = colorPaletteSB.instantiateViewController(withIdentifier: "ColorPaletteViewController") as? ColorPaletteViewController else {
+                    return
+                }
+                navigationController?.pushViewController(colorPaletteVC, animated: true)
+            } else {
+                let colorPaletteSB = UIStoryboard(name: "ColorPaletteViewControllerOld", bundle: nil)
+                guard let colorPaletteVC = colorPaletteSB.instantiateViewController(withIdentifier: "ColorPaletteViewControllerOld") as? ColorPaletteViewControllerOld else {
+                    return
+                }
+                navigationController?.pushViewController(colorPaletteVC, animated: true)
+            }
+
+        // MARK: Cache Settings
         case SettingsSection.clear.rawValue /* Cache Clear */:
             switch indexPath.row {
             case 0 /* Clear cache */:
@@ -1708,6 +1677,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             default:
                 break
             }
+
+        // MARK: Information
         case SettingsSection.about.rawValue /* About — Informations */:
             switch indexPath.row {
             case 0 /* Open @piwigo on Twitter */:
