@@ -165,7 +165,7 @@ class UploadManager: NSObject, URLSessionDelegate {
                                             .uploading, .uploadingError, .uploaded,
                                             .finishing, .finishingError]
         nberOfUploadsToComplete = uploadsProvider.getRequestsIn(states: states).count
-        return // for debugging background tasks
+//        return // for debugging background tasks
 
         // Pause upload manager if app not in the foreground
         // and not executed in a background task
