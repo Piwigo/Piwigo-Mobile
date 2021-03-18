@@ -53,6 +53,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     private var nberGroups = ""
     private var nberComments = ""
     private var didChangeDefaultAlbum = false
+    private var hasAutoUploadSettings = false
 
 
     #if DEBUG
@@ -92,6 +93,13 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // Get Server Infos if possible
         if Model.sharedInstance().hasAdminRights {
             getInfos()
+        }
+        
+        // Check if Auto-Upload can be proposed
+        if #available(iOS 13.0, *) {
+            if Model.sharedInstance()?.usesUploadAsync ?? false {
+                hasAutoUploadSettings = true
+            }
         }
 
         // Title
@@ -436,9 +444,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             nberOfRows = 5
         case SettingsSection.imageUpload.rawValue:
             nberOfRows = 7 + (Model.sharedInstance().hasAdminRights ? 1 : 0)
-                           + (Model.sharedInstance().resizeImageOnUpload ? 1 : 0)
-                           + (Model.sharedInstance().compressImageOnUpload ? 1 : 0)
-                           + (Model.sharedInstance().prefixFileNameBeforeUpload ? 1 : 0)
+            nberOfRows += (Model.sharedInstance().resizeImageOnUpload ? 1 : 0)
+            nberOfRows += (Model.sharedInstance().compressImageOnUpload ? 1 : 0)
+            nberOfRows += (Model.sharedInstance().prefixFileNameBeforeUpload ? 1 : 0)
+            nberOfRows += hasAutoUploadSettings ? 1 : 0
         case SettingsSection.appearance.rawValue:
             nberOfRows = 1
         case SettingsSection.cache.rawValue:
@@ -780,6 +789,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             row += (!Model.sharedInstance().resizeImageOnUpload && (row > 3)) ? 1 : 0
             row += (!Model.sharedInstance().compressImageOnUpload && (row > 5)) ? 1 : 0
             row += (!Model.sharedInstance().prefixFileNameBeforeUpload && (row > 7)) ? 1 : 0
+            row += !hasAutoUploadSettings ? 1 : 0
             switch row {
             case 0 /* Author Name? */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as? TextFieldTableViewCell else {
@@ -1023,7 +1033,30 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.accessibilityIdentifier = "wifiOnly"
                 tableViewCell = cell
 
-            case 10 /* Delete image after upload? */:
+            case 10 /* Auto-upload */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
+                    return LabelTableViewCell()
+                }
+                let title: String
+                if view.bounds.size.width > 414 {
+                    // i.e. larger than iPhones 6,7 screen width
+                    title = NSLocalizedString("settingsHeader_autoUpload>414px", comment: "Auto Upload in the Background")
+                } else {
+                    title = NSLocalizedString("settingsHeader_autoUpload", comment: "Auto Upload")
+                }
+                let detail: String
+                if Model.sharedInstance()?.isAutoUploadActive == true {
+                    detail = NSLocalizedString("settingsHeader_autoUploadEnabled", comment: "On")
+                } else {
+                    detail = NSLocalizedString("settingsHeader_autoUploadDisabled", comment: "Off")
+                }
+                cell.configure(with: title, detail: detail)
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                cell.accessibilityIdentifier = "colorPalette"
+                tableViewCell = cell
+
+            case 11 /* Delete image after upload? */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
                     print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                     return SwitchTableViewCell()
@@ -1332,19 +1365,21 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             row += (!Model.sharedInstance().resizeImageOnUpload && (row > 3)) ? 1 : 0
             row += (!Model.sharedInstance().compressImageOnUpload && (row > 5)) ? 1 : 0
             row += (!Model.sharedInstance().prefixFileNameBeforeUpload && (row > 7)) ? 1 : 0
+            row += !hasAutoUploadSettings ? 1 : 0
             switch row {
-            case 0 /* Author Name */,
-                 2 /* Strip private Metadata */,
-                 3 /* Resize Before Upload */,
-                 4 /* Image Size slider */,
-                 5 /* Compress Before Upload switch */,
-                 6 /* Image Quality slider */,
-                 7 /* Prefix Filename Before Upload switch */,
-                 8 /* Filename Prefix */,
-                 9 /* Wi-Fi Only */,
-                 10 /* Delete image after upload */:
+            case 0  /* Author Name */,
+                 2  /* Strip private Metadata */,
+                 3  /* Resize Before Upload */,
+                 4  /* Image Size slider */,
+                 5  /* Compress Before Upload switch */,
+                 6  /* Image Quality slider */,
+                 7  /* Prefix Filename Before Upload switch */,
+                 8  /* Filename Prefix */,
+                 9  /* Wi-Fi Only */,
+                 11 /* Delete image after upload */:
                 result = false
-            case 1 /* Privacy Level */:
+            case 1  /* Privacy Level */,
+                 10 /* Auto upload */:
                 result = true
             default:
                 break
@@ -1560,6 +1595,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             row += (!Model.sharedInstance().resizeImageOnUpload && (row > 3)) ? 1 : 0
             row += (!Model.sharedInstance().compressImageOnUpload && (row > 5)) ? 1 : 0
             row += (!Model.sharedInstance().prefixFileNameBeforeUpload && (row > 7)) ? 1 : 0
+            row += !hasAutoUploadSettings ? 1 : 0
             switch row {
             case 1 /* Default privacy selection */:
                 let privacySB = UIStoryboard(name: "SelectPrivacyViewController", bundle: nil)
@@ -1569,6 +1605,12 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 if let privacyVC = privacyVC {
                     navigationController?.pushViewController(privacyVC, animated: true)
                 }
+            case 10 /* Auto Upload */:
+                let autoUploadSB = UIStoryboard(name: "AutoUploadViewController", bundle: nil)
+                guard let autoUploadVC = autoUploadSB.instantiateViewController(withIdentifier: "AutoUploadViewController") as? AutoUploadViewController else {
+                    return
+                }
+                navigationController?.pushViewController(autoUploadVC, animated: true)
             default:
                 break
             }

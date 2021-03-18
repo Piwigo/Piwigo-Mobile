@@ -173,6 +173,7 @@ typedef enum {
 @property (nonatomic, strong) NSString *defaultPrefix;
 @property (nonatomic, assign) kPiwigoSort localImagesSort;
 @property (nonatomic, assign) BOOL wifiOnlyUploading;
+@property (nonatomic, assign) BOOL isAutoUploadActive;
 
 // Default color palette (adopts light/dark modes as from iOS 13)
 @property (nonatomic, assign) BOOL isDarkPaletteActive;

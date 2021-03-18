@@ -679,6 +679,10 @@
 "settings_deleteImage>375px" = "Delete Photo After Upload";
 "settings_wifiOnly" = "Wi-Fi Only";
 "settings_deleteImage" = "Delete After Upload";
+"settingsHeader_autoUpload" = "Auto Upload";
+"settingsHeader_autoUpload>414px" = "Auto Upload in the Background";
+"settingsHeader_autoUploadEnabled" = "On";
+"settingsHeader_autoUploadDisabled" = "Off";
 
 // Settings — Cache
 "settingsHeader_cache" = "Cache Settings (Used/Total)";

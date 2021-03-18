@@ -120,6 +120,7 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
         instance.defaultPrefix = @"";
         instance.localImagesSort = kPiwigoSortDateCreatedDescending;    // i.e. new to old
         instance.wifiOnlyUploading = NO;            // Wi-Fi only option
+        instance.isAutoUploadActive = NO;           // Auto-upload On/Off
 
         // Default palette mode
         instance.isDarkPaletteActive = NO;
@@ -267,6 +268,7 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
         self.localImagesSort = modelData.localImagesSort;
         self.wifiOnlyUploading = modelData.wifiOnlyUploading;
         self.didWatchHelpViews = modelData.didWatchHelpViews;
+        self.isAutoUploadActive = modelData.isAutoUploadActive;
 	}
 }
 
@@ -350,6 +352,8 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
     [saveObject addObject:[NSNumber numberWithBool:self.wifiOnlyUploading]];
     // Added in 2.5.3…
     [saveObject addObject:[NSNumber numberWithInteger:self.didWatchHelpViews]];
+    // Added in 2.7.0…
+    [saveObject addObject:[NSNumber numberWithBool:self.isAutoUploadActive]];
 
     [encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -662,6 +666,11 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
         self.isLightPaletteModeActive = [[savedData objectAtIndex:55] boolValue];
     } else {
         self.isLightPaletteModeActive = NO;
+    }
+    if(savedData.count > 56) {
+        self.isAutoUploadActive = [[savedData objectAtIndex:56] boolValue];
+    } else {
+        self.isAutoUploadActive = NO;
     }
 	return self;
 }
