@@ -63,9 +63,11 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             selectPhotoLibraryItemsButton = UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(selectPhotoLibraryItems))
         }
         
-        // Button for returning to albums/images collections or auto-upload settings
-        cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(quitUpload))
-        cancelBarButton?.accessibilityIdentifier = "Cancel"
+        if wantedAction == .presentLocalAlbum {
+            // Button for returning to albums/images collections
+            cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(quitUpload))
+            cancelBarButton?.accessibilityIdentifier = "Cancel"
+        }
         
         // Register palette changes
         var name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
