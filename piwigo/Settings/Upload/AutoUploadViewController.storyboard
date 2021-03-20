@@ -3,10 +3,15 @@
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18092"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18122"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
+    <customFonts key="customFonts">
+        <array key="OpenSansRegular.TTF">
+            <string>OpenSans</string>
+        </array>
+    </customFonts>
     <scenes>
         <!--Auto Upload View Controller-->
         <scene sceneID="s0d-6b-0kx">
@@ -16,6 +21,42 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="SwitchTableViewCell" id="cMZ-L4-RBO" customClass="SwitchTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="24.5" width="414" height="43.5"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="cMZ-L4-RBO" id="EFw-Wy-xBp">
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999998807907104" translatesAutoresizingMaskIntoConstraints="NO" id="3aI-6T-cUb">
+                                            <rect key="frame" x="20" y="10" width="48" height="23.5"/>
+                                            <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xMm-4k-pMU">
+                                            <rect key="frame" x="345" y="6.5" width="51" height="31"/>
+                                            <color key="onTintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                            <connections>
+                                                <action selector="switchChanged:" destination="cMZ-L4-RBO" eventType="valueChanged" id="OAT-Iv-ae6"/>
+                                            </connections>
+                                        </switch>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="3aI-6T-cUb" firstAttribute="centerY" secondItem="EFw-Wy-xBp" secondAttribute="centerY" id="fBT-qX-8MP"/>
+                                        <constraint firstItem="xMm-4k-pMU" firstAttribute="centerY" secondItem="EFw-Wy-xBp" secondAttribute="centerY" id="mx2-Gg-uk0"/>
+                                        <constraint firstAttribute="trailing" secondItem="xMm-4k-pMU" secondAttribute="trailing" constant="20" symbolic="YES" id="nrZ-7X-Q8W"/>
+                                        <constraint firstItem="3aI-6T-cUb" firstAttribute="trailing" relation="lessThanOrEqual" secondItem="EFw-Wy-xBp" secondAttribute="trailing" constant="-71" id="vza-m1-NfE"/>
+                                        <constraint firstItem="3aI-6T-cUb" firstAttribute="leading" secondItem="EFw-Wy-xBp" secondAttribute="leading" constant="20" symbolic="YES" id="yue-l8-Ktr"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="cellSwitch" destination="xMm-4k-pMU" id="8Hc-dT-wnH"/>
+                                    <outlet property="switchName" destination="3aI-6T-cUb" id="Xuj-0e-i5h"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="Y6W-OH-hqX" id="2Rg-6a-h0O"/>
                             <outlet property="delegate" destination="Y6W-OH-hqX" id="aTb-J7-RaW"/>

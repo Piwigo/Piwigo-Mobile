@@ -680,9 +680,12 @@
 "settings_wifiOnly" = "Wi-Fi Only";
 "settings_deleteImage" = "Delete After Upload";
 "settingsHeader_autoUpload" = "Auto Upload";
-"settingsHeader_autoUpload>414px" = "Auto Upload in the Background";
+"settingsHeader_autoUpload>414px" = "Auto Upload Photos";
 "settingsHeader_autoUploadEnabled" = "On";
+"settingsFooter_autoUploadEnabledInfo" = "Photos will be automatically uploaded to your Piwigo.";
+"settingsFooter_autoUploadEnabledInfoAll" = "Photos and videos will be automatically uploaded to your Piwigo.";
 "settingsHeader_autoUploadDisabled" = "Off";
+"settingsFooter_autoUploadDisabledInfo" = "Photos will not be automatically uploaded to your Piwigo.";
 
 // Settings — Cache
 "settingsHeader_cache" = "Cache Settings (Used/Total)";
