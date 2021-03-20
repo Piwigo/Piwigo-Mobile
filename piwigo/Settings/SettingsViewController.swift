@@ -1041,19 +1041,19 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let title: String
                 if view.bounds.size.width > 414 {
                     // i.e. larger than iPhones 6,7 screen width
-                    title = NSLocalizedString("settingsHeader_autoUpload>414px", comment: "Auto Upload in the Background")
+                    title = NSLocalizedString("settings_autoUpload>414px", comment: "Auto Upload in the Background")
                 } else {
-                    title = NSLocalizedString("settingsHeader_autoUpload", comment: "Auto Upload")
+                    title = NSLocalizedString("settings_autoUpload", comment: "Auto Upload")
                 }
                 let detail: String
                 if Model.sharedInstance()?.isAutoUploadActive == true {
-                    detail = NSLocalizedString("settingsHeader_autoUploadEnabled", comment: "On")
+                    detail = NSLocalizedString("settings_autoUploadEnabled", comment: "On")
                 } else {
-                    detail = NSLocalizedString("settingsHeader_autoUploadDisabled", comment: "Off")
+                    detail = NSLocalizedString("settings_autoUploadDisabled", comment: "Off")
                 }
                 cell.configure(with: title, detail: detail)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
-                cell.accessibilityIdentifier = "colorPalette"
+                cell.accessibilityIdentifier = "autoUpload"
                 tableViewCell = cell
 
             case 11 /* Delete image after upload? */:

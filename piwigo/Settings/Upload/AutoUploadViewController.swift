@@ -72,7 +72,9 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         let titleString: String
         switch section {
         case 0:
-            titleString = NSLocalizedString("settingsHeader_autoUpload>414px", comment: "Auto Upload Photos")
+            titleString = NSLocalizedString("settings_autoUpload>414px", comment: "Auto Upload Photos")
+        case 1:
+            titleString = NSLocalizedString("tabBar_albums", comment: "Albums")
         default:
             titleString = ""
         }
@@ -90,7 +92,9 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         let titleString: String
         switch section {
         case 0:
-            titleString = NSLocalizedString("settingsHeader_autoUpload>414px", comment: "Auto Upload Photos")
+            titleString = NSLocalizedString("settings_autoUpload>414px", comment: "Auto Upload Photos")
+        case 1:
+            titleString = NSLocalizedString("tabBar_albums", comment: "Albums")
         default:
             titleString = ""
         }
@@ -126,8 +130,19 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
 
 
     // MARK: - UITableView - Rows
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        switch section {
+        case 0:
+            return 1
+        case 1:
+            return 1
+        default:
+            fatalError("Unknown section")
+        }
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -143,7 +158,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                 print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                 return SwitchTableViewCell()
             }
-            let title = NSLocalizedString("settingsHeader_autoUpload", comment: "Auto Upload")
+            let title = NSLocalizedString("settings_autoUpload", comment: "Auto Upload")
             cell.configure(with: title)
             cell.cellSwitch.setOn(Model.sharedInstance().isAutoUploadActive, animated: true)
             cell.cellSwitchBlock = { switchState in
@@ -153,13 +168,80 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                 self.autoUploadTableView.reloadSections(IndexSet.init(integer: indexPath.section), with: .automatic)
             }
             tableViewCell = cell
+            
+        case 1:
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
+                print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
+                return LabelTableViewCell()
+            }
+            var title = "", detail = ""
+            switch indexPath.row {
+            case 0:
+                title = NSLocalizedString("settings_autoUploadSource", comment: "Source")
+                cell.configure(with: title, detail: detail)
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                cell.accessibilityIdentifier = "colorPalette"
+                tableViewCell = cell
+
+            default:
+                break
+            }
+            cell.configure(with: title, detail: detail)
+            cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+            tableViewCell = cell
+
         default:
             break
         }
         return tableViewCell
     }
 
+    func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+        switch indexPath.section {
+        case 0:
+            return false
+        default:
+            return true
+        }
+    }
+    
+    
+    // MARK: - UITableViewDelegate Methods
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
         
+        switch indexPath.section {
+        case 1:
+            switch indexPath.row {
+            case 0:
+                // Check autorisation to access Photo Library before uploading
+                if #available(iOS 14, *) {
+                    PhotosFetch.sharedInstance().checkPhotoLibraryAuthorizationStatus(for: .readWrite, for: self) {
+                        // Open local albums view controller
+                        let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewController", bundle: nil)
+                        guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else { return }
+                        localAlbumsVC.setCategoryId(0)  // To indicate that we only request an album ID
+                        self.navigationController?.pushViewController(localAlbumsVC, animated: true)
+                    } onDeniedAccess: { }
+                } else {
+                    // Fallback on earlier versions
+                    PhotosFetch.sharedInstance().checkPhotoLibraryAccessForViewController(self) {
+                        let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewController", bundle: nil)
+                        guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else { return }
+                        localAlbumsVC.setCategoryId(0)  // To indicate that we only request an album ID
+                        self.navigationController?.pushViewController(localAlbumsVC, animated: true)
+                    } onDeniedAccess: { }
+                }
+
+            default:
+                break
+            }
+            
+        default:
+            break
+        }
+    }
+
     // MARK: - UITableView - Footer
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         // No footer by default (nil => 0 point)
@@ -170,12 +252,12 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         case 0:
             if Model.sharedInstance().isAutoUploadActive {
                 if Model.sharedInstance().serverFileTypes.contains("mp4") {
-                    footer = NSLocalizedString("settingsFooter_autoUploadEnabledInfo", comment: "Photos and videos will be automatically uploaded to your Piwigo")
+                    footer = NSLocalizedString("settings_autoUploadEnabledInfo", comment: "Photos and videos will be automatically uploaded to your Piwigo")
                 } else {
-                    footer = NSLocalizedString("settingsFooter_autoUploadEnabledInfo", comment: "Photos will be automatically uploaded to your Piwigo")
+                    footer = NSLocalizedString("settings_autoUploadEnabledInfo", comment: "Photos will be automatically uploaded to your Piwigo")
                 }
             } else {
-                footer = NSLocalizedString("settingsFooter_autoUploadDisabledInfo", comment: "Photos will not be automatically uploaded to your Piwigo")
+                footer = NSLocalizedString("settings_autoUploadDisabledInfo", comment: "Photos will not be automatically uploaded to your Piwigo")
             }
         default:
             return 16.0
@@ -208,12 +290,12 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         case 0:
             if Model.sharedInstance().isAutoUploadActive {
                 if Model.sharedInstance().serverFileTypes.contains("mp4") {
-                    footerLabel.text = NSLocalizedString("settingsFooter_autoUploadEnabledInfoAll", comment: "Photos and videos will be automatically uploaded to your Piwigo.")
+                    footerLabel.text = NSLocalizedString("settings_autoUploadEnabledInfoAll", comment: "Photos and videos will be automatically uploaded to your Piwigo.")
                 } else {
-                    footerLabel.text = NSLocalizedString("settingsFooter_autoUploadEnabledInfo", comment: "Photos will be automatically uploaded to your Piwigo.")
+                    footerLabel.text = NSLocalizedString("settings_autoUploadEnabledInfo", comment: "Photos will be automatically uploaded to your Piwigo.")
                 }
             } else {
-                footerLabel.text = NSLocalizedString("settingsFooter_autoUploadDisabledInfo", comment: "Photos will not be automatically uploaded to your Piwigo.")
+                footerLabel.text = NSLocalizedString("settings_autoUploadDisabledInfo", comment: "Photos will not be automatically uploaded to your Piwigo.")
             }
         default:
             break

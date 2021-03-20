@@ -56,6 +56,43 @@
                                     <outlet property="switchName" destination="3aI-6T-cUb" id="Xuj-0e-i5h"/>
                                 </connections>
                             </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="LabelTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="LabelTableViewCell" id="oka-qP-KB6" customClass="LabelTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="68" width="414" height="43.5"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="oka-qP-KB6" id="pvg-Vz-8ZI">
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xU2-JK-3Sc">
+                                            <rect key="frame" x="20" y="10" width="50" height="23.5"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="50" id="MIQ-v4-QXP"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Info" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2rE-88-1L7">
+                                            <rect key="frame" x="362.5" y="10" width="31.5" height="23.5"/>
+                                            <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="trailing" secondItem="2rE-88-1L7" secondAttribute="trailing" constant="20" symbolic="YES" id="6xk-BD-dgD"/>
+                                        <constraint firstItem="xU2-JK-3Sc" firstAttribute="leading" secondItem="pvg-Vz-8ZI" secondAttribute="leading" constant="20" symbolic="YES" id="7hb-on-nNT"/>
+                                        <constraint firstItem="2rE-88-1L7" firstAttribute="centerY" secondItem="pvg-Vz-8ZI" secondAttribute="centerY" id="Wvb-f0-85D"/>
+                                        <constraint firstItem="2rE-88-1L7" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="xU2-JK-3Sc" secondAttribute="trailing" constant="10" id="Yje-uf-Fpi"/>
+                                        <constraint firstItem="xU2-JK-3Sc" firstAttribute="centerY" secondItem="pvg-Vz-8ZI" secondAttribute="centerY" id="bhp-kr-a5r"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <outlet property="detailLabel" destination="2rE-88-1L7" id="qZj-qp-dHN"/>
+                                    <outlet property="titleLabel" destination="xU2-JK-3Sc" id="jRt-WM-xNE"/>
+                                </connections>
+                            </tableViewCell>
                         </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="Y6W-OH-hqX" id="2Rg-6a-h0O"/>
