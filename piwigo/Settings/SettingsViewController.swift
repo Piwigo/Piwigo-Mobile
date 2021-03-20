@@ -37,7 +37,7 @@ let kHelpUsTranslatePiwigo = "Piwigo is only partially translated in your langua
 }
 
 @objc
-class SettingsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate, DefaultCategoryDelegate, CategorySortDelegate, SelectPrivacyDelegate {
+class SettingsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate, SelectCategoryDelegate, CategorySortDelegate, SelectPrivacyDelegate {
 
     @objc weak var settingsDelegate: ChangedSettingsDelegate?
 
@@ -1538,8 +1538,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case SettingsSection.albums.rawValue /* Albums */:
             switch indexPath.row {
             case 0 /* Default album */:
-                let categorySB = UIStoryboard(name: "DefaultCategoryViewController", bundle: nil)
-                guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "DefaultCategoryViewController") as? DefaultCategoryViewController else { return }
+                let categorySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
+                guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
                 categoryVC.setCurrentCategory(Model.sharedInstance().defaultCategory)
                 categoryVC.delegate = self
                 navigationController?.pushViewController(categoryVC, animated: true)
@@ -1956,8 +1956,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
 
     
-// MARK: - DefaultCategoryDelegate Methods
-    func didChangeDefaultCategory(_ categoryId: Int) {
+// MARK: - SelectCategoryDelegate Methods
+    func didSelectCategory(_ categoryId: Int) {
         // Save new choice
         Model.sharedInstance()?.defaultCategory = categoryId
         Model.sharedInstance()?.saveToDisk()

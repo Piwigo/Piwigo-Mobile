@@ -1,5 +1,5 @@
 //
-//  DefaultCategoryViewController
+//  SelectCategoryViewController
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 05/07/2018.
@@ -11,14 +11,14 @@
 import UIKit
 
 @objc
-protocol DefaultCategoryDelegate: NSObjectProtocol {
-    func didChangeDefaultCategory(_ category: Int)
+protocol SelectCategoryDelegate: NSObjectProtocol {
+    func didSelectCategory(_ category: Int)
 }
 
 @objc
-class DefaultCategoryViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, CategoryCellDelegate {
+class SelectCategoryViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, CategoryCellDelegate {
 
-    @objc weak var delegate: DefaultCategoryDelegate?
+    @objc weak var delegate: SelectCategoryDelegate?
 
     @objc func setCurrentCategory(_ currentCategory: Int) {
         _currentCategory = currentCategory
@@ -239,7 +239,7 @@ class DefaultCategoryViewController: UIViewController, UITableViewDataSource, UI
                 
             // Set new Default Album
             if categoryData.albumId != Model.sharedInstance().defaultCategory {
-                self.delegate?.didChangeDefaultCategory(categoryData.albumId)
+                self.delegate?.didSelectCategory(categoryData.albumId)
             }
 
             // Return to Settings
