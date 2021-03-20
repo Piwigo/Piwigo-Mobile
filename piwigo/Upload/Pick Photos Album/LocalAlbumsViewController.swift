@@ -22,15 +22,12 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
 
     @objc weak var delegate: LocalAlbumsSelectorDelegate?
 
-    @objc
-    func setCategoryId(_ categoryId: Int) {
-        // Set to 0 to indicate that we only request an album ID
-        // and that this view should be dismissed after selection.
-        _categoryId = categoryId
-    }
-
     @IBOutlet var localAlbumsTableView: UITableView!
     
+    @objc
+    func setCategoryId(_ categoryId: Int) {
+        _categoryId = categoryId
+    }
     private var _categoryId: Int?
     private var categoryId: Int {
         get {
@@ -40,6 +37,14 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             _categoryId = categoryId
         }
     }
+
+    // Actions to perform after selection
+    private enum kPiwigoCategorySelectAction : Int {
+        case none
+        case presentLocalAlbum
+        case setAutoUploadAlbum
+    }
+    private var wantedAction: kPiwigoCategorySelectAction = .none
 
     private var selectPhotoLibraryItemsButton: UIBarButtonItem?
     private var cancelBarButton: UIBarButtonItem?
@@ -113,11 +118,21 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         // Set colors, fonts, etc.
         applyColorPalette()
 
-        // If the category is not null, check if thare are images in the pasteboard.
-        if categoryId != 0,
-           let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: ["public.image", "public.movie"]),
-           indexSet.count > 0, let _ = UIPasteboard.general.types(forItemSet: indexSet) {
-            hasImagesInPasteboard = true
+        // Determine what to do after selection
+        if let caller = delegate {
+            if caller.isKind(of: AutoUploadViewController.self) {
+                wantedAction = .setAutoUploadAlbum
+            } else {
+                wantedAction = .presentLocalAlbum
+                
+                // Check if there are photos/videos in the pasteboard
+                if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: ["public.image", "public.movie"]),
+                   indexSet.count > 0, let _ = UIPasteboard.general.types(forItemSet: indexSet) {
+                    hasImagesInPasteboard = true
+                }
+            }
+        } else {
+            wantedAction = .none
         }
 
         // Navigation "Cancel" button and identifier
@@ -154,7 +169,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
 
     @objc func checkPasteboard() {
         // Don't consider the pasteboard if the cateogry is null.
-        if categoryId == 0 { return }
+        if wantedAction == .setAutoUploadAlbum { return }
         
         // Are there images in the pasteboard?
         let testTypes = UIPasteboard.general.contains(pasteboardTypes: ["public.image", "public.movie"]) ? true : false
@@ -166,7 +181,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     }
 
     @objc func quitUpload() {
-        if categoryId ==  0 {
+        if wantedAction == .setAutoUploadAlbum {
             // Return to Upload settings
             navigationController?.popViewController(animated: true)
         } else {
@@ -311,7 +326,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
                 return LocalAlbumsTableViewCell()
             }
             cell.configure(with: title, nberPhotos: nberPhotos, startDate: startDate, endDate: endDate)
-            cell.accessoryType = categoryId == 0 ? .none : .disclosureIndicator
+            cell.accessoryType = wantedAction == .setAutoUploadAlbum ? .none : .disclosureIndicator
             if assetCollection.assetCollectionType == .smartAlbum && assetCollection.assetCollectionSubtype == .smartAlbumUserLibrary {
                 cell.accessibilityIdentifier = "Recent"
             }
@@ -324,7 +339,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
                 return LocalAlbumsNoDatesTableViewCell()
             }
             cell.configure(with: title, nberPhotos: nberPhotos)
-            cell.accessoryType = categoryId == 0 ? .none : .disclosureIndicator
+            cell.accessoryType = wantedAction == .setAutoUploadAlbum ? .none : .disclosureIndicator
             if assetCollection.assetCollectionType == .smartAlbum && assetCollection.assetCollectionSubtype == .smartAlbumUserLibrary {
                 cell.accessibilityIdentifier = "Recent"
             }
@@ -440,11 +455,9 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             switch activeSection {
             case 0:
                 let pasteboardImagesSB = UIStoryboard(name: "PasteboardImagesViewController", bundle: nil)
-                let localImagesVC = pasteboardImagesSB.instantiateViewController(withIdentifier: "PasteboardImagesViewController") as? PasteboardImagesViewController
-                localImagesVC?.setCategoryId(categoryId)
-                if let localImagesVC = localImagesVC {
-                    navigationController?.pushViewController(localImagesVC, animated: true)
-                }
+                guard let localImagesVC = pasteboardImagesSB.instantiateViewController(withIdentifier: "PasteboardImagesViewController") as? PasteboardImagesViewController else { return }
+                localImagesVC.setCategoryId(categoryId)
+                navigationController?.pushViewController(localImagesVC, animated: true)
                 return
             default:
                 activeSection -= 1
@@ -467,7 +480,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         // Case of an album
         let assetCollection = LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[activeSection][indexPath.row]
         let albumID = assetCollection.localIdentifier
-        if categoryId == 0 {
+        if wantedAction == .setAutoUploadAlbum {
             // Return the selected album ID and name
             let albumName = assetCollection.localizedTitle ?? "—> ? <——"
             delegate?.didSelectPhotoAlbum(withId: albumID, andName: albumName)

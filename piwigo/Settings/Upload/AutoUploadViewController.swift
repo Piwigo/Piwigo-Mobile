@@ -209,45 +209,6 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     
-    // MARK: - UITableViewDelegate Methods
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        
-        switch indexPath.section {
-        case 1:
-            switch indexPath.row {
-            case 0:
-                // Check autorisation to access Photo Library before uploading
-                if #available(iOS 14, *) {
-                    PhotosFetch.sharedInstance().checkPhotoLibraryAuthorizationStatus(for: .readWrite, for: self) {
-                        // Open local albums view controller
-                        let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewController", bundle: nil)
-                        guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else { return }
-                        localAlbumsVC.setCategoryId(0)  // To indicate that we only request an album ID
-                        localAlbumsVC.delegate = self
-                        self.navigationController?.pushViewController(localAlbumsVC, animated: true)
-                    } onDeniedAccess: { }
-                } else {
-                    // Fallback on earlier versions
-                    PhotosFetch.sharedInstance().checkPhotoLibraryAccessForViewController(self) {
-                        let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewController", bundle: nil)
-                        guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else { return }
-                        localAlbumsVC.setCategoryId(0)  // To indicate that we only request an album ID
-                        localAlbumsVC.delegate = self
-                        self.navigationController?.pushViewController(localAlbumsVC, animated: true)
-                    } onDeniedAccess: { }
-                }
-
-            default:
-                break
-            }
-            
-        default:
-            break
-        }
-    }
-
     // MARK: - UITableView - Footer
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         // No footer by default (nil => 0 point)
@@ -326,8 +287,47 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
     }
 
     
-    // MARK: - LocalAlbumsViewControllerDelegate Methods
+    // MARK: - UITableViewDelegate Methods
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        switch indexPath.section {
+        case 1:
+            switch indexPath.row {
+            case 0 /* Select Photos Library album */ :
+                // Check autorisation to access Photo Library before uploading
+                if #available(iOS 14, *) {
+                    PhotosFetch.sharedInstance().checkPhotoLibraryAuthorizationStatus(for: .readWrite, for: self) {
+                        // Open local albums view controller
+                        let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewController", bundle: nil)
+                        guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else { return }
+                        localAlbumsVC.setCategoryId(NSNotFound)
+                        localAlbumsVC.delegate = self
+                        self.navigationController?.pushViewController(localAlbumsVC, animated: true)
+                    } onDeniedAccess: { }
+                } else {
+                    // Fallback on earlier versions
+                    PhotosFetch.sharedInstance().checkPhotoLibraryAccessForViewController(self) {
+                        let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewController", bundle: nil)
+                        guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else { return }
+                        localAlbumsVC.setCategoryId(NSNotFound)
+                        localAlbumsVC.delegate = self
+                        self.navigationController?.pushViewController(localAlbumsVC, animated: true)
+                    } onDeniedAccess: { }
+                }
+
+            default:
+                break
+            }
+            
+        default:
+            break
+        }
+    }
+
+
+    // MARK: - LocalAlbumsViewControllerDelegate Methods
     func didSelectPhotoAlbum(withId photoAlbumId: String, andName albumName: String) -> Void {
         Model.sharedInstance()?.autoUploadAlbumId = photoAlbumId
         Model.sharedInstance()?.autoUploadAlbumName = albumName
