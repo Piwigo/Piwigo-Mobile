@@ -1682,7 +1682,7 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
     // Check autorisation to access Photo Library before uploading
     if (@available(iOS 14, *)) {
         [[PhotosFetch sharedInstance] checkPhotoLibraryAuthorizationStatusFor:PHAccessLevelReadWrite for:self onAccess:^{
-            // Open local albums view controller in new navigation controlelr
+            // Open local albums view controller in new navigation controller
             UIStoryboard *localAlbumsSB = [UIStoryboard storyboardWithName:@"LocalAlbumsViewController" bundle:nil];
             LocalAlbumsViewController *localAlbumsVC = [localAlbumsSB instantiateViewControllerWithIdentifier:@"LocalAlbumsViewController"];
             localAlbumsVC.categoryId = self.categoryId;
@@ -1695,7 +1695,7 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
         // Fallback on earlier versions
         [[PhotosFetch sharedInstance] checkPhotoLibraryAccessForViewController:self
                 onAuthorizedAccess:^{
-                    // Open local albums view controller in new navigation controlelr
+                    // Open local albums view controller in new navigation controller
                     UIStoryboard *localAlbumsSB = [UIStoryboard storyboardWithName:@"LocalAlbumsViewController" bundle:nil];
                     LocalAlbumsViewController *localAlbumsVC = [localAlbumsSB instantiateViewControllerWithIdentifier:@"LocalAlbumsViewController"];
                     localAlbumsVC.categoryId = self.categoryId;
