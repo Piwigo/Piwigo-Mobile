@@ -353,6 +353,7 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
     // Added in 2.5.3…
     [saveObject addObject:[NSNumber numberWithInteger:self.didWatchHelpViews]];
     // Added in 2.7.0…
+    [saveObject addObject:[NSNumber numberWithBool:self.isLightPaletteModeActive]];
     [saveObject addObject:[NSNumber numberWithBool:self.isAutoUploadActive]];
 
     [encoder encodeObject:saveObject forKey:@"Model"];
