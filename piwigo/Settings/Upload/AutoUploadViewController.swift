@@ -9,8 +9,8 @@
 import UIKit
 
 @objc
-class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-    
+class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, LocalAlbumsSelectorDelegate {
+
     @IBOutlet var autoUploadTableView: UITableView!
     
     
@@ -67,6 +67,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
 
 
     // MARK: - UITableView - Header
+    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         // Title
         let titleString: String
@@ -130,6 +131,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
 
 
     // MARK: - UITableView - Rows
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
@@ -178,6 +180,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
             switch indexPath.row {
             case 0:
                 title = NSLocalizedString("settings_autoUploadSource", comment: "Source")
+                detail = Model.sharedInstance()?.autoUploadAlbumName ?? ""
                 cell.configure(with: title, detail: detail)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.accessibilityIdentifier = "colorPalette"
@@ -207,6 +210,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
     
     
     // MARK: - UITableViewDelegate Methods
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
@@ -221,6 +225,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                         let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewController", bundle: nil)
                         guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else { return }
                         localAlbumsVC.setCategoryId(0)  // To indicate that we only request an album ID
+                        localAlbumsVC.delegate = self
                         self.navigationController?.pushViewController(localAlbumsVC, animated: true)
                     } onDeniedAccess: { }
                 } else {
@@ -229,6 +234,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                         let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewController", bundle: nil)
                         guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else { return }
                         localAlbumsVC.setCategoryId(0)  // To indicate that we only request an album ID
+                        localAlbumsVC.delegate = self
                         self.navigationController?.pushViewController(localAlbumsVC, animated: true)
                     } onDeniedAccess: { }
                 }
@@ -319,5 +325,12 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         return footer
     }
 
-
+    
+    // MARK: - LocalAlbumsViewControllerDelegate Methods
+    
+    func didSelectPhotoAlbum(withId photoAlbumId: String, andName albumName: String) -> Void {
+        Model.sharedInstance()?.autoUploadAlbumId = photoAlbumId
+        Model.sharedInstance()?.autoUploadAlbumName = albumName
+        Model.sharedInstance()?.saveToDisk()
+    }
 }

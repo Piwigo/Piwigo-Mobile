@@ -13,10 +13,19 @@ import PhotosUI
 import UIKit
 
 @objc
+protocol LocalAlbumsSelectorDelegate: NSObjectProtocol {
+    func didSelectPhotoAlbum(withId: String, andName albumName: String)
+}
+
+@objc
 class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, LocalAlbumsProviderDelegate {
+
+    @objc weak var delegate: LocalAlbumsSelectorDelegate?
 
     @objc
     func setCategoryId(_ categoryId: Int) {
+        // Set to 0 to indicate that we only request an album ID
+        // and that this view should be dismissed after selection.
         _categoryId = categoryId
     }
 
@@ -49,7 +58,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             selectPhotoLibraryItemsButton = UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(selectPhotoLibraryItems))
         }
         
-        // Button for returning to albums/images
+        // Button for returning to albums/images collections or auto-upload settings
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(quitUpload))
         cancelBarButton?.accessibilityIdentifier = "Cancel"
         
@@ -104,8 +113,9 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         // Set colors, fonts, etc.
         applyColorPalette()
 
-        // Are there images in the pasteboard?
-        if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: ["public.image", "public.movie"]),
+        // If the category is not null, check if thare are images in the pasteboard.
+        if categoryId != 0,
+           let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: ["public.image", "public.movie"]),
            indexSet.count > 0, let _ = UIPasteboard.general.types(forItemSet: indexSet) {
             hasImagesInPasteboard = true
         }
@@ -143,6 +153,9 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     }
 
     @objc func checkPasteboard() {
+        // Don't consider the pasteboard if the cateogry is null.
+        if categoryId == 0 { return }
+        
         // Are there images in the pasteboard?
         let testTypes = UIPasteboard.general.contains(pasteboardTypes: ["public.image", "public.movie"]) ? true : false
         let nberPhotos = UIPasteboard.general.itemSet(withPasteboardTypes: ["public.image", "public.movie"])?.count ?? 0
@@ -153,8 +166,13 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     }
 
     @objc func quitUpload() {
-        // Leave Upload action and return to Albums and Images
-        dismiss(animated: true)
+        if categoryId ==  0 {
+            // Return to Upload settings
+            navigationController?.popViewController(animated: true)
+        } else {
+            // Leave Upload action and return to albums/images collections
+            dismiss(animated: true)
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -293,6 +311,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
                 return LocalAlbumsTableViewCell()
             }
             cell.configure(with: title, nberPhotos: nberPhotos, startDate: startDate, endDate: endDate)
+            cell.accessoryType = categoryId == 0 ? .none : .disclosureIndicator
             if assetCollection.assetCollectionType == .smartAlbum && assetCollection.assetCollectionSubtype == .smartAlbumUserLibrary {
                 cell.accessibilityIdentifier = "Recent"
             }
@@ -305,6 +324,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
                 return LocalAlbumsNoDatesTableViewCell()
             }
             cell.configure(with: title, nberPhotos: nberPhotos)
+            cell.accessoryType = categoryId == 0 ? .none : .disclosureIndicator
             if assetCollection.assetCollectionType == .smartAlbum && assetCollection.assetCollectionSubtype == .smartAlbumUserLibrary {
                 cell.accessibilityIdentifier = "Recent"
             }
@@ -445,11 +465,19 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         }
         
         // Case of an album
-        let localImagesSB = UIStoryboard(name: "LocalImagesViewController", bundle: nil)
-        let localImagesVC = localImagesSB.instantiateViewController(withIdentifier: "LocalImagesViewController") as? LocalImagesViewController
-        localImagesVC?.setCategoryId(categoryId)
-        localImagesVC?.setImageCollectionId(LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[activeSection][indexPath.row].localIdentifier)
-        if let localImagesVC = localImagesVC {
+        let assetCollection = LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[activeSection][indexPath.row]
+        let albumID = assetCollection.localIdentifier
+        if categoryId == 0 {
+            // Return the selected album ID and name
+            let albumName = assetCollection.localizedTitle ?? "—> ? <——"
+            delegate?.didSelectPhotoAlbum(withId: albumID, andName: albumName)
+            navigationController?.popViewController(animated: true)
+        } else {
+            // Presents local images of the selected album
+            let localImagesSB = UIStoryboard(name: "LocalImagesViewController", bundle: nil)
+            guard let localImagesVC = localImagesSB.instantiateViewController(withIdentifier: "LocalImagesViewController") as? LocalImagesViewController else { return }
+            localImagesVC.setCategoryId(categoryId)
+            localImagesVC.setImageCollectionId(albumID)
             navigationController?.pushViewController(localImagesVC, animated: true)
         }
     }
