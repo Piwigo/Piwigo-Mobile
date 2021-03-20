@@ -282,63 +282,6 @@ class DefaultCategoryViewController: UIViewController, UITableViewDataSource, UI
         })
     }
 
-    func changedDefaultCategory() {
-        // Does the default album view controller already exists?
-        var cur = 0
-        var index = 0
-        var rootAlbumViewController: AlbumImagesViewController?
-        for viewController in navigationController?.viewControllers ?? [] {
-
-            // Look for AlbumImagesViewControllers
-            if viewController is AlbumImagesViewController {
-                let thisViewController = viewController as? AlbumImagesViewController
-
-                // Is this the view controller of the default album?
-                if thisViewController?.categoryId == Model.sharedInstance().defaultCategory {
-                    // The view controller of the parent category already exist
-                    rootAlbumViewController = thisViewController
-                }
-
-                // Is this the current view controller?
-                if thisViewController?.categoryId == currentCategory {
-                    // This current view controller will become the child view controller
-                    index = cur
-                }
-            }
-            cur += 1
-        }
-
-        // The view controller of the default album does not exist yet
-        if rootAlbumViewController == nil {
-            // Create an instance of the default album view controller
-            rootAlbumViewController = AlbumImagesViewController(albumId: Model.sharedInstance().defaultCategory, inCache: false)
-            // The existing album view controller must become a child of the default album view controller
-            var arrayOfVC: [UIViewController]? = nil
-            if let viewControllers = navigationController?.viewControllers {
-                arrayOfVC = viewControllers
-            }
-            if let rootAlbumViewController = rootAlbumViewController {
-                arrayOfVC?.insert(rootAlbumViewController, at: index)
-            }
-            if let arrayOfVC = arrayOfVC {
-                navigationController?.viewControllers = arrayOfVC
-            }
-        }
-
-        // Dismiss Settings and present default album
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            navigationController?.dismiss(animated: true) {
-                // Replace current album view with default album view
-                let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationBackToDefaultAlbum)
-                NotificationCenter.default.post(name: name, object: nil)
-            }
-        } else {
-            if let rootAlbumViewController = rootAlbumViewController {
-                navigationController?.popToViewController(rootAlbumViewController, animated: true)
-            }
-        }
-    }
-
     
 // MARK: - HUD methods
     func showHUDwithTitle(_ title: String?) {
