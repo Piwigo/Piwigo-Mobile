@@ -69,7 +69,13 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
     // MARK: - UITableView - Header
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         // Title
-        let titleString = NSLocalizedString("settingsHeader_autoUpload>414px", comment: "Auto Upload Photos")
+        let titleString: String
+        switch section {
+        case 0:
+            titleString = NSLocalizedString("settingsHeader_autoUpload>414px", comment: "Auto Upload Photos")
+        default:
+            titleString = ""
+        }
         let titleAttributes = [
             NSAttributedString.Key.font: UIFont.piwigoFontBold()
         ]
@@ -81,7 +87,13 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         // Title
-        let titleString = NSLocalizedString("settingsHeader_autoUpload>414px", comment: "Auto Upload Photos")
+        let titleString: String
+        switch section {
+        case 0:
+            titleString = NSLocalizedString("settingsHeader_autoUpload>414px", comment: "Auto Upload Photos")
+        default:
+            titleString = ""
+        }
         let titleAttributedString = NSMutableAttributedString(string: titleString)
         titleAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: NSRange(location: 0, length: titleString.count))
 
