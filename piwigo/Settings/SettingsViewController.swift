@@ -1539,26 +1539,20 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             switch indexPath.row {
             case 0 /* Default album */:
                 let categorySB = UIStoryboard(name: "DefaultCategoryViewController", bundle: nil)
-                let categoryVC = categorySB.instantiateViewController(withIdentifier: "DefaultCategoryViewController") as? DefaultCategoryViewController
-                categoryVC?.setCurrentCategory(Model.sharedInstance().defaultCategory)
-                categoryVC?.delegate = self
-                if let categoryVC = categoryVC {
-                    navigationController?.pushViewController(categoryVC, animated: true)
-                }
+                guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "DefaultCategoryViewController") as? DefaultCategoryViewController else { return }
+                categoryVC.setCurrentCategory(Model.sharedInstance().defaultCategory)
+                categoryVC.delegate = self
+                navigationController?.pushViewController(categoryVC, animated: true)
             case 1 /* Thumbnail file selection */:
                 let defaultThumbnailSizeSB = UIStoryboard(name: "DefaultAlbumThumbnailSizeViewController", bundle: nil)
-                let defaultThumbnailSizeVC = defaultThumbnailSizeSB.instantiateViewController(withIdentifier: "DefaultAlbumThumbnailSizeViewController") as? DefaultAlbumThumbnailSizeViewController
-                if let defaultThumbnailSizeVC = defaultThumbnailSizeVC {
-                    navigationController?.pushViewController(defaultThumbnailSizeVC, animated: true)
-                }
+                guard let defaultThumbnailSizeVC = defaultThumbnailSizeSB.instantiateViewController(withIdentifier: "DefaultAlbumThumbnailSizeViewController") as? DefaultAlbumThumbnailSizeViewController else { return }
+                navigationController?.pushViewController(defaultThumbnailSizeVC, animated: true)
             case 2 /* Sort method selection */:
                 let categorySB = UIStoryboard(name: "CategorySortViewController", bundle: nil)
-                let categoryVC = categorySB.instantiateViewController(withIdentifier: "CategorySortViewController") as? CategorySortViewController
-                categoryVC?.currentCategorySortType = Model.sharedInstance().defaultSort
-                categoryVC?.sortDelegate = self
-                if let categoryVC = categoryVC {
-                    navigationController?.pushViewController(categoryVC, animated: true)
-                }
+                guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "CategorySortViewController") as? CategorySortViewController else {return }
+                categoryVC.currentCategorySortType = Model.sharedInstance().defaultSort
+                categoryVC.sortDelegate = self
+                navigationController?.pushViewController(categoryVC, animated: true)
             default:
                 break
             }
@@ -1568,22 +1562,16 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             switch indexPath.row {
             case 0 /* Thumbnail file selection */:
                 let defaultThumbnailSizeSB = UIStoryboard(name: "DefaultImageThumbnailSizeViewController", bundle: nil)
-                let defaultThumbnailSizeVC = defaultThumbnailSizeSB.instantiateViewController(withIdentifier: "DefaultImageThumbnailSizeViewController") as? DefaultImageThumbnailSizeViewController
-                if let defaultThumbnailSizeVC = defaultThumbnailSizeVC {
-                    navigationController?.pushViewController(defaultThumbnailSizeVC, animated: true)
-                }
+                guard let defaultThumbnailSizeVC = defaultThumbnailSizeSB.instantiateViewController(withIdentifier: "DefaultImageThumbnailSizeViewController") as? DefaultImageThumbnailSizeViewController else { return }
+                navigationController?.pushViewController(defaultThumbnailSizeVC, animated: true)
             case 3 /* Image file selection */:
                 let defaultImageSizeSB = UIStoryboard(name: "DefaultImageSizeViewController", bundle: nil)
-                let defaultImageSizeVC = defaultImageSizeSB.instantiateViewController(withIdentifier: "DefaultImageSizeViewController") as? DefaultImageSizeViewController
-                if let defaultImageSizeVC = defaultImageSizeVC {
-                    navigationController?.pushViewController(defaultImageSizeVC, animated: true)
-                }
+                guard let defaultImageSizeVC = defaultImageSizeSB.instantiateViewController(withIdentifier: "DefaultImageSizeViewController") as? DefaultImageSizeViewController else { return }
+                navigationController?.pushViewController(defaultImageSizeVC, animated: true)
             case 4 /* Share image metadata options */:
                 let metadataOptionsSB = UIStoryboard(name: "ShareMetadataViewController", bundle: nil)
-                let metadataOptionsVC = metadataOptionsSB.instantiateViewController(withIdentifier: "ShareMetadataViewController") as? ShareMetadataViewController
-                if let metadataOptionsVC = metadataOptionsVC {
-                    navigationController?.pushViewController(metadataOptionsVC, animated: true)
-                }
+                guard let metadataOptionsVC = metadataOptionsSB.instantiateViewController(withIdentifier: "ShareMetadataViewController") as? ShareMetadataViewController else { return }
+                navigationController?.pushViewController(metadataOptionsVC, animated: true)
             default:
                 break
             }
@@ -1599,17 +1587,13 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             switch row {
             case 1 /* Default privacy selection */:
                 let privacySB = UIStoryboard(name: "SelectPrivacyViewController", bundle: nil)
-                let privacyVC = privacySB.instantiateViewController(withIdentifier: "SelectPrivacyViewController") as? SelectPrivacyViewController
-                privacyVC?.delegate = self
-                privacyVC?.setPrivacy(Model.sharedInstance().defaultPrivacyLevel)
-                if let privacyVC = privacyVC {
-                    navigationController?.pushViewController(privacyVC, animated: true)
-                }
+                guard let privacyVC = privacySB.instantiateViewController(withIdentifier: "SelectPrivacyViewController") as? SelectPrivacyViewController else { return }
+                privacyVC.delegate = self
+                privacyVC.setPrivacy(Model.sharedInstance().defaultPrivacyLevel)
+                navigationController?.pushViewController(privacyVC, animated: true)
             case 10 /* Auto Upload */:
                 let autoUploadSB = UIStoryboard(name: "AutoUploadViewController", bundle: nil)
-                guard let autoUploadVC = autoUploadSB.instantiateViewController(withIdentifier: "AutoUploadViewController") as? AutoUploadViewController else {
-                    return
-                }
+                guard let autoUploadVC = autoUploadSB.instantiateViewController(withIdentifier: "AutoUploadViewController") as? AutoUploadViewController else { return }
                 navigationController?.pushViewController(autoUploadVC, animated: true)
             default:
                 break
@@ -1619,15 +1603,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case SettingsSection.appearance.rawValue /* Appearance */:
             if #available(iOS 13.0, *) {
                 let colorPaletteSB = UIStoryboard(name: "ColorPaletteViewController", bundle: nil)
-                guard let colorPaletteVC = colorPaletteSB.instantiateViewController(withIdentifier: "ColorPaletteViewController") as? ColorPaletteViewController else {
-                    return
-                }
+                guard let colorPaletteVC = colorPaletteSB.instantiateViewController(withIdentifier: "ColorPaletteViewController") as? ColorPaletteViewController else { return }
                 navigationController?.pushViewController(colorPaletteVC, animated: true)
             } else {
                 let colorPaletteSB = UIStoryboard(name: "ColorPaletteViewControllerOld", bundle: nil)
-                guard let colorPaletteVC = colorPaletteSB.instantiateViewController(withIdentifier: "ColorPaletteViewControllerOld") as? ColorPaletteViewControllerOld else {
-                    return
-                }
+                guard let colorPaletteVC = colorPaletteSB.instantiateViewController(withIdentifier: "ColorPaletteViewControllerOld") as? ColorPaletteViewControllerOld else { return }
                 navigationController?.pushViewController(colorPaletteVC, animated: true)
             }
 
