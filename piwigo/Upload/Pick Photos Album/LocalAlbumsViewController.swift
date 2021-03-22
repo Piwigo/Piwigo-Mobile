@@ -63,11 +63,9 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             selectPhotoLibraryItemsButton = UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(selectPhotoLibraryItems))
         }
         
-        if wantedAction == .presentLocalAlbum {
-            // Button for returning to albums/images collections
-            cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(quitUpload))
-            cancelBarButton?.accessibilityIdentifier = "Cancel"
-        }
+        // Button for returning to albums/images collections
+        cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(quitUpload))
+        cancelBarButton?.accessibilityIdentifier = "Cancel"
         
         // Register palette changes
         var name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
@@ -117,29 +115,32 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        // Set colors, fonts, etc.
-        applyColorPalette()
-
         // Determine what to do after selection
         if let caller = delegate {
             if caller.isKind(of: AutoUploadViewController.self) {
                 wantedAction = .setAutoUploadAlbum
             } else {
-                wantedAction = .presentLocalAlbum
-                
-                // Check if there are photos/videos in the pasteboard
-                if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: ["public.image", "public.movie"]),
-                   indexSet.count > 0, let _ = UIPasteboard.general.types(forItemSet: indexSet) {
-                    hasImagesInPasteboard = true
-                }
+                wantedAction = .none
             }
         } else {
-            wantedAction = .none
+            // The user wishes to upload photos
+            wantedAction = .presentLocalAlbum
+            
+            // Check if there are photos/videos in the pasteboard
+            if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: ["public.image", "public.movie"]),
+               indexSet.count > 0, let _ = UIPasteboard.general.types(forItemSet: indexSet) {
+                hasImagesInPasteboard = true
+            }
         }
 
-        // Navigation "Cancel" button and identifier
-        navigationItem.setLeftBarButton(cancelBarButton, animated: true)
-        navigationController?.navigationBar.accessibilityIdentifier = "LocalAlbumsNav"
+        // Set colors, fonts, etc.
+        applyColorPalette()
+
+        if wantedAction == .presentLocalAlbum {
+            // Navigation "Cancel" button and identifier
+            navigationItem.setLeftBarButton(cancelBarButton, animated: true)
+            navigationController?.navigationBar.accessibilityIdentifier = "LocalAlbumsNav"
+        }
 
         // Hide toolbar when returning from the LocalImages / PasteboardImages views
         navigationController?.isToolbarHidden = true
