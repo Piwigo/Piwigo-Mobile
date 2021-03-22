@@ -351,21 +351,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         present(alert, animated: true, completion: {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             alert.view.tintColor = UIColor.piwigoColorOrange()
-            if #available(iOS 13.0, *) {
-                alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
-            } else {
-                // Fallback on earlier versions
-            }
-            alert.popoverPresentationController?.sourceView = tableView
-            alert.popoverPresentationController?.permittedArrowDirections = .left
-            alert.popoverPresentationController?.sourceRect = rectOfCellInTableView
-            present(alert, animated: true, completion: {
-                // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                alert.view.tintColor = UIColor.piwigoColorOrange()
-            })
-        default:
-            break
-        }
+        })
     }
 
     
@@ -482,56 +468,28 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         var diff: [PiwigoAlbumData] = []
 
         // Look for categories which are not already displayed
-        for category in allCategories {
-
-            // Smart albums should not be proposed
-            if category.albumId <= kPiwigoSearchCategoryId {
-                continue
-            }
-
-            // Non-admin Community users can only upload in specific albums
-            if !Model.sharedInstance().hasAdminRights && !category.hasUploadRights {
-                continue
-            }
-
+        /// - Smart albums should not be proposed
+        /// - Non-admin Community users can only upload in specific albums
+        allCategories.filter({ $0.albumId > kPiwigoSearchCategoryId })
+            .filter({ Model.sharedInstance().hasAdminRights || $0.hasUploadRights })
+            .forEach { category in
             // Is this category already in displayed list?
-            var doesNotExist = true
-            for existingCat in categories {
-
-                if category.albumId == existingCat.albumId {
-                    doesNotExist = false
-                    break
-                }
-            }
-            if doesNotExist {
+            if !categories.contains(where: { $0.albumId == category.albumId }) {
                 diff.append(category)
             }
         }
 
         // Build list of categories to be displayed
-        for category in diff {
-
-            // Always add categories in default album
+        diff.forEach { category in
             if category.parentAlbumId == 0 {
                 categories.append(category)
-                continue
             }
         }
 
         // Add Community private categories
         for category in comCategories {
-
             // Is this category already in displayed list?
-            var doesNotExist = true
-            for existingCat in categories {
-
-                if category.albumId == existingCat.albumId {
-                    doesNotExist = false
-                    break
-                }
-            }
-
-            if doesNotExist {
+            if !categories.contains(where: { $0.albumId == category.albumId }) {
                 categories.append(category)
             }
         }
@@ -555,27 +513,13 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         var subcategories: [PiwigoAlbumData] = []
 
         // Look for known requested sub-categories
-        for category in allCategories {
-
-            // Only add sub-categories of tapped category
-            if ((category.parentAlbumId != categoryTapped.albumId) ||
-                (category.albumId == currentCategory)) {
-                continue
-            }
-            subcategories.append(category)
-        }
+        subcategories.append(contentsOf: allCategories.filter({ $0.parentAlbumId == categoryTapped.albumId })
+                                                      .filter({ $0.albumId != currentCategory }))
 
         // Look for sub-categories which are already displayed
         var nberDisplayedSubCategories = 0
-        for category in subcategories {
-
-            for existingCat in categories {
-
-                if category.albumId == existingCat.albumId {
-                    nberDisplayedSubCategories += 1
-                    break
-                }
-            }
+        subcategories.forEach { category in
+            nberDisplayedSubCategories += categories.filter({ $0.albumId == category.albumId}).count
         }
 
         // This test depends on the caching option loadAllCategoryInfo:
@@ -622,41 +566,25 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         var diff: [PiwigoAlbumData] = []
 
         // Look for categories which are not already displayed
-        for category in allCategories {
-
-            // Non-admin Community users can only upload in specific albums
-            if !Model.sharedInstance().hasAdminRights && !category.hasUploadRights {
-                continue
-            }
-
-            // Only add sub-categories of tapped category
-            if ((category.nearestUpperCategory != categoryTapped.albumId) ||
-                (category.albumId == currentCategory)) {
-                continue
-            }
-
+        /// - Non-admin Community users can only upload in specific albums
+        /// - Only add sub-categories of tapped category
+        /// - Do not add the current category
+        allCategories.filter({ Model.sharedInstance().hasAdminRights || $0.hasUploadRights })
+            .filter({ $0.nearestUpperCategory == categoryTapped.albumId })
+            .filter({ $0.albumId != currentCategory})
+            .forEach { category in
             // Is this category already in displayed list?
-            var doesNotExist = true
-            for existingCat in categories {
-
-                if category.albumId == existingCat.albumId {
-                    doesNotExist = false
-                    break
-                }
-            }
-            if doesNotExist {
+            if !categories.contains(where: { $0.albumId == category.albumId }) {
                 diff.append(category)
             }
         }
 
         // Build list of categories to be displayed
-        for category in diff {
-
+        diff.forEach { category in
             // Should we add sub-categories?
             if category.upperCategories.count > 0 {
                 var indexOfParent = 0
                 for existingCategory in categories {
-
                     if category.containsUpperCategory(existingCategory.albumId) {
                         categories.insert(category, at: indexOfParent + 1)
                         break
@@ -678,13 +606,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         var diff: [PiwigoAlbumData] = []
 
         // Look for sub-categories to remove
-        for category in categories {
-
-            // Keep the parent category
-            if category.albumId == categoryTapped.albumId {
-                continue
-            }
-
+        categories.filter({ $0.albumId != categoryTapped.albumId}).forEach { category in
             // Remove the sub-categories
             let upperCategories = category.upperCategories
             if upperCategories?.contains(String(format: "%ld", Int(categoryTapped.albumId))) ?? false {
