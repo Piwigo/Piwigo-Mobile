@@ -14,7 +14,7 @@ import UIKit
 
 @objc
 protocol LocalAlbumsSelectorDelegate: NSObjectProtocol {
-    func didSelectPhotoAlbum(withId: String, andName albumName: String)
+    func didSelectPhotoAlbum(withId: String)
 }
 
 @objc
@@ -484,9 +484,8 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         let assetCollection = LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[activeSection][indexPath.row]
         let albumID = assetCollection.localIdentifier
         if wantedAction == .setAutoUploadAlbum {
-            // Return the selected album ID and name
-            let albumName = assetCollection.localizedTitle ?? "—> ? <——"
-            delegate?.didSelectPhotoAlbum(withId: albumID, andName: albumName)
+            // Return the selected album ID
+            delegate?.didSelectPhotoAlbum(withId: albumID)
             navigationController?.popViewController(animated: true)
         } else {
             // Presents local images of the selected album

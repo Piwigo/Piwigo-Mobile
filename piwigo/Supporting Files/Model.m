@@ -122,7 +122,7 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
         instance.wifiOnlyUploading = NO;            // Wi-Fi only option
         instance.isAutoUploadActive = NO;           // Auto-upload On/Off
         instance.autoUploadAlbumId = @"";           // Unknown source Photos album
-        instance.autoUploadAlbumName = @"";
+        instance.autoUploadCategoryId = NSNotFound; // Unknown destination Piwigo album
 
         // Default palette mode
         instance.isDarkPaletteActive = NO;
@@ -272,7 +272,7 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
         self.didWatchHelpViews = modelData.didWatchHelpViews;
         self.isAutoUploadActive = modelData.isAutoUploadActive;
         self.autoUploadAlbumId = modelData.autoUploadAlbumId;
-        self.autoUploadAlbumName = modelData.autoUploadAlbumName;
+        self.autoUploadCategoryId = modelData.autoUploadCategoryId;
 	}
 }
 
@@ -360,7 +360,7 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
     [saveObject addObject:[NSNumber numberWithBool:self.isLightPaletteModeActive]];
     [saveObject addObject:[NSNumber numberWithBool:self.isAutoUploadActive]];
     [saveObject addObject:self.autoUploadAlbumId];
-    [saveObject addObject:self.autoUploadAlbumName];
+    [saveObject addObject:[NSNumber numberWithInteger:self.autoUploadCategoryId]];
 
     [encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -685,9 +685,9 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
         self.autoUploadAlbumId = @"";
     }
     if(savedData.count > 58) {
-        self.autoUploadAlbumName = [savedData objectAtIndex:58];
+        self.autoUploadCategoryId = [[savedData objectAtIndex:58] integerValue];
     } else {
-        self.autoUploadAlbumName = @"";
+        self.autoUploadCategoryId = NSNotFound;
     }
 	return self;
 }

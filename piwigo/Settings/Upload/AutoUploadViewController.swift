@@ -6,10 +6,11 @@
 //  Copyright © 2021 Piwigo.org. All rights reserved.
 //
 
+import Photos
 import UIKit
 
 @objc
-class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, LocalAlbumsSelectorDelegate {
+class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, LocalAlbumsSelectorDelegate, SelectCategoryDelegate {
 
     @IBOutlet var autoUploadTableView: UITableView!
     
@@ -141,7 +142,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         case 0:
             return 1
         case 1:
-            return 1
+            return 2
         default:
             fatalError("Unknown section")
         }
@@ -176,16 +177,36 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                 print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                 return LabelTableViewCell()
             }
+            
             var title = "", detail = ""
             switch indexPath.row {
-            case 0:
+            case 0 /* Select Photos Library album */ :
                 title = NSLocalizedString("settings_autoUploadSource", comment: "Source")
-                detail = Model.sharedInstance()?.autoUploadAlbumName ?? ""
+                if let collectionID = Model.sharedInstance()?.autoUploadAlbumId, !collectionID.isEmpty,
+                   let collection = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [collectionID], options: nil).firstObject {
+                    detail = collection.localizedTitle ?? ""
+                } else {
+                    // Did not find the Photo Library album
+                    Model.sharedInstance()?.autoUploadAlbumId = ""
+                    Model.sharedInstance()?.saveToDisk()
+                }
                 cell.configure(with: title, detail: detail)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
-                cell.accessibilityIdentifier = "colorPalette"
                 tableViewCell = cell
 
+            case 1 /* Select Piwigo album*/ :
+                title = NSLocalizedString("settings_autoUploadDestination", comment: "Destination")
+                if let categoryId = Model.sharedInstance()?.autoUploadCategoryId,
+                   let albumData = CategoriesData.sharedInstance().getCategoryById(categoryId) {
+                    detail = albumData.name ?? ""
+                } else {
+                    // Did not find the Piwigo album
+                    Model.sharedInstance()?.autoUploadCategoryId = NSNotFound
+                    Model.sharedInstance()?.saveToDisk()
+                }
+                cell.configure(with: title, detail: detail)
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                tableViewCell = cell
             default:
                 break
             }
@@ -317,6 +338,12 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                     } onDeniedAccess: { }
                 }
 
+            case 1 /* Select Piwigo album*/ :
+                let categorySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
+                guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
+                categoryVC.delegate = self
+                navigationController?.pushViewController(categoryVC, animated: true)
+
             default:
                 break
             }
@@ -328,9 +355,15 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
 
 
     // MARK: - LocalAlbumsViewControllerDelegate Methods
-    func didSelectPhotoAlbum(withId photoAlbumId: String, andName albumName: String) -> Void {
+    func didSelectPhotoAlbum(withId photoAlbumId: String) -> Void {
         Model.sharedInstance()?.autoUploadAlbumId = photoAlbumId
-        Model.sharedInstance()?.autoUploadAlbumName = albumName
+        Model.sharedInstance()?.saveToDisk()
+    }
+
+
+    // MARK: - SelectCategoryDelegate Methods
+    func didSelectCategory(withId categoryId: Int) -> Void {
+        Model.sharedInstance()?.autoUploadCategoryId = categoryId
         Model.sharedInstance()?.saveToDisk()
     }
 }
