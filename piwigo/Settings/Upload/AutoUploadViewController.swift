@@ -321,8 +321,8 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                 if #available(iOS 14, *) {
                     PhotosFetch.sharedInstance().checkPhotoLibraryAuthorizationStatus(for: .readWrite, for: self) {
                         // Open local albums view controller
-                        let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewController", bundle: nil)
-                        guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else { return }
+                        let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewControllerGrouped", bundle: nil)
+                        guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewControllerGrouped") as? LocalAlbumsViewController else { return }
                         localAlbumsVC.setCategoryId(NSNotFound)
                         localAlbumsVC.delegate = self
                         self.navigationController?.pushViewController(localAlbumsVC, animated: true)
@@ -330,8 +330,8 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                 } else {
                     // Fallback on earlier versions
                     PhotosFetch.sharedInstance().checkPhotoLibraryAccessForViewController(self) {
-                        let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewController", bundle: nil)
-                        guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewController") as? LocalAlbumsViewController else { return }
+                        let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewControllerGrouped", bundle: nil)
+                        guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewControllerGrouped") as? LocalAlbumsViewController else { return }
                         localAlbumsVC.setCategoryId(NSNotFound)
                         localAlbumsVC.delegate = self
                         self.navigationController?.pushViewController(localAlbumsVC, animated: true)
