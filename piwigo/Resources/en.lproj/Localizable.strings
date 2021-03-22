@@ -687,6 +687,8 @@
 "settings_autoUploadDisabled" = "Off";
 "settings_autoUploadDisabledInfo" = "Photos will not be automatically uploaded to your Piwigo.";
 "settings_autoUploadSource" = "Source";
+"settings_autoUploadDestination" = "Destination";
+"settings_autoUploadDestinationInfo" = "Please select the album or sub-album into which photos and videos will be auto-uploaded.";
 
 // Settings — Cache
 "settingsHeader_cache" = "Cache Settings (Used/Total)";

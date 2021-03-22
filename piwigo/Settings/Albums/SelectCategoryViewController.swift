@@ -12,7 +12,7 @@ import UIKit
 
 @objc
 protocol SelectCategoryDelegate: NSObjectProtocol {
-    func didSelectCategory(_ category: Int)
+    func didSelectCategory(withId category: Int)
 }
 
 @objc
@@ -92,10 +92,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        // Set colors, fonts, etc.
-        applyColorPalette()
-
         // Determine what to do after selection
+        // Note: The presented data source depends on it.
         if let caller = delegate {
             if caller.isKind(of: SettingsViewController.self) {
                 wantedAction = .setDefaultAlbum
@@ -105,6 +103,9 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         } else {
             wantedAction = .none
         }
+
+        // Set colors, fonts, etc.
+        applyColorPalette()
 
         // Register palette changes
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
@@ -129,6 +130,9 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         case .setDefaultAlbum:
             titleString = "\(NSLocalizedString("setDefaultCategory_title", comment: "Default Album"))\n"
             textString = NSLocalizedString("categoryUpload_defaultSelect", comment: "Please select the album or sub-album which will become your default album")
+        case .setAutoUploadAlbum:
+            titleString = "\(NSLocalizedString("settings_autoUploadDestination", comment: "Destination"))\n"
+            textString = NSLocalizedString("settings_autoUploadDestinationInfo", comment: "Please select the album or sub-album into which photos and videos will be auto-uploaded.")
         default:
             titleString = ""; textString = ""
         }
@@ -157,6 +161,9 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         case .setDefaultAlbum:
             titleString = "\(NSLocalizedString("setDefaultCategory_title", comment: "Default Album"))\n"
             textString = NSLocalizedString("categoryUpload_defaultSelect", comment: "Please select the album or sub-album which will become your default album")
+        case .setAutoUploadAlbum:
+            titleString = "\(NSLocalizedString("settings_autoUploadDestination", comment: "Destination"))\n"
+            textString = NSLocalizedString("settings_autoUploadDestinationInfo", comment: "Please select the album or sub-album into which photos and videos will be auto-uploaded.")
         default:
             titleString = ""; textString = ""
         }
@@ -234,6 +241,12 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 cell.isUserInteractionEnabled = false
                 cell.categoryLabel.textColor = UIColor.piwigoColorRightLabel()
             }
+        case .setAutoUploadAlbum:
+            // The root album is not selectable (should not be presented but in case…)
+            if categoryData.albumId == 0 {
+                cell.isUserInteractionEnabled = false
+                cell.categoryLabel.textColor = UIColor.piwigoColorRightLabel()
+            }
         default:
             break
         }
@@ -263,52 +276,80 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // What should we do with this selection?
         switch wantedAction {
         case .setDefaultAlbum:
-            // Do nothing if this is the current default category
-            if categoryData.albumId == currentCategory { return }
-            
-            // Ask the user to confirm
-            var message = ""
-            if categoryData.albumId == 0 {
-                message = String(format: NSLocalizedString("setDefaultCategory_message", comment: "Are you sure you want to set the album %@ as default album?"), NSLocalizedString("categorySelection_root", comment: "Root Album"))
-            } else {
-                message = String(format: NSLocalizedString("setDefaultCategory_message", comment: "Are you sure you want to set the album %@ as default album?"), categoryData.name)
+            // Request confirmation
+            didSelectDefaultAlbum(withData: categoryData, at: indexPath)
+        case .setAutoUploadAlbum:
+            // Return the selected album ID
+            delegate?.didSelectCategory(withId: categoryData.albumId)
+            navigationController?.popViewController(animated: true)
+        default:
+            break
+        }
+    }
+
+    private func didSelectDefaultAlbum(withData categoryData:PiwigoAlbumData,
+                                       at indexPath: IndexPath) -> Void {
+        // Do nothing if this is the current default category
+        if categoryData.albumId == currentCategory { return }
+        
+        // Ask the user to confirm
+        var message = ""
+        if categoryData.albumId == 0 {
+            message = String(format: NSLocalizedString("setDefaultCategory_message", comment: "Are you sure you want to set the album %@ as default album?"), NSLocalizedString("categorySelection_root", comment: "Root Album"))
+        } else {
+            message = String(format: NSLocalizedString("setDefaultCategory_message", comment: "Are you sure you want to set the album %@ as default album?"), categoryData.name)
+        }
+
+        let alert = UIAlertController(title: NSLocalizedString("setDefaultCategory_title", comment: "Default Album"),
+                                      message: message,
+                                      preferredStyle: .actionSheet)
+        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
+                                         style: .cancel, handler: { action in })
+        let setCategoryAction = UIAlertAction(title: NSLocalizedString("alertYesButton", comment: "Yes"), style: .default, handler: { action in
+            // Set new Default Album
+            if categoryData.albumId != Model.sharedInstance().defaultCategory {
+                self.delegate?.didSelectCategory(withId: categoryData.albumId)
             }
+            // Return to Settings
+            self.navigationController?.popViewController(animated: true)
+        })
 
-            let alert = UIAlertController(title: NSLocalizedString("setDefaultCategory_title", comment: "Default Album"),
-                                          message: message,
-                                          preferredStyle: .actionSheet)
-            let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
-                                             style: .cancel, handler: { action in })
-            let setCategoryAction = UIAlertAction(title: NSLocalizedString("alertYesButton", comment: "Yes"), style: .default, handler: { action in
-                // Set new Default Album
-                if categoryData.albumId != Model.sharedInstance().defaultCategory {
-                    self.delegate?.didSelectCategory(categoryData.albumId)
-                }
-                // Return to Settings
-                self.navigationController?.popViewController(animated: true)
-            })
+        // Add actions
+        alert.addAction(cancelAction)
+        alert.addAction(setCategoryAction)
 
-            // Add actions
-            alert.addAction(cancelAction)
-            alert.addAction(setCategoryAction)
+        // Determine position of cell in table view
+        var rectOfCellInTableView = categoriesTableView.rectForRow(at: indexPath)
 
-            // Determine position of cell in table view
-            var rectOfCellInTableView = tableView.rectForRow(at: indexPath)
+        // Determine width of text
+        let cell = categoriesTableView.cellForRow(at: indexPath) as? CategoryTableViewCell
+        let textString = cell?.categoryLabel.text
+        let textAttributes = [
+            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
+        ]
+        let context = NSStringDrawingContext()
+        context.minimumScaleFactor = 1.0
+        let textRect = textString?.boundingRect(with: CGSize(width: categoriesTableView.frame.size.width - 30.0,
+                                                             height: CGFloat.greatestFiniteMagnitude),
+                                                options: .usesLineFragmentOrigin,
+                                                attributes: textAttributes, context: context)
 
-            // Determine width of text
-            let cell = tableView.cellForRow(at: indexPath) as? CategoryTableViewCell
-            let textString = cell?.categoryLabel.text
-            let textAttributes = [
-                NSAttributedString.Key.font: UIFont.piwigoFontNormal()
-            ]
-            let context = NSStringDrawingContext()
-            context.minimumScaleFactor = 1.0
-            let textRect = textString?.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: textAttributes, context: context)
+        // Calculate horizontal position of popover view
+        rectOfCellInTableView.origin.x -= categoriesTableView.frame.size.width
+            - (textRect?.size.width ?? 0.0) - categoriesTableView.layoutMargins.left - 12
 
-            // Calculate horizontal position of popover view
-            rectOfCellInTableView.origin.x -= tableView.frame.size.width - (textRect?.size.width ?? 0.0) - tableView.layoutMargins.left - 12
-
-            // Present popover view
+        // Present popover view
+        alert.view.tintColor = UIColor.piwigoColorOrange()
+        if #available(iOS 13.0, *) {
+            alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+        } else {
+            // Fallback on earlier versions
+        }
+        alert.popoverPresentationController?.sourceView = categoriesTableView
+        alert.popoverPresentationController?.permittedArrowDirections = .left
+        alert.popoverPresentationController?.sourceRect = rectOfCellInTableView
+        present(alert, animated: true, completion: {
+            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             alert.view.tintColor = UIColor.piwigoColorOrange()
             if #available(iOS 13.0, *) {
                 alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
@@ -495,11 +536,13 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             }
         }
 
-        // Add root album
-        let rootAlbum = PiwigoAlbumData()
-        rootAlbum.albumId = 0
-        rootAlbum.name = NSLocalizedString("categorySelection_root", comment: "Root Album")
-        categories.insert(rootAlbum, at: 0)
+        // Add root album if needed
+        if wantedAction == .setDefaultAlbum {
+            let rootAlbum = PiwigoAlbumData()
+            rootAlbum.albumId = 0
+            rootAlbum.name = NSLocalizedString("categorySelection_root", comment: "Root Album")
+            categories.insert(rootAlbum, at: 0)
+        }
     }
 
     
