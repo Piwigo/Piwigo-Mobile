@@ -165,6 +165,7 @@
 "categorySelection_root" = "Root Album";
 "categorySelection_action" = "Select an action for this album";
 "categorySelectionHUD_label" = "Retrieving Albums Data…";
+"categorySelection_allAlbums" = "All Albums";
 
 // Album upload
 "categoryUpload_noSubAlbum" = "There is no sub-album to upload photos to";
@@ -183,11 +184,9 @@
 
 "categoyUpload_loadSubCategories" = "load";
 "categoryUpload_images" = "Upload Photos";
-"categoryUpload_subAlbum" = "Create Sub-Album";
-"categoryUpload_defaultAlbum" = "Set as Default Album";
-"categoryUpload_defaultSelect" = "Please select the album or sub-album which will become your default album";
 
 // Default album
+"setDefaultCategory_select" = "Please select an album or sub-album which will become the new root album.";
 "setDefaultCategory_title" = "Default Album";
 "setDefaultCategory_message" = "Are you sure you want to set the album \"%@\" as default album?";
 
@@ -245,9 +244,7 @@
 
 // Album move
 "moveCategory" = "Move Album";
-"moveCategory_selectParent" = "Select an album to move album \"%@\" into";
-"moveCategory_selectRecent" = "Select a recent album to move album \"%@\" into";
-"moveCategory_selectRecentOther" = "Or select another album to move album \"%@\" into";
+"moveCategory_select" = "Please select an album or sub-album to move album \"%@\" into.";
 "moveCategory_message" = "Are you sure you want to move \"%@\" into the album \"%@\"?";
 "moveCategoryHUD_moving" = "Moving Album…";
 
