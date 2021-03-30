@@ -240,12 +240,12 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         case 0:
             if Model.sharedInstance().isAutoUploadActive {
                 if Model.sharedInstance().serverFileTypes.contains("mp4") {
-                    footer = NSLocalizedString("settings_autoUploadEnabledInfo", comment: "Photos and videos will be automatically uploaded to your Piwigo")
+                    footer = NSLocalizedString("settings_autoUploadEnabledInfoAll", comment: "Photos and videos will be automatically uploaded to your Piwigo.")
                 } else {
-                    footer = NSLocalizedString("settings_autoUploadEnabledInfo", comment: "Photos will be automatically uploaded to your Piwigo")
+                    footer = NSLocalizedString("settings_autoUploadEnabledInfo", comment: "Photos will be automatically uploaded to your Piwigo.")
                 }
             } else {
-                footer = NSLocalizedString("settings_autoUploadDisabledInfo", comment: "Photos will not be automatically uploaded to your Piwigo")
+                footer = NSLocalizedString("settings_autoUploadDisabledInfo", comment: "Photos will not be automatically uploaded to your Piwigo.")
             }
         default:
             return 16.0
