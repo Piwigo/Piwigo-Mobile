@@ -461,7 +461,9 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     
     // MARK: - Category List Builder
     
-    func buildCategoryArray(usingCache useCache: Bool, untilCompletion completion: @escaping (_ result: Bool) -> Void, orFailure fail: @escaping (_ task: URLSessionTask?, _ error: Error?) -> Void) {
+    private func buildCategoryArray(usingCache useCache: Bool,
+                                    untilCompletion completion: @escaping (_ result: Bool) -> Void,
+                                    orFailure fail: @escaping (_ task: URLSessionTask?, _ error: Error?) -> Void) {
         // Show loading HUD when not using cache option,
         if !(useCache && Model.sharedInstance().loadAllCategoryInfo && (Model.sharedInstance().defaultCategory == 0)) {
             // Show loading HD
@@ -493,8 +495,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         }
     }
 
-    func buildCategoryArray() {
-        
+    private func buildCategoryArray() {
         categories = []
 
         // Build list of categories from complete known lists
@@ -537,6 +538,29 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             rootAlbum.albumId = 0
             rootAlbum.name = NSLocalizedString("categorySelection_root", comment: "Root Album")
             categories.insert(rootAlbum, at: 0)
+        }
+    }
+    
+    private func buildRecentCategoryArray() -> Void {
+        // Current recent categories
+        guard let selectedCategory = _selectedCategory else { return }
+        guard let recentCatIds = Model.sharedInstance()?.recentCategories.components(separatedBy: ","),
+              !recentCatIds.isEmpty else { return }
+
+        // Build list of recent categories
+        for catIdStr in recentCatIds {
+            // Get category data
+            guard let categoryData = CategoriesData.sharedInstance()?.getCategoryById(Int(catIdStr)!) else { continue }
+            
+            // Do not add current category
+            if (categoryData.albumId == selectedCategory.parentAlbumId) ||
+               categoryData.upperCategories.contains(String(selectedCategory.albumId)) { continue }
+            
+            // Add category existing in cache
+            recentCategories.append(categoryData)
+
+            // Reach max number of recent categories?
+            if recentCategories.count == Model.sharedInstance().maxNberRecentCategories { break }
         }
     }
 
