@@ -79,6 +79,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
 
         // Table view
+        setTableViewMainHeader()
         categoriesTableView.separatorColor = UIColor.piwigoColorSeparator()
         categoriesTableView.indicatorStyle = Model.sharedInstance().isDarkPaletteActive ? .white : .black
         buildCategoryArray(usingCache: true, untilCompletion: { result in
@@ -123,6 +124,28 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     
     // MARK: - UITableView - Header
     
+    private func setTableViewMainHeader() {
+        switch _wantedAction {
+        case kPiwigoCategorySelectActionSetDefaultAlbum:
+            let headerView = SelectCategoryHeaderView(frame: .zero)
+            headerView.configure(width: categoriesTableView.frame.size.width,
+                                 text: NSLocalizedString("setDefaultCategory_select", comment: "Please select an album or sub-album which will become the new root album."))
+            categoriesTableView.tableHeaderView = headerView
+        case kPiwigoCategorySelectActionSetAutoUploadAlbum:
+            let headerView = SelectCategoryHeaderView(frame: .zero)
+            headerView.configure(width: categoriesTableView.frame.size.width,
+                                 text: NSLocalizedString("settings_autoUploadDestinationInfo", comment: "Please select the album or sub-album into which photos and videos will be auto-uploaded."))
+            categoriesTableView.tableHeaderView = headerView
+        case kPiwigoCategorySelectActionMoveAlbum:
+            let headerView = SelectCategoryHeaderView(frame: .zero)
+            headerView.configure(width: categoriesTableView.frame.size.width,
+                                 text: String.init(format: NSLocalizedString("moveCategory_select", comment:"Please select an album or sub-album to move album \"%@\" into."), _selectedCategory?.name ?? ""))
+            categoriesTableView.tableHeaderView = headerView
+        default:
+            categoriesTableView.tableHeaderView = nil
+        }
+    }
+
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         // Title & text
         let titleString: String, textString: String
