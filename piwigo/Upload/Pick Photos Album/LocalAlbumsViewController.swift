@@ -126,6 +126,10 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             // The user wishes to upload photos
             wantedAction = .presentLocalAlbum
             
+            // Navigation "Cancel" button and identifier
+            navigationItem.setLeftBarButton(cancelBarButton, animated: true)
+            navigationController?.navigationBar.accessibilityIdentifier = "LocalAlbumsNav"
+
             // Check if there are photos/videos in the pasteboard
             if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: ["public.image", "public.movie"]),
                indexSet.count > 0, let _ = UIPasteboard.general.types(forItemSet: indexSet) {
@@ -135,12 +139,6 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
 
         // Set colors, fonts, etc.
         applyColorPalette()
-
-        if wantedAction == .presentLocalAlbum {
-            // Navigation "Cancel" button and identifier
-            navigationItem.setLeftBarButton(cancelBarButton, animated: true)
-            navigationController?.navigationBar.accessibilityIdentifier = "LocalAlbumsNav"
-        }
 
         // Hide toolbar when returning from the LocalImages / PasteboardImages views
         navigationController?.isToolbarHidden = true
@@ -184,10 +182,11 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     }
 
     @objc func quitUpload() {
-        if wantedAction == .setAutoUploadAlbum {
-            // Return to Upload settings
+        switch wantedAction {
+        case .setAutoUploadAlbum, .none:
+            // Should never be called
             navigationController?.popViewController(animated: true)
-        } else {
+        default:
             // Leave Upload action and return to albums/images collections
             dismiss(animated: true)
         }
