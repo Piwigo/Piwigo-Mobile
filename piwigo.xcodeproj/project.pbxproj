@@ -67,6 +67,7 @@
 		AD4AAFB725A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD4AAFB325A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard */; };
 		AD4AAFB825A0A1E4007DCD54 /* PasteboardImagesHeaderReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD4AAFB425A0A1E4007DCD54 /* PasteboardImagesHeaderReusableView.swift */; };
 		AD4AAFB925A0A1E4007DCD54 /* PasteboardImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD4AAFB525A0A1E4007DCD54 /* PasteboardImageCollectionViewCell.swift */; };
+		AD4D4ED8260D321A0077D838 /* SelectCategoryHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD4D4ED7260D321A0077D838 /* SelectCategoryHeaderView.swift */; };
 		AD5317E125ADC47C0027A26A /* ShareVideoActivityItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5317E025ADC47B0027A26A /* ShareVideoActivityItemProvider.swift */; };
 		AD563B402603FCDB00B6EF93 /* AutoUploadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD563B3F2603FCDB00B6EF93 /* AutoUploadViewController.swift */; };
 		AD563B422603FCE800B6EF93 /* AutoUploadViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD563B412603FCE800B6EF93 /* AutoUploadViewController.storyboard */; };
@@ -339,6 +340,7 @@
 		AD4AAFB325A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = PasteboardImagesViewController.storyboard; sourceTree = "<group>"; };
 		AD4AAFB425A0A1E4007DCD54 /* PasteboardImagesHeaderReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PasteboardImagesHeaderReusableView.swift; sourceTree = "<group>"; };
 		AD4AAFB525A0A1E4007DCD54 /* PasteboardImageCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PasteboardImageCollectionViewCell.swift; sourceTree = "<group>"; };
+		AD4D4ED7260D321A0077D838 /* SelectCategoryHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SelectCategoryHeaderView.swift; path = piwigo/Settings/Albums/SelectCategoryHeaderView.swift; sourceTree = SOURCE_ROOT; };
 		AD5317E025ADC47B0027A26A /* ShareVideoActivityItemProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareVideoActivityItemProvider.swift; sourceTree = "<group>"; };
 		AD563B3F2603FCDB00B6EF93 /* AutoUploadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoUploadViewController.swift; sourceTree = "<group>"; };
 		AD563B412603FCE800B6EF93 /* AutoUploadViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AutoUploadViewController.storyboard; sourceTree = "<group>"; };
@@ -1094,6 +1096,7 @@
 			isa = PBXGroup;
 			children = (
 				ADF1CC74243D111600D75319 /* SelectCategoryViewController.swift */,
+				AD4D4ED7260D321A0077D838 /* SelectCategoryHeaderView.swift */,
 				ADF1CC76243D132100D75319 /* SelectCategoryViewController.storyboard */,
 				ADF8AE7924A8A6EB00F86515 /* CategoryImageSort.swift */,
 				AD2B0A18243D063E00AF1FEE /* CategorySortViewController.swift */,
@@ -1819,6 +1822,7 @@
 				D86044111A99922F0067E5D1 /* ImageScrollView.m in Sources */,
 				ADB7A102210B803D006723B9 /* MoveImageViewController.m in Sources */,
 				D863EEBD1A6A440600C0A6E9 /* PiwigoButton.m in Sources */,
+				AD4D4ED8260D321A0077D838 /* SelectCategoryHeaderView.swift in Sources */,
 				D89045BF1A950FF700A306FE /* EditImageTagsTableViewCell.m in Sources */,
 				AD770FDA23B4CE79007DAD50 /* EditImageThumbCollectionViewCell.m in Sources */,
 				D87C5A951A6F4C43001763BC /* KeychainAccess.m in Sources */,
