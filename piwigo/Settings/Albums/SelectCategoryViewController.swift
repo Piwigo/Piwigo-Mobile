@@ -254,9 +254,19 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Switch between Open/Close cell disclosure
         cell.categoryDelegate = self
         if categoriesThatShowSubCategories.contains(categoryData.albumId) {
-            cell.upDownImage.image = UIImage(named: "cellClose")
+            if #available(iOS 13.0, *) {
+                cell.upDownImage.image = UIImage(systemName: "multiply")
+            } else {
+                // Fallback on earlier versions
+                cell.upDownImage.image = UIImage(named: "cellClose")
+            }
         } else {
-            cell.upDownImage.image = UIImage(named: "cellOpen")
+            if #available(iOS 13.0, *) {
+                cell.upDownImage.image = UIImage(systemName: "plus")
+            } else {
+                // Fallback on earlier versions
+                cell.upDownImage.image = UIImage(named: "cellOpen")
+            }
         }
 
         cell.isAccessibilityElement = true
