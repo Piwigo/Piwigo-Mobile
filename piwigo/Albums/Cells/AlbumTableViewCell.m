@@ -211,10 +211,13 @@ NSString * const kPiwigoNotificationDeletedCategory = @"kPiwigoNotificationDelet
 
 -(void)moveCategory
 {
-    MoveCategoryViewController *moveCategoryVC = [[MoveCategoryViewController alloc] initWithSelectedCategory:self.albumData];
+    UIStoryboard *moveSB = [UIStoryboard storyboardWithName:@"SelectCategoryViewController" bundle:nil];
+    SelectCategoryViewController *moveVC = [moveSB instantiateViewControllerWithIdentifier:@"SelectCategoryViewController"];
+    [moveVC setCurrentCategory:self.albumData.albumId];
+    [moveVC setWantedAction:kPiwigoCategorySelectActionMoveAlbum];
     if([self.cellDelegate respondsToSelector:@selector(pushView:)])
     {
-        [self.cellDelegate pushView:moveCategoryVC];
+        [self.cellDelegate pushView:moveVC];
     }
 }
 

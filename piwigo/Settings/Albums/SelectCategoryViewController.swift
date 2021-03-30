@@ -20,27 +20,29 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
     @objc weak var delegate: SelectCategoryDelegate?
 
-    @objc func setCurrentCategory(_ currentCategory: Int) {
-        _currentCategory = currentCategory
-    }
-
+    // Category to be moved
     private var _currentCategory: Int?
-    private var currentCategory: Int {
+    private var _selectedCategory: PiwigoAlbumData?
+    @objc var currentCategory: Int {
         get {
-            return _currentCategory ?? Model.sharedInstance().defaultCategory
+            return _currentCategory ?? NSNotFound
         }
         set(currentCategory) {
             _currentCategory = currentCategory
+            _selectedCategory = CategoriesData.sharedInstance().getCategoryById(currentCategory)
         }
     }
     
     // Actions to perform after selection
-    private enum kPiwigoCategorySelectAction : Int {
-        case none
-        case setDefaultAlbum
-        case setAutoUploadAlbum
+    private var _wantedAction = kPiwigoCategorySelectActionNone
+    @objc var wantedAction: kPiwigoCategorySelectAction {
+        get {
+            return _wantedAction
+        }
+        set(action) {
+            _wantedAction = action
+        }
     }
-    private var wantedAction: kPiwigoCategorySelectAction = .none
 
     @IBOutlet var categoriesTableView: UITableView!
 
@@ -93,16 +95,25 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        // Determine what to do after selection
-        // Note: The presented data source depends on it.
-        if let caller = delegate {
-            if caller.isKind(of: SettingsViewController.self) {
-                wantedAction = .setDefaultAlbum
-            } else if caller.isKind(of: AutoUploadViewController.self) {
-                wantedAction = .setAutoUploadAlbum
-            }
-        } else {
-            wantedAction = .none
+        //
+        switch _wantedAction {
+        case kPiwigoCategorySelectActionSetDefaultAlbum:
+            // Set view title
+            title = NSLocalizedString("setDefaultCategory_title", comment: "Default Album")
+        
+        case kPiwigoCategorySelectActionMoveAlbum:
+            // Set view title
+            title = NSLocalizedString("moveCategory", comment:"Move Album")
+        
+            // Navigation "Cancel" button and identifier
+            navigationItem.setLeftBarButton(cancelBarButton, animated: true)
+            navigationController?.navigationBar.accessibilityIdentifier = "LocalAlbumsNav"
+        
+        case kPiwigoCategorySelectActionSetAutoUploadAlbum:
+            // Set view title
+            title = NSLocalizedString("settings_autoUploadDestination", comment: "Destination")
+        default:
+            title = ""
         }
 
         // Set colors, fonts, etc.
@@ -147,59 +158,52 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        // Title & text
-        let titleString: String, textString: String
-        switch wantedAction {
-        case .setDefaultAlbum:
-            titleString = "\(NSLocalizedString("setDefaultCategory_title", comment: "Default Album"))\n"
-            textString = NSLocalizedString("categoryUpload_defaultSelect", comment: "Please select the album or sub-album which will become your default album")
-        case .setAutoUploadAlbum:
-            titleString = "\(NSLocalizedString("settings_autoUploadDestination", comment: "Destination"))\n"
-            textString = NSLocalizedString("settings_autoUploadDestinationInfo", comment: "Please select the album or sub-album into which photos and videos will be auto-uploaded.")
-        default:
-            titleString = ""; textString = ""
+        let titleString: String
+        let context = NSStringDrawingContext()
+        context.minimumScaleFactor = 1.0
+
+        // 1st section
+        if section == 0 {
+            // Do we have recent albums to show?
+            if recentCategories.count > 0 {
+                // Present recent albums
+                titleString = NSLocalizedString("maxNberOfRecentAlbums>320px", comment: "Recent Albums")
+            } else {
+                // Present all albums
+                titleString = NSLocalizedString("tabBar_albums", comment: "Albums")
+            }
+        } else {
+            // 2nd section
+            titleString = NSLocalizedString("categorySelection_allAlbums", comment: "All Albums")
         }
 
-        // Title
         let titleAttributes = [
             NSAttributedString.Key.font: UIFont.piwigoFontBold()
         ]
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
         let titleRect = titleString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
-
-        // Text
-        let textAttributes = [
-            NSAttributedString.Key.font: UIFont.piwigoFontSmall()
-        ]
-        let textRect = textString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: textAttributes, context: context)
-        return CGFloat(fmax(44.0, ceil(titleRect.size.height + textRect.size.height)))
+        return CGFloat(fmax(44.0, ceil(titleRect.size.height)))
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        // Title & text
-        let titleString: String, textString: String
-        let headerAttributedString = NSMutableAttributedString(string: "")
-        switch wantedAction {
-        case .setDefaultAlbum:
-            titleString = "\(NSLocalizedString("setDefaultCategory_title", comment: "Default Album"))\n"
-            textString = NSLocalizedString("categoryUpload_defaultSelect", comment: "Please select the album or sub-album which will become your default album")
-        case .setAutoUploadAlbum:
-            titleString = "\(NSLocalizedString("settings_autoUploadDestination", comment: "Destination"))\n"
-            textString = NSLocalizedString("settings_autoUploadDestinationInfo", comment: "Please select the album or sub-album into which photos and videos will be auto-uploaded.")
-        default:
-            titleString = ""; textString = ""
+        let titleString: String
+        // 1st section
+        if section == 0 {
+            // Do we have recent albums to show?
+            if recentCategories.count > 0 {
+                // Present recent albums
+                titleString = NSLocalizedString("maxNberOfRecentAlbums>320px", comment: "Recent Albums")
+            } else {
+                // Present all albums
+                titleString = NSLocalizedString("categorySelection_allAlbums", comment: "All Albums")
+            }
+        } else {
+            // 2nd section
+            titleString = NSLocalizedString("categorySelection_allAlbums", comment: "All Albums")
         }
 
         // Title
-        let titleAttributedString = NSMutableAttributedString(string: titleString)
-        titleAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: NSRange(location: 0, length: titleString.count))
-        headerAttributedString.append(titleAttributedString)
-
-        // Text
-        let textAttributedString = NSMutableAttributedString(string: textString)
-        textAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: NSRange(location: 0, length: textString.count))
-        headerAttributedString.append(textAttributedString)
+        let headerAttributedString = NSMutableAttributedString(string: titleString)
+        headerAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: NSRange(location: 0, length: titleString.count))
 
         // Header label
         let headerLabel = UILabel()
@@ -257,14 +261,14 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         cell.setup(withCategoryData: categoryData, atDepth: depth, withSubCategoryButton: true)
 
         // How should we present special categories?
-        switch wantedAction {
-        case .setDefaultAlbum:
+        switch _wantedAction {
+        case kPiwigoCategorySelectActionSetDefaultAlbum:
             // The current default category is not selectable
-            if categoryData.albumId == currentCategory {
+            if categoryData.albumId == _currentCategory {
                 cell.isUserInteractionEnabled = false
                 cell.categoryLabel.textColor = UIColor.piwigoColorRightLabel()
             }
-        case .setAutoUploadAlbum:
+        case kPiwigoCategorySelectActionSetAutoUploadAlbum:
             // The root album is not selectable (should not be presented but in case…)
             if categoryData.albumId == 0 {
                 cell.isUserInteractionEnabled = false
@@ -307,11 +311,11 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         let categoryData = categories[indexPath.row]
 
         // What should we do with this selection?
-        switch wantedAction {
-        case .setDefaultAlbum:
+        switch _wantedAction {
+        case kPiwigoCategorySelectActionSetDefaultAlbum:
             // Request confirmation
             didSelectDefaultAlbum(withData: categoryData, at: indexPath)
-        case .setAutoUploadAlbum:
+        case kPiwigoCategorySelectActionSetAutoUploadAlbum:
             // Return the selected album ID
             delegate?.didSelectCategory(withId: categoryData.albumId)
             navigationController?.popViewController(animated: true)
@@ -323,7 +327,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     private func didSelectDefaultAlbum(withData categoryData:PiwigoAlbumData,
                                        at indexPath: IndexPath) -> Void {
         // Do nothing if this is the current default category
-        if categoryData.albumId == currentCategory { return }
+        if categoryData.albumId == _currentCategory { return }
         
         // Ask the user to confirm
         var message = ""
@@ -528,7 +532,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         }
 
         // Add root album if needed
-        if wantedAction == .setDefaultAlbum {
+        if _wantedAction == kPiwigoCategorySelectActionSetDefaultAlbum {
             let rootAlbum = PiwigoAlbumData()
             rootAlbum.albumId = 0
             rootAlbum.name = NSLocalizedString("categorySelection_root", comment: "Root Album")
@@ -547,7 +551,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
         // Look for known requested sub-categories
         subcategories.append(contentsOf: allCategories.filter({ $0.parentAlbumId == categoryTapped.albumId })
-                                                      .filter({ $0.albumId != currentCategory }))
+                                                      .filter({ $0.albumId != _currentCategory }))
 
         // Look for sub-categories which are already displayed
         var nberDisplayedSubCategories = 0
@@ -602,10 +606,10 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         /// - Non-admin Community users can only upload in specific albums
         /// - Only add sub-categories of tapped category
         /// - Do not add the current category
-        allCategories.filter({ Model.sharedInstance().hasAdminRights || $0.hasUploadRights })
+        let filteredCat = allCategories.filter({ Model.sharedInstance().hasAdminRights || $0.hasUploadRights })
             .filter({ $0.nearestUpperCategory == categoryTapped.albumId })
-            .filter({ $0.albumId != currentCategory})
-            .forEach { category in
+            .filter({ $0.albumId != _currentCategory})
+        for category in filteredCat {   // Don't use forEach to keep the order
             // Is this category already in displayed list?
             if !categories.contains(where: { $0.albumId == category.albumId }) {
                 diff.append(category)
@@ -613,7 +617,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         }
 
         // Build list of categories to be displayed
-        diff.forEach { category in
+        for category in diff {
             // Should we add sub-categories?
             if category.upperCategories.count > 0 {
                 var indexOfParent = 0
