@@ -24,7 +24,6 @@
 #import "ImagesCollection.h"
 #import "MBProgressHUD.h"
 #import "Model.h"
-#import "MoveCategoryViewController.h"
 #import "MoveImageViewController.h"
 #import "NetworkHandler.h"
 #import "SAMKeychain.h"
@@ -3441,7 +3440,7 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
         {
             viewController.modalPresentationStyle = UIModalPresentationPopover;
             viewController.popoverPresentationController.sourceView = self.imagesCollection;
-            if ([viewController isKindOfClass:[MoveCategoryViewController class]]) {
+            if ([viewController isKindOfClass:[SelectCategoryViewController class]]) {
                 viewController.popoverPresentationController.permittedArrowDirections = 0;
                 [self.navigationController presentViewController:viewController animated:YES completion:nil];
             }
