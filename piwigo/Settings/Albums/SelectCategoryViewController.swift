@@ -21,15 +21,15 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     @objc weak var delegate: SelectCategoryDelegate?
 
     // Category to be moved
-    private var _currentCategory: Int?
-    private var _selectedCategory: PiwigoAlbumData?
+    private var _currentCategoryId: Int?
+    private var _currentCategoryData: PiwigoAlbumData?
     @objc var currentCategory: Int {
         get {
-            return _currentCategory ?? NSNotFound
+            return _currentCategoryId ?? NSNotFound
         }
         set(currentCategory) {
-            _currentCategory = currentCategory
-            _selectedCategory = CategoriesData.sharedInstance().getCategoryById(currentCategory)
+            _currentCategoryId = currentCategory
+            _currentCategoryData = CategoriesData.sharedInstance().getCategoryById(currentCategory)
         }
     }
     
@@ -45,8 +45,10 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     }
 
     @IBOutlet var categoriesTableView: UITableView!
+    private var cancelBarButton: UIBarButtonItem?
 
-    private var categories: [PiwigoAlbumData] = []
+    private var recentCategories: [PiwigoAlbumData] = []        // Recent categories presented in 1st section
+    private var categories: [PiwigoAlbumData] = []              // Categories presented in 2nd section
     private var categoriesThatShowSubCategories: [Int] = []
     private var hudViewController: UIViewController?
 
@@ -56,7 +58,14 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = NSLocalizedString("tabBar_albums", comment: "Albums")
+        // Build list of recent categories (1st section)
+        buildRecentCategoryArray()
+        
+        // Button for returning to albums/images collections
+        cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(quitSelector))
+        cancelBarButton?.accessibilityIdentifier = "Cancel"
+
+        // Register CategoryTableViewCell
         categoriesTableView.register(UINib(nibName: "CategoryTableViewCell", bundle: nil),
                                      forCellReuseIdentifier: "CategoryTableViewCell")
     }
@@ -131,6 +140,20 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
         NotificationCenter.default.removeObserver(self, name: name, object: nil)
     }
+    
+    @objc
+    func quitSelector() -> Void {
+        switch _wantedAction {
+        case kPiwigoCategorySelectActionSetDefaultAlbum,
+             kPiwigoCategorySelectActionSetAutoUploadAlbum,
+             kPiwigoCategorySelectActionNone:
+            // Should never be called
+            navigationController?.popViewController(animated: true)
+        default:
+            // Leave Selector and return to albums/images collections
+            dismiss(animated: true)
+        }
+    }
 
     
     // MARK: - UITableView - Header
@@ -150,7 +173,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         case kPiwigoCategorySelectActionMoveAlbum:
             let headerView = SelectCategoryHeaderView(frame: .zero)
             headerView.configure(width: categoriesTableView.frame.size.width,
-                                 text: String.init(format: NSLocalizedString("moveCategory_select", comment:"Please select an album or sub-album to move album \"%@\" into."), _selectedCategory?.name ?? ""))
+                                 text: String.init(format: NSLocalizedString("moveCategory_select", comment:"Please select an album or sub-album to move album \"%@\" into."), _currentCategoryData?.name ?? ""))
             categoriesTableView.tableHeaderView = headerView
         default:
             categoriesTableView.tableHeaderView = nil
@@ -235,11 +258,16 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     // MARK: - UITableView - Rows
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        
+        return 1 + (recentCategories.count > 0 ? 1 : 0)
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categories.count
+        if (recentCategories.count > 0) && (section == 0) {
+            return recentCategories.count;
+        } else {
+            return categories.count;
+        }
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -253,51 +281,74 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             return CategoryTableViewCell()
         }
 
-        // Determine the depth before setting up the cell
-        let categoryData = categories[indexPath.row]
-        var depth = categoryData.getDepthOfCategory()
-        let defaultCategoryData = categories[0]
-        depth -= defaultCategoryData.getDepthOfCategory()
-        cell.setup(withCategoryData: categoryData, atDepth: depth, withSubCategoryButton: true)
-
-        // How should we present special categories?
-        switch _wantedAction {
-        case kPiwigoCategorySelectActionSetDefaultAlbum:
-            // The current default category is not selectable
-            if categoryData.albumId == _currentCategory {
-                cell.isUserInteractionEnabled = false
-                cell.categoryLabel.textColor = UIColor.piwigoColorRightLabel()
-            }
-        case kPiwigoCategorySelectActionSetAutoUploadAlbum:
-            // The root album is not selectable (should not be presented but in case…)
-            if categoryData.albumId == 0 {
-                cell.isUserInteractionEnabled = false
-                cell.categoryLabel.textColor = UIColor.piwigoColorRightLabel()
-            }
-        default:
-            break
+        if (recentCategories.count > 0) && (indexPath.section == 0) {
+            let categoryData = recentCategories[indexPath.row]
+            cell.setup(withCategoryData: categoryData, atDepth: 0, withSubCategoryButton: false)
         }
+        else {
+            // Determine the depth before setting up the cell
+            let categoryData = categories[indexPath.row]
+            var depth = categoryData.getDepthOfCategory()
+            let defaultCategoryData = categories[0]
+            depth -= defaultCategoryData.getDepthOfCategory()
+            cell.setup(withCategoryData: categoryData, atDepth: depth, withSubCategoryButton: true)
 
-        // Switch between Open/Close cell disclosure
-        cell.categoryDelegate = self
-        if categoriesThatShowSubCategories.contains(categoryData.albumId) {
-            if #available(iOS 13.0, *) {
-                cell.upDownImage.image = UIImage(systemName: "multiply")
-            } else {
-                // Fallback on earlier versions
-                cell.upDownImage.image = UIImage(named: "cellClose")
+            // How should we present special categories?
+            switch _wantedAction {
+            case kPiwigoCategorySelectActionSetDefaultAlbum:
+                // The current default category is not selectable
+                if categoryData.albumId == _currentCategoryId {
+                    cell.isUserInteractionEnabled = false
+                    cell.categoryLabel.textColor = UIColor.piwigoColorRightLabel()
+                }
+            case kPiwigoCategorySelectActionSetAutoUploadAlbum:
+                // The root album is not selectable (should not be presented but in case…)
+                if categoryData.albumId == 0 {
+                    cell.isUserInteractionEnabled = false
+                    cell.categoryLabel.textColor = UIColor.piwigoColorRightLabel()
+                }
+            default:
+                break
             }
-        } else {
-            if #available(iOS 13.0, *) {
-                cell.upDownImage.image = UIImage(systemName: "plus")
+
+            // Switch between Open/Close cell disclosure
+            cell.categoryDelegate = self
+            if categoriesThatShowSubCategories.contains(categoryData.albumId) {
+                if #available(iOS 13.0, *) {
+                    cell.upDownImage.image = UIImage(systemName: "multiply")
+                } else {
+                    // Fallback on earlier versions
+                    cell.upDownImage.image = UIImage(named: "cellClose")
+                }
             } else {
-                // Fallback on earlier versions
-                cell.upDownImage.image = UIImage(named: "cellOpen")
+                if #available(iOS 13.0, *) {
+                    cell.upDownImage.image = UIImage(systemName: "plus")
+                } else {
+                    // Fallback on earlier versions
+                    cell.upDownImage.image = UIImage(named: "cellOpen")
+                }
             }
         }
-
         cell.isAccessibilityElement = true
         return cell
+    }
+
+    func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+        // Retrieve album data
+        let categoryData:PiwigoAlbumData
+        if (self.recentCategories.count > 0) && (indexPath.section == 0) {
+            categoryData = recentCategories[indexPath.row]
+        } else {
+            categoryData = categories[indexPath.row]
+        }
+        
+        // User cannot move album to current parent album or in itself
+        if wantedAction == kPiwigoCategorySelectActionMoveAlbum, let catId = _currentCategoryId,
+           (categoryData.albumId == _currentCategoryData?.parentAlbumId) ||
+            categoryData.upperCategories.contains(String(catId)) {
+            return false
+        }
+        return true;
     }
 
     
@@ -308,7 +359,12 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         tableView.deselectRow(at: indexPath, animated: true)
 
         // Get selected category
-        let categoryData = categories[indexPath.row]
+        let categoryData:PiwigoAlbumData
+        if (self.recentCategories.count > 0) && (indexPath.section == 0) {
+            categoryData = recentCategories[indexPath.row]
+        } else {
+            categoryData = categories[indexPath.row]
+        }
 
         // What should we do with this selection?
         switch _wantedAction {
@@ -327,7 +383,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     private func didSelectDefaultAlbum(withData categoryData:PiwigoAlbumData,
                                        at indexPath: IndexPath) -> Void {
         // Do nothing if this is the current default category
-        if categoryData.albumId == _currentCategory { return }
+        if categoryData.albumId == _currentCategoryId { return }
         
         // Ask the user to confirm
         var message = ""
@@ -543,18 +599,24 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     
     private func buildRecentCategoryArray() -> Void {
         // Current recent categories
-        guard let selectedCategory = _selectedCategory else { return }
+        guard let currentCategoryId = _currentCategoryId else { return }
         guard let recentCatIds = Model.sharedInstance()?.recentCategories.components(separatedBy: ","),
               !recentCatIds.isEmpty else { return }
 
         // Build list of recent categories
         for catIdStr in recentCatIds {
-            // Get category data
-            guard let categoryData = CategoriesData.sharedInstance()?.getCategoryById(Int(catIdStr)!) else { continue }
+            // Get category ID
+            guard let catId = Int(catIdStr) else { continue }
             
-            // Do not add current category
-            if (categoryData.albumId == selectedCategory.parentAlbumId) ||
-               categoryData.upperCategories.contains(String(selectedCategory.albumId)) { continue }
+            // Exclude current category
+            if catId == currentCategoryId { continue }
+            
+            // Get category data
+            guard let categoryData = CategoriesData.sharedInstance()?.getCategoryById(catId) else { continue }
+            
+            // Exclude children categories (cannot move an album into one of its sub-albums)
+            if wantedAction == kPiwigoCategorySelectActionMoveAlbum,
+               categoryData.upperCategories.contains(String(currentCategoryId)) { continue }
             
             // Add category existing in cache
             recentCategories.append(categoryData)
@@ -575,7 +637,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
         // Look for known requested sub-categories
         subcategories.append(contentsOf: allCategories.filter({ $0.parentAlbumId == categoryTapped.albumId })
-                                                      .filter({ $0.albumId != _currentCategory }))
+                                                      .filter({ $0.albumId != _currentCategoryId }))
 
         // Look for sub-categories which are already displayed
         var nberDisplayedSubCategories = 0
@@ -632,7 +694,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         /// - Do not add the current category
         let filteredCat = allCategories.filter({ Model.sharedInstance().hasAdminRights || $0.hasUploadRights })
             .filter({ $0.nearestUpperCategory == categoryTapped.albumId })
-            .filter({ $0.albumId != _currentCategory})
+            .filter({ $0.albumId != _currentCategoryId})
         for category in filteredCat {   // Don't use forEach to keep the order
             // Is this category already in displayed list?
             if !categories.contains(where: { $0.albumId == category.albumId }) {
