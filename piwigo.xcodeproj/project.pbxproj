@@ -187,7 +187,6 @@
 		ADFC3A4C2401D704004CD337 /* PrivacyPolicyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFC3A4B2401D704004CD337 /* PrivacyPolicyViewController.swift */; };
 		ADFC3A4E2401DA4F004CD337 /* UIFont+AppFonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFC3A4D2401DA4E004CD337 /* UIFont+AppFonts.swift */; };
 		D8083A551A7D66CD00A95605 /* ImageService.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083A541A7D66CD00A95605 /* ImageService.m */; };
-		D8172E1A1AB7C07E00271DB0 /* MoveCategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8172E191AB7C07E00271DB0 /* MoveCategoryViewController.m */; };
 		D8172E201AB7D2EA00271DB0 /* ThumbnailCategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8172E1F1AB7D2EA00271DB0 /* ThumbnailCategoryViewController.m */; };
 		D818E9FB1A74C18500733991 /* AlbumService.m in Sources */ = {isa = PBXBuildFile; fileRef = D818E9FA1A74C18500733991 /* AlbumService.m */; };
 		D818E9FF1A74C2A000733991 /* PiwigoAlbumData.m in Sources */ = {isa = PBXBuildFile; fileRef = D818E9FE1A74C2A000733991 /* PiwigoAlbumData.m */; };
@@ -521,8 +520,6 @@
 		CF89AF9D04D25606B05A868A /* Pods-piwigoAppStore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-piwigoAppStore.release.xcconfig"; path = "Pods/Target Support Files/Pods-piwigoAppStore/Pods-piwigoAppStore.release.xcconfig"; sourceTree = "<group>"; };
 		D8083A531A7D66CD00A95605 /* ImageService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageService.h; sourceTree = "<group>"; };
 		D8083A541A7D66CD00A95605 /* ImageService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageService.m; sourceTree = "<group>"; };
-		D8172E181AB7C07E00271DB0 /* MoveCategoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoveCategoryViewController.h; sourceTree = "<group>"; };
-		D8172E191AB7C07E00271DB0 /* MoveCategoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoveCategoryViewController.m; sourceTree = "<group>"; };
 		D8172E1E1AB7D2EA00271DB0 /* ThumbnailCategoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThumbnailCategoryViewController.h; sourceTree = "<group>"; };
 		D8172E1F1AB7D2EA00271DB0 /* ThumbnailCategoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThumbnailCategoryViewController.m; sourceTree = "<group>"; };
 		D818E9F91A74C18500733991 /* AlbumService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumService.h; sourceTree = "<group>"; };
@@ -1042,8 +1039,6 @@
 				D88A68591AC2323D002A3259 /* CategoryTableViewCell.h */,
 				D88A685A1AC2323D002A3259 /* CategoryTableViewCell.m */,
 				ADEFBD622074E19000DFAD26 /* CategoryTableViewCell.xib */,
-				D8172E181AB7C07E00271DB0 /* MoveCategoryViewController.h */,
-				D8172E191AB7C07E00271DB0 /* MoveCategoryViewController.m */,
 				D8172E1E1AB7D2EA00271DB0 /* ThumbnailCategoryViewController.h */,
 				D8172E1F1AB7D2EA00271DB0 /* ThumbnailCategoryViewController.m */,
 			);
@@ -1829,7 +1824,6 @@
 				AD870CD71F54AE110015BFA1 /* ImagesCollection.m in Sources */,
 				AD7B4C1620E031B0003E403A /* AlbumTableViewCell.m in Sources */,
 				ED9A42B51ACAD35300EA4421 /* LoginViewController_iPad.m in Sources */,
-				D8172E1A1AB7C07E00271DB0 /* MoveCategoryViewController.m in Sources */,
 				D863EECA1A6A484C00C0A6E9 /* PiwigoTextField.m in Sources */,
 				AD82C0482433D1A200F774BA /* main.m in Sources */,
 				AD39165E22A126CA00414E4B /* SearchImagesViewController.m in Sources */,

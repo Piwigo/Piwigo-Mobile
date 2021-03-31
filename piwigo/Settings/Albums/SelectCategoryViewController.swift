@@ -301,6 +301,13 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                     cell.isUserInteractionEnabled = false
                     cell.categoryLabel.textColor = UIColor.piwigoColorRightLabel()
                 }
+            case kPiwigoCategorySelectActionMoveAlbum:
+                // User cannot move album to current parent album or in itself
+                if let catId = _currentCategoryId,
+                   (categoryData.albumId == _currentCategoryData?.parentAlbumId) ||
+                    categoryData.upperCategories.contains(String(catId)) {
+                    cell.categoryLabel.textColor = UIColor.piwigoColorRightLabel()
+                }
             case kPiwigoCategorySelectActionSetAutoUploadAlbum:
                 // The root album is not selectable (should not be presented but in case…)
                 if categoryData.albumId == 0 {
@@ -371,6 +378,9 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         case kPiwigoCategorySelectActionSetDefaultAlbum:
             // Request confirmation
             didSelectDefaultAlbum(withData: categoryData, at: indexPath)
+        case kPiwigoCategorySelectActionMoveAlbum:
+            // Request confirmation
+            didSelectTargetAlbum(withData: categoryData, at: indexPath)
         case kPiwigoCategorySelectActionSetAutoUploadAlbum:
             // Return the selected album ID
             delegate?.didSelectCategory(withId: categoryData.albumId)
@@ -380,6 +390,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         }
     }
 
+    
+    // MARK: - Set default album methods
     private func didSelectDefaultAlbum(withData categoryData:PiwigoAlbumData,
                                        at indexPath: IndexPath) -> Void {
         // Do nothing if this is the current default category
@@ -447,6 +459,180 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         })
     }
 
+    
+    // MARK: - Move album methods
+    private func didSelectTargetAlbum(withData categoryData:PiwigoAlbumData,
+                                      at indexPath: IndexPath) -> Void {
+        // Do nothing if this is the current default category
+        if categoryData.albumId == _currentCategoryId { return }
+
+        // User must not move album to current parent album or in itself
+        guard let currentCatData = _currentCategoryData else { return }
+        if wantedAction == kPiwigoCategorySelectActionMoveAlbum, let catId = _currentCategoryId,
+           (categoryData.albumId == _currentCategoryData?.parentAlbumId) ||
+            categoryData.upperCategories.contains(String(catId)) { return }
+
+        // Ask user to confirm
+        let message = String(format: NSLocalizedString("moveCategory_message", comment: "Are you sure you want to move \"%@\" into the album \"%@\"?"), currentCatData.name, categoryData.name)
+        let alert = UIAlertController(title: NSLocalizedString("moveCategory", comment: "Move Album"),
+                                      message: message,
+                                      preferredStyle: .actionSheet)
+        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
+                                         style: .cancel, handler: { action in })
+        let moveCategoryAction = UIAlertAction(title: NSLocalizedString("alertYesButton", comment: "Yes"), style: .default, handler: { action in
+            // Add category to list of recent albums
+            let userInfo = ["categoryId": String(categoryData.albumId)]
+            let name = NSNotification.Name(rawValue: kPiwigoNotificationAddRecentAlbum)
+            NotificationCenter.default.post(name: name, object: nil, userInfo: userInfo)
+
+            // Move album to selected category
+            self.moveCategory(withData: currentCatData, intoCategory: categoryData)
+        })
+
+        // Add actions
+        alert.addAction(cancelAction)
+        alert.addAction(moveCategoryAction)
+
+        // Determine position of cell in table view
+        var rectOfCellInTableView = categoriesTableView.rectForRow(at: indexPath)
+
+        // Determine width of text
+        let cell = categoriesTableView.cellForRow(at: indexPath) as? CategoryTableViewCell
+        let textString = cell?.categoryLabel.text
+        let textAttributes = [
+            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
+        ]
+        let context = NSStringDrawingContext()
+        context.minimumScaleFactor = 1.0
+        let textRect = textString?.boundingRect(with: CGSize(width: categoriesTableView.frame.size.width - 30.0,
+                                                             height: CGFloat.greatestFiniteMagnitude),
+                                                options: .usesLineFragmentOrigin,
+                                                attributes: textAttributes, context: context)
+
+        // Calculate horizontal position of popover view
+        rectOfCellInTableView.origin.x -= categoriesTableView.frame.size.width
+            - (textRect?.size.width ?? 0.0) - categoriesTableView.layoutMargins.left - 12
+
+        // Present popover view
+        alert.view.tintColor = UIColor.piwigoColorOrange()
+        if #available(iOS 13.0, *) {
+            alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+        } else {
+            // Fallback on earlier versions
+        }
+        alert.popoverPresentationController?.sourceView = categoriesTableView
+        alert.popoverPresentationController?.permittedArrowDirections = .left
+        alert.popoverPresentationController?.sourceRect = rectOfCellInTableView
+        present(alert, animated: true, completion: {
+            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+            alert.view.tintColor = UIColor.piwigoColorOrange()
+        })
+    }
+
+    private func moveCategory(withData currentCatData:PiwigoAlbumData, intoCategory parentCatData:PiwigoAlbumData) {
+        // Display HUD during the update
+        DispatchQueue.main.async {
+            self.showHUDwithTitle(NSLocalizedString("moveCategoryHUD_moving", comment: "Moving Album…"))
+        }
+
+        guard let currentCatId = _currentCategoryId else { return }
+        AlbumService.moveCategory(currentCatId,
+                                  intoCategory: parentCatData.albumId) { task, movedSuccessfully in
+            if movedSuccessfully {
+                // Update cached old parent categories, except root album
+                for oldParentStr in currentCatData.upperCategories {
+                    guard let oldParentID = Int(oldParentStr) else { continue }
+                    // Check that it is not the root album, nor the moved album
+                    if (oldParentID == 0) || (oldParentID == currentCatData.albumId) { continue }
+
+                    // Remove number of moved sub-categories and images
+                    CategoriesData.sharedInstance()?.getCategoryById(oldParentID).numberOfSubCategories -= currentCatData.numberOfSubCategories + 1
+                    CategoriesData.sharedInstance()?.getCategoryById(oldParentID).totalNumberOfImages -= currentCatData.totalNumberOfImages
+                }
+                
+                // Update cached new parent categories, except root album
+                var newUpperCategories = [String]()
+                if parentCatData.albumId != 0 {
+                    // Parent category in which we moved the category
+                    newUpperCategories = CategoriesData.sharedInstance().getCategoryById(parentCatData.albumId).upperCategories ?? []
+                    for newParentStr in newUpperCategories {
+                        // Check that it is not the root album, nor the moved album
+                        guard let newParentId = Int(newParentStr) else { continue }
+                        if (newParentId == 0) || (newParentId == currentCatId) { continue }
+                        
+                        // Add number of moved sub-categories and images
+                        CategoriesData.sharedInstance()?.getCategoryById(newParentId).numberOfSubCategories += currentCatData.numberOfSubCategories + 1;
+                        CategoriesData.sharedInstance()?.getCategoryById(newParentId).totalNumberOfImages += currentCatData.totalNumberOfImages
+                    }
+
+                    // Update upperCategories of moved sub-categories
+                    var upperCatToRemove:[String] = currentCatData.upperCategories ?? []
+                    upperCatToRemove.removeAll(where: {$0 == String(currentCatId)})
+                    var catToUpdate = [PiwigoAlbumData]()
+                    
+                    if currentCatData.numberOfSubCategories > 0 {
+                        let subCategories:[PiwigoAlbumData] = CategoriesData.sharedInstance().getCategoriesForParentCategory(currentCatId) ?? []
+                        for subCategory in subCategories {
+                            // Replace list of upper categories
+                            var upperCategories = subCategory.upperCategories ?? []
+                            upperCategories.removeAll(where: { upperCatToRemove.contains($0) })
+                            upperCategories.append(contentsOf: newUpperCategories)
+                            subCategory.upperCategories = upperCategories
+                            catToUpdate.append(subCategory)
+                        }
+                    }
+
+                    // Replace upper category of moved album
+                    var upperCategories = currentCatData.upperCategories ?? []
+                    upperCategories.removeAll(where: { upperCatToRemove.contains($0) })
+                    upperCategories.append(contentsOf: newUpperCategories)
+                    currentCatData.upperCategories = upperCategories
+                    currentCatData.nearestUpperCategory = parentCatData.albumId
+                    currentCatData.parentAlbumId = parentCatData.albumId
+                    catToUpdate.append(currentCatData)
+                    self._currentCategoryData = currentCatData
+
+                    // Update cache
+                    CategoriesData.sharedInstance().updateCategories(catToUpdate)
+                    self.hideHUDwithSuccess(true, completion: { self.quitSelector() })
+                }
+
+            } else {
+                self.hideHUDwithSuccess(false) {
+                    self.showMoveCategoryErrorWith()
+                }
+            }
+        } onFailure: { [unowned self] task, error in
+            self.hideHUDwithSuccess(false) {
+                guard let error = error as NSError? else {
+                    self.showMoveCategoryErrorWith()
+                    return
+                }
+                self.showMoveCategoryErrorWith(message: error.localizedDescription)
+            }
+        }
+    }
+
+    private func showMoveCategoryErrorWith(message msg:String = NSLocalizedString("moveCategoryError_message", comment:"Failed to move your album")) {
+        
+        let alert = UIAlertController.init(title: NSLocalizedString("moveCategoryError_title", comment:"Move Fail"),
+                                           message: msg, preferredStyle: .alert)
+        let dismissAction = UIAlertAction.init(title: NSLocalizedString("alertDismissButton", comment:"Dismiss"),
+                                               style: .cancel) { _ in }
+        alert.addAction(dismissAction)
+        alert.view.tintColor = UIColor.piwigoColorOrange()
+        if #available(iOS 13.0, *) {
+            alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+        } else {
+            // Fallback on earlier versions
+        }
+        present(alert, animated: true) {
+            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+            alert.view.tintColor = UIColor.piwigoColorOrange()
+        }
+        navigationController?.popViewController(animated: true)
+    }
+    
     
     // MARK: - HUD methods
     
@@ -694,7 +880,6 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         /// - Do not add the current category
         let filteredCat = allCategories.filter({ Model.sharedInstance().hasAdminRights || $0.hasUploadRights })
             .filter({ $0.nearestUpperCategory == categoryTapped.albumId })
-            .filter({ $0.albumId != _currentCategoryId})
         for category in filteredCat {   // Don't use forEach to keep the order
             // Is this category already in displayed list?
             if !categories.contains(where: { $0.albumId == category.albumId }) {

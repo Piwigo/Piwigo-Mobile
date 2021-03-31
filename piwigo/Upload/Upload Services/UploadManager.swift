@@ -482,7 +482,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         }
         
         // Add category to list of recent albums
-        let userInfo = ["categoryId": String(format: "%ld", Int(uploadProperties.category))]
+        let userInfo = ["categoryId": String(uploadProperties.category)]
         let name = NSNotification.Name(rawValue: kPiwigoNotificationAddRecentAlbum)
         NotificationCenter.default.post(name: name, object: nil, userInfo: userInfo)
 
