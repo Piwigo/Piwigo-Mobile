@@ -1540,8 +1540,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             case 0 /* Default album */:
                 let categorySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
                 guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
-                categoryVC.currentCategory = Model.sharedInstance().defaultCategory
-                categoryVC.wantedAction = kPiwigoCategorySelectActionSetDefaultAlbum
+                categoryVC.setInput(parameter: Model.sharedInstance()?.defaultCategory ?? 0,
+                                    for: kPiwigoCategorySelectActionSetDefaultAlbum)
                 categoryVC.delegate = self
                 navigationController?.pushViewController(categoryVC, animated: true)
             case 1 /* Thumbnail file selection */:

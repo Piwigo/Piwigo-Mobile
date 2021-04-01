@@ -8,7 +8,6 @@
 
 #import <Photos/Photos.h>
 
-#import "ThumbnailCategoryViewController.h"
 #import "AppDelegate.h"
 #import "CategoriesData.h"
 #import "EditImageParamsViewController.h"
@@ -25,7 +24,7 @@
 NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedImage";
 NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationUpdateImageFileName";
 
-@interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate, EditImageParamsDelegate, SetAlbumImageDelegate, MoveImageDelegate, ShareImageActivityItemProviderDelegate, UIToolbarDelegate>
+@interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate, EditImageParamsDelegate, SelectCategoryDelegate, MoveImageDelegate, ShareImageActivityItemProviderDelegate, UIToolbarDelegate>
 
 @property (nonatomic, assign) NSInteger categoryId;
 @property (nonatomic, strong) PiwigoImageData *imageData;
@@ -1018,10 +1017,12 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     // Disable buttons during action
     [self setEnableStateOfButtons:NO];
 
-    // Present AllCategories view
-    ThumbnailCategoryViewController *allCategoriesPickVC = [[ThumbnailCategoryViewController alloc] initForImage:self.imageData andCategoryId:[[self.imageData.categoryIds firstObject] integerValue]];
-    allCategoriesPickVC.setAlbumImageDelegate = self;
-    [self pushView:allCategoriesPickVC];
+    // Present SelectCategory view
+    UIStoryboard *setThumbSB = [UIStoryboard storyboardWithName:@"SelectCategoryViewController" bundle:nil];
+    SelectCategoryViewController *setThumbVC = [setThumbSB instantiateViewControllerWithIdentifier:@"SelectCategoryViewController"];
+    [setThumbVC setInputWithParameter:self.imageData for:kPiwigoCategorySelectActionSetAlbumThumbnail];
+    setThumbVC.delegate = self;
+    [self pushView:setThumbVC];
 }
 
 
@@ -1139,7 +1140,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
 {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         
-        if ([viewController isKindOfClass:[ThumbnailCategoryViewController class]])
+        if ([viewController isKindOfClass:[SelectCategoryViewController class]])
         {
             viewController.modalPresentationStyle = UIModalPresentationPopover;
             viewController.popoverPresentationController.sourceView = self.view;
@@ -1389,9 +1390,9 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
 }
 
 
-#pragma mark - SetAlbumImageDelegate Methods
+#pragma mark - SelectCategoryDelegate Methods
 
--(void)didSetImageAsAlbumThumbnail
+-(void)didSelectCategoryWithId:(NSInteger)category
 {
     [self setEnableStateOfButtons:YES];
 }

@@ -82,7 +82,8 @@ typedef enum {
     kPiwigoCategorySelectActionNone = 0,
     kPiwigoCategorySelectActionSetDefaultAlbum = 1,
     kPiwigoCategorySelectActionMoveAlbum = 2,
-    kPiwigoCategorySelectActionSetAutoUploadAlbum = 3
+    kPiwigoCategorySelectActionSetAlbumThumbnail = 3,
+    kPiwigoCategorySelectActionSetAutoUploadAlbum = 4
 } kPiwigoCategorySelectAction;
 
 @interface Model : NSObject

@@ -19,7 +19,7 @@
 //      element_url, derivatives, (page_url)
 //
 @property (nonatomic, assign) NSInteger imageId;                // id
-@property (nonatomic, strong) NSArray *categoryIds;             // categories
+@property (nonatomic, strong) NSArray<NSNumber *> *categoryIds; // categories
 @property (nonatomic, strong) NSString *imageTitle;             // title (don't use title!)
 @property (nonatomic, strong) NSString *comment;                // description (don't use description!)
 @property (nonatomic, assign) NSInteger visits;                 // hit

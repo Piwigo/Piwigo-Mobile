@@ -65,7 +65,7 @@ extension UploadManager {
                         imageData.datePosted = Date.init()
                         imageData.fileSize = NSNotFound // will trigger pwg.images.getInfo
                         imageData.imageTitle = uploadProperties.imageTitle
-                        imageData.categoryIds = [uploadProperties.category]
+                        imageData.categoryIds = [uploadProperties.category as NSNumber]
                         imageData.fileName = uploadProperties.fileName
                         imageData.isVideo = uploadProperties.isVideo
                         imageData.dateCreated = Date(timeIntervalSinceReferenceDate: uploadProperties.creationDate)
@@ -599,7 +599,7 @@ extension UploadManager {
 
                 let imageData = PiwigoImageData.init()
                 imageData.imageId = uploadJSON.data.imageId!
-                imageData.categoryIds = [uploadProperties.category]
+                imageData.categoryIds = [uploadProperties.category as NSNumber]
                 imageData.imageTitle = NetworkUtilities.utf8mb4String(from: uploadJSON.data.imageTitle ?? "")
                 imageData.comment = NetworkUtilities.utf8mb4String(from: uploadJSON.data.comment ?? "")
                 imageData.visits = uploadJSON.data.visits ?? 0

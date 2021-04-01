@@ -187,7 +187,6 @@
 		ADFC3A4C2401D704004CD337 /* PrivacyPolicyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFC3A4B2401D704004CD337 /* PrivacyPolicyViewController.swift */; };
 		ADFC3A4E2401DA4F004CD337 /* UIFont+AppFonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFC3A4D2401DA4E004CD337 /* UIFont+AppFonts.swift */; };
 		D8083A551A7D66CD00A95605 /* ImageService.m in Sources */ = {isa = PBXBuildFile; fileRef = D8083A541A7D66CD00A95605 /* ImageService.m */; };
-		D8172E201AB7D2EA00271DB0 /* ThumbnailCategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8172E1F1AB7D2EA00271DB0 /* ThumbnailCategoryViewController.m */; };
 		D818E9FB1A74C18500733991 /* AlbumService.m in Sources */ = {isa = PBXBuildFile; fileRef = D818E9FA1A74C18500733991 /* AlbumService.m */; };
 		D818E9FF1A74C2A000733991 /* PiwigoAlbumData.m in Sources */ = {isa = PBXBuildFile; fileRef = D818E9FE1A74C2A000733991 /* PiwigoAlbumData.m */; };
 		D82B8CC41A67820A000E47CA /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CC31A67820A000E47CA /* AppDelegate.m */; };
@@ -339,7 +338,7 @@
 		AD4AAFB325A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = PasteboardImagesViewController.storyboard; sourceTree = "<group>"; };
 		AD4AAFB425A0A1E4007DCD54 /* PasteboardImagesHeaderReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PasteboardImagesHeaderReusableView.swift; sourceTree = "<group>"; };
 		AD4AAFB525A0A1E4007DCD54 /* PasteboardImageCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PasteboardImageCollectionViewCell.swift; sourceTree = "<group>"; };
-		AD4D4ED7260D321A0077D838 /* SelectCategoryHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SelectCategoryHeaderView.swift; path = piwigo/Settings/Albums/SelectCategoryHeaderView.swift; sourceTree = SOURCE_ROOT; };
+		AD4D4ED7260D321A0077D838 /* SelectCategoryHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SelectCategoryHeaderView.swift; path = piwigo/Albums/Manage/SelectCategoryHeaderView.swift; sourceTree = SOURCE_ROOT; };
 		AD5317E025ADC47B0027A26A /* ShareVideoActivityItemProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareVideoActivityItemProvider.swift; sourceTree = "<group>"; };
 		AD563B3F2603FCDB00B6EF93 /* AutoUploadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoUploadViewController.swift; sourceTree = "<group>"; };
 		AD563B412603FCE800B6EF93 /* AutoUploadViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AutoUploadViewController.storyboard; sourceTree = "<group>"; };
@@ -520,8 +519,6 @@
 		CF89AF9D04D25606B05A868A /* Pods-piwigoAppStore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-piwigoAppStore.release.xcconfig"; path = "Pods/Target Support Files/Pods-piwigoAppStore/Pods-piwigoAppStore.release.xcconfig"; sourceTree = "<group>"; };
 		D8083A531A7D66CD00A95605 /* ImageService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageService.h; sourceTree = "<group>"; };
 		D8083A541A7D66CD00A95605 /* ImageService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageService.m; sourceTree = "<group>"; };
-		D8172E1E1AB7D2EA00271DB0 /* ThumbnailCategoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThumbnailCategoryViewController.h; sourceTree = "<group>"; };
-		D8172E1F1AB7D2EA00271DB0 /* ThumbnailCategoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThumbnailCategoryViewController.m; sourceTree = "<group>"; };
 		D818E9F91A74C18500733991 /* AlbumService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumService.h; sourceTree = "<group>"; };
 		D818E9FA1A74C18500733991 /* AlbumService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumService.m; sourceTree = "<group>"; };
 		D818E9FD1A74C2A000733991 /* PiwigoAlbumData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiwigoAlbumData.h; sourceTree = "<group>"; };
@@ -1036,11 +1033,12 @@
 		D8172E171AB7C06200271DB0 /* Manage */ = {
 			isa = PBXGroup;
 			children = (
+				ADF1CC74243D111600D75319 /* SelectCategoryViewController.swift */,
+				AD4D4ED7260D321A0077D838 /* SelectCategoryHeaderView.swift */,
+				ADF1CC76243D132100D75319 /* SelectCategoryViewController.storyboard */,
 				D88A68591AC2323D002A3259 /* CategoryTableViewCell.h */,
 				D88A685A1AC2323D002A3259 /* CategoryTableViewCell.m */,
 				ADEFBD622074E19000DFAD26 /* CategoryTableViewCell.xib */,
-				D8172E1E1AB7D2EA00271DB0 /* ThumbnailCategoryViewController.h */,
-				D8172E1F1AB7D2EA00271DB0 /* ThumbnailCategoryViewController.m */,
 			);
 			path = Manage;
 			sourceTree = "<group>";
@@ -1090,9 +1088,6 @@
 		D81C993E1B02DA190081C976 /* Albums */ = {
 			isa = PBXGroup;
 			children = (
-				ADF1CC74243D111600D75319 /* SelectCategoryViewController.swift */,
-				AD4D4ED7260D321A0077D838 /* SelectCategoryHeaderView.swift */,
-				ADF1CC76243D132100D75319 /* SelectCategoryViewController.storyboard */,
 				ADF8AE7924A8A6EB00F86515 /* CategoryImageSort.swift */,
 				AD2B0A18243D063E00AF1FEE /* CategorySortViewController.swift */,
 				AD2B0A1A243D086000AF1FEE /* CategorySortViewController.storyboard */,
@@ -1852,7 +1847,6 @@
 				ED9A42B21ACACF4100EA4421 /* LoginViewController_iPhone.m in Sources */,
 				D8F325141A875A42007CBDAC /* EditImageTextFieldTableViewCell.m in Sources */,
 				D860440E1A99894C0067E5D1 /* ImagePreviewViewController.m in Sources */,
-				D8172E201AB7D2EA00271DB0 /* ThumbnailCategoryViewController.m in Sources */,
 				D8A94EB21AAE3C5600E4B287 /* CategoryCollectionViewCell.m in Sources */,
 				ADD3C97825E44173008FEA2A /* Location+CoreDataClass.swift in Sources */,
 				ADF26FBB24C1FE830036E778 /* TagsData.m in Sources */,
