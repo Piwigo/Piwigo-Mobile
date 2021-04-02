@@ -644,45 +644,44 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                         CategoriesData.sharedInstance()?.getCategoryById(newParentId).numberOfSubCategories += self.currentCategoryData.numberOfSubCategories + 1;
                         CategoriesData.sharedInstance()?.getCategoryById(newParentId).totalNumberOfImages += self.currentCategoryData.totalNumberOfImages
                     }
-
-                    // Update upperCategories of moved sub-categories
-                    var upperCatToRemove:[String] = self.currentCategoryData.upperCategories ?? []
-                    upperCatToRemove.removeAll(where: {$0 == String(self.currentCategoryId)})
-                    var catToUpdate = [PiwigoAlbumData]()
-                    
-                    if self.currentCategoryData.numberOfSubCategories > 0 {
-                        let subCategories:[PiwigoAlbumData] = CategoriesData.sharedInstance().getCategoriesForParentCategory(self.currentCategoryId) ?? []
-                        for subCategory in subCategories {
-                            // Replace list of upper categories
-                            var upperCategories = subCategory.upperCategories ?? []
-                            upperCategories.removeAll(where: { upperCatToRemove.contains($0) })
-                            upperCategories.append(contentsOf: newUpperCategories)
-                            subCategory.upperCategories = upperCategories
-                            catToUpdate.append(subCategory)
-                        }
-                    }
-
-                    // Replace upper category of moved album
-                    var upperCategories = self.currentCategoryData.upperCategories ?? []
-                    upperCategories.removeAll(where: { upperCatToRemove.contains($0) })
-                    upperCategories.append(contentsOf: newUpperCategories)
-                    self.currentCategoryData.upperCategories = upperCategories
-                    self.currentCategoryData.nearestUpperCategory = parentCatData.albumId
-                    self.currentCategoryData.parentAlbumId = parentCatData.albumId
-                    catToUpdate.append(self.currentCategoryData)
-
-                    // Update cache
-                    CategoriesData.sharedInstance().updateCategories(catToUpdate)
-                    self.hideHUDwithSuccess(true, completion: {
-                        let deadlineTime = DispatchTime.now() + .milliseconds(500)
-                        DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
-                            self.hideHUD {
-                                self.dismiss(animated: true)
-                            }
-                        }
-                    })
                 }
 
+                // Update upperCategories of moved sub-categories
+                var upperCatToRemove:[String] = self.currentCategoryData.upperCategories ?? []
+                upperCatToRemove.removeAll(where: {$0 == String(self.currentCategoryId)})
+                var catToUpdate = [PiwigoAlbumData]()
+                
+                if self.currentCategoryData.numberOfSubCategories > 0 {
+                    let subCategories:[PiwigoAlbumData] = CategoriesData.sharedInstance().getCategoriesForParentCategory(self.currentCategoryId) ?? []
+                    for subCategory in subCategories {
+                        // Replace list of upper categories
+                        var upperCategories = subCategory.upperCategories ?? []
+                        upperCategories.removeAll(where: { upperCatToRemove.contains($0) })
+                        upperCategories.append(contentsOf: newUpperCategories)
+                        subCategory.upperCategories = upperCategories
+                        catToUpdate.append(subCategory)
+                    }
+                }
+
+                // Replace upper category of moved album
+                var upperCategories = self.currentCategoryData.upperCategories ?? []
+                upperCategories.removeAll(where: { upperCatToRemove.contains($0) })
+                upperCategories.append(contentsOf: newUpperCategories)
+                self.currentCategoryData.upperCategories = upperCategories
+                self.currentCategoryData.nearestUpperCategory = parentCatData.albumId
+                self.currentCategoryData.parentAlbumId = parentCatData.albumId
+                catToUpdate.append(self.currentCategoryData)
+
+                // Update cache
+                CategoriesData.sharedInstance().updateCategories(catToUpdate)
+                self.hideHUDwithSuccess(true, completion: {
+                    let deadlineTime = DispatchTime.now() + .milliseconds(500)
+                    DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
+                        self.hideHUD {
+                            self.dismiss(animated: true)
+                        }
+                    }
+                })
             } else {
                 self.hideHUD {
                     self.showError()
