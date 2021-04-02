@@ -418,6 +418,18 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
     // Set colors, fonts, etc.
     [self applyColorPalette];
 
+    // Register palette changes
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
+
+    // Register root album changes
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnToDefaultCategory) name:kPiwigoNotificationBackToDefaultAlbum object:nil];
+    
+    // Register upload manager changes
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateNberOfUploads:) name:kPiwigoNotificationLeftUploads object:nil];
+
+    // Register upload progress
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUploadQueueButtonWithProgress:) name:kPiwigoNotificationUploadProgress object:nil];
+
     // Called before displaying SearchImagesViewController?
     UIViewController *presentedViewController = [self presentedViewController];
     if ([presentedViewController isKindOfClass:[UISearchController class]]) {
@@ -480,18 +492,6 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
 {
 	[super viewDidAppear:animated];
 	
-    // Register palette changes
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
-
-    // Register root album changes
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnToDefaultCategory) name:kPiwigoNotificationBackToDefaultAlbum object:nil];
-    
-    // Register upload manager changes
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateNberOfUploads:) name:kPiwigoNotificationLeftUploads object:nil];
-
-    // Register upload progress
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUploadQueueButtonWithProgress:) name:kPiwigoNotificationUploadProgress object:nil];
-
     // Called after displaying SearchImagesViewController?
     if (@available(iOS 11.0, *)) {
         UIViewController *presentedViewController = [self presentedViewController];
