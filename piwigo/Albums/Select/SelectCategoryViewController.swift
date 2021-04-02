@@ -132,7 +132,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             title = NSLocalizedString("categoryImageSet_title", comment:"Album Thumbnail")
         
             // Navigation "Cancel" button and identifier
-            navigationItem.setRightBarButton(cancelBarButton, animated: true)
+            navigationItem.setLeftBarButton(cancelBarButton, animated: true)
 
         case kPiwigoCategorySelectActionSetAutoUploadAlbum:
             // Set view title
