@@ -280,13 +280,15 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
             if AFNetworkReachabilityManager.shared().isReachableViaWWAN && Model.sharedInstance().wifiOnlyUploading {
                 // No Wi-Fi and user wishes to upload only on Wi-Fi
                 let headerView = UploadQueueHeaderView(frame: .zero)
-                headerView.configure(text: NSLocalizedString("uploadNoWiFiNetwork", comment: "No Wi-Fi Connection"))
+                headerView.configure(width: self.queueTableView.frame.width,
+                                     text: NSLocalizedString("uploadNoWiFiNetwork", comment: "No Wi-Fi Connection"))
                 self.queueTableView.tableHeaderView = headerView
             }
             else if ProcessInfo.processInfo.isLowPowerModeEnabled {
                 // Low Power mode enabled
                 let headerView = UploadQueueHeaderView(frame: .zero)
-                headerView.configure(text: NSLocalizedString("uploadLowPowerMode", comment: "Low Power Mode enabled"))
+                headerView.configure(width: self.queueTableView.frame.width,
+                                     text: NSLocalizedString("uploadLowPowerMode", comment: "Low Power Mode enabled"))
                 self.queueTableView.tableHeaderView = headerView
             }
             else {

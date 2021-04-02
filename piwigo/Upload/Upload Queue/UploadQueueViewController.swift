@@ -67,7 +67,21 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         updateNavBar()
         
         // Header informing user on network status
-        mainHeader()
+        setTableViewMainHeader()
+        
+        // Register palette changes
+        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.applyColorPalette), name: name, object: nil)
+        
+        // Register network reachability
+        NotificationCenter.default.addObserver(self, selector: #selector(self.setTableViewMainHeader), name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
+
+        // Register Low Power Mode status
+        NotificationCenter.default.addObserver(self, selector: #selector(self.setTableViewMainHeader), name: NSNotification.Name.NSProcessInfoPowerStateDidChange, object: nil)
+
+        // Register upload progress
+        let name2: NSNotification.Name = NSNotification.Name(kPiwigoNotificationUploadProgress)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.applyUploadProgress), name: name2, object: nil)
     }
 
     override func viewWillLayoutSubviews() {
@@ -134,24 +148,6 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         }
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        // Register palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.applyColorPalette), name: name, object: nil)
-        
-        // Register network reachability
-        NotificationCenter.default.addObserver(self, selector: #selector(self.mainHeader), name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
-
-        // Register Low Power Mode status
-        NotificationCenter.default.addObserver(self, selector: #selector(self.mainHeader), name: NSNotification.Name.NSProcessInfoPowerStateDidChange, object: nil)
-
-        // Register upload progress
-        let name2: NSNotification.Name = NSNotification.Name(kPiwigoNotificationUploadProgress)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.applyUploadProgress), name: name2, object: nil)
-    }
-    
     override func viewWillDisappear(_ animated: Bool) {
         // Allow device to sleep
         UIApplication.shared.isIdleTimerDisabled = false
@@ -308,18 +304,20 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
 
     // MARK: - UITableView - Headers
     
-    @objc func mainHeader() {
+    @objc func setTableViewMainHeader() {
         DispatchQueue.main.async {
             if AFNetworkReachabilityManager.shared().isReachableViaWWAN && Model.sharedInstance().wifiOnlyUploading {
                 // No Wi-Fi and user wishes to upload only on Wi-Fi
                 let headerView = UploadQueueHeaderView(frame: .zero)
-                headerView.configure(text: NSLocalizedString("uploadNoWiFiNetwork", comment: "No Wi-Fi Connection"))
+                headerView.configure(width: self.queueTableView.frame.size.width,
+                                     text: NSLocalizedString("uploadNoWiFiNetwork", comment: "No Wi-Fi Connection"))
                 self.queueTableView.tableHeaderView = headerView
             }
             else if ProcessInfo.processInfo.isLowPowerModeEnabled {
                 // Low Power mode enabled
                 let headerView = UploadQueueHeaderView(frame: .zero)
-                headerView.configure(text: NSLocalizedString("uploadLowPowerMode", comment: "Low Power Mode enabled"))
+                headerView.configure(width: self.queueTableView.frame.size.width,
+                                     text: NSLocalizedString("uploadLowPowerMode", comment: "Low Power Mode enabled"))
                 self.queueTableView.tableHeaderView = headerView
             }
             else {
