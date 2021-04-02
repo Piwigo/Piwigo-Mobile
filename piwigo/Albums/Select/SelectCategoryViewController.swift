@@ -72,7 +72,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         buildRecentCategoryArray()
         
         // Button for returning to albums/images collections
-        cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(quitSelector))
+        cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelSelect))
         cancelBarButton?.accessibilityIdentifier = "Cancel"
 
         // Register CategoryTableViewCell
@@ -181,7 +181,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     }
     
     @objc
-    func quitSelector() -> Void {
+    func cancelSelect() -> Void {
         switch wantedAction {
         case kPiwigoCategorySelectActionSetDefaultAlbum,
              kPiwigoCategorySelectActionSetAutoUploadAlbum,
@@ -190,6 +190,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             navigationController?.popViewController(animated: true)
         default:
             // Leave Selector and return to albums/images collections
+            self.delegate?.didSelectCategory(withId: NSNotFound)
             dismiss(animated: true)
         }
     }
@@ -676,7 +677,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                         let deadlineTime = DispatchTime.now() + .milliseconds(500)
                         DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
                             self.hideHUD {
-                                self.quitSelector()
+                                self.dismiss(animated: true)
                             }
                         }
                     })
@@ -724,7 +725,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                         self.hideHUD {
                             // Inform Album/Images view controller & dismiss view
                             self.delegate?.didSelectCategory(withId: categoryData.albumId)
-                            self.quitSelector()
+                            self.dismiss(animated: true)
                         }
                     }
                 }

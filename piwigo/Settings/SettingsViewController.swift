@@ -1959,6 +1959,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     
 // MARK: - SelectCategoryDelegate Methods
     func didSelectCategory(withId categoryId: Int) {
+        if categoryId == NSNotFound { return }
         // Save new choice
         Model.sharedInstance()?.defaultCategory = categoryId
         Model.sharedInstance()?.saveToDisk()

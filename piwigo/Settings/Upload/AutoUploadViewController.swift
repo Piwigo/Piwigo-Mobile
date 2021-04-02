@@ -365,6 +365,8 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
 
     // MARK: - SelectCategoryDelegate Methods
     func didSelectCategory(withId categoryId: Int) -> Void {
+        if categoryId == NSNotFound { return }
+        // Save new choice
         Model.sharedInstance()?.autoUploadCategoryId = categoryId
         Model.sharedInstance()?.saveToDisk()
     }
