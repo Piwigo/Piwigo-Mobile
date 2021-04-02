@@ -339,8 +339,8 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                 }
 
             case 1 /* Select Piwigo album*/ :
-                let categorySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
-                guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
+                let categorySB = UIStoryboard(name: "SelectCategoryViewControllerGrouped", bundle: nil)
+                guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewControllerGrouped") as? SelectCategoryViewController else { return }
                 categoryVC.setInput(parameter: Model.sharedInstance()?.autoUploadCategoryId ?? NSNotFound,
                                     for: kPiwigoCategorySelectActionSetAutoUploadAlbum)
                 categoryVC.delegate = self

@@ -1538,8 +1538,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case SettingsSection.albums.rawValue /* Albums */:
             switch indexPath.row {
             case 0 /* Default album */:
-                let categorySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
-                guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
+                let categorySB = UIStoryboard(name: "SelectCategoryViewControllerGrouped", bundle: nil)
+                guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewControllerGrouped") as? SelectCategoryViewController else { return }
                 categoryVC.setInput(parameter: Model.sharedInstance()?.defaultCategory ?? 0,
                                     for: kPiwigoCategorySelectActionSetDefaultAlbum)
                 categoryVC.delegate = self

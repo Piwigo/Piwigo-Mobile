@@ -120,6 +120,7 @@
 		ADA6DA4721B2AD9900F941F1 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = ADA6DA4621B2AD9900F941F1 /* Settings.bundle */; };
 		ADAA57D122DD00B700EB4EAA /* DiscoverImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADAA57D022DD00B700EB4EAA /* DiscoverImagesViewController.m */; };
 		ADAC548C26170B1200301C1C /* SelectCategoryHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAC548B26170B1200301C1C /* SelectCategoryHeaderView.swift */; };
+		ADAC548E26178BF500301C1C /* SelectCategoryViewControllerGrouped.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADAC548D26178BF500301C1C /* SelectCategoryViewControllerGrouped.storyboard */; };
 		ADAEED8822E2665000CB1B12 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADAEED8622E2665000CB1B12 /* LaunchScreen.storyboard */; };
 		ADB607E81FC9D79000AF28DB /* VideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = ADB607E71FC9D79000AF28DB /* VideoView.m */; };
 		ADB7A102210B803D006723B9 /* MoveImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD42DDF6210B38F30083FC7D /* MoveImageViewController.m */; };
@@ -417,6 +418,7 @@
 		ADAA57CF22DD006C00EB4EAA /* DiscoverImagesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DiscoverImagesViewController.h; sourceTree = "<group>"; };
 		ADAA57D022DD00B700EB4EAA /* DiscoverImagesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DiscoverImagesViewController.m; sourceTree = "<group>"; };
 		ADAC548B26170B1200301C1C /* SelectCategoryHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectCategoryHeaderView.swift; sourceTree = "<group>"; };
+		ADAC548D26178BF500301C1C /* SelectCategoryViewControllerGrouped.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = SelectCategoryViewControllerGrouped.storyboard; sourceTree = "<group>"; };
 		ADAF3B7023DDAC2F007B0ABA /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		ADAF3B7123DDAC2F007B0ABA /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/About.strings; sourceTree = "<group>"; };
 		ADAF3B7223DDAC2F007B0ABA /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
@@ -1036,6 +1038,7 @@
 				ADF1CC74243D111600D75319 /* SelectCategoryViewController.swift */,
 				ADAC548B26170B1200301C1C /* SelectCategoryHeaderView.swift */,
 				ADF1CC76243D132100D75319 /* SelectCategoryViewController.storyboard */,
+				ADAC548D26178BF500301C1C /* SelectCategoryViewControllerGrouped.storyboard */,
 				D88A68591AC2323D002A3259 /* CategoryTableViewCell.h */,
 				D88A685A1AC2323D002A3259 /* CategoryTableViewCell.m */,
 				ADEFBD622074E19000DFAD26 /* CategoryTableViewCell.xib */,
@@ -1539,6 +1542,7 @@
 				AD42D08324448F2400F0BAC1 /* LocalAlbumsViewController.storyboard in Resources */,
 				ADE03D3025FCC1B7002F5C7B /* ColorPaletteViewControllerOld.storyboard in Resources */,
 				ADC8167D244B5FA800650223 /* LocalImagesViewController.storyboard in Resources */,
+				ADAC548E26178BF500301C1C /* SelectCategoryViewControllerGrouped.storyboard in Resources */,
 				AD3207E9240AD93900F00FEB /* PrivacyPolicyViewController.storyboard in Resources */,
 				AD5B498724E6FCF000BDF5B4 /* UploadQueueViewControllerOld.storyboard in Resources */,
 				AD31F5F7242FABF300BD65FC /* ReleaseNotesViewController.storyboard in Resources */,
