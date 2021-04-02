@@ -28,8 +28,8 @@ class UploadQueueHeaderView: UIView {
         NSLayoutConstraint.activate([
             label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: margin),
             label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -margin),
-            label.topAnchor.constraint(equalTo: topAnchor, constant: 4.0),
-            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -4.0),
+            label.topAnchor.constraint(equalTo: topAnchor),
+            label.bottomAnchor.constraint(equalTo: bottomAnchor),
             ])
     }
 
@@ -41,7 +41,7 @@ class UploadQueueHeaderView: UIView {
                                                        height: CGFloat.greatestFiniteMagnitude),
                                           options: .usesLineFragmentOrigin,
                                           attributes: titleAttributes, context: context)
-        titleRect.size.height += 8
+        titleRect.size.height += 16
         self.frame = titleRect
         label.text = text
     }

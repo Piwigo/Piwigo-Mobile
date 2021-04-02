@@ -84,13 +84,6 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(self.applyUploadProgress), name: name2, object: nil)
     }
 
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        
-        guard let header = queueTableView.tableHeaderView else { return }
-        header.frame.size.height = header.systemLayoutSizeFitting(CGSize(width: view.bounds.width - 32.0, height: 0)).height
-    }
-
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
 
@@ -329,7 +322,6 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
                     }
                 }
             }
-            self.viewWillLayoutSubviews()
         }
     }
     
