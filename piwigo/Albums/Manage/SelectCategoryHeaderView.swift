@@ -28,7 +28,8 @@ class SelectCategoryHeaderView: UIView {
         NSLayoutConstraint.activate([
             label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: margin),
             label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -margin),
-            label.topAnchor.constraint(equalTo: topAnchor, constant: 8.0)
+            label.bottomAnchor.constraint(equalTo: bottomAnchor),
+            label.topAnchor.constraint(equalTo: topAnchor)
         ])
     }
 
@@ -36,10 +37,11 @@ class SelectCategoryHeaderView: UIView {
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
         let titleAttributes = [NSAttributedString.Key.font: UIFont.piwigoFontSmall()]
-        let titleRect = text.boundingRect(with: CGSize(width: width - 2 * margin,
+        var titleRect = text.boundingRect(with: CGSize(width: width - 2 * margin,
                                                        height: CGFloat.greatestFiniteMagnitude),
                                           options: .usesLineFragmentOrigin,
                                           attributes: titleAttributes, context: context)
+        titleRect.size.height += 16
         self.frame = titleRect
         label.text = text
     }
