@@ -29,18 +29,26 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         wantedAction = action
         switch action {
         case kPiwigoCategorySelectActionSetDefaultAlbum,
-             kPiwigoCategorySelectActionMoveAlbum,
              kPiwigoCategorySelectActionSetAutoUploadAlbum:
+            guard let categoryId = parameter as? Int else {
+                fatalError("Input parameter expected to be an Int")
+            }
+            currentCategoryId = categoryId
+            currentCategoryData = CategoriesData.sharedInstance().getCategoryById(categoryId)
+            
+        case kPiwigoCategorySelectActionMoveAlbum:
             guard let categoryData = parameter as? PiwigoAlbumData else {
-                fatalError("Input parameter expected to be an Int or different from NSNotFound")
+                fatalError("Input parameter expected to be of PiwigoAlbumData type")
             }
             currentCategoryId = categoryData.albumId
             currentCategoryData = categoryData
+            
         case kPiwigoCategorySelectActionSetAlbumThumbnail:
             guard let imageData = parameter as? PiwigoImageData else {
                 fatalError("Input parameter expected to be of type PiwigoImageData")
             }
             currentImageData = imageData
+            
         default:
             fatalError("Called setParameter before setting wanted action")
         }
