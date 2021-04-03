@@ -52,7 +52,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     private var nberUsers = ""
     private var nberGroups = ""
     private var nberComments = ""
-    private var didChangeDefaultAlbum = false
     private var hasAutoUploadSettings = false
 
 
@@ -223,11 +222,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-
-        // Load new default album view if necessary
-        if didChangeDefaultAlbum {
-            settingsDelegate?.didChangeDefaultAlbum()
-        }
 
         // Unregister palette changes
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
@@ -1959,13 +1953,17 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     
 // MARK: - SelectCategoryDelegate Methods
     func didSelectCategory(withId categoryId: Int) {
-        if categoryId == NSNotFound { return }
+        // Do nothing if new default album is unknown or unchanged
+        if categoryId == NSNotFound ||
+            categoryId == Model.sharedInstance()?.defaultCategory
+        { return }
+
         // Save new choice
         Model.sharedInstance()?.defaultCategory = categoryId
         Model.sharedInstance()?.saveToDisk()
 
         // Will load default album view when dismissing this view
-        didChangeDefaultAlbum = true
+        settingsDelegate?.didChangeDefaultAlbum()
     }
 
     
