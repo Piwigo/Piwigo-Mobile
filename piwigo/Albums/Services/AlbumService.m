@@ -222,7 +222,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                       NSLog(@"                => %ld albums returned", (long)[albums count]);
 #endif
                       // Update Categories Data cache
-                      if ([Model sharedInstance].loadAllCategoryInfo && (categoryId == 0))
+                      if ([Model sharedInstance].loadAllCategoryInfo && (categoryId == [Model sharedInstance].defaultCategory))
                       {
                           [[CategoriesData sharedInstance] replaceAllCategories:albums];
                       }
