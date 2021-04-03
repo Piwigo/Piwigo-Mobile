@@ -493,7 +493,7 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
     
     if ((self.recentCategories.count > 0) && (indexPath.section == 0)) {
         PiwigoAlbumData *categoryData = [self.recentCategories objectAtIndex:indexPath.row];
-        [cell configureWith:categoryData atDepth:0 showingButton:NO];
+        [cell configureWith:categoryData atDepth:0 andButtonState:kPiwigoCategoryTableCellButtonStateNone];
     }
     else {
         // Determine the depth before setting up the cell
@@ -501,23 +501,22 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
         NSInteger depth = [categoryData getDepthOfCategory];
         PiwigoAlbumData *defaultCategoryData = [self.categories objectAtIndex:0];
         depth -= [defaultCategoryData getDepthOfCategory];
-        [cell configureWith:categoryData atDepth:depth showingButton:YES];
+
+        cell.delegate = self;
+        // Switch between Open/Close cell disclosure
+        if([self.categoriesThatShowSubCategories containsObject:@(categoryData.albumId)]) {
+            [cell configureWith:categoryData atDepth:depth andButtonState:kPiwigoCategoryTableCellButtonStateHideSubAlbum];
+            cell.userInteractionEnabled = YES;
+        } else {
+            [cell configureWith:categoryData atDepth:depth andButtonState:kPiwigoCategoryTableCellButtonStateShowSubAlbum];
+            cell.userInteractionEnabled = YES;
+        }
         
         // Category contains selected image?
         if ([self.selectedImage.categoryIds containsObject:@(categoryData.albumId)])
         {
             cell.categoryLabel.textColor = [UIColor piwigoColorRightLabel];
             cell.userInteractionEnabled = NO;
-        }
-        
-        // Switch between Open/Close cell disclosure
-        cell.delegate = self;
-        if([self.categoriesThatShowSubCategories containsObject:@(categoryData.albumId)]) {
-            cell.showHideSubCategoriesImage.image = [UIImage imageNamed:@"cellClose"];
-            cell.userInteractionEnabled = YES;
-        } else {
-            cell.showHideSubCategoriesImage.image = [UIImage imageNamed:@"cellOpen"];
-            cell.userInteractionEnabled = YES;
         }
     }
     

@@ -86,6 +86,12 @@ typedef enum {
     kPiwigoCategorySelectActionSetAutoUploadAlbum = 4
 } kPiwigoCategorySelectAction;
 
+typedef enum {
+    kPiwigoCategoryTableCellButtonStateNone = 0,
+    kPiwigoCategoryTableCellButtonStateShowSubAlbum = 1,
+    kPiwigoCategoryTableCellButtonStateHideSubAlbum = 2
+} kPiwigoCategoryTableCellButtonState;
+
 @interface Model : NSObject
 
 +(Model*)sharedInstance;

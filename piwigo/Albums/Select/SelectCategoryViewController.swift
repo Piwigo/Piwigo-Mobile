@@ -388,87 +388,64 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             return CategoryTableViewCell()
         }
 
+        var depth = 0
         let categoryData:PiwigoAlbumData
         if (indexPath.section == 0) && (wantedAction == kPiwigoCategorySelectActionSetAlbumThumbnail) {
             let categoryId = currentImageData.categoryIds[indexPath.row].intValue
             categoryData = CategoriesData.sharedInstance().getCategoryById(categoryId)
-            cell.configure(with: categoryData, atDepth: 0, showingButton: false)
+            cell.configure(with: categoryData, atDepth: 0, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
         }
         else if (recentCategories.count > 0) && (indexPath.section == 0) {
             categoryData = recentCategories[indexPath.row]
-            cell.configure(with: categoryData, atDepth: 0, showingButton: false)
+            cell.configure(with: categoryData, atDepth: 0, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
         }
         else {
             // Determine the depth before setting up the cell
             categoryData = categories[indexPath.row]
-            var depth = 0
-            if categoryData.albumId != 0 {
-                depth += categoryData.upperCategories.count
+            if let upperCat = categoryData.upperCategories {
+                depth += upperCat.filter({ $0 != String(categoryData.albumId )}).count
             }
-            if categories[0].albumId != 0 {
-                depth -= categories[0].upperCategories.count
+            if let defaultCategoryData = CategoriesData.sharedInstance().getCategoryById(Model.sharedInstance().defaultCategory), let upperCat = defaultCategoryData.upperCategories {
+                depth -= upperCat.filter({ $0 != String(Model.sharedInstance().defaultCategory )}).count
             }
-
-            // Build list of sub categories from complete known list
-            var showButton = false
-            let allCategories: [PiwigoAlbumData] = CategoriesData.sharedInstance().allCategories
-            let filteredCat = allCategories.filter({ Model.sharedInstance().hasAdminRights || $0.hasUploadRights })
-                .filter({ $0.nearestUpperCategory == categoryData.albumId })
-                .filter({ $0.albumId != categoryData.albumId })
-            for category in filteredCat {
-                // Does the user has upload rights?
-                if category.hasUploadRights {
-                    showButton = true
-                    break
-                }
-            }
-            cell.configure(with: categoryData, atDepth: depth, showingButton: showButton)
         }
         
         // How should we present special categories?
+        cell.delegate = self
+        let buttonState = categoriesThatShowSubCategories.contains(categoryData.albumId) ? kPiwigoCategoryTableCellButtonStateHideSubAlbum : kPiwigoCategoryTableCellButtonStateShowSubAlbum
         switch wantedAction {
         case kPiwigoCategorySelectActionSetDefaultAlbum:
             // The current default category is not selectable
             if categoryData.albumId == currentCategoryId {
-                cell.isUserInteractionEnabled = false
+                cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
                 cell.categoryLabel.textColor = UIColor.piwigoColorRightLabel()
+            } else {
+                cell.configure(with: categoryData, atDepth: depth, andButtonState: buttonState)
             }
         case kPiwigoCategorySelectActionMoveAlbum:
             // User cannot move album to current parent album or in itself
             if categoryData.albumId == 0 {  // upperCategories is nil for root
+                cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
                 if currentCategoryData.parentAlbumId == 0 {
                     cell.categoryLabel.textColor = UIColor.piwigoColorRightLabel()
                 }
             } else if (categoryData.albumId == currentCategoryData.parentAlbumId) ||
                 categoryData.upperCategories.contains(String(currentCategoryId)) {
+                cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
                 cell.categoryLabel.textColor = UIColor.piwigoColorRightLabel()
+            } else {
+                cell.configure(with: categoryData, atDepth: depth, andButtonState: buttonState)
             }
         case kPiwigoCategorySelectActionSetAutoUploadAlbum:
             // The root album is not selectable (should not be presented but in case…)
             if categoryData.albumId == 0 {
-                cell.isUserInteractionEnabled = false
+                cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
                 cell.categoryLabel.textColor = UIColor.piwigoColorRightLabel()
+            } else {
+                cell.configure(with: categoryData, atDepth: depth, andButtonState: buttonState)
             }
         default:
             break
-        }
-
-        // Switch between Open/Close cell disclosure
-        cell.delegate = self
-        if categoriesThatShowSubCategories.contains(categoryData.albumId) {
-            if #available(iOS 13.0, *) {
-                cell.showHideSubCategoriesImage.image = UIImage(systemName: "multiply")
-            } else {
-                // Fallback on earlier versions
-                cell.showHideSubCategoriesImage.image = UIImage(named: "cellClose")
-            }
-        } else {
-            if #available(iOS 13.0, *) {
-                cell.showHideSubCategoriesImage.image = UIImage(systemName: "plus")
-            } else {
-                // Fallback on earlier versions
-                cell.showHideSubCategoriesImage.image = UIImage(named: "cellOpen")
-            }
         }
 
         cell.isAccessibilityElement = true
@@ -478,20 +455,36 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         // Retrieve album data
         let categoryData:PiwigoAlbumData
-        if (self.recentCategories.count > 0) && (indexPath.section == 0) {
+        if (indexPath.section == 0) && (wantedAction == kPiwigoCategorySelectActionSetAlbumThumbnail) {
+            let categoryId = currentImageData.categoryIds[indexPath.row].intValue
+            categoryData = CategoriesData.sharedInstance().getCategoryById(categoryId)
+        }
+        else if (self.recentCategories.count > 0) && (indexPath.section == 0) {
             categoryData = recentCategories[indexPath.row]
         } else {
             categoryData = categories[indexPath.row]
         }
         
-        // User cannot move album to current parent album or in itself
-        if wantedAction == kPiwigoCategorySelectActionMoveAlbum {
+        switch wantedAction {
+        case kPiwigoCategorySelectActionSetDefaultAlbum:
+            // The current default category is not selectable
+            if categoryData.albumId == currentCategoryId { return false }
+            
+        case kPiwigoCategorySelectActionMoveAlbum:
+            // Do nothing if this is the current default category
+            if categoryData.albumId == currentCategoryId { return false }
+            // User cannot move album to current parent album or in itself
             if categoryData.albumId == 0 {  // upperCategories is nil for root
-                if currentCategoryData.nearestUpperCategory == 0 { return false }
+                if currentCategoryData.parentAlbumId == 0 { return false }
             } else if (categoryData.albumId == currentCategoryData.parentAlbumId) ||
-                      categoryData.upperCategories.contains(String(currentCategoryId)) {
-                return false
-            }
+                        categoryData.upperCategories.contains(String(currentCategoryId)) { return false }
+            
+        case kPiwigoCategorySelectActionSetAutoUploadAlbum:
+            // The root album is not selectable (should not be presented but in case…)
+            if categoryData.albumId == 0 { return false }
+
+        default:
+            break
         }
         return true;
     }
@@ -573,6 +566,9 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             }, forCategory: categoryData, at: indexPath)
 
         case kPiwigoCategorySelectActionSetAutoUploadAlbum:
+            // Do nothing if this is the root album
+            if categoryData.albumId == 0 { return }
+            
             // Return the selected album ID
             delegate?.didSelectCategory(withId: categoryData.albumId)
             navigationController?.popViewController(animated: true)
@@ -914,9 +910,9 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Look for categories which are not already displayed
         /// - Smart albums should not be proposed
         /// - Non-admin Community users can only upload in specific albums
-        allCategories.filter({ $0.albumId > kPiwigoSearchCategoryId })
+        let filteredCat = allCategories.filter({ $0.albumId > kPiwigoSearchCategoryId })
             .filter({ Model.sharedInstance().hasAdminRights || $0.hasUploadRights })
-            .forEach { category in
+        for category in filteredCat {   // Don't use forEach to keep the order
             // Is this category already in displayed list?
             if !categories.contains(where: { $0.albumId == category.albumId }) {
                 diff.append(category)
@@ -924,7 +920,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         }
 
         // Build list of categories to be displayed
-        diff.forEach { category in
+        for category in diff {   // Don't use forEach to keep the order
             if category.parentAlbumId == 0 {
                 categories.append(category)
             }

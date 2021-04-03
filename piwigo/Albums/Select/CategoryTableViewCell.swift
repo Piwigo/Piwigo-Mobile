@@ -8,6 +8,12 @@
 
 import UIKit
 
+//enum kPiwigoCategoryTableCellButtonState : Int {
+//    case none
+//    case showSubAlbum
+//    case hideSubAlbum
+//}
+
 @objc
 protocol CategoryCellDelegate: NSObjectProtocol {
     func tappedDisclosure(of categoryTapped: PiwigoAlbumData)
@@ -25,7 +31,7 @@ class CategoryTableViewCell: UITableViewCell {
     private var categoryData:PiwigoAlbumData!
     
     @objc func configure(with category:PiwigoAlbumData, atDepth depth:Int,
-                         showingButton showSubCatButton:Bool) {
+                         andButtonState buttonState:kPiwigoCategoryTableCellButtonState) {
         // General settings
         backgroundColor = UIColor.piwigoColorCellBackground()
         tintColor = UIColor.piwigoColorOrange()
@@ -36,8 +42,8 @@ class CategoryTableViewCell: UITableViewCell {
         // Is this a sub-category?
         categoryLabel.font = UIFont.piwigoFontNormal()
         categoryLabel.textColor = UIColor.piwigoColorLeftLabel()
-        if (depth < 1) || !showSubCatButton {
-            // Categories in root album
+        if depth == 0 {
+            // Categories in root album or root album itself
             categoryLabel.text = categoryData.name
         } else {
             // Append "—" characters to sub-category names
@@ -50,13 +56,29 @@ class CategoryTableViewCell: UITableViewCell {
         }
         
         // Show open/close button (# sub-albums) if there are sub-categories
-        if (category.numberOfSubCategories <= 0) || !showSubCatButton {
+        if (category.numberOfSubCategories <= 0) || buttonState == kPiwigoCategoryTableCellButtonStateNone {
             subCategoriesLabel.text = ""
             showHideSubCategoriesImage.isHidden = true
         } else {
             subCategoriesLabel.text = String(format: "%ld %@",
                                    categoryData.numberOfSubCategories,
                                    categoryData.numberOfSubCategories > 1 ? NSLocalizedString("categoryTableView_subCategoriesCount", comment:"sub-albums") : NSLocalizedString("categoryTableView_subCategoryCount", comment:"sub-album"))
+            
+            if buttonState == kPiwigoCategoryTableCellButtonStateShowSubAlbum {
+                if #available(iOS 13.0, *) {
+                    showHideSubCategoriesImage.image = UIImage(systemName: "plus")
+                } else {
+                    // Fallback on earlier versions
+                    showHideSubCategoriesImage.image = UIImage(named: "cellOpen")
+                }
+            } else {
+                if #available(iOS 13.0, *) {
+                    showHideSubCategoriesImage.image = UIImage(systemName: "multiply")
+                } else {
+                    // Fallback on earlier versions
+                    showHideSubCategoriesImage.image = UIImage(named: "cellClose")
+                }
+            }
             showHideSubCategoriesImage.isHidden = false
         }
 
