@@ -9,7 +9,6 @@
 #import "AppDelegate.h"
 #import "AlbumService.h"
 #import "CategoriesData.h"
-#import "CategoryTableViewCell.h"
 #import "ImageService.h"
 #import "MBProgressHUD.h"
 #import "Model.h"
@@ -494,7 +493,7 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
     
     if ((self.recentCategories.count > 0) && (indexPath.section == 0)) {
         PiwigoAlbumData *categoryData = [self.recentCategories objectAtIndex:indexPath.row];
-        [cell setupWithCategoryData:categoryData atDepth:0 withSubCategoryButton:NO];
+        [cell configureWith:categoryData atDepth:0 showingButton:NO];
     }
     else {
         // Determine the depth before setting up the cell
@@ -502,7 +501,7 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
         NSInteger depth = [categoryData getDepthOfCategory];
         PiwigoAlbumData *defaultCategoryData = [self.categories objectAtIndex:0];
         depth -= [defaultCategoryData getDepthOfCategory];
-        [cell setupWithCategoryData:categoryData atDepth:depth withSubCategoryButton:YES];
+        [cell configureWith:categoryData atDepth:depth showingButton:YES];
         
         // Category contains selected image?
         if ([self.selectedImage.categoryIds containsObject:@(categoryData.albumId)])
@@ -512,12 +511,12 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
         }
         
         // Switch between Open/Close cell disclosure
-        cell.categoryDelegate = self;
+        cell.delegate = self;
         if([self.categoriesThatShowSubCategories containsObject:@(categoryData.albumId)]) {
-            cell.upDownImage.image = [UIImage imageNamed:@"cellClose"];
+            cell.showHideSubCategoriesImage.image = [UIImage imageNamed:@"cellClose"];
             cell.userInteractionEnabled = YES;
         } else {
-            cell.upDownImage.image = [UIImage imageNamed:@"cellOpen"];
+            cell.showHideSubCategoriesImage.image = [UIImage imageNamed:@"cellOpen"];
             cell.userInteractionEnabled = YES;
         }
     }
@@ -1029,7 +1028,7 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
 
 #pragma mark - CategoryCellDelegate Methods
 
--(void)tappedDisclosure:(PiwigoAlbumData *)categoryTapped
+-(void)tappedDisclosureOf:(PiwigoAlbumData *)categoryTapped
 {
     // Build list of categories from list of known categories
     NSArray *allCategories = [CategoriesData sharedInstance].allCategories;

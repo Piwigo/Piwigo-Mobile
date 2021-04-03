@@ -392,19 +392,37 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         if (indexPath.section == 0) && (wantedAction == kPiwigoCategorySelectActionSetAlbumThumbnail) {
             let categoryId = currentImageData.categoryIds[indexPath.row].intValue
             categoryData = CategoriesData.sharedInstance().getCategoryById(categoryId)
-            cell.setup(withCategoryData: categoryData, atDepth: 0, withSubCategoryButton: false)
+            cell.configure(with: categoryData, atDepth: 0, showingButton: false)
         }
         else if (recentCategories.count > 0) && (indexPath.section == 0) {
             categoryData = recentCategories[indexPath.row]
-            cell.setup(withCategoryData: categoryData, atDepth: 0, withSubCategoryButton: false)
+            cell.configure(with: categoryData, atDepth: 0, showingButton: false)
         }
         else {
             // Determine the depth before setting up the cell
             categoryData = categories[indexPath.row]
-            var depth = categoryData.getDepthOfCategory()
-            let defaultCategoryData = categories[0]
-            depth -= defaultCategoryData.getDepthOfCategory()
-            cell.setup(withCategoryData: categoryData, atDepth: depth, withSubCategoryButton: true)
+            var depth = 0
+            if categoryData.albumId != 0 {
+                depth += categoryData.upperCategories.count
+            }
+            if categories[0].albumId != 0 {
+                depth -= categories[0].upperCategories.count
+            }
+
+            // Build list of sub categories from complete known list
+            var showButton = false
+            let allCategories: [PiwigoAlbumData] = CategoriesData.sharedInstance().allCategories
+            let filteredCat = allCategories.filter({ Model.sharedInstance().hasAdminRights || $0.hasUploadRights })
+                .filter({ $0.nearestUpperCategory == categoryData.albumId })
+                .filter({ $0.albumId != categoryData.albumId })
+            for category in filteredCat {
+                // Does the user has upload rights?
+                if category.hasUploadRights {
+                    showButton = true
+                    break
+                }
+            }
+            cell.configure(with: categoryData, atDepth: depth, showingButton: showButton)
         }
         
         // How should we present special categories?
@@ -436,20 +454,20 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         }
 
         // Switch between Open/Close cell disclosure
-        cell.categoryDelegate = self
+        cell.delegate = self
         if categoriesThatShowSubCategories.contains(categoryData.albumId) {
             if #available(iOS 13.0, *) {
-                cell.upDownImage.image = UIImage(systemName: "multiply")
+                cell.showHideSubCategoriesImage.image = UIImage(systemName: "multiply")
             } else {
                 // Fallback on earlier versions
-                cell.upDownImage.image = UIImage(named: "cellClose")
+                cell.showHideSubCategoriesImage.image = UIImage(named: "cellClose")
             }
         } else {
             if #available(iOS 13.0, *) {
-                cell.upDownImage.image = UIImage(systemName: "plus")
+                cell.showHideSubCategoriesImage.image = UIImage(systemName: "plus")
             } else {
                 // Fallback on earlier versions
-                cell.upDownImage.image = UIImage(named: "cellOpen")
+                cell.showHideSubCategoriesImage.image = UIImage(named: "cellOpen")
             }
         }
 
@@ -962,7 +980,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     
     // MARK: - CategoryCellDelegate Methods
     
-    func tappedDisclosure(_ categoryTapped: PiwigoAlbumData) {
+    func tappedDisclosure(of categoryTapped: PiwigoAlbumData) {
         
         // Build list of categories from list of known categories
         let allCategories: [PiwigoAlbumData] = CategoriesData.sharedInstance().allCategories

@@ -17,7 +17,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CategoryTableViewCell"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="CategoryTableViewCell" rowHeight="43" id="ZX0-lp-lWu" customClass="CategoryTableViewCell">
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="CategoryTableViewCell" rowHeight="43" id="ZX0-lp-lWu" customClass="CategoryTableViewCell" customModule="piwigo">
             <rect key="frame" x="0.0" y="0.0" width="474" height="43"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="ZX0-lp-lWu" id="NIn-Ig-Teh">
@@ -30,8 +30,8 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="subAlbumsLabel" textAlignment="right" lineBreakMode="clip" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DJY-mf-etU">
-                        <rect key="frame" x="316.5" y="10" width="126.5" height="23.5"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="subCategoriesLabel" textAlignment="right" lineBreakMode="clip" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DJY-mf-etU">
+                        <rect key="frame" x="292.5" y="10" width="150.5" height="23.5"/>
                         <fontDescription key="fontDescription" name="OpenSans-Light" family="Open Sans" pointSize="17"/>
                         <color key="textColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
@@ -45,7 +45,7 @@
                         </constraints>
                     </imageView>
                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Q74-gm-pPI">
-                        <rect key="frame" x="316.5" y="0.0" width="152.5" height="43"/>
+                        <rect key="frame" x="292.5" y="0.0" width="176.5" height="43"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </view>
@@ -66,10 +66,10 @@
                 </constraints>
             </tableViewCellContentView>
             <connections>
-                <outlet property="categoryLabel" destination="H4A-sH-yFL" id="QsN-E1-Pgp"/>
-                <outlet property="loadTapView" destination="Q74-gm-pPI" id="lgB-Wi-HUk"/>
-                <outlet property="subAlbumsLabel" destination="DJY-mf-etU" id="VsO-cf-VB6"/>
-                <outlet property="upDownImage" destination="Zfo-EN-xzn" id="WU3-ee-A6Z"/>
+                <outlet property="categoryLabel" destination="H4A-sH-yFL" id="SS6-NM-umo"/>
+                <outlet property="showHideSubCategoriesGestureArea" destination="Q74-gm-pPI" id="kUY-bd-rJO"/>
+                <outlet property="showHideSubCategoriesImage" destination="Zfo-EN-xzn" id="M1j-b5-fJz"/>
+                <outlet property="subCategoriesLabel" destination="DJY-mf-etU" id="cNL-N5-mdE"/>
             </connections>
             <point key="canvasLocation" x="151" y="-698"/>
         </tableViewCell>
