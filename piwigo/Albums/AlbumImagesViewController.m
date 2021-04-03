@@ -1388,12 +1388,6 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
     
     // Images ?
     if (self.categoryId != 0) {
-        // Reload whole collection if defult album is not root
-        if ([Model sharedInstance].defaultCategory != 0) {
-            [self.imagesCollection reloadData];
-            return;
-        }
-        
         // Store current image list
         NSArray *oldImageList = self.albumData.images;
 //        NSLog(@"=> categoriesUpdated… %ld contained %ld images", (long)self.categoryId, (long)oldImageList.count);
@@ -3383,51 +3377,12 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
 
 -(void)didChangeDefaultAlbum
 {
-    // Show loading HD
-    [self showHUDwithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") inMode:MBProgressHUDModeIndeterminate withDetailLabel:NO];
+    // Change default album
+    self.categoryId = [Model sharedInstance].defaultCategory;
 
-    // Load, sort images and reload collection
-    [AlbumService getAlbumListForCategory:[Model sharedInstance].loadAllCategoryInfo ? 0 : [Model sharedInstance].defaultCategory
-                               usingCache:NO
-                          inRecursiveMode:[Model sharedInstance].loadAllCategoryInfo
-                             OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
-            // Change default album
-            self.categoryId = [Model sharedInstance].defaultCategory;
-
-            // For iOS 11 and later: place search bar in navigation bar or root album
-            if (@available(iOS 11.0, *)) {
-                // Initialise search controller when displaying root album
-                if (self.categoryId == 0) {
-                    SearchImagesViewController *resultsCollectionController = [[SearchImagesViewController alloc] init];
-                    UISearchController *searchController = [[UISearchController alloc] initWithSearchResultsController:resultsCollectionController];
-                    searchController.delegate = self;
-                    searchController.hidesNavigationBarDuringPresentation = YES;
-                    searchController.searchResultsUpdater = self;
-                    
-                    searchController.searchBar.tintColor = [UIColor piwigoColorOrange];
-                    searchController.searchBar.searchBarStyle = UISearchBarStyleMinimal;
-                    searchController.searchBar.translucent = NO;
-                    searchController.searchBar.showsCancelButton = NO;
-                    searchController.searchBar.showsSearchResultsButton = NO;
-                    searchController.searchBar.delegate = self;        // Monitor when the search button is tapped.
-                    self.definesPresentationContext = YES;
-                    
-                    // Place the search bar in the navigation bar.
-                    self.navigationItem.searchController = searchController;
-                } else {
-                    self.navigationItem.searchController = nil;
-                }
-            }
-
-                                 // Hide loading HUD
-                                 [self hideHUD];
-                             
-                             }  onFailure:^(NSURLSessionTask *task, NSError *error) {
-
-                                 // Hide loading HUD
-                                 [self hideHUD];
-                             }
-     ];
+    // Reload category data
+    self.isCachedAtInit = FALSE;
+    [self getCategoryData:nil];
 }
 
 
