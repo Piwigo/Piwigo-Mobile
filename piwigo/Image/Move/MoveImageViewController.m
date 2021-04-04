@@ -15,7 +15,6 @@
 #import "MoveImageViewController.h"
 #import "PiwigoAlbumData.h"
 
-CGFloat const kMoveImageViewWidth = 512.0;      // MoveImage view width
 NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage";
 
 @class PiwigoAlbumData;
@@ -162,7 +161,8 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
         // On iPad, the Settings section is presented in a centered popover view
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
             CGRect mainScreenBounds = [UIScreen mainScreen].bounds;
-            self.preferredContentSize = CGSizeMake(kMoveImageViewWidth, ceil(CGRectGetHeight(mainScreenBounds)*2/3));
+            self.preferredContentSize = CGSizeMake(kPiwigoPadSubViewWidth,
+                                                   ceil(CGRectGetHeight(mainScreenBounds)*2/3));
         }
         
         // Reload table view
@@ -593,24 +593,6 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
     [alert addAction:cancelAction];
     [alert addAction:moveImageAction];
     
-    // Determine position of cell in table view
-    CGRect rectOfCellInTableView = [tableView rectForRowAtIndexPath:indexPath];
-    
-    // Determine width of text
-    CategoryTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    NSString *textString = cell.categoryLabel.text;
-    NSDictionary *textAttributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
-    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
-    context.minimumScaleFactor = 1.0;
-    CGRect textRect = [textString boundingRectWithSize:CGSizeMake(tableView.frame.size.width, CGFLOAT_MAX)
-                                               options:NSStringDrawingUsesLineFragmentOrigin
-                                            attributes:textAttributes
-                                               context:context];
-    
-    // Calculate horizontal position of popover view
-    rectOfCellInTableView.origin.x += textRect.size.width + tableView.layoutMargins.left;
-    rectOfCellInTableView.size.width = 12.0;
-    
     // Present popover view
     alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
@@ -618,9 +600,10 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
     } else {
         // Fallback on earlier versions
     }
-    alert.popoverPresentationController.sourceView = tableView;
+    CategoryTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    alert.popoverPresentationController.sourceView = cell.contentView;
     alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionLeft;
-    alert.popoverPresentationController.sourceRect = rectOfCellInTableView;
+    alert.popoverPresentationController.sourceRect = cell.contentView.frame;
     [self presentViewController:alert animated:YES completion:^{
         // Bugfix: iOS9 - Tint not fully Applied without Reapplying
         alert.view.tintColor = UIColor.piwigoColorOrange;
