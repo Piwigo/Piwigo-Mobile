@@ -364,15 +364,6 @@
                 (([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeLeft) &&
                  ([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeRight))) {
         
-                // Redefine bar buttons (definition lost after rotation of device)
-                self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
-                self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteSelection)];
-                self.deleteBarButton.tintColor = [UIColor redColor];
-                self.shareBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(shareSelection)];
-                self.shareBarButton.tintColor = [UIColor piwigoColorOrange];
-                self.moveBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply target:self action:@selector(addImagesToCategory)];
-                self.moveBarButton.tintColor = [UIColor piwigoColorOrange];
-
                 // Left side of navigation bar
                 [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
                 self.cancelBarButton.enabled = YES;

@@ -1185,15 +1185,6 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
     [self.addButton setHidden:YES];
     [self.homeAlbumButton setHidden:YES];
 
-    // Redefine bar buttons (definition lost after rotation of device)
-    self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
-    self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteSelection)];
-    self.deleteBarButton.tintColor = [UIColor redColor];
-    self.shareBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(shareSelection)];
-    self.shareBarButton.tintColor = [UIColor piwigoColorOrange];
-    self.moveBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply target:self action:@selector(addImagesToCategory)];
-    self.moveBarButton.tintColor = [UIColor piwigoColorOrange];
-
     // User can delete images/videos if he/she has:
     // — admin rights
     if ([Model sharedInstance].hasAdminRights)
@@ -3467,8 +3458,8 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
         {
             viewController.modalPresentationStyle = UIModalPresentationPopover;
-            viewController.popoverPresentationController.sourceView = self.imagesCollection;
             if ([viewController isKindOfClass:[SelectCategoryViewController class]]) {
+                viewController.popoverPresentationController.sourceView = self.imagesCollection;
                 viewController.popoverPresentationController.permittedArrowDirections = 0;
                 [self.navigationController presentViewController:viewController animated:YES completion:nil];
             }
@@ -3486,7 +3477,6 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
                 // Push Edit view embedded in navigation controller
                 UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
                 navController.modalPresentationStyle = UIModalPresentationPopover;
-                navController.popoverPresentationController.sourceView = self.view;
                 navController.popoverPresentationController.barButtonItem = self.editBarButton;
                 navController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
                 [self.navigationController presentViewController:navController animated:YES completion:nil];
