@@ -159,8 +159,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 self.popoverPresentationController?.sourceRect = CGRect(x: mainScreenBounds.midX,
                                                                         y: mainScreenBounds.midY,
                                                                         width: 0, height: 0)
-                self.preferredContentSize = CGSize(width: ceil(mainScreenBounds.width * 2 / 3),
-                                                   height: ceil(mainScreenBounds.height * 2 / 3))
+                self.preferredContentSize = CGSize(width: kPiwigoPadSubViewWidth,
+                                                   height: ceil(mainScreenBounds.height*2/3));
             }
 
             // Reload table view

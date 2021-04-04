@@ -21,6 +21,9 @@ NSInteger const kPiwigoDiskCacheInc   = 64;     // Slider increment
 NSInteger const kPiwigoDiskCacheMin   = 128;    // Minimum size
 NSInteger const kPiwigoDiskCacheMax   = 2048;   // Maximum size
 
+CGFloat const kPiwigoPadSubViewWidth  = 375.0;  // Preferred popover view width on iPad
+CGFloat const kPiwigoPadSettingsWidth = 512.0;  // Preferred Settings view width on iPad
+
 NSTimeInterval const k1WeekInDays  = 60 * 60 * 24 *  7.0;
 NSTimeInterval const k2WeeksInDays = 60 * 60 * 24 * 14.0;
 NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;

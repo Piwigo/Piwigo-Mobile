@@ -19,6 +19,9 @@ FOUNDATION_EXPORT NSInteger const kPiwigoDiskCacheInc;
 FOUNDATION_EXPORT NSInteger const kPiwigoDiskCacheMin;
 FOUNDATION_EXPORT NSInteger const kPiwigoDiskCacheMax;
 
+FOUNDATION_EXPORT CGFloat const kPiwigoPadSubViewWidth;
+FOUNDATION_EXPORT CGFloat const kPiwigoPadSettingsWidth;
+
 FOUNDATION_EXPORT NSTimeInterval const k1WeekInDays;
 FOUNDATION_EXPORT NSTimeInterval const k2WeeksInDays;
 FOUNDATION_EXPORT NSTimeInterval const k3WeeksInDays;

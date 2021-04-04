@@ -211,8 +211,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             // On iPad, the Settings section is presented in a centered popover view
             if UIDevice.current.userInterfaceIdiom == .pad {
                 let mainScreenBounds = UIScreen.main.bounds
-                self.popoverPresentationController?.sourceRect = CGRect(x: mainScreenBounds.midX, y: mainScreenBounds.midY, width: 0, height: 0)
-                self.preferredContentSize = CGSize(width: ceil(mainScreenBounds.width * 2 / 3), height: ceil(mainScreenBounds.height * 2 / 3))
+                self.popoverPresentationController?.sourceRect = CGRect(x: mainScreenBounds.midX,
+                                                                        y: mainScreenBounds.midY,
+                                                                        width: 0, height: 0)
+                self.preferredContentSize = CGSize(width: kPiwigoPadSettingsWidth,
+                                                   height: ceil(mainScreenBounds.height * 2 / 3))
             }
 
             // Reload table view

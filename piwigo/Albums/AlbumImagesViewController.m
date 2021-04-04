@@ -867,6 +867,11 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:settingsVC];
     navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     navController.modalPresentationStyle = UIModalPresentationFormSheet;
+    CGRect mainScreenBounds = [UIScreen mainScreen].bounds;
+    navController.popoverPresentationController.sourceRect = CGRectMake(CGRectGetMidX(mainScreenBounds),
+                                                                        CGRectGetMidY(mainScreenBounds), 0, 0);
+    navController.preferredContentSize = CGSizeMake(kPiwigoPadSettingsWidth,
+                                                    ceil(mainScreenBounds.size.height * 2 / 3));
     [self presentViewController:navController animated:YES completion:nil];
 }
 

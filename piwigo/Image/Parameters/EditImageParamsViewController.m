@@ -240,7 +240,8 @@ typedef enum {
         // On iPad, the form is presented in a popover view
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
             CGRect mainScreenBounds = [UIScreen mainScreen].bounds;
-            self.preferredContentSize = CGSizeMake(kEditImageParamsViewWidth, ceil(CGRectGetHeight(mainScreenBounds)*2/3));
+            self.preferredContentSize = CGSizeMake(kPiwigoPadSubViewWidth,
+                                                   ceil(CGRectGetHeight(mainScreenBounds)*2/3));
             [self.editImageParamsTableView setContentInset:UIEdgeInsetsMake(0.0, 0.0, MAX(0.0, tableHeight + navBarHeight - size.height), 0.0)];
         } else {
             CGFloat statBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
