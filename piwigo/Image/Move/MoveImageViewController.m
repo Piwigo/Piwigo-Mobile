@@ -602,13 +602,14 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
     NSDictionary *textAttributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
     NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
     context.minimumScaleFactor = 1.0;
-    CGRect textRect = [textString boundingRectWithSize:CGSizeMake(tableView.frame.size.width - 30.0, CGFLOAT_MAX)
+    CGRect textRect = [textString boundingRectWithSize:CGSizeMake(tableView.frame.size.width, CGFLOAT_MAX)
                                                options:NSStringDrawingUsesLineFragmentOrigin
                                             attributes:textAttributes
                                                context:context];
     
     // Calculate horizontal position of popover view
-    rectOfCellInTableView.origin.x -= tableView.frame.size.width - textRect.size.width - tableView.layoutMargins.left - 12;
+    rectOfCellInTableView.origin.x += textRect.size.width + tableView.layoutMargins.left;
+    rectOfCellInTableView.size.width = 12.0;
     
     // Present popover view
     alert.view.tintColor = UIColor.piwigoColorOrange;
