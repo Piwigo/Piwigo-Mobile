@@ -124,15 +124,9 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             // Set view title
             title = NSLocalizedString("moveCategory", comment:"Move Album")
         
-            // Navigation "Cancel" button and identifier
-            navigationItem.setLeftBarButton(cancelBarButton, animated: true)
-    
         case kPiwigoCategorySelectActionSetAlbumThumbnail:
             // Set view title
             title = NSLocalizedString("categoryImageSet_title", comment:"Album Thumbnail")
-        
-            // Navigation "Cancel" button and identifier
-            navigationItem.setLeftBarButton(cancelBarButton, animated: true)
 
         case kPiwigoCategorySelectActionSetAutoUploadAlbum:
             // Set view title
@@ -141,6 +135,9 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         default:
             title = ""
         }
+
+        // Navigation "Cancel" button and identifier
+        navigationItem.setRightBarButton(cancelBarButton, animated: true)
 
         // Set colors, fonts, etc.
         applyColorPalette()
@@ -175,6 +172,11 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
+        // Re-enable tollbar items in image preview mode
+        if wantedAction == kPiwigoCategorySelectActionSetAlbumThumbnail {
+            self.delegate?.didSelectCategory(withId: NSNotFound)
+        }
+
         // Unregister palette changes
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
         NotificationCenter.default.removeObserver(self, name: name, object: nil)
@@ -184,14 +186,21 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     func cancelSelect() -> Void {
         switch wantedAction {
         case kPiwigoCategorySelectActionSetDefaultAlbum,
-             kPiwigoCategorySelectActionSetAutoUploadAlbum,
-             kPiwigoCategorySelectActionNone:
-            // Should never be called
+             kPiwigoCategorySelectActionSetAutoUploadAlbum:
+            // Return to Settings
             navigationController?.popViewController(animated: true)
-        default:
-            // Leave Selector and return to albums/images collections
+        
+        case kPiwigoCategorySelectActionMoveAlbum:
+            // Return to Album/Images collection
+            dismiss(animated: true)
+
+        case kPiwigoCategorySelectActionSetAlbumThumbnail:
+            // Re-enable toolbar items and return to albums/images collection
             self.delegate?.didSelectCategory(withId: NSNotFound)
             dismiss(animated: true)
+
+        default:
+            break
         }
     }
 
@@ -420,7 +429,12 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
                 cell.categoryLabel.textColor = UIColor.piwigoColorRightLabel()
             } else {
-                cell.configure(with: categoryData, atDepth: depth, andButtonState: buttonState)
+                // Don't present sub-albums in Recent Albums section
+                if (recentCategories.count > 0) && (indexPath.section == 0) {
+                    cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
+                } else {
+                    cell.configure(with: categoryData, atDepth: depth, andButtonState: buttonState)
+                }
             }
         case kPiwigoCategorySelectActionMoveAlbum:
             // User cannot move album to current parent album or in itself
@@ -434,7 +448,22 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
                 cell.categoryLabel.textColor = UIColor.piwigoColorRightLabel()
             } else {
+                // Don't present sub-albums in Recent Albums section
+                if (recentCategories.count > 0) && (indexPath.section == 0) {
+                    cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
+                } else {
+                    cell.configure(with: categoryData, atDepth: depth, andButtonState: buttonState)
+                }
+            }
+        case kPiwigoCategorySelectActionSetAlbumThumbnail:
+            // The root album is not available
+            if indexPath.section == 0 {
+                cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
+            } else {
                 cell.configure(with: categoryData, atDepth: depth, andButtonState: buttonState)
+            }
+            if categoryData.albumId == 0 {
+                cell.categoryLabel.textColor = UIColor.piwigoColorRightLabel()
             }
         case kPiwigoCategorySelectActionSetAutoUploadAlbum:
             // The root album is not selectable (should not be presented but in case…)
@@ -442,7 +471,12 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
                 cell.categoryLabel.textColor = UIColor.piwigoColorRightLabel()
             } else {
-                cell.configure(with: categoryData, atDepth: depth, andButtonState: buttonState)
+                // Don't present sub-albums in Recent Albums section
+                if (recentCategories.count > 0) && (indexPath.section == 0) {
+                    cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
+                } else {
+                    cell.configure(with: categoryData, atDepth: depth, andButtonState: buttonState)
+                }
             }
         default:
             break
