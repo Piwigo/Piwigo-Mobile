@@ -600,10 +600,9 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
     } else {
         // Fallback on earlier versions
     }
-    CategoryTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    alert.popoverPresentationController.sourceView = cell.contentView;
-    alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionLeft;
-    alert.popoverPresentationController.sourceRect = cell.contentView.frame;
+    alert.popoverPresentationController.sourceView = tableView;
+    alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionLeft | UIPopoverArrowDirectionRight;
+    alert.popoverPresentationController.sourceRect = [tableView rectForRowAtIndexPath:indexPath];
     [self presentViewController:alert animated:YES completion:^{
         // Bugfix: iOS9 - Tint not fully Applied without Reapplying
         alert.view.tintColor = UIColor.piwigoColorOrange;

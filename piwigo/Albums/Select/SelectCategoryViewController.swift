@@ -622,26 +622,6 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         alert.addAction(cancelAction)
         alert.addAction(performAction)
 
-        // Determine position of cell in table view
-        var rectOfCellInTableView = categoriesTableView.rectForRow(at: indexPath)
-
-        // Determine width of text
-        let cell = categoriesTableView.cellForRow(at: indexPath) as? CategoryTableViewCell
-        let textString = cell?.categoryLabel.text
-        let textAttributes = [
-            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
-        ]
-        let context = NSStringDrawingContext()
-        context.minimumScaleFactor = 1.0
-        let textRect = textString?.boundingRect(with: CGSize(width: categoriesTableView.frame.size.width - 30.0,
-                                                             height: CGFloat.greatestFiniteMagnitude),
-                                                options: .usesLineFragmentOrigin,
-                                                attributes: textAttributes, context: context)
-
-        // Calculate horizontal position of popover view
-        rectOfCellInTableView.origin.x -= categoriesTableView.frame.size.width
-            - (textRect?.size.width ?? 0.0) - categoriesTableView.layoutMargins.left - 12
-
         // Present popover view
         alert.view.tintColor = UIColor.piwigoColorOrange()
         if #available(iOS 13.0, *) {
@@ -650,8 +630,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             // Fallback on earlier versions
         }
         alert.popoverPresentationController?.sourceView = categoriesTableView
-        alert.popoverPresentationController?.permittedArrowDirections = .left
-        alert.popoverPresentationController?.sourceRect = rectOfCellInTableView
+        alert.popoverPresentationController?.sourceRect = categoriesTableView.rectForRow(at: indexPath)
+        alert.popoverPresentationController?.permittedArrowDirections = [.left, .right]
         present(alert, animated: true, completion: {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
             alert.view.tintColor = UIColor.piwigoColorOrange()
