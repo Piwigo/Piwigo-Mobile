@@ -1975,6 +1975,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // Save new choice
         Model.sharedInstance()?.defaultPrivacyLevel = privacyLevel
         Model.sharedInstance()?.saveToDisk()
+
+        // Refresh settings
+        let indexPath = IndexPath(row: 1, section: SettingsSection.imageUpload.rawValue)
+        settingsTableView.reloadRows(at: [indexPath], with: .automatic)
     }
 
     

@@ -15,6 +15,7 @@
 #import "AlbumTableViewCell.h"
 #import "AppDelegate.h"
 #import "CategoriesData.h"
+#import "EditImageParamsViewController.h"
 #import "EditImageTextFieldTableViewCell.h"
 #import "EditImagePrivacyTableViewCell.h"
 #import "EditImageTagsTableViewCell.h"

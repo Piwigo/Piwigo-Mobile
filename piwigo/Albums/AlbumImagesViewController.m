@@ -3423,11 +3423,18 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
 
 -(void)didFinishEditingParams:(PiwigoImageData *)params
 {
-    // Update image data
-    [self.albumData updateImage:params];
+    // Were parameters updated?
+    if (params != nil) {
+        // Update image data
+        [self.albumData updateImage:params];
 
-    // Deselect images and leave select mode
-    [self cancelSelect];
+        // Deselect images and leave select mode
+        [self cancelSelect];
+    }
+    else {
+        // Re-enable buttons
+        [self updateButtonsInSelectionMode];
+    }
 }
 
 

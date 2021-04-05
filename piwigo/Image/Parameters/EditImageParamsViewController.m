@@ -53,6 +53,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL shouldUpdateComment;
 @property (nonatomic, strong) UIViewController *hudViewController;
 @property (nonatomic, assign) double nberOfSelectedImages;
+@property (nonatomic, assign) BOOL didUpdateImageParameters;
 
 @end
 
@@ -121,6 +122,7 @@ typedef enum {
     [self.editImageParamsTableView registerNib:[UINib nibWithNibName:@"EditImageShiftPickerTableViewCell" bundle:nil] forCellReuseIdentifier:kShiftPickerTableCell_ID];
 
     // Initialise common image properties, mostly from first supplied image
+    self.didUpdateImageParameters = NO;
     self.commonParameters = [PiwigoImageData new];
 
     // Common title?
@@ -202,6 +204,9 @@ typedef enum {
         break;
     }
     self.shouldUpdateComment = NO;
+
+    // Set colors, fonts, etc.
+    [self applyColorPalette];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -221,9 +226,6 @@ typedef enum {
         CGFloat statBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
         [self.editImageParamsTableView setContentInset:UIEdgeInsetsMake(0.0, 0.0, MAX(0.0, tableHeight + statBarHeight + navBarHeight - viewHeight), 0.0)];
     }
-    
-    // Set colors, fonts, etc.
-    [self applyColorPalette];
 }
 
 -(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
@@ -254,12 +256,25 @@ typedef enum {
     } completion:nil];
 }
 
--(void)viewWillDisappear:(BOOL)animated
+-(void)viewDidDisappear:(BOOL)animated
 {
-    [super viewWillDisappear:animated];
-        
+    [super viewDidDisappear:animated];
+
     // Unregister palette changes
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationPaletteChanged object:nil];
+
+    // Check if the user is still editing parameters
+    if ([self.navigationController.visibleViewController isKindOfClass:[SelectPrivacyViewController class]] ||
+        [self.navigationController.visibleViewController isKindOfClass:[TagsViewController class]]) {
+        return;
+    }
+    
+    // Return updated parameters
+    if (self.didUpdateImageParameters == NO) { self.commonParameters = nil; }
+    if ([self.delegate respondsToSelector:@selector(didFinishEditingParams:)])
+    {
+        [self.delegate didFinishEditingParams:self.commonParameters];
+    }
 }
 
 
@@ -362,13 +377,8 @@ typedef enum {
                                         // Done, hide HUD and dismiss controller
                                         [self hideHUDwithSuccess:YES completion:^{
                                             // Return to image preview or album view
-                                            [self dismissViewControllerAnimated:YES completion:^{
-                                                // Return updated parameters
-                                                if ([self.delegate respondsToSelector:@selector(didFinishEditingParams:)])
-                                                {
-                                                    [self.delegate didFinishEditingParams:self.commonParameters];
-                                                }
-                                            }];
+                                            self.didUpdateImageParameters = YES;
+                                            [self dismissViewControllerAnimated:YES completion:nil];
                                         }];
                                     }
                                 }
@@ -1094,11 +1104,28 @@ typedef enum {
 
 -(void)didSelectPrivacyLevel:(kPiwigoPrivacy)privacyLevel
 {
-	// Update image parameter
-    self.commonParameters.privacyLevel = privacyLevel;
+    // Check if the user decided to leave the Edit mode
+    if (![self.navigationController.visibleViewController isKindOfClass:[EditImageParamsViewController class]]) {
+        // Return updated parameters
+        if (self.didUpdateImageParameters == NO) { self.commonParameters = nil; }
+        if ([self.delegate respondsToSelector:@selector(didFinishEditingParams:)])
+        {
+            [self.delegate didFinishEditingParams:self.commonParameters];
+        }
+        return;
+    }
+
+	// Update image parameter?
+    if (privacyLevel != self.commonParameters.privacyLevel) {
+        // Remember to update image info
+        self.shouldUpdatePrivacyLevel = YES;
+        self.commonParameters.privacyLevel = privacyLevel;
 	
-    // Remember to update image info
-    self.shouldUpdatePrivacyLevel = YES;
+        // Refresh table row
+        NSInteger row = EditImageParamsOrderPrivacy - (self.hasDatePicker == NO ? 1 : 0);
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
+        [self.editImageParamsTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
 }
 
 
@@ -1106,6 +1133,17 @@ typedef enum {
 
 -(void)didSelectTags:(NSArray<Tag *> *)selectedTags
 {
+    // Check if the user decided to leave the Edit mode
+    if (![self.navigationController.visibleViewController isKindOfClass:[EditImageParamsViewController class]]) {
+        // Return updated parameters
+        if (self.didUpdateImageParameters == NO) { self.commonParameters = nil; }
+        if ([self.delegate respondsToSelector:@selector(didFinishEditingParams:)])
+        {
+            [self.delegate didFinishEditingParams:self.commonParameters];
+        }
+        return;
+    }
+
     // Build new list of common tags (i.e. Tag -> PiwigoTagData)
     NSMutableArray<PiwigoTagData *>* newCommonTags = [NSMutableArray new];
     for (Tag *selectedTag in selectedTags) {
@@ -1115,7 +1153,7 @@ typedef enum {
         newTag.lastModified = selectedTag.lastModified;
         newTag.numberOfImagesUnderTag = selectedTag.numberOfImagesUnderTag;
         [newCommonTags addObject:newTag];
-        NSLog(@"==> %@", newTag);
+//        NSLog(@"==> %@", newTag);
     }
 
     // Build list of added tags
@@ -1142,8 +1180,9 @@ typedef enum {
     
     // Do we need to update images?
     if (addedTags.count > 0 || removedTags.count > 0) {
-        // Will change colour of tags
+        // Update common tag list and remember to update image info
         self.shouldUpdateTags = YES;
+        self.commonParameters.tags = newCommonTags;
 
         // Update all images
         NSMutableArray *updatedImages = [[NSMutableArray alloc] init];
@@ -1177,10 +1216,12 @@ typedef enum {
             [updatedImages addObject:imageData];
         }
         self.images = updatedImages;
-    }
 
-    // Update common tag list and remember to update image info
-    self.commonParameters.tags = newCommonTags;
+        // Refresh table row
+        NSInteger row = EditImageParamsOrderTags - (self.hasDatePicker == NO ? 1 : 0);
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
+        [self.editImageParamsTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
 }
 
 
