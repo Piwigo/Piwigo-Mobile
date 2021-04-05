@@ -1548,7 +1548,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             case 2 /* Sort method selection */:
                 let categorySB = UIStoryboard(name: "CategorySortViewController", bundle: nil)
                 guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "CategorySortViewController") as? CategorySortViewController else {return }
-                categoryVC.currentCategorySortType = Model.sharedInstance().defaultSort
                 categoryVC.sortDelegate = self
                 navigationController?.pushViewController(categoryVC, animated: true)
             default:
