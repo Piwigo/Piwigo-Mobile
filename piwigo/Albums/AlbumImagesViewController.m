@@ -1163,23 +1163,7 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
 
 #pragma mark - Buttons in Selection mode
 
--(void)updateButtonsInSelectionMode
-{
-    // Update title
-    switch (self.selectedImageIds.count) {
-        case 0:
-            self.title = NSLocalizedString(@"selectImages", @"Select Photos");
-            break;
-            
-        case 1:
-            self.title = NSLocalizedString(@"selectImageSelected", @"1 Photo Selected");
-            break;
-            
-        default:
-            self.title = [NSString stringWithFormat:NSLocalizedString(@"selectImagesSelected", @"%@ Photos Selected"), @(self.selectedImageIds.count)];
-            break;
-    }
-    
+-(void)initButtonsInSelectionMode {
     // Hide back, Settings, Upload and Home buttons
     [self.navigationItem setHidesBackButton:YES];
     [self.addButton setHidden:YES];
@@ -1196,18 +1180,13 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
     
             // Left side of navigation bar
             [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
-            self.cancelBarButton.enabled = YES;
 
             // Right side of navigation bar
             [self.navigationItem setRightBarButtonItems:@[self.editBarButton] animated:YES];
-            self.editBarButton.enabled = (self.selectedImageIds.count > 0);
 
             // Toolbar
             [self.navigationController setToolbarHidden:NO animated:YES];
             self.toolbarItems = @[self.shareBarButton, self.spaceBetweenButtons, self.moveBarButton, self.spaceBetweenButtons, self.deleteBarButton];
-            self.shareBarButton.enabled = (self.selectedImageIds.count > 0);
-            self.moveBarButton.enabled = (self.selectedImageIds.count > 0);
-            self.deleteBarButton.enabled = (self.selectedImageIds.count > 0);
         }
         else    // iPhone in landscape mode, iPad in any orientation
         {
@@ -1216,11 +1195,84 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
 
             // Left side of navigation bar
             [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton, self.deleteBarButton] animated:YES];
+
+            // Right side of navigation bar
+            [self.navigationItem setRightBarButtonItems:@[self.editBarButton, self.moveBarButton, self.shareBarButton] animated:YES];
+      }
+    }
+    // WRONG =====> 'normal' user with upload access to the current category can edit images
+    // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by' values of images for checking rights
+    else if ([Model sharedInstance].hasNormalRights && [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
+    {
+        // iPhone in portrait mode
+        if (([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) &&
+            (([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeLeft) &&
+             ([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeRight))) {
+                
+                // Left side of navigation bar
+                [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
+
+                // Right side of navigation bar
+                [self.navigationItem setRightBarButtonItems:@[self.editBarButton] animated:YES];
+
+                // Present toolbar
+                [self.navigationController setToolbarHidden:NO animated:YES];
+                self.toolbarItems = @[self.shareBarButton, self.spaceBetweenButtons, self.moveBarButton];
+            }
+        else    // iPhone in landscape mode, iPad in any orientation
+        {
+            // Hide toolbar
+            [self.navigationController setToolbarHidden:YES animated:YES];
+            
+            // Left side of navigation bar
+            [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
+
+            // Right side of navigation bar
+            [self.navigationItem setRightBarButtonItems:@[self.editBarButton, self.moveBarButton, self.shareBarButton] animated:YES];
+        }
+    }
+    else    // No rights => No toolbar, only download button
+    {
+        // Hide toolbar
+        [self.navigationController setToolbarHidden:YES animated:YES];
+
+        // Left side of navigation bar
+        [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
+
+        // Right side of navigation bar
+        [self.navigationItem setRightBarButtonItems:@[self.shareBarButton] animated:YES];
+    }
+    
+    // Set initial status
+    [self updateButtonsInSelectionMode];
+}
+
+-(void)updateButtonsInSelectionMode
+{
+    // User can delete images/videos if he/she has:
+    // — admin rights
+    if ([Model sharedInstance].hasAdminRights)
+    {
+        // iPhone in portrait mode
+        if (([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) &&
+            (([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeLeft) &&
+             ([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeRight))) {
+    
+            // Right side of navigation bar
+            self.editBarButton.enabled = (self.selectedImageIds.count > 0);
+
+            // Toolbar
+            self.shareBarButton.enabled = (self.selectedImageIds.count > 0);
+            self.moveBarButton.enabled = (self.selectedImageIds.count > 0);
+            self.deleteBarButton.enabled = (self.selectedImageIds.count > 0);
+        }
+        else    // iPhone in landscape mode, iPad in any orientation
+        {
+            // Left side of navigation bar
             self.cancelBarButton.enabled = YES;
             self.deleteBarButton.enabled = (self.selectedImageIds.count > 0);
 
             // Right side of navigation bar
-            [self.navigationItem setRightBarButtonItems:@[self.editBarButton, self.moveBarButton, self.shareBarButton] animated:YES];
             self.shareBarButton.enabled = (self.selectedImageIds.count > 0);
             self.moveBarButton.enabled = (self.selectedImageIds.count > 0);
             self.editBarButton.enabled = (self.selectedImageIds.count > 0);
@@ -1236,30 +1288,21 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
              ([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeRight))) {
                 
                 // Left side of navigation bar
-                [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
                 self.cancelBarButton.enabled = YES;
 
                 // Right side of navigation bar
-                [self.navigationItem setRightBarButtonItems:@[self.editBarButton] animated:YES];
                 self.editBarButton.enabled = (self.selectedImageIds.count > 0);
 
                 // Present toolbar
-                [self.navigationController setToolbarHidden:NO animated:YES];
-                self.toolbarItems = @[self.shareBarButton, self.spaceBetweenButtons, self.moveBarButton];
                 self.shareBarButton.enabled = (self.selectedImageIds.count > 0);
                 self.moveBarButton.enabled = (self.selectedImageIds.count > 0);
             }
         else    // iPhone in landscape mode, iPad in any orientation
         {
-            // Hide toolbar
-            [self.navigationController setToolbarHidden:YES animated:YES];
-            
             // Left side of navigation bar
-            [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
             self.cancelBarButton.enabled = YES;
 
             // Right side of navigation bar
-            [self.navigationItem setRightBarButtonItems:@[self.editBarButton, self.moveBarButton, self.shareBarButton] animated:YES];
             self.editBarButton.enabled = (self.selectedImageIds.count > 0);
             self.shareBarButton.enabled = (self.selectedImageIds.count > 0);
             self.moveBarButton.enabled = (self.selectedImageIds.count > 0);
@@ -1267,15 +1310,10 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
     }
     else    // No rights => No toolbar, only download button
     {
-        // Hide toolbar
-        [self.navigationController setToolbarHidden:YES animated:YES];
-
         // Left side of navigation bar
-        [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
         self.cancelBarButton.enabled = YES;
 
         // Right side of navigation bar
-        [self.navigationItem setRightBarButtonItems:@[self.shareBarButton] animated:YES];
         self.shareBarButton.enabled = (self.selectedImageIds.count > 0);
     }
 }
@@ -1955,7 +1993,7 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
         [self.imagesCollection scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1] atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
     
     // Update navigation bar and toolbar
-    [self updateButtonsInSelectionMode];
+    [self initButtonsInSelectionMode];
 }
 
 -(void)cancelSelect
@@ -3190,7 +3228,7 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
                 }
                 [collectionView reloadItemsAtIndexPaths:@[indexPath]];
                 
-                // and display nav buttons
+                // and update nav buttons
                 [self updateButtonsInSelectionMode];
             }
         }
