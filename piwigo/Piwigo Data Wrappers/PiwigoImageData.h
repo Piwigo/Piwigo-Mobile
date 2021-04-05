@@ -90,7 +90,6 @@
 +(kPiwigoImageSize)optimumImageThumbnailSizeForDevice;
 +(NSString*)nameForImageThumbnailSizeType:(kPiwigoImageSize)imageSize withInfo:(BOOL)addInfo;
 
-+(kPiwigoImageSize)getImageSizeForRow:(NSInteger)row;
 +(kPiwigoImageSize)optimumImageSizeForDevice;
 +(NSString*)nameForImageSizeType:(kPiwigoImageSize)imageSize withInfo:(BOOL)addInfo;
 

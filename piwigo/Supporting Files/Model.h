@@ -129,7 +129,7 @@ typedef enum {
 
 // Album/category settings
 @property (nonatomic, assign) NSInteger defaultCategory;
-@property (nonatomic, assign) NSInteger defaultAlbumThumbnailSize;
+@property (nonatomic, assign) kPiwigoImageSize defaultAlbumThumbnailSize;
 @property (nonatomic, strong) NSString *recentCategories;
 @property (nonatomic, assign) NSUInteger maxNberRecentCategories;
 
@@ -156,7 +156,7 @@ typedef enum {
 @property (nonatomic, assign) NSInteger thumbnailsPerRowInPortrait;
 
 // Default image settings
-@property (nonatomic, assign) NSInteger defaultImagePreviewSize;
+@property (nonatomic, assign) kPiwigoImageSize defaultImagePreviewSize;
 @property (nonatomic, assign) BOOL shareMetadataTypeAirDrop;
 @property (nonatomic, assign) BOOL shareMetadataTypeAssignToContact;
 @property (nonatomic, assign) BOOL shareMetadataTypeCopyToPasteboard;

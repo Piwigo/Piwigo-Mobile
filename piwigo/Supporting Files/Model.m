@@ -347,7 +347,7 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
     [saveObject addObject:[NSNumber numberWithInteger:self.uploadChunkSize]];
     [saveObject addObject:[NSNumber numberWithUnsignedInteger:self.stringEncoding]];
     // Added in v2.4.2…
-    [saveObject addObject:[NSNumber numberWithInteger:self.defaultAlbumThumbnailSize]];
+    [saveObject addObject:@(self.defaultAlbumThumbnailSize)];
     // Added in v2.4.5…
     [saveObject addObject:self.recentCategories];
     [saveObject addObject:[NSNumber numberWithUnsignedInteger:self.maxNberRecentCategories]];
@@ -413,7 +413,7 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
 	}
     if(savedData.count > 11) {
         if(savedData.count > 47) {
-            self.defaultImagePreviewSize = [[savedData objectAtIndex:11] integerValue];
+            self.defaultImagePreviewSize = (kPiwigoImageSize)[[savedData objectAtIndex:11] integerValue];
         } else {
             // Just updated to 2.4.2…
             self.defaultImagePreviewSize = [PiwigoImageData optimumImageSizeForDevice];
@@ -632,7 +632,7 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
         self.stringEncoding = NSUTF8StringEncoding;
     }
     if(savedData.count > 47) {
-        self.defaultAlbumThumbnailSize = [[savedData objectAtIndex:47] integerValue];
+        self.defaultAlbumThumbnailSize = (kPiwigoImageSize)[[savedData objectAtIndex:47] integerValue];
     } else {
         self.defaultAlbumThumbnailSize = [PiwigoImageData optimumAlbumThumbnailSizeForDevice];
     }

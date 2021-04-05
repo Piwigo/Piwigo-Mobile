@@ -37,7 +37,7 @@ let kHelpUsTranslatePiwigo = "Piwigo is only partially translated in your langua
 }
 
 @objc
-class SettingsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate, SelectCategoryDelegate, CategorySortDelegate, SelectPrivacyDelegate {
+class SettingsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate {
 
     @objc weak var settingsDelegate: ChangedSettingsDelegate?
 
@@ -116,6 +116,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
         // Table view identifier
         settingsTableView.accessibilityIdentifier = "settings"
+
+        // Set colors, fonts, etc.
+        applyColorPalette()
     }
 
     @objc func applyColorPalette() {
@@ -149,9 +152,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
-        // Set colors, fonts, etc.
-        applyColorPalette()
 
         // Set navigation buttons
         navigationItem.setLeftBarButtonItems([doneBarButton].compactMap { $0 }, animated: true)
@@ -556,7 +556,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let defaultAlbum = PiwigoImageData.name(forAlbumThumbnailSizeType: kPiwigoImageSize(rawValue: kPiwigoImageSize.RawValue(Model.sharedInstance().defaultAlbumThumbnailSize)) as kPiwigoImageSize, withInfo: false)!
+                let defaultAlbum = PiwigoImageData.name(forAlbumThumbnailSizeType: Model.sharedInstance().defaultAlbumThumbnailSize, withInfo: false)!
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 var title: String
                 if view.bounds.size.width > 375 {
@@ -719,7 +719,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let defaultSize = PiwigoImageData.name(forImageSizeType: kPiwigoImageSize(rawValue: kPiwigoImageSize.RawValue(Model.sharedInstance().defaultImagePreviewSize)) as kPiwigoImageSize, withInfo: false)!
+                let defaultSize = PiwigoImageData.name(forImageSizeType: Model.sharedInstance().defaultImagePreviewSize, withInfo: false)!
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 var title: String
                 if view.bounds.size.width > 375 {
@@ -1505,7 +1505,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         return footer
     }
 
-// MARK: - UITableViewDelegate Methods
+    // MARK: - UITableViewDelegate Methods
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
@@ -1544,6 +1544,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             case 1 /* Thumbnail file selection */:
                 let defaultThumbnailSizeSB = UIStoryboard(name: "DefaultAlbumThumbnailSizeViewController", bundle: nil)
                 guard let defaultThumbnailSizeVC = defaultThumbnailSizeSB.instantiateViewController(withIdentifier: "DefaultAlbumThumbnailSizeViewController") as? DefaultAlbumThumbnailSizeViewController else { return }
+                defaultThumbnailSizeVC.delegate = self
                 navigationController?.pushViewController(defaultThumbnailSizeVC, animated: true)
             case 2 /* Sort method selection */:
                 let categorySB = UIStoryboard(name: "CategorySortViewController", bundle: nil)
@@ -1560,10 +1561,12 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             case 0 /* Thumbnail file selection */:
                 let defaultThumbnailSizeSB = UIStoryboard(name: "DefaultImageThumbnailSizeViewController", bundle: nil)
                 guard let defaultThumbnailSizeVC = defaultThumbnailSizeSB.instantiateViewController(withIdentifier: "DefaultImageThumbnailSizeViewController") as? DefaultImageThumbnailSizeViewController else { return }
+                defaultThumbnailSizeVC.delegate = self
                 navigationController?.pushViewController(defaultThumbnailSizeVC, animated: true)
             case 3 /* Image file selection */:
                 let defaultImageSizeSB = UIStoryboard(name: "DefaultImageSizeViewController", bundle: nil)
                 guard let defaultImageSizeVC = defaultImageSizeSB.instantiateViewController(withIdentifier: "DefaultImageSizeViewController") as? DefaultImageSizeViewController else { return }
+                defaultImageSizeVC.delegate = self
                 navigationController?.pushViewController(defaultImageSizeVC, animated: true)
             case 4 /* Share image metadata options */:
                 let metadataOptionsSB = UIStoryboard(name: "ShareMetadataViewController", bundle: nil)
@@ -1786,8 +1789,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
 
     
-// MARK: - Actions Methods
-
+    // MARK: - Actions Methods
     func loginLogout() {
         if Model.sharedInstance().username.count > 0 {
             // Ask user for confirmation
@@ -1929,7 +1931,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
 
     
-// MARK: - UITextFieldDelegate Methods
+    // MARK: - UITextFieldDelegate Methods
     func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
         return true
     }
@@ -1953,53 +1955,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
 
     
-// MARK: - SelectCategoryDelegate Methods
-    func didSelectCategory(withId categoryId: Int) {
-        // Do nothing if new default album is unknown or unchanged
-        if categoryId == NSNotFound ||
-            categoryId == Model.sharedInstance()?.defaultCategory
-        { return }
-
-        // Save new choice
-        Model.sharedInstance()?.defaultCategory = categoryId
-        Model.sharedInstance()?.saveToDisk()
-
-        // Will load default album view when dismissing this view
-        settingsDelegate?.didChangeDefaultAlbum()
-    }
-
-    
-    // MARK: - SelectedPrivacyDelegate Methods
-    func didSelectPrivacyLevel(_ privacyLevel: kPiwigoPrivacy) {
-        // Do nothing if privacy level is unchanged
-        if privacyLevel == Model.sharedInstance()?.defaultPrivacyLevel { return }
-        
-        // Save new choice
-        Model.sharedInstance()?.defaultPrivacyLevel = privacyLevel
-        Model.sharedInstance()?.saveToDisk()
-
-        // Refresh settings
-        let indexPath = IndexPath(row: 1, section: SettingsSection.imageUpload.rawValue)
-        settingsTableView.reloadRows(at: [indexPath], with: .automatic)
-    }
-
-    
-    // MARK: - CategorySortDelegate Methods
-    func didSelectCategorySortType(_ sortType: kPiwigoSort) {
-        // Do nothing if privacy level is unchanged
-        if sortType == Model.sharedInstance()?.defaultSort { return }
-        
-        // Save new choice
-        Model.sharedInstance()?.defaultSort = sortType
-        Model.sharedInstance()?.saveToDisk()
-
-        // Refresh settings
-        let indexPath = IndexPath(row: 2, section: SettingsSection.albums.rawValue)
-        settingsTableView.reloadRows(at: [indexPath], with: .automatic)
-    }
-
-    
-// MARK: - Get Server Infos
+    // MARK: - Get Server Infos
         
     func getInfos() {
         AlbumService.getInfosOnCompletion({ task, infos in
@@ -2042,5 +1998,107 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             self.nberCategories = ""
             self.nberImages = ""
         })
+    }
+}
+
+
+// MARK: - SelectCategoryDelegate Methods
+extension SettingsViewController: SelectCategoryDelegate {
+    func didSelectCategory(withId categoryId: Int) {
+        // Do nothing if new default album is unknown or unchanged
+        if categoryId == NSNotFound ||
+            categoryId == Model.sharedInstance()?.defaultCategory
+        { return }
+
+        // Save new choice
+        Model.sharedInstance()?.defaultCategory = categoryId
+        Model.sharedInstance()?.saveToDisk()
+
+        // Will load default album view when dismissing this view
+        settingsDelegate?.didChangeDefaultAlbum()
+    }
+}
+
+
+// MARK: - DefaultAlbumThumbnailSizeDelegate Methods
+extension SettingsViewController: DefaultAlbumThumbnailSizeDelegate {
+    func didSelectAlbumDefaultThumbnailSize(_ thumbnailSize: kPiwigoImageSize) {
+        // Do nothing if size is unchanged
+        if thumbnailSize == Model.sharedInstance()?.defaultAlbumThumbnailSize { return }
+        
+        // Save new choice
+        Model.sharedInstance()?.defaultAlbumThumbnailSize = thumbnailSize
+        Model.sharedInstance()?.saveToDisk()
+
+        // Refresh settings
+        let indexPath = IndexPath(row: 1, section: SettingsSection.albums.rawValue)
+        settingsTableView.reloadRows(at: [indexPath], with: .automatic)
+    }
+}
+
+
+// MARK: - CategorySortDelegate Methods
+extension SettingsViewController: CategorySortDelegate {
+    func didSelectCategorySortType(_ sortType: kPiwigoSort) {
+        // Do nothing if sort type is unchanged
+        if sortType == Model.sharedInstance()?.defaultSort { return }
+        
+        // Save new choice
+        Model.sharedInstance()?.defaultSort = sortType
+        Model.sharedInstance()?.saveToDisk()
+
+        // Refresh settings
+        let indexPath = IndexPath(row: 2, section: SettingsSection.albums.rawValue)
+        settingsTableView.reloadRows(at: [indexPath], with: .automatic)
+    }
+}
+
+
+// MARK: - DefaultImageThumbnailSizeDelegate Methods
+extension SettingsViewController: DefaultImageThumbnailSizeDelegate {
+    func didSelectImageDefaultThumbnailSize(_ thumbnailSize: kPiwigoImageSize) {
+        // Do nothing if size is unchanged
+        if thumbnailSize == Model.sharedInstance()?.defaultThumbnailSize { return }
+        
+        // Save new choice
+        Model.sharedInstance()?.defaultThumbnailSize = thumbnailSize
+        Model.sharedInstance()?.saveToDisk()
+
+        // Refresh settings
+        let indexPath = IndexPath(row: 0, section: SettingsSection.images.rawValue)
+        settingsTableView.reloadRows(at: [indexPath], with: .automatic)
+    }
+}
+
+// MARK: - DefaultImageSizeDelegate Methods
+extension SettingsViewController: DefaultImageSizeDelegate {
+    func didSelectImageDefaultSize(_ imageSize: kPiwigoImageSize) {
+        // Do nothing if size is unchanged
+        if imageSize == Model.sharedInstance()?.defaultImagePreviewSize { return }
+        
+        // Save new choice
+        Model.sharedInstance()?.defaultImagePreviewSize = imageSize
+        Model.sharedInstance()?.saveToDisk()
+
+        // Refresh settings
+        let indexPath = IndexPath(row: 3, section: SettingsSection.images.rawValue)
+        settingsTableView.reloadRows(at: [indexPath], with: .automatic)
+    }
+}
+
+
+// MARK: - SelectedPrivacyDelegate Methods
+extension SettingsViewController: SelectPrivacyDelegate {
+    func didSelectPrivacyLevel(_ privacyLevel: kPiwigoPrivacy) {
+        // Do nothing if privacy level is unchanged
+        if privacyLevel == Model.sharedInstance()?.defaultPrivacyLevel { return }
+        
+        // Save new choice
+        Model.sharedInstance()?.defaultPrivacyLevel = privacyLevel
+        Model.sharedInstance()?.saveToDisk()
+
+        // Refresh settings
+        let indexPath = IndexPath(row: 1, section: SettingsSection.imageUpload.rawValue)
+        settingsTableView.reloadRows(at: [indexPath], with: .automatic)
     }
 }
