@@ -700,7 +700,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 self.currentCategoryData.parentAlbumId = parentCatData.albumId
                 catToUpdate.append(self.currentCategoryData)
 
-                // Update cache
+                // Update cache (will refresh album/images view)
                 CategoriesData.sharedInstance().updateCategories(catToUpdate)
                 self.hideHUDwithSuccess(true, completion: {
                     let deadlineTime = DispatchTime.now() + .milliseconds(500)
