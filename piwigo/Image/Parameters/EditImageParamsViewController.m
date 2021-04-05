@@ -257,13 +257,7 @@ typedef enum {
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    
-    // Return updated parameters or nil
-    if ([self.delegate respondsToSelector:@selector(didFinishEditingParams:)])
-    {
-        [self.delegate didFinishEditingParams:self.commonParameters];
-    }
-    
+        
     // Unregister palette changes
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationPaletteChanged object:nil];
 }
@@ -368,7 +362,13 @@ typedef enum {
                                         // Done, hide HUD and dismiss controller
                                         [self hideHUDwithSuccess:YES completion:^{
                                             // Return to image preview or album view
-                                            [self dismissViewControllerAnimated:YES completion:nil];
+                                            [self dismissViewControllerAnimated:YES completion:^{
+                                                // Return updated parameters
+                                                if ([self.delegate respondsToSelector:@selector(didFinishEditingParams:)])
+                                                {
+                                                    [self.delegate didFinishEditingParams:self.commonParameters];
+                                                }
+                                            }];
                                         }];
                                     }
                                 }
