@@ -16,7 +16,7 @@ protocol SelectCategoryDelegate: NSObjectProtocol {
 }
 
 @objc
-class SelectCategoryViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, CategoryCellDelegate {
+class SelectCategoryViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     @objc weak var delegate: SelectCategoryDelegate?
     
@@ -988,59 +988,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     }
 
     
-    // MARK: - CategoryCellDelegate Methods
+    // MARK: - Sub-Categories Addition/Removal
     
-    func tappedDisclosure(of categoryTapped: PiwigoAlbumData) {
-        
-        // Build list of categories from list of known categories
-        let allCategories: [PiwigoAlbumData] = CategoriesData.sharedInstance().allCategories
-        var subcategories: [PiwigoAlbumData] = []
-
-        // Look for known requested sub-categories
-        subcategories.append(contentsOf: allCategories.filter({ $0.parentAlbumId == categoryTapped.albumId })
-                                                      .filter({ $0.albumId != currentCategoryId }))
-
-        // Look for sub-categories which are already displayed
-        var nberDisplayedSubCategories = 0
-        subcategories.forEach { category in
-            nberDisplayedSubCategories += categories.filter({ $0.albumId == category.albumId}).count
-        }
-
-        // This test depends on the caching option loadAllCategoryInfo:
-        // => if YES: compare number of sub-albums inside category to be closed
-        // => if NO: compare number of sub-sub-albums inside category to be closed
-        if (subcategories.count > 0) && (subcategories.count == nberDisplayedSubCategories) {
-            // User wants to hide sub-categories
-            removeSubCategories(toCategoryID: categoryTapped)
-        } else if subcategories.count > 0 {
-            // Sub-categories are already known
-            addSubCaterories(toCategoryID: categoryTapped)
-        } else {
-            // Sub-categories are not known
-            //        NSLog(@"subCategories => getAlbumListForCategory(%ld,NO,NO)", (long)categoryTapped.albumId);
-
-            // Show loading HD
-            showHUDwithTitle(NSLocalizedString("loadingHUD_label", comment: "Loading…"))
-
-            AlbumService.getAlbumList(forCategory: categoryTapped.albumId,
-                                      usingCache: Model.sharedInstance().loadAllCategoryInfo,
-                                      inRecursiveMode: false,
-                                      onCompletion: { task, albums in
-                                        // Hide loading HUD
-                                        self.hideHUD {
-                                            // Add sub-categories
-                                            self.addSubCaterories(toCategoryID: categoryTapped)
-                                        }
-                                    },
-                                      onFailure: { task, error in
-                                        // Hide loading HUD
-                                        self.hideHUD {
-                                            print(String(format: "getAlbumListForCategory: %@", error?.localizedDescription ?? ""))
-                                        }
-                                    })
-        }
-    }
-
     func addSubCaterories(toCategoryID categoryTapped: PiwigoAlbumData) {
         // Build list of categories from complete known list
         let allCategories: [PiwigoAlbumData] = CategoriesData.sharedInstance().allCategories
@@ -1130,6 +1079,62 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         } else {
             // Reload table view
             categoriesTableView.reloadData()
+        }
+    }
+}
+
+
+// MARK: - CategoryCellDelegate Methods
+extension SelectCategoryViewController: CategoryCellDelegate {
+    // Called when the user taps a sub-category button
+    func tappedDisclosure(of categoryTapped: PiwigoAlbumData) {
+        
+        // Build list of categories from list of known categories
+        let allCategories: [PiwigoAlbumData] = CategoriesData.sharedInstance().allCategories
+        var subcategories: [PiwigoAlbumData] = []
+
+        // Look for known requested sub-categories
+        subcategories.append(contentsOf: allCategories.filter({ $0.parentAlbumId == categoryTapped.albumId })
+                                                      .filter({ $0.albumId != currentCategoryId }))
+
+        // Look for sub-categories which are already displayed
+        var nberDisplayedSubCategories = 0
+        subcategories.forEach { category in
+            nberDisplayedSubCategories += categories.filter({ $0.albumId == category.albumId}).count
+        }
+
+        // This test depends on the caching option loadAllCategoryInfo:
+        // => if YES: compare number of sub-albums inside category to be closed
+        // => if NO: compare number of sub-sub-albums inside category to be closed
+        if (subcategories.count > 0) && (subcategories.count == nberDisplayedSubCategories) {
+            // User wants to hide sub-categories
+            removeSubCategories(toCategoryID: categoryTapped)
+        } else if subcategories.count > 0 {
+            // Sub-categories are already known
+            addSubCaterories(toCategoryID: categoryTapped)
+        } else {
+            // Sub-categories are not known
+            //        NSLog(@"subCategories => getAlbumListForCategory(%ld,NO,NO)", (long)categoryTapped.albumId);
+
+            // Show loading HD
+            showHUDwithTitle(NSLocalizedString("loadingHUD_label", comment: "Loading…"))
+
+            AlbumService.getAlbumList(forCategory: categoryTapped.albumId,
+                                      usingCache: Model.sharedInstance().loadAllCategoryInfo,
+                                      inRecursiveMode: false,
+                                      onCompletion: { task, albums in
+                                        // Hide loading HUD
+                                        self.hideHUD {
+                                            // Add sub-categories
+                                            self.addSubCaterories(toCategoryID: categoryTapped)
+                                        }
+                                    },
+                                      onFailure: { task, error in
+                                        // Hide loading HUD
+                                        self.hideHUD {
+                                            print(String(format: "getAlbumListForCategory: %@", error?.localizedDescription ?? ""))
+                                        }
+                                    })
         }
     }
 }
