@@ -1970,8 +1970,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
 
     
-// MARK: - SelectedPrivacyDelegate Methods
+    // MARK: - SelectedPrivacyDelegate Methods
     func didSelectPrivacyLevel(_ privacyLevel: kPiwigoPrivacy) {
+        // Do nothing if privacy level is unchanged
+        if privacyLevel == Model.sharedInstance()?.defaultPrivacyLevel { return }
+        
         // Save new choice
         Model.sharedInstance()?.defaultPrivacyLevel = privacyLevel
         Model.sharedInstance()?.saveToDisk()
@@ -1982,11 +1985,18 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
 
     
-// MARK: - CategorySortDelegate Methods
+    // MARK: - CategorySortDelegate Methods
     func didSelectCategorySortType(_ sortType: kPiwigoSort) {
+        // Do nothing if privacy level is unchanged
+        if sortType == Model.sharedInstance()?.defaultSort { return }
+        
         // Save new choice
         Model.sharedInstance()?.defaultSort = sortType
         Model.sharedInstance()?.saveToDisk()
+
+        // Refresh settings
+        let indexPath = IndexPath(row: 2, section: SettingsSection.albums.rawValue)
+        settingsTableView.reloadRows(at: [indexPath], with: .automatic)
     }
 
     

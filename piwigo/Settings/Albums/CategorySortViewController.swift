@@ -117,8 +117,8 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
 
         // Return selected album
         sortDelegate?.didSelectCategorySortType(currentCategorySortType)
@@ -231,8 +231,12 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
+        // Did the user change the sort option
+        if kPiwigoSort(rawValue: UInt32(indexPath.row)) == currentCategorySortType { return }
+
+        // Update choice
+        tableView.cellForRow(at: IndexPath(row: Int(currentCategorySortType.rawValue), section: 0))?.accessoryType = .none
         currentCategorySortType = kPiwigoSort(rawValue: UInt32(indexPath.row))
-        tableView.reloadData()
-        navigationController?.popViewController(animated: true)
+        tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
     }
 }
