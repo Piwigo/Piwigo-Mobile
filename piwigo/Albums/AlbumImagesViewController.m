@@ -2328,8 +2328,8 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
         }];
     
     UIAlertAction* removeImagesAction = [UIAlertAction
-        actionWithTitle:NSLocalizedString(@"deleteCategory_orphanedImages", @"Delete Orphans")
-        style:UIAlertActionStyleDestructive
+        actionWithTitle: self.selectedImagesToDelete.count == 0 ? NSLocalizedString(@"removeSingleImage_title", @"Remove from Album") : NSLocalizedString(@"deleteCategory_orphanedImages", @"Delete Orphans")
+        style: self.selectedImagesToDelete.count == 0 ? UIAlertActionStyleDefault : UIAlertActionStyleDestructive
         handler:^(UIAlertAction * action) {
 
             // Display HUD during server update
@@ -2337,12 +2337,12 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
                                      + (self.selectedImagesToDelete.count > 0);
             if (self.totalNumberOfImages > 1) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [self showHUDwithTitle:NSLocalizedString(@"deleteSeveralImagesHUD_deleting", @"Deleting Images…") inMode:MBProgressHUDModeAnnularDeterminate withDetailLabel:NO];
+                    [self showHUDwithTitle: self.selectedImagesToDelete.count == 0 ? NSLocalizedString(@"removeSeveralImagesHUD_removing", @"Removing Photos…") :NSLocalizedString(@"deleteSeveralImagesHUD_deleting", @"Deleting Images…") inMode:MBProgressHUDModeAnnularDeterminate withDetailLabel:NO];
                 });
             }
             else {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [self showHUDwithTitle:NSLocalizedString(@"deleteSingleImageHUD_deleting", @"Deleting Image…") inMode:MBProgressHUDModeIndeterminate withDetailLabel:NO];
+                    [self showHUDwithTitle: self.selectedImagesToDelete.count == 0 ? NSLocalizedString(@"removeSingleImageHUD_removing", @"Removing Photo…") : NSLocalizedString(@"deleteSingleImageHUD_deleting", @"Deleting Image…") inMode:MBProgressHUDModeIndeterminate withDetailLabel:NO];
                 });
             }
 
