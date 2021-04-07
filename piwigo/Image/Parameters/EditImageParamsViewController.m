@@ -50,6 +50,8 @@ typedef enum {
 @property (nonatomic, strong) NSDate *oldCreationDate;
 @property (nonatomic, assign) BOOL shouldUpdatePrivacyLevel;
 @property (nonatomic, assign) BOOL shouldUpdateTags;
+@property (nonatomic, strong) NSMutableArray<PiwigoTagData *>* addedTags;
+@property (nonatomic, strong) NSMutableArray<PiwigoTagData *>* removedTags;
 @property (nonatomic, assign) BOOL shouldUpdateComment;
 @property (nonatomic, strong) UIViewController *hudViewController;
 @property (nonatomic, assign) double nberOfSelectedImages;
@@ -176,11 +178,11 @@ typedef enum {
     self.shouldUpdatePrivacyLevel = NO;
 
     // Common tags?
-    self.commonParameters.tags = [NSArray arrayWithArray:self.images[0].tags];
-    NSMutableArray *newTags = [[NSMutableArray alloc] initWithArray:self.commonParameters.tags];
+    self.commonParameters.tags = [self.images[0].tags mutableCopy];
+    NSMutableArray<PiwigoTagData *> *newTags = [[NSMutableArray<PiwigoTagData *> alloc] initWithArray:self.commonParameters.tags];
     for (PiwigoImageData *imageData in self.images) {
         // Loop over the common tags
-        NSMutableArray *tempTagList = [[NSMutableArray alloc] initWithArray:newTags];
+        NSMutableArray<PiwigoTagData *> *tempTagList = [[NSMutableArray<PiwigoTagData *> alloc] initWithArray:newTags];
         for (PiwigoTagData *tag in tempTagList) {
             // Remove tags not belonging to other images
             if (![[TagsData sharedInstance] listOfTags:imageData.tags containsTag:tag]) [newTags removeObject:tag];
@@ -325,6 +327,35 @@ typedef enum {
         // Update image privacy level?
         if ((self.commonParameters.privacyLevel != kPiwigoPrivacyUnknown) && self.shouldUpdatePrivacyLevel) {
             imageData.privacyLevel = self.commonParameters.privacyLevel;
+        }
+        
+        // Update image tags?
+        if ((self.commonParameters.tags) && self.shouldUpdateTags) {
+            // Retrieve tags of current image
+            NSMutableArray<PiwigoTagData *> *imageTags = [imageData.tags mutableCopy];
+            
+            // Loop over the removed tags
+            for (PiwigoTagData *tag in self.removedTags) {
+                NSInteger indexOfExistingItem = [imageTags indexOfObjectPassingTest:^BOOL(PiwigoTagData * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                    return obj.tagId == tag.tagId;
+                }];
+                if (indexOfExistingItem != NSNotFound) {
+                    [imageTags removeObjectAtIndex:indexOfExistingItem];
+                }
+            }
+
+            // Loop over the added tags
+            for (PiwigoTagData *tag in self.addedTags) {
+                NSInteger indexOfExistingItem = [imageTags indexOfObjectPassingTest:^BOOL(PiwigoTagData * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                    return obj.tagId == tag.tagId;
+                }];
+                if (indexOfExistingItem == NSNotFound) {
+                    [imageTags addObject:tag];
+                }
+            }
+
+            // Append image data
+            imageData.tags = [imageTags copy];
         }
 
         // Update image description?
@@ -1157,65 +1188,32 @@ typedef enum {
     }
 
     // Build list of added tags
-    NSMutableArray<PiwigoTagData *>* addedTags = [NSMutableArray new];
+    self.addedTags = [NSMutableArray new];
     for (PiwigoTagData *tag in newCommonTags) {
         NSInteger indexOfExistingTag = [self.commonParameters.tags indexOfObjectPassingTest:^BOOL(PiwigoTagData * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             return obj.tagId == tag.tagId;
         }];
         if (indexOfExistingTag == NSNotFound) {
-            [addedTags addObject:tag];
+            [self.addedTags addObject:tag];
         }
     }
 
     // Build list of removed tags
-    NSMutableArray<PiwigoTagData *>* removedTags = [NSMutableArray new];
+    self.removedTags = [NSMutableArray new];
     for (PiwigoTagData *tag in self.commonParameters.tags) {
         NSInteger indexOfExistingTag = [newCommonTags indexOfObjectPassingTest:^BOOL(PiwigoTagData * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             return obj.tagId == tag.tagId;
         }];
         if (indexOfExistingTag == NSNotFound) {
-            [removedTags addObject:tag];
+            [self.removedTags addObject:tag];
         }
     }
     
     // Do we need to update images?
-    if (addedTags.count > 0 || removedTags.count > 0) {
+    if (self.addedTags.count > 0 || self.removedTags.count > 0) {
         // Update common tag list and remember to update image info
         self.shouldUpdateTags = YES;
         self.commonParameters.tags = newCommonTags;
-
-        // Update all images
-        NSMutableArray *updatedImages = [[NSMutableArray alloc] init];
-        for (PiwigoImageData *imageData in self.images)
-        {
-            // Retrieve tags of current image
-            NSMutableArray<PiwigoTagData *> *imageTags = [imageData.tags mutableCopy];
-            
-            // Loop over the removed tags
-            for (PiwigoTagData *tag in removedTags) {
-                NSInteger indexOfExistingItem = [imageTags indexOfObjectPassingTest:^BOOL(PiwigoTagData * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                    return obj.tagId == tag.tagId;
-                }];
-                if (indexOfExistingItem != NSNotFound) {
-                    [imageTags removeObjectAtIndex:indexOfExistingItem];
-                }
-            }
-
-            // Loop over the added tags
-            for (PiwigoTagData *tag in addedTags) {
-                NSInteger indexOfExistingItem = [imageTags indexOfObjectPassingTest:^BOOL(PiwigoTagData * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                    return obj.tagId == tag.tagId;
-                }];
-                if (indexOfExistingItem == NSNotFound) {
-                    [imageTags addObject:tag];
-                }
-            }
-
-            // Append image data
-            imageData.tags = [imageTags copy];
-            [updatedImages addObject:imageData];
-        }
-        self.images = updatedImages;
 
         // Refresh table row
         NSInteger row = EditImageParamsOrderTags - (self.hasDatePicker == NO ? 1 : 0);
