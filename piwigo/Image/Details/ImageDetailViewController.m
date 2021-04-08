@@ -17,14 +17,14 @@
 #import "ImageScrollView.h"
 #import "ImagesCollection.h"
 #import "Model.h"
-#import "MoveImageViewController.h"
 #import "MBProgressHUD.h"
 #import "SAMKeychain.h"
 
 NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedImage";
 NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationUpdateImageFileName";
+NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage";
 
-@interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate, EditImageParamsDelegate, SelectCategoryDelegate, MoveImageDelegate, ShareImageActivityItemProviderDelegate, UIToolbarDelegate>
+@interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate, EditImageParamsDelegate, SelectCategoryDelegate, SelectCategoryImageCopiedDelegate, SelectCategoryImageRemovedDelegate, ShareImageActivityItemProviderDelegate, UIToolbarDelegate>
 
 @property (nonatomic, assign) NSInteger categoryId;
 @property (nonatomic, strong) PiwigoImageData *imageData;
@@ -49,7 +49,8 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
 
 @implementation ImageDetailViewController
 
--(instancetype)initWithCategoryId:(NSInteger)categoryId atImageIndex:(NSInteger)imageIndex withArray:(NSArray *)arrayOfImages
+-(instancetype)initWithCategoryId:(NSInteger)categoryId atImageIndex:(NSInteger)imageIndex
+                        withArray:(NSArray<PiwigoImageData *> *)arrayOfImages
 {
 	self = [super initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
 	if(self)
@@ -98,7 +99,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
         self.moveBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply target:self action:@selector(addImageToCategory)];
         self.moveBarButton.tintColor = [UIColor piwigoColorOrange];
         [self.moveBarButton setAccessibilityIdentifier:@"move"];
-//        self.favoriteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageNotFavorite"] landscapeImagePhone:[UIImage imageNamed:@"imageNotFavoriteCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addImageToFavorites)];
+//        self.favoriteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageNotFavorite"] landscapeImagePhone:[UIImage imageNamed:@"imageNotFavoriteCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addToFavoritesImageWithId)];
 //        self.favoriteBarButton.tintColor = [UIColor piwigoColorOrange];
 //        [self.favoriteBarButton setAccessibilityIdentifier:@"favorite"];
         self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
@@ -483,14 +484,6 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
         return nil;
     }
     
-    // Check to see if they've scrolled beyond a certain threshold, then load more image data
-//    if ((currentIndex >= self.images.count - 21) && (self.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
-//    {
-//        if([self.imgDetailDelegate respondsToSelector:@selector(needToLoadMoreImages)])
-//        {
-//            [self.imgDetailDelegate needToLoadMoreImages];
-//        }
-//    }
     NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.view imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
     if ((currentIndex > (self.images.count - roundf(imagesPerPage / 3.0))) &&
         (self.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
@@ -501,19 +494,6 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
         }
     }
 
-    // Does the needed image preview controller already exist?
-//    for (UIViewController *viewController in [pageViewController viewControllers]) {
-//        // Only consider view controllers of the right class!
-//        if ([viewController isKindOfClass:[ImagePreviewViewController class]]) {
-//            ImagePreviewViewController *imageViewCtrl = (ImagePreviewViewController *)viewController;
-//            // Return if exists
-//            if (imageViewCtrl.imageIndex == currentIndex + 1) {
-//                NSLog(@"=> Preview view controller for next image already exists");
-//                return imageViewCtrl;
-//            }
-//        }
-//    }
-    
     // Retrieve data of next image (may be incomplete)
     PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex + 1];
 
@@ -522,6 +502,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     ImagePreviewViewController *nextImage = [ImagePreviewViewController new];
     nextImage.imageLoaded = NO;
     nextImage.imageIndex = currentIndex + 1;
+//    nextImage.imagePreviewDelegate = self;
     [nextImage setImageScrollViewWithImageData:imageData];
     return nextImage;
 }
@@ -560,6 +541,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     ImagePreviewViewController *prevImage = [ImagePreviewViewController new];
     prevImage.imageLoaded = NO;
     prevImage.imageIndex = currentIndex - 1;
+//    prevImage.imagePreviewDelegate = self;
     [prevImage setImageScrollViewWithImageData:imageData];
     return prevImage;
 }
@@ -612,18 +594,17 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
         currentIndex = self.images.count - 1;
     }
 
-    // Retrieve image data in case user will want to copy, edit, move, etc. the image
-//    PiwigoImageData *imageData = [self.images objectAtIndex:currentIndex];
-//    if (self.imageData.fileSize == NSNotFound) {
-//        [self retrieveCompleteImageDataOfImage:imageData];
-//    }
-
     self.imageData = [self.images objectAtIndex:currentIndex];
     [self setTitleViewFromImageData];
     if(self.imageData.isVideo)
     {
         self.progressBar.hidden = YES;
     }
+}
+
+- (NSInteger)presentationIndexForPageViewController:(UIPageViewController *)pageViewController
+{
+    return [self indexOfSelectedImage];
 }
 
 -(NSInteger)indexOfSelectedImage
@@ -653,7 +634,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     EditImageParamsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageParams"];
     editImageVC.images = @[self.imageData];
     editImageVC.delegate = self;
-    [self pushView:editImageVC];
+    [self pushView:editImageVC forButton:self.editBarButton];
 }
 
 
@@ -718,7 +699,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
 {
     // Display HUD during deletion
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self showHUDwithTitle:NSLocalizedString(@"removeSingleImageHUD_removing", @"Removing Image…") withProgress:NO];
+        [self showHUDwithTitle:NSLocalizedString(@"removeSingleImageHUD_removing", @"Removing Photo…") withProgress:NO];
     });
     
     // Update image category list
@@ -726,7 +707,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     [categoryIds removeObject:@(self.categoryId)];
     
     // Send request to Piwigo server
-    [ImageService setCategoriesForImage:self.imageData
+    [ImageService setCategoriesForImageWithId:self.imageData.imageId
          withCategories:categoryIds
              onProgress:nil
            OnCompletion:^(NSURLSessionTask *task, BOOL updatedSuccessfully) {
@@ -739,30 +720,13 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
                     // Remove image from cache and update UI
                     [[CategoriesData sharedInstance] removeImage:self.imageData fromCategory:[NSString stringWithFormat:@"%ld", (long)self.categoryId]];
 
-                    // Notify the Upload database that this image has been removed from this category
-                    if (categoryIds.count > 0) {
-                        NSDictionary *userInfo = @{@"albumId" : @([categoryIds[0] longValue]),
-                                                   @"imageId" : @(self.imageData.imageId)};
-                        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationMovedImage object:nil userInfo:userInfo];
-                    }
-
                     // Hide HUD
                     [self hideHUDwithSuccess:YES completion:^{
                         self.hudViewController = nil;
                     }];
 
-                    // Return to album view
-                    NSInteger index = 0;
-                    for (UIViewController *viewController in self.viewControllers) {
-                        // Look for view controller of the right class!
-                        if ([viewController isKindOfClass:[ImagePreviewViewController class]]) {
-                            ImagePreviewViewController *imageViewCtrl = (ImagePreviewViewController *)viewController;
-                            // Return if exists
-                            index = imageViewCtrl.imageIndex;
-                            break;
-                        }
-                    }
-                    [self didRemoveImage:self.imageData atIndex:index];
+                    // Dispaly preceding/next image or return to album view
+                    [self didRemoveImageWithId:self.imageData.imageId];
                }
                else {
                     [self hideHUDwithSuccess:NO completion:^{
@@ -795,8 +759,8 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
                      self.hudViewController = nil;
                  }];
 
-                 // Return to album view
-                 [self didRemoveImage:self.imageData atIndex:[self indexOfSelectedImage]];
+                 // Dispaly preceding/next image or return to album view
+                 [self didRemoveImageWithId:self.imageData.imageId];
              }
                     onFailure:^(NSURLSessionTask *task, NSError *error) {
                  [self hideHUDwithSuccess:NO completion:^{
@@ -998,7 +962,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     SelectCategoryViewController *setThumbVC = [setThumbSB instantiateViewControllerWithIdentifier:@"SelectCategoryViewController"];
     [setThumbVC setInputWithParameter:self.imageData for:kPiwigoCategorySelectActionSetAlbumThumbnail];
     setThumbVC.delegate = self;
-    [self pushView:setThumbVC];
+    [self pushView:setThumbVC forButton:self.setThumbnailBarButton];
 }
 
 
@@ -1011,9 +975,13 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
 
     // If image selected from Search, immediatley propose to copy it
     if (self.categoryId == kPiwigoSearchCategoryId) {
-        MoveImageViewController *moveImageVC = [[MoveImageViewController alloc] initWithSelectedImageIds:nil orSingleImageData:self.imageData inCategoryId:self.categoryId atIndex:[self indexOfSelectedImage] andCopyOption:YES];
-        moveImageVC.moveImageDelegate = self;
-        [self pushView:moveImageVC];
+        UIStoryboard *copySB = [UIStoryboard storyboardWithName:@"SelectCategoryViewController" bundle:nil];
+        SelectCategoryViewController *copyVC = [copySB instantiateViewControllerWithIdentifier:@"SelectCategoryViewController"];
+        NSArray<id> *parameter = [[NSArray<id> alloc] initWithObjects:self.imageData, @(self.categoryId), nil];
+        [copyVC setInputWithParameter:parameter for:kPiwigoCategorySelectActionCopyImage];
+        copyVC.delegate = self;                 // To re-enable toolbar
+        copyVC.imageCopiedDelegate = self;      // To update image data after copy
+        [self pushView:copyVC forButton:self.moveBarButton];
         return;
     }
     
@@ -1034,19 +1002,27 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
             actionWithTitle:NSLocalizedString(@"copyImage_title", @"Copy to Album")
             style:UIAlertActionStyleDefault
             handler:^(UIAlertAction * action) {
-                MoveImageViewController *moveImageVC = [[MoveImageViewController alloc] initWithSelectedImageIds:nil orSingleImageData:self.imageData inCategoryId:self.categoryId atIndex:[self indexOfSelectedImage] andCopyOption:YES];
-                moveImageVC.moveImageDelegate = self;
-                [self pushView:moveImageVC];
+        UIStoryboard *copySB = [UIStoryboard storyboardWithName:@"SelectCategoryViewController" bundle:nil];
+        SelectCategoryViewController *copyVC = [copySB instantiateViewControllerWithIdentifier:@"SelectCategoryViewController"];
+        NSArray<id> *parameter = [[NSArray<id> alloc] initWithObjects:self.imageData, @(self.categoryId), nil];
+        [copyVC setInputWithParameter:parameter for:kPiwigoCategorySelectActionCopyImage];
+        copyVC.delegate = self;                 // To re-enable toolbar
+        copyVC.imageCopiedDelegate = self;      // To update image data after copy
+        [self pushView:copyVC forButton:self.moveBarButton];
             }];
 
     UIAlertAction* moveAction = [UIAlertAction
             actionWithTitle:NSLocalizedString(@"moveImage_title", @"Move to Album")
             style:UIAlertActionStyleDefault
             handler:^(UIAlertAction * action) {
-                MoveImageViewController *moveImageVC = [[MoveImageViewController alloc] initWithSelectedImageIds:nil orSingleImageData:self.imageData inCategoryId:self.categoryId atIndex:[self indexOfSelectedImage] andCopyOption:NO];
-                moveImageVC.moveImageDelegate = self;
-                [self pushView:moveImageVC];
-            }];
+        UIStoryboard *moveSB = [UIStoryboard storyboardWithName:@"SelectCategoryViewController" bundle:nil];
+        SelectCategoryViewController *moveVC = [moveSB instantiateViewControllerWithIdentifier:@"SelectCategoryViewController"];
+        NSArray<id> *parameter = [[NSArray<id> alloc] initWithObjects:self.imageData, @(self.categoryId), nil];
+        [moveVC setInputWithParameter:parameter for:kPiwigoCategorySelectActionMoveImage];
+        moveVC.delegate = self;                 // To re-enable toolbar
+        moveVC.imageRemovedDelegate = self;     // To remove image after move
+        [self pushView:moveVC forButton:self.moveBarButton];
+    }];
 
     // Add actions
     [alert addAction:cancelAction];
@@ -1070,15 +1046,15 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
 
 #pragma mark - Add to / remove from favorites
 
--(void)addImageToFavorites
+-(void)addToFavoritesImageWithId
 {
     // Disable buttons during action
     [self setEnableStateOfButtons:NO];
 
     // Send request to Piwigo server
-    [ImageService addImageToFavorites:self.imageData
-                           onProgress:nil
-                         OnCompletion:^(NSURLSessionTask *task, BOOL addedSuccessfully) {
+    [ImageService addToFavoritesImageWithId:self.imageData.imageId
+                                 onProgress:nil
+                               OnCompletion:^(NSURLSessionTask *task, BOOL addedSuccessfully) {
         
                             // Enable buttons during action
                             [self setEnableStateOfButtons:YES];
@@ -1111,21 +1087,16 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
 }
 
 
-#pragma mark - push view
--(void)pushView:(UIViewController *)viewController
+#pragma mark - Push Views
+
+-(void)pushView:(UIViewController *)viewController forButton:(UIBarButtonItem *)button
 {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         
         if ([viewController isKindOfClass:[SelectCategoryViewController class]])
         {
             viewController.modalPresentationStyle = UIModalPresentationPopover;
-            viewController.popoverPresentationController.barButtonItem = self.setThumbnailBarButton;
-            [self.navigationController presentViewController:viewController animated:YES completion:nil];
-       }
-        else if ([viewController isKindOfClass:[MoveImageViewController class]])
-        {
-            viewController.modalPresentationStyle = UIModalPresentationPopover;
-            viewController.popoverPresentationController.barButtonItem = self.moveBarButton;
+            viewController.popoverPresentationController.barButtonItem = button;
             [self.navigationController presentViewController:viewController animated:YES completion:nil];
         }
         else if ([viewController isKindOfClass:[EditImageParamsViewController class]])
@@ -1133,7 +1104,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
             // Push Edit view embedded in navigation controller
             UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
             navController.modalPresentationStyle = UIModalPresentationPopover;
-            navController.popoverPresentationController.barButtonItem = self.editBarButton;
+            navController.popoverPresentationController.barButtonItem = button;
             [self.navigationController presentViewController:navController animated:YES completion:nil];
         }
     }
@@ -1323,37 +1294,40 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     [self setTitleViewFromImageData];
 }
 
--(void)didFinishEditingParams:(PiwigoImageData *)params
+-(void)didChangeParamsOfImage:(PiwigoImageData *)params
 {
     // Update image data
-    if (params != nil) {
-        // Update list of images
-        NSInteger index = 0;
-        for(PiwigoImageData *image in self.images)
-        {
-            if(image.imageId == params.imageId) {
-                // Update image data
-                image.imageTitle = params.imageTitle;
-                image.author = params.author;
-                image.privacyLevel = params.privacyLevel;
-                if (params.comment)
-                    image.comment = [NSString stringWithString:params.comment];
-                else
-                    image.comment = @"";
-                image.tags = [params.tags copy];
-                
-                // Update list and currently viewed image
-                [self.images replaceObjectAtIndex:index withObject:image];
-                self.imageData = image;
-                break;
-            }
-            index++;
-        }
-        
-        // Update current view
-        [self setTitleViewFromImageData];
-    }
+    if (params == nil) { return; }
+    
+    // Update list of images
+    NSInteger index = 0;
+    for(PiwigoImageData *image in self.images)
+    {
+        if(image.imageId == params.imageId) {
+            // Update image data
+            image.imageTitle = params.imageTitle;
+            image.author = params.author;
+            image.privacyLevel = params.privacyLevel;
+            if (params.comment)
+                image.comment = [NSString stringWithString:params.comment];
+            else
+                image.comment = @"";
+            image.tags = [params.tags copy];
+            
+            // Update list and currently viewed image
+            [self.images replaceObjectAtIndex:index withObject:image];
+            self.imageData = image;
 
+            // Update current view
+            [self setTitleViewFromImageData];
+            break;
+        }
+        index++;
+    }
+}
+
+-(void)didFinishEditingParameters
+{
     // Enable buttons after action
     [self setEnableStateOfButtons:YES];
 
@@ -1370,34 +1344,97 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
 }
 
 
-#pragma mark - MoveImageDelegate Methods
+#pragma mark - SelectCategoryOfImageDelegate Methods
 
--(void)cancelMoveImage
+-(void)didCopyImageWithData:(PiwigoImageData *)imageData
 {
+    // Update image data
+    self.imageData = imageData;
+
     // Re-enable buttons
     [self setEnableStateOfButtons:YES];
 }
 
--(void)didCopyImageInOneOfCategoryIds:(NSMutableArray *)categoryIds
-{
-    // Update image data
-    self.imageData.categoryIds = [categoryIds mutableCopy];
-}
 
--(void)didRemoveImage:(PiwigoImageData *)image atIndex:(NSInteger)index
+#pragma mark - SelectCategoryImageRemovedDelegate Methods
+
+-(void)didRemoveImageWithId:(NSInteger)imageID
 {
-    // Update album data
-    if([self.imgDetailDelegate respondsToSelector:@selector(didDeleteImage:atIndex:)])
-    {
-        [self.imgDetailDelegate didDeleteImage:self.imageData atIndex:index];
+    // Determine index of removed image
+    NSInteger indexOfRemovedImage = [self.images indexOfObjectPassingTest:^BOOL(PiwigoImageData *image, NSUInteger index, BOOL * _Nonnull stop) {
+     return image.imageId == imageID;
+    }];
+        
+    // Remove the image from the datasource
+    if (indexOfRemovedImage != NSNotFound) {
+        [self.images removeObjectAtIndex:indexOfRemovedImage];
+    }
+    
+    // Return to the album view if the album is empty
+    // or if we could not find the index of the removed image
+    if ((indexOfRemovedImage == NSNotFound) || (self.images.count == 0)) {
+        // Return to the Album/Images collection view
+        [self.navigationController popViewControllerAnimated:YES];
+        return;
+    }
+    
+    // Can we present the next image?
+    if (indexOfRemovedImage < self.images.count) {
+        // Retrieve data of next image (may be incomplete)
+        PiwigoImageData *imageData = [self.images objectAtIndex:indexOfRemovedImage];
+
+        // Create view controller for presenting next image
+        ImagePreviewViewController *nextImage = [ImagePreviewViewController new];
+        nextImage.imageLoaded = NO;
+        nextImage.imageIndex = indexOfRemovedImage;
+        [nextImage setImageScrollViewWithImageData:imageData];
+        if (nextImage) {
+            // This changes the View Controller
+            // and calls the presentationIndexForPageViewController datasource method
+            __weak typeof(self) weakSelf = self;
+            [self setViewControllers:@[nextImage]
+                           direction:UIPageViewControllerNavigationDirectionForward
+                            animated:YES
+                          completion:^(BOOL finished) {
+                // Update image data
+                weakSelf.imageData = [weakSelf.images objectAtIndex:indexOfRemovedImage];
+                // Re-enable buttons
+                [weakSelf setEnableStateOfButtons:YES];
+            }];
+            return;
+        }
     }
 
-    // Return to image collection
-    [self.navigationController popViewControllerAnimated:YES];
+    // Can we present the preceding image?
+    if (indexOfRemovedImage > 0) {
+        // Retrieve data of next image (may be incomplete)
+        PiwigoImageData *imageData = [self.images objectAtIndex:indexOfRemovedImage - 1];
+
+        // Create view controller for presenting next image
+        ImagePreviewViewController *prevImage = [ImagePreviewViewController new];
+        prevImage.imageLoaded = NO;
+        prevImage.imageIndex = indexOfRemovedImage - 1;
+        [prevImage setImageScrollViewWithImageData:imageData];
+        if (prevImage) {
+            // This changes the View Controller
+            // and calls the presentationIndexForPageViewController datasource method
+            __weak typeof(self) weakSelf = self;
+            [self setViewControllers:@[prevImage]
+                           direction:UIPageViewControllerNavigationDirectionReverse
+                            animated:YES
+                          completion:^(BOOL finished) {
+                // Update image data
+                weakSelf.imageData = [weakSelf.images objectAtIndex:(indexOfRemovedImage - 1)];
+                // Re-enable buttons
+                [weakSelf setEnableStateOfButtons:YES];
+            }];
+            return;
+        }
+    }
 }
 
 
-#pragma mark - ShareImageActivityItemProviderDelegate
+#pragma mark - ShareImageActivityItemProviderDelegate Methods
 
 -(void)imageActivityItemProviderPreprocessingDidBegin:(UIActivityItemProvider *)imageActivityItemProvider withTitle:(NSString *)title
 {

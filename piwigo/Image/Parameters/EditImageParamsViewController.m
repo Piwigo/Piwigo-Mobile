@@ -55,7 +55,6 @@ typedef enum {
 @property (nonatomic, assign) BOOL shouldUpdateComment;
 @property (nonatomic, strong) UIViewController *hudViewController;
 @property (nonatomic, assign) double nberOfSelectedImages;
-@property (nonatomic, assign) BOOL didUpdateImageParameters;
 
 @end
 
@@ -124,7 +123,6 @@ typedef enum {
     [self.editImageParamsTableView registerNib:[UINib nibWithNibName:@"EditImageShiftPickerTableViewCell" bundle:nil] forCellReuseIdentifier:kShiftPickerTableCell_ID];
 
     // Initialise common image properties, mostly from first supplied image
-    self.didUpdateImageParameters = NO;
     self.commonParameters = [PiwigoImageData new];
 
     // Common title?
@@ -258,9 +256,9 @@ typedef enum {
     } completion:nil];
 }
 
--(void)viewDidDisappear:(BOOL)animated
+-(void)viewWillDisappear:(BOOL)animated
 {
-    [super viewDidDisappear:animated];
+    [super viewWillDisappear:animated];
 
     // Unregister palette changes
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationPaletteChanged object:nil];
@@ -272,10 +270,9 @@ typedef enum {
     }
     
     // Return updated parameters
-    if (self.didUpdateImageParameters == NO) { self.commonParameters = nil; }
-    if ([self.delegate respondsToSelector:@selector(didFinishEditingParams:)])
+    if ([self.delegate respondsToSelector:@selector(didFinishEditingParameters)])
     {
-        [self.delegate didFinishEditingParams:self.commonParameters];
+        [self.delegate didFinishEditingParameters];
     }
 }
 
@@ -408,8 +405,12 @@ typedef enum {
                                         // Done, hide HUD and dismiss controller
                                         [self hideHUDwithSuccess:YES completion:^{
                                             // Return to image preview or album view
-                                            self.didUpdateImageParameters = YES;
-                                            [self dismissViewControllerAnimated:YES completion:nil];
+                                            [self dismissViewControllerAnimated:YES completion:^{
+                                                if ([self.delegate respondsToSelector:@selector(didChangeParamsOfImage:)])
+                                                {
+                                                    [self.delegate didChangeParamsOfImage:self.commonParameters];
+                                                }
+                                            }];
                                         }];
                                     }
                                 }
@@ -1138,10 +1139,9 @@ typedef enum {
     // Check if the user decided to leave the Edit mode
     if (![self.navigationController.visibleViewController isKindOfClass:[EditImageParamsViewController class]]) {
         // Return updated parameters
-        if (self.didUpdateImageParameters == NO) { self.commonParameters = nil; }
-        if ([self.delegate respondsToSelector:@selector(didFinishEditingParams:)])
+        if ([self.delegate respondsToSelector:@selector(didFinishEditingParameters)])
         {
-            [self.delegate didFinishEditingParams:self.commonParameters];
+            [self.delegate didFinishEditingParameters];
         }
         return;
     }
@@ -1167,10 +1167,9 @@ typedef enum {
     // Check if the user decided to leave the Edit mode
     if (![self.navigationController.visibleViewController isKindOfClass:[EditImageParamsViewController class]]) {
         // Return updated parameters
-        if (self.didUpdateImageParameters == NO) { self.commonParameters = nil; }
-        if ([self.delegate respondsToSelector:@selector(didFinishEditingParams:)])
+        if ([self.delegate respondsToSelector:@selector(didFinishEditingParameters)])
         {
-            [self.delegate didFinishEditingParams:self.commonParameters];
+            [self.delegate didFinishEditingParameters];
         }
         return;
     }

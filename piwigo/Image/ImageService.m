@@ -1441,17 +1441,17 @@ NSString * const kGetImageOrderDescending = @"desc";
     return request;
 }
 
-+(NSURLSessionTask*)setCategoriesForImage:(PiwigoImageData *)image
-                           withCategories:(NSArray *)categoryIds
-                               onProgress:(void (^)(NSProgress *))progress
-                             OnCompletion:(void (^)(NSURLSessionTask *task, BOOL setCategoriesSuccessfully))completion
-                                onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
++(NSURLSessionTask*)setCategoriesForImageWithId:(NSInteger)imageId
+                                 withCategories:(NSArray *)categoryIds
+                                     onProgress:(void (^)(NSProgress *))progress
+                                   OnCompletion:(void (^)(NSURLSessionTask *task, BOOL setCategoriesSuccessfully))completion
+                                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
     NSString *newImageCategories = [categoryIds componentsJoinedByString:@";"];
     NSURLSessionTask *request = [self post:kPiwigoImageSetInfo
              URLParameters:nil
                 parameters:@{
-                             @"image_id" : [NSString stringWithFormat:@"%ld", (long)image.imageId],
+                             @"image_id" : [NSString stringWithFormat:@"%ld", (long)imageId],
                              @"categories" : newImageCategories,
                              @"multiple_value_mode" : @"replace"
                              }
@@ -1485,15 +1485,15 @@ NSString * const kGetImageOrderDescending = @"desc";
     return request;
 }
 
-+(NSURLSessionTask*)addImageToFavorites:(PiwigoImageData *)image
-                             onProgress:(void (^)(NSProgress *))progress
-                           OnCompletion:(void (^)(NSURLSessionTask *task, BOOL addedSuccessfully))completion
-                              onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
++(NSURLSessionTask*)addToFavoritesImageWithId:(NSInteger)imageId
+                                   onProgress:(void (^)(NSProgress *))progress
+                                 OnCompletion:(void (^)(NSURLSessionTask *task, BOOL addedSuccessfully))completion
+                                    onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
     NSURLSessionTask *request = [self post:kPiwigoUserFavoritesAdd
              URLParameters:nil
                 parameters:@{
-                             @"image_id" : [NSString stringWithFormat:@"%ld", (long)image.imageId]
+                             @"image_id" : [NSString stringWithFormat:@"%ld", (long)imageId]
                              }
             sessionManager:[Model sharedInstance].sessionManager
                   progress:progress
@@ -1505,7 +1505,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                        }
                 } failure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
-                    NSLog(@"=> addImageToFavorites — Fail: %@", [error description]);
+                    NSLog(@"=> addToFavoritesImageWithId — Fail: %@", [error description]);
 #endif
                     NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
                     if ((statusCode == 401) ||        // Unauthorized

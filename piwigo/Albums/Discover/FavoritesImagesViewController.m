@@ -18,9 +18,8 @@
 #import "ImagesCollection.h"
 #import "MBProgressHUD.h"
 #import "Model.h"
-#import "MoveImageViewController.h"
 
-@interface FavoritesImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UIGestureRecognizerDelegate, ImageDetailDelegate, EditImageParamsDelegate, ShareImageActivityItemProviderDelegate, MoveImagesDelegate>
+@interface FavoritesImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UIGestureRecognizerDelegate, ImageDetailDelegate, EditImageParamsDelegate, SelectCategoryDelegate, SelectCategoryImageCopiedDelegate, ShareImageActivityItemProviderDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, assign) NSInteger categoryId;
@@ -407,13 +406,15 @@
     }
 }
 
--(void)disableBarButtons
+// Buttons are disabled (greyed) when retrieving image data
+// They are also disabled during an action
+-(void)setEnableStateOfButtons:(BOOL)state
 {
-    self.cancelBarButton.enabled = NO;
-    self.editBarButton.enabled = NO;
-    self.deleteBarButton.enabled = NO;
-    self.moveBarButton.enabled = NO;
-    self.shareBarButton.enabled = NO;
+    self.cancelBarButton.enabled = state;
+    self.editBarButton.enabled = state;
+    self.deleteBarButton.enabled = state;
+    self.moveBarButton.enabled = state;
+    self.shareBarButton.enabled = state;
 }
 
 
@@ -889,7 +890,7 @@
     if (self.selectedImageIds.count <= 0) return;
 
     // Disable buttons
-    [self disableBarButtons];
+    [self setEnableStateOfButtons:NO];
     
     // Display HUD
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -1012,7 +1013,7 @@
     if(self.selectedImageIds.count <= 0) return;
     
     // Disable buttons
-    [self disableBarButtons];
+    [self setEnableStateOfButtons:NO];
     
     // Display HUD
     self.totalNumberOfImages = self.selectedImageIds.count;
@@ -1215,7 +1216,7 @@
     if (self.selectedImageIds.count <= 0) return;
 
     // Disable buttons
-    [self disableBarButtons];
+    [self setEnableStateOfButtons:NO];
     
     // Display HUD
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -1404,27 +1405,16 @@
 -(void)addImagesToCategory
 {
     // Disable buttons
-    [self disableBarButtons];
+    [self setEnableStateOfButtons:NO];
     
-    // Determine index of first selected cell
-    NSInteger indexOfFirstSelectedImage = LONG_MAX;
-    PiwigoImageData *firstImageData;
-    for (NSNumber *imageId in self.selectedImageIds) {
-        NSInteger obj1 = [imageId integerValue];
-        NSInteger index = 0;
-        for (PiwigoImageData *image in self.albumData.images) {
-            NSInteger obj2 = image.imageId;
-            if (obj1 == obj2) break;
-            index++;
-        }
-        indexOfFirstSelectedImage = MIN(index, indexOfFirstSelectedImage);
-        firstImageData = [self.albumData.images objectAtIndex:indexOfFirstSelectedImage];
-    }
-
     // Present album list for copying images into
-    MoveImageViewController *moveImageVC = [[MoveImageViewController alloc] initWithSelectedImageIds:self.selectedImageIds orSingleImageData:firstImageData inCategoryId:self.categoryId atIndex:indexOfFirstSelectedImage andCopyOption:YES];
-    moveImageVC.moveImagesDelegate = self;
-    [self pushView:moveImageVC];
+    UIStoryboard *copySB = [UIStoryboard storyboardWithName:@"SelectCategoryViewController" bundle:nil];
+    SelectCategoryViewController *copyVC = [copySB instantiateViewControllerWithIdentifier:@"SelectCategoryViewController"];
+    NSArray<id> *parameter = [[NSArray<id> alloc] initWithObjects:self.selectedImageIds, @(self.categoryId), nil];
+    [copyVC setInputWithParameter:parameter for:kPiwigoCategorySelectActionCopyImages];
+    copyVC.delegate = self;                 // To re-enable toolbar
+    copyVC.imageCopiedDelegate = self;      // To update image data after copy
+    [self pushView:copyVC];
 }
 
 
@@ -1432,13 +1422,13 @@
 
 -(void)didFinishPreviewOfImageWithId:(NSInteger)imageId
 {
-    NSInteger index = 0;
-    for (PiwigoImageData *image in self.albumData.images) {
-        if (image.imageId == imageId) break;
-        index++;
+    // Determine index of image
+    NSInteger indexOfImage = [self.albumData.images indexOfObjectPassingTest:^BOOL(PiwigoImageData *image, NSUInteger index, BOOL * _Nonnull stop) {
+     return image.imageId == imageId;
+    }];
+    if (indexOfImage != NSNotFound) {
+        self.imageOfInterest = [NSIndexPath indexPathForItem:indexOfImage inSection:1];
     }
-    if (index < [self.albumData.images count])
-        self.imageOfInterest = [NSIndexPath indexPathForItem:index inSection:0];
 }
 
 -(void)didDeleteImage:(PiwigoImageData *)image atIndex:(NSInteger)index
@@ -1475,33 +1465,45 @@
     [self.albumData updateImage:imageData];
 }
 
--(void)didFinishEditingParams:(PiwigoImageData *)params
+-(void)didChangeParamsOfImage:(PiwigoImageData *)params
 {
+    // Were parameters updated?
+    if (params == nil) { return; }
+
     // Update image data
     [self.albumData updateImage:params];
+}
 
-    // Deselect images and leave select mode
-    [self cancelSelect];
+-(void)didFinishEditingParameters
+{
+    // Enable buttons after action
+    [self setEnableStateOfButtons:YES];
 }
 
 
-#pragma mark - MoveImagesDelegate methods
+#pragma mark - SelectCategoryDelegate Methods
 
--(void)cancelMoveImages
+-(void)didSelectCategoryWithId:(NSInteger)category
 {
-    // Re-enable buttons
-    [self updateBarButtons];
+    [self setEnableStateOfButtons:YES];
 }
 
--(void)didRemoveImage:(PiwigoImageData *)image atIndex:(NSInteger)index
-{
-    // NOP — Should never happen
-}
 
--(void)deselectImages
+#pragma mark - SelectCategoryImageCopiedDelegate Methods
+
+-(void)didCopyImageWithData:(PiwigoImageData *)imageData
 {
-    // Deselect images and leave select mode
-    [self cancelSelect];
+    // Determine index of updated image
+    NSMutableArray<PiwigoImageData *> *newImages = [[NSMutableArray<PiwigoImageData *> alloc] initWithArray:self.albumData.images];
+    NSInteger indexOfUpdatedImage = [newImages indexOfObjectPassingTest:^BOOL(PiwigoImageData *image, NSUInteger index, BOOL * _Nonnull stop) {
+     return image.imageId == imageData.imageId;
+    }];
+
+    // Update image data
+    if (indexOfUpdatedImage != NSNotFound) {
+        [newImages replaceObjectAtIndex:indexOfUpdatedImage withObject:imageData];
+        self.albumData.images = newImages;
+    }
 }
 
 
@@ -1596,7 +1598,7 @@
     {
         viewController.modalPresentationStyle = UIModalPresentationPopover;
         viewController.popoverPresentationController.sourceView = self.imagesCollection;
-        if ([viewController isKindOfClass:[MoveImageViewController class]]) {
+        if ([viewController isKindOfClass:[SelectCategoryViewController class]]) {
             viewController.popoverPresentationController.barButtonItem = self.moveBarButton;
             viewController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
             [self.navigationController presentViewController:viewController animated:YES completion:nil];

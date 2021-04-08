@@ -24,7 +24,6 @@
 #import "ImagesCollection.h"
 #import "MBProgressHUD.h"
 #import "Model.h"
-#import "MoveImageViewController.h"
 #import "NetworkHandler.h"
 #import "SAMKeychain.h"
 #import "SearchImagesViewController.h"
@@ -47,7 +46,7 @@ NSString * const kPiwigoNotificationCancelDownloadImage = @"kPiwigoNotificationC
 NSString * const kPiwigoNotificationDidShareVideo = @"kPiwigoNotificationDidShareVideo";
 NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationCancelDownloadVideo";
 
-@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, UITextFieldDelegate, ImageDetailDelegate, EditImageParamsDelegate, MoveImagesDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, ShareImageActivityItemProviderDelegate, TagSelectorViewDelegate, ChangedSettingsDelegate>
+@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, UITextFieldDelegate, ImageDetailDelegate, EditImageParamsDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, SelectCategoryDelegate, SelectCategoryImageCopiedDelegate, ShareImageActivityItemProviderDelegate, TagSelectorViewDelegate, ChangedSettingsDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
@@ -712,7 +711,6 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
                 self.uploadImagesButton.frame = CGRectMake(xPos - 3*kRadius*cos(75*kDeg2Rad), yPos - 3*kRadius*sin(75*kDeg2Rad), 1.72*kRadius, 1.72*kRadius);
             }
         }
-        [self.imagesCollection reloadData];
     } completion:nil];
 }
 
@@ -1318,15 +1316,16 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
     }
 }
 
--(void)disableBarButtons
+// Buttons are disabled (greyed) when retrieving image data
+// They are also disabled during an action
+-(void)setEnableStateOfButtons:(BOOL)state
 {
-    self.cancelBarButton.enabled = NO;
-    self.editBarButton.enabled = NO;
-    self.deleteBarButton.enabled = NO;
-    self.moveBarButton.enabled = NO;
-    self.shareBarButton.enabled = NO;
+    self.cancelBarButton.enabled = state;
+    self.editBarButton.enabled = state;
+    self.deleteBarButton.enabled = state;
+    self.moveBarButton.enabled = state;
+    self.shareBarButton.enabled = state;
 }
-
 
 
 #pragma mark - Category Data
@@ -2100,14 +2099,14 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
 }
 
 
-#pragma mark - Edit images
+#pragma mark - Edit Images Parameters
 
 -(void)editSelection
 {
     if (self.selectedImageIds.count <= 0) return;
 
     // Disable buttons
-    [self disableBarButtons];
+    [self setEnableStateOfButtons:NO];
     
     // Display HUD
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -2230,7 +2229,7 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
     if(self.selectedImageIds.count <= 0) return;
     
     // Disable buttons
-    [self disableBarButtons];
+    [self setEnableStateOfButtons:NO];
     
     // Display HUD
     self.totalNumberOfImages = self.selectedImageIds.count;
@@ -2414,7 +2413,7 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
     [categoryIds removeObject:@(self.categoryId)];
     
     // Let's remove the image from current category
-    [ImageService setCategoriesForImage:self.selectedImage
+    [ImageService setCategoriesForImageWithId:self.selectedImage.imageId
          withCategories:categoryIds
              onProgress:nil
            OnCompletion:^(NSURLSessionTask *task, BOOL updatedSuccessfully) {
@@ -2590,7 +2589,7 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
     if (self.selectedImageIds.count <= 0) return;
 
     // Disable buttons
-    [self disableBarButtons];
+    [self setEnableStateOfButtons:NO];
     
     // Display HUD
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -2794,7 +2793,7 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
 -(void)addImagesToCategory
 {
     // Disable buttons
-    [self disableBarButtons];
+    [self setEnableStateOfButtons:NO];
     
     // Determine index of first selected cell
     NSInteger indexOfFirstSelectedImage = LONG_MAX;
@@ -2827,19 +2826,26 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
                                  actionWithTitle:NSLocalizedString(@"copyImage_title", @"Copy to Album")
                                  style:UIAlertActionStyleDefault
                                  handler:^(UIAlertAction * action) {
-                                     MoveImageViewController *moveImageVC = [[MoveImageViewController alloc] initWithSelectedImageIds:self.selectedImageIds orSingleImageData:firstImageData inCategoryId:self.categoryId atIndex:indexOfFirstSelectedImage andCopyOption:YES];
-                                     moveImageVC.moveImagesDelegate = self;
-                                     [self pushView:moveImageVC];
-                                 }];
+        UIStoryboard *copySB = [UIStoryboard storyboardWithName:@"SelectCategoryViewController" bundle:nil];
+        SelectCategoryViewController *copyVC = [copySB instantiateViewControllerWithIdentifier:@"SelectCategoryViewController"];
+        NSArray<id> *parameter = [[NSArray<id> alloc] initWithObjects:self.selectedImageIds, @(self.categoryId), nil];
+        [copyVC setInputWithParameter:parameter for:kPiwigoCategorySelectActionCopyImages];
+        copyVC.delegate = self;                 // To re-enable toolbar
+        copyVC.imageCopiedDelegate = self;      // To update image data after copy
+        [self pushView:copyVC];
+    }];
     
     UIAlertAction* moveAction = [UIAlertAction
                                  actionWithTitle:NSLocalizedString(@"moveImage_title", @"Move to Album")
                                  style:UIAlertActionStyleDefault
                                  handler:^(UIAlertAction * action) {
-                                     MoveImageViewController *moveImageVC = [[MoveImageViewController alloc] initWithSelectedImageIds:self.selectedImageIds orSingleImageData:firstImageData inCategoryId:self.categoryId atIndex:indexOfFirstSelectedImage andCopyOption:NO];
-                                     moveImageVC.moveImagesDelegate = self;
-                                     [self pushView:moveImageVC];
-                                 }];
+        UIStoryboard *moveSB = [UIStoryboard storyboardWithName:@"SelectCategoryViewController" bundle:nil];
+        SelectCategoryViewController *moveVC = [moveSB instantiateViewControllerWithIdentifier:@"SelectCategoryViewController"];
+        NSArray<id> *parameter = [[NSArray<id> alloc] initWithObjects:self.selectedImageIds, @(self.categoryId), nil];
+        [moveVC setInputWithParameter:parameter for:kPiwigoCategorySelectActionMoveImages];
+        moveVC.delegate = self;         // To re-enable toolbar
+        [self pushView:moveVC];
+    }];
     
     // Add actions
     [alert addAction:cancelAction];
@@ -3139,7 +3145,6 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
             }
             
             return cell;
-            break;
         }
             
         default:            // Images
@@ -3376,13 +3381,13 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
 
 -(void)didFinishPreviewOfImageWithId:(NSInteger)imageId
 {
-    NSInteger index = 0;
-    for (PiwigoImageData *image in self.albumData.images) {
-        if (image.imageId == imageId) break;
-        index++;
+    // Determine index of image
+    NSInteger indexOfImage = [self.albumData.images indexOfObjectPassingTest:^BOOL(PiwigoImageData *image, NSUInteger index, BOOL * _Nonnull stop) {
+     return image.imageId == imageId;
+    }];
+    if (indexOfImage != NSNotFound) {
+        self.imageOfInterest = [NSIndexPath indexPathForItem:indexOfImage inSection:1];
     }
-    if (index < [self.albumData.images count])
-        self.imageOfInterest = [NSIndexPath indexPathForItem:index inSection:1];
 }
 
 -(void)didDeleteImage:(PiwigoImageData *)image atIndex:(NSInteger)index
@@ -3419,44 +3424,45 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
     [self.albumData updateImage:imageData];
 }
 
--(void)didFinishEditingParams:(PiwigoImageData *)params
+-(void)didChangeParamsOfImage:(PiwigoImageData *)params
 {
     // Were parameters updated?
-    if (params != nil) {
-        // Update image data
-        [self.albumData updateImage:params];
+    if (params == nil) { return; }
 
-        // Deselect images and leave select mode
-        [self cancelSelect];
-    }
-    else {
-        // Re-enable buttons
-        [self updateButtonsInSelectionMode];
-    }
+    // Update image data
+    [self.albumData updateImage:params];
+}
+
+-(void)didFinishEditingParameters
+{
+    // Enable buttons after action
+    [self setEnableStateOfButtons:YES];
 }
 
 
-#pragma mark - MoveImagesDelegate methods
+#pragma mark - SelectCategoryDelegate Methods
 
--(void)cancelMoveImages
+-(void)didSelectCategoryWithId:(NSInteger)category
 {
-    // Re-enable buttons
-    [self updateButtonsInSelectionMode];
-}
-
--(void)didRemoveImage:(PiwigoImageData *)image atIndex:(NSInteger)index
-{
-    [self.albumData removeImage:image];
-    index = MAX(0, index-1);                                    // index must be >= 0
-    index = MIN(index, [self.albumData.images count] - 1);      // index must be < nber images
-    self.imageOfInterest = [NSIndexPath indexPathForItem:index inSection:1];
-    [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
-}
-
--(void)deselectImages
-{
-    // Deselect images and leave select mode
     [self cancelSelect];
+}
+
+
+#pragma mark - SelectCategoryImageCopiedDelegate Methods
+
+-(void)didCopyImageWithData:(PiwigoImageData *)imageData
+{
+    // Determine index of updated image
+    NSMutableArray<PiwigoImageData *> *newImages = [[NSMutableArray<PiwigoImageData *> alloc] initWithArray:self.albumData.images];
+    NSInteger indexOfUpdatedImage = [newImages indexOfObjectPassingTest:^BOOL(PiwigoImageData *image, NSUInteger index, BOOL * _Nonnull stop) {
+     return image.imageId == imageData.imageId;
+    }];
+
+    // Update image data
+    if (indexOfUpdatedImage != NSNotFound) {
+        [newImages replaceObjectAtIndex:indexOfUpdatedImage withObject:imageData];
+        self.albumData.images = newImages;
+    }
 }
 
 
@@ -3485,13 +3491,38 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
 }
 
 
-#pragma mark - CategoryCollectionViewCellDelegate Methods
+#pragma mark - Push Views (incl. CategoryCollectionViewCellDelegate Method)
+
+-(void)pushCategoryView:(UIViewController *)viewController
+{
+    // Push sub-album, Discover or Favorites album
+    if ([viewController isKindOfClass:[AlbumImagesViewController class]]) {
+        // Push sub-album view
+        [self.navigationController pushViewController:viewController animated:YES];
+    }
+    else {
+        // Push album list
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
+        {
+            viewController.modalPresentationStyle = UIModalPresentationPopover;
+            viewController.popoverPresentationController.sourceView = self.imagesCollection;
+            viewController.popoverPresentationController.permittedArrowDirections = 0;
+            [self.navigationController presentViewController:viewController animated:YES completion:nil];
+        }
+        else {
+            UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
+            navController.modalPresentationStyle = UIModalPresentationPopover;
+            navController.popoverPresentationController.sourceView = self.view;
+            navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+            [self.navigationController presentViewController:navController animated:YES completion:nil];
+        }
+    }
+}
 
 -(void)pushView:(UIViewController *)viewController
 {
     // Push sub-album, Discover or Favorites album
-    if (([viewController isKindOfClass:[AlbumImagesViewController class]])    ||
-        ([viewController isKindOfClass:[DiscoverImagesViewController class]]) ||
+    if (([viewController isKindOfClass:[DiscoverImagesViewController class]]) ||
         ([viewController isKindOfClass:[FavoritesImagesViewController class]]) ) {
         // Push sub-album view
         [self.navigationController pushViewController:viewController animated:YES];
@@ -3502,11 +3533,6 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
         {
             viewController.modalPresentationStyle = UIModalPresentationPopover;
             if ([viewController isKindOfClass:[SelectCategoryViewController class]]) {
-                viewController.popoverPresentationController.sourceView = self.imagesCollection;
-                viewController.popoverPresentationController.permittedArrowDirections = 0;
-                [self.navigationController presentViewController:viewController animated:YES completion:nil];
-            }
-            else if ([viewController isKindOfClass:[MoveImageViewController class]]) {
                 viewController.popoverPresentationController.barButtonItem = self.moveBarButton;
                 viewController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
                 [self.navigationController presentViewController:viewController animated:YES completion:nil];
@@ -3536,7 +3562,7 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
 }
 
 
-#pragma mark - ShareImageActivityItemProviderDelegate
+#pragma mark - ShareImageActivityItemProviderDelegate Methods
 
 -(void)imageActivityItemProviderPreprocessingDidBegin:(UIActivityItemProvider *)imageActivityItemProvider withTitle:(NSString *)title
 {

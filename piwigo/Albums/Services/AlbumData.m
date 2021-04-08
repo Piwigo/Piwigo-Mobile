@@ -13,7 +13,6 @@
 
 @interface AlbumData()
 
-@property (nonatomic, strong) NSArray *images;
 @property (nonatomic, strong) NSString *sortString;
 @property (nonatomic, strong) NSString *lastSortString;
 @property (nonatomic, assign) NSInteger categoryId;

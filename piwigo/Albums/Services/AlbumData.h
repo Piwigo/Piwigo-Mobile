@@ -12,7 +12,7 @@
 
 @interface AlbumData : NSObject
 
-@property (nonatomic, readonly) NSArray *images;
+@property (nonatomic, strong) NSArray<PiwigoImageData *> *images;
 @property (nonatomic, strong) NSString *searchQuery;
 
 -(instancetype)initWithCategoryId:(NSInteger)categoryId andQuery:(NSString *)query;

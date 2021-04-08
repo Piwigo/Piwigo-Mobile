@@ -82,11 +82,15 @@ typedef enum {
 #define kPiwigoPrivacyString(enum) [@[@"Everybody", @"Admins, Family, Friends, Contacts", @"Admins, Family, Friends", @"3: not assigned", @"Admins, Family", @"5: Count", @"6: not assigned", @"7: not assigned", @"Admins"] objectAtIndex:enum]
 
 typedef enum {
-    kPiwigoCategorySelectActionNone = 0,
-    kPiwigoCategorySelectActionSetDefaultAlbum = 1,
-    kPiwigoCategorySelectActionMoveAlbum = 2,
-    kPiwigoCategorySelectActionSetAlbumThumbnail = 3,
-    kPiwigoCategorySelectActionSetAutoUploadAlbum = 4
+    kPiwigoCategorySelectActionNone,
+    kPiwigoCategorySelectActionSetDefaultAlbum,
+    kPiwigoCategorySelectActionMoveAlbum,
+    kPiwigoCategorySelectActionSetAlbumThumbnail,
+    kPiwigoCategorySelectActionSetAutoUploadAlbum,
+    kPiwigoCategorySelectActionCopyImage,
+    kPiwigoCategorySelectActionMoveImage,
+    kPiwigoCategorySelectActionCopyImages,
+    kPiwigoCategorySelectActionMoveImages
 } kPiwigoCategorySelectAction;
 
 typedef enum {

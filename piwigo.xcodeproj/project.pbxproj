@@ -124,7 +124,6 @@
 		ADAC5490261793F700301C1C /* CategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAC548F261793F700301C1C /* CategoryTableViewCell.swift */; };
 		ADAEED8822E2665000CB1B12 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADAEED8622E2665000CB1B12 /* LaunchScreen.storyboard */; };
 		ADB607E81FC9D79000AF28DB /* VideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = ADB607E71FC9D79000AF28DB /* VideoView.m */; };
-		ADB7A102210B803D006723B9 /* MoveImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD42DDF6210B38F30083FC7D /* MoveImageViewController.m */; };
 		ADBC08CE244604EB00BF82E8 /* NberImagesFooterCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBC08CD244604EB00BF82E8 /* NberImagesFooterCollectionReusableView.swift */; };
 		ADBC08D02446060700BF82E8 /* CategoryHeaderReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBC08CF2446060700BF82E8 /* CategoryHeaderReusableView.swift */; };
 		ADBCFE87235B7603001D6EE7 /* FavoritesImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADBCFE86235B7603001D6EE7 /* FavoritesImagesViewController.m */; };
@@ -318,8 +317,6 @@
 		AD42D08024448B7C00F0BAC1 /* LocalAlbumsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalAlbumsViewController.swift; sourceTree = "<group>"; };
 		AD42D08224448F2400F0BAC1 /* LocalAlbumsViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LocalAlbumsViewController.storyboard; sourceTree = "<group>"; };
 		AD42D08424449FF000F0BAC1 /* LocalImageCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocalImageCollectionViewCell.swift; path = "piwigo/Upload/Pick Local Images/LocalImageCollectionViewCell.swift"; sourceTree = SOURCE_ROOT; };
-		AD42DDF5210B38DB0083FC7D /* MoveImageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MoveImageViewController.h; sourceTree = "<group>"; };
-		AD42DDF6210B38F30083FC7D /* MoveImageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MoveImageViewController.m; sourceTree = "<group>"; };
 		AD435822246FF21C00AC7D9C /* DataModel 2 (+Location).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 2 (+Location).xcdatamodel"; sourceTree = "<group>"; };
 		AD435823246FF21C00AC7D9C /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
 		AD435825246FF4BE00AC7D9C /* DataModel 3 (+Upload).xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "DataModel 3 (+Upload).xcdatamodel"; sourceTree = "<group>"; };
@@ -722,15 +719,6 @@
 			path = "Locations Data";
 			sourceTree = "<group>";
 		};
-		AD42DDF4210B38820083FC7D /* Move */ = {
-			isa = PBXGroup;
-			children = (
-				AD42DDF5210B38DB0083FC7D /* MoveImageViewController.h */,
-				AD42DDF6210B38F30083FC7D /* MoveImageViewController.m */,
-			);
-			path = Move;
-			sourceTree = "<group>";
-		};
 		AD4AAFB125A0A1E4007DCD54 /* Pick Pasteboard Images */ = {
 			isa = PBXGroup;
 			children = (
@@ -1001,7 +989,6 @@
 				AD2FEA5725AFA1470072596A /* VideoMetadata.swift */,
 				D818EA031A74D32100733991 /* Details */,
 				AD0CC81121EA8A050009FFF6 /* Share */,
-				AD42DDF4210B38820083FC7D /* Move */,
 				AD770FD123B4BD3B007DAD50 /* Parameters */,
 			);
 			path = Image;
@@ -1813,7 +1800,6 @@
 				D82B8D301A688512000E47CA /* PiwigoImageData.m in Sources */,
 				AD460F9B25E446CE00B09AFE /* Tag+CoreDataClass.swift in Sources */,
 				D86044111A99922F0067E5D1 /* ImageScrollView.m in Sources */,
-				ADB7A102210B803D006723B9 /* MoveImageViewController.m in Sources */,
 				D863EEBD1A6A440600C0A6E9 /* PiwigoButton.m in Sources */,
 				D89045BF1A950FF700A306FE /* EditImageTagsTableViewCell.m in Sources */,
 				AD770FDA23B4CE79007DAD50 /* EditImageThumbCollectionViewCell.m in Sources */,

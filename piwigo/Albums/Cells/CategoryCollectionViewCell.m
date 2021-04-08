@@ -15,6 +15,7 @@
 @interface CategoryCollectionViewCell() <UITableViewDataSource, UITableViewDelegate, AlbumTableViewCellDelegate>
 
 @property (nonatomic, strong) PiwigoAlbumData *albumData;
+@property (nonatomic, assign) BOOL isSelect;
 @property (nonatomic, strong) UITableView *tableView;
 
 @end
@@ -112,10 +113,10 @@
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 	
     // Push new album view
-    if([self.categoryDelegate respondsToSelector:@selector(pushView:)])
+    if([self.categoryDelegate respondsToSelector:@selector(pushCategoryView:)])
 	{
 		AlbumImagesViewController *albumView = [[AlbumImagesViewController alloc] initWithAlbumId:self.albumData.albumId inCache:YES];
-		[self.categoryDelegate pushView:albumView];
+		[self.categoryDelegate pushCategoryView:albumView];
 	}
 }
 
@@ -123,9 +124,9 @@
 
 -(void)pushView:(UIViewController *)viewController
 {
-	if([self.categoryDelegate respondsToSelector:@selector(pushView:)])
+	if([self.categoryDelegate respondsToSelector:@selector(pushCategoryView:)])
 	{
-		[self.categoryDelegate pushView:viewController];
+		[self.categoryDelegate pushCategoryView:viewController];
 	}
 }
 

@@ -81,8 +81,8 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
+    override func viewWillDisappear(_ animated: Bool) {
+        super .viewWillDisappear(animated)
 
         // Update cell of parent view
         delegate?.didSelectPrivacyLevel(privacy)

@@ -12,7 +12,7 @@
 
 @protocol CategoryCollectionViewCellDelegate <NSObject>
 
--(void)pushView:(UIViewController*)viewController;
+-(void)pushCategoryView:(UIViewController*)viewController;
 
 @end
 
