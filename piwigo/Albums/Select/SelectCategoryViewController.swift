@@ -260,7 +260,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         super.viewWillDisappear(animated)
         
         // Re-enable tollbar items in image preview mode
-        if [kPiwigoCategorySelectActionSetAlbumThumbnail,
+        if [kPiwigoCategorySelectActionMoveAlbum,
+            kPiwigoCategorySelectActionSetAlbumThumbnail,
             kPiwigoCategorySelectActionCopyImage,
             kPiwigoCategorySelectActionCopyImages,
             kPiwigoCategorySelectActionMoveImage,
