@@ -360,6 +360,11 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 
 -(void)addImage:(PiwigoImageData *)image toCategory:(NSString *)category
 {
+    // Check if the image already belongs to the category
+    PiwigoImageData *imageInCategory = [self getImageForCategory:category.integerValue andId:image.imageId];
+    if (imageInCategory != nil) { return; }
+    
+    // Add image to category
     PiwigoAlbumData *imageCategory = [self getCategoryById:[category integerValue]];
     [imageCategory addUploadedImage:image];
     [imageCategory incrementImageSizeByOne];
