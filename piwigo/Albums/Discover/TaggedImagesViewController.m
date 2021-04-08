@@ -1493,7 +1493,7 @@
 
 -(void)didSelectCategoryWithId:(NSInteger)category
 {
-    [self setEnableStateOfButtons:YES];
+    [self cancelSelect];
 }
 
 
