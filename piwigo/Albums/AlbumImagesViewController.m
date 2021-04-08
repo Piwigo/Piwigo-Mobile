@@ -1978,7 +1978,7 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
         // Disable user interaction with category cell
         if ([cell isKindOfClass:[CategoryCollectionViewCell class]]) {
             CategoryCollectionViewCell *categoryCell = (CategoryCollectionViewCell *)cell;
-            [categoryCell setAlpha:0.5];
+            [categoryCell.contentView setAlpha:0.5];
             [categoryCell setUserInteractionEnabled:NO];
         }
 
@@ -2010,7 +2010,7 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
         // Enable user interaction with category cell
         if ([cell isKindOfClass:[CategoryCollectionViewCell class]]) {
             CategoryCollectionViewCell *categoryCell = (CategoryCollectionViewCell *)cell;
-            [categoryCell setAlpha:1.0];
+            [categoryCell.contentView setAlpha:1.0];
             [categoryCell setUserInteractionEnabled:YES];
         }
         
@@ -3131,10 +3131,10 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
             
             // Disable category cells in Image selection mode
             if (self.isSelect) {
-                [cell setAlpha:0.5];
+                [cell.contentView setAlpha:0.5];
                 [cell setUserInteractionEnabled:NO];
             } else {
-                [cell setAlpha:1.0];
+                [cell.contentView setAlpha:1.0];
                 [cell setUserInteractionEnabled:YES];
             }
             
