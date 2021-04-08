@@ -2087,8 +2087,7 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
                     [self.selectedImageIds removeObject:imageIdObject];
                 }
                 
-                // Reload the cell and update the navigation bar
-                [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
+                // Update the navigation bar
                 [self updateButtonsInSelectionMode];
             }
         }
@@ -3226,7 +3225,6 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
                     selectedCell.isSelected = NO;
                     [self.selectedImageIds removeObject:imageIdObject];
                 }
-                [collectionView reloadItemsAtIndexPaths:@[indexPath]];
                 
                 // and update nav buttons
                 [self updateButtonsInSelectionMode];
