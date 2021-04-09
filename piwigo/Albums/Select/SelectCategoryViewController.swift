@@ -592,9 +592,18 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             }
         }
         
-        // How should we present special categories?
+        // No button if the user does not have upload rights
+        var buttonState = kPiwigoCategoryTableCellButtonStateNone
+        let allCategories: [PiwigoAlbumData] = CategoriesData.sharedInstance().allCategories
+        let filteredCat = allCategories.filter({ Model.sharedInstance().hasAdminRights || $0.hasUploadRights })
+            .filter({ $0.nearestUpperCategory == categoryData.albumId })
+            .filter({ $0.albumId != categoryData.albumId })
+        if filteredCat.count > 0 {
+            buttonState = categoriesThatShowSubCategories.contains(categoryData.albumId) ? kPiwigoCategoryTableCellButtonStateHideSubAlbum : kPiwigoCategoryTableCellButtonStateShowSubAlbum
+        }
+
+        // How should we present the category
         cell.delegate = self
-        let buttonState = categoriesThatShowSubCategories.contains(categoryData.albumId) ? kPiwigoCategoryTableCellButtonStateHideSubAlbum : kPiwigoCategoryTableCellButtonStateShowSubAlbum
         switch wantedAction {
         case kPiwigoCategorySelectActionSetDefaultAlbum:
             // The current default category is not selectable
