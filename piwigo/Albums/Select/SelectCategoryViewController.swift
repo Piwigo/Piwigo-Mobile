@@ -953,7 +953,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Present alert
         let alert = UIAlertController.init(title: title, message: message, preferredStyle: .alert)
         let dismissAction = UIAlertAction.init(title: NSLocalizedString("alertDismissButton", comment:"Dismiss"),
-                                               style: .cancel) { _ in }
+                                               style: .cancel) { _ in self.dismiss(animated: true, completion: {})}
         alert.addAction(dismissAction)
         alert.view.tintColor = UIColor.piwigoColorOrange()
         if #available(iOS 13.0, *) {

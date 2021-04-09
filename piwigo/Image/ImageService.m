@@ -1467,16 +1467,16 @@ NSString * const kGetImageOrderDescending = @"desc";
 #if defined(DEBUG)
                      NSLog(@"=> setCategoriesForImage — Fail: %@", [error description]);
 #endif
-                     NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
-                     if ((statusCode == 401) ||        // Unauthorized
-                         (statusCode == 403) ||        // Forbidden
-                         (statusCode == 404))          // Not Found
-                     {
-                         NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
-                         dispatch_async(dispatch_get_main_queue(), ^{
-                             [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
-                         });
-                     }
+//                     NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
+//                     if ((statusCode == 401) ||        // Unauthorized
+//                         (statusCode == 403) ||        // Forbidden
+//                         (statusCode == 404))          // Not Found
+//                     {
+//                         NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
+//                         dispatch_async(dispatch_get_main_queue(), ^{
+//                             [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
+//                         });
+//                     }
                      if(fail) {
                          fail(task, error);
                      }
@@ -1507,16 +1507,16 @@ NSString * const kGetImageOrderDescending = @"desc";
 #if defined(DEBUG)
                     NSLog(@"=> addToFavoritesImageWithId — Fail: %@", [error description]);
 #endif
-                    NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
-                    if ((statusCode == 401) ||        // Unauthorized
-                        (statusCode == 403) ||        // Forbidden
-                        (statusCode == 404))          // Not Found
-                    {
-                        NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
-                        });
-                    }
+//                    NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
+//                    if ((statusCode == 401) ||        // Unauthorized
+//                        (statusCode == 403) ||        // Forbidden
+//                        (statusCode == 404))          // Not Found
+//                    {
+//                        NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
+//                        dispatch_async(dispatch_get_main_queue(), ^{
+//                            [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
+//                        });
+//                    }
                     if(fail) {
                         fail(task, error);
                     }
@@ -1547,16 +1547,16 @@ NSString * const kGetImageOrderDescending = @"desc";
 #if defined(DEBUG)
                    NSLog(@"=> removeImageFromFavorites — Fail: %@", [error description]);
 #endif
-                   NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
-                   if ((statusCode == 401) ||        // Unauthorized
-                       (statusCode == 403) ||        // Forbidden
-                       (statusCode == 404))          // Not Found
-                   {
-                       NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
-                       dispatch_async(dispatch_get_main_queue(), ^{
-                           [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
-                       });
-                   }
+//                   NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
+//                   if ((statusCode == 401) ||        // Unauthorized
+//                       (statusCode == 403) ||        // Forbidden
+//                       (statusCode == 404))          // Not Found
+//                   {
+//                       NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
+//                       dispatch_async(dispatch_get_main_queue(), ^{
+//                           [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
+//                       });
+//                   }
                    if(fail) {
                        fail(task, error);
                    }
