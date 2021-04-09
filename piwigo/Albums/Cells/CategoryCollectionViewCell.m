@@ -133,6 +133,9 @@
 -(NSArray*) swipeTableCell:(MGSwipeTableCell*) cell swipeButtonsForDirection:(MGSwipeDirection)direction
              swipeSettings:(MGSwipeSettings*) swipeSettings expansionSettings:(MGSwipeExpansionSettings*) expansionSettings
 {
+    // Only admins can rename, move and delete albums
+    if (![Model sharedInstance].hasAdminRights) { return nil; }
+    
     // Settings
     cell.swipeBackgroundColor = [UIColor piwigoColorOrange];
     swipeSettings.transition = MGSwipeTransitionBorder;
