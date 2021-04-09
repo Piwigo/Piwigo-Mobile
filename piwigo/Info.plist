@@ -41,7 +41,6 @@
 	<true/>
 	<key>UIAppFonts</key>
 	<array>
-		<string>LacunaRegular.TTF</string>
 		<string>OpenSansLight.TTF</string>
 		<string>OpenSansRegular.TTF</string>
 		<string>OpenSansSemiBold.TTF</string>

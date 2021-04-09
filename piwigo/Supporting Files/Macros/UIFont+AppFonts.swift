@@ -72,11 +72,6 @@ extension UIFont {
     }
 
     @objc
-    class func piwigoFontDisclosure() -> UIFont {
-        return UIFont(name: "LacunaRegular", size: 21.0) ?? UIFont.systemFont(ofSize: 21.0)
-    }
-
-    @objc
     class func fontSizeFor(label: UILabel?, nberLines: Int) -> CGFloat {
         
         if label?.adjustsFontSizeToFitWidth == false || (label?.minimumScaleFactor ?? 1.0) >= 1.0 {
