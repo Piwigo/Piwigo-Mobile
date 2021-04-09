@@ -1476,8 +1476,7 @@
 
 -(void)didFinishEditingParameters
 {
-    // Enable buttons after action
-    [self setEnableStateOfButtons:YES];
+    [self cancelSelect];
 }
 
 
