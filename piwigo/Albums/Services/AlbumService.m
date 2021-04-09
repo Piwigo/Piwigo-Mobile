@@ -277,6 +277,14 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 
 +(NSArray*)parseAlbumJSON:(NSArray*)json
 {
+    // API pwg.categories.getList returns:
+    //      id, id_uppercat, representative_picture_id, tn_url
+    //      status, name, comment
+    //      nb_categories, uppercats, nb_images, total_nb_images
+    //      date_last, max_date_last
+    //      comment, global_rank, permalink, url
+    //
+
     NSMutableArray *albums = [NSMutableArray new];
 	for(NSDictionary *category in json)
 	{
