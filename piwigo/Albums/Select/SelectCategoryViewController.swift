@@ -728,7 +728,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             if inputImageData.categoryIds.contains(NSNumber(value: categoryData.albumId)) { return false }
 
         default:
-            fatalError("shouldHighlightRowAt() not fully coded in SelectCategoryViewController")
+            return false
         }
         return true;
     }
