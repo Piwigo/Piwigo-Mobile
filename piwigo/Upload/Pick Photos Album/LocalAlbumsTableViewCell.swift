@@ -55,8 +55,11 @@ class LocalAlbumsTableViewCell: UITableViewCell {
                                 dateFormatter1.locale = .current
                                 dateFormatter2.locale = .current
                                 dateFormatter1.setLocalizedDateFormatFromTemplate("EEEE MMMMYYYYd HH:mm")
-                                dateFormatter2.setLocalizedDateFormatFromTemplate("HH:mm")
-                                subtitle.append(dateFormatter1.string(from: startDate) + " — " + dateFormatter2.string(from: endDate))
+                                subtitle.append(dateFormatter1.string(from: startDate))
+                                if endDate != startDate {
+                                    dateFormatter2.setLocalizedDateFormatFromTemplate("HH:mm")
+                                    subtitle.append(" — " + dateFormatter2.string(from: endDate))
+                                }
                             } else {
                                 let dateFormatter = DateFormatter.init()
                                 dateFormatter.locale = .current
