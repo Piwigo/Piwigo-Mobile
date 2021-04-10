@@ -433,6 +433,7 @@
 "copySingleImageError_message" = "Failed to copy your photo";
 
 // Images upload
+"imageUploadHeader" = "Please select the album or sub-album from which photos and videos of your device will be uploaded.";
 "imageUploadHeaderTitle_images" = "Photos Parameters";
 "imageUploadHeaderText_images" = "Please set the parameters to apply to the selection of photos/videos";
 "imageUploadHeaderTitle_upload" = "Upload Settings";

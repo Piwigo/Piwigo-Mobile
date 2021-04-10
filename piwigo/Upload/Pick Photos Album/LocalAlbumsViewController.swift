@@ -107,6 +107,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
                 
         // Table view
+        setTableViewMainHeader()
         localAlbumsTableView?.separatorColor = UIColor.piwigoColorSeparator()
         localAlbumsTableView?.indicatorStyle = Model.sharedInstance().isDarkPaletteActive ? .white : .black
         localAlbumsTableView?.reloadData()
@@ -159,6 +160,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             if let indexPath = localAlbumsTableView.indexPath(for: cell) {
                 // Reload the tableview on orientation change, to match the new width of the table.
                 coordinator.animate(alongsideTransition: { context in
+                    self.setTableViewMainHeader()
                     self.localAlbumsTableView.reloadData()
 
                     // Scroll to previous position
@@ -178,6 +180,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         hasImagesInPasteboard = testTypes && (nberPhotos > 0)
 
         // Reload tableView
+        self.setTableViewMainHeader()
         localAlbumsTableView.reloadData()
     }
 
@@ -206,6 +209,23 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
 
     
     // MARK: - UITableView - Header
+    private func setTableViewMainHeader() {
+        let headerView = SelectCategoryHeaderView(frame: .zero)
+        switch wantedAction {
+        case .presentLocalAlbum:
+            headerView.configure(width: min(localAlbumsTableView.frame.size.width, kPiwigoPadSettingsWidth),
+                                 text: NSLocalizedString("imageUploadHeader", comment: "Please select the album or sub-album from which photos and videos of your device will be uploaded."))
+
+        case .setAutoUploadAlbum:
+            headerView.configure(width: min(localAlbumsTableView.frame.size.width, kPiwigoPadSubViewWidth),
+                                 text: String(format: NSLocalizedString("settings_autoUploadSourceInfo", comment:"Please select the album or sub-album from which photos and videos of your device will be auto-uploaded.")))
+
+        default:
+            fatalError("Action not configured in setTableViewMainHeader().")
+        }
+        localAlbumsTableView.tableHeaderView = headerView
+    }
+
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let context = NSStringDrawingContext()
         context.minimumScaleFactor = 1.0
