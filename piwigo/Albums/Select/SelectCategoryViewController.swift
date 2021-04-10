@@ -1113,6 +1113,11 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     
     // MARK: - Copy Images Methods
     private func copySingleImage(toCategory categoryData:PiwigoAlbumData) {
+        // Add category to list of recent albums
+        let userInfo = ["categoryId": String(categoryData.albumId)]
+        let name = NSNotification.Name(rawValue: kPiwigoNotificationAddRecentAlbum)
+        NotificationCenter.default.post(name: name, object: nil, userInfo: userInfo)
+
         // Check image data
         guard let imageData = self.inputImageData else {
             self.showError()
@@ -1152,6 +1157,11 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     }
     
     private func copySeveralImages(toCategory categoryData:PiwigoAlbumData) {
+        // Add category to list of recent albums
+        let userInfo = ["categoryId": String(categoryData.albumId)]
+        let name = NSNotification.Name(rawValue: kPiwigoNotificationAddRecentAlbum)
+        NotificationCenter.default.post(name: name, object: nil, userInfo: userInfo)
+
         // Jobe done?
         if inputImagesData.count == 0 {
             DispatchQueue.main.async {
@@ -1233,6 +1243,11 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     
     // MARK: - Move Images Methods
     private func moveSingleImage(toCategory categoryData:PiwigoAlbumData) {
+        // Add category to list of recent albums
+        let userInfo = ["categoryId": String(categoryData.albumId)]
+        let name = NSNotification.Name(rawValue: kPiwigoNotificationAddRecentAlbum)
+        NotificationCenter.default.post(name: name, object: nil, userInfo: userInfo)
+
         // Check image data
         guard let imageData = self.inputImageData else {
             self.showError()
@@ -1272,6 +1287,11 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     }
     
     private func moveSeveralImages(toCategory categoryData:PiwigoAlbumData) {
+        // Add category to list of recent albums
+        let userInfo = ["categoryId": String(categoryData.albumId)]
+        let name = NSNotification.Name(rawValue: kPiwigoNotificationAddRecentAlbum)
+        NotificationCenter.default.post(name: name, object: nil, userInfo: userInfo)
+
         // Jobe done?
         if inputImagesData.count == 0 {
             DispatchQueue.main.async {
