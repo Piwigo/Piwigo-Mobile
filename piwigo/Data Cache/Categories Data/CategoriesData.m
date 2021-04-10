@@ -426,7 +426,9 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDeletedImage object:nil userInfo:userInfo];
 
     // Notify the Upload database that this image has been removed from this category
-    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationMovedImage object:nil userInfo:userInfo];
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationMovedImage object:nil userInfo:userInfo];
+    });
 
     // Notify UI that the number of images has changed and that the thumbnail may have to be changed
     userInfo = @{@"albumId" : category,
