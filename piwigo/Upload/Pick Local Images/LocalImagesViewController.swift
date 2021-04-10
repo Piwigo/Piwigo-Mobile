@@ -1245,8 +1245,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     }
 
                     // Select the cell
-                    selectedImages[index] = UploadProperties.init(localIdentifier: cell.localIdentifier,
-                                                                  category: categoryId)
+                    selectedImages[index] = UploadProperties(localIdentifier: cell.localIdentifier,
+                                                                    category: categoryId)
                     cell.cellSelected = true
                 }
 
