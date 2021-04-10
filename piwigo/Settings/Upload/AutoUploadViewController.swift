@@ -56,6 +56,9 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         // Register palette changes
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+
+        // Pause UploadManager while changing settings
+        UploadManager.shared.isPaused = true
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -64,6 +67,14 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         // Unregister palette changes
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
         NotificationCenter.default.removeObserver(self, name: name, object: nil)
+
+        // Restart UploadManager activities
+        if UploadManager.shared.isPaused {
+            UploadManager.shared.isPaused = false
+            UploadManager.shared.backgroundQueue.async {
+                UploadManager.shared.findNextImageToUpload()
+            }
+        }
     }
 
 
