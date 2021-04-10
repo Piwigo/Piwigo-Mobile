@@ -14,6 +14,16 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
 
     @IBOutlet var autoUploadTableView: UITableView!
     
+    // MARK: - Core Data
+    /**
+     The UploadsProvider that collects upload data, saves it to Core Data,
+     and serves it to the uploader.
+     */
+    private lazy var uploadsProvider: UploadsProvider = {
+        let provider : UploadsProvider = UploadsProvider()
+        return provider
+    }()
+
     
     // MARK: - View Lifecycle
     
@@ -176,10 +186,12 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
             cell.configure(with: title)
             cell.cellSwitch.setOn(Model.sharedInstance().isAutoUploadActive, animated: true)
             cell.cellSwitchBlock = { switchState in
-                Model.sharedInstance().isAutoUploadActive = switchState
-                Model.sharedInstance().saveToDisk()
-                
-                self.autoUploadTableView.reloadSections(IndexSet.init(integer: indexPath.section), with: .automatic)
+                // Enable/disable auto-upload option
+                if switchState {
+                    self.enableAutoUpload()
+                } else {
+                    self.disableAutoUpload()
+                }
             }
             tableViewCell = cell
             
@@ -380,5 +392,181 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         // Save new choice
         Model.sharedInstance()?.autoUploadCategoryId = categoryId
         Model.sharedInstance()?.saveToDisk()
+    }
+
+
+    // MARK: - Auto-Upload Request Management
+    
+    private func enableAutoUpload() {
+        // Check access Photo Library album
+        guard let collectionID = Model.sharedInstance()?.autoUploadAlbumId, !collectionID.isEmpty,
+           let collection = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [collectionID], options: nil).firstObject else {
+            // Cannot access local album
+            let title = NSLocalizedString("settings_autoUploadSourceInvalid", comment:"Invalid source album")
+            let message = NSLocalizedString("settings_autoUploadSourceInfo", comment: "Please select the album or sub-album from which photos and videos of your device will be auto-uploaded.")
+            self.showError(withTitle: title, message: message) {
+                self.disableAutoUpload()
+            }
+            return
+        }
+
+        // Check existence of Piwigo album
+        guard let categoryId = Model.sharedInstance()?.autoUploadCategoryId, categoryId != NSNotFound else {
+            // Cannot access local album
+            let title = NSLocalizedString("settings_autoUploadDestinationInvalid", comment:"Invalid destination album")
+            let message = NSLocalizedString("settings_autoUploadSourceInfo", comment: "Please select the album or sub-album into which photos and videos will be auto-uploaded.")
+            self.showError(withTitle: title, message: message) {
+                self.disableAutoUpload()
+            }
+            return
+        }
+        
+        // Collect IDs of images to upload
+        let fetchOptions = PHFetchOptions()
+        fetchOptions.includeHiddenAssets = false
+        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        let fetchedImages = PHAsset.fetchAssets(in: collection, options: fetchOptions)
+        if fetchedImages.count == 0 {
+            // Nothing to add to the upload queue - Job done
+            return
+        }
+        
+        // Collect IDs of images already considered for upload
+        guard let uploadIds = uploadsProvider.fetchedResultsController
+                .fetchedObjects?.map({ $0.localIdentifier }) else {
+            // Could not retrieve uploads
+            return
+        }
+        
+        // Determine which local images are still not considered for upload
+        var imagesToUpload = [UploadProperties]()
+        fetchedImages.enumerateObjects { image, idx, stop in
+            if !uploadIds.contains(image.localIdentifier) {
+                var uploadRequest = UploadProperties(localIdentifier: image.localIdentifier,
+                                                     category: categoryId)
+                // Image parameters
+                if let author = Model.sharedInstance()?.defaultAuthor {
+                    uploadRequest.author = author
+                }
+                if let privacy = Model.sharedInstance()?.defaultPrivacyLevel {
+                    uploadRequest.privacyLevel = privacy
+                }
+
+                // Upload settings
+                if let stripGPSdataOnUpload = Model.sharedInstance()?.stripGPSdataOnUpload {
+                    uploadRequest.stripGPSdataOnUpload = stripGPSdataOnUpload
+                }
+                if let resizeImageOnUpload = Model.sharedInstance()?.resizeImageOnUpload {
+                    uploadRequest.resizeImageOnUpload = resizeImageOnUpload
+                    if resizeImageOnUpload {
+                        if let photoResize = Model.sharedInstance()?.photoResize {
+                            uploadRequest.photoResize = Int16(photoResize)
+                        }
+                    } else {
+                        uploadRequest.photoResize = 100
+                    }
+                }
+                if let compressImageOnUpload = Model.sharedInstance()?.compressImageOnUpload {
+                    uploadRequest.compressImageOnUpload = compressImageOnUpload
+                }
+                if let photoQuality = Model.sharedInstance()?.photoQuality {
+                    uploadRequest.photoQuality = Int16(photoQuality)
+                }
+                if let prefixFileNameBeforeUpload = Model.sharedInstance()?.prefixFileNameBeforeUpload {
+                    uploadRequest.prefixFileNameBeforeUpload = prefixFileNameBeforeUpload
+                }
+                if let defaultPrefix = Model.sharedInstance()?.defaultPrefix {
+                    uploadRequest.defaultPrefix = defaultPrefix
+                }
+                if let deleteImageAfterUpload = Model.sharedInstance()?.deleteImageAfterUpload {
+                    uploadRequest.deleteImageAfterUpload = deleteImageAfterUpload
+                }
+                uploadRequest.markedForAutoUpload = true
+                imagesToUpload.append(uploadRequest)
+            }
+        }
+        if imagesToUpload.count == 0 {
+            // Nothing to add to the upload queue - Job done
+            return
+        }
+
+        // Append local images to upload queue
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.uploadsProvider.importUploads(from: imagesToUpload.compactMap{ $0 }) { error in
+                // Show an alert if there was an error.
+                guard let error = error else {
+                    // Auto-upload mode enabled
+                    Model.sharedInstance().isAutoUploadActive = true
+                    Model.sharedInstance().saveToDisk()
+                    
+                    // Refresh cell
+                    DispatchQueue.main.async {
+                        self.autoUploadTableView.reloadSections(IndexSet(integer: 0), with: .automatic)
+                    }
+
+                    // Restart UploadManager activities
+                    if UploadManager.shared.isPaused {
+                        UploadManager.shared.isPaused = false
+                        UploadManager.shared.backgroundQueue.async {
+                            UploadManager.shared.findNextImageToUpload()
+                        }
+                    }
+                    return
+                }
+                
+                // Inform user
+                DispatchQueue.main.async {
+                    let title = NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object.")
+                    self.showError(withTitle: title, message: error.localizedDescription) {
+                        DispatchQueue.global(qos: .userInteractive).async {
+                            // Disable auto-uploading
+                            self.disableAutoUpload()
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private func disableAutoUpload() {
+        // Disable auto-uploading
+        Model.sharedInstance().isAutoUploadActive = false
+        Model.sharedInstance().saveToDisk()
+        autoUploadTableView.reloadSections(IndexSet(integer: 0), with: .automatic)
+
+        // Collect upload requests of images considered for auto-upload
+        guard let uploads = uploadsProvider.fetchedNonCompletedResultsController.fetchedObjects?
+                .filter({ $0.markedForAutoUpload == true})
+                .map({ $0.objectID }) else {
+            // Could not retrieve uploads
+            
+            return
+        }
+        if uploads.count == 0 {
+            // Nothing to remove from the upload queue - Job done
+            return
+        }
+        
+        // Remove upload requests marked for auto-upload from the upload queue
+        uploadsProvider.delete(uploadRequests: uploads)
+    }
+    
+    private func showError(withTitle title: String, message: String,
+                           completion: @escaping () -> Void) {
+        DispatchQueue.main.async {
+            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"),
+                                          style: .default, handler: { _ in completion() } ))
+            alert.view.tintColor = UIColor.piwigoColorOrange()
+            if #available(iOS 13.0, *) {
+                alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+            } else {
+                // Fallback on earlier versions
+            }
+            self.present(alert, animated: true, completion: {
+                // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+                alert.view.tintColor = UIColor.piwigoColorOrange()
+            })
+        }
     }
 }
