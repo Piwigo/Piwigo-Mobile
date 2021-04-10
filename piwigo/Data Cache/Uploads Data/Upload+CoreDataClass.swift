@@ -75,6 +75,7 @@ public class Upload: NSManagedObject {
         prefixFileNameBeforeUpload = uploadProperties.prefixFileNameBeforeUpload
         defaultPrefix = uploadProperties.defaultPrefix
         deleteImageAfterUpload = uploadProperties.deleteImageAfterUpload
+        markedForAutoUpload = uploadProperties.markedForAutoUpload
     }
     
     func updateStatus(with state: kPiwigoUploadState?, error: String?) throws {
@@ -177,7 +178,8 @@ extension Upload {
             resizeImageOnUpload: self.resizeImageOnUpload, photoResize: self.photoResize,
             compressImageOnUpload: self.compressImageOnUpload, photoQuality: self.photoQuality,
             prefixFileNameBeforeUpload: self.prefixFileNameBeforeUpload, defaultPrefix: self.defaultPrefix,
-            deleteImageAfterUpload: self.deleteImageAfterUpload)
+            deleteImageAfterUpload: self.deleteImageAfterUpload,
+            markedForAutoUpload: self.markedForAutoUpload)
     }
 
     func getProperties(with state: kPiwigoUploadState, error: String) -> UploadProperties {
@@ -200,7 +202,8 @@ extension Upload {
             resizeImageOnUpload: self.resizeImageOnUpload, photoResize: self.photoResize,
             compressImageOnUpload: self.compressImageOnUpload, photoQuality: self.photoQuality,
             prefixFileNameBeforeUpload: self.prefixFileNameBeforeUpload, defaultPrefix: self.defaultPrefix,
-            deleteImageAfterUpload: self.deleteImageAfterUpload)
+            deleteImageAfterUpload: self.deleteImageAfterUpload,
+            markedForAutoUpload: self.markedForAutoUpload)
     }
 
     @objc(addUploadsObject:)
@@ -357,6 +360,7 @@ struct UploadProperties
     var prefixFileNameBeforeUpload: Bool
     var defaultPrefix: String
     var deleteImageAfterUpload: Bool
+    var markedForAutoUpload: Bool
 }
 
 extension UploadProperties {
@@ -388,7 +392,8 @@ extension UploadProperties {
             photoQuality: Int16(Model.sharedInstance()?.photoQuality ?? 98),
             prefixFileNameBeforeUpload: Model.sharedInstance()?.prefixFileNameBeforeUpload ?? false,
             defaultPrefix: Model.sharedInstance()?.defaultPrefix ?? "",
-            deleteImageAfterUpload: false)
+            deleteImageAfterUpload: false,
+            markedForAutoUpload: false)
     }
     
     var stateLabel: String {

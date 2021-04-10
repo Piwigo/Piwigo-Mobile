@@ -44,5 +44,5 @@ extension Upload {
     @NSManaged public var serverPath: String
     @NSManaged public var stripGPSdataOnUpload: Bool
     @NSManaged public var tagIds: String
-
+    @NSManaged public var markedForAutoUpload: Bool
 }

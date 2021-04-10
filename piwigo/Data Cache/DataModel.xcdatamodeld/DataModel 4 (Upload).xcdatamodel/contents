@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="18153" systemVersion="20D64" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="DataModel">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="18154" systemVersion="20E5224a" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="DataModel">
     <entity name="Location" representedClassName=".Location" syncable="YES">
         <attribute name="latitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="longitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
@@ -31,6 +31,7 @@
         <attribute name="imageName" attributeType="String" defaultValueString=""/>
         <attribute name="isVideo" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="localIdentifier" attributeType="String"/>
+        <attribute name="markedForAutoUpload" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="md5Sum" attributeType="String" defaultValueString=""/>
         <attribute name="mimeType" attributeType="String" defaultValueString=""/>
         <attribute name="photoQuality" attributeType="Integer 16" defaultValueString="98" usesScalarValueType="YES"/>
@@ -55,6 +56,6 @@
     <elements>
         <element name="Location" positionX="-60.984375" positionY="-122.5" width="128" height="104"/>
         <element name="Tag" positionX="-61.69140625" positionY="-237.2265625" width="128" height="89"/>
-        <element name="Upload" positionX="-403.19921875" positionY="-201.09375" width="128" height="434"/>
+        <element name="Upload" positionX="-403.19921875" positionY="-201.09375" width="128" height="449"/>
     </elements>
 </model>
