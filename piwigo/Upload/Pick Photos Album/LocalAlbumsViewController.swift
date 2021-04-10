@@ -207,7 +207,25 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     
     // MARK: - UITableView - Header
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 44.0
+        let context = NSStringDrawingContext()
+        context.minimumScaleFactor = 1.0
+
+        // First section added for pasteboard?
+        var activeSection = section
+        if hasImagesInPasteboard {
+            switch activeSection {
+            case 0:
+                return 0.0
+            default:
+                activeSection -= 1
+            }
+        }
+
+        // Title
+        let titleString = LocalAlbumsProvider.sharedInstance().localAlbumHeaders[activeSection]
+        let titleAttributes = [NSAttributedString.Key.font: UIFont.piwigoFontBold()]
+        let titleRect = titleString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
+        return CGFloat(ceil(titleRect.size.height))
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
