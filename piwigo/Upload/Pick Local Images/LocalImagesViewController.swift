@@ -571,19 +571,21 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         queue.addOperations([sortOperation, cacheOperation], waitUntilFinished: true)
 
         // Hide HUD (displayed when Photo Library motifies changes)
-        self.hideHUDwithSuccess(true) {
-            // Enable Select buttons
-            DispatchQueue.main.async {
-                self.updateActionButton()
-                self.updateNavBar()
-                self.localImagesCollection.reloadData()
-            }
-            // Restart UplaodManager activity if all images are already in the upload queue
-            if self.indexedUploadsInQueue.compactMap({$0}).count == self.fetchedImages.count,
-               UploadManager.shared.isPaused {
-                UploadManager.shared.isPaused = false
-                UploadManager.shared.backgroundQueue.async {
-                    UploadManager.shared.findNextImageToUpload()
+        updatePiwigoHUDwithSuccess {
+            self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
+                // Enable Select buttons
+                DispatchQueue.main.async {
+                    self.updateActionButton()
+                    self.updateNavBar()
+                    self.localImagesCollection.reloadData()
+                }
+                // Restart UplaodManager activity if all images are already in the upload queue
+                if self.indexedUploadsInQueue.compactMap({$0}).count == self.fetchedImages.count,
+                   UploadManager.shared.isPaused {
+                    UploadManager.shared.isPaused = false
+                    UploadManager.shared.backgroundQueue.async {
+                        UploadManager.shared.findNextImageToUpload()
+                    }
                 }
             }
         }
@@ -1578,65 +1580,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     }
 
 
-    // MARK: - HUD methods
-    
-    func showHUD(with title: String?, detail: String?) {
-        // Determine the present view controller if needed (not necessarily self.view)
-        if hudViewController == nil {
-            hudViewController = UIApplication.shared.keyWindow?.rootViewController
-            while ((hudViewController?.presentedViewController) != nil) {
-                hudViewController = hudViewController?.presentedViewController
-            }
-        }
-
-        // Create the login HUD if needed
-        var hud = hudViewController?.view.viewWithTag(loadingViewTag) as? MBProgressHUD
-        if hud == nil {
-            // Create the HUD
-            hud = MBProgressHUD.showAdded(to: (hudViewController?.view)!, animated: true)
-            hud?.tag = loadingViewTag
-
-            // Change the background view shape, style and color.
-            hud?.isSquare = false
-            hud?.animationType = MBProgressHUDAnimation.fade
-            hud?.backgroundView.style = MBProgressHUDBackgroundStyle.solidColor
-            hud?.backgroundView.color = UIColor(white: 0.0, alpha: 0.5)
-            hud?.contentColor = UIColor.piwigoColorText()
-            hud?.bezelView.color = UIColor.piwigoColorText()
-            hud?.bezelView.style = MBProgressHUDBackgroundStyle.solidColor
-            hud?.bezelView.backgroundColor = UIColor.piwigoColorCellBackground()
-
-            // Will look best, if we set a minimum size.
-            hud?.minSize = CGSize(width: 200.0, height: 100.0)
-        }
-
-        // Set title
-        hud?.label.text = title
-        hud?.label.font = UIFont.piwigoFontNormal()
-        hud?.mode = MBProgressHUDMode.indeterminate
-        hud?.detailsLabel.text = detail
-    }
-
-    func hideHUDwithSuccess(_ success: Bool, completion: @escaping () -> Void) {
-        DispatchQueue.main.async(execute: {
-            // Hide and remove the HUD
-            if let hud = self.hudViewController?.view.viewWithTag(loadingViewTag) as? MBProgressHUD {
-                if success {
-                    let image = UIImage(named: "completed")?.withRenderingMode(.alwaysTemplate)
-                    let imageView = UIImageView(image: image)
-                    hud.customView = imageView
-                    hud.mode = MBProgressHUDMode.customView
-                    hud.label.text = NSLocalizedString("completeHUD_label", comment: "Complete")
-                    hud.hide(animated: true, afterDelay: 0.3)
-                } else {
-                    hud.hide(animated: true)
-                }
-            }
-            completion()
-        })
-    }
-    
-    
     // MARK: - LocalImagesHeaderReusableView Delegate Methods
     
     func didSelectImagesOfSection(_ section: Int) {
@@ -1814,6 +1757,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 /// Changes are not returned as expected (iOS 14.3 provides objects, not their indexes).
 /// The image selection is therefore updated during the sort.
 extension LocalImagesViewController: PHPhotoLibraryChangeObserver {
+    
     func photoLibraryDidChange(_ changeInstance: PHChange) {
         // Check each of the fetches for changes
         guard let changes = changeInstance.changeDetails(for: self.fetchedImages)
@@ -1822,7 +1766,7 @@ extension LocalImagesViewController: PHPhotoLibraryChangeObserver {
         // This method may be called on a background queue; use the main queue to update the UI.
         DispatchQueue.main.async {
             // Show HUD during update, preventing touches
-            self.showHUD(with: NSLocalizedString("editImageDetailsHUD_updatingPlural", comment: "Updating Photos…"), detail: nil)
+            self.showPiwigoHUD(withTitle: NSLocalizedString("editImageDetailsHUD_updatingPlural", comment: "Updating Photos…"))
 
             // Update fetched asset collection
             self.fetchedImages = changes.fetchResultAfterChanges
