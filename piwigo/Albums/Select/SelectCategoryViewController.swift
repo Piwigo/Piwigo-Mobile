@@ -960,20 +960,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         if message.count > 0 { mainMessage.append("\n\(message)") }
         
         // Present alert
-        let alert = UIAlertController.init(title: title, message: message, preferredStyle: .alert)
-        let dismissAction = UIAlertAction.init(title: NSLocalizedString("alertDismissButton", comment:"Dismiss"),
-                                               style: .cancel) { _ in self.dismiss(animated: true, completion: {})}
-        alert.addAction(dismissAction)
-        alert.view.tintColor = UIColor.piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
-        present(alert, animated: true) {
-            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange()
-        }
+        self.dismissPiwigoError(withTitle: title, message: message) { self.dismiss(animated: true, completion: {}) }
     }
     
 
@@ -1050,15 +1037,11 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                     self.hideHUDwithSuccess(true, completion: {
                         let deadlineTime = DispatchTime.now() + .milliseconds(500)
                         DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
-                            self.hideHUD {
-                                self.dismiss(animated: true)
-                            }
+                            self.hideHUD { self.dismiss(animated: true) }
                         }
                     })
                 } else {
-                    self.hideHUD {
-                        self.showError()
-                    }
+                    self.hideHUD { self.showError() }
                 }
             } onFailure: { [unowned self] task, error in
                 self.hideHUD {
@@ -1096,16 +1079,12 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                     self.hideHUDwithSuccess(true) {
                         let deadlineTime = DispatchTime.now() + .milliseconds(500)
                         DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
-                            self.hideHUD {
-                                self.dismiss(animated: true)
-                            }
+                            self.hideHUD { self.dismiss(animated: true) }
                         }
                     }
                 } else {
                     // Close HUD and inform user
-                    self.hideHUD {
-                        self.showError()
-                    }
+                    self.hideHUD { self.showError() }
                 }
             } onFailure: { _, error in
                 // Close HUD and inform user
@@ -1182,6 +1161,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                     }
                 }
             }
+            return
         }
         
         // Check image data
@@ -1197,10 +1177,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 // Next image…
                 self.inputImagesData.removeLast()
                 DispatchQueue.main.async {
-                    if let hudView = self.hudViewController?.view,
-                       let hudObject = MBProgressHUD.forView(hudView) {
-                        hudObject.progress = 1.0 - Float(self.inputImagesData.count) / self.nberOfSelectedImages
-                    }
+                    self.updateHUD(withProgress: 1.0 - Float(self.inputImagesData.count) / self.nberOfSelectedImages)
                 }
                 self.copySeveralImages(toCategory: categoryData)
             } else {
@@ -1312,6 +1289,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                     }
                 }
             }
+            return
         }
         
         // Check image data
@@ -1327,10 +1305,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 // Next image…
                 self.inputImagesData.removeLast()
                 DispatchQueue.main.async {
-                    if let hudView = self.hudViewController?.view,
-                       let hudObject = MBProgressHUD.forView(hudView) {
-                        hudObject.progress = 1.0 - Float(self.inputImagesData.count) / self.nberOfSelectedImages
-                    }
+                    self.updateHUD(withProgress: 1.0 - Float(self.inputImagesData.count) / self.nberOfSelectedImages)
                 }
                 self.moveSeveralImages(toCategory: categoryData)
             } else {
@@ -1383,74 +1358,6 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             }
         } onFailure: { _, error in
             fail(error as NSError?)
-        }
-    }
-    
-    
-    // MARK: - HUD methods
-    
-    func showHUD(withTitle title: String?,  andMode mode: MBProgressHUDMode) {
-        // Determine the present view controller if needed (not necessarily self.view)
-        if hudViewController == nil {
-            hudViewController = UIApplication.shared.keyWindow?.rootViewController
-            while hudViewController?.presentedViewController != nil {
-                hudViewController = hudViewController?.presentedViewController
-            }
-        }
-
-        // Create the login HUD if needed
-        var hud = hudViewController?.view.viewWithTag(loadingViewTag) as? MBProgressHUD
-        if hud == nil {
-            // Create the HUD
-            hud = MBProgressHUD.showAdded(to: (hudViewController?.view)!, animated: true)
-            hud?.tag = loadingViewTag
-
-            // Change the background view shape, style and color.
-            hud?.mode = mode
-            hud?.isSquare = false
-            hud?.animationType = MBProgressHUDAnimation.fade
-            hud?.backgroundView.style = MBProgressHUDBackgroundStyle.solidColor
-            hud?.backgroundView.color = UIColor(white: 0.0, alpha: 0.5)
-            hud?.contentColor = UIColor.piwigoColorText()
-            hud?.bezelView.color = UIColor.piwigoColorText()
-            hud?.bezelView.style = MBProgressHUDBackgroundStyle.solidColor
-            hud?.bezelView.backgroundColor = UIColor.piwigoColorCellBackground()
-
-            // Will look best, if we set a minimum size.
-            hud?.minSize = CGSize(width: 200.0, height: 100.0)
-        }
-
-        // Set title
-        hud?.label.text = title
-        hud?.label.font = UIFont.piwigoFontNormal()
-    }
-
-    func hideHUDwithSuccess(_ success: Bool, completion: @escaping () -> Void) {
-        DispatchQueue.main.async {
-            // Show "Completed" icon
-            let hud = self.hudViewController?.view.viewWithTag(loadingViewTag) as? MBProgressHUD
-            if hud != nil {
-                if success {
-                    let image = UIImage(named: "completed")?.withRenderingMode(.alwaysTemplate)
-                    let imageView = UIImageView(image: image)
-                    hud?.customView = imageView
-                    hud?.mode = MBProgressHUDMode.customView
-                    hud?.label.text = NSLocalizedString("completeHUD_label", comment: "Complete")
-                }
-            }
-            completion()
-        }
-    }
-
-    func hideHUD(completion: @escaping () -> Void) {
-        DispatchQueue.main.async {
-            // Hide and remove the HUD
-            let hud = self.hudViewController?.view.viewWithTag(loadingViewTag) as? MBProgressHUD
-            if hud != nil {
-                hud?.hide(animated: true)
-                self.hudViewController = nil
-            }
-            completion()
         }
     }
 
