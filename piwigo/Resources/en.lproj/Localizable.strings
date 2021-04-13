@@ -418,6 +418,7 @@
 // Image move — Errors
 "moveImageError_title" = "Move Fail";
 "moveSingleImageError_message" = "Failed to move your photo";
+"moveSeveralImagesError_message" = "Failed to move some photos";
 
 // Image copy
 "copyImage_title" = "Copy to Album";
@@ -431,6 +432,7 @@
 // Image copy — Errors
 "copyImageError_title" = "Copy Fail";
 "copySingleImageError_message" = "Failed to copy your photo";
+"copySeveralImagesError_message" = "Failed to copy some photos";
 
 // Images upload
 "imageUploadHeader" = "Please select the album or sub-album from which photos and videos of your device will be uploaded.";

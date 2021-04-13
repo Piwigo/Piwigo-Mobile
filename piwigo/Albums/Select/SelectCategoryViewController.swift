@@ -944,7 +944,16 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             mainMessage = NSLocalizedString("categoryImageSetError_message", comment:"Failed to set the album image")
         case kPiwigoCategorySelectActionCopyImage:
             title = NSLocalizedString("copyImageError_title", comment:"Copy Fail")
-            mainMessage = NSLocalizedString("copySingleImageError_message", comment:"Failed to copy your image")
+            mainMessage = NSLocalizedString("copySingleImageError_message", comment:"Failed to copy your photo")
+        case kPiwigoCategorySelectActionCopyImages:
+            title = NSLocalizedString("copyImageError_title", comment:"Copy Fail")
+            mainMessage = NSLocalizedString("copySeveralImagesError_message", comment:"Failed to copy some photos")
+        case kPiwigoCategorySelectActionMoveImage:
+            title = NSLocalizedString("moveImageError_title", comment:"Move Fail")
+            mainMessage = NSLocalizedString("moveSingleImageError_message", comment:"Failed to copy your photo")
+        case kPiwigoCategorySelectActionMoveImages:
+            title = NSLocalizedString("moveImageError_title", comment:"Move Fail")
+            mainMessage = NSLocalizedString("moveSeveralImagesError_message", comment:"Failed to move some photos")
         default:
             return
         }
