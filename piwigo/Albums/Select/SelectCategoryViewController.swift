@@ -126,7 +126,6 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     private var recentCategories: [PiwigoAlbumData] = []        // Recent categories presented in 1st section
     private var categories: [PiwigoAlbumData] = []              // Categories presented in 2nd section
     private var categoriesThatShowSubCategories: [Int] = []
-    private var hudViewController: UIViewController?
     private var nberOfSelectedImages = Float(0)
 
     
