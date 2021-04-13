@@ -345,7 +345,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                                         style: .default, handler: { _ in self.retrieveImageData() })
         let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment:"Dismiss"),
                                                style: .cancel) { _ in
-            self.hideHUDwithSuccess(false) {
+            self.hideHUD {
                 self.dismiss(animated: true) { }
             }
         }
@@ -967,8 +967,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     // MARK: - Move Category Methods
     private func moveCategory(intoCategory parentCatData:PiwigoAlbumData) {
         // Display HUD during the update
-        self.showHUD(withTitle: NSLocalizedString("moveCategoryHUD_moving", comment: "Moving Album…"),
-                     andMode: .indeterminate)
+        showHUD(withTitle: NSLocalizedString("moveCategoryHUD_moving", comment: "Moving Album…"),
+                andMode: .indeterminate)
 
         DispatchQueue.global(qos: .userInitiated).async {
             // Add category to list of recent albums
@@ -1034,12 +1034,11 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
                     // Update cache (will refresh album/images view)
                     CategoriesData.sharedInstance().updateCategories(catToUpdate)
-                    self.hideHUDwithSuccess(true, completion: {
-                        let deadlineTime = DispatchTime.now() + .milliseconds(500)
-                        DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
-                            self.hideHUD { self.dismiss(animated: true) }
+                    self.updateHUDwithSuccess() {
+                        self.hideHUD(afterDelay: 500) {
+                            self.dismiss(animated: true)
                         }
-                    })
+                    }
                 } else {
                     self.hideHUD { self.showError() }
                 }
@@ -1058,8 +1057,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     // MARK: - Set Album Thumbnail Methods
     private func setRepresentative(for categoryData:PiwigoAlbumData) {
         // Display HUD during the update
-        self.showHUD(withTitle: NSLocalizedString("categoryImageSetHUD_updating", comment:"Updating Album Thumbnail…"),
-                     andMode: .indeterminate)
+        showHUD(withTitle: NSLocalizedString("categoryImageSetHUD_updating", comment:"Updating Album Thumbnail…"),
+                andMode: .indeterminate)
         
         // Set image as representative
         DispatchQueue.global(qos: .userInitiated).async {
@@ -1076,10 +1075,9 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                     categoryData.categoryImage = nil
                     
                     // Close HUD
-                    self.hideHUDwithSuccess(true) {
-                        let deadlineTime = DispatchTime.now() + .milliseconds(500)
-                        DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
-                            self.hideHUD { self.dismiss(animated: true) }
+                    self.updateHUDwithSuccess() {
+                        self.hideHUD(afterDelay: 500) {
+                            self.dismiss(animated: true)
                         }
                     }
                 } else {
@@ -1113,18 +1111,17 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         }
         
         // Display HUD during the update
-        self.showHUD(withTitle: NSLocalizedString("copySingleImageHUD_copying", comment:"Copying Photo…"),
-                     andMode: .indeterminate)
+        showHUD(withTitle: NSLocalizedString("copySingleImageHUD_copying", comment:"Copying Photo…"),
+                andMode: .indeterminate)
         
         // Copy image to selected album
         DispatchQueue.global(qos: .userInitiated).async {
             self.copyImage(imageData, toCategory: categoryData) { didSucceed in
                 if didSucceed {
                     // Close HUD
-                    self.hideHUDwithSuccess(true) {
-                        let deadlineTime = DispatchTime.now() + .milliseconds(500)
-                        DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
-                            self.hideHUD { self.dismiss(animated: true) }
+                    self.updateHUDwithSuccess() {
+                        self.hideHUD(afterDelay: 500) {
+                            self.dismiss(animated: true)
                         }
                     }
                 } else {
@@ -1152,13 +1149,10 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
         // Jobe done?
         if inputImagesData.count == 0 {
-            DispatchQueue.main.async {
-                // Close HUD
-                self.hideHUDwithSuccess(true) {
-                    let deadlineTime = DispatchTime.now() + .milliseconds(500)
-                    DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
-                        self.hideHUD { self.dismiss(animated: true) }
-                    }
+            // Close HUD
+            updateHUDwithSuccess() {
+                self.hideHUD(afterDelay: 500) {
+                    self.dismiss(animated: true)
                 }
             }
             return
@@ -1176,9 +1170,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             if didSucceed {
                 // Next image…
                 self.inputImagesData.removeLast()
-                DispatchQueue.main.async {
-                    self.updateHUD(withProgress: 1.0 - Float(self.inputImagesData.count) / self.nberOfSelectedImages)
-                }
+                self.updateHUD(withProgress: 1.0 - Float(self.inputImagesData.count) / self.nberOfSelectedImages)
                 self.copySeveralImages(toCategory: categoryData)
             } else {
                 // Close HUD and inform user
@@ -1241,18 +1233,17 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         }
         
         // Display HUD during the update
-        self.showHUD(withTitle: NSLocalizedString("moveSingleImageHUD_moving", comment:"Moving Photo…"),
-                     andMode: .indeterminate)
+        showHUD(withTitle: NSLocalizedString("moveSingleImageHUD_moving", comment:"Moving Photo…"),
+                andMode: .indeterminate)
         
         // Move image to selected album
         DispatchQueue.global(qos: .userInitiated).async {
             self.moveImage(imageData, toCategory: categoryData) { didSucceed in
                 if didSucceed {
                     // Close HUD
-                    self.hideHUDwithSuccess(true) {
-                        let deadlineTime = DispatchTime.now() + .milliseconds(500)
-                        DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
-                            self.hideHUD { self.dismiss(animated: true) }
+                    self.updateHUDwithSuccess() {
+                        self.hideHUD(afterDelay: 500) {
+                            self.dismiss(animated: true)
                         }
                     }
                 } else {
@@ -1280,13 +1271,10 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
         // Jobe done?
         if inputImagesData.count == 0 {
-            DispatchQueue.main.async {
-                // Close HUD
-                self.hideHUDwithSuccess(true) {
-                    let deadlineTime = DispatchTime.now() + .milliseconds(500)
-                    DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
-                        self.hideHUD { self.dismiss(animated: true) }
-                    }
+            // Close HUD
+            updateHUDwithSuccess() {
+                self.hideHUD(afterDelay: 500) {
+                    self.dismiss(animated: true)
                 }
             }
             return
@@ -1304,9 +1292,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             if didSucceed {
                 // Next image…
                 self.inputImagesData.removeLast()
-                DispatchQueue.main.async {
-                    self.updateHUD(withProgress: 1.0 - Float(self.inputImagesData.count) / self.nberOfSelectedImages)
-                }
+                self.updateHUD(withProgress: 1.0 - Float(self.inputImagesData.count) / self.nberOfSelectedImages)
                 self.moveSeveralImages(toCategory: categoryData)
             } else {
                 // Close HUD and inform user
