@@ -28,6 +28,8 @@ NSTimeInterval const k1WeekInDays  = 60 * 60 * 24 *  7.0;
 NSTimeInterval const k2WeeksInDays = 60 * 60 * 24 * 14.0;
 NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
 
+NSInteger const kDelayPiwigoHUD = 500;
+
 @interface Model()
 
 @end

@@ -26,6 +26,8 @@ FOUNDATION_EXPORT NSTimeInterval const k1WeekInDays;
 FOUNDATION_EXPORT NSTimeInterval const k2WeeksInDays;
 FOUNDATION_EXPORT NSTimeInterval const k3WeeksInDays;
 
+FOUNDATION_EXPORT NSInteger const kDelayPiwigoHUD;
+
 @class PHPhotoLibrary;
 
 typedef enum {

@@ -219,8 +219,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Retrieve image data if needed
         if [kPiwigoCategorySelectActionCopyImages,
             kPiwigoCategorySelectActionMoveImages].contains(wantedAction) {
-            showHUD(withTitle: NSLocalizedString("loadingHUD_label", comment:"Loading…"),
-                    andMode: .indeterminate)
+            showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment:"Loading…"),
+                          andMode: .indeterminate)
             inputImagesData = []
             retrieveImageData()
         }
@@ -293,7 +293,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Job done?
         if inputImageIds.count == 0 {
             DispatchQueue.main.async {
-                self.hideHUD { self.categoriesTableView.reloadData() }
+                self.hidePiwigoHUD { self.categoriesTableView.reloadData() }
             }
             return
         }
@@ -344,7 +344,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                                         style: .default, handler: { _ in self.retrieveImageData() })
         let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment:"Dismiss"),
                                                style: .cancel) { _ in
-            self.hideHUD {
+            self.hidePiwigoHUD {
                 self.dismiss(animated: true) { }
             }
         }
@@ -866,8 +866,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                                 forCategory: categoryData, at: indexPath, handler: { _ in
                 // Initialise counter and display HUD
                 self.nberOfSelectedImages = Float(self.inputImagesData.count)
-                self.showHUD(withTitle: NSLocalizedString("copySeveralImagesHUD_copying", comment: "Copying Photos…"),
-                             andMode: .annularDeterminate)
+                self.showPiwigoHUD(withTitle: NSLocalizedString("copySeveralImagesHUD_copying", comment: "Copying Photos…"), andMode: .annularDeterminate)
 
                 // Copy several images to selected album
                 DispatchQueue.global(qos: .userInitiated).async {
@@ -888,8 +887,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                                 forCategory: categoryData, at: indexPath) { _ in
                 // Initialise counter and display HUD
                 self.nberOfSelectedImages = Float(self.inputImagesData.count)
-                self.showHUD(withTitle: NSLocalizedString("moveSeveralImagesHUD_moving", comment: "Moving Photos…"),
-                             andMode: .annularDeterminate)
+                self.showPiwigoHUD(withTitle: NSLocalizedString("moveSeveralImagesHUD_moving", comment: "Moving Photos…"), andMode: .annularDeterminate)
                 
                 // Move several images to selected album
                 DispatchQueue.global(qos: .userInitiated).async {
@@ -966,8 +964,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     // MARK: - Move Category Methods
     private func moveCategory(intoCategory parentCatData:PiwigoAlbumData) {
         // Display HUD during the update
-        showHUD(withTitle: NSLocalizedString("moveCategoryHUD_moving", comment: "Moving Album…"),
-                andMode: .indeterminate)
+        showPiwigoHUD(withTitle: NSLocalizedString("moveCategoryHUD_moving", comment: "Moving Album…"),
+                      andMode: .indeterminate)
 
         DispatchQueue.global(qos: .userInitiated).async {
             // Add category to list of recent albums
@@ -1033,16 +1031,16 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
                     // Update cache (will refresh album/images view)
                     CategoriesData.sharedInstance().updateCategories(catToUpdate)
-                    self.updateHUDwithSuccess() {
-                        self.hideHUD(afterDelay: 500) {
+                    self.updatePiwigoHUDwithSuccess() {
+                        self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
                             self.dismiss(animated: true)
                         }
                     }
                 } else {
-                    self.hideHUD { self.showError() }
+                    self.hidePiwigoHUD { self.showError() }
                 }
             } onFailure: { [unowned self] task, error in
-                self.hideHUD {
+                self.hidePiwigoHUD {
                     guard let error = error as NSError? else {
                         self.showError()
                         return
@@ -1056,8 +1054,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     // MARK: - Set Album Thumbnail Methods
     private func setRepresentative(for categoryData:PiwigoAlbumData) {
         // Display HUD during the update
-        showHUD(withTitle: NSLocalizedString("categoryImageSetHUD_updating", comment:"Updating Album Thumbnail…"),
-                andMode: .indeterminate)
+        showPiwigoHUD(withTitle: NSLocalizedString("categoryImageSetHUD_updating", comment:"Updating Album Thumbnail…"), andMode: .indeterminate)
         
         // Set image as representative
         DispatchQueue.global(qos: .userInitiated).async {
@@ -1074,18 +1071,18 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                     categoryData.categoryImage = nil
                     
                     // Close HUD
-                    self.updateHUDwithSuccess() {
-                        self.hideHUD(afterDelay: 500) {
+                    self.updatePiwigoHUDwithSuccess() {
+                        self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
                             self.dismiss(animated: true)
                         }
                     }
                 } else {
                     // Close HUD and inform user
-                    self.hideHUD { self.showError() }
+                    self.hidePiwigoHUD { self.showError() }
                 }
             } onFailure: { _, error in
                 // Close HUD and inform user
-                self.hideHUD {
+                self.hidePiwigoHUD {
                     guard let error = error as NSError? else {
                         self.showError()
                         return
@@ -1110,26 +1107,26 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         }
         
         // Display HUD during the update
-        showHUD(withTitle: NSLocalizedString("copySingleImageHUD_copying", comment:"Copying Photo…"),
-                andMode: .indeterminate)
+        showPiwigoHUD(withTitle: NSLocalizedString("copySingleImageHUD_copying", comment:"Copying Photo…"),
+                      andMode: .indeterminate)
         
         // Copy image to selected album
         DispatchQueue.global(qos: .userInitiated).async {
             self.copyImage(imageData, toCategory: categoryData) { didSucceed in
                 if didSucceed {
                     // Close HUD
-                    self.updateHUDwithSuccess() {
-                        self.hideHUD(afterDelay: 500) {
+                    self.updatePiwigoHUDwithSuccess() {
+                        self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
                             self.dismiss(animated: true)
                         }
                     }
                 } else {
                     // Close HUD and inform user
-                    self.hideHUD { self.showError() }
+                    self.hidePiwigoHUD { self.showError() }
                 }
             } onFailure: { error in
                 // Close HUD and inform user
-                self.hideHUD {
+                self.hidePiwigoHUD {
                     guard let error = error as NSError? else {
                         self.showError()
                         return
@@ -1149,8 +1146,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Jobe done?
         if inputImagesData.count == 0 {
             // Close HUD
-            updateHUDwithSuccess() {
-                self.hideHUD(afterDelay: 500) {
+            updatePiwigoHUDwithSuccess() {
+                self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
                     self.dismiss(animated: true)
                 }
             }
@@ -1160,7 +1157,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Check image data
         guard let imageData = inputImagesData.last else {
             // Close HUD and inform user
-            self.hideHUD { self.showError() }
+            self.hidePiwigoHUD { self.showError() }
             return
         }
 
@@ -1169,15 +1166,15 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             if didSucceed {
                 // Next image…
                 self.inputImagesData.removeLast()
-                self.updateHUD(withProgress: 1.0 - Float(self.inputImagesData.count) / self.nberOfSelectedImages)
+                self.updatePiwigoHUD(withProgress: 1.0 - Float(self.inputImagesData.count) / self.nberOfSelectedImages)
                 self.copySeveralImages(toCategory: categoryData)
             } else {
                 // Close HUD and inform user
-                self.hideHUD { self.showError() }
+                self.hidePiwigoHUD { self.showError() }
             }
         } onFailure: { error in
             // Close HUD and inform user
-            self.hideHUD {
+            self.hidePiwigoHUD {
                 guard let error = error as NSError? else {
                     self.showError()
                     return
@@ -1232,26 +1229,26 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         }
         
         // Display HUD during the update
-        showHUD(withTitle: NSLocalizedString("moveSingleImageHUD_moving", comment:"Moving Photo…"),
-                andMode: .indeterminate)
+        showPiwigoHUD(withTitle: NSLocalizedString("moveSingleImageHUD_moving", comment:"Moving Photo…"),
+                      andMode: .indeterminate)
         
         // Move image to selected album
         DispatchQueue.global(qos: .userInitiated).async {
             self.moveImage(imageData, toCategory: categoryData) { didSucceed in
                 if didSucceed {
                     // Close HUD
-                    self.updateHUDwithSuccess() {
-                        self.hideHUD(afterDelay: 500) {
+                    self.updatePiwigoHUDwithSuccess() {
+                        self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
                             self.dismiss(animated: true)
                         }
                     }
                 } else {
                     // Close HUD and inform user
-                    self.hideHUD { self.showError() }
+                    self.hidePiwigoHUD { self.showError() }
                 }
             } onFailure: { error in
                 // Close HUD and inform user
-                self.hideHUD {
+                self.hidePiwigoHUD {
                     guard let error = error as NSError? else {
                         self.showError()
                         return
@@ -1271,8 +1268,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Jobe done?
         if inputImagesData.count == 0 {
             // Close HUD
-            updateHUDwithSuccess() {
-                self.hideHUD(afterDelay: 500) {
+            updatePiwigoHUDwithSuccess() {
+                self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
                     self.dismiss(animated: true)
                 }
             }
@@ -1282,7 +1279,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Check image data
         guard let imageData = inputImagesData.last else {
             // Close HUD and inform user
-            self.hideHUD { self.showError() }
+            self.hidePiwigoHUD { self.showError() }
             return
         }
 
@@ -1291,15 +1288,15 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             if didSucceed {
                 // Next image…
                 self.inputImagesData.removeLast()
-                self.updateHUD(withProgress: 1.0 - Float(self.inputImagesData.count) / self.nberOfSelectedImages)
+                self.updatePiwigoHUD(withProgress: 1.0 - Float(self.inputImagesData.count) / self.nberOfSelectedImages)
                 self.moveSeveralImages(toCategory: categoryData)
             } else {
                 // Close HUD and inform user
-                self.hideHUD { self.showError() }
+                self.hidePiwigoHUD { self.showError() }
             }
         } onFailure: { error in
             // Close HUD and inform user
-            self.hideHUD {
+            self.hidePiwigoHUD {
                 guard let error = error as NSError? else {
                     self.showError()
                     return
@@ -1355,15 +1352,15 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Show loading HUD when not using cache option,
         if !(useCache && Model.sharedInstance().loadAllCategoryInfo && (Model.sharedInstance().defaultCategory == 0)) {
             // Show loading HD
-            showHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-                    andMode: .indeterminate)
+            showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
+                          andMode: .indeterminate)
 
             // Reload category data and set current category
             //        NSLog(@"buildCategoryDf => getAlbumListForCategory(%ld,NO,YES)", (long)0);
             AlbumService.getAlbumList(forCategory: 0, usingCache: false, inRecursiveMode: Model.sharedInstance().loadAllCategoryInfo,
                     onCompletion: { task, albums in
                         // Hide loading HUD
-                        self.hideHUD {
+                        self.hidePiwigoHUD {
                             // Build category array
                             self.buildCategoryArray()
                             completion(true)
@@ -1371,7 +1368,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                     },
                     onFailure: { task, error in
                         // Hide loading HUD
-                        self.hideHUD {
+                        self.hidePiwigoHUD {
                             print(String(format: "getAlbumListForCategory: %@", error?.localizedDescription ?? ""))
                             fail(task, error!)
                         }
@@ -1531,21 +1528,21 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             //        NSLog(@"subCategories => getAlbumListForCategory(%ld,NO,NO)", (long)categoryTapped.albumId);
 
             // Show loading HD
-            showHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-                    andMode: .indeterminate)
+            showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
+                          andMode: .indeterminate)
 
             AlbumService.getAlbumList(forCategory: categoryTapped.albumId,
                                       usingCache: false,
                                       inRecursiveMode: Model.sharedInstance().loadAllCategoryInfo,
                                       onCompletion: { task, albums in
                 // Hide loading HUD
-                self.hideHUD {
+                self.hidePiwigoHUD {
                     // Reload table view
                     self.categoriesTableView.reloadData()
                 }
             }, onFailure: { task, error in
                 // Hide loading HUD
-                self.hideHUD {
+                self.hidePiwigoHUD {
                     print(String(format: "getAlbumListForCategory: %@", error?.localizedDescription ?? ""))
                 }
             })
@@ -1590,22 +1587,22 @@ extension SelectCategoryViewController: CategoryCellDelegate {
             // NSLog(@"subCategories => getAlbumListForCategory(%ld,NO,NO)", (long)categoryTapped.albumId);
 
             // Show loading HD
-            showHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-                    andMode: .indeterminate)
+            showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
+                          andMode: .indeterminate)
 
             AlbumService.getAlbumList(forCategory: categoryTapped.albumId,
                                       usingCache: Model.sharedInstance().loadAllCategoryInfo,
                                       inRecursiveMode: false,
                                       onCompletion: { task, albums in
                                         // Hide loading HUD
-                                        self.hideHUD {
+                                        self.hidePiwigoHUD {
                                             // Add sub-categories
                                             self.addSubCaterories(toCategoryID: categoryTapped)
                                         }
                                     },
                                       onFailure: { task, error in
                                         // Hide loading HUD
-                                        self.hideHUD {
+                                        self.hidePiwigoHUD {
                                             print(String(format: "getAlbumListForCategory: %@", error?.localizedDescription ?? ""))
                                         }
                                     })

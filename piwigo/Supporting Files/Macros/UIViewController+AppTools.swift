@@ -12,7 +12,8 @@ import UIKit
 extension UIViewController {
 
     // MARK: - MBProgressHUD
-    func showHUD(withTitle title:String?, andMode mode:MBProgressHUDMode) {
+    func showPiwigoHUD(withTitle title:String?, detail: String = "",
+                 andMode mode:MBProgressHUDMode = .indeterminate) {
         DispatchQueue.main.async {
             // Create the login HUD if needed
             var hud = self.view.viewWithTag(loadingViewTag) as? MBProgressHUD
@@ -36,20 +37,22 @@ extension UIViewController {
                 hud?.minSize = CGSize(width: 200.0, height: 100.0)
             }
 
-            // Set title
-            hud?.label.text = title
+            // Set title and detail
+            hud?.label.text = title ?? ""
             hud?.label.font = UIFont.piwigoFontNormal()
+            hud?.detailsLabel.text = detail
+            hud?.detailsLabel.font = UIFont.piwigoFontSmall()
         }
     }
     
-    func updateHUD(withProgress progress:Float) {
+    func updatePiwigoHUD(withProgress progress:Float) {
         DispatchQueue.main.async {
             let hud = self.view.viewWithTag(loadingViewTag) as? MBProgressHUD
             hud?.progress = progress
         }
     }
 
-    func updateHUDwithSuccess(completion: @escaping () -> Void) {
+    func updatePiwigoHUDwithSuccess(completion: @escaping () -> Void) {
         DispatchQueue.main.async {
             // Show "Completed" icon
             if let hud = self.view.viewWithTag(loadingViewTag) as? MBProgressHUD {
@@ -63,15 +66,15 @@ extension UIViewController {
         }
     }
 
-    func hideHUD(afterDelay delay:Int, completion: @escaping () -> Void) {
+    func hidePiwigoHUD(afterDelay delay:Int, completion: @escaping () -> Void) {
         let deadlineTime = DispatchTime.now() + .milliseconds(delay)
         DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
             // Hide and remove the HUD
-            self.hideHUD(completion: { completion() })
+            self.hidePiwigoHUD(completion: { completion() })
         }
     }
 
-    func hideHUD(completion: @escaping () -> Void) {
+    func hidePiwigoHUD(completion: @escaping () -> Void) {
         DispatchQueue.main.async {
             // Hide and remove the HUD
             let hud = self.view.viewWithTag(loadingViewTag) as? MBProgressHUD
