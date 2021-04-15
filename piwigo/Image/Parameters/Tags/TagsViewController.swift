@@ -387,99 +387,20 @@ extension TagsViewController {
         }
         
         // Display HUD during the update
-        DispatchQueue.main.async(execute: {
-            self.showHUDwithLabel(NSLocalizedString("tagsAddHUD_label", comment: "Creating Tag…"))
-        })
+        showPiwigoHUD(withTitle: NSLocalizedString("tagsAddHUD_label", comment: "Creating Tag…"))
 
-        // Rename album
+        // Add new tag
         dataProvider.addTag(with: tagName, completionHandler: { error in
             guard let error = error else {
-                self.hideHUDwithSuccess(true) { }
+                self.updatePiwigoHUDwithSuccess {
+                    self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD, completion: {})
+                }
                 return
             }
-            self.hideHUDwithSuccess(false) {
-                self.showAddError(withMessage: error.localizedDescription)
-            }
-        })
-    }
-
-    func showAddError(withMessage message: String?) {
-        var errorMessage = NSLocalizedString("tagsAddError_message", comment: "Failed to create new tag")
-        if message != nil {
-            errorMessage = "\(errorMessage)\n\(message ?? "")"
-        }
-        let alert = UIAlertController(title: NSLocalizedString("tagsAddError_title", comment: "Create Fail"), message: errorMessage, preferredStyle: .alert)
-
-        let defaultAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .cancel, handler: { action in
-            })
-
-        // Add actions
-        alert.addAction(defaultAction)
-
-        // Present list of actions
-        alert.view.tintColor = UIColor.piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
-        alert.popoverPresentationController?.barButtonItem = addBarButton
-        alert.popoverPresentationController?.permittedArrowDirections = .up
-        self.present(alert, animated: true) {
-            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange()
-        }
-    }
-
-
-    // MARK: - HUD methods
-    func showHUDwithLabel(_ label: String?) {
-        // Determine the present view controller if needed (not necessarily self.view)
-        if hudViewController == nil {
-            hudViewController = UIApplication.shared.keyWindow?.rootViewController
-            while ((hudViewController?.presentedViewController) != nil) {
-                hudViewController = hudViewController?.presentedViewController
-            }
-        }
-
-        // Create the login HUD if needed
-        var hud = hudViewController?.view.viewWithTag(loadingViewTag) as? MBProgressHUD
-        if hud == nil {
-            // Create the HUD
-            hud = MBProgressHUD.showAdded(to: (hudViewController?.view)!, animated: true)
-            hud?.tag = loadingViewTag
-
-            // Change the background view shape, style and color.
-            hud?.isSquare = false
-            hud?.animationType = .fade
-            hud?.backgroundView.style = .solidColor
-            hud?.backgroundView.color = UIColor(white: 0.0, alpha: 0.5)
-            hud?.contentColor = UIColor.piwigoColorText()
-            hud?.bezelView.color = UIColor.piwigoColorText()
-            hud?.bezelView.style = .solidColor
-            hud?.bezelView.backgroundColor = UIColor.piwigoColorCellBackground()
-        }
-        
-        // Define the text
-        hud?.label.text = label
-        hud?.label.font = UIFont.piwigoFontNormal()
-    }
-    
-    func hideHUDwithSuccess(_ success: Bool, completion: @escaping () -> Void) {
-        DispatchQueue.main.async(execute: {
-            // Hide and remove the HUD
-            if let hud = self.hudViewController?.view.viewWithTag(loadingViewTag) as? MBProgressHUD {
-                if success {
-                    let image = UIImage(named: "completed")?.withRenderingMode(.alwaysTemplate)
-                    let imageView = UIImageView(image: image)
-                    hud.customView = imageView
-                    hud.mode = .customView
-                    hud.label.text = NSLocalizedString("completeHUD_label", comment: "Complete")
-                    hud.hide(animated: true, afterDelay: 0.5)
-                } else {
-                    hud.hide(animated: true)
-                }
-                completion()
+            self.hidePiwigoHUD {
+                let message = NSLocalizedString("tagsAddError_message", comment: "Failed to create new tag") + "\n(\(error.localizedDescription))"
+                self.dismissPiwigoError(withTitle: NSLocalizedString("tagsAddError_title", comment: "Create Fail"),
+                                        message: message, completion: { })
             }
         })
     }
