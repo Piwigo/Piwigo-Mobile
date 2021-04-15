@@ -85,10 +85,16 @@ extension UIViewController {
 
     
     // MARK: - Dismiss Alert View
-    func dismissPiwigoError(withTitle title:String, message:String = "",
+    func dismissPiwigoError(withTitle title:String, message:String = "", errorMessage:String = "",
                             completion: @escaping () -> Void) {
+        // Prepare message
+        var wholeMessage = message
+        if errorMessage.count > 0 {
+            wholeMessage.append("\n(" + errorMessage + ")")
+        }
+        
         // Present alert
-        let alert = UIAlertController.init(title: title, message: message, preferredStyle: .alert)
+        let alert = UIAlertController.init(title: title, message: wholeMessage, preferredStyle: .alert)
         let dismissAction = UIAlertAction.init(title: NSLocalizedString("alertDismissButton", comment:"Dismiss"),
                                                style: .cancel) { _ in completion() }
         alert.addAction(dismissAction)

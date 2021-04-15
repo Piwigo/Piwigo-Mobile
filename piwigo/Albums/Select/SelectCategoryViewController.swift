@@ -928,36 +928,36 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         })
     }
 
-    private func showError(with message:String = "") {
+    private func showError(with error:String = "") {
         // Title and message
         let title:String
-        var mainMessage:String
+        var message:String
         switch wantedAction {
         case kPiwigoCategorySelectActionMoveAlbum:
             title = NSLocalizedString("moveCategoryError_title", comment:"Move Fail")
-            mainMessage = NSLocalizedString("moveCategoryError_message", comment:"Failed to move your album")
+            message = NSLocalizedString("moveCategoryError_message", comment:"Failed to move your album")
         case kPiwigoCategorySelectActionSetAlbumThumbnail:
             title = NSLocalizedString("categoryImageSetError_title", comment:"Image Set Error")
-            mainMessage = NSLocalizedString("categoryImageSetError_message", comment:"Failed to set the album image")
+            message = NSLocalizedString("categoryImageSetError_message", comment:"Failed to set the album image")
         case kPiwigoCategorySelectActionCopyImage:
             title = NSLocalizedString("copyImageError_title", comment:"Copy Fail")
-            mainMessage = NSLocalizedString("copySingleImageError_message", comment:"Failed to copy your photo")
+            message = NSLocalizedString("copySingleImageError_message", comment:"Failed to copy your photo")
         case kPiwigoCategorySelectActionCopyImages:
             title = NSLocalizedString("copyImageError_title", comment:"Copy Fail")
-            mainMessage = NSLocalizedString("copySeveralImagesError_message", comment:"Failed to copy some photos")
+            message = NSLocalizedString("copySeveralImagesError_message", comment:"Failed to copy some photos")
         case kPiwigoCategorySelectActionMoveImage:
             title = NSLocalizedString("moveImageError_title", comment:"Move Fail")
-            mainMessage = NSLocalizedString("moveSingleImageError_message", comment:"Failed to copy your photo")
+            message = NSLocalizedString("moveSingleImageError_message", comment:"Failed to copy your photo")
         case kPiwigoCategorySelectActionMoveImages:
             title = NSLocalizedString("moveImageError_title", comment:"Move Fail")
-            mainMessage = NSLocalizedString("moveSeveralImagesError_message", comment:"Failed to move some photos")
+            message = NSLocalizedString("moveSeveralImagesError_message", comment:"Failed to move some photos")
         default:
             return
         }
-        if message.count > 0 { mainMessage.append("\n\(message)") }
         
         // Present alert
-        self.dismissPiwigoError(withTitle: title, message: message) { self.dismiss(animated: true, completion: {}) }
+        self.dismissPiwigoError(withTitle: title, message: message,
+                                errorMessage: error) { self.dismiss(animated: true, completion: {}) }
     }
     
 

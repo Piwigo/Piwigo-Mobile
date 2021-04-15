@@ -398,9 +398,9 @@ extension TagsViewController {
                 return
             }
             self.hidePiwigoHUD {
-                let message = NSLocalizedString("tagsAddError_message", comment: "Failed to create new tag") + "\n(\(error.localizedDescription))"
                 self.dismissPiwigoError(withTitle: NSLocalizedString("tagsAddError_title", comment: "Create Fail"),
-                                        message: message, completion: { })
+                                        message: NSLocalizedString("tagsAddError_message", comment: "Failed to…"),
+                                        errorMessage: error.localizedDescription, completion: { })
             }
         })
     }
