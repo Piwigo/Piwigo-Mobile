@@ -375,13 +375,9 @@ typedef enum {
     // Display HUD during the update
     if (self.imagesToUpdate.count > 1) {
         self.nberOfSelectedImages = (double)(self.imagesToUpdate.count);
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self showHUDwithTitle:NSLocalizedString(@"editImageDetailsHUD_updatingPlural", @"Updating Photos…") andMode:MBProgressHUDModeIndeterminate];
-        });
+        [self showPiwigoHUDWithTitle:NSLocalizedString(@"editImageDetailsHUD_updatingPlural", @"Updating Photos…") detail:@"" andMode:MBProgressHUDModeIndeterminate];
     } else {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self showHUDwithTitle:NSLocalizedString(@"editImageDetailsHUD_updatingSingle", @"Updating Photo…") andMode:MBProgressHUDModeAnnularDeterminate];
-        });
+        [self showPiwigoHUDWithTitle:NSLocalizedString(@"editImageDetailsHUD_updatingSingle", @"Updating Photo…") detail:@"" andMode:MBProgressHUDModeAnnularDeterminate];
     }
     
     // Update image info on server and in cache
@@ -403,13 +399,15 @@ typedef enum {
                                     }
                                     else {
                                         // Done, hide HUD and dismiss controller
-                                        [self hideHUDwithSuccess:YES completion:^{
-                                            // Return to image preview or album view
-                                            [self dismissViewControllerAnimated:YES completion:^{
-                                                if ([self.delegate respondsToSelector:@selector(didChangeParamsOfImage:)])
-                                                {
-                                                    [self.delegate didChangeParamsOfImage:self.commonParameters];
-                                                }
+                                        [self updatePiwigoHUDwithSuccessWithCompletion:^{
+                                            [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
+                                                // Return to image preview or album view
+                                                [self dismissViewControllerAnimated:YES completion:^{
+                                                    if ([self.delegate respondsToSelector:@selector(didChangeParamsOfImage:)])
+                                                    {
+                                                        [self.delegate didChangeParamsOfImage:self.commonParameters];
+                                                    }
+                                                }];
                                             }];
                                         }];
                                     }
@@ -417,15 +415,15 @@ typedef enum {
                                 else
                                 {
                                     // Display Piwigo error in HUD
-                                    NSError *error = [NetworkHandler getPiwigoErrorFromResponse:response path:kPiwigoImageSetInfo andURLparams:nil];
-                                    [self hideHUDwithSuccess:NO completion:^{
+                                    [self hidePiwigoHUDWithCompletion:^{
+                                        NSError *error = [NetworkHandler getPiwigoErrorFromResponse:response path:kPiwigoImageSetInfo andURLparams:nil];
                                         [self showErrorWithMessage:[error localizedDescription]];
                                     }];
                                 }
                             }
                              onFailure:^(NSURLSessionTask *task, NSError *error) {
                                 // Failed
-                                [self hideHUDwithSuccess:NO completion:^{
+                                [self hidePiwigoHUDWithCompletion:^{
                                     [self showErrorWithMessage:[error localizedDescription]];
                                 }];
                             }];
@@ -446,7 +444,7 @@ typedef enum {
 
     UIAlertAction* dismissAction = [UIAlertAction
                     actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                    style:UIAlertActionStyleCancel
+                    style:UIAlertActionStyleDestructive
                     handler:^(UIAlertAction * action) {
                         // Bypass this image
                         [self.imagesToUpdate removeLastObject];
@@ -479,74 +477,74 @@ typedef enum {
 
 #pragma mark - HUD Methods
 
--(void)showHUDwithTitle:(NSString *)title andMode:(MBProgressHUDMode)mode
-{
-    // Determine the present view controller if needed (not necessarily self.view)
-    if (!self.hudViewController) {
-        self.hudViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-        while (self.hudViewController.presentedViewController) {
-            self.hudViewController = self.hudViewController.presentedViewController;
-        }
-    }
-    
-    // Create the login HUD if needed
-    MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
-    if (!hud) {
-        // Create the HUD
-        hud = [MBProgressHUD showHUDAddedTo:self.hudViewController.view animated:YES];
-        [hud setTag:loadingViewTag];
-        
-        // Change the background view shape, style and color.
-        hud.mode = mode;
-        hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
-        hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
-        hud.contentColor = [UIColor piwigoColorText];
-        hud.bezelView.color = [UIColor piwigoColorText];
-        hud.bezelView.style = MBProgressHUDBackgroundStyleSolidColor;
-        hud.bezelView.backgroundColor = [UIColor piwigoColorCellBackground];
+//-(void)showHUDwithTitle:(NSString *)title andMode:(MBProgressHUDMode)mode
+//{
+//    // Determine the present view controller if needed (not necessarily self.view)
+//    if (!self.hudViewController) {
+//        self.hudViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+//        while (self.hudViewController.presentedViewController) {
+//            self.hudViewController = self.hudViewController.presentedViewController;
+//        }
+//    }
+//
+//    // Create the login HUD if needed
+//    MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
+//    if (!hud) {
+//        // Create the HUD
+//        hud = [MBProgressHUD showHUDAddedTo:self.hudViewController.view animated:YES];
+//        [hud setTag:loadingViewTag];
+//
+//        // Change the background view shape, style and color.
+//        hud.mode = mode;
+//        hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
+//        hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
+//        hud.contentColor = [UIColor piwigoColorText];
+//        hud.bezelView.color = [UIColor piwigoColorText];
+//        hud.bezelView.style = MBProgressHUDBackgroundStyleSolidColor;
+//        hud.bezelView.backgroundColor = [UIColor piwigoColorCellBackground];
+//
+//        // Will look best, if we set a minimum size.
+//        hud.minSize = CGSizeMake(200.f, 100.f);
+//    }
+//
+//    // Set title
+//    hud.label.text = title;
+//    hud.label.font = [UIFont piwigoFontNormal];
+//}
 
-        // Will look best, if we set a minimum size.
-        hud.minSize = CGSizeMake(200.f, 100.f);
-    }
-    
-    // Set title
-    hud.label.text = title;
-    hud.label.font = [UIFont piwigoFontNormal];
-}
+//-(void)hideHUDwithSuccess:(BOOL)success completion:(void (^)(void))completion
+//{
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        // Hide and remove the HUD
+//        MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
+//        if (hud) {
+//            if (success) {
+//                UIImage *image = [[UIImage imageNamed:@"completed"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+//                UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+//                hud.customView = imageView;
+//                hud.mode = MBProgressHUDModeCustomView;
+//                hud.label.text = NSLocalizedString(@"completeHUD_label", @"Complete");
+//                [hud hideAnimated:YES afterDelay:1.f];
+//            } else {
+//                [hud hideAnimated:YES];
+//            }
+//        }
+//        if (completion) {
+//            completion();
+//        }
+//    });
+//}
 
--(void)hideHUDwithSuccess:(BOOL)success completion:(void (^)(void))completion
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        // Hide and remove the HUD
-        MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
-        if (hud) {
-            if (success) {
-                UIImage *image = [[UIImage imageNamed:@"completed"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-                UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-                hud.customView = imageView;
-                hud.mode = MBProgressHUDModeCustomView;
-                hud.label.text = NSLocalizedString(@"completeHUD_label", @"Complete");
-                [hud hideAnimated:YES afterDelay:1.f];
-            } else {
-                [hud hideAnimated:YES];
-            }
-        }
-        if (completion) {
-            completion();
-        }
-    });
-}
-
--(void)hideHUD
-{
-    // Hide and remove the HUD
-//    if (self.isLoadingCategories || self.isLoadingImageData) return;
-    MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
-    if (hud) {
-        [hud hideAnimated:YES];
-        self.hudViewController = nil;
-    }
-}
+//-(void)hideHUD
+//{
+//    // Hide and remove the HUD
+////    if (self.isLoadingCategories || self.isLoadingImageData) return;
+//    MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
+//    if (hud) {
+//        [hud hideAnimated:YES];
+//        self.hudViewController = nil;
+//    }
+//}
 
 //-(void)showUpdatingImageInfoHUD
 //{
