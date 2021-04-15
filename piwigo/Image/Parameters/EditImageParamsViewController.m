@@ -375,9 +375,9 @@ typedef enum {
     // Display HUD during the update
     if (self.imagesToUpdate.count > 1) {
         self.nberOfSelectedImages = (double)(self.imagesToUpdate.count);
-        [self showPiwigoHUDWithTitle:NSLocalizedString(@"editImageDetailsHUD_updatingPlural", @"Updating Photos…") detail:@"" andMode:MBProgressHUDModeIndeterminate];
+        [self showPiwigoHUDWithTitle:NSLocalizedString(@"editImageDetailsHUD_updatingPlural", @"Updating Photos…") detail:@"" andMode:MBProgressHUDModeAnnularDeterminate];
     } else {
-        [self showPiwigoHUDWithTitle:NSLocalizedString(@"editImageDetailsHUD_updatingSingle", @"Updating Photo…") detail:@"" andMode:MBProgressHUDModeAnnularDeterminate];
+        [self showPiwigoHUDWithTitle:NSLocalizedString(@"editImageDetailsHUD_updatingSingle", @"Updating Photo…") detail:@"" andMode:MBProgressHUDModeIndeterminate];
     }
     
     // Update image info on server and in cache
@@ -392,9 +392,7 @@ typedef enum {
                                     // Next image?
                                     [self.imagesToUpdate removeLastObject];
                                     if (self.imagesToUpdate.count) {
-                                        dispatch_async(dispatch_get_main_queue(), ^{
-                                            [MBProgressHUD HUDForView:self.hudViewController.view].progress = 1.0 - (double)(self.imagesToUpdate.count) / self.nberOfSelectedImages;
-                                        });
+                                        [self updatePiwigoHUDWithProgress:1.0 - (double)(self.imagesToUpdate.count) / self.nberOfSelectedImages];
                                         [self updateImageProperties];
                                     }
                                     else {
@@ -473,122 +471,6 @@ typedef enum {
         alert.view.tintColor = UIColor.piwigoColorOrange;
     }];
 }
-
-
-#pragma mark - HUD Methods
-
-//-(void)showHUDwithTitle:(NSString *)title andMode:(MBProgressHUDMode)mode
-//{
-//    // Determine the present view controller if needed (not necessarily self.view)
-//    if (!self.hudViewController) {
-//        self.hudViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-//        while (self.hudViewController.presentedViewController) {
-//            self.hudViewController = self.hudViewController.presentedViewController;
-//        }
-//    }
-//
-//    // Create the login HUD if needed
-//    MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
-//    if (!hud) {
-//        // Create the HUD
-//        hud = [MBProgressHUD showHUDAddedTo:self.hudViewController.view animated:YES];
-//        [hud setTag:loadingViewTag];
-//
-//        // Change the background view shape, style and color.
-//        hud.mode = mode;
-//        hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
-//        hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
-//        hud.contentColor = [UIColor piwigoColorText];
-//        hud.bezelView.color = [UIColor piwigoColorText];
-//        hud.bezelView.style = MBProgressHUDBackgroundStyleSolidColor;
-//        hud.bezelView.backgroundColor = [UIColor piwigoColorCellBackground];
-//
-//        // Will look best, if we set a minimum size.
-//        hud.minSize = CGSizeMake(200.f, 100.f);
-//    }
-//
-//    // Set title
-//    hud.label.text = title;
-//    hud.label.font = [UIFont piwigoFontNormal];
-//}
-
-//-(void)hideHUDwithSuccess:(BOOL)success completion:(void (^)(void))completion
-//{
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        // Hide and remove the HUD
-//        MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
-//        if (hud) {
-//            if (success) {
-//                UIImage *image = [[UIImage imageNamed:@"completed"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-//                UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-//                hud.customView = imageView;
-//                hud.mode = MBProgressHUDModeCustomView;
-//                hud.label.text = NSLocalizedString(@"completeHUD_label", @"Complete");
-//                [hud hideAnimated:YES afterDelay:1.f];
-//            } else {
-//                [hud hideAnimated:YES];
-//            }
-//        }
-//        if (completion) {
-//            completion();
-//        }
-//    });
-//}
-
-//-(void)hideHUD
-//{
-//    // Hide and remove the HUD
-////    if (self.isLoadingCategories || self.isLoadingImageData) return;
-//    MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
-//    if (hud) {
-//        [hud hideAnimated:YES];
-//        self.hudViewController = nil;
-//    }
-//}
-
-//-(void)showUpdatingImageInfoHUD
-//{
-//    // Create the loading HUD if needed
-//    MBProgressHUD *hud = [MBProgressHUD HUDForView:self.view];
-//    if (!hud) {
-//        hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-//    }
-//    
-//    // Change the background view shape, style and color.
-//    hud.square = NO;
-//    hud.animationType = MBProgressHUDAnimationFade;
-//    hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
-//    hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
-//    hud.contentColor = [UIColor piwigoColorHudContent];
-//    hud.bezelView.color = [UIColor piwigoColorHudBezelView];
-//
-//    // Define the text
-//    hud.label.text = NSLocalizedString(@"editImageDetailsHUD_updating", @"Updating Image Info…");
-//    hud.label.font = [UIFont piwigoFontNormal];
-//}
-//
-//-(void)hideUpdatingImageInfoHUDwithSuccess:(BOOL)success completion:(void (^)(void))completion
-//{
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        // Hide and remove the HUD
-//        MBProgressHUD *hud = [MBProgressHUD HUDForView:self.view];
-//        if (hud) {
-//            if (success) {
-//                UIImage *image = [[UIImage imageNamed:@"completed"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-//                UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-//                hud.customView = imageView;
-//                hud.mode = MBProgressHUDModeCustomView;
-//                hud.label.text = NSLocalizedString(@"completeHUD_label", @"Complete");
-//                [hud hideAnimated:YES afterDelay:2.f];
-//            } else {
-//                [hud hideAnimated:YES];
-//            }
-//        }
-//        if (completion) {
-//            completion();
-//        }
-//    });
-//}
 
 
 #pragma mark - UITableView - Rows
