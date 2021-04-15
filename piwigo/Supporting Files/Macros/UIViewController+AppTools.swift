@@ -109,4 +109,32 @@ extension UIViewController {
             alert.view.tintColor = UIColor.piwigoColorOrange()
         }
     }
+
+    func cancelRetryPiwigoError(withTitle title:String, message:String = "", errorMessage:String = "",
+                                cancel: @escaping () -> Void, retry: @escaping () -> Void) {
+        // Prepare message
+        var wholeMessage = message
+        if errorMessage.count > 0 {
+            wholeMessage.append("\n(" + errorMessage + ")")
+        }
+        
+        // Present alert
+        let alert = UIAlertController.init(title: title, message: wholeMessage, preferredStyle: .alert)
+        let dismissAction = UIAlertAction.init(title: NSLocalizedString("alertDismissButton", comment:"Dismiss"),
+                                               style: .cancel) { _ in cancel() }
+        let retryAction = UIAlertAction.init(title: NSLocalizedString("alertRetryButton", comment:"Retry"),
+                                               style: .cancel) { _ in retry() }
+        alert.addAction(dismissAction)
+        alert.addAction(retryAction)
+        alert.view.tintColor = UIColor.piwigoColorOrange()
+        if #available(iOS 13.0, *) {
+            alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+        } else {
+            // Fallback on earlier versions
+        }
+        present(alert, animated: true) {
+            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+            alert.view.tintColor = UIColor.piwigoColorOrange()
+        }
+    }
 }
