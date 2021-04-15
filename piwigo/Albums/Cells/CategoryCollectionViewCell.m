@@ -273,9 +273,7 @@
 -(void)renameCategoryWithName:(NSString *)albumName comment:(NSString *)albumComment andViewController:(UIViewController *)topViewController
 {
     // Display HUD during the update
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self showHUDwithLabel:NSLocalizedString(@"renameCategoryHUD_label", @"Renaming Album…") inView:topViewController.view];
-    });
+    [topViewController showPiwigoHUDWithTitle:NSLocalizedString(@"renameCategoryHUD_label", @"Renaming Album…") detail:@"" andMode:MBProgressHUDModeIndeterminate];
     
     // Rename album
     [AlbumService renameCategory:self.albumData.albumId
@@ -285,67 +283,33 @@
                         
                         if(renamedSuccessfully)
                         {
-                            [self hideHUDwithSuccess:YES inView:topViewController.view completion:^{
-                                dispatch_async(dispatch_get_main_queue(), ^{
-                                    self.albumData.name = albumName;
-                                    self.albumData.comment = albumComment;
-                                    
-                                    // Notify album/image view of modification
-                                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+                            [topViewController updatePiwigoHUDwithSuccessWithCompletion:^{
+                                [topViewController hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
+                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                        self.albumData.name = albumName;
+                                        self.albumData.comment = albumComment;
+                                        
+                                        // Notify album/image view of modification
+                                        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
 
-                                    // Hide swipe buttons
-                                    AlbumTableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-                                    [cell hideSwipeAnimated:YES];
-                                });
+                                        // Hide swipe buttons
+                                        AlbumTableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+                                        [cell hideSwipeAnimated:YES];
+                                    });
+                                }];
                             }];
                         }
                         else
                         {
-                            [self hideHUDwithSuccess:NO inView:topViewController.view completion:^{
-                                [self showRenameErrorWithMessage:nil andViewController:topViewController];
+                            [topViewController hidePiwigoHUDWithCompletion:^{
+                                [topViewController dismissPiwigoErrorWithTitle:NSLocalizedString(@"renameCategoyError_title", @"Rename Fail") message:NSLocalizedString(@"renameCategoyError_message", @"Failed to rename your album") errorMessage:@"" completion:^{ }];
                             }];
                         }
                     } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                        [self hideHUDwithSuccess:NO inView:topViewController.view completion:^{
-                            [self showRenameErrorWithMessage:[error localizedDescription] andViewController:topViewController];
+                        [topViewController hidePiwigoHUDWithCompletion:^{
+                            [topViewController dismissPiwigoErrorWithTitle:NSLocalizedString(@"renameCategoyError_title", @"Rename Fail") message:NSLocalizedString(@"renameCategoyError_message", @"Failed to rename your album") errorMessage:[error localizedDescription] completion:^{ }];
                         }];
                     }];
-}
-    
--(void)showRenameErrorWithMessage:(NSString*)message andViewController:(UIViewController *)topViewController
-{
-    NSString *errorMessage = NSLocalizedString(@"renameCategoyError_message", @"Failed to rename your album");
-    if(message)
-    {
-        errorMessage = [NSString stringWithFormat:@"%@\n%@", errorMessage, message];
-    }
-    UIAlertController* alert = [UIAlertController
-                alertControllerWithTitle:NSLocalizedString(@"renameCategoyError_title", @"Rename Fail")
-                message:errorMessage
-                preferredStyle:UIAlertControllerStyleActionSheet];
-    
-    UIAlertAction* defaultAction = [UIAlertAction
-                actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                style:UIAlertActionStyleCancel
-                handler:^(UIAlertAction * action) {}];
-    
-    // Add actions
-    [alert addAction:defaultAction];
-
-    // Present list of actions
-    alert.view.tintColor = UIColor.piwigoColorOrange;
-    if (@available(iOS 13.0, *)) {
-        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
-    } else {
-        // Fallback on earlier versions
-    }
-    alert.popoverPresentationController.sourceView = self.contentView;
-    alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUnknown;
-    alert.popoverPresentationController.sourceRect = self.contentView.frame;
-    [topViewController presentViewController:alert animated:YES completion:^{
-        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-        alert.view.tintColor = UIColor.piwigoColorOrange;
-    }];
 }
 
 
@@ -563,152 +527,44 @@
     if(number == self.albumData.totalNumberOfImages)
     {
         // Display HUD during the update
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self showHUDwithLabel:NSLocalizedString(@"deleteCategoryHUD_label", @"Deleting Album…") inView:topViewController.view];
-        });
+        [topViewController showPiwigoHUDWithTitle:NSLocalizedString(@"deleteCategoryHUD_label", @"Deleting Album…") detail:@"" andMode:MBProgressHUDModeIndeterminate];
         
         [AlbumService deleteCategory:self.albumData.albumId
                       inMode:deletionMode
                 OnCompletion:^(NSURLSessionTask *task, BOOL deletedSuccessfully) {
                         if(deletedSuccessfully)
                         {
-                            [self hideHUDwithSuccess:YES inView:topViewController.view completion:^{
-                                // Delete category from cache
-                                [[CategoriesData sharedInstance] deleteCategory:self.albumData.albumId];
+                            [topViewController updatePiwigoHUDwithSuccessWithCompletion:^{
+                                [topViewController hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
+                                    // Delete category from cache
+                                    [[CategoriesData sharedInstance] deleteCategory:self.albumData.albumId];
 
-                                // Notify the Upload database that this category has been deleted
-                                NSDictionary *userInfo = @{@"albumId" : @(self.albumData.albumId)};
-                                [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDeletedCategory object:nil userInfo:userInfo];
+                                    // Notify the Upload database that this category has been deleted
+                                    NSDictionary *userInfo = @{@"albumId" : @(self.albumData.albumId)};
+                                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDeletedCategory object:nil userInfo:userInfo];
 
-                                // Hide swipe buttons
-                                AlbumTableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-                                [cell hideSwipeAnimated:YES];
+                                    // Hide swipe buttons
+                                    AlbumTableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+                                    [cell hideSwipeAnimated:YES];
+                                }];
                             }];
                         }
                         else
                         {
-                            [self hideHUDwithSuccess:NO inView:topViewController.view completion:^{
-                                [self showDeleteCategoryErrorWithMessage:nil andViewController:topViewController];
+                            [topViewController hidePiwigoHUDWithCompletion:^{
+                                [topViewController dismissPiwigoErrorWithTitle:NSLocalizedString(@"deleteCategoryError_title", @"Delete Fail") message:NSLocalizedString(@"deleteCategoryError_message", @"Failed to delete your album") errorMessage:@"" completion:^{ }];
                             }];
                         }
                 }  onFailure:^(NSURLSessionTask *task, NSError *error) {
-                    [self hideHUDwithSuccess:NO inView:topViewController.view completion:^{
-                        [self showDeleteCategoryErrorWithMessage:[error localizedDescription] andViewController:topViewController];
+                    [topViewController hidePiwigoHUDWithCompletion:^{
+                        [topViewController dismissPiwigoErrorWithTitle:NSLocalizedString(@"deleteCategoryError_title", @"Delete Fail") message:NSLocalizedString(@"deleteCategoryError_message", @"Failed to delete your album") errorMessage:[error localizedDescription] completion:^{ }];
                     }];
                 }];
     }
     else
     {    // User entered the wrong amount
-        UIAlertController* alert = [UIAlertController
-                alertControllerWithTitle:NSLocalizedString(@"deleteCategoryMatchError_title", @"Number Doesn't Match")
-                message:NSLocalizedString(@"deleteCategoryMatchError_message", @"The number of images you entered doesn't match the number of images in the category. Please try again if you desire to delete this album")
-                preferredStyle:UIAlertControllerStyleAlert];
-        
-        UIAlertAction* defaultAction = [UIAlertAction
-                actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                style:UIAlertActionStyleDefault
-                handler:^(UIAlertAction * action) {}];
-        
-        // Add actions
-        [alert addAction:defaultAction];
-
-        // Present list of actions
-        alert.view.tintColor = UIColor.piwigoColorOrange;
-        if (@available(iOS 13.0, *)) {
-            alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
-        } else {
-            // Fallback on earlier versions
-        }
-        [topViewController presentViewController:alert animated:YES completion:^{
-            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange;
-        }];
+        [topViewController dismissPiwigoErrorWithTitle:NSLocalizedString(@"deleteCategoryMatchError_title", @"Number Doesn't Match") message:NSLocalizedString(@"deleteCategoryMatchError_message", @"The number of images you entered doesn't match the number of images in the category. Please try again if you desire to delete this album") errorMessage:@"" completion:^{ }];
     }
-}
-
--(void)showDeleteCategoryErrorWithMessage:(NSString*)message andViewController:(UIViewController *)topViewController
-{
-    NSString *errorMessage = NSLocalizedString(@"deleteCategoryError_message", @"Failed to delete your album");
-    if(message)
-    {
-        errorMessage = [NSString stringWithFormat:@"%@\n%@", errorMessage, message];
-    }
-
-    UIAlertController* alert = [UIAlertController
-            alertControllerWithTitle:NSLocalizedString(@"deleteCategoryError_title", @"Delete Fail")
-            message:errorMessage
-            preferredStyle:UIAlertControllerStyleActionSheet];
-    
-    UIAlertAction* defaultAction = [UIAlertAction
-            actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-            style:UIAlertActionStyleCancel
-            handler:^(UIAlertAction * action) {}];
-    
-    // Add actions
-    [alert addAction:defaultAction];
-
-    // Present list of actions
-    alert.view.tintColor = UIColor.piwigoColorOrange;
-    if (@available(iOS 13.0, *)) {
-        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
-    } else {
-        // Fallback on earlier versions
-    }
-    alert.popoverPresentationController.sourceView = self.contentView;
-    alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUnknown;
-    alert.popoverPresentationController.sourceRect = self.contentView.frame;
-    [topViewController presentViewController:alert animated:YES completion:^{
-        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-        alert.view.tintColor = UIColor.piwigoColorOrange;
-    }];
-}
-
-#pragma mark - HUD methods
-
--(void)showHUDwithLabel:(NSString *)label inView:(UIView *)topView
-{
-    // Create the loading HUD if needed
-    MBProgressHUD *hud = [MBProgressHUD HUDForView:topView];
-    if (!hud) {
-        hud = [MBProgressHUD showHUDAddedTo:topView animated:YES];
-    }
-    
-    // Change the background view shape, style and color.
-    hud.square = NO;
-    hud.animationType = MBProgressHUDAnimationFade;
-    hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
-    hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
-    hud.contentColor = [UIColor piwigoColorText];
-    hud.bezelView.color = [UIColor piwigoColorText];
-    hud.bezelView.style = MBProgressHUDBackgroundStyleSolidColor;
-    hud.bezelView.backgroundColor = [UIColor piwigoColorCellBackground];
-
-    // Define the text
-    hud.label.text = label;
-    hud.label.font = [UIFont piwigoFontNormal];
-}
-
--(void)hideHUDwithSuccess:(BOOL)success inView:(UIView *)topView completion:(void (^)(void))completion
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        // Hide and remove the HUD
-        MBProgressHUD *hud = [MBProgressHUD HUDForView:topView];
-        if (hud) {
-            if (success) {
-                UIImage *image = [[UIImage imageNamed:@"completed"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-                UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-                hud.customView = imageView;
-                hud.mode = MBProgressHUDModeCustomView;
-                hud.label.text = NSLocalizedString(@"completeHUD_label", @"Complete");
-                [hud hideAnimated:YES afterDelay:0.5f];
-            } else {
-                [hud hideAnimated:YES];
-            }
-        }
-        if (completion) {
-            completion();
-        }
-    });
 }
 
 
