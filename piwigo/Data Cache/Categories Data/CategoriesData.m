@@ -374,10 +374,12 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationUploadedImage object:nil userInfo:userInfo];
     
     // Notify UI that the number of images has changed and that the thumbnail may have to be changed
-    userInfo = @{@"albumId" : category,
-                 @"thumbnailId" : @(image.imageId),
-                 @"thumbnailUrl" : image.ThumbPath};
-    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedAlbumData object:nil userInfo:userInfo];
+    for (NSString *catStr in imageCategory.upperCategories) {
+        userInfo = @{@"albumId" : catStr,
+                     @"thumbnailId" : @(image.imageId),
+                     @"thumbnailUrl" : image.ThumbPath};
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedAlbumData object:nil userInfo:userInfo];
+    }
 }
 
 -(void)removeImage:(PiwigoImageData*)image
@@ -431,10 +433,12 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     });
 
     // Notify UI that the number of images has changed and that the thumbnail may have to be changed
-    userInfo = @{@"albumId" : category,
-                 @"thumbnailId" : @"0",
-                 @"thumbnailUrl" : @""};
-    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedAlbumData object:nil userInfo:userInfo];
+    for (NSString *catStr in imageCategory.upperCategories) {
+        userInfo = @{@"albumId" : catStr,
+                     @"thumbnailId" : @"0",
+                     @"thumbnailUrl" : @""};
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedAlbumData object:nil userInfo:userInfo];
+    }
 }
 
 
