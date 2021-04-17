@@ -1200,7 +1200,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             if didSucceed {
                 imageData.categoryIds = categoryIds
                 // Add image to selected category and update corresponding Album/Images collection
-                CategoriesData.sharedInstance().addImage(imageData, toCategory: String(categoryData.albumId))
+                CategoriesData.sharedInstance().addImage(imageData)
                 
                 // Update image data in current view (ImageDetailImage view or Album/Images collection)
                 DispatchQueue.main.async {
