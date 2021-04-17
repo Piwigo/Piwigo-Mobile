@@ -30,7 +30,6 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
 @property (nonatomic, strong) PiwigoImageData *imageData;
 @property (nonatomic, strong) UIProgressView *progressBar;
 @property (nonatomic, strong) NSLayoutConstraint *topProgressBarConstraint;
-@property (nonatomic, strong) UIViewController *hudViewController;
 
 @property (nonatomic, strong) UIBarButtonItem *editBarButton;
 @property (nonatomic, strong) UIBarButtonItem *deleteBarButton;
@@ -698,9 +697,7 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
 -(void)removeImageFromCategory
 {
     // Display HUD during deletion
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self showHUDwithTitle:NSLocalizedString(@"removeSingleImageHUD_removing", @"Removing Photo…") withProgress:NO];
-    });
+    [self showPiwigoHUDWithTitle:NSLocalizedString(@"removeSingleImageHUD_removing", @"Removing Photo…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
     
     // Update image category list
     NSMutableArray *categoryIds = [self.imageData.categoryIds mutableCopy];
@@ -721,52 +718,46 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
                     [[CategoriesData sharedInstance] removeImage:self.imageData fromCategory:[NSString stringWithFormat:@"%ld", (long)self.categoryId]];
 
                     // Hide HUD
-                    [self hideHUDwithSuccess:YES completion:^{
-                        self.hudViewController = nil;
+                    [self updatePiwigoHUDwithSuccessWithCompletion:^{
+                        [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
+                            // Dispaly preceding/next image or return to album view
+                            [self didRemoveImageWithId:self.imageData.imageId];
+                        }];
                     }];
-
-                    // Dispaly preceding/next image or return to album view
-                    [self didRemoveImageWithId:self.imageData.imageId];
                }
                else {
-                    [self hideHUDwithSuccess:NO completion:^{
-                       self.hudViewController = nil;
+                   [self hidePiwigoHUDWithCompletion:^{
                        [self showDeleteImageErrorWithMessage:NSLocalizedString(@"alertTryAgainButton", @"Try Again")];
-                    }];
+                   }];
                }
            }
-              onFailure:^(NSURLSessionTask *task, NSError *error) {
-                  [self hideHUDwithSuccess:NO completion:^{
-                      self.hudViewController = nil;
-                      [self showDeleteImageErrorWithMessage:[error localizedDescription]];
-                  }];
-              }];
+            onFailure:^(NSURLSessionTask *task, NSError *error) {
+                [self hidePiwigoHUDWithCompletion:^{
+                    [self showDeleteImageErrorWithMessage:[error localizedDescription]];
+                }];
+            }];
 }
 
 -(void)deleteImageFromDatabase
 {
     // Display HUD during deletion
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self showHUDwithTitle:NSLocalizedString(@"deleteSingleImageHUD_deleting", @"Deleting Image…") withProgress:NO];
-    });
+    [self showPiwigoHUDWithTitle:NSLocalizedString(@"deleteSingleImageHUD_deleting", @"Deleting Image…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
     
     // Send request to Piwigo server
     [ImageService deleteImage:self.imageData
              ListOnCompletion:^(NSURLSessionTask *task) {
-                 
                  // Hide HUD
-                 [self hideHUDwithSuccess:YES completion:^{
-                     self.hudViewController = nil;
-                 }];
-
-                 // Dispaly preceding/next image or return to album view
-                 [self didRemoveImageWithId:self.imageData.imageId];
+                [self updatePiwigoHUDwithSuccessWithCompletion:^{
+                    [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
+                        // Dispaly preceding/next image or return to album view
+                        [self didRemoveImageWithId:self.imageData.imageId];
+                    }];
+                }];
              }
-                    onFailure:^(NSURLSessionTask *task, NSError *error) {
-                 [self hideHUDwithSuccess:NO completion:^{
-                     self.hudViewController = nil;
-                     [self showDeleteImageErrorWithMessage:[error localizedDescription]];
-                 }];
+                onFailure:^(NSURLSessionTask *task, NSError *error) {
+                    [self hidePiwigoHUDWithCompletion:^{
+                        [self showDeleteImageErrorWithMessage:[error localizedDescription]];
+                    }];
              }];
 }
 
@@ -882,9 +873,6 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
     // ShareImageActivityItemProvider's superclass conforms to the UIActivityItemSource protocol
     UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:itemsToShare applicationActivities:nil];
 
-    // Set HUD view controller for displaying progress
-    self.hudViewController = activityViewController;
-    
     // Exclude some activity types if needed
     if (!hasCameraRollAccess) {
         // Exclude "camera roll" activity when the Photo Library is not accessible
@@ -1009,7 +997,7 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
         copyVC.delegate = self;                 // To re-enable toolbar
         copyVC.imageCopiedDelegate = self;      // To update image data after copy
         [self pushView:copyVC forButton:self.moveBarButton];
-            }];
+    }];
 
     UIAlertAction* moveAction = [UIAlertAction
             actionWithTitle:NSLocalizedString(@"moveImage_title", @"Move to Album")
@@ -1115,78 +1103,6 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
         navController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
         [self presentViewController:navController animated:YES completion:nil];
     }
-}
-
-
-#pragma mark - HUD methods
-
--(void)showHUDwithTitle:(NSString *)title withProgress:(BOOL)showProgress
-{
-    // Determine the present view controller if needed (not necessarily self.view)
-    if (!self.hudViewController) {
-        self.hudViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-        while (self.hudViewController.presentedViewController) {
-            self.hudViewController = self.hudViewController.presentedViewController;
-        }
-    }
-    
-    // Create the loading HUD if needed
-    MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
-    if (!hud) {
-        // Create the HUD
-        hud = [MBProgressHUD showHUDAddedTo:self.hudViewController.view animated:YES];
-        [hud setTag:loadingViewTag];
-        
-        // Change the background view shape, style and color.
-        hud.mode = showProgress ? MBProgressHUDModeAnnularDeterminate : MBProgressHUDModeIndeterminate;
-        hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
-        hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
-        hud.contentColor = [UIColor piwigoColorText];
-        hud.bezelView.color = [UIColor piwigoColorText];
-        hud.bezelView.style = MBProgressHUDBackgroundStyleSolidColor;
-        hud.bezelView.backgroundColor = [UIColor piwigoColorCellBackground];
-
-        // Will look best, if we set a minimum size.
-        hud.minSize = CGSizeMake(200.f, 100.f);
-        
-        // Configure the button if managed progress
-        if (showProgress) {
-            [hud.button setTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-                        forState:UIControlStateNormal];
-            [hud.button addTarget:self action:@selector(cancelShareImage) forControlEvents:UIControlEventTouchUpInside];
-        }
-    }
-    
-    // Set title
-    hud.label.text = title;
-    hud.label.font = [UIFont piwigoFontNormal];
-}
-
--(void)hideHUDwithSuccess:(BOOL)success completion:(void (^)(void))completion
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        // Hide and remove the HUD
-        MBProgressHUD *hud = [self.hudViewController.view viewWithTag:loadingViewTag];
-        if (hud) {
-            if (success) {
-                UIImage *image = [[UIImage imageNamed:@"completed"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-                UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-                hud.customView = imageView;
-                hud.mode = MBProgressHUDModeCustomView;
-                hud.label.text = NSLocalizedString(@"completeHUD_label", @"Complete");
-            } else {
-                UIImage *image = [[UIImage imageNamed:@"warning"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-                UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-                hud.customView = imageView;
-                hud.mode = MBProgressHUDModeCustomView;
-                hud.label.text = NSLocalizedString(@"errorHUD_label", @"Error");
-            }
-            [hud hideAnimated:YES afterDelay:0.5f];
-        }
-        if (completion) {
-            completion();
-        }
-    });
 }
 
 
@@ -1439,19 +1355,13 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
 -(void)imageActivityItemProviderPreprocessingDidBegin:(UIActivityItemProvider *)imageActivityItemProvider withTitle:(NSString *)title
 {
     // Show HUD to let the user know the image is being downloaded in the background.
-    dispatch_async(dispatch_get_main_queue(),
-                   ^(void){
-                       [self showHUDwithTitle:title withProgress:YES];
-                   });
+    [self.presentedViewController showPiwigoHUDWithTitle:title detail:@"" buttonTitle:NSLocalizedString(@"alertCancelButton", @"Cancel") buttonTarget:self buttonSelector:@selector(cancelShareImage) inMode:MBProgressHUDModeAnnularDeterminate];
 }
 
 -(void)imageActivityItemProvider:(UIActivityItemProvider *)imageActivityItemProvider preprocessingProgressDidUpdate:(float)progress
 {
     // Update HUD
-    dispatch_async(dispatch_get_main_queue(),
-                   ^(void){
-                       [MBProgressHUD HUDForView:self.hudViewController.view].progress = progress;
-                   });
+    [self.presentedViewController updatePiwigoHUDWithProgress:progress];
 }
 
 -(void)imageActivityItemProviderPreprocessingDidEnd:(UIActivityItemProvider *)imageActivityItemProvider withImageId:(NSInteger)imageId
@@ -1460,13 +1370,11 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
     dispatch_async(dispatch_get_main_queue(),
                    ^(void){
                        if ([imageActivityItemProvider isCancelled]) {
-                           [self hideHUDwithSuccess:NO completion:^{
-                               self.hudViewController = nil;
-                           }];
+                           [self.presentedViewController hidePiwigoHUDWithCompletion:^{ }];
                        }
                        else {
-                           [self hideHUDwithSuccess:YES completion:^{
-                               self.hudViewController = nil;
+                           [self.presentedViewController updatePiwigoHUDwithSuccessWithCompletion:^{
+                               [self.presentedViewController hidePiwigoHUDWithCompletion:^{ }];
                            }];
                        }
                    });
@@ -1474,11 +1382,6 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
 
 -(void)showErrorWithTitle:(NSString *)title andMessage:(NSString *)message
 {
-    // Close HUD if needed
-    if (self.hudViewController) {
-        [self hideHUDwithSuccess:NO completion:nil];
-    }
-    
     // Display error alert after trying to share image
     dispatch_async(dispatch_get_main_queue(),
                    ^(void){
