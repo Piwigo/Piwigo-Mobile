@@ -12,8 +12,9 @@ import UIKit
 extension UIViewController {
 
     // MARK: - MBProgressHUD
-    func showPiwigoHUD(withTitle title:String?, detail: String = "",
-                 andMode mode:MBProgressHUDMode = .indeterminate) {
+    func showPiwigoHUD(withTitle title:String = "", detail:String = "",
+                       buttonTitle:String = "", buttonSelector:Selector? = nil,
+                       inMode mode:MBProgressHUDMode = .indeterminate) {
         DispatchQueue.main.async {
             // Create the login HUD if needed
             var hud = self.view.viewWithTag(loadingViewTag) as? MBProgressHUD
@@ -37,11 +38,23 @@ extension UIViewController {
                 hud?.minSize = CGSize(width: 200.0, height: 100.0)
             }
 
-            // Set title and detail
-            hud?.label.text = title ?? ""
-            hud?.label.font = UIFont.piwigoFontNormal()
-            hud?.detailsLabel.text = detail
-            hud?.detailsLabel.font = UIFont.piwigoFontSmall()
+            // Set title if needed
+            if title.count > 0 {
+                hud?.label.text = title
+                hud?.label.font = UIFont.piwigoFontNormal()
+            }
+            
+            // Set details label if needed
+            if detail.count > 0 {
+                hud?.detailsLabel.text = detail
+                hud?.detailsLabel.font = UIFont.piwigoFontSmall()
+            }
+            
+            // Set button if needed
+            if buttonTitle.count > 0, let selector = buttonSelector {
+                hud?.button.setTitle(buttonTitle, for: .normal)
+                hud?.button.addTarget(self, action: selector, for: .touchUpInside)
+            }
         }
     }
     

@@ -375,9 +375,9 @@ typedef enum {
     // Display HUD during the update
     if (self.imagesToUpdate.count > 1) {
         self.nberOfSelectedImages = (double)(self.imagesToUpdate.count);
-        [self showPiwigoHUDWithTitle:NSLocalizedString(@"editImageDetailsHUD_updatingPlural", @"Updating Photos…") detail:@"" andMode:MBProgressHUDModeAnnularDeterminate];
+        [self showPiwigoHUDWithTitle:NSLocalizedString(@"editImageDetailsHUD_updatingPlural", @"Updating Photos…") detail:@"" buttonTitle:@"" buttonSelector:nil inMode:MBProgressHUDModeAnnularDeterminate];
     } else {
-        [self showPiwigoHUDWithTitle:NSLocalizedString(@"editImageDetailsHUD_updatingSingle", @"Updating Photo…") detail:@"" andMode:MBProgressHUDModeIndeterminate];
+        [self showPiwigoHUDWithTitle:NSLocalizedString(@"editImageDetailsHUD_updatingSingle", @"Updating Photo…") detail:@"" buttonTitle:@"" buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
     }
     
     // Update image info on server and in cache

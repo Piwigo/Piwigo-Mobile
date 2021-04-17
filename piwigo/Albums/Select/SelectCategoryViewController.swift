@@ -219,8 +219,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Retrieve image data if needed
         if [kPiwigoCategorySelectActionCopyImages,
             kPiwigoCategorySelectActionMoveImages].contains(wantedAction) {
-            showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment:"Loading…"),
-                          andMode: .indeterminate)
+            showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment:"Loading…"))
             inputImagesData = []
             retrieveImageData()
         }
@@ -866,7 +865,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                                 forCategory: categoryData, at: indexPath, handler: { _ in
                 // Initialise counter and display HUD
                 self.nberOfSelectedImages = Float(self.inputImagesData.count)
-                self.showPiwigoHUD(withTitle: NSLocalizedString("copySeveralImagesHUD_copying", comment: "Copying Photos…"), andMode: .annularDeterminate)
+                self.showPiwigoHUD(withTitle: NSLocalizedString("copySeveralImagesHUD_copying", comment: "Copying Photos…"),
+                                   inMode: .annularDeterminate)
 
                 // Copy several images to selected album
                 DispatchQueue.global(qos: .userInitiated).async {
@@ -887,7 +887,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                                 forCategory: categoryData, at: indexPath) { _ in
                 // Initialise counter and display HUD
                 self.nberOfSelectedImages = Float(self.inputImagesData.count)
-                self.showPiwigoHUD(withTitle: NSLocalizedString("moveSeveralImagesHUD_moving", comment: "Moving Photos…"), andMode: .annularDeterminate)
+                self.showPiwigoHUD(withTitle: NSLocalizedString("moveSeveralImagesHUD_moving", comment: "Moving Photos…"),
+                                   inMode: .annularDeterminate)
                 
                 // Move several images to selected album
                 DispatchQueue.global(qos: .userInitiated).async {
@@ -964,8 +965,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     // MARK: - Move Category Methods
     private func moveCategory(intoCategory parentCatData:PiwigoAlbumData) {
         // Display HUD during the update
-        showPiwigoHUD(withTitle: NSLocalizedString("moveCategoryHUD_moving", comment: "Moving Album…"),
-                      andMode: .indeterminate)
+        showPiwigoHUD(withTitle: NSLocalizedString("moveCategoryHUD_moving", comment: "Moving Album…"))
 
         DispatchQueue.global(qos: .userInitiated).async {
             // Add category to list of recent albums
@@ -1054,7 +1054,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     // MARK: - Set Album Thumbnail Methods
     private func setRepresentative(for categoryData:PiwigoAlbumData) {
         // Display HUD during the update
-        showPiwigoHUD(withTitle: NSLocalizedString("categoryImageSetHUD_updating", comment:"Updating Album Thumbnail…"), andMode: .indeterminate)
+        showPiwigoHUD(withTitle: NSLocalizedString("categoryImageSetHUD_updating", comment:"Updating Album Thumbnail…"))
         
         // Set image as representative
         DispatchQueue.global(qos: .userInitiated).async {
@@ -1107,8 +1107,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         }
         
         // Display HUD during the update
-        showPiwigoHUD(withTitle: NSLocalizedString("copySingleImageHUD_copying", comment:"Copying Photo…"),
-                      andMode: .indeterminate)
+        showPiwigoHUD(withTitle: NSLocalizedString("copySingleImageHUD_copying", comment:"Copying Photo…"))
         
         // Copy image to selected album
         DispatchQueue.global(qos: .userInitiated).async {
@@ -1229,8 +1228,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         }
         
         // Display HUD during the update
-        showPiwigoHUD(withTitle: NSLocalizedString("moveSingleImageHUD_moving", comment:"Moving Photo…"),
-                      andMode: .indeterminate)
+        showPiwigoHUD(withTitle: NSLocalizedString("moveSingleImageHUD_moving", comment:"Moving Photo…"))
         
         // Move image to selected album
         DispatchQueue.global(qos: .userInitiated).async {
@@ -1352,8 +1350,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Show loading HUD when not using cache option,
         if !(useCache && Model.sharedInstance().loadAllCategoryInfo && (Model.sharedInstance().defaultCategory == 0)) {
             // Show loading HD
-            showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-                          andMode: .indeterminate)
+            showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"))
 
             // Reload category data and set current category
             //        NSLog(@"buildCategoryDf => getAlbumListForCategory(%ld,NO,YES)", (long)0);
@@ -1528,8 +1525,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             //        NSLog(@"subCategories => getAlbumListForCategory(%ld,NO,NO)", (long)categoryTapped.albumId);
 
             // Show loading HD
-            showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-                          andMode: .indeterminate)
+            showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"))
 
             AlbumService.getAlbumList(forCategory: categoryTapped.albumId,
                                       usingCache: false,
@@ -1587,8 +1583,7 @@ extension SelectCategoryViewController: CategoryCellDelegate {
             // NSLog(@"subCategories => getAlbumListForCategory(%ld,NO,NO)", (long)categoryTapped.albumId);
 
             // Show loading HD
-            showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"),
-                          andMode: .indeterminate)
+            showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"))
 
             AlbumService.getAlbumList(forCategory: categoryTapped.albumId,
                                       usingCache: Model.sharedInstance().loadAllCategoryInfo,

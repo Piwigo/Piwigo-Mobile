@@ -274,7 +274,7 @@ NSString * const kEditImageThumbCollectionCell_ID = @"EditImageThumbCollectionCe
 -(void)renameImageWithName:(NSString *)fileName andViewController:(UIViewController *)topViewController
 {
     // Display HUD during the update
-    [topViewController showPiwigoHUDWithTitle:NSLocalizedString(@"renameImageHUD_label", @"Renaming Original File…") detail:@"" andMode:MBProgressHUDModeIndeterminate];
+    [topViewController showPiwigoHUDWithTitle:NSLocalizedString(@"renameImageHUD_label", @"Renaming Original File…") detail:@"" buttonTitle:@"" buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
     
     // Prepare dictionary of parameters
     NSMutableDictionary *imageInformation = [NSMutableDictionary new];
