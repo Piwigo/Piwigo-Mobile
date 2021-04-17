@@ -13,7 +13,7 @@ extension UIViewController {
 
     // MARK: - MBProgressHUD
     func showPiwigoHUD(withTitle title:String = "", detail:String = "",
-                       buttonTitle:String = "", buttonSelector:Selector? = nil,
+                       buttonTitle:String = "", buttonTarget:UIViewController? = nil, buttonSelector:Selector? = nil,
                        inMode mode:MBProgressHUDMode = .indeterminate) {
         DispatchQueue.main.async {
             // Create the login HUD if needed
@@ -51,9 +51,9 @@ extension UIViewController {
             }
             
             // Set button if needed
-            if buttonTitle.count > 0, let selector = buttonSelector {
+            if buttonTitle.count > 0, let target = buttonTarget, let selector = buttonSelector {
                 hud?.button.setTitle(buttonTitle, for: .normal)
-                hud?.button.addTarget(self, action: selector, for: .touchUpInside)
+                hud?.button.addTarget(target, action:selector, for: .touchUpInside)
             }
         }
     }

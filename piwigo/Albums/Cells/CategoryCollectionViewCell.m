@@ -273,7 +273,7 @@
 -(void)renameCategoryWithName:(NSString *)albumName comment:(NSString *)albumComment andViewController:(UIViewController *)topViewController
 {
     // Display HUD during the update
-    [topViewController showPiwigoHUDWithTitle:NSLocalizedString(@"renameCategoryHUD_label", @"Renaming Album…") detail:@"" buttonTitle:@"" buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
+    [topViewController showPiwigoHUDWithTitle:NSLocalizedString(@"renameCategoryHUD_label", @"Renaming Album…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
     
     // Rename album
     [AlbumService renameCategory:self.albumData.albumId
@@ -527,7 +527,7 @@
     if(number == self.albumData.totalNumberOfImages)
     {
         // Display HUD during the update
-        [topViewController showPiwigoHUDWithTitle:NSLocalizedString(@"deleteCategoryHUD_label", @"Deleting Album…") detail:@"" buttonTitle:@"" buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
+        [topViewController showPiwigoHUDWithTitle:NSLocalizedString(@"deleteCategoryHUD_label", @"Deleting Album…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
         
         [AlbumService deleteCategory:self.albumData.albumId
                       inMode:deletionMode
