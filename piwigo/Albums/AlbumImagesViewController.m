@@ -300,6 +300,9 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
             
             // Place the search bar in the navigation bar.
             self.navigationItem.searchController = searchController;
+
+            // Hide the search bar when scrolling
+            self.navigationItem.hidesSearchBarWhenScrolling = true;
         }
     }
 }
@@ -476,12 +479,9 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
         }
     }
 
-    // Always open this view with a navigation bar and the search bar
+    // Always open this view with a navigation bar
     // (might have been hidden during Image Previewing)
     [self.navigationController setNavigationBarHidden:NO animated:YES];
-    if (@available(iOS 11.0, *)) {
-        self.navigationItem.hidesSearchBarWhenScrolling = false;
-    }
 
     // Set navigation bar buttons
     [self updateButtonsInPreviewMode];
@@ -508,11 +508,6 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
 	[self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     [self.imagesCollection addSubview:self.refreshControl];
     self.imagesCollection.alwaysBounceVertical = YES;
-    
-    // Allows hiding search bar when scrolling
-    if (@available(iOS 11.0, *)) {
-        self.navigationItem.hidesSearchBarWhenScrolling = true;
-    }
 
     // Should we scroll to image of interest?
 //        NSLog(@"••• Starting with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
