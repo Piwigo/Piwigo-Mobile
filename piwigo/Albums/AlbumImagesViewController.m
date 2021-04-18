@@ -1021,7 +1021,11 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
 				[self.uploadQueueButton.layer setOpacity:0.8];
 				CGFloat xPos = self.addButton.frame.origin.x - extraWidth;
 				CGFloat yPos = self.addButton.frame.origin.y;
-				self.uploadQueueButton.frame = CGRectMake(xPos - 3*kRadius, yPos, 2*kRadius + extraWidth, 2*kRadius);
+                if (self.addButton.isHidden) {
+                    self.uploadQueueButton.frame = CGRectMake(xPos, yPos, 2*kRadius + extraWidth, 2*kRadius);
+                } else {
+                    self.uploadQueueButton.frame = CGRectMake(xPos - 3*kRadius, yPos, 2*kRadius + extraWidth, 2*kRadius);
+                }
 				[self.uploadQueueButton setNeedsLayout];
 			}];
         } else {
