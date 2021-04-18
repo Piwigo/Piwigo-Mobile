@@ -172,8 +172,16 @@
                               default:
                                   break;
                           }
-                          [Model sharedInstance].version = versionStr;
-                          
+                          [Model sharedInstance].version = [versionStr copy];
+
+                          // Community users cannot upload with uploadAsync with Piwigo 11.0.0 and above
+                          if ([Model sharedInstance].usesCommunityPluginV29 &&
+                              ![Model sharedInstance].hasAdminRights &&
+                              [@"11.0.0" compare:versionStr options:NSNumericSearch] != NSOrderedDescending) {
+                              [Model sharedInstance].usesUploadAsync = NO;
+                          }
+                          NSLog(@"=> version: %@, usesUploadAsync: %@", [Model sharedInstance].version, [Model sharedInstance].usesUploadAsync ? @"YES" : @"NO");
+
                           NSString *charset = [[result objectForKey:@"charset"] uppercaseString];
                           if ([charset isEqualToString:@"UTF-8"]) {
                               [Model sharedInstance].stringEncoding = NSUTF8StringEncoding;
@@ -522,6 +530,9 @@
                       }
                       else
                       {
+                          [Model sharedInstance].hasAdminRights = NO;
+                          [Model sharedInstance].hasNormalRights = NO;
+                          [Model sharedInstance].usesUploadAsync = NO;
                           completion(nil);
                       }
                   }
