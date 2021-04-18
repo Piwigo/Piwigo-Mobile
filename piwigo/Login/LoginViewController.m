@@ -133,6 +133,10 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     return self;
 }
 
+-(UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
+}
+
 
 #pragma mark - View Lifecycle
 
