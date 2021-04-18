@@ -285,7 +285,11 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
         let tagsSB = UIStoryboard(name: "TagsViewController", bundle: nil)
         if let tagsVC = tagsSB.instantiateViewController(withIdentifier: "TagsViewController") as? TagsViewController {
             tagsVC.delegate = self
-            tagsVC.setSelectedTagIds(commonTags.map({$0.tagId}))
+            tagsVC.setPreselectedTagIds(commonTags.map({$0.tagId}))
+            // Can we propose to create tags?
+            if let switchVC = parent as? UploadSwitchViewController {
+                tagsVC.setTagCreationRights(switchVC.hasTagCreationRights)
+            }
             navigationController?.pushViewController(tagsVC, animated: true)
         }
             

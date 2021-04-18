@@ -22,19 +22,16 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
     @objc weak var delegate: TagsViewControllerDelegate?
 
     // Called before uploading images (Tag class)
-    @objc func setSelectedTagIds(_ selectedTagIds: [Int32]?) {
-        _selectedTagIds = selectedTagIds ?? [Int32]()
+    private var selectedTagIds = [Int32]()
+    @objc func setPreselectedTagIds(_ preselectedTagIds: [Int32]?) {
+        selectedTagIds = preselectedTagIds ?? [Int32]()
     }
-    private var _selectedTagIds = [Int32]()
-    private var selectedTagIds: [Int32] {
-        get {
-            return _selectedTagIds
-        }
-        set(selectedTagIds) {
-            _selectedTagIds = selectedTagIds
-        }
+    
+    private var hasTagCreationRights:Bool = false
+    @objc func setTagCreationRights(_ tagCreationRights:Bool) {
+        hasTagCreationRights = tagCreationRights
     }
-
+    
 
     // MARK: - Core Data
     /**
@@ -91,8 +88,8 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
         // Title
         title = NSLocalizedString("tags", comment: "Tags")
         
-        // Add button for Admins
-        if Model.sharedInstance().hasAdminRights {
+        // Add button for Admins and some Community users
+        if hasTagCreationRights {
             addBarButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(requestNewTagName))
             navigationItem.setRightBarButton(addBarButton, animated: false)
         }

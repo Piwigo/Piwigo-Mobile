@@ -25,5 +25,6 @@
 
 @property (nonatomic, weak) id<EditImageParamsDelegate> delegate;
 @property (nonatomic, strong) NSArray<PiwigoImageData *> *images;
+@property (nonatomic, assign) BOOL hasTagCreationRights;
 
 @end

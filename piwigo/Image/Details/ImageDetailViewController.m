@@ -643,6 +643,9 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
     UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageParams" bundle:nil];
     EditImageParamsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageParams"];
     editImageVC.images = @[self.imageData];
+    PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
+    editImageVC.hasTagCreationRights = [Model sharedInstance].hasAdminRights ||
+                                        ([Model sharedInstance].hasNormalRights && albumData.hasUploadRights);
     editImageVC.delegate = self;
     [self pushView:editImageVC forButton:self.editBarButton];
 }
