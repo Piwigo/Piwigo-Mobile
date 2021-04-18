@@ -441,6 +441,12 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
         BOOL isNavigationBarHidden = self.navigationController.isNavigationBarHidden;
         [self.navigationController setNavigationBarHidden:!isNavigationBarHidden animated:YES];
         
+        // Display/hide home indicator
+        if (@available(iOS 11, *)) {
+            // Notify UIKit that this view controller updated its preference regarding the visual indicator
+            [self setNeedsUpdateOfHomeIndicatorAutoHidden];
+        }
+
         // Display/hide the toolbar on iPhone if required
         if (self.isToolbarRequired)
             [self.navigationController setToolbarHidden:!isNavigationBarHidden animated:YES];
@@ -461,6 +467,11 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
 // Display/hide status bar
 -(BOOL)prefersStatusBarHidden{
     return self.navigationController.isNavigationBarHidden;
+}
+
+// Display/hide home indicator
+-(BOOL)prefersHomeIndicatorAutoHidden {
+    return self.navigationController.navigationBarHidden;
 }
 
 -(void)didPinchView
