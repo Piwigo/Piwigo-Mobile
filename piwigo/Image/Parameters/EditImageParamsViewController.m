@@ -473,7 +473,7 @@ typedef enum {
 }
 
 
-#pragma mark - UITableView - Rows
+#pragma mark - UITableView - Header & Footer
 
 - (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
@@ -485,14 +485,23 @@ typedef enum {
     return 0.0;        // To hide the section footer
 }
 
+
+#pragma mark - UITableView - Rows
+
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    NSInteger nberOfRows = EditImageParamsOrderCount - (self.hasDatePicker == NO);
+    nberOfRows -= (![Model sharedInstance].hasAdminRights ? 1 : 0);
+
+    return nberOfRows;
+}
+
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     CGFloat height = 44.0;
     NSInteger row = indexPath.row;
-    if (self.hasDatePicker == NO) {
-        // Bypass the date picker
-        if (row > EditImageParamsOrderDate) row++;
-    }
+    row += (!self.hasDatePicker && (row > EditImageParamsOrderDate)) ? 1 : 0;
+    row += (![Model sharedInstance].hasAdminRights && (row > EditImageParamsOrderDatePicker)) ? 1 : 0;
     switch (row)
     {
         case EditImageParamsOrderThumbnails:
@@ -525,20 +534,13 @@ typedef enum {
     return height;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-	return EditImageParamsOrderCount - (self.hasDatePicker == NO);
-}
-
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *tableViewCell = [UITableViewCell new];
 
     NSInteger row = indexPath.row;
-    if (self.hasDatePicker == NO) {
-        // Bypass the date picker
-        if (row > EditImageParamsOrderDate) row++;
-    }
+    row += (!self.hasDatePicker && (row > EditImageParamsOrderDate)) ? 1 : 0;
+    row += (![Model sharedInstance].hasAdminRights && (row > EditImageParamsOrderDatePicker)) ? 1 : 0;
     switch (row)
 	{
         case EditImageParamsOrderThumbnails:
@@ -646,10 +648,8 @@ typedef enum {
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSInteger row = indexPath.row;
-    if (self.hasDatePicker == NO) {
-        // Bypass the date picker
-        if (row > EditImageParamsOrderDate) row++;
-    }
+    row += (!self.hasDatePicker && (row > EditImageParamsOrderDate)) ? 1 : 0;
+    row += (![Model sharedInstance].hasAdminRights && (row > EditImageParamsOrderDatePicker)) ? 1 : 0;
     switch (row)
     {
         case EditImageParamsOrderPrivacy:
@@ -700,10 +700,8 @@ typedef enum {
 {
     BOOL result;
     NSInteger row = indexPath.row;
-    if (self.hasDatePicker == NO) {
-        // Bypass the date picker
-        if (row > EditImageParamsOrderDate) row++;
-    }
+    row += (!self.hasDatePicker && (row > EditImageParamsOrderDate)) ? 1 : 0;
+    row += (![Model sharedInstance].hasAdminRights && (row > EditImageParamsOrderDatePicker)) ? 1 : 0;
     switch (row)
     {
         case EditImageParamsOrderImageName:
@@ -1096,7 +1094,9 @@ typedef enum {
         self.commonParameters.tags = newCommonTags;
 
         // Refresh table row
-        NSInteger row = EditImageParamsOrderTags - (self.hasDatePicker == NO ? 1 : 0);
+        NSInteger row = EditImageParamsOrderTags;
+        row -= !self.hasDatePicker ? 1 : 0;
+        row -= ![Model sharedInstance].hasAdminRights ? 1 : 0;
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
         [self.editImageParamsTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     }
