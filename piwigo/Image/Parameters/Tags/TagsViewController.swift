@@ -62,26 +62,14 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
 
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
-        dataProvider.fetchTags(asAdmin: Model.sharedInstance()?.hasAdminRights ?? false) { error in
-            DispatchQueue.main.async {
+        DispatchQueue.global(qos: .userInteractive).async {
+            self.dataProvider.fetchTags(asAdmin: self.hasTagCreationRights) { error in
                 guard let error = error else { return }     // Done if no error
 
                 // Show an alert if there was an error.
-                let alert = UIAlertController(title: NSLocalizedString("CoreDataFetch_TagError", comment: "Fetch tags error!"),
-                                              message: error.localizedDescription,
-                                              preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: NSLocalizedString("alertOkButton", comment: "OK"),
-                                              style: .default, handler: nil))
-                alert.view.tintColor = UIColor.piwigoColorOrange()
-                if #available(iOS 13.0, *) {
-                    alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
-                } else {
-                    // Fallback on earlier versions
+                DispatchQueue.main.async {
+                    self.dismissPiwigoError(withTitle: "", message: NSLocalizedString("CoreDataFetch_TagError", comment: "Fetch tags error!"), errorMessage: error.localizedDescription) { }
                 }
-                self.present(alert, animated: true, completion: {
-                    // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                    alert.view.tintColor = UIColor.piwigoColorOrange()
-                })
             }
         }
         
@@ -130,10 +118,10 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
         
         // Prepare data source
-        self.selectedTags = self.dataProvider.fetchedResultsController.fetchedObjects?
-                                .filter({self.selectedTagIds.contains($0.tagId)}) ?? [Tag]()
-        self.nonSelectedTags = self.dataProvider.fetchedResultsController.fetchedObjects?
-                                .filter({!self.selectedTagIds.contains($0.tagId)}) ?? [Tag]()
+        self.selectedTags = dataProvider.fetchedResultsController.fetchedObjects?
+                                .filter({selectedTagIds.contains($0.tagId)}) ?? [Tag]()
+        self.nonSelectedTags = dataProvider.fetchedResultsController.fetchedObjects?
+                                .filter({!selectedTagIds.contains($0.tagId)}) ?? [Tag]()
         // Build ABC index
         self.updateSectionIndex()
         
@@ -463,7 +451,7 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
                 selectedTagIds.removeAll(where: {$0 == tag.tagId})
                 // Delete tag from table view
                 let deleteAtIndexPath = IndexPath.init(row: selectedTagIdsBeforeUpdate.firstIndex(where: {$0 == tag.tagId})!, section: 0)
-                print(".delete =>", deleteAtIndexPath.debugDescription)
+//                print(".delete =>", deleteAtIndexPath.debugDescription)
                 tagsTableView.deleteRows(at: [deleteAtIndexPath], with: .automatic)
             }
             // List of not selected tags
@@ -472,7 +460,7 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
                 nonSelectedTags.remove(at: index)
                 // Delete tag from table view
                 let deleteAtIndexPath = IndexPath.init(row: nonSelectedTagIdsBeforeUpdate.firstIndex(where: {$0 == tag.tagId})!, section: 1)
-                print(".delete =>", deleteAtIndexPath.debugDescription)
+//                print(".delete =>", deleteAtIndexPath.debugDescription)
                 tagsTableView.deleteRows(at: [deleteAtIndexPath], with: .automatic)
             }
 
@@ -485,7 +473,7 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
             // Determine index of added tag and insert tag
             let index = nonSelectedTags.firstIndex(where: {$0.tagId == tag.tagId})
             let addAtIndexPath = IndexPath.init(row: index!, section: 1)
-            print(".insert =>", addAtIndexPath.debugDescription)
+//            print(".insert =>", addAtIndexPath.debugDescription)
             tagsTableView.insertRows(at: [addAtIndexPath], with: .automatic)
 
         case .move:        // Should never "move"
@@ -498,7 +486,7 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
             // List of selected tags
             if let index = selectedTags.firstIndex(where: {$0.tagId == tag.tagId}) {
                 let updateAtIndexPath = IndexPath.init(row: index, section: 0)
-                print(".update =>", updateAtIndexPath.debugDescription)
+//                print(".update =>", updateAtIndexPath.debugDescription)
                 if let cell = tableView.cellForRow(at: updateAtIndexPath) as? TagTableViewCell {
                     cell.configure(with: tag, andEditOption: .remove)
                 }
@@ -506,7 +494,7 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
             // List of not selected tags
             else if let index = nonSelectedTags.firstIndex(where: {$0.tagId == tag.tagId}) {
                 let updateAtIndexPath = IndexPath.init(row: index, section: 1)
-                print(".update =>", updateAtIndexPath.debugDescription)
+//                print(".update =>", updateAtIndexPath.debugDescription)
                 if let cell = tableView.cellForRow(at: updateAtIndexPath) as? TagTableViewCell {
                     cell.configure(with: tag, andEditOption: .add)
                 }
