@@ -1255,6 +1255,9 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
             (([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeLeft) &&
              ([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeRight))) {
     
+            // Left side of navigation bar
+            self.cancelBarButton.enabled = YES;
+
             // Right side of navigation bar
             self.editBarButton.enabled = (self.selectedImageIds.count > 0);
 
@@ -3445,7 +3448,9 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
 
 -(void)didSelectCategoryWithId:(NSInteger)category
 {
-    if (category != NSNotFound) {
+    if (category == NSNotFound) {
+        [self setEnableStateOfButtons:YES];
+    } else {
         [self cancelSelect];
     }
 }

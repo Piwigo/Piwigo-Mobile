@@ -1492,7 +1492,9 @@
 
 -(void)didSelectCategoryWithId:(NSInteger)category
 {
-    if (category != NSNotFound) {
+    if (category == NSNotFound) {
+        [self setEnableStateOfButtons:YES];
+    } else {
         [self cancelSelect];
     }
 }
