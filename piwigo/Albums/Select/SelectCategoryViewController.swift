@@ -725,16 +725,13 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             } else if (categoryData.albumId == inputCategoryData.parentAlbumId) ||
                         categoryData.upperCategories.contains(String(inputCategoryId)) { return false }
             
-        case kPiwigoCategorySelectActionSetAutoUploadAlbum:
+        case kPiwigoCategorySelectActionSetAlbumThumbnail:
             // The root album is not selectable (should not be presented but in case…)
             if categoryData.albumId == 0 { return false }
 
-        case kPiwigoCategorySelectActionCopyImage,
-             kPiwigoCategorySelectActionMoveImage:
+        case kPiwigoCategorySelectActionSetAutoUploadAlbum:
             // The root album is not selectable (should not be presented but in case…)
             if categoryData.albumId == 0 { return false }
-            // Albums containing the image are not selectable
-            if inputImageData.categoryIds.contains(NSNumber(value: categoryData.albumId)) { return false }
 
         case kPiwigoCategorySelectActionCopyImage,
              kPiwigoCategorySelectActionCopyImages,
