@@ -125,15 +125,36 @@ extension UIViewController {
         
         // Prepare actions
         let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment:"Dismiss"),
-                                               style: .cancel) { _ in dismiss() }
+                                          style: .cancel) { _ in dismiss() }
         let retryAction = UIAlertAction(title: NSLocalizedString("alertRetryButton", comment:"Retry"),
-                                               style: .default) { _ in retry() }
+                                        style: .default) { _ in retry() }
 
         // Present alert
         self.presentPiwigoAlert(withTitle: title, message: wholeMessage,
                                 actions: [dismissAction, retryAction])
     }
-    
+
+    func cancelDismissRetryPiwigoError(withTitle title:String, message:String = "", errorMessage:String = "",
+                        cancel: @escaping () -> Void, dismiss: @escaping () -> Void, retry: @escaping () -> Void) {
+        // Prepare message
+        var wholeMessage = message
+        if errorMessage.count > 0 {
+            wholeMessage.append("\n(" + errorMessage + ")")
+        }
+        
+        // Prepare actions
+        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment:"Cancel"),
+                                         style: .cancel) { _ in cancel() }
+        let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment:"Dismiss"),
+                                          style: .default) { _ in dismiss() }
+        let retryAction = UIAlertAction(title: NSLocalizedString("alertRetryButton", comment:"Retry"),
+                                        style: .default) { _ in retry() }
+
+        // Present alert
+        self.presentPiwigoAlert(withTitle: title, message: wholeMessage,
+                                actions: [cancelAction, dismissAction, retryAction])
+    }
+
     private func presentPiwigoAlert(withTitle title:String, message:String, actions:[UIAlertAction]) {
         // Create alert view controller
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)

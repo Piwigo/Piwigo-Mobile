@@ -382,94 +382,65 @@ typedef enum {
     
     // Update image info on server and in cache
     [ImageService setImageProperties:[self.imagesToUpdate lastObject]
-                           onProgress:^(NSProgress *progress) {
-                            // Progress
-                            }
-                          OnCompletion:^(NSURLSessionTask *task, NSDictionary *response)
-                            {
-                                if([[response objectForKey:@"stat"] isEqualToString:@"ok"])
+       onProgress:^(NSProgress *progress) {
+            // Progress
+        }
+      OnCompletion:^(NSURLSessionTask *task, NSDictionary *response)
+        {
+            if(![[response objectForKey:@"stat"] isEqualToString:@"ok"])
+            {
+                // Next image?
+                [self.imagesToUpdate removeLastObject];
+                if (self.imagesToUpdate.count) {
+                    [self updatePiwigoHUDWithProgress:1.0 - (double)(self.imagesToUpdate.count) / self.nberOfSelectedImages];
+                    [self updateImageProperties];
+                }
+                else {
+                    // Done, hide HUD and dismiss controller
+                    [self updatePiwigoHUDwithSuccessWithCompletion:^{
+                        [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
+                            // Return to image preview or album view
+                            [self dismissViewControllerAnimated:YES completion:^{
+                                if ([self.delegate respondsToSelector:@selector(didChangeParamsOfImage:)])
                                 {
-                                    // Next image?
-                                    [self.imagesToUpdate removeLastObject];
-                                    if (self.imagesToUpdate.count) {
-                                        [self updatePiwigoHUDWithProgress:1.0 - (double)(self.imagesToUpdate.count) / self.nberOfSelectedImages];
-                                        [self updateImageProperties];
-                                    }
-                                    else {
-                                        // Done, hide HUD and dismiss controller
-                                        [self updatePiwigoHUDwithSuccessWithCompletion:^{
-                                            [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
-                                                // Return to image preview or album view
-                                                [self dismissViewControllerAnimated:YES completion:^{
-                                                    if ([self.delegate respondsToSelector:@selector(didChangeParamsOfImage:)])
-                                                    {
-                                                        [self.delegate didChangeParamsOfImage:self.commonParameters];
-                                                    }
-                                                }];
-                                            }];
-                                        }];
-                                    }
+                                    [self.delegate didChangeParamsOfImage:self.commonParameters];
                                 }
-                                else
-                                {
-                                    // Display Piwigo error in HUD
-                                    [self hidePiwigoHUDWithCompletion:^{
-                                        NSError *error = [NetworkHandler getPiwigoErrorFromResponse:response path:kPiwigoImageSetInfo andURLparams:nil];
-                                        [self showErrorWithMessage:[error localizedDescription]];
-                                    }];
-                                }
-                            }
-                             onFailure:^(NSURLSessionTask *task, NSError *error) {
-                                // Failed
-                                [self hidePiwigoHUDWithCompletion:^{
-                                    [self showErrorWithMessage:[error localizedDescription]];
-                                }];
                             }];
-}
-
--(void)showErrorWithMessage:(NSString*)message
-{
-    UIAlertController* alert = [UIAlertController
-            alertControllerWithTitle:NSLocalizedString(@"editImageDetailsError_title", @"Failed to Update")
-            message:message
-            preferredStyle:UIAlertControllerStyleAlert];
-    
-    UIAlertAction* cancelAction = [UIAlertAction
-                    actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-                    style:UIAlertActionStyleCancel
-                    handler:^(UIAlertAction * action) {
+                        }];
                     }];
-
-    UIAlertAction* dismissAction = [UIAlertAction
-                    actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                    style:UIAlertActionStyleDestructive
-                    handler:^(UIAlertAction * action) {
+                }
+            }
+            else
+            {
+                // Display Piwigo error in HUD
+                [self hidePiwigoHUDWithCompletion:^{
+                    NSError *error = [NetworkHandler getPiwigoErrorFromResponse:response path:kPiwigoImageSetInfo andURLparams:nil];
+                    [self cancelDismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"editImageDetailsError_title", @"Failed to Update") message:NSLocalizedString(@"editImageDetailsError_message", @"Failed to update your changes with your server. Try again?") errorMessage:error.localizedDescription cancel:^{
+                    } dismiss:^{
                         // Bypass this image
                         [self.imagesToUpdate removeLastObject];
                         // Next image
                         if (self.imagesToUpdate.count) [self updateImageProperties];
-                    }];
-
-    UIAlertAction* retryAction = [UIAlertAction
-                    actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
-                    style:UIAlertActionStyleDefault
-                    handler:^(UIAlertAction * action) {
+                    } retry:^{
                         [self updateImageProperties];
                     }];
-
-    [alert addAction:cancelAction];
-    if (self.imagesToUpdate.count > 2) [alert addAction:dismissAction];
-    [alert addAction:retryAction];
-    alert.view.tintColor = UIColor.piwigoColorOrange;
-    if (@available(iOS 13.0, *)) {
-        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
-    } else {
-        // Fallback on earlier versions
-    }
-    [self presentViewController:alert animated:YES completion:^{
-        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-        alert.view.tintColor = UIColor.piwigoColorOrange;
-    }];
+                }];
+            }
+        }
+         onFailure:^(NSURLSessionTask *task, NSError *error) {
+            // Failed
+            [self hidePiwigoHUDWithCompletion:^{
+                [self cancelDismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"editImageDetailsError_title", @"Failed to Update") message:NSLocalizedString(@"editImageDetailsError_message", @"Failed to update your changes with your server. Try again?") errorMessage:error.localizedDescription cancel:^{
+                } dismiss:^{
+                    // Bypass this image
+                    [self.imagesToUpdate removeLastObject];
+                    // Next image
+                    if (self.imagesToUpdate.count) [self updateImageProperties];
+                } retry:^{
+                    [self updateImageProperties];
+                }];
+            }];
+        }];
 }
 
 

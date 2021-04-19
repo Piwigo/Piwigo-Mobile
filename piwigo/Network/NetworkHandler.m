@@ -817,19 +817,19 @@ NSInteger const loadingViewTag = 899;
     NSError *error;
     switch (errorCode) {
         case kInvalidMethod:
-            error = [NSError errorWithDomain:url code:errorCode userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@\r(%@)", errorMsg.length ? errorMsg : NSLocalizedString(@"serverInvalidMethodError_message", @"Failed to call server method."), url]}];
+            error = [NSError errorWithDomain:url code:errorCode userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@\r%@", errorMsg.length ? errorMsg : NSLocalizedString(@"serverInvalidMethodError_message", @"Failed to call server method."), url]}];
             break;
             
         case kMissingParameter:
-            error = [NSError errorWithDomain:url code:errorCode userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@\r(%@)", errorMsg.length ? errorMsg : NSLocalizedString(@"serverMissingParamError_message", @"Failed to execute server method with missing parameter."), url]}];
+            error = [NSError errorWithDomain:url code:errorCode userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@\r%@", errorMsg.length ? errorMsg : NSLocalizedString(@"serverMissingParamError_message", @"Failed to execute server method with missing parameter."), url]}];
             break;
             
         case kInvalidParameter:
-            error = [NSError errorWithDomain:url code:errorCode userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@\r(%@)", errorMsg.length ? errorMsg : NSLocalizedString(@"serverInvalidParamError_message", @"Failed to call server method with provided parameters."), url]}];
+            error = [NSError errorWithDomain:url code:errorCode userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@\r%@", errorMsg.length ? errorMsg : NSLocalizedString(@"serverInvalidParamError_message", @"Failed to call server method with provided parameters."), url]}];
             break;
             
         default:
-            error = [NSError errorWithDomain:url code:errorCode userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@\r(%@)", errorMsg.length ? errorMsg : NSLocalizedString(@"serverUnknownError_message", @"Unexpected error encountered while calling server method with provided parameters."), url]}];
+            error = [NSError errorWithDomain:url code:errorCode userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@\r%@", errorMsg.length ? errorMsg : NSLocalizedString(@"serverUnknownError_message", @"Unexpected error encountered while calling server method with provided parameters."), url]}];
             break;
     }
     return error;
