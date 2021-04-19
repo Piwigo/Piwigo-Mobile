@@ -608,7 +608,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // No button if the user does not have upload rights
         var buttonState = kPiwigoCategoryTableCellButtonStateNone
         let allCategories: [PiwigoAlbumData] = CategoriesData.sharedInstance().allCategories
-        let filteredCat = allCategories.filter({ Model.sharedInstance().hasAdminRights || $0.hasUploadRights })
+        let filteredCat = allCategories.filter({ Model.sharedInstance().hasAdminRights ||
+                                                (Model.sharedInstance().hasNormalRights && $0.hasUploadRights) })
             .filter({ $0.nearestUpperCategory == categoryData.albumId })
             .filter({ $0.albumId != categoryData.albumId })
         if filteredCat.count > 0 {
@@ -1406,7 +1407,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         /// - Smart albums should not be proposed
         /// - Non-admin Community users can only upload in specific albums
         let filteredCat = allCategories.filter({ $0.albumId > kPiwigoSearchCategoryId })
-            .filter({ Model.sharedInstance().hasAdminRights || $0.hasUploadRights })
+            .filter({ Model.sharedInstance().hasAdminRights ||
+                        (Model.sharedInstance().hasNormalRights && $0.hasUploadRights) })
         for category in filteredCat {   // Don't use forEach to keep the order
             // Is this category already in displayed list?
             if !categories.contains(where: { $0.albumId == category.albumId }) {
@@ -1482,7 +1484,9 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         /// - Non-admin Community users can only upload in specific albums
         /// - Only add sub-categories of tapped category
         /// - Do not add the current category
-        let filteredCat = allCategories.filter({ Model.sharedInstance().hasAdminRights || $0.hasUploadRights })
+        let filteredCat = allCategories
+            .filter({ Model.sharedInstance().hasAdminRights ||
+                        (Model.sharedInstance().hasNormalRights && $0.hasUploadRights) })
             .filter({ $0.nearestUpperCategory == categoryTapped.albumId })
         for category in filteredCat {   // Don't use forEach to keep the order
             // Is this category already in displayed list?
