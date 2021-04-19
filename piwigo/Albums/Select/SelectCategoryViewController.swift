@@ -44,7 +44,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     private var inputImageData: PiwigoImageData!
     private var inputImageIds: [Int]!
     private var inputImagesData = [PiwigoImageData]()
-    
+    private var totalNumberOfImages: Float = 0.0
+
     @objc func setInput(parameter:Any, for action:kPiwigoCategorySelectAction) {
         wantedAction = action
         switch action {
@@ -219,7 +220,12 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Retrieve image data if needed
         if [kPiwigoCategorySelectActionCopyImages,
             kPiwigoCategorySelectActionMoveImages].contains(wantedAction) {
-            showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment:"Loading…"))
+            totalNumberOfImages = Float(inputImageIds.count)
+            if totalNumberOfImages > 1 {
+                showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment:"Loading…"), inMode: .annularDeterminate)
+            } else {
+                showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment:"Loading…"), inMode: .indeterminate)
+            }
             inputImagesData = []
             retrieveImageData()
         }
@@ -292,7 +298,11 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Job done?
         if inputImageIds.count == 0 {
             DispatchQueue.main.async {
-                self.hidePiwigoHUD { self.categoriesTableView.reloadData() }
+                self.updatePiwigoHUDwithSuccess {
+                    self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
+                        self.categoriesTableView.reloadData()
+                    }
+                }
             }
             return
         }
@@ -319,8 +329,13 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             set1.intersect(set2)
             self.inputImageData.categoryIds = set1.allObjects.map { NSNumber(integerLiteral: $0 as! Int) }
 
-            // Next image
+            // Image info retrieved
             self.inputImageIds.removeLast()
+            
+            // Update HUD
+            self.updatePiwigoHUD(withProgress: 1.0 - Float(self.inputImageIds.count) / self.totalNumberOfImages)
+            
+            // Next image
             self.retrieveImageData()
 
         } onFailure: { _, error in
