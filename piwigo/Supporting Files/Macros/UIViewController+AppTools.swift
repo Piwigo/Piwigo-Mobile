@@ -106,39 +106,44 @@ extension UIViewController {
             wholeMessage.append("\n(" + errorMessage + ")")
         }
         
-        // Present alert
-        let alert = UIAlertController.init(title: title, message: wholeMessage, preferredStyle: .alert)
+        // Prepare actions
         let dismissAction = UIAlertAction.init(title: NSLocalizedString("alertDismissButton", comment:"Dismiss"),
                                                style: .cancel) { _ in completion() }
-        alert.addAction(dismissAction)
-        alert.view.tintColor = UIColor.piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
-        present(alert, animated: true) {
-            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange()
-        }
+
+        // Present alert
+        self.presentPiwigoAlert(withTitle: title, message: wholeMessage,
+                                actions: [dismissAction])
     }
 
-    func cancelRetryPiwigoError(withTitle title:String, message:String = "", errorMessage:String = "",
-                                cancel: @escaping () -> Void, retry: @escaping () -> Void) {
+    func dismissRetryPiwigoError(withTitle title:String, message:String = "", errorMessage:String = "",
+                                 dismiss: @escaping () -> Void, retry: @escaping () -> Void) {
         // Prepare message
         var wholeMessage = message
         if errorMessage.count > 0 {
             wholeMessage.append("\n(" + errorMessage + ")")
         }
         
+        // Prepare actions
+        let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment:"Dismiss"),
+                                               style: .cancel) { _ in dismiss() }
+        let retryAction = UIAlertAction(title: NSLocalizedString("alertRetryButton", comment:"Retry"),
+                                               style: .default) { _ in retry() }
+
         // Present alert
-        let alert = UIAlertController.init(title: title, message: wholeMessage, preferredStyle: .alert)
-        let dismissAction = UIAlertAction.init(title: NSLocalizedString("alertDismissButton", comment:"Dismiss"),
-                                               style: .cancel) { _ in cancel() }
-        let retryAction = UIAlertAction.init(title: NSLocalizedString("alertRetryButton", comment:"Retry"),
-                                               style: .cancel) { _ in retry() }
-        alert.addAction(dismissAction)
-        alert.addAction(retryAction)
+        self.presentPiwigoAlert(withTitle: title, message: wholeMessage,
+                                actions: [dismissAction, retryAction])
+    }
+    
+    private func presentPiwigoAlert(withTitle title:String, message:String, actions:[UIAlertAction]) {
+        // Create alert view controller
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+
+        // Add actions
+        for action in actions {
+            alert.addAction(action)
+        }
+        
+        // Present alert
         alert.view.tintColor = UIColor.piwigoColorOrange()
         if #available(iOS 13.0, *) {
             alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light

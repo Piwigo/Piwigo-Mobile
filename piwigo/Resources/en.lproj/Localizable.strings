@@ -382,7 +382,7 @@
 
 // Image delete — Errors
 "deleteImageFail_title" = "Delete Failed";
-"deleteImageFail_message" = "Photo could not be deleted\n%@";
+"deleteImageFail_message" = "Photo could not be deleted.";
 
 // Image download
 "downloadSingleImage_title" = "Download Photo";

@@ -915,7 +915,7 @@
           }
           else {
               // Could not retrieve image data
-              [self cancelRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed") message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?") errorMessage:@"" cancel:^{
+              [self dismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed") message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?") errorMessage:@"" dismiss:^{
                   [self hidePiwigoHUDWithCompletion:^{ [self updateBarButtons]; }];
               } retry:^{
                   [self retrieveImageDataBeforeEdit];
@@ -924,7 +924,7 @@
       }
          onFailure:^(NSURLSessionTask *task, NSError *error) {
             // Failed — Ask user if he/she wishes to retry
-            [self cancelRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed") message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?") errorMessage:error.localizedDescription cancel:^{
+            [self dismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed") message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?") errorMessage:error.localizedDescription dismiss:^{
                 [self hidePiwigoHUDWithCompletion:^{ [self updateBarButtons]; }];
             } retry:^{
                 [self retrieveImageDataBeforeEdit];
@@ -1008,7 +1008,7 @@
           }
           else {
               // Could not retrieve image data
-              [self cancelRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed") message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?") errorMessage:@"" cancel:^{
+              [self dismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed") message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?") errorMessage:@"" dismiss:^{
                   [self hidePiwigoHUDWithCompletion:^{ [self updateBarButtons]; }];
               } retry:^{
                   [self retrieveImageDataBeforeDelete];
@@ -1017,7 +1017,7 @@
       }
      onFailure:^(NSURLSessionTask *task, NSError *error) {
         // Failed — Ask user if he/she wishes to retry
-        [self cancelRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed") message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?") errorMessage:error.localizedDescription cancel:^{
+        [self dismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed") message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?") errorMessage:error.localizedDescription dismiss:^{
             [self hidePiwigoHUDWithCompletion:^{ [self updateBarButtons]; }];
         } retry:^{
             [self retrieveImageDataBeforeDelete];
@@ -1103,7 +1103,7 @@
       }
     onFailure:^(NSURLSessionTask *task, NSError *error) {
         // Error — Try again ?
-        [self cancelRetryPiwigoErrorWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed") message:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted.") errorMessage:[error localizedDescription] cancel:^{
+        [self dismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed") message:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted.") errorMessage:[error localizedDescription] dismiss:^{
             [self hidePiwigoHUDWithCompletion:^{ [self updateBarButtons]; }];
         } retry:^{
             [self deleteImages];
@@ -1163,7 +1163,7 @@
           }
           else {
               // Could not retrieve image data
-              [self cancelRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed") message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?") errorMessage:@"" cancel:^{
+              [self dismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed") message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?") errorMessage:@"" dismiss:^{
                   [self hidePiwigoHUDWithCompletion:^{ [self updateBarButtons]; }];
               } retry:^{
                   [self retrieveImageDataBeforeShare];
@@ -1172,7 +1172,7 @@
       }
      onFailure:^(NSURLSessionTask *task, NSError *error) {
         // Failed — Ask user if he/she wishes to retry
-        [self cancelRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed") message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?") errorMessage:error.localizedDescription cancel:^{
+        [self dismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed") message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?") errorMessage:error.localizedDescription dismiss:^{
             [self hidePiwigoHUDWithCompletion:^{ [self updateBarButtons]; }];
         } retry:^{
             [self retrieveImageDataBeforeShare];
