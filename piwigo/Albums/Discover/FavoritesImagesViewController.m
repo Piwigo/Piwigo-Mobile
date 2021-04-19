@@ -26,7 +26,6 @@
 @property (nonatomic, strong) AlbumData *albumData;
 @property (nonatomic, strong) NSIndexPath *imageOfInterest;
 @property (nonatomic, assign) BOOL displayImageTitles;
-@property (nonatomic, strong) UIViewController *hudViewController;
 
 @property (nonatomic, strong) UIBarButtonItem *selectBarButton;
 @property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
@@ -819,9 +818,7 @@
 -(void)retrieveImageDataBeforeEdit
 {
     if (self.selectedImageIdsToEdit.count <= 0) {
-        [self hidePiwigoHUDWithCompletion:^{
-            [self editImages];
-        }];
+        [self hidePiwigoHUDWithCompletion:^{ [self editImages]; }];
         return;
     }
     
@@ -837,7 +834,7 @@
               [self.selectedImageIdsToEdit removeLastObject];
 
               // Update HUD
-              [self updatePiwigoHUDWithProgress:1.0 - (double)(self.selectedImageIdsToEdit.count) / self.totalNumberOfImages];
+              [self updatePiwigoHUDWithProgress:1.0 - (float)self.selectedImageIdsToEdit.count / (float)self.totalNumberOfImages];
 
               // Next image
               [self retrieveImageDataBeforeEdit];
@@ -851,14 +848,14 @@
               }];
           }
       }
-            onFailure:^(NSURLSessionTask *task, NSError *error) {
-                // Could not retrieve image data
-                [self cancelRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed") message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?") errorMessage:@"" cancel:^{
-                    [self hidePiwigoHUDWithCompletion:^{ [self updateBarButtons]; }];
-                } retry:^{
-                    [self retrieveImageDataBeforeEdit];
-                }];
+        onFailure:^(NSURLSessionTask *task, NSError *error) {
+            // Could not retrieve image data
+            [self cancelRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed") message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?") errorMessage:error.localizedDescription cancel:^{
+                [self hidePiwigoHUDWithCompletion:^{ [self updateBarButtons]; }];
+            } retry:^{
+                [self retrieveImageDataBeforeEdit];
             }];
+        }];
 }
 
 -(void)editImages
@@ -929,7 +926,7 @@
               [self.selectedImageIdsToDelete removeLastObject];
 
               // Update HUD
-              [self updatePiwigoHUDWithProgress:1.0 - (double)(self.selectedImageIdsToDelete.count) / self.totalNumberOfImages];
+              [self updatePiwigoHUDWithProgress:1.0 - (float)self.selectedImageIdsToDelete.count / (float)self.totalNumberOfImages];
 
               // Next image
               [self retrieveImageDataBeforeDelete];
@@ -945,7 +942,7 @@
       }
      onFailure:^(NSURLSessionTask *task, NSError *error) {
          // Failed — Ask user if he/she wishes to retry
-        [self cancelRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed") message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?") errorMessage:@"" cancel:^{
+        [self cancelRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed") message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?") errorMessage:error.localizedDescription cancel:^{
             [self hidePiwigoHUDWithCompletion:^{ [self updateBarButtons]; }];
         } retry:^{
             [self retrieveImageDataBeforeDelete];
@@ -1066,10 +1063,8 @@
 -(void)retrieveImageDataBeforeShare
 {
     if (self.selectedImageIdsToShare.count <= 0) {
-        [self updatePiwigoHUDwithSuccessWithCompletion:^{
-            [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
-                [self checkPhotoLibraryAccessBeforeShare];
-            }];
+        [self hidePiwigoHUDWithCompletion:^{
+            [self checkPhotoLibraryAccessBeforeShare];
         }];
         return;
     }
@@ -1082,12 +1077,14 @@
               // Store image data
               [self.selectedImagesToShare insertObject:imageData atIndex:0];
               
-              // Next image
+              // Image info retrieved
               [self.selectedImageIdsToShare removeLastObject];
-              [self retrieveImageDataBeforeShare];
 
               // Update HUD
-              [self updatePiwigoHUDWithProgress:1.0 - (double)(self.selectedImageIdsToShare.count) / self.totalNumberOfImages];
+              [self updatePiwigoHUDWithProgress:1.0 - (float)self.selectedImageIdsToShare.count / (float)self.totalNumberOfImages];
+
+              // Next image
+              [self retrieveImageDataBeforeShare];
           }
           else {
               // Could not retrieve image data
@@ -1098,14 +1095,14 @@
               }];
           }
       }
-        onFailure:^(NSURLSessionTask *task, NSError *error) {
-            // Failed — Ask user if he/she wishes to retry
-            [self cancelRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed") message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?") errorMessage:error.localizedDescription cancel:^{
-                [self hidePiwigoHUDWithCompletion:^{ [self updateBarButtons]; }];
-            } retry:^{
-                [self retrieveImageDataBeforeShare];
-            }];
-         }];
+    onFailure:^(NSURLSessionTask *task, NSError *error) {
+        // Failed — Ask user if he/she wishes to retry
+        [self cancelRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed") message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?") errorMessage:error.localizedDescription cancel:^{
+            [self hidePiwigoHUDWithCompletion:^{ [self updateBarButtons]; }];
+        } retry:^{
+            [self retrieveImageDataBeforeShare];
+        }];
+    }];
 }
 
 -(void)checkPhotoLibraryAccessBeforeShare
@@ -1180,9 +1177,6 @@
     // Create an activity view controller with the activity provider item.
     // ShareImageActivityItemProvider's superclass conforms to the UIActivityItemSource protocol
     UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:itemsToShare applicationActivities:nil];
-    
-    // Set HUD view controller for displaying progress
-    self.hudViewController = activityViewController;
     
     // Exclude camera roll activity if needed
     if (!hasCameraRollAccess) {
