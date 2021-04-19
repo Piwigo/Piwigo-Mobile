@@ -297,13 +297,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     private func retrieveImageData() {
         // Job done?
         if inputImageIds.count == 0 {
-            DispatchQueue.main.async {
-                self.updatePiwigoHUDwithSuccess {
-                    self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
-                        self.categoriesTableView.reloadData()
-                    }
-                }
-            }
+            self.hidePiwigoHUD { self.categoriesTableView.reloadData() }
             return
         }
         
