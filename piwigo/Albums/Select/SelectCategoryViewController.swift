@@ -45,6 +45,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     private var inputImageIds: [Int]!
     private var inputImagesData = [PiwigoImageData]()
     private var totalNumberOfImages: Float = 0.0
+    private var selectedCategoryId = NSNotFound
 
     @objc func setInput(parameter:Any, for action:kPiwigoCategorySelectAction) {
         wantedAction = action
@@ -263,14 +264,14 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        // Re-enable tollbar items in image preview mode
+        // Re-enable toolbar items in image preview mode
         if [kPiwigoCategorySelectActionMoveAlbum,
             kPiwigoCategorySelectActionSetAlbumThumbnail,
             kPiwigoCategorySelectActionCopyImage,
             kPiwigoCategorySelectActionCopyImages,
             kPiwigoCategorySelectActionMoveImage,
             kPiwigoCategorySelectActionMoveImages].contains(wantedAction) {
-            self.delegate?.didSelectCategory(withId: NSNotFound)
+            self.delegate?.didSelectCategory(withId: selectedCategoryId)
         }
 
         // Unregister palette changes
@@ -768,6 +769,9 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         } else {
             categoryData = categories[indexPath.row]
         }
+        
+        // Remember the choice
+        selectedCategoryId = categoryData.albumId
 
         // What should we do with this selection?
         switch wantedAction {
@@ -916,7 +920,10 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                                      handler:((UIAlertAction) -> Void)? = nil) -> Void {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
         let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"),
-                                         style: .cancel, handler: { action in })
+                                         style: .cancel, handler: {_ in 
+                                            // Forget the choice
+                                            self.selectedCategoryId = NSNotFound
+                                         })
         let performAction = UIAlertAction(title: NSLocalizedString("alertYesButton", comment: "Yes"), style: .default, handler:handler)
     
         // Add actions
@@ -967,8 +974,12 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         }
         
         // Present alert
-        self.dismissPiwigoError(withTitle: title, message: message,
-                                errorMessage: error) { self.dismiss(animated: true, completion: {}) }
+        self.dismissPiwigoError(withTitle: title, message: message, errorMessage: error) {
+            // Forget the choice
+            self.selectedCategoryId = NSNotFound
+            // Dismiss the view
+            self.dismiss(animated: true, completion: {})
+        }
     }
     
 
