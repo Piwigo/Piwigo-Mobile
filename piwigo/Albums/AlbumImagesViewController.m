@@ -3445,7 +3445,9 @@ NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationC
 
 -(void)didSelectCategoryWithId:(NSInteger)category
 {
-    [self cancelSelect];
+    if (category != NSNotFound) {
+        [self cancelSelect];
+    }
 }
 
 

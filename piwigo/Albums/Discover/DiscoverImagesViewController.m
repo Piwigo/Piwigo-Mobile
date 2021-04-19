@@ -1557,7 +1557,9 @@
 
 -(void)didSelectCategoryWithId:(NSInteger)category
 {
-    [self cancelSelect];
+    if (category != NSNotFound) {
+        [self cancelSelect];
+    }
 }
 
 
