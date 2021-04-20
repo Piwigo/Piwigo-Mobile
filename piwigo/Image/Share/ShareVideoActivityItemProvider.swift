@@ -54,7 +54,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
 
         // We use the thumbnail cached in memory
         let alreadyLoadedSize = Model.sharedInstance().defaultThumbnailSize
-        guard let thumbnailRL = URL(string: imageData.getURLFromImageSizeType(alreadyLoadedSize)) else {
+        guard let thumbnailURL = URL(string: imageData.getURLFromImageSizeType(alreadyLoadedSize)) else {
             imageFileURL = URL.init(string: "")!
             super.init(placeholderItem: UIImage(named: "AppIconShare")!)
             return
@@ -62,9 +62,9 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         
         // Retrieve thumbnail image
         let thumb = UIImageView()
-        thumb.setImageWith(thumbnailRL, placeholderImage: UIImage(named: "AppIconShare"))
+        thumb.setImageWith(thumbnailURL, placeholderImage: UIImage(named: "AppIconShare"))
         if let thumbnailImage = thumb.image {
-            imageFileURL = thumbnailRL
+            imageFileURL = thumbnailURL
             let resizedImage = thumbnailImage.resize(to: CGFloat(70.0), opaque: true)
             super.init(placeholderItem: resizedImage)
         } else {
@@ -404,10 +404,10 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         
         // We use the thumbnail in cache
         let alreadyLoadedSize = Model.sharedInstance().defaultThumbnailSize
-        if let thumbnailRL = URL(string: imageData.getURLFromImageSizeType(alreadyLoadedSize)) {
+        if let thumbnailURL = URL(string: imageData.getURLFromImageSizeType(alreadyLoadedSize)) {
             // Retrieve thumbnail image
             let thumb = UIImageView()
-            thumb.setImageWith(thumbnailRL, placeholderImage: UIImage(named: "AppIconShare"))
+            thumb.setImageWith(thumbnailURL, placeholderImage: UIImage(named: "AppIconShare"))
             if let thumbnailImage = thumb.image {
                 linkMetaData.imageProvider = NSItemProvider(object: thumbnailImage)
             } else {
