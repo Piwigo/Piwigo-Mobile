@@ -674,6 +674,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     
     // Update the navigation bar on orientation change, to match the new width of the table.
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+        [self.imagesCollection reloadData];
         if (self.isSelect) {
             [self updateButtonsInSelectionMode];
         } else {
