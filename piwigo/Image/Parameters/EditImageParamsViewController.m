@@ -387,7 +387,7 @@ typedef enum {
         }
       OnCompletion:^(NSURLSessionTask *task, NSDictionary *response)
         {
-            if(![[response objectForKey:@"stat"] isEqualToString:@"ok"])
+            if ([[response objectForKey:@"stat"] isEqualToString:@"ok"])
             {
                 // Next image?
                 [self.imagesToUpdate removeLastObject];
