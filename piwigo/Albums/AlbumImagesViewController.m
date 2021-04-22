@@ -41,10 +41,8 @@ NSString * const kPiwigoNotificationUploadedImage = @"kPiwigoNotificationUploade
 NSString * const kPiwigoNotificationDeletedImage = @"kPiwigoNotificationDeletedImage";
 NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChangedAlbumData";
 
-NSString * const kPiwigoNotificationDidShareImage = @"kPiwigoNotificationDidShareImage";
-NSString * const kPiwigoNotificationCancelDownloadImage = @"kPiwigoNotificationCancelDownloadImage";
-NSString * const kPiwigoNotificationDidShareVideo = @"kPiwigoNotificationDidShareVideo";
-NSString * const kPiwigoNotificationCancelDownloadVideo = @"kPiwigoNotificationCancelDownloadVideo";
+NSString * const kPiwigoNotificationDidShare = @"kPiwigoNotificationDidShare";
+NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancelDownload";
 
 @interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, UITextFieldDelegate, ImageDetailDelegate, EditImageParamsDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, SelectCategoryDelegate, SelectCategoryImageCopiedDelegate, ShareImageActivityItemProviderDelegate, TagSelectorViewDelegate, ChangedSettingsDelegate>
 
