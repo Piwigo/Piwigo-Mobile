@@ -632,6 +632,7 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
     return index;
 }
 
+
 #pragma mark - Edit Image
 
 -(void)editImage
@@ -901,36 +902,16 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
         // Enable buttons after action
         [self setEnableStateOfButtons:YES];
 
-        if (completed) {
-//            NSLog(@"Selected activity was performed and returned error:%ld", (long)activityError.code);
-            if (self.imageData.isVideo) {
-                // Remove observers
-                [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDidShareVideo object:nil];
-            }
-            else {
-                // Remove observers
-                [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDidShareImage object:nil];
-            }
-        } else {
+        // Remove observers
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDidShare object:nil];
+
+        if (!completed) {
             if (activityType == NULL) {
 //                NSLog(@"User dismissed the view controller without making a selection.");
             } else {
                 NSLog(@"Activity was not performed.");
-                if (self.imageData.isVideo)
-                {
-                    // Cancel download task
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCancelDownloadVideo object:nil];
-                    
-                    // Remove observers
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDidShareVideo object:nil];
-                }
-                else {
-                    // Cancel download task
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCancelDownloadImage object:nil];
-                    
-                    // Remove observers
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDidShareImage object:nil];
-                }
+                // Cancel download task
+                [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCancelDownload object:nil];
             }
         }
     }];
@@ -942,14 +923,8 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
 
 -(void)cancelShareImage
 {
-    if (self.imageData.isVideo) {
-        // Cancel video file donwload
-        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCancelDownloadVideo object:nil];
-    }
-    else {
-        // Cancel image file download
-        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCancelDownloadImage object:nil];
-    }
+    // Cancel file donwload
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCancelDownload object:nil];
 }
 
 #pragma mark - Set as Album Image
@@ -1381,56 +1356,23 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
 -(void)imageActivityItemProviderPreprocessingDidEnd:(UIActivityItemProvider *)imageActivityItemProvider withImageId:(NSInteger)imageId
 {
     // Close HUD
-    dispatch_async(dispatch_get_main_queue(),
-                   ^(void){
-                       if ([imageActivityItemProvider isCancelled]) {
-                           [self.presentedViewController hidePiwigoHUDWithCompletion:^{ }];
-                       }
-                       else {
-                           [self.presentedViewController updatePiwigoHUDwithSuccessWithCompletion:^{
-                               [self.presentedViewController hidePiwigoHUDWithCompletion:^{ }];
-                           }];
-                       }
-                   });
+    if (imageActivityItemProvider.isCancelled) {
+        [self.presentedViewController hidePiwigoHUDWithCompletion:^{ }];
+    }
+    else {
+        [self.presentedViewController updatePiwigoHUDwithSuccessWithCompletion:^{
+            [self.presentedViewController hidePiwigoHUDWithCompletion:^{ }];
+        }];
+    }
 }
 
 -(void)showErrorWithTitle:(NSString *)title andMessage:(NSString *)message
 {
     // Display error alert after trying to share image
-    dispatch_async(dispatch_get_main_queue(),
-                   ^(void){
-        // Determine present view controller
-        UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-        while (topViewController.presentedViewController) {
-            topViewController = topViewController.presentedViewController;
-        }
-
-        // Present alert
-        UIAlertController* alert = [UIAlertController
-            alertControllerWithTitle:title
-            message:message
-            preferredStyle:UIAlertControllerStyleAlert];
-
-        UIAlertAction* dismissAction = [UIAlertAction
-            actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-            style:UIAlertActionStyleCancel
-            handler:^(UIAlertAction * action) {
-                // Closes ActivityView
-                [topViewController dismissViewControllerAnimated:YES completion:nil];
-        }];
-
-        [alert addAction:dismissAction];
-        alert.view.tintColor = UIColor.piwigoColorOrange;
-        if (@available(iOS 13.0, *)) {
-            alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
-        } else {
-            // Fallback on earlier versions
-        }
-        [topViewController presentViewController:alert animated:YES completion:^{
-            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange;
-        }];
-                    });
+    [self.presentedViewController dismissPiwigoErrorWithTitle:title message:message errorMessage:@"" completion:^{
+        // Closes ActivityView
+        [self.presentedViewController dismissViewControllerAnimated:YES completion:nil];
+    }];
 }
 
 @end
