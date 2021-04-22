@@ -180,7 +180,7 @@
                               [@"11.0.0" compare:versionStr options:NSNumericSearch] != NSOrderedDescending) {
                               [Model sharedInstance].usesUploadAsync = NO;
                           }
-                          NSLog(@"=> version: %@, usesUploadAsync: %@", [Model sharedInstance].version, [Model sharedInstance].usesUploadAsync ? @"YES" : @"NO");
+                          NSLog(@"   version: %@, usesUploadAsync: %@", [Model sharedInstance].version, [Model sharedInstance].usesUploadAsync ? @"YES" : @"NO");
 
                           NSString *charset = [[result objectForKey:@"charset"] uppercaseString];
                           if ([charset isEqualToString:@"UTF-8"]) {
