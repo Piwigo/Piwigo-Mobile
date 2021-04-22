@@ -1190,47 +1190,40 @@
 //        NSLog(@"Activity Type selected: %@", activityType);
         if (completed) {
 //            NSLog(@"Selected activity was performed and returned error:%ld", (long)activityError.code);
+            // Delete shared file & remove observers
+            [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDidShare object:nil];
+            
+            // Close HUD with success
             [self updatePiwigoHUDwithSuccessWithCompletion:^{
                 [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
+                    // Deselect images
                     [self cancelSelect];
+                    // Close ActivityView
+                    [self.presentedViewController dismissViewControllerAnimated:YES completion:nil];
                 }];
             }];
-//            [self hideHUDwithSuccess:YES completion:nil];
-            for (PiwigoImageData *imageData in self.selectedImagesToShare) {
-                if (imageData.isVideo) {
-                    // Delete shared video file & remove observers
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDidShareVideo object:nil];
-                }
-                else {
-                    // Delete shared image file & remove observers
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDidShareImage object:nil];
-                }
-            }
-        } else {
+        }
+        else {
             if (activityType == NULL) {
 //                NSLog(@"User dismissed the view controller without making a selection.");
-                [self updateBarButtons];
+                [self setEnableStateOfButtons:YES];
             }
             else {
-//                NSLog(@"Activity was not performed.");
-                [self cancelSelect];
-                for (PiwigoImageData *imageData in self.selectedImagesToShare) {
-                    if (imageData.isVideo)
-                    {
-                        // Cancel download task
-                        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCancelDownloadVideo object:nil];
-                        
-                        // Delete shared video file & remove observers
-                        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDidShareVideo object:nil];
-                    }
-                    else {
-                        // Cancel download task
-                        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCancelDownloadImage object:nil];
-                        
-                        // Delete shared image file & remove observers
-                        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDidShareImage object:nil];
-                    }
+                // Check what to do with selection
+                if (self.selectedImageIds.count == 0) {
+                    [self cancelSelect];
+                } else {
+                    [self setEnableStateOfButtons:YES];
                 }
+
+                // Cancel download tasks
+                [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCancelDownload object:nil];
+                
+                // Delete shared files & remove observers
+                [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDidShare object:nil];
+
+                // Close ActivityView
+                [self.presentedViewController dismissViewControllerAnimated:YES completion:nil];
             }
         }
     }];
@@ -1238,6 +1231,12 @@
     // Present share image activity view controller
     activityViewController.popoverPresentationController.barButtonItem = self.shareBarButton;
     [self presentViewController:activityViewController animated:YES completion:nil];
+}
+
+-(void)cancelShareImages
+{
+    // Cancel image file download and remaining activity shares if any
+    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCancelDownload object:nil];
 }
 
 
@@ -1353,11 +1352,12 @@
 
 #pragma mark - ShareImageActivityItemProviderDelegate
 
--(void)imageActivityItemProviderPreprocessingDidBegin:(UIActivityItemProvider *)imageActivityItemProvider withTitle:(NSString *)title
+-(void)imageActivityItemProviderPreprocessingDidBegin:(UIActivityItemProvider *)imageActivityItemProvider
+                                            withTitle:(NSString *)title
 {
     // Show HUD to let the user know the image is being downloaded in the background.
     NSString *detailsLabel = [NSString stringWithFormat:@"%ld / %ld", (long)(self.totalNumberOfImages - self.selectedImageIds.count + 1), (long)self.totalNumberOfImages];
-    [self.presentedViewController showPiwigoHUDWithTitle:title detail:detailsLabel buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeAnnularDeterminate];
+    [self.presentedViewController showPiwigoHUDWithTitle:title detail:detailsLabel buttonTitle:NSLocalizedString(@"alertCancelButton", @"Cancel") buttonTarget:self buttonSelector:@selector(cancelShareImages) inMode:MBProgressHUDModeAnnularDeterminate];
 }
 
 -(void)imageActivityItemProvider:(UIActivityItemProvider *)imageActivityItemProvider preprocessingProgressDidUpdate:(float)progress
@@ -1371,16 +1371,18 @@
     // Close HUD
     NSString *imageIdObject = [NSString stringWithFormat:@"%ld", (long)imageId];
     if ([imageActivityItemProvider isCancelled]) {
-        [self.presentedViewController updatePiwigoHUDwithSuccessWithCompletion:^{
-            [self.presentedViewController hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{ }];
-        }];
+        [self.presentedViewController hidePiwigoHUDWithCompletion:^{ }];
     } else {
         if ([self.selectedImageIds containsObject:imageIdObject]) {
             // Remove image from selection
             [self.selectedImageIds removeObject:imageIdObject];
+            [self updateBarButtons];
+            
             // Close HUD if last image
             if ([self.selectedImageIds count] == 0) {
-                [self.presentedViewController hidePiwigoHUDWithCompletion:^{ }];
+                [self.presentedViewController updatePiwigoHUDwithSuccessWithCompletion:^{
+                    [self.presentedViewController hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{ }];
+                }];
             }
         }
     }
@@ -1388,8 +1390,17 @@
 
 -(void)showErrorWithTitle:(NSString *)title andMessage:(NSString *)message
 {
+    // Cancel remaining shares
+    [self cancelShareImages];
+    
+    // Close HUD if needed
+    [self.presentedViewController hidePiwigoHUDWithCompletion:^{ }];
+    
     // Display error alert after trying to share image
-    [self.presentedViewController dismissPiwigoErrorWithTitle:title message:message errorMessage:@"" completion:^{ }];
+    [self.presentedViewController dismissPiwigoErrorWithTitle:title message:message errorMessage:@"" completion:^{
+        // Close ActivityView
+        [self.presentedViewController dismissViewControllerAnimated:YES completion:nil];
+    }];
 }
 
 
