@@ -1010,7 +1010,9 @@
     if (self.selectedImagesToDelete.count <= 0)
     {
         [self updatePiwigoHUDwithSuccessWithCompletion:^{
-            [self hidePiwigoHUDWithCompletion:^{ [self cancelSelect]; }];
+            [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
+                [self cancelSelect];
+            }];
         }];
         return;
     }
