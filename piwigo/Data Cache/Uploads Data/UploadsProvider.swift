@@ -315,7 +315,7 @@ class UploadsProvider: NSObject {
     */
     @objc private func didMoveImageWithId(_ notification: Notification) {
         // Check current queue
-        print("•••>> didMoveImageWithId()", queueName())
+//        print("•••>> didMoveImageWithId()", queueName())
 
         // Collect image ID
         guard let imageId = notification.userInfo?["imageId"] as? Int64 else {
