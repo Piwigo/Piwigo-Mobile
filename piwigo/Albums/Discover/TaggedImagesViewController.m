@@ -871,7 +871,9 @@
         case 0:     // No image => End (should never happened)
         {
             [self updatePiwigoHUDwithSuccessWithCompletion:^{
-                [self hidePiwigoHUDWithCompletion:^{ [self cancelSelect]; }];
+                [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
+                    [self cancelSelect];
+                }];
             }];
             break;
         }
@@ -1017,7 +1019,9 @@
     if (self.selectedImagesToDelete.count <= 0)
     {
         [self updatePiwigoHUDwithSuccessWithCompletion:^{
-            [self hidePiwigoHUDWithCompletion:^{ [self cancelSelect]; }];
+            [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
+                [self cancelSelect];
+            }];
         }];
         return;
     }
