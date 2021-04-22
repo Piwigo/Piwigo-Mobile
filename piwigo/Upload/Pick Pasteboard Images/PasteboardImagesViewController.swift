@@ -538,6 +538,13 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
             uploadSwitchVC.delegate = self
             uploadSwitchVC.canDeleteImages = false
 
+            // Can the user create tags?
+            let albumData = CategoriesData.sharedInstance()?.getCategoryById(categoryId)
+            if Model.sharedInstance()?.hasAdminRights ?? false ||
+                (Model.sharedInstance()?.hasNormalRights ?? false && albumData?.hasUploadRights ?? false) {
+                uploadSwitchVC.hasTagCreationRights = true
+            }
+
             // Push Edit view embedded in navigation controller
             let navController = UINavigationController(rootViewController: uploadSwitchVC)
             navController.modalPresentationStyle = .popover
