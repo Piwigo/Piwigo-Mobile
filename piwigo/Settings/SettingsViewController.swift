@@ -95,11 +95,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         }
         
         // Check if Auto-Upload can be proposed
-        if #available(iOS 13.0, *) {
-            if Model.sharedInstance()?.usesUploadAsync ?? false {
-                hasAutoUploadSettings = true
-            }
-        }
+//        if #available(iOS 13.0, *) {
+//            if Model.sharedInstance()?.usesUploadAsync ?? false {
+//                hasAutoUploadSettings = true
+//            }
+//        }
 
         // Title
         title = NSLocalizedString("tabBar_preferences", comment: "Settings")
@@ -786,7 +786,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             row += (!Model.sharedInstance().resizeImageOnUpload && (row > 3)) ? 1 : 0
             row += (!Model.sharedInstance().compressImageOnUpload && (row > 5)) ? 1 : 0
             row += (!Model.sharedInstance().prefixFileNameBeforeUpload && (row > 7)) ? 1 : 0
-            row += !hasAutoUploadSettings ? 1 : 0
+            row += (!hasAutoUploadSettings && (row > 9)) ? 1 : 0
             switch row {
             case 0 /* Author Name? */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as? TextFieldTableViewCell else {
@@ -1362,7 +1362,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             row += (!Model.sharedInstance().resizeImageOnUpload && (row > 3)) ? 1 : 0
             row += (!Model.sharedInstance().compressImageOnUpload && (row > 5)) ? 1 : 0
             row += (!Model.sharedInstance().prefixFileNameBeforeUpload && (row > 7)) ? 1 : 0
-            row += !hasAutoUploadSettings ? 1 : 0
+            row += (!hasAutoUploadSettings && (row > 9)) ? 1 : 0
             switch row {
             case 0  /* Author Name */,
                  2  /* Strip private Metadata */,
@@ -1583,7 +1583,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             row += (!Model.sharedInstance().resizeImageOnUpload && (row > 3)) ? 1 : 0
             row += (!Model.sharedInstance().compressImageOnUpload && (row > 5)) ? 1 : 0
             row += (!Model.sharedInstance().prefixFileNameBeforeUpload && (row > 7)) ? 1 : 0
-            row += !hasAutoUploadSettings ? 1 : 0
+            row += (!hasAutoUploadSettings && (row > 9)) ? 1 : 0
             switch row {
             case 1 /* Default privacy selection */:
                 let privacySB = UIStoryboard(name: "SelectPrivacyViewController", bundle: nil)
