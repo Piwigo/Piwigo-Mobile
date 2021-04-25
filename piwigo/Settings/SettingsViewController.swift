@@ -535,7 +535,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 }
                 let title = NSLocalizedString("setDefaultCategory_title", comment: "Default Album")
                 var detail: String
-                if Model.sharedInstance().defaultCategory == 0 {
+                if Model.sharedInstance()?.defaultCategory ?? 0 == 0 {
                     detail = NSLocalizedString("categorySelection_root", comment: "Root Album")
                 } else {
                     if let albumName = CategoriesData.sharedInstance().getCategoryById(Model.sharedInstance().defaultCategory).name {
