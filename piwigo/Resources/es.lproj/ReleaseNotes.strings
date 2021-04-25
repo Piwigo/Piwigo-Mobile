@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.6.1_text" = "Versión 2.6.1\n\n• Corrige la atribución de etiquetas a una selección de fotos\n• Ajustes de Apariencia rediseñados\n• Mejora la fiabilidad de las subidas en segundo plano\n• Corrección de errores menores y mejoras de la interfaz";
+"v2.6.2_text" = "Version 2.6.2\n\n• Allows some Community users to create tags\n• Fixes a compatibility issue with Piwigo 11\n• Minor bug fixes and improvements of the interface\n• Code modernization";
+
+"v2.6.1_text" = "Versión 2.6.1\n19 de marzo de 2021\n\n• Corrige la atribución de etiquetas a una selección de fotos\n• Ajustes de Apariencia rediseñados\n• Mejora la fiabilidad de las subidas en segundo plano\n• Corrección de errores menores y mejoras de la interfaz";
 
 "v2.6.0_text" = "Versión 2.6\n3 de marzo de 2021\n\n• Pegar/cargar fotos y vídeos desde el portapapeles\n• Se soluciona un problema de compatibilidad con Piwigo 11\n• Soluciones de errores menores y mejoras de la interfaz";
 

@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.6.1_text" = "Version 2.6.1\n\n• Fixar tilldelningen av taggar till ett urval av foton\n• Nydesignade inställningar för utseende\n• Förbättrar tillförlitligheten för uppladdning av bakgrunden\n• Mindre buggfixar och förbättring av gränssnittet";
+"v2.6.2_text" = "Version 2.6.2\n\n• Allows some Community users to create tags\n• Fixes a compatibility issue with Piwigo 11\n• Minor bug fixes and improvements of the interface\n• Code modernization";
+
+"v2.6.1_text" = "Version 2.6.1\n19 mars 2021\n\n• Fixar tilldelningen av taggar till ett urval av foton\n• Nydesignade inställningar för utseende\n• Förbättrar tillförlitligheten för uppladdning av bakgrunden\n• Mindre buggfixar och förbättring av gränssnittet";
 
 "v2.6.0_text" = "Version 2.6\n3 mars 2021\n\n• Klistra in/ladda upp foton och videor från urklipp\n• Fixar ett kompatibilitetsproblem med Piwigo 11\n• Mindre buggfixar och förbättring av gränssnittet";
 

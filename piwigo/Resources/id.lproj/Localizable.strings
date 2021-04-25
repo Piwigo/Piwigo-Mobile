@@ -165,6 +165,7 @@
 "categorySelection_root" = "Akar Album";
 "categorySelection_action" = "Pilih tindakan untuk album ini";
 "categorySelectionHUD_label" = "Mengambil Data album…";
+"categorySelection_allAlbums" = "All Albums";
 
 // Album upload
 "categoryUpload_noSubAlbum" = "Ada ada sub album untuk meng-upload gambar ke";
@@ -183,11 +184,9 @@
 
 "categoyUpload_loadSubCategories" = "muat";
 "categoryUpload_images" = "Unggah gambar";
-"categoryUpload_subAlbum" = "Membuat Album sub";
-"categoryUpload_defaultAlbum" = "Set as Default Album";
-"categoryUpload_defaultSelect" = "Please select the album or sub-album which will become your default album";
 
 // Default album
+"setDefaultCategory_select" = "Please select an album or sub-album which will become the new root album.";
 "setDefaultCategory_title" = "Default Album";
 "setDefaultCategory_message" = "Apakah Anda yakin Anda ingin mengatur album \"%@\" sebagai default album?";
 
@@ -245,9 +244,7 @@
 
 // Album move
 "moveCategory" = "Pindahkan Album";
-"moveCategory_selectParent" = "Pilih album yang akan dipindahkan ke dalam album \"%@\"";
-"moveCategory_selectRecent" = "Select a recent album to move album \"%@\" into";
-"moveCategory_selectRecentOther" = "Or select another album to move album \"%@\" into";
+"moveCategory_select" = "Please select an album or sub-album to move album \"%@\" into.";
 "moveCategory_message" = "Anda yakin ingin memindahkan \"%@\" ke dalam album \"%@\"?";
 "moveCategoryHUD_moving" = "Memindahkan Album…";
 
@@ -256,7 +253,7 @@
 "moveCategoryError_message" = "Gagal untuk memindahkan album Anda";
 
 // Album set photo thumbnail
-//"categorySelection_select" = "Select Album";
+"categorySelection_setThumbnail" = "Please select the album which will use the photo \"%@\" as a thumbnail.";
 "categorySelection_current" = "Pilih album saat ini untuk gambar ini";
 "categorySelection_one" = "Pilih album yang didalamnya terdapat gambar ini";
 "categorySelection_other" = "atau pilih album lain untuk gambar ini";
@@ -378,6 +375,7 @@
 "deleteSeveralImagesHUD_deleting" = "Menghapus gambar…";
 "removeSingleImage_title" = "Hapus dari Album";
 "removeSingleImageHUD_removing" = "Menghapus Gambar…";
+"removeSeveralImagesHUD_removing" = "Removing Photos…";
 "deleteSingleImage_message" = "Anda yakin ingin menghapus gambar ini? Ini tidak dapat dibatalkan!";
 "deleteSeveralImages_title" = "Hapus Gambar";
 "deleteSeveralImages_message" = "Anda yakin ingin menghapus gambar %@ yang dipilih? Ini tidak dapat dibatalkan!";
@@ -410,12 +408,8 @@
 
 // Image move
 "moveImage_title" = "Pindah ke Album";
-"moveSingleImage_selectAlbum" = "Pilih album untuk memindahkan gambar \"%@\"";
-"moveSingleImage_selectRecent" = "Select a recent album to move photo \"%@\" to";
-"moveSingleImage_selectRecentOther" = "Or select another album to move photo \"%@\" to";
-"moveSeveralImages_selectAlbum" = "Pilih album untuk memindahkan gambar";
-"moveSeveralImages_selectRecent" = "Select a recent album to move the photos to";
-"moveSeveralImages_selectRecentOther" = "Or select another album to move the photos to";
+"moveSingleImage_selectAlbum" = "Please, select the album in which you wish to move the photo \"%@\".";
+"moveSeveralImages_selectAlbum" = "Please, select the album in which you wish to copy the photos.";
 "moveSingleImage_message" = "Apakah anda ingin memindahkan gambar \"%@\" ke album \"%@\"?";
 "moveSeveralImages_message" = "Apakah anda ingin memindahkan gambar ke album \"%@\"?";
 "moveSingleImageHUD_moving" = "Memindahkan…";
@@ -424,15 +418,12 @@
 // Image move — Errors
 "moveImageError_title" = "Gagal Memindahkan";
 "moveSingleImageError_message" = "Gagal memindahkan gambar anda";
+"moveSeveralImagesError_message" = "Failed to move some photos";
 
 // Image copy
 "copyImage_title" = "Salin ke Album";
-"copySingleImage_selectAlbum" = "Pilih album untuk menyalin gambar \"%@\"";
-"copySingleImage_selectRecent" = "Select a recent album to copy photo \"%@\" to";
-"copySingleImage_selectRecentOther" = "Or select another album to copy photo \"%@\" to";
-"copySeveralImages_selectAlbum" = "Pilih album untuk menyalin gambar";
-"copySeveralImages_selectRecent" = "Select a recent album to copy the photos to";
-"copySeveralImages_selectRecentOther" = "Or select another album to copy the photos to";
+"copySingleImage_selectAlbum" = "Please, select the album in which you wish to copy the photo \"%@\".";
+"copySeveralImages_selectAlbum" = "Please, select the album in which you wish to copy the photos.";
 "copySingleImage_message" = "Apakah anda ingin menyalin gambar \"%@\" ke album \"%@\"?";
 "copySeveralImages_message" = "Apakah anda ingin menyalin gambar ke album \"%@\"?";
 "copySingleImageHUD_copying" = "Menyalin Gambar…";
@@ -441,8 +432,10 @@
 // Image copy — Errors
 "copyImageError_title" = "Gagal menyalin";
 "copySingleImageError_message" = "Gagal menyalin gambar anda";
+"copySeveralImagesError_message" = "Failed to copy some photos";
 
 // Images upload
+"imageUploadHeader" = "Please select the album or sub-album from which photos and videos of your device will be uploaded.";
 "imageUploadHeaderTitle_images" = "Photos Parameters";
 "imageUploadHeaderText_images" = "Please set the parameters to apply to the selection of photos/videos";
 "imageUploadHeaderTitle_upload" = "Upload Settings";
@@ -679,6 +672,19 @@
 "settings_deleteImage>375px" = "Hapus Gambar Setelah Mengunggah";
 "settings_wifiOnly" = "Wi-Fi Only";
 "settings_deleteImage" = "Hapus Setelah Mengunggah";
+"settings_autoUpload" = "Auto Upload";
+"settings_autoUpload>414px" = "Auto Upload Photos";
+"settings_autoUploadEnabled" = "On";
+"settings_autoUploadEnabledInfo" = "Photos will be automatically uploaded to your Piwigo.";
+"settings_autoUploadEnabledInfoAll" = "Photos and videos will be automatically uploaded to your Piwigo.";
+"settings_autoUploadDisabled" = "Off";
+"settings_autoUploadDisabledInfo" = "Photos will not be automatically uploaded to your Piwigo.";
+"settings_autoUploadSource" = "Source";
+"settings_autoUploadSourceInvalid" = "Invalid source album";
+"settings_autoUploadSourceInfo" = "Please select the album or sub-album from which photos and videos of your device will be auto-uploaded.";
+"settings_autoUploadDestination" = "Destination";
+"settings_autoUploadDestinationInvalid" = "Invalid destination album";
+"settings_autoUploadDestinationInfo" = "Please select the album or sub-album into which photos and videos will be auto-uploaded.";
 
 // Settings — Cache
 "settingsHeader_cache" = "Pengaturan Tembolok (Terpakai/Total)";

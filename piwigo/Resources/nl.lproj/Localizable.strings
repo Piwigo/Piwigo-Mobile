@@ -165,6 +165,7 @@
 "categorySelection_root" = "Root-album";
 "categorySelection_action" = "Selecteer een actie voor dit album";
 "categorySelectionHUD_label" = "Terugvinden van album-gegevens…";
+"categorySelection_allAlbums" = "All Albums";
 
 // Album upload
 "categoryUpload_noSubAlbum" = "Er is geen sub-album om foto's naar up te loaden";
@@ -183,11 +184,9 @@
 
 "categoyUpload_loadSubCategories" = "laden";
 "categoryUpload_images" = "Foto's uploaden";
-"categoryUpload_subAlbum" = "Maak sub-album";
-"categoryUpload_defaultAlbum" = "Stel in als standaard-album";
-"categoryUpload_defaultSelect" = "Selecteer a. u. b. het album of sub-album dat je standaard album zal worden";
 
 // Default album
+"setDefaultCategory_select" = "Please select an album or sub-album which will become the new root album.";
 "setDefaultCategory_title" = "Standaard album";
 "setDefaultCategory_message" = "Weet je zeker dat je het album \"%@\" als standaard album wilt instellen?";
 
@@ -245,9 +244,7 @@
 
 // Album move
 "moveCategory" = "Album verplaatsen";
-"moveCategory_selectParent" = "Selecteer een album om het verplaatsen \"%@\" naar";
-"moveCategory_selectRecent" = "Selecteer een recent album om het album \"%@\" naar te verplaatsen";
-"moveCategory_selectRecentOther" = "Of selecteer een ander album om het album \"%@\" naar te verplaatsen";
+"moveCategory_select" = "Please select an album or sub-album to move album \"%@\" into.";
 "moveCategory_message" = "Weet je zeker dat je \"%@\" wilt verplaatsen naar album \"%@\"?";
 "moveCategoryHUD_moving" = "Bezig album te verplaatsen…";
 
@@ -256,7 +253,7 @@
 "moveCategoryError_message" = "Verplaatsen van jouw album is mislukt";
 
 // Album set photo thumbnail
-//"categorySelection_select" = "Select Album";
+"categorySelection_setThumbnail" = "Please select the album which will use the photo \"%@\" as a thumbnail.";
 "categorySelection_current" = "Selecteer voor deze foto het huidig album";
 "categorySelection_one" = "Selecteer één van de albums met deze afbeelding";
 "categorySelection_other" = "of selecteer een ander album voor deze foto";
@@ -378,6 +375,7 @@
 "deleteSeveralImagesHUD_deleting" = "Foto's aan het verwijderen…";
 "removeSingleImage_title" = "Verwijder uit album";
 "removeSingleImageHUD_removing" = "Foto verwijderen…";
+"removeSeveralImagesHUD_removing" = "Removing Photos…";
 "deleteSingleImage_message" = "Weet je zeker dat je dit bestand wilt verwijderen? Dit kan niet ongedaan worden gemaakt!";
 "deleteSeveralImages_title" = "Verwijder %@ foto's";
 "deleteSeveralImages_message" = "Weet je zeker dat je de geselecteerde %@ foto's wilt verwijderen? Dit kan niet ongedaan worden gemaakt!";
@@ -410,12 +408,8 @@
 
 // Image move
 "moveImage_title" = "Verplaats naar album";
-"moveSingleImage_selectAlbum" = "Kies een album om er foto \"%@\" naar toe te verplaatsen";
-"moveSingleImage_selectRecent" = "Selecteer een recent album om foto \"%@\" naar";
-"moveSingleImage_selectRecentOther" = "Of selecteer een ander album om foto%@te verplaatsen naar";
-"moveSeveralImages_selectAlbum" = "Selecteer een album om je foto's naar toe te brengen";
-"moveSeveralImages_selectRecent" = "Selecteer een recent album om de foto's naar te verplaatsen";
-"moveSeveralImages_selectRecentOther" = "Of selecteer een ander album om de foto's naar te verplaatsen";
+"moveSingleImage_selectAlbum" = "Please, select the album in which you wish to move the photo \"%@\".";
+"moveSeveralImages_selectAlbum" = "Please, select the album in which you wish to copy the photos.";
 "moveSingleImage_message" = "Weet je zeker dat je foto \"%@\" naar album \"%@\" wilt verplaatsen?";
 "moveSeveralImages_message" = "Weet je zeker dat je de foto's naar album \"%@\" wilt verplaatsen?";
 "moveSingleImageHUD_moving" = "Verplaatsen van foto…";
@@ -424,15 +418,12 @@
 // Image move — Errors
 "moveImageError_title" = "Verplaatsingsfout";
 "moveSingleImageError_message" = "Je foto verplaatsen is niet gelukt";
+"moveSeveralImagesError_message" = "Failed to move some photos";
 
 // Image copy
 "copyImage_title" = "Kopieer naar album";
-"copySingleImage_selectAlbum" = "Kies een album om er foto \"%@\" naar toe te kopiëren";
-"copySingleImage_selectRecent" = "Selecteer een recent album om foto%@te kopiëren naar";
-"copySingleImage_selectRecentOther" = "Of selecteer een ander album om foto%@te kopiëren naar";
-"copySeveralImages_selectAlbum" = "Selecteer een album om de foto's naar toe te verplaatsen";
-"copySeveralImages_selectRecent" = "Selecteer een recent album om de foto's naar te kopiëren";
-"copySeveralImages_selectRecentOther" = "Of selecteer een ander album om de foto's naar te kopiëren";
+"copySingleImage_selectAlbum" = "Please, select the album in which you wish to copy the photo \"%@\".";
+"copySeveralImages_selectAlbum" = "Please, select the album in which you wish to copy the photos.";
 "copySingleImage_message" = "Wet je zeker dat je foto \"%@\" naar album \"%@\" wilt kopiëren?";
 "copySeveralImages_message" = "Weet je zeker dat je de foto's naar album \"%@\" wilt verplaatsen?";
 "copySingleImageHUD_copying" = "Kopiëren van foto…";
@@ -441,8 +432,10 @@
 // Image copy — Errors
 "copyImageError_title" = "Kopiëren niet gelukt";
 "copySingleImageError_message" = "Je foto kopiëren is niet gelukt";
+"copySeveralImagesError_message" = "Failed to copy some photos";
 
 // Images upload
+"imageUploadHeader" = "Please select the album or sub-album from which photos and videos of your device will be uploaded.";
 "imageUploadHeaderTitle_images" = "Foto's parameters";
 "imageUploadHeaderText_images" = "Stel de parameters in om toe te passen op de selectie van fotos/video's";
 "imageUploadHeaderTitle_upload" = "Upload instellingen";
@@ -679,6 +672,19 @@
 "settings_deleteImage>375px" = "Verwijder de foto ná het uploaden";
 "settings_wifiOnly" = "Alleen wifi";
 "settings_deleteImage" = "Verwijder na uploaden";
+"settings_autoUpload" = "Auto Upload";
+"settings_autoUpload>414px" = "Auto Upload Photos";
+"settings_autoUploadEnabled" = "On";
+"settings_autoUploadEnabledInfo" = "Photos will be automatically uploaded to your Piwigo.";
+"settings_autoUploadEnabledInfoAll" = "Photos and videos will be automatically uploaded to your Piwigo.";
+"settings_autoUploadDisabled" = "Off";
+"settings_autoUploadDisabledInfo" = "Photos will not be automatically uploaded to your Piwigo.";
+"settings_autoUploadSource" = "Source";
+"settings_autoUploadSourceInvalid" = "Invalid source album";
+"settings_autoUploadSourceInfo" = "Please select the album or sub-album from which photos and videos of your device will be auto-uploaded.";
+"settings_autoUploadDestination" = "Destination";
+"settings_autoUploadDestinationInvalid" = "Invalid destination album";
+"settings_autoUploadDestinationInfo" = "Please select the album or sub-album into which photos and videos will be auto-uploaded.";
 
 // Settings — Cache
 "settingsHeader_cache" = "Cache-instellingen (gebruikt/totaal)";

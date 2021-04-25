@@ -165,6 +165,7 @@
 "categorySelection_root" = "ألبوم الجذر";
 "categorySelection_action" = "حدد إجراء لهذا الألبوم";
 "categorySelectionHUD_label" = "استرداد بيانات الألبومات...";
+"categorySelection_allAlbums" = "All Albums";
 
 // Album upload
 "categoryUpload_noSubAlbum" = "وهناك لا يوجد ألبوم الفرعية تحميل الصور إلى";
@@ -183,11 +184,9 @@
 
 "categoyUpload_loadSubCategories" = "تحميل";
 "categoryUpload_images" = "تحميل الصور";
-"categoryUpload_subAlbum" = "إنشاء ألبوم الفرعية";
-"categoryUpload_defaultAlbum" = "تعيين كافتراضي ألبوم";
-"categoryUpload_defaultSelect" = "Please select the album or sub-album which will become your default album";
 
 // Default album
+"setDefaultCategory_select" = "Please select an album or sub-album which will become the new root album.";
 "setDefaultCategory_title" = "Default Album";
 "setDefaultCategory_message" = "Are you sure you want to set the album \"%@\" as default album?";
 
@@ -245,9 +244,7 @@
 
 // Album move
 "moveCategory" = "نقل الألبوم";
-"moveCategory_selectParent" = "حدد ألبوما لنقل الألبوم \"%@\" إلى";
-"moveCategory_selectRecent" = "Select a recent album to move album \"%@\" into";
-"moveCategory_selectRecentOther" = "Or select another album to move album \"%@\" into";
+"moveCategory_select" = "Please select an album or sub-album to move album \"%@\" into.";
 "moveCategory_message" = "هل تريد بالتأكيد نقل \"%@\" إلى الألبوم \"%@\"؟";
 "moveCategoryHUD_moving" = "جار نقل الألبوم…";
 
@@ -256,7 +253,7 @@
 "moveCategoryError_message" = "فشل في نقل الألبوم الخاص بك";
 
 // Album set photo thumbnail
-//"categorySelection_select" = "Select Album";
+"categorySelection_setThumbnail" = "Please select the album which will use the photo \"%@\" as a thumbnail.";
 "categorySelection_current" = "Select the current album for this photo";
 "categorySelection_one" = "Select one of the albums containing this photo";
 "categorySelection_other" = "Or select another album for this photo";
@@ -378,6 +375,7 @@
 "deleteSeveralImagesHUD_deleting" = "Deleting Photos…";
 "removeSingleImage_title" = "إزالة من الألبوم";
 "removeSingleImageHUD_removing" = "Removing Photo…";
+"removeSeveralImagesHUD_removing" = "Removing Photos…";
 "deleteSingleImage_message" = "هل أنت متأكد أنك تريد حذف هذه الصورة؟ هذا لا يمكن التراجع عنه!";
 "deleteSeveralImages_title" = "حذف الصور";
 "deleteSeveralImages_message" = "هل تريد بالتأكيد حذف %@ من الصور المحددة؟ هذا لا يمكن التراجع عنه!";
@@ -410,12 +408,8 @@
 
 // Image move
 "moveImage_title" = "Move to Album";
-"moveSingleImage_selectAlbum" = "Select an album to move photo \"%@\" to";
-"moveSingleImage_selectRecent" = "Select a recent album to move photo \"%@\" to";
-"moveSingleImage_selectRecentOther" = "Or select another album to move photo \"%@\" to";
-"moveSeveralImages_selectAlbum" = "Select an album to move the photos to";
-"moveSeveralImages_selectRecent" = "Select a recent album to move the photos to";
-"moveSeveralImages_selectRecentOther" = "Or select another album to move the photos to";
+"moveSingleImage_selectAlbum" = "Please, select the album in which you wish to move the photo \"%@\".";
+"moveSeveralImages_selectAlbum" = "Please, select the album in which you wish to copy the photos.";
 "moveSingleImage_message" = "Are you sure you want to move the photo \"%@\" to the album \"%@\"?";
 "moveSeveralImages_message" = "Are you sure you want to move the photos to the album \"%@\"?";
 "moveSingleImageHUD_moving" = "Moving Photo…";
@@ -424,15 +418,12 @@
 // Image move — Errors
 "moveImageError_title" = "فشل النقل";
 "moveSingleImageError_message" = "Failed to move your photo";
+"moveSeveralImagesError_message" = "Failed to move some photos";
 
 // Image copy
 "copyImage_title" = "Copy to Album";
-"copySingleImage_selectAlbum" = "Select an album to copy photo \"%@\" to";
-"copySingleImage_selectRecent" = "Select a recent album to copy photo \"%@\" to";
-"copySingleImage_selectRecentOther" = "Or select another album to copy photo \"%@\" to";
-"copySeveralImages_selectAlbum" = "Select an album to copy the photos to";
-"copySeveralImages_selectRecent" = "Select a recent album to copy the photos to";
-"copySeveralImages_selectRecentOther" = "Or select another album to copy the photos to";
+"copySingleImage_selectAlbum" = "Please, select the album in which you wish to copy the photo \"%@\".";
+"copySeveralImages_selectAlbum" = "Please, select the album in which you wish to copy the photos.";
 "copySingleImage_message" = "Are you sure you want to copy the photo \"%@\" to the album \"%@\"?";
 "copySeveralImages_message" = "Are you sure you want to copy the photos to the album \"%@\"?";
 "copySingleImageHUD_copying" = "Copying Photo…";
@@ -441,8 +432,10 @@
 // Image copy — Errors
 "copyImageError_title" = "Copy Fail";
 "copySingleImageError_message" = "Failed to copy your photo";
+"copySeveralImagesError_message" = "Failed to copy some photos";
 
 // Images upload
+"imageUploadHeader" = "Please select the album or sub-album from which photos and videos of your device will be uploaded.";
 "imageUploadHeaderTitle_images" = "Photos Parameters";
 "imageUploadHeaderText_images" = "Please set the parameters to apply to the selection of photos/videos";
 "imageUploadHeaderTitle_upload" = "Upload Settings";
@@ -679,6 +672,19 @@
 "settings_deleteImage>375px" = "حذف الصورة بعد تحميل";
 "settings_wifiOnly" = "Wi-Fi Only";
 "settings_deleteImage" = "الحذف بعد التحميل";
+"settings_autoUpload" = "Auto Upload";
+"settings_autoUpload>414px" = "Auto Upload Photos";
+"settings_autoUploadEnabled" = "On";
+"settings_autoUploadEnabledInfo" = "Photos will be automatically uploaded to your Piwigo.";
+"settings_autoUploadEnabledInfoAll" = "Photos and videos will be automatically uploaded to your Piwigo.";
+"settings_autoUploadDisabled" = "Off";
+"settings_autoUploadDisabledInfo" = "Photos will not be automatically uploaded to your Piwigo.";
+"settings_autoUploadSource" = "Source";
+"settings_autoUploadSourceInvalid" = "Invalid source album";
+"settings_autoUploadSourceInfo" = "Please select the album or sub-album from which photos and videos of your device will be auto-uploaded.";
+"settings_autoUploadDestination" = "Destination";
+"settings_autoUploadDestinationInvalid" = "Invalid destination album";
+"settings_autoUploadDestinationInfo" = "Please select the album or sub-album into which photos and videos will be auto-uploaded.";
 
 // Settings — Cache
 "settingsHeader_cache" = "ذاكرة الإعدادات المؤقة (المستخدم / الإجمالي)";

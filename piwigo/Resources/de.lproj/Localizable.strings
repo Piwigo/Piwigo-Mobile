@@ -165,6 +165,7 @@
 "categorySelection_root" = "Haupt-Album";
 "categorySelection_action" = "Wähle eine Aktion für dieses Album";
 "categorySelectionHUD_label" = "Albumdaten abrufen…";
+"categorySelection_allAlbums" = "Alle Alben";
 
 // Album upload
 "categoryUpload_noSubAlbum" = "Es gibt kein Unter-Album um Fotos hochzuladen";
@@ -183,11 +184,9 @@
 
 "categoyUpload_loadSubCategories" = "Laden";
 "categoryUpload_images" = "Lade Fotos hoch";
-"categoryUpload_subAlbum" = "Erstelle Unter-Album";
-"categoryUpload_defaultAlbum" = "Als Standard-Album festlegen";
-"categoryUpload_defaultSelect" = "Bitte wählen Sie ein Album oder Unter-Album das Ihr Standard Fotoalbum werden soll";
 
 // Default album
+"setDefaultCategory_select" = "Bitte wählen Sie ein Album oder Unter-Album das Ihr Standard Fotoalbum werden soll.";
 "setDefaultCategory_title" = "Standard-Album";
 "setDefaultCategory_message" = "Sind Sie sicher, dass Sie das Album \"%@\" als Standard-Album festlegen möchten?";
 
@@ -245,9 +244,7 @@
 
 // Album move
 "moveCategory" = "Album verschieben";
-"moveCategory_selectParent" = "Wählen Sie ein Album aus, in das Sie das Album \"%@\" verschieben möchten";
-"moveCategory_selectRecent" = "Wählen Sie ein Album aus, in das Sie das Album \"%@\" verschieben möchten";
-"moveCategory_selectRecentOther" = "oder wählen Sie ein anderes Album aus, in das Sie das Album \"%@\" verschieben möchten";
+"moveCategory_select" = "Bitte wählen Sie ein Album oder ein Unter-Album, in das das Album \"%@\" verschoben werden soll.";
 "moveCategory_message" = "Möchtesn Sie wirklich das Album \"%@\" in das Album \"%@\" verschieben?";
 "moveCategoryHUD_moving" = "Album wird verschoben…";
 
@@ -256,7 +253,7 @@
 "moveCategoryError_message" = "Fehler beim Verschieben Ihres Albums";
 
 // Album set photo thumbnail
-//"categorySelection_select" = "Select Album";
+"categorySelection_setThumbnail" = "Bitte wählen Sie das Album aus, das das Foto \"%@\" als Vorschaubild verwendet.";
 "categorySelection_current" = "Wähle das aktuelle Album für dieses Foto";
 "categorySelection_one" = "Wähle ein Album in dem dieses Foto vorkommt";
 "categorySelection_other" = "oder wähle ein anderes Album für dieses Foto";
@@ -378,6 +375,7 @@
 "deleteSeveralImagesHUD_deleting" = "Lösche Fotos…";
 "removeSingleImage_title" = "Aus Album entfernen";
 "removeSingleImageHUD_removing" = "Lösche Foto…";
+"removeSeveralImagesHUD_removing" = "Entferne Fotos…";
 "deleteSingleImage_message" = "Möchtest Du dieses Foto wirklich löschen? Dies kann nicht rückgängig gemacht werden!";
 "deleteSeveralImages_title" = "Lösche %@ Fotos";
 "deleteSeveralImages_message" = "Möchten Sie die %@ ausgewählten Fotos wirklich löschen? Dies kann nicht rückgängig gemacht werden!";
@@ -410,12 +408,8 @@
 
 // Image move
 "moveImage_title" = "Zum Album verschieben";
-"moveSingleImage_selectAlbum" = "Wählen Sie ein Album aus, in das Sie das Foto \"%@\" verschieben möchten";
-"moveSingleImage_selectRecent" = "Wählen Sie ein aktuelles Album aus, in das Sie das Foto \"%@\" verschieben möchten";
-"moveSingleImage_selectRecentOther" = "Oder wählen Sie ein anderes Album aus, in das Sie das Foto \"%@\" verschieben möchten";
-"moveSeveralImages_selectAlbum" = "Wähle ein Album zum Verschieben der Fotos";
-"moveSeveralImages_selectRecent" = "Wählen Sie ein aktuelles Album aus, in das Sie die Fotos verschieben möchten";
-"moveSeveralImages_selectRecentOther" = "Oder wählen Sie ein anderes Album aus, in das Sie die Fotos verschieben möchten";
+"moveSingleImage_selectAlbum" = "Bitte wählen Sie das Album aus, in dem Sie das Foto \"%@ \" verschieben möchten.";
+"moveSeveralImages_selectAlbum" = "Bitte wählen Sie das Album aus, in das Sie die Fotos kopieren möchten.";
 "moveSingleImage_message" = "MöchteN Sie wirklich das Foto \"%@\" in das Album \"%@\" verschieben?";
 "moveSeveralImages_message" = "Möchten Sie wirklich die Fotos in das Album \"%@\" verschieben?";
 "moveSingleImageHUD_moving" = "Foto verschieben…";
@@ -424,15 +418,12 @@
 // Image move — Errors
 "moveImageError_title" = "Verschieben fehlgeschlagen";
 "moveSingleImageError_message" = "Fehler beim Verschieben Ihres Fotos";
+"moveSeveralImagesError_message" = "Fehler beim Verschieben einiger Fotos";
 
 // Image copy
 "copyImage_title" = "Zum Album kopieren";
-"copySingleImage_selectAlbum" = "Wählen Sie ein Album aus, in das Sie das Foto \"%@\" kopieren möchten";
-"copySingleImage_selectRecent" = "Wählen Sie ein aktuelles Album aus, in das Sie das Foto \"%@\" kopieren möchten";
-"copySingleImage_selectRecentOther" = "Oder wählen Sie ein anderes Album aus, in das Sie das Foto \"%@\" kopieren möchten";
-"copySeveralImages_selectAlbum" = "Wähle ein Album zum Kopieren der Fotos";
-"copySeveralImages_selectRecent" = "Wählen Sie ein aktuelles Album aus, in das Sie die Fotos kopieren möchten";
-"copySeveralImages_selectRecentOther" = "Oder wählen Sie ein anderes Album aus, in das Sie die Fotos kopieren möchten";
+"copySingleImage_selectAlbum" = "Bitte wählen Sie das Album aus, in dem Sie das Foto \"%@ \" kopieren möchten.";
+"copySeveralImages_selectAlbum" = "Bitte wählen Sie das Album aus, in das Sie die Fotos kopieren möchten.";
 "copySingleImage_message" = "Möchten Sie wirklich das Foto \"%@\" in das Album \"%@\" kopieren?";
 "copySeveralImages_message" = "Sind Sie sicher, dass Sie die Fotos in das Album \"%@ \" kopieren möchten?";
 "copySingleImageHUD_copying" = "Foto kopieren…";
@@ -441,8 +432,10 @@
 // Image copy — Errors
 "copyImageError_title" = "Kopieren fehlgeschlagen";
 "copySingleImageError_message" = "Fehler beim Kopieren Ihres Fotos";
+"copySeveralImagesError_message" = "Fehler beim Kopieren einiger Fotos";
 
 // Images upload
+"imageUploadHeader" = "Bitte wählen Sie das Album oder das Unter-Album, von dem Fotos und Videos Ihres Geräts hochgeladen werden.";
 "imageUploadHeaderTitle_images" = "Foto-Parameter";
 "imageUploadHeaderText_images" = "Bitte setzen Sie die Parameter für die Auswahl der Fotos/Videos";
 "imageUploadHeaderTitle_upload" = "Upload Einstellungen";
@@ -679,6 +672,19 @@
 "settings_deleteImage>375px" = "Foto nach dem Hochladen löschen";
 "settings_wifiOnly" = "Nur WLAN";
 "settings_deleteImage" = "Nach dem Hochladen löschen";
+"settings_autoUpload" = "Automatisches Hochladen";
+"settings_autoUpload>414px" = "Fotos automatisch hochladen";
+"settings_autoUploadEnabled" = "An";
+"settings_autoUploadEnabledInfo" = "Fotos werden automatisch zu Ihrem Piwigo hochgeladen.";
+"settings_autoUploadEnabledInfoAll" = "Fotos und Videos werden automatisch auf Ihr Piwigo hochgeladen.";
+"settings_autoUploadDisabled" = "Aus";
+"settings_autoUploadDisabledInfo" = "Fotos werden nicht automatisch in Ihr Piwigo hochgeladen.";
+"settings_autoUploadSource" = "Quelle";
+"settings_autoUploadSourceInvalid" = "Ungültiges Quell-Album";
+"settings_autoUploadSourceInfo" = "Bitte wählen Sie das Album oder das Unter-Album, von dem Fotos und Videos Ihres Geräts automatisch hochgeladen werden.";
+"settings_autoUploadDestination" = "Ziel";
+"settings_autoUploadDestinationInvalid" = "Ungültiges Zielalbum";
+"settings_autoUploadDestinationInfo" = "Bitte wählen Sie das Album oder das Unter-Album, in das Fotos und Videos automatisch hochgeladen werden.";
 
 // Settings — Cache
 "settingsHeader_cache" = "Cache-Einstellungen (Verwendet/Total)";

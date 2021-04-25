@@ -165,6 +165,7 @@
 "categorySelection_root" = "ルートアルバム";
 "categorySelection_action" = "このアルバムのためのアクションを選択します";
 "categorySelectionHUD_label" = "アルバムのデータを取得しています...";
+"categorySelection_allAlbums" = "All Albums";
 
 // Album upload
 "categoryUpload_noSubAlbum" = "写真をアップロードするサブアルバムがありません";
@@ -183,11 +184,9 @@
 
 "categoyUpload_loadSubCategories" = "読み込む";
 "categoryUpload_images" = "写真をアップロードする";
-"categoryUpload_subAlbum" = "サブアルバムを作成します";
-"categoryUpload_defaultAlbum" = "規定のアルバムとして設定します";
-"categoryUpload_defaultSelect" = "規定のアルバムとなるアルバムまたはサブアルバムを選択してください。";
 
 // Default album
+"setDefaultCategory_select" = "Please select an album or sub-album which will become the new root album.";
 "setDefaultCategory_title" = "既定のアルバム";
 "setDefaultCategory_message" = "アルバム「%@」を規定のアルバムに設定してよろしいですか？";
 
@@ -245,9 +244,7 @@
 
 // Album move
 "moveCategory" = "アルバムを移動します";
-"moveCategory_selectParent" = "アルバム「%@」へ移動するアルバムを選択して下さい";
-"moveCategory_selectRecent" = "アルバム \"%@\" の移動先に最近のアルバムを選択する";
-"moveCategory_selectRecentOther" = "または、アルバム \"%@\" の移動先に他のアルバムを選択する";
+"moveCategory_select" = "Please select an album or sub-album to move album \"%@\" into.";
 "moveCategory_message" = "「%@」をアルバム「%@」へ移動していいですか？";
 "moveCategoryHUD_moving" = "アルバムを移動中...";
 
@@ -256,7 +253,7 @@
 "moveCategoryError_message" = "アルバムを移動するのに失敗しました";
 
 // Album set photo thumbnail
-//"categorySelection_select" = "Select Album";
+"categorySelection_setThumbnail" = "Please select the album which will use the photo \"%@\" as a thumbnail.";
 "categorySelection_current" = "この写真のためのアルバムを選択します";
 "categorySelection_one" = "この写真を含むアルバムを1つ選択して下さい";
 "categorySelection_other" = "または、この写真のために別のアルバムを選択します";
@@ -378,6 +375,7 @@
 "deleteSeveralImagesHUD_deleting" = "写真を削除しています...";
 "removeSingleImage_title" = "アルバムから削除する";
 "removeSingleImageHUD_removing" = "写真を削除しています...";
+"removeSeveralImagesHUD_removing" = "Removing Photos…";
 "deleteSingleImage_message" = "この写真を本当に削除しますか？この操作は元に戻せません。";
 "deleteSeveralImages_title" = "%@枚の写真を削除";
 "deleteSeveralImages_message" = "選択した%@枚の写真を本当に削除しますか？この操作は元に戻せません。";
@@ -410,12 +408,8 @@
 
 // Image move
 "moveImage_title" = "アルバムに移動する";
-"moveSingleImage_selectAlbum" = "写真「%@」を移動するアルバムを選択する";
-"moveSingleImage_selectRecent" = "写真 \"%@\" の移動先に最近のアルバムを選択する";
-"moveSingleImage_selectRecentOther" = "または、写真 \"%@\" の移動先に他のアルバムを選択する";
-"moveSeveralImages_selectAlbum" = "写真を移動するアルバムを選択する";
-"moveSeveralImages_selectRecent" = "それらの写真の移動先に最近のアルバムを選択する";
-"moveSeveralImages_selectRecentOther" = "それらの写真の移動先に他のアルバムを選択する";
+"moveSingleImage_selectAlbum" = "Please, select the album in which you wish to move the photo \"%@\".";
+"moveSeveralImages_selectAlbum" = "Please, select the album in which you wish to copy the photos.";
 "moveSingleImage_message" = "写真「%@」をアルバム「%@」へ移動していいですか？";
 "moveSeveralImages_message" = "写真をアルバム「%@」へ移動していいですか？";
 "moveSingleImageHUD_moving" = "写真を移動しています...";
@@ -424,15 +418,12 @@
 // Image move — Errors
 "moveImageError_title" = "移動に失敗しました";
 "moveSingleImageError_message" = "写真の移動に失敗しました。";
+"moveSeveralImagesError_message" = "Failed to move some photos";
 
 // Image copy
 "copyImage_title" = "アルバムにコピーする";
-"copySingleImage_selectAlbum" = "写真「%@」をコピーするアルバムを選択する";
-"copySingleImage_selectRecent" = "写真 \"%@\" のコピー先に最近のアルバムを選択する";
-"copySingleImage_selectRecentOther" = "または、写真 \"%@\" のコピー先に他のアルバムを選択する";
-"copySeveralImages_selectAlbum" = "写真をコピーするアルバムを選択する";
-"copySeveralImages_selectRecent" = "それらの写真のコピー先に最近のアルバムを選択する";
-"copySeveralImages_selectRecentOther" = "または、それらの写真のコピー先に他のアルバムを選択する";
+"copySingleImage_selectAlbum" = "Please, select the album in which you wish to copy the photo \"%@\".";
+"copySeveralImages_selectAlbum" = "Please, select the album in which you wish to copy the photos.";
 "copySingleImage_message" = "写真「%@」をアルバム「%@」へコピーしていいですか？";
 "copySeveralImages_message" = "写真をアルバム「%@」へコピーしていいですか？";
 "copySingleImageHUD_copying" = "写真をコピーしています...";
@@ -441,8 +432,10 @@
 // Image copy — Errors
 "copyImageError_title" = "コピーに失敗しました";
 "copySingleImageError_message" = "写真のコピーに失敗しました";
+"copySeveralImagesError_message" = "Failed to copy some photos";
 
 // Images upload
+"imageUploadHeader" = "Please select the album or sub-album from which photos and videos of your device will be uploaded.";
 "imageUploadHeaderTitle_images" = "写真のパラメータ";
 "imageUploadHeaderText_images" = "写真/動画の選択に適用するパラメータを設定してください";
 "imageUploadHeaderTitle_upload" = "アップロード設定";
@@ -679,6 +672,19 @@
 "settings_deleteImage>375px" = "アップロード後に写真を削除します";
 "settings_wifiOnly" = "Wi-Fiのみ";
 "settings_deleteImage" = "アップロード後に削除します";
+"settings_autoUpload" = "Auto Upload";
+"settings_autoUpload>414px" = "Auto Upload Photos";
+"settings_autoUploadEnabled" = "On";
+"settings_autoUploadEnabledInfo" = "Photos will be automatically uploaded to your Piwigo.";
+"settings_autoUploadEnabledInfoAll" = "Photos and videos will be automatically uploaded to your Piwigo.";
+"settings_autoUploadDisabled" = "Off";
+"settings_autoUploadDisabledInfo" = "Photos will not be automatically uploaded to your Piwigo.";
+"settings_autoUploadSource" = "Source";
+"settings_autoUploadSourceInvalid" = "Invalid source album";
+"settings_autoUploadSourceInfo" = "Please select the album or sub-album from which photos and videos of your device will be auto-uploaded.";
+"settings_autoUploadDestination" = "Destination";
+"settings_autoUploadDestinationInvalid" = "Invalid destination album";
+"settings_autoUploadDestinationInfo" = "Please select the album or sub-album into which photos and videos will be auto-uploaded.";
 
 // Settings — Cache
 "settingsHeader_cache" = "キャッシュ設定 (使用済み／総計)";

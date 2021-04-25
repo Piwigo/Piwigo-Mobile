@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.6.1_text" = "Version 2.6.1\n\n• Korrigiert die Zuweisung von Schlagworten zu einer Auswahl von Fotos\n• Überarbeitete Einstellungen für das Erscheinungsbild\n• Verbessert die Zuverlässigkeit des Hochladens im Hintergrund\n• Kleinere Fehlerkorrekturen und Verbesserungen an der Benutzeroberfläche";
+"v2.6.2_text" = "Version 2.6.\n\n• Ermöglicht einigen Community-Benutzern, Tags zu erstellen\n• Behebt ein Kompatibilitätsproblem mit Piwigo 11\n• Kleinere Fehlerbehebungen und Verbesserungen der Schnittstelle\n• Code-Modernisierung";
+
+"v2.6.1_text" = "Version 2.6.1\n19. März 2021\n\n• Korrigiert die Zuweisung von Schlagworten zu einer Auswahl von Fotos\n• Überarbeitete Einstellungen für das Erscheinungsbild\n• Verbessert die Zuverlässigkeit des Hochladens im Hintergrund\n• Kleinere Fehlerkorrekturen und Verbesserungen an der Benutzeroberfläche";
 
 "v2.6.0_text" = "Version 2.6\n3. März 2021\n\n• Einfügen/Hochladen von Fotos und Videos aus der Zwischenablage\n• Behebt ein Kompatibilitätsproblem mit Piwigo 11\n• Kleinere Fehlerbehebungen und Verbesserungen der Schnittstelle";
 
