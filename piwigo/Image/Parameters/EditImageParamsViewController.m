@@ -381,7 +381,7 @@ typedef enum {
     }
     
     // Update image info on server and in cache
-    [ImageService setImageProperties:[self.imagesToUpdate lastObject]
+    [ImageService setImageProperties:self.imagesToUpdate.lastObject
        onProgress:^(NSProgress *progress) {
             // Progress
         }
@@ -389,6 +389,12 @@ typedef enum {
         {
             if ([[response objectForKey:@"stat"] isEqualToString:@"ok"])
             {
+                // Update image parameters in cache
+                if ([self.delegate respondsToSelector:@selector(didChangeParamsOfImage:)])
+                {
+                    [self.delegate didChangeParamsOfImage:self.imagesToUpdate.lastObject];
+                }
+
                 // Next image?
                 [self.imagesToUpdate removeLastObject];
                 if (self.imagesToUpdate.count) {
@@ -400,12 +406,7 @@ typedef enum {
                     [self updatePiwigoHUDwithSuccessWithCompletion:^{
                         [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
                             // Return to image preview or album view
-                            [self dismissViewControllerAnimated:YES completion:^{
-                                if ([self.delegate respondsToSelector:@selector(didChangeParamsOfImage:)])
-                                {
-                                    [self.delegate didChangeParamsOfImage:self.commonParameters];
-                                }
-                            }];
+                            [self dismissViewControllerAnimated:YES completion:nil];
                         }];
                     }];
                 }
