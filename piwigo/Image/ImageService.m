@@ -1152,34 +1152,31 @@ NSString * const kGetImageOrderDescending = @"desc";
                         }
        sessionManager:[Model sharedInstance].sessionManager
              progress:nil
-			  success:^(NSURLSessionTask *task, id responseObject) {
-				  if(completion) {
-					  if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
-						  // Remove image from cache and update UI
-                          [[CategoriesData sharedInstance] removeImage:image];
-						  completion(task);
-					  } else {
-						  fail(task, responseObject);
-					  }
-				  }
-			  } failure:^(NSURLSessionTask *task, NSError *error) {
+			  success:^(NSURLSessionTask *task, id responseObject)
+    {
+        if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
+            // Remove image from cache and update UI
+            [[CategoriesData sharedInstance] removeImage:image];
+            if(completion) {
+                completion(task);
+            }
+        } else {
+            if(fail) {
+                NSError *error = [NetworkHandler getPiwigoErrorFromResponse:responseObject
+                                 path:kPiwigoImageDelete andURLparams:nil];
+                fail(task, error);
+            }
+        }
+    }
+              failure:^(NSURLSessionTask *task, NSError *error)
+    {
 #if defined(DEBUG)
-                NSLog(@"=> deleteImage — Fail: %@", [error description]);
+        NSLog(@"=> deleteImage — Fail: %@", [error description]);
 #endif
-                  NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
-                  if ((statusCode == 401) ||        // Unauthorized
-                      (statusCode == 403) ||        // Forbidden
-                      (statusCode == 404))          // Not Found
-                  {
-                      NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
-                      dispatch_async(dispatch_get_main_queue(), ^{
-                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
-                      });
-                  }
-				  if(fail) {
-					  fail(task, error);
-				  }
-			  }];
+        if(fail) {
+            fail(task, error);
+        }
+    }];
 }
 
 +(NSURLSessionTask*)deleteImages:(NSArray *)images
@@ -1203,36 +1200,33 @@ NSString * const kGetImageOrderDescending = @"desc";
                         }
        sessionManager:[Model sharedInstance].sessionManager
              progress:nil
-              success:^(NSURLSessionTask *task, id responseObject) {
-                  if(completion) {
-                      if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
-                          for (PiwigoImageData *image in images) {
-                              // Remove image from cache and update UI
-                              [[CategoriesData sharedInstance] removeImage:image];
-                          }
-                          completion(task);
-                      } else {
-                          fail(task, responseObject);
-                      }
-                  }
-              } failure:^(NSURLSessionTask *task, NSError *error) {
+              success:^(NSURLSessionTask *task, id responseObject)
+    {
+        if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
+            for (PiwigoImageData *image in images) {
+              // Remove image from cache and update UI
+              [[CategoriesData sharedInstance] removeImage:image];
+            }
+            if(completion) {
+                completion(task);
+            }
+        } else {
+            if(fail) {
+                NSError *error = [NetworkHandler getPiwigoErrorFromResponse:responseObject
+                                     path:kPiwigoImageDelete andURLparams:nil];
+                fail(task, error);
+            }
+        }
+    }
+              failure:^(NSURLSessionTask *task, NSError *error)
+    {
 #if defined(DEBUG)
-                  NSLog(@"=> deleteImages — Fail: %@", [error description]);
+        NSLog(@"=> deleteImages — Fail: %@", [error description]);
 #endif
-                  NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
-                  if ((statusCode == 401) ||        // Unauthorized
-                      (statusCode == 403) ||        // Forbidden
-                      (statusCode == 404))          // Not Found
-                  {
-                      NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
-                      dispatch_async(dispatch_get_main_queue(), ^{
-                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
-                      });
-                  }
-                  if(fail) {
-                      fail(task, error);
-                  }
-              }];
+        if(fail) {
+            fail(task, error);
+        }
+    }];
 }
 
 
@@ -1444,7 +1438,7 @@ NSString * const kGetImageOrderDescending = @"desc";
 +(NSURLSessionTask*)setCategoriesForImageWithId:(NSInteger)imageId
                                  withCategories:(NSArray *)categoryIds
                                      onProgress:(void (^)(NSProgress *))progress
-                                   OnCompletion:(void (^)(NSURLSessionTask *task, BOOL setCategoriesSuccessfully))completion
+                                   OnCompletion:(void (^)(NSURLSessionTask *task))completion
                                       onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
     NSString *newImageCategories = [categoryIds componentsJoinedByString:@";"];
@@ -1457,30 +1451,29 @@ NSString * const kGetImageOrderDescending = @"desc";
                              }
             sessionManager:[Model sharedInstance].sessionManager
                   progress:progress
-                   success:^(NSURLSessionTask *task, id responseObject) {
-                       
-                       if(completion)
-                       {
-                           completion(task, [[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]);
-                       }
-                } failure:^(NSURLSessionTask *task, NSError *error) {
+                   success:^(NSURLSessionTask *task, id responseObject)
+    {
+        if(![[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
+            if(completion) {
+                completion(task);
+            }
+        } else {
+            NSError *error = [NetworkHandler getPiwigoErrorFromResponse:responseObject
+                                   path:kPiwigoImageDelete andURLparams:nil];
+            if(fail) {
+                fail(task, error);
+            }
+        }
+    }
+                    failure:^(NSURLSessionTask *task, NSError *error)
+    {
 #if defined(DEBUG)
-                     NSLog(@"=> setCategoriesForImage — Fail: %@", [error description]);
+         NSLog(@"=> setCategoriesForImage — Fail: %@", [error description]);
 #endif
-//                     NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
-//                     if ((statusCode == 401) ||        // Unauthorized
-//                         (statusCode == 403) ||        // Forbidden
-//                         (statusCode == 404))          // Not Found
-//                     {
-//                         NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
-//                         dispatch_async(dispatch_get_main_queue(), ^{
-//                             [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
-//                         });
-//                     }
-                     if(fail) {
-                         fail(task, error);
-                     }
-                 }];
+         if(fail) {
+             fail(task, error);
+         }
+    }];
 
     return request;
 }

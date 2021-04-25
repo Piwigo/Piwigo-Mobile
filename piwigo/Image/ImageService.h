@@ -92,7 +92,7 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
 +(NSURLSessionTask*)setCategoriesForImageWithId:(NSInteger)imageId
                                  withCategories:(NSArray *)imageCategories
                                      onProgress:(void (^)(NSProgress *))progress
-                                   OnCompletion:(void (^)(NSURLSessionTask *task, BOOL setCategoriesSuccessfully))completion
+                                   OnCompletion:(void (^)(NSURLSessionTask *task))completion
                                       onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 +(NSURLSessionTask*)addToFavoritesImageWithId:(NSInteger)imageId

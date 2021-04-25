@@ -703,35 +703,45 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
     [ImageService setCategoriesForImageWithId:self.imageData.imageId
          withCategories:categoryIds
              onProgress:nil
-           OnCompletion:^(NSURLSessionTask *task, BOOL updatedSuccessfully) {
-               
-                if (updatedSuccessfully)
-                {
-                    // Update image data
-                    self.imageData.categoryIds = categoryIds;
+           OnCompletion:^(NSURLSessionTask *task)
+    {
+                // Update image data
+                self.imageData.categoryIds = categoryIds;
 
-                    // Remove image from cache and update UI
-                    [[CategoriesData sharedInstance] removeImage:self.imageData fromCategory:[NSString stringWithFormat:@"%ld", (long)self.categoryId]];
+                // Remove image from cache and update UI
+                [[CategoriesData sharedInstance] removeImage:self.imageData fromCategory:[NSString stringWithFormat:@"%ld", (long)self.categoryId]];
 
-                    // Hide HUD
-                    [self updatePiwigoHUDwithSuccessWithCompletion:^{
-                        [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
-                            // Dispaly preceding/next image or return to album view
-                            [self didRemoveImageWithId:self.imageData.imageId];
-                        }];
+                // Hide HUD
+                [self updatePiwigoHUDwithSuccessWithCompletion:^{
+                    [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
+                        // Dispaly preceding/next image or return to album view
+                        [self didRemoveImageWithId:self.imageData.imageId];
                     }];
-               }
-               else {
-                   [self hidePiwigoHUDWithCompletion:^{
-                       [self showDeleteImageErrorWithMessage:NSLocalizedString(@"alertTryAgainButton", @"Try Again")];
-                   }];
-               }
-           }
-            onFailure:^(NSURLSessionTask *task, NSError *error) {
-                [self hidePiwigoHUDWithCompletion:^{
-                    [self showDeleteImageErrorWithMessage:[error localizedDescription]];
                 }];
+           }
+            onFailure:^(NSURLSessionTask *task, NSError *error)
+    {
+        [self dismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed") message:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted") errorMessage:error.localizedDescription dismiss:^{
+            // Hide HUD
+            [self hidePiwigoHUDWithCompletion:^{
+                // Re-enable buttons
+                [self setEnableStateOfButtons:YES];
             }];
+        }
+        retry:^{
+            // Try relogin if unauthorized
+            NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
+            if (statusCode == 401) {        // Unauthorized
+                // Try relogin
+                AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                [appDelegate reloginAndRetryWithCompletion:^{
+                    [self removeImageFromCategory];
+                }];
+            } else {
+                [self removeImageFromCategory];
+            }
+        }];
+    }];
 }
 
 -(void)deleteImageFromDatabase
@@ -741,49 +751,38 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
     
     // Send request to Piwigo server
     [ImageService deleteImage:self.imageData
-             ListOnCompletion:^(NSURLSessionTask *task) {
-                 // Hide HUD
-                [self updatePiwigoHUDwithSuccessWithCompletion:^{
-                    [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
-                        // Dispaly preceding/next image or return to album view
-                        [self didRemoveImageWithId:self.imageData.imageId];
-                    }];
-                }];
-             }
-                onFailure:^(NSURLSessionTask *task, NSError *error) {
-                    [self hidePiwigoHUDWithCompletion:^{
-                        [self showDeleteImageErrorWithMessage:[error localizedDescription]];
-                    }];
-             }];
-}
-
--(void)showDeleteImageErrorWithMessage:(NSString*)message
-{
-    NSString *errorMessage = [NSString stringWithFormat:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted\n%@"), message];
-    
-    UIAlertController* alert = [UIAlertController
-            alertControllerWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed")
-            message:errorMessage
-            preferredStyle:UIAlertControllerStyleAlert];
-    
-    UIAlertAction* dismissAction = [UIAlertAction
-            actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-            style:UIAlertActionStyleCancel
-            handler:^(UIAlertAction * action) {
+             ListOnCompletion:^(NSURLSessionTask *task)
+    {
+         // Hide HUD
+        [self updatePiwigoHUDwithSuccessWithCompletion:^{
+            [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
+                // Dispaly preceding/next image or return to album view
+                [self didRemoveImageWithId:self.imageData.imageId];
+            }];
+        }];
+    }
+                    onFailure:^(NSURLSessionTask *task, NSError *error)
+    {
+        [self dismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed") message:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted") errorMessage:error.localizedDescription dismiss:^{
+            // Hide HUD
+            [self hidePiwigoHUDWithCompletion:^{
                 // Re-enable buttons
                 [self setEnableStateOfButtons:YES];
-    }];
-    
-    [alert addAction:dismissAction];
-    alert.view.tintColor = UIColor.piwigoColorOrange;
-    if (@available(iOS 13.0, *)) {
-        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
-    } else {
-        // Fallback on earlier versions
-    }
-    [self presentViewController:alert animated:YES completion:^{
-        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-        alert.view.tintColor = UIColor.piwigoColorOrange;
+            }];
+        }
+        retry:^{
+            // Try relogin if unauthorized
+            NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
+            if (statusCode == 401) {        // Unauthorized
+                // Try relogin
+                AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                [appDelegate reloginAndRetryWithCompletion:^{
+                    [self deleteImageFromDatabase];
+                }];
+            } else {
+                [self deleteImageFromDatabase];
+            }
+        }];
     }];
 }
 
