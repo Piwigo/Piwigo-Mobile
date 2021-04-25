@@ -114,7 +114,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             /// - Resume upload operations in background queue
             ///   and update badge, upload button of album navigator
             let appDelegate = UIApplication.shared.delegate as? AppDelegate
-            appDelegate?.reloginAndRetry { }
+            appDelegate?.reloginAndRetry {
+                // Refresh Album/Images view
+                let uploadInfo: [String : Any] = ["NoHUD" : "YES",
+                                                  "fromCache" : "NO",
+                                                  "albumId" : String(0)]
+                let name = NSNotification.Name(rawValue: kPiwigoNotificationGetCategoryData)
+                NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
+            }
         }
     }
 

@@ -203,9 +203,6 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
         
         // Enable network reachability monitoring
         [[AFNetworkReachabilityManager sharedManager] startMonitoring];
-
-        // Should we reopen the session ?
-        [self reloginAndRetryWithCompletion:nil];
     }
 }
 
@@ -228,10 +225,14 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
         UIViewController *rootVC = self.window.rootViewController;
         UIViewController *currentVC = rootVC.childViewControllers.firstObject;
         if ([currentVC isKindOfClass:[AlbumImagesViewController class]]) {
-            /// - Perform relogin
-            /// - Resume upload operations in background queue
+            /// — Perform relogin
+            /// — Resume upload operations in background queue
             ///   and update badge, upload button of album navigator
-            [self reloginAndRetryWithCompletion:nil];
+            [self reloginAndRetryWithCompletion:^{
+                // Refresh Album/Images view
+                NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO", @"albumId" : @(0)};
+                [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
+            }];
         }
     }
 }
@@ -339,7 +340,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     return _loginVC;
 }
 
--(void)reloginAndRetryWithCompletion:(void (^)(void))completion
+-(void)reloginAndRetryWithCompletion:(void (^)(void))reloginCompletion
 {
     BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;
     NSString *server = [Model sharedInstance].serverPath;
@@ -348,7 +349,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     if(hadOpenedSession && (server.length > 0) && (user.length > 0))
     {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.loginVC performReloginWithCompletion:completion];
+            [self.loginVC performReloginWithCompletion:reloginCompletion];
         });
     }
 }
@@ -357,7 +358,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
 {
     if (![[NSProcessInfo processInfo] isLowPowerModeEnabled]) {
         // Restart battery intensive upload operations
-        [self reloginAndRetryWithCompletion:nil];
+        [self reloginAndRetryWithCompletion:^{}];
     }
 }
 
