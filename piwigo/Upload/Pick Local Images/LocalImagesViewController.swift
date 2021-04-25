@@ -1496,7 +1496,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Cell state
         if queue.operationCount == 0 {
             // Use indexed data
-            if let state = indexedUploadsInQueue[index]?.1 {
+            if index < indexedUploadsInQueue.count,
+               let state = indexedUploadsInQueue[index]?.1 {
                 switch state {
                 case .waiting, .preparing, .prepared:
                     cell.cellWaiting = true
@@ -1826,10 +1827,10 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
                     fetchOptions.predicate = NSPredicate(format: "localIdentifier == %@", upload.localIdentifier)
                     if let asset = PHAsset.fetchAssets(with: fetchOptions).firstObject {
                         let cachedObject = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState)!, asset.canPerform(.delete))
-                        self.indexedUploadsInQueue[indexOfUploadedImage] = Optional(cachedObject)
+                        self.indexedUploadsInQueue[indexOfUploadedImage] = cachedObject
                     } else {
                         let cachedObject = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState)!, false)
-                        self.indexedUploadsInQueue[indexOfUploadedImage] = Optional(cachedObject)
+                        self.indexedUploadsInQueue[indexOfUploadedImage] = cachedObject
                     }
                 }
                 
