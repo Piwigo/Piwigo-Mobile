@@ -377,47 +377,28 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
                   }
               }
               else {
-                  [self couldNotRetrieveImageData];
+                  [self dismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed") message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?") errorMessage:@"" dismiss:^{ }
+                  retry:^{
+                      [self retrieveCompleteImageDataOfImage:self.imageData];
+                  }];
               }
           }
-                 onFailure:^(NSURLSessionTask *task, NSError *error) {
-                     // Failed — Ask user if he/she wishes to retry
-                     [self couldNotRetrieveImageData];
-                 }];
-}
-
--(void)couldNotRetrieveImageData
-{
-    // Failed — Ask user if he/she wishes to retry
-    UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed")
-        message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?")
-        preferredStyle:UIAlertControllerStyleAlert];
-    
-    UIAlertAction* dismissAction = [UIAlertAction
-        actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-        style:UIAlertActionStyleCancel
-        handler:^(UIAlertAction * action) {
+         onFailure:^(NSURLSessionTask *task, NSError *error) {
+            [self dismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed") message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?") errorMessage:error.localizedDescription dismiss:^{ }
+            retry:^{
+                // Try relogin if unauthorized
+                NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
+                if (statusCode == 401) {        // Unauthorized
+                    // Try relogin
+                    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                    [appDelegate reloginAndRetryWithCompletion:^{
+                        [self retrieveCompleteImageDataOfImage:self.imageData];
+                    }];
+                } else {
+                    [self retrieveCompleteImageDataOfImage:self.imageData];
+                }
+            }];
         }];
-    
-    UIAlertAction* retryAction = [UIAlertAction
-        actionWithTitle:NSLocalizedString(@"alertRetryButton", @"Retry")
-        style:UIAlertActionStyleDefault
-        handler:^(UIAlertAction * action) {
-          [self retrieveCompleteImageDataOfImage:self.imageData];
-        }];
-    
-    [alert addAction:dismissAction];
-    [alert addAction:retryAction];
-    alert.view.tintColor = UIColor.piwigoColorOrange;
-    if (@available(iOS 13.0, *)) {
-        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
-    } else {
-        // Fallback on earlier versions
-    }
-    [self presentViewController:alert animated:YES completion:^{
-        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-        alert.view.tintColor = UIColor.piwigoColorOrange;
-    }];
 }
 
 
