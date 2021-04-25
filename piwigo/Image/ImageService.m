@@ -1250,7 +1250,10 @@ NSString * const kGetImageOrderDescending = @"desc";
                 if([[response objectForKey:@"stat"] isEqualToString:@"ok"])
                 {
                     // Update cache
-                    [[[CategoriesData sharedInstance] getCategoryById:(long)imageData.categoryIds[0]] updateImageAfterEdit:imageData];
+                    for (NSNumber *cat in imageData.categoryIds) {
+                        NSInteger catId = [cat integerValue];
+                        [[[CategoriesData sharedInstance] getCategoryById:catId] updateImageAfterEdit:imageData];
+                    }
 
                     // Notify album/image view of modification
                     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
