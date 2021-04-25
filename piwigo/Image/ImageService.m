@@ -1375,7 +1375,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                   progress:progress
                    success:^(NSURLSessionTask *task, id responseObject)
     {
-        if(![[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
+        if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
             if(completion) {
                 completion(task);
             }
