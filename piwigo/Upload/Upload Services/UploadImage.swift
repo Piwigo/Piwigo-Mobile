@@ -169,7 +169,7 @@ extension UploadManager {
                             completionHandler(imageData, nil)
                         }
                     } else {
-                        DispatchQueue(label: "prepareImage").async {
+                        self.backgroundQueue.async {
 //                            print("\(self.debugFormatter.string(from: Date())) > exits retrieveFullSizeAssetDataFromImage in", queueName())
                             if info?[PHImageErrorKey] != nil || ((imageData?.count ?? 0) == 0) {
                                 completionHandler(nil, info?[PHImageErrorKey] as? Error)
@@ -191,7 +191,7 @@ extension UploadManager {
                             completionHandler(imageData, nil)
                         }
                     } else {
-                        DispatchQueue(label: "prepareImage").async {
+                        self.backgroundQueue.async {
 //                            print("\(self.debugFormatter.string(from: Date())) > exits retrieveFullSizeAssetDataFromImage in", queueName())
                             if info?[PHImageErrorKey] != nil || ((imageData?.count ?? 0) == 0) {
                                 completionHandler(nil, info?[PHImageErrorKey] as? Error)

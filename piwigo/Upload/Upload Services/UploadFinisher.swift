@@ -43,7 +43,7 @@ extension UploadManager{
             onProgress:nil,
             onCompletion: { (task, jsonData) in
                 // Continue in background queue!
-                DispatchQueue.global(qos: .background).async {
+                self.backgroundQueue.async {
                     // Check returned data
                     guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {
                         // Upload still ready for finish
@@ -86,7 +86,7 @@ extension UploadManager{
             },
             onFailure: { (task, error) in
                 // Continue in background queue!
-                DispatchQueue.global(qos: .background).async {
+                self.backgroundQueue.async {
                     if let error = error as NSError? {
                         // Try relogin if unauthorized
                         if let response = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? HTTPURLResponse,
@@ -139,7 +139,7 @@ extension UploadManager{
         getUploadedImageStatus(byId: imageIds, inCategory: categoryId,
             onCompletion: { (task, jsonData) in
                 // Continue in background queue!
-                DispatchQueue.global(qos: .background).async {
+                self.backgroundQueue.async {
                     // Check returned data
                     guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {
                         // Will retry later
@@ -176,7 +176,7 @@ extension UploadManager{
                 }
         }, onFailure: { (task, error) in
             // Continue in background queue!
-            DispatchQueue.global(qos: .background).async {
+            self.backgroundQueue.async {
                 // Will retry later
                 completionHandler(false)
                 return
