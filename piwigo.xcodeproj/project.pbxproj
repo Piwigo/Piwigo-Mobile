@@ -16,6 +16,7 @@
 		AD0ED1002441C42200C69178 /* SliderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED0FF2441C42200C69178 /* SliderTableViewCell.swift */; };
 		AD0ED1022441CEC200C69178 /* SwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED1012441CEC200C69178 /* SwitchTableViewCell.swift */; };
 		AD0ED1042441F65B00C69178 /* TextFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED1032441F65B00C69178 /* TextFieldTableViewCell.swift */; };
+		AD0FD7F42622178200C85F99 /* UploadAuto.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0FD7F32622178200C85F99 /* UploadAuto.swift */; };
 		AD0FF9B821316ECE0094B907 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0FF9B721316ECE0094B907 /* SnapshotHelper.swift */; };
 		AD1092EB23D4E4D0006627B0 /* TagsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1092EA23D4E4D0006627B0 /* TagsProvider.swift */; };
 		AD11BDA22402C7E7003347BE /* UIColor+AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1F60012402B1B70099E5E5 /* UIColor+AppColors.swift */; };
@@ -254,6 +255,7 @@
 		AD0ED0FF2441C42200C69178 /* SliderTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SliderTableViewCell.swift; sourceTree = "<group>"; };
 		AD0ED1012441CEC200C69178 /* SwitchTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchTableViewCell.swift; sourceTree = "<group>"; };
 		AD0ED1032441F65B00C69178 /* TextFieldTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFieldTableViewCell.swift; sourceTree = "<group>"; };
+		AD0FD7F32622178200C85F99 /* UploadAuto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadAuto.swift; sourceTree = "<group>"; };
 		AD0FF9B721316ECE0094B907 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotHelper.swift; path = fastlane/SnapshotHelper.swift; sourceTree = SOURCE_ROOT; };
 		AD1092EA23D4E4D0006627B0 /* TagsProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagsProvider.swift; sourceTree = "<group>"; };
 		AD11E45E24A930B000C8876F /* piwigoWebAPI.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = piwigoWebAPI.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -869,6 +871,7 @@
 				AD13EB882494DFBF005987A8 /* UploadVideo.swift */,
 				AD8A452224771618002360EA /* UploadTransfer.swift */,
 				AD1D5F6A248553710004C8BC /* UploadFinisher.swift */,
+				AD0FD7F32622178200C85F99 /* UploadAuto.swift */,
 			);
 			path = "Upload Services";
 			sourceTree = "<group>";
@@ -1813,6 +1816,7 @@
 				ED9A42B51ACAD35300EA4421 /* LoginViewController_iPad.m in Sources */,
 				D863EECA1A6A484C00C0A6E9 /* PiwigoTextField.m in Sources */,
 				AD82C0482433D1A200F774BA /* main.m in Sources */,
+				AD0FD7F42622178200C85F99 /* UploadAuto.swift in Sources */,
 				AD39165E22A126CA00414E4B /* SearchImagesViewController.m in Sources */,
 				AD770FDD23B6A666007DAD50 /* EditImageDatePickerTableViewCell.m in Sources */,
 				D87C5A9A1A6F4FB0001763BC /* SessionService.m in Sources */,
