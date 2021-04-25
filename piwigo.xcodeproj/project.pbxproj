@@ -109,6 +109,8 @@
 		AD8A452324771618002360EA /* UploadTransfer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8A452224771618002360EA /* UploadTransfer.swift */; };
 		AD8F4B8B23F04B8C009483B6 /* TagSelectorViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD3369BE23F035F700F3FA80 /* TagSelectorViewController.storyboard */; };
 		AD92B8FE1F200083006E5B63 /* ReleaseNotes.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD92B9001F200083006E5B63 /* ReleaseNotes.strings */; };
+		AD98762F2626014500B964C5 /* UploadProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD98762E2626014500B964C5 /* UploadProperties.swift */; };
+		AD987634262606C600B964C5 /* UIViewController+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD987633262606C600B964C5 /* UIViewController+AppTools.swift */; };
 		AD9A1BE824E04F0000D22C86 /* UploadQueueHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9A1BE724E04F0000D22C86 /* UploadQueueHeaderView.swift */; };
 		ADA24DAF243A68FA00864D1F /* DefaultImageThumbnailSizeViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADA24DAE243A68FA00864D1F /* DefaultImageThumbnailSizeViewController.storyboard */; };
 		ADA24DB1243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA24DB0243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift */; };
@@ -395,6 +397,8 @@
 		AD8A4520247714EF002360EA /* UploadImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadImage.swift; sourceTree = "<group>"; };
 		AD8A452224771618002360EA /* UploadTransfer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadTransfer.swift; sourceTree = "<group>"; };
 		AD92B9011F200092006E5B63 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
+		AD98762E2626014500B964C5 /* UploadProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadProperties.swift; sourceTree = "<group>"; };
+		AD987633262606C600B964C5 /* UIViewController+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+AppTools.swift"; sourceTree = "<group>"; };
 		AD9A1BE724E04F0000D22C86 /* UploadQueueHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadQueueHeaderView.swift; sourceTree = "<group>"; };
 		ADA24DAE243A68FA00864D1F /* DefaultImageThumbnailSizeViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = DefaultImageThumbnailSizeViewController.storyboard; sourceTree = "<group>"; };
 		ADA24DB0243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultImageThumbnailSizeViewController.swift; sourceTree = "<group>"; };
@@ -682,6 +686,7 @@
 			children = (
 				AD460F9E25E44EE200B09AFE /* Upload+CoreDataClass.swift */,
 				AD460FA025E44EE400B09AFE /* Upload+CoreDataProperties.swift */,
+				AD98762E2626014500B964C5 /* UploadProperties.swift */,
 				AD23A1F22427D2D900F662AB /* UploadsProvider.swift */,
 				AD23A1F02427C95700F662AB /* UploadError.swift */,
 			);
@@ -1150,13 +1155,14 @@
 			children = (
 				AD870CD81F54AE230015BFA1 /* ImagesCollection.h */,
 				AD870CD61F54AE110015BFA1 /* ImagesCollection.m */,
+				AD07A23525CF07D8000EE016 /* Data+AppTools.swift */,
 				ADF3EC0B2516515500379E53 /* DeviceUtilities.swift */,
 				AD35A16A2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift */,
 				AD1F60012402B1B70099E5E5 /* UIColor+AppColors.swift */,
 				ADFC3A4D2401DA4E004CD337 /* UIFont+AppFonts.swift */,
 				ADCC996425B452670034CB4A /* UIImage+AppTools.swift */,
+				AD987633262606C600B964C5 /* UIViewController+AppTools.swift */,
 				AD07A23325CF024A000EE016 /* URL+AppTools.swift */,
-				AD07A23525CF07D8000EE016 /* Data+AppTools.swift */,
 			);
 			path = Macros;
 			sourceTree = "<group>";
@@ -1748,6 +1754,7 @@
 				AD196AA12438D2D6006C492A /* ShareMetadataViewController.swift in Sources */,
 				AD0ED1002441C42200C69178 /* SliderTableViewCell.swift in Sources */,
 				AD0ED1022441CEC200C69178 /* SwitchTableViewCell.swift in Sources */,
+				AD98762F2626014500B964C5 /* UploadProperties.swift in Sources */,
 				ADE03F3623D4E3BD00F21ED9 /* TagError.swift in Sources */,
 				AD1092EB23D4E4D0006627B0 /* TagsProvider.swift in Sources */,
 				AD3369C023F035F700F3FA80 /* TagSelectorCell.swift in Sources */,
@@ -1799,6 +1806,7 @@
 				D863EEBD1A6A440600C0A6E9 /* PiwigoButton.m in Sources */,
 				D89045BF1A950FF700A306FE /* EditImageTagsTableViewCell.m in Sources */,
 				AD770FDA23B4CE79007DAD50 /* EditImageThumbCollectionViewCell.m in Sources */,
+				AD987634262606C600B964C5 /* UIViewController+AppTools.swift in Sources */,
 				D87C5A951A6F4C43001763BC /* KeychainAccess.m in Sources */,
 				AD870CD71F54AE110015BFA1 /* ImagesCollection.m in Sources */,
 				AD7B4C1620E031B0003E403A /* AlbumTableViewCell.m in Sources */,
@@ -2363,7 +2371,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.7;
+				MARKETING_VERSION = 2.6.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-all_load",
@@ -2426,7 +2434,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.7;
+				MARKETING_VERSION = 2.6.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-all_load",

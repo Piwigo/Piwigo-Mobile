@@ -148,13 +148,23 @@ class ReleaseNotesViewController: UIViewController {
         spacerAttributedString.addAttribute(.font, value: UIFont.piwigoFontTiny(), range: spacerRange)
 
         // Release 2.7.0 — Bundle string
-        let v270String = NSLocalizedString("v2.7.0_text", tableName: "ReleaseNotes", bundle: Bundle.main, value: "", comment: "v2.7.0 Release Notes text")
-        let v270AttributedString = NSMutableAttributedString(string: v270String)
-        var v270Range = NSRange(location: 0, length: v270String.count)
-        v270AttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: v270Range)
-        v270Range = NSRange(location: 0, length: (v270String as NSString).range(of: "\n").location)
-        v270AttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: v270Range)
-        notesAttributedString.append(v270AttributedString)
+//        let v270String = NSLocalizedString("v2.7.0_text", tableName: "ReleaseNotes", bundle: Bundle.main, value: "", comment: "v2.7.0 Release Notes text")
+//        let v270AttributedString = NSMutableAttributedString(string: v270String)
+//        var v270Range = NSRange(location: 0, length: v270String.count)
+//        v270AttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: v270Range)
+//        v270Range = NSRange(location: 0, length: (v270String as NSString).range(of: "\n").location)
+//        v270AttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: v270Range)
+//        notesAttributedString.append(v270AttributedString)
+//        notesAttributedString.append(spacerAttributedString)
+
+        // Release 2.6.2 — Bundle string
+        let v262String = NSLocalizedString("v2.6.2_text", tableName: "ReleaseNotes", bundle: Bundle.main, value: "", comment: "v2.6.2 Release Notes text")
+        let v262AttributedString = NSMutableAttributedString(string: v262String)
+        var v262Range = NSRange(location: 0, length: v262String.count)
+        v262AttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: v262Range)
+        v262Range = NSRange(location: 0, length: (v262String as NSString).range(of: "\n").location)
+        v262AttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: v262Range)
+        notesAttributedString.append(v262AttributedString)
         notesAttributedString.append(spacerAttributedString)
 
         // Release 2.6.1 — Bundle string

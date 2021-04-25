@@ -6,9 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.7.0_text" = "Version 2.7\n\n• Minor bug fixes and improvements of the interface\n• Code modernization";
+"v2.6.2_text" = "Version 2.6.2\n\n• Allows some Community users to create tags\n• Fixes a compatibility issue with Piwigo 11\n• Minor bug fixes and improvements of the interface\n• Code modernization";
 
-"v2.6.1_text" = "Version 2.6.\nMarch 19, 2021\n\n• Fixes the attribution of tags to a selection of photos\n• Redesigned Appearance settings\n• Improves background uploading reliability\n• Minor bug fixes and improvements of the interface";
+"v2.6.1_text" = "Version 2.6.1\nMarch 19, 2021\n\n• Fixes the attribution of tags to a selection of photos\n• Redesigned Appearance settings\n• Improves background uploading reliability\n• Minor bug fixes and improvements of the interface";
 
 "v2.6.0_text" = "Version 2.6\nMarch 3, 2021\n\n• Paste/upload photos and videos from clipboard\n• Fixes a compatibility issue with Piwigo 11\n• Minor bug fixes and improvements of the interface";
 
