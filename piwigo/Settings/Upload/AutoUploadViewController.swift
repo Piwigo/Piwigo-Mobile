@@ -380,6 +380,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
 
 
     // MARK: - LocalAlbumsViewControllerDelegate Methods
+    
     func didSelectPhotoAlbum(withId photoAlbumId: String) -> Void {
         Model.sharedInstance()?.autoUploadAlbumId = photoAlbumId
         Model.sharedInstance()?.saveToDisk()
@@ -387,6 +388,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
 
 
     // MARK: - SelectCategoryDelegate Methods
+    
     func didSelectCategory(withId categoryId: Int) -> Void {
         if categoryId == NSNotFound { return }
         // Save new choice
@@ -444,43 +446,6 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
             if !uploadIds.contains(image.localIdentifier) {
                 var uploadRequest = UploadProperties(localIdentifier: image.localIdentifier,
                                                      category: categoryId)
-                // Image parameters
-                if let author = Model.sharedInstance()?.defaultAuthor {
-                    uploadRequest.author = author
-                }
-                if let privacy = Model.sharedInstance()?.defaultPrivacyLevel {
-                    uploadRequest.privacyLevel = privacy
-                }
-
-                // Upload settings
-                if let stripGPSdataOnUpload = Model.sharedInstance()?.stripGPSdataOnUpload {
-                    uploadRequest.stripGPSdataOnUpload = stripGPSdataOnUpload
-                }
-                if let resizeImageOnUpload = Model.sharedInstance()?.resizeImageOnUpload {
-                    uploadRequest.resizeImageOnUpload = resizeImageOnUpload
-                    if resizeImageOnUpload {
-                        if let photoResize = Model.sharedInstance()?.photoResize {
-                            uploadRequest.photoResize = Int16(photoResize)
-                        }
-                    } else {
-                        uploadRequest.photoResize = 100
-                    }
-                }
-                if let compressImageOnUpload = Model.sharedInstance()?.compressImageOnUpload {
-                    uploadRequest.compressImageOnUpload = compressImageOnUpload
-                }
-                if let photoQuality = Model.sharedInstance()?.photoQuality {
-                    uploadRequest.photoQuality = Int16(photoQuality)
-                }
-                if let prefixFileNameBeforeUpload = Model.sharedInstance()?.prefixFileNameBeforeUpload {
-                    uploadRequest.prefixFileNameBeforeUpload = prefixFileNameBeforeUpload
-                }
-                if let defaultPrefix = Model.sharedInstance()?.defaultPrefix {
-                    uploadRequest.defaultPrefix = defaultPrefix
-                }
-                if let deleteImageAfterUpload = Model.sharedInstance()?.deleteImageAfterUpload {
-                    uploadRequest.deleteImageAfterUpload = deleteImageAfterUpload
-                }
                 uploadRequest.markedForAutoUpload = true
                 imagesToUpload.append(uploadRequest)
             }
