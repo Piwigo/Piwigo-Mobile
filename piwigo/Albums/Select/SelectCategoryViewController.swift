@@ -1213,21 +1213,18 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
         // Update image on server
         ImageService.setCategoriesForImageWithId(imageData.imageId, withCategories: categoryIds) { _ in }
-          onCompletion: { _, didSucceed in
-            if didSucceed {
-                imageData.categoryIds = categoryIds
-                // Add image to selected category and update corresponding Album/Images collection
-                CategoriesData.sharedInstance().addImage(imageData)
-                
-                // Update image data in current view (ImageDetailImage view or Album/Images collection)
-                DispatchQueue.main.async {
-                    self.imageCopiedDelegate?.didCopyImage(withData: imageData)
-                }
-                completion(true)
-            } else {
-                completion(false)
+          onCompletion: { _ in
+            imageData.categoryIds = categoryIds
+            // Add image to selected category and update corresponding Album/Images collection
+            CategoriesData.sharedInstance().addImage(imageData)
+            
+            // Update image data in current view (ImageDetailImage view or Album/Images collection)
+            DispatchQueue.main.async {
+                self.imageCopiedDelegate?.didCopyImage(withData: imageData)
             }
-        } onFailure: { _, error in
+            completion(true)
+        }
+            onFailure: { _, error in
             fail(error as NSError?)
         }
     }
@@ -1337,23 +1334,19 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
         // Update image on server
         ImageService.setCategoriesForImageWithId(imageData.imageId, withCategories: categoryIds) { _ in }
-          onCompletion: { _, didSucceed in
-            if didSucceed {
-                imageData.categoryIds = categoryIds
-                // Add image to selected category
-                CategoriesData.sharedInstance().addImage(imageData, toCategory: String(categoryData.albumId))
+          onCompletion: { _ in
+            imageData.categoryIds = categoryIds
+            // Add image to selected category
+            CategoriesData.sharedInstance().addImage(imageData, toCategory: String(categoryData.albumId))
 
-                // Remove image from current category if needed
-                CategoriesData.sharedInstance().removeImage(imageData, fromCategory: String(self.inputCategoryId))
-                                
-                // Remove image from ImageDetailImage view
-                DispatchQueue.main.async {
-                    self.imageRemovedDelegate?.didRemoveImage(withId: imageData.imageId)
-                }
-                completion(true)
-            } else {
-                completion(false)
+            // Remove image from current category if needed
+            CategoriesData.sharedInstance().removeImage(imageData, fromCategory: String(self.inputCategoryId))
+                            
+            // Remove image from ImageDetailImage view
+            DispatchQueue.main.async {
+                self.imageRemovedDelegate?.didRemoveImage(withId: imageData.imageId)
             }
+            completion(true)
         } onFailure: { _, error in
             fail(error as NSError?)
         }
