@@ -375,19 +375,21 @@ extension TagsViewController {
         showPiwigoHUD(withTitle: NSLocalizedString("tagsAddHUD_label", comment: "Creating Tag…"))
 
         // Add new tag
-        dataProvider.addTag(with: tagName, completionHandler: { error in
-            guard let error = error else {
-                self.updatePiwigoHUDwithSuccess {
-                    self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD, completion: {})
+        DispatchQueue.global(qos: .userInteractive).async {
+            self.dataProvider.addTag(with: tagName, completionHandler: { error in
+                guard let error = error else {
+                    self.updatePiwigoHUDwithSuccess {
+                        self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD, completion: {})
+                    }
+                    return
                 }
-                return
-            }
-            self.hidePiwigoHUD {
-                self.dismissPiwigoError(withTitle: NSLocalizedString("tagsAddError_title", comment: "Create Fail"),
-                                        message: NSLocalizedString("tagsAddError_message", comment: "Failed to…"),
-                                        errorMessage: error.localizedDescription, completion: { })
-            }
-        })
+                self.hidePiwigoHUD {
+                    self.dismissPiwigoError(withTitle: NSLocalizedString("tagsAddError_title", comment: "Create Fail"),
+                                            message: NSLocalizedString("tagsAddError_message", comment: "Failed to…"),
+                                            errorMessage: error.localizedDescription, completion: { })
+                }
+            })
+        }
     }
 
 
