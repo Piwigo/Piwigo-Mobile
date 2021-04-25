@@ -2646,21 +2646,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     // Disable buttons
     [self setEnableStateOfButtons:NO];
     
-    // Determine index of first selected cell
-    NSInteger indexOfFirstSelectedImage = LONG_MAX;
-    PiwigoImageData *firstImageData;
-    for (NSNumber *imageId in self.selectedImageIds) {
-        NSInteger obj1 = [imageId integerValue];
-        NSInteger index = 0;
-        for (PiwigoImageData *image in self.albumData.images) {
-            NSInteger obj2 = image.imageId;
-            if (obj1 == obj2) break;
-            index++;
-        }
-        indexOfFirstSelectedImage = MIN(index, indexOfFirstSelectedImage);
-        firstImageData = [self.albumData.images objectAtIndex:indexOfFirstSelectedImage];
-    }
-
     // Present alert to user
     UIAlertController* alert = [UIAlertController
                                 alertControllerWithTitle:nil message:nil
