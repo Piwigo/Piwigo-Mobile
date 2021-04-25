@@ -342,8 +342,8 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         }
 
         // Display [+] button at the bottom of section presenting a limited number of albums
-        if indexPath.section < LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums.count,
-           LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums[indexPath.section] == true,
+        if activeSection < LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums.count,
+           LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums[activeSection] == true,
             indexPath.row == LocalAlbumsProvider.sharedInstance().maxNberOfAlbumsInSection {
             
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "LocalAlbumsMoreTableViewCell", for: indexPath) as? LocalAlbumsMoreTableViewCell else {
