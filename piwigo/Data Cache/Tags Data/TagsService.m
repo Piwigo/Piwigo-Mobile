@@ -66,16 +66,6 @@
 #if defined(DEBUG)
                   NSLog(@"=> addTagWithName:%@ — Failed!", tagName);
 #endif
-                  NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
-                  if ((statusCode == 401) ||        // Unauthorized
-                      (statusCode == 403) ||        // Forbidden
-                      (statusCode == 404))          // Not Found
-                  {
-                      NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
-                      dispatch_async(dispatch_get_main_queue(), ^{
-                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
-                      });
-                  }
                   if(fail) {
                       fail(task, error);
                   }

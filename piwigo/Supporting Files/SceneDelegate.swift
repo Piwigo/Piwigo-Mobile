@@ -107,12 +107,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
         }
 
-        // Should we resume uploads?
+        // Should we reopen the session and restart uploads?
         if let rootVC = self.window?.rootViewController,
            let _ = rootVC.children.first as? AlbumImagesViewController {
-            // Resume upload operations in background queue
-            // and update badge, upload button of album navigator
-            UploadManager.shared.resumeAll()
+            /// - Perform relogin
+            /// - Resume upload operations in background queue
+            ///   and update badge, upload button of album navigator
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate
+            appDelegate?.reloginAndRetry { }
         }
     }
 
@@ -135,10 +137,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Enable network reachability monitoring
         AFNetworkReachabilityManager.shared().startMonitoring()
-
-        // Should we reopen the session ?
-        let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        appDelegate?.checkSessionStatusAndTryRelogin()
     }
 
     @available(iOS 13.0, *)

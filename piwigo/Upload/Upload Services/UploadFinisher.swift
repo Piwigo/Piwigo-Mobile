@@ -88,16 +88,19 @@ extension UploadManager{
                 // Continue in background queue!
                 DispatchQueue.global(qos: .background).async {
                     if let error = error as NSError? {
-                        if ((error.code == 401) ||        // Unauthorized
-                            (error.code == 403) ||        // Forbidden
-                            (error.code == 404))          // Not Found
-                        {
-                            print("…notify kPiwigoNotificationNetworkErrorEncountered!")
-                            let name = NSNotification.Name(rawValue: kPiwigoNotificationNetworkErrorEncountered)
-                            NotificationCenter.default.post(name: name, object: nil, userInfo: nil)
+                        // Try relogin if unauthorized
+                        if let response = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? HTTPURLResponse,
+                           response.statusCode == 401 {
+                            // Try relogin
+                            let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                            appDelegate?.reloginAndRetry {
+                                // Upload still ready for finish
+                                self.didSetParameters(for: uploadID, error: error)
+                            }
+                        } else {
+                            // Upload still ready for finish
+                            self.didSetParameters(for: uploadID, error: error)
                         }
-                        // Upload still ready for finish
-                        self.didSetParameters(for: uploadID, error: error)
                     }
                 }
             })

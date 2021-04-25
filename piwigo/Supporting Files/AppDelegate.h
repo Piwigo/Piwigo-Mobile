@@ -11,7 +11,6 @@
 @class UploadManager;
 
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationPaletteChanged;
-FOUNDATION_EXPORT NSString * const kPiwigoNotificationNetworkErrorEncountered;
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationAddRecentAlbum;
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationRemoveRecentAlbum;
 
@@ -25,7 +24,7 @@ FOUNDATION_EXPORT NSString * const kPiwigoBackgroundTaskUpload;
 -(void)loadLoginView;
 -(void)loadNavigation;
 -(void)cleanUpTemporaryDirectoryImmediately:(BOOL)immediately;
--(void)checkSessionStatusAndTryRelogin;
+-(void)reloginAndRetryWithCompletion:(void (^)(void))completion;
 -(void)screenBrightnessChanged;
 -(void)scheduleNextUpload;
 

@@ -98,17 +98,20 @@ extension UploadManager {
                 }
             },
             onFailure: { (task, error) in
-                if let error = error {
-                    if ((error.code == 401) ||        // Unauthorized
-                        (error.code == 403) ||        // Forbidden
-                        (error.code == 404))          // Not Found
-                    {
-                        print("…notify kPiwigoNotificationNetworkErrorEncountered!")
-                        let name = NSNotification.Name(rawValue: kPiwigoNotificationNetworkErrorEncountered)
-                        NotificationCenter.default.post(name: name, object: nil, userInfo: nil)
+                if let error = error as NSError? {
+                    // Try relogin if unauthorized
+                    if let response = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? HTTPURLResponse,
+                       response.statusCode == 401 {
+                        // Try relogin
+                        let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                        appDelegate?.reloginAndRetry {
+                            // Image still ready for upload
+                            self.didEndTransfer(for: uploadID, with: uploadProperties, error)
+                        }
+                    } else {
+                        // Image still ready for upload
+                        self.didEndTransfer(for: uploadID, with: uploadProperties, error)
                     }
-                    // Image still ready for upload
-                    self.didEndTransfer(for: uploadID, with: uploadProperties, error)
                 }
             })
     }
