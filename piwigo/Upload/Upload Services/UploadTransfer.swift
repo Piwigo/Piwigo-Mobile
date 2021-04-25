@@ -252,7 +252,7 @@ extension UploadManager {
             },
            success: { task, responseObject in
                 // Continue in background queue!
-                DispatchQueue.global(qos: .background).async {
+                self.backgroundQueue.async {
                     // Continue?
                     print("\(self.debugFormatter.string(from: Date())) > #\(count) done:", responseObject.debugDescription)
                     if count >= chunks - 1 {
@@ -269,7 +269,7 @@ extension UploadManager {
             },
            failure: { task, error in
                 // Continue in background queue!
-                DispatchQueue.global(qos: .background).async {
+                self.backgroundQueue.async {
                     // failed!
                     fail(task, error as NSError?)
                 }

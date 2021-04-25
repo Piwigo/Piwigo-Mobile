@@ -314,7 +314,7 @@ extension UploadManager {
                 }
                 completionHandler(avasset, options, nil)
             } else {
-                DispatchQueue(label: "prepareVideo").async {
+                self.backgroundQueue.async {
 //                    print("\(self.debugFormatter.string(from: Date())) > exits retrieveVideoAssetFrom in", queueName())
                     // Any error?
                     if info?[PHImageErrorKey] != nil {

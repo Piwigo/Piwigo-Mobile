@@ -1034,8 +1034,8 @@ class UploadManager: NSObject, URLSessionDelegate {
                 PHAssetChangeRequest.deleteAssets(assetsToDelete as NSFastEnumeration)
             }, completionHandler: { success, error in
                 if success == true {
-                    // Delete upload requests in a private queue
-                    DispatchQueue.global(qos: .userInitiated).async {
+                    // Delete upload requests in the private queue
+                    self.backgroundQueue.async {
                         self.uploadsProvider.delete(uploadRequests: uploadIDs)
                     }
                 }
