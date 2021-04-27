@@ -847,6 +847,10 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     } else {
         // No button
         [self.navigationItem setRightBarButtonItems:@[] animated:YES];
+        
+        // Following 2 lines fixes situation where the Edit button remains visible
+        [self.navigationController.navigationBar setNeedsLayout];
+        [self.navigationController.navigationBar layoutIfNeeded];
     }
 }
 
