@@ -1353,20 +1353,21 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     }
 
     // Display HUD if requested
-    if (!([Model sharedInstance].loadAllCategoryInfo && self.isCachedAtInit) && !noHUD) {
+    if (!self.isCachedAtInit && !noHUD) {
         // Show loading HD
         [self showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
     }
     
     // Reload category data
 #if defined(DEBUG_LIFECYCLE)
-    NSLog(@"getCategoryData => getAlbumListForCategory(ID:%ld, cache:%@, recursive:%@)", (long)self.categoryId,([Model sharedInstance].loadAllCategoryInfo && self.isCachedAtInit) ? @"Yes" : @"No",[Model sharedInstance].loadAllCategoryInfo ? @"Yes" : @"No");
+    NSLog(@"getCategoryData => getAlbumListForCategory(ID:%ld, cache:%@)",
+          (long)self.categoryId, self.isCachedAtInit ? @"Yes" : @"No");
 #endif
     
     // Load category data
     [AlbumService getAlbumListForCategory:self.categoryId
-                               usingCache:([Model sharedInstance].loadAllCategoryInfo && self.isCachedAtInit)
-                          inRecursiveMode:[Model sharedInstance].loadAllCategoryInfo
+                               usingCache:self.isCachedAtInit
+                          inRecursiveMode:YES
      OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
          self.isCachedAtInit = YES;
          if (albums != nil) {
@@ -1439,9 +1440,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     // Show loading HD
     [self showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
 
-    [AlbumService getAlbumListForCategory:[Model sharedInstance].loadAllCategoryInfo ? 0 : self.categoryId
+    [AlbumService getAlbumListForCategory:0
                                usingCache:NO
-                          inRecursiveMode:[Model sharedInstance].loadAllCategoryInfo
+                          inRecursiveMode:YES
          OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
             [self.imagesCollection reloadData];
 

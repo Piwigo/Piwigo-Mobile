@@ -688,8 +688,6 @@
 
 // Settings — Cache
 "settingsHeader_cache" = "Cache Settings (Used/Total)";
-"settings_loadAllCategories" = "Download all Albums at Start";
-"settings_loadAllCategories>320px" = "Download all Albums at Start (uncheck if troubles)";
 "settings_cacheDisk" = "Disk";
 "settings_cacheMemory" = "Memory";
 "settings_cacheMegabytes" = "MB";

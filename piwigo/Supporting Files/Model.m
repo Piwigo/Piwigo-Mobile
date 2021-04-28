@@ -138,7 +138,7 @@ NSInteger const kDelayPiwigoHUD = 500;
         instance.isSystemDarkModeActive = NO;
         
         // Default cache settings
-        instance.loadAllCategoryInfo = YES;         // Load all albums data at start
+        instance.available = YES;                           // Available…
 		instance.diskCache = kPiwigoDiskCacheMin * 4;       // i.e. 512 MB
 		instance.memoryCache = kPiwigoMemoryCacheInc * 2;   // i.e. 16 MB
 		
@@ -228,7 +228,7 @@ NSInteger const kDelayPiwigoHUD = 500;
 		self.memoryCache = modelData.memoryCache;
 		self.photoQuality = modelData.photoQuality;
 		self.photoResize = modelData.photoResize;
-		self.loadAllCategoryInfo = modelData.loadAllCategoryInfo;
+		self.available = modelData.available;
 		self.defaultSort = modelData.defaultSort;
 		self.resizeImageOnUpload = modelData.resizeImageOnUpload;
 		self.defaultImagePreviewSize = modelData.defaultImagePreviewSize;
@@ -301,7 +301,7 @@ NSInteger const kDelayPiwigoHUD = 500;
 	[saveObject addObject:@(self.photoQuality)];
 	[saveObject addObject:@(self.photoResize)];
 	[saveObject addObject:self.serverProtocol];
-	[saveObject addObject:[NSNumber numberWithBool:self.loadAllCategoryInfo]];
+	[saveObject addObject:[NSNumber numberWithBool:self.available]];
 	[saveObject addObject:@(self.defaultSort)];
 	[saveObject addObject:[NSNumber numberWithBool:self.resizeImageOnUpload]];
 	[saveObject addObject:@(self.defaultImagePreviewSize)];
@@ -398,9 +398,9 @@ NSInteger const kDelayPiwigoHUD = 500;
 	}
 	if(savedData.count > 8)
 	{
-		self.loadAllCategoryInfo = [[savedData objectAtIndex:8] boolValue];
+		self.available = [[savedData objectAtIndex:8] boolValue];
 	} else {
-		self.loadAllCategoryInfo = YES;
+		self.available = YES;
 	}
 	if(savedData.count > 9) {
 		self.defaultSort = (kPiwigoSort)[[savedData objectAtIndex:9] intValue];

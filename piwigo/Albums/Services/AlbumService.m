@@ -130,7 +130,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
     }
 
     // Recursive option ?
-    NSString *recursiveString = ([Model sharedInstance].loadAllCategoryInfo || recursive) ? @"true" : @"false";
+    NSString *recursiveString = recursive ? @"true" : @"false";
 
     // Community extension active ?
     NSString *fakedString = [Model sharedInstance].usesCommunityPluginV29 ? @"false" : @"true";
@@ -211,7 +211,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                       NSLog(@"                => %ld albums returned", (long)[albums count]);
 #endif
                       // Update Categories Data cache
-                      if ([Model sharedInstance].loadAllCategoryInfo && (categoryId == 0))
+                      if (categoryId == 0)
                       {
                           [[CategoriesData sharedInstance] replaceAllCategories:albums];
                       }
