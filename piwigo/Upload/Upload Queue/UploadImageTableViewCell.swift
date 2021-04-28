@@ -125,7 +125,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         }
 
         // Progress bar
-        if let progressFraction: Float = userInfo["progressFraction"] as! Float? {
+        if let progressFraction = userInfo["progressFraction"] as? Float {
             let progress = max(uploadingProgress.progress, progressFraction)
             uploadingProgress?.setProgress(progress, animated: true)
         }

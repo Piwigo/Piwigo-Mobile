@@ -137,17 +137,17 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         
         // Register palette changes
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.applyColorPalette), name: name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
         
         // Register network reachability
-        NotificationCenter.default.addObserver(self, selector: #selector(self.mainHeader), name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(mainHeader), name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
 
         // Register Low Power Mode status
-        NotificationCenter.default.addObserver(self, selector: #selector(self.mainHeader), name: NSNotification.Name.NSProcessInfoPowerStateDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(mainHeader), name: NSNotification.Name.NSProcessInfoPowerStateDidChange, object: nil)
 
         // Register upload progress
         let name2: NSNotification.Name = NSNotification.Name(kPiwigoNotificationUploadProgress)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.applyUploadProgress), name: name2, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress), name: name2, object: nil)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -364,12 +364,14 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
     }
 
     @objc func applyUploadProgress(_ notification: Notification) {
-        let localIdentifier =  (notification.userInfo?["localIdentifier"] ?? "") as! String
-        let visibleCells = queueTableView.visibleCells as! [UploadImageTableViewCell]
-        for cell in visibleCells {
-            if cell.localIdentifier == localIdentifier {
-                cell.update(with: notification.userInfo!)
-                break
+        if let localIdentifier = notification.userInfo?["localIdentifier"] as? String,
+            localIdentifier.count > 0 {
+            let visibleCells = queueTableView.visibleCells as! [UploadImageTableViewCell]
+            for cell in visibleCells {
+                if cell.localIdentifier == localIdentifier {
+                    cell.update(with: notification.userInfo!)
+                    break
+                }
             }
         }
     }

@@ -478,7 +478,7 @@ class UploadManager: NSObject, URLSessionDelegate {
             updateCell(with: uploadProperties.localIdentifier,
                        stateLabel: kPiwigoUploadState.preparing.stateInfo,
                        photoResize: Int16(uploadProperties.photoResize),
-                       progress: Float(0.0), errorMsg: "")
+                       progress: nil, errorMsg: "")
         }
         
         // Add category to list of recent albums

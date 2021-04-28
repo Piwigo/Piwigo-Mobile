@@ -1534,14 +1534,16 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     }
 
     @objc func applyUploadProgress(_ notification: Notification) {
-        let localIdentifier =  (notification.userInfo?["localIdentifier"] ?? "") as! String
-        let progressFraction = (notification.userInfo?["progressFraction"] ?? Float(0.0)) as! Float
-        let indexPathsForVisibleItems = localImagesCollection.indexPathsForVisibleItems
-        for indexPath in indexPathsForVisibleItems {
-            if let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell,
-               cell.localIdentifier == localIdentifier {
-                cell.setProgress(progressFraction, withAnimation: true)
-                return
+        if let localIdentifier =  notification.userInfo?["localIdentifier"] as? String,
+           localIdentifier.count > 0,
+           let progressFraction = notification.userInfo?["progressFraction"] as? Float {
+            let indexPathsForVisibleItems = localImagesCollection.indexPathsForVisibleItems
+            for indexPath in indexPathsForVisibleItems {
+                if let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell,
+                   cell.localIdentifier == localIdentifier {
+                    cell.setProgress(progressFraction, withAnimation: true)
+                    return
+                }
             }
         }
     }
