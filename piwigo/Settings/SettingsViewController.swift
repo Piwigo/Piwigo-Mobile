@@ -448,7 +448,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case SettingsSection.appearance.rawValue:
             nberOfRows = 1
         case SettingsSection.cache.rawValue:
-            nberOfRows = 3
+            nberOfRows = 2
         case SettingsSection.clear.rawValue:
             nberOfRows = 1
         case SettingsSection.about.rawValue:
@@ -1100,31 +1100,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // MARK: Cache Settings
         case SettingsSection.cache.rawValue /* Cache Settings */:
             switch indexPath.row {
-            case 0 /* Download all Albums at Start */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
-                    return SwitchTableViewCell()
-                }
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                if view.bounds.size.width > 414 {
-                    // i.e. larger than iPhones 6, 7 screen width
-                    cell.configure(with: NSLocalizedString("settings_loadAllCategories>320px", comment: "Download all Albums at Start (uncheck if troubles)"))
-                } else {
-                    cell.configure(with: NSLocalizedString("settings_loadAllCategories", comment: "Download all Albums at Start"))
-                }
-                cell.cellSwitch.setOn(Model.sharedInstance().loadAllCategoryInfo, animated: true)
-                cell.cellSwitchBlock = { switchState in
-                    if !Model.sharedInstance().loadAllCategoryInfo && switchState {
-                        AlbumService.getAlbumList(forCategory: 0, usingCache: false, inRecursiveMode: true, onCompletion: nil, onFailure: nil)
-                    }
-
-                    Model.sharedInstance().loadAllCategoryInfo = switchState
-                    Model.sharedInstance().saveToDisk()
-                }
-                cell.accessibilityIdentifier = "loadAllCategories"
-                tableViewCell = cell
-                
-            case 1 /* Disk */:
+            case 0 /* Disk */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell else {
                     print("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!")
                     return SliderTableViewCell()
@@ -1155,7 +1131,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.accessibilityIdentifier = "diskCache"
                 tableViewCell = cell
                 
-            case 2 /* Memory */:
+            case 1 /* Memory */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell else {
                     print("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!")
                     return SliderTableViewCell()

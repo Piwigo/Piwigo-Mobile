@@ -1359,13 +1359,13 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                                     untilCompletion completion: @escaping (_ result: Bool) -> Void,
                                     orFailure fail: @escaping (_ task: URLSessionTask?, _ error: Error?) -> Void) {
         // Show loading HUD when not using cache option,
-        if !(useCache && Model.sharedInstance().loadAllCategoryInfo && (Model.sharedInstance().defaultCategory == 0)) {
+        if !(useCache && (Model.sharedInstance().defaultCategory == 0)) {
             // Show loading HD
             showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"))
 
             // Reload category data and set current category
             //        NSLog(@"buildCategoryDf => getAlbumListForCategory(%ld,NO,YES)", (long)0);
-            AlbumService.getAlbumList(forCategory: 0, usingCache: false, inRecursiveMode: Model.sharedInstance().loadAllCategoryInfo,
+            AlbumService.getAlbumList(forCategory: 0, usingCache: false, inRecursiveMode: true,
                     onCompletion: { task, albums in
                         // Hide loading HUD
                         self.hidePiwigoHUD {
@@ -1533,33 +1533,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             categoriesThatShowSubCategories.removeAll { $0 as AnyObject === NSNumber(value: categoryTapped.albumId) as AnyObject }
         }
 
-        // Sub-categories will not be known if user closes several layers at once
-        // and caching option loadAllCategoryInfo is not activated
-        if !Model.sharedInstance().loadAllCategoryInfo {
-            //        NSLog(@"subCategories => getAlbumListForCategory(%ld,NO,NO)", (long)categoryTapped.albumId);
-
-            // Show loading HD
-            showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"))
-
-            AlbumService.getAlbumList(forCategory: categoryTapped.albumId,
-                                      usingCache: false,
-                                      inRecursiveMode: Model.sharedInstance().loadAllCategoryInfo,
-                                      onCompletion: { task, albums in
-                // Hide loading HUD
-                self.hidePiwigoHUD {
-                    // Reload table view
-                    self.categoriesTableView.reloadData()
-                }
-            }, onFailure: { task, error in
-                // Hide loading HUD
-                self.hidePiwigoHUD {
-                    print(String(format: "getAlbumListForCategory: %@", error?.localizedDescription ?? ""))
-                }
-            })
-        } else {
-            // Reload table view
-            categoriesTableView.reloadData()
-        }
+        // Reload table view
+        categoriesTableView.reloadData()
     }
 }
 
@@ -1574,8 +1549,7 @@ extension SelectCategoryViewController: CategoryCellDelegate {
         var subcategories: [PiwigoAlbumData] = []
 
         // Look for known requested sub-categories
-        subcategories.append(contentsOf: allCategories.filter({ $0.parentAlbumId == categoryTapped.albumId })
-                                                      .filter({ $0.albumId != inputCategoryId }))
+        subcategories.append(contentsOf: allCategories.filter({ $0.parentAlbumId == categoryTapped.albumId }))
 
         // Look for sub-categories which are already displayed
         var nberDisplayedSubCategories = 0
@@ -1583,9 +1557,7 @@ extension SelectCategoryViewController: CategoryCellDelegate {
             nberDisplayedSubCategories += categories.filter({ $0.albumId == category.albumId}).count
         }
 
-        // This test depends on the caching option loadAllCategoryInfo:
-        // => if YES: compare number of sub-albums inside category to be closed
-        // => if NO: compare number of sub-sub-albums inside category to be closed
+        // Compare number of sub-albums inside category to be closed
         if (subcategories.count > 0) && (subcategories.count == nberDisplayedSubCategories) {
             // User wants to hide sub-categories
             removeSubCategories(toCategoryID: categoryTapped)
@@ -1600,7 +1572,7 @@ extension SelectCategoryViewController: CategoryCellDelegate {
             showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"))
 
             AlbumService.getAlbumList(forCategory: categoryTapped.albumId,
-                                      usingCache: Model.sharedInstance().loadAllCategoryInfo,
+                                      usingCache: true,
                                       inRecursiveMode: false,
                                       onCompletion: { task, albums in
                                         // Hide loading HUD

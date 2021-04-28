@@ -209,7 +209,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL isSystemDarkModeActive;
 
 // Default cache settings
-@property (nonatomic, assign) BOOL loadAllCategoryInfo;
+@property (nonatomic, assign) BOOL available;
 @property (nonatomic, assign) NSInteger memoryCache;
 @property (nonatomic, assign) NSInteger diskCache;
 @property (nonatomic, assign) BOOL couldNotMigrateCoreDataStore;
