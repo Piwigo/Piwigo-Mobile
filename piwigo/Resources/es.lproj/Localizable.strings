@@ -186,7 +186,7 @@
 "categoryUpload_images" = "Subir fotos";
 
 // Default album
-"setDefaultCategory_select" = "Seleccione un álbum o subálbum que se convertirá en el nuevo álbum raíz.";
+"setDefaultCategory_select" = "Seleccione un álbum o sub-álbum que se convertirá en el nuevo álbum raíz.";
 "setDefaultCategory_title" = "Álbum por defecto";
 "setDefaultCategory_message" = "¿Estás seguro de que deseas definir el álbum \"%@\" como álbum por defecto?";
 
@@ -244,7 +244,7 @@
 
 // Album move
 "moveCategory" = "Mover álbum";
-"moveCategory_select" = "Seleccione un álbum o subálbum al que mover el álbum \"%@\".";
+"moveCategory_select" = "Seleccione un álbum o sub-álbum al que mover el álbum \"%@\".";
 "moveCategory_message" = "¿Estás seguro de que deseas mover el álbum \"%@\" al álbum \"%@\"?";
 "moveCategoryHUD_moving" = "Moviendo álbum…";
 
@@ -681,10 +681,10 @@
 "settings_autoUploadDisabledInfo" = "Las fotos no se subirán automáticamente a tu Piwigo.";
 "settings_autoUploadSource" = "Origen";
 "settings_autoUploadSourceInvalid" = "Álbum de origen no válido";
-"settings_autoUploadSourceInfo" = "Please select the album or sub-album from which photos and videos of your device will be auto-uploaded.";
-"settings_autoUploadDestination" = "Destination";
-"settings_autoUploadDestinationInvalid" = "Invalid destination album";
-"settings_autoUploadDestinationInfo" = "Please select the album or sub-album into which photos and videos will be auto-uploaded.";
+"settings_autoUploadSourceInfo" = "Seleccione el álbum o sub-álbum desde el que se subirán automáticamente fotos y vídeos de su dispositivo.";
+"settings_autoUploadDestination" = "Destino";
+"settings_autoUploadDestinationInvalid" = "Álbum de destino no válido";
+"settings_autoUploadDestinationInfo" = "Seleccione el álbum o sub-álbum al que se subirán automáticamente fotos y vídeos.";
 
 // Settings — Cache
 "settingsHeader_cache" = "Configuración de caché (Usado/Total)";
