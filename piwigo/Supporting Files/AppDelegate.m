@@ -225,14 +225,22 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
         UIViewController *rootVC = self.window.rootViewController;
         UIViewController *currentVC = rootVC.childViewControllers.firstObject;
         if ([currentVC isKindOfClass:[AlbumImagesViewController class]]) {
-            /// — Perform relogin
-            /// — Resume upload operations in background queue
-            ///   and update badge, upload button of album navigator
-            [self reloginAndRetryWithCompletion:^{
-                // Refresh Album/Images view
-                NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO", @"albumId" : @(0)};
-                [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
-            }];
+            // Determine for how long the session is opened
+            NSTimeInterval timeSinceLastLogin = [Model.sharedInstance.dateOfLastLogin timeIntervalSinceNow];
+            if (timeSinceLastLogin < (NSTimeInterval)(-900)) { // i.e. 15 minutes (Piwigo 11 session duration defaults to an hour)
+                /// — Perform relogin
+                /// — Resume upload operations in background queue
+                ///   and update badge, upload button of album navigator
+                [self reloginAndRetryWithCompletion:^{
+                    // Refresh Album/Images view
+                    NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO", @"albumId" : @(0)};
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
+                }];
+            } else {
+                /// - Resume upload operations in background queue
+                ///   and update badge, upload button of album navigator
+                [[UploadManager shared] resumeAll];
+            }
         }
     }
 }

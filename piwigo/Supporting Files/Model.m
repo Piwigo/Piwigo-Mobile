@@ -58,6 +58,7 @@ NSInteger const kDelayPiwigoHUD = 500;
         instance.hasAdminRights = NO;
         instance.hasNormalRights = NO;
         instance.hadOpenedSession = NO;
+        instance.dateOfLastLogin = [NSDate distantPast];
         instance.didRejectCertificate = NO;
         instance.didFailHTTPauthentication = NO;
         instance.didApproveCertificate = NO;
