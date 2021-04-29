@@ -770,14 +770,16 @@ NSString * const kGetImageOrderDescending = @"desc";
     categoryIds = nil;
 
     // Object "name"
-    if (![[imageJson objectForKey:@"name"] isKindOfClass:[NSNull class]]) {
+    NSString *name = [imageJson objectForKey:@"name"];
+    if ((name != nil) && ![name isKindOfClass:[NSNull class]]) {
         imageData.imageTitle = [NetworkUtilities utf8mb4StringFrom:[imageJson objectForKey:@"name"]];
     } else {
         imageData.imageTitle = @"";
     }
     
     // Object "comment"
-    if (![[imageJson objectForKey:@"comment"] isKindOfClass:[NSNull class]]) {
+    NSString *comment = [imageJson objectForKey:@"comment"];
+    if ((comment != nil) && ![comment isKindOfClass:[NSNull class]]) {
         imageData.comment = [NetworkUtilities utf8mb4StringFrom:[imageJson objectForKey:@"comment"]];
     } else {
         imageData.comment = @"";
@@ -791,7 +793,8 @@ NSString * const kGetImageOrderDescending = @"desc";
     }
     
     // Object "file"
-    if (![[imageJson objectForKey:@"file"] isKindOfClass:[NSNull class]]) {
+    NSString *file = [imageJson objectForKey:@"file"];
+    if ((file != nil) && ![file isKindOfClass:[NSNull class]]) {
         imageData.fileName = [NetworkUtilities utf8mb4StringFrom:[imageJson objectForKey:@"file"]];
     } else {
         imageData.fileName = @"NoName.jpg";    // Filename should never be empty. Just in case…
@@ -810,7 +813,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     NSDateFormatter *dateFormat = [NSDateFormatter new];
     [dateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     NSString *dateAvailableString = [imageJson objectForKey:@"date_available"];
-    if (![dateAvailableString isKindOfClass:[NSNull class]]) {
+    if ((dateAvailableString != nil) && ![dateAvailableString isKindOfClass:[NSNull class]]) {
         imageData.datePosted = [dateFormat dateFromString:dateAvailableString];
     } else {
         imageData.datePosted = [NSDate date];
@@ -818,7 +821,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     
     // Object "date_creation"
     NSString *dateCreatedString = [imageJson objectForKey:@"date_creation"];
-    if (![dateCreatedString isKindOfClass:[NSNull class]]) {
+    if ((dateCreatedString != nil) && ![dateCreatedString isKindOfClass:[NSNull class]]) {
         imageData.dateCreated = [dateFormat dateFromString:dateCreatedString];
     }
     else {
@@ -839,7 +842,13 @@ NSString * const kGetImageOrderDescending = @"desc";
     // Object "element_url"
     // When $conf['original_url_protection'] = 'images' or 'all'; is enabled
     // the URLs returned by the Piwigo server contain &amp; instead of & (Piwigo v2.9.2)
-    imageData.fullResPath = [NetworkHandler encodedImageURL:[[imageJson objectForKey:@"element_url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+    NSString *fullResURL = [imageJson objectForKey:@"element_url"];
+    if ((fullResURL != nil) && ![fullResURL isKindOfClass:[NSNull class]]) {
+        imageData.fullResPath = [NetworkHandler encodedImageURL:[fullResURL stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+    } else {
+        // When the image URL is unknown, use an empty URL
+        imageData.fullResPath = @"";
+    }
     
     // Objects "derivatives"
     // When $conf['original_url_protection'] = 'images' or 'all'; is enabled
@@ -847,7 +856,12 @@ NSString * const kGetImageOrderDescending = @"desc";
 	NSDictionary *imageSizes = [imageJson objectForKey:@"derivatives"];
     
     // Square image
-    imageData.SquarePath = [NetworkHandler encodedImageURL:[[[imageSizes objectForKey:@"square"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+    NSString *square = [[imageSizes objectForKey:@"square"] objectForKey:@"url"];
+    if ((square != nil) && ![square isKindOfClass:[NSNull class]]) {
+        imageData.SquarePath = [NetworkHandler encodedImageURL:[square stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+    } else {
+        imageData.SquarePath = @"";
+    }
     if (![[[imageSizes objectForKey:@"square"] objectForKey:@"width"] isKindOfClass:[NSNull class]]) {
         imageData.SquareWidth = [[[imageSizes objectForKey:@"square"] objectForKey:@"width"] integerValue];
     }
@@ -864,7 +878,12 @@ NSString * const kGetImageOrderDescending = @"desc";
     }
 
     // Thumbnail image
-    imageData.ThumbPath = [NetworkHandler encodedImageURL:[[[imageSizes objectForKey:@"thumb"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+    NSString *thumb = [[imageSizes objectForKey:@"thumb"] objectForKey:@"url"];
+    if ((thumb != nil) && ![thumb isKindOfClass:[NSNull class]]) {
+        imageData.ThumbPath = [NetworkHandler encodedImageURL:[thumb stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+    } else {
+        imageData.ThumbPath = @"";
+    }
     if (![[[imageSizes objectForKey:@"thumb"] objectForKey:@"width"] isKindOfClass:[NSNull class]]) {
         imageData.ThumbWidth = [[[imageSizes objectForKey:@"thumb"] objectForKey:@"width"] integerValue];
     }
@@ -881,7 +900,12 @@ NSString * const kGetImageOrderDescending = @"desc";
     }
 
     // Medium image
-    imageData.MediumPath = [NetworkHandler encodedImageURL:[[[imageSizes objectForKey:@"medium"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+    NSString *medium = [[imageSizes objectForKey:@"medium"] objectForKey:@"url"];
+    if ((medium != nil) && ![medium isKindOfClass:[NSNull class]]) {
+        imageData.MediumPath = [NetworkHandler encodedImageURL:[medium stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+    } else {
+        imageData.MediumPath = @"";
+    }
     if (![[[imageSizes objectForKey:@"medium"] objectForKey:@"width"] isKindOfClass:[NSNull class]]) {
         imageData.MediumWidth = [[[imageSizes objectForKey:@"medium"] objectForKey:@"width"] integerValue];
     }
@@ -898,7 +922,12 @@ NSString * const kGetImageOrderDescending = @"desc";
     }
 
     // XX small image
-    imageData.XXSmallPath = [NetworkHandler encodedImageURL:[[[imageSizes objectForKey:@"2small"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+    NSString *xxsmall = [[imageSizes objectForKey:@"2small"] objectForKey:@"url"];
+    if ((xxsmall != nil) && ![xxsmall isKindOfClass:[NSNull class]]) {
+        imageData.XXSmallPath = [NetworkHandler encodedImageURL:[xxsmall stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+    } else {
+        imageData.XXSmallPath = @"";
+    }
     if (![[[imageSizes objectForKey:@"2small"] objectForKey:@"width"] isKindOfClass:[NSNull class]]) {
         imageData.XXSmallWidth = [[[imageSizes objectForKey:@"2small"] objectForKey:@"width"] integerValue];
     }
@@ -915,7 +944,12 @@ NSString * const kGetImageOrderDescending = @"desc";
     }
 
     // X small image
-    imageData.XSmallPath = [NetworkHandler encodedImageURL:[[[imageSizes objectForKey:@"xsmall"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+    NSString *xsmall = [[imageSizes objectForKey:@"xsmall"] objectForKey:@"url"];
+    if ((xsmall != nil) && ![xsmall isKindOfClass:[NSNull class]]) {
+        imageData.XSmallPath = [NetworkHandler encodedImageURL:[xsmall stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+    } else {
+        imageData.XSmallPath = @"";
+    }
     if (![[[imageSizes objectForKey:@"xsmall"] objectForKey:@"width"] isKindOfClass:[NSNull class]]) {
         imageData.XSmallWidth = [[[imageSizes objectForKey:@"xsmall"] objectForKey:@"width"] integerValue];
     }
@@ -932,7 +966,12 @@ NSString * const kGetImageOrderDescending = @"desc";
     }
 
     // Small image
-    imageData.SmallPath = [NetworkHandler encodedImageURL:[[[imageSizes objectForKey:@"small"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+    NSString *small = [[imageSizes objectForKey:@"small"] objectForKey:@"url"];
+    if ((small != nil) && ![small isKindOfClass:[NSNull class]]) {
+        imageData.SmallPath = [NetworkHandler encodedImageURL:[small stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+    } else {
+        imageData.SmallPath = @"";
+    }
     if (![[[imageSizes objectForKey:@"small"] objectForKey:@"width"] isKindOfClass:[NSNull class]]) {
         imageData.SmallWidth = [[[imageSizes objectForKey:@"small"] objectForKey:@"width"] integerValue];
     }
@@ -949,7 +988,12 @@ NSString * const kGetImageOrderDescending = @"desc";
     }
 
     // Large image
-    imageData.LargePath = [NetworkHandler encodedImageURL:[[[imageSizes objectForKey:@"large"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+    NSString *large = [[imageSizes objectForKey:@"large"] objectForKey:@"url"];
+    if ((large != nil) && ![large isKindOfClass:[NSNull class]]) {
+        imageData.LargePath = [NetworkHandler encodedImageURL:[large stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+    } else {
+        imageData.LargePath = @"";
+    }
     if (![[[imageSizes objectForKey:@"large"] objectForKey:@"width"] isKindOfClass:[NSNull class]]) {
         imageData.LargeWidth = [[[imageSizes objectForKey:@"large"] objectForKey:@"width"] integerValue];
     }
@@ -966,7 +1010,12 @@ NSString * const kGetImageOrderDescending = @"desc";
     }
 
     // X large image
-    imageData.XLargePath = [NetworkHandler encodedImageURL:[[[imageSizes objectForKey:@"xlarge"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+    NSString *xlarge = [[imageSizes objectForKey:@"xlarge"] objectForKey:@"url"];
+    if ((xlarge != nil) && ![xlarge isKindOfClass:[NSNull class]]) {
+        imageData.XLargePath = [NetworkHandler encodedImageURL:[xlarge stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+    } else {
+        imageData.XLargePath = @"";
+    }
     if (![[[imageSizes objectForKey:@"xlarge"] objectForKey:@"width"] isKindOfClass:[NSNull class]]) {
         imageData.XLargeWidth = [[[imageSizes objectForKey:@"xlarge"] objectForKey:@"width"] integerValue];
     }
@@ -983,7 +1032,12 @@ NSString * const kGetImageOrderDescending = @"desc";
     }
 
     // XX large image
-    imageData.XXLargePath = [NetworkHandler encodedImageURL:[[[imageSizes objectForKey:@"xxlarge"] objectForKey:@"url"] stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+    NSString *xxlarge = [[imageSizes objectForKey:@"xxlarge"] objectForKey:@"url"];
+    if ((xxlarge != nil) && ![xxlarge isKindOfClass:[NSNull class]]) {
+        imageData.XXLargePath = [NetworkHandler encodedImageURL:[xxlarge stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"]];
+    } else {
+        imageData.XXLargePath = @"";
+    }
     if (![[[imageSizes objectForKey:@"xxlarge"] objectForKey:@"width"] isKindOfClass:[NSNull class]]) {
         imageData.XXLargeWidth = [[[imageSizes objectForKey:@"xxlarge"] objectForKey:@"width"] integerValue];
     }
@@ -1007,8 +1061,9 @@ NSString * const kGetImageOrderDescending = @"desc";
     //
     
     // Object "author"
-    if (![[imageJson objectForKey:@"author"] isKindOfClass:[NSNull class]]) {
-        imageData.author = [NetworkUtilities utf8mb4StringFrom:[imageJson objectForKey:@"author"]];
+    NSString *author = [imageJson objectForKey:@"author"];
+    if ((author != nil) && ![author isKindOfClass:[NSNull class]]) {
+        imageData.author = [NetworkUtilities utf8mb4StringFrom:author];
     } else {
         imageData.author = @"NSNotFound";
     }
@@ -1067,7 +1122,8 @@ NSString * const kGetImageOrderDescending = @"desc";
     }
     
     // Object "md5sum"
-    if (![[imageJson objectForKey:@"md5sum"] isKindOfClass:[NSNull class]]) {
+    NSString *md5sum = [imageJson objectForKey:@"md5sum"];
+    if ((md5sum != nil) && ![md5sum isKindOfClass:[NSNull class]]) {
         imageData.MD5checksum = [NetworkUtilities utf8mb4StringFrom:[imageJson objectForKey:@"md5sum"]];
     } else {
         imageData.MD5checksum = @"";
