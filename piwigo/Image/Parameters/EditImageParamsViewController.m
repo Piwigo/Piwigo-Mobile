@@ -414,36 +414,40 @@ typedef enum {
             else
             {
                 // Display Piwigo error in HUD
+                NSError *error = [NetworkHandler getPiwigoErrorFromResponse:response path:kPiwigoImageSetInfo andURLparams:nil];
                 [self hidePiwigoHUDWithCompletion:^{
-                    NSError *error = [NetworkHandler getPiwigoErrorFromResponse:response path:kPiwigoImageSetInfo andURLparams:nil];
-                    [self cancelDismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"editImageDetailsError_title", @"Failed to Update") message:NSLocalizedString(@"editImageDetailsError_message", @"Failed to update your changes with your server. Try again?") errorMessage:error.localizedDescription cancel:^{
-                    } dismiss:^{
-                        // Bypass this image
-                        [self.imagesToUpdate removeLastObject];
-                        // Next image
-                        if (self.imagesToUpdate.count) [self updateImageProperties];
-                    } retry:^{
-                        [self updateImageProperties];
-                    }];
+                    [self showUpdatePropertiesError:error];
                 }];
             }
         }
          onFailure:^(NSURLSessionTask *task, NSError *error) {
             // Failed
             [self hidePiwigoHUDWithCompletion:^{
-                [self cancelDismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"editImageDetailsError_title", @"Failed to Update") message:NSLocalizedString(@"editImageDetailsError_message", @"Failed to update your changes with your server. Try again?") errorMessage:error.localizedDescription cancel:^{
-                } dismiss:^{
-                    // Bypass this image
-                    [self.imagesToUpdate removeLastObject];
-                    // Next image
-                    if (self.imagesToUpdate.count) [self updateImageProperties];
-                } retry:^{
-                    [self updateImageProperties];
-                }];
+                [self showUpdatePropertiesError:error];
             }];
-        }];
+    }];
 }
 
+-(void)showUpdatePropertiesError:(NSError *)error
+{
+    // If there are images left, propose in addition to bypass the one creating problems
+    if (self.imagesToUpdate.count > 1) {
+        [self cancelDismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"editImageDetailsError_title", @"Failed to Update") message:NSLocalizedString(@"editImageDetailsError_message", @"Failed to update your changes with your server. Try again?") errorMessage:error.localizedDescription cancel:^{
+        } dismiss:^{
+            // Bypass this image
+            [self.imagesToUpdate removeLastObject];
+            // Next image
+            if (self.imagesToUpdate.count) [self updateImageProperties];
+        } retry:^{
+            [self updateImageProperties];
+        }];
+    } else {
+        [self dismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"editImageDetailsError_title", @"Failed to Update") message:NSLocalizedString(@"editImageDetailsError_message", @"Failed to update your changes with your server. Try again?") errorMessage:error.localizedDescription dismiss:^{
+        } retry:^{
+            [self updateImageProperties];
+        }];
+    }
+}
 
 #pragma mark - UITableView - Header & Footer
 
