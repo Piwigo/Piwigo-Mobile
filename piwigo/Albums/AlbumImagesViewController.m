@@ -2369,26 +2369,44 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
       onFailure:^(NSURLSessionTask *task, NSError *error)
     {
         // Error — Try again ?
-        [self cancelDismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed") message:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted.") errorMessage:error.localizedDescription cancel:^{
-            [self hidePiwigoHUDWithCompletion:^{ [self updateButtonsInSelectionMode]; }];
-        } dismiss:^{
-            // Bypass image
-            [self.selectedImagesToRemove removeLastObject];
-            // Continue removing images
-            [self removeImages];
-        } retry:^{
-            // Try relogin if unauthorized
-            NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
-            if (statusCode == 401) {        // Unauthorized
-                // Try relogin
-                AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                [appDelegate reloginAndRetryWithCompletion:^{
-                    [self removeImages];
-                }];
-            } else {
+        if (self.selectedImagesToRemove.count > 1) {
+            [self cancelDismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed") message:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted.") errorMessage:error.localizedDescription cancel:^{
+                [self hidePiwigoHUDWithCompletion:^{ [self updateButtonsInSelectionMode]; }];
+            } dismiss:^{
+                // Bypass image
+                [self.selectedImagesToRemove removeLastObject];
+                // Continue removing images
                 [self removeImages];
-            }
-        }];
+            } retry:^{
+                // Try relogin if unauthorized
+                NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
+                if (statusCode == 401) {        // Unauthorized
+                    // Try relogin
+                    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                    [appDelegate reloginAndRetryWithCompletion:^{
+                        [self removeImages];
+                    }];
+                } else {
+                    [self removeImages];
+                }
+            }];
+        } else {
+            [self dismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed") message:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted.") errorMessage:error.localizedDescription dismiss:^{
+                [self hidePiwigoHUDWithCompletion:^{ [self updateButtonsInSelectionMode]; }];
+            } retry:^{
+                // Try relogin if unauthorized
+                NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
+                if (statusCode == 401) {        // Unauthorized
+                    // Try relogin
+                    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                    [appDelegate reloginAndRetryWithCompletion:^{
+                        [self removeImages];
+                    }];
+                } else {
+                    [self removeImages];
+                }
+            }];
+        }
     }];
 }
 
