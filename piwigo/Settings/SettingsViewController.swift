@@ -240,7 +240,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         let helpVC = helpSB.instantiateViewController(withIdentifier: "HelpViewController") as? HelpViewController
         if let helpVC = helpVC {
             // Update this list after deleting/creating Help##ViewControllers
-            helpVC.displayHelpPagesWithIndex = [0,4,5,1,3,2]
+            if #available(iOS 13, *) {
+                helpVC.displayHelpPagesWithIndex = [0,4,5,1,3,2]
+            } else {
+                helpVC.displayHelpPagesWithIndex = [0,4,5,3,2]
+            }
             if UIDevice.current.userInterfaceIdiom == .phone {
                 helpVC.popoverPresentationController?.permittedArrowDirections = .up
                 navigationController?.present(helpVC, animated:true)
