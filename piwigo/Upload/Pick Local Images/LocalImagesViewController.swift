@@ -1739,7 +1739,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         if (Model.sharedInstance().didWatchHelpViews & 0b00000000_00100000) == 0 {
             displayHelpPagesWithIndex.append(5)     // i.e. manage upload requests in queue
         }
-        if (Model.sharedInstance().didWatchHelpViews & 0b00000000_00000010) == 0 {
+        if #available(iOS 13, *),
+           (Model.sharedInstance().didWatchHelpViews & 0b00000000_00000010) == 0 {
             displayHelpPagesWithIndex.append(1)     // i.e. use background uploading
         }
         if displayHelpPagesWithIndex.count > 0 {
