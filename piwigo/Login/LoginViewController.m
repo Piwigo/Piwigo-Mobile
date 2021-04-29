@@ -777,6 +777,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
        withReloginCompletion:(void (^)(void))reloginCompletion
 {
     self.isAlreadyTryingToLogin = NO;
+    [Model sharedInstance].dateOfLastLogin = [NSDate date];
 
     // Load navigation if needed
     if (isFirstLogin) {

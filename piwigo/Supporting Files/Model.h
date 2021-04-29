@@ -123,6 +123,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL hasAdminRights;
 @property (nonatomic, assign) BOOL hasNormalRights;
 @property (nonatomic, assign) BOOL hadOpenedSession;
+@property (nonatomic, strong) NSDate *dateOfLastLogin;
 @property (nonatomic, assign) BOOL didRejectCertificate;
 @property (nonatomic, assign) BOOL didFailHTTPauthentication;
 @property (nonatomic, assign) BOOL didApproveCertificate;
