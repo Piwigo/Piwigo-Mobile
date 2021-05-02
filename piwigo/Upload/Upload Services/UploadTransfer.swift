@@ -454,14 +454,14 @@ extension UploadManager {
             }
             var uploadProperties: UploadProperties
             do {
-                let upload = try taskContext.existingObject(with: uploadID) as! Upload
+                let upload = try taskContext.existingObject(with: uploadID)
                 if upload.isFault {
                     // The upload request is not fired yet.
                     upload.willAccessValue(forKey: nil)
-                    uploadProperties = upload.getProperties()
+                    uploadProperties = (upload as! Upload).getProperties()
                     upload.didAccessValue(forKey: nil)
                 } else {
-                    uploadProperties = upload.getProperties()
+                    uploadProperties = (upload as! Upload).getProperties()
                 }
             }
             catch {
@@ -516,14 +516,14 @@ extension UploadManager {
         }
         var uploadProperties: UploadProperties
         do {
-            let upload = try taskContext.existingObject(with: uploadID) as! Upload
+            let upload = try taskContext.existingObject(with: uploadID)
             if upload.isFault {
                 // The upload request is not fired yet.
                 upload.willAccessValue(forKey: nil)
-                uploadProperties = upload.getProperties()
+                uploadProperties = (upload as! Upload).getProperties()
                 upload.didAccessValue(forKey: nil)
             } else {
-                uploadProperties = upload.getProperties()
+                uploadProperties = (upload as! Upload).getProperties()
             }
         }
         catch {
