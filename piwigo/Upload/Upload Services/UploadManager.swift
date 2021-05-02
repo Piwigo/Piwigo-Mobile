@@ -453,14 +453,14 @@ class UploadManager: NSObject, URLSessionDelegate {
         var uploadProperties: UploadProperties!
         let taskContext = DataController.getPrivateContext()
         do {
-            let upload = try taskContext.existingObject(with: uploadID) as! Upload
+            let upload = try taskContext.existingObject(with: uploadID)
             if upload.isFault {
                 // The upload request is not fired yet.
                 upload.willAccessValue(forKey: nil)
-                uploadProperties = upload.getProperties()
+                uploadProperties = (upload as! Upload).getProperties()
                 upload.didAccessValue(forKey: nil)
             } else {
-                uploadProperties = upload.getProperties()
+                uploadProperties = (upload as! Upload).getProperties()
             }
         }
         catch {
@@ -858,14 +858,14 @@ class UploadManager: NSObject, URLSessionDelegate {
         var uploadProperties: UploadProperties!
         let taskContext = DataController.getPrivateContext()
         do {
-            let upload = try taskContext.existingObject(with: uploadID) as! Upload
+            let upload = try taskContext.existingObject(with: uploadID)
             if upload.isFault {
                 // The upload request is not fired yet.
                 upload.willAccessValue(forKey: nil)
-                uploadProperties = upload.getProperties()
+                uploadProperties = (upload as! Upload).getProperties()
                 upload.didAccessValue(forKey: nil)
             } else {
-                uploadProperties = upload.getProperties()
+                uploadProperties = (upload as! Upload).getProperties()
             }
         }
         catch {
@@ -1114,7 +1114,8 @@ class UploadManager: NSObject, URLSessionDelegate {
         for failedUploadID in failedUploads {
             do {
                 // Get upload request
-                let failedUpload = try (taskContext.existingObject(with: failedUploadID) as! Upload)
+                let object = try taskContext.existingObject(with: failedUploadID)
+                let failedUpload = object as! Upload
 
                 // Create upload properties cancelling error
                 var uploadProperties: UploadProperties
