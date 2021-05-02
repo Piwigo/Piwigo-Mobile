@@ -467,16 +467,30 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
             }
 
         case .insert:
-            // Add tag to list of non selected tags
+            // Add tag to appropriate list of tags
             /// We cannot sort the list now to avoid the case where we insert several rows at the same index path.
-            /// The sort is performed after the data source update.
+            /// The sort is performed after having changed the data source.
             guard let tag: Tag = anObject as? Tag else { return }
-            nonSelectedTags.append(tag)
-            // Determine index of added tag and insert tag
-            let index = nonSelectedTags.firstIndex(where: {$0.tagId == tag.tagId})
-            let addAtIndexPath = IndexPath.init(row: index!, section: 1)
-//            print(".insert =>", addAtIndexPath.debugDescription)
-            tagsTableView.insertRows(at: [addAtIndexPath], with: .automatic)
+            // Append tag to appropriate list
+            if selectedTagIds.contains(tag.tagId) {
+                // Append tag to list of selected tags
+                selectedTags.append(tag)
+                // Determine index of added tag
+                if let index = selectedTags.firstIndex(where: {$0.tagId == tag.tagId}) {
+                    let addAtIndexPath = IndexPath.init(row: index, section: 0)
+                    print(".insert =>", addAtIndexPath.debugDescription)
+                    tagsTableView.insertRows(at: [addAtIndexPath], with: .automatic)
+                }
+            } else {
+                // Append tag to list of non-selected tags
+                nonSelectedTags.append(tag)
+                // Determine index of added tag
+                if let index = nonSelectedTags.firstIndex(where: {$0.tagId == tag.tagId}) {
+                    let addAtIndexPath = IndexPath.init(row: index, section: 1)
+                    print(".insert =>", addAtIndexPath.debugDescription)
+                    tagsTableView.insertRows(at: [addAtIndexPath], with: .automatic)
+                }
+            }
 
         case .move:        // Should never "move"
             // Update tag belonging to the right list
