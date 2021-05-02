@@ -14,7 +14,7 @@ PODS:
   - AFNetworking/Serialization (4.0.1)
   - AFNetworking/UIKit (4.0.1):
     - AFNetworking/NSURLSession
-  - IQKeyboardManager (6.5.5)
+  - IQKeyboardManager (6.5.6)
   - MBProgressHUD (1.2.0)
   - MGSwipeTableCell (1.6.11)
   - SAMKeychain (1.5.3)
@@ -36,7 +36,7 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   AFNetworking: 7864c38297c79aaca1500c33288e429c3451fdce
-  IQKeyboardManager: 3a8b9e603f8b0eeaf5f096a1f2b2cfcf121992ef
+  IQKeyboardManager: 2a6e97afdafc7becf0cb17a9a8d795e3a980717f
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
   MGSwipeTableCell: b804e4e450dee439c42250be90bd50458bf67fce
   SAMKeychain: 483e1c9f32984d50ca961e26818a534283b4cd5c
