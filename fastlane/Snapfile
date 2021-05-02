@@ -1,15 +1,30 @@
 ###################
 # piwigoGetPiwigo #
 ###################
+# Installation:
+#	cd '/Users/lelievre/Privé - GitHub/Piwigo-Mobile'
+#	sudo gem install fastlane -NV
+#	fastlane init
+#   fastlane init swift
+#	
+#	export LC_ALL=en_US.UTF-8
+#	export LANG=en_US.UTF-8
+# 	Create a ./Gemfile in the root directory of your project
+#	sudo /usr/bin/bundle update
+#	sudo /usr/bin/bundle install
+#
+# To update fastlane:
+#	sudo /usr/bin/bundle update fastlane
+#
 # To launch fastlane:
-#	bundle exec fastlane snapshot --number_of_retries 0 --skip_open_summary
+#	bundle exec fastlane snapshot --number_of_retries 1 --skip_open_summary
 #
 # To upload screenshots
 #   bundle exec fastlane deliver
 #
 # A list of devices you want to take the screenshots from
 devices([
-  "iPhone SE (1st generation)",						# 4-inch
+#  "iPhone SE (1st generation)",						# 4-inch
 #  "iPhone 8",										# 4.7-inch
 #  "iPhone 8 Plus",									# 5.5-inch
 #  "iPhone 11 Pro",									# 5.8-inch
@@ -18,7 +33,7 @@ devices([
 #  "iPad Pro (10.5-inch)",							# 10.5-inch
 #  "iPad Pro (12.9-inch) (2nd generation)",			# 12.9-inch
 #  "iPad Pro (11-inch) (2nd generation)",			# 11-inch
-#  "iPad Pro (12.9-inch) (3rd generation)"			# 12.9-inch
+  "iPad Pro (12.9-inch) (4th generation)"			# 12.9-inch
 ])
 
 #   ["pt", "pt_BR"] # Portuguese with Brazilian locale
