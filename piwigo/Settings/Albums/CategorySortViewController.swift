@@ -79,6 +79,7 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
 
         title = NSLocalizedString("tabBar_albums", comment: "Albums")
         sortSelectTableView.accessibilityIdentifier = "sortSelect"
+        navigationController?.navigationBar.accessibilityIdentifier = "CategorySortBar"
 
         // Set colors, fonts, etc.
         applyColorPalette()
