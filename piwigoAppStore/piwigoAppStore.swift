@@ -260,6 +260,7 @@ class piwigoAppStore: XCTestCase {
         sleep(1);
         app.tables["settings"].cells["defaultSort"].tap()
         app.tables["sortSelect"].cells.element(boundBy: 0).tap()
+        app.navigationBars["CategorySortBar"].buttons.element(boundBy: 0).tap()
         app.navigationBars.buttons["Done"].tap()
 
         // Screenshot #1: swipe left and reveal album actions
