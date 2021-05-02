@@ -379,7 +379,7 @@ class piwigoAppStore: XCTestCase {
             sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
         }
-        else if deviceType == "iPad Pro 3 12.9\"" {
+        else if deviceType == "iPad Pro 4 12.9\"" {
             app.collectionViews.children(matching: .cell).element(boundBy: 26).tap()
             sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
@@ -425,7 +425,7 @@ class piwigoAppStore: XCTestCase {
             sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
         }
-        else if deviceType == "iPad Pro 3 12.9\"" {
+        else if deviceType == "iPad Pro 4 12.9\"" {
             app.collectionViews.children(matching: .cell).element(boundBy: 13).tap()
             sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
