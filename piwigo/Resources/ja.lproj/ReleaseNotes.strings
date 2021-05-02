@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.6.2_text" = "Version 2.6.2\n\n• Allows some Community users to create tags\n• Fixes a compatibility issue with Piwigo 11\n• Minor bug fixes and improvements of the interface\n• Code modernization";
+"v2.6.2_text" = "バージョン2.6.2\n\n• 一部のコミュニティユーザーがタグを作成できるようにする\n• Piwigo 11との互換性の問題を修正する\n• 軽微なバグの修正とインタフェースの改善\n• コードの近代化";
 
 "v2.6.1_text" = "バージョン2.6.1\n2021年3月19日\n\n• 写真の選択に対するタグの属性を修正\n• 外観設定の再設計\n• バックグラウンドアップロードの信頼性を向上\n• 軽微なバグの修正とインタフェースの改善";
 
