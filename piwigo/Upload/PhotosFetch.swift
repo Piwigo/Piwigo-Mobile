@@ -229,10 +229,7 @@ class PhotosFetch: NSObject {
 
     private func requestPhotoLibraryAccess(in viewController: UIViewController?) {
         // Invite user to provide access to photos
-        let alert = UIAlertController(title: NSLocalizedString("localAlbums_photosNotAuthorized_title", comment: "No Access"), message: NSLocalizedString("localAlbums_photosNotAuthorized_msg", comment: "tell user to change settings, how"), preferredStyle: .alert)
-
-        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .destructive, handler: { action in
-            })
+        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .destructive, handler: { action in })
 
         let prefsAction = UIAlertAction(title: NSLocalizedString("alertOkButton", comment: "OK"), style: .default, handler: { action in
                 // Redirect user to Settings app
@@ -241,41 +238,15 @@ class PhotosFetch: NSObject {
                 }
             })
 
-        // Add actions
-        alert.addAction(cancelAction)
-        alert.addAction(prefsAction)
-
-        // Present list of actions
-        alert.view.tintColor = UIColor.piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
-        viewController?.present(alert, animated: true) {
-            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange()
-        }
+        // Present alert
+        let title = NSLocalizedString("localAlbums_photosNotAuthorized_title", comment: "No Access")
+        let message = NSLocalizedString("localAlbums_photosNotAuthorized_msg", comment: "tell user to change settings, how")
+        viewController?.presentPiwigoAlert(withTitle: title, message: message,
+                                actions: [cancelAction, prefsAction])
     }
 
     func showPhotosLibraryAccessRestricted(in viewController: UIViewController?) {
-        let alert = UIAlertController(title: NSLocalizedString("localAlbums_photosNiltitle", comment: "Problem Reading Photos"), message: NSLocalizedString("localAlbums_photosNnil_msg", comment: "There is a problem reading your local photo library."), preferredStyle: .alert)
-
-        let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .cancel, handler: { action in
-            })
-
-        // Present alert
-        alert.addAction(dismissAction)
-        alert.view.tintColor = UIColor.piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
-        viewController?.present(alert, animated: true) {
-            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange()
-        }
+        viewController?.dismissPiwigoError(withTitle: NSLocalizedString("localAlbums_photosNiltitle", comment: "Problem Reading Photos"), message: NSLocalizedString("localAlbums_photosNnil_msg", comment: "There is a problem reading your local photo library."), completion: {})
     }
 
 
