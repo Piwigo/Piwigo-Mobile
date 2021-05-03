@@ -197,6 +197,13 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        
+        // If user disallowed access to Photos, there is no album left for selection.
+        // So in this case, we return an empty collection name as source for auto-uploading.
+        if wantedAction == .setAutoUploadAlbum,
+           LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums.count == 0 {
+                delegate?.didSelectPhotoAlbum(withId: "")
+        }
 
         // Unregister palette changes
         var name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
