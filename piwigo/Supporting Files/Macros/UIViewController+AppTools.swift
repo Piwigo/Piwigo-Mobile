@@ -100,7 +100,7 @@ extension UIViewController {
     }
 
     
-    // MARK: - Dismiss Alert View
+    // MARK: - Dismiss Alert Views
     func dismissPiwigoError(withTitle title:String, message:String = "", errorMessage:String = "",
                             completion: @escaping () -> Void) {
         // Prepare message
@@ -158,7 +158,7 @@ extension UIViewController {
                                 actions: [cancelAction, dismissAction, retryAction])
     }
 
-    private func presentPiwigoAlert(withTitle title:String, message:String, actions:[UIAlertAction]) {
+    func presentPiwigoAlert(withTitle title:String, message:String, actions:[UIAlertAction]) {
         // Create alert view controller
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
 
