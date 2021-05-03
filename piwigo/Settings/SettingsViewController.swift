@@ -95,11 +95,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         }
         
         // Check if Auto-Upload can be proposed
-//        if #available(iOS 13.0, *) {
-//            if Model.sharedInstance()?.usesUploadAsync ?? false {
-//                hasAutoUploadSettings = true
-//            }
-//        }
+        if #available(iOS 13.0, *) {
+            if Model.sharedInstance()?.usesUploadAsync ?? false {
+                hasAutoUploadSettings = true
+            }
+        }
 
         // Title
         title = NSLocalizedString("tabBar_preferences", comment: "Settings")
