@@ -227,7 +227,7 @@ class PhotosFetch: NSObject {
         }
     }
 
-    private func requestPhotoLibraryAccess(in viewController: UIViewController?) {
+    func requestPhotoLibraryAccess(in viewController: UIViewController?) {
         // Invite user to provide access to photos
         let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .destructive, handler: { action in })
 
