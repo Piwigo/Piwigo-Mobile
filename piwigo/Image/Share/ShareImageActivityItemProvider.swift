@@ -12,9 +12,6 @@ import Photos
 import UIKit
 import LinkPresentation
 
-//let kPiwigoNotificationDidShareImage = "kPiwigoNotificationDidShareImage"
-//let kPiwigoNotificationCancelDownloadImage = "kPiwigoNotificationCancelDownloadImage"
-
 @objc
 class ShareImageActivityItemProvider: UIActivityItemProvider {
     
@@ -27,7 +24,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
     private var alertMessage: String?
     private var imageFileURL: URL                       // Shared image file URL
     private var imageFileData: Data                     // Content of the shared image file
-
+    private var isCancelledByUser = false               // Flag updated when pressing Cancel
     
     // MARK: - Progress Faction
     private var _progressFraction: Float = 0.0
@@ -54,7 +51,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
 
         // We use the thumbnail cached in memory
         let alreadyLoadedSize = Model.sharedInstance().defaultThumbnailSize
-        guard let thumbnailRL = URL(string: imageData.getURLFromImageSizeType(alreadyLoadedSize)) else {
+        guard let thumbnailURL = URL(string: imageData.getURLFromImageSizeType(alreadyLoadedSize)) else {
             imageFileData = Data()
             imageFileURL = URL.init(string: "")!
             super.init(placeholderItem: UIImage(named: "AppIconShare")!)
@@ -63,9 +60,9 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         
         // Retrieve thumbnail image
         let thumb = UIImageView()
-        thumb.setImageWith(thumbnailRL, placeholderImage: UIImage(named: "AppIconShare"))
+        thumb.setImageWith(thumbnailURL, placeholderImage: UIImage(named: "AppIconShare"))
         if let thumbnailImage = thumb.image {
-            imageFileURL = thumbnailRL
+            imageFileURL = thumbnailURL
             let resizedImage = thumbnailImage.resize(to: CGFloat(70.0), opaque: true)
             imageFileData = resizedImage.jpegData(compressionQuality: 1.0) ?? Data()
             super.init(placeholderItem: thumbnailImage)
@@ -74,6 +71,10 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
             imageFileURL = URL.init(string: "")!
             super.init(placeholderItem: UIImage(named: "AppIconShare")!)
         }
+
+        // Register image share methods to perform on completion
+        NotificationCenter.default.addObserver(self, selector: #selector(didFinishSharingImage), name: NSNotification.Name(kPiwigoNotificationDidShare), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(cancelDownloadImageTask), name: NSNotification.Name(kPiwigoNotificationCancelDownload), object: nil)
     }
 
     // MARK: - Download & Prepare Image
@@ -83,14 +84,19 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
     /// The implementation of this method loads an image from the Piwigo server.
     ///****************************************************
     override var item: Any {
+        // First check if this operation is not cancelled
+        if isCancelledByUser {
+            // Cancel task
+            cancel()
+            // Notify the delegate on the main thread that the processing is cancelled
+            preprocessingDidEnd()
+            return placeholderItem!
+        }
+        
         // Notify the delegate on the main thread that the processing is beginning.
         DispatchQueue.main.async(execute: {
             self.delegate?.imageActivityItemProviderPreprocessingDidBegin(self, withTitle: NSLocalizedString("downloadingImage", comment: "Downloading Photo"))
         })
-
-        // Register image share methods to perform on completion
-        NotificationCenter.default.addObserver(self, selector: #selector(didFinishSharingImage), name: NSNotification.Name(kPiwigoNotificationDidShareImage), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(cancelDownloadImageTask), name: NSNotification.Name(kPiwigoNotificationCancelDownloadImage), object: nil)
 
         // Get the maximum accepted image size (infinity for largest)
         let maxSize = activityType?.imageMaxSize() ?? Int.max
@@ -343,14 +349,16 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
     }
     
     @objc func cancelDownloadImageTask() {
+        // Will cancel share when operation starts
+        isCancelledByUser = true
         // Cancel image file download
         task?.cancel()
     }
 
     @objc func didFinishSharingImage() {
         // Remove image share observers
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kPiwigoNotificationDidShareImage), object: nil)
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kPiwigoNotificationCancelDownloadImage), object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kPiwigoNotificationDidShare), object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kPiwigoNotificationCancelDownload), object: nil)
 
         // Inform user in case of error after dismissing activity view controller
         if let alertTitle = alertTitle {
@@ -381,10 +389,10 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         
         // We use the thumbnail in cache
         let alreadyLoadedSize = Model.sharedInstance().defaultThumbnailSize
-        if let thumbnailRL = URL(string: imageData.getURLFromImageSizeType(alreadyLoadedSize)) {
+        if let thumbnailURL = URL(string: imageData.getURLFromImageSizeType(alreadyLoadedSize)) {
             // Retrieve thumbnail image
             let thumb = UIImageView()
-            thumb.setImageWith(thumbnailRL, placeholderImage: UIImage(named: "AppIconShare"))
+            thumb.setImageWith(thumbnailURL, placeholderImage: UIImage(named: "AppIconShare"))
             if let thumbnailImage = thumb.image {
                 linkMetaData.imageProvider = NSItemProvider(object: thumbnailImage)
             } else {

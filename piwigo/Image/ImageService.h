@@ -89,16 +89,16 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
                                   OnCompletion:(void (^)(NSURLSessionTask *task, id response))completion
                                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(NSURLSessionTask*)setCategoriesForImage:(PiwigoImageData *)imageId
-                           withCategories:(NSArray *)imageCategories
-                               onProgress:(void (^)(NSProgress *))progress
-                             OnCompletion:(void (^)(NSURLSessionTask *task, BOOL setCategoriesSuccessfully))completion
-                                onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
++(NSURLSessionTask*)setCategoriesForImageWithId:(NSInteger)imageId
+                                 withCategories:(NSArray *)imageCategories
+                                     onProgress:(void (^)(NSProgress *))progress
+                                   OnCompletion:(void (^)(NSURLSessionTask *task))completion
+                                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(NSURLSessionTask*)addImageToFavorites:(PiwigoImageData *)image
-                             onProgress:(void (^)(NSProgress *))progress
-                           OnCompletion:(void (^)(NSURLSessionTask *task, BOOL addedSuccessfully))completion
-                              onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
++(NSURLSessionTask*)addToFavoritesImageWithId:(NSInteger)imageId
+                                   onProgress:(void (^)(NSProgress *))progress
+                                 OnCompletion:(void (^)(NSURLSessionTask *task, BOOL addedSuccessfully))completion
+                                    onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 +(NSURLSessionTask*)removeImageFromFavorites:(PiwigoImageData *)image
                                   onProgress:(void (^)(NSProgress *))progress

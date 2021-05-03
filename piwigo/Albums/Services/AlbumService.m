@@ -103,17 +103,6 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 #if defined(DEBUG_ALBUM)
                   NSLog(@"getInfos — Fail: %@", [error description]);
 #endif
-                  // Check session (closed or IPv4/IPv6 switch)?
-                  NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
-                  if ((statusCode == 401) ||        // Unauthorized
-                      (statusCode == 403) ||        // Forbidden
-                      (statusCode == 404))          // Not Found
-                  {
-                      NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
-                      dispatch_async(dispatch_get_main_queue(), ^{
-                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
-                      });
-                  }
                   if(fail) {
                       fail(task, error);
                   }
@@ -141,7 +130,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
     }
 
     // Recursive option ?
-    NSString *recursiveString = ([Model sharedInstance].loadAllCategoryInfo || recursive) ? @"true" : @"false";
+    NSString *recursiveString = recursive ? @"true" : @"false";
 
     // Community extension active ?
     NSString *fakedString = [Model sharedInstance].usesCommunityPluginV29 ? @"false" : @"true";
@@ -222,7 +211,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                       NSLog(@"                => %ld albums returned", (long)[albums count]);
 #endif
                       // Update Categories Data cache
-                      if ([Model sharedInstance].loadAllCategoryInfo && (categoryId == 0))
+                      if (categoryId == 0)
                       {
                           [[CategoriesData sharedInstance] replaceAllCategories:albums];
                       }
@@ -258,17 +247,6 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 #if defined(DEBUG_ALBUM)
                   NSLog(@"getAlbumListForCategory — Fail: %@", [error description]);
 #endif
-                  // Check session (closed or IPv4/IPv6 switch)?
-                  NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
-                  if ((statusCode == 401) ||        // Unauthorized
-                      (statusCode == 403) ||        // Forbidden
-                      (statusCode == 404))          // Not Found
-                  {
-                      NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
-                      dispatch_async(dispatch_get_main_queue(), ^{
-                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
-                      });
-                  }
                   if(fail) {
                       fail(task, error);
                   }
@@ -277,6 +255,14 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 
 +(NSArray*)parseAlbumJSON:(NSArray*)json
 {
+    // API pwg.categories.getList returns:
+    //      id, id_uppercat, representative_picture_id, tn_url
+    //      status, name, comment
+    //      nb_categories, uppercats, nb_images, total_nb_images
+    //      date_last, max_date_last
+    //      comment, global_rank, permalink, url
+    //
+
     NSMutableArray *albums = [NSMutableArray new];
 	for(NSDictionary *category in json)
 	{
@@ -404,16 +390,8 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 #if defined(DEBUG_ALBUM)
                   NSLog(@"getCommunityAlbumListForCategory — Fail: %@", [error description]);
 #endif
-                  // Check session (closed or IPv4/IPv6 switch)?
-                  NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
-                  if ((statusCode == 401) ||        // Unauthorized
-                      (statusCode == 403) ||        // Forbidden
-                      (statusCode == 404))          // Not Found
-                  {
-                      NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
-                      dispatch_async(dispatch_get_main_queue(), ^{
-                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
-                      });
+                  if(fail) {
+                      fail(task, error);
                   }
               }];
 }
@@ -470,17 +448,6 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 #if defined(DEBUG_ALBUM)
             NSLog(@"createCategoryWithName — Fail: %@", [error description]);
 #endif
-            // Check session (closed or IPv4/IPv6 switch)?
-            NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
-            if ((statusCode == 401) ||        // Unauthorized
-                (statusCode == 403) ||        // Forbidden
-                (statusCode == 404))          // Not Found
-            {
-                NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
-                });
-            }
             if(fail) {
                 fail(task, error);
             }
@@ -511,17 +478,6 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
     #if defined(DEBUG_ALBUM)
                   NSLog(@"renameCategory — Fail: %@", [error description]);
     #endif
-                  // Check session (closed or IPv4/IPv6 switch)?
-                  NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
-                  if ((statusCode == 401) ||        // Unauthorized
-                      (statusCode == 403) ||        // Forbidden
-                      (statusCode == 404))          // Not Found
-                  {
-                      NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
-                      dispatch_async(dispatch_get_main_queue(), ^{
-                          [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
-                      });
-                  }
                   if(fail) {
                       fail(task, error);
                   }
@@ -555,17 +511,6 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
   #if defined(DEBUG_ALBUM)
                 NSLog(@"deleteCategory — Fail: %@", [error description]);
   #endif
-                // Check session (closed or IPv4/IPv6 switch)?
-                NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
-                if ((statusCode == 401) ||        // Unauthorized
-                    (statusCode == 403) ||        // Forbidden
-                    (statusCode == 404))          // Not Found
-                {
-                    NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
-                    });
-                }
                 if(fail) {
                     fail(task, error);
                 }
@@ -595,17 +540,6 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
   #if defined(DEBUG_ALBUM)
                 NSLog(@"moveCategory — Fail: %@", [error description]);
   #endif
-                // Check session (closed or IPv4/IPv6 switch)?
-                NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
-                if ((statusCode == 401) ||        // Unauthorized
-                    (statusCode == 403) ||        // Forbidden
-                    (statusCode == 404))          // Not Found
-                {
-                    NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
-                    });
-                }
                 if(fail) {
                     fail(task, error);
                 }
@@ -634,17 +568,6 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
   #if defined(DEBUG_ALBUM)
                 NSLog(@"setCategoryRepresentativeForCategory — Fail: %@", [error description]);
   #endif
-                // Check session (closed or IPv4/IPv6 switch)?
-                NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
-                if ((statusCode == 401) ||        // Unauthorized
-                    (statusCode == 403) ||        // Forbidden
-                    (statusCode == 404))          // Not Found
-                {
-                    NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
-                    });
-                }
                 if(fail) {
                     fail(task, error);
                 }
@@ -671,17 +594,6 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
   #if defined(DEBUG_ALBUM)
                 NSLog(@"refreshCategoryRepresentativeForCategory — Fail: %@", [error description]);
   #endif
-                // Check session (closed or IPv4/IPv6 switch)?
-                NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
-                if ((statusCode == 401) ||        // Unauthorized
-                    (statusCode == 403) ||        // Forbidden
-                    (statusCode == 404))          // Not Found
-                {
-                    NSLog(@"…notify kPiwigoNotificationNetworkErrorEncountered!");
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationNetworkErrorEncountered object:nil userInfo:nil];
-                    });
-                }
                 if(fail) {
                     fail(task, error);
                 }

@@ -65,7 +65,7 @@ extension UploadManager {
                         imageData.datePosted = Date.init()
                         imageData.fileSize = NSNotFound // will trigger pwg.images.getInfo
                         imageData.imageTitle = uploadProperties.imageTitle
-                        imageData.categoryIds = [uploadProperties.category]
+                        imageData.categoryIds = [uploadProperties.category as NSNumber]
                         imageData.fileName = uploadProperties.fileName
                         imageData.isVideo = uploadProperties.isVideo
                         imageData.dateCreated = Date(timeIntervalSinceReferenceDate: uploadProperties.creationDate)
@@ -98,17 +98,20 @@ extension UploadManager {
                 }
             },
             onFailure: { (task, error) in
-                if let error = error {
-                    if ((error.code == 401) ||        // Unauthorized
-                        (error.code == 403) ||        // Forbidden
-                        (error.code == 404))          // Not Found
-                    {
-                        print("…notify kPiwigoNotificationNetworkErrorEncountered!")
-                        let name = NSNotification.Name(rawValue: kPiwigoNotificationNetworkErrorEncountered)
-                        NotificationCenter.default.post(name: name, object: nil, userInfo: nil)
+                if let error = error as NSError? {
+                    // Try relogin if unauthorized
+                    if let response = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? HTTPURLResponse,
+                       response.statusCode == 401 {
+                        // Try relogin
+                        let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                        appDelegate?.reloginAndRetry {
+                            // Image still ready for upload
+                            self.didEndTransfer(for: uploadID, with: uploadProperties, error)
+                        }
+                    } else {
+                        // Image still ready for upload
+                        self.didEndTransfer(for: uploadID, with: uploadProperties, error)
                     }
-                    // Image still ready for upload
-                    self.didEndTransfer(for: uploadID, with: uploadProperties, error)
                 }
             })
     }
@@ -249,7 +252,7 @@ extension UploadManager {
             },
            success: { task, responseObject in
                 // Continue in background queue!
-                DispatchQueue.global(qos: .background).async {
+                self.backgroundQueue.async {
                     // Continue?
                     print("\(self.debugFormatter.string(from: Date())) > #\(count) done:", responseObject.debugDescription)
                     if count >= chunks - 1 {
@@ -266,7 +269,7 @@ extension UploadManager {
             },
            failure: { task, error in
                 // Continue in background queue!
-                DispatchQueue.global(qos: .background).async {
+                self.backgroundQueue.async {
                     // failed!
                     fail(task, error as NSError?)
                 }
@@ -451,14 +454,14 @@ extension UploadManager {
             }
             var uploadProperties: UploadProperties
             do {
-                let upload = try taskContext.existingObject(with: uploadID) as! Upload
+                let upload = try taskContext.existingObject(with: uploadID)
                 if upload.isFault {
                     // The upload request is not fired yet.
                     upload.willAccessValue(forKey: nil)
-                    uploadProperties = upload.getProperties()
+                    uploadProperties = (upload as! Upload).getProperties()
                     upload.didAccessValue(forKey: nil)
                 } else {
-                    uploadProperties = upload.getProperties()
+                    uploadProperties = (upload as! Upload).getProperties()
                 }
             }
             catch {
@@ -513,14 +516,14 @@ extension UploadManager {
         }
         var uploadProperties: UploadProperties
         do {
-            let upload = try taskContext.existingObject(with: uploadID) as! Upload
+            let upload = try taskContext.existingObject(with: uploadID)
             if upload.isFault {
                 // The upload request is not fired yet.
                 upload.willAccessValue(forKey: nil)
-                uploadProperties = upload.getProperties()
+                uploadProperties = (upload as! Upload).getProperties()
                 upload.didAccessValue(forKey: nil)
             } else {
-                uploadProperties = upload.getProperties()
+                uploadProperties = (upload as! Upload).getProperties()
             }
         }
         catch {
@@ -599,7 +602,7 @@ extension UploadManager {
 
                 let imageData = PiwigoImageData.init()
                 imageData.imageId = uploadJSON.data.imageId!
-                imageData.categoryIds = [uploadProperties.category]
+                imageData.categoryIds = [uploadProperties.category as NSNumber]
                 imageData.imageTitle = NetworkUtilities.utf8mb4String(from: uploadJSON.data.imageTitle ?? "")
                 imageData.comment = NetworkUtilities.utf8mb4String(from: uploadJSON.data.comment ?? "")
                 imageData.visits = uploadJSON.data.visits ?? 0

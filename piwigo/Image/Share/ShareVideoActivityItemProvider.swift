@@ -12,9 +12,6 @@ import AVFoundation
 import UIKit
 import LinkPresentation
 
-//let kPiwigoNotificationDidShareVideo = "kPiwigoNotificationDidShareVideo"
-//let kPiwigoNotificationCancelDownloadVideo = "kPiwigoNotificationCancelDownloadVideo"
-
 @objc
 class ShareVideoActivityItemProvider: UIActivityItemProvider {
 
@@ -27,6 +24,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
     private var alertTitle: String?                     // Used if task cancels or fails
     private var alertMessage: String?
     private var imageFileURL: URL                       // Shared image file URL
+    private var isCancelledByUser = false               // Flag updated when pressing Cancel
 
 
     // MARK: - Progress Faction
@@ -54,7 +52,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
 
         // We use the thumbnail cached in memory
         let alreadyLoadedSize = Model.sharedInstance().defaultThumbnailSize
-        guard let thumbnailRL = URL(string: imageData.getURLFromImageSizeType(alreadyLoadedSize)) else {
+        guard let thumbnailURL = URL(string: imageData.getURLFromImageSizeType(alreadyLoadedSize)) else {
             imageFileURL = URL.init(string: "")!
             super.init(placeholderItem: UIImage(named: "AppIconShare")!)
             return
@@ -62,15 +60,19 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         
         // Retrieve thumbnail image
         let thumb = UIImageView()
-        thumb.setImageWith(thumbnailRL, placeholderImage: UIImage(named: "AppIconShare"))
+        thumb.setImageWith(thumbnailURL, placeholderImage: UIImage(named: "AppIconShare"))
         if let thumbnailImage = thumb.image {
-            imageFileURL = thumbnailRL
+            imageFileURL = thumbnailURL
             let resizedImage = thumbnailImage.resize(to: CGFloat(70.0), opaque: true)
             super.init(placeholderItem: resizedImage)
         } else {
             imageFileURL = URL.init(string: "")!
             super.init(placeholderItem: UIImage(named: "AppIconShare")!)
         }
+
+        // Register image share methods to perform on completion
+        NotificationCenter.default.addObserver(self, selector: #selector(didFinishSharingVideo), name: NSNotification.Name(kPiwigoNotificationDidShare), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(cancelDownloadVideoTask), name: NSNotification.Name(kPiwigoNotificationCancelDownload), object: nil)
     }
 
     // MARK: - Download & Prepare Video
@@ -80,14 +82,19 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
     /// The implementation of this method loads an image from the Piwigo server.
     ///****************************************************
     override var item: Any {
+        // First check if this operation is not cancelled
+        if isCancelledByUser {
+            // Cancel task
+            cancel()
+            // Notify the delegate on the main thread that the processing is cancelled
+            preprocessingDidEnd()
+            return placeholderItem!
+        }
+        
         // Notify the delegate on the main thread that the processing is beginning.
         DispatchQueue.main.async(execute: {
             self.delegate?.imageActivityItemProviderPreprocessingDidBegin(self, withTitle: NSLocalizedString("downloadingVideo", comment: "Downloading Video"))
         })
-
-        // Register image share methods to perform on completion
-        NotificationCenter.default.addObserver(self, selector: #selector(didFinishSharingVideo), name: NSNotification.Name(kPiwigoNotificationDidShareVideo), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(cancelDownloadVideoTask), name: NSNotification.Name(kPiwigoNotificationCancelDownloadVideo), object: nil)
 
         // Determine the URL request
         /// - The movie URL is necessarily the one of the full resolution Piwigo image
@@ -367,6 +374,8 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
     }
     
     @objc func cancelDownloadVideoTask() {
+        // Will cancel share when operation starts
+        isCancelledByUser = true
         // Cancel video file download
         task?.cancel()
         // Cancel video export
@@ -375,8 +384,8 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
 
     @objc func didFinishSharingVideo() {
         // Remove image share observers
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kPiwigoNotificationDidShareVideo), object: nil)
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kPiwigoNotificationCancelDownloadVideo), object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kPiwigoNotificationDidShare), object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kPiwigoNotificationCancelDownload), object: nil)
 
         // Inform user in case of error after dismissing activity view controller
         if let alertTitle = alertTitle {
@@ -404,10 +413,10 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         
         // We use the thumbnail in cache
         let alreadyLoadedSize = Model.sharedInstance().defaultThumbnailSize
-        if let thumbnailRL = URL(string: imageData.getURLFromImageSizeType(alreadyLoadedSize)) {
+        if let thumbnailURL = URL(string: imageData.getURLFromImageSizeType(alreadyLoadedSize)) {
             // Retrieve thumbnail image
             let thumb = UIImageView()
-            thumb.setImageWith(thumbnailRL, placeholderImage: UIImage(named: "AppIconShare"))
+            thumb.setImageWith(thumbnailURL, placeholderImage: UIImage(named: "AppIconShare"))
             if let thumbnailImage = thumb.image {
                 linkMetaData.imageProvider = NSItemProvider(object: thumbnailImage)
             } else {

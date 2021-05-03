@@ -38,7 +38,7 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
     }
 
 
-// MARK: - View Lifecycle
+    // MARK: - View Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -82,15 +82,18 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
+        super .viewWillDisappear(animated)
+
+        // Update cell of parent view
+        delegate?.didSelectPrivacyLevel(privacy)
+
         // Unregister palette changes
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
         NotificationCenter.default.removeObserver(self, name: name, object: nil)
     }
 
     
-// MARK: - UITableView - Header
+    // MARK: - UITableView - Header
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         // Title
@@ -154,7 +157,7 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
     }
 
     
-// MARK: - UITableView - Rows
+    // MARK: - UITableView - Rows
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return Int(kPiwigoPrivacyCount.rawValue)
@@ -186,29 +189,28 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
     }
 
     
-// MARK: - UITableViewDelegate Methods
+    // MARK: - UITableViewDelegate Methods
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+        // Deselect row
         tableView.deselectRow(at: indexPath, animated: true)
-        let selectedPrivacy = getPrivacyLevel(forRow: indexPath.row)
-
+        
+        // Did the user change the level?
+        if privacy == getPrivacyLevel(forRow: indexPath.row) { return }
+        
+        // Update choice
+        privacy = getPrivacyLevel(forRow: indexPath.row)
         for visibleCell in tableView.visibleCells {
             visibleCell.accessoryType = .none
-            if visibleCell.tag == Int(selectedPrivacy.rawValue) {
+            if visibleCell.tag == Int(privacy.rawValue) {
                 visibleCell.accessoryType = .checkmark
             }
         }
-
-        // Update cell of parent view
-        delegate?.didSelectPrivacyLevel(selectedPrivacy)
-
-        navigationController?.popViewController(animated: true)
     }
 }
 
 
-// MARK: - Utilities
+    // MARK: - Utilities
 
     private func getPrivacyLevel(forRow row: Int) -> kPiwigoPrivacy {
         var privacyLevel: kPiwigoPrivacy

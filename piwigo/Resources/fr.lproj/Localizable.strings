@@ -165,6 +165,7 @@
 "categorySelection_root" = "Album Racine";
 "categorySelection_action" = "Choisissez une action pour cet album";
 "categorySelectionHUD_label" = "Récupération des Données d'Albums…";
+"categorySelection_allAlbums" = "Tous les albums";
 
 // Album upload
 "categoryUpload_noSubAlbum" = "Il n'y a pas de sous-album qui puisse recevoir des photos";
@@ -183,11 +184,9 @@
 
 "categoyUpload_loadSubCategories" = "télécharge";
 "categoryUpload_images" = "Télécharger des photos";
-"categoryUpload_subAlbum" = "Créer un sous-album";
-"categoryUpload_defaultAlbum" = "Définir comme Album par Défaut";
-"categoryUpload_defaultSelect" = "Veuillez sélectionnez l’album ou le sous-album qui deviendra votre album par défaut";
 
 // Default album
+"setDefaultCategory_select" = "Veuillez sélectionner un album ou un sous-album qui deviendra le nouvel album racine.";
 "setDefaultCategory_title" = "Album par Défaut";
 "setDefaultCategory_message" = "Etes-vous sûr de vouloir définir l'album \"%@\" comme Album par Défaut ?";
 
@@ -245,9 +244,7 @@
 
 // Album move
 "moveCategory" = "Déplacer l'Album";
-"moveCategory_selectParent" = "Sélectionnez l'album vers lequel vous souhaitez déplacer l’album \"%@\"";
-"moveCategory_selectRecent" = "Sélectionnez un album récent vers lequel vous souhaitez déplacer l’album \"%@\"";
-"moveCategory_selectRecentOther" = "Ou sélectionnez un autre album vers lequel vous souhaitez déplacer l'album \"%@\"";
+"moveCategory_select" = "Veuillez sélectionner un album ou un sous-album où déplacer l'album \"%@\".";
 "moveCategory_message" = "Êtes-vous certain de vouloir déplacer \"%@\" dans l’album \"%@\" ?";
 "moveCategoryHUD_moving" = "Déplacement de l'Album…";
 
@@ -256,7 +253,7 @@
 "moveCategoryError_message" = "Impossible de déplacer votre album";
 
 // Album set photo thumbnail
-//"categorySelection_select" = "Select Album";
+"categorySelection_setThumbnail" = "Veuillez sélectionner l'album qui utilisera la photo \"%@\" comme vignette.";
 "categorySelection_current" = "Sélectionnez l’album en cours pour cette photo";
 "categorySelection_one" = "Sélectionnez un des albums contenant cette photo";
 "categorySelection_other" = "Ou sélectionnez un autre album pour cette photo";
@@ -378,6 +375,7 @@
 "deleteSeveralImagesHUD_deleting" = "Effacement des photos…";
 "removeSingleImage_title" = "Supprimer de cet album";
 "removeSingleImageHUD_removing" = "Suppression de la photo…";
+"removeSeveralImagesHUD_removing" = "Suppression des photos…";
 "deleteSingleImage_message" = "Êtes-vous sûr de vouloir supprimer cette photo ? Opération irréversible !";
 "deleteSeveralImages_title" = "Effacer %@ photos";
 "deleteSeveralImages_message" = "Êtes-vous sûr de vouloir effacer la sélection de %@ photos ? Opération irréversible !";
@@ -410,12 +408,8 @@
 
 // Image move
 "moveImage_title" = "Déplacer vers un Album";
-"moveSingleImage_selectAlbum" = "Sélectionnez l'album vers lequel vous souhaitez déplacer la photo \"%@\"";
-"moveSingleImage_selectRecent" = "Sélectionnez un album récent vers lequel vous souhaitez déplacer la photo \"%@\"";
-"moveSingleImage_selectRecentOther" = "Ou sélectionnez un autre album vers lequel vous souhaitez déplacer la photo \"%@\"";
-"moveSeveralImages_selectAlbum" = "Sélectionnez l'album vers lequel vous souhaitez déplacer les photos";
-"moveSeveralImages_selectRecent" = "Sélectionnez un album récent vers lequel vous souhaitez déplacer les photos";
-"moveSeveralImages_selectRecentOther" = "Ou sélectionnez un autre album vers lequel vous souhaitez déplacer les photos";
+"moveSingleImage_selectAlbum" = "Veuillez sélectionner l'album dans lequel vous souhaitez déplacer la photo \"%@\".";
+"moveSeveralImages_selectAlbum" = "Veuillez sélectionner l'album dans lequel vous souhaitez copier les photos.";
 "moveSingleImage_message" = "Êtes-vous certain de vouloir déplacer la photo \"%@\" dans l’album \"%@\" ?";
 "moveSeveralImages_message" = "Êtes-vous certain de vouloir déplacer les photos dans l’album \"%@\" ?";
 "moveSingleImageHUD_moving" = "Déplacement de la photo…";
@@ -424,15 +418,12 @@
 // Image move — Errors
 "moveImageError_title" = "Échec du déplacement";
 "moveSingleImageError_message" = "Impossible de déplacer votre photo";
+"moveSeveralImagesError_message" = "Impossible de déplacer certaines photos";
 
 // Image copy
 "copyImage_title" = "Copier dans un Album";
-"copySingleImage_selectAlbum" = "Sélectionnez l'album vers lequel vous souhaitez copier la photo \"%@\"";
-"copySingleImage_selectRecent" = "Sélectionnez un album récent vers lequel vous souhaitez copier la photo \"%@\"";
-"copySingleImage_selectRecentOther" = "Ou sélectionnez un autre album vers lequel vous souhaitez copier la photo \"%@\"";
-"copySeveralImages_selectAlbum" = "Sélectionnez l'album Piwigo vers lequel vous souhaitez copier les photos";
-"copySeveralImages_selectRecent" = "Sélectionnez un album récent vers lequel vous souhaitez copier les photos";
-"copySeveralImages_selectRecentOther" = "Ou sélectionnez un autre album vers lequel vous souhaitez copier les photos";
+"copySingleImage_selectAlbum" = "Veuillez sélectionner l'album dans lequel vous souhaitez copier la photo \"%@\".";
+"copySeveralImages_selectAlbum" = "Veuillez sélectionner l'album dans lequel vous souhaitez copier les photos.";
 "copySingleImage_message" = "Êtes-vous certain de vouloir copier la photo \"%@\" dans l’album \"%@\" ?";
 "copySeveralImages_message" = "Êtes-vous certain de vouloir copier les photos dans l’album \"%@\" ?";
 "copySingleImageHUD_copying" = "Copie de la photo…";
@@ -441,8 +432,10 @@
 // Image copy — Errors
 "copyImageError_title" = "Échec de la copie";
 "copySingleImageError_message" = "Impossible de copier votre photo";
+"copySeveralImagesError_message" = "Impossible de copier certaines photos";
 
 // Images upload
+"imageUploadHeader" = "Veuillez sélectionner l'album ou le sous-album à partir duquel les photos et les vidéos de votre appareil seront téléchargées.";
 "imageUploadHeaderTitle_images" = "Paramètres des photos";
 "imageUploadHeaderText_images" = "Veuillez définir les paramètres à appliquer à la sélection des photos/vidéos";
 "imageUploadHeaderTitle_upload" = "Réglage des téléchargements";
@@ -679,6 +672,19 @@
 "settings_deleteImage>375px" = "Effacer la photo après envoi";
 "settings_wifiOnly" = "Wi-Fi uniquement";
 "settings_deleteImage" = "Effacer après Envoi";
+"settings_autoUpload" = "Télécharger automatiquement";
+"settings_autoUpload>414px" = "Télécharger automatiquement des photos";
+"settings_autoUploadEnabled" = "Activé";
+"settings_autoUploadEnabledInfo" = "Les photos seront automatiquement téléchargées sur votre Piwigo.";
+"settings_autoUploadEnabledInfoAll" = "Les photos et les vidéos seront automatiquement téléchargées sur votre Piwigo.";
+"settings_autoUploadDisabled" = "Désactivé";
+"settings_autoUploadDisabledInfo" = "Les photos ne seront pas automatiquement téléchargées sur votre Piwigo.";
+"settings_autoUploadSource" = "Source";
+"settings_autoUploadSourceInvalid" = "Album source invalide";
+"settings_autoUploadSourceInfo" = "Veuillez sélectionner l'album ou le sous-album à partir duquel les photos et les vidéos de votre appareil seront automatiquement téléchargées.";
+"settings_autoUploadDestination" = "Destination";
+"settings_autoUploadDestinationInvalid" = "Album de destination invalide";
+"settings_autoUploadDestinationInfo" = "Veuillez sélectionner l'album ou le sous-album dans lequel les photos et les vidéos seront automatiquement téléchargées.";
 
 // Settings — Cache
 "settingsHeader_cache" = "Paramètres de Cache (Utilisé/Total)";

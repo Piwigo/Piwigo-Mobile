@@ -36,6 +36,17 @@ class UploadSwitchViewController: UIViewController {
         }
     }
 
+    private var _hasTagCreationRights = false
+    @objc var hasTagCreationRights: Bool {
+        get {
+            _hasTagCreationRights
+        }
+        set(canCreateTags) {
+            _hasTagCreationRights = canCreateTags
+        }
+    }
+
+    
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -43,7 +43,7 @@ extension UploadManager{
             onProgress:nil,
             onCompletion: { (task, jsonData) in
                 // Continue in background queue!
-                DispatchQueue.global(qos: .background).async {
+                self.backgroundQueue.async {
                     // Check returned data
                     guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {
                         // Upload still ready for finish
@@ -86,18 +86,21 @@ extension UploadManager{
             },
             onFailure: { (task, error) in
                 // Continue in background queue!
-                DispatchQueue.global(qos: .background).async {
+                self.backgroundQueue.async {
                     if let error = error as NSError? {
-                        if ((error.code == 401) ||        // Unauthorized
-                            (error.code == 403) ||        // Forbidden
-                            (error.code == 404))          // Not Found
-                        {
-                            print("…notify kPiwigoNotificationNetworkErrorEncountered!")
-                            let name = NSNotification.Name(rawValue: kPiwigoNotificationNetworkErrorEncountered)
-                            NotificationCenter.default.post(name: name, object: nil, userInfo: nil)
+                        // Try relogin if unauthorized
+                        if let response = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? HTTPURLResponse,
+                           response.statusCode == 401 {
+                            // Try relogin
+                            let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                            appDelegate?.reloginAndRetry {
+                                // Upload still ready for finish
+                                self.didSetParameters(for: uploadID, error: error)
+                            }
+                        } else {
+                            // Upload still ready for finish
+                            self.didSetParameters(for: uploadID, error: error)
                         }
-                        // Upload still ready for finish
-                        self.didSetParameters(for: uploadID, error: error)
                     }
                 }
             })
@@ -136,7 +139,7 @@ extension UploadManager{
         getUploadedImageStatus(byId: imageIds, inCategory: categoryId,
             onCompletion: { (task, jsonData) in
                 // Continue in background queue!
-                DispatchQueue.global(qos: .background).async {
+                self.backgroundQueue.async {
                     // Check returned data
                     guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {
                         // Will retry later
@@ -173,7 +176,7 @@ extension UploadManager{
                 }
         }, onFailure: { (task, error) in
             // Continue in background queue!
-            DispatchQueue.global(qos: .background).async {
+            self.backgroundQueue.async {
                 // Will retry later
                 completionHandler(false)
                 return

@@ -360,6 +360,11 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 
 -(void)addImage:(PiwigoImageData *)image toCategory:(NSString *)category
 {
+    // Check if the image already belongs to the category
+    PiwigoImageData *imageInCategory = [self getImageForCategory:category.integerValue andId:image.imageId];
+    if (imageInCategory != nil) { return; }
+    
+    // Add image to category
     PiwigoAlbumData *imageCategory = [self getCategoryById:[category integerValue]];
     [imageCategory addUploadedImage:image];
     [imageCategory incrementImageSizeByOne];
@@ -369,10 +374,12 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationUploadedImage object:nil userInfo:userInfo];
     
     // Notify UI that the number of images has changed and that the thumbnail may have to be changed
-    userInfo = @{@"albumId" : category,
-                 @"thumbnailId" : @(image.imageId),
-                 @"thumbnailUrl" : image.ThumbPath};
-    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedAlbumData object:nil userInfo:userInfo];
+    for (NSString *catStr in imageCategory.upperCategories) {
+        userInfo = @{@"albumId" : catStr,
+                     @"thumbnailId" : @(image.imageId),
+                     @"thumbnailUrl" : image.ThumbPath};
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedAlbumData object:nil userInfo:userInfo];
+    }
 }
 
 -(void)removeImage:(PiwigoImageData*)image
@@ -406,6 +413,11 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 
 -(void)removeImage:(PiwigoImageData*)image fromCategory:(NSString *)category
 {
+    // Check the existence of the image
+    PiwigoImageData *imageInCategory = [self getImageForCategory:category.integerValue andId:image.imageId];
+    if (imageInCategory == nil) { return; }
+    
+    // Remove image from category
     PiwigoAlbumData *imageCategory = [self getCategoryById:[category integerValue]];
     [imageCategory deincrementImageSizeByOne];
     [imageCategory removeImages:@[image]];
@@ -415,11 +427,18 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     NSDictionary *userInfo = @{@"albumId" : category, @"imageId" : @(image.imageId)};
     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDeletedImage object:nil userInfo:userInfo];
 
+    // Notify the Upload database that this image has been removed from this category
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationMovedImage object:nil userInfo:userInfo];
+    });
+
     // Notify UI that the number of images has changed and that the thumbnail may have to be changed
-    userInfo = @{@"albumId" : category,
-                 @"thumbnailId" : @"0",
-                 @"thumbnailUrl" : @""};
-    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedAlbumData object:nil userInfo:userInfo];
+    for (NSString *catStr in imageCategory.upperCategories) {
+        userInfo = @{@"albumId" : catStr,
+                     @"thumbnailId" : @"0",
+                     @"thumbnailUrl" : @""};
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedAlbumData object:nil userInfo:userInfo];
+    }
 }
 
 

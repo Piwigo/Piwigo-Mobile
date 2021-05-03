@@ -571,19 +571,21 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         queue.addOperations([sortOperation, cacheOperation], waitUntilFinished: true)
 
         // Hide HUD (displayed when Photo Library motifies changes)
-        self.hideHUDwithSuccess(true) {
-            // Enable Select buttons
-            DispatchQueue.main.async {
-                self.updateActionButton()
-                self.updateNavBar()
-                self.localImagesCollection.reloadData()
-            }
-            // Restart UplaodManager activity if all images are already in the upload queue
-            if self.indexedUploadsInQueue.compactMap({$0}).count == self.fetchedImages.count,
-               UploadManager.shared.isPaused {
-                UploadManager.shared.isPaused = false
-                UploadManager.shared.backgroundQueue.async {
-                    UploadManager.shared.findNextImageToUpload()
+        updatePiwigoHUDwithSuccess {
+            self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
+                // Enable Select buttons
+                DispatchQueue.main.async {
+                    self.updateActionButton()
+                    self.updateNavBar()
+                    self.localImagesCollection.reloadData()
+                }
+                // Restart UplaodManager activity if all images are already in the upload queue
+                if self.indexedUploadsInQueue.compactMap({$0}).count == self.fetchedImages.count,
+                   UploadManager.shared.isPaused {
+                    UploadManager.shared.isPaused = false
+                    UploadManager.shared.backgroundQueue.async {
+                        UploadManager.shared.findNextImageToUpload()
+                    }
                 }
             }
         }
@@ -1159,6 +1161,13 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 }
             }
             
+            // Can the user create tags?
+            let albumData = CategoriesData.sharedInstance()?.getCategoryById(categoryId)
+            if Model.sharedInstance()?.hasAdminRights ?? false ||
+                (Model.sharedInstance()?.hasNormalRights ?? false && albumData?.hasUploadRights ?? false) {
+                uploadSwitchVC.hasTagCreationRights = true
+            }
+            
             // Push Edit view embedded in navigation controller
             let navController = UINavigationController(rootViewController: uploadSwitchVC)
             navController.modalPresentationStyle = .popover
@@ -1245,8 +1254,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     }
 
                     // Select the cell
-                    selectedImages[index] = UploadProperties.init(localIdentifier: cell.localIdentifier,
-                                                                  category: categoryId)
+                    selectedImages[index] = UploadProperties(localIdentifier: cell.localIdentifier,
+                                                                    category: categoryId)
                     cell.cellSelected = true
                 }
 
@@ -1487,7 +1496,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Cell state
         if queue.operationCount == 0 {
             // Use indexed data
-            if let state = indexedUploadsInQueue[index]?.1 {
+            if index < indexedUploadsInQueue.count,
+               let state = indexedUploadsInQueue[index]?.1 {
                 switch state {
                 case .waiting, .preparing, .prepared:
                     cell.cellWaiting = true
@@ -1524,14 +1534,16 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     }
 
     @objc func applyUploadProgress(_ notification: Notification) {
-        let localIdentifier =  (notification.userInfo?["localIdentifier"] ?? "") as! String
-        let progressFraction = (notification.userInfo?["progressFraction"] ?? Float(0.0)) as! Float
-        let indexPathsForVisibleItems = localImagesCollection.indexPathsForVisibleItems
-        for indexPath in indexPathsForVisibleItems {
-            if let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell,
-               cell.localIdentifier == localIdentifier {
-                cell.setProgress(progressFraction, withAnimation: true)
-                return
+        if let localIdentifier =  notification.userInfo?["localIdentifier"] as? String,
+           localIdentifier.count > 0,
+           let progressFraction = notification.userInfo?["progressFraction"] as? Float {
+            let indexPathsForVisibleItems = localImagesCollection.indexPathsForVisibleItems
+            for indexPath in indexPathsForVisibleItems {
+                if let cell = localImagesCollection.cellForItem(at: indexPath) as? LocalImageCollectionViewCell,
+                   cell.localIdentifier == localIdentifier {
+                    cell.setProgress(progressFraction, withAnimation: true)
+                    return
+                }
             }
         }
     }
@@ -1578,65 +1590,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     }
 
 
-    // MARK: - HUD methods
-    
-    func showHUD(with title: String?, detail: String?) {
-        // Determine the present view controller if needed (not necessarily self.view)
-        if hudViewController == nil {
-            hudViewController = UIApplication.shared.keyWindow?.rootViewController
-            while ((hudViewController?.presentedViewController) != nil) {
-                hudViewController = hudViewController?.presentedViewController
-            }
-        }
-
-        // Create the login HUD if needed
-        var hud = hudViewController?.view.viewWithTag(loadingViewTag) as? MBProgressHUD
-        if hud == nil {
-            // Create the HUD
-            hud = MBProgressHUD.showAdded(to: (hudViewController?.view)!, animated: true)
-            hud?.tag = loadingViewTag
-
-            // Change the background view shape, style and color.
-            hud?.isSquare = false
-            hud?.animationType = MBProgressHUDAnimation.fade
-            hud?.backgroundView.style = MBProgressHUDBackgroundStyle.solidColor
-            hud?.backgroundView.color = UIColor(white: 0.0, alpha: 0.5)
-            hud?.contentColor = UIColor.piwigoColorText()
-            hud?.bezelView.color = UIColor.piwigoColorText()
-            hud?.bezelView.style = MBProgressHUDBackgroundStyle.solidColor
-            hud?.bezelView.backgroundColor = UIColor.piwigoColorCellBackground()
-
-            // Will look best, if we set a minimum size.
-            hud?.minSize = CGSize(width: 200.0, height: 100.0)
-        }
-
-        // Set title
-        hud?.label.text = title
-        hud?.label.font = UIFont.piwigoFontNormal()
-        hud?.mode = MBProgressHUDMode.indeterminate
-        hud?.detailsLabel.text = detail
-    }
-
-    func hideHUDwithSuccess(_ success: Bool, completion: @escaping () -> Void) {
-        DispatchQueue.main.async(execute: {
-            // Hide and remove the HUD
-            if let hud = self.hudViewController?.view.viewWithTag(loadingViewTag) as? MBProgressHUD {
-                if success {
-                    let image = UIImage(named: "completed")?.withRenderingMode(.alwaysTemplate)
-                    let imageView = UIImageView(image: image)
-                    hud.customView = imageView
-                    hud.mode = MBProgressHUDMode.customView
-                    hud.label.text = NSLocalizedString("completeHUD_label", comment: "Complete")
-                    hud.hide(animated: true, afterDelay: 0.3)
-                } else {
-                    hud.hide(animated: true)
-                }
-            }
-            completion()
-        })
-    }
-    
-    
     // MARK: - LocalImagesHeaderReusableView Delegate Methods
     
     func didSelectImagesOfSection(_ section: Int) {
@@ -1786,7 +1739,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         if (Model.sharedInstance().didWatchHelpViews & 0b00000000_00100000) == 0 {
             displayHelpPagesWithIndex.append(5)     // i.e. manage upload requests in queue
         }
-        if (Model.sharedInstance().didWatchHelpViews & 0b00000000_00000010) == 0 {
+        if #available(iOS 13, *),
+           (Model.sharedInstance().didWatchHelpViews & 0b00000000_00000010) == 0 {
             displayHelpPagesWithIndex.append(1)     // i.e. use background uploading
         }
         if displayHelpPagesWithIndex.count > 0 {
@@ -1814,6 +1768,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 /// Changes are not returned as expected (iOS 14.3 provides objects, not their indexes).
 /// The image selection is therefore updated during the sort.
 extension LocalImagesViewController: PHPhotoLibraryChangeObserver {
+    
     func photoLibraryDidChange(_ changeInstance: PHChange) {
         // Check each of the fetches for changes
         guard let changes = changeInstance.changeDetails(for: self.fetchedImages)
@@ -1822,7 +1777,7 @@ extension LocalImagesViewController: PHPhotoLibraryChangeObserver {
         // This method may be called on a background queue; use the main queue to update the UI.
         DispatchQueue.main.async {
             // Show HUD during update, preventing touches
-            self.showHUD(with: NSLocalizedString("editImageDetailsHUD_updatingPlural", comment: "Updating Photos…"), detail: nil)
+            self.showPiwigoHUD(withTitle: NSLocalizedString("editImageDetailsHUD_updatingPlural", comment: "Updating Photos…"))
 
             // Update fetched asset collection
             self.fetchedImages = changes.fetchResultAfterChanges
@@ -1875,10 +1830,10 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
                     fetchOptions.predicate = NSPredicate(format: "localIdentifier == %@", upload.localIdentifier)
                     if let asset = PHAsset.fetchAssets(with: fetchOptions).firstObject {
                         let cachedObject = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState)!, asset.canPerform(.delete))
-                        self.indexedUploadsInQueue[indexOfUploadedImage] = Optional(cachedObject)
+                        self.indexedUploadsInQueue[indexOfUploadedImage] = cachedObject
                     } else {
                         let cachedObject = (upload.localIdentifier, kPiwigoUploadState(rawValue: upload.requestState)!, false)
-                        self.indexedUploadsInQueue[indexOfUploadedImage] = Optional(cachedObject)
+                        self.indexedUploadsInQueue[indexOfUploadedImage] = cachedObject
                     }
                 }
                 

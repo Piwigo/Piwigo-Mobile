@@ -19,9 +19,14 @@ FOUNDATION_EXPORT NSInteger const kPiwigoDiskCacheInc;
 FOUNDATION_EXPORT NSInteger const kPiwigoDiskCacheMin;
 FOUNDATION_EXPORT NSInteger const kPiwigoDiskCacheMax;
 
+FOUNDATION_EXPORT CGFloat const kPiwigoPadSubViewWidth;
+FOUNDATION_EXPORT CGFloat const kPiwigoPadSettingsWidth;
+
 FOUNDATION_EXPORT NSTimeInterval const k1WeekInDays;
 FOUNDATION_EXPORT NSTimeInterval const k2WeeksInDays;
 FOUNDATION_EXPORT NSTimeInterval const k3WeeksInDays;
+
+FOUNDATION_EXPORT NSInteger const kDelayPiwigoHUD;
 
 @class PHPhotoLibrary;
 
@@ -78,6 +83,24 @@ typedef enum {
 
 #define kPiwigoPrivacyString(enum) [@[@"Everybody", @"Admins, Family, Friends, Contacts", @"Admins, Family, Friends", @"3: not assigned", @"Admins, Family", @"5: Count", @"6: not assigned", @"7: not assigned", @"Admins"] objectAtIndex:enum]
 
+typedef enum {
+    kPiwigoCategorySelectActionNone,
+    kPiwigoCategorySelectActionSetDefaultAlbum,
+    kPiwigoCategorySelectActionMoveAlbum,
+    kPiwigoCategorySelectActionSetAlbumThumbnail,
+    kPiwigoCategorySelectActionSetAutoUploadAlbum,
+    kPiwigoCategorySelectActionCopyImage,
+    kPiwigoCategorySelectActionMoveImage,
+    kPiwigoCategorySelectActionCopyImages,
+    kPiwigoCategorySelectActionMoveImages
+} kPiwigoCategorySelectAction;
+
+typedef enum {
+    kPiwigoCategoryTableCellButtonStateNone = 0,
+    kPiwigoCategoryTableCellButtonStateShowSubAlbum = 1,
+    kPiwigoCategoryTableCellButtonStateHideSubAlbum = 2
+} kPiwigoCategoryTableCellButtonState;
+
 @interface Model : NSObject
 
 +(Model*)sharedInstance;
@@ -100,6 +123,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL hasAdminRights;
 @property (nonatomic, assign) BOOL hasNormalRights;
 @property (nonatomic, assign) BOOL hadOpenedSession;
+@property (nonatomic, strong) NSDate *dateOfLastLogin;
 @property (nonatomic, assign) BOOL didRejectCertificate;
 @property (nonatomic, assign) BOOL didFailHTTPauthentication;
 @property (nonatomic, assign) BOOL didApproveCertificate;
@@ -112,7 +136,7 @@ typedef enum {
 
 // Album/category settings
 @property (nonatomic, assign) NSInteger defaultCategory;
-@property (nonatomic, assign) NSInteger defaultAlbumThumbnailSize;
+@property (nonatomic, assign) kPiwigoImageSize defaultAlbumThumbnailSize;
 @property (nonatomic, strong) NSString *recentCategories;
 @property (nonatomic, assign) NSUInteger maxNberRecentCategories;
 
@@ -139,7 +163,7 @@ typedef enum {
 @property (nonatomic, assign) NSInteger thumbnailsPerRowInPortrait;
 
 // Default image settings
-@property (nonatomic, assign) NSInteger defaultImagePreviewSize;
+@property (nonatomic, assign) kPiwigoImageSize defaultImagePreviewSize;
 @property (nonatomic, assign) BOOL shareMetadataTypeAirDrop;
 @property (nonatomic, assign) BOOL shareMetadataTypeAssignToContact;
 @property (nonatomic, assign) BOOL shareMetadataTypeCopyToPasteboard;
@@ -173,6 +197,9 @@ typedef enum {
 @property (nonatomic, strong) NSString *defaultPrefix;
 @property (nonatomic, assign) kPiwigoSort localImagesSort;
 @property (nonatomic, assign) BOOL wifiOnlyUploading;
+@property (nonatomic, assign) BOOL isAutoUploadActive;
+@property (nonatomic, strong) NSString *autoUploadAlbumId;
+@property (nonatomic, assign) NSInteger autoUploadCategoryId;
 
 // Default color palette (adopts light/dark modes as from iOS 13)
 @property (nonatomic, assign) BOOL isDarkPaletteActive;
@@ -183,7 +210,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL isSystemDarkModeActive;
 
 // Default cache settings
-@property (nonatomic, assign) BOOL loadAllCategoryInfo;
+@property (nonatomic, assign) BOOL available;
 @property (nonatomic, assign) NSInteger memoryCache;
 @property (nonatomic, assign) NSInteger diskCache;
 @property (nonatomic, assign) BOOL couldNotMigrateCoreDataStore;

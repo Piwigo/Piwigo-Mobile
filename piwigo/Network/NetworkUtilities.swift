@@ -35,7 +35,7 @@ class NetworkUtilities: NSObject {
         // Replace characters encoded on 4 bytes
         var utf8mb3String = ""
         for char in strToFilter {
-            if char.utf8.count > 2 {
+            if char.utf8.count > 3 {
                 // 4-byte char => Not handled by Piwigo Server
                 utf8mb3String.append("\u{FFFD}")  // Use the Unicode replacement character
             } else {

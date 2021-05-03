@@ -10,6 +10,7 @@
 
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationPinchedImage;
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationUpdateImageFileName;
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationMovedImage;
 
 @class PiwigoImageData;
 
@@ -25,8 +26,9 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationUpdateImageFileName;
 @interface ImageDetailViewController : UIPageViewController
 
 @property (nonatomic, weak) id<ImageDetailDelegate> imgDetailDelegate;
-@property (nonatomic, strong) NSMutableArray *images;
+@property (nonatomic, strong) NSMutableArray<PiwigoImageData *> *images;
 
--(instancetype)initWithCategoryId:(NSInteger)categoryId atImageIndex:(NSInteger)imageIndex withArray:(NSArray*)array;
+-(instancetype)initWithCategoryId:(NSInteger)categoryId atImageIndex:(NSInteger)imageIndex
+                        withArray:(NSArray<PiwigoImageData *> *)array;
 
 @end

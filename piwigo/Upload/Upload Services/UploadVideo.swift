@@ -202,7 +202,7 @@ extension UploadManager {
 
         // Update UI
         updateCell(with: newProperties.localIdentifier, stateLabel: newProperties.stateLabel,
-                   photoResize: nil, progress: Float(0.0), errorMsg: errorMsg)
+                   photoResize: nil, progress: nil, errorMsg: errorMsg)
 
         // Update state of upload request
         print("\(debugFormatter.string(from: Date())) > prepared \(uploadID) \(errorMsg)")
@@ -314,7 +314,7 @@ extension UploadManager {
                 }
                 completionHandler(avasset, options, nil)
             } else {
-                DispatchQueue(label: "prepareVideo").async {
+                self.backgroundQueue.async {
 //                    print("\(self.debugFormatter.string(from: Date())) > exits retrieveVideoAssetFrom in", queueName())
                     // Any error?
                     if info?[PHImageErrorKey] != nil {

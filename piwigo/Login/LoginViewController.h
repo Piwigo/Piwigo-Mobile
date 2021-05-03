@@ -30,6 +30,6 @@
 @property (nonatomic, assign) BOOL isAlreadyTryingToLogin;
 
 -(void)launchLogin;
--(void)checkSessionStatusAndTryRelogin;
+-(void)performReloginWithCompletion:(void (^)(void))reloginCompletion;
 
 @end

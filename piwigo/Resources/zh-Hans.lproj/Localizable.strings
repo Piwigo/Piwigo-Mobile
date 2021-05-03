@@ -165,6 +165,7 @@
 "categorySelection_root" = "根相册";
 "categorySelection_action" = "选择此相册的操作";
 "categorySelectionHUD_label" = "正在检索相册数据…";
+"categorySelection_allAlbums" = "All Albums";
 
 // Album upload
 "categoryUpload_noSubAlbum" = "找不到上传照片的子相册";
@@ -183,11 +184,9 @@
 
 "categoyUpload_loadSubCategories" = "加载";
 "categoryUpload_images" = "上传图片";
-"categoryUpload_subAlbum" = "创建子相册";
-"categoryUpload_defaultAlbum" = "设置为默认相册";
-"categoryUpload_defaultSelect" = "请选择一个相册或子相册作为你的默认相册";
 
 // Default album
+"setDefaultCategory_select" = "Please select an album or sub-album which will become the new root album.";
 "setDefaultCategory_title" = "默认相册";
 "setDefaultCategory_message" = "您确定要设置相册\"%@\"作为默认相册？";
 
@@ -245,9 +244,7 @@
 
 // Album move
 "moveCategory" = "移动相册";
-"moveCategory_selectParent" = "你想把相册\"%@\"移动到何处？";
-"moveCategory_selectRecent" = "你想把相册\"%@\"移动到最近使用的哪个相册？";
-"moveCategory_selectRecentOther" = "或者将相册\"%@\"移动到一个最近的相册";
+"moveCategory_select" = "Please select an album or sub-album to move album \"%@\" into.";
 "moveCategory_message" = "你确定要把\"%@\"移动到相册\"%@\"中吗？";
 "moveCategoryHUD_moving" = "移动相册中...";
 
@@ -256,7 +253,7 @@
 "moveCategoryError_message" = "移动相册失败";
 
 // Album set photo thumbnail
-//"categorySelection_select" = "Select Album";
+"categorySelection_setThumbnail" = "Please select the album which will use the photo \"%@\" as a thumbnail.";
 "categorySelection_current" = "为该照片选择当前相册";
 "categorySelection_one" = "选择包含该照片的相册";
 "categorySelection_other" = "或者为该照片选择另一个相册";
@@ -378,6 +375,7 @@
 "deleteSeveralImagesHUD_deleting" = "正在删除照片中...";
 "removeSingleImage_title" = "从相册中移除";
 "removeSingleImageHUD_removing" = "正在移除照片中...";
+"removeSeveralImagesHUD_removing" = "Removing Photos…";
 "deleteSingleImage_message" = "你确定要删除这张照片吗？此操作无法撤销！";
 "deleteSeveralImages_title" = "删除 %@ 张照片";
 "deleteSeveralImages_message" = "你确定要删除你所选择的 %@ 张照片吗？该操作无法撤销！";
@@ -410,12 +408,8 @@
 
 // Image move
 "moveImage_title" = "移动到相册";
-"moveSingleImage_selectAlbum" = "希望将照片\"%@\"移动到哪个相册？";
-"moveSingleImage_selectRecent" = "希望将照片\"%@\"移动到哪个最近相册？";
-"moveSingleImage_selectRecentOther" = "或者将照片\"%@\"移动到另一个相册";
-"moveSeveralImages_selectAlbum" = "选择要移动照片的相册";
-"moveSeveralImages_selectRecent" = "选择最近的相册以移动照片";
-"moveSeveralImages_selectRecentOther" = "或者选择另一个相册来移动照片";
+"moveSingleImage_selectAlbum" = "Please, select the album in which you wish to move the photo \"%@\".";
+"moveSeveralImages_selectAlbum" = "Please, select the album in which you wish to copy the photos.";
 "moveSingleImage_message" = "您确定要将照片\"%@\"移动到相册\"%@\"吗？";
 "moveSeveralImages_message" = "您确定要将照片移动到相册\"%@\"吗？";
 "moveSingleImageHUD_moving" = "正在移动照片…";
@@ -424,15 +418,12 @@
 // Image move — Errors
 "moveImageError_title" = "移动失败";
 "moveSingleImageError_message" = "无法移动照片";
+"moveSeveralImagesError_message" = "Failed to move some photos";
 
 // Image copy
 "copyImage_title" = "复制到相册";
-"copySingleImage_selectAlbum" = "希望将照片\"%@\"复制到哪个相册？";
-"copySingleImage_selectRecent" = "希望将照片\"%@\"移动到哪个最近相册？";
-"copySingleImage_selectRecentOther" = "或者将照片\"%@\"复制到另一个相册";
-"copySeveralImages_selectAlbum" = "选择要复制照片的相册";
-"copySeveralImages_selectRecent" = "选择最近的相册以复制照片";
-"copySeveralImages_selectRecentOther" = "或者选择另一个相册来复制照片";
+"copySingleImage_selectAlbum" = "Please, select the album in which you wish to copy the photo \"%@\".";
+"copySeveralImages_selectAlbum" = "Please, select the album in which you wish to copy the photos.";
 "copySingleImage_message" = "你确定要把照片\"%@\"移动到相册\"%@\"中吗？";
 "copySeveralImages_message" = "你确定要把照片移动到相册 \"%@\" 吗？";
 "copySingleImageHUD_copying" = "复制照片中...";
@@ -441,8 +432,10 @@
 // Image copy — Errors
 "copyImageError_title" = "复制失败";
 "copySingleImageError_message" = "无法复制照片";
+"copySeveralImagesError_message" = "Failed to copy some photos";
 
 // Images upload
+"imageUploadHeader" = "Please select the album or sub-album from which photos and videos of your device will be uploaded.";
 "imageUploadHeaderTitle_images" = "照片参数";
 "imageUploadHeaderText_images" = "请设置用于选择照片/视频的参数";
 "imageUploadHeaderTitle_upload" = "上传设置";
@@ -679,6 +672,19 @@
 "settings_deleteImage>375px" = "上传后删除照片";
 "settings_wifiOnly" = "仅限Wi-Fi";
 "settings_deleteImage" = "上传后删除照片";
+"settings_autoUpload" = "Auto Upload";
+"settings_autoUpload>414px" = "Auto Upload Photos";
+"settings_autoUploadEnabled" = "On";
+"settings_autoUploadEnabledInfo" = "Photos will be automatically uploaded to your Piwigo.";
+"settings_autoUploadEnabledInfoAll" = "Photos and videos will be automatically uploaded to your Piwigo.";
+"settings_autoUploadDisabled" = "Off";
+"settings_autoUploadDisabledInfo" = "Photos will not be automatically uploaded to your Piwigo.";
+"settings_autoUploadSource" = "Source";
+"settings_autoUploadSourceInvalid" = "Invalid source album";
+"settings_autoUploadSourceInfo" = "Please select the album or sub-album from which photos and videos of your device will be auto-uploaded.";
+"settings_autoUploadDestination" = "Destination";
+"settings_autoUploadDestinationInvalid" = "Invalid destination album";
+"settings_autoUploadDestinationInfo" = "Please select the album or sub-album into which photos and videos will be auto-uploaded.";
 
 // Settings — Cache
 "settingsHeader_cache" = "缓存设置 (使用量/总量)";

@@ -453,14 +453,14 @@ class UploadManager: NSObject, URLSessionDelegate {
         var uploadProperties: UploadProperties!
         let taskContext = DataController.getPrivateContext()
         do {
-            let upload = try taskContext.existingObject(with: uploadID) as! Upload
+            let upload = try taskContext.existingObject(with: uploadID)
             if upload.isFault {
                 // The upload request is not fired yet.
                 upload.willAccessValue(forKey: nil)
-                uploadProperties = upload.getProperties()
+                uploadProperties = (upload as! Upload).getProperties()
                 upload.didAccessValue(forKey: nil)
             } else {
-                uploadProperties = upload.getProperties()
+                uploadProperties = (upload as! Upload).getProperties()
             }
         }
         catch {
@@ -478,11 +478,11 @@ class UploadManager: NSObject, URLSessionDelegate {
             updateCell(with: uploadProperties.localIdentifier,
                        stateLabel: kPiwigoUploadState.preparing.stateInfo,
                        photoResize: Int16(uploadProperties.photoResize),
-                       progress: Float(0.0), errorMsg: "")
+                       progress: nil, errorMsg: "")
         }
         
         // Add category to list of recent albums
-        let userInfo = ["categoryId": String(format: "%ld", Int(uploadProperties.category))]
+        let userInfo = ["categoryId": String(uploadProperties.category)]
         let name = NSNotification.Name(rawValue: kPiwigoNotificationAddRecentAlbum)
         NotificationCenter.default.post(name: name, object: nil, userInfo: userInfo)
 
@@ -858,14 +858,14 @@ class UploadManager: NSObject, URLSessionDelegate {
         var uploadProperties: UploadProperties!
         let taskContext = DataController.getPrivateContext()
         do {
-            let upload = try taskContext.existingObject(with: uploadID) as! Upload
+            let upload = try taskContext.existingObject(with: uploadID)
             if upload.isFault {
                 // The upload request is not fired yet.
                 upload.willAccessValue(forKey: nil)
-                uploadProperties = upload.getProperties()
+                uploadProperties = (upload as! Upload).getProperties()
                 upload.didAccessValue(forKey: nil)
             } else {
-                uploadProperties = upload.getProperties()
+                uploadProperties = (upload as! Upload).getProperties()
             }
         }
         catch {
@@ -1034,8 +1034,8 @@ class UploadManager: NSObject, URLSessionDelegate {
                 PHAssetChangeRequest.deleteAssets(assetsToDelete as NSFastEnumeration)
             }, completionHandler: { success, error in
                 if success == true {
-                    // Delete upload requests in a private queue
-                    DispatchQueue.global(qos: .userInitiated).async {
+                    // Delete upload requests in the private queue
+                    self.backgroundQueue.async {
                         self.uploadsProvider.delete(uploadRequests: uploadIDs)
                     }
                 }
@@ -1114,7 +1114,8 @@ class UploadManager: NSObject, URLSessionDelegate {
         for failedUploadID in failedUploads {
             do {
                 // Get upload request
-                let failedUpload = try (taskContext.existingObject(with: failedUploadID) as! Upload)
+                let object = try taskContext.existingObject(with: failedUploadID)
+                let failedUpload = object as! Upload
 
                 // Create upload properties cancelling error
                 var uploadProperties: UploadProperties

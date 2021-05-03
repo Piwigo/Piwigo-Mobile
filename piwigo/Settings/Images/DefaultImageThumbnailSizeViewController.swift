@@ -10,17 +10,27 @@
 
 import UIKit
 
+protocol DefaultImageThumbnailSizeDelegate: NSObjectProtocol {
+    func didSelectImageDefaultThumbnailSize(_ thumbnailSize: kPiwigoImageSize)
+}
+
 class DefaultImageThumbnailSizeViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
+    weak var delegate: DefaultImageThumbnailSizeDelegate?
+    private var currentThumbnailSize = Model.sharedInstance().defaultThumbnailSize
+    
     @IBOutlet var tableView: UITableView!
     
 
-// MARK: - View Lifecycle
+    // MARK: - View Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         title = NSLocalizedString("settingsHeader_images", comment: "Images")
+
+        // Set colors, fonts, etc.
+        applyColorPalette()
     }
 
     @objc func applyColorPalette() {
@@ -50,24 +60,25 @@ class DefaultImageThumbnailSizeViewController: UIViewController, UITableViewData
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        // Set colors, fonts, etc.
-        applyColorPalette()
-
         // Register palette changes
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        // Return selected image thumbnail size
+        delegate?.didSelectImageDefaultThumbnailSize(currentThumbnailSize)
+
         // Unregister palette changes
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
         NotificationCenter.default.removeObserver(self, name: name, object: nil)
     }
 
     
-// MARK: - UITableView - Header
+    // MARK: - UITableView - Header
+    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         
         // Title
@@ -132,7 +143,8 @@ class DefaultImageThumbnailSizeViewController: UIViewController, UITableViewData
     }
 
     
-// MARK: - UITableView - Rows
+    // MARK: - UITableView - Rows
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return Int(kPiwigoImageSizeEnumCount.rawValue)
     }
@@ -144,7 +156,7 @@ class DefaultImageThumbnailSizeViewController: UIViewController, UITableViewData
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        let imageSize = PiwigoImageData.getImageSize(forRow: indexPath.row)
+        let imageSize = kPiwigoImageSize(rawValue: UInt32(indexPath.row))
 
         // Appearance
         cell.backgroundColor = UIColor.piwigoColorCellBackground()
@@ -154,7 +166,7 @@ class DefaultImageThumbnailSizeViewController: UIViewController, UITableViewData
         cell.textLabel?.adjustsFontSizeToFitWidth = false
 
         // Add checkmark in front of selected item
-        if Model.sharedInstance().defaultThumbnailSize.rawValue == indexPath.row {
+        if imageSize == currentThumbnailSize {
             cell.accessoryType = .checkmark
         } else {
             cell.accessoryType = .none
@@ -261,7 +273,8 @@ class DefaultImageThumbnailSizeViewController: UIViewController, UITableViewData
     }
 
     
-// MARK: - UITableView - Footer
+    // MARK: - UITableView - Footer
+    
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         // Footer height?
         let footer = NSLocalizedString("defaultSizeFooter", comment: "Greyed sizes are not advised or not available on Piwigo server.")
@@ -306,15 +319,17 @@ class DefaultImageThumbnailSizeViewController: UIViewController, UITableViewData
     }
 
     
-// MARK: - UITableViewDelegate Methods
+    // MARK: - UITableViewDelegate Methods
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        Model.sharedInstance().defaultThumbnailSize = kPiwigoImageSize(UInt32(indexPath.row))
-        Model.sharedInstance().saveToDisk()
-        tableView.reloadData()
+        // Did the user change of default size
+        if kPiwigoImageSize(rawValue: UInt32(indexPath.row)) == currentThumbnailSize { return }
 
-        navigationController?.popViewController(animated: true)
+        // Update default size
+        tableView.cellForRow(at: IndexPath(row: Int(currentThumbnailSize.rawValue), section: 0))?.accessoryType = .none
+        currentThumbnailSize = kPiwigoImageSize(rawValue: UInt32(indexPath.row))
+        tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
     }
 }

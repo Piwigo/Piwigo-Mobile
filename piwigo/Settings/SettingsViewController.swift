@@ -37,7 +37,7 @@ let kHelpUsTranslatePiwigo = "Piwigo is only partially translated in your langua
 }
 
 @objc
-class SettingsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate, DefaultCategoryDelegate, CategorySortDelegate, SelectPrivacyDelegate {
+class SettingsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate {
 
     @objc weak var settingsDelegate: ChangedSettingsDelegate?
 
@@ -52,7 +52,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     private var nberUsers = ""
     private var nberGroups = ""
     private var nberComments = ""
-    private var didChangeDefaultAlbum = false
+    private var hasAutoUploadSettings = false
 
 
     #if DEBUG
@@ -93,6 +93,13 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         if Model.sharedInstance().hasAdminRights {
             getInfos()
         }
+        
+        // Check if Auto-Upload can be proposed
+//        if #available(iOS 13.0, *) {
+//            if Model.sharedInstance()?.usesUploadAsync ?? false {
+//                hasAutoUploadSettings = true
+//            }
+//        }
 
         // Title
         title = NSLocalizedString("tabBar_preferences", comment: "Settings")
@@ -109,6 +116,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
         // Table view identifier
         settingsTableView.accessibilityIdentifier = "settings"
+
+        // Set colors, fonts, etc.
+        applyColorPalette()
     }
 
     @objc func applyColorPalette() {
@@ -142,9 +152,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
-        // Set colors, fonts, etc.
-        applyColorPalette()
 
         // Set navigation buttons
         navigationItem.setLeftBarButtonItems([doneBarButton].compactMap { $0 }, animated: true)
@@ -204,8 +211,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             // On iPad, the Settings section is presented in a centered popover view
             if UIDevice.current.userInterfaceIdiom == .pad {
                 let mainScreenBounds = UIScreen.main.bounds
-                self.popoverPresentationController?.sourceRect = CGRect(x: mainScreenBounds.midX, y: mainScreenBounds.midY, width: 0, height: 0)
-                self.preferredContentSize = CGSize(width: ceil(mainScreenBounds.width * 2 / 3), height: ceil(mainScreenBounds.height * 2 / 3))
+                self.popoverPresentationController?.sourceRect = CGRect(x: mainScreenBounds.midX,
+                                                                        y: mainScreenBounds.midY,
+                                                                        width: 0, height: 0)
+                self.preferredContentSize = CGSize(width: kPiwigoPadSettingsWidth,
+                                                   height: ceil(mainScreenBounds.height * 2 / 3))
             }
 
             // Reload table view
@@ -215,11 +225,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-
-        // Load new default album view if necessary
-        if didChangeDefaultAlbum {
-            settingsDelegate?.didChangeDefaultAlbum()
-        }
 
         // Unregister palette changes
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
@@ -235,7 +240,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         let helpVC = helpSB.instantiateViewController(withIdentifier: "HelpViewController") as? HelpViewController
         if let helpVC = helpVC {
             // Update this list after deleting/creating Help##ViewControllers
-            helpVC.displayHelpPagesWithIndex = [0,4,5,1,3,2]
+            if #available(iOS 13, *) {
+                helpVC.displayHelpPagesWithIndex = [0,4,5,1,3,2]
+            } else {
+                helpVC.displayHelpPagesWithIndex = [0,4,5,3,2]
+            }
             if UIDevice.current.userInterfaceIdiom == .phone {
                 helpVC.popoverPresentationController?.permittedArrowDirections = .up
                 navigationController?.present(helpVC, animated:true)
@@ -436,13 +445,14 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             nberOfRows = 5
         case SettingsSection.imageUpload.rawValue:
             nberOfRows = 7 + (Model.sharedInstance().hasAdminRights ? 1 : 0)
-                           + (Model.sharedInstance().resizeImageOnUpload ? 1 : 0)
-                           + (Model.sharedInstance().compressImageOnUpload ? 1 : 0)
-                           + (Model.sharedInstance().prefixFileNameBeforeUpload ? 1 : 0)
+            nberOfRows += (Model.sharedInstance().resizeImageOnUpload ? 1 : 0)
+            nberOfRows += (Model.sharedInstance().compressImageOnUpload ? 1 : 0)
+            nberOfRows += (Model.sharedInstance().prefixFileNameBeforeUpload ? 1 : 0)
+            nberOfRows += hasAutoUploadSettings ? 1 : 0
         case SettingsSection.appearance.rawValue:
             nberOfRows = 1
         case SettingsSection.cache.rawValue:
-            nberOfRows = 3
+            nberOfRows = 2
         case SettingsSection.clear.rawValue:
             nberOfRows = 1
         case SettingsSection.about.rawValue:
@@ -529,7 +539,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 }
                 let title = NSLocalizedString("setDefaultCategory_title", comment: "Default Album")
                 var detail: String
-                if Model.sharedInstance().defaultCategory == 0 {
+                if Model.sharedInstance()?.defaultCategory ?? 0 == 0 {
                     detail = NSLocalizedString("categorySelection_root", comment: "Root Album")
                 } else {
                     if let albumName = CategoriesData.sharedInstance().getCategoryById(Model.sharedInstance().defaultCategory).name {
@@ -550,7 +560,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let defaultAlbum = PiwigoImageData.name(forAlbumThumbnailSizeType: kPiwigoImageSize(rawValue: kPiwigoImageSize.RawValue(Model.sharedInstance().defaultAlbumThumbnailSize)) as kPiwigoImageSize, withInfo: false)!
+                let defaultAlbum = PiwigoImageData.name(forAlbumThumbnailSizeType: Model.sharedInstance().defaultAlbumThumbnailSize, withInfo: false)!
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 var title: String
                 if view.bounds.size.width > 375 {
@@ -713,7 +723,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let defaultSize = PiwigoImageData.name(forImageSizeType: kPiwigoImageSize(rawValue: kPiwigoImageSize.RawValue(Model.sharedInstance().defaultImagePreviewSize)) as kPiwigoImageSize, withInfo: false)!
+                let defaultSize = PiwigoImageData.name(forImageSizeType: Model.sharedInstance().defaultImagePreviewSize, withInfo: false)!
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 var title: String
                 if view.bounds.size.width > 375 {
@@ -780,6 +790,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             row += (!Model.sharedInstance().resizeImageOnUpload && (row > 3)) ? 1 : 0
             row += (!Model.sharedInstance().compressImageOnUpload && (row > 5)) ? 1 : 0
             row += (!Model.sharedInstance().prefixFileNameBeforeUpload && (row > 7)) ? 1 : 0
+            row += (!hasAutoUploadSettings && (row > 9)) ? 1 : 0
             switch row {
             case 0 /* Author Name? */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as? TextFieldTableViewCell else {
@@ -1023,7 +1034,30 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.accessibilityIdentifier = "wifiOnly"
                 tableViewCell = cell
 
-            case 10 /* Delete image after upload? */:
+            case 10 /* Auto-upload */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
+                    return LabelTableViewCell()
+                }
+                let title: String
+                if view.bounds.size.width > 414 {
+                    // i.e. larger than iPhones 6,7 screen width
+                    title = NSLocalizedString("settings_autoUpload>414px", comment: "Auto Upload in the Background")
+                } else {
+                    title = NSLocalizedString("settings_autoUpload", comment: "Auto Upload")
+                }
+                let detail: String
+                if Model.sharedInstance()?.isAutoUploadActive == true {
+                    detail = NSLocalizedString("settings_autoUploadEnabled", comment: "On")
+                } else {
+                    detail = NSLocalizedString("settings_autoUploadDisabled", comment: "Off")
+                }
+                cell.configure(with: title, detail: detail)
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                cell.accessibilityIdentifier = "autoUpload"
+                tableViewCell = cell
+
+            case 11 /* Delete image after upload? */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
                     print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                     return SwitchTableViewCell()
@@ -1070,31 +1104,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // MARK: Cache Settings
         case SettingsSection.cache.rawValue /* Cache Settings */:
             switch indexPath.row {
-            case 0 /* Download all Albums at Start */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
-                    return SwitchTableViewCell()
-                }
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                if view.bounds.size.width > 414 {
-                    // i.e. larger than iPhones 6, 7 screen width
-                    cell.configure(with: NSLocalizedString("settings_loadAllCategories>320px", comment: "Download all Albums at Start (uncheck if troubles)"))
-                } else {
-                    cell.configure(with: NSLocalizedString("settings_loadAllCategories", comment: "Download all Albums at Start"))
-                }
-                cell.cellSwitch.setOn(Model.sharedInstance().loadAllCategoryInfo, animated: true)
-                cell.cellSwitchBlock = { switchState in
-                    if !Model.sharedInstance().loadAllCategoryInfo && switchState {
-                        AlbumService.getAlbumList(forCategory: 0, usingCache: false, inRecursiveMode: true, onCompletion: nil, onFailure: nil)
-                    }
-
-                    Model.sharedInstance().loadAllCategoryInfo = switchState
-                    Model.sharedInstance().saveToDisk()
-                }
-                cell.accessibilityIdentifier = "loadAllCategories"
-                tableViewCell = cell
-                
-            case 1 /* Disk */:
+            case 0 /* Disk */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell else {
                     print("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!")
                     return SliderTableViewCell()
@@ -1125,7 +1135,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.accessibilityIdentifier = "diskCache"
                 tableViewCell = cell
                 
-            case 2 /* Memory */:
+            case 1 /* Memory */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell else {
                     print("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!")
                     return SliderTableViewCell()
@@ -1332,19 +1342,21 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             row += (!Model.sharedInstance().resizeImageOnUpload && (row > 3)) ? 1 : 0
             row += (!Model.sharedInstance().compressImageOnUpload && (row > 5)) ? 1 : 0
             row += (!Model.sharedInstance().prefixFileNameBeforeUpload && (row > 7)) ? 1 : 0
+            row += (!hasAutoUploadSettings && (row > 9)) ? 1 : 0
             switch row {
-            case 0 /* Author Name */,
-                 2 /* Strip private Metadata */,
-                 3 /* Resize Before Upload */,
-                 4 /* Image Size slider */,
-                 5 /* Compress Before Upload switch */,
-                 6 /* Image Quality slider */,
-                 7 /* Prefix Filename Before Upload switch */,
-                 8 /* Filename Prefix */,
-                 9 /* Wi-Fi Only */,
-                 10 /* Delete image after upload */:
+            case 0  /* Author Name */,
+                 2  /* Strip private Metadata */,
+                 3  /* Resize Before Upload */,
+                 4  /* Image Size slider */,
+                 5  /* Compress Before Upload switch */,
+                 6  /* Image Quality slider */,
+                 7  /* Prefix Filename Before Upload switch */,
+                 8  /* Filename Prefix */,
+                 9  /* Wi-Fi Only */,
+                 11 /* Delete image after upload */:
                 result = false
-            case 1 /* Privacy Level */:
+            case 1  /* Privacy Level */,
+                 10 /* Auto upload */:
                 result = true
             default:
                 break
@@ -1473,7 +1485,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         return footer
     }
 
-// MARK: - UITableViewDelegate Methods
+    // MARK: - UITableViewDelegate Methods
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
@@ -1503,27 +1515,22 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case SettingsSection.albums.rawValue /* Albums */:
             switch indexPath.row {
             case 0 /* Default album */:
-                let categorySB = UIStoryboard(name: "DefaultCategoryViewController", bundle: nil)
-                let categoryVC = categorySB.instantiateViewController(withIdentifier: "DefaultCategoryViewController") as? DefaultCategoryViewController
-                categoryVC?.setCurrentCategory(Model.sharedInstance().defaultCategory)
-                categoryVC?.delegate = self
-                if let categoryVC = categoryVC {
-                    navigationController?.pushViewController(categoryVC, animated: true)
-                }
+                let categorySB = UIStoryboard(name: "SelectCategoryViewControllerGrouped", bundle: nil)
+                guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewControllerGrouped") as? SelectCategoryViewController else { return }
+                categoryVC.setInput(parameter: Model.sharedInstance()?.defaultCategory ?? 0,
+                                    for: kPiwigoCategorySelectActionSetDefaultAlbum)
+                categoryVC.delegate = self
+                navigationController?.pushViewController(categoryVC, animated: true)
             case 1 /* Thumbnail file selection */:
                 let defaultThumbnailSizeSB = UIStoryboard(name: "DefaultAlbumThumbnailSizeViewController", bundle: nil)
-                let defaultThumbnailSizeVC = defaultThumbnailSizeSB.instantiateViewController(withIdentifier: "DefaultAlbumThumbnailSizeViewController") as? DefaultAlbumThumbnailSizeViewController
-                if let defaultThumbnailSizeVC = defaultThumbnailSizeVC {
-                    navigationController?.pushViewController(defaultThumbnailSizeVC, animated: true)
-                }
+                guard let defaultThumbnailSizeVC = defaultThumbnailSizeSB.instantiateViewController(withIdentifier: "DefaultAlbumThumbnailSizeViewController") as? DefaultAlbumThumbnailSizeViewController else { return }
+                defaultThumbnailSizeVC.delegate = self
+                navigationController?.pushViewController(defaultThumbnailSizeVC, animated: true)
             case 2 /* Sort method selection */:
                 let categorySB = UIStoryboard(name: "CategorySortViewController", bundle: nil)
-                let categoryVC = categorySB.instantiateViewController(withIdentifier: "CategorySortViewController") as? CategorySortViewController
-                categoryVC?.currentCategorySortType = Model.sharedInstance().defaultSort
-                categoryVC?.sortDelegate = self
-                if let categoryVC = categoryVC {
-                    navigationController?.pushViewController(categoryVC, animated: true)
-                }
+                guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "CategorySortViewController") as? CategorySortViewController else {return }
+                categoryVC.sortDelegate = self
+                navigationController?.pushViewController(categoryVC, animated: true)
             default:
                 break
             }
@@ -1533,22 +1540,18 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             switch indexPath.row {
             case 0 /* Thumbnail file selection */:
                 let defaultThumbnailSizeSB = UIStoryboard(name: "DefaultImageThumbnailSizeViewController", bundle: nil)
-                let defaultThumbnailSizeVC = defaultThumbnailSizeSB.instantiateViewController(withIdentifier: "DefaultImageThumbnailSizeViewController") as? DefaultImageThumbnailSizeViewController
-                if let defaultThumbnailSizeVC = defaultThumbnailSizeVC {
-                    navigationController?.pushViewController(defaultThumbnailSizeVC, animated: true)
-                }
+                guard let defaultThumbnailSizeVC = defaultThumbnailSizeSB.instantiateViewController(withIdentifier: "DefaultImageThumbnailSizeViewController") as? DefaultImageThumbnailSizeViewController else { return }
+                defaultThumbnailSizeVC.delegate = self
+                navigationController?.pushViewController(defaultThumbnailSizeVC, animated: true)
             case 3 /* Image file selection */:
                 let defaultImageSizeSB = UIStoryboard(name: "DefaultImageSizeViewController", bundle: nil)
-                let defaultImageSizeVC = defaultImageSizeSB.instantiateViewController(withIdentifier: "DefaultImageSizeViewController") as? DefaultImageSizeViewController
-                if let defaultImageSizeVC = defaultImageSizeVC {
-                    navigationController?.pushViewController(defaultImageSizeVC, animated: true)
-                }
+                guard let defaultImageSizeVC = defaultImageSizeSB.instantiateViewController(withIdentifier: "DefaultImageSizeViewController") as? DefaultImageSizeViewController else { return }
+                defaultImageSizeVC.delegate = self
+                navigationController?.pushViewController(defaultImageSizeVC, animated: true)
             case 4 /* Share image metadata options */:
                 let metadataOptionsSB = UIStoryboard(name: "ShareMetadataViewController", bundle: nil)
-                let metadataOptionsVC = metadataOptionsSB.instantiateViewController(withIdentifier: "ShareMetadataViewController") as? ShareMetadataViewController
-                if let metadataOptionsVC = metadataOptionsVC {
-                    navigationController?.pushViewController(metadataOptionsVC, animated: true)
-                }
+                guard let metadataOptionsVC = metadataOptionsSB.instantiateViewController(withIdentifier: "ShareMetadataViewController") as? ShareMetadataViewController else { return }
+                navigationController?.pushViewController(metadataOptionsVC, animated: true)
             default:
                 break
             }
@@ -1560,15 +1563,18 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             row += (!Model.sharedInstance().resizeImageOnUpload && (row > 3)) ? 1 : 0
             row += (!Model.sharedInstance().compressImageOnUpload && (row > 5)) ? 1 : 0
             row += (!Model.sharedInstance().prefixFileNameBeforeUpload && (row > 7)) ? 1 : 0
+            row += (!hasAutoUploadSettings && (row > 9)) ? 1 : 0
             switch row {
             case 1 /* Default privacy selection */:
                 let privacySB = UIStoryboard(name: "SelectPrivacyViewController", bundle: nil)
-                let privacyVC = privacySB.instantiateViewController(withIdentifier: "SelectPrivacyViewController") as? SelectPrivacyViewController
-                privacyVC?.delegate = self
-                privacyVC?.setPrivacy(Model.sharedInstance().defaultPrivacyLevel)
-                if let privacyVC = privacyVC {
-                    navigationController?.pushViewController(privacyVC, animated: true)
-                }
+                guard let privacyVC = privacySB.instantiateViewController(withIdentifier: "SelectPrivacyViewController") as? SelectPrivacyViewController else { return }
+                privacyVC.delegate = self
+                privacyVC.setPrivacy(Model.sharedInstance().defaultPrivacyLevel)
+                navigationController?.pushViewController(privacyVC, animated: true)
+            case 10 /* Auto Upload */:
+                let autoUploadSB = UIStoryboard(name: "AutoUploadViewController", bundle: nil)
+                guard let autoUploadVC = autoUploadSB.instantiateViewController(withIdentifier: "AutoUploadViewController") as? AutoUploadViewController else { return }
+                navigationController?.pushViewController(autoUploadVC, animated: true)
             default:
                 break
             }
@@ -1577,15 +1583,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case SettingsSection.appearance.rawValue /* Appearance */:
             if #available(iOS 13.0, *) {
                 let colorPaletteSB = UIStoryboard(name: "ColorPaletteViewController", bundle: nil)
-                guard let colorPaletteVC = colorPaletteSB.instantiateViewController(withIdentifier: "ColorPaletteViewController") as? ColorPaletteViewController else {
-                    return
-                }
+                guard let colorPaletteVC = colorPaletteSB.instantiateViewController(withIdentifier: "ColorPaletteViewController") as? ColorPaletteViewController else { return }
                 navigationController?.pushViewController(colorPaletteVC, animated: true)
             } else {
                 let colorPaletteSB = UIStoryboard(name: "ColorPaletteViewControllerOld", bundle: nil)
-                guard let colorPaletteVC = colorPaletteSB.instantiateViewController(withIdentifier: "ColorPaletteViewControllerOld") as? ColorPaletteViewControllerOld else {
-                    return
-                }
+                guard let colorPaletteVC = colorPaletteSB.instantiateViewController(withIdentifier: "ColorPaletteViewControllerOld") as? ColorPaletteViewControllerOld else { return }
                 navigationController?.pushViewController(colorPaletteVC, animated: true)
             }
 
@@ -1767,8 +1769,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
 
     
-// MARK: - Actions Methods
-
+    // MARK: - Actions Methods
     func loginLogout() {
         if Model.sharedInstance().username.count > 0 {
             // Ask user for confirmation
@@ -1910,7 +1911,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
 
     
-// MARK: - UITextFieldDelegate Methods
+    // MARK: - UITextFieldDelegate Methods
     func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
         return true
     }
@@ -1934,34 +1935,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
 
     
-// MARK: - DefaultCategoryDelegate Methods
-    func didChangeDefaultCategory(_ categoryId: Int) {
-        // Save new choice
-        Model.sharedInstance()?.defaultCategory = categoryId
-        Model.sharedInstance()?.saveToDisk()
-
-        // Will load default album view when dismissing this view
-        didChangeDefaultAlbum = true
-    }
-
-    
-// MARK: - SelectedPrivacyDelegate Methods
-    func didSelectPrivacyLevel(_ privacyLevel: kPiwigoPrivacy) {
-        // Save new choice
-        Model.sharedInstance()?.defaultPrivacyLevel = privacyLevel
-        Model.sharedInstance()?.saveToDisk()
-    }
-
-    
-// MARK: - CategorySortDelegate Methods
-    func didSelectCategorySortType(_ sortType: kPiwigoSort) {
-        // Save new choice
-        Model.sharedInstance()?.defaultSort = sortType
-        Model.sharedInstance()?.saveToDisk()
-    }
-
-    
-// MARK: - Get Server Infos
+    // MARK: - Get Server Infos
         
     func getInfos() {
         AlbumService.getInfosOnCompletion({ task, infos in
@@ -2004,5 +1978,107 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             self.nberCategories = ""
             self.nberImages = ""
         })
+    }
+}
+
+
+// MARK: - SelectCategoryDelegate Methods
+extension SettingsViewController: SelectCategoryDelegate {
+    func didSelectCategory(withId categoryId: Int) {
+        // Do nothing if new default album is unknown or unchanged
+        if categoryId == NSNotFound ||
+            categoryId == Model.sharedInstance()?.defaultCategory
+        { return }
+
+        // Save new choice
+        Model.sharedInstance()?.defaultCategory = categoryId
+        Model.sharedInstance()?.saveToDisk()
+
+        // Will load default album view when dismissing this view
+        settingsDelegate?.didChangeDefaultAlbum()
+    }
+}
+
+
+// MARK: - DefaultAlbumThumbnailSizeDelegate Methods
+extension SettingsViewController: DefaultAlbumThumbnailSizeDelegate {
+    func didSelectAlbumDefaultThumbnailSize(_ thumbnailSize: kPiwigoImageSize) {
+        // Do nothing if size is unchanged
+        if thumbnailSize == Model.sharedInstance()?.defaultAlbumThumbnailSize { return }
+        
+        // Save new choice
+        Model.sharedInstance()?.defaultAlbumThumbnailSize = thumbnailSize
+        Model.sharedInstance()?.saveToDisk()
+
+        // Refresh settings
+        let indexPath = IndexPath(row: 1, section: SettingsSection.albums.rawValue)
+        settingsTableView.reloadRows(at: [indexPath], with: .automatic)
+    }
+}
+
+
+// MARK: - CategorySortDelegate Methods
+extension SettingsViewController: CategorySortDelegate {
+    func didSelectCategorySortType(_ sortType: kPiwigoSort) {
+        // Do nothing if sort type is unchanged
+        if sortType == Model.sharedInstance()?.defaultSort { return }
+        
+        // Save new choice
+        Model.sharedInstance()?.defaultSort = sortType
+        Model.sharedInstance()?.saveToDisk()
+
+        // Refresh settings
+        let indexPath = IndexPath(row: 2, section: SettingsSection.albums.rawValue)
+        settingsTableView.reloadRows(at: [indexPath], with: .automatic)
+    }
+}
+
+
+// MARK: - DefaultImageThumbnailSizeDelegate Methods
+extension SettingsViewController: DefaultImageThumbnailSizeDelegate {
+    func didSelectImageDefaultThumbnailSize(_ thumbnailSize: kPiwigoImageSize) {
+        // Do nothing if size is unchanged
+        if thumbnailSize == Model.sharedInstance()?.defaultThumbnailSize { return }
+        
+        // Save new choice
+        Model.sharedInstance()?.defaultThumbnailSize = thumbnailSize
+        Model.sharedInstance()?.saveToDisk()
+
+        // Refresh settings
+        let indexPath = IndexPath(row: 0, section: SettingsSection.images.rawValue)
+        settingsTableView.reloadRows(at: [indexPath], with: .automatic)
+    }
+}
+
+// MARK: - DefaultImageSizeDelegate Methods
+extension SettingsViewController: DefaultImageSizeDelegate {
+    func didSelectImageDefaultSize(_ imageSize: kPiwigoImageSize) {
+        // Do nothing if size is unchanged
+        if imageSize == Model.sharedInstance()?.defaultImagePreviewSize { return }
+        
+        // Save new choice
+        Model.sharedInstance()?.defaultImagePreviewSize = imageSize
+        Model.sharedInstance()?.saveToDisk()
+
+        // Refresh settings
+        let indexPath = IndexPath(row: 3, section: SettingsSection.images.rawValue)
+        settingsTableView.reloadRows(at: [indexPath], with: .automatic)
+    }
+}
+
+
+// MARK: - SelectedPrivacyDelegate Methods
+extension SettingsViewController: SelectPrivacyDelegate {
+    func didSelectPrivacyLevel(_ privacyLevel: kPiwigoPrivacy) {
+        // Do nothing if privacy level is unchanged
+        if privacyLevel == Model.sharedInstance()?.defaultPrivacyLevel { return }
+        
+        // Save new choice
+        Model.sharedInstance()?.defaultPrivacyLevel = privacyLevel
+        Model.sharedInstance()?.saveToDisk()
+
+        // Refresh settings
+        let indexPath = IndexPath(row: 1, section: SettingsSection.imageUpload.rawValue)
+        settingsTableView.reloadRows(at: [indexPath], with: .automatic)
     }
 }

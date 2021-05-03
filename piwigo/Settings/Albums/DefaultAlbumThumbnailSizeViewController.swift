@@ -10,8 +10,15 @@
 
 import UIKit
 
+protocol DefaultAlbumThumbnailSizeDelegate: NSObjectProtocol {
+    func didSelectAlbumDefaultThumbnailSize(_ thumbnailSize: kPiwigoImageSize)
+}
+
 class DefaultAlbumThumbnailSizeViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
+    weak var delegate: DefaultAlbumThumbnailSizeDelegate?
+    private var currentThumbnailSize = Model.sharedInstance().defaultAlbumThumbnailSize
+    
     @IBOutlet var tableView: UITableView!
     
 
@@ -21,6 +28,9 @@ class DefaultAlbumThumbnailSizeViewController: UIViewController, UITableViewData
         super.viewDidLoad()
 
         title = NSLocalizedString("tabBar_albums", comment: "Albums")
+
+        // Set colors, fonts, etc.
+        applyColorPalette()
     }
 
     @objc func applyColorPalette() {
@@ -49,18 +59,18 @@ class DefaultAlbumThumbnailSizeViewController: UIViewController, UITableViewData
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
-        // Set colors, fonts, etc.
-        applyColorPalette()
         
         // Register palette changes
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
         
+        // Return selected album thumbnail size
+        delegate?.didSelectAlbumDefaultThumbnailSize(currentThumbnailSize)
+
         // Unregister palette changes
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
         NotificationCenter.default.removeObserver(self, name: name, object: nil)
@@ -144,7 +154,7 @@ class DefaultAlbumThumbnailSizeViewController: UIViewController, UITableViewData
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        let imageSize = PiwigoImageData.getImageSize(forRow: indexPath.row)
+        let imageSize = kPiwigoImageSize(rawValue: UInt32(indexPath.row))
 
         // Name of the thumbnail size
         cell.backgroundColor = UIColor.piwigoColorCellBackground()
@@ -154,7 +164,7 @@ class DefaultAlbumThumbnailSizeViewController: UIViewController, UITableViewData
         cell.textLabel?.adjustsFontSizeToFitWidth = false
 
         // Add checkmark in front of selected item
-        if Model.sharedInstance().defaultAlbumThumbnailSize == indexPath.row {
+        if imageSize == currentThumbnailSize {
             cell.accessoryType = .checkmark
         } else {
             cell.accessoryType = .none
@@ -261,7 +271,7 @@ class DefaultAlbumThumbnailSizeViewController: UIViewController, UITableViewData
     }
 
     
-// MARK: - UITableView - Footer
+    // MARK: - UITableView - Footer
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         // Footer height?
@@ -307,15 +317,17 @@ class DefaultAlbumThumbnailSizeViewController: UIViewController, UITableViewData
     }
 
 
-// MARK: - UITableViewDelegate Methods
+    // MARK: - UITableViewDelegate Methods
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        Model.sharedInstance().defaultAlbumThumbnailSize = indexPath.row
-        Model.sharedInstance().saveToDisk()
-        self.tableView.reloadData()
+        // Did the user change of default size
+        if kPiwigoImageSize(rawValue: UInt32(indexPath.row)) == currentThumbnailSize { return }
 
-        navigationController?.popViewController(animated: true)
+        // Update default size
+        tableView.cellForRow(at: IndexPath(row: Int(currentThumbnailSize.rawValue), section: 0))?.accessoryType = .none
+        currentThumbnailSize = kPiwigoImageSize(rawValue: UInt32(indexPath.row))
+        tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
     }
 }

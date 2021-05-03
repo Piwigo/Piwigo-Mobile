@@ -19,7 +19,7 @@ protocol CategorySortDelegate: NSObjectProtocol {
 class CategorySortViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @objc weak var sortDelegate: CategorySortDelegate?
-    @objc var currentCategorySortType: kPiwigoSort = Model.sharedInstance().defaultSort 
+    private var currentCategorySortType: kPiwigoSort = Model.sharedInstance().defaultSort 
 
     @objc
     class func getNameForCategorySortType(_ sortType: kPiwigoSort) -> String {
@@ -79,6 +79,10 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
 
         title = NSLocalizedString("tabBar_albums", comment: "Albums")
         sortSelectTableView.accessibilityIdentifier = "sortSelect"
+        navigationController?.navigationBar.accessibilityIdentifier = "CategorySortBar"
+
+        // Set colors, fonts, etc.
+        applyColorPalette()
     }
 
     @objc
@@ -108,17 +112,14 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
-        // Set colors, fonts, etc.
-        applyColorPalette()
         
         // Register palette changes
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
 
         // Return selected album
         sortDelegate?.didSelectCategorySortType(currentCategorySortType)
@@ -129,7 +130,7 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
     }
 
     
-// MARK: - UITableView - Header
+    // MARK: - UITableView - Header
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         // Title
@@ -193,7 +194,7 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
     }
 
     
-// MARK: - UITableView - Rows
+    // MARK: - UITableView - Rows
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return Int(kPiwigoSortCount.rawValue)
@@ -226,13 +227,17 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
     }
 
     
-// MARK: - UITableViewDelegate Methods
+    // MARK: - UITableViewDelegate Methods
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
+        // Did the user change the sort option
+        if kPiwigoSort(rawValue: UInt32(indexPath.row)) == currentCategorySortType { return }
+
+        // Update choice
+        tableView.cellForRow(at: IndexPath(row: Int(currentCategorySortType.rawValue), section: 0))?.accessoryType = .none
         currentCategorySortType = kPiwigoSort(rawValue: UInt32(indexPath.row))
-        tableView.reloadData()
-        navigationController?.popViewController(animated: true)
+        tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
     }
 }

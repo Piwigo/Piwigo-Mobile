@@ -12,11 +12,9 @@
 		1BF4D9DCF2C605B882B70DA9ED9C7BE0 /* SAMKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = F4B7CF70921598EB9DE2D15BD03391F4 /* SAMKeychain.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		1C29F16975F5BF9F923ADE0BCD8F1356 /* AFURLRequestSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 32343C9224EC631B69FE0A6651061E9E /* AFURLRequestSerialization.m */; };
 		2371864D79791C7BBFE1A368D747C88D /* IQBarButtonItem.h in Headers */ = {isa = PBXBuildFile; fileRef = F7CCA00CDE5E529114E3DDF439234790 /* IQBarButtonItem.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		24359359599D1702F87DFA9A31149A5A /* Pods-piwigoAppStore-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = B90D71E9127862E518422337A87443D4 /* Pods-piwigoAppStore-dummy.m */; };
 		2701377FC679ADF592556FFA71AA1CF9 /* AFURLRequestSerialization.h in Headers */ = {isa = PBXBuildFile; fileRef = C34F60DC1BDFCD355897A6D53B0DDFE3 /* AFURLRequestSerialization.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		27BE4E0A6E5399EA700936F3BF2418FA /* AFImageDownloader.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A58F52FA365B7032E6FDADC731AC718 /* AFImageDownloader.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		2F9E86A931E7083E5DE89DA7AA10B3F3 /* IQKeyboardReturnKeyHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = B51CB1ED6CFEC6933B95E48CD7DEADFC /* IQKeyboardReturnKeyHandler.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		2FD3806F6E0A639F106ABF32DB76C1B0 /* Pods-piwigo-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F727B50F1B87CA089607CFF141A529B /* Pods-piwigo-dummy.m */; };
 		31527D1ECCCE46487B10C24E775E1E6D /* MGSwipeTableCell-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 359EA4C8409AF6D1FC97831EBC529B04 /* MGSwipeTableCell-dummy.m */; };
 		31AE4FF831EE2D4616BDEDA4742B8300 /* WKWebView+AFNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = 86E9D1447BB62B6DC4EA50C760B256F8 /* WKWebView+AFNetworking.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		346C336F22A464FCBF931F47CE9FEAAA /* IQUIViewController+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AF133ADB71941BC73158645802C24E6 /* IQUIViewController+Additions.m */; };
@@ -29,6 +27,7 @@
 		55A0B5766CCC0190C8EF42371DF21C75 /* MGSwipeTableCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 3F53632B7490B6EED5391880B8E25B41 /* MGSwipeTableCell.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		5A75A17B427CA5BC83F49DEF738590FA /* IQKeyboardManagerConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = D677FA6E06E6A1C445DA993E974BA65D /* IQKeyboardManagerConstants.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		5AD5C40B9CAFAFB181A0DC793C6699BB /* UIRefreshControl+AFNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = D4604F9CA4298242C9B95F812AA43ED3 /* UIRefreshControl+AFNetworking.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		60AEB7C51228D5FE1E6A9FC7F2F8D229 /* Pods-piwigoGetPiwigo-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CB59E857B8CB8C7E0D137A43B0F923C /* Pods-piwigoGetPiwigo-dummy.m */; };
 		6FE24FA5F993BEFE4E05D6ED0783DC76 /* AFNetworkActivityIndicatorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E299B0F4C02627E69711A6A3F6786DD /* AFNetworkActivityIndicatorManager.m */; };
 		70E0DCC3A21933BFA26230B726CDA1B5 /* AFCompatibilityMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = B82FA1EACDE408606D1424450FB88897 /* AFCompatibilityMacros.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		71D969C60E968DE1CA40BFBF82C70A4C /* MGSwipeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B5B015012F89CE7A308A82583EB4A4B /* MGSwipeButton.m */; };
@@ -39,6 +38,7 @@
 		7D3B9361F0EE82A9511C505691E7EFEA /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BC1BDE6F6CCC99E7F1BD89897C225CD /* AFHTTPSessionManager.m */; };
 		7E7A151DAF696DF52828298F84F00D43 /* UIProgressView+AFNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = 17974D1CF8A384D334C7F8FCA75D7C6D /* UIProgressView+AFNetworking.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		82C587B99711DF6AF4E01802549C310B /* AFNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = E9EBDCAB4D89DEFC87B3F89DC7FD2C75 /* AFNetworking.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		8810E6A10BA43193E493B5F0D4594022 /* Pods-piwigo-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F727B50F1B87CA089607CFF141A529B /* Pods-piwigo-dummy.m */; };
 		88149E9B9331F197820187C24D35D861 /* IQUIScrollView+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = FC1C1CD33FC41456A2C2742F76CF1336 /* IQUIScrollView+Additions.m */; };
 		8F4CC2D7D779CDAF51E0F212F6EB02CC /* SAMKeychain-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CF6EFBD61848B228BCFDA8A7852BF3B /* SAMKeychain-dummy.m */; };
 		9F48CDEDD1E6F7749BE0DABB878BA295 /* IQUIView+IQKeyboardToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A96087D4E7D7CE86E95AF9CEC3561D0 /* IQUIView+IQKeyboardToolbar.m */; };
@@ -68,7 +68,7 @@
 		CC248DDA2280DE5ECDAAC40DA8C1AFE1 /* WKWebView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 55CE228C2403697C2F309EE5D03B0985 /* WKWebView+AFNetworking.m */; };
 		CC2A6ED5C1E3C473978BDA535F404D9A /* AFURLResponseSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = F33E64212135647F30E38A4C4F180839 /* AFURLResponseSerialization.m */; };
 		CD42FDD933D2BBB9ED8196DC1B687B09 /* IQToolbar.h in Headers */ = {isa = PBXBuildFile; fileRef = BD7E99D7646519948CEFC902A4BAB8FE /* IQToolbar.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		CF669065EFC62D58AFFB2BE888B36F42 /* Pods-piwigoGetPiwigo-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CB59E857B8CB8C7E0D137A43B0F923C /* Pods-piwigoGetPiwigo-dummy.m */; };
+		CF0F30CCF28A7F88F0EC5117DABB28A1 /* Pods-piwigoAppStore-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = B90D71E9127862E518422337A87443D4 /* Pods-piwigoAppStore-dummy.m */; };
 		D471373F1154D7076D2E9A5D36D05633 /* IQPreviousNextView.h in Headers */ = {isa = PBXBuildFile; fileRef = E7E4B5105439ABD8D65A3B04E9B590EA /* IQPreviousNextView.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		D6438BA4F863AE0A7891F212EE3C06D0 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 989E9D634AE59BF8A5BC0059DB3D3FE7 /* MBProgressHUD.m */; };
 		D7345AFD440B86E70F2C809BC590CAF7 /* IQKeyboardManager-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BD987F0EAAAF093D7AD799F5456BBB1 /* IQKeyboardManager-dummy.m */; };
@@ -88,54 +88,54 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		11071E60B6364C4C152B7516117A4496 /* PBXContainerItemProxy */ = {
+		0F6C39FC4F5EFD6A75DF760D8E2C1C9D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 82B0A41D3031FF27D78E17B0A9A46FB0;
 			remoteInfo = MBProgressHUD;
 		};
-		121397D5DA453BABCF06B48BC6DAAA8F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1EEB7FC8FC3DC62BFD58C64EF0EDFF4B;
-			remoteInfo = MGSwipeTableCell;
-		};
-		3E9CE8C0BADAC6F2B3D9D178272EE17F /* PBXContainerItemProxy */ = {
+		2F48B84C2623E204DB89D22C4A5D134B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 4D72DA4D5EFCE5D0CE44D031B08BE51D;
 			remoteInfo = "Pods-piwigo";
 		};
-		6443B26CBE271FCC575C7AC1D5A9DAD3 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = FBA456CB50E371584C11231929A0971E;
-			remoteInfo = IQKeyboardManager;
-		};
-		965AAFDC7F18232445911E63F174EF2B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 0130B3724283586C0E9D2A112D4F2AA1;
-			remoteInfo = AFNetworking;
-		};
-		EB20EABF66EADC6762F301A565AC4B4D /* PBXContainerItemProxy */ = {
+		2F6CA0F41936DB1CF4775AE2D4266CCB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 5572D14DECB5A676C1B31B30A3BA7F10;
 			remoteInfo = SAMKeychain;
 		};
-		FCD144A167F96DA7A56A74A96C4C33B8 /* PBXContainerItemProxy */ = {
+		30B70E9A4F758186275E287C2F3238DB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FBA456CB50E371584C11231929A0971E;
+			remoteInfo = IQKeyboardManager;
+		};
+		62060A6B0489A0C09B259A868A9A30C7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1EEB7FC8FC3DC62BFD58C64EF0EDFF4B;
+			remoteInfo = MGSwipeTableCell;
+		};
+		92C06841DFB31CDD58109ED02759B516 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 4D72DA4D5EFCE5D0CE44D031B08BE51D;
 			remoteInfo = "Pods-piwigo";
+		};
+		B855FDF7523003BA4FE342C3719FA63F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0130B3724283586C0E9D2A112D4F2AA1;
+			remoteInfo = AFNetworking;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -266,14 +266,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		51D0A21EF6B86C9524F7C49385B0A739 /* Frameworks */ = {
+		3D2E362FB164BAD355F50A9E7E228697 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		6818D080F904FB0F0691525DCADDBFF0 /* Frameworks */ = {
+		644CF378E299D0BFD26517A597BC7989 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -308,7 +308,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F04C0C5ED5A83F5E824A6747D19280C5 /* Frameworks */ = {
+		EF65C829FB5A04E082E04C463F4341DE /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -635,14 +635,14 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		051C9E7D7FE4901050C748F6304A0DF0 /* Headers */ = {
+		3F83F24D4D78C2E45C1FFEC406501D5D /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1C9701EBC46A951CACEAD67EC68FBDE7 /* Headers */ = {
+		49867410D342E0B97F8462A59377B375 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -682,7 +682,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		9EBB503197B100073A918E704CA1B1FB /* Headers */ = {
+		72A6F0B2C7252B5604A208B4409735BD /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -750,16 +750,16 @@
 		};
 		0F1857D7AF002C4A4490C59CE19C2102 /* Pods-piwigoGetPiwigo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E7FBFE2C5A698FD556DD6F3FDC9BE7EC /* Build configuration list for PBXNativeTarget "Pods-piwigoGetPiwigo" */;
+			buildConfigurationList = CA6D417664AD15EAA13DB8D9BBCDE19F /* Build configuration list for PBXNativeTarget "Pods-piwigoGetPiwigo" */;
 			buildPhases = (
-				1C9701EBC46A951CACEAD67EC68FBDE7 /* Headers */,
-				28D323E8B22FEBC81983C8112026A2EB /* Sources */,
-				51D0A21EF6B86C9524F7C49385B0A739 /* Frameworks */,
+				49867410D342E0B97F8462A59377B375 /* Headers */,
+				6D7A2A6DD2F0DDA894F02F5909D398F1 /* Sources */,
+				644CF378E299D0BFD26517A597BC7989 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				15380E62E11F1426BBB4E1BB9AC97D11 /* PBXTargetDependency */,
+				85B1FD6932ED87F45589B11880DEA95B /* PBXTargetDependency */,
 			);
 			name = "Pods-piwigoGetPiwigo";
 			productName = "Pods-piwigoGetPiwigo";
@@ -785,20 +785,20 @@
 		};
 		4D72DA4D5EFCE5D0CE44D031B08BE51D /* Pods-piwigo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 81D7ABB1F99E7961FEF9CD98E60E6550 /* Build configuration list for PBXNativeTarget "Pods-piwigo" */;
+			buildConfigurationList = 89C8D08C9E418E31AFD061B766113567 /* Build configuration list for PBXNativeTarget "Pods-piwigo" */;
 			buildPhases = (
-				9EBB503197B100073A918E704CA1B1FB /* Headers */,
-				B7131D88F1811B67E9B41A0326F5EAC7 /* Sources */,
-				6818D080F904FB0F0691525DCADDBFF0 /* Frameworks */,
+				3F83F24D4D78C2E45C1FFEC406501D5D /* Headers */,
+				9D9F57007B64A382E5032780C34725AB /* Sources */,
+				EF65C829FB5A04E082E04C463F4341DE /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				401A011C83CC8DE14292613B88BDFECE /* PBXTargetDependency */,
-				F3A08F9916F01A99AE2633AD1EA668F4 /* PBXTargetDependency */,
-				EC8DEFA58EDA09D09367373F3AAEC8E6 /* PBXTargetDependency */,
-				F2773FE05C90B32F9DE7B1115A24CEDE /* PBXTargetDependency */,
-				1AC1ED867B812F4131768D82CA5734DA /* PBXTargetDependency */,
+				FD6D8E62BB8A412C4E39F9516E51B35D /* PBXTargetDependency */,
+				7A0266187D36EF1AAB655105FDBF6F0E /* PBXTargetDependency */,
+				CC4C004E0E902969AC4AA053FFA73ACC /* PBXTargetDependency */,
+				2ABDEFDF11CEC46E78D8671FBFDDAE47 /* PBXTargetDependency */,
+				652900EAE7FFBA44B2B01DE9E5416061 /* PBXTargetDependency */,
 			);
 			name = "Pods-piwigo";
 			productName = "Pods-piwigo";
@@ -824,16 +824,16 @@
 		};
 		771F7CD6E0864BC28C79DE87EBC62872 /* Pods-piwigoAppStore */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F0021D57B4DB5E7B236E7D7DCD067AD5 /* Build configuration list for PBXNativeTarget "Pods-piwigoAppStore" */;
+			buildConfigurationList = 9A6F061783C8D9D83B8E5B1F887D654C /* Build configuration list for PBXNativeTarget "Pods-piwigoAppStore" */;
 			buildPhases = (
-				051C9E7D7FE4901050C748F6304A0DF0 /* Headers */,
-				7DAAB1D1F313E331BD995606299071D4 /* Sources */,
-				F04C0C5ED5A83F5E824A6747D19280C5 /* Frameworks */,
+				72A6F0B2C7252B5604A208B4409735BD /* Headers */,
+				F8CCCFE48E70601CFB2917FF6194D6D0 /* Sources */,
+				3D2E362FB164BAD355F50A9E7E228697 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				11282D1543D5CA58658DC1DB2CBCB5FF /* PBXTargetDependency */,
+				12909E18A03B89FBD9D4D64A67157FA9 /* PBXTargetDependency */,
 			);
 			name = "Pods-piwigoAppStore";
 			productName = "Pods-piwigoAppStore";
@@ -881,7 +881,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1100;
-				LastUpgradeCheck = 1220;
+				LastUpgradeCheck = 1100;
 			};
 			buildConfigurationList = 4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */;
 			compatibilityVersion = "Xcode 10.0";
@@ -918,14 +918,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		28D323E8B22FEBC81983C8112026A2EB /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				CF669065EFC62D58AFFB2BE888B36F42 /* Pods-piwigoGetPiwigo-dummy.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		3B440599D57747C4B6810A6959F7D748 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -957,6 +949,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6D7A2A6DD2F0DDA894F02F5909D398F1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				60AEB7C51228D5FE1E6A9FC7F2F8D229 /* Pods-piwigoGetPiwigo-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6FAB00E52BA519A8EEAD67251A40EF4A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -964,14 +964,6 @@
 				71D969C60E968DE1CA40BFBF82C70A4C /* MGSwipeButton.m in Sources */,
 				31527D1ECCCE46487B10C24E775E1E6D /* MGSwipeTableCell-dummy.m in Sources */,
 				B550BCAF51474C6D62E694F633085312 /* MGSwipeTableCell.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		7DAAB1D1F313E331BD995606299071D4 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				24359359599D1702F87DFA9A31149A5A /* Pods-piwigoAppStore-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -998,187 +990,75 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B7131D88F1811B67E9B41A0326F5EAC7 /* Sources */ = {
+		9D9F57007B64A382E5032780C34725AB /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2FD3806F6E0A639F106ABF32DB76C1B0 /* Pods-piwigo-dummy.m in Sources */,
+				8810E6A10BA43193E493B5F0D4594022 /* Pods-piwigo-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F8CCCFE48E70601CFB2917FF6194D6D0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CF0F30CCF28A7F88F0EC5117DABB28A1 /* Pods-piwigoAppStore-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		11282D1543D5CA58658DC1DB2CBCB5FF /* PBXTargetDependency */ = {
+		12909E18A03B89FBD9D4D64A67157FA9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = "Pods-piwigo";
 			target = 4D72DA4D5EFCE5D0CE44D031B08BE51D /* Pods-piwigo */;
-			targetProxy = FCD144A167F96DA7A56A74A96C4C33B8 /* PBXContainerItemProxy */;
+			targetProxy = 92C06841DFB31CDD58109ED02759B516 /* PBXContainerItemProxy */;
 		};
-		15380E62E11F1426BBB4E1BB9AC97D11 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = "Pods-piwigo";
-			target = 4D72DA4D5EFCE5D0CE44D031B08BE51D /* Pods-piwigo */;
-			targetProxy = 3E9CE8C0BADAC6F2B3D9D178272EE17F /* PBXContainerItemProxy */;
-		};
-		1AC1ED867B812F4131768D82CA5734DA /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = SAMKeychain;
-			target = 5572D14DECB5A676C1B31B30A3BA7F10 /* SAMKeychain */;
-			targetProxy = EB20EABF66EADC6762F301A565AC4B4D /* PBXContainerItemProxy */;
-		};
-		401A011C83CC8DE14292613B88BDFECE /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = AFNetworking;
-			target = 0130B3724283586C0E9D2A112D4F2AA1 /* AFNetworking */;
-			targetProxy = 965AAFDC7F18232445911E63F174EF2B /* PBXContainerItemProxy */;
-		};
-		EC8DEFA58EDA09D09367373F3AAEC8E6 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = MBProgressHUD;
-			target = 82B0A41D3031FF27D78E17B0A9A46FB0 /* MBProgressHUD */;
-			targetProxy = 11071E60B6364C4C152B7516117A4496 /* PBXContainerItemProxy */;
-		};
-		F2773FE05C90B32F9DE7B1115A24CEDE /* PBXTargetDependency */ = {
+		2ABDEFDF11CEC46E78D8671FBFDDAE47 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = MGSwipeTableCell;
 			target = 1EEB7FC8FC3DC62BFD58C64EF0EDFF4B /* MGSwipeTableCell */;
-			targetProxy = 121397D5DA453BABCF06B48BC6DAAA8F /* PBXContainerItemProxy */;
+			targetProxy = 62060A6B0489A0C09B259A868A9A30C7 /* PBXContainerItemProxy */;
 		};
-		F3A08F9916F01A99AE2633AD1EA668F4 /* PBXTargetDependency */ = {
+		652900EAE7FFBA44B2B01DE9E5416061 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SAMKeychain;
+			target = 5572D14DECB5A676C1B31B30A3BA7F10 /* SAMKeychain */;
+			targetProxy = 2F6CA0F41936DB1CF4775AE2D4266CCB /* PBXContainerItemProxy */;
+		};
+		7A0266187D36EF1AAB655105FDBF6F0E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = IQKeyboardManager;
 			target = FBA456CB50E371584C11231929A0971E /* IQKeyboardManager */;
-			targetProxy = 6443B26CBE271FCC575C7AC1D5A9DAD3 /* PBXContainerItemProxy */;
+			targetProxy = 30B70E9A4F758186275E287C2F3238DB /* PBXContainerItemProxy */;
+		};
+		85B1FD6932ED87F45589B11880DEA95B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "Pods-piwigo";
+			target = 4D72DA4D5EFCE5D0CE44D031B08BE51D /* Pods-piwigo */;
+			targetProxy = 2F48B84C2623E204DB89D22C4A5D134B /* PBXContainerItemProxy */;
+		};
+		CC4C004E0E902969AC4AA053FFA73ACC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = MBProgressHUD;
+			target = 82B0A41D3031FF27D78E17B0A9A46FB0 /* MBProgressHUD */;
+			targetProxy = 0F6C39FC4F5EFD6A75DF760D8E2C1C9D /* PBXContainerItemProxy */;
+		};
+		FD6D8E62BB8A412C4E39F9516E51B35D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = AFNetworking;
+			target = 0130B3724283586C0E9D2A112D4F2AA1 /* AFNetworking */;
+			targetProxy = B855FDF7523003BA4FE342C3719FA63F /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		13F203428EA9B41BDE0A6111E2E4FC9C /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 47C8958BC522FB6CE492CC53BE49B98E /* MBProgressHUD.release.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				GCC_PREFIX_HEADER = "Target Support Files/MBProgressHUD/MBProgressHUD-prefix.pch";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PRIVATE_HEADERS_FOLDER_PATH = "";
-				PRODUCT_MODULE_NAME = MBProgressHUD;
-				PRODUCT_NAME = MBProgressHUD;
-				PUBLIC_HEADERS_FOLDER_PATH = "";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		1C45490DDC4013BF7B6108ACAB7F2468 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2EE002E0F0893FCFE1649EF91C5EDEF3 /* AFNetworking.debug.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				GCC_PREFIX_HEADER = "Target Support Files/AFNetworking/AFNetworking-prefix.pch";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PRIVATE_HEADERS_FOLDER_PATH = "";
-				PRODUCT_MODULE_NAME = AFNetworking;
-				PRODUCT_NAME = AFNetworking;
-				PUBLIC_HEADERS_FOLDER_PATH = "";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		3E3772C7F6BCC7107DA93ED6186EF5E4 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = EE6BB1D4C42D841C53CD380C9FCE8DFE /* MGSwipeTableCell.release.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				GCC_PREFIX_HEADER = "Target Support Files/MGSwipeTableCell/MGSwipeTableCell-prefix.pch";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PRIVATE_HEADERS_FOLDER_PATH = "";
-				PRODUCT_MODULE_NAME = MGSwipeTableCell;
-				PRODUCT_NAME = MGSwipeTableCell;
-				PUBLIC_HEADERS_FOLDER_PATH = "";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		47FDFF447297891781F419511C47EBDC /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = E07D757BA77FCDECECE0850E0A436A1C /* MGSwipeTableCell.debug.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				GCC_PREFIX_HEADER = "Target Support Files/MGSwipeTableCell/MGSwipeTableCell-prefix.pch";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PRIVATE_HEADERS_FOLDER_PATH = "";
-				PRODUCT_MODULE_NAME = MGSwipeTableCell;
-				PRODUCT_NAME = MGSwipeTableCell;
-				PUBLIC_HEADERS_FOLDER_PATH = "";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		4BAFC13390081E029EC7DD9A9CFD6505 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8E55EBD8EF5421D1C67E9AEAA3697BCE /* Pods-piwigo.debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				MACH_O_TYPE = staticlib;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		67CD434A7F467384854010AFCA6BFD86 /* Debug */ = {
+		303B148F690F59DBA57051995625042C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 660CA63AC85B96512304C2C18280C1FA /* Pods-piwigoAppStore.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
@@ -1194,12 +1074,11 @@
 			};
 			name = Debug;
 		};
-		77831BB3B1DE90C6249711C1D94BBC61 /* Debug */ = {
+		352B5A0C1B545594BA9DC3A02597EEF7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 120F5EF416D90E7C56B581045A1B7BB5 /* Pods-piwigoGetPiwigo.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
@@ -1215,12 +1094,55 @@
 			};
 			name = Debug;
 		};
-		802883473E73224123FB621974DBBB2E /* Release */ = {
+		35AD5DA7E006BBDA1AF0055256460249 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = EE6BB1D4C42D841C53CD380C9FCE8DFE /* MGSwipeTableCell.release.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				GCC_PREFIX_HEADER = "Target Support Files/MGSwipeTableCell/MGSwipeTableCell-prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
+				PRODUCT_MODULE_NAME = MGSwipeTableCell;
+				PRODUCT_NAME = MGSwipeTableCell;
+				PUBLIC_HEADERS_FOLDER_PATH = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		372FECDC636F8F08EB4DF2A331E8BD25 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8E55EBD8EF5421D1C67E9AEAA3697BCE /* Pods-piwigo.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MACH_O_TYPE = staticlib;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		3DB2E5E86BF1132D6F40764C2FA93DB0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 34F1BD1C8FEB1F9659B05B4D6238EC42 /* Pods-piwigoAppStore.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
@@ -1237,81 +1159,11 @@
 			};
 			name = Release;
 		};
-		8114641BC50DD627374396075793EFEE /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 27ED012521559904C183DE7EDD56DEA0 /* Pods-piwigo.release.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				MACH_O_TYPE = staticlib;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		86B547DAB445CA8EC511BEA58114D5CA /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 74CCD6E874D08A4560CD32DE5BB804B3 /* AFNetworking.release.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				GCC_PREFIX_HEADER = "Target Support Files/AFNetworking/AFNetworking-prefix.pch";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PRIVATE_HEADERS_FOLDER_PATH = "";
-				PRODUCT_MODULE_NAME = AFNetworking;
-				PRODUCT_NAME = AFNetworking;
-				PUBLIC_HEADERS_FOLDER_PATH = "";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		AD1650720D3AF474CA7F09D95799814C /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = F80586D0B93695D26697FFE6F76E3582 /* MBProgressHUD.debug.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				GCC_PREFIX_HEADER = "Target Support Files/MBProgressHUD/MBProgressHUD-prefix.pch";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PRIVATE_HEADERS_FOLDER_PATH = "";
-				PRODUCT_MODULE_NAME = MBProgressHUD;
-				PRODUCT_NAME = MBProgressHUD;
-				PUBLIC_HEADERS_FOLDER_PATH = "";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		B0087CB4594321EF41619F3181FE120E /* Release */ = {
+		431BA2B8298F0EE71735B9E0114E1955 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1369,32 +1221,58 @@
 			};
 			name = Release;
 		};
-		B55F6452F7E6053783DAFB65BC9C09A6 /* Release */ = {
+		515C3871C2F5403A56186A0EDF825E6C /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BCE97E0316D79D92DF43FFA3A5ABFD39 /* Pods-piwigoGetPiwigo.release.xcconfig */;
+			baseConfigurationReference = 74CCD6E874D08A4560CD32DE5BB804B3 /* AFNetworking.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				GCC_PREFIX_HEADER = "Target Support Files/AFNetworking/AFNetworking-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				MACH_O_TYPE = staticlib;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
+				PRODUCT_MODULE_NAME = AFNetworking;
+				PRODUCT_NAME = AFNetworking;
+				PUBLIC_HEADERS_FOLDER_PATH = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
-		B8BCBD0110C2658BB5DAADB9B7D97B92 /* Debug */ = {
+		773811D01A911332E002314D698A823E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2EE002E0F0893FCFE1649EF91C5EDEF3 /* AFNetworking.debug.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				GCC_PREFIX_HEADER = "Target Support Files/AFNetworking/AFNetworking-prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
+				PRODUCT_MODULE_NAME = AFNetworking;
+				PRODUCT_NAME = AFNetworking;
+				PUBLIC_HEADERS_FOLDER_PATH = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		79759604D78320E712558F49DF19AA9F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1456,21 +1334,20 @@
 			};
 			name = Debug;
 		};
-		BBBA83B1BA20CD37330E32AEB13D6FE1 /* Release */ = {
+		849984297D20966E1D5A470F5010DF20 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4589AEE99B1A6A4A6347C1F57F292F43 /* SAMKeychain.release.xcconfig */;
+			baseConfigurationReference = 47C8958BC522FB6CE492CC53BE49B98E /* MBProgressHUD.release.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				GCC_PREFIX_HEADER = "Target Support Files/SAMKeychain/SAMKeychain-prefix.pch";
+				GCC_PREFIX_HEADER = "Target Support Files/MBProgressHUD/MBProgressHUD-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
 				PRIVATE_HEADERS_FOLDER_PATH = "";
-				PRODUCT_MODULE_NAME = SAMKeychain;
-				PRODUCT_NAME = SAMKeychain;
+				PRODUCT_MODULE_NAME = MBProgressHUD;
+				PRODUCT_NAME = MBProgressHUD;
 				PUBLIC_HEADERS_FOLDER_PATH = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -1481,36 +1358,56 @@
 			};
 			name = Release;
 		};
-		C607036196D5F64015A3A59EF0B7C950 /* Release */ = {
+		8DA381E79DE4262C4023762A1F07350A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4128CA118EABA8A9A2C776142E3B3BB2 /* IQKeyboardManager.release.xcconfig */;
+			baseConfigurationReference = F80586D0B93695D26697FFE6F76E3582 /* MBProgressHUD.debug.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				GCC_PREFIX_HEADER = "Target Support Files/IQKeyboardManager/IQKeyboardManager-prefix.pch";
+				GCC_PREFIX_HEADER = "Target Support Files/MBProgressHUD/MBProgressHUD-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
 				PRIVATE_HEADERS_FOLDER_PATH = "";
-				PRODUCT_MODULE_NAME = IQKeyboardManager;
-				PRODUCT_NAME = IQKeyboardManager;
+				PRODUCT_MODULE_NAME = MBProgressHUD;
+				PRODUCT_NAME = MBProgressHUD;
 				PUBLIC_HEADERS_FOLDER_PATH = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
 			};
-			name = Release;
+			name = Debug;
 		};
-		D00883CA1810D70E95CDDC4D2AB98E8C /* Debug */ = {
+		9F762F0DBA7CF99D7E61854C4C95D266 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E07D757BA77FCDECECE0850E0A436A1C /* MGSwipeTableCell.debug.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				GCC_PREFIX_HEADER = "Target Support Files/MGSwipeTableCell/MGSwipeTableCell-prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
+				PRODUCT_MODULE_NAME = MGSwipeTableCell;
+				PRODUCT_NAME = MGSwipeTableCell;
+				PUBLIC_HEADERS_FOLDER_PATH = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A1D5EEBF3E60A5D29BCFD4E72D6330A8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D6CE00543DEB080894C437973F004EC6 /* IQKeyboardManager.debug.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
@@ -1530,11 +1427,55 @@
 			};
 			name = Debug;
 		};
-		F2BE8516A05573A1F8C9132691EB01C4 /* Debug */ = {
+		AB32CBCFEFFE3660FCC6C8CD1626F4E7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BCE97E0316D79D92DF43FFA3A5ABFD39 /* Pods-piwigoGetPiwigo.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MACH_O_TYPE = staticlib;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		B165F2F4D67208C0D90EF4E102C20EA5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4589AEE99B1A6A4A6347C1F57F292F43 /* SAMKeychain.release.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				GCC_PREFIX_HEADER = "Target Support Files/SAMKeychain/SAMKeychain-prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
+				PRODUCT_MODULE_NAME = SAMKeychain;
+				PRODUCT_NAME = SAMKeychain;
+				PUBLIC_HEADERS_FOLDER_PATH = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		C0BE8145D3B843693450B80C4AC92DE3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 187E6180A9FDDE610EEAE27A0FCBC6A8 /* SAMKeychain.debug.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
@@ -1553,6 +1494,51 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
+		};
+		D8D0B2E7681315DCDE02C227D89DD3F7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4128CA118EABA8A9A2C776142E3B3BB2 /* IQKeyboardManager.release.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				GCC_PREFIX_HEADER = "Target Support Files/IQKeyboardManager/IQKeyboardManager-prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
+				PRODUCT_MODULE_NAME = IQKeyboardManager;
+				PRODUCT_NAME = IQKeyboardManager;
+				PUBLIC_HEADERS_FOLDER_PATH = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		DB3EB14160F3959F8F0ACA4EA10D7A8E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 27ED012521559904C183DE7EDD56DEA0 /* Pods-piwigo.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MACH_O_TYPE = staticlib;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
@@ -1560,8 +1546,8 @@
 		20217F7F18136BEC6503B8147352D3E3 /* Build configuration list for PBXNativeTarget "MBProgressHUD" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				AD1650720D3AF474CA7F09D95799814C /* Debug */,
-				13F203428EA9B41BDE0A6111E2E4FC9C /* Release */,
+				8DA381E79DE4262C4023762A1F07350A /* Debug */,
+				849984297D20966E1D5A470F5010DF20 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1569,8 +1555,8 @@
 		37D5C655E98905CBD45AFDD1A2A979BF /* Build configuration list for PBXNativeTarget "AFNetworking" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1C45490DDC4013BF7B6108ACAB7F2468 /* Debug */,
-				86B547DAB445CA8EC511BEA58114D5CA /* Release */,
+				773811D01A911332E002314D698A823E /* Debug */,
+				515C3871C2F5403A56186A0EDF825E6C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1578,8 +1564,8 @@
 		4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				B8BCBD0110C2658BB5DAADB9B7D97B92 /* Debug */,
-				B0087CB4594321EF41619F3181FE120E /* Release */,
+				79759604D78320E712558F49DF19AA9F /* Debug */,
+				431BA2B8298F0EE71735B9E0114E1955 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1587,8 +1573,8 @@
 		4D645BBBFC9D02971DD3BDC3F095D7F2 /* Build configuration list for PBXNativeTarget "MGSwipeTableCell" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				47FDFF447297891781F419511C47EBDC /* Debug */,
-				3E3772C7F6BCC7107DA93ED6186EF5E4 /* Release */,
+				9F762F0DBA7CF99D7E61854C4C95D266 /* Debug */,
+				35AD5DA7E006BBDA1AF0055256460249 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1596,8 +1582,8 @@
 		52E9588118811AB05EBECC8C49A3054C /* Build configuration list for PBXNativeTarget "SAMKeychain" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				F2BE8516A05573A1F8C9132691EB01C4 /* Debug */,
-				BBBA83B1BA20CD37330E32AEB13D6FE1 /* Release */,
+				C0BE8145D3B843693450B80C4AC92DE3 /* Debug */,
+				B165F2F4D67208C0D90EF4E102C20EA5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1605,35 +1591,35 @@
 		6E9C114B7B52BA52233E28318FD27689 /* Build configuration list for PBXNativeTarget "IQKeyboardManager" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				D00883CA1810D70E95CDDC4D2AB98E8C /* Debug */,
-				C607036196D5F64015A3A59EF0B7C950 /* Release */,
+				A1D5EEBF3E60A5D29BCFD4E72D6330A8 /* Debug */,
+				D8D0B2E7681315DCDE02C227D89DD3F7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		81D7ABB1F99E7961FEF9CD98E60E6550 /* Build configuration list for PBXNativeTarget "Pods-piwigo" */ = {
+		89C8D08C9E418E31AFD061B766113567 /* Build configuration list for PBXNativeTarget "Pods-piwigo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				4BAFC13390081E029EC7DD9A9CFD6505 /* Debug */,
-				8114641BC50DD627374396075793EFEE /* Release */,
+				372FECDC636F8F08EB4DF2A331E8BD25 /* Debug */,
+				DB3EB14160F3959F8F0ACA4EA10D7A8E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E7FBFE2C5A698FD556DD6F3FDC9BE7EC /* Build configuration list for PBXNativeTarget "Pods-piwigoGetPiwigo" */ = {
+		9A6F061783C8D9D83B8E5B1F887D654C /* Build configuration list for PBXNativeTarget "Pods-piwigoAppStore" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				77831BB3B1DE90C6249711C1D94BBC61 /* Debug */,
-				B55F6452F7E6053783DAFB65BC9C09A6 /* Release */,
+				303B148F690F59DBA57051995625042C /* Debug */,
+				3DB2E5E86BF1132D6F40764C2FA93DB0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F0021D57B4DB5E7B236E7D7DCD067AD5 /* Build configuration list for PBXNativeTarget "Pods-piwigoAppStore" */ = {
+		CA6D417664AD15EAA13DB8D9BBCDE19F /* Build configuration list for PBXNativeTarget "Pods-piwigoGetPiwigo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				67CD434A7F467384854010AFCA6BFD86 /* Debug */,
-				802883473E73224123FB621974DBBB2E /* Release */,
+				352B5A0C1B545594BA9DC3A02597EEF7 /* Debug */,
+				AB32CBCFEFFE3660FCC6C8CD1626F4E7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

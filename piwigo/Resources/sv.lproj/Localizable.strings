@@ -165,6 +165,7 @@
 "categorySelection_root" = "Rotalbum";
 "categorySelection_action" = "Välj en åtgärd för detta album";
 "categorySelectionHUD_label" = "Hämta albumdata…";
+"categorySelection_allAlbums" = "All Albums";
 
 // Album upload
 "categoryUpload_noSubAlbum" = "Det finns ingen underalbum att ladda upp bilder till";
@@ -183,11 +184,9 @@
 
 "categoyUpload_loadSubCategories" = "ladda";
 "categoryUpload_images" = "Ladda upp bilder";
-"categoryUpload_subAlbum" = "Skapa underalbum";
-"categoryUpload_defaultAlbum" = "Ange som standardalbum";
-"categoryUpload_defaultSelect" = "Välj det album eller underalbumsom ska bli ditt standardalbum";
 
 // Default album
+"setDefaultCategory_select" = "Please select an album or sub-album which will become the new root album.";
 "setDefaultCategory_title" = "Standardalbum";
 "setDefaultCategory_message" = "Är du säker att du vill sätta album \"%@\" som standardalbum?";
 
@@ -245,9 +244,7 @@
 
 // Album move
 "moveCategory" = "Flytta Album";
-"moveCategory_selectParent" = "Välj ett album att flytta album ”%@” till";
-"moveCategory_selectRecent" = "Välj ett nytt album att flytta album \"%@\" till";
-"moveCategory_selectRecentOther" = "Eller välj ett annat album för att flytta album \"%@\" till";
+"moveCategory_select" = "Please select an album or sub-album to move album \"%@\" into.";
 "moveCategory_message" = "Är du säker du vill flytta ”%@” in i album ”%@”?";
 "moveCategoryHUD_moving" = "Flyttar Album…";
 
@@ -256,7 +253,7 @@
 "moveCategoryError_message" = "Kunde inte flytta ditt album";
 
 // Album set photo thumbnail
-//"categorySelection_select" = "Select Album";
+"categorySelection_setThumbnail" = "Please select the album which will use the photo \"%@\" as a thumbnail.";
 "categorySelection_current" = "Välj det aktuella albumet för denna bild";
 "categorySelection_one" = "Välj en av de album som innehåller den här bilden";
 "categorySelection_other" = "Eller välj ett annat album för detta foto";
@@ -378,6 +375,7 @@
 "deleteSeveralImagesHUD_deleting" = "Raderar bilder…";
 "removeSingleImage_title" = "Ta bort från Album";
 "removeSingleImageHUD_removing" = "Ta bort bild…";
+"removeSeveralImagesHUD_removing" = "Removing Photos…";
 "deleteSingleImage_message" = "Är du säker på att du vill radera den här bilden? Åtgärden kan inte ångras!";
 "deleteSeveralImages_title" = "Radera %@ bilder";
 "deleteSeveralImages_message" = "Är du säker på att du vill radera de valda %@ bilderna? Åtgärden kan inte ångras!";
@@ -410,12 +408,8 @@
 
 // Image move
 "moveImage_title" = "Flytta till Album";
-"moveSingleImage_selectAlbum" = "Välj ett album att flytta bild \"%@\" till";
-"moveSingleImage_selectRecent" = "Välj ett nytt album att flytta foto \"%@\" till";
-"moveSingleImage_selectRecentOther" = "Eller välj ett annat album för att flytta foto \"%@\" till";
-"moveSeveralImages_selectAlbum" = "Välj ett album att flytta bilderna till";
-"moveSeveralImages_selectRecent" = "Välj ett nytt album för att flytta bilderna till";
-"moveSeveralImages_selectRecentOther" = "Eller välj ett annat album för att flytta bilderna till";
+"moveSingleImage_selectAlbum" = "Please, select the album in which you wish to move the photo \"%@\".";
+"moveSeveralImages_selectAlbum" = "Please, select the album in which you wish to copy the photos.";
 "moveSingleImage_message" = "Är du säker på att du vill flytta bilden ”%@” till albumet ”%@”?";
 "moveSeveralImages_message" = "Är du säker på att du vill flytta bilderna till albumet ”%@”?";
 "moveSingleImageHUD_moving" = "Flyttar bild…";
@@ -424,15 +418,12 @@
 // Image move — Errors
 "moveImageError_title" = "Flytt misslyckades";
 "moveSingleImageError_message" = "Kunde inte flytta din bild";
+"moveSeveralImagesError_message" = "Failed to move some photos";
 
 // Image copy
 "copyImage_title" = "Kopiera till Album";
-"copySingleImage_selectAlbum" = "Välj ett album att kopiera bild \"%@\" till";
-"copySingleImage_selectRecent" = "Välj ett nytt album att kopiera foto \"%@\" till";
-"copySingleImage_selectRecentOther" = "Eller välj ett annat album att kopiera foto \"%@\" till";
-"copySeveralImages_selectAlbum" = "Välj ett album att kopiera bilderna till";
-"copySeveralImages_selectRecent" = "Välj ett nytt album för att kopiera bilderna till";
-"copySeveralImages_selectRecentOther" = "Eller välj ett annat album att kopiera bilderna till";
+"copySingleImage_selectAlbum" = "Please, select the album in which you wish to copy the photo \"%@\".";
+"copySeveralImages_selectAlbum" = "Please, select the album in which you wish to copy the photos.";
 "copySingleImage_message" = "Är du säker att du vill kopiera bild ”%@” till albumet ”%@”?";
 "copySeveralImages_message" = "Är du säker att du vill kopiera bilderna till albumet ”%@”?";
 "copySingleImageHUD_copying" = "Kopierar bild…";
@@ -441,8 +432,10 @@
 // Image copy — Errors
 "copyImageError_title" = "Kopiering misslyckad";
 "copySingleImageError_message" = "Kunde inte kopiera din bild";
+"copySeveralImagesError_message" = "Failed to copy some photos";
 
 // Images upload
+"imageUploadHeader" = "Please select the album or sub-album from which photos and videos of your device will be uploaded.";
 "imageUploadHeaderTitle_images" = "Parametrar för foton";
 "imageUploadHeaderText_images" = "Ställ in de parametrar som ska gälla för valet av bilder/videor";
 "imageUploadHeaderTitle_upload" = "Ladda upp inställningar";
@@ -679,6 +672,19 @@
 "settings_deleteImage>375px" = "Radera bild efter uppladdning";
 "settings_wifiOnly" = "Endast Wi-Fi";
 "settings_deleteImage" = "Radera efter uppladdning";
+"settings_autoUpload" = "Auto Upload";
+"settings_autoUpload>414px" = "Auto Upload Photos";
+"settings_autoUploadEnabled" = "On";
+"settings_autoUploadEnabledInfo" = "Photos will be automatically uploaded to your Piwigo.";
+"settings_autoUploadEnabledInfoAll" = "Photos and videos will be automatically uploaded to your Piwigo.";
+"settings_autoUploadDisabled" = "Off";
+"settings_autoUploadDisabledInfo" = "Photos will not be automatically uploaded to your Piwigo.";
+"settings_autoUploadSource" = "Source";
+"settings_autoUploadSourceInvalid" = "Invalid source album";
+"settings_autoUploadSourceInfo" = "Please select the album or sub-album from which photos and videos of your device will be auto-uploaded.";
+"settings_autoUploadDestination" = "Destination";
+"settings_autoUploadDestinationInvalid" = "Invalid destination album";
+"settings_autoUploadDestinationInfo" = "Please select the album or sub-album into which photos and videos will be auto-uploaded.";
 
 // Settings — Cache
 "settingsHeader_cache" = "Cache-inställningar (använd/totalt)";

@@ -274,9 +274,7 @@ NSString * const kEditImageThumbCollectionCell_ID = @"EditImageThumbCollectionCe
 -(void)renameImageWithName:(NSString *)fileName andViewController:(UIViewController *)topViewController
 {
     // Display HUD during the update
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self showHUDwithLabel:NSLocalizedString(@"renameImageHUD_label", @"Renaming Original File…") inView:topViewController.view];
-    });
+    [topViewController showPiwigoHUDWithTitle:NSLocalizedString(@"renameImageHUD_label", @"Renaming Original File…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
     
     // Prepare dictionary of parameters
     NSMutableDictionary *imageInformation = [NSMutableDictionary new];
@@ -290,66 +288,32 @@ NSString * const kEditImageThumbCollectionCell_ID = @"EditImageThumbCollectionCe
 
                 if(response != nil)
                     {
-                        [self hideHUDwithSuccess:YES inView:topViewController.view completion:^{
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                // Adopt new original filename
-                                self.imageFile.text = fileName;
-                                
-                                // Update parent image view
-                                if ([self.delegate respondsToSelector:@selector(didRenameFileOfImageWithId:andFilename:)])
-                                {
-                                    [self.delegate didRenameFileOfImageWithId:self.imageId andFilename:fileName];
-                                }
-                            });
+                        [topViewController updatePiwigoHUDwithSuccessWithCompletion:^{
+                            [topViewController hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    // Adopt new original filename
+                                    self.imageFile.text = fileName;
+                                    
+                                    // Update parent image view
+                                    if ([self.delegate respondsToSelector:@selector(didRenameFileOfImageWithId:andFilename:)])
+                                    {
+                                        [self.delegate didRenameFileOfImageWithId:self.imageId andFilename:fileName];
+                                    }
+                                });
+                            }];
                         }];
                     }
                     else
                     {
-                        [self hideHUDwithSuccess:NO inView:topViewController.view completion:^{
-                            [self showRenameErrorWithMessage:nil andViewController:topViewController];
+                        [topViewController hidePiwigoHUDWithCompletion:^{
+                            [topViewController dismissPiwigoErrorWithTitle:NSLocalizedString(@"renameCategoyError_title", @"Rename Fail") message:NSLocalizedString(@"renameImageError_message", @"Failed to rename your image filename") errorMessage:@"" completion:^{ }];
                         }];
                     }
                 } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                        [self hideHUDwithSuccess:NO inView:topViewController.view completion:^{
-                            [self showRenameErrorWithMessage:[error localizedDescription] andViewController:topViewController];
-                        } ];
+                    [topViewController hidePiwigoHUDWithCompletion:^{
+                        [topViewController dismissPiwigoErrorWithTitle:NSLocalizedString(@"renameCategoyError_title", @"Rename Fail") message:NSLocalizedString(@"renameImageError_message", @"Failed to rename your image filename") errorMessage:[error localizedDescription] completion:^{ }];
+                    }];
                 }];
-}
-    
--(void)showRenameErrorWithMessage:(NSString*)message andViewController:(UIViewController *)topViewController
-{
-    NSString *errorMessage = NSLocalizedString(@"renameImageError_message", @"Failed to rename your image filename");
-    if(message)
-    {
-        errorMessage = [NSString stringWithFormat:@"%@\n%@", errorMessage, message];
-    }
-    UIAlertController* alert = [UIAlertController
-                alertControllerWithTitle:NSLocalizedString(@"renameCategoyError_title", @"Rename Fail")
-                message:errorMessage
-                preferredStyle:UIAlertControllerStyleActionSheet];
-    
-    UIAlertAction* defaultAction = [UIAlertAction
-                actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                style:UIAlertActionStyleCancel
-                handler:^(UIAlertAction * action) {}];
-    
-    // Add actions
-    [alert addAction:defaultAction];
-
-    // Present list of actions
-    alert.view.tintColor = UIColor.piwigoColorOrange;
-    if (@available(iOS 13.0, *)) {
-        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
-    } else {
-        // Fallback on earlier versions
-    }
-    alert.popoverPresentationController.sourceView = self.contentView;
-    alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUnknown;
-    alert.popoverPresentationController.sourceRect = self.contentView.frame;
-    [topViewController presentViewController:alert animated:YES completion:^{
-        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-        alert.view.tintColor = UIColor.piwigoColorOrange;
-    }];
 }
 
 
@@ -362,55 +326,6 @@ NSString * const kEditImageThumbCollectionCell_ID = @"EditImageThumbCollectionCe
     {
         [self.delegate didDeselectImageWithId:self.imageId];
     }
-}
-
-
-#pragma mark - HUD Methods
-
--(void)showHUDwithLabel:(NSString *)label inView:(UIView *)topView
-{
-    // Create the loading HUD if needed
-    MBProgressHUD *hud = [MBProgressHUD HUDForView:topView];
-    if (!hud) {
-        hud = [MBProgressHUD showHUDAddedTo:topView animated:YES];
-    }
-    
-    // Change the background view shape, style and color.
-    hud.square = NO;
-    hud.animationType = MBProgressHUDAnimationFade;
-    hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
-    hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
-    hud.contentColor = [UIColor piwigoColorText];
-    hud.bezelView.color = [UIColor piwigoColorText];
-    hud.bezelView.style = MBProgressHUDBackgroundStyleSolidColor;
-    hud.bezelView.backgroundColor = [UIColor piwigoColorCellBackground];
-
-    // Define the text
-    hud.label.text = label;
-    hud.label.font = [UIFont piwigoFontNormal];
-}
-
--(void)hideHUDwithSuccess:(BOOL)success inView:(UIView *)topView completion:(void (^)(void))completion
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        // Hide and remove the HUD
-        MBProgressHUD *hud = [MBProgressHUD HUDForView:topView];
-        if (hud) {
-            if (success) {
-                UIImage *image = [[UIImage imageNamed:@"completed"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-                UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-                hud.customView = imageView;
-                hud.mode = MBProgressHUDModeCustomView;
-                hud.label.text = NSLocalizedString(@"completeHUD_label", @"Complete");
-                [hud hideAnimated:YES afterDelay:0.5f];
-            } else {
-                [hud hideAnimated:YES];
-            }
-        }
-        if (completion) {
-            completion();
-        }
-    });
 }
 
 

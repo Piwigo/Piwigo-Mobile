@@ -107,12 +107,29 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
         }
 
-        // Should we resume uploads?
+        // Should we reopen the session and restart uploads?
         if let rootVC = self.window?.rootViewController,
            let _ = rootVC.children.first as? AlbumImagesViewController {
-            // Resume upload operations in background queue
-            // and update badge, upload button of album navigator
-            UploadManager.shared.resumeAll()
+            // Determine for how long the session is opened
+            let timeSinceLastLogin = Model.sharedInstance()?.dateOfLastLogin.timeIntervalSinceNow ?? TimeInterval(-3600.0)
+            if timeSinceLastLogin < TimeInterval(-900) { // i.e. 15 minutes (Piwigo 11 session duration defaults to an hour)
+                /// - Perform relogin
+                /// - Resume upload operations in background queue
+                ///   and update badge, upload button of album navigator
+                let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                appDelegate?.reloginAndRetry {
+                    // Refresh Album/Images view
+                    let uploadInfo: [String : Any] = ["NoHUD" : "YES",
+                                                      "fromCache" : "NO",
+                                                      "albumId" : String(0)]
+                    let name = NSNotification.Name(rawValue: kPiwigoNotificationGetCategoryData)
+                    NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
+                }
+            } else {
+                /// - Resume upload operations in background queue
+                ///   and update badge, upload button of album navigator
+                UploadManager.shared.resumeAll()
+            }
         }
     }
 
@@ -135,10 +152,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Enable network reachability monitoring
         AFNetworkReachabilityManager.shared().startMonitoring()
-
-        // Should we reopen the session ?
-        let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        appDelegate?.checkSessionStatusAndTryRelogin()
     }
 
     @available(iOS 13.0, *)

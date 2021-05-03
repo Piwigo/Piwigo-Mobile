@@ -27,7 +27,6 @@
 //#endif
 
 NSString * const kPiwigoNotificationPaletteChanged = @"kPiwigoNotificationPaletteChanged";
-NSString * const kPiwigoNotificationNetworkErrorEncountered = @"kPiwigoNotificationNetworkErrorEncountered";
 NSString * const kPiwigoNotificationAddRecentAlbum = @"kPiwigoNotificationAddRecentAlbum";
 NSString * const kPiwigoNotificationRemoveRecentAlbum = @"kPiwigoNotificationRemoveRecentAlbum";
 
@@ -204,9 +203,6 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
         
         // Enable network reachability monitoring
         [[AFNetworkReachabilityManager sharedManager] startMonitoring];
-
-        // Should we reopen the session ?
-        [self checkSessionStatusAndTryRelogin];
     }
 }
 
@@ -229,9 +225,22 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
         UIViewController *rootVC = self.window.rootViewController;
         UIViewController *currentVC = rootVC.childViewControllers.firstObject;
         if ([currentVC isKindOfClass:[AlbumImagesViewController class]]) {
-            // Resume upload operations in background queue
-            // and update badge, upload button of album navigator
-            [[UploadManager shared] resumeAll];
+            // Determine for how long the session is opened
+            NSTimeInterval timeSinceLastLogin = [Model.sharedInstance.dateOfLastLogin timeIntervalSinceNow];
+            if (timeSinceLastLogin < (NSTimeInterval)(-900)) { // i.e. 15 minutes (Piwigo 11 session duration defaults to an hour)
+                /// — Perform relogin
+                /// — Resume upload operations in background queue
+                ///   and update badge, upload button of album navigator
+                [self reloginAndRetryWithCompletion:^{
+                    // Refresh Album/Images view
+                    NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO", @"albumId" : @(0)};
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
+                }];
+            } else {
+                /// - Resume upload operations in background queue
+                ///   and update badge, upload button of album navigator
+                [[UploadManager shared] resumeAll];
+            }
         }
     }
 }
@@ -339,7 +348,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     return _loginVC;
 }
 
--(void)checkSessionStatusAndTryRelogin
+-(void)reloginAndRetryWithCompletion:(void (^)(void))reloginCompletion
 {
     BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;
     NSString *server = [Model sharedInstance].serverPath;
@@ -347,17 +356,9 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     
     if(hadOpenedSession && (server.length > 0) && (user.length > 0))
     {
-#if defined(DEBUG)
-        NSLog(@"       Connection changed but again reachable: Login in again");
-#endif
-        if ([NSThread isMainThread]) {
-            [self.loginVC checkSessionStatusAndTryRelogin];
-        }
-        else{
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.loginVC checkSessionStatusAndTryRelogin];
-            });
-        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.loginVC performReloginWithCompletion:reloginCompletion];
+        });
     }
 }
 
@@ -365,7 +366,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
 {
     if (![[NSProcessInfo processInfo] isLowPowerModeEnabled]) {
         // Restart battery intensive upload operations
-        [self checkSessionStatusAndTryRelogin];
+        [self reloginAndRetryWithCompletion:^{}];
     }
 }
 
@@ -393,10 +394,6 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     // When that notification is posted, the method screenBrightnessChanged will be called.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenBrightnessChanged) name:UIScreenBrightnessDidChangeNotification object:nil];
 
-    // Observe the PiwigoNetworkErrorEncounteredNotification
-    // When that notification is posted, the app checks the login.
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkSessionStatusAndTryRelogin) name:kPiwigoNotificationNetworkErrorEncountered object:nil];
-    
     // Observe the PiwigoAddRecentAlbumNotification
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addRecentAlbumWithAlbumId:) name:kPiwigoNotificationAddRecentAlbum object:nil];
 

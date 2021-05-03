@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.6.1_text" = "Version 2.6.1\n\n• Retter tildelingen af tags til et udvalg af fotos\n• Nydesignede indstillinger for udseende\n• Forbedrer pålideligheden af upload af baggrunden\n• Mindre fejlrettelser og forbedringer af grænsefladen";
+"v2.6.2_text" = "Version 2.6.2\n\n• Tillader nogle fællesskabsbrugere at oprette tags\n• Løser et kompatibilitetsproblem med Piwigo 11\n• Mindre fejlrettelser og forbedringer af brugerflade\n• Modernisering af kode";
+
+"v2.6.1_text" = "Version 2.6.1\n19 marts 2021\n\n• Retter tildelingen af tags til et udvalg af fotos\n• Nydesignede indstillinger for udseende\n• Forbedrer pålideligheden af upload af baggrunden\n• Mindre fejlrettelser og forbedringer af grænsefladen";
 
 "v2.6.0_text" = "Version 2.6\n3 marts 2021\n\n• Indsæt / upload fotos og videoer fra udklipsholder\n• Løser et kompatibilitetsproblem med Piwigo 11\n• Mindre fejl rettet og forbedringer af brugerflade";
 
@@ -18,7 +20,7 @@
 
 "v2.5.1_text" = "Version 2.5.1\n10 september 2020\n\n• Ny mulighed for at præsentere fotos og videoer i tilfældig rækkefølge\n• Mindre fejlrettelser og forbedringer af brugerflade";
 
-"v2.5.0_text" = "Version 2.5\nAugust 27, 2020\n\n• Registrerer upload requests\n• Uploads photos/videos when possible\n• \"Wi-Fi only\" option for uploads\n• No upload when in Low Power Mode\n• Much faster access to the Photo Library\n• Minor bug fixes and improvements of the interface\n• Code modernization\n\nBackground uploading will be available after a server update.";
+"v2.5.0_text" = "Version 2.5\n27 august 2020\n\n• Optegnelser upload anmodninger\n• Uploader fotos/videoer, når det er muligt\n• \"Kun Wi-Fi\" mulighed for uploads\n• Ingen upload ved lav strømtilstand\n• Meget hurtigere adgang til Fotobiblioteket\n• Mindre fejlrettelser og forbedringer af brugerflade\n• Modernisering af kode\n\nBaggrundsupload vil være tilgængelig efter en serveropdatering.";
 
 "v2.4.8_text" = "Version 2.4.8\n25 marts 2020\n\n• Piwigo advarer dig, når:\n  - et websted har et certifikat, der ikke er gyldigt,\n  - inden du opretter en usikker forbindelse\n• Forbedret cachehåndtering\n• Mindre fejlrettelser og forbedringer af grænsefladen";
 

@@ -13,15 +13,21 @@ import PhotosUI
 import UIKit
 
 @objc
+protocol LocalAlbumsSelectorDelegate: NSObjectProtocol {
+    func didSelectPhotoAlbum(withId: String)
+}
+
+@objc
 class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, LocalAlbumsProviderDelegate {
 
+    @objc weak var delegate: LocalAlbumsSelectorDelegate?
+
+    @IBOutlet var localAlbumsTableView: UITableView!
+    
     @objc
     func setCategoryId(_ categoryId: Int) {
         _categoryId = categoryId
     }
-
-    @IBOutlet var localAlbumsTableView: UITableView!
-    
     private var _categoryId: Int?
     private var categoryId: Int {
         get {
@@ -31,6 +37,14 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             _categoryId = categoryId
         }
     }
+
+    // Actions to perform after selection
+    private enum kPiwigoCategorySelectAction : Int {
+        case none
+        case presentLocalAlbum
+        case setAutoUploadAlbum
+    }
+    private var wantedAction: kPiwigoCategorySelectAction = .none
 
     private var selectPhotoLibraryItemsButton: UIBarButtonItem?
     private var cancelBarButton: UIBarButtonItem?
@@ -49,7 +63,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             selectPhotoLibraryItemsButton = UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(selectPhotoLibraryItems))
         }
         
-        // Button for returning to albums/images
+        // Button for returning to albums/images collections
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(quitUpload))
         cancelBarButton?.accessibilityIdentifier = "Cancel"
         
@@ -93,6 +107,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
                 
         // Table view
+        setTableViewMainHeader()
         localAlbumsTableView?.separatorColor = UIColor.piwigoColorSeparator()
         localAlbumsTableView?.indicatorStyle = Model.sharedInstance().isDarkPaletteActive ? .white : .black
         localAlbumsTableView?.reloadData()
@@ -101,18 +116,30 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        // Set colors, fonts, etc.
-        applyColorPalette()
+        // Determine what to do after selection
+        if let caller = delegate {
+            if caller.isKind(of: AutoUploadViewController.self) {
+                wantedAction = .setAutoUploadAlbum
+            } else {
+                wantedAction = .none
+            }
+        } else {
+            // The user wishes to upload photos
+            wantedAction = .presentLocalAlbum
+            
+            // Navigation "Cancel" button and identifier
+            navigationItem.setLeftBarButton(cancelBarButton, animated: true)
+            navigationController?.navigationBar.accessibilityIdentifier = "LocalAlbumsNav"
 
-        // Are there images in the pasteboard?
-        if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: ["public.image", "public.movie"]),
-           indexSet.count > 0, let _ = UIPasteboard.general.types(forItemSet: indexSet) {
-            hasImagesInPasteboard = true
+            // Check if there are photos/videos in the pasteboard
+            if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: ["public.image", "public.movie"]),
+               indexSet.count > 0, let _ = UIPasteboard.general.types(forItemSet: indexSet) {
+                hasImagesInPasteboard = true
+            }
         }
 
-        // Navigation "Cancel" button and identifier
-        navigationItem.setLeftBarButton(cancelBarButton, animated: true)
-        navigationController?.navigationBar.accessibilityIdentifier = "LocalAlbumsNav"
+        // Set colors, fonts, etc.
+        applyColorPalette()
 
         // Hide toolbar when returning from the LocalImages / PasteboardImages views
         navigationController?.isToolbarHidden = true
@@ -133,6 +160,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             if let indexPath = localAlbumsTableView.indexPath(for: cell) {
                 // Reload the tableview on orientation change, to match the new width of the table.
                 coordinator.animate(alongsideTransition: { context in
+                    self.setTableViewMainHeader()
                     self.localAlbumsTableView.reloadData()
 
                     // Scroll to previous position
@@ -143,18 +171,28 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     }
 
     @objc func checkPasteboard() {
+        // Don't consider the pasteboard if the cateogry is null.
+        if wantedAction == .setAutoUploadAlbum { return }
+        
         // Are there images in the pasteboard?
         let testTypes = UIPasteboard.general.contains(pasteboardTypes: ["public.image", "public.movie"]) ? true : false
         let nberPhotos = UIPasteboard.general.itemSet(withPasteboardTypes: ["public.image", "public.movie"])?.count ?? 0
         hasImagesInPasteboard = testTypes && (nberPhotos > 0)
 
         // Reload tableView
+        self.setTableViewMainHeader()
         localAlbumsTableView.reloadData()
     }
 
     @objc func quitUpload() {
-        // Leave Upload action and return to Albums and Images
-        dismiss(animated: true)
+        switch wantedAction {
+        case .setAutoUploadAlbum, .none:
+            // Should never be called
+            navigationController?.popViewController(animated: true)
+        default:
+            // Leave Upload action and return to albums/images collections
+            dismiss(animated: true)
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -171,8 +209,43 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
 
     
     // MARK: - UITableView - Header
+    private func setTableViewMainHeader() {
+        let headerView = SelectCategoryHeaderView(frame: .zero)
+        switch wantedAction {
+        case .presentLocalAlbum:
+            headerView.configure(width: min(localAlbumsTableView.frame.size.width, kPiwigoPadSettingsWidth),
+                                 text: NSLocalizedString("imageUploadHeader", comment: "Please select the album or sub-album from which photos and videos of your device will be uploaded."))
+
+        case .setAutoUploadAlbum:
+            headerView.configure(width: min(localAlbumsTableView.frame.size.width, kPiwigoPadSubViewWidth),
+                                 text: String(format: NSLocalizedString("settings_autoUploadSourceInfo", comment:"Please select the album or sub-album from which photos and videos of your device will be auto-uploaded.")))
+
+        default:
+            fatalError("Action not configured in setTableViewMainHeader().")
+        }
+        localAlbumsTableView.tableHeaderView = headerView
+    }
+
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 44.0
+        let context = NSStringDrawingContext()
+        context.minimumScaleFactor = 1.0
+
+        // First section added for pasteboard?
+        var activeSection = section
+        if hasImagesInPasteboard {
+            switch activeSection {
+            case 0:
+                return 0.0
+            default:
+                activeSection -= 1
+            }
+        }
+
+        // Title
+        let titleString = LocalAlbumsProvider.sharedInstance().localAlbumHeaders[activeSection]
+        let titleAttributes = [NSAttributedString.Key.font: UIFont.piwigoFontBold()]
+        let titleRect = titleString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
+        return CGFloat(ceil(titleRect.size.height))
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -269,8 +342,8 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         }
 
         // Display [+] button at the bottom of section presenting a limited number of albums
-        if indexPath.section < LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums.count,
-           LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums[indexPath.section] == true,
+        if activeSection < LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums.count,
+           LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums[activeSection] == true,
             indexPath.row == LocalAlbumsProvider.sharedInstance().maxNberOfAlbumsInSection {
             
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "LocalAlbumsMoreTableViewCell", for: indexPath) as? LocalAlbumsMoreTableViewCell else {
@@ -293,6 +366,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
                 return LocalAlbumsTableViewCell()
             }
             cell.configure(with: title, nberPhotos: nberPhotos, startDate: startDate, endDate: endDate)
+            cell.accessoryType = wantedAction == .setAutoUploadAlbum ? .none : .disclosureIndicator
             if assetCollection.assetCollectionType == .smartAlbum && assetCollection.assetCollectionSubtype == .smartAlbumUserLibrary {
                 cell.accessibilityIdentifier = "Recent"
             }
@@ -305,6 +379,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
                 return LocalAlbumsNoDatesTableViewCell()
             }
             cell.configure(with: title, nberPhotos: nberPhotos)
+            cell.accessoryType = wantedAction == .setAutoUploadAlbum ? .none : .disclosureIndicator
             if assetCollection.assetCollectionType == .smartAlbum && assetCollection.assetCollectionSubtype == .smartAlbumUserLibrary {
                 cell.accessibilityIdentifier = "Recent"
             }
@@ -420,11 +495,9 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             switch activeSection {
             case 0:
                 let pasteboardImagesSB = UIStoryboard(name: "PasteboardImagesViewController", bundle: nil)
-                let localImagesVC = pasteboardImagesSB.instantiateViewController(withIdentifier: "PasteboardImagesViewController") as? PasteboardImagesViewController
-                localImagesVC?.setCategoryId(categoryId)
-                if let localImagesVC = localImagesVC {
-                    navigationController?.pushViewController(localImagesVC, animated: true)
-                }
+                guard let localImagesVC = pasteboardImagesSB.instantiateViewController(withIdentifier: "PasteboardImagesViewController") as? PasteboardImagesViewController else { return }
+                localImagesVC.setCategoryId(categoryId)
+                navigationController?.pushViewController(localImagesVC, animated: true)
                 return
             default:
                 activeSection -= 1
@@ -437,7 +510,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             // Release album list
             LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums[activeSection] = false
             // Add remaining albums
-            let indexPaths: [IndexPath] = Array(LocalAlbumsProvider.sharedInstance().maxNberOfAlbumsInSection+1..<LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[activeSection].count).map { IndexPath.init(row: $0, section: activeSection)}
+            let indexPaths: [IndexPath] = Array(LocalAlbumsProvider.sharedInstance().maxNberOfAlbumsInSection+1..<LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[activeSection].count).map { IndexPath.init(row: $0, section: indexPath.section)}
             tableView.insertRows(at: indexPaths, with: .automatic)
             // Replace button
             tableView.reloadRows(at: [indexPath], with: .automatic)
@@ -445,11 +518,18 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         }
         
         // Case of an album
-        let localImagesSB = UIStoryboard(name: "LocalImagesViewController", bundle: nil)
-        let localImagesVC = localImagesSB.instantiateViewController(withIdentifier: "LocalImagesViewController") as? LocalImagesViewController
-        localImagesVC?.setCategoryId(categoryId)
-        localImagesVC?.setImageCollectionId(LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[activeSection][indexPath.row].localIdentifier)
-        if let localImagesVC = localImagesVC {
+        let assetCollection = LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[activeSection][indexPath.row]
+        let albumID = assetCollection.localIdentifier
+        if wantedAction == .setAutoUploadAlbum {
+            // Return the selected album ID
+            delegate?.didSelectPhotoAlbum(withId: albumID)
+            navigationController?.popViewController(animated: true)
+        } else {
+            // Presents local images of the selected album
+            let localImagesSB = UIStoryboard(name: "LocalImagesViewController", bundle: nil)
+            guard let localImagesVC = localImagesSB.instantiateViewController(withIdentifier: "LocalImagesViewController") as? LocalImagesViewController else { return }
+            localImagesVC.setCategoryId(categoryId)
+            localImagesVC.setImageCollectionId(albumID)
             navigationController?.pushViewController(localImagesVC, animated: true)
         }
     }

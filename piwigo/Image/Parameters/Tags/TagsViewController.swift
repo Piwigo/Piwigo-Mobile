@@ -22,19 +22,16 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
     @objc weak var delegate: TagsViewControllerDelegate?
 
     // Called before uploading images (Tag class)
-    @objc func setSelectedTagIds(_ selectedTagIds: [Int32]?) {
-        _selectedTagIds = selectedTagIds ?? [Int32]()
+    private var selectedTagIds = [Int32]()
+    @objc func setPreselectedTagIds(_ preselectedTagIds: [Int32]?) {
+        selectedTagIds = preselectedTagIds ?? [Int32]()
     }
-    private var _selectedTagIds = [Int32]()
-    private var selectedTagIds: [Int32] {
-        get {
-            return _selectedTagIds
-        }
-        set(selectedTagIds) {
-            _selectedTagIds = selectedTagIds
-        }
+    
+    private var hasTagCreationRights:Bool = false
+    @objc func setTagCreationRights(_ tagCreationRights:Bool) {
+        hasTagCreationRights = tagCreationRights
     }
-
+    
 
     // MARK: - Core Data
     /**
@@ -65,34 +62,22 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
 
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
-        dataProvider.fetchTags(asAdmin: Model.sharedInstance()?.hasAdminRights ?? false) { error in
-            DispatchQueue.main.async {
+        DispatchQueue.global(qos: .userInteractive).async {
+            self.dataProvider.fetchTags(asAdmin: self.hasTagCreationRights) { error in
                 guard let error = error else { return }     // Done if no error
 
                 // Show an alert if there was an error.
-                let alert = UIAlertController(title: NSLocalizedString("CoreDataFetch_TagError", comment: "Fetch tags error!"),
-                                              message: error.localizedDescription,
-                                              preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: NSLocalizedString("alertOkButton", comment: "OK"),
-                                              style: .default, handler: nil))
-                alert.view.tintColor = UIColor.piwigoColorOrange()
-                if #available(iOS 13.0, *) {
-                    alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
-                } else {
-                    // Fallback on earlier versions
+                DispatchQueue.main.async {
+                    self.dismissPiwigoError(withTitle: "", message: NSLocalizedString("CoreDataFetch_TagError", comment: "Fetch tags error!"), errorMessage: error.localizedDescription) { }
                 }
-                self.present(alert, animated: true, completion: {
-                    // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                    alert.view.tintColor = UIColor.piwigoColorOrange()
-                })
             }
         }
         
         // Title
         title = NSLocalizedString("tags", comment: "Tags")
         
-        // Add button for Admins
-        if Model.sharedInstance().hasAdminRights {
+        // Add button for Admins and some Community users
+        if hasTagCreationRights {
             addBarButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(requestNewTagName))
             navigationItem.setRightBarButton(addBarButton, animated: false)
         }
@@ -133,10 +118,10 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
         
         // Prepare data source
-        self.selectedTags = self.dataProvider.fetchedResultsController.fetchedObjects?
-                                .filter({self.selectedTagIds.contains($0.tagId)}) ?? [Tag]()
-        self.nonSelectedTags = self.dataProvider.fetchedResultsController.fetchedObjects?
-                                .filter({!self.selectedTagIds.contains($0.tagId)}) ?? [Tag]()
+        self.selectedTags = dataProvider.fetchedResultsController.fetchedObjects?
+                                .filter({selectedTagIds.contains($0.tagId)}) ?? [Tag]()
+        self.nonSelectedTags = dataProvider.fetchedResultsController.fetchedObjects?
+                                .filter({!selectedTagIds.contains($0.tagId)}) ?? [Tag]()
         // Build ABC index
         self.updateSectionIndex()
         
@@ -145,7 +130,7 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
     }
 
     override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+        super .viewWillDisappear(animated)
 
         // Unregister palette changes
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
@@ -387,101 +372,24 @@ extension TagsViewController {
         }
         
         // Display HUD during the update
-        DispatchQueue.main.async(execute: {
-            self.showHUDwithLabel(NSLocalizedString("tagsAddHUD_label", comment: "Creating Tag…"))
-        })
+        showPiwigoHUD(withTitle: NSLocalizedString("tagsAddHUD_label", comment: "Creating Tag…"))
 
-        // Rename album
-        dataProvider.addTag(with: tagName, completionHandler: { error in
-            guard let error = error else {
-                self.hideHUDwithSuccess(true) { }
-                return
-            }
-            self.hideHUDwithSuccess(false) {
-                self.showAddError(withMessage: error.localizedDescription)
-            }
-        })
-    }
-
-    func showAddError(withMessage message: String?) {
-        var errorMessage = NSLocalizedString("tagsAddError_message", comment: "Failed to create new tag")
-        if message != nil {
-            errorMessage = "\(errorMessage)\n\(message ?? "")"
-        }
-        let alert = UIAlertController(title: NSLocalizedString("tagsAddError_title", comment: "Create Fail"), message: errorMessage, preferredStyle: .alert)
-
-        let defaultAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .cancel, handler: { action in
-            })
-
-        // Add actions
-        alert.addAction(defaultAction)
-
-        // Present list of actions
-        alert.view.tintColor = UIColor.piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
-        alert.popoverPresentationController?.barButtonItem = addBarButton
-        alert.popoverPresentationController?.permittedArrowDirections = .up
-        self.present(alert, animated: true) {
-            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange()
-        }
-    }
-
-
-    // MARK: - HUD methods
-    func showHUDwithLabel(_ label: String?) {
-        // Determine the present view controller if needed (not necessarily self.view)
-        if hudViewController == nil {
-            hudViewController = UIApplication.shared.keyWindow?.rootViewController
-            while ((hudViewController?.presentedViewController) != nil) {
-                hudViewController = hudViewController?.presentedViewController
-            }
-        }
-
-        // Create the login HUD if needed
-        var hud = hudViewController?.view.viewWithTag(loadingViewTag) as? MBProgressHUD
-        if hud == nil {
-            // Create the HUD
-            hud = MBProgressHUD.showAdded(to: (hudViewController?.view)!, animated: true)
-            hud?.tag = loadingViewTag
-
-            // Change the background view shape, style and color.
-            hud?.isSquare = false
-            hud?.animationType = .fade
-            hud?.backgroundView.style = .solidColor
-            hud?.backgroundView.color = UIColor(white: 0.0, alpha: 0.5)
-            hud?.contentColor = UIColor.piwigoColorText()
-            hud?.bezelView.color = UIColor.piwigoColorText()
-            hud?.bezelView.style = .solidColor
-            hud?.bezelView.backgroundColor = UIColor.piwigoColorCellBackground()
-        }
-        
-        // Define the text
-        hud?.label.text = label
-        hud?.label.font = UIFont.piwigoFontNormal()
-    }
-    
-    func hideHUDwithSuccess(_ success: Bool, completion: @escaping () -> Void) {
-        DispatchQueue.main.async(execute: {
-            // Hide and remove the HUD
-            if let hud = self.hudViewController?.view.viewWithTag(loadingViewTag) as? MBProgressHUD {
-                if success {
-                    let image = UIImage(named: "completed")?.withRenderingMode(.alwaysTemplate)
-                    let imageView = UIImageView(image: image)
-                    hud.customView = imageView
-                    hud.mode = .customView
-                    hud.label.text = NSLocalizedString("completeHUD_label", comment: "Complete")
-                    hud.hide(animated: true, afterDelay: 0.5)
-                } else {
-                    hud.hide(animated: true)
+        // Add new tag
+        DispatchQueue.global(qos: .userInteractive).async {
+            self.dataProvider.addTag(with: tagName, completionHandler: { error in
+                guard let error = error else {
+                    self.updatePiwigoHUDwithSuccess {
+                        self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD, completion: {})
+                    }
+                    return
                 }
-                completion()
-            }
-        })
+                self.hidePiwigoHUD {
+                    self.dismissPiwigoError(withTitle: NSLocalizedString("tagsAddError_title", comment: "Create Fail"),
+                                            message: NSLocalizedString("tagsAddError_message", comment: "Failed to…"),
+                                            errorMessage: error.localizedDescription, completion: { })
+                }
+            })
+        }
     }
 
 
@@ -545,7 +453,7 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
                 selectedTagIds.removeAll(where: {$0 == tag.tagId})
                 // Delete tag from table view
                 let deleteAtIndexPath = IndexPath.init(row: selectedTagIdsBeforeUpdate.firstIndex(where: {$0 == tag.tagId})!, section: 0)
-                print(".delete =>", deleteAtIndexPath.debugDescription)
+//                print(".delete =>", deleteAtIndexPath.debugDescription)
                 tagsTableView.deleteRows(at: [deleteAtIndexPath], with: .automatic)
             }
             // List of not selected tags
@@ -554,21 +462,35 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
                 nonSelectedTags.remove(at: index)
                 // Delete tag from table view
                 let deleteAtIndexPath = IndexPath.init(row: nonSelectedTagIdsBeforeUpdate.firstIndex(where: {$0 == tag.tagId})!, section: 1)
-                print(".delete =>", deleteAtIndexPath.debugDescription)
+//                print(".delete =>", deleteAtIndexPath.debugDescription)
                 tagsTableView.deleteRows(at: [deleteAtIndexPath], with: .automatic)
             }
 
         case .insert:
-            // Add tag to list of non selected tags
+            // Add tag to appropriate list of tags
             /// We cannot sort the list now to avoid the case where we insert several rows at the same index path.
-            /// The sort is performed after the data source update.
+            /// The sort is performed after having changed the data source.
             guard let tag: Tag = anObject as? Tag else { return }
-            nonSelectedTags.append(tag)
-            // Determine index of added tag and insert tag
-            let index = nonSelectedTags.firstIndex(where: {$0.tagId == tag.tagId})
-            let addAtIndexPath = IndexPath.init(row: index!, section: 1)
-            print(".insert =>", addAtIndexPath.debugDescription)
-            tagsTableView.insertRows(at: [addAtIndexPath], with: .automatic)
+            // Append tag to appropriate list
+            if selectedTagIds.contains(tag.tagId) {
+                // Append tag to list of selected tags
+                selectedTags.append(tag)
+                // Determine index of added tag
+                if let index = selectedTags.firstIndex(where: {$0.tagId == tag.tagId}) {
+                    let addAtIndexPath = IndexPath.init(row: index, section: 0)
+                    print(".insert =>", addAtIndexPath.debugDescription)
+                    tagsTableView.insertRows(at: [addAtIndexPath], with: .automatic)
+                }
+            } else {
+                // Append tag to list of non-selected tags
+                nonSelectedTags.append(tag)
+                // Determine index of added tag
+                if let index = nonSelectedTags.firstIndex(where: {$0.tagId == tag.tagId}) {
+                    let addAtIndexPath = IndexPath.init(row: index, section: 1)
+                    print(".insert =>", addAtIndexPath.debugDescription)
+                    tagsTableView.insertRows(at: [addAtIndexPath], with: .automatic)
+                }
+            }
 
         case .move:        // Should never "move"
             // Update tag belonging to the right list
@@ -580,7 +502,7 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
             // List of selected tags
             if let index = selectedTags.firstIndex(where: {$0.tagId == tag.tagId}) {
                 let updateAtIndexPath = IndexPath.init(row: index, section: 0)
-                print(".update =>", updateAtIndexPath.debugDescription)
+//                print(".update =>", updateAtIndexPath.debugDescription)
                 if let cell = tableView.cellForRow(at: updateAtIndexPath) as? TagTableViewCell {
                     cell.configure(with: tag, andEditOption: .remove)
                 }
@@ -588,7 +510,7 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
             // List of not selected tags
             else if let index = nonSelectedTags.firstIndex(where: {$0.tagId == tag.tagId}) {
                 let updateAtIndexPath = IndexPath.init(row: index, section: 1)
-                print(".update =>", updateAtIndexPath.debugDescription)
+//                print(".update =>", updateAtIndexPath.debugDescription)
                 if let cell = tableView.cellForRow(at: updateAtIndexPath) as? TagTableViewCell {
                     cell.configure(with: tag, andEditOption: .add)
                 }

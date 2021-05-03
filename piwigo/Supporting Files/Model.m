@@ -21,9 +21,14 @@ NSInteger const kPiwigoDiskCacheInc   = 64;     // Slider increment
 NSInteger const kPiwigoDiskCacheMin   = 128;    // Minimum size
 NSInteger const kPiwigoDiskCacheMax   = 2048;   // Maximum size
 
+CGFloat const kPiwigoPadSubViewWidth  = 375.0;  // Preferred popover view width on iPad
+CGFloat const kPiwigoPadSettingsWidth = 512.0;  // Preferred Settings view width on iPad
+
 NSTimeInterval const k1WeekInDays  = 60 * 60 * 24 *  7.0;
 NSTimeInterval const k2WeeksInDays = 60 * 60 * 24 * 14.0;
 NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
+
+NSInteger const kDelayPiwigoHUD = 500;
 
 @interface Model()
 
@@ -53,6 +58,7 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
         instance.hasAdminRights = NO;
         instance.hasNormalRights = NO;
         instance.hadOpenedSession = NO;
+        instance.dateOfLastLogin = [NSDate distantPast];
         instance.didRejectCertificate = NO;
         instance.didFailHTTPauthentication = NO;
         instance.didApproveCertificate = NO;
@@ -120,6 +126,9 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
         instance.defaultPrefix = @"";
         instance.localImagesSort = kPiwigoSortDateCreatedDescending;    // i.e. new to old
         instance.wifiOnlyUploading = NO;            // Wi-Fi only option
+        instance.isAutoUploadActive = NO;           // Auto-upload On/Off
+        instance.autoUploadAlbumId = @"";           // Unknown source Photos album
+        instance.autoUploadCategoryId = NSNotFound; // Unknown destination Piwigo album
 
         // Default palette mode
         instance.isDarkPaletteActive = NO;
@@ -130,7 +139,7 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
         instance.isSystemDarkModeActive = NO;
         
         // Default cache settings
-        instance.loadAllCategoryInfo = YES;         // Load all albums data at start
+        instance.available = YES;                           // Available…
 		instance.diskCache = kPiwigoDiskCacheMin * 4;       // i.e. 512 MB
 		instance.memoryCache = kPiwigoMemoryCacheInc * 2;   // i.e. 16 MB
 		
@@ -220,7 +229,7 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
 		self.memoryCache = modelData.memoryCache;
 		self.photoQuality = modelData.photoQuality;
 		self.photoResize = modelData.photoResize;
-		self.loadAllCategoryInfo = modelData.loadAllCategoryInfo;
+		self.available = modelData.available;
 		self.defaultSort = modelData.defaultSort;
 		self.resizeImageOnUpload = modelData.resizeImageOnUpload;
 		self.defaultImagePreviewSize = modelData.defaultImagePreviewSize;
@@ -267,6 +276,9 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
         self.localImagesSort = modelData.localImagesSort;
         self.wifiOnlyUploading = modelData.wifiOnlyUploading;
         self.didWatchHelpViews = modelData.didWatchHelpViews;
+        self.isAutoUploadActive = modelData.isAutoUploadActive;
+        self.autoUploadAlbumId = modelData.autoUploadAlbumId;
+        self.autoUploadCategoryId = modelData.autoUploadCategoryId;
 	}
 }
 
@@ -290,7 +302,7 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
 	[saveObject addObject:@(self.photoQuality)];
 	[saveObject addObject:@(self.photoResize)];
 	[saveObject addObject:self.serverProtocol];
-	[saveObject addObject:[NSNumber numberWithBool:self.loadAllCategoryInfo]];
+	[saveObject addObject:[NSNumber numberWithBool:self.available]];
 	[saveObject addObject:@(self.defaultSort)];
 	[saveObject addObject:[NSNumber numberWithBool:self.resizeImageOnUpload]];
 	[saveObject addObject:@(self.defaultImagePreviewSize)];
@@ -338,7 +350,7 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
     [saveObject addObject:[NSNumber numberWithInteger:self.uploadChunkSize]];
     [saveObject addObject:[NSNumber numberWithUnsignedInteger:self.stringEncoding]];
     // Added in v2.4.2…
-    [saveObject addObject:[NSNumber numberWithInteger:self.defaultAlbumThumbnailSize]];
+    [saveObject addObject:@(self.defaultAlbumThumbnailSize)];
     // Added in v2.4.5…
     [saveObject addObject:self.recentCategories];
     [saveObject addObject:[NSNumber numberWithUnsignedInteger:self.maxNberRecentCategories]];
@@ -350,6 +362,11 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
     [saveObject addObject:[NSNumber numberWithBool:self.wifiOnlyUploading]];
     // Added in 2.5.3…
     [saveObject addObject:[NSNumber numberWithInteger:self.didWatchHelpViews]];
+    // Added in 2.7.0…
+    [saveObject addObject:[NSNumber numberWithBool:self.isLightPaletteModeActive]];
+    [saveObject addObject:[NSNumber numberWithBool:self.isAutoUploadActive]];
+    [saveObject addObject:self.autoUploadAlbumId];
+    [saveObject addObject:[NSNumber numberWithInteger:self.autoUploadCategoryId]];
 
     [encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -382,9 +399,9 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
 	}
 	if(savedData.count > 8)
 	{
-		self.loadAllCategoryInfo = [[savedData objectAtIndex:8] boolValue];
+		self.available = [[savedData objectAtIndex:8] boolValue];
 	} else {
-		self.loadAllCategoryInfo = YES;
+		self.available = YES;
 	}
 	if(savedData.count > 9) {
 		self.defaultSort = (kPiwigoSort)[[savedData objectAtIndex:9] intValue];
@@ -399,7 +416,7 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
 	}
     if(savedData.count > 11) {
         if(savedData.count > 47) {
-            self.defaultImagePreviewSize = [[savedData objectAtIndex:11] integerValue];
+            self.defaultImagePreviewSize = (kPiwigoImageSize)[[savedData objectAtIndex:11] integerValue];
         } else {
             // Just updated to 2.4.2…
             self.defaultImagePreviewSize = [PiwigoImageData optimumImageSizeForDevice];
@@ -618,7 +635,7 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
         self.stringEncoding = NSUTF8StringEncoding;
     }
     if(savedData.count > 47) {
-        self.defaultAlbumThumbnailSize = [[savedData objectAtIndex:47] integerValue];
+        self.defaultAlbumThumbnailSize = (kPiwigoImageSize)[[savedData objectAtIndex:47] integerValue];
     } else {
         self.defaultAlbumThumbnailSize = [PiwigoImageData optimumAlbumThumbnailSizeForDevice];
     }
@@ -662,6 +679,21 @@ NSTimeInterval const k3WeeksInDays = 60 * 60 * 24 * 21.0;
         self.isLightPaletteModeActive = [[savedData objectAtIndex:55] boolValue];
     } else {
         self.isLightPaletteModeActive = NO;
+    }
+    if(savedData.count > 56) {
+        self.isAutoUploadActive = [[savedData objectAtIndex:56] boolValue];
+    } else {
+        self.isAutoUploadActive = NO;
+    }
+    if(savedData.count > 57) {
+        self.autoUploadAlbumId = [savedData objectAtIndex:57];
+    } else {
+        self.autoUploadAlbumId = @"";
+    }
+    if(savedData.count > 58) {
+        self.autoUploadCategoryId = [[savedData objectAtIndex:58] integerValue];
+    } else {
+        self.autoUploadCategoryId = NSNotFound;
     }
 	return self;
 }

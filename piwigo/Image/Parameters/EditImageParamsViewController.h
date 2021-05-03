@@ -15,8 +15,9 @@
 @protocol EditImageParamsDelegate <NSObject>
 
 -(void)didDeselectImageWithId:(NSInteger)imageId;
--(void)didFinishEditingParams:(PiwigoImageData *)params;
 -(void)didRenameFileOfImage:(PiwigoImageData *)imageData;
+-(void)didChangeParamsOfImage:(PiwigoImageData *)params;
+-(void)didFinishEditingParameters;
 
 @end
 
@@ -24,5 +25,6 @@
 
 @property (nonatomic, weak) id<EditImageParamsDelegate> delegate;
 @property (nonatomic, strong) NSArray<PiwigoImageData *> *images;
+@property (nonatomic, assign) BOOL hasTagCreationRights;
 
 @end

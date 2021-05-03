@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.6.1_text" = "Wersja 2.6.1\n\n• Naprawia przypisywanie tagów wybranym zdjęciom\n• Przeprojektowane ustawienia wyglądu\n• Poprawia niezawodność przesyłania w tle\n• Poprawki drobnych błędów i ulepszenia interfejsu";
+"v2.6.2_text" = "Wersja 2.6.2\n\n• Pozwala wybranym użytkownikom Community tworzyć tagi\n• Naprawia problem kompatybilności z Piwigo 11\n• Poprawki drobnych błędów i ulepszenia interfejsu\n• Modernizacja kodu";
+
+"v2.6.1_text" = "Wersja 2.6.1\n19 marca 2021\n\n• Naprawia przypisywanie tagów wybranym zdjęciom\n• Przeprojektowane ustawienia wyglądu\n• Poprawia niezawodność przesyłania w tle\n• Poprawki drobnych błędów i ulepszenia interfejsu";
 
 "v2.6.0_text" = "Wersja 2.6\n3 marca 2021\n\n• Wklejanie/przesyłanie zdjęć i filmów ze schowka\n• Rozwiązanie problemu z kompatybilnością z Piwigo 11\n• Poprawki drobnych błędów i ulepszenia interfejsu";
 

@@ -12,13 +12,14 @@
 
 @protocol CategoryCollectionViewCellDelegate <NSObject>
 
--(void)pushView:(UIViewController*)viewController;
+-(void)pushCategoryView:(UIViewController*)viewController;
 
 @end
 
 @interface CategoryCollectionViewCell : UICollectionViewCell
 
 @property (nonatomic, weak) id<CategoryCollectionViewCellDelegate> categoryDelegate;
+
 -(void)setupWithAlbumData:(PiwigoAlbumData*)albumData;
 
 @end

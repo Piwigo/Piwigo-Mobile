@@ -19,6 +19,9 @@
 +(NSURLSessionTask*)getMethodsListOnCompletion:(void (^)(NSDictionary *methodsList))completion
                                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
+    // API reflection.getMethodList returns:
+    //      methods
+
     return [self post:kReflectionGetMethodList
         URLParameters:nil
            parameters:nil
@@ -73,6 +76,9 @@
                             onCompletion:(void (^)(BOOL result, id response))completion
                                onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
+    // API pwg.session.login returns:
+    //      result = 1 if logged successfully
+
     [[Model sharedInstance] saveToDisk];
     
     return [self post:kPiwigoSessionLogin
@@ -123,6 +129,12 @@
                               OnCompletion:(void (^)(NSDictionary *responseObject))completion
                                  onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
+    // API pwg.session.getStatus returns:
+    //      username, status, pwg_token
+    //      version, language, charset, theme
+    //      available_sizes, upload_file_types, upload_form_chunk_size
+    //      current_datetime
+
     return [self post:kPiwigoSessionGetStatus
         URLParameters:nil
            parameters:nil
@@ -160,8 +172,16 @@
                               default:
                                   break;
                           }
-                          [Model sharedInstance].version = versionStr;
-                          
+                          [Model sharedInstance].version = [versionStr copy];
+
+                          // Community users cannot upload with uploadAsync with Piwigo 11.0.0 and above
+                          if ([Model sharedInstance].usesCommunityPluginV29 &&
+                              ![Model sharedInstance].hasAdminRights &&
+                              [@"11.0.0" compare:versionStr options:NSNumericSearch] != NSOrderedDescending) {
+                              [Model sharedInstance].usesUploadAsync = NO;
+                          }
+                          NSLog(@"   version: %@, usesUploadAsync: %@", [Model sharedInstance].version, [Model sharedInstance].usesUploadAsync ? @"YES" : @"NO");
+
                           NSString *charset = [[result objectForKey:@"charset"] uppercaseString];
                           if ([charset isEqualToString:@"UTF-8"]) {
                               [Model sharedInstance].stringEncoding = NSUTF8StringEncoding;
@@ -484,6 +504,10 @@
 +(NSURLSessionTask*)getCommunityStatusOnCompletion:(void (^)(NSDictionary *responseObject))completion
                                          onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
+    // API community.session.getStatus returns:
+    //      real_user_status
+    //      upload_categories_getList_method
+
     return [self post:kCommunitySessionGetStatus
         URLParameters:nil
            parameters:nil
@@ -506,6 +530,9 @@
                       }
                       else
                       {
+                          [Model sharedInstance].hasAdminRights = NO;
+                          [Model sharedInstance].hasNormalRights = NO;
+                          [Model sharedInstance].usesUploadAsync = NO;
                           completion(nil);
                       }
                   }

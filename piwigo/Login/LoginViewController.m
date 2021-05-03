@@ -19,9 +19,9 @@
 #import "SAMKeychain.h"
 #import "SessionService.h"
 
-//#ifndef DEBUG_SESSION
-//#define DEBUG_SESSION
-//#endif
+#ifndef DEBUG_SESSION
+#define DEBUG_SESSION
+#endif
 
 NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 
@@ -131,6 +131,10 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
 
     return self;
+}
+
+-(UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
 }
 
 
@@ -597,7 +601,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                      {
                          // Session now opened
                          // First determine user rights if Community extension installed
-                         [self getCommunityStatusAtFirstLogin:YES];
+                         [self getCommunityStatusAtFirstLogin:YES withReloginCompletion:^{}];
                      }
                      else
                      {
@@ -626,12 +630,13 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
         [[Model sharedInstance] saveToDisk];
 
         // Check Piwigo version, get token, available sizes, etc.
-        [self getCommunityStatusAtFirstLogin:YES];
+        [self getCommunityStatusAtFirstLogin:YES withReloginCompletion:^{}];
     }
 }
 
 // Determine true user rights when Community extension installed
 -(void)getCommunityStatusAtFirstLogin:(BOOL)isFirstLogin
+                withReloginCompletion:(void (^)(void))reloginCompletion
 {
 #if defined(DEBUG_SESSION)
     NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@, hasNormalRights=%@",
@@ -653,7 +658,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
             if(responseObject)
             {
                 // Check Piwigo version, get token, available sizes, etc.
-                [self getSessionStatusAtLogin:YES andFirstLogin:isFirstLogin];
+                [self getSessionStatusAtLogin:YES andFirstLogin:isFirstLogin withReloginCompletion:reloginCompletion];
             
             } else {
                 // Inform user that server failed to retrieve Community parameters
@@ -673,12 +678,14 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     } else {
         // Community extension not installed
         // Check Piwigo version, get token, available sizes, etc.
-        [self getSessionStatusAtLogin:YES andFirstLogin:isFirstLogin];
+        [self getSessionStatusAtLogin:YES andFirstLogin:isFirstLogin withReloginCompletion:reloginCompletion];
     }
 }
 
 // Check Piwigo version, get token, available sizes, etc.
--(void)getSessionStatusAtLogin:(BOOL)isLoggingIn andFirstLogin:(BOOL)isFirstLogin
+-(void)getSessionStatusAtLogin:(BOOL)isLoggingIn
+                 andFirstLogin:(BOOL)isFirstLogin
+         withReloginCompletion:(void (^)(void))reloginCompletion
 {
 #if defined(DEBUG_SESSION)
     NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@, hasNormalRights=%@",
@@ -721,11 +728,8 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                                     style:UIAlertActionStyleDestructive
                                     handler:^(UIAlertAction * action) {
                                         // Proceed at their own risk
-                                        self.isAlreadyTryingToLogin = NO;
-                                        if (isFirstLogin) {
-                                            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                                            [appDelegate loadNavigation];
-                                        }
+                                    [self launchAppAtFirstLogin:isFirstLogin
+                                          withReloginCompletion:reloginCompletion];
                                     }];
                             
                             [alert addAction:defaultAction];
@@ -744,17 +748,9 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                     }];
                 } else {
                     // Their version is Ok. Close HUD.
-                    self.isAlreadyTryingToLogin = NO;
                     [self hideLoadingWithCompletion:^{
-                        // Load navigation if needed
-                        if (isFirstLogin) {
-                            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                            [appDelegate loadNavigation];
-                        } else {
-                            // Refresh category data
-                            NSDictionary *userInfo = @{@"NoHUD" : @"NO", @"fromCache" : @"NO", @"albumId" : @(0)};
-                            [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
-                        }
+                        [self launchAppAtFirstLogin:isFirstLogin
+                              withReloginCompletion:reloginCompletion];
                     }];
                 }
             } else {
@@ -777,76 +773,40 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     }
 }
 
--(void)checkSessionStatusAndTryRelogin
+-(void)launchAppAtFirstLogin:(BOOL)isFirstLogin
+       withReloginCompletion:(void (^)(void))reloginCompletion
 {
-    // Display HUD during re-login
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self showLoadingWithSubtitle:NSLocalizedString(@"login_connectionChanged", @"Connection Changed!")];
-    });
+    self.isAlreadyTryingToLogin = NO;
+    [Model sharedInstance].dateOfLastLogin = [NSDate date];
+
+    // Load navigation if needed
+    if (isFirstLogin) {
+        // Present Album/Images view and resume uploads
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate loadNavigation];
+        return;
+    }
+
+    // Resume upload operations
+    // and update badge, upload button of album navigator
+    [[UploadManager shared] resumeAll];
     
-    // Don't try to login in if already being trying
-    if (self.isAlreadyTryingToLogin) return;
-    
-    // Check whether session is still active
-    self.isAlreadyTryingToLogin = YES;
-    [SessionService getPiwigoStatusAtLogin:NO
-                              OnCompletion:^(NSDictionary *responseObject) {
-            if (responseObject != nil) {
-                
-                // When the session is closed, user becomes guest
-                NSString *userName = [responseObject objectForKey:@"username"];
-#if defined(DEBUG_SESSION)
-                NSLog(@"=> checkSessionStatusAndTryRelogin: username=%@", userName);
-#endif
-                if (![userName isEqualToString:[Model sharedInstance].username]) {
-
-                    // Session was closed, try relogging in assuming server did not change for speed
-                    [self performRelogin];
-
-                } else {
-                    // Connection still alive. Close HUD
-                    self.isAlreadyTryingToLogin = NO;
-                    [self hideLoading];
-
-#if defined(DEBUG_SESSION)
-                    NSLog(@"=> checkSessionStatusAndTryRelogin: Connection still alive…");
-                    NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@",
-                          ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
-                          ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
-#endif
-                }
-            } else {
-                // Display HUD
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self showLoadingWithSubtitle:NSLocalizedString(@"login_connectionChanged", @"Connection Changed!")];
-                });
-
-                // Connection really lost, inform user
-                NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"internetErrorGeneral_broken", @"Sorry, the communication was broken.\nTry logging in again.")}];
-                [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
-                [Model sharedInstance].hadOpenedSession = NO;
-                self.isAlreadyTryingToLogin = NO;
-            }
-        } onFailure:^(NSURLSessionTask *task, NSError *error) {
-            // No connection or server down
-            self.isAlreadyTryingToLogin = NO;
-            [Model sharedInstance].hadOpenedSession = NO;
-            
-            // Display message
-            [self loggingInConnectionError:([Model sharedInstance].userCancelledCommunication ? nil : error)];
-        }
-     ];
+    // Was it a relogin after encountering an arror?
+    reloginCompletion();
 }
 
--(void)performRelogin
+-(void)performReloginWithCompletion:(void (^)(void))reloginCompletion
 {
 #if defined(DEBUG_SESSION)
-    NSLog(@"=> performRelogin: starting with…");
     NSLog(@"   usesCommunityPluginV29=%@, hasAdminRights=%@, hasNormalRights=%@",
           ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
           ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"),
           ([Model sharedInstance].hasNormalRights ? @"YES" : @"NO"));
+    NSLog(@"=> performRelogin: starting…");
 #endif
+    
+    // Don't try to relogin in if already being trying
+    if (self.isAlreadyTryingToLogin) return;
     
     // Update HUD during re-login
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -856,6 +816,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     // Perform re-login
     NSString *user = [Model sharedInstance].username;
     NSString *password = [SAMKeychain passwordForService:[Model sharedInstance].serverPath account:user];
+    self.isAlreadyTryingToLogin = YES;
     [SessionService performLoginWithUser:user
                              andPassword:password
                             onCompletion:^(BOOL result, id response) {
@@ -865,7 +826,8 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                                     [Model sharedInstance].hadOpenedSession = YES;
                                     
                                     // First determine user rights if Community extension installed
-                                    [self getCommunityStatusAtFirstLogin:NO];
+                                    [self getCommunityStatusAtFirstLogin:NO
+                                                   withReloginCompletion:reloginCompletion];
                                 }
                                 else
                                 {
