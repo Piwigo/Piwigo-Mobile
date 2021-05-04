@@ -738,6 +738,62 @@ class UploadsProvider: NSObject {
         return (localIdentifiers, uploadIDs)
     }
 
+    func getAutoUploadRequests(onlyWaiting:Bool = false) -> ([String], [NSManagedObjectID]) {
+        // Check current queue
+        print("•••>> getAutoUploadRequests()", queueName())
+
+        // Initialisation
+        var localIdentifiers = [String]()
+        var uploadIDs = [NSManagedObjectID]()
+
+        // Create a private queue context.
+        let taskContext = DataController.getPrivateContext()
+
+        // Perform the fetch
+        taskContext.performAndWait {
+
+            // Retrieve upload requests marked as "auto-upload"
+            // Create a fetch request for the Upload entity sorted by localIdentifier
+            let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "requestDate", ascending: true)]
+            
+            // Predicate
+            let autoUploadPredicate = NSPredicate(format: "markedForAutoUpload == YES")
+            let serverPredicate = NSPredicate(format: "serverPath == %@", Model.sharedInstance().serverPath)
+            if onlyWaiting {
+                let statePredicate = NSPredicate(format: "requestState == %d", kPiwigoUploadState.waiting.rawValue)
+                fetchRequest.predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [autoUploadPredicate, statePredicate, serverPredicate])
+            } else {
+                fetchRequest.predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [autoUploadPredicate, serverPredicate])
+            }
+
+            // Create a fetched results controller and set its fetch request, context, and delegate.
+            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                                managedObjectContext: taskContext,
+                                                  sectionNameKeyPath: nil, cacheName: nil)
+
+            // Perform the fetch.
+            do {
+                try controller.performFetch()
+            } catch {
+                fatalError("Unresolved error \(error)")
+            }
+            
+            // Reset flag of upload requests to prevent another demand for deleting images
+            if let uploads = controller.fetchedObjects {
+                for upload in uploads {
+                    // Collect localIdentifier to return
+                    localIdentifiers.append(upload.localIdentifier)
+                    uploadIDs.append(upload.objectID)
+                }
+            }
+
+            // Reset the taskContext to free the cache and lower the memory footprint.
+            taskContext.reset()
+        }
+        return (localIdentifiers, uploadIDs)
+    }
+
     
     // MARK: - Clear Uploads
     /**
