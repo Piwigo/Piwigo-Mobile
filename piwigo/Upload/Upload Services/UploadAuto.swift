@@ -12,10 +12,6 @@ extension UploadManager {
     
     // MARK: - Add Auto-Upload Requests
     func appendAutoUploadRequests() {
-        // Enable auto-uploading
-        Model.sharedInstance().isAutoUploadActive = true
-        Model.sharedInstance().saveToDisk()
-
         // Check access to Photo Library album
         guard let collectionID = Model.sharedInstance()?.autoUploadAlbumId, !collectionID.isEmpty,
            let collection = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [collectionID], options: nil).firstObject else {
@@ -43,7 +39,7 @@ extension UploadManager {
             return
         }
 
-        // Collect localIdentifiers of auto-uploaded images or considered for auto-uploading
+        // Collect localIdentifiers of images in the Upload cache
         let (uploadIDs, _) = uploadsProvider.getAutoUploadRequests()
 
         // Determine which local images are still not considered for upload

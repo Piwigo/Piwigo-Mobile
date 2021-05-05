@@ -1089,12 +1089,16 @@ class UploadManager: NSObject, URLSessionDelegate {
                 if failedUploads.count > 0 {
                     // Resume failed uploads
                     self.resume(failedUploads: failedUploads) { (_) in
+                        // Append auto-upload requests
+                        self.appendAutoUploadRequests()
                         // Pursue the work
                         self.findNextImageToUpload()
                     }
                 } else {
                     // Clean cache from completed uploads whose images do not exist in Photo Library
                     self.uploadsProvider.clearCompletedUploads()
+                    // Append auto-upload requests
+                    self.appendAutoUploadRequests()
                     // Pursue the work
                     self.findNextImageToUpload()
                 }

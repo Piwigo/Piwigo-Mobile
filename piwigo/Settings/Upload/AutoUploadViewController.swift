@@ -189,8 +189,12 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                 // Enable/disable auto-upload option
                 UploadManager.shared.backgroundQueue.async {
                     if switchState {
+                        // Enable auto-uploading
+                        Model.sharedInstance().isAutoUploadActive = true
+                        Model.sharedInstance().saveToDisk()
                         UploadManager.shared.appendAutoUploadRequests()
                     } else {
+                        // Disable auto-uploading
                         UploadManager.shared.disableAutoUpload()
                     }
                 }
