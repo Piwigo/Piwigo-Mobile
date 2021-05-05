@@ -262,6 +262,8 @@ enum kPiwigoUploadState : Int16 {
     case finishingError
     case finished
     case moderated
+    
+    case deleted
 }
 
 extension kPiwigoUploadState {
@@ -295,6 +297,9 @@ extension kPiwigoUploadState {
                    NSLocalizedString("errorHUD_label", comment: "Error")
         case .finished, .moderated:
             return NSLocalizedString("imageUploadProgressBar_completed", comment: "Completed")
+            
+        case .deleted:      // Image deleted from the Piwigo server
+            return ""
         }
     }
     
@@ -318,7 +323,8 @@ extension kPiwigoUploadState {
             return SectionKeys.Section3.rawValue
             
         case .finished,
-             .moderated:
+             .moderated,
+             .deleted:
             fallthrough
         default:
             return SectionKeys.Section4.rawValue

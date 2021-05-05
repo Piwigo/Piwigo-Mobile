@@ -820,12 +820,14 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
             // Use indexed data
             if let state = indexedUploadsInQueue[indexPath.item]?.1 {
                 switch state {
-                case .waiting, .preparing, .preparingError, .preparingFail, .prepared, .formatError:
+                case .waiting, .preparing, .prepared, .deleted:
                     cell.cellWaiting = true
-                case .uploading, .uploadingError, .uploaded, .finishing, .finishingError:
+                case .uploading, .uploaded, .finishing:
                     cell.cellUploading = true
                 case .finished, .moderated:
                     cell.cellUploaded = true
+                case .preparingFail, .preparingError, .formatError, .uploadingError, .finishingError:
+                    cell.cellFailed = true
                 }
             } else {
                 cell.cellSelected = selectedImages[indexPath.item] != nil
@@ -835,12 +837,14 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
             let md5Sum = pbObjects[indexPath.item].md5Sum
             if let upload = uploadsInQueue.first(where: { $0?.0 == md5Sum }) {
                 switch upload?.1 {
-                case .waiting, .preparing, .preparingError, .preparingFail, .prepared, .formatError:
+                case .waiting, .preparing, .prepared, .deleted:
                     cell.cellWaiting = true
-                case .uploading, .uploadingError, .uploaded, .finishing, .finishingError:
+                case .uploading, .uploaded, .finishing:
                     cell.cellUploading = true
                 case .finished, .moderated:
                     cell.cellUploaded = true
+                case .preparingFail, .preparingError, .formatError, .uploadingError, .finishingError:
+                    cell.cellFailed = true
                 case .none:
                     cell.cellSelected = false
                 }
@@ -1109,7 +1113,7 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate {
                     // Update cell
                     cell.selectedImage.isHidden = true
                     switch upload.state {
-                    case .waiting, .preparing, .prepared:
+                    case .waiting, .preparing, .prepared, .deleted:
                         cell.cellWaiting = true
                     case .uploading, .uploaded, .finishing:
                         cell.cellUploading = true

@@ -84,7 +84,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
                     }
                     return true
                 })]
-        case .waiting:
+        case .waiting, .deleted:
             rightButtons = [
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeCancel.png"), backgroundColor: UIColor.piwigoColorBrown(), callback: { sender in
                     DispatchQueue.global(qos: .userInitiated).async {

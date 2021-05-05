@@ -420,7 +420,7 @@ class UploadsProvider: NSObject {
                 break
             }
         }
-}
+    }
     
     /**
      Delete one batch of upload requests on a private queue. After saving,
@@ -758,13 +758,15 @@ class UploadsProvider: NSObject {
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: "requestDate", ascending: true)]
             
             // Predicate
-            let autoUploadPredicate = NSPredicate(format: "markedForAutoUpload == YES")
             let serverPredicate = NSPredicate(format: "serverPath == %@", Model.sharedInstance().serverPath)
             if onlyWaiting {
+                // Select requests created by the auto-upload mode and still pending
+                let autoUploadPredicate = NSPredicate(format: "markedForAutoUpload == YES")
                 let statePredicate = NSPredicate(format: "requestState == %d", kPiwigoUploadState.waiting.rawValue)
                 fetchRequest.predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [autoUploadPredicate, statePredicate, serverPredicate])
             } else {
-                fetchRequest.predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [autoUploadPredicate, serverPredicate])
+                // Select all upload requests so that we shall not duplicate requests
+                fetchRequest.predicate = serverPredicate
             }
 
             // Create a fetched results controller and set its fetch request, context, and delegate.
@@ -863,8 +865,12 @@ class UploadsProvider: NSObject {
         // Sort upload requests by date
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "requestDate", ascending: true)]
         
-        // Consider upload requests for the current server only
-        fetchRequest.predicate = NSPredicate(format: "serverPath == %@", Model.sharedInstance().serverPath)
+        // Select upload requests:
+        /// — whose image has not been deleted from the Piwigo server
+        /// — for the current server only
+        let notDeletedPredicate = NSPredicate(format: "requestState != %d", kPiwigoUploadState.deleted.rawValue)
+        let serverPredicate = NSPredicate(format: "serverPath == %@", Model.sharedInstance().serverPath)
+        fetchRequest.predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [notDeletedPredicate, serverPredicate])
 
         // Create a fetched results controller and set its fetch request, context, and delegate.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
@@ -904,11 +910,15 @@ class UploadsProvider: NSObject {
         let secondSortDescriptor = NSSortDescriptor(key: "requestDate", ascending: true)
         fetchRequest.sortDescriptors = [firstSortDescriptor, secondSortDescriptor]
         
-        // Do not consider completed upload requests for the current server
+        // Select upload requests:
+        /// — which are not completed
+        /// — whose image has not been deleted from the Piwigo server
+        /// — for the current server only
         let notFinishedPredicate = NSPredicate(format: "requestState != %d", kPiwigoUploadState.finished.rawValue)
         let notModeratedPredicate = NSPredicate(format: "requestState != %d", kPiwigoUploadState.moderated.rawValue)
+        let notDeletedPredicate = NSPredicate(format: "requestState != %d", kPiwigoUploadState.deleted.rawValue)
         let serverPredicate = NSPredicate(format: "serverPath == %@", Model.sharedInstance().serverPath)
-        fetchRequest.predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [notFinishedPredicate, notModeratedPredicate, serverPredicate])
+        fetchRequest.predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [notFinishedPredicate, notModeratedPredicate, notDeletedPredicate, serverPredicate])
 
         // Create a fetched results controller and set its fetch request, context, and delegate.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,

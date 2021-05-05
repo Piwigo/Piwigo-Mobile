@@ -1499,7 +1499,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             if index < indexedUploadsInQueue.count,
                let state = indexedUploadsInQueue[index]?.1 {
                 switch state {
-                case .waiting, .preparing, .prepared:
+                case .waiting, .preparing, .prepared, .deleted:
                     cell.cellWaiting = true
                 case .uploading, .uploaded, .finishing:
                     cell.cellUploading = true
@@ -1515,7 +1515,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             // Use non-indexed data
             if let upload = uploadsInQueue.first(where: { $0?.0 == imageAsset.localIdentifier }) {
                 switch upload?.1 {
-                case .waiting, .preparing, .prepared:
+                case .waiting, .preparing, .prepared, .deleted:
                     cell.cellWaiting = true
                 case .uploading, .uploaded, .finishing:
                     cell.cellUploading = true
@@ -1885,7 +1885,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
                     // Update cell
                     cell.selectedImage.isHidden = true
                     switch upload.state {
-                    case .waiting, .preparing, .prepared:
+                    case .waiting, .preparing, .prepared, .deleted:
                         cell.cellWaiting = true
                     case .uploading, .uploaded, .finishing:
                         cell.cellUploading = true
