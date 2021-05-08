@@ -63,10 +63,6 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
                         OnCompletion:(void (^)(NSURLSessionTask *task, PiwigoImageData *imageData))completion
                            onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(NSURLSessionTask*)deleteImage:(PiwigoImageData*)image
-               ListOnCompletion:(void (^)(NSURLSessionTask *task))completion
-                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
-
 +(NSURLSessionTask*)deleteImages:(NSArray *)images
                 ListOnCompletion:(void (^)(NSURLSessionTask *task))completion
                        onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;

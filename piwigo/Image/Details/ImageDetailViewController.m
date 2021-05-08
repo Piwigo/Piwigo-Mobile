@@ -750,7 +750,7 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
     [self showPiwigoHUDWithTitle:NSLocalizedString(@"deleteSingleImageHUD_deleting", @"Deleting Image…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
     
     // Send request to Piwigo server
-    [ImageService deleteImage:self.imageData
+    [ImageService deleteImages:@[self.imageData]
              ListOnCompletion:^(NSURLSessionTask *task)
     {
          // Hide HUD

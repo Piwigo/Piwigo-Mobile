@@ -1135,45 +1135,6 @@ NSString * const kGetImageOrderDescending = @"desc";
 
 #pragma mark - Delete images
 
-+(NSURLSessionTask*)deleteImage:(PiwigoImageData*)image
-               ListOnCompletion:(void (^)(NSURLSessionTask *task))completion
-                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
-{
-    return [self post:kPiwigoImageDelete
-		URLParameters:nil
-		   parameters:@{
-                        @"image_id" : [NSString stringWithFormat:@"%ld", (long)image.imageId],
-                        @"pwg_token" : [Model sharedInstance].pwgToken
-                        }
-       sessionManager:[Model sharedInstance].sessionManager
-             progress:nil
-			  success:^(NSURLSessionTask *task, id responseObject)
-    {
-        if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
-            // Remove image from cache and update UI
-            [[CategoriesData sharedInstance] removeImage:image];
-            if(completion) {
-                completion(task);
-            }
-        } else {
-            if(fail) {
-                NSError *error = [NetworkHandler getPiwigoErrorFromResponse:responseObject
-                                 path:kPiwigoImageDelete andURLparams:nil];
-                fail(task, error);
-            }
-        }
-    }
-              failure:^(NSURLSessionTask *task, NSError *error)
-    {
-#if defined(DEBUG)
-        NSLog(@"=> deleteImage — Fail: %@", [error description]);
-#endif
-        if(fail) {
-            fail(task, error);
-        }
-    }];
-}
-
 +(NSURLSessionTask*)deleteImages:(NSArray *)images
                 ListOnCompletion:(void (^)(NSURLSessionTask *task))completion
                        onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
@@ -1199,8 +1160,8 @@ NSString * const kGetImageOrderDescending = @"desc";
     {
         if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
             for (PiwigoImageData *image in images) {
-              // Remove image from cache and update UI
-              [[CategoriesData sharedInstance] removeImage:image];
+              // Remove image from cache, update UI and Upload database
+              [[CategoriesData sharedInstance] deleteImage:image];
             }
             if(completion) {
                 completion(task);
