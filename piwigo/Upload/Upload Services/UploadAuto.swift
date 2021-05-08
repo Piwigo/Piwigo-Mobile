@@ -17,7 +17,7 @@ extension UploadManager {
            let collection = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [collectionID], options: nil).firstObject else {
             // Cannot access local album
             Model.sharedInstance().autoUploadAlbumId = ""               // Unknown source Photos album
-            disableAutoUpload(withTitle: NSLocalizedString("settings_autoUploadSourceInvalid", comment:"Invalid source album"), message: NSLocalizedString("settings_autoUploadSourceInfo", comment: "Please select the album or sub-album from which photos and videos of your device will be auto-uploaded."))
+            disableAutoUpload()
             return
         }
 
@@ -25,7 +25,7 @@ extension UploadManager {
         guard let categoryId = Model.sharedInstance()?.autoUploadCategoryId, categoryId != NSNotFound else {
             // Cannot access local album
             Model.sharedInstance().autoUploadCategoryId = NSNotFound    // Unknown destination Piwigo album
-            disableAutoUpload(withTitle: NSLocalizedString("settings_autoUploadDestinationInvalid", comment:"Invalid destination album"), message: NSLocalizedString("settings_autoUploadSourceInfo", comment: "Please select the album or sub-album into which photos and videos will be auto-uploaded."))
+            disableAutoUpload()
             return
         }
         
@@ -89,7 +89,7 @@ extension UploadManager {
         }
     }
     
-    func disableAutoUpload(withTitle title:String = "", message:String = "") {
+    func disableAutoUpload() {
         // Disable auto-uploading
         Model.sharedInstance().isAutoUploadActive = false
         Model.sharedInstance().saveToDisk()
@@ -99,29 +99,5 @@ extension UploadManager {
 
         // Remove waiting upload requests marked for auto-upload from the upload queue
         uploadsProvider.delete(uploadRequests: objectIDs)
-
-        // Job done in background task
-        if isExecutingBackgroundUploadTask { return }
-        
-        // Look for the presented view controller
-        DispatchQueue.main.async {
-            if var topViewController = UIApplication.shared.keyWindow?.rootViewController {
-                // Inform the user if needed
-                if !title.isEmpty {     // i.e. disable auto-uploading because there was an errors
-                    // Look for top view controller
-                    while let presentedViewController = topViewController.presentedViewController {
-                        topViewController = presentedViewController
-                    }
-                    topViewController.dismissPiwigoError(withTitle: title, message: message) {
-                        // Change switch button state
-                        if topViewController is UINavigationController,
-                           let visibleVC = (topViewController as! UINavigationController).visibleViewController,
-                           let autoUploadVC = visibleVC as? AutoUploadViewController {
-                            autoUploadVC.autoUploadTableView.reloadSections(IndexSet(integer: 0), with: .automatic)
-                        }
-                    }
-                }
-            }
-        }
     }
 }
