@@ -536,7 +536,6 @@
     // Disable auto-upload if this album is the destination album
     if ([Model sharedInstance].autoUploadCategoryId == self.albumData.albumId) {
         [Model sharedInstance].isAutoUploadActive = NO;
-        [Model sharedInstance].autoUploadCategoryId = NSNotFound;
         [[Model sharedInstance] saveToDisk];
     }
 
@@ -551,6 +550,9 @@
     if (self.albumData.imageList.count < self.albumData.numberOfImages) {
         // Load missing images
         [self getMissingImagesBeforeDeletingInMode:deletionMode withViewController:topViewController];
+    } else {
+        // Delete images and category
+        [self deleteCategoryWithDeletionMode:deletionMode andViewController:topViewController];
     }
 }
 
