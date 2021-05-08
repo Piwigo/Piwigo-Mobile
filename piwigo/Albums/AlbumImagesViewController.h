@@ -12,7 +12,7 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationBackToDefaultAlbum;
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationLeftUploads;
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationUploadProgress;
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationUploadedImage;
-FOUNDATION_EXPORT NSString * const kPiwigoNotificationDeletedImage;
+FOUNDATION_EXPORT NSString * const kPiwigoNotificationRemovedImage;
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationChangedAlbumData;
 
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationDidShare;

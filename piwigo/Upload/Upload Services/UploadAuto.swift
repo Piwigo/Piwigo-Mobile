@@ -94,8 +94,8 @@ extension UploadManager {
         Model.sharedInstance().isAutoUploadActive = false
         Model.sharedInstance().saveToDisk()
         
-        // Collect objectIDs of images considered for auto-uploading
-        let (_, objectIDs) = uploadsProvider.getAutoUploadRequests(onlyWaiting: true)
+        // Collect objectIDs of images being considered for auto-uploading
+        let (_, objectIDs) = uploadsProvider.getAutoUploadRequests()
 
         // Remove waiting upload requests marked for auto-upload from the upload queue
         uploadsProvider.delete(uploadRequests: objectIDs)

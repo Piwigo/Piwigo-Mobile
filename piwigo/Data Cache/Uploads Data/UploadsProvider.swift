@@ -16,17 +16,9 @@ class UploadsProvider: NSObject {
     override init() {
         super.init()
         
-        // Register image deletion
-        var name = NSNotification.Name(kPiwigoNotificationDeletedImage)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.didDeleteImageWithId(_:)), name: name, object: nil)
-        
-        // Register image moved to category
-        name = NSNotification.Name(kPiwigoNotificationMovedImage)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.didMoveImageWithId(_:)), name: name, object: nil)
-
-        // Register category deletion
-        name = NSNotification.Name(kPiwigoNotificationDeletedCategory)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.didDeleteCategoryWithId(_:)), name: name, object: nil)
+        // Register image deletion on Piwigo server
+        let name = NSNotification.Name(kPiwigoNotificationDeletedImage)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.didDeleteImageFromPiwigo(_:)), name: name, object: nil)
     }
     
     deinit {
@@ -310,22 +302,15 @@ class UploadsProvider: NSObject {
     }
 
     /**
-     Update a single upload request on the private queue when an image is moved. After saving,
-     resets the context to clean up the cache and lower the memory footprint.
+     Update a single upload request on the private queue when an image is deleted from the Piwigo server.
+     After saving, resets the context to clean up the cache and lower the memory footprint.
     */
-    @objc private func didMoveImageWithId(_ notification: Notification) {
+    @objc private func didDeleteImageFromPiwigo(_ notification: Notification) {
         // Check current queue
-//        print("•••>> didMoveImageWithId()", queueName())
+//        print("•••>> didDeleteImageWithId()", queueName())
 
         // Collect image ID
-        guard let imageId = notification.userInfo?["imageId"] as? Int64 else {
-            return
-        }
-
-        // Collect new album ID
-        guard let albumId = notification.userInfo?["albumId"] as? Int64 else {
-            return
-        }
+        guard let imageId = notification.userInfo?["imageId"] as? Int64 else { return }
 
         // Create a private queue context.
         let taskContext = DataController.getPrivateContext()
@@ -354,8 +339,8 @@ class UploadsProvider: NSObject {
             // Update cached upload
             if let cachedUpload = controller.fetchedObjects?.first
             {
-                // Update upload request
-                cachedUpload.category = albumId
+                // Mark image as deleted
+                cachedUpload.requestState = kPiwigoUploadState.deleted.rawValue
                 
                 // Save all insertions and deletions from the context to the store.
                 if taskContext.hasChanges {
@@ -487,119 +472,6 @@ class UploadsProvider: NSObject {
             UploadManager.shared.nberOfUploadsToComplete = getRequestsIn(states: states).count
         }
         return success
-    }
-
-    /**
-     Delete the upload request of a deleted image on the private queue. After saving,
-     resets the context to clean up the cache and lower the memory footprint.
-    */
-    @objc private func didDeleteImageWithId(_ notification: Notification) {
-        // Always perform this task in background
-        DispatchQueue.global(qos: .userInitiated).async {
-            // Check current queue
-//            print("•••>> didDeleteImageWithId()", queueName())
-
-            // Collect album ID
-            guard let albumId = notification.userInfo?["albumId"] as? Int64 else {
-                return
-            }
-
-            // Collect image ID
-            guard let imageId = notification.userInfo?["imageId"] as? Int64 else {
-                return
-            }
-
-            // Create a private queue context.
-            let taskContext = DataController.getPrivateContext()
-                    
-            // taskContext.performAndWait
-            taskContext.performAndWait {
-                
-                // Retrieve existing upload (if any)
-                // Create a fetch request for the image ID uploaded to the albumId
-                let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
-                fetchRequest.sortDescriptors = [NSSortDescriptor(key: "imageId", ascending: true)]
-                var predicates = [NSPredicate]()
-                predicates.append(NSPredicate(format: "imageId == %ld", imageId))
-                predicates.append(NSPredicate(format: "category == %ld", albumId))
-                fetchRequest.predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: predicates)
-
-                // Create a fetched results controller and set its fetch request, context, and delegate.
-                let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                    managedObjectContext: taskContext,
-                                                      sectionNameKeyPath: nil, cacheName: nil)
-                
-                // Perform the fetch.
-                do {
-                    // Fetch request of image with Piwigo ID
-                    try controller.performFetch()
-                } catch {
-                    fatalError("Unresolved error \(error)")
-                }
-
-                // Update cached upload
-                if let cachedUpload = controller.fetchedObjects?.first
-                {
-                    // Delete upload request
-                    self.delete(uploadRequests: [cachedUpload.objectID])
-                }
-
-                // Reset the taskContext to free the cache and lower the memory footprint.
-                taskContext.reset()
-            }
-        }
-    }
-
-    /**
-     Delete the upload requests of a deleted image on the private queue. After saving,
-     resets the context to clean up the cache and lower the memory footprint.
-    */
-    @objc private func didDeleteCategoryWithId(_ notification: Notification) {
-        // Always perform this task in background
-        DispatchQueue.global(qos: .userInitiated).async {
-            // Check current queue
-//            print("•••>> didDeleteCategoryWithId()", queueName())
-
-            // Collect album ID
-            guard let albumId = notification.userInfo?["albumId"] as? Int64 else {
-                return
-            }
-
-            // Create a private queue context.
-            let taskContext = DataController.getPrivateContext()
-                    
-            // taskContext.performAndWait
-            taskContext.performAndWait {
-                
-                // Retrieve existing upload (if any)
-                // Create a fetch request for the image ID uploaded to the albumId
-                let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
-                fetchRequest.sortDescriptors = [NSSortDescriptor(key: "imageId", ascending: true)]
-                fetchRequest.predicate = NSPredicate(format: "category == %ld", albumId)
-
-                // Create a fetched results controller and set its fetch request, context, and delegate.
-                let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                    managedObjectContext: taskContext,
-                                                      sectionNameKeyPath: nil, cacheName: nil)
-                
-                // Perform the fetch.
-                do {
-                    try controller.performFetch()
-                } catch {
-                    fatalError("Unresolved error \(error)")
-                }
-                
-                // Update cached upload
-                if let cachedUploads = controller.fetchedObjects
-                {
-                    // Delete upload requests
-                    self.delete(uploadRequests: cachedUploads.map({$0.objectID}))
-                }
-
-                // Reset the taskContext to free the cache and lower the memory footprint.
-                taskContext.reset()
-            }
-        }
     }
 
 
@@ -738,7 +610,7 @@ class UploadsProvider: NSObject {
         return (localIdentifiers, uploadIDs)
     }
 
-    func getAutoUploadRequests(onlyWaiting:Bool = false) -> ([String], [NSManagedObjectID]) {
+    func getAutoUploadRequests() -> ([String], [NSManagedObjectID]) {
         // Check current queue
         print("•••>> getAutoUploadRequests()", queueName())
 
@@ -758,16 +630,10 @@ class UploadsProvider: NSObject {
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: "requestDate", ascending: true)]
             
             // Predicate
+            let autoUploadPredicate = NSPredicate(format: "markedForAutoUpload == YES")
+            let categoryPredicate = NSPredicate(format: "category == %d", Model.sharedInstance().autoUploadCategoryId)
             let serverPredicate = NSPredicate(format: "serverPath == %@", Model.sharedInstance().serverPath)
-            if onlyWaiting {
-                // Select requests created by the auto-upload mode and still pending
-                let autoUploadPredicate = NSPredicate(format: "markedForAutoUpload == YES")
-                let statePredicate = NSPredicate(format: "requestState == %d", kPiwigoUploadState.waiting.rawValue)
-                fetchRequest.predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [autoUploadPredicate, statePredicate, serverPredicate])
-            } else {
-                // Select all upload requests so that we shall not duplicate requests
-                fetchRequest.predicate = serverPredicate
-            }
+            fetchRequest.predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [autoUploadPredicate, categoryPredicate, serverPredicate])
 
             // Create a fetched results controller and set its fetch request, context, and delegate.
             let controller = NSFetchedResultsController(fetchRequest: fetchRequest,

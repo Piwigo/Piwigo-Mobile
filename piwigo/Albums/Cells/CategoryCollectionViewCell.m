@@ -422,7 +422,7 @@
        actionWithTitle:NSLocalizedString(@"deleteCategory_empty", @"Delete Empty Album")
        style:UIAlertActionStyleDestructive
        handler:^(UIAlertAction * action) {
-           [self deleteCategoryWithNumberOfImages:0  deletionMode:kCategoryDeletionModeNone andViewController:topViewController];
+           [self deleteCategoryWithDeletionMode:kCategoryDeletionModeNone andViewController:topViewController];
     }];
     
     UIAlertAction* keepImagesAction = [UIAlertAction
@@ -503,7 +503,7 @@
                          handler:^(UIAlertAction * action) {
                              if(alert.textFields.firstObject.text.length > 0)
                              {
-                                 [self deleteCategoryWithNumberOfImages:[alert.textFields.firstObject.text integerValue]  deletionMode:deletionMode andViewController:topViewController];
+                                 [self prepareDeletionWithNumberOfImages:[alert.textFields.firstObject.text integerValue]  deletionMode:deletionMode andViewController:topViewController];
                              }
                          }];
     
@@ -521,50 +521,105 @@
     }];
 }
 
--(void)deleteCategoryWithNumberOfImages:(NSInteger)number deletionMode:(NSString *)deletionMode andViewController:(UIViewController *)topViewController
+-(void)prepareDeletionWithNumberOfImages:(NSInteger)number deletionMode:(NSString *)deletionMode andViewController:(UIViewController *)topViewController
 {
-    // Delete album?
-    if(number == self.albumData.totalNumberOfImages)
+    // Check provided number of iamges
+    if (number != self.albumData.totalNumberOfImages)
     {
-        // Display HUD during the update
-        [topViewController showPiwigoHUDWithTitle:NSLocalizedString(@"deleteCategoryHUD_label", @"Deleting Album…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
+        [topViewController dismissPiwigoErrorWithTitle:NSLocalizedString(@"deleteCategoryMatchError_title", @"Number Doesn't Match") message:NSLocalizedString(@"deleteCategoryMatchError_message", @"The number of images you entered doesn't match the number of images in the category. Please try again if you desire to delete this album") errorMessage:@"" completion:^{ }];
+        return;
+    }
+    
+    // Display HUD during the deletion
+    [topViewController showPiwigoHUDWithTitle:NSLocalizedString(@"deleteCategoryHUD_label", @"Deleting Album…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
+    
+    // Disable auto-upload if this album is the destination album
+    if ([Model sharedInstance].autoUploadCategoryId == self.albumData.albumId) {
+        [Model sharedInstance].isAutoUploadActive = NO;
+        [Model sharedInstance].autoUploadCategoryId = NSNotFound;
+        [[Model sharedInstance] saveToDisk];
+    }
+
+    // Should we retrieve images before deleting the category?
+    if ([deletionMode isEqualToString:kCategoryDeletionModeNone]) {
+        // No => Delete category
+        [self deleteCategoryWithDeletionMode:deletionMode andViewController:topViewController];
+        return;
+    }
+    
+    // Images belonging to the album to be deleted must be retrieved before deletion
+    if (self.albumData.imageList.count < self.albumData.numberOfImages) {
+        // Load missing images
+        [self getMissingImagesBeforeDeletingInMode:deletionMode withViewController:topViewController];
+    }
+}
+
+-(void)getMissingImagesBeforeDeletingInMode:deletionMode
+                         withViewController:(UIViewController *)topViewController
+{
+    NSString *sortDesc = [CategoryImageSort getPiwigoSortDescriptionFor:[Model sharedInstance].defaultSort];
+    [self.albumData loadCategoryImageDataChunkWithSort:sortDesc
+        forProgress:nil OnCompletion:^(BOOL completed) {
+        // Did the load succeed?
+        if (!completed) {
+            // Did not succeed -> try to complete the job with missing images
+            [topViewController hidePiwigoHUDWithCompletion:^{
+                [topViewController dismissPiwigoErrorWithTitle:NSLocalizedString(@"deleteCategoryError_title", @"Delete Fail") message:NSLocalizedString(@"deleteCategoryError_message", @"Failed to delete your album") errorMessage:@"" completion:^{ }];
+            }];
+            return;;
+        }
         
-        [AlbumService deleteCategory:self.albumData.albumId
-                      inMode:deletionMode
-                OnCompletion:^(NSURLSessionTask *task, BOOL deletedSuccessfully) {
-                        if(deletedSuccessfully)
-                        {
-                            [topViewController updatePiwigoHUDwithSuccessWithCompletion:^{
-                                [topViewController hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
-                                    // Delete category from cache
-                                    [[CategoriesData sharedInstance] deleteCategory:self.albumData.albumId];
+        // Do we have all images?
+        if (self.albumData.imageList.count < self.albumData.numberOfImages) {
+            // No => Continue loading image data
+            [self getMissingImagesBeforeDeletingInMode:deletionMode withViewController:topViewController];
+            return;
+        }
+        
+        // Done => delete images and then the category containing them
+        [self deleteCategoryWithDeletionMode:deletionMode andViewController:topViewController];
+    }];
+}
 
-                                    // Notify the Upload database that this category has been deleted
-                                    NSDictionary *userInfo = @{@"albumId" : @(self.albumData.albumId)};
-                                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDeletedCategory object:nil userInfo:userInfo];
+-(void)deleteCategoryWithDeletionMode:(NSString *)deletionMode
+                    andViewController:(UIViewController *)topViewController
+{
+    // Stores image data before category deletion
+    NSArray<PiwigoImageData *> *images = [NSArray new];
+    if (![deletionMode isEqual:kCategoryDeletionModeNone]) {
+        images = [self.albumData.imageList copy];
+    }
+    
+    // Delete the category
+    [AlbumService deleteCategory:self.albumData.albumId
+                  inMode:deletionMode
+            OnCompletion:^(NSURLSessionTask *task, BOOL deletedSuccessfully) {
+                [topViewController updatePiwigoHUDwithSuccessWithCompletion:^{
+                    [topViewController hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
 
-                                    // Hide swipe buttons
-                                    AlbumTableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-                                    [cell hideSwipeAnimated:YES];
-                                }];
-                            }];
+                        // Delete images from cache
+                        for (PiwigoImageData *image in images) {
+                            // Delete orphans only?
+                            if ([deletionMode isEqualToString:kCategoryDeletionModeOrphaned] &&
+                                image.categoryIds.count > 1) { continue; }
+                            
+                            // Delete image
+                            [[CategoriesData sharedInstance] deleteImage:image];
                         }
-                        else
-                        {
-                            [topViewController hidePiwigoHUDWithCompletion:^{
-                                [topViewController dismissPiwigoErrorWithTitle:NSLocalizedString(@"deleteCategoryError_title", @"Delete Fail") message:NSLocalizedString(@"deleteCategoryError_message", @"Failed to delete your album") errorMessage:@"" completion:^{ }];
-                            }];
-                        }
-                }  onFailure:^(NSURLSessionTask *task, NSError *error) {
-                    [topViewController hidePiwigoHUDWithCompletion:^{
-                        [topViewController dismissPiwigoErrorWithTitle:NSLocalizedString(@"deleteCategoryError_title", @"Delete Fail") message:NSLocalizedString(@"deleteCategoryError_message", @"Failed to delete your album") errorMessage:[error localizedDescription] completion:^{ }];
+                        
+                        // Delete category from cache
+                        [[CategoriesData sharedInstance] deleteCategoryWithId:self.albumData.albumId];
+                        
+                        // Hide swipe buttons
+                        AlbumTableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+                        [cell hideSwipeAnimated:YES];
                     }];
                 }];
-    }
-    else
-    {    // User entered the wrong amount
-        [topViewController dismissPiwigoErrorWithTitle:NSLocalizedString(@"deleteCategoryMatchError_title", @"Number Doesn't Match") message:NSLocalizedString(@"deleteCategoryMatchError_message", @"The number of images you entered doesn't match the number of images in the category. Please try again if you desire to delete this album") errorMessage:@"" completion:^{ }];
-    }
+            }  onFailure:^(NSURLSessionTask *task, NSError *error) {
+                [topViewController hidePiwigoHUDWithCompletion:^{
+                    [topViewController dismissPiwigoErrorWithTitle:NSLocalizedString(@"deleteCategoryError_title", @"Delete Fail") message:NSLocalizedString(@"deleteCategoryError_message", @"Failed to delete your album") errorMessage:[error localizedDescription] completion:^{ }];
+                }];
+    }];
 }
 
 

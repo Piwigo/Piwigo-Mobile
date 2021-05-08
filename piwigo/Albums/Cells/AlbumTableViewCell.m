@@ -17,7 +17,6 @@
 #import "SAMKeychain.h"
 
 NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
-NSString * const kPiwigoNotificationDeletedCategory = @"kPiwigoNotificationDeletedCategory";
 
 @interface AlbumTableViewCell()
 
