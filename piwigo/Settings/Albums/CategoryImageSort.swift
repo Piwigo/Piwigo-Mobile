@@ -14,6 +14,51 @@ import Foundation
 class CategoryImageSort: NSObject {
     
     @objc
+    class func getPiwigoSortDescription(for type:kPiwigoSort) -> String {
+        var sortDesc = ""
+        switch type {
+        case kPiwigoSortNameAscending:          // Photo title, A → Z
+            sortDesc = String(format: "%@ %@", kGetImageOrderName, kGetImageOrderAscending)
+        case kPiwigoSortNameDescending:         // Photo title, Z → A
+            sortDesc = String(format: "%@ %@", kGetImageOrderName, kGetImageOrderDescending)
+
+        case kPiwigoSortFileNameAscending:      // File name, A → Z
+            sortDesc = String(format: "%@ %@", kGetImageOrderFileName, kGetImageOrderAscending)
+        case kPiwigoSortFileNameDescending:     // File name, Z → A
+            sortDesc = String(format: "%@ %@", kGetImageOrderFileName, kGetImageOrderDescending)
+        
+        case kPiwigoSortDateCreatedAscending:   // Date created, old → new
+            sortDesc = String(format: "%@ %@", kGetImageOrderDateCreated, kGetImageOrderAscending)
+        case kPiwigoSortDateCreatedDescending:  // Date created, new → old
+            sortDesc = String(format: "%@ %@", kGetImageOrderDateCreated, kGetImageOrderDescending)
+            
+        case kPiwigoSortDatePostedAscending:    // Date posted, new → old
+            sortDesc = String(format: "%@ %@", kGetImageOrderDatePosted, kGetImageOrderAscending)
+        case kPiwigoSortDatePostedDescending:   // Date posted, old → new
+            sortDesc = String(format: "%@ %@", kGetImageOrderDatePosted, kGetImageOrderDescending)
+
+        case kPiwigoSortRatingScoreDescending:  // Rating score, high → low
+            sortDesc = String(format: "%@ %@", kGetImageOrderRating, kGetImageOrderDescending)
+        case kPiwigoSortRatingScoreAscending:   // Rating score, low → high
+            sortDesc = String(format: "%@ %@", kGetImageOrderRating, kGetImageOrderAscending)
+
+        case kPiwigoSortVisitsAscending:        // Visits, high → low
+            sortDesc = String(format: "%@ %@", kGetImageOrderVisits, kGetImageOrderAscending)
+        case kPiwigoSortVisitsDescending:       // Visits, low → high
+            sortDesc = String(format: "%@ %@", kGetImageOrderVisits, kGetImageOrderDescending)
+            
+        case kPiwigoSortManual,                 // Manual order
+             kPiwigoSortRandom,                 // Random order
+             kPiwigoSortCount:
+            fallthrough
+        default:
+            sortDesc = ""
+        }
+        
+        return sortDesc
+    }
+    
+    @objc
     class func sortImages(_ images: [PiwigoImageData]?, for sortOrder: kPiwigoSort) -> [PiwigoImageData] {
         
         // Return empty image list if images is undefined or empty

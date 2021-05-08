@@ -52,10 +52,7 @@
 {
     if((onPage != 0) && (onPage >= page))
     {
-        if(completion)
-        {
-            completion();
-        }
+        if (completion) { completion(); }
         return;
     }
     
@@ -83,20 +80,17 @@
 	}
     
     // Set sort string parameter from sort type
-	[self updateSortString];
+    NSString *sortDesc = [CategoryImageSort getPiwigoSortDescriptionFor:self.sortType];
 	
     // Load more category image data
-	[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] loadCategoryImageDataChunkWithSort:self.sortString forProgress:nil OnCompletion:^(BOOL completed) {
-		if(!completed)
-		{
-			return;
-		}
+	[[[CategoriesData sharedInstance] getCategoryById:self.categoryId]
+                   loadCategoryImageDataChunkWithSort:sortDesc forProgress:nil
+                                         OnCompletion:^(BOOL completed)
+    {
+		if(!completed) { return; }
         // We have all the image data, just manually sort it (uploaded images are appended to cache)
         self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList for:self.sortType];
-		if(completion)
-		{
-			completion();
-		}
+		if(completion) { completion(); }
 	}];
 }
 
@@ -116,72 +110,6 @@
 
 
 #pragma mark - Image sorting
-
--(void)updateSortString
-{
-	NSString *sort = @"";
-	switch (self.sortType)
-	{
-		case kPiwigoSortNameAscending:          // Photo title, A → Z
-			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderName, kGetImageOrderAscending];
-			break;
-		case kPiwigoSortNameDescending:         // Photo title, Z → A
-			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderName, kGetImageOrderDescending];
-			break;
-
-        case kPiwigoSortFileNameAscending:      // File name, A → Z
-			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderFileName, kGetImageOrderAscending];
-			break;
-		case kPiwigoSortFileNameDescending:     // File name, Z → A
-			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderFileName, kGetImageOrderDescending];
-			break;
-		
-        case kPiwigoSortDateCreatedAscending:   // Date created, old → new
-            sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderDateCreated, kGetImageOrderAscending];
-            break;
-        case kPiwigoSortDateCreatedDescending:  // Date created, new → old
-            sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderDateCreated, kGetImageOrderDescending];
-            break;
-            
-        case kPiwigoSortDatePostedAscending:    // Date posted, new → old
-			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderDatePosted, kGetImageOrderAscending];
-			break;
-		case kPiwigoSortDatePostedDescending:   // Date posted, old → new
-			sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderDatePosted, kGetImageOrderDescending];
-			break;
-
-        case kPiwigoSortRatingScoreDescending:  // Rating score, high → low
-            sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderRating, kGetImageOrderDescending];
-            break;
-        case kPiwigoSortRatingScoreAscending:   // Rating score, low → high
-            sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderRating, kGetImageOrderAscending];
-            break;
-
-        case kPiwigoSortVisitsAscending:        // Visits, high → low
-            sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderVisits, kGetImageOrderAscending];
-            break;
-        case kPiwigoSortVisitsDescending:       // Visits, low → high
-            sort = [NSString stringWithFormat:@"%@ %@", kGetImageOrderVisits, kGetImageOrderDescending];
-            break;
-            
-        case kPiwigoSortManual:                 // Manual order
-        case kPiwigoSortRandom:                 // Random order
-            // Empty string
-            break;
-
-//		case kPiwigoSortVideoOnly:
-//			//			sort = NSLocalizedString(@"categorySort_videosOnly", @"Videos Only");
-//			break;
-//		case kPiwigoSortImageOnly:
-//			//			sort = NSLocalizedString(@"categorySort_imagesOnly", @"Images Only");
-//			break;
-			
-		case kPiwigoSortCount:
-			break;
-	}
-	
-	self.sortString = sort;
-}
 
 -(void)updateImageSort:(kPiwigoSort)imageSort
           OnCompletion:(void (^)(void))completion
