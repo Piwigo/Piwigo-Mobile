@@ -1361,6 +1361,12 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 return view
             }
                 
+            // Configure the header (if any)
+            if selectedSections.count <= indexPath.section {
+                let view = UICollectionReusableView(frame: CGRect.zero)
+                return view
+            }
+
             // Update section if available data
             updateSelectButton(ofSection: indexPath.section, completion: {})
             
@@ -1371,7 +1377,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 imageAssets.append(fetchedImages[index])
             }
             
-            // Configure the header
             let selectState = queue.operationCount == 0 ? selectedSections[indexPath.section] : .none
             header.configure(with: imageAssets, section: indexPath.section, selectState: selectState)
             header.headerDelegate = self
