@@ -77,8 +77,9 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         super.viewWillTransition(to: size, with: coordinator)
 
         // Save position of collection view
-        if let cell = self.queueTableView.visibleCells.first {
-            if let indexPath = self.queueTableView.indexPath(for: cell) {
+        if queueTableView.visibleCells.count > 0,
+           let cell = queueTableView.visibleCells.first {
+            if let indexPath = queueTableView.indexPath(for: cell) {
                 // Reload the tableview on orientation change, to match the new width of the table.
                 coordinator.animate(alongsideTransition: { context in
                     self.queueTableView.reloadData()
