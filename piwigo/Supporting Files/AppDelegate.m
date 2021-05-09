@@ -233,7 +233,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
                 ///   and update badge, upload button of album navigator
                 [self reloginAndRetryWithCompletion:^{
                     // Refresh Album/Images view
-                    NSDictionary *userInfo = @{@"NoHUD" : @"YES", @"fromCache" : @"NO", @"albumId" : @(0)};
+                    NSDictionary *userInfo = @{@"fromCache" : @"NO", @"albumId" : @(0)};
                     [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationGetCategoryData object:nil userInfo:userInfo];
                 }];
             } else {

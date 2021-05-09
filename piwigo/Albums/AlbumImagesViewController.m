@@ -1333,7 +1333,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 -(void)getCategoryData:(NSNotification *)notification
 {
     // Extract notification user info
-    BOOL noHUD = NO;
     if (notification != nil) {
         NSDictionary *userInfo = notification.userInfo;
 
@@ -1341,9 +1340,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         NSInteger catId = [[userInfo objectForKey:@"albumId"] integerValue];
         if (catId != self.categoryId) return;
         
-        // Display HUD?
-        noHUD = [[userInfo objectForKey:@"NoHUD"] boolValue];
-
         // Disable cache?
         self.isCachedAtInit = [[userInfo objectForKey:@"fromCache"] boolValue];
     }

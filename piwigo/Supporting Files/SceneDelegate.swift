@@ -119,8 +119,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 let appDelegate = UIApplication.shared.delegate as? AppDelegate
                 appDelegate?.reloginAndRetry {
                     // Refresh Album/Images view
-                    let uploadInfo: [String : Any] = ["NoHUD" : "YES",
-                                                      "fromCache" : "NO",
+                    let uploadInfo: [String : Any] = ["fromCache" : "NO",
                                                       "albumId" : String(0)]
                     let name = NSNotification.Name(rawValue: kPiwigoNotificationGetCategoryData)
                     NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
