@@ -1849,10 +1849,16 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
                     uploadsInQueue.remove(at: index)
                 }
                 // Remove image from indexed upload queue
-                if let indexOfUploadedImage = indexedUploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
-                    indexedUploadsInQueue[indexOfUploadedImage] = nil
+                if let index = indexedUploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
+                    indexedUploadsInQueue[index] = nil
                 }
                 
+                // Remove image from selection if needed
+                if let index = selectedImages.firstIndex(where: { $0?.localIdentifier == upload.localIdentifier }) {
+                    // Deselect image
+                    selectedImages.remove(at: index)
+                }
+
                 // Update corresponding cell
                 updateCell(for: upload)
             }
