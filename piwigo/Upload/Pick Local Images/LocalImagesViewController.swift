@@ -1285,11 +1285,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Number of images in section
         let nberOfImagesInSection = localImagesCollection.numberOfItems(inSection: section)
         if nberOfImagesInSection == 0 {
-            // Job done if there is no image
-            if selectedSections[section] != .none {
+            if section < selectedSections.count,
+               selectedSections[section] != .none {
                 selectedSections[section] = .none
-                completion()
             }
+            completion()
             return
         }
 
