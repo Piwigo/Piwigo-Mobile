@@ -156,7 +156,8 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         super.viewWillTransition(to: size, with: coordinator)
 
         // Save position of collection view
-        if let cell = localAlbumsTableView.visibleCells.first {
+        if localAlbumsTableView.visibleCells.count > 0,
+           let cell = localAlbumsTableView.visibleCells.first {
             if let indexPath = localAlbumsTableView.indexPath(for: cell) {
                 // Reload the tableview on orientation change, to match the new width of the table.
                 coordinator.animate(alongsideTransition: { context in
