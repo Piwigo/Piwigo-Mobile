@@ -298,6 +298,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 #if defined(DEBUG_LIFECYCLE)
     NSLog(@"viewDidLoad => ID:%ld", (long)self.categoryId);
 #endif
+    self.loadingImages = YES;
     [self getCategoryData:nil];
 
     // Navigation bar
@@ -1347,12 +1348,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         self.isCachedAtInit = [[userInfo objectForKey:@"fromCache"] boolValue];
     }
 
-    // Display HUD if requested
-    if (!self.isCachedAtInit && !noHUD) {
-        // Show loading HD
-        [self showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
-    }
-    
     // Reload category data
 #if defined(DEBUG_LIFECYCLE)
     NSLog(@"getCategoryData => getAlbumListForCategory(ID:%ld, cache:%@)",
@@ -1360,6 +1355,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 #endif
     
     // Load category data
+    self.loadingImages = YES;
     [AlbumService getAlbumListForCategory:self.categoryId
                                usingCache:self.isCachedAtInit
                           inRecursiveMode:YES
@@ -1368,7 +1364,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
          if (albums != nil) {
              // Load, sort images and reload collection
              if (self.categoryId != 0) {
-                 self.loadingImages = YES;
                  self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
                  [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
 
@@ -1391,6 +1386,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
          #endif
                  self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
                  if([[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count > 0) {
+                     self.loadingImages = NO;
                      [self.imagesCollection reloadData];
 
                      // For iOS 11 and later: place search bar in navigation bar or root album
@@ -1416,16 +1412,11 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                  }
              }
          }
-
-        // Hide loading HUD
-        [self hidePiwigoHUDWithCompletion:^{}];
     }
         onFailure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
             NSLog(@"getAlbumListForCategory error %ld: %@", (long)error.code, error.localizedDescription);
 #endif
-            // Hide loading HUD
-            [self hidePiwigoHUDWithCompletion:^{}];
         }
      ];
 }
@@ -2741,7 +2732,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
                 if (self.loadingImages) {
                     // Currently trying to load images…
-                    footer.noImagesLabel.text = NSLocalizedString(@"categoryMainEmtpy", @"No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.");
+                    footer.noImagesLabel.text = NSLocalizedString(@"loadingHUD_label", @"Loading…");
                 } else {
                     // Get number of images
                     NSInteger totalImageCount = 0;
@@ -2818,7 +2809,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             NSString *footer = @"";
             if (self.loadingImages) {
                 // Currently trying to load images…
-                footer = NSLocalizedString(@"categoryMainEmtpy", @"No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.");
+                footer = NSLocalizedString(@"loadingHUD_label", @"Loading…");
             } else {
                 // Get number of images
                 NSInteger totalImageCount = 0;
