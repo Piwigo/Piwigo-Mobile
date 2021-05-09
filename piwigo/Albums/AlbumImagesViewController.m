@@ -112,25 +112,30 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         self.touchedImageIds = [NSMutableArray new];
         self.selectedImageIds = [NSMutableArray new];
 
-        // Collection of images
-		self.imagesCollection = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:[UICollectionViewFlowLayout new]];
-		self.imagesCollection.translatesAutoresizingMaskIntoConstraints = NO;
-		self.imagesCollection.alwaysBounceVertical = YES;
-        self.imagesCollection.showsVerticalScrollIndicator = YES;
-		self.imagesCollection.dataSource = self;
-		self.imagesCollection.delegate = self;
-
-        [self.imagesCollection registerClass:[ImageCollectionViewCell class] forCellWithReuseIdentifier:@"ImageCollectionViewCell"];
-		[self.imagesCollection registerClass:[CategoryCollectionViewCell class] forCellWithReuseIdentifier:@"CategoryCollectionViewCell"];
-        [self.imagesCollection registerClass:[CategoryHeaderReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"CategoryHeader"];
-        [self.imagesCollection registerClass:[NberImagesFooterCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"NberImagesFooterCollection"];
-
-		[self.view addSubview:self.imagesCollection];
-        [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.imagesCollection]];
+        // For iOS 11 and later: place search bar in navigation bar for root album
         if (@available(iOS 11.0, *)) {
-            [self.imagesCollection setContentInsetAdjustmentBehavior:UIScrollViewContentInsetAdjustmentAlways];
-        } else {
-            // Fallback on earlier versions
+            // Initialise search controller when displaying root album
+            if (albumId == 0) {
+                SearchImagesViewController *resultsCollectionController = [[SearchImagesViewController alloc] init];
+                UISearchController *searchController = [[UISearchController alloc] initWithSearchResultsController:resultsCollectionController];
+                searchController.delegate = self;
+                searchController.hidesNavigationBarDuringPresentation = YES;
+                searchController.searchResultsUpdater = self;
+                
+                searchController.searchBar.tintColor = [UIColor piwigoColorOrange];
+                searchController.searchBar.searchBarStyle = UISearchBarStyleMinimal;
+                searchController.searchBar.translucent = NO;
+                searchController.searchBar.showsCancelButton = NO;
+                searchController.searchBar.showsSearchResultsButton = NO;
+                searchController.searchBar.delegate = self;        // Monitor when the search button is tapped.
+                self.definesPresentationContext = YES;
+                
+                // Place the search bar in the navigation bar.
+                self.navigationItem.searchController = searchController;
+
+                // Hide the search bar when scrolling
+                self.navigationItem.hidesSearchBarWhenScrolling = true;
+            }
         }
 
         // Navigation bar and toolbar buttons
@@ -153,6 +158,32 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         self.moveBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply target:self action:@selector(addImagesToCategory)];
         self.moveBarButton.tintColor = [UIColor piwigoColorOrange];
         self.navigationController.toolbarHidden = YES;
+
+        // Collection of images
+        self.imagesCollection = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:[UICollectionViewFlowLayout new]];
+        self.imagesCollection.translatesAutoresizingMaskIntoConstraints = NO;
+        self.imagesCollection.alwaysBounceVertical = YES;
+        self.imagesCollection.showsVerticalScrollIndicator = YES;
+        self.imagesCollection.dataSource = self;
+        self.imagesCollection.delegate = self;
+
+        // Refresh view
+        UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+        [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
+        self.imagesCollection.refreshControl = refreshControl;
+
+        [self.imagesCollection registerClass:[ImageCollectionViewCell class] forCellWithReuseIdentifier:@"ImageCollectionViewCell"];
+        [self.imagesCollection registerClass:[CategoryCollectionViewCell class] forCellWithReuseIdentifier:@"CategoryCollectionViewCell"];
+        [self.imagesCollection registerClass:[CategoryHeaderReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"CategoryHeader"];
+        [self.imagesCollection registerClass:[NberImagesFooterCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"NberImagesFooterCollection"];
+
+        [self.view addSubview:self.imagesCollection];
+        [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.imagesCollection]];
+        if (@available(iOS 11.0, *)) {
+            [self.imagesCollection setContentInsetAdjustmentBehavior:UIScrollViewContentInsetAdjustmentAlways];
+        } else {
+            // Fallback on earlier versions
+        }
 
         // "Add" button above collection view and other buttons
         self.addButton = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -253,37 +284,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         self.uploadImagesButton.hidden = YES;
         [self.uploadImagesButton setAccessibilityIdentifier:@"addImages"];
         [self.view insertSubview:self.uploadImagesButton belowSubview:self.addButton];
-
-        // Refresh view
-        UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
-        [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
-        self.imagesCollection.refreshControl = refreshControl;
-
-        // For iOS 11 and later: place search bar in navigation bar for root album
-        if (@available(iOS 11.0, *)) {
-            // Initialise search controller when displaying root album
-            if (albumId == 0) {
-                SearchImagesViewController *resultsCollectionController = [[SearchImagesViewController alloc] init];
-                UISearchController *searchController = [[UISearchController alloc] initWithSearchResultsController:resultsCollectionController];
-                searchController.delegate = self;
-                searchController.hidesNavigationBarDuringPresentation = YES;
-                searchController.searchResultsUpdater = self;
-                
-                searchController.searchBar.tintColor = [UIColor piwigoColorOrange];
-                searchController.searchBar.searchBarStyle = UISearchBarStyleMinimal;
-                searchController.searchBar.translucent = NO;
-                searchController.searchBar.showsCancelButton = NO;
-                searchController.searchBar.showsSearchResultsButton = NO;
-                searchController.searchBar.delegate = self;        // Monitor when the search button is tapped.
-                self.definesPresentationContext = YES;
-                
-                // Place the search bar in the navigation bar.
-                self.navigationItem.searchController = searchController;
-
-                // Hide the search bar when scrolling
-                self.navigationItem.hidesSearchBarWhenScrolling = true;
-            }
-        }
     }
 	return self;
 }
@@ -1870,8 +1870,14 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 -(void)addCategoryWithName:(NSString *)albumName andComment:(NSString *)albumComment
                   inParent:(NSInteger)parentId
 {
+    // Determine the present view controller
+    UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    while (topViewController.presentedViewController) {
+        topViewController = topViewController.presentedViewController;
+    }
+
     // Display HUD during the update
-    [self showPiwigoHUDWithTitle:NSLocalizedString(@"createNewAlbumHUD_label", @"Creating Album…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
+    [topViewController showPiwigoHUDWithTitle:NSLocalizedString(@"createNewAlbumHUD_label", @"Creating Album…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
     
     // Create album
     [AlbumService createCategoryWithName:albumName
@@ -1885,8 +1891,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
 
                 // Hide HUD
-                [self updatePiwigoHUDwithSuccessWithCompletion:^{
-                    [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
+                [topViewController updatePiwigoHUDwithSuccessWithCompletion:^{
+                    [topViewController hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
                         // Reset buttons
                         [self didCancelTapAddButton];
                     }];
@@ -1895,8 +1901,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             else
             {
                 // Hide HUD and inform user
-                [self hidePiwigoHUDWithCompletion:^{
-                    [self dismissPiwigoErrorWithTitle:NSLocalizedString(@"createAlbumError_title", @"Create Album Error") message:NSLocalizedString(@"createAlbumError_message", @"Failed to create a new album") errorMessage:@"" completion:^{
+                [topViewController hidePiwigoHUDWithCompletion:^{
+                    [topViewController dismissPiwigoErrorWithTitle:NSLocalizedString(@"createAlbumError_title", @"Create Album Error") message:NSLocalizedString(@"createAlbumError_message", @"Failed to create a new album") errorMessage:@"" completion:^{
                         // Reset buttons
                         [self didCancelTapAddButton];
                     }];
@@ -1904,8 +1910,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             }
         } onFailure:^(NSURLSessionTask *task, NSError *error) {
             // Hide HUD and inform user
-            [self hidePiwigoHUDWithCompletion:^{
-                [self dismissPiwigoErrorWithTitle:NSLocalizedString(@"createAlbumError_title", @"Create Album Error") message:NSLocalizedString(@"createAlbumError_message", @"Failed to create a new album") errorMessage:error.localizedDescription completion:^{
+            [topViewController hidePiwigoHUDWithCompletion:^{
+                [topViewController dismissPiwigoErrorWithTitle:NSLocalizedString(@"createAlbumError_title", @"Create Album Error") message:NSLocalizedString(@"createAlbumError_message", @"Failed to create a new album") errorMessage:error.localizedDescription completion:^{
                     // Reset buttons
                     [self didCancelTapAddButton];
                 }];
