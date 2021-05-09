@@ -86,8 +86,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 @property (nonatomic, strong) NSMutableArray *selectedImagesToShare;
 @property (nonatomic, strong) PiwigoImageData *selectedImage;
 
-@property (nonatomic, strong) UIRefreshControl *refreshControl;
-
 @property (nonatomic, assign) kPiwigoSort currentSortCategory;
 @property (nonatomic, strong) ImageDetailViewController *imageDetailView;
 
@@ -134,9 +132,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         } else {
             // Fallback on earlier versions
         }
-
-        // Refresh view
-        self.refreshControl = [[UIRefreshControl alloc] init];
 
         // Navigation bar and toolbar buttons
         self.settingsBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"settings"] landscapeImagePhone:[UIImage imageNamed:@"settingsCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(didTapPreferencesButton)];
@@ -258,6 +253,37 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         self.uploadImagesButton.hidden = YES;
         [self.uploadImagesButton setAccessibilityIdentifier:@"addImages"];
         [self.view insertSubview:self.uploadImagesButton belowSubview:self.addButton];
+
+        // Refresh view
+        UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+        [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
+        self.imagesCollection.refreshControl = refreshControl;
+
+        // For iOS 11 and later: place search bar in navigation bar for root album
+        if (@available(iOS 11.0, *)) {
+            // Initialise search controller when displaying root album
+            if (albumId == 0) {
+                SearchImagesViewController *resultsCollectionController = [[SearchImagesViewController alloc] init];
+                UISearchController *searchController = [[UISearchController alloc] initWithSearchResultsController:resultsCollectionController];
+                searchController.delegate = self;
+                searchController.hidesNavigationBarDuringPresentation = YES;
+                searchController.searchResultsUpdater = self;
+                
+                searchController.searchBar.tintColor = [UIColor piwigoColorOrange];
+                searchController.searchBar.searchBarStyle = UISearchBarStyleMinimal;
+                searchController.searchBar.translucent = NO;
+                searchController.searchBar.showsCancelButton = NO;
+                searchController.searchBar.showsSearchResultsButton = NO;
+                searchController.searchBar.delegate = self;        // Monitor when the search button is tapped.
+                self.definesPresentationContext = YES;
+                
+                // Place the search bar in the navigation bar.
+                self.navigationItem.searchController = searchController;
+
+                // Hide the search bar when scrolling
+                self.navigationItem.hidesSearchBarWhenScrolling = true;
+            }
+        }
     }
 	return self;
 }
@@ -276,32 +302,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
     // Navigation bar
     [self.navigationController.navigationBar setAccessibilityIdentifier:@"AlbumImagesNav"];
-
-    // For iOS 11 and later: place search bar in navigation bar for root album
-    if (@available(iOS 11.0, *)) {
-        // Initialise search controller when displaying root album
-        if (self.categoryId == 0) {
-            SearchImagesViewController *resultsCollectionController = [[SearchImagesViewController alloc] init];
-            UISearchController *searchController = [[UISearchController alloc] initWithSearchResultsController:resultsCollectionController];
-            searchController.delegate = self;
-            searchController.hidesNavigationBarDuringPresentation = YES;
-            searchController.searchResultsUpdater = self;
-            
-            searchController.searchBar.tintColor = [UIColor piwigoColorOrange];
-            searchController.searchBar.searchBarStyle = UISearchBarStyleMinimal;
-            searchController.searchBar.translucent = NO;
-            searchController.searchBar.showsCancelButton = NO;
-            searchController.searchBar.showsSearchResultsButton = NO;
-            searchController.searchBar.delegate = self;        // Monitor when the search button is tapped.
-            self.definesPresentationContext = YES;
-            
-            // Place the search bar in the navigation bar.
-            self.navigationItem.searchController = searchController;
-
-            // Hide the search bar when scrolling
-            self.navigationItem.hidesSearchBarWhenScrolling = true;
-        }
-    }
 }
 
 -(void)applyColorPalette
@@ -310,13 +310,13 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     self.view.backgroundColor = [UIColor piwigoColorBackground];
 
     // Refresh controller
-    self.refreshControl.backgroundColor = [UIColor piwigoColorBackground];
-    self.refreshControl.tintColor = [UIColor piwigoColorOrange];
+    self.imagesCollection.refreshControl.backgroundColor = [UIColor piwigoColorBackground];
+    self.imagesCollection.refreshControl.tintColor = [UIColor piwigoColorHeader];
     NSDictionary *attributesRefresh = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoColorOrange],
-                                 NSFontAttributeName: [UIFont piwigoFontNormal],
-                                 };
-    self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"pullToRefresh", @"Reload Images") attributes:attributesRefresh];
+        NSForegroundColorAttributeName: [UIColor piwigoColorHeader],
+        NSFontAttributeName: [UIFont piwigoFontLight],
+    };
+    self.imagesCollection.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"pullToRefresh", @"Reload Photos") attributes:attributesRefresh];
     
     // Buttons
     [self.addButton.layer setShadowColor:[UIColor piwigoColorShadow].CGColor];
@@ -501,11 +501,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         }
     }
     
-    // Refresh controller
-	[self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
-    [self.imagesCollection addSubview:self.refreshControl];
-    self.imagesCollection.alwaysBounceVertical = YES;
-
     // Should we scroll to image of interest?
 //        NSLog(@"••• Starting with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
     if ((self.categoryId != 0) && ([self.albumData.images count] > 0) && (self.imageOfInterest.item != 0)) {
@@ -1437,25 +1432,15 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
 -(void)refresh:(UIRefreshControl*)refreshControl
 {
-    // Show loading HD
-    [self showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
-
     [AlbumService getAlbumListForCategory:0
                                usingCache:NO
                           inRecursiveMode:YES
          OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
             [self.imagesCollection reloadData];
-
             if (refreshControl) [refreshControl endRefreshing];
-
-            // Hide loading HUD
-            [self hidePiwigoHUDWithCompletion:^{}];
-
-         }  onFailure:^(NSURLSessionTask *task, NSError *error) {
+         }
+        onFailure:^(NSURLSessionTask *task, NSError *error) {
              if (refreshControl) [refreshControl endRefreshing];
-
-             // Hide loading HUD
-             [self hidePiwigoHUDWithCompletion:^{}];
          }
      ];
 }
