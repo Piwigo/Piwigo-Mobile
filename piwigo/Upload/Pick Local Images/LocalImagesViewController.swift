@@ -527,14 +527,14 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             self.indexOfImageSortedByMonth = []
             if self.fetchedImages.count > 0 {
                 // Sort images by months, weeks and days in the background
-                if self.selectedImages.compactMap({$0}).count == 0 {
+                if self.selectedImages.compactMap({$0}).isEmpty {
                     self.sortByMonthWeekDay(images: self.fetchedImages)
                 } else {
                     self.sortByMonthWeekDayAndUpdateSelection(images: self.fetchedImages)
                 }
             } else {
                 self.selectedImages = []
-                self.selectedSections = []
+                self.selectedSections = [.none]
             }
         })
         sortOperation.completionBlock = {
@@ -1138,7 +1138,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
     @objc func didTapUploadButton() {
         // Avoid potential crash (should never happen, but…)
-        if selectedImages.compactMap({ $0 }).count == 0 { return }
+        if selectedImages.compactMap({ $0 }).isEmpty { return }
         
         // Disable buttons
         cancelBarButton?.isEnabled = false
@@ -1288,8 +1288,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             if section < selectedSections.count,
                selectedSections[section] != .none {
                 selectedSections[section] = .none
+                completion()
             }
-            completion()
             return
         }
 
@@ -1304,10 +1304,12 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         }
         
         // Number of selected images
-        let nberOfSelectedImagesInSection = selectedImages[firstIndex...lastIndex].compactMap{ $0 }.count
+        let nberOfSelectedImagesInSection = selectedImages.count > lastIndex ?
+            selectedImages[firstIndex...lastIndex].compactMap{ $0 }.count : 0
         if nberOfImagesInSection == nberOfSelectedImagesInSection {
             // All images are selected
-            if selectedSections[section] != .deselect {
+            if section < selectedSections.count,
+               selectedSections[section] != .deselect {
                 selectedSections[section] = .deselect
                 completion()
             }
@@ -1317,7 +1319,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Can we calculate the number of images already in the upload queue?
         if queue.operationCount != 0 {
             // Keep Select button disabled
-            if selectedSections[section] != .none {
+            if section < selectedSections.count,
+               selectedSections[section] != .none {
                 selectedSections[section] = .none
                 completion()
             }
@@ -1325,24 +1328,27 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         }
 
         // Number of images already in the upload queue
-        let nberOfImagesOfSectionInUploadQueue = indexedUploadsInQueue[firstIndex...lastIndex].compactMap{ $0 }.count
+        let nberOfImagesOfSectionInUploadQueue = indexedUploadsInQueue.count > lastIndex ?  indexedUploadsInQueue[firstIndex...lastIndex].compactMap{ $0 }.count : 0
 
         // Update state of Select button only if needed
         if nberOfImagesInSection == nberOfImagesOfSectionInUploadQueue {
             // All images are in the upload queue or already downloaded
-            if selectedSections[section] != .none {
+            if section < selectedSections.count,
+               selectedSections[section] != .none {
                 selectedSections[section] = .none
                 completion()
             }
         } else if nberOfImagesInSection == nberOfSelectedImagesInSection + nberOfImagesOfSectionInUploadQueue {
             // All images are either selected or in the upload queue
-            if selectedSections[section] != .deselect {
+            if section < selectedSections.count,
+               selectedSections[section] != .deselect {
                 selectedSections[section] = .deselect
                 completion()
             }
         } else {
             // Not all images are either selected or in the upload queue
-            if selectedSections[section] != .select {
+            if section < selectedSections.count,
+               selectedSections[section] != .select {
                 selectedSections[section] = .select
                 completion()
             }
@@ -1361,12 +1367,6 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 return view
             }
                 
-            // Configure the header (if any)
-            if selectedSections.count <= indexPath.section {
-                let view = UICollectionReusableView(frame: CGRect.zero)
-                return view
-            }
-
             // Update section if available data
             updateSelectButton(ofSection: indexPath.section, completion: {})
             
@@ -1842,9 +1842,8 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
                         self.indexedUploadsInQueue[indexOfUploadedImage] = cachedObject
                     }
                 }
-                
                 // Update corresponding cell
-                updateCell(for: upload)
+                updateCellAndSectionHedaer(for: upload)
             }
         case .delete:
 //            print("••• LocalImagesViewController controller:delete...")
@@ -1858,15 +1857,13 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
                 if let index = indexedUploadsInQueue.firstIndex(where: { $0?.0 == upload.localIdentifier }) {
                     indexedUploadsInQueue[index] = nil
                 }
-                
                 // Remove image from selection if needed
                 if let index = selectedImages.firstIndex(where: { $0?.localIdentifier == upload.localIdentifier }) {
                     // Deselect image
-                    selectedImages.remove(at: index)
+                    selectedImages[index] = nil
                 }
-
                 // Update corresponding cell
-                updateCell(for: upload)
+                updateCellAndSectionHedaer(for: upload)
             }
         case .move:
 //            print("••• LocalImagesViewController controller:move...")
@@ -1884,7 +1881,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
                     indexedUploadsInQueue[indexOfUploadedImage]?.1 = kPiwigoUploadState(rawValue: upload.requestState)!
                 }
                 // Update corresponding cell
-                updateCell(for: upload)
+                updateCellAndSectionHedaer(for: upload)
             }
         @unknown default:
             fatalError("LocalImagesViewController: unknown NSFetchedResultsChangeType")
@@ -1898,7 +1895,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
         updateNavBar()
     }
 
-    func updateCell(for upload: Upload) {
+    func updateCellAndSectionHedaer(for upload: Upload) {
         DispatchQueue.main.async {
             // Get indices of visible items
             let indexPathsForVisibleItems = self.localImagesCollection.indexPathsForVisibleItems
