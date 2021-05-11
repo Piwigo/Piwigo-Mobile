@@ -72,7 +72,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
     // MARK: - UITableView - Header
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         // Title
-        let titleString = "\(NSLocalizedString("imageUploadHeaderTitle_images", comment: "Photos Parameters"))\n"
+        let titleString = "\(NSLocalizedString("imageDetailsView_title", comment: "Properties"))\n"
         let titleAttributes = [
             NSAttributedString.Key.font: UIFont.piwigoFontBold()
         ]
@@ -93,7 +93,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
         let headerAttributedString = NSMutableAttributedString(string: "")
 
         // Title
-        let titleString = "\(NSLocalizedString("imageUploadHeaderTitle_images", comment: "Photos Parameters"))\n"
+        let titleString = "\(NSLocalizedString("imageDetailsView_title", comment: "Properties"))\n"
         let titleAttributedString = NSMutableAttributedString(string: titleString)
         titleAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: NSRange(location: 0, length: titleString.count))
         headerAttributedString.append(titleAttributedString)
@@ -155,9 +155,9 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
 
         var height: CGFloat = 44.0
         switch EditImageDetailsOrder(rawValue: row) {
-        case .privacy, .tags:
+            case .privacy, .tags:
                 height = 78.0
-        case .comment:
+            case .comment:
                 height = 428.0
                 height += !Model.sharedInstance().hasAdminRights ? 78.0 : 0.0
             default:
