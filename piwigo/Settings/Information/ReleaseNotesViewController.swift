@@ -157,6 +157,16 @@ class ReleaseNotesViewController: UIViewController {
 //        notesAttributedString.append(v270AttributedString)
 //        notesAttributedString.append(spacerAttributedString)
 
+        // Release 2.6.3 — Bundle string
+        let v263String = NSLocalizedString("v2.6.3_text", tableName: "ReleaseNotes", bundle: Bundle.main, value: "", comment: "v2.6.3 Release Notes text")
+        let v263AttributedString = NSMutableAttributedString(string: v263String)
+        var v263Range = NSRange(location: 0, length: v263String.count)
+        v263AttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: v263Range)
+        v263Range = NSRange(location: 0, length: (v263String as NSString).range(of: "\n").location)
+        v263AttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: v263Range)
+        notesAttributedString.append(v263AttributedString)
+        notesAttributedString.append(spacerAttributedString)
+
         // Release 2.6.2 — Bundle string
         let v262String = NSLocalizedString("v2.6.2_text", tableName: "ReleaseNotes", bundle: Bundle.main, value: "", comment: "v2.6.2 Release Notes text")
         let v262AttributedString = NSMutableAttributedString(string: v262String)

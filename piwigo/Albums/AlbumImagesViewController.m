@@ -86,8 +86,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 @property (nonatomic, strong) NSMutableArray *selectedImagesToShare;
 @property (nonatomic, strong) PiwigoImageData *selectedImage;
 
-@property (nonatomic, strong) UIRefreshControl *refreshControl;
-
 @property (nonatomic, assign) kPiwigoSort currentSortCategory;
 @property (nonatomic, strong) ImageDetailViewController *imageDetailView;
 
@@ -114,29 +112,31 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         self.touchedImageIds = [NSMutableArray new];
         self.selectedImageIds = [NSMutableArray new];
 
-        // Collection of images
-		self.imagesCollection = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:[UICollectionViewFlowLayout new]];
-		self.imagesCollection.translatesAutoresizingMaskIntoConstraints = NO;
-		self.imagesCollection.alwaysBounceVertical = YES;
-        self.imagesCollection.showsVerticalScrollIndicator = YES;
-		self.imagesCollection.dataSource = self;
-		self.imagesCollection.delegate = self;
-
-        [self.imagesCollection registerClass:[ImageCollectionViewCell class] forCellWithReuseIdentifier:@"ImageCollectionViewCell"];
-		[self.imagesCollection registerClass:[CategoryCollectionViewCell class] forCellWithReuseIdentifier:@"CategoryCollectionViewCell"];
-        [self.imagesCollection registerClass:[CategoryHeaderReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"CategoryHeader"];
-        [self.imagesCollection registerClass:[NberImagesFooterCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"NberImagesFooterCollection"];
-
-		[self.view addSubview:self.imagesCollection];
-        [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.imagesCollection]];
+        // For iOS 11 and later: place search bar in navigation bar for root album
         if (@available(iOS 11.0, *)) {
-            [self.imagesCollection setContentInsetAdjustmentBehavior:UIScrollViewContentInsetAdjustmentAlways];
-        } else {
-            // Fallback on earlier versions
-        }
+            // Initialise search controller when displaying root album
+            if (albumId == 0) {
+                SearchImagesViewController *resultsCollectionController = [[SearchImagesViewController alloc] init];
+                UISearchController *searchController = [[UISearchController alloc] initWithSearchResultsController:resultsCollectionController];
+                searchController.delegate = self;
+                searchController.hidesNavigationBarDuringPresentation = YES;
+                searchController.searchResultsUpdater = self;
+                
+                searchController.searchBar.tintColor = [UIColor piwigoColorOrange];
+                searchController.searchBar.searchBarStyle = UISearchBarStyleMinimal;
+                searchController.searchBar.translucent = NO;
+                searchController.searchBar.showsCancelButton = NO;
+                searchController.searchBar.showsSearchResultsButton = NO;
+                searchController.searchBar.delegate = self;        // Monitor when the search button is tapped.
+                self.definesPresentationContext = YES;
+                
+                // Place the search bar in the navigation bar.
+                self.navigationItem.searchController = searchController;
 
-        // Refresh view
-        self.refreshControl = [[UIRefreshControl alloc] init];
+                // Hide the search bar when scrolling
+                self.navigationItem.hidesSearchBarWhenScrolling = true;
+            }
+        }
 
         // Navigation bar and toolbar buttons
         self.settingsBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"settings"] landscapeImagePhone:[UIImage imageNamed:@"settingsCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(didTapPreferencesButton)];
@@ -158,6 +158,32 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         self.moveBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply target:self action:@selector(addImagesToCategory)];
         self.moveBarButton.tintColor = [UIColor piwigoColorOrange];
         self.navigationController.toolbarHidden = YES;
+
+        // Collection of images
+        self.imagesCollection = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:[UICollectionViewFlowLayout new]];
+        self.imagesCollection.translatesAutoresizingMaskIntoConstraints = NO;
+        self.imagesCollection.alwaysBounceVertical = YES;
+        self.imagesCollection.showsVerticalScrollIndicator = YES;
+        self.imagesCollection.dataSource = self;
+        self.imagesCollection.delegate = self;
+
+        // Refresh view
+        UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+        [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
+        self.imagesCollection.refreshControl = refreshControl;
+
+        [self.imagesCollection registerClass:[ImageCollectionViewCell class] forCellWithReuseIdentifier:@"ImageCollectionViewCell"];
+        [self.imagesCollection registerClass:[CategoryCollectionViewCell class] forCellWithReuseIdentifier:@"CategoryCollectionViewCell"];
+        [self.imagesCollection registerClass:[CategoryHeaderReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"CategoryHeader"];
+        [self.imagesCollection registerClass:[NberImagesFooterCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"NberImagesFooterCollection"];
+
+        [self.view addSubview:self.imagesCollection];
+        [self.view addConstraints:[NSLayoutConstraint constraintFillSize:self.imagesCollection]];
+        if (@available(iOS 11.0, *)) {
+            [self.imagesCollection setContentInsetAdjustmentBehavior:UIScrollViewContentInsetAdjustmentAlways];
+        } else {
+            // Fallback on earlier versions
+        }
 
         // "Add" button above collection view and other buttons
         self.addButton = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -272,36 +298,11 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 #if defined(DEBUG_LIFECYCLE)
     NSLog(@"viewDidLoad => ID:%ld", (long)self.categoryId);
 #endif
+    self.loadingImages = YES;
     [self getCategoryData:nil];
 
     // Navigation bar
     [self.navigationController.navigationBar setAccessibilityIdentifier:@"AlbumImagesNav"];
-
-    // For iOS 11 and later: place search bar in navigation bar for root album
-    if (@available(iOS 11.0, *)) {
-        // Initialise search controller when displaying root album
-        if (self.categoryId == 0) {
-            SearchImagesViewController *resultsCollectionController = [[SearchImagesViewController alloc] init];
-            UISearchController *searchController = [[UISearchController alloc] initWithSearchResultsController:resultsCollectionController];
-            searchController.delegate = self;
-            searchController.hidesNavigationBarDuringPresentation = YES;
-            searchController.searchResultsUpdater = self;
-            
-            searchController.searchBar.tintColor = [UIColor piwigoColorOrange];
-            searchController.searchBar.searchBarStyle = UISearchBarStyleMinimal;
-            searchController.searchBar.translucent = NO;
-            searchController.searchBar.showsCancelButton = NO;
-            searchController.searchBar.showsSearchResultsButton = NO;
-            searchController.searchBar.delegate = self;        // Monitor when the search button is tapped.
-            self.definesPresentationContext = YES;
-            
-            // Place the search bar in the navigation bar.
-            self.navigationItem.searchController = searchController;
-
-            // Hide the search bar when scrolling
-            self.navigationItem.hidesSearchBarWhenScrolling = true;
-        }
-    }
 }
 
 -(void)applyColorPalette
@@ -310,13 +311,13 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     self.view.backgroundColor = [UIColor piwigoColorBackground];
 
     // Refresh controller
-    self.refreshControl.backgroundColor = [UIColor piwigoColorBackground];
-    self.refreshControl.tintColor = [UIColor piwigoColorOrange];
+    self.imagesCollection.refreshControl.backgroundColor = [UIColor piwigoColorBackground];
+    self.imagesCollection.refreshControl.tintColor = [UIColor piwigoColorHeader];
     NSDictionary *attributesRefresh = @{
-                                 NSForegroundColorAttributeName: [UIColor piwigoColorOrange],
-                                 NSFontAttributeName: [UIFont piwigoFontNormal],
-                                 };
-    self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"pullToRefresh", @"Reload Images") attributes:attributesRefresh];
+        NSForegroundColorAttributeName: [UIColor piwigoColorHeader],
+        NSFontAttributeName: [UIFont piwigoFontLight],
+    };
+    self.imagesCollection.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"pullToRefresh", @"Reload Photos") attributes:attributesRefresh];
     
     // Buttons
     [self.addButton.layer setShadowColor:[UIColor piwigoColorShadow].CGColor];
@@ -501,11 +502,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         }
     }
     
-    // Refresh controller
-	[self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
-    [self.imagesCollection addSubview:self.refreshControl];
-    self.imagesCollection.alwaysBounceVertical = YES;
-
     // Should we scroll to image of interest?
 //        NSLog(@"••• Starting with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
     if ((self.categoryId != 0) && ([self.albumData.images count] > 0) && (self.imageOfInterest.item != 0)) {
@@ -1337,7 +1333,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 -(void)getCategoryData:(NSNotification *)notification
 {
     // Extract notification user info
-    BOOL noHUD = NO;
     if (notification != nil) {
         NSDictionary *userInfo = notification.userInfo;
 
@@ -1345,19 +1340,10 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         NSInteger catId = [[userInfo objectForKey:@"albumId"] integerValue];
         if (catId != self.categoryId) return;
         
-        // Display HUD?
-        noHUD = [[userInfo objectForKey:@"NoHUD"] boolValue];
-
         // Disable cache?
         self.isCachedAtInit = [[userInfo objectForKey:@"fromCache"] boolValue];
     }
 
-    // Display HUD if requested
-    if (!self.isCachedAtInit && !noHUD) {
-        // Show loading HD
-        [self showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
-    }
-    
     // Reload category data
 #if defined(DEBUG_LIFECYCLE)
     NSLog(@"getCategoryData => getAlbumListForCategory(ID:%ld, cache:%@)",
@@ -1365,6 +1351,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 #endif
     
     // Load category data
+    self.loadingImages = YES;
     [AlbumService getAlbumListForCategory:self.categoryId
                                usingCache:self.isCachedAtInit
                           inRecursiveMode:YES
@@ -1373,7 +1360,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
          if (albums != nil) {
              // Load, sort images and reload collection
              if (self.categoryId != 0) {
-                 self.loadingImages = YES;
                  self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
                  [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
 
@@ -1396,6 +1382,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
          #endif
                  self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
                  if([[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count > 0) {
+                     self.loadingImages = NO;
                      [self.imagesCollection reloadData];
 
                      // For iOS 11 and later: place search bar in navigation bar or root album
@@ -1421,41 +1408,26 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                  }
              }
          }
-
-        // Hide loading HUD
-        [self hidePiwigoHUDWithCompletion:^{}];
     }
         onFailure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
             NSLog(@"getAlbumListForCategory error %ld: %@", (long)error.code, error.localizedDescription);
 #endif
-            // Hide loading HUD
-            [self hidePiwigoHUDWithCompletion:^{}];
         }
      ];
 }
 
 -(void)refresh:(UIRefreshControl*)refreshControl
 {
-    // Show loading HD
-    [self showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
-
     [AlbumService getAlbumListForCategory:0
                                usingCache:NO
                           inRecursiveMode:YES
          OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
             [self.imagesCollection reloadData];
-
             if (refreshControl) [refreshControl endRefreshing];
-
-            // Hide loading HUD
-            [self hidePiwigoHUDWithCompletion:^{}];
-
-         }  onFailure:^(NSURLSessionTask *task, NSError *error) {
+         }
+        onFailure:^(NSURLSessionTask *task, NSError *error) {
              if (refreshControl) [refreshControl endRefreshing];
-
-             // Hide loading HUD
-             [self hidePiwigoHUDWithCompletion:^{}];
          }
      ];
 }
@@ -1895,7 +1867,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                   inParent:(NSInteger)parentId
 {
     // Display HUD during the update
-    [self showPiwigoHUDWithTitle:NSLocalizedString(@"createNewAlbumHUD_label", @"Creating Album…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
+    [self.navigationController showPiwigoHUDWithTitle:NSLocalizedString(@"createNewAlbumHUD_label", @"Creating Album…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
     
     // Create album
     [AlbumService createCategoryWithName:albumName
@@ -1909,8 +1881,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
 
                 // Hide HUD
-                [self updatePiwigoHUDwithSuccessWithCompletion:^{
-                    [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
+                [self.navigationController updatePiwigoHUDwithSuccessWithCompletion:^{
+                    [self.navigationController hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
                         // Reset buttons
                         [self didCancelTapAddButton];
                     }];
@@ -1919,8 +1891,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             else
             {
                 // Hide HUD and inform user
-                [self hidePiwigoHUDWithCompletion:^{
-                    [self dismissPiwigoErrorWithTitle:NSLocalizedString(@"createAlbumError_title", @"Create Album Error") message:NSLocalizedString(@"createAlbumError_message", @"Failed to create a new album") errorMessage:@"" completion:^{
+                [self.navigationController hidePiwigoHUDWithCompletion:^{
+                    [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"createAlbumError_title", @"Create Album Error") message:NSLocalizedString(@"createAlbumError_message", @"Failed to create a new album") errorMessage:@"" completion:^{
                         // Reset buttons
                         [self didCancelTapAddButton];
                     }];
@@ -1928,8 +1900,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             }
         } onFailure:^(NSURLSessionTask *task, NSError *error) {
             // Hide HUD and inform user
-            [self hidePiwigoHUDWithCompletion:^{
-                [self dismissPiwigoErrorWithTitle:NSLocalizedString(@"createAlbumError_title", @"Create Album Error") message:NSLocalizedString(@"createAlbumError_message", @"Failed to create a new album") errorMessage:error.localizedDescription completion:^{
+            [self.navigationController hidePiwigoHUDWithCompletion:^{
+                [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"createAlbumError_title", @"Create Album Error") message:NSLocalizedString(@"createAlbumError_message", @"Failed to create a new album") errorMessage:error.localizedDescription completion:^{
                     // Reset buttons
                     [self didCancelTapAddButton];
                 }];
@@ -2086,10 +2058,10 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     // Display HUD
     self.totalNumberOfImages = self.selectedImageIds.count;
     if (self.totalNumberOfImages > 1) {
-        [self showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeAnnularDeterminate];
+        [self.navigationController showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeAnnularDeterminate];
     }
     else {
-        [self showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
+        [self.navigationController showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
     }
 
     // Retrieve image data
@@ -2101,44 +2073,49 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 -(void)retrieveImageDataBeforeEdit
 {
     if (self.selectedImageIdsToEdit.count <= 0) {
-        [self hidePiwigoHUDWithCompletion:^{ [self editImages]; }];
+        [self.navigationController hidePiwigoHUDWithCompletion:^{ [self editImages]; }];
         return;
     }
     
     // Image data are not complete when retrieved using pwg.categories.getImages
     [ImageService getImageInfoById:[[self.selectedImageIdsToEdit lastObject] integerValue]
-                      OnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData) {
-                      
-                      if (imageData != nil) {
-                          // Store image data
-                          [self.selectedImagesToEdit insertObject:imageData atIndex:0];
-                          
-                          // Image info retrieved
-                          [self.selectedImageIdsToEdit removeLastObject];
+                      OnCompletion:^(NSURLSessionTask *task, PiwigoImageData *imageData)
+    {
+        if (imageData != nil) {
+            // Store image data
+            [self.selectedImagesToEdit insertObject:imageData atIndex:0];
+            
+            // Image info retrieved
+            [self.selectedImageIdsToEdit removeLastObject];
 
-                          // Update HUD
-                          [self updatePiwigoHUDWithProgress:1.0 - (float)self.selectedImageIdsToEdit.count / (float)self.totalNumberOfImages];
+            // Update HUD
+            [self.navigationController updatePiwigoHUDWithProgress:1.0 - (float)self.selectedImageIdsToEdit.count / (float)self.totalNumberOfImages];
 
-                          // Next image
-                          [self retrieveImageDataBeforeEdit];
-                      }
-                      else {
-                          // Could not retrieve image data
-                          [self dismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed") message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?") errorMessage:@"" dismiss:^{
-                              [self hidePiwigoHUDWithCompletion:^{ [self updateButtonsInSelectionMode]; }];
-                          } retry:^{
-                              [self retrieveImageDataBeforeEdit];
-                          }];
-                      }
-                  }
-                         onFailure:^(NSURLSessionTask *task, NSError *error) {
-                             // Failed — Ask user if he/she wishes to retry
-                             [self dismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed") message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?") errorMessage:error.localizedDescription dismiss:^{
-                                 [self hidePiwigoHUDWithCompletion:^{ [self updateButtonsInSelectionMode]; }];
-                             } retry:^{
-                                 [self retrieveImageDataBeforeEdit];
-                             }];
-                         }];
+            // Next image
+            [self retrieveImageDataBeforeEdit];
+        }
+        else {
+            // Could not retrieve image data
+            [self.navigationController dismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed") message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?") errorMessage:@"" dismiss:^{
+                [self.navigationController hidePiwigoHUDWithCompletion:^{
+                    [self updateButtonsInSelectionMode];
+                }];
+            } retry:^{
+                [self retrieveImageDataBeforeEdit];
+            }];
+        }
+    }
+         onFailure:^(NSURLSessionTask *task, NSError *error)
+    {
+         // Failed — Ask user if he/she wishes to retry
+         [self dismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed") message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?") errorMessage:error.localizedDescription dismiss:^{
+             [self.navigationController hidePiwigoHUDWithCompletion:^{
+                 [self updateButtonsInSelectionMode];
+             }];
+         } retry:^{
+             [self retrieveImageDataBeforeEdit];
+         }];
+    }];
 }
 
 -(void)editImages
@@ -2146,8 +2123,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     switch (self.selectedImagesToEdit.count) {
         case 0:     // No image => End (should never happened)
         {
-            [self updatePiwigoHUDwithSuccessWithCompletion:^{
-                [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
+            [self.navigationController updatePiwigoHUDwithSuccessWithCompletion:^{
+                [self.navigationController hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
                     [self cancelSelect];
                 }];
             }];
@@ -2183,10 +2160,10 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     // Display HUD
     self.totalNumberOfImages = self.selectedImageIds.count;
     if (self.totalNumberOfImages > 1) {
-        [self showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeAnnularDeterminate];
+        [self.navigationController showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeAnnularDeterminate];
     }
     else {
-        [self showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
+        [self.navigationController showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
     }
 
     // Retrieve image data
@@ -2199,7 +2176,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 -(void)retrieveImageDataBeforeDelete
 {
     if (self.selectedImageIdsToDelete.count <= 0) {
-        [self hidePiwigoHUDWithCompletion:^{ [self askDeleteConfirmation]; }];
+        [self.navigationController hidePiwigoHUDWithCompletion:^{
+            [self askDeleteConfirmation];
+        }];
         return;
     }
     
@@ -2220,7 +2199,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
               [self.selectedImageIdsToDelete removeLastObject];
 
               // Update HUD
-              [self updatePiwigoHUDWithProgress:1.0 - (float)self.selectedImageIdsToDelete.count / (float)self.totalNumberOfImages];
+              [self.navigationController updatePiwigoHUDWithProgress:1.0 - (float)self.selectedImageIdsToDelete.count / (float)self.totalNumberOfImages];
 
               // Next image
               [self retrieveImageDataBeforeDelete];
@@ -2228,7 +2207,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
           else {
               // Could not retrieve image data
               [self dismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed") message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?") errorMessage:@"" dismiss:^{
-                  [self hidePiwigoHUDWithCompletion:^{ [self updateButtonsInSelectionMode]; }];
+                  [self.navigationController hidePiwigoHUDWithCompletion:^{
+                      [self updateButtonsInSelectionMode];
+                  }];
               } retry:^{
                   [self retrieveImageDataBeforeDelete];
               }];
@@ -2237,7 +2218,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     onFailure:^(NSURLSessionTask *task, NSError *error) {
                      // Failed — Ask user if he/she wishes to retry
         [self dismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed") message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?") errorMessage:error.localizedDescription dismiss:^{
-            [self hidePiwigoHUDWithCompletion:^{ [self updateButtonsInSelectionMode]; }];
+            [self.navigationController hidePiwigoHUDWithCompletion:^{
+                [self updateButtonsInSelectionMode];
+            }];
         } retry:^{
             [self retrieveImageDataBeforeDelete];
         }];
@@ -2277,13 +2260,13 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         self.totalNumberOfImages = self.selectedImagesToRemove.count
                                  + (self.selectedImagesToDelete.count > 0);
         if (self.totalNumberOfImages > 1) {
-            [self showPiwigoHUDWithTitle:self.selectedImagesToDelete.count == 0 ?
+            [self.navigationController showPiwigoHUDWithTitle:self.selectedImagesToDelete.count == 0 ?
                 NSLocalizedString(@"removeSeveralImagesHUD_removing", @"Removing Photos…") :
                 NSLocalizedString(@"deleteSeveralImagesHUD_deleting", @"Deleting Images…")
                 detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeAnnularDeterminate];
         }
         else {
-            [self showPiwigoHUDWithTitle:self.selectedImagesToDelete.count == 0 ?
+            [self.navigationController showPiwigoHUDWithTitle:self.selectedImagesToDelete.count == 0 ?
                 NSLocalizedString(@"removeSingleImageHUD_removing", @"Removing Photo…") :
                 NSLocalizedString(@"deleteSingleImageHUD_deleting", @"Deleting Image…")
                 detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
@@ -2301,7 +2284,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         [self.selectedImagesToDelete addObjectsFromArray:self.selectedImagesToRemove];
 
         // Display HUD during server update
-        [self showPiwigoHUDWithTitle:self.selectedImagesToDelete.count > 1 ? NSLocalizedString(@"deleteSingleImageHUD_deleting", @"Deleting Image…") :
+        [self.navigationController showPiwigoHUDWithTitle:self.selectedImagesToDelete.count > 1 ? NSLocalizedString(@"deleteSingleImageHUD_deleting", @"Deleting Image…") :
             NSLocalizedString(@"deleteSeveralImagesHUD_deleting", @"Deleting Images…")
             detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
 
@@ -2333,8 +2316,10 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     if (self.selectedImagesToRemove.count <= 0)
     {
         if (self.selectedImagesToDelete.count <= 0) {
-            [self updatePiwigoHUDwithSuccessWithCompletion:^{
-                [self hidePiwigoHUDWithCompletion:^{ [self cancelSelect]; }];
+            [self.navigationController updatePiwigoHUDwithSuccessWithCompletion:^{
+                [self.navigationController hidePiwigoHUDWithCompletion:^{
+                    [self cancelSelect];
+                }];
             }];
         }
         else {
@@ -2361,7 +2346,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
            [self.selectedImagesToRemove removeLastObject];
            
            // Update HUD
-           [self updatePiwigoHUDWithProgress:1.0 - (float)self.selectedImagesToRemove.count / (float)self.totalNumberOfImages];
+           [self.navigationController updatePiwigoHUDWithProgress:1.0 - (float)self.selectedImagesToRemove.count / (float)self.totalNumberOfImages];
 
            // Next image
            [self removeImages];
@@ -2371,7 +2356,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         // Error — Try again ?
         if (self.selectedImagesToRemove.count > 1) {
             [self cancelDismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed") message:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted.") errorMessage:error.localizedDescription cancel:^{
-                [self hidePiwigoHUDWithCompletion:^{ [self updateButtonsInSelectionMode]; }];
+                [self.navigationController hidePiwigoHUDWithCompletion:^{
+                    [self updateButtonsInSelectionMode];
+                }];
             } dismiss:^{
                 // Bypass image
                 [self.selectedImagesToRemove removeLastObject];
@@ -2392,7 +2379,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             }];
         } else {
             [self dismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed") message:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted.") errorMessage:error.localizedDescription dismiss:^{
-                [self hidePiwigoHUDWithCompletion:^{ [self updateButtonsInSelectionMode]; }];
+                [self.navigationController hidePiwigoHUDWithCompletion:^{
+                    [self updateButtonsInSelectionMode];
+                }];
             } retry:^{
                 // Try relogin if unauthorized
                 NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
@@ -2414,8 +2403,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 {
     if (self.selectedImagesToDelete.count <= 0)
     {
-        [self updatePiwigoHUDwithSuccessWithCompletion:^{
-            [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
+        [self.navigationController updatePiwigoHUDwithSuccessWithCompletion:^{
+            [self.navigationController hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
                 [self cancelSelect];
             }];
         }];
@@ -2427,8 +2416,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         ListOnCompletion:^(NSURLSessionTask *task) {
                   
         // Hide HUD
-        [self updatePiwigoHUDwithSuccessWithCompletion:^{
-            [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
+        [self.navigationController updatePiwigoHUDwithSuccessWithCompletion:^{
+            [self.navigationController hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
                 [self cancelSelect];
             }];
         }];
@@ -2436,7 +2425,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     onFailure:^(NSURLSessionTask *task, NSError *error) {
         // Error — Try again ?
         [self dismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed") message:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted.") errorMessage:[error localizedDescription] dismiss:^{
-            [self hidePiwigoHUDWithCompletion:^{ [self updateButtonsInSelectionMode]; }];
+            [self.navigationController hidePiwigoHUDWithCompletion:^{
+                [self updateButtonsInSelectionMode];
+            }];
         } retry:^{
             // Try relogin if unauthorized
             NSInteger statusCode = [[[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
@@ -2466,9 +2457,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     // Display HUD
     self.totalNumberOfImages = self.selectedImageIds.count;
     if (self.totalNumberOfImages > 1) {
-        [self showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeAnnularDeterminate];
+        [self.navigationController showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeAnnularDeterminate];
     } else {
-        [self showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
+        [self.navigationController showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
     }
 
     // Retrieve image data
@@ -2480,7 +2471,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 -(void)retrieveImageDataBeforeShare
 {
     if (self.selectedImageIdsToShare.count <= 0) {
-        [self hidePiwigoHUDWithCompletion:^{
+        [self.navigationController hidePiwigoHUDWithCompletion:^{
             [self checkPhotoLibraryAccessBeforeShare];
         }];
         return;
@@ -2498,7 +2489,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
               [self.selectedImageIdsToShare removeLastObject];
 
               // Update HUD
-              [self updatePiwigoHUDWithProgress:1.0 - (float)self.selectedImageIdsToShare.count / (float)self.totalNumberOfImages];
+              [self.navigationController updatePiwigoHUDWithProgress:1.0 - (float)self.selectedImageIdsToShare.count / (float)self.totalNumberOfImages];
 
               // Next image
               [self retrieveImageDataBeforeShare];
@@ -2506,7 +2497,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
           else {
               // Could not retrieve image data
               [self dismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed") message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?") errorMessage:@"" dismiss:^{
-                  [self hidePiwigoHUDWithCompletion:^{ [self updateButtonsInSelectionMode]; }];
+                  [self.navigationController hidePiwigoHUDWithCompletion:^{
+                      [self updateButtonsInSelectionMode];
+                  }];
               } retry:^{
                   [self retrieveImageDataBeforeShare];
               }];
@@ -2515,7 +2508,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
          onFailure:^(NSURLSessionTask *task, NSError *error) {
              // Failed — Ask user if he/she wishes to retry
         [self dismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed") message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?") errorMessage:error.localizedDescription dismiss:^{
-            [self hidePiwigoHUDWithCompletion:^{ [self updateButtonsInSelectionMode]; }];
+            [self.navigationController hidePiwigoHUDWithCompletion:^{
+                [self updateButtonsInSelectionMode];
+            }];
         } retry:^{
             [self retrieveImageDataBeforeShare];
         }];
@@ -2756,7 +2751,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
                 if (self.loadingImages) {
                     // Currently trying to load images…
-                    footer.noImagesLabel.text = NSLocalizedString(@"categoryMainEmtpy", @"No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.");
+                    footer.noImagesLabel.text = NSLocalizedString(@"loadingHUD_label", @"Loading…");
                 } else {
                     // Get number of images
                     NSInteger totalImageCount = 0;
@@ -2833,7 +2828,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             NSString *footer = @"";
             if (self.loadingImages) {
                 // Currently trying to load images…
-                footer = NSLocalizedString(@"categoryMainEmtpy", @"No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.");
+                footer = NSLocalizedString(@"loadingHUD_label", @"Loading…");
             } else {
                 // Get number of images
                 NSInteger totalImageCount = 0;

@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.6.2_text" = "Version 2.6.2\n\n• Permet à certains utilisateurs Community de créer des tags\n• Corrige un problème de compatibilité avec Piwigo 11\n• Corrections de bugs mineurs et améliorations de l'interface\n• Modernisation du code";
+"v2.6.3_text" = "Version 2.6.3\n\n• Correction de bugs";
+
+"v2.6.2_text" = "Version 2.6.2\n3 mai 2021\n\n• Permet à certains utilisateurs Community de créer des tags\n• Corrige un problème de compatibilité avec Piwigo 11\n• Corrections de bugs mineurs et améliorations de l'interface\n• Modernisation du code";
 
 "v2.6.1_text" = "Version 2.6.1\n19 mars 2021\n\n• Corrige l'attribution de tags à une sélection de photos\n• Paramètres d'apparence repensés\n• Améliore la fiabilité du téléchargement en arrière-plan\n• Corrections de bugs mineurs et améliorations de l'interface";
 

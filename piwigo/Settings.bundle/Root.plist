@@ -2,15 +2,13 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>StringsTable</key>
-	<string>Root</string>
 	<key>PreferenceSpecifiers</key>
 	<array>
 		<dict>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
-			<key>Title</key>
-			<string>Information</string>
+			<key>FooterText</key>
+			<string>© 2015-2021 Spencer Baker, Olaf Greck, Eddy Lelièvre-Berna.</string>
 		</dict>
 		<dict>
 			<key>Type</key>
@@ -38,12 +36,8 @@
 			<key>File</key>
 			<string>Acknowledgements</string>
 		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSGroupSpecifier</string>
-			<key>FooterText</key>
-			<string>© 2015-2020 Spencer Baker, Olaf Greck, Eddy Lelièvre-Berna.</string>
-		</dict>
 	</array>
+	<key>StringsTable</key>
+	<string>Root</string>
 </dict>
 </plist>
