@@ -229,7 +229,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
         case .comment:
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "comment", for: indexPath) as? EditImageTextViewTableViewCell else {
             print("Error: tableView.dequeueReusableCell does not return a EditImageTextViewTableViewCell!")
-            return EditImageTagsTableViewCell()
+            return EditImageTextViewTableViewCell()
         }
         cell.setComment(commonComment, in: shouldUpdateComment ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
         cell.textView.delegate = self
