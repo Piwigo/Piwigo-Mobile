@@ -336,6 +336,9 @@ class UploadManager: NSObject, URLSessionDelegate {
         // UIApplication.shared.state must be called on the main thread
         isExecutingBackgroundUploadTask = true
         
+        // Append auto-upload requests if needed
+        appendAutoUploadRequests()
+        
         // Reset variables
         countOfBytesPrepared = 0
         countOfBytesToUpload = 0
