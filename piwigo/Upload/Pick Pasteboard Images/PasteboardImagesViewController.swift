@@ -241,7 +241,8 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         super.viewWillTransition(to: size, with: coordinator)
 
         // Save position of collection view
-        if let cell = localImagesCollection.visibleCells.first {
+        if localImagesCollection.visibleCells.count > 0,
+           let cell = localImagesCollection.visibleCells.first {
             if let indexPath = localImagesCollection.indexPath(for: cell) {
                 // Reload the tableview on orientation change, to match the new width of the table.
                 coordinator.animate(alongsideTransition: { context in
