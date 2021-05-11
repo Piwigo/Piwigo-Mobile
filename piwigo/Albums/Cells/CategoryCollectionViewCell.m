@@ -130,7 +130,7 @@
     return YES;
 }
 
--(NSArray*) swipeTableCell:(MGSwipeTableCell*) cell swipeButtonsForDirection:(MGSwipeDirection)direction
+-(NSArray*)swipeTableCell:(MGSwipeTableCell*) cell swipeButtonsForDirection:(MGSwipeDirection)direction
              swipeSettings:(MGSwipeSettings*) swipeSettings expansionSettings:(MGSwipeExpansionSettings*) expansionSettings
 {
     // Only admins can rename, move and delete albums
@@ -139,7 +139,6 @@
     // Settings
     cell.swipeBackgroundColor = [UIColor piwigoColorOrange];
     swipeSettings.transition = MGSwipeTransitionBorder;
-    expansionSettings.buttonIndex = 0;
 
     // Right => Left swipe
     if (direction == MGSwipeDirectionRightToLeft) {
@@ -164,7 +163,14 @@
             [self renameCategory];
             return NO;
         }];
-        return @[trash, move, rename];
+        
+        // Disallow user to delete the auto-upload destination album
+        if (self.albumData.albumId == [Model sharedInstance].autoUploadCategoryId) {
+            return @[move, rename];
+        } else {
+            expansionSettings.buttonIndex = 0;
+            return @[trash, move, rename];
+        }
     }
     else {
         // Disabled because it does not work reliably on the server side
