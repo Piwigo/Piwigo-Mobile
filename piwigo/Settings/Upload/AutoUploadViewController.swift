@@ -10,7 +10,7 @@ import Photos
 import UIKit
 
 @objc
-class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, LocalAlbumsSelectorDelegate, SelectCategoryDelegate {
+class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, LocalAlbumsSelectorDelegate, SelectCategoryDelegate, TagsViewControllerDelegate {
 
     @IBOutlet var autoUploadTableView: UITableView!
     
@@ -24,7 +24,26 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         return provider
     }()
 
+    /**
+     The TagsProvider that fetches tag data, saves it to Core Data,
+     and serves it to this table view.
+     */
+    private lazy var tagsProvider: TagsProvider = {
+        let provider : TagsProvider = TagsProvider()
+        return provider
+    }()
     
+    let hasTagCreationRights:Bool = {
+        // Admin?
+        if Model.sharedInstance()?.hasAdminRights == true { return true }
+        // Community user with upload rights?
+        if let albumId = Model.sharedInstance()?.autoUploadCategoryId,
+           let albumData = CategoriesData.sharedInstance().getCategoryById(albumId),
+           (Model.sharedInstance().hasNormalRights && albumData.hasUploadRights) { return true }
+        return false
+    }()
+
+
     // MARK: - View Lifecycle
     
     override func viewDidLoad() {
@@ -98,6 +117,8 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
             titleString = NSLocalizedString("settings_autoUpload>414px", comment: "Auto Upload Photos")
         case 1:
             titleString = NSLocalizedString("tabBar_albums", comment: "Albums")
+        case 2:
+            titleString = NSLocalizedString("imageDetailsView_title", comment: "Properties")
         default:
             titleString = ""
         }
@@ -118,6 +139,8 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
             titleString = NSLocalizedString("settings_autoUpload>414px", comment: "Auto Upload Photos")
         case 1:
             titleString = NSLocalizedString("tabBar_albums", comment: "Albums")
+        case 2:
+            titleString = NSLocalizedString("imageDetailsView_title", comment: "Properties")
         default:
             titleString = ""
         }
@@ -155,7 +178,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
     // MARK: - UITableView - Rows
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 3
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -164,20 +187,34 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
             return 1
         case 1:
             return 2
+        case 2:
+            return 1
         default:
             fatalError("Unknown section")
         }
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 44.0
+        var height: CGFloat = 44.0
+        switch indexPath.section {
+        case 2:
+            switch indexPath.row {
+            case 0:
+                height = 78.0
+            default:
+                break
+            }
+        default:
+            break
+        }
+        return height
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var tableViewCell = UITableViewCell()
         
         switch indexPath.section {
-        case 0:
+        case 0:     // Auto-Upload On/Off
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
                 print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                 return SwitchTableViewCell()
@@ -201,7 +238,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
             }
             tableViewCell = cell
             
-        case 1:
+        case 1:     // Source & destination albums
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
                 print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                 return LabelTableViewCell()
@@ -243,6 +280,30 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
             }
             cell.configure(with: title, detail: detail)
             cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+            tableViewCell = cell
+
+        case 2:     // Properties
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "tags", for: indexPath) as? EditImageTagsTableViewCell else {
+                print("Error: tableView.dequeueReusableCell does not return a EditImageTagsTableViewCell!")
+                return EditImageTagsTableViewCell()
+            }
+            // Retrieve tags and switch to old cache data format
+            let tags = tagsProvider.fetchedResultsController.fetchedObjects
+            let tagIds = Model.sharedInstance()?.autoUploadTagIds.components(separatedBy: ",").map({ Int32($0) }) ?? []
+            var tagList = [PiwigoTagData]()
+            tagIds.forEach({ tagId in
+                if let id = tagId,
+                   let tag = tags?.first(where: { $0.tagId == id }) {
+                    let newTag = PiwigoTagData.init()
+                    newTag.tagId = Int(tag.tagId)
+                    newTag.tagName = tag.tagName
+                    newTag.lastModified = tag.lastModified
+                    newTag.numberOfImagesUnderTag = tag.numberOfImagesUnderTag
+                    tagList.append(newTag)
+                }
+            })
+            cell.backgroundColor = UIColor.piwigoColorCellBackground()
+            cell.setTagList(tagList, in: UIColor.piwigoColorRightLabel())
             tableViewCell = cell
 
         default:
@@ -385,14 +446,38 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                 break
             }
             
+        case 2:
+            switch indexPath.row {
+            case 0 /* Select Tags */ :
+                // Create view controller
+                let tagsSB = UIStoryboard(name: "TagsViewController", bundle: nil)
+                if let tagsVC = tagsSB.instantiateViewController(withIdentifier: "TagsViewController") as? TagsViewController {
+                    tagsVC.delegate = self
+                    tagsVC.setPreselectedTagIds((Model.sharedInstance()?.autoUploadTagIds ?? "")
+                                                    .components(separatedBy: ",")
+                                                    .map { Int32($0) ?? nil }.compactMap {$0})
+                    // Can we propose to create tags?
+                    if let switchVC = parent as? UploadSwitchViewController {
+                        tagsVC.setTagCreationRights(switchVC.hasTagCreationRights)
+                    }
+                    navigationController?.pushViewController(tagsVC, animated: true)
+                }
+                
+            default:
+                break
+            }
+            
         default:
             break
         }
     }
+}
 
 
-    // MARK: - LocalAlbumsViewControllerDelegate Methods
-    
+// MARK: - LocalAlbumsViewControllerDelegate Methods
+
+extension AutoUploadViewController {
+    // Collect cosen Photo Library album (or whole Camera Roll)
     func didSelectPhotoAlbum(withId photoAlbumId: String) -> Void {
         // Check selection
         if photoAlbumId.isEmpty {
@@ -408,10 +493,13 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         // Save choice
         Model.sharedInstance()?.saveToDisk()
     }
+}
 
 
-    // MARK: - SelectCategoryDelegate Methods
+// MARK: - SelectCategoryDelegate Methods
     
+extension AutoUploadViewController {
+    // Collect chosen Piwigo category
     func didSelectCategory(withId categoryId: Int) -> Void {
         // Check selection
         if categoryId == NSNotFound {
@@ -426,5 +514,20 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         
         // Save choice
         Model.sharedInstance()?.saveToDisk()
+    }
+}
+
+
+// MARK: - TagsViewControllerDelegate Methods
+extension AutoUploadViewController {
+    // Collect selected tags
+    func didSelectTags(_ selectedTags: [Tag]) {
+        // Store selected tags
+        Model.sharedInstance()?.autoUploadTagIds = String(selectedTags.map({"\($0.tagId),"})
+                                                            .reduce("", +).dropLast(1))
+        Model.sharedInstance()?.saveToDisk()
+
+        // Update cell
+        autoUploadTableView.reloadRows(at: [IndexPath(row: 0, section: 2)], with: .automatic)
     }
 }

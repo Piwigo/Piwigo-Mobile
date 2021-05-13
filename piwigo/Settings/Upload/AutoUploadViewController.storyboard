@@ -93,6 +93,45 @@
                                     <outlet property="titleLabel" destination="xU2-JK-3Sc" id="jRt-WM-xNE"/>
                                 </connections>
                             </tableViewCell>
+                            <tableViewCell contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="tags" rowHeight="78" id="Fmc-Ur-koT" customClass="EditImageTagsTableViewCell">
+                                <rect key="frame" x="0.0" y="111.5" width="414" height="78"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" tableViewCell="Fmc-Ur-koT" id="Qjc-w5-mie">
+                                    <rect key="frame" x="0.0" y="0.0" width="384.5" height="78"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tags:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="r6G-04-LNU">
+                                            <rect key="frame" x="20" y="11" width="356.5" height="20.5"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="ite-3k-wMn">
+                                            <rect key="frame" x="20" y="46" width="356.5" height="21"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="21" id="H8m-z1-Tnk"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="ite-3k-wMn" firstAttribute="bottom" secondItem="Qjc-w5-mie" secondAttribute="bottomMargin" id="3bi-Ny-8bK"/>
+                                        <constraint firstItem="ite-3k-wMn" firstAttribute="leading" secondItem="r6G-04-LNU" secondAttribute="leading" id="AUx-4c-cSB"/>
+                                        <constraint firstItem="r6G-04-LNU" firstAttribute="trailing" secondItem="Qjc-w5-mie" secondAttribute="trailingMargin" id="Vtx-m1-UZe"/>
+                                        <constraint firstItem="ite-3k-wMn" firstAttribute="trailing" secondItem="r6G-04-LNU" secondAttribute="trailing" id="dKf-tt-wnI"/>
+                                        <constraint firstItem="r6G-04-LNU" firstAttribute="top" secondItem="Qjc-w5-mie" secondAttribute="topMargin" id="kkj-Hj-PgF"/>
+                                        <constraint firstItem="r6G-04-LNU" firstAttribute="leading" secondItem="Qjc-w5-mie" secondAttribute="leadingMargin" id="mx5-5E-5Se"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <color key="backgroundColor" systemColor="tableCellGroupedBackgroundColor"/>
+                                <color key="tintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <outlet property="tagsLabel" destination="r6G-04-LNU" id="wKH-LS-wQW"/>
+                                    <outlet property="tagsList" destination="ite-3k-wMn" id="vX5-lG-QnA"/>
+                                </connections>
+                            </tableViewCell>
                         </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="Y6W-OH-hqX" id="2Rg-6a-h0O"/>
@@ -110,6 +149,9 @@
     </scenes>
     <resources>
         <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="tableCellGroupedBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
     </resources>

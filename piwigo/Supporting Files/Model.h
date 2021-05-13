@@ -200,6 +200,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL isAutoUploadActive;
 @property (nonatomic, strong) NSString *autoUploadAlbumId;
 @property (nonatomic, assign) NSInteger autoUploadCategoryId;
+@property (nonatomic, strong) NSString *autoUploadTagIds;
 
 // Default color palette (adopts light/dark modes as from iOS 13)
 @property (nonatomic, assign) BOOL isDarkPaletteActive;
