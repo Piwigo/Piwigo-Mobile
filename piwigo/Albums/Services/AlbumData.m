@@ -70,7 +70,7 @@
 	NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].numberOfImages;
 	
     // Return if job done
-    if (downloadedImageDataCount >= totalImageCount)
+    if ((totalImageCount != NSNotFound) && (downloadedImageDataCount >= totalImageCount))
 	{
 //        NSLog(@"loadMoreImagesOnCompletion: we have all image data");
         // We have all the image data, just manually sort it (uploaded images are appended to cache)
@@ -190,7 +190,7 @@
 	NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].numberOfImages;
 	
 //    NSLog(@"updateImageSort: catId=%ld, downloaded:%ld, total:%ld", (long)self.categoryId, (long)downloadedImageDataCount, (long)totalImageCount);
-	if (downloadedImageDataCount >= totalImageCount)
+	if ((totalImageCount != NSNotFound) && (downloadedImageDataCount >= totalImageCount))
 	{	// We have all the image data, just manually sort it (uploaded images are appended to cache)
         self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList for:imageSort];
 		if(completion)

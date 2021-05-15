@@ -694,7 +694,11 @@
         NberImagesFooterCollectionReusableView *footer = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"NberImagesFooterCollection" forIndexPath:indexPath];
         footer.noImagesLabel.textColor = [UIColor piwigoColorHeader];
         
-        if (totalImageCount == 0) {
+        if (totalImageCount == NSNotFound) {
+            // Is loading…
+            footer.noImagesLabel.text = NSLocalizedString(@"loadingHUD_label", @"Loading…");
+        }
+        else if (totalImageCount == 0) {
             // Display "No images"
             footer.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
             }
@@ -725,7 +729,11 @@
     NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].numberOfImages;
     NSString *footer = @"";
 
-    if (totalImageCount == 0) {
+    if (totalImageCount == NSNotFound) {
+        // Is loading…
+        footer = NSLocalizedString(@"loadingHUD_label", @"Loading…");
+    }
+    else if (totalImageCount == 0) {
         // Display "No images"
         footer = NSLocalizedString(@"noImages", @"No Images");
     }
