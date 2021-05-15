@@ -546,12 +546,14 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             // Get number of already loaded items
             NSInteger nberOfItems = [self.imagesCollection numberOfItemsInSection:1];
             if (self.imageOfInterest.item < nberOfItems) {
-                // Already loaded => scroll to it
-//                NSLog(@"=> Scroll to item #%ld in section #%ld", (long)self.imageOfInterest.item, (long)self.imageOfInterest.section);
-                [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
-                
                 // Calculate the number of thumbnails displayed per page
                 NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.imagesCollection imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+
+                // Already loaded => scroll to image if necessary
+//                NSLog(@"=> Discover|Scroll down to item #%ld", (long)self.imageOfInterest.item);
+                if (self.imageOfInterest.item > roundf(imagesPerPage *2.0 / 3.0)) {
+                    [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+                }
 
                 // Load more images if seems to be a good idea
                 if ((self.imageOfInterest.item > (nberOfItems - roundf(imagesPerPage / 3.0))) &&
