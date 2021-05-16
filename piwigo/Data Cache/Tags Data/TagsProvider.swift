@@ -242,8 +242,12 @@ class TagsProvider {
         let cachedTags:[Tag] = controller.fetchedObjects ?? []
 
         // Loop over tags in cache
-        for cachedTag in cachedTags {
-            if !allTags.contains(where: { $0.id == cachedTag.tagId}) {
+        cachedTags.forEach { cachedTag in
+            if cachedTag.isFault {
+                cachedTag.willAccessValue(forKey: nil)
+                cachedTag.didAccessValue(forKey: nil)
+            }
+            if !allTags.contains(where: { $0.id == cachedTag.tagId }) {
                 taskContext.delete(cachedTag)
             }
         }
