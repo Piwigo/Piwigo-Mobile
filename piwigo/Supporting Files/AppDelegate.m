@@ -639,39 +639,36 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     NSInteger categoryId = [[userInfo objectForKey:@"categoryId"] integerValue];
     if ((categoryId <= 0) || (categoryId == NSNotFound)) return;
 
+    // Compile new album Id
+    NSString *categoryIdStr = [NSString stringWithFormat:@"%ld", (long)categoryId];
+    
+    // Create new array of recent albums
+    NSMutableArray *newList = [NSMutableArray new];
+    
+    // Add albumId to top of list
+    [newList addObject:categoryIdStr];
+
     // Get current list of recent albums
     NSString *recentAlbumsStr = [Model sharedInstance].recentCategories;
 
-    // Create new list of recent albums
-    NSMutableArray *newList = [NSMutableArray new];
-    
-    // Compile new list
-    NSString *categoryIdStr = [NSString stringWithFormat:@"%ld", (long)categoryId];
-    if (recentAlbumsStr.length == 0)
-    {
-        // Empty list => simply add albumId
-        [newList addObject:categoryIdStr];
-    }
-    else {
-        // Non-empty list
-        NSMutableArray<NSString *> *recentCategories = [[recentAlbumsStr componentsSeparatedByString:@","] mutableCopy];
+    // Add recent albums while avoiding duplicates
+    if (recentAlbumsStr.length != 0) {
+        // Build mutable set of recent album IDs
+        NSArray *oldList = [[recentAlbumsStr componentsSeparatedByString:@","] mutableCopy];
         
-        // Add albumId to top of list
-        [newList addObject:categoryIdStr];
-
-        // Remove albumId from old list if necessary
-        [recentCategories removeObjectIdenticalTo:categoryIdStr];
-        
-        // Append old list
-        [newList addObjectsFromArray:recentCategories];
-
-        // Will limit list to 3 - 10 objects (5 by default) when presenting albums
-        // As some recent albums may not be suggested or other may be deleted, we store more than 10, say 20
-        NSUInteger count = [newList count];
-        if (count > 20) {
-            NSRange range = NSMakeRange(20, count - 20);
-            [newList removeObjectsInRange:range];
+        // Adds album IDs of old list
+        for (NSString *catId in oldList) {
+            if ([newList containsObject:catId]) { continue; }
+            [newList addObject:catId];
         }
+    }
+
+    // We will present 3 - 10 albums (5 by default), but because some recent albums
+    // may not be suggested or other may be deleted, we store more than 10, say 20.
+    NSUInteger count = newList.count;
+    if (count > 20) {
+        NSRange range = NSMakeRange(20, count - 20);
+        [newList removeObjectsInRange:range];
     }
 
     // Update list
