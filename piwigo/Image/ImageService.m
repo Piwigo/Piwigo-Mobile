@@ -449,7 +449,7 @@ NSString * const kGetImageOrderDescending = @"desc";
               // Check the presence of favorite images
               if ([[responseObject objectForKey:@"result"] isKindOfClass:[NSDictionary class]]) {
                   // Store number of images in cache
-                  NSInteger nberImages = [[[[responseObject objectForKey:@"result"] objectForKey:@"paging"] objectForKey:@"total_count"] integerValue];
+                  NSInteger nberImages = [[[[responseObject objectForKey:@"result"] objectForKey:@"paging"] objectForKey:@"count"] integerValue];
                   [[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId].numberOfImages = nberImages;
                   [[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId].totalNumberOfImages = nberImages;
                   

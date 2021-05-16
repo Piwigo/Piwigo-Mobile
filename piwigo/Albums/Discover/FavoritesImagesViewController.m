@@ -59,15 +59,14 @@
 
 @implementation FavoritesImagesViewController
 
--(instancetype)initWithCategoryId:(NSInteger)categoryId
+-(instancetype)init
 {
     self = [super init];
     if(self)
     {
-        self.categoryId = categoryId;
         self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:0];
         
-        self.albumData = [[AlbumData alloc] initWithCategoryId:categoryId andQuery:@""];
+        self.albumData = [[AlbumData alloc] initWithCategoryId:kPiwigoFavoritesCategoryId andQuery:@""];
         self.currentSortCategory = [Model sharedInstance].defaultSort;
         self.displayImageTitles = [Model sharedInstance].displayImageTitles;
         
@@ -154,7 +153,7 @@
     [self updateBarButtons];
 
     // Initialise discover cache
-    PiwigoAlbumData *discoverAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:self.categoryId];
+    PiwigoAlbumData *discoverAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoFavoritesCategoryId];
     [[CategoriesData sharedInstance] updateCategories:@[discoverAlbum]];
 
     // Load, sort images and reload collection
@@ -220,7 +219,7 @@
 
                 // Load more images if seems to be a good idea
                 if ((self.imageOfInterest.item > (nberOfItems - roundf(imagesPerPage / 3.0))) &&
-                    (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages])) {
+                    (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId] numberOfImages])) {
 //                    NSLog(@"=> Discover|Load more images…");
                     [self.albumData loadMoreImagesOnCompletion:^{
                         [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
@@ -229,7 +228,7 @@
             } else {
                 // No yet loaded => load more images
                 // Should not happen as needToLoadMoreImages() should be called when previewing images
-                if (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]) {
+                if (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId] numberOfImages]) {
 //                    NSLog(@"=> Discover|Load more images…");
                     [self.albumData loadMoreImagesOnCompletion:^{
                         [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
@@ -312,7 +311,7 @@
     if(!self.isSelect) {    // Image selection mode inactive
         
         // Title
-        self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
+        self.title = [[[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId] name];
 
         // Hide toolbar
         [self.navigationController setToolbarHidden:YES animated:YES];
@@ -440,7 +439,7 @@
 
         // Right category Id?
         NSInteger catId = [[userInfo objectForKey:@"albumId"] integerValue];
-        if (catId != self.categoryId) return;
+        if (catId != kPiwigoFavoritesCategoryId) return;
         
         // Image Id?
 //        NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
@@ -448,7 +447,7 @@
         
         // Store current image list
         NSArray *oldImageList = self.albumData.images;
-//        NSLog(@"=> category %ld contained %ld images", (long)self.categoryId, (long)oldImageList.count);
+//        NSLog(@"=> category %ld contained %ld images", (long)kPiwigoFavoritesCategoryId, (long)oldImageList.count);
 
         // Load new image (appended to cache) and sort images before updating UI
         [self.albumData loadMoreImagesOnCompletion:^{
@@ -457,10 +456,10 @@
 
                 // The album title is not shown in backButtonItem to provide enough space
                 // for image title on devices of screen width <= 414 ==> Restore album title
-                self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
+                self.title = [[[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId] name];
 
                 // Refresh collection view if needed
-                NSLog(@"=> category %ld now contains %ld images", (long)self.categoryId, (long)self.albumData.images.count);
+                NSLog(@"=> category %ld now contains %ld images", (long)kPiwigoFavoritesCategoryId, (long)self.albumData.images.count);
                 if (oldImageList.count == self.albumData.images.count) {
                     return;
                 }
@@ -486,7 +485,7 @@
 
                 // Update footer
                 UICollectionReusableView *visibleFooter = [[self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter] firstObject];
-                NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].totalNumberOfImages;
+                NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId].totalNumberOfImages;
                 if ([visibleFooter isKindOfClass:[NberImagesFooterCollectionReusableView class]]) {
                     NberImagesFooterCollectionReusableView *footer = (NberImagesFooterCollectionReusableView *)visibleFooter;
                     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
@@ -618,7 +617,7 @@
     if(kind == UICollectionElementKindSectionFooter)
     {
         // Display number of images
-        NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].numberOfImages;
+        NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId].numberOfImages;
         NberImagesFooterCollectionReusableView *footer = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"NberImagesFooterCollection" forIndexPath:indexPath];
         footer.noImagesLabel.textColor = [UIColor piwigoColorHeader];
         
@@ -654,7 +653,7 @@
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section
 {
     // Display number of images
-    NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].numberOfImages;
+    NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId].numberOfImages;
     NSString *footer = @"";
 
     if (totalImageCount == NSNotFound) {
@@ -695,7 +694,7 @@
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
     // Returns number of images
-    return [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;
+    return [[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId].imageList.count;
 }
 
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
@@ -732,7 +731,7 @@
     if (self.albumData.images.count > indexPath.row) {
         // Create cell from Piwigo data
         PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
-        [cell setupWithImageData:imageData forCategoryId:self.categoryId];
+        [cell setupWithImageData:imageData forCategoryId:kPiwigoFavoritesCategoryId];
         cell.isSelected = [self.selectedImageIds containsObject:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]];
         
         // Add pan gesture recognition
@@ -750,7 +749,7 @@
     
     // Load image data in advance if possible (page after page…)
     if ((indexPath.row > fmaxf(roundf(2 * imagesPerPage / 3.0), [collectionView numberOfItemsInSection:0] - roundf(imagesPerPage / 3.0))) &&
-        (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
+        (self.albumData.images.count < [[[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId] numberOfImages]))
     {
         [self.albumData loadMoreImagesOnCompletion:^{
             [self.imagesCollection reloadData];
@@ -1260,7 +1259,7 @@
     // Present album list for copying images into
     UIStoryboard *copySB = [UIStoryboard storyboardWithName:@"SelectCategoryViewController" bundle:nil];
     SelectCategoryViewController *copyVC = [copySB instantiateViewControllerWithIdentifier:@"SelectCategoryViewController"];
-    NSArray<id> *parameter = [[NSArray<id> alloc] initWithObjects:self.selectedImageIds, @(self.categoryId), nil];
+    NSArray<id> *parameter = [[NSArray<id> alloc] initWithObjects:self.selectedImageIds, @(kPiwigoFavoritesCategoryId), nil];
     [copyVC setInputWithParameter:parameter for:kPiwigoCategorySelectActionCopyImages];
     copyVC.delegate = self;                 // To re-enable toolbar
     copyVC.imageCopiedDelegate = self;      // To update image data after copy

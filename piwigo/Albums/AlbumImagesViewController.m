@@ -3483,7 +3483,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 -(void)discoverFavoritesImages
 {
     // Create Discover view
-    FavoritesImagesViewController *discoverController = [[FavoritesImagesViewController alloc] initWithCategoryId:kPiwigoFavoritesCategoryId];
+    FavoritesImagesViewController *discoverController = [[FavoritesImagesViewController alloc] init];
     [self pushView:discoverController];
 }
 
