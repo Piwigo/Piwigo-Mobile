@@ -85,6 +85,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 @property (nonatomic, strong) NSMutableArray *selectedImagesToShare;
 @property (nonatomic, strong) PiwigoImageData *selectedImage;
 
+@property (nonatomic, strong) UIRefreshControl *refreshControl;     // iOS 9.x only
+
 @property (nonatomic, assign) kPiwigoSort currentSortCategory;
 @property (nonatomic, strong) ImageDetailViewController *imageDetailView;
 
@@ -168,7 +170,12 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         // Refresh view
         UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
         [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
-        self.imagesCollection.refreshControl = refreshControl;
+        if (@available(iOS 10.0, *)) {
+            self.imagesCollection.refreshControl = refreshControl;
+        } else {
+            // Fallback on earlier versions
+            self.refreshControl = refreshControl;
+        }
 
         [self.imagesCollection registerClass:[ImageCollectionViewCell class] forCellWithReuseIdentifier:@"ImageCollectionViewCell"];
         [self.imagesCollection registerClass:[CategoryCollectionViewCell class] forCellWithReuseIdentifier:@"CategoryCollectionViewCell"];
@@ -308,13 +315,24 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     self.view.backgroundColor = [UIColor piwigoColorBackground];
 
     // Refresh controller
-    self.imagesCollection.refreshControl.backgroundColor = [UIColor piwigoColorBackground];
-    self.imagesCollection.refreshControl.tintColor = [UIColor piwigoColorHeader];
-    NSDictionary *attributesRefresh = @{
-        NSForegroundColorAttributeName: [UIColor piwigoColorHeader],
-        NSFontAttributeName: [UIFont piwigoFontLight],
-    };
-    self.imagesCollection.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"pullToRefresh", @"Reload Photos") attributes:attributesRefresh];
+    if (@available(iOS 10.0, *)) {
+        self.imagesCollection.refreshControl.backgroundColor = [UIColor piwigoColorBackground];
+        self.imagesCollection.refreshControl.tintColor = [UIColor piwigoColorHeader];
+        NSDictionary *attributesRefresh = @{
+            NSForegroundColorAttributeName: [UIColor piwigoColorHeader],
+            NSFontAttributeName: [UIFont piwigoFontLight],
+        };
+        self.imagesCollection.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"pullToRefresh", @"Reload Photos") attributes:attributesRefresh];
+    } else {
+        // Fallback on earlier versions
+        self.refreshControl.backgroundColor = [UIColor piwigoColorBackground];
+        self.refreshControl.tintColor = [UIColor piwigoColorOrange];
+        NSDictionary *attributesRefresh = @{
+                                     NSForegroundColorAttributeName: [UIColor piwigoColorOrange],
+                                     NSFontAttributeName: [UIFont piwigoFontNormal],
+                                     };
+        self.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"pullToRefresh", @"Reload Images") attributes:attributesRefresh];
+    }
     
     // Buttons
     [self.addButton.layer setShadowColor:[UIColor piwigoColorShadow].CGColor];
@@ -494,6 +512,13 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         }
     }
     
+    if (@available(iOS 10.0, *)) {
+    } else {
+        // Fallback on earlier versions
+        [self.imagesCollection addSubview:self.refreshControl];
+        self.imagesCollection.alwaysBounceVertical = YES;
+    }
+
     // Should we scroll to image of interest?
 //        NSLog(@"••• Starting with %ld images", (long)[self.imagesCollection numberOfItemsInSection:1]);
     if ((self.categoryId != 0) && ([self.albumData.images count] > 0) && (self.imageOfInterest.item != 0)) {
