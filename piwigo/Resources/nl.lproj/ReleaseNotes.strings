@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.6.3_text" = "Versie 2.6.3\n\n• Foutjes verbeterd";
+"v2.6.4_text" = "Versie 2.6.4\n\n• Kleine foutjes verbeterd en verbetering van de interface";
+
+"v2.6.3_text" = "Versie 2.6.3\n11 Mei 2021\n\n• Foutjes verbeterd";
 
 "v2.6.2_text" = "Versie 2.6.2\n3 Mei 2021\n\n• Laat sommige gebruikers toe om tags te maken\n• Lost een compatibiliteitsprobleem op met Piwigo 11\n• Kleine foutjes hersteld en verbetering van de interface\n• Code modernisering";
 

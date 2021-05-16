@@ -95,13 +95,9 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     albumData.comment = @"";
     albumData.globalRank = 0.0;
     albumData.numberOfSubCategories = 0;
+    albumData.numberOfImages = NSNotFound;
+    albumData.totalNumberOfImages = NSNotFound;
 
-    // Set number of images to more than one page
-    // because the number of images will be known after the first load.
-    NSInteger startNber = 2 * [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
-    albumData.numberOfImages = startNber;
-    albumData.totalNumberOfImages = startNber;
-    
     // No album image
     albumData.albumThumbnailId = 0;
     albumData.albumThumbnailUrl = @"";
@@ -144,12 +140,8 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     albumData.comment = @"";
     albumData.globalRank = 0.0;
     albumData.numberOfSubCategories = 0;
-    
-    // Set number of images to more than one page
-    // because the number of images will be known after the first load.
-    NSInteger startNber = 2 * [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
-    albumData.numberOfImages = startNber;
-    albumData.totalNumberOfImages = startNber;
+    albumData.numberOfImages = NSNotFound;
+    albumData.totalNumberOfImages = NSNotFound;
 
     // No album image
     albumData.albumThumbnailId = 0;
