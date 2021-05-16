@@ -73,6 +73,7 @@ class TagsProvider {
      Imports a JSON dictionary into the Core Data store on a private queue,
      processing the record in batches to avoid a high memory footprint.
     */
+    private let batchSize = 256
     private func importTags(from tagPropertiesArray: [TagProperties]) throws {
         
         // Create a private queue context.
@@ -86,13 +87,13 @@ class TagsProvider {
         }
         
         // Process records in batches to avoid a high memory footprint.
-        let batchSize = 256
         let count = tagPropertiesArray.count
         
         // Determine the total number of batches.
         var numBatches = count / batchSize
         numBatches += count % batchSize > 0 ? 1 : 0
         
+        // Loop over the batches
         for batchNumber in 0 ..< numBatches {
             
             // Determine the range for this batch.
@@ -108,6 +109,9 @@ class TagsProvider {
                 return
             }
         }
+
+        // Delete cached tags not in server
+        deleteTagsNotOnServer(tagPropertiesArray, taskContext: taskContext)
     }
     
     /**
@@ -145,9 +149,6 @@ class TagsProvider {
             }
             let cachedTags:[Tag] = controller.fetchedObjects ?? []
 
-            // Initialise list of tags to delete
-            let indexesOfTagsToUpdate: NSMutableIndexSet = NSMutableIndexSet.init()
-
             // Loop over new tags
             for tagData in tagsBatch {
             
@@ -177,7 +178,6 @@ class TagsProvider {
                 }
                 else {
                     // Update the tag's properties using the raw data
-                    indexesOfTagsToUpdate.add(index!)
                     do {
                         try cachedTags[index!].update(with: tagData)
                     }
@@ -189,15 +189,6 @@ class TagsProvider {
                         print(error.localizedDescription)
                     }
 
-                }
-            }
-            
-            // Delete cached tags which were not returned by the Piwigo server
-            for index in 0..<cachedTags.count {
-                
-                // Delete tags which were not updated
-                if !indexesOfTagsToUpdate.contains(index) {
-                    taskContext.delete(cachedTags[index])
                 }
             }
                         
@@ -231,6 +222,58 @@ class TagsProvider {
         return success
     }
     
+    private func deleteTagsNotOnServer(_ allTags: [TagProperties], taskContext: NSManagedObjectContext) {
+        // Retrieve existing tags
+        // Create a fetch request for the Tag entity sorted by Id
+        let fetchRequest = NSFetchRequest<Tag>(entityName: "Tag")
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "tagId", ascending: true)]
+        
+        // Create a fetched results controller and set its fetch request, context, and delegate.
+        let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                            managedObjectContext: taskContext,
+                                              sectionNameKeyPath: nil, cacheName: nil)
+        
+        // Perform the fetch.
+        do {
+            try controller.performFetch()
+        } catch {
+            fatalError("Unresolved error \(error)")
+        }
+        let cachedTags:[Tag] = controller.fetchedObjects ?? []
+
+        // Loop over tags in cache
+        for cachedTag in cachedTags {
+            if !allTags.contains(where: { $0.id == cachedTag.tagId}) {
+                taskContext.delete(cachedTag)
+            }
+        }
+        
+        // Save all deletions from the context to the store.
+        if taskContext.hasChanges {
+            do {
+                try taskContext.save()
+
+                // Performs a task in the main queue and wait until this tasks finishes
+                DispatchQueue.main.async {
+                    self.managedObjectContext.performAndWait {
+                        do {
+                            // Saves the data from the child to the main context to be stored properly
+                            try self.managedObjectContext.save()
+                        } catch {
+                            fatalError("Failure to save context: \(error)")
+                        }
+                    }
+                }
+            }
+            catch {
+                print("Error: \(error)\nCould not save Core Data context.")
+                return
+            }
+            // Reset the taskContext to free the cache and lower the memory footprint.
+            taskContext.reset()
+        }
+    }
+
     
     // MARK: - Add Tags
     /**

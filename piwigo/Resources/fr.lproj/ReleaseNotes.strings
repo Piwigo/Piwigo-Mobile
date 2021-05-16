@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.6.3_text" = "Version 2.6.3\n\n• Correction de bugs";
+"v2.6.4_text" = "Version 2.6.4\n\n• Corrige des bugs mineurs et améliore l'interface";
+
+"v2.6.3_text" = "Version 2.6.3\n11 mai 2021\n\n• Correction de bugs";
 
 "v2.6.2_text" = "Version 2.6.2\n3 mai 2021\n\n• Permet à certains utilisateurs Community de créer des tags\n• Corrige un problème de compatibilité avec Piwigo 11\n• Corrections de bugs mineurs et améliorations de l'interface\n• Modernisation du code";
 

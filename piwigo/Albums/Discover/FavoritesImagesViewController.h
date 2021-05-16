@@ -10,6 +10,6 @@
 
 @interface FavoritesImagesViewController : UIViewController
 
--(instancetype)initWithCategoryId:(NSInteger)categoryId;
+-(instancetype)init;
 
 @end

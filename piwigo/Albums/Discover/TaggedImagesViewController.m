@@ -214,13 +214,15 @@
             // Get number of already loaded items
             NSInteger nberOfItems = [self.imagesCollection numberOfItemsInSection:0];
             if (self.imageOfInterest.item < nberOfItems) {
-                // Already loaded => scroll to it
-//                NSLog(@"=> Discover|Scroll down to item #%ld", (long)self.imageOfInterest.item);
-                [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
-                
                 // Calculate the number of thumbnails displayed per page
                 NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.imagesCollection imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
                 
+                // Already loaded => scroll to image if necessary
+//                NSLog(@"=> Discover|Scroll down to item #%ld", (long)self.imageOfInterest.item);
+                if (self.imageOfInterest.item > roundf(imagesPerPage *2.0 / 3.0)) {
+                    [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+                }
+
                 // Load more images if seems to be a good idea
                 if ((self.imageOfInterest.item > (nberOfItems - roundf(imagesPerPage / 3.0))) &&
                     (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId] numberOfImages])) {
@@ -625,10 +627,14 @@
         NberImagesFooterCollectionReusableView *footer = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"NberImagesFooterCollection" forIndexPath:indexPath];
         footer.noImagesLabel.textColor = [UIColor piwigoColorHeader];
         
-        if (totalImageCount == 0) {
+        if (totalImageCount == NSNotFound) {
+            // Is loading…
+            footer.noImagesLabel.text = NSLocalizedString(@"loadingHUD_label", @"Loading…");
+        }
+        else if (totalImageCount == 0) {
             // Display "No images"
             footer.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
-            }
+        }
         else {
             // Display number of images…
             footer.noImagesLabel.text = [NSString stringWithFormat:@"%ld %@", (long)totalImageCount, (totalImageCount > 1) ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
@@ -656,7 +662,11 @@
     NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId].numberOfImages;
     NSString *footer = @"";
 
-    if (totalImageCount == 0) {
+    if (totalImageCount == NSNotFound) {
+        // Is loading…
+        footer = NSLocalizedString(@"loadingHUD_label", @"Loading…");
+    }
+    else if (totalImageCount == 0) {
         // Display "No images"
         footer = NSLocalizedString(@"noImages", @"No Images");
     }
@@ -690,9 +700,7 @@
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
     // Returns number of images
-//    NSLog(@"items: %ld", [[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId].imageList.count);
-//    NSLog(@"items: %ld", self.albumData.images.count);
-    return [[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId].imageList.count;
+    return self.albumData.images.count;
 }
 
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
@@ -747,7 +755,7 @@
     
     // Load image data in advance if possible (page after page…)
     if ((indexPath.row > fmaxf(roundf(2 * imagesPerPage / 3.0), [collectionView numberOfItemsInSection:0] - roundf(imagesPerPage / 3.0))) &&
-        (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId] numberOfImages]))
+        (self.albumData.images.count < [[[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId] numberOfImages]))
     {
         [self.albumData loadMoreImagesOnCompletion:^{
             [self.imagesCollection reloadData];

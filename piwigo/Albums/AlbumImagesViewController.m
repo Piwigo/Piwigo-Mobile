@@ -51,7 +51,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 @property (nonatomic, strong) NSIndexPath *imageOfInterest;
 @property (nonatomic, assign) BOOL isCachedAtInit;
 @property (nonatomic, strong) NSString *currentSort;
-@property (nonatomic, assign) BOOL loadingImages;
 @property (nonatomic, assign) BOOL displayImageTitles;
 
 @property (nonatomic, strong) UIBarButtonItem *settingsBarButton;
@@ -99,7 +98,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 	if(self)
 	{
 		self.categoryId = albumId;
-        self.loadingImages = NO;
         self.isCachedAtInit = isCached;
         self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:1];
         
@@ -298,7 +296,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 #if defined(DEBUG_LIFECYCLE)
     NSLog(@"viewDidLoad => ID:%ld", (long)self.categoryId);
 #endif
-    self.loadingImages = YES;
     [self getCategoryData:nil];
 
     // Navigation bar
@@ -447,13 +444,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 #if defined(DEBUG_LIFECYCLE)
         NSLog(@"viewWillAppear  => load images");
 #endif
-        self.loadingImages = YES;
         [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
-
             // Reset navigation bar buttons after image load
             [self updateButtonsInPreviewMode];
-
-            self.loadingImages = NO;
             [self.imagesCollection reloadData];
         }];
     }
@@ -471,7 +464,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         self.displayImageTitles = [Model sharedInstance].displayImageTitles;
         if (self.categoryId != 0) {
             [self.albumData reloadAlbumOnCompletion:^{
-                self.loadingImages = NO;
                 [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
             }];
         }
@@ -546,12 +538,14 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             // Get number of already loaded items
             NSInteger nberOfItems = [self.imagesCollection numberOfItemsInSection:1];
             if (self.imageOfInterest.item < nberOfItems) {
-                // Already loaded => scroll to it
-//                NSLog(@"=> Scroll to item #%ld in section #%ld", (long)self.imageOfInterest.item, (long)self.imageOfInterest.section);
-                [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
-                
                 // Calculate the number of thumbnails displayed per page
                 NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.imagesCollection imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+
+                // Already loaded => scroll to image if necessary
+//                NSLog(@"=> Discover|Scroll down to item #%ld", (long)self.imageOfInterest.item);
+                if (self.imageOfInterest.item > roundf(imagesPerPage *2.0 / 3.0)) {
+                    [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+                }
 
                 // Load more images if seems to be a good idea
                 if ((self.imageOfInterest.item > (nberOfItems - roundf(imagesPerPage / 3.0))) &&
@@ -1351,7 +1345,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 #endif
     
     // Load category data
-    self.loadingImages = YES;
     [AlbumService getAlbumListForCategory:self.categoryId
                                usingCache:self.isCachedAtInit
                           inRecursiveMode:YES
@@ -1365,8 +1358,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
                      // Reset navigation bar buttons after image load
                      [self updateButtonsInPreviewMode];
-
-                     self.loadingImages = NO;
                      [self.imagesCollection reloadData];
 
                      // For iOS 11 and later: place search bar in navigation bar or root album
@@ -1382,7 +1373,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
          #endif
                  self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
                  if([[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count > 0) {
-                     self.loadingImages = NO;
                      [self.imagesCollection reloadData];
 
                      // For iOS 11 and later: place search bar in navigation bar or root album
@@ -1438,12 +1428,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     NSLog(@"=> categoriesUpdated… %ld", (long)self.categoryId);
 #endif
     
-    // Quit if already being loading images
-//    if (self.loadingImages) {
-//        NSLog(@"=> categoriesUpdated… STOP [already being loading images]");
-//        return;
-//    }
-    
     // Images ?
     if (self.categoryId != 0) {
         // Store current image list
@@ -1451,14 +1435,12 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 //        NSLog(@"=> categoriesUpdated… %ld contained %ld images", (long)self.categoryId, (long)oldImageList.count);
 
         // Collect images belonging to the current album
-        self.loadingImages = TRUE;
         [self.albumData loadAllImagesOnCompletion:^{
 
             // Sort images
             [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
 //                NSLog(@"=> categoriesUpdated… %ld now contains %ld images", (long)self.categoryId, (long)self.albumData.images.count);
                 if (oldImageList.count == self.albumData.images.count) {
-                    self.loadingImages = NO;
                     [self.imagesCollection reloadData];     // Total number of images may have changed
                     return;
                 }
@@ -1513,9 +1495,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 } else {
                     [self updateButtonsInPreviewMode];
                 }
-
-                // Update done
-                self.loadingImages = FALSE;
             }];
         }];
     }
@@ -1550,7 +1529,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 //        NSLog(@"=> category %ld contained %ld images", (long)self.categoryId, (long)oldImageList.count);
 
         // Load new image (appended to cache) and sort images before updating UI
-        self.loadingImages = YES;
         [self.albumData loadMoreImagesOnCompletion:^{
             // Sort images
             [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
@@ -1562,7 +1540,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 // Refresh collection view if needed
 //                NSLog(@"=> category %ld now contains %ld images", (long)self.categoryId, (long)self.albumData.images.count);
                 if (oldImageList.count == self.albumData.images.count) {
-                    self.loadingImages = NO;
                     return;
                 }
 
@@ -1601,9 +1578,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 } else {
                     [self updateButtonsInPreviewMode];
                 }
-
-                // Update done
-                self.loadingImages = FALSE;
             }];
         }];
     }
@@ -1627,7 +1601,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 //        NSLog(@"=> category %ld contained %ld images", (long)self.categoryId, (long)oldImageList.count);
 
         // Remove image (removed from cache) and sort images before updating UI
-        self.loadingImages = YES;
         [self.albumData loadMoreImagesOnCompletion:^{
             // Sort images
             [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
@@ -1639,7 +1612,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 // Refresh collection view if needed
 //                NSLog(@"=> category %ld now contains %ld images", (long)self.categoryId, (long)self.albumData.images.count);
                 if (oldImageList.count == self.albumData.images.count) {
-                    self.loadingImages = NO;
                     return;
                 }
 
@@ -1682,9 +1654,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 } else {
                     [self updateButtonsInPreviewMode];
                 }
-
-                // Update done
-                self.loadingImages = FALSE;
             }];
         }];
     }
@@ -2749,32 +2718,31 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 NberImagesFooterCollectionReusableView *footer = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"NberImagesFooterCollection" forIndexPath:indexPath];
                 footer.noImagesLabel.textColor = [UIColor piwigoColorHeader];
 
-                if (self.loadingImages) {
-                    // Currently trying to load images…
-                    footer.noImagesLabel.text = NSLocalizedString(@"loadingHUD_label", @"Loading…");
+                // Get number of images
+                NSInteger totalImageCount = 0;
+                if (self.categoryId == 0) {
+                    // Only albums in Root Album => total number of images
+                    for (PiwigoAlbumData *albumData in [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId]) {
+                        totalImageCount += albumData.totalNumberOfImages;
+                    }
                 } else {
-                    // Get number of images
-                    NSInteger totalImageCount = 0;
-                    if (self.categoryId == 0) {
-                        // Only albums in Root Album => total number of images
-                        for (PiwigoAlbumData *albumData in [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId]) {
-                            totalImageCount += albumData.totalNumberOfImages;
-                        }
-                    } else {
-                        // Number of images in current album
-                        totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].totalNumberOfImages;
-                    }
+                    // Number of images in current album
+                    totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].totalNumberOfImages;
+                }
 
-                    if (totalImageCount == 0) {
-                        // Not loading and no images
-                        footer.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
-                    }
-                    else {
-                        // Display number of images…
-                        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-                        [numberFormatter setPositiveFormat:@"#,##0"];
-                        footer.noImagesLabel.text = [NSString stringWithFormat:@"%@ %@", [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]], totalImageCount > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
-                    }
+                if (totalImageCount == NSNotFound) {
+                    // Is loading…
+                    footer.noImagesLabel.text = NSLocalizedString(@"loadingHUD_label", @"Loading…");
+                }
+                else if (totalImageCount == 0) {
+                    // Not loading and no images
+                    footer.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
+                }
+                else {
+                    // Display number of images…
+                    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+                    [numberFormatter setPositiveFormat:@"#,##0"];
+                    footer.noImagesLabel.text = [NSString stringWithFormat:@"%@ %@", [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]], totalImageCount > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
                 }
                 return footer;
             }
@@ -2826,32 +2794,31 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         case 1:    // Section 1 — Image collection
         {
             NSString *footer = @"";
-            if (self.loadingImages) {
-                // Currently trying to load images…
-                footer = NSLocalizedString(@"loadingHUD_label", @"Loading…");
+            // Get number of images
+            NSInteger totalImageCount = 0;
+            if (self.categoryId == 0) {
+                // Only albums in Root Album => total number of images
+                for (PiwigoAlbumData *albumData in [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId]) {
+                    totalImageCount += albumData.totalNumberOfImages;
+                }
             } else {
-                // Get number of images
-                NSInteger totalImageCount = 0;
-                if (self.categoryId == 0) {
-                    // Only albums in Root Album => total number of images
-                    for (PiwigoAlbumData *albumData in [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId]) {
-                        totalImageCount += albumData.totalNumberOfImages;
-                    }
-                } else {
-                    // Number of images in current album
-                    totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].totalNumberOfImages;
-                }
+                // Number of images in current album
+                totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].totalNumberOfImages;
+            }
 
-                if (totalImageCount == 0) {
-                    // Not loading and no images
-                    footer = NSLocalizedString(@"noImages", @"No Images");
-                }
-                else {
-                    // Display number of images…
-                    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-                    [numberFormatter setPositiveFormat:@"#,##0"];
-                    footer = [NSString stringWithFormat:@"%@ %@", [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]], totalImageCount > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
-                }
+            if (totalImageCount == NSNotFound) {
+                // Is loading…
+                footer = NSLocalizedString(@"loadingHUD_label", @"Loading…");
+            }
+            else if (totalImageCount == 0) {
+                // Not loading and no images
+                footer = NSLocalizedString(@"noImages", @"No Images");
+            }
+            else {
+                // Display number of images…
+                NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+                [numberFormatter setPositiveFormat:@"#,##0"];
+                footer = [NSString stringWithFormat:@"%@ %@", [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]], totalImageCount > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
             }
  
             if ([footer length] > 0) {
@@ -3029,9 +2996,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             if ((indexPath.row > fmaxf(roundf(2 * imagesPerPage / 3.0), [collectionView numberOfItemsInSection:1] - roundf(imagesPerPage / 3.0))) &&
                 (self.albumData.images.count < [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
             {
-                self.loadingImages = YES;
                 [self.albumData loadMoreImagesOnCompletion:^{
-                    self.loadingImages = NO;
                     [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
                 }];
             }
@@ -3518,7 +3483,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 -(void)discoverFavoritesImages
 {
     // Create Discover view
-    FavoritesImagesViewController *discoverController = [[FavoritesImagesViewController alloc] initWithCategoryId:kPiwigoFavoritesCategoryId];
+    FavoritesImagesViewController *discoverController = [[FavoritesImagesViewController alloc] init];
     [self pushView:discoverController];
 }
 

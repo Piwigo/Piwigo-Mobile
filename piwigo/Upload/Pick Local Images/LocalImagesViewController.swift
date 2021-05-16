@@ -1563,7 +1563,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
         // Images in the upload queue cannot be selected
         let index = getImageIndex(for: indexPath)
-        if queue.operationCount == 0 {
+        if queue.operationCount == 0, index < indexedUploadsInQueue.count {
             // Indexed uploads available
             if indexedUploadsInQueue[index] != nil { return }
         } else {

@@ -145,7 +145,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                   
           if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
               // Store number of images in cache
-              NSInteger nberImages = [[[[responseObject objectForKey:@"result"] objectForKey:@"paging"] objectForKey:@"count"] integerValue];
+              NSInteger nberImages = [[[[responseObject objectForKey:@"result"] objectForKey:@"paging"] objectForKey:@"total_count"] integerValue];
               [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].numberOfImages = nberImages;
               [[CategoriesData sharedInstance] getCategoryById:kPiwigoSearchCategoryId].totalNumberOfImages = nberImages;
               
@@ -259,14 +259,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                   
           if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
               // Store number of images in cache
-              NSInteger nberImages;
-              if ((categoryId == kPiwigoVisitsCategoryId) ||
-                  (categoryId == kPiwigoBestCategoryId)   ||
-                  (categoryId == kPiwigoRecentCategoryId)) {
-                  nberImages = [[[[responseObject objectForKey:@"result"] objectForKey:@"paging"] objectForKey:@"total_count"] integerValue];
-              } else {
-                  nberImages = [[[[responseObject objectForKey:@"result"] objectForKey:@"paging"] objectForKey:@"count"] integerValue];
-              }
+              NSInteger nberImages = [[[[responseObject objectForKey:@"result"] objectForKey:@"paging"] objectForKey:@"total_count"] integerValue];
               [[CategoriesData sharedInstance] getCategoryById:categoryId].numberOfImages = nberImages;
               [[CategoriesData sharedInstance] getCategoryById:categoryId].totalNumberOfImages = nberImages;
               

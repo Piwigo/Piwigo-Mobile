@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.6.3_text" = "Wersja 2.6.3\n\n• Poprawki błędów";
+"v2.6.4_text" = "Wersja 2.6.4\n\n• Poprawki drobnych błędów i ulepszenia interfejsu";
+
+"v2.6.3_text" = "Wersja 2.6.3\n11 maja 2021\n\n• Poprawki błędów";
 
 "v2.6.2_text" = "Wersja 2.6.2\n3 maja 2021\n\n• Pozwala wybranym użytkownikom Community tworzyć tagi\n• Naprawia problem kompatybilności z Piwigo 11\n• Poprawki drobnych błędów i ulepszenia interfejsu\n• Modernizacja kodu";
 
