@@ -79,6 +79,7 @@ class CategoryTableViewCell: UITableViewCell {
                     showHideSubCategoriesImage.image = UIImage(named: "cellClose")
                 }
             }
+            showHideSubCategoriesImage.tintColor = UIColor.piwigoColorOrange()  // required on iOS 9
             showHideSubCategoriesImage.isHidden = false
         }
 
