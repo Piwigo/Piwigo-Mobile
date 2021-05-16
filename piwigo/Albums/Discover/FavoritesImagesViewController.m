@@ -694,7 +694,7 @@
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
     // Returns number of images
-    return [[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId].imageList.count;
+    return self.albumData.images.count;
 }
 
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
