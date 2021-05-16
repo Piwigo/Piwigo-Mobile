@@ -62,14 +62,12 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
 
         // Use the TagsProvider to fetch tag data. On completion,
         // handle general UI updates and error alerts on the main queue.
-        DispatchQueue.global(qos: .userInteractive).async {
-            self.dataProvider.fetchTags(asAdmin: self.hasTagCreationRights) { error in
-                guard let error = error else { return }     // Done if no error
+        dataProvider.fetchTags(asAdmin: hasTagCreationRights) { error in
+            guard let error = error else { return }     // Done if no error
 
-                // Show an alert if there was an error.
-                DispatchQueue.main.async {
-                    self.dismissPiwigoError(withTitle: "", message: NSLocalizedString("CoreDataFetch_TagError", comment: "Fetch tags error!"), errorMessage: error.localizedDescription) { }
-                }
+            // Show an alert if there was an error.
+            DispatchQueue.main.async {
+                self.dismissPiwigoError(withTitle: "", message: NSLocalizedString("CoreDataFetch_TagError", comment: "Fetch tags error!"), errorMessage: error.localizedDescription) { }
             }
         }
         
