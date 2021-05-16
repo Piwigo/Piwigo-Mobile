@@ -51,7 +51,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 @property (nonatomic, strong) NSIndexPath *imageOfInterest;
 @property (nonatomic, assign) BOOL isCachedAtInit;
 @property (nonatomic, strong) NSString *currentSort;
-@property (nonatomic, assign) BOOL loadingImages;
 @property (nonatomic, assign) BOOL displayImageTitles;
 
 @property (nonatomic, strong) UIBarButtonItem *settingsBarButton;
@@ -99,7 +98,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 	if(self)
 	{
 		self.categoryId = albumId;
-        self.loadingImages = NO;
         self.isCachedAtInit = isCached;
         self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:1];
         
@@ -298,7 +296,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 #if defined(DEBUG_LIFECYCLE)
     NSLog(@"viewDidLoad => ID:%ld", (long)self.categoryId);
 #endif
-    self.loadingImages = YES;
     [self getCategoryData:nil];
 
     // Navigation bar
@@ -447,13 +444,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 #if defined(DEBUG_LIFECYCLE)
         NSLog(@"viewWillAppear  => load images");
 #endif
-        self.loadingImages = YES;
         [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
-
             // Reset navigation bar buttons after image load
             [self updateButtonsInPreviewMode];
-
-            self.loadingImages = NO;
             [self.imagesCollection reloadData];
         }];
     }
@@ -471,7 +464,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         self.displayImageTitles = [Model sharedInstance].displayImageTitles;
         if (self.categoryId != 0) {
             [self.albumData reloadAlbumOnCompletion:^{
-                self.loadingImages = NO;
                 [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
             }];
         }
@@ -1353,7 +1345,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 #endif
     
     // Load category data
-    self.loadingImages = YES;
     [AlbumService getAlbumListForCategory:self.categoryId
                                usingCache:self.isCachedAtInit
                           inRecursiveMode:YES
@@ -1367,8 +1358,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
                      // Reset navigation bar buttons after image load
                      [self updateButtonsInPreviewMode];
-
-                     self.loadingImages = NO;
                      [self.imagesCollection reloadData];
 
                      // For iOS 11 and later: place search bar in navigation bar or root album
@@ -1384,7 +1373,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
          #endif
                  self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
                  if([[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count > 0) {
-                     self.loadingImages = NO;
                      [self.imagesCollection reloadData];
 
                      // For iOS 11 and later: place search bar in navigation bar or root album
@@ -1440,12 +1428,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     NSLog(@"=> categoriesUpdated… %ld", (long)self.categoryId);
 #endif
     
-    // Quit if already being loading images
-//    if (self.loadingImages) {
-//        NSLog(@"=> categoriesUpdated… STOP [already being loading images]");
-//        return;
-//    }
-    
     // Images ?
     if (self.categoryId != 0) {
         // Store current image list
@@ -1453,14 +1435,12 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 //        NSLog(@"=> categoriesUpdated… %ld contained %ld images", (long)self.categoryId, (long)oldImageList.count);
 
         // Collect images belonging to the current album
-        self.loadingImages = TRUE;
         [self.albumData loadAllImagesOnCompletion:^{
 
             // Sort images
             [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
 //                NSLog(@"=> categoriesUpdated… %ld now contains %ld images", (long)self.categoryId, (long)self.albumData.images.count);
                 if (oldImageList.count == self.albumData.images.count) {
-                    self.loadingImages = NO;
                     [self.imagesCollection reloadData];     // Total number of images may have changed
                     return;
                 }
@@ -1515,9 +1495,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 } else {
                     [self updateButtonsInPreviewMode];
                 }
-
-                // Update done
-                self.loadingImages = FALSE;
             }];
         }];
     }
@@ -1552,7 +1529,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 //        NSLog(@"=> category %ld contained %ld images", (long)self.categoryId, (long)oldImageList.count);
 
         // Load new image (appended to cache) and sort images before updating UI
-        self.loadingImages = YES;
         [self.albumData loadMoreImagesOnCompletion:^{
             // Sort images
             [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
@@ -1564,7 +1540,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 // Refresh collection view if needed
 //                NSLog(@"=> category %ld now contains %ld images", (long)self.categoryId, (long)self.albumData.images.count);
                 if (oldImageList.count == self.albumData.images.count) {
-                    self.loadingImages = NO;
                     return;
                 }
 
@@ -1603,9 +1578,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 } else {
                     [self updateButtonsInPreviewMode];
                 }
-
-                // Update done
-                self.loadingImages = FALSE;
             }];
         }];
     }
@@ -1629,7 +1601,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 //        NSLog(@"=> category %ld contained %ld images", (long)self.categoryId, (long)oldImageList.count);
 
         // Remove image (removed from cache) and sort images before updating UI
-        self.loadingImages = YES;
         [self.albumData loadMoreImagesOnCompletion:^{
             // Sort images
             [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
@@ -1641,7 +1612,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 // Refresh collection view if needed
 //                NSLog(@"=> category %ld now contains %ld images", (long)self.categoryId, (long)self.albumData.images.count);
                 if (oldImageList.count == self.albumData.images.count) {
-                    self.loadingImages = NO;
                     return;
                 }
 
@@ -1684,9 +1654,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 } else {
                     [self updateButtonsInPreviewMode];
                 }
-
-                // Update done
-                self.loadingImages = FALSE;
             }];
         }];
     }
@@ -3029,9 +2996,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             if ((indexPath.row > fmaxf(roundf(2 * imagesPerPage / 3.0), [collectionView numberOfItemsInSection:1] - roundf(imagesPerPage / 3.0))) &&
                 (self.albumData.images.count < [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
             {
-                self.loadingImages = YES;
                 [self.albumData loadMoreImagesOnCompletion:^{
-                    self.loadingImages = NO;
                     [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
                 }];
             }
