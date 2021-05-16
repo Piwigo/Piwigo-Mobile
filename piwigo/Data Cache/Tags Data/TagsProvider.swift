@@ -42,28 +42,30 @@ class TagsProvider {
             }
 
             // Decode the JSON and import it into Core Data.
-            do {
-                // Decode the JSON into codable type TagJSON.
-                let decoder = JSONDecoder()
-                let tagJSON = try decoder.decode(TagJSON.self, from: data)
+            DispatchQueue.global(qos: .background).async {
+                do {
+                    // Decode the JSON into codable type TagJSON.
+                    let decoder = JSONDecoder()
+                    let tagJSON = try decoder.decode(TagJSON.self, from: data)
 
-                // Piwigo error?
-                let error: NSError
-                if (tagJSON.errorCode != 0) {
-                    error = NSError.init(domain: "Piwigo", code: tagJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : tagJSON.errorMessage])
-                    completionHandler(error)
+                    // Piwigo error?
+                    let error: NSError
+                    if (tagJSON.errorCode != 0) {
+                        error = NSError.init(domain: "Piwigo", code: tagJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : tagJSON.errorMessage])
+                        completionHandler(error)
+                        return
+                    }
+
+                    // Import the tagJSON into Core Data.
+                    try self.importTags(from: tagJSON.data)
+
+                } catch {
+                    // Alert the user if data cannot be digested.
+                    completionHandler(TagError.wrongDataFormat)
                     return
                 }
-
-                // Import the tagJSON into Core Data.
-                try self.importTags(from: tagJSON.data)
-
-            } catch {
-                // Alert the user if data cannot be digested.
-                completionHandler(TagError.wrongDataFormat)
-                return
+                completionHandler(nil)
             }
-            completionHandler(nil)
         }) { (task, error) in
             completionHandler(TagError.networkUnavailable)
         }
@@ -242,8 +244,13 @@ class TagsProvider {
         let cachedTags:[Tag] = controller.fetchedObjects ?? []
 
         // Loop over tags in cache
-        for cachedTag in cachedTags {
-            if !allTags.contains(where: { $0.id == cachedTag.tagId}) {
+        cachedTags.forEach { cachedTag in
+            if cachedTag.isFault {
+                cachedTag.willAccessValue(forKey: nil)
+                cachedTag.didAccessValue(forKey: nil)
+            }
+            if !allTags.contains(where: { $0.id == cachedTag.tagId }) {
+//                print("=> delete tag with ID:\(cachedTag.tagId) and name:\(cachedTag.tagName)")
                 taskContext.delete(cachedTag)
             }
         }

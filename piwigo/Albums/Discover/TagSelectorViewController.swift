@@ -44,11 +44,8 @@ class TagSelectorViewController: UITableViewController {
         // handle general UI updates and error alerts on the main queue.
         dataProvider.fetchTags(asAdmin: false) { error in
             DispatchQueue.main.async {
-
-                // Show an alert if there was an error.
                 guard let error = error else {
-                    
-                    // Build ABC index
+                    // Rebuild ABC index
                     let firstCharacters = NSMutableSet.init(capacity: 0)
                     for tag in self.dataProvider.fetchedResultsController.fetchedObjects! {
                         firstCharacters.add((tag.tagName as String).prefix(1).uppercased())
@@ -57,21 +54,9 @@ class TagSelectorViewController: UITableViewController {
                     self.tableView.reloadData()
                     return
                 }
-                let alert = UIAlertController(title: NSLocalizedString("CoreDataFetch_TagError", comment: "Fetch tags error!"),
-                                              message: error.localizedDescription,
-                                              preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: NSLocalizedString("alertOkButton", comment: "OK"),
-                                              style: .default, handler: nil))
-                alert.view.tintColor = UIColor.piwigoColorOrange()
-                if #available(iOS 13.0, *) {
-                    alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
-                } else {
-                    // Fallback on earlier versions
-                }
-                self.present(alert, animated: true, completion: {
-                    // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                    alert.view.tintColor = UIColor.piwigoColorOrange()
-                })
+
+                // Show an alert if there was an error.
+                self.dismissPiwigoError(withTitle: NSLocalizedString("CoreDataFetch_TagError", comment: "Fetch tags error!"), message: error.localizedDescription) { }
             }
         }
         
