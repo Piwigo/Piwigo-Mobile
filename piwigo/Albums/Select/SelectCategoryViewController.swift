@@ -127,7 +127,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
     private var recentCategories: [PiwigoAlbumData] = []        // Recent categories presented in 1st section
     private var categories: [PiwigoAlbumData] = []              // Categories presented in 2nd section
-    private var categoriesThatShowSubCategories: [Int] = []
+    private var categoriesThatShowSubCategories = Set<Int>()
     private var nberOfSelectedImages = Float(0)
 
     
@@ -139,6 +139,12 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Build list of recent categories (1st section)
         buildRecentCategoryArray()
         
+        // Remove space between navigation bar and first cell
+        if #available(iOS 12.0, *) {
+        } else {
+            automaticallyAdjustsScrollViewInsets = false
+        }
+
         // Button for returning to albums/images collections
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelSelect))
         cancelBarButton?.accessibilityIdentifier = "Cancel"
@@ -1506,7 +1512,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         }
 
         // Add tapped category to list of categories having shown sub-categories
-        categoriesThatShowSubCategories.append(categoryTapped.albumId)
+        categoriesThatShowSubCategories.insert(categoryTapped.albumId)
 
         // Reload table view
         categoriesTableView.reloadData()
@@ -1530,7 +1536,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
         // Remove tapped category from list of categories having shown sub-categories
         if categoriesThatShowSubCategories.contains(categoryTapped.albumId) {
-            categoriesThatShowSubCategories.removeAll { $0 as AnyObject === NSNumber(value: categoryTapped.albumId) as AnyObject }
+            categoriesThatShowSubCategories.remove(categoryTapped.albumId)
         }
 
         // Reload table view
