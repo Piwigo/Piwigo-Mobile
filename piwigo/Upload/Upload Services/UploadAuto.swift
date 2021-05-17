@@ -49,6 +49,8 @@ extension UploadManager {
                 var uploadRequest = UploadProperties(localIdentifier: image.localIdentifier,
                                                      category: categoryId)
                 uploadRequest.markedForAutoUpload = true
+                uploadRequest.tagIds = Model.sharedInstance()?.autoUploadTagIds ?? ""
+                uploadRequest.comment = Model.sharedInstance()?.autoUploadComments ?? ""
                 uploadRequestsToAppend.append(uploadRequest)
             }
         }
