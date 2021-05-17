@@ -66,7 +66,7 @@ extension UploadManager {
             // Job done in background task
             if self.isExecutingBackgroundUploadTask { return }
 
-            // Show an alert if there was an error.
+            // Restart uploader if no error
             guard let error = error else {
                 // Restart UploadManager activities
                 if UploadManager.shared.isPaused {
@@ -85,7 +85,15 @@ extension UploadManager {
                     while let presentedViewController = topViewController.presentedViewController {
                         topViewController = presentedViewController
                     }
-                    topViewController.dismissPiwigoError(withTitle: NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object."), message: error.localizedDescription) {}
+                    topViewController.dismissPiwigoError(withTitle: NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object."), message: error.localizedDescription) {
+                        // Restart UploadManager activities
+                        if UploadManager.shared.isPaused {
+                            UploadManager.shared.isPaused = false
+                            UploadManager.shared.backgroundQueue.async {
+                                UploadManager.shared.findNextImageToUpload()
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -115,6 +123,14 @@ extension UploadManager {
                 autoUploadVC.dismissPiwigoError(withTitle: title, message: message) {
                     // Change switch button state
                     autoUploadVC.autoUploadTableView.reloadSections(IndexSet(integer: 0), with: .automatic)
+                }
+            } else {
+                // Restart UploadManager activities
+                if UploadManager.shared.isPaused {
+                    UploadManager.shared.isPaused = false
+                    UploadManager.shared.backgroundQueue.async {
+                        UploadManager.shared.findNextImageToUpload()
+                    }
                 }
             }
         }
