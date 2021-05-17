@@ -10,20 +10,11 @@ import Photos
 import UIKit
 
 @objc
-class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, LocalAlbumsSelectorDelegate, SelectCategoryDelegate, TagsViewControllerDelegate {
+class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, LocalAlbumsSelectorDelegate, SelectCategoryDelegate, TagsViewControllerDelegate, UITextViewDelegate {
 
     @IBOutlet var autoUploadTableView: UITableView!
     
     // MARK: - Core Data
-    /**
-     The UploadsProvider that collects upload data, saves it to Core Data,
-     and serves it to the uploader.
-     */
-    private lazy var uploadsProvider: UploadsProvider = {
-        let provider : UploadsProvider = UploadsProvider()
-        return provider
-    }()
-
     /**
      The TagsProvider that fetches tag data, saves it to Core Data,
      and serves it to this table view.
@@ -188,7 +179,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         case 1:
             return 2
         case 2:
-            return 1
+            return 2
         default:
             fatalError("Unknown section")
         }
@@ -201,6 +192,8 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
             switch indexPath.row {
             case 0:
                 height = 78.0
+            case 1:
+                height = 428.0
             default:
                 break
             }
@@ -283,32 +276,49 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
             tableViewCell = cell
 
         case 2:     // Properties
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "tags", for: indexPath) as? EditImageTagsTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a EditImageTagsTableViewCell!")
-                return EditImageTagsTableViewCell()
-            }
-            // Retrieve tags and switch to old cache data format
-            let tags = tagsProvider.fetchedResultsController.fetchedObjects
-            let tagIds = Model.sharedInstance()?.autoUploadTagIds.components(separatedBy: ",").map({ Int32($0) }) ?? []
-            var tagList = [PiwigoTagData]()
-            tagIds.forEach({ tagId in
-                if let id = tagId,
-                   let tag = tags?.first(where: { $0.tagId == id }) {
-                    let newTag = PiwigoTagData.init()
-                    newTag.tagId = Int(tag.tagId)
-                    newTag.tagName = tag.tagName
-                    newTag.lastModified = tag.lastModified
-                    newTag.numberOfImagesUnderTag = tag.numberOfImagesUnderTag
-                    tagList.append(newTag)
+            switch indexPath.row {
+            case 0 /* Tags */ :
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "tags", for: indexPath) as? EditImageTagsTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a EditImageTagsTableViewCell!")
+                    return EditImageTagsTableViewCell()
                 }
-            })
-            cell.backgroundColor = UIColor.piwigoColorCellBackground()
-            cell.setTagList(tagList, in: UIColor.piwigoColorRightLabel())
-            tableViewCell = cell
+                // Retrieve tags and switch to old cache data format
+                let tags = tagsProvider.fetchedResultsController.fetchedObjects
+                let tagIds = Model.sharedInstance()?.autoUploadTagIds.components(separatedBy: ",").map({ Int32($0) }) ?? []
+                var tagList = [PiwigoTagData]()
+                tagIds.forEach({ tagId in
+                    if let id = tagId,
+                       let tag = tags?.first(where: { $0.tagId == id }) {
+                        let newTag = PiwigoTagData.init()
+                        newTag.tagId = Int(tag.tagId)
+                        newTag.tagName = tag.tagName
+                        newTag.lastModified = tag.lastModified
+                        newTag.numberOfImagesUnderTag = tag.numberOfImagesUnderTag
+                        tagList.append(newTag)
+                    }
+                })
+                cell.setTagList(tagList, in: UIColor.piwigoColorRightLabel())
+                tableViewCell = cell
+
+            case 1 /* Comments */ :
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "comment", for: indexPath) as? EditImageTextViewTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a EditImageTextViewTableViewCell!")
+                    return EditImageTextViewTableViewCell()
+                }
+                cell.setComment(Model.sharedInstance()?.autoUploadComments ?? "", in:UIColor.piwigoColorRightLabel())
+                cell.textView.delegate = self
+                tableViewCell = cell
+
+            default:
+                break
+            }
 
         default:
             break
         }
+
+        tableViewCell.backgroundColor = UIColor.piwigoColorCellBackground()
+        tableViewCell.tintColor = UIColor.piwigoColorOrange()
         return tableViewCell
     }
 
@@ -316,9 +326,17 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         switch indexPath.section {
         case 0:
             return false
+        case 2:
+            switch indexPath.row {
+            case 1:
+                return false
+            default:
+                break
+            }
         default:
             return true
         }
+        return true
     }
     
     
@@ -461,7 +479,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                     tagsVC.setTagCreationRights(tagCreationRights)
                     navigationController?.pushViewController(tagsVC, animated: true)
                 }
-                
+
             default:
                 break
             }
@@ -496,7 +514,7 @@ extension AutoUploadViewController {
 
 
 // MARK: - SelectCategoryDelegate Methods
-    
+
 extension AutoUploadViewController {
     // Collect chosen Piwigo category
     func didSelectCategory(withId categoryId: Int) -> Void {
@@ -518,6 +536,7 @@ extension AutoUploadViewController {
 
 
 // MARK: - TagsViewControllerDelegate Methods
+
 extension AutoUploadViewController {
     // Collect selected tags
     func didSelectTags(_ selectedTags: [Tag]) {
@@ -528,5 +547,28 @@ extension AutoUploadViewController {
 
         // Update cell
         autoUploadTableView.reloadRows(at: [IndexPath(row: 0, section: 2)], with: .automatic)
+    }
+}
+
+
+// MARK: - UITextViewDelegate Methods
+
+extension AutoUploadViewController {
+    // Update comments and store them
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        let finalString = (textView.text as NSString).replacingCharacters(in: range, with: text)
+        Model.sharedInstance()?.autoUploadComments = finalString
+        Model.sharedInstance()?.saveToDisk()
+        return true
+    }
+
+    func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
+        autoUploadTableView.endEditing(true)
+        return true
+    }
+
+    func textViewDidEndEditing(_ textView: UITextView) {
+        Model.sharedInstance()?.autoUploadComments = textView.text
+        Model.sharedInstance()?.saveToDisk()
     }
 }

@@ -130,6 +130,7 @@ NSInteger const kDelayPiwigoHUD = 500;
         instance.autoUploadAlbumId = @"";           // Unknown source Photos album
         instance.autoUploadCategoryId = NSNotFound; // Unknown destination Piwigo album
         instance.autoUploadTagIds = @"";            // No tag
+        instance.autoUploadComments = @"";          // No comment
 
         // Default palette mode
         instance.isDarkPaletteActive = NO;
@@ -281,6 +282,7 @@ NSInteger const kDelayPiwigoHUD = 500;
         self.autoUploadAlbumId = modelData.autoUploadAlbumId;
         self.autoUploadCategoryId = modelData.autoUploadCategoryId;
         self.autoUploadTagIds = modelData.autoUploadTagIds;
+        self.autoUploadComments = modelData.autoUploadComments;
 	}
 }
 
@@ -370,6 +372,7 @@ NSInteger const kDelayPiwigoHUD = 500;
     [saveObject addObject:self.autoUploadAlbumId];
     [saveObject addObject:[NSNumber numberWithInteger:self.autoUploadCategoryId]];
     [saveObject addObject:self.autoUploadTagIds];
+    [saveObject addObject:self.autoUploadComments];
 
     [encoder encodeObject:saveObject forKey:@"Model"];
 }
@@ -702,6 +705,11 @@ NSInteger const kDelayPiwigoHUD = 500;
         self.autoUploadTagIds = [savedData objectAtIndex:59];
     } else {
         self.autoUploadTagIds = @"";
+    }
+    if(savedData.count > 60) {
+        self.autoUploadComments = [savedData objectAtIndex:60];
+    } else {
+        self.autoUploadComments = @"";
     }
 	return self;
 }
