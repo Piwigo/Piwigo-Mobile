@@ -139,12 +139,6 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Build list of recent categories (1st section)
         buildRecentCategoryArray()
         
-        // Remove space between navigation bar and first cell
-        if #available(iOS 12.0, *) {
-        } else {
-            automaticallyAdjustsScrollViewInsets = false
-        }
-
         // Button for returning to albums/images collections
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelSelect))
         cancelBarButton?.accessibilityIdentifier = "Cancel"
