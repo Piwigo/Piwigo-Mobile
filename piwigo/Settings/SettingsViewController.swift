@@ -52,7 +52,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     private var nberUsers = ""
     private var nberGroups = ""
     private var nberComments = ""
-    private var hasAutoUploadSettings = false
+    private var hasAutoUploadSettings = Model.sharedInstance()?.usesUploadAsync ?? false
 
 
     #if DEBUG
@@ -94,13 +94,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             getInfos()
         }
         
-        // Check if Auto-Upload can be proposed
-        if #available(iOS 13.0, *) {
-            if Model.sharedInstance()?.usesUploadAsync ?? false {
-                hasAutoUploadSettings = true
-            }
-        }
-
         // Title
         title = NSLocalizedString("tabBar_preferences", comment: "Settings")
 
