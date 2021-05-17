@@ -456,10 +456,9 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                     tagsVC.setPreselectedTagIds((Model.sharedInstance()?.autoUploadTagIds ?? "")
                                                     .components(separatedBy: ",")
                                                     .map { Int32($0) ?? nil }.compactMap {$0})
-                    // Can we propose to create tags?
-                    if let switchVC = parent as? UploadSwitchViewController {
-                        tagsVC.setTagCreationRights(switchVC.hasTagCreationRights)
-                    }
+                    let tagCreationRights = (Model.sharedInstance()?.hasAdminRights ?? false) ||
+                        ((Model.sharedInstance()?.hasNormalRights ?? false) && (Model.sharedInstance()?.usesCommunityPluginV29 ?? false))
+                    tagsVC.setTagCreationRights(tagCreationRights)
                     navigationController?.pushViewController(tagsVC, animated: true)
                 }
                 
