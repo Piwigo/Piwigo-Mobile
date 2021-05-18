@@ -510,7 +510,14 @@ class UploadsProvider: NSObject {
             }
             let statesPredicate = NSCompoundPredicate.init(orPredicateWithSubpredicates: predicates)
             let serverPredicate = NSPredicate(format: "serverPath == %@", Model.sharedInstance().serverPath)
-            fetchRequest.predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [statesPredicate, serverPredicate])
+            if Model.sharedInstance()?.isAutoUploadActive ?? false {
+                // Select all requests
+                fetchRequest.predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [statesPredicate, serverPredicate])
+            } else {
+                // Select only those not marked as "auto-upload"
+                let autoUploadPredicate = NSPredicate(format: "markedForAutoUpload == NO")
+                fetchRequest.predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [autoUploadPredicate, statesPredicate, serverPredicate])
+            }
 
             // Create a fetched results controller and set its fetch request, context, and delegate.
             let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
@@ -610,9 +617,15 @@ class UploadsProvider: NSObject {
         return (localIdentifiers, uploadIDs)
     }
 
-    func getAutoUploadRequests() -> ([String], [NSManagedObjectID]) {
+    func getAutoUploadRequestsIn(states: [kPiwigoUploadState]) -> ([String], [NSManagedObjectID]) {
+        // Check that states is not empty
+        if states.count == 0 {
+            assertionFailure("!!! getAutoUploadRequestsIn() called with no args !!!")
+            return ([], [NSManagedObjectID]())
+        }
+        
         // Check current queue
-        print("•••>> getAutoUploadRequests()", queueName())
+        print("•••>> getAutoUploadRequestsIn()", queueName())
 
         // Initialisation
         var localIdentifiers = [String]()
@@ -630,10 +643,15 @@ class UploadsProvider: NSObject {
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: "requestDate", ascending: true)]
             
             // Predicate
+            var predicates = [NSPredicate]()
+            states.forEach { (state) in
+                predicates.append(NSPredicate(format: "requestState == %d", state.rawValue))
+            }
+            let statesPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: predicates)
             let autoUploadPredicate = NSPredicate(format: "markedForAutoUpload == YES")
             let categoryPredicate = NSPredicate(format: "category == %d", Model.sharedInstance().autoUploadCategoryId)
             let serverPredicate = NSPredicate(format: "serverPath == %@", Model.sharedInstance().serverPath)
-            fetchRequest.predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [autoUploadPredicate, categoryPredicate, serverPredicate])
+            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [statesPredicate, autoUploadPredicate, categoryPredicate, serverPredicate])
 
             // Create a fetched results controller and set its fetch request, context, and delegate.
             let controller = NSFetchedResultsController(fetchRequest: fetchRequest,

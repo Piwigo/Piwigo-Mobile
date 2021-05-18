@@ -39,13 +39,17 @@ extension UploadManager {
             return
         }
 
-        // Collect localIdentifiers of images in the Upload cache
-        let (uploadIDs, _) = uploadsProvider.getAutoUploadRequests()
+        // Collect localIdentifiers of uploaded and not yet uploaded images in the Upload cache
+        let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
+                                            .preparingFail, .formatError, .prepared,
+                                            .uploading, .uploadingError, .uploaded,
+                                            .finishing, .finishingError, .finished, .moderated]
+        let (imageIDs, _) = uploadsProvider.getAutoUploadRequestsIn(states: states)
 
         // Determine which local images are still not considered for upload
         var uploadRequestsToAppend = [UploadProperties]()
         fetchedImages.enumerateObjects { image, idx, stop in
-            if !uploadIDs.contains(image.localIdentifier) {
+            if !imageIDs.contains(image.localIdentifier) {
                 var uploadRequest = UploadProperties(localIdentifier: image.localIdentifier,
                                                      category: categoryId)
                 uploadRequest.markedForAutoUpload = true
@@ -105,10 +109,16 @@ extension UploadManager {
         Model.sharedInstance().saveToDisk()
         
         // Collect objectIDs of images being considered for auto-uploading
-        let (_, objectIDs) = uploadsProvider.getAutoUploadRequests()
+        let states: [kPiwigoUploadState] = [.waiting, .preparingError,
+                                            .preparingFail, .formatError, .prepared,
+                                            .uploadingError, .uploaded,
+                                            .finishingError]
+        let (_, objectIDs) = uploadsProvider.getAutoUploadRequestsIn(states: states)
 
         // Remove waiting upload requests marked for auto-upload from the upload queue
-        uploadsProvider.delete(uploadRequests: objectIDs)
+        if !objectIDs.isEmpty {
+            uploadsProvider.delete(uploadRequests: objectIDs)
+        }
 
         // Job done in background task
         if isExecutingBackgroundUploadTask || title.isEmpty { return }
