@@ -531,9 +531,9 @@ class UploadsProvider: NSObject {
         return uploadIDs
     }
 
-    func getCompletedRequestsToBeDeleted() -> ([String], [NSManagedObjectID]) {
+    func getCompletedRequestsOfImagesToDelete() -> ([String], [NSManagedObjectID]) {
         // Check current queue
-        print("•••>> getCompletedRequestsToBeDeleted()", queueName())
+        print("•••>> getCompletedRequestsOfImagesToDelete()", queueName())
 
         // Initialisation
         var localIdentifiers = [String]()

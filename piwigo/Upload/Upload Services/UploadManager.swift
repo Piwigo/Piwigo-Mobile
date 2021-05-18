@@ -303,7 +303,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         
         // Upload requests are completed
         // Considers only uploads to the server to which the user is logged in
-        let (imageIDs, uploadIDs) = uploadsProvider.getCompletedRequestsToBeDeleted()
+        let (imageIDs, uploadIDs) = uploadsProvider.getCompletedRequestsOfImagesToDelete()
         if !imageIDs.isEmpty, !uploadIDs.isEmpty {
             print("\(debugFormatter.string(from: Date())) > (\(imageIDs.count),\(uploadIDs.count)) should be deleted")
             self.delete(uploadedImages: imageIDs, with: uploadIDs)
