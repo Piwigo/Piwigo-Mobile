@@ -43,7 +43,8 @@ extension UploadManager {
         let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
                                             .preparingFail, .formatError, .prepared,
                                             .uploading, .uploadingError, .uploaded,
-                                            .finishing, .finishingError, .finished, .moderated]
+                                            .finishing, .finishingError, .finished,
+                                            .moderated, .deleted]
         let (imageIDs, _) = uploadsProvider.getAutoUploadRequestsIn(states: states)
 
         // Determine which local images are still not considered for upload
