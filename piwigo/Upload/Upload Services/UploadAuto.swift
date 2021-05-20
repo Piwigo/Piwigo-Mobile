@@ -49,8 +49,22 @@ extension UploadManager {
 
         // Determine which local images are still not considered for upload
         var uploadRequestsToAppend = [UploadProperties]()
+        let serverFileTypes = Model.sharedInstance()?.serverFileTypes ?? "jpg, jpeg"
         fetchedImages.enumerateObjects { image, idx, stop in
+            // Keep images which had never been considered for upload
             if !imageIDs.contains(image.localIdentifier) {
+                // Retrieve image file extension
+                let fileName = PhotosFetch.sharedInstance().getFileNameFomImageAsset(image)
+                let fileExt = (URL(fileURLWithPath: fileName).pathExtension).lowercased()
+                
+                // Rejects videos if the server cannot accept them
+                if image.mediaType == .video,
+                   (!serverFileTypes.contains(fileExt) &&
+                        (!serverFileTypes.contains("mp4") || !self.acceptedMovieFormats.contains(fileExt)) ){
+                    return
+                }
+                
+                // Format should be acceptable, create upload request
                 var uploadRequest = UploadProperties(localIdentifier: image.localIdentifier,
                                                      category: categoryId)
                 uploadRequest.markedForAutoUpload = true

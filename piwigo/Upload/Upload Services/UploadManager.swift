@@ -435,8 +435,8 @@ class UploadManager: NSObject, URLSessionDelegate {
     
     // MARK: - Prepare image
     /// https://developer.apple.com/documentation/uniformtypeidentifiers/uttype/system_declared_types
-    private let acceptedImageFormats = "png,heic,heif,tif,tiff,jpg,jpeg,raw,webp,gif,bmp,ico"
-    private let acceptedMovieFormats = "mov,mpg,mpeg,mpeg2,mp4,avi"
+    let acceptedImageFormats = "png,heic,heif,tif,tiff,jpg,jpeg,raw,webp,gif,bmp,ico"
+    let acceptedMovieFormats = "mov,mpg,mpeg,mpeg2,mp4,avi"
 
     private var _isPreparing = false
     private var isPreparing: Bool {
