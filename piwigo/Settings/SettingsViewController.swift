@@ -1597,46 +1597,37 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .cancel, handler: nil)
 
                 #if DEBUG
-                let nberOfTags = tagsProvider.fetchedResultsController.fetchedObjects?.count ?? 0
-                if nberOfTags > 0 {
-                    let titleClearTags = nberOfTags > 1 ? String(format: "Clear %ld Tags", nberOfTags) : "Clear 1 Tag"
-                    let clearTagsAction = UIAlertAction(title: titleClearTags,
-                                                        style: .default, handler: { action in
-                        // Delete all tags in background queue
-                        self.tagsProvider.clearTags()
-                        TagsData.sharedInstance().clearCache()
-                    })
-                    alert.addAction(clearTagsAction)
-                }
+                let clearTagsAction = UIAlertAction(title: "Clear All Tags",
+                                                    style: .default, handler: { action in
+                    // Delete all tags in background queue
+                    self.tagsProvider.clearTags()
+                    TagsData.sharedInstance().clearCache()
+                })
+                alert.addAction(clearTagsAction)
                 
-                let nberOfLocations = locationsProvider.fetchedResultsController.fetchedObjects?.count ?? 0
-                if nberOfLocations > 0 {
-                    let titleClearLocations = nberOfTags > 1 ? String(format: "Clear %ld Locations", nberOfTags) : "Clear 1 location"
-                    let clearLocationsAction = UIAlertAction(title: titleClearLocations,
-                                                             style: .default, handler: { action in
-                        // Delete all locations in background queue
-                        self.locationsProvider.clearLocations()
-                    })
-                    alert.addAction(clearLocationsAction)
-                }
+                let titleClearLocations = "Clear All Locations"
+                let clearLocationsAction = UIAlertAction(title: titleClearLocations,
+                                                         style: .default, handler: { action in
+                    // Delete all locations in background queue
+                    self.locationsProvider.clearLocations()
+                })
+                alert.addAction(clearLocationsAction)
                 
-                let nberOfUploads = uploadsProvider.fetchedResultsController.fetchedObjects?.count ?? 0
-                if nberOfUploads > 0 {
-                    let titleClearUploadRequests = nberOfUploads > 1 ? String(format: "Clear %ld Upload Requests",
-                        nberOfUploads) : "Clear 1 Upload Request"
-                    let clearUploadsAction = UIAlertAction(title: titleClearUploadRequests,
-                                                           style: .default, handler: { action in
+                let clearUploadsAction = UIAlertAction(title: "Clear All Upload Requests",
+                                                       style: .default, handler: { action in
+                    // Delete all upload requests in a private queue
+                    DispatchQueue.global(qos: .userInitiated).async {
                         // Get all upload requests
-                        guard let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects else {
-                            return
-                        }
-                        // Delete all upload requests in a private queue
-                        DispatchQueue.global(qos: .userInitiated).async {
-                            self.uploadsProvider.delete(uploadRequests: allUploads.map({$0.objectID}))
-                        }
-                    })
-                    alert.addAction(clearUploadsAction)
-                }
+                        let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
+                                                            .preparingFail, .formatError, .prepared,
+                                                            .uploading, .uploadingError, .uploaded,
+                                                            .finishing, .finishingError, .finished,
+                                                            .moderated, .deleted]
+                        let (_, objectIDs) = self.uploadsProvider.getAutoUploadRequestsIn(states: states)
+                        self.uploadsProvider.delete(uploadRequests: objectIDs)
+                    }
+                })
+                alert.addAction(clearUploadsAction)
                 #endif
 
                 let clearAction = UIAlertAction(title: NSLocalizedString("alertClearButton", comment: "Clear"), style: .destructive, handler: { action in
