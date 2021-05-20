@@ -376,8 +376,14 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
         // Update UI
         let snapshot = snapshot as NSDiffableDataSourceSnapshot<String,NSManagedObjectID>
         DispatchQueue.main.async {
+            // Apply modifications
             self.diffableDataSource.apply(snapshot, animatingDifferences: self.queueTableView.window != nil)
+            
+            // Update the navigation bar
             self.updateNavBar()
+            
+            // Refresh header informing user on network status when UploadManager restarted running
+            self.setTableViewMainHeader()
         }
         
         // If all upload requests are done, delete all temporary files (in case some would not be deleted)
