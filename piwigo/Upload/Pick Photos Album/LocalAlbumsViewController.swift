@@ -76,8 +76,8 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         NotificationCenter.default.addObserver(self, selector: #selector(checkPasteboard), name: name, object: nil)
 
         // Use the LocalAlbumsProvider to fetch albums data.
-        LocalAlbumsProvider.sharedInstance().fetchedLocalAlbumsDelegate = self
-        LocalAlbumsProvider.sharedInstance().fetchLocalAlbums {
+        LocalAlbumsProvider.shared.fetchedLocalAlbumsDelegate = self
+        LocalAlbumsProvider.shared.fetchLocalAlbums {
             self.localAlbumsTableView.reloadData()
         }
     }
@@ -202,7 +202,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         // If user disallowed access to Photos, there is no album left for selection.
         // So in this case, we return an empty collection name as source for auto-uploading.
         if wantedAction == .setAutoUploadAlbum,
-           LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums.count == 0 {
+           LocalAlbumsProvider.shared.fetchedLocalAlbums.count == 0 {
                 delegate?.didSelectPhotoAlbum(withId: "")
         }
 
@@ -250,7 +250,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         }
 
         // Title
-        let titleString = LocalAlbumsProvider.sharedInstance().localAlbumHeaders[activeSection]
+        let titleString = LocalAlbumsProvider.shared.localAlbumHeaders[activeSection]
         let titleAttributes = [NSAttributedString.Key.font: UIFont.piwigoFontBold()]
         let titleRect = titleString.boundingRect(with: CGSize(width: tableView.frame.size.width - 30.0, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: titleAttributes, context: context)
         return CGFloat(ceil(titleRect.size.height))
@@ -270,7 +270,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         }
 
         // Title
-        let titleString = LocalAlbumsProvider.sharedInstance().localAlbumHeaders[activeSection]
+        let titleString = LocalAlbumsProvider.shared.localAlbumHeaders[activeSection]
         let titleAttributedString = NSMutableAttributedString(string: titleString)
         titleAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: NSRange(location: 0, length: titleString.count))
 
@@ -311,7 +311,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     // MARK: - UITableView - Rows
     func numberOfSections(in tableView: UITableView) -> Int {
         // First section added for pasteboard if necessary
-        return LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums.count +
+        return LocalAlbumsProvider.shared.fetchedLocalAlbums.count +
             (hasImagesInPasteboard ? 1 : 0)
     }
 
@@ -326,7 +326,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
                 activeSection -= 1
             }
         }
-        return LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums[activeSection] ? min(LocalAlbumsProvider.sharedInstance().maxNberOfAlbumsInSection, LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[activeSection].count) + 1 : LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[activeSection].count
+        return LocalAlbumsProvider.shared.hasLimitedNberOfAlbums[activeSection] ? min(LocalAlbumsProvider.shared.maxNberOfAlbumsInSection, LocalAlbumsProvider.shared.fetchedLocalAlbums[activeSection].count) + 1 : LocalAlbumsProvider.shared.fetchedLocalAlbums[activeSection].count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -350,9 +350,9 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         }
 
         // Display [+] button at the bottom of section presenting a limited number of albums
-        if activeSection < LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums.count,
-           LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums[activeSection] == true,
-            indexPath.row == LocalAlbumsProvider.sharedInstance().maxNberOfAlbumsInSection {
+        if activeSection < LocalAlbumsProvider.shared.hasLimitedNberOfAlbums.count,
+           LocalAlbumsProvider.shared.hasLimitedNberOfAlbums[activeSection] == true,
+            indexPath.row == LocalAlbumsProvider.shared.maxNberOfAlbumsInSection {
             
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "LocalAlbumsMoreTableViewCell", for: indexPath) as? LocalAlbumsMoreTableViewCell else {
                 print("Error: tableView.dequeueReusableCell does not return a LocalAlbumsMoreTableViewCell!")
@@ -364,7 +364,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         }
         
         // Case of an album
-        let assetCollection = LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[activeSection][indexPath.row]
+        let assetCollection = LocalAlbumsProvider.shared.fetchedLocalAlbums[activeSection][indexPath.row]
         let title = assetCollection.localizedTitle ?? "—> ? <——"
         let nberPhotos = assetCollection.estimatedAssetCount
 
@@ -409,13 +409,13 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         }
 
         // Display [+] button at the bottom of section presenting a limited number of albums
-        if LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums[activeSection] == true &&
-            indexPath.row == LocalAlbumsProvider.sharedInstance().maxNberOfAlbumsInSection {
+        if LocalAlbumsProvider.shared.hasLimitedNberOfAlbums[activeSection] == true &&
+            indexPath.row == LocalAlbumsProvider.shared.maxNberOfAlbumsInSection {
             return 36.0
         }
         
         // Case of an album
-        let assetCollection = LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[activeSection][indexPath.row]
+        let assetCollection = LocalAlbumsProvider.shared.fetchedLocalAlbums[activeSection][indexPath.row]
         if let _ = assetCollection.startDate, let _ = assetCollection.endDate {
             return 53.0
         } else {
@@ -438,7 +438,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         }
 
         // No footer by default (nil => 0 point)
-        let footer = LocalAlbumsProvider.sharedInstance().localAlbumsFooters[activeSection]
+        let footer = LocalAlbumsProvider.shared.localAlbumsFooters[activeSection]
 
         // Footer height?
         let attributes = [
@@ -472,7 +472,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         footerLabel.numberOfLines = 0
         footerLabel.adjustsFontSizeToFitWidth = false
         footerLabel.lineBreakMode = .byWordWrapping
-        footerLabel.text = LocalAlbumsProvider.sharedInstance().localAlbumsFooters[activeSection]
+        footerLabel.text = LocalAlbumsProvider.shared.localAlbumsFooters[activeSection]
 
         // Footer view
         let footer = UIView()
@@ -513,12 +513,12 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         }
 
         // Did tap [+] button at the bottom of section —> release remaining albums
-        if LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums[activeSection] == true &&
-            indexPath.row == LocalAlbumsProvider.sharedInstance().maxNberOfAlbumsInSection {
+        if LocalAlbumsProvider.shared.hasLimitedNberOfAlbums[activeSection] == true &&
+            indexPath.row == LocalAlbumsProvider.shared.maxNberOfAlbumsInSection {
             // Release album list
-            LocalAlbumsProvider.sharedInstance().hasLimitedNberOfAlbums[activeSection] = false
+            LocalAlbumsProvider.shared.hasLimitedNberOfAlbums[activeSection] = false
             // Add remaining albums
-            let indexPaths: [IndexPath] = Array(LocalAlbumsProvider.sharedInstance().maxNberOfAlbumsInSection+1..<LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[activeSection].count).map { IndexPath.init(row: $0, section: indexPath.section)}
+            let indexPaths: [IndexPath] = Array(LocalAlbumsProvider.shared.maxNberOfAlbumsInSection+1..<LocalAlbumsProvider.shared.fetchedLocalAlbums[activeSection].count).map { IndexPath.init(row: $0, section: indexPath.section)}
             tableView.insertRows(at: indexPaths, with: .automatic)
             // Replace button
             tableView.reloadRows(at: [indexPath], with: .automatic)
@@ -526,7 +526,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         }
         
         // Case of an album
-        let assetCollection = LocalAlbumsProvider.sharedInstance().fetchedLocalAlbums[activeSection][indexPath.row]
+        let assetCollection = LocalAlbumsProvider.shared.fetchedLocalAlbums[activeSection][indexPath.row]
         let albumID = assetCollection.localIdentifier
         if wantedAction == .setAutoUploadAlbum {
             // Return the selected album ID

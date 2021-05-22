@@ -17,10 +17,7 @@ protocol LocalAlbumsProviderDelegate: NSObjectProtocol {
 class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
     
     // Singleton
-    static var instance: LocalAlbumsProvider = LocalAlbumsProvider()
-    class func sharedInstance() -> LocalAlbumsProvider {
-        return instance
-    }
+    static let shared = LocalAlbumsProvider()
     
     // MARK: Properties
     let maxNberOfAlbumsInSection = 23
