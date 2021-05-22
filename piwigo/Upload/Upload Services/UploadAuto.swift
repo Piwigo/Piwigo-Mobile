@@ -53,15 +53,16 @@ extension UploadManager {
         fetchedImages.enumerateObjects { image, idx, stop in
             // Keep images which had never been considered for upload
             if !imageIDs.contains(image.localIdentifier) {
-                // Retrieve image file extension
-                let fileName = PhotosFetch.sharedInstance().getFileNameFomImageAsset(image)
-                let fileExt = (URL(fileURLWithPath: fileName).pathExtension).lowercased()
-                
                 // Rejects videos if the server cannot accept them
-                if image.mediaType == .video,
-                   (!serverFileTypes.contains(fileExt) &&
-                        (!serverFileTypes.contains("mp4") || !self.acceptedMovieFormats.contains(fileExt)) ){
-                    return
+                if image.mediaType == .video {
+                    // Retrieve image file extension (slow)
+                    let fileName = PhotosFetch.sharedInstance().getFileNameFomImageAsset(image)
+                    let fileExt = (URL(fileURLWithPath: fileName).pathExtension).lowercased()
+                    // Check file format
+                    let unacceptedFileFormat = !serverFileTypes.contains(fileExt)
+                    let mp4NotAccepted = !serverFileTypes.contains("mp4")
+                    let notConvertible = !self.acceptedMovieFormats.contains(fileExt)
+                    if unacceptedFileFormat && (mp4NotAccepted || notConvertible) { return }
                 }
                 
                 // Format should be acceptable, create upload request
