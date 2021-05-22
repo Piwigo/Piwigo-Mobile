@@ -1624,7 +1624,15 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                                                             .finishing, .finishingError, .finished,
                                                             .moderated, .deleted]
                         let (_, objectIDs) = self.uploadsProvider.getAutoUploadRequestsIn(states: states)
-                        self.uploadsProvider.delete(uploadRequests: objectIDs)
+                        self.uploadsProvider.delete(uploadRequests: objectIDs) { error in
+                            // Error encountered?
+                            if let error = error {
+                                DispatchQueue.main.async {
+                                    self.dismissPiwigoError(withTitle: "Clear All Upload Requests",
+                                                            message: error.localizedDescription) { }
+                                }
+                            }
+                        }
                     }
                 })
                 alert.addAction(clearUploadsAction)

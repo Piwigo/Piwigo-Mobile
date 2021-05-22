@@ -80,7 +80,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
                 }),
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeCancel.png"), backgroundColor: UIColor.piwigoColorBrown(), callback: { sender in
                     DispatchQueue.global(qos: .userInitiated).async {
-                        self.uploadsProvider.delete(uploadRequests: [upload.objectID])
+                        self.uploadsProvider.delete(uploadRequests: [upload.objectID]) { _ in }
                     }
                     return true
                 })]
@@ -88,7 +88,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
             rightButtons = [
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeCancel.png"), backgroundColor: UIColor.piwigoColorBrown(), callback: { sender in
                     DispatchQueue.global(qos: .userInitiated).async {
-                        self.uploadsProvider.delete(uploadRequests: [upload.objectID])
+                        self.uploadsProvider.delete(uploadRequests: [upload.objectID]) { _ in }
                     }
                     return true
                 })]
@@ -96,7 +96,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
             rightButtons = [
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeTrashSmall.png"), backgroundColor: UIColor.red, callback: { sender in
                     DispatchQueue.global(qos: .userInitiated).async {
-                        self.uploadsProvider.delete(uploadRequests: [upload.objectID])
+                        self.uploadsProvider.delete(uploadRequests: [upload.objectID]) { _ in }
                     }
                     return true
                 })]

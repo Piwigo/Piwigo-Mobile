@@ -39,7 +39,8 @@ class UploadsProvider: NSObject {
      Adds or updates a batch of upload requests into the Core Data store on a private queue,
      processing the record in batches to avoid a high memory footprint.
     */
-    func importUploads(from uploadRequest: [UploadProperties], completionHandler: @escaping (Error?) -> Void) {
+    func importUploads(from uploadRequest: [UploadProperties],
+                       completionHandler: @escaping (Error?) -> Void) {
         
         guard !uploadRequest.isEmpty else { return }
         
@@ -108,6 +109,7 @@ class UploadsProvider: NSObject {
             let cachedUploads = controller.fetchedObjects ?? []
 
             // Loop over new uploads
+            var nberOfUploadsToComplete = cachedUploads.count
             for uploadData in uploadsBatch {
                 // Index of this new upload in cache
                 if let index = cachedUploads.firstIndex( where: { $0.localIdentifier == uploadData.localIdentifier }) {
@@ -132,6 +134,7 @@ class UploadsProvider: NSObject {
                     // Populate the Upload's properties using the data.
                     do {
                         try upload.update(with: uploadData)
+                        nberOfUploadsToComplete += 1
                     }
                     catch UploadError.missingData {
                         // Delete invalid Upload from the private queue context.
@@ -170,14 +173,15 @@ class UploadsProvider: NSObject {
 
             success = true
 
-            // Get uploads to complete in queue
-            // Considers only uploads to the server to which the user is logged in
-            let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
-                                                .preparingFail, .formatError, .prepared,
-                                                .uploading, .uploadingError, .uploaded,
-                                                .finishing, .finishingError]
-            // Update app badge and Upload button in root/default album
-            UploadManager.shared.nberOfUploadsToComplete = getRequestsIn(states: states).count
+            // Update badge and button
+            DispatchQueue.main.async {
+                // Update app badge
+                UIApplication.shared.applicationIconBadgeNumber = nberOfUploadsToComplete
+                // Update button of root album (or default album)
+                let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : nberOfUploadsToComplete]
+                let name = NSNotification.Name(rawValue: kPiwigoNotificationLeftUploads)
+                NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
+            }
         }
         return success
     }
@@ -375,7 +379,8 @@ class UploadsProvider: NSObject {
      Delete a batch of upload requests from the Core Data store on a private queue,
      processing the record in batches to avoid a high memory footprint.
     */
-    func delete(uploadRequests: [NSManagedObjectID]) {
+    func delete(uploadRequests: [NSManagedObjectID],
+                completionHandler: @escaping (Error?) -> Void) {
         
         guard !uploadRequests.isEmpty else { return }
         
@@ -390,6 +395,7 @@ class UploadsProvider: NSObject {
         var numBatches = count / batchSize
         numBatches += count % batchSize > 0 ? 1 : 0
         
+        // Loop over the batches
         for batchNumber in 0 ..< numBatches {
             
             // Determine the range for this batch.
@@ -402,9 +408,10 @@ class UploadsProvider: NSObject {
             
             // Stop the entire deletion if any batch is unsuccessful.
             if !deleteOneBatch(uploadsBatch, taskContext: taskContext) {
-                break
+                completionHandler(UploadError.deletionError)
             }
         }
+        completionHandler(nil)
     }
     
     /**

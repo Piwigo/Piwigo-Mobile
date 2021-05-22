@@ -235,7 +235,15 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
                         let uploadIds = self.diffableDataSource.snapshot().itemIdentifiers(inSection: SectionKeys.Section1.rawValue)
                         // Delete failed uploads in a private queue
                         DispatchQueue.global(qos: .userInitiated).async {
-                            self.uploadsProvider.delete(uploadRequests: uploadIds)
+                            self.uploadsProvider.delete(uploadRequests: uploadIds) { error in
+                                // Error encountered?
+                                if let error = error {
+                                    DispatchQueue.main.async {
+                                        self.dismissPiwigoError(withTitle: titleClear,
+                                                                message: error.localizedDescription) { }
+                                    }
+                                }
+                            }
                         }
                     }
                 })

@@ -1039,7 +1039,7 @@ class UploadManager: NSObject, URLSessionDelegate {
                 if success == true {
                     // Delete upload requests in the private queue
                     self.backgroundQueue.async {
-                        self.uploadsProvider.delete(uploadRequests: uploadIDs)
+                        self.uploadsProvider.delete(uploadRequests: uploadIDs) { _ in }
                     }
                 }
             })

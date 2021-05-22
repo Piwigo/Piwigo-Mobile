@@ -82,11 +82,11 @@ extension UploadManager {
         }
 
         // Record upload requests in database
-        self.uploadsProvider.importUploads(from: uploadRequestsToAppend.compactMap{ $0 }) { error in
+        uploadsProvider.importUploads(from: uploadRequestsToAppend.compactMap{ $0 }) { error in
             // Job done in background task
             if self.isExecutingBackgroundUploadTask { return }
 
-            // Restart uploader if no error
+            // Restart upload manager if no error
             guard let error = error else {
                 // Restart UploadManager activities
                 if UploadManager.shared.isPaused {
@@ -98,7 +98,7 @@ extension UploadManager {
                 return
             }
 
-            // Inform user
+            // Error encountered, inform user
             DispatchQueue.main.async {
                 // Look for the presented view controller
                 if var topViewController = UIApplication.shared.keyWindow?.rootViewController {
@@ -119,11 +119,29 @@ extension UploadManager {
         }
     }
     
+    // MARK: - Delete Auto-Upload Requests
     func disableAutoUpload(withTitle title:String = "", message:String = "") {
         // Disable auto-uploading
         Model.sharedInstance().isAutoUploadActive = false
         Model.sharedInstance().saveToDisk()
         
+        // If the Settings page is displayed:
+        /// - switch off Auto-Upload control
+        /// - inform user in case of error
+        DispatchQueue.main.async {
+            if let topViewController = UIApplication.shared.keyWindow?.rootViewController,
+               topViewController is UINavigationController,
+               let visibleVC = (topViewController as! UINavigationController).visibleViewController,
+               let autoUploadVC = visibleVC as? AutoUploadViewController {
+                // Change switch button state
+                autoUploadVC.autoUploadTableView.reloadSections(IndexSet(integer: 0), with: .automatic)
+                // Inform user if an error was reported
+                if !title.isEmpty {
+                    autoUploadVC.dismissPiwigoError(withTitle: title, message: message) { }
+                }
+            }
+        }
+
         // Collect objectIDs of images being considered for auto-uploading
         let states: [kPiwigoUploadState] = [.waiting, .preparingError,
                                             .preparingFail, .formatError, .prepared,
@@ -131,31 +149,40 @@ extension UploadManager {
                                             .finishingError]
         let (_, objectIDs) = uploadsProvider.getAutoUploadRequestsIn(states: states)
 
-        // Remove waiting upload requests marked for auto-upload from the upload queue
+        // Remove non-completed upload requests marked for auto-upload from the upload queue
         if !objectIDs.isEmpty {
-            uploadsProvider.delete(uploadRequests: objectIDs)
-        }
+            uploadsProvider.delete(uploadRequests: objectIDs) { error in
+                // Job done in background task
+                if self.isExecutingBackgroundUploadTask { return }
 
-        // Job done in background task
-        if isExecutingBackgroundUploadTask || title.isEmpty { return }
-        
-        // Look for the presented view controller
-        DispatchQueue.main.async {
-            if let topViewController = UIApplication.shared.keyWindow?.rootViewController,
-               topViewController is UINavigationController,
-               let visibleVC = (topViewController as! UINavigationController).visibleViewController,
-               let autoUploadVC = visibleVC as? AutoUploadViewController {
-                // Inform the user if needed
-                autoUploadVC.dismissPiwigoError(withTitle: title, message: message) {
-                    // Change switch button state
-                    autoUploadVC.autoUploadTableView.reloadSections(IndexSet(integer: 0), with: .automatic)
+                // Error encountered?
+                guard let error = error else {
+                    // Restart UploadManager activities
+                    if UploadManager.shared.isPaused {
+                        UploadManager.shared.isPaused = false
+                        UploadManager.shared.backgroundQueue.async {
+                            UploadManager.shared.findNextImageToUpload()
+                        }
+                    }
+                    return
                 }
-            } else {
-                // Restart UploadManager activities
-                if UploadManager.shared.isPaused {
-                    UploadManager.shared.isPaused = false
-                    UploadManager.shared.backgroundQueue.async {
-                        UploadManager.shared.findNextImageToUpload()
+                
+                // Error encountered, inform user
+                DispatchQueue.main.async {
+                    if let topViewController = UIApplication.shared.keyWindow?.rootViewController,
+                       topViewController is UINavigationController,
+                       let visibleVC = (topViewController as! UINavigationController).visibleViewController {
+                        // Inform user
+                        let title = NSLocalizedString("settings_autoUpload", comment: "Auto Upload")
+                        visibleVC.dismissPiwigoError(withTitle: title, message: error.localizedDescription) {
+                            // Restart UploadManager activities
+                            if UploadManager.shared.isPaused {
+                                UploadManager.shared.isPaused = false
+                                UploadManager.shared.backgroundQueue.async {
+                                    UploadManager.shared.findNextImageToUpload()
+                                }
+                            }
+                        }
                     }
                 }
             }
