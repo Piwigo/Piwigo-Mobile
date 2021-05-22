@@ -58,14 +58,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     #if DEBUG
     // MARK: - Core Data
     /**
-     The LocationsProvider that fetches location data, saves it to Core Data,
-     and serves it to this table view.
-     */
-    private lazy var locationsProvider: LocationsProvider = {
-        let provider : LocationsProvider = LocationsProvider()
-        return provider
-    }()
-    /**
      The TagsProvider that fetches tag data, saves it to Core Data,
      and serves it to this table view.
      */
@@ -1609,7 +1601,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let clearLocationsAction = UIAlertAction(title: titleClearLocations,
                                                          style: .default, handler: { action in
                     // Delete all locations in background queue
-                    self.locationsProvider.clearLocations()
+                    LocationsProvider.shared.clearLocations()
                 })
                 alert.addAction(clearLocationsAction)
                 

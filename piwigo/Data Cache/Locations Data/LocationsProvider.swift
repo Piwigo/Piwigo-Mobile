@@ -18,7 +18,6 @@ class LocationsProvider: NSObject {
     
     // Singleton
     static let shared = LocationsProvider()
-
     
     // Initialisation
     private var geocoder = CLGeocoder()
