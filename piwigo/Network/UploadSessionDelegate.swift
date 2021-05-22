@@ -11,7 +11,10 @@ import Foundation
 @objc
 class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegate, URLSessionDataDelegate {
     
+    // Singleton
     @objc static var shared = UploadSessionDelegate()
+    
+    // Constants and variables
     @objc let uploadSessionIdentifier:String! = "org.piwigo.uploadBckgSession"
     @objc var uploadSessionCompletionHandler: (() -> Void)?
             
