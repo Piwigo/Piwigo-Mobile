@@ -20,7 +20,7 @@ class ClearCache: NSObject {
         tagsProvider.clearTags()
 
         // Locations with place names
-        LocationsProvider.sharedInstance().clearLocations()
+        LocationsProvider.shared.clearLocations()
 
         // Data
         TagsData.sharedInstance().clearCache()

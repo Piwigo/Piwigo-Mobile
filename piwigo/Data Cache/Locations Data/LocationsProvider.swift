@@ -16,6 +16,11 @@ let e2: Double = 0.00669437999014       // Earth eccentricity squared
 
 class LocationsProvider: NSObject {
     
+    // Singleton
+    static let shared = LocationsProvider()
+
+    
+    // Initialisation
     private var geocoder = CLGeocoder()
     private var queue = OperationQueue()
     private var queuedLocations: [LocationProperties]
@@ -26,12 +31,6 @@ class LocationsProvider: NSObject {
         queue.qualityOfService = .background    // fetch location names in the background
         // Initialise locations in queue
         queuedLocations = []
-    }
-    
-    // Singleton
-    static var instance: LocationsProvider = LocationsProvider()
-    class func sharedInstance() -> LocationsProvider {
-        return instance
     }
     
 
