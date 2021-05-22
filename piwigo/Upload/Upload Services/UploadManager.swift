@@ -698,7 +698,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         }
         
         // Determine non-empty unique file name and extension from asset
-        var fileName = PhotosFetch.sharedInstance().getFileNameFomImageAsset(originalAsset)
+        var fileName = PhotosFetch.shared.getFileNameFomImageAsset(originalAsset)
         if uploadProperties.prefixFileNameBeforeUpload {
             if !fileName.hasPrefix(uploadProperties.defaultPrefix) {
                 fileName = uploadProperties.defaultPrefix + fileName

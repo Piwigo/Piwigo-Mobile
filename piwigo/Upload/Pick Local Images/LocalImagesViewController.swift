@@ -116,7 +116,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
         // Check collection Id
         if imageCollectionId.count == 0 {
-            PhotosFetch.sharedInstance().showPhotosLibraryAccessRestricted(in: self)
+            PhotosFetch.shared.showPhotosLibraryAccessRestricted(in: self)
         }
 
         // Fetch a specific path of the Photo Library to reduce the workload

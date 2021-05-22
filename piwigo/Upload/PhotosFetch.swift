@@ -16,13 +16,7 @@ import UIKit
 class PhotosFetch: NSObject {
     
     // Singleton
-    @objc static var instance: PhotosFetch = PhotosFetch()
-
-    @objc
-    class func sharedInstance() -> PhotosFetch {
-        // `dispatch_once()` call was converted to a static variable initializer
-        return instance
-    }
+    @objc static let shared = PhotosFetch()
     
     // MARK: - Photo Library Access
     /// Called before saving photos to the Photo Library or uploading photo of the Library

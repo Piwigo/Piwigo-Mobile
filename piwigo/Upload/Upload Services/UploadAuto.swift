@@ -56,7 +56,7 @@ extension UploadManager {
                 // Rejects videos if the server cannot accept them
                 if image.mediaType == .video {
                     // Retrieve image file extension (slow)
-                    let fileName = PhotosFetch.sharedInstance().getFileNameFomImageAsset(image)
+                    let fileName = PhotosFetch.shared.getFileNameFomImageAsset(image)
                     let fileExt = (URL(fileURLWithPath: fileName).pathExtension).lowercased()
                     // Check file format
                     let unacceptedFileFormat = !serverFileTypes.contains(fileExt)

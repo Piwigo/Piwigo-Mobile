@@ -441,7 +441,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
             case 0 /* Select Photos Library album */ :
                 // Check autorisation to access Photo Library before uploading
                 if #available(iOS 14, *) {
-                    PhotosFetch.sharedInstance().checkPhotoLibraryAuthorizationStatus(for: .readWrite, for: self) {
+                    PhotosFetch.shared.checkPhotoLibraryAuthorizationStatus(for: .readWrite, for: self) {
                         // Open local albums view controller
                         let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewControllerGrouped", bundle: nil)
                         guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewControllerGrouped") as? LocalAlbumsViewController else { return }
@@ -449,18 +449,18 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                         localAlbumsVC.delegate = self
                         self.navigationController?.pushViewController(localAlbumsVC, animated: true)
                     } onDeniedAccess: {
-                        PhotosFetch.sharedInstance().requestPhotoLibraryAccess(in: self)
+                        PhotosFetch.shared.requestPhotoLibraryAccess(in: self)
                     }
                 } else {
                     // Fallback on earlier versions
-                    PhotosFetch.sharedInstance().checkPhotoLibraryAccessForViewController(self) {
+                    PhotosFetch.shared.checkPhotoLibraryAccessForViewController(self) {
                         let localAlbumsSB = UIStoryboard(name: "LocalAlbumsViewControllerGrouped", bundle: nil)
                         guard let localAlbumsVC = localAlbumsSB.instantiateViewController(withIdentifier: "LocalAlbumsViewControllerGrouped") as? LocalAlbumsViewController else { return }
                         localAlbumsVC.setCategoryId(NSNotFound)
                         localAlbumsVC.delegate = self
                         self.navigationController?.pushViewController(localAlbumsVC, animated: true)
                     } onDeniedAccess: {
-                        PhotosFetch.sharedInstance().requestPhotoLibraryAccess(in: self)
+                        PhotosFetch.shared.requestPhotoLibraryAccess(in: self)
                     }
                 }
 

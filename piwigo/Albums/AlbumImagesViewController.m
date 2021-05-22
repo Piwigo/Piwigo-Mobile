@@ -1732,7 +1732,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 {
     // Check autorisation to access Photo Library before uploading
     if (@available(iOS 14, *)) {
-        [[PhotosFetch sharedInstance] checkPhotoLibraryAuthorizationStatusFor:PHAccessLevelReadWrite for:self onAccess:^{
+        [PhotosFetch.shared checkPhotoLibraryAuthorizationStatusFor:PHAccessLevelReadWrite for:self onAccess:^{
             // Open local albums view controller in new navigation controller
             UIStoryboard *localAlbumsSB = [UIStoryboard storyboardWithName:@"LocalAlbumsViewController" bundle:nil];
             LocalAlbumsViewController *localAlbumsVC = [localAlbumsSB instantiateViewControllerWithIdentifier:@"LocalAlbumsViewController"];
@@ -1744,7 +1744,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         } onDeniedAccess:^{}];
     } else {
         // Fallback on earlier versions
-        [[PhotosFetch sharedInstance] checkPhotoLibraryAccessForViewController:self
+        [PhotosFetch.shared checkPhotoLibraryAccessForViewController:self
                 onAuthorizedAccess:^{
                     // Open local albums view controller in new navigation controller
                     UIStoryboard *localAlbumsSB = [UIStoryboard storyboardWithName:@"LocalAlbumsViewController" bundle:nil];
@@ -2515,7 +2515,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 {
     // Check autorisation to access Photo Library (camera roll)
     if (@available(iOS 14, *)) {
-        [[PhotosFetch sharedInstance] checkPhotoLibraryAuthorizationStatusFor:PHAccessLevelAddOnly for:self
+        [PhotosFetch.shared checkPhotoLibraryAuthorizationStatusFor:PHAccessLevelAddOnly for:self
             onAccess:^{
             // User allowed to save image in camera roll
             [self presentShareImageViewControllerWithCameraRollAccess:YES];
@@ -2532,7 +2532,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         }];
     } else {
         // Fallback on earlier versions
-        [[PhotosFetch sharedInstance] checkPhotoLibraryAccessForViewController:nil
+        [PhotosFetch.shared checkPhotoLibraryAccessForViewController:nil
                 onAuthorizedAccess:^{
                     // User allowed to save image in camera roll
                     [self presentShareImageViewControllerWithCameraRollAccess:YES];

@@ -1198,7 +1198,7 @@
 {
     // Check autorisation to access Photo Library (camera roll)
     if (@available(iOS 14, *)) {
-        [[PhotosFetch sharedInstance] checkPhotoLibraryAuthorizationStatusFor:PHAccessLevelAddOnly for:self
+        [PhotosFetch.shared checkPhotoLibraryAuthorizationStatusFor:PHAccessLevelAddOnly for:self
             onAccess:^{
             // User allowed to save image in camera roll
             [self presentShareImageViewControllerWithCameraRollAccess:YES];
@@ -1215,7 +1215,7 @@
         }];
     } else {
         // Fallback on earlier versions
-        [[PhotosFetch sharedInstance] checkPhotoLibraryAccessForViewController:nil
+        [PhotosFetch.shared checkPhotoLibraryAccessForViewController:nil
                 onAuthorizedAccess:^{
                     // User allowed to save image in camera roll
                     [self presentShareImageViewControllerWithCameraRollAccess:YES];
