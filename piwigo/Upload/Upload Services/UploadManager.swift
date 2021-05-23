@@ -337,7 +337,9 @@ class UploadManager: NSObject, URLSessionDelegate {
         isExecutingBackgroundUploadTask = true
         
         // Append auto-upload requests if needed
-        appendAutoUploadRequests()
+        if Model.sharedInstance()?.isAutoUploadActive ?? false {
+            appendAutoUploadRequests()
+        }
         
         // Reset variables
         countOfBytesPrepared = 0
