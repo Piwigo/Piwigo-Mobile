@@ -51,7 +51,7 @@ class LocationsProvider: NSObject {
         
         // Add Geocoder request
         let operation = BlockOperation(block: {
-            let semaphore = DispatchSemaphore.init(value: 0)
+            let semaphore = DispatchSemaphore(value: 0)
 
             // Initialise
             let latitude = location.coordinate!.latitude as CLLocationDistance

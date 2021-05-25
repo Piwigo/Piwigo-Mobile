@@ -51,7 +51,7 @@ class TagsProvider {
                     // Piwigo error?
                     let error: NSError
                     if (tagJSON.errorCode != 0) {
-                        error = NSError.init(domain: "Piwigo", code: tagJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : tagJSON.errorMessage])
+                        error = NSError(domain: "Piwigo", code: tagJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : tagJSON.errorMessage])
                         completionHandler(error)
                         return
                     }
@@ -307,14 +307,14 @@ class TagsProvider {
                 // Piwigo error?
                 let error: NSError
                 if (tagJSON.errorCode != 0) {
-                    error = NSError.init(domain: "Piwigo", code: tagJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : tagJSON.errorMessage])
+                    error = NSError(domain: "Piwigo", code: tagJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : tagJSON.errorMessage])
                     completionHandler(error)
                     return
                 }
 
                 // Import the tagJSON into Core Data.
-                let newTag = TagProperties.init(id: tagJSON.data.id, name: name,
-                                                lastmodified: "", counter: 0, url_name: "", url: "")
+                let newTag = TagProperties(id: tagJSON.data.id, name: name,
+                                           lastmodified: "", counter: 0, url_name: "", url: "")
 
                 // Import the new tag in a private queue context.
                 let taskContext = DataController.getPrivateContext()

@@ -1869,9 +1869,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
                 let loginVC: LoginViewController
                 if UIDevice.current.userInterfaceIdiom == .phone {
-                    loginVC = LoginViewController_iPhone.init()
+                    loginVC = LoginViewController_iPhone()
                 } else {
-                    loginVC = LoginViewController_iPad.init()
+                    loginVC = LoginViewController_iPad()
                 }
                 let nav = LoginNavigationController(rootViewController: loginVC)
                 nav.isNavigationBarHidden = true

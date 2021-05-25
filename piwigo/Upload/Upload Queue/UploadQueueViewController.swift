@@ -192,7 +192,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         if let _ = diffableDataSource.snapshot().indexOfSection(SectionKeys.Section2.rawValue) {
             let failedUploads = diffableDataSource.snapshot().numberOfItems(inSection: SectionKeys.Section2.rawValue)
             if failedUploads > 0 {
-                let titleResume = failedUploads > 1 ? String(format: NSLocalizedString("imageUploadResumeSeveral", comment: "Resume %@ Failed Uploads"), NumberFormatter.localizedString(from: NSNumber.init(value: failedUploads), number: .decimal)) : NSLocalizedString("imageUploadResumeSingle", comment: "Resume Failed Upload")
+                let titleResume = failedUploads > 1 ? String(format: NSLocalizedString("imageUploadResumeSeveral", comment: "Resume %@ Failed Uploads"), NumberFormatter.localizedString(from: NSNumber(value: failedUploads), number: .decimal)) : NSLocalizedString("imageUploadResumeSingle", comment: "Resume Failed Upload")
                 let resumeAction = UIAlertAction(title: titleResume, style: .default, handler: { action in
                     if let _ = self.diffableDataSource.snapshot().indexOfSection(SectionKeys.Section2.rawValue) {
                         // Get IDs of upload requests which can be resumed
@@ -228,7 +228,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         if let _ = diffableDataSource.snapshot().indexOfSection(SectionKeys.Section1.rawValue) {
             let impossibleUploads = diffableDataSource.snapshot().numberOfItems(inSection: SectionKeys.Section1.rawValue)
             if impossibleUploads > 0 {
-                let titleClear = impossibleUploads > 1 ? String(format: NSLocalizedString("imageUploadClearFailedSeveral", comment: "Clear %@ Failed"), NumberFormatter.localizedString(from: NSNumber.init(value: impossibleUploads), number: .decimal)) : NSLocalizedString("imageUploadClearFailedSingle", comment: "Clear 1 Failed")
+                let titleClear = impossibleUploads > 1 ? String(format: NSLocalizedString("imageUploadClearFailedSeveral", comment: "Clear %@ Failed"), NumberFormatter.localizedString(from: NSNumber(value: impossibleUploads), number: .decimal)) : NSLocalizedString("imageUploadClearFailedSingle", comment: "Clear 1 Failed")
                 let clearAction = UIAlertAction(title: titleClear, style: .default, handler: { action in
                     if let _ = self.diffableDataSource.snapshot().indexOfSection(SectionKeys.Section1.rawValue) {
                         // Get IDs of upload requests which won't be possible to perform
@@ -349,7 +349,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
             print("Error: tableView.dequeueReusableHeaderFooterView does not return a UploadImageHeaderView!")
             return UploadImageHeaderView()
         }
-        let sectionKey = SectionKeys.init(rawValue: diffableDataSource.snapshot().sectionIdentifiers[section]) ?? SectionKeys.Section4
+        let sectionKey = SectionKeys(rawValue: diffableDataSource.snapshot().sectionIdentifiers[section]) ?? SectionKeys.Section4
         header.config(with: sectionKey)
         return header
     }

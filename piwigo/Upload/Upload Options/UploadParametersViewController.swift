@@ -216,7 +216,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
         // Switch to old cache data format
         var tagList = [PiwigoTagData]()
         commonTags.forEach { (tag) in
-            let newTag = PiwigoTagData.init()
+            let newTag = PiwigoTagData()
             newTag.tagId = Int(tag.tagId)
             newTag.tagName = tag.tagName
             newTag.lastModified = tag.lastModified
@@ -371,7 +371,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
                 commonTitle = typedText
             }
             // Update cell
-            let indexPath = IndexPath.init(row: EditImageDetailsOrder.imageName.rawValue, section: 0)
+            let indexPath = IndexPath(row: EditImageDetailsOrder.imageName.rawValue, section: 0)
             paramsTableView.reloadRows(at: [indexPath], with: .automatic)
         case .author:
             if let typedText = textField.text, typedText.count > 0 {
@@ -380,7 +380,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
                 commonAuthor = "NSNotFound"
             }
             // Update cell
-            let indexPath = IndexPath.init(row: EditImageDetailsOrder.author.rawValue, section: 0)
+            let indexPath = IndexPath(row: EditImageDetailsOrder.author.rawValue, section: 0)
             paramsTableView.reloadRows(at: [indexPath], with: .automatic)
         default:
             break
@@ -420,7 +420,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
         shouldUpdatePrivacyLevel = true
 
         // Update cell
-        let indexPath = IndexPath.init(row: EditImageDetailsOrder.privacy.rawValue, section: 0)
+        let indexPath = IndexPath(row: EditImageDetailsOrder.privacy.rawValue, section: 0)
         paramsTableView.reloadRows(at: [indexPath], with: .automatic)
     }
     
@@ -434,7 +434,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
         shouldUpdateTags = true
 
         // Update cell
-        let indexPath = IndexPath.init(row: EditImageDetailsOrder.tags.rawValue, section: 0)
+        let indexPath = IndexPath(row: EditImageDetailsOrder.tags.rawValue, section: 0)
         paramsTableView.reloadRows(at: [indexPath], with: .automatic)
     }
 }

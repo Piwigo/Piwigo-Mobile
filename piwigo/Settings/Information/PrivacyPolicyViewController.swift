@@ -327,7 +327,7 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
         privacyAttributedString.append(spacerAttributedString)
 
         // Piwigo-Mobile URLs
-        let noRange = NSRange.init(location: NSNotFound, length: 0)
+        let noRange = NSRange(location: NSNotFound, length: 0)
         let iOS_URL = URL(string: "https://github.com/Piwigo/Piwigo-Mobile")
         var iOS_Range = (privacyAttributedString.string as NSString).range(of: "Piwigo-Mobile")
         while !NSEqualRanges(iOS_Range, noRange) {

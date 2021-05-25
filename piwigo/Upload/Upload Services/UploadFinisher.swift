@@ -47,7 +47,7 @@ extension UploadManager{
                     // Check returned data
                     guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {
                         // Upload still ready for finish
-                        let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.invalidJSONobject.localizedDescription])
+                        let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.invalidJSONobject.localizedDescription])
                         self.didSetParameters(for: uploadID, error: error)
                         return
                     }
@@ -59,7 +59,7 @@ extension UploadManager{
                         
                         // Piwigo error?
                         if (uploadJSON.errorCode != 0) {
-                            let error = NSError.init(domain: "Piwigo", code: uploadJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
+                            let error = NSError(domain: "Piwigo", code: uploadJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
                             self.didSetParameters(for: uploadID, error: error)
                             return
                         }
@@ -72,13 +72,13 @@ extension UploadManager{
                         else {
                             // Could not set image parameters, upload still ready for finish
                             print("••>> setImageInfoForImageWithId(): no successful")
-                            let error = NSError.init(domain: "Piwigo", code: -1, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")])
+                            let error = NSError(domain: "Piwigo", code: -1, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")])
                             self.didSetParameters(for: uploadID, error: error)
                             return
                         }
                     } catch {
                         // Data cannot be digested, upload still ready for finish
-                        let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongJSONobject.localizedDescription])
+                        let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongJSONobject.localizedDescription])
                         self.didSetParameters(for: uploadID, error: error)
                         return
                     }

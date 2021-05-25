@@ -408,7 +408,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
             break
         }
         // Update cell
-        let indexPath = IndexPath.init(row: kImageUploadSetting.prefix.rawValue, section: 0)
+        let indexPath = IndexPath(row: kImageUploadSetting.prefix.rawValue, section: 0)
         settingsTableView.reloadRows(at: [indexPath], with: .automatic)
     }
 

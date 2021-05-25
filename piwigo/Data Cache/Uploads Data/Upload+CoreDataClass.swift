@@ -88,7 +88,7 @@ public class Upload: NSManagedObject {
         requestState = Int16(newStatus.rawValue)
         
         // Section into which the upload request belongs to
-        requestSectionKey = SectionKeys.init(rawValue: newStatus.sectionKey)!.rawValue
+        requestSectionKey = SectionKeys(rawValue: newStatus.sectionKey)!.rawValue
 
         // Error message description
         requestError = error ?? ""
@@ -159,7 +159,7 @@ extension Upload {
     }
 
     func getProperties() -> UploadProperties {
-        return UploadProperties.init(localIdentifier: self.localIdentifier,
+        return UploadProperties(localIdentifier: self.localIdentifier,
             // Category ID of the album to upload to
             category: Int(self.category),
             // Server parameters
@@ -183,7 +183,7 @@ extension Upload {
     }
 
     func getProperties(with state: kPiwigoUploadState, error: String) -> UploadProperties {
-        return UploadProperties.init(localIdentifier: self.localIdentifier,
+        return UploadProperties(localIdentifier: self.localIdentifier,
             // Category ID of the album to upload to
             category: Int(self.category),
             // Server parameters

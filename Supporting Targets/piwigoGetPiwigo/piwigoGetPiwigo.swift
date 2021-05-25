@@ -89,7 +89,7 @@ public extension UIDevice {
         uname(&systemInfo)
         let modelCode = withUnsafePointer(to: &systemInfo.machine) {
             $0.withMemoryRebound(to: CChar.self, capacity: 1) {
-                ptr in String.init(validatingUTF8: ptr)
+                ptr in String(validatingUTF8: ptr)
                 
             }
         }
@@ -206,10 +206,10 @@ public extension UIDevice {
             "AppleTV6,2" : .AppleTV_4K
         ]
         
-        if let model = modelMap[String.init(validatingUTF8: modelCode!)!] {
+        if let model = modelMap[String(validatingUTF8: modelCode!)!] {
             if model == .simulator {
                 if let simModelCode = ProcessInfo().environment["SIMULATOR_MODEL_IDENTIFIER"] {
-                    if let simModel = modelMap[String.init(validatingUTF8: simModelCode)!] {
+                    if let simModel = modelMap[String(validatingUTF8: simModelCode)!] {
                         return simModel
                     }
                 }

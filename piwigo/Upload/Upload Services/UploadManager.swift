@@ -13,6 +13,7 @@ import Photos
 @objc
 class UploadManager: NSObject, URLSessionDelegate {
 
+    // Singleton
     @objc static let shared = UploadManager()
     
     // MARK: - Initialisation
@@ -34,10 +35,10 @@ class UploadManager: NSObject, URLSessionDelegate {
     
     // For logs
     let debugFormatter: DateFormatter = {
-        var formatter = DateFormatter.init()
-        formatter.locale = Locale.init(identifier: "en_US")
+        var formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US")
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.ssssss"
-        formatter.timeZone = TimeZone.init(secondsFromGMT: 0)
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
         return formatter
     }()
     
@@ -387,7 +388,7 @@ class UploadManager: NSObject, URLSessionDelegate {
                 case .running:
                     // Retrieve upload request properties
                     guard let taskDescription = task.taskDescription else { continue }
-                    guard let objectURI = URL.init(string: taskDescription) else {
+                    guard let objectURI = URL(string: taskDescription) else {
                         print("\(self.debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no object URI!")
                         continue
                     }
@@ -1069,7 +1070,7 @@ class UploadManager: NSObject, URLSessionDelegate {
                     // Retrieve upload request properties
 //                    print("======>> task \(task.taskIdentifier) - \(task.taskDescription ?? "no description")")
                     guard let taskDescription = task.taskDescription else { continue }
-                    guard let objectURI = URL.init(string: taskDescription) else {
+                    guard let objectURI = URL(string: taskDescription) else {
                         print("\(self.debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no object URI!")
                         continue
                     }

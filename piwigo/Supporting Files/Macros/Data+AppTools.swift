@@ -63,7 +63,7 @@ extension Data {
 extension Data {
     // Return contentType of image data
     func contentType() -> String? {
-        var bytes: [UInt8] = Array.init(repeating: UInt8(0), count: 12)
+        var bytes: [UInt8] = Array(repeating: UInt8(0), count: 12)
         (self as NSData).getBytes(&bytes, length: 12)
 
         var jpg = jpgSignature()
@@ -110,7 +110,7 @@ extension Data {
 
     // Return file extension corresponding to image data
     func fileExtension() -> String? {
-        var bytes: [UInt8] = Array.init(repeating: UInt8(0), count: 12)
+        var bytes: [UInt8] = Array(repeating: UInt8(0), count: 12)
         (self as NSData).getBytes(&bytes, length: 12)
 
         var jpg = jpgSignature()

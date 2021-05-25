@@ -21,8 +21,8 @@ class UploadSwitchViewController: UIViewController {
 
     private var cancelBarButton: UIBarButtonItem?
     private var uploadBarButton: UIBarButtonItem?
-    private var switchViewSegmentedControl = UISegmentedControl.init(items: [UIImage.init(named: "imageAll")!,
-                                                                             UIImage.init(named: "settings")!])
+    private var switchViewSegmentedControl = UISegmentedControl(items: [UIImage(named: "imageAll")!,
+                                                                        UIImage(named: "settings")!])
     @IBOutlet weak var parametersView: UIView!
     @IBOutlet weak var settingsView: UIView!
 
@@ -63,7 +63,8 @@ class UploadSwitchViewController: UIViewController {
         uploadBarButton = UIBarButtonItem(title: NSLocalizedString("tabBar_upload", comment: "Upload"), style: .done, target: self, action: #selector(didTapUploadButton))
         
         // Segmented control (choice for presenting common image parameters or upload settings)
-        switchViewSegmentedControl = UISegmentedControl.init(items: [UIImage.init(named: "imageAll")!, UIImage.init(named: "settings")!])
+        switchViewSegmentedControl = UISegmentedControl(items: [UIImage(named: "imageAll")!,
+                                                                UIImage(named: "settings")!])
         if #available(iOS 13.0, *) {
             switchViewSegmentedControl.selectedSegmentTintColor = UIColor.piwigoColorOrange()
         } else {
@@ -144,8 +145,8 @@ class UploadSwitchViewController: UIViewController {
         UploadManager.shared.isPaused = true
 
         // Retrieve custom image parameters and upload settings from child views
-        var imageParameters = [String:Any].init(minimumCapacity: 5)
-        var uploadParameters = [String:Any].init(minimumCapacity: 8)
+        var imageParameters = [String:Any](minimumCapacity: 5)
+        var uploadParameters = [String:Any](minimumCapacity: 8)
         children.forEach { (child) in
             
             // Image parameters

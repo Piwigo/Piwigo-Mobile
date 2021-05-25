@@ -14,7 +14,7 @@ let kPiwigoImagesUpload = "format=json&method=pwg.images.upload"
 struct ImagesUploadJSON: Decodable {
 
     var status: String?
-    var data = ImagesUpload.init(image_id: NSNotFound, square_src: "", src: "", category: nil, name: "")
+    var data = ImagesUpload(image_id: NSNotFound, square_src: "", src: "", category: nil, name: "")
     var errorCode = 0
     var errorMessage = ""
 

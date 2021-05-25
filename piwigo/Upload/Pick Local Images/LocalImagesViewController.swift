@@ -99,7 +99,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                                                         //  - for reversing the sort order
                                                         //  - for sorting by day, week or month (or not)
                                                         //  - for selecting images in the Photo Library
-    private var legendLabel = UILabel.init()            // Legend presented in the toolbar on iPhone/iOS 14+
+    private var legendLabel = UILabel()                 // Legend presented in the toolbar on iPhone/iOS 14+
     private var legendBarItem: UIBarButtonItem!
 
     private var removeUploadedImages = false
@@ -250,7 +250,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         if #available(iOS 14, *) {
             // Toolbar
             legendLabel.textColor = UIColor.piwigoColorText()
-            legendBarItem = UIBarButtonItem.init(customView: legendLabel)
+            legendBarItem = UIBarButtonItem(customView: legendLabel)
             toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
             navigationController?.toolbar.barTintColor = UIColor.piwigoColorBackground()
             navigationController?.toolbar.barStyle = Model.sharedInstance().isDarkPaletteActive ? .black : .default
@@ -374,7 +374,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     
                     // Present the "Upload" button in the toolbar
                     legendLabel.text = NSLocalizedString("selectImages", comment: "Select Photos")
-                    legendBarItem = UIBarButtonItem.init(customView: legendLabel)
+                    legendBarItem = UIBarButtonItem(customView: legendLabel)
                     toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
                 } else {
                     // Title
@@ -410,7 +410,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 if #available(iOS 14, *) {
                     // Update the number of selected photos in the toolbar
                     legendLabel.text = nberOfSelectedImages == 1 ? NSLocalizedString("selectImageSelected", comment: "1 Photo Selected") : String(format:NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), NSNumber(value: nberOfSelectedImages))
-                    legendBarItem = UIBarButtonItem.init(customView: legendLabel)
+                    legendBarItem = UIBarButtonItem(customView: legendLabel)
                     toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
 
                     // Presents a single action menu
@@ -521,7 +521,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // but index 70588 uploads in 69.1 s if there are already 520 stored upload requests
 
         // Sort all images in one loop i.e. O(n)
-        let sortOperation = BlockOperation.init(block: {
+        let sortOperation = BlockOperation(block: {
             self.indexOfImageSortedByDay = []
             self.indexOfImageSortedByWeek = []
             self.indexOfImageSortedByMonth = []
@@ -636,7 +636,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     continue
                 } else {
                     // Append section to collection by days
-                    indexOfImageSortedByDay.append(IndexSet.init(integersIn: firstIndexOfSameDay..<index))
+                    indexOfImageSortedByDay.append(IndexSet(integersIn: firstIndexOfSameDay..<index))
 
                     // Initialise for next day
                     firstIndexOfSameDay = index
@@ -648,7 +648,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     // What should we do with this new image?
                     if newWeekComponents != weekComponents {
                         // Append section to collection by weeks
-                        indexOfImageSortedByWeek.append(IndexSet.init(integersIn: firstIndexOfSameWeek..<index))
+                        indexOfImageSortedByWeek.append(IndexSet(integersIn: firstIndexOfSameWeek..<index))
 
                         // Initialise for next week
                         firstIndexOfSameWeek = index
@@ -661,7 +661,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     // What should we do with this new image?
                     if newMonthComponents != monthComponents {
                         // Append section to collection by months
-                        indexOfImageSortedByMonth.append(IndexSet.init(integersIn: firstIndexOfSameMonth..<index))
+                        indexOfImageSortedByMonth.append(IndexSet(integersIn: firstIndexOfSameMonth..<index))
 
                         // Initialise for next month
                         firstIndexOfSameMonth = index
@@ -672,9 +672,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         }
 
         // Append last section to collection
-        indexOfImageSortedByDay.append(IndexSet.init(integersIn: firstIndexOfSameDay..<images.count))
-        indexOfImageSortedByWeek.append(IndexSet.init(integersIn: firstIndexOfSameWeek..<images.count))
-        indexOfImageSortedByMonth.append(IndexSet.init(integersIn: firstIndexOfSameMonth..<images.count))
+        indexOfImageSortedByDay.append(IndexSet(integersIn: firstIndexOfSameDay..<images.count))
+        indexOfImageSortedByWeek.append(IndexSet(integersIn: firstIndexOfSameWeek..<images.count))
+        indexOfImageSortedByMonth.append(IndexSet(integersIn: firstIndexOfSameMonth..<images.count))
         let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
         print("   sorted \(fetchedImages.count) images by days, weeks and months in \(diff) ms")
     }
@@ -730,7 +730,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     continue
                 } else {
                     // Append section to collection by days
-                    indexOfImageSortedByDay.append(IndexSet.init(integersIn: firstIndexOfSameDay..<index))
+                    indexOfImageSortedByDay.append(IndexSet(integersIn: firstIndexOfSameDay..<index))
 
                     // Initialise for next day
                     firstIndexOfSameDay = index
@@ -742,7 +742,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     // What should we do with this new image?
                     if newWeekComponents != weekComponents {
                         // Append section to collection by weeks
-                        indexOfImageSortedByWeek.append(IndexSet.init(integersIn: firstIndexOfSameWeek..<index))
+                        indexOfImageSortedByWeek.append(IndexSet(integersIn: firstIndexOfSameWeek..<index))
 
                         // Initialise for next week
                         firstIndexOfSameWeek = index
@@ -755,7 +755,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     // What should we do with this new image?
                     if newMonthComponents != monthComponents {
                         // Append section to collection by months
-                        indexOfImageSortedByMonth.append(IndexSet.init(integersIn: firstIndexOfSameMonth..<index))
+                        indexOfImageSortedByMonth.append(IndexSet(integersIn: firstIndexOfSameMonth..<index))
 
                         // Initialise for next month
                         firstIndexOfSameMonth = index
@@ -766,9 +766,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         }
 
         // Append last section to collection
-        indexOfImageSortedByDay.append(IndexSet.init(integersIn: firstIndexOfSameDay..<images.count))
-        indexOfImageSortedByWeek.append(IndexSet.init(integersIn: firstIndexOfSameWeek..<images.count))
-        indexOfImageSortedByMonth.append(IndexSet.init(integersIn: firstIndexOfSameMonth..<images.count))
+        indexOfImageSortedByDay.append(IndexSet(integersIn: firstIndexOfSameDay..<images.count))
+        indexOfImageSortedByWeek.append(IndexSet(integersIn: firstIndexOfSameWeek..<images.count))
+        indexOfImageSortedByMonth.append(IndexSet(integersIn: firstIndexOfSameMonth..<images.count))
         let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
         print("   sorted \(fetchedImages.count) images by days, weeks and months and updated selection in \(diff) ms")
     }
@@ -1000,10 +1000,10 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 self.localImagesCollection.reloadData()
             }
         })
-        return UIMenu.init(title: "", image: nil,
-                           identifier: UIMenu.Identifier("org.piwigo.localImages.action"),
-                           options: .displayInline,
-                           children: [swapOrder, sortByDay, sortByWeek, sortByMonth, noSort])
+        return UIMenu(title: "", image: nil,
+                      identifier: UIMenu.Identifier("org.piwigo.localImages.action"),
+                      options: .displayInline,
+                      children: [swapOrder, sortByDay, sortByWeek, sortByMonth, noSort])
     }
 
     @objc func swapSortOrder() {
@@ -1047,10 +1047,10 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 // Proposes to change the Photo Library selection
                 PHPhotoLibrary.shared().presentLimitedLibraryPicker(from: self)
             })
-            return UIMenu.init(title: "", image: nil,
-                               identifier: UIMenu.Identifier("org.piwigo.localImages.selector"),
-                               options: .displayInline,
-                               children: [selector])
+            return UIMenu(title: "", image: nil,
+                          identifier: UIMenu.Identifier("org.piwigo.localImages.selector"),
+                          options: .displayInline,
+                          children: [selector])
         }
         return nil
     }
@@ -1067,10 +1067,10 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 // Delete uploaded photos from the camera roll
                 self.deleteUploadedImages()
             })
-            return UIMenu.init(title: "", image: nil,
-                               identifier: UIMenu.Identifier("org.piwigo.localImages.delete"),
-                               options: .displayInline,
-                               children: [delete])
+            return UIMenu(title: "", image: nil,
+                          identifier: UIMenu.Identifier("org.piwigo.localImages.delete"),
+                          options: .displayInline,
+                          children: [delete])
         }
         return nil
     }
@@ -1296,11 +1296,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Get start and last indices of section
         let firstIndex: Int, lastIndex: Int
         if Model.sharedInstance().localImagesSort == kPiwigoSortDateCreatedDescending {
-            firstIndex = getImageIndex(for: IndexPath.init(item: 0, section: section))
-            lastIndex = getImageIndex(for: IndexPath.init(item: nberOfImagesInSection - 1, section: section))
+            firstIndex = getImageIndex(for: IndexPath(item: 0, section: section))
+            lastIndex = getImageIndex(for: IndexPath(item: nberOfImagesInSection - 1, section: section))
         } else {
-            firstIndex = getImageIndex(for: IndexPath.init(item: nberOfImagesInSection - 1, section: section))
-            lastIndex = getImageIndex(for: IndexPath.init(item: 0, section: section))
+            firstIndex = getImageIndex(for: IndexPath(item: nberOfImagesInSection - 1, section: section))
+            lastIndex = getImageIndex(for: IndexPath(item: 0, section: section))
         }
         
         // Number of selected images
@@ -1373,7 +1373,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             // Determine place names from first images
             var imageAssets: [PHAsset] = []
             for row in 0..<min(localImagesCollection.numberOfItems(inSection: indexPath.section), 20) {
-                let index = getImageIndex(for: IndexPath.init(item: row, section: indexPath.section))
+                let index = getImageIndex(for: IndexPath(item: row, section: indexPath.section))
                 imageAssets.append(fetchedImages[index])
             }
             
@@ -1578,8 +1578,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             cell.cellSelected = false
         } else {
             // Select the cell
-            selectedImages[index] = UploadProperties.init(localIdentifier: cell.localIdentifier,
-                                                          category: categoryId)
+            selectedImages[index] = UploadProperties(localIdentifier: cell.localIdentifier,
+                                                     category: categoryId)
             cell.cellSelected = true
         }
 
@@ -1602,11 +1602,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         let nberOfImagesInSection = localImagesCollection.numberOfItems(inSection: section)
         let firstIndex: Int, lastIndex: Int
         if Model.sharedInstance().localImagesSort == kPiwigoSortDateCreatedDescending {
-            firstIndex = getImageIndex(for: IndexPath.init(item: 0, section: section))
-            lastIndex = getImageIndex(for: IndexPath.init(item: nberOfImagesInSection - 1, section: section))
+            firstIndex = getImageIndex(for: IndexPath(item: 0, section: section))
+            lastIndex = getImageIndex(for: IndexPath(item: nberOfImagesInSection - 1, section: section))
         } else {
-            firstIndex = getImageIndex(for: IndexPath.init(item: nberOfImagesInSection - 1, section: section))
-            lastIndex = getImageIndex(for: IndexPath.init(item: 0, section: section))
+            firstIndex = getImageIndex(for: IndexPath(item: nberOfImagesInSection - 1, section: section))
+            lastIndex = getImageIndex(for: IndexPath(item: 0, section: section))
         }
 //        let start = CFAbsoluteTimeGetCurrent()
         if selectedSections[section] == .select {
@@ -1615,7 +1615,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             for index in firstIndex...lastIndex {
                 // Images in the upload queue cannot be selected
                 if indexedUploadsInQueue[index] == nil {
-                    selectedImages[index] = UploadProperties.init(localIdentifier: self.fetchedImages[index].localIdentifier, category: self.categoryId)
+                    selectedImages[index] = UploadProperties(localIdentifier: self.fetchedImages[index].localIdentifier,
+                                                             category: self.categoryId)
                 }
             }
             // Change section button state
@@ -1633,7 +1634,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         self.updateNavBar()
 
         // Update collection
-        self.localImagesCollection.reloadSections(IndexSet.init(integer: section))
+        self.localImagesCollection.reloadSections(IndexSet(integer: section))
     }
 
 

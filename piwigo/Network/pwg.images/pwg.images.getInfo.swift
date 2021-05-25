@@ -78,9 +78,9 @@ struct ImagesGetInfoJSON: Decodable {
                 }
                 catch {
                     let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .squareImage)
-                    derivatives?.squareImage = Derivative.init(url: square.url,
-                                                               width: Int(square.width ?? "1"),
-                                                               height: Int(square.height ?? "1"))
+                    derivatives?.squareImage = Derivative(url: square.url,
+                                                          width: Int(square.width ?? "1"),
+                                                          height: Int(square.height ?? "1"))
                 }
 
                 // Thumbnail image
@@ -90,9 +90,9 @@ struct ImagesGetInfoJSON: Decodable {
                 }
                 catch {
                     let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .thumbImage)
-                    derivatives?.thumbImage = Derivative.init(url: square.url,
-                                                              width: Int(square.width ?? "1"),
-                                                              height: Int(square.height ?? "1"))
+                    derivatives?.thumbImage = Derivative(url: square.url,
+                                                         width: Int(square.width ?? "1"),
+                                                         height: Int(square.height ?? "1"))
                 }
 
                 // Medium image
@@ -102,9 +102,9 @@ struct ImagesGetInfoJSON: Decodable {
                 }
                 catch {
                     let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .mediumImage)
-                    derivatives?.mediumImage = Derivative.init(url: square.url,
-                                                               width: Int(square.width ?? "1"),
-                                                               height: Int(square.height ?? "1"))
+                    derivatives?.mediumImage = Derivative(url: square.url,
+                                                          width: Int(square.width ?? "1"),
+                                                          height: Int(square.height ?? "1"))
                 }
 
                 // Small image
@@ -114,9 +114,9 @@ struct ImagesGetInfoJSON: Decodable {
                 }
                 catch {
                     let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .smallImage)
-                    derivatives?.smallImage = Derivative.init(url: square.url,
-                                                              width: Int(square.width ?? "1"),
-                                                              height: Int(square.height ?? "1"))
+                    derivatives?.smallImage = Derivative(url: square.url,
+                                                         width: Int(square.width ?? "1"),
+                                                         height: Int(square.height ?? "1"))
                 }
 
                 // XSmall image
@@ -126,9 +126,9 @@ struct ImagesGetInfoJSON: Decodable {
                 }
                 catch {
                     let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .xSmallImage)
-                    derivatives?.xSmallImage = Derivative.init(url: square.url,
-                                                               width: Int(square.width ?? "1"),
-                                                               height: Int(square.height ?? "1"))
+                    derivatives?.xSmallImage = Derivative(url: square.url,
+                                                          width: Int(square.width ?? "1"),
+                                                          height: Int(square.height ?? "1"))
                 }
 
                 // XXSmall image
@@ -138,9 +138,9 @@ struct ImagesGetInfoJSON: Decodable {
                 }
                 catch {
                     let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .xxSmallImage)
-                    derivatives?.xxSmallImage = Derivative.init(url: square.url,
-                                                                width: Int(square.width ?? "1"),
-                                                                height: Int(square.height ?? "1"))
+                    derivatives?.xxSmallImage = Derivative(url: square.url,
+                                                           width: Int(square.width ?? "1"),
+                                                           height: Int(square.height ?? "1"))
                 }
 
                 // Large image
@@ -150,9 +150,9 @@ struct ImagesGetInfoJSON: Decodable {
                 }
                 catch {
                     let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .largeImage)
-                    derivatives?.largeImage = Derivative.init(url: square.url,
-                                                              width: Int(square.width ?? "1"),
-                                                              height: Int(square.height ?? "1"))
+                    derivatives?.largeImage = Derivative(url: square.url,
+                                                         width: Int(square.width ?? "1"),
+                                                         height: Int(square.height ?? "1"))
                 }
 
                 // XLarge image
@@ -162,9 +162,9 @@ struct ImagesGetInfoJSON: Decodable {
                 }
                 catch {
                     let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .xLargeImage)
-                    derivatives?.xLargeImage = Derivative.init(url: square.url,
-                                                               width: Int(square.width ?? "1"),
-                                                               height: Int(square.height ?? "1"))
+                    derivatives?.xLargeImage = Derivative(url: square.url,
+                                                          width: Int(square.width ?? "1"),
+                                                          height: Int(square.height ?? "1"))
                 }
 
                 // XXLarge image
@@ -174,9 +174,9 @@ struct ImagesGetInfoJSON: Decodable {
                 }
                 catch {
                     let square = try derivativesContainer.decode(DerivativeStr.self, forKey: .xxLargeImage)
-                    derivatives?.xxLargeImage = Derivative.init(url: square.url,
-                                                                width: Int(square.width ?? "1"),
-                                                                height: Int(square.height ?? "1"))
+                    derivatives?.xxLargeImage = Derivative(url: square.url,
+                                                           width: Int(square.width ?? "1"),
+                                                           height: Int(square.height ?? "1"))
                 }
             }
         }

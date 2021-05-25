@@ -46,7 +46,7 @@ class TagSelectorViewController: UITableViewController {
             DispatchQueue.main.async {
                 guard let error = error else {
                     // Rebuild ABC index
-                    let firstCharacters = NSMutableSet.init(capacity: 0)
+                    let firstCharacters = NSMutableSet(capacity: 0)
                     for tag in self.dataProvider.fetchedResultsController.fetchedObjects! {
                         firstCharacters.add((tag.tagName as String).prefix(1).uppercased())
                     }

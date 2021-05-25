@@ -233,7 +233,7 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
 //                if strPart2.count > 1 {
 //                    let newPwgID = strPart2[1].components(separatedBy: " ")[0].drop(while: {$0 == ";"})
 //                    properties.updateValue(newPwgID, forKey: .value)
-//                    if let cookie = HTTPCookie.init(properties: properties) {
+//                    if let cookie = HTTPCookie(properties: properties) {
 //                        print("newPwgID => \(newPwgID)")
 //                        HTTPCookieStorage.shared.setCookie(cookie)
 //                    }

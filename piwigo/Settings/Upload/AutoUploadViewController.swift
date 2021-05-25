@@ -301,7 +301,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                 tagIds.forEach({ tagId in
                     if let id = tagId,
                        let tag = tags?.first(where: { $0.tagId == id }) {
-                        let newTag = PiwigoTagData.init()
+                        let newTag = PiwigoTagData()
                         newTag.tagId = Int(tag.tagId)
                         newTag.tagName = tag.tagName
                         newTag.lastModified = tag.lastModified

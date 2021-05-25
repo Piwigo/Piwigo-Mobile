@@ -53,7 +53,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         let alreadyLoadedSize = Model.sharedInstance().defaultThumbnailSize
         guard let thumbnailURL = URL(string: imageData.getURLFromImageSizeType(alreadyLoadedSize)) else {
             imageFileData = Data()
-            imageFileURL = URL.init(string: "")!
+            imageFileURL = URL(string: "")!
             super.init(placeholderItem: UIImage(named: "AppIconShare")!)
             return
         }
@@ -68,7 +68,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
             super.init(placeholderItem: thumbnailImage)
         } else {
             imageFileData = Data()
-            imageFileURL = URL.init(string: "")!
+            imageFileURL = URL(string: "")!
             super.init(placeholderItem: UIImage(named: "AppIconShare")!)
         }
 

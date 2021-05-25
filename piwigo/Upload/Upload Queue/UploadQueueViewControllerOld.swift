@@ -195,7 +195,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         // Resume upload requests in section 2 (preparingError, uploadingError, finishingError)
         let failedUploads = uploadsProvider.fetchedResultsController.fetchedObjects?.map({ ($0.state == .preparingError) || ($0.state == .uploadingError) || ($0.state == .finishingError) ? 1 : 0}).reduce(0, +) ?? 0
             if failedUploads > 0 {
-			let titleResume = failedUploads > 1 ? String(format: NSLocalizedString("imageUploadResumeSeveral", comment: "Resume %@ Failed Uploads"), NumberFormatter.localizedString(from: NSNumber.init(value: failedUploads), number: .decimal)) : NSLocalizedString("imageUploadResumeSingle", comment: "Resume Failed Upload")
+			let titleResume = failedUploads > 1 ? String(format: NSLocalizedString("imageUploadResumeSeveral", comment: "Resume %@ Failed Uploads"), NumberFormatter.localizedString(from: NSNumber(value: failedUploads), number: .decimal)) : NSLocalizedString("imageUploadResumeSingle", comment: "Resume Failed Upload")
 			let resumeAction = UIAlertAction(title: titleResume, style: .default, handler: { action in
 				// Collect list of failed uploads
 				if let uploadIds = self.uploadsProvider.fetchedResultsController.fetchedObjects?.filter({$0.state == .preparingError || $0.state == .uploadingError || $0.state == .finishingError }).map({$0.objectID}) {
@@ -232,7 +232,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         // Clear impossible upload requests in section 1 (preparingFail, formatError)
         let impossibleUploads = uploadsProvider.fetchedResultsController.fetchedObjects?.map({ (($0.state == .preparingFail) || ($0.state == .formatError)) ? 1 : 0}).reduce(0, +) ?? 0
     	if impossibleUploads > 0 {
-	        let titleClear = impossibleUploads > 1 ? String(format: NSLocalizedString("imageUploadClearFailedSeveral", comment: "Clear %@ Failed"), NumberFormatter.localizedString(from: NSNumber.init(value: impossibleUploads), number: .decimal)) : NSLocalizedString("imageUploadClearFailedSingle", comment: "Clear 1 Failed")
+	        let titleClear = impossibleUploads > 1 ? String(format: NSLocalizedString("imageUploadClearFailedSeveral", comment: "Clear %@ Failed"), NumberFormatter.localizedString(from: NSNumber(value: impossibleUploads), number: .decimal)) : NSLocalizedString("imageUploadClearFailedSingle", comment: "Clear 1 Failed")
 			let clearAction = UIAlertAction(title: titleClear, style: .default, handler: { action in
 			   // Get completed uploads
 				guard let allUploads = self.uploadsProvider.fetchedResultsController.fetchedObjects else {
@@ -317,7 +317,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         var sectionName = SectionKeys.Section4.name
         if let sectionInfo = uploadsProvider.fetchedNonCompletedResultsController.sections?[section] {
-            let sectionKey = SectionKeys.init(rawValue: sectionInfo.name) ?? SectionKeys.Section4
+            let sectionKey = SectionKeys(rawValue: sectionInfo.name) ?? SectionKeys.Section4
             sectionName = sectionKey.name
         }
         let titleAttributes = [NSAttributedString.Key.font: UIFont.piwigoFontBold()]
@@ -333,7 +333,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
             return UploadImageHeaderView()
         }
         if let sectionInfo = uploadsProvider.fetchedNonCompletedResultsController.sections?[section] {
-            let sectionKey = SectionKeys.init(rawValue: sectionInfo.name) ?? SectionKeys.Section4
+            let sectionKey = SectionKeys(rawValue: sectionInfo.name) ?? SectionKeys.Section4
             header.config(with: sectionKey)
         } else {
             header.config(with: SectionKeys.Section4)
@@ -401,10 +401,10 @@ extension UploadQueueViewControllerOld: NSFetchedResultsControllerDelegate {
         switch type {
         case .insert:
             print("insert section… at", sectionIndex)
-            queueTableView.insertSections(IndexSet.init(integer: sectionIndex), with: .automatic)
+            queueTableView.insertSections(IndexSet(integer: sectionIndex), with: .automatic)
         case .delete:
             print("delete section… at", sectionIndex)
-            queueTableView.deleteSections(IndexSet.init(integer: sectionIndex), with: .automatic)
+            queueTableView.deleteSections(IndexSet(integer: sectionIndex), with: .automatic)
         case .move, .update:
             fallthrough
         @unknown default:
@@ -414,7 +414,7 @@ extension UploadQueueViewControllerOld: NSFetchedResultsControllerDelegate {
 
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
 
-        let oldIndexPath = indexPath ?? IndexPath.init(row: 0, section: 0)
+        let oldIndexPath = indexPath ?? IndexPath(row: 0, section: 0)
         switch type {
         case .insert:
             print("insert…")

@@ -170,7 +170,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
             catch let error as NSError {
                 // Could not find the file to upload!
                 print(error.localizedDescription)
-                let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                 return
             }
 

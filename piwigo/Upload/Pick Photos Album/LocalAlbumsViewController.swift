@@ -518,7 +518,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             // Release album list
             LocalAlbumsProvider.shared.hasLimitedNberOfAlbums[activeSection] = false
             // Add remaining albums
-            let indexPaths: [IndexPath] = Array(LocalAlbumsProvider.shared.maxNberOfAlbumsInSection+1..<LocalAlbumsProvider.shared.fetchedLocalAlbums[activeSection].count).map { IndexPath.init(row: $0, section: indexPath.section)}
+            let indexPaths: [IndexPath] = Array(LocalAlbumsProvider.shared.maxNberOfAlbumsInSection+1..<LocalAlbumsProvider.shared.fetchedLocalAlbums[activeSection].count).map { IndexPath(row: $0, section: indexPath.section)}
             tableView.insertRows(at: indexPaths, with: .automatic)
             // Replace button
             tableView.reloadRows(at: [indexPath], with: .automatic)

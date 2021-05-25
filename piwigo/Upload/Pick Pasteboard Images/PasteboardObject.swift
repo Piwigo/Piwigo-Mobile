@@ -92,7 +92,7 @@ class ObjectPreparation : Operation {
     /// https://developer.apple.com/documentation/uniformtypeidentifiers/uttype/system_declared_types
     private func getDataOfPasteboardMovie(at index:Int) -> (movieData: Data, fileExt: String)? {
         // IndexSet of current image
-        let indexSet = IndexSet.init(integer: index)
+        let indexSet = IndexSet(integer: index)
         // Movie type?
         if pbObject.types.contains("com.apple.quicktime-movie"),
                let imageData = UIPasteboard.general.data(forPasteboardType: "com.apple.quicktime-movie", inItemSet: indexSet)?.first {
@@ -122,7 +122,7 @@ class ObjectPreparation : Operation {
 
     private func getDataOfPasteboardImage(at index:Int) -> (imageData: Data, fileExt: String)? {
         // IndexSet of current image
-        let indexSet = IndexSet.init(integer: index)
+        let indexSet = IndexSet(integer: index)
 
         // Image type?
         // PNG format in priority in case where JPEG is also available

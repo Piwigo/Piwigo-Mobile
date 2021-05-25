@@ -519,11 +519,11 @@ class UploadsProvider: NSObject {
             let serverPredicate = NSPredicate(format: "serverPath == %@", Model.sharedInstance().serverPath)
             if Model.sharedInstance()?.isAutoUploadActive ?? false {
                 // Select all requests
-                fetchRequest.predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [statesPredicate, serverPredicate])
+                fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [statesPredicate, serverPredicate])
             } else {
                 // Select only those not marked as "auto-upload"
                 let autoUploadPredicate = NSPredicate(format: "markedForAutoUpload == NO")
-                fetchRequest.predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [autoUploadPredicate, statesPredicate, serverPredicate])
+                fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [autoUploadPredicate, statesPredicate, serverPredicate])
             }
 
             // Create a fetched results controller and set its fetch request, context, and delegate.
@@ -568,7 +568,7 @@ class UploadsProvider: NSObject {
             var predicates = [NSPredicate]()
             predicates.append(NSPredicate(format: "requestState == %d", kPiwigoUploadState.finished.rawValue))
             predicates.append(NSPredicate(format: "requestState == %d", kPiwigoUploadState.moderated.rawValue))
-            let statesPredicate = NSCompoundPredicate.init(orPredicateWithSubpredicates: predicates)
+            let statesPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: predicates)
             let deletePredicate = NSPredicate(format: "deleteImageAfterUpload == YES")
             let serverPredicate = NSPredicate(format: "serverPath == %@", Model.sharedInstance().serverPath)
             fetchRequest.predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [statesPredicate, deletePredicate, serverPredicate])

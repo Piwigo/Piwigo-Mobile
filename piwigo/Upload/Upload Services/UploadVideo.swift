@@ -18,7 +18,7 @@ extension UploadManager {
                       for uploadID: NSManagedObjectID, with uploadProperties: UploadProperties) -> Void {
         
         // Retrieve video data
-        let originalVideo = AVAsset.init(url: originalFileURL)
+        let originalVideo = AVAsset(url: originalFileURL)
 
         // Check if the user wants to:
         /// - reduce the frame size
@@ -33,12 +33,12 @@ extension UploadManager {
         
         // Get MIME type
         guard let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, originalFileURL.pathExtension as NSString, nil)?.takeRetainedValue() else {
-            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+            let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
             self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
             return
         }
         guard let mimeType = (UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue()) as String? else  {
-            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+            let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
             self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
             return
         }
@@ -65,7 +65,7 @@ extension UploadManager {
                       for uploadID: NSManagedObjectID, with uploadProperties: UploadProperties) -> Void {
 
         // Retrieve video data
-        let originalVideo = AVAsset.init(url: originalFileURL)
+        let originalVideo = AVAsset(url: originalFileURL)
 
         // Check that the video can be exported
         self.checkVideoExportability(of: originalVideo,
@@ -89,7 +89,7 @@ extension UploadManager {
 
             // Valid AVAsset?
             guard let originalVideo = avasset else {
-                let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                 self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
                 return
             }
@@ -107,19 +107,19 @@ extension UploadManager {
             
             // Get original fileURL
             guard let originalFileURL = (originalVideo as? AVURLAsset)?.url else {
-                let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                 self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
                 return
             }
 
             // Get MIME type
             guard let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, originalFileURL.pathExtension as NSString, nil)?.takeRetainedValue() else {
-                let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                 self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
                 return
             }
             guard let mimeType = (UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue()) as String? else  {
-                let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                 self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
                 return
             }
@@ -176,7 +176,7 @@ extension UploadManager {
 
             // Valid AVAsset?
             guard let originalVideo = avasset else {
-                let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                 self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
                 return
             }
@@ -334,7 +334,7 @@ extension UploadManager {
                                          for uploadID: NSManagedObjectID, with uploadProperties: UploadProperties) {
         // We cannot convert the video if it is not exportable
         if !originalVideo.isExportable {
-            let error = NSError.init(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("shareMetadataError_message", comment: "Cannot strip private metadata")])
+            let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("shareMetadataError_message", comment: "Cannot strip private metadata")])
             self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
             return
         }
@@ -359,7 +359,7 @@ extension UploadManager {
         var exportPreset = AVAssetExportPresetHighestQuality
         
         // Determine video size
-        let videoSize = videoAsset.tracks(withMediaType: .video).first?.naturalSize ?? CGSize.init(width: 640, height: 480)
+        let videoSize = videoAsset.tracks(withMediaType: .video).first?.naturalSize ?? CGSize(width: 640, height: 480)
         var maxPixels = max(videoSize.width, videoSize.height)
                                                 
         // Resize frames
@@ -393,7 +393,7 @@ extension UploadManager {
         // Get export session
         guard let exportSession = AVAssetExportSession(asset: videoAsset,
                                                        presetName: exportPreset) else {
-            let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+            let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
             self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
             return
         }
@@ -462,7 +462,7 @@ extension UploadManager {
                 } catch {
                 }
                 // Report error
-                let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                 self.didPrepareVideo(for: uploadID, with: newUploadProperties, error)
                 return
             }

@@ -16,9 +16,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     let loginVC: LoginViewController = {
         if UIDevice.current.userInterfaceIdiom == .phone {
-            return LoginViewController_iPhone.init()
+            return LoginViewController_iPhone()
         } else {
-            return LoginViewController_iPad.init()
+            return LoginViewController_iPad()
         }
     }()
 

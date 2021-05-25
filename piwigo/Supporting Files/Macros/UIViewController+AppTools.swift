@@ -110,8 +110,8 @@ extension UIViewController {
         }
         
         // Prepare actions
-        let dismissAction = UIAlertAction.init(title: NSLocalizedString("alertDismissButton", comment:"Dismiss"),
-                                               style: .cancel) { _ in completion() }
+        let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment:"Dismiss"),
+                                          style: .cancel) { _ in completion() }
 
         // Present alert
         self.presentPiwigoAlert(withTitle: title, message: wholeMessage,

@@ -53,7 +53,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         // We use the thumbnail cached in memory
         let alreadyLoadedSize = Model.sharedInstance().defaultThumbnailSize
         guard let thumbnailURL = URL(string: imageData.getURLFromImageSizeType(alreadyLoadedSize)) else {
-            imageFileURL = URL.init(string: "")!
+            imageFileURL = URL(string: "")!
             super.init(placeholderItem: UIImage(named: "AppIconShare")!)
             return
         }
@@ -66,7 +66,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
             let resizedImage = thumbnailImage.resize(to: CGFloat(70.0), opaque: true)
             super.init(placeholderItem: resizedImage)
         } else {
-            imageFileURL = URL.init(string: "")!
+            imageFileURL = URL(string: "")!
             super.init(placeholderItem: UIImage(named: "AppIconShare")!)
         }
 

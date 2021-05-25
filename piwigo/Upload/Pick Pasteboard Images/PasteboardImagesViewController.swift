@@ -63,7 +63,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
     // Buttons
     private var cancelBarButton: UIBarButtonItem!       // For cancelling the selection of images
     private var uploadBarButton: UIBarButtonItem!       // for uploading selected images
-    private var legendLabel = UILabel.init()            // Legend presented in the toolbar on iPhone/iOS 14+
+    private var legendLabel = UILabel()                 // Legend presented in the toolbar on iPhone/iOS 14+
     private var legendBarItem: UIBarButtonItem!
 
     private var removeUploadedImages = false
@@ -190,7 +190,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         if #available(iOS 14, *) {
             // Toolbar
             legendLabel.textColor = UIColor.piwigoColorText()
-            legendBarItem = UIBarButtonItem.init(customView: legendLabel)
+            legendBarItem = UIBarButtonItem(customView: legendLabel)
             toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
             navigationController?.toolbar.barTintColor = UIColor.piwigoColorBackground()
             navigationController?.toolbar.barStyle = Model.sharedInstance().isDarkPaletteActive ? .black : .default
@@ -304,7 +304,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                 if #available(iOS 14, *) {
                     // Present the "Upload" button in the toolbar
                     legendLabel.text = NSLocalizedString("selectImages", comment: "Select Photos")
-                    legendBarItem = UIBarButtonItem.init(customView: legendLabel)
+                    legendBarItem = UIBarButtonItem(customView: legendLabel)
                     toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
                 } else {
                     // Title
@@ -325,7 +325,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                 if #available(iOS 14, *) {
                     // Update the number of selected photos in the toolbar
                     legendLabel.text = nberOfSelectedImages == 1 ? NSLocalizedString("selectImageSelected", comment: "1 Photo Selected") : String(format:NSLocalizedString("selectImagesSelected", comment: "%@ Photos Selected"), NSNumber(value: nberOfSelectedImages))
-                    legendBarItem = UIBarButtonItem.init(customView: legendLabel)
+                    legendBarItem = UIBarButtonItem(customView: legendLabel)
                     toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
                 } else {
                     // Update the number of selected photos in the navigation bar
@@ -493,7 +493,8 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                 for index in 0..<self.selectedImages.count {
                     // Images in the upload queue cannot be selected
                     if self.indexedUploadsInQueue[index] == nil {
-                        self.selectedImages[index] = UploadProperties.init(localIdentifier: self.pbObjects[index].identifier, category: self.categoryId)
+                        self.selectedImages[index] = UploadProperties(localIdentifier: self.pbObjects[index].identifier,
+                                                                      category: self.categoryId)
                     }
                 }
                 // Reload collection while updating section buttons
@@ -626,8 +627,8 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                     }
 
                     // Select the cell
-                    selectedImages[indexPath.item] = UploadProperties.init(localIdentifier: cell.localIdentifier,
-                                                                  category: categoryId)
+                    selectedImages[indexPath.item] = UploadProperties(localIdentifier: cell.localIdentifier,
+                                                                      category: categoryId)
                     cell.cellSelected = true
                 }
 
@@ -797,8 +798,8 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
             cell.md5sum = pbObjects[indexPath.row].md5Sum
         }
         else if let data = UIPasteboard.general.data(forPasteboardType: "public.image",
-                                                       inItemSet: IndexSet.init(integer: indexPath.row))?.first {
-            image = UIImage.init(data: data) ?? imagePlaceholder
+                                                       inItemSet: IndexSet(integer: indexPath.row))?.first {
+            image = UIImage(data: data) ?? imagePlaceholder
             cell.md5sum = ""
         }
 
@@ -894,8 +895,8 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
             cell.cellSelected = false
         } else {
             // Select the cell
-            selectedImages[indexPath.item] = UploadProperties.init(localIdentifier: cell.localIdentifier,
-                                                                   category: categoryId)
+            selectedImages[indexPath.item] = UploadProperties(localIdentifier: cell.localIdentifier,
+                                                              category: categoryId)
             cell.cellSelected = true
         }
 
@@ -922,7 +923,8 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
             for index in 0..<nberOfImagesInSection {
                 // Images in the upload queue cannot be selected
                 if indexedUploadsInQueue[index] == nil {
-                    selectedImages[index] = UploadProperties.init(localIdentifier: pbObjects[index].identifier, category: self.categoryId)
+                    selectedImages[index] = UploadProperties(localIdentifier: pbObjects[index].identifier,
+                                                             category: self.categoryId)
                 }
             }
             // Change section button state
@@ -938,7 +940,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         self.updateNavBar()
 
         // Update collection
-        self.localImagesCollection.reloadSections(IndexSet.init(integer: 0))
+        self.localImagesCollection.reloadSections(IndexSet(integer: 0))
     }
 
 

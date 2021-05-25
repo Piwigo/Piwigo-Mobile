@@ -14,7 +14,7 @@ let kPiwigoTagsAdd = "format=json&method=pwg.tags.add"
 struct TagAddJSON: Decodable {
 
     var status: String?
-    var data = TagPropertiesAdd.init(id: 0, info: "")
+    var data = TagPropertiesAdd(id: 0, info: "")
     var errorCode = 0
     var errorMessage = ""
 
