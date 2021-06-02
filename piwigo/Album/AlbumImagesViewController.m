@@ -899,15 +899,15 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     if (self.homeAlbumButton.isHidden)
     {
         // Show CreateAlbum and UploadImages albums
-        [self hideOptionalButtonsCompletion:^{
-            
+        [self showOptionalButtonsCompletion:^{
+
             // Change appearance and action of Add button
-            [self.addButton removeTarget:self action:@selector(didCancelTapAddButton)
+            [self.addButton removeTarget:self action:@selector(didTapAddButton)
                         forControlEvents:UIControlEventTouchUpInside];
-            [self.addButton addTarget:self action:@selector(didTapAddButton)
+            [self.addButton addTarget:self action:@selector(didCancelTapAddButton)
                    forControlEvents:UIControlEventTouchUpInside];
             [UIView animateWithDuration:0.2 animations:^{
-                self.addButton.backgroundColor = [UIColor orangeColor];
+                self.addButton.backgroundColor = [UIColor grayColor];
                 self.addButton.tintColor = [UIColor whiteColor];
             }];
         }];
@@ -3224,6 +3224,13 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 {
     // Change default album
     self.categoryId = AlbumVars.shared.defaultCategory;
+
+    // Reset Add button icon
+    if (self.categoryId == 0) {
+        [self.addButton setImage:[UIImage imageNamed:@"createLarge"] forState:UIControlStateNormal];
+    } else {
+        [self.addButton setImage:[UIImage imageNamed:@"add"] forState:UIControlStateNormal];
+    }
 
     // Reload category data
     self.isCachedAtInit = FALSE;
