@@ -177,17 +177,9 @@ class UploadManager: NSObject, URLSessionDelegate {
             // Low Power Mode is enabled. Stop transferring images.
             return
         }
-
-        // Acceptable conditions for treating upload requests?
-        guard let _ = Model.sharedInstance()?.serverProtocol,
-            let _ = Model.sharedInstance()?.username,
-            let _ = Model.sharedInstance()?.wifiOnlyUploading,
-            let _ = Model.sharedInstance()?.hasAdminRights else {
-            return
-        }
         
         // Check network access and status
-        if AFNetworkReachabilityManager.shared().isReachableViaWWAN && Model.sharedInstance().wifiOnlyUploading {
+        if AFNetworkReachabilityManager.shared().isReachableViaWWAN && UploadVars.shared.wifiOnlyUploading {
             return
         }
 
@@ -286,8 +278,8 @@ class UploadManager: NSObject, URLSessionDelegate {
         // Moderate images uploaded by Community regular user
         // Considers only uploads to the server to which the user is logged in
         let finishedUploads = uploadsProvider.getRequestsIn(states: [.finished])
-        if Model.sharedInstance()?.hasNormalRights ?? false,
-           Model.sharedInstance()?.usesCommunityPluginV29 ?? false, finishedUploads.count > 0 {
+        if NetworkVars.shared.hasNormalRights,
+           NetworkVars.shared.usesCommunityPluginV29, finishedUploads.count > 0 {
 
             // Pause upload manager if app not in the foreground
             // and not executed in a background task
@@ -338,7 +330,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         isExecutingBackgroundUploadTask = true
         
         // Append auto-upload requests if needed
-        if Model.sharedInstance()?.isAutoUploadActive ?? false {
+        if UploadVars.shared.isAutoUploadActive {
             appendAutoUploadRequests()
         }
         
@@ -536,7 +528,8 @@ class UploadManager: NSObject, URLSessionDelegate {
         var fileName = fileURL.lastPathComponent
 
         // Check/update serverFileTypes if possible
-        if let fileTypes = Model.sharedInstance()?.serverFileTypes, fileTypes.count > 0 {
+        let fileTypes = UploadVars.shared.serverFileTypes
+        if fileTypes.count > 0 {
             uploadProperties.serverFileTypes = fileTypes
         }
 
@@ -710,7 +703,8 @@ class UploadManager: NSObject, URLSessionDelegate {
         uploadProperties.fileName = fileName
         
         // Check/update serverFileTypes if possible
-        if let fileTypes = Model.sharedInstance()?.serverFileTypes, fileTypes.count > 0 {
+        let fileTypes = UploadVars.shared.serverFileTypes
+        if fileTypes.count > 0 {
             uploadProperties.serverFileTypes = fileTypes
         }
         
@@ -893,7 +887,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         }
 
         // Choose recent method if possible
-        if Model.sharedInstance()?.usesUploadAsync ?? false || isExecutingBackgroundUploadTask {
+        if NetworkVars.shared.usesUploadAsync || isExecutingBackgroundUploadTask {
             // Prepare transfer
             self.transferInBackgroundImage(for: uploadID, with: uploadProperties)
 
@@ -1110,7 +1104,7 @@ class UploadManager: NSObject, URLSessionDelegate {
     
     private func resumeOperations() {
         // Append auto-upload requests if requested
-        if Model.sharedInstance()?.isAutoUploadActive ?? false {
+        if UploadVars.shared.isAutoUploadActive {
             self.appendAutoUploadRequests()
         } else {
             self.disableAutoUpload()

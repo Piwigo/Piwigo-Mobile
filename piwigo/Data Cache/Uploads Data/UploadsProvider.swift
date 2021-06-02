@@ -515,9 +515,9 @@ class UploadsProvider: NSObject {
             states.forEach { (state) in
                 predicates.append(NSPredicate(format: "requestState == %d", state.rawValue))
             }
-            let statesPredicate = NSCompoundPredicate.init(orPredicateWithSubpredicates: predicates)
-            let serverPredicate = NSPredicate(format: "serverPath == %@", Model.sharedInstance().serverPath)
-            if Model.sharedInstance()?.isAutoUploadActive ?? false {
+            let statesPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: predicates)
+            let serverPredicate = NSPredicate(format: "serverPath == %@", NetworkVars.shared.serverPath)
+            if UploadVars.shared.isAutoUploadActive {
                 // Select all requests
                 fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [statesPredicate, serverPredicate])
             } else {
@@ -570,8 +570,8 @@ class UploadsProvider: NSObject {
             predicates.append(NSPredicate(format: "requestState == %d", kPiwigoUploadState.moderated.rawValue))
             let statesPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: predicates)
             let deletePredicate = NSPredicate(format: "deleteImageAfterUpload == YES")
-            let serverPredicate = NSPredicate(format: "serverPath == %@", Model.sharedInstance().serverPath)
-            fetchRequest.predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [statesPredicate, deletePredicate, serverPredicate])
+            let serverPredicate = NSPredicate(format: "serverPath == %@", NetworkVars.shared.serverPath)
+            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [statesPredicate, deletePredicate, serverPredicate])
 
             // Create a fetched results controller and set its fetch request, context, and delegate.
             let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
@@ -656,8 +656,8 @@ class UploadsProvider: NSObject {
             }
             let statesPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: predicates)
             let autoUploadPredicate = NSPredicate(format: "markedForAutoUpload == YES")
-            let categoryPredicate = NSPredicate(format: "category == %d", Model.sharedInstance().autoUploadCategoryId)
-            let serverPredicate = NSPredicate(format: "serverPath == %@", Model.sharedInstance().serverPath)
+            let categoryPredicate = NSPredicate(format: "category == %d", UploadVars.shared.autoUploadCategoryId)
+            let serverPredicate = NSPredicate(format: "serverPath == %@", NetworkVars.shared.serverPath)
             fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [statesPredicate, autoUploadPredicate, categoryPredicate, serverPredicate])
 
             // Create a fetched results controller and set its fetch request, context, and delegate.
@@ -760,8 +760,8 @@ class UploadsProvider: NSObject {
         /// — whose image has not been deleted from the Piwigo server
         /// — for the current server only
         let notDeletedPredicate = NSPredicate(format: "requestState != %d", kPiwigoUploadState.deleted.rawValue)
-        let serverPredicate = NSPredicate(format: "serverPath == %@", Model.sharedInstance().serverPath)
-        fetchRequest.predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [notDeletedPredicate, serverPredicate])
+        let serverPredicate = NSPredicate(format: "serverPath == %@", NetworkVars.shared.serverPath)
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [notDeletedPredicate, serverPredicate])
 
         // Create a fetched results controller and set its fetch request, context, and delegate.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
@@ -808,8 +808,8 @@ class UploadsProvider: NSObject {
         let notFinishedPredicate = NSPredicate(format: "requestState != %d", kPiwigoUploadState.finished.rawValue)
         let notModeratedPredicate = NSPredicate(format: "requestState != %d", kPiwigoUploadState.moderated.rawValue)
         let notDeletedPredicate = NSPredicate(format: "requestState != %d", kPiwigoUploadState.deleted.rawValue)
-        let serverPredicate = NSPredicate(format: "serverPath == %@", Model.sharedInstance().serverPath)
-        fetchRequest.predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: [notFinishedPredicate, notModeratedPredicate, notDeletedPredicate, serverPredicate])
+        let serverPredicate = NSPredicate(format: "serverPath == %@", NetworkVars.shared.serverPath)
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [notFinishedPredicate, notModeratedPredicate, notDeletedPredicate, serverPredicate])
 
         // Create a fetched results controller and set its fetch request, context, and delegate.
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest,

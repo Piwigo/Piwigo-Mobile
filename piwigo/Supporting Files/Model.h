@@ -11,14 +11,6 @@
 
 #import "AFAutoPurgingImageCache.h"
 
-FOUNDATION_EXPORT NSInteger const kPiwigoMemoryCacheInc;
-FOUNDATION_EXPORT NSInteger const kPiwigoMemoryCacheMin;
-FOUNDATION_EXPORT NSInteger const kPiwigoMemoryCacheMax;
-
-FOUNDATION_EXPORT NSInteger const kPiwigoDiskCacheInc;
-FOUNDATION_EXPORT NSInteger const kPiwigoDiskCacheMin;
-FOUNDATION_EXPORT NSInteger const kPiwigoDiskCacheMax;
-
 FOUNDATION_EXPORT CGFloat const kPiwigoPadSubViewWidth;
 FOUNDATION_EXPORT CGFloat const kPiwigoPadSettingsWidth;
 
@@ -30,7 +22,7 @@ FOUNDATION_EXPORT NSInteger const kDelayPiwigoHUD;
 
 @class PHPhotoLibrary;
 
-typedef enum {
+typedef enum NSInteger {
     kPiwigoImageSizeSquare,
     kPiwigoImageSizeThumb,
     kPiwigoImageSizeXXSmall,
@@ -104,125 +96,7 @@ typedef enum {
 @interface Model : NSObject
 
 +(Model*)sharedInstance;
--(void)saveToDisk;
-
-@property (nonatomic, assign) BOOL isAppLanguageRTL;
-
-@property (nonatomic, strong) NSString *serverProtocol;     // => Manages cases where the Piwigo server
-@property (nonatomic, strong) NSString *serverPath;         // returns the wrong protocol (http: or https:)
-@property (nonatomic, strong) NSString *pwgToken;
-@property (nonatomic, strong) NSString *language;
-@property (nonatomic, assign) NSUInteger stringEncoding;    // Character encoding used by the Piwigo server
-@property (nonatomic, strong) NSString *version;
-@property (nonatomic, strong) NSString *username;
-@property (nonatomic, strong) NSString *HttpUsername;
-@property (nonatomic, strong) NSString *serverFileTypes;    // File formats accepted by the Piwigo server
-@property (nonatomic, assign) BOOL usesCommunityPluginV29;
-@property (nonatomic, assign) BOOL usesUploadAsync;
-
-@property (nonatomic, assign) BOOL hasAdminRights;
-@property (nonatomic, assign) BOOL hasNormalRights;
-@property (nonatomic, assign) BOOL hadOpenedSession;
-@property (nonatomic, strong) NSDate *dateOfLastLogin;
-@property (nonatomic, assign) BOOL didRejectCertificate;
-@property (nonatomic, assign) BOOL didFailHTTPauthentication;
-@property (nonatomic, assign) BOOL didApproveCertificate;
-@property (nonatomic, strong) NSString *certificateInformation;
-@property (nonatomic, assign) BOOL userCancelledCommunication;
-@property (nonatomic, strong) AFHTTPSessionManager *sessionManager;
-@property (nonatomic, strong) AFHTTPSessionManager *imagesSessionManager;
-@property (nonatomic, strong) NSURLCache *imageCache;
-@property (nonatomic, strong) AFAutoPurgingImageCache *thumbnailCache;
-
-// Album/category settings
-@property (nonatomic, assign) NSInteger defaultCategory;
-@property (nonatomic, assign) kPiwigoImageSize defaultAlbumThumbnailSize;
-@property (nonatomic, strong) NSString *recentCategories;
-@property (nonatomic, assign) NSUInteger maxNberRecentCategories;
-
-// Sort images by date: old to new
-@property (nonatomic, assign) kPiwigoSort defaultSort;
-@property (nonatomic, assign) NSInteger currentPage;
-
-// Display images titles in collection views
-@property (nonatomic, assign) BOOL displayImageTitles;
-
-// Default available Piwigo sizes
-@property (nonatomic, assign) BOOL hasSquareSizeImages;
-@property (nonatomic, assign) BOOL hasThumbSizeImages;
-@property (nonatomic, assign) BOOL hasXXSmallSizeImages;
-@property (nonatomic, assign) BOOL hasXSmallSizeImages;
-@property (nonatomic, assign) BOOL hasSmallSizeImages;
-@property (nonatomic, assign) BOOL hasMediumSizeImages;
-@property (nonatomic, assign) BOOL hasLargeSizeImages;
-@property (nonatomic, assign) BOOL hasXLargeSizeImages;
-@property (nonatomic, assign) BOOL hasXXLargeSizeImages;
-
-// Default thumbnail size and number per row in portrait mode
-@property (nonatomic, assign) kPiwigoImageSize defaultThumbnailSize;
-@property (nonatomic, assign) NSInteger thumbnailsPerRowInPortrait;
-
-// Default image settings
-@property (nonatomic, assign) kPiwigoImageSize defaultImagePreviewSize;
-@property (nonatomic, assign) BOOL shareMetadataTypeAirDrop;
-@property (nonatomic, assign) BOOL shareMetadataTypeAssignToContact;
-@property (nonatomic, assign) BOOL shareMetadataTypeCopyToPasteboard;
-@property (nonatomic, assign) BOOL shareMetadataTypeMail;
-@property (nonatomic, assign) BOOL shareMetadataTypeMessage;
-@property (nonatomic, assign) BOOL shareMetadataTypePostToFacebook;
-@property (nonatomic, assign) BOOL shareMetadataTypeMessenger;
-@property (nonatomic, assign) BOOL shareMetadataTypePostToFlickr;
-@property (nonatomic, assign) BOOL shareMetadataTypePostInstagram;
-@property (nonatomic, assign) BOOL shareMetadataTypePostToSignal;
-@property (nonatomic, assign) BOOL shareMetadataTypePostToSnapchat;
-@property (nonatomic, assign) BOOL shareMetadataTypePostToTencentWeibo;
-@property (nonatomic, assign) BOOL shareMetadataTypePostToTwitter;
-@property (nonatomic, assign) BOOL shareMetadataTypePostToVimeo;
-@property (nonatomic, assign) BOOL shareMetadataTypePostToWeibo;
-@property (nonatomic, assign) BOOL shareMetadataTypePostToWhatsApp;
-@property (nonatomic, assign) BOOL shareMetadataTypeSaveToCameraRoll;
-@property (nonatomic, assign) BOOL shareMetadataTypeOther;
-
-// Default image upload settings
-@property (nonatomic, assign) NSInteger uploadChunkSize;
-@property (nonatomic, strong) NSString *defaultAuthor;
-@property (nonatomic, assign) kPiwigoPrivacy defaultPrivacyLevel;
-@property (nonatomic, assign) BOOL stripGPSdataOnUpload;
-@property (nonatomic, assign) BOOL resizeImageOnUpload;
-@property (nonatomic, assign) NSInteger photoResize;
-@property (nonatomic, assign) BOOL compressImageOnUpload;
-@property (nonatomic, assign) NSInteger photoQuality;
-@property (nonatomic, assign) BOOL deleteImageAfterUpload;
-@property (nonatomic, assign) BOOL prefixFileNameBeforeUpload;
-@property (nonatomic, strong) NSString *defaultPrefix;
-@property (nonatomic, assign) kPiwigoSort localImagesSort;
-@property (nonatomic, assign) BOOL wifiOnlyUploading;
-@property (nonatomic, assign) BOOL isAutoUploadActive;
-@property (nonatomic, strong) NSString *autoUploadAlbumId;
-@property (nonatomic, assign) NSInteger autoUploadCategoryId;
-@property (nonatomic, strong) NSString *autoUploadTagIds;
-@property (nonatomic, strong) NSString *autoUploadComments;
-
-// Default color palette (adopts light/dark modes as from iOS 13)
-@property (nonatomic, assign) BOOL isDarkPaletteActive;
-@property (nonatomic, assign) BOOL switchPaletteAutomatically;
-@property (nonatomic, assign) NSInteger switchPaletteThreshold;
-@property (nonatomic, assign) BOOL isDarkPaletteModeActive;
-@property (nonatomic, assign) BOOL isLightPaletteModeActive;
-@property (nonatomic, assign) BOOL isSystemDarkModeActive;
-
-// Default cache settings
-@property (nonatomic, assign) BOOL available;
-@property (nonatomic, assign) NSInteger memoryCache;
-@property (nonatomic, assign) NSInteger diskCache;
-@property (nonatomic, assign) BOOL couldNotMigrateCoreDataStore;
-
-// Remember which help views were watched
-@property (nonatomic, assign) UInt16 didWatchHelpViews;
-
-// Request help for translating Piwigo every month or so
-@property (nonatomic, assign) NSTimeInterval dateOfLastTranslationRequest;
-
+-(void)readFromDisk;
 -(NSString *)getNameForPrivacyLevel:(kPiwigoPrivacy)privacyLevel;
 
 @end

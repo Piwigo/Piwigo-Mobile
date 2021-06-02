@@ -40,7 +40,7 @@ class DeviceTableViewCell: UITableViewCell {
         
         // Buttons
         if #available(iOS 13.0, *) {
-            if Model.sharedInstance()?.isDarkPaletteActive ?? false {
+            if AppVars.shared.isDarkPaletteActive {
                 lightButton.setImage(UIImage(systemName: "circle"), for: .normal)
                 lightButton.tintColor = UIColor.piwigoColorRightLabel()
                 darkButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
@@ -53,7 +53,7 @@ class DeviceTableViewCell: UITableViewCell {
             }
         } else {
             // Fallback on earlier versions
-            if Model.sharedInstance()?.isDarkPaletteActive ?? false {
+            if AppVars.shared.isDarkPaletteActive {
                 lightButton.setImage(UIImage(named: "circle"), for: .normal)
                 lightButton.tintColor = UIColor.piwigoColorRightLabel()
                 darkButton.setImage(UIImage(named: "checkmark.circle.fill"), for: .normal)
@@ -69,10 +69,9 @@ class DeviceTableViewCell: UITableViewCell {
         
     @IBAction func didTapLightMode(_ sender: Any) {
         // Select static light mode
-        Model.sharedInstance()?.isLightPaletteModeActive = true
-        Model.sharedInstance()?.isDarkPaletteModeActive = false
-        Model.sharedInstance()?.switchPaletteAutomatically = false
-        Model.sharedInstance()?.saveToDisk()
+        AppVars.shared.isLightPaletteModeActive = true
+        AppVars.shared.isDarkPaletteModeActive = false
+        AppVars.shared.switchPaletteAutomatically = false
 
         // Apply light color palette
         (UIApplication.shared.delegate as! AppDelegate).screenBrightnessChanged()
@@ -90,10 +89,9 @@ class DeviceTableViewCell: UITableViewCell {
     
     @IBAction func didTapDarkMode(_ sender: Any) {
         // Select static dark mode
-        Model.sharedInstance()?.isLightPaletteModeActive = false
-        Model.sharedInstance()?.isDarkPaletteModeActive = true
-        Model.sharedInstance()?.switchPaletteAutomatically = false
-        Model.sharedInstance()?.saveToDisk()
+        AppVars.shared.isLightPaletteModeActive = false
+        AppVars.shared.isDarkPaletteModeActive = true
+        AppVars.shared.switchPaletteAutomatically = false
 
         // Apply dark color palette
         (UIApplication.shared.delegate as! AppDelegate).screenBrightnessChanged()

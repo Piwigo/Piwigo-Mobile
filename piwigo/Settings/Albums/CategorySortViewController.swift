@@ -19,7 +19,7 @@ protocol CategorySortDelegate: NSObjectProtocol {
 class CategorySortViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @objc weak var sortDelegate: CategorySortDelegate?
-    private var currentCategorySortType: kPiwigoSort = Model.sharedInstance().defaultSort 
+    private var currentCategorySortType = kPiwigoSort(AlbumVars.shared.defaultSort)
 
     @objc
     class func getNameForCategorySortType(_ sortType: kPiwigoSort) -> String {
@@ -99,14 +99,14 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
         if #available(iOS 11.0, *) {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = Model.sharedInstance().isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
 
         // Table view
         sortSelectTableView.separatorColor = UIColor.piwigoColorSeparator()
-        sortSelectTableView.indicatorStyle = Model.sharedInstance().isDarkPaletteActive ? .white : .black
+        sortSelectTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         sortSelectTableView.reloadData()
     }
 

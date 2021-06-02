@@ -53,8 +53,7 @@ class Help02ViewController: UIViewController {
         legendBot.attributedText = legendBotAttributedString
         
         // Remember that this view was watched
-        Model.sharedInstance().didWatchHelpViews = Model.sharedInstance().didWatchHelpViews | helpID
-        Model.sharedInstance().saveToDisk()
+        AppVars.shared.didWatchHelpViews = AppVars.shared.didWatchHelpViews | helpID
     }
 
     override func viewWillAppear(_ animated: Bool) {

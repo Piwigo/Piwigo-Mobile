@@ -35,7 +35,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
     private var _categoryId: Int?
     private var categoryId: Int {
         get {
-            return _categoryId ?? Model.sharedInstance().defaultCategory
+            return _categoryId ?? AlbumVars.shared.defaultCategory
         }
         set(categoryId) {
             _categoryId = categoryId
@@ -181,7 +181,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         if #available(iOS 11.0, *) {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = Model.sharedInstance().isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
@@ -193,14 +193,14 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
             legendBarItem = UIBarButtonItem(customView: legendLabel)
             toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
             navigationController?.toolbar.barTintColor = UIColor.piwigoColorBackground()
-            navigationController?.toolbar.barStyle = Model.sharedInstance().isDarkPaletteActive ? .black : .default
+            navigationController?.toolbar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         }
         else {
             // Fallback on earlier versions
         }
 
         // Collection view
-        localImagesCollection.indicatorStyle = Model.sharedInstance().isDarkPaletteActive ? .white : .black
+        localImagesCollection.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         localImagesCollection.reloadData()
     }
 
@@ -512,7 +512,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         // Present list of actions
         alert.view.tintColor = UIColor.piwigoColorOrange()
         if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         } else {
             // Fallback on earlier versions
         }
@@ -542,8 +542,8 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
 
             // Can the user create tags?
             let albumData = CategoriesData.sharedInstance()?.getCategoryById(categoryId)
-            if Model.sharedInstance()?.hasAdminRights ?? false ||
-                (Model.sharedInstance()?.hasNormalRights ?? false && albumData?.hasUploadRights ?? false) {
+            if NetworkVars.shared.hasAdminRights ||
+                (NetworkVars.shared.hasNormalRights && albumData?.hasUploadRights ?? false) {
                 uploadSwitchVC.hasTagCreationRights = true
             }
 
@@ -775,7 +775,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         // Calculate the optimum image size
-        let size = CGFloat(ImagesCollection.imageSize(for: collectionView, imagesPerRowInPortrait: Model.sharedInstance().thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup))
+        let size = CGFloat(ImagesCollection.imageSize(for: collectionView, imagesPerRowInPortrait: AlbumVars.shared.thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup))
 
         return CGSize(width: size, height: size)
     }
@@ -804,7 +804,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         }
 
         // Configure cell
-        let thumbnailSize = ImagesCollection.imageSize(for: self.localImagesCollection, imagesPerRowInPortrait: Model.sharedInstance().thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup)
+        let thumbnailSize = ImagesCollection.imageSize(for: self.localImagesCollection, imagesPerRowInPortrait: AlbumVars.shared.thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup)
         cell.configure(with: image, identifier: identifier, thumbnailSize: CGFloat(thumbnailSize))
         
         // Add pan gesture recognition

@@ -10,13 +10,13 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
     
     @IBOutlet var settingsTableView: UITableView!
     
-    var stripGPSdataOnUpload = Model.sharedInstance()?.stripGPSdataOnUpload ?? false
-    var resizeImageOnUpload = Model.sharedInstance()?.resizeImageOnUpload ?? false
-    var photoResize: Int16 = Int16(Model.sharedInstance()?.photoResize ?? 100)
-    var compressImageOnUpload = Model.sharedInstance()?.compressImageOnUpload ?? false
-    var photoQuality: Int16 = Int16(Model.sharedInstance()?.photoQuality ?? 98)
-    var prefixFileNameBeforeUpload = Model.sharedInstance()?.prefixFileNameBeforeUpload ?? false
-    var defaultPrefix = Model.sharedInstance()?.defaultPrefix ?? ""
+    var stripGPSdataOnUpload = UploadVars.shared.stripGPSdataOnUpload
+    var resizeImageOnUpload = UploadVars.shared.resizeImageOnUpload
+    var photoResize: Int16 = UploadVars.shared.photoResize
+    var compressImageOnUpload = UploadVars.shared.compressImageOnUpload
+    var photoQuality: Int16 = UploadVars.shared.photoQuality
+    var prefixFileNameBeforeUpload = UploadVars.shared.prefixFileNameBeforeUpload
+    var defaultPrefix = UploadVars.shared.defaultPrefix
     private var shouldUpdateDefaultPrefix = false
     private var canDeleteImages = false
     var deleteImageAfterUpload = false
@@ -35,7 +35,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
 
         // Table view
         settingsTableView.separatorColor = UIColor.piwigoColorSeparator()
-        settingsTableView.indicatorStyle = Model.sharedInstance().isDarkPaletteActive ? .white : .black
+        settingsTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         settingsTableView.reloadData()
     }
 
@@ -53,7 +53,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
         if let switchVC = parent as? UploadSwitchViewController {
             canDeleteImages = switchVC.canDeleteImages
             if canDeleteImages {
-                deleteImageAfterUpload = Model.sharedInstance().deleteImageAfterUpload
+                deleteImageAfterUpload = UploadVars.shared.deleteImageAfterUpload
             }
         }
     }

@@ -39,8 +39,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             window.rootViewController?.view.setNeedsUpdateConstraints()
 
             // Color palette depends on system settings
-            Model.sharedInstance().isSystemDarkModeActive = loginVC.traitCollection.userInterfaceStyle == .dark
-//            print("•••> iOS mode: \(Model.sharedInstance().isSystemDarkModeActive ? "Dark" : "Light"), app mode: \(Model.sharedInstance().isDarkPaletteModeActive ? "Dark" : "Light"), Brightness: \(lroundf(Float(UIScreen.main.brightness) * 100.0))/\(Model.sharedInstance().switchPaletteThreshold), app: \(Model.sharedInstance().isDarkPaletteActive ? "Dark" : "Light")")
+            AppVars.shared.isSystemDarkModeActive = loginVC.traitCollection.userInterfaceStyle == .dark
+//            print("•••> iOS mode: \(AppVars.shared.isSystemDarkModeActive ? "Dark" : "Light"), app mode: \(Model.sharedInstance().isDarkPaletteModeActive ? "Dark" : "Light"), Brightness: \(lroundf(Float(UIScreen.main.brightness) * 100.0))/\(Model.sharedInstance().switchPaletteThreshold), app: \(AppVars.shared.isDarkPaletteActive ? "Dark" : "Light")")
 
             // Apply color palette
             (UIApplication.shared.delegate as! AppDelegate).screenBrightnessChanged()
@@ -52,14 +52,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             // Look for credentials if server address provided
             var user: String = ""
             var password: String = ""
-            let server = Model.sharedInstance()?.serverPath ?? ""
+            let server = NetworkVars.shared.serverPath
             SAMKeychain.setAccessibilityType(kSecAttrAccessibleAfterFirstUnlock)
             if server.count > 0 {
                 // Known acounts for that server?
                 if let accounts = SAMKeychain.accounts(forService: server), accounts.count > 0 {
                     // Credentials available
-                    user = Model.sharedInstance().username ?? ""
-                    if user.count > 0 {
+                    let user = NetworkVars.shared.username
+                    if !user.isEmpty {
                         password = SAMKeychain.password(forService: server, account: user) ?? ""
                     }
                 } else {
@@ -69,8 +69,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
                     // Store credentials with new method if found
                     if user.count > 0 {
-                        Model.sharedInstance().username = user
-                        Model.sharedInstance().saveToDisk()
+                        NetworkVars.shared.username = user
                         SAMKeychain.setPassword(password, forService: server, account: user)
                     }
                 }
@@ -111,7 +110,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let rootVC = self.window?.rootViewController,
            let _ = rootVC.children.first as? AlbumImagesViewController {
             // Determine for how long the session is opened
-            let timeSinceLastLogin = Model.sharedInstance()?.dateOfLastLogin.timeIntervalSinceNow ?? TimeInterval(-3600.0)
+            let timeSinceLastLogin = NetworkVars.shared.dateOfLastLogin.timeIntervalSinceNow
             if timeSinceLastLogin < TimeInterval(-900) { // i.e. 15 minutes (Piwigo 11 session duration defaults to an hour)
                 /// - Perform relogin
                 /// - Resume upload operations in background queue
@@ -170,7 +169,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Schedule background tasks after cancelling pending onces
         BGTaskScheduler.shared.cancelAllTaskRequests()
-        if Model.sharedInstance()?.usesUploadAsync ?? false {
+        if NetworkVars.shared.usesUploadAsync {
             (UIApplication.shared.delegate as! AppDelegate).scheduleNextUpload()
         }
 

@@ -19,7 +19,7 @@
     return [self post: isAdmin ? kPiwigoTagsGetAdminList : kPiwigoTagsGetList
 		URLParameters:nil
            parameters:nil
-       sessionManager:[Model sharedInstance].sessionManager
+       sessionManager:NetworkVars.shared.sessionManager
              progress:nil
 			  success:completion
 			  failure:fail];
@@ -32,7 +32,7 @@
     return [self post:kPiwigoTagsAdd
         URLParameters:nil
            parameters:@{@"name": tagName}
-       sessionManager:[Model sharedInstance].sessionManager
+       sessionManager:NetworkVars.shared.sessionManager
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   

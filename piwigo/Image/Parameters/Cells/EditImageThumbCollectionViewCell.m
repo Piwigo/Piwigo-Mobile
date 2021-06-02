@@ -126,44 +126,45 @@ NSString * const kEditImageThumbCollectionCell_ID = @"EditImageThumbCollectionCe
 
     // Retrieve image thumbnail from Photo Libray
     NSString *thumbnailUrl;
-    switch ([Model sharedInstance].defaultAlbumThumbnailSize) {
+    kPiwigoImageSize albumThumbnailSize = (kPiwigoImageSize)AlbumVars.shared.defaultAlbumThumbnailSize;
+    switch (albumThumbnailSize) {
         case kPiwigoImageSizeSquare:
-            if ([Model sharedInstance].hasSquareSizeImages) {
+            if (AlbumVars.shared.hasSquareSizeImages) {
                 thumbnailUrl = imageData.SquarePath;
             }
             break;
         case kPiwigoImageSizeXXSmall:
-            if ([Model sharedInstance].hasXXSmallSizeImages) {
+            if (AlbumVars.shared.hasXXSmallSizeImages) {
                 thumbnailUrl = imageData.XXSmallPath;
             }
             break;
         case kPiwigoImageSizeXSmall:
-            if ([Model sharedInstance].hasXSmallSizeImages) {
+            if (AlbumVars.shared.hasXSmallSizeImages) {
                 thumbnailUrl = imageData.XSmallPath;
             }
             break;
         case kPiwigoImageSizeSmall:
-            if ([Model sharedInstance].hasSmallSizeImages) {
+            if (AlbumVars.shared.hasSmallSizeImages) {
                 thumbnailUrl = imageData.SmallPath;
             }
             break;
         case kPiwigoImageSizeMedium:
-            if ([Model sharedInstance].hasMediumSizeImages) {
+            if (AlbumVars.shared.hasMediumSizeImages) {
                 thumbnailUrl = imageData.MediumPath;
             }
             break;
         case kPiwigoImageSizeLarge:
-            if ([Model sharedInstance].hasLargeSizeImages) {
+            if (AlbumVars.shared.hasLargeSizeImages) {
                 thumbnailUrl = imageData.LargePath;
             }
             break;
         case kPiwigoImageSizeXLarge:
-            if ([Model sharedInstance].hasXLargeSizeImages) {
+            if (AlbumVars.shared.hasXLargeSizeImages) {
                 thumbnailUrl = imageData.XLargePath;
             }
             break;
         case kPiwigoImageSizeXXLarge:
-            if ([Model sharedInstance].hasXXLargeSizeImages) {
+            if (AlbumVars.shared.hasXXLargeSizeImages) {
                 thumbnailUrl = imageData.XXLargePath;
             }
             break;
@@ -235,7 +236,7 @@ NSString * const kEditImageThumbCollectionCell_ID = @"EditImageThumbCollectionCe
         textField.text = self.imageFile.text;
         textField.clearButtonMode = UITextFieldViewModeAlways;
         textField.keyboardType = UIKeyboardTypeDefault;
-        textField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
+        textField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
         textField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
         textField.autocorrectionType = UITextAutocorrectionTypeYes;
         textField.returnKeyType = UIReturnKeyContinue;
@@ -261,7 +262,7 @@ NSString * const kEditImageThumbCollectionCell_ID = @"EditImageThumbCollectionCe
     [alert addAction:self.renameFileNameAction];
     alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
-        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }

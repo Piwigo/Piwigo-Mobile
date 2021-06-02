@@ -113,14 +113,14 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes
         navigationController?.navigationBar.prefersLargeTitles = false
-        navigationController?.navigationBar.barStyle = Model.sharedInstance().isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
 
         // Table view
         queueTableView.separatorColor = UIColor.piwigoColorSeparator()
-        queueTableView.indicatorStyle = Model.sharedInstance().isDarkPaletteActive ? .white : .black
+        queueTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
     }
     
     @objc func applyColorPalette() {
@@ -207,7 +207,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
                                         })
                                     alert.addAction(cancelAction)
                                     alert.view.tintColor = UIColor.piwigoColorOrange()
-                                    alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+                                    alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
                                     self.present(alert, animated: true, completion: {
                                         // Bugfix: iOS9 - Tint not fully Applied without Reapplying
                                         alert.view.tintColor = UIColor.piwigoColorOrange()
@@ -259,7 +259,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         
         // Present list of actions
         alert.view.tintColor = UIColor.piwigoColorOrange()
-        alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.barButtonItem = actionBarButton
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
@@ -308,7 +308,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
     
     @objc func setTableViewMainHeader() {
         DispatchQueue.main.async {
-            if AFNetworkReachabilityManager.shared().isReachableViaWWAN && Model.sharedInstance().wifiOnlyUploading {
+            if AFNetworkReachabilityManager.shared().isReachableViaWWAN && UploadVars.shared.wifiOnlyUploading {
                 // No Wi-Fi and user wishes to upload only on Wi-Fi
                 let headerView = UploadQueueHeaderView(frame: .zero)
                 headerView.configure(width: self.queueTableView.frame.size.width,

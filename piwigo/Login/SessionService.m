@@ -25,9 +25,9 @@
     return [self post:kReflectionGetMethodList
         URLParameters:nil
            parameters:nil
-       sessionManager:[Model sharedInstance].sessionManager
+       sessionManager:NetworkVars.shared.sessionManager
              progress:^(NSProgress * progress) {
-                 if ([Model sharedInstance].userCancelledCommunication) {
+                 if (NetworkVars.shared.userCancelledCommunication) {
                      [progress cancel];
                  }
              }
@@ -36,8 +36,8 @@
                   if(completion) {
                       
                       // Initialise flags
-                      [Model sharedInstance].usesCommunityPluginV29 = NO;
-                      [Model sharedInstance].usesUploadAsync = NO;
+                      NetworkVars.shared.usesCommunityPluginV29 = NO;
+                      NetworkVars.shared.usesUploadAsync = NO;
                       
                       // Did the server answer the request? (it should have)
                       if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
@@ -47,11 +47,11 @@
                           for (NSString *method in methodsList) {
                               // Check if the Community extension is installed and active (> 2.9a)
                               if([method isEqualToString:@"community.session.getStatus"]) {
-                                  [Model sharedInstance].usesCommunityPluginV29 = YES;
+                                  NetworkVars.shared.usesCommunityPluginV29 = YES;
                               }
                               // Check if the pwg.images.uploadAsync method is available
                               if ([method isEqualToString:@"pwg.images.uploadAsync"]) {
-                                  [Model sharedInstance].usesUploadAsync = YES;
+                                  NetworkVars.shared.usesUploadAsync = YES;
                               }
                           }
                           completion([[responseObject objectForKey:@"result"] objectForKey:@"methods"]);
@@ -78,16 +78,13 @@
 {
     // API pwg.session.login returns:
     //      result = 1 if logged successfully
-
-    [[Model sharedInstance] saveToDisk];
-    
     return [self post:kPiwigoSessionLogin
         URLParameters:nil
            parameters:@{@"username" : user,
                         @"password" : password}
-       sessionManager:[Model sharedInstance].sessionManager
+       sessionManager:NetworkVars.shared.sessionManager
              progress:^(NSProgress * progress) {
-                 if ([Model sharedInstance].userCancelledCommunication) {
+                 if (NetworkVars.shared.userCancelledCommunication) {
                      [progress cancel];
                  }
              }
@@ -97,9 +94,8 @@
                      [[responseObject objectForKey:@"result"] boolValue])
                   {
                       // Login successful
-                      [Model sharedInstance].username = user;
-                      [Model sharedInstance].hadOpenedSession = YES;
-                      [[Model sharedInstance] saveToDisk];
+                      NetworkVars.shared.username = user;
+                      NetworkVars.shared.hadOpenedSession = YES;
                       if (completion) {
                           completion(YES, [responseObject objectForKey:@"result"]);
                       }
@@ -107,7 +103,7 @@
                   else
                   {
                       // Login failed
-                      [Model sharedInstance].hadOpenedSession = NO;
+                      NetworkVars.shared.hadOpenedSession = NO;
                       NSError *error = [NetworkHandler getPiwigoErrorFromResponse:responseObject
                                              path:kPiwigoSessionLogin andURLparams:nil];
                       if (completion) {
@@ -119,7 +115,7 @@
                   
                   if(fail)
                   {
-                      [Model sharedInstance].hadOpenedSession = NO;
+                      NetworkVars.shared.hadOpenedSession = NO;
                       fail(task, error);
                   }
               }];
@@ -138,9 +134,9 @@
     return [self post:kPiwigoSessionGetStatus
         URLParameters:nil
            parameters:nil
-       sessionManager:[Model sharedInstance].sessionManager
+       sessionManager:NetworkVars.shared.sessionManager
              progress:^(NSProgress * progress) {
-                 if ([Model sharedInstance].userCancelledCommunication) {
+                 if (NetworkVars.shared.userCancelledCommunication) {
                      [progress cancel];
                  }
              }
@@ -150,10 +146,10 @@
                   {
                       NSDictionary *result = [responseObject objectForKey:@"result"];
                       // Retrieve a potentially new token (required since the use of uploadAsync)
-                      [Model sharedInstance].pwgToken = [result objectForKey:@"pwg_token"];
+                      NetworkVars.shared.pwgToken = [result objectForKey:@"pwg_token"];
 
                       if (isLogginIn) {
-                          [Model sharedInstance].language = [result objectForKey:@"language"];
+                          NetworkVars.shared.language = [result objectForKey:@"language"];
                           
                           // Piwigo server version should be of format 1.2.3
                           NSMutableString *versionStr = [result objectForKey:@"version"];
@@ -172,122 +168,123 @@
                               default:
                                   break;
                           }
-                          [Model sharedInstance].version = [versionStr copy];
+                          NetworkVars.shared.version = [versionStr copy];
 
                           // Community users cannot upload with uploadAsync with Piwigo 11.0.0 and above
-                          if ([Model sharedInstance].usesCommunityPluginV29 &&
-                              ![Model sharedInstance].hasAdminRights &&
+                          if (NetworkVars.shared.usesCommunityPluginV29 &&
+                              !NetworkVars.shared.hasAdminRights &&
                               [@"11.0.0" compare:versionStr options:NSNumericSearch] != NSOrderedDescending) {
-                              [Model sharedInstance].usesUploadAsync = NO;
+                              NetworkVars.shared.usesUploadAsync = NO;
                           }
-                          NSLog(@"   version: %@, usesUploadAsync: %@", [Model sharedInstance].version, [Model sharedInstance].usesUploadAsync ? @"YES" : @"NO");
+                          NSLog(@"   version: %@, usesUploadAsync: %@", NetworkVars.shared.version,
+                                NetworkVars.shared.usesUploadAsync ? @"YES" : @"NO");
 
                           NSString *charset = [[result objectForKey:@"charset"] uppercaseString];
                           if ([charset isEqualToString:@"UTF-8"]) {
-                              [Model sharedInstance].stringEncoding = NSUTF8StringEncoding;
+                              NetworkVars.shared.stringEncoding = NSUTF8StringEncoding;
                           } else if ([charset isEqualToString:@"UTF-16"]) {
-                              [Model sharedInstance].stringEncoding = NSUTF16StringEncoding;
+                              NetworkVars.shared.stringEncoding = NSUTF16StringEncoding;
                           } else if ([charset isEqualToString:@"ISO-8859-1"]) {
-                              [Model sharedInstance].stringEncoding = NSWindowsCP1252StringEncoding;
+                              NetworkVars.shared.stringEncoding = NSWindowsCP1252StringEncoding;
                           } else if ([charset isEqualToString:@"US-ASCII"]) {
-                              [Model sharedInstance].stringEncoding = NSASCIIStringEncoding;
+                              NetworkVars.shared.stringEncoding = NSASCIIStringEncoding;
                           } else if ([charset isEqualToString:@"X-EUC"]) {
-                              [Model sharedInstance].stringEncoding = NSJapaneseEUCStringEncoding;
+                              NetworkVars.shared.stringEncoding = NSJapaneseEUCStringEncoding;
                           } else if ([charset isEqualToString:@"ISO-8859-3"]) {
-                              [Model sharedInstance].stringEncoding = NSISOLatin1StringEncoding;
+                              NetworkVars.shared.stringEncoding = NSISOLatin1StringEncoding;
                           } else if ([charset isEqualToString:@"ISO-8859-3"]) {
-                              [Model sharedInstance].stringEncoding = NSISOLatin1StringEncoding;
+                              NetworkVars.shared.stringEncoding = NSISOLatin1StringEncoding;
                           } else if ([charset isEqualToString:@"SHIFT-JIS"]) {
-                              [Model sharedInstance].stringEncoding = NSShiftJISStringEncoding;
+                              NetworkVars.shared.stringEncoding = NSShiftJISStringEncoding;
                           } else if ([charset isEqualToString:@"CP870"]) {
-                              [Model sharedInstance].stringEncoding = NSISOLatin2StringEncoding;
+                              NetworkVars.shared.stringEncoding = NSISOLatin2StringEncoding;
                           } else if ([charset isEqualToString:@"UNICODE"]) {
-                              [Model sharedInstance].stringEncoding = NSUnicodeStringEncoding;
+                              NetworkVars.shared.stringEncoding = NSUnicodeStringEncoding;
                           } else if ([charset isEqualToString:@"WINDOWS-1251"]) {
-                              [Model sharedInstance].stringEncoding = NSWindowsCP1251StringEncoding;
+                              NetworkVars.shared.stringEncoding = NSWindowsCP1251StringEncoding;
                           } else if ([charset isEqualToString:@"WINDOWS-1252"]) {
-                              [Model sharedInstance].stringEncoding = NSWindowsCP1252StringEncoding;
+                              NetworkVars.shared.stringEncoding = NSWindowsCP1252StringEncoding;
                           } else if ([charset isEqualToString:@"WINDOWS-1253"]) {
-                              [Model sharedInstance].stringEncoding = NSWindowsCP1253StringEncoding;
+                              NetworkVars.shared.stringEncoding = NSWindowsCP1253StringEncoding;
                           } else if ([charset isEqualToString:@"WINDOWS-1254"]) {
-                              [Model sharedInstance].stringEncoding = NSWindowsCP1254StringEncoding;
+                              NetworkVars.shared.stringEncoding = NSWindowsCP1254StringEncoding;
                           } else if ([charset isEqualToString:@"WINDOWS-1250"]) {
-                              [Model sharedInstance].stringEncoding = NSWindowsCP1250StringEncoding;
+                              NetworkVars.shared.stringEncoding = NSWindowsCP1250StringEncoding;
                           } else if ([charset isEqualToString:@"ISO-2022-JP"]) {
-                              [Model sharedInstance].stringEncoding = NSISO2022JPStringEncoding;
+                              NetworkVars.shared.stringEncoding = NSISO2022JPStringEncoding;
                           } else if ([charset isEqualToString:@"ISO-2022-JP"]) {
-                              [Model sharedInstance].stringEncoding = NSISO2022JPStringEncoding;
+                              NetworkVars.shared.stringEncoding = NSISO2022JPStringEncoding;
                           } else if ([charset isEqualToString:@"MACINTOSH"]) {
-                              [Model sharedInstance].stringEncoding = NSMacOSRomanStringEncoding;
+                              NetworkVars.shared.stringEncoding = NSMacOSRomanStringEncoding;
                           } else if ([charset isEqualToString:@"UNICODEFFFE"]) {
-                              [Model sharedInstance].stringEncoding = NSUTF16BigEndianStringEncoding;
+                              NetworkVars.shared.stringEncoding = NSUTF16BigEndianStringEncoding;
                           } else if ([charset isEqualToString:@"UTF-32"]) {
-                              [Model sharedInstance].stringEncoding = NSUTF32StringEncoding;
+                              NetworkVars.shared.stringEncoding = NSUTF32StringEncoding;
                           } else {
                               // UTF-8 string encoding by default
-                              [Model sharedInstance].stringEncoding = NSUTF8StringEncoding;
+                              NetworkVars.shared.stringEncoding = NSUTF8StringEncoding;
                           }
                           
                           // Upload chunk size is null if not provided by server
                           NSInteger uploadChunkSize = [[result objectForKey:@"upload_form_chunk_size"] integerValue];
                           if (uploadChunkSize != 0) {
-                              [Model sharedInstance].uploadChunkSize = [[result objectForKey:@"upload_form_chunk_size"] integerValue];
+                              UploadVars.shared.uploadChunkSize = [[result objectForKey:@"upload_form_chunk_size"] integerValue];
                           } else {
                               // Just in case…
-                              [Model sharedInstance].uploadChunkSize = 500;
+                              UploadVars.shared.uploadChunkSize = 500;
                           }
 
                           // Images and videos can be uploaded if their file types are found.
                           // The iPhone creates mov files that will be uploaded in mp4 format.
                           // This string is nil if the server does not provide it.
-                          [Model sharedInstance].serverFileTypes = [result objectForKey:@"upload_file_types"];
+                          UploadVars.shared.serverFileTypes = [result objectForKey:@"upload_file_types"];
                           
                           // User rights are determined by Community extension (if installed)
-                          if(![Model sharedInstance].usesCommunityPluginV29) {
+                          if(!NetworkVars.shared.usesCommunityPluginV29) {
                               NSString *userStatus = [result objectForKey:@"status"];
-                              [Model sharedInstance].hasAdminRights = ([userStatus isEqualToString:@"admin"] || [userStatus isEqualToString:@"webmaster"]);
-                              [Model sharedInstance].hasNormalRights = [userStatus isEqualToString:@"normal"];
+                              NetworkVars.shared.hasAdminRights = ([userStatus isEqualToString:@"admin"] || [userStatus isEqualToString:@"webmaster"]);
+                              NetworkVars.shared.hasNormalRights = [userStatus isEqualToString:@"normal"];
                           }
                           
                           // Collect the list of available sizes
                           // Let's start with default values
-                          [Model sharedInstance].hasSquareSizeImages  = YES;
-                          [Model sharedInstance].hasThumbSizeImages   = YES;
-                          [Model sharedInstance].hasXXSmallSizeImages = NO;
-                          [Model sharedInstance].hasXSmallSizeImages  = NO;
-                          [Model sharedInstance].hasSmallSizeImages   = NO;
-                          [Model sharedInstance].hasMediumSizeImages  = YES;
-                          [Model sharedInstance].hasLargeSizeImages   = NO;
-                          [Model sharedInstance].hasXLargeSizeImages  = NO;
-                          [Model sharedInstance].hasXXLargeSizeImages = NO;
+                          AlbumVars.shared.hasSquareSizeImages  = YES;
+                          AlbumVars.shared.hasThumbSizeImages   = YES;
+                          AlbumVars.shared.hasXXSmallSizeImages = NO;
+                          AlbumVars.shared.hasXSmallSizeImages  = NO;
+                          AlbumVars.shared.hasSmallSizeImages   = NO;
+                          AlbumVars.shared.hasMediumSizeImages  = YES;
+                          AlbumVars.shared.hasLargeSizeImages   = NO;
+                          AlbumVars.shared.hasXLargeSizeImages  = NO;
+                          AlbumVars.shared.hasXXLargeSizeImages = NO;
                           
                           // Update list of available sizes
                           id availableSizesList = [result objectForKey:@"available_sizes"];
                           for (NSString *size in availableSizesList) {
                               if ([size isEqualToString:@"square"]) {
-                                  [Model sharedInstance].hasSquareSizeImages = YES;
+                                  AlbumVars.shared.hasSquareSizeImages = YES;
                               } else if ([size isEqualToString:@"thumb"]) {
-                                  [Model sharedInstance].hasThumbSizeImages = YES;
+                                  AlbumVars.shared.hasThumbSizeImages = YES;
                               } else if ([size isEqualToString:@"2small"]) {
-                                  [Model sharedInstance].hasXXSmallSizeImages = YES;
+                                  AlbumVars.shared.hasXXSmallSizeImages = YES;
                               } else if ([size isEqualToString:@"xsmall"]) {
-                                  [Model sharedInstance].hasXSmallSizeImages = YES;
+                                  AlbumVars.shared.hasXSmallSizeImages = YES;
                               } else if ([size isEqualToString:@"small"]) {
-                                  [Model sharedInstance].hasSmallSizeImages = YES;
+                                  AlbumVars.shared.hasSmallSizeImages = YES;
                               } else if ([size isEqualToString:@"medium"]) {
-                                  [Model sharedInstance].hasMediumSizeImages = YES;
+                                  AlbumVars.shared.hasMediumSizeImages = YES;
                               } else if ([size isEqualToString:@"large"]) {
-                                  [Model sharedInstance].hasLargeSizeImages = YES;
+                                  AlbumVars.shared.hasLargeSizeImages = YES;
                               } else if ([size isEqualToString:@"xlarge"]) {
-                                  [Model sharedInstance].hasXLargeSizeImages = YES;
+                                  AlbumVars.shared.hasXLargeSizeImages = YES;
                               } else if ([size isEqualToString:@"xxlarge"]) {
-                                  [Model sharedInstance].hasXXLargeSizeImages = YES;
+                                  AlbumVars.shared.hasXXLargeSizeImages = YES;
                               }
                           }
                           
                           // Check that the actual default album thumbnail size is available
                           // and select the next available size in case of unavailability
-                          switch ([Model sharedInstance].defaultAlbumThumbnailSize) {
+                          switch (AlbumVars.shared.defaultAlbumThumbnailSize) {
                               case kPiwigoImageSizeSquare:
                                   // Should always be available
                                   break;
@@ -295,60 +292,60 @@
                                   // Should always be available
                                   break;
                               case kPiwigoImageSizeXXSmall:
-                                  if (![Model sharedInstance].hasXXSmallSizeImages) {
+                                  if (!AlbumVars.shared.hasXXSmallSizeImages) {
                                       // Look for next available larger size
-                                      if ([Model sharedInstance].hasXSmallSizeImages) {
-                                          [Model sharedInstance].defaultAlbumThumbnailSize = kPiwigoImageSizeXSmall;
-                                      } else if ([Model sharedInstance].hasSmallSizeImages) {
-                                          [Model sharedInstance].defaultAlbumThumbnailSize = kPiwigoImageSizeSmall;
+                                      if (AlbumVars.shared.hasXSmallSizeImages) {
+                                          AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeXSmall;
+                                      } else if (AlbumVars.shared.hasSmallSizeImages) {
+                                          AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeSmall;
                                       } else {
-                                          [Model sharedInstance].defaultAlbumThumbnailSize = kPiwigoImageSizeMedium;
+                                          AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeMedium;
                                       }
                                   }
                                   break;
                               case kPiwigoImageSizeXSmall:
-                                  if (![Model sharedInstance].hasXSmallSizeImages) {
+                                  if (!AlbumVars.shared.hasXSmallSizeImages) {
                                       // Look for next available larger size
-                                      if ([Model sharedInstance].hasSmallSizeImages) {
-                                          [Model sharedInstance].defaultAlbumThumbnailSize = kPiwigoImageSizeSmall;
+                                      if (AlbumVars.shared.hasSmallSizeImages) {
+                                          AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeSmall;
                                       } else {
-                                          [Model sharedInstance].defaultAlbumThumbnailSize = kPiwigoImageSizeMedium;
+                                          AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeMedium;
                                       }
                                   }
                                   break;
                               case kPiwigoImageSizeSmall:
-                                  if (![Model sharedInstance].hasSmallSizeImages) {
+                                  if (!AlbumVars.shared.hasSmallSizeImages) {
                                       // Select next available larger size
-                                      [Model sharedInstance].defaultAlbumThumbnailSize = kPiwigoImageSizeMedium;
+                                      AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeMedium;
                                   }
                                   break;
                               case kPiwigoImageSizeMedium:
                                   // Should always be available
                                   break;
                               case kPiwigoImageSizeLarge:
-                                  if (![Model sharedInstance].hasLargeSizeImages) {
-                                      [Model sharedInstance].defaultAlbumThumbnailSize = kPiwigoImageSizeMedium;
+                                  if (!AlbumVars.shared.hasLargeSizeImages) {
+                                      AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeMedium;
                                   }
                                   break;
                               case kPiwigoImageSizeXLarge:
-                                  if (![Model sharedInstance].hasXLargeSizeImages) {
-                                      [Model sharedInstance].defaultAlbumThumbnailSize = kPiwigoImageSizeMedium;
+                                  if (!AlbumVars.shared.hasXLargeSizeImages) {
+                                      AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeMedium;
                                   }
                                   break;
                               case kPiwigoImageSizeXXLarge:
-                                  if (![Model sharedInstance].hasXXLargeSizeImages) {
-                                      [Model sharedInstance].defaultAlbumThumbnailSize = kPiwigoImageSizeMedium;
+                                  if (!AlbumVars.shared.hasXXLargeSizeImages) {
+                                      AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeMedium;
                                   }
                                   break;
                               case kPiwigoImageSizeFullRes:
                               default:
-                                  [Model sharedInstance].defaultAlbumThumbnailSize = kPiwigoImageSizeMedium;
+                                  AlbumVars.shared.defaultAlbumThumbnailSize = kPiwigoImageSizeMedium;
                                   break;
                           }
                           
                           // Check that the actual default image thumbnail size is available
                           // and select the next available size in case of unavailability
-                          switch ([Model sharedInstance].defaultThumbnailSize) {
+                          switch (AlbumVars.shared.defaultThumbnailSize) {
                               case kPiwigoImageSizeSquare:
                                   // Should always be available
                                   break;
@@ -356,67 +353,67 @@
                                   // Should always be available
                                   break;
                               case kPiwigoImageSizeXXSmall:
-                                  if (![Model sharedInstance].hasXXSmallSizeImages) {
+                                  if (!AlbumVars.shared.hasXXSmallSizeImages) {
                                       // Look for next available larger size
-                                      if ([Model sharedInstance].hasXSmallSizeImages) {
-                                          [Model sharedInstance].defaultThumbnailSize = kPiwigoImageSizeXSmall;
-                                      } else if ([Model sharedInstance].hasSmallSizeImages) {
-                                          [Model sharedInstance].defaultThumbnailSize = kPiwigoImageSizeSmall;
+                                      if (AlbumVars.shared.hasXSmallSizeImages) {
+                                          AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeXSmall;
+                                      } else if (AlbumVars.shared.hasSmallSizeImages) {
+                                          AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeSmall;
                                       } else {
-                                          [Model sharedInstance].defaultThumbnailSize = kPiwigoImageSizeMedium;
+                                          AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeMedium;
                                       }
                                   }
                                   break;
                               case kPiwigoImageSizeXSmall:
-                                  if (![Model sharedInstance].hasXSmallSizeImages) {
+                                  if (!AlbumVars.shared.hasXSmallSizeImages) {
                                       // Look for next available larger size
-                                      if ([Model sharedInstance].hasSmallSizeImages) {
-                                          [Model sharedInstance].defaultThumbnailSize = kPiwigoImageSizeSmall;
+                                      if (AlbumVars.shared.hasSmallSizeImages) {
+                                          AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeSmall;
                                       } else {
-                                          [Model sharedInstance].defaultThumbnailSize = kPiwigoImageSizeMedium;
+                                          AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeMedium;
                                       }
                                   }
                                   break;
                               case kPiwigoImageSizeSmall:
-                                  if (![Model sharedInstance].hasSmallSizeImages) {
+                                  if (!AlbumVars.shared.hasSmallSizeImages) {
                                       // Select next available larger size
-                                      [Model sharedInstance].defaultThumbnailSize = kPiwigoImageSizeMedium;
+                                      AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeMedium;
                                   }
                                   break;
                               case kPiwigoImageSizeMedium:
                                   // Should always be available
                                   break;
                               case kPiwigoImageSizeLarge:
-                                  if (![Model sharedInstance].hasLargeSizeImages) {
-                                      [Model sharedInstance].defaultThumbnailSize = kPiwigoImageSizeMedium;
+                                  if (!AlbumVars.shared.hasLargeSizeImages) {
+                                      AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeMedium;
                                   }
                                   break;
                               case kPiwigoImageSizeXLarge:
-                                  if (![Model sharedInstance].hasXLargeSizeImages) {
-                                      [Model sharedInstance].defaultThumbnailSize = kPiwigoImageSizeMedium;
+                                  if (!AlbumVars.shared.hasXLargeSizeImages) {
+                                      AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeMedium;
                                   }
                                   break;
                               case kPiwigoImageSizeXXLarge:
-                                  if (![Model sharedInstance].hasXXLargeSizeImages) {
-                                      [Model sharedInstance].defaultThumbnailSize = kPiwigoImageSizeMedium;
+                                  if (!AlbumVars.shared.hasXXLargeSizeImages) {
+                                      AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeMedium;
                                   }
                                   break;
                               case kPiwigoImageSizeFullRes:
                               default:
-                                  [Model sharedInstance].defaultThumbnailSize = kPiwigoImageSizeMedium;
+                                  AlbumVars.shared.defaultThumbnailSize = kPiwigoImageSizeMedium;
                                   break;
                           }
 
                           // Calculate number of thumbnails per row for that selection
-                          NSInteger minNberOfImages = [ImagesCollection imagesPerRowInPortraitForView:nil maxWidth:[PiwigoImageData widthForImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultThumbnailSize]];
+                          NSInteger minNberOfImages = [ImagesCollection imagesPerRowInPortraitForView:nil maxWidth:[PiwigoImageData widthForImageSizeType:(kPiwigoImageSize)AlbumVars.shared.defaultThumbnailSize]];
 
                           // Make sure that default number fits inside selected range
-                          [Model sharedInstance].thumbnailsPerRowInPortrait = MAX([Model sharedInstance].thumbnailsPerRowInPortrait, minNberOfImages);
-                          [Model sharedInstance].thumbnailsPerRowInPortrait = MIN([Model sharedInstance].thumbnailsPerRowInPortrait, 2*minNberOfImages);
+                          AlbumVars.shared.thumbnailsPerRowInPortrait = MAX(AlbumVars.shared.thumbnailsPerRowInPortrait, minNberOfImages);
+                          AlbumVars.shared.thumbnailsPerRowInPortrait = MIN(AlbumVars.shared.thumbnailsPerRowInPortrait, 2*minNberOfImages);
 
                           // Check that the actual default image preview size is still available
                           // and select the next available size in case of unavailability
-                          switch ([Model sharedInstance].defaultImagePreviewSize) {
+                          switch (ImageVars.shared.defaultImagePreviewSize) {
                               case kPiwigoImageSizeSquare:
                                   // Should always be available
                                   break;
@@ -424,70 +421,69 @@
                                   // Should always be available
                                   break;
                               case kPiwigoImageSizeXXSmall:
-                                  if (![Model sharedInstance].hasXXSmallSizeImages) {
+                                  if (!AlbumVars.shared.hasXXSmallSizeImages) {
                                       // Look for next available larger size
-                                      if ([Model sharedInstance].hasXSmallSizeImages) {
-                                          [Model sharedInstance].defaultImagePreviewSize = kPiwigoImageSizeXSmall;
-                                      } else if ([Model sharedInstance].hasSmallSizeImages) {
-                                          [Model sharedInstance].defaultImagePreviewSize = kPiwigoImageSizeSmall;
+                                      if (AlbumVars.shared.hasXSmallSizeImages) {
+                                          ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeXSmall;
+                                      } else if (AlbumVars.shared.hasSmallSizeImages) {
+                                          ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeSmall;
                                       } else {
-                                          [Model sharedInstance].defaultImagePreviewSize = kPiwigoImageSizeMedium;
+                                          ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeMedium;
                                       }
                                   }
                                   break;
                               case kPiwigoImageSizeXSmall:
-                                  if (![Model sharedInstance].hasXSmallSizeImages) {
+                                  if (!AlbumVars.shared.hasXSmallSizeImages) {
                                       // Look for next available larger size
-                                      if ([Model sharedInstance].hasSmallSizeImages) {
-                                          [Model sharedInstance].defaultImagePreviewSize = kPiwigoImageSizeSmall;
+                                      if (AlbumVars.shared.hasSmallSizeImages) {
+                                          ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeSmall;
                                       } else {
-                                          [Model sharedInstance].defaultImagePreviewSize = kPiwigoImageSizeMedium;
+                                          ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeMedium;
                                       }
                                   }
                                   break;
                               case kPiwigoImageSizeSmall:
-                                  if (![Model sharedInstance].hasSmallSizeImages) {
+                                  if (!AlbumVars.shared.hasSmallSizeImages) {
                                       // Select next available larger size
-                                      [Model sharedInstance].defaultImagePreviewSize = kPiwigoImageSizeMedium;
+                                      ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeMedium;
                                   }
                                   break;
                               case kPiwigoImageSizeMedium:
                                   // Should always be available
                                   break;
                               case kPiwigoImageSizeLarge:
-                                  if (![Model sharedInstance].hasLargeSizeImages) {
+                                  if (!AlbumVars.shared.hasLargeSizeImages) {
                                       // Look for next available larger size
-                                      if ([Model sharedInstance].hasXLargeSizeImages) {
-                                          [Model sharedInstance].defaultImagePreviewSize = kPiwigoImageSizeXLarge;
-                                      } else if ([Model sharedInstance].hasXXLargeSizeImages) {
-                                          [Model sharedInstance].defaultImagePreviewSize = kPiwigoImageSizeXXLarge;
+                                      if (AlbumVars.shared.hasXLargeSizeImages) {
+                                          ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeXLarge;
+                                      } else if (AlbumVars.shared.hasXXLargeSizeImages) {
+                                          ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeXXLarge;
                                       } else {
-                                          [Model sharedInstance].defaultImagePreviewSize = kPiwigoImageSizeFullRes;
+                                          ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeFullRes;
                                       }
                                   }
                                   break;
                               case kPiwigoImageSizeXLarge:
-                                  if (![Model sharedInstance].hasXLargeSizeImages) {
+                                  if (!AlbumVars.shared.hasXLargeSizeImages) {
                                       // Look for next available larger size
-                                      if ([Model sharedInstance].hasXXLargeSizeImages) {
-                                          [Model sharedInstance].defaultImagePreviewSize = kPiwigoImageSizeXXLarge;
+                                      if (AlbumVars.shared.hasXXLargeSizeImages) {
+                                          ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeXXLarge;
                                       } else {
-                                          [Model sharedInstance].defaultImagePreviewSize = kPiwigoImageSizeFullRes;
+                                          ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeFullRes;
                                       }
                                   }
                                   break;
                               case kPiwigoImageSizeXXLarge:
-                                  if (![Model sharedInstance].hasXXLargeSizeImages) {
-                                      [Model sharedInstance].defaultImagePreviewSize = kPiwigoImageSizeFullRes;
+                                  if (!AlbumVars.shared.hasXXLargeSizeImages) {
+                                      ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeFullRes;
                                   }
                                   break;
                               case kPiwigoImageSizeFullRes:
                               default:
-                                  [Model sharedInstance].defaultImagePreviewSize = kPiwigoImageSizeFullRes;
+                                  ImageVars.shared.defaultImagePreviewSize = kPiwigoImageSizeFullRes;
                                   break;
                           }
                       }
-                      [[Model sharedInstance] saveToDisk];
 
                       if(completion) { completion(result); }
                   } else {
@@ -511,9 +507,9 @@
     return [self post:kCommunitySessionGetStatus
         URLParameters:nil
            parameters:nil
-       sessionManager:[Model sharedInstance].sessionManager
+       sessionManager:NetworkVars.shared.sessionManager
              progress:^(NSProgress * progress) {
-                 if ([Model sharedInstance].userCancelledCommunication) {
+                 if (NetworkVars.shared.userCancelledCommunication) {
                      [progress cancel];
                  }
              }
@@ -523,16 +519,16 @@
                       if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
                       {
                           NSString *userStatus = [[responseObject objectForKey:@"result" ] objectForKey:@"real_user_status"];
-                          [Model sharedInstance].hasAdminRights = ([userStatus isEqualToString:@"admin"] || [userStatus isEqualToString:@"webmaster"]);
-                          [Model sharedInstance].hasNormalRights = [userStatus isEqualToString:@"normal"];
+                          NetworkVars.shared.hasAdminRights = ([userStatus isEqualToString:@"admin"] || [userStatus isEqualToString:@"webmaster"]);
+                          NetworkVars.shared.hasNormalRights = [userStatus isEqualToString:@"normal"];
 
                           completion([responseObject objectForKey:@"result"]);
                       }
                       else
                       {
-                          [Model sharedInstance].hasAdminRights = NO;
-                          [Model sharedInstance].hasNormalRights = NO;
-                          [Model sharedInstance].usesUploadAsync = NO;
+                          NetworkVars.shared.hasAdminRights = NO;
+                          NetworkVars.shared.hasNormalRights = NO;
+                          NetworkVars.shared.usesUploadAsync = NO;
                           completion(nil);
                       }
                   }
@@ -550,7 +546,7 @@
 	return [self post:kPiwigoSessionLogout
 		URLParameters:nil
            parameters:nil
-       sessionManager:[Model sharedInstance].sessionManager
+       sessionManager:NetworkVars.shared.sessionManager
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
 

@@ -51,8 +51,8 @@ extension UploadProperties {
             category: category,
             
             // Server parameters
-            serverPath: Model.sharedInstance()?.serverPath ?? "",
-            serverFileTypes: Model.sharedInstance()?.serverFileTypes ?? "jpg,jpeg,png,gif",
+            serverPath: NetworkVars.shared.serverPath,
+            serverFileTypes: UploadVars.shared.serverFileTypes,
             
             // Upload request date is now and state is waiting
             requestDate: Date().timeIntervalSinceReferenceDate,
@@ -63,23 +63,23 @@ extension UploadProperties {
             mimeType: "", md5Sum: "", isVideo: false,
             
             // Photo author name defaults to name entered in Settings
-            author: Model.sharedInstance()?.defaultAuthor ?? "",
+            author: UploadVars.shared.defaultAuthor,
             
             // Privacy level defaults to level selected in Settings
-            privacyLevel: Model.sharedInstance()?.defaultPrivacyLevel ?? kPiwigoPrivacyEverybody,
+            privacyLevel: kPiwigoPrivacy(UploadVars.shared.defaultPrivacyLevel),
             
             // No title, comment, tag, filename by default, image ID unknown
             imageTitle: "", comment: "", tagIds: "", imageId: NSNotFound,
             
             // Upload settings
-            stripGPSdataOnUpload: Model.sharedInstance()?.stripGPSdataOnUpload ?? false,
-            resizeImageOnUpload: Model.sharedInstance()?.resizeImageOnUpload ?? false,
-            photoResize: Int16(Model.sharedInstance()?.photoResize ?? 100),
-            compressImageOnUpload: Model.sharedInstance()?.compressImageOnUpload ?? false,
-            photoQuality: Int16(Model.sharedInstance()?.photoQuality ?? 98),
-            prefixFileNameBeforeUpload: Model.sharedInstance()?.prefixFileNameBeforeUpload ?? false,
-            defaultPrefix: Model.sharedInstance()?.defaultPrefix ?? "",
-            deleteImageAfterUpload: Model.sharedInstance()?.deleteImageAfterUpload ?? false,
+            stripGPSdataOnUpload: UploadVars.shared.stripGPSdataOnUpload,
+            resizeImageOnUpload: UploadVars.shared.resizeImageOnUpload,
+            photoResize: UploadVars.shared.photoResize,
+            compressImageOnUpload: UploadVars.shared.compressImageOnUpload,
+            photoQuality: UploadVars.shared.photoQuality,
+            prefixFileNameBeforeUpload: UploadVars.shared.prefixFileNameBeforeUpload,
+            defaultPrefix: UploadVars.shared.defaultPrefix,
+            deleteImageAfterUpload: UploadVars.shared.deleteImageAfterUpload,
             markedForAutoUpload: false)
     }
     

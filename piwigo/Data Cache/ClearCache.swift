@@ -27,8 +27,8 @@ class ClearCache: NSObject {
         if !exceptCategories { CategoriesData.sharedInstance().clearCache() }
 
         // URL requests
-        Model.sharedInstance()?.imageCache.removeAllCachedResponses()
-        Model.sharedInstance()?.thumbnailCache.removeAllImages()
+        NetworkVars.shared.imageCache?.removeAllCachedResponses()
+        NetworkVars.shared.thumbnailCache?.removeAllImages()
         
         // Clean up /tmp directory
         let appDelegate = UIApplication.shared.delegate as? AppDelegate

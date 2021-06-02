@@ -32,6 +32,111 @@ NSInteger const kDelayPiwigoHUD = 500;
 
 @interface Model()
 
+// Network variables
+@property (nonatomic, strong) NSString *serverProtocol;
+@property (nonatomic, strong) NSString *serverPath;
+@property (nonatomic, assign) NSUInteger stringEncoding;
+@property (nonatomic, strong) NSString *HttpUsername;
+@property (nonatomic, strong) NSString *username;
+
+@property (nonatomic, strong) AFHTTPSessionManager *sessionManager;
+@property (nonatomic, strong) AFHTTPSessionManager *imagesSessionManager;
+@property (nonatomic, strong) NSURLCache *imageCache;
+@property (nonatomic, strong) AFAutoPurgingImageCache *thumbnailCache;
+
+@property (nonatomic, assign) BOOL usesCommunityPluginV29;
+@property (nonatomic, assign) BOOL usesUploadAsync;
+@property (nonatomic, assign) BOOL didFailHTTPauthentication;
+@property (nonatomic, assign) BOOL didApproveCertificate;
+@property (nonatomic, assign) BOOL didRejectCertificate;
+@property (nonatomic, strong) NSString *certificateInformation;
+@property (nonatomic, assign) BOOL userCancelledCommunication;
+@property (nonatomic, assign) BOOL hasNormalRights;
+@property (nonatomic, assign) BOOL hasAdminRights;
+@property (nonatomic, assign) BOOL hadOpenedSession;
+@property (nonatomic, strong) NSDate *dateOfLastLogin;
+@property (nonatomic, strong) NSString *pwgToken;
+@property (nonatomic, strong) NSString *language;
+@property (nonatomic, strong) NSString *version;
+
+// Album variables
+@property (nonatomic, assign) NSInteger defaultCategory;
+@property (nonatomic, assign) kPiwigoImageSize defaultAlbumThumbnailSize;
+@property (nonatomic, strong) NSString *recentCategories;
+@property (nonatomic, assign) NSInteger maxNberRecentCategories;
+@property (nonatomic, assign) kPiwigoSort defaultSort;
+@property (nonatomic, assign) BOOL displayImageTitles;
+@property (nonatomic, assign) kPiwigoImageSize defaultThumbnailSize;
+@property (nonatomic, assign) NSInteger thumbnailsPerRowInPortrait;
+
+// Available image sizes
+@property (nonatomic, assign) BOOL hasSquareSizeImages;
+@property (nonatomic, assign) BOOL hasThumbSizeImages;
+@property (nonatomic, assign) BOOL hasXXSmallSizeImages;
+@property (nonatomic, assign) BOOL hasXSmallSizeImages;
+@property (nonatomic, assign) BOOL hasSmallSizeImages;
+@property (nonatomic, assign) BOOL hasMediumSizeImages;
+@property (nonatomic, assign) BOOL hasLargeSizeImages;
+@property (nonatomic, assign) BOOL hasXLargeSizeImages;
+@property (nonatomic, assign) BOOL hasXXLargeSizeImages;
+
+// Image variables
+@property (nonatomic, assign) kPiwigoImageSize defaultImagePreviewSize;
+@property (nonatomic, assign) BOOL shareMetadataTypeAirDrop;
+@property (nonatomic, assign) BOOL shareMetadataTypeAssignToContact;
+@property (nonatomic, assign) BOOL shareMetadataTypeCopyToPasteboard;
+@property (nonatomic, assign) BOOL shareMetadataTypeMail;
+@property (nonatomic, assign) BOOL shareMetadataTypeMessage;
+@property (nonatomic, assign) BOOL shareMetadataTypePostToFacebook;
+@property (nonatomic, assign) BOOL shareMetadataTypeMessenger;
+@property (nonatomic, assign) BOOL shareMetadataTypePostToFlickr;
+@property (nonatomic, assign) BOOL shareMetadataTypePostInstagram;
+@property (nonatomic, assign) BOOL shareMetadataTypePostToSignal;
+@property (nonatomic, assign) BOOL shareMetadataTypePostToSnapchat;
+@property (nonatomic, assign) BOOL shareMetadataTypePostToTencentWeibo;
+@property (nonatomic, assign) BOOL shareMetadataTypePostToTwitter;
+@property (nonatomic, assign) BOOL shareMetadataTypePostToVimeo;
+@property (nonatomic, assign) BOOL shareMetadataTypePostToWeibo;
+@property (nonatomic, assign) BOOL shareMetadataTypePostToWhatsApp;
+@property (nonatomic, assign) BOOL shareMetadataTypeSaveToCameraRoll;
+@property (nonatomic, assign) BOOL shareMetadataTypeOther;
+
+// App variables - orientation, Core Data migration issue
+@property (nonatomic, assign) BOOL isAppLanguageRTL;
+@property (nonatomic, assign) BOOL couldNotMigrateCoreDataStore;
+@property (nonatomic, assign) BOOL isDarkPaletteActive;
+@property (nonatomic, assign) BOOL switchPaletteAutomatically;
+@property (nonatomic, assign) NSInteger switchPaletteThreshold;
+@property (nonatomic, assign) BOOL isDarkPaletteModeActive;
+@property (nonatomic, assign) BOOL isLightPaletteModeActive;
+@property (nonatomic, assign) BOOL isSystemDarkModeActive;
+@property (nonatomic, assign) NSInteger memoryCache;
+@property (nonatomic, assign) NSInteger diskCache;
+@property (nonatomic, assign) UInt16 didWatchHelpViews;
+@property (nonatomic, assign) NSTimeInterval dateOfLastTranslationRequest;
+@property (nonatomic, assign) BOOL available;               // Unused, i.e. available flag
+
+// Default image upload settings
+@property (nonatomic, assign) kPiwigoSort localImagesSort;
+@property (nonatomic, strong) NSString *defaultAuthor;
+@property (nonatomic, assign) kPiwigoPrivacy defaultPrivacyLevel;
+@property (nonatomic, assign) BOOL stripGPSdataOnUpload;
+@property (nonatomic, assign) BOOL resizeImageOnUpload;
+@property (nonatomic, assign) NSInteger photoResize;
+@property (nonatomic, assign) BOOL compressImageOnUpload;
+@property (nonatomic, assign) NSInteger photoQuality;
+@property (nonatomic, assign) BOOL deleteImageAfterUpload;
+@property (nonatomic, assign) BOOL prefixFileNameBeforeUpload;
+@property (nonatomic, strong) NSString *defaultPrefix;
+@property (nonatomic, strong) NSString *serverFileTypes;
+@property (nonatomic, assign) NSInteger uploadChunkSize;
+@property (nonatomic, assign) BOOL wifiOnlyUploading;
+@property (nonatomic, assign) BOOL isAutoUploadActive;
+@property (nonatomic, strong) NSString *autoUploadAlbumId;
+@property (nonatomic, assign) NSInteger autoUploadCategoryId;
+@property (nonatomic, strong) NSString *autoUploadTagIds;
+@property (nonatomic, strong) NSString *autoUploadComments;
+
 @end
 
 @implementation Model
@@ -93,7 +198,6 @@ NSInteger const kDelayPiwigoHUD = 500;
         instance.thumbnailsPerRowInPortrait = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ? 4 : 6;
 
         // Default image settings
-        instance.couldNotMigrateCoreDataStore = NO;
 		instance.defaultImagePreviewSize = [PiwigoImageData optimumImageSizeForDevice];
         instance.shareMetadataTypeAirDrop = YES;
         instance.shareMetadataTypeAssignToContact = NO;
@@ -141,6 +245,7 @@ NSInteger const kDelayPiwigoHUD = 500;
         instance.isSystemDarkModeActive = NO;
         
         // Default cache settings
+        instance.couldNotMigrateCoreDataStore = NO;
         instance.available = YES;                           // Available…
 		instance.diskCache = kPiwigoDiskCacheMin * 4;       // i.e. 512 MB
 		instance.memoryCache = kPiwigoMemoryCacheInc * 2;   // i.e. 16 MB
@@ -150,8 +255,6 @@ NSInteger const kDelayPiwigoHUD = 500;
         
         // Request help for translating Piwigo every 2 weeks or so
         instance.dateOfLastTranslationRequest = [[NSDate date] timeIntervalSinceReferenceDate] - k2WeeksInDays;
-
-        [instance readFromDisk];
 	});
 	return instance;
 }
@@ -223,158 +326,137 @@ NSInteger const kDelayPiwigoHUD = 500;
 	{
 		NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:codedData];
 		Model *modelData = [unarchiver decodeObjectForKey:@"Model"];
+        
+        // => Network variables stored in UserDefaults / App Group
 		self.serverProtocol = modelData.serverProtocol;
+        NetworkVars.shared.serverProtocol = modelData.serverProtocol;
 		self.serverPath = modelData.serverPath;
-		self.defaultPrivacyLevel = modelData.defaultPrivacyLevel;
-		self.defaultAuthor = modelData.defaultAuthor;
-		self.diskCache = modelData.diskCache;
-		self.memoryCache = modelData.memoryCache;
-		self.photoQuality = modelData.photoQuality;
-		self.photoResize = modelData.photoResize;
-		self.available = modelData.available;
-		self.defaultSort = modelData.defaultSort;
-		self.resizeImageOnUpload = modelData.resizeImageOnUpload;
-		self.defaultImagePreviewSize = modelData.defaultImagePreviewSize;
-        self.stripGPSdataOnUpload = modelData.stripGPSdataOnUpload;
-        self.defaultThumbnailSize = modelData.defaultThumbnailSize;
-        self.displayImageTitles = modelData.displayImageTitles;
-        self.compressImageOnUpload = modelData.compressImageOnUpload;
-        self.deleteImageAfterUpload = modelData.deleteImageAfterUpload;
-        self.username = modelData.username;
-        self.HttpUsername = modelData.HttpUsername;
-        self.isDarkPaletteActive = modelData.isDarkPaletteActive;
-        self.switchPaletteAutomatically = modelData.switchPaletteAutomatically;
-        self.switchPaletteThreshold = modelData.switchPaletteThreshold;
-        self.isDarkPaletteModeActive = modelData.isDarkPaletteModeActive;
-        self.thumbnailsPerRowInPortrait = modelData.thumbnailsPerRowInPortrait;
-        self.defaultCategory = modelData.defaultCategory;
-        self.dateOfLastTranslationRequest = modelData.dateOfLastTranslationRequest;
-        self.couldNotMigrateCoreDataStore = modelData.couldNotMigrateCoreDataStore;
-        self.shareMetadataTypeAirDrop = modelData.shareMetadataTypeAirDrop;
-        self.shareMetadataTypeAssignToContact = modelData.shareMetadataTypeAssignToContact;
-        self.shareMetadataTypeCopyToPasteboard = modelData.shareMetadataTypeCopyToPasteboard;
-        self.shareMetadataTypeMail = modelData.shareMetadataTypeMail;
-        self.shareMetadataTypeMessage = modelData.shareMetadataTypeMessage;
-        self.shareMetadataTypePostToFacebook = modelData.shareMetadataTypePostToFacebook;
-        self.shareMetadataTypeMessenger = modelData.shareMetadataTypeMessenger;
-        self.shareMetadataTypePostToFlickr = modelData.shareMetadataTypePostToFlickr;
-        self.shareMetadataTypePostInstagram = modelData.shareMetadataTypePostInstagram;
-        self.shareMetadataTypePostToSignal = modelData.shareMetadataTypePostToSignal;
-        self.shareMetadataTypePostToSnapchat = modelData.shareMetadataTypePostToSnapchat;
-        self.shareMetadataTypePostToTencentWeibo = modelData.shareMetadataTypePostToTencentWeibo;
-        self.shareMetadataTypePostToTwitter = modelData.shareMetadataTypePostToTwitter;
-        self.shareMetadataTypePostToVimeo = modelData.shareMetadataTypePostToVimeo;
-        self.shareMetadataTypePostToWeibo = modelData.shareMetadataTypePostToWeibo;
-        self.shareMetadataTypePostToWhatsApp = modelData.shareMetadataTypePostToWhatsApp;
-        self.shareMetadataTypeSaveToCameraRoll = modelData.shareMetadataTypeSaveToCameraRoll;
-        self.shareMetadataTypeOther = modelData.shareMetadataTypeOther;
-        self.uploadChunkSize = modelData.uploadChunkSize;
+        NetworkVars.shared.serverPath = modelData.serverPath;
         self.stringEncoding = modelData.stringEncoding;
+        NetworkVars.shared.stringEncoding = modelData.stringEncoding;
+        self.HttpUsername = modelData.HttpUsername;
+        NetworkVars.shared.httpUsername = modelData.HttpUsername;
+        self.username = modelData.username;
+        NetworkVars.shared.username = modelData.username;
+
+        // Album variables stored in UserDefaults / Standard
+        self.defaultCategory = modelData.defaultCategory;
+        AlbumVars.shared.defaultCategory = modelData.defaultCategory;
         self.defaultAlbumThumbnailSize = modelData.defaultAlbumThumbnailSize;
+        AlbumVars.shared.defaultAlbumThumbnailSize = modelData.defaultAlbumThumbnailSize;
         self.recentCategories = modelData.recentCategories;
+        AlbumVars.shared.recentCategories = modelData.recentCategories;
         self.maxNberRecentCategories = modelData.maxNberRecentCategories;
-        self.prefixFileNameBeforeUpload = modelData.prefixFileNameBeforeUpload;
-        self.defaultPrefix = modelData.defaultPrefix;
-        self.localImagesSort = modelData.localImagesSort;
-        self.wifiOnlyUploading = modelData.wifiOnlyUploading;
+        AlbumVars.shared.maxNberRecentCategories = modelData.maxNberRecentCategories;
+        self.defaultSort = modelData.defaultSort;
+        AlbumVars.shared.defaultSort = modelData.defaultSort;
+        self.displayImageTitles = modelData.displayImageTitles;
+        AlbumVars.shared.displayImageTitles = modelData.displayImageTitles;
+        self.defaultThumbnailSize = modelData.defaultThumbnailSize;
+        AlbumVars.shared.defaultThumbnailSize = modelData.defaultThumbnailSize;
+        self.thumbnailsPerRowInPortrait = modelData.thumbnailsPerRowInPortrait;
+        AlbumVars.shared.thumbnailsPerRowInPortrait = modelData.thumbnailsPerRowInPortrait;
+
+        self.defaultImagePreviewSize = modelData.defaultImagePreviewSize;
+        ImageVars.shared.defaultImagePreviewSize = modelData.defaultImagePreviewSize;
+        self.shareMetadataTypeAirDrop = modelData.shareMetadataTypeAirDrop;
+        ImageVars.shared.shareMetadataTypeAirDrop = modelData.shareMetadataTypeAirDrop;
+        self.shareMetadataTypeAssignToContact = modelData.shareMetadataTypeAssignToContact;
+        ImageVars.shared.shareMetadataTypeAssignToContact = modelData.shareMetadataTypeAssignToContact;
+        self.shareMetadataTypeCopyToPasteboard = modelData.shareMetadataTypeCopyToPasteboard;
+        ImageVars.shared.shareMetadataTypeCopyToPasteboard = modelData.shareMetadataTypeCopyToPasteboard;
+        self.shareMetadataTypeMail = modelData.shareMetadataTypeMail;
+        ImageVars.shared.shareMetadataTypeMail = modelData.shareMetadataTypeMail;
+        self.shareMetadataTypeMessage = modelData.shareMetadataTypeMessage;
+        ImageVars.shared.shareMetadataTypeMessage = modelData.shareMetadataTypeMessage;
+        self.shareMetadataTypePostToFacebook = modelData.shareMetadataTypePostToFacebook;
+        ImageVars.shared.shareMetadataTypePostToFacebook = modelData.shareMetadataTypePostToFacebook;
+        self.shareMetadataTypeMessenger = modelData.shareMetadataTypeMessenger;
+        ImageVars.shared.shareMetadataTypeMessenger = modelData.shareMetadataTypeMessenger;
+        self.shareMetadataTypePostToFlickr = modelData.shareMetadataTypePostToFlickr;
+        ImageVars.shared.shareMetadataTypePostToFlickr = modelData.shareMetadataTypePostToFlickr;
+        self.shareMetadataTypePostInstagram = modelData.shareMetadataTypePostInstagram;
+        ImageVars.shared.shareMetadataTypePostInstagram = modelData.shareMetadataTypePostInstagram;
+        self.shareMetadataTypePostToSignal = modelData.shareMetadataTypePostToSignal;
+        ImageVars.shared.shareMetadataTypePostToSignal = modelData.shareMetadataTypePostToSignal;
+        self.shareMetadataTypePostToSnapchat = modelData.shareMetadataTypePostToSnapchat;
+        ImageVars.shared.shareMetadataTypePostToSnapchat = modelData.shareMetadataTypePostToSnapchat;
+        self.shareMetadataTypePostToTencentWeibo = modelData.shareMetadataTypePostToTencentWeibo;
+        ImageVars.shared.shareMetadataTypePostToTencentWeibo = modelData.shareMetadataTypePostToTencentWeibo;
+        self.shareMetadataTypePostToTwitter = modelData.shareMetadataTypePostToTwitter;
+        ImageVars.shared.shareMetadataTypePostToTwitter = modelData.shareMetadataTypePostToTwitter;
+        self.shareMetadataTypePostToVimeo = modelData.shareMetadataTypePostToVimeo;
+        ImageVars.shared.shareMetadataTypePostToVimeo = modelData.shareMetadataTypePostToVimeo;
+        self.shareMetadataTypePostToWeibo = modelData.shareMetadataTypePostToWeibo;
+        ImageVars.shared.shareMetadataTypePostToWeibo = modelData.shareMetadataTypePostToWeibo;
+        self.shareMetadataTypePostToWhatsApp = modelData.shareMetadataTypePostToWhatsApp;
+        ImageVars.shared.shareMetadataTypePostToWhatsApp = modelData.shareMetadataTypePostToWhatsApp;
+        self.shareMetadataTypeSaveToCameraRoll = modelData.shareMetadataTypeSaveToCameraRoll;
+        ImageVars.shared.shareMetadataTypeSaveToCameraRoll = modelData.shareMetadataTypeSaveToCameraRoll;
+        self.shareMetadataTypeOther = modelData.shareMetadataTypeOther;
+        ImageVars.shared.shareMetadataTypeOther = modelData.shareMetadataTypeOther;
+
+        self.isDarkPaletteActive = modelData.isDarkPaletteActive;
+        AppVars.shared.isDarkPaletteActive = modelData.isDarkPaletteActive;
+        self.switchPaletteAutomatically = modelData.switchPaletteAutomatically;
+        AppVars.shared.switchPaletteAutomatically = modelData.switchPaletteAutomatically;
+        self.switchPaletteThreshold = modelData.switchPaletteThreshold;
+        AppVars.shared.switchPaletteThreshold = modelData.switchPaletteThreshold;
+        self.isDarkPaletteModeActive = modelData.isDarkPaletteModeActive;
+        AppVars.shared.isDarkPaletteModeActive = modelData.isDarkPaletteModeActive;
+        self.isLightPaletteModeActive = modelData.isLightPaletteModeActive;
+        AppVars.shared.isLightPaletteModeActive = modelData.isLightPaletteModeActive;
+        self.couldNotMigrateCoreDataStore = modelData.couldNotMigrateCoreDataStore;
+        AppVars.shared.couldNotMigrateCoreDataStore = modelData.couldNotMigrateCoreDataStore;
+        self.diskCache = modelData.diskCache;
+        AppVars.shared.diskCache = modelData.diskCache;
+        self.memoryCache = modelData.memoryCache;
+        AppVars.shared.memoryCache = modelData.memoryCache;
         self.didWatchHelpViews = modelData.didWatchHelpViews;
+        AppVars.shared.didWatchHelpViews = modelData.didWatchHelpViews;
+        self.dateOfLastTranslationRequest = modelData.dateOfLastTranslationRequest;
+        AppVars.shared.dateOfLastTranslationRequest = modelData.dateOfLastTranslationRequest;
+
+        self.defaultPrivacyLevel = modelData.defaultPrivacyLevel;
+        UploadVars.shared.defaultPrivacyLevel = modelData.defaultPrivacyLevel;
+		self.defaultAuthor = modelData.defaultAuthor;
+        UploadVars.shared.defaultAuthor = modelData.defaultAuthor;
+		self.photoQuality = modelData.photoQuality;
+        UploadVars.shared.photoQuality = modelData.photoQuality;
+		self.photoResize = modelData.photoResize;
+        UploadVars.shared.photoResize = modelData.photoResize;
+		self.resizeImageOnUpload = modelData.resizeImageOnUpload;
+        UploadVars.shared.resizeImageOnUpload = modelData.resizeImageOnUpload;
+        self.stripGPSdataOnUpload = modelData.stripGPSdataOnUpload;
+        UploadVars.shared.stripGPSdataOnUpload = modelData.stripGPSdataOnUpload;
+        self.compressImageOnUpload = modelData.compressImageOnUpload;
+        UploadVars.shared.compressImageOnUpload = modelData.compressImageOnUpload;
+        self.deleteImageAfterUpload = modelData.deleteImageAfterUpload;
+        UploadVars.shared.deleteImageAfterUpload = modelData.deleteImageAfterUpload;
+        self.uploadChunkSize = modelData.uploadChunkSize;
+        UploadVars.shared.uploadChunkSize = modelData.uploadChunkSize;
+        self.prefixFileNameBeforeUpload = modelData.prefixFileNameBeforeUpload;
+        UploadVars.shared.prefixFileNameBeforeUpload = modelData.prefixFileNameBeforeUpload;
+        self.defaultPrefix = modelData.defaultPrefix;
+        UploadVars.shared.defaultPrefix = modelData.defaultPrefix;
+        self.localImagesSort = modelData.localImagesSort;
+        UploadVars.shared.localImagesSort = modelData.localImagesSort;
+        self.wifiOnlyUploading = modelData.wifiOnlyUploading;
+        UploadVars.shared.wifiOnlyUploading = modelData.wifiOnlyUploading;
         self.isAutoUploadActive = modelData.isAutoUploadActive;
+        UploadVars.shared.isAutoUploadActive = modelData.isAutoUploadActive;
         self.autoUploadAlbumId = modelData.autoUploadAlbumId;
+        UploadVars.shared.autoUploadAlbumId = modelData.autoUploadAlbumId;
         self.autoUploadCategoryId = modelData.autoUploadCategoryId;
+        UploadVars.shared.autoUploadCategoryId = modelData.autoUploadCategoryId;
         self.autoUploadTagIds = modelData.autoUploadTagIds;
+        UploadVars.shared.autoUploadTagIds = modelData.autoUploadTagIds;
         self.autoUploadComments = modelData.autoUploadComments;
+        UploadVars.shared.autoUploadComments = modelData.autoUploadComments;
+        
+        // Delete file which is replaced by UserDefaults default and App Groups
+        [NSFileManager.defaultManager removeItemAtPath:dataPath error:nil];
 	}
-}
-
-- (void)saveToDisk
-{
-	NSString *dataPath = [Model applicationDocumentsDirectory];
-	NSMutableData *data = [[NSMutableData alloc] init];
-	NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:data];
-	[archiver encodeObject:self forKey:@"Model"];
-	[archiver finishEncoding];
-	[data writeToFile:dataPath atomically:YES];
-}
-
-- (void)encodeWithCoder:(NSCoder *)encoder {
-	NSMutableArray *saveObject = [[NSMutableArray alloc] init];
-	[saveObject addObject:self.serverPath];
-	[saveObject addObject:@(self.defaultPrivacyLevel)];
-	[saveObject addObject:self.defaultAuthor];
-	[saveObject addObject:@(self.diskCache)];
-	[saveObject addObject:@(self.memoryCache)];
-	[saveObject addObject:@(self.photoQuality)];
-	[saveObject addObject:@(self.photoResize)];
-	[saveObject addObject:self.serverProtocol];
-	[saveObject addObject:[NSNumber numberWithBool:self.available]];
-	[saveObject addObject:@(self.defaultSort)];
-	[saveObject addObject:[NSNumber numberWithBool:self.resizeImageOnUpload]];
-	[saveObject addObject:@(self.defaultImagePreviewSize)];
-    [saveObject addObject:[NSNumber numberWithBool:self.stripGPSdataOnUpload]];
-    [saveObject addObject:@(self.defaultThumbnailSize)];
-    [saveObject addObject:@(self.displayImageTitles)];
-    // Added in v2.1.5…
-    [saveObject addObject:[NSNumber numberWithBool:self.compressImageOnUpload]];
-    [saveObject addObject:[NSNumber numberWithBool:self.deleteImageAfterUpload]];
-    // Added in v2.1.6…
-    [saveObject addObject:self.username];
-    [saveObject addObject:self.HttpUsername];
-    [saveObject addObject:[NSNumber numberWithBool:self.isDarkPaletteActive]];
-    [saveObject addObject:[NSNumber numberWithBool:self.switchPaletteAutomatically]];
-    [saveObject addObject:@(self.switchPaletteThreshold)];
-    [saveObject addObject:[NSNumber numberWithBool:self.isDarkPaletteModeActive]];
-    // Added in v2.1.8…
-    [saveObject addObject:[NSNumber numberWithInteger:self.thumbnailsPerRowInPortrait]];
-    // Added in v2.2.0…
-    [saveObject addObject:[NSNumber numberWithInteger:self.defaultCategory]];
-    // Added in v2.2.3…
-    [saveObject addObject:[NSNumber numberWithDouble:self.dateOfLastTranslationRequest]];
-    // Added in v2.2.5…
-    [saveObject addObject:[NSNumber numberWithBool:self.couldNotMigrateCoreDataStore]];
-    // Added in v2.3…
-    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypeAirDrop]];
-    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypeAssignToContact]];
-    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypeCopyToPasteboard]];
-    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypeMail]];
-    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypeMessage]];
-    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypePostToFacebook]];
-    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypeMessenger]];
-    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypePostToFlickr]];
-    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypePostInstagram]];
-    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypePostToSignal]];
-    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypePostToSnapchat]];
-    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypePostToTencentWeibo]];
-    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypePostToTwitter]];
-    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypePostToVimeo]];
-    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypePostToWeibo]];
-    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypePostToWhatsApp]];
-    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypeSaveToCameraRoll]];
-    [saveObject addObject:[NSNumber numberWithBool:self.shareMetadataTypeOther]];
-    // Added in v2.4.1…
-    [saveObject addObject:[NSNumber numberWithInteger:self.uploadChunkSize]];
-    [saveObject addObject:[NSNumber numberWithUnsignedInteger:self.stringEncoding]];
-    // Added in v2.4.2…
-    [saveObject addObject:@(self.defaultAlbumThumbnailSize)];
-    // Added in v2.4.5…
-    [saveObject addObject:self.recentCategories];
-    [saveObject addObject:[NSNumber numberWithUnsignedInteger:self.maxNberRecentCategories]];
-    // Added in 2.4.6…
-    [saveObject addObject:[NSNumber numberWithBool:self.prefixFileNameBeforeUpload]];
-    [saveObject addObject:self.defaultPrefix];
-    // Added in 2.5.0…
-    [saveObject addObject:@(self.localImagesSort)];
-    [saveObject addObject:[NSNumber numberWithBool:self.wifiOnlyUploading]];
-    // Added in 2.5.3…
-    [saveObject addObject:[NSNumber numberWithInteger:self.didWatchHelpViews]];
-    // Added in 2.7.0…
-    [saveObject addObject:[NSNumber numberWithBool:self.isLightPaletteModeActive]];
-    [saveObject addObject:[NSNumber numberWithBool:self.isAutoUploadActive]];
-    [saveObject addObject:self.autoUploadAlbumId];
-    [saveObject addObject:[NSNumber numberWithInteger:self.autoUploadCategoryId]];
-    [saveObject addObject:self.autoUploadTagIds];
-    [saveObject addObject:self.autoUploadComments];
-
-    [encoder encodeObject:saveObject forKey:@"Model"];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {

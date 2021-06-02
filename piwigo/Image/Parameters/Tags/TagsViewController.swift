@@ -94,14 +94,14 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
         if #available(iOS 11.0, *) {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = Model.sharedInstance().isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
 
         // Table view
         tagsTableView?.separatorColor = UIColor.piwigoColorSeparator()
-        tagsTableView?.indicatorStyle = Model.sharedInstance().isDarkPaletteActive ? .white : .black
+        tagsTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         tagsTableView?.reloadData()
     }
 
@@ -330,7 +330,7 @@ extension TagsViewController {
             textField.placeholder = NSLocalizedString("tagsAdd_placeholder", comment: "New tag")
             textField.clearButtonMode = .always
             textField.keyboardType = .default
-            textField.keyboardAppearance = Model.sharedInstance().isDarkPaletteActive ? .dark : .default
+            textField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
             textField.autocapitalizationType = .sentences
             textField.autocorrectionType = .yes
             textField.returnKeyType = .continue
@@ -353,7 +353,7 @@ extension TagsViewController {
         }
         alert.view.tintColor = UIColor.piwigoColorOrange()
         if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         } else {
             // Fallback on earlier versions
         }

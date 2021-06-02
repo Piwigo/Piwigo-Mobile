@@ -59,7 +59,7 @@ extension UploadManager {
                     }
                     
                     // Add image to cache when uploaded by admin users
-                    if Model.sharedInstance()?.hasAdminRights ?? false {
+                    if NetworkVars.shared.hasAdminRights {
                         // Prepare image for cache
                         let imageData = PiwigoImageData()
                         imageData.datePosted = Date()
@@ -170,7 +170,7 @@ extension UploadManager {
                         onFailure fail: @escaping (_ task: URLSessionTask?, _ error: NSError?) -> Void) {
         
         // Calculate chunk size
-        let chunkSize = (Model.sharedInstance()?.uploadChunkSize ?? 512) * 1024
+        let chunkSize = UploadVars.shared.uploadChunkSize * 1024
 
         // Get file to upload
         var imageData: Data? = nil
@@ -229,7 +229,7 @@ extension UploadManager {
         var offset = offset
         
         // Calculate this chunk size
-        let chunkSize = (Model.sharedInstance()?.uploadChunkSize ?? 512) * 1024
+        let chunkSize = UploadVars.shared.uploadChunkSize * 1024
         let length = imageData?.count ?? 0
         let thisChunkSize = length - offset > chunkSize ? chunkSize : length - offset
         let chunk = imageData?.subdata(in: offset..<offset + thisChunkSize)
@@ -301,7 +301,7 @@ extension UploadManager {
         }
 
         // Calculate number of chunks
-        let chunkSize = (Model.sharedInstance()?.uploadChunkSize ?? 512) * 1024
+        let chunkSize = UploadVars.shared.uploadChunkSize * 1024
         let chunksDiv : Float = Float(imageData.count) / Float(chunkSize)
         let chunks = Int(chunksDiv.rounded(.up))
         let chunksStr = String(format: "%ld", chunks)
@@ -327,7 +327,7 @@ extension UploadManager {
         let creationDate = dateFormat.string(from: date)
 
         // Initialise credentials, boundary and upload session
-        let username = Model.sharedInstance()?.username ?? ""
+        let username = NetworkVars.shared.username
         let password = SAMKeychain.password(forService: uploadProperties.serverPath, account: username) ?? ""
         let boundary = createBoundary(from: uploadProperties.md5Sum)
         for chunk in 0..<chunks {
@@ -586,8 +586,8 @@ extension UploadManager {
             UploadSessionDelegate.shared.removeCounter(withID: identifier)
 
             // Add image to cache when uploaded by admin users
-            if let getInfos = uploadJSON.data, let imageId = getInfos.imageId, imageId != NSNotFound,
-                Model.sharedInstance()?.hasAdminRights ?? false {
+            if let getInfos = uploadJSON.data, let imageId = getInfos.imageId,
+               imageId != NSNotFound, NetworkVars.shared.hasAdminRights {
 
                 // Update UI (fill progress bar)
                 if !isExecutingBackgroundUploadTask {

@@ -40,7 +40,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     private var _categoryId: Int?
     private var categoryId: Int {
         get {
-            return _categoryId ?? Model.sharedInstance().defaultCategory
+            return _categoryId ?? AlbumVars.shared.defaultCategory
         }
         set(categoryId) {
             _categoryId = categoryId
@@ -241,7 +241,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         if #available(iOS 11.0, *) {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = Model.sharedInstance().isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
@@ -253,7 +253,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             legendBarItem = UIBarButtonItem(customView: legendLabel)
             toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
             navigationController?.toolbar.barTintColor = UIColor.piwigoColorBackground()
-            navigationController?.toolbar.barStyle = Model.sharedInstance().isDarkPaletteActive ? .black : .default
+            navigationController?.toolbar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         }
         else {
             // Fallback on earlier versions
@@ -261,14 +261,14 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             segmentedControl.superview?.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.8)
             if #available(iOS 13.0, *) {
                 // Keep standard background color
-                segmentedControl.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+                segmentedControl.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
             } else {
                 segmentedControl.backgroundColor = UIColor(red: 0.0, green: 0.0, blue: 0.08, alpha: 0.06666)
             }
         }
 
         // Collection view
-        localImagesCollection.indicatorStyle = Model.sharedInstance().isDarkPaletteActive ? .white : .black
+        localImagesCollection.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         localImagesCollection.reloadData()
     }
 
@@ -777,7 +777,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     private func getImageIndex(for indexPath:IndexPath) -> Int {
         switch sortType {
         case .month:
-            switch Model.sharedInstance().localImagesSort {
+            switch kPiwigoSort(UploadVars.shared.localImagesSort) {
             case kPiwigoSortDateCreatedDescending:
                 return indexOfImageSortedByMonth[indexPath.section].first! + indexPath.row
             case kPiwigoSortDateCreatedAscending:
@@ -787,7 +787,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 return 0
             }
         case .week:
-            switch Model.sharedInstance().localImagesSort {
+            switch kPiwigoSort(UploadVars.shared.localImagesSort) {
             case kPiwigoSortDateCreatedDescending:
                 return indexOfImageSortedByWeek[indexPath.section].first! + indexPath.row
             case kPiwigoSortDateCreatedAscending:
@@ -797,7 +797,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 return 0
             }
         case .day:
-            switch Model.sharedInstance().localImagesSort {
+            switch kPiwigoSort(UploadVars.shared.localImagesSort) {
             case kPiwigoSortDateCreatedDescending:
                 return indexOfImageSortedByDay[indexPath.section].first! + indexPath.row
             case kPiwigoSortDateCreatedAscending:
@@ -807,7 +807,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 return 0
             }
         case .all:
-            switch Model.sharedInstance().localImagesSort {
+            switch kPiwigoSort(UploadVars.shared.localImagesSort) {
             case kPiwigoSortDateCreatedDescending:
                 return indexPath.row
             case kPiwigoSortDateCreatedAscending:
@@ -899,7 +899,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     // MARK: - Sort Images
     /// Icons used on iPhone and iPad on iOS 13 and earlier
     private func getSwapSortImage() -> UIImage {
-        switch Model.sharedInstance()?.localImagesSort {
+        switch kPiwigoSort(UploadVars.shared.localImagesSort) {
         case kPiwigoSortDateCreatedAscending:
             if #available(iOS 13.0, *) {
                 return UIImage(named: "dateDescending")!
@@ -919,7 +919,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
     /// Icons used on iPhone and iPad on iOS 13 and earlier
     private func getSwapSortCompactImage() -> UIImage {
-        switch Model.sharedInstance()?.localImagesSort {
+        switch kPiwigoSort(UploadVars.shared.localImagesSort) {
         case kPiwigoSortDateCreatedAscending:
             if #available(iOS 13.0, *) {
                 return UIImage(named: "dateDescendingCompact")!
@@ -941,7 +941,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     private func getMenuForSorting() -> UIMenu {
         // Initialise menu items
         let swapOrder: UIAction!
-        switch Model.sharedInstance()?.localImagesSort {
+        switch kPiwigoSort(UploadVars.shared.localImagesSort) {
         case kPiwigoSortDateCreatedAscending:
             swapOrder = UIAction(title: NSLocalizedString("Date", comment: "Date"),
                                  image: UIImage(systemName: "arrow.up"), handler: { _ in self.swapSortOrder()})
@@ -1008,15 +1008,14 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
     @objc func swapSortOrder() {
         // Swap between the two sort options
-        switch Model.sharedInstance()?.localImagesSort {
+        switch kPiwigoSort(UploadVars.shared.localImagesSort) {
         case kPiwigoSortDateCreatedDescending:
-            Model.sharedInstance()?.localImagesSort = kPiwigoSortDateCreatedAscending
+            UploadVars.shared.localImagesSort = kPiwigoSortDateCreatedAscending.rawValue
         case kPiwigoSortDateCreatedAscending:
-            Model.sharedInstance()?.localImagesSort = kPiwigoSortDateCreatedDescending
+            UploadVars.shared.localImagesSort = kPiwigoSortDateCreatedDescending.rawValue
         default:
             return
         }
-        Model.sharedInstance()?.saveToDisk()
 
         // Change button icon and refresh collection
         updateActionButton()
@@ -1121,7 +1120,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 alert.addAction(deleteAction)
                 alert.view.tintColor = UIColor.piwigoColorOrange()
                 if #available(iOS 13.0, *) {
-                    alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+                    alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
                 } else {
                     // Fallback on earlier versions
                 }
@@ -1164,8 +1163,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             
             // Can the user create tags?
             let albumData = CategoriesData.sharedInstance()?.getCategoryById(categoryId)
-            if Model.sharedInstance()?.hasAdminRights ?? false ||
-                (Model.sharedInstance()?.hasNormalRights ?? false && albumData?.hasUploadRights ?? false) {
+            if NetworkVars.shared.hasAdminRights ||
+                (NetworkVars.shared.hasNormalRights && albumData?.hasUploadRights ?? false) {
                 uploadSwitchVC.hasTagCreationRights = true
             }
             
@@ -1295,7 +1294,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
         // Get start and last indices of section
         let firstIndex: Int, lastIndex: Int
-        if Model.sharedInstance().localImagesSort == kPiwigoSortDateCreatedDescending {
+        if UploadVars.shared.localImagesSort == kPiwigoSortDateCreatedDescending.rawValue {
             firstIndex = getImageIndex(for: IndexPath(item: 0, section: section))
             lastIndex = getImageIndex(for: IndexPath(item: nberOfImagesInSection - 1, section: section))
         } else {
@@ -1438,7 +1437,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Number of items depends on image sort type and date order
         switch sortType {
         case .month:
-            switch Model.sharedInstance().localImagesSort {
+            switch kPiwigoSort(UploadVars.shared.localImagesSort) {
             case kPiwigoSortDateCreatedDescending:
                 return indexOfImageSortedByMonth[section].count
             case kPiwigoSortDateCreatedAscending:
@@ -1447,7 +1446,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 return 0
             }
         case .week:
-            switch Model.sharedInstance().localImagesSort {
+            switch kPiwigoSort(UploadVars.shared.localImagesSort) {
             case kPiwigoSortDateCreatedDescending:
                 return indexOfImageSortedByWeek[section].count
             case kPiwigoSortDateCreatedAscending:
@@ -1456,7 +1455,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 return 0
             }
         case .day:
-            switch Model.sharedInstance().localImagesSort {
+            switch kPiwigoSort(UploadVars.shared.localImagesSort) {
             case kPiwigoSortDateCreatedDescending:
                 return indexOfImageSortedByDay[section].count
             case kPiwigoSortDateCreatedAscending:
@@ -1471,7 +1470,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         // Calculate the optimum image size
-        let size = CGFloat(ImagesCollection.imageSize(for: collectionView, imagesPerRowInPortrait: Model.sharedInstance().thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup))
+        let size = CGFloat(ImagesCollection.imageSize(for: collectionView, imagesPerRowInPortrait: AlbumVars.shared.thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup))
 
         return CGSize(width: size, height: size)
     }
@@ -1488,7 +1487,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         let imageAsset = fetchedImages[index]
 
         // Configure cell with image asset
-        cell.configure(with: imageAsset, thumbnailSize: CGFloat(ImagesCollection.imageSize(for: collectionView, imagesPerRowInPortrait: Model.sharedInstance().thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup)))
+        cell.configure(with: imageAsset, thumbnailSize: CGFloat(ImagesCollection.imageSize(for: collectionView, imagesPerRowInPortrait: AlbumVars.shared.thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup)))
 
         // Add pan gesture recognition
         let imageSeriesRocognizer = UIPanGestureRecognizer(target: self, action: #selector(touchedImages(_:)))
@@ -1601,7 +1600,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     func didSelectImagesOfSection(_ section: Int) {
         let nberOfImagesInSection = localImagesCollection.numberOfItems(inSection: section)
         let firstIndex: Int, lastIndex: Int
-        if Model.sharedInstance().localImagesSort == kPiwigoSortDateCreatedDescending {
+        if UploadVars.shared.localImagesSort == kPiwigoSortDateCreatedDescending.rawValue {
             firstIndex = getImageIndex(for: IndexPath(item: 0, section: section))
             lastIndex = getImageIndex(for: IndexPath(item: nberOfImagesInSection - 1, section: section))
         } else {
@@ -1723,17 +1722,17 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         
         // Determine which help pages should be presented
         var displayHelpPagesWithIndex: [Int] = []
-        if (Model.sharedInstance().didWatchHelpViews & 0b00000000_00010000) == 0 {
+        if (AppVars.shared.didWatchHelpViews & 0b00000000_00010000) == 0 {
             displayHelpPagesWithIndex.append(4)     // i.e. submit upload requests and let it go
         }
-        if (Model.sharedInstance().didWatchHelpViews & 0b00000000_00001000) == 0 {
+        if (AppVars.shared.didWatchHelpViews & 0b00000000_00001000) == 0 {
             displayHelpPagesWithIndex.append(3)     // i.e. remove images from camera roll
         }
-        if (Model.sharedInstance().didWatchHelpViews & 0b00000000_00100000) == 0 {
+        if (AppVars.shared.didWatchHelpViews & 0b00000000_00100000) == 0 {
             displayHelpPagesWithIndex.append(5)     // i.e. manage upload requests in queue
         }
         if #available(iOS 13, *),
-           (Model.sharedInstance().didWatchHelpViews & 0b00000000_00000010) == 0 {
+           (AppVars.shared.didWatchHelpViews & 0b00000000_00000010) == 0 {
             displayHelpPagesWithIndex.append(1)     // i.e. use background uploading
         }
         if displayHelpPagesWithIndex.count > 0 {

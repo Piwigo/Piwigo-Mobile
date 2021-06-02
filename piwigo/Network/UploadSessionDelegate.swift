@@ -32,7 +32,7 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
         config.shouldUseExtendedBackgroundIdleMode = true
 
         /// Indicates whether the request is allowed to use the built-in cellular radios to satisfy the request.
-        config.allowsCellularAccess = !(Model.sharedInstance()?.wifiOnlyUploading ?? false)
+        config.allowsCellularAccess = !(UploadVars.shared.wifiOnlyUploading)
         
         /// How long a task should wait for additional data to arrive before giving up (1 day)
         config.timeoutIntervalForRequest = 1 * 24 * 60 * 60
@@ -324,11 +324,11 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
     // MARK: - HTTP Credentials
     func credentialsFromKeychain() -> URLCredential? {
         // Return credentials retrieved from the keychain
-        guard let username = Model.sharedInstance().httpUsername, !username.isEmpty,
-            let password = SAMKeychain.password(forService:  "\(Model.sharedInstance().serverProtocol ?? "https://")\(Model.sharedInstance().serverPath ?? "")", account: username), !password.isEmpty else {
+        guard !NetworkVars.shared.httpUsername.isEmpty,
+            let password = SAMKeychain.password(forService:  "\(NetworkVars.shared.serverProtocol)\(NetworkVars.shared.serverPath)", account: NetworkVars.shared.httpUsername), !password.isEmpty else {
                 return nil
         }
-        return URLCredential(user: username, password: password,
+        return URLCredential(user: NetworkVars.shared.httpUsername, password: password,
                              persistence: .forSession)
     }
     

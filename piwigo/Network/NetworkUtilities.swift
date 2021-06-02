@@ -16,7 +16,7 @@ class NetworkUtilities: NSObject {
             return ""
         }
         // Convert string to UTF-8 encoding
-        let serverEncoding = String.Encoding.init(rawValue: Model.sharedInstance()?.stringEncoding ?? String.Encoding.utf8.rawValue )
+        let serverEncoding = String.Encoding(rawValue: NetworkVars.shared.stringEncoding )
         if let strData = strToConvert.data(using: serverEncoding, allowLossyConversion: true) {
             return String(data: strData, encoding: .utf8)
         }

@@ -134,7 +134,7 @@
              swipeSettings:(MGSwipeSettings*) swipeSettings expansionSettings:(MGSwipeExpansionSettings*) expansionSettings
 {
     // Only admins can rename, move and delete albums
-    if (![Model sharedInstance].hasAdminRights) { return nil; }
+    if (!NetworkVars.shared.hasAdminRights) { return nil; }
     
     // Settings
     cell.swipeBackgroundColor = [UIColor piwigoColorOrange];
@@ -165,7 +165,7 @@
         }];
         
         // Disallow user to delete the auto-upload destination album
-        if (self.albumData.albumId == [Model sharedInstance].autoUploadCategoryId) {
+        if (self.albumData.albumId == UploadVars.shared.autoUploadCategoryId) {
             return @[move, rename];
         } else {
             expansionSettings.buttonIndex = 0;
@@ -224,7 +224,7 @@
         textField.text = self.albumData.name;
         textField.clearButtonMode = UITextFieldViewModeAlways;
         textField.keyboardType = UIKeyboardTypeDefault;
-        textField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
+        textField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
         textField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
         textField.autocorrectionType = UITextAutocorrectionTypeYes;
         textField.returnKeyType = UIReturnKeyContinue;
@@ -236,7 +236,7 @@
         textField.text = self.albumData.comment;
         textField.clearButtonMode = UITextFieldViewModeAlways;
         textField.keyboardType = UIKeyboardTypeDefault;
-        textField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
+        textField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
         textField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
         textField.autocorrectionType = UITextAutocorrectionTypeYes;
         textField.returnKeyType = UIReturnKeyContinue;
@@ -266,7 +266,7 @@
     [alert addAction:self.categoryAction];
     alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
-        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
@@ -470,7 +470,7 @@
     // Present list of actions
     alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
-        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
@@ -492,7 +492,7 @@
     
     [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
         textField.placeholder = [NSString stringWithFormat:@"%@", @(self.albumData.numberOfImages)];
-        textField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
+        textField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
         textField.clearButtonMode = UITextFieldViewModeAlways;
         textField.keyboardType = UIKeyboardTypeNumberPad;
         textField.delegate = self;
@@ -517,7 +517,7 @@
     [alert addAction:self.deleteAction];
     alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
-        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
@@ -540,9 +540,8 @@
     [topViewController showPiwigoHUDWithTitle:NSLocalizedString(@"deleteCategoryHUD_label", @"Deleting Album…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
     
     // Disable auto-upload if this album is the destination album
-    if ([Model sharedInstance].autoUploadCategoryId == self.albumData.albumId) {
-        [Model sharedInstance].isAutoUploadActive = NO;
-        [[Model sharedInstance] saveToDisk];
+    if (UploadVars.shared.autoUploadCategoryId == self.albumData.albumId) {
+        UploadVars.shared.isAutoUploadActive = NO;
     }
 
     // Should we retrieve images before deleting the category?
@@ -565,7 +564,7 @@
 -(void)getMissingImagesBeforeDeletingInMode:deletionMode
                          withViewController:(UIViewController *)topViewController
 {
-    NSString *sortDesc = [CategoryImageSort getPiwigoSortDescriptionFor:[Model sharedInstance].defaultSort];
+    NSString *sortDesc = [CategoryImageSort getPiwigoSortDescriptionFor:(kPiwigoSort)AlbumVars.shared.defaultSort];
     [self.albumData loadCategoryImageDataChunkWithSort:sortDesc
         forProgress:nil OnCompletion:^(BOOL completed) {
         // Did the load succeed?

@@ -104,14 +104,14 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         if #available(iOS 11.0, *) {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = Model.sharedInstance().isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
 
         // Table view
         queueTableView.separatorColor = UIColor.piwigoColorSeparator()
-        queueTableView.indicatorStyle = Model.sharedInstance().isDarkPaletteActive ? .white : .black
+        queueTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
     }
     
     @objc func applyColorPalette() {
@@ -210,7 +210,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
 								alert.addAction(cancelAction)
 								alert.view.tintColor = UIColor.piwigoColorOrange()
 								if #available(iOS 13.0, *) {
-									alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+									alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
 								} else {
 									// Fallback on earlier versions
 								}
@@ -265,7 +265,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         // Present list of actions
         alert.view.tintColor = UIColor.piwigoColorOrange()
         if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
         } else {
             // Fallback on earlier versions
         }
@@ -286,7 +286,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
     
     @objc func mainHeader() {
         DispatchQueue.main.async {
-            if AFNetworkReachabilityManager.shared().isReachableViaWWAN && Model.sharedInstance().wifiOnlyUploading {
+            if AFNetworkReachabilityManager.shared().isReachableViaWWAN && UploadVars.shared.wifiOnlyUploading {
                 // No Wi-Fi and user wishes to upload only on Wi-Fi
                 let headerView = UploadQueueHeaderView(frame: .zero)
                 headerView.configure(width: self.queueTableView.frame.width,

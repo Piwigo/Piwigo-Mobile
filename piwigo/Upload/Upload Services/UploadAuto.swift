@@ -13,18 +13,20 @@ extension UploadManager {
     // MARK: - Add Auto-Upload Requests
     func appendAutoUploadRequests() {
         // Check access to Photo Library album
-        guard let collectionID = Model.sharedInstance()?.autoUploadAlbumId, !collectionID.isEmpty,
+        let collectionID = UploadVars.shared.autoUploadAlbumId
+        guard !collectionID.isEmpty,
            let collection = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [collectionID], options: nil).firstObject else {
             // Cannot access local album
-            Model.sharedInstance().autoUploadAlbumId = ""               // Unknown source Photos album
+            UploadVars.shared.autoUploadAlbumId = ""               // Unknown source Photos album
             disableAutoUpload(withTitle: NSLocalizedString("settings_autoUploadSourceInvalid", comment:"Invalid source album"), message: NSLocalizedString("settings_autoUploadSourceInfo", comment: "Please select the album or sub-album from which photos and videos of your device will be auto-uploaded."))
             return
         }
 
         // Check existence of Piwigo album
-        guard let categoryId = Model.sharedInstance()?.autoUploadCategoryId, categoryId != NSNotFound else {
+        let categoryId = UploadVars.shared.autoUploadCategoryId
+        guard categoryId != NSNotFound else {
             // Cannot access local album
-            Model.sharedInstance().autoUploadCategoryId = NSNotFound    // Unknown destination Piwigo album
+            UploadVars.shared.autoUploadCategoryId = NSNotFound    // Unknown destination Piwigo album
             disableAutoUpload(withTitle: NSLocalizedString("settings_autoUploadDestinationInvalid", comment:"Invalid destination album"), message: NSLocalizedString("settings_autoUploadSourceInfo", comment: "Please select the album or sub-album into which photos and videos will be auto-uploaded."))
             return
         }
@@ -49,7 +51,7 @@ extension UploadManager {
 
         // Determine which local images are still not considered for upload
         var uploadRequestsToAppend = [UploadProperties]()
-        let serverFileTypes = Model.sharedInstance()?.serverFileTypes ?? "jpg, jpeg"
+        let serverFileTypes = UploadVars.shared.serverFileTypes
         fetchedImages.enumerateObjects { image, idx, stop in
             // Keep images which had never been considered for upload
             if !imageIDs.contains(image.localIdentifier) {
@@ -69,8 +71,8 @@ extension UploadManager {
                 var uploadRequest = UploadProperties(localIdentifier: image.localIdentifier,
                                                      category: categoryId)
                 uploadRequest.markedForAutoUpload = true
-                uploadRequest.tagIds = Model.sharedInstance()?.autoUploadTagIds ?? ""
-                uploadRequest.comment = Model.sharedInstance()?.autoUploadComments ?? ""
+                uploadRequest.tagIds = UploadVars.shared.autoUploadTagIds
+                uploadRequest.comment = UploadVars.shared.autoUploadComments
                 uploadRequestsToAppend.append(uploadRequest)
             }
         }
@@ -122,8 +124,7 @@ extension UploadManager {
     // MARK: - Delete Auto-Upload Requests
     func disableAutoUpload(withTitle title:String = "", message:String = "") {
         // Disable auto-uploading
-        Model.sharedInstance().isAutoUploadActive = false
-        Model.sharedInstance().saveToDisk()
+        UploadVars.shared.isAutoUploadActive = false
         
         // If the Settings page is displayed:
         /// - switch off Auto-Upload control

@@ -34,14 +34,14 @@ class ColorPaletteViewController: UIViewController, UITableViewDataSource, UITab
         if #available(iOS 11.0, *) {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = Model.sharedInstance().isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
 
         // Table view
         tableView.separatorColor = UIColor.piwigoColorSeparator()
-        tableView.indicatorStyle = Model.sharedInstance().isDarkPaletteActive ? .white : .black
+        tableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
         tableView.reloadData()
     }
 
@@ -146,21 +146,18 @@ class ColorPaletteViewController: UIViewController, UITableViewDataSource, UITab
                 return SwitchTableViewCell()
             }
             cell.configure(with: NSLocalizedString("settings_switchPalette", comment: "Automatic"))
-            cell.cellSwitch.setOn(Model.sharedInstance().switchPaletteAutomatically, animated: true)
+            cell.cellSwitch.setOn(AppVars.shared.switchPaletteAutomatically, animated: true)
             cell.cellSwitchBlock = { switchState in
 
                 // Number of rows will change accordingly
-                Model.sharedInstance().switchPaletteAutomatically = switchState
+                AppVars.shared.switchPaletteAutomatically = switchState
 
                 // What should we do?
                 if switchState {
                     // Switch off light/dark modes
-                    Model.sharedInstance().isLightPaletteModeActive = false
-                    Model.sharedInstance().isDarkPaletteModeActive = false
+                    AppVars.shared.isLightPaletteModeActive = false
+                    AppVars.shared.isDarkPaletteModeActive = false
                 }
-
-                // Store modified setting
-                Model.sharedInstance().saveToDisk()
 
                 // Notify palette change
                 (UIApplication.shared.delegate as! AppDelegate).screenBrightnessChanged()

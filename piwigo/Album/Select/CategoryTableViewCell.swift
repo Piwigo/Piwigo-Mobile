@@ -48,7 +48,7 @@ class CategoryTableViewCell: UITableViewCell {
         } else {
             // Append "—" characters to sub-category names
             let subAlbumPrefix = "".padding(toLength: depth, withPad: "…", startingAt: 0)
-            if Model.sharedInstance().isAppLanguageRTL {
+            if AppVars.shared.isAppLanguageRTL {
                 categoryLabel.text = String(format: "%@ %@", categoryData.name, subAlbumPrefix)
             } else {
                 categoryLabel.text = String(format: "%@ %@", subAlbumPrefix, categoryData.name)

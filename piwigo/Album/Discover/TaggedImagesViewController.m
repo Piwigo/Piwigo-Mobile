@@ -1,8 +1,8 @@
 //
-//  FavoritesImagesViewController.m
+//  TaggedImagesViewController.m
 //  piwigo
 //
-//  Created by Eddy Lelièvre-Berna on 19/10/2019.
+//  Created by Eddy Lelièvre-Berna on 02/08/2019.
 //  Copyright © 2019 Piwigo.org. All rights reserved.
 //
 
@@ -10,19 +10,21 @@
 #import "AlbumService.h"
 #import "AppDelegate.h"
 #import "CategoriesData.h"
+#import "DiscoverImagesViewController.h"
 #import "EditImageParamsViewController.h"
-#import "FavoritesImagesViewController.h"
 #import "ImageCollectionViewCell.h"
 #import "ImageDetailViewController.h"
 #import "ImageService.h"
 #import "ImagesCollection.h"
 #import "MBProgressHUD.h"
 #import "Model.h"
+#import "TaggedImagesViewController.h"
 
-@interface FavoritesImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UIGestureRecognizerDelegate, ImageDetailDelegate, EditImageParamsDelegate, SelectCategoryDelegate, SelectCategoryImageCopiedDelegate, ShareImageActivityItemProviderDelegate>
+@interface TaggedImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UIGestureRecognizerDelegate, ImageDetailDelegate, EditImageParamsDelegate, SelectCategoryDelegate, SelectCategoryImageCopiedDelegate, ShareImageActivityItemProviderDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
-@property (nonatomic, assign) NSInteger categoryId;
+@property (nonatomic, assign) NSInteger tagId;
+@property (nonatomic, strong) NSString *tagName;
 @property (nonatomic, strong) AlbumData *albumData;
 @property (nonatomic, strong) NSIndexPath *imageOfInterest;
 @property (nonatomic, assign) BOOL displayImageTitles;
@@ -48,6 +50,8 @@
 @property (nonatomic, strong) NSMutableArray *selectedImagesToShare;
 @property (nonatomic, strong) PiwigoImageData *selectedImage;
 
+@property (nonatomic, strong) UIBarButtonItem *tagSelectBarButton;
+
 @property (nonatomic, assign) kPiwigoSort currentSortCategory;
 @property (nonatomic, strong) ImageDetailViewController *imageDetailView;
 
@@ -57,18 +61,20 @@
 //#define DEBUG_LIFECYCLE
 //#endif
 
-@implementation FavoritesImagesViewController
+@implementation TaggedImagesViewController
 
--(instancetype)init
+-(instancetype)initWithTagId:(NSInteger)tagId andTagName:(NSString *)tagName
 {
     self = [super init];
     if(self)
     {
+        self.tagId = tagId;
+        self.tagName = tagName;
         self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:0];
         
-        self.albumData = [[AlbumData alloc] initWithCategoryId:kPiwigoFavoritesCategoryId andQuery:@""];
-        self.currentSortCategory = [Model sharedInstance].defaultSort;
-        self.displayImageTitles = [Model sharedInstance].displayImageTitles;
+        self.albumData = [[AlbumData alloc] initWithCategoryId:kPiwigoTagsCategoryId andQuery:@""];
+        self.currentSortCategory = (kPiwigoSort)AlbumVars.shared.defaultSort;
+        self.displayImageTitles = AlbumVars.shared.displayImageTitles;
         
         // Initialise selection mode
         self.isSelect = NO;
@@ -76,13 +82,12 @@
         self.selectedImageIds = [NSMutableArray new];
 
         // Collection of images
-        self.imagesCollection = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:[UICollectionViewFlowLayout new]];
+        self.imagesCollection = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:[UICollectionViewFlowLayout new]];
         self.imagesCollection.translatesAutoresizingMaskIntoConstraints = NO;
-        self.imagesCollection.backgroundColor = [UIColor clearColor];
         self.imagesCollection.alwaysBounceVertical = YES;
         self.imagesCollection.showsVerticalScrollIndicator = YES;
-        self.imagesCollection.delegate = self;
         self.imagesCollection.dataSource = self;
+        self.imagesCollection.delegate = self;
         
         [self.imagesCollection registerClass:[ImageCollectionViewCell class] forCellWithReuseIdentifier:@"ImageCollectionViewCell"];
         [self.imagesCollection registerClass:[NberImagesFooterCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"NberImagesFooterCollection"];
@@ -131,14 +136,14 @@
     if (@available(iOS 11.0, *)) {
         self.navigationController.navigationBar.prefersLargeTitles = NO;
     }
-    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    self.navigationController.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
     self.navigationController.navigationBar.tintColor = [UIColor piwigoColorOrange];
     self.navigationController.navigationBar.barTintColor = [UIColor piwigoColorBackground];
     self.navigationController.navigationBar.backgroundColor = [UIColor piwigoColorBackground];
 
     // Collection view
     self.imagesCollection.backgroundColor = [UIColor piwigoColorBackground];
-    self.imagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
+    self.imagesCollection.indicatorStyle = AppVars.shared.isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self.imagesCollection reloadData];
 }
 
@@ -153,10 +158,11 @@
     [self updateBarButtons];
 
     // Initialise discover cache
-    PiwigoAlbumData *discoverAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoFavoritesCategoryId];
+    PiwigoAlbumData *discoverAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoTagsCategoryId];
     [[CategoriesData sharedInstance] updateCategories:@[discoverAlbum]];
 
     // Load, sort images and reload collection
+    discoverAlbum.query = [NSString stringWithFormat:@"%ld", (long)self.tagId];
     [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
         
         // Set navigation bar buttons
@@ -209,7 +215,7 @@
             NSInteger nberOfItems = [self.imagesCollection numberOfItemsInSection:0];
             if (self.imageOfInterest.item < nberOfItems) {
                 // Calculate the number of thumbnails displayed per page
-                NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.imagesCollection imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+                NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
                 
                 // Already loaded => scroll to image if necessary
 //                NSLog(@"=> Discover|Scroll down to item #%ld", (long)self.imageOfInterest.item);
@@ -219,7 +225,7 @@
 
                 // Load more images if seems to be a good idea
                 if ((self.imageOfInterest.item > (nberOfItems - roundf(imagesPerPage / 3.0))) &&
-                    (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId] numberOfImages])) {
+                    (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId] numberOfImages])) {
 //                    NSLog(@"=> Discover|Load more images…");
                     [self.albumData loadMoreImagesOnCompletion:^{
                         [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
@@ -228,7 +234,7 @@
             } else {
                 // No yet loaded => load more images
                 // Should not happen as needToLoadMoreImages() should be called when previewing images
-                if (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId] numberOfImages]) {
+                if (self.albumData.images.count != [[[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId] numberOfImages]) {
 //                    NSLog(@"=> Discover|Load more images…");
                     [self.albumData loadMoreImagesOnCompletion:^{
                         [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
@@ -278,7 +284,7 @@
     if (@available(iOS 13.0, *)) {
         BOOL hasUserInterfaceStyleChanged = (previousTraitCollection.userInterfaceStyle != self.traitCollection.userInterfaceStyle);
         if (hasUserInterfaceStyleChanged) {
-            [Model sharedInstance].isSystemDarkModeActive = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+            AppVars.shared.isSystemDarkModeActive = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
             [appDelegate screenBrightnessChanged];
         }
@@ -311,7 +317,7 @@
     if(!self.isSelect) {    // Image selection mode inactive
         
         // Title
-        self.title = [[[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId] name];
+        self.title = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"tag" , @"Tag"), self.tagName];
 
         // Hide toolbar
         [self.navigationController setToolbarHidden:YES animated:YES];
@@ -351,7 +357,7 @@
 
         // User can delete images/videos if he/she has:
         // — admin rights
-        if ([Model sharedInstance].hasAdminRights)
+        if (NetworkVars.shared.hasAdminRights)
         {
             // Interface depends on device and orientation
             if (([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) &&
@@ -439,7 +445,7 @@
 
         // Right category Id?
         NSInteger catId = [[userInfo objectForKey:@"albumId"] integerValue];
-        if (catId != kPiwigoFavoritesCategoryId) return;
+        if (catId != kPiwigoTagsCategoryId) return;
         
         // Image Id?
 //        NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
@@ -447,7 +453,7 @@
         
         // Store current image list
         NSArray *oldImageList = self.albumData.images;
-//        NSLog(@"=> category %ld contained %ld images", (long)kPiwigoFavoritesCategoryId, (long)oldImageList.count);
+//        NSLog(@"=> category %ld contained %ld images", (long)kPiwigoTagsCategoryId, (long)oldImageList.count);
 
         // Load new image (appended to cache) and sort images before updating UI
         [self.albumData loadMoreImagesOnCompletion:^{
@@ -456,10 +462,10 @@
 
                 // The album title is not shown in backButtonItem to provide enough space
                 // for image title on devices of screen width <= 414 ==> Restore album title
-                self.title = [[[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId] name];
+                self.title = [[[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId] name];
 
                 // Refresh collection view if needed
-                NSLog(@"=> category %ld now contains %ld images", (long)kPiwigoFavoritesCategoryId, (long)self.albumData.images.count);
+                NSLog(@"=> category %ld now contains %ld images", (long)kPiwigoTagsCategoryId, (long)self.albumData.images.count);
                 if (oldImageList.count == self.albumData.images.count) {
                     return;
                 }
@@ -485,7 +491,7 @@
 
                 // Update footer
                 UICollectionReusableView *visibleFooter = [[self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter] firstObject];
-                NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId].totalNumberOfImages;
+                NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId].totalNumberOfImages;
                 if ([visibleFooter isKindOfClass:[NberImagesFooterCollectionReusableView class]]) {
                     NberImagesFooterCollectionReusableView *footer = (NberImagesFooterCollectionReusableView *)visibleFooter;
                     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
@@ -507,7 +513,7 @@
 {
     // Activate Images Selection mode
     self.isSelect = YES;
-    
+            
     // Update navigation bar
     [self updateBarButtons];
 }
@@ -610,14 +616,14 @@
 }
 
 
-#pragma mark - UICollectionView Headers & Footers
+#pragma mark - UICollectionView Headers & Footer
 
 -(UICollectionReusableView*)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
 {
     if(kind == UICollectionElementKindSectionFooter)
     {
         // Display number of images
-        NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId].numberOfImages;
+        NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId].numberOfImages;
         NberImagesFooterCollectionReusableView *footer = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"NberImagesFooterCollection" forIndexPath:indexPath];
         footer.noImagesLabel.textColor = [UIColor piwigoColorHeader];
         
@@ -628,7 +634,7 @@
         else if (totalImageCount == 0) {
             // Display "No images"
             footer.noImagesLabel.text = NSLocalizedString(@"noImages", @"No Images");
-            }
+        }
         else {
             // Display number of images…
             footer.noImagesLabel.text = [NSString stringWithFormat:@"%ld %@", (long)totalImageCount, (totalImageCount > 1) ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
@@ -653,7 +659,7 @@
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section
 {
     // Display number of images
-    NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId].numberOfImages;
+    NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId].numberOfImages;
     NSString *footer = @"";
 
     if (totalImageCount == NSNotFound) {
@@ -720,7 +726,7 @@
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     // Calculate the optimum image size
-    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:collectionView imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:collectionView imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
     return CGSizeMake(size, size);
 }
 
@@ -731,7 +737,7 @@
     if (self.albumData.images.count > indexPath.row) {
         // Create cell from Piwigo data
         PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
-        [cell setupWithImageData:imageData forCategoryId:kPiwigoFavoritesCategoryId];
+        [cell setupWithImageData:imageData forCategoryId:kPiwigoTagsCategoryId];
         cell.isSelected = [self.selectedImageIds containsObject:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]];
         
         // Add pan gesture recognition
@@ -745,11 +751,11 @@
     }
     
     // Calculate the number of thumbnails displayed per page
-    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:collectionView imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:collectionView imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
     
     // Load image data in advance if possible (page after page…)
     if ((indexPath.row > fmaxf(roundf(2 * imagesPerPage / 3.0), [collectionView numberOfItemsInSection:0] - roundf(imagesPerPage / 3.0))) &&
-        (self.albumData.images.count < [[[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId] numberOfImages]))
+        (self.albumData.images.count < [[[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId] numberOfImages]))
     {
         [self.albumData loadMoreImagesOnCompletion:^{
             [self.imagesCollection reloadData];
@@ -817,7 +823,7 @@
     else {
         [self showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
     }
-    
+
     // Retrieve image data
     self.selectedImagesToEdit = [NSMutableArray new];
     self.selectedImageIdsToEdit = [NSMutableArray arrayWithArray:[self.selectedImageIds mutableCopy]];
@@ -857,14 +863,14 @@
               }];
           }
       }
-        onFailure:^(NSURLSessionTask *task, NSError *error) {
-            // Could not retrieve image data
-            [self dismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed") message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?") errorMessage:error.localizedDescription dismiss:^{
-                [self hidePiwigoHUDWithCompletion:^{ [self updateBarButtons]; }];
-            } retry:^{
-                [self retrieveImageDataBeforeEdit];
-            }];
+     onFailure:^(NSURLSessionTask *task, NSError *error) {
+        // Failed — Ask user if he/she wishes to retry
+        [self dismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed") message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?") errorMessage:error.localizedDescription dismiss:^{
+            [self hidePiwigoHUDWithCompletion:^{ [self updateBarButtons]; }];
+        } retry:^{
+            [self retrieveImageDataBeforeEdit];
         }];
+    }];
 }
 
 -(void)editImages
@@ -873,7 +879,9 @@
         case 0:     // No image => End (should never happened)
         {
             [self updatePiwigoHUDwithSuccessWithCompletion:^{
-                [self hidePiwigoHUDWithCompletion:^{ [self cancelSelect]; }];
+                [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
+                    [self cancelSelect];
+                }];
             }];
             break;
         }
@@ -956,7 +964,7 @@
         } retry:^{
             [self retrieveImageDataBeforeDelete];
         }];
-    }];
+     }];
 }
 
 -(void)askDeleteConfirmation
@@ -987,14 +995,14 @@
         style:UIAlertActionStyleDestructive
         handler:^(UIAlertAction * action) {
             
-            // Display HUD during server update
-            [self showPiwigoHUDWithTitle:self.selectedImagesToDelete.count > 1 ? NSLocalizedString(@"deleteSingleImageHUD_deleting", @"Deleting Image…") :
-                NSLocalizedString(@"deleteSeveralImagesHUD_deleting", @"Deleting Images…")
-                detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
+        // Display HUD during server update
+        [self showPiwigoHUDWithTitle:self.selectedImagesToDelete.count > 1 ? NSLocalizedString(@"deleteSingleImageHUD_deleting", @"Deleting Image…") :
+            NSLocalizedString(@"deleteSeveralImagesHUD_deleting", @"Deleting Images…")
+            detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
 
-            // Start deleting images
-            [self deleteImages];
-       }];
+        // Start deleting images
+        [self deleteImages];
+    }];
     
     // Add actions
     [alert addAction:cancelAction];
@@ -1003,7 +1011,7 @@
     // Present list of actions
     alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
-        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
@@ -1029,21 +1037,21 @@
     // Let's delete all images at once
     [ImageService deleteImages:self.selectedImagesToDelete
               ListOnCompletion:^(NSURLSessionTask *task) {
-
-            // Hide HUD
-            [self updatePiwigoHUDwithSuccessWithCompletion:^{
-                [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
-                    [self cancelSelect];
-                }];
+                  
+        // Hide HUD
+        [self updatePiwigoHUDwithSuccessWithCompletion:^{
+            [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
+                [self cancelSelect];
             }];
-        }
-        onFailure:^(NSURLSessionTask *task, NSError *error) {
-            // Error — Try again ?
-            [self dismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed") message:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted.") errorMessage:[error localizedDescription] dismiss:^{
-                [self hidePiwigoHUDWithCompletion:^{ [self updateBarButtons]; }];
-            } retry:^{
-                [self deleteImages];
-            }];
+        }];
+    }
+    onFailure:^(NSURLSessionTask *task, NSError *error) {
+        // Error — Try again ?
+        [self dismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"deleteImageFail_title", @"Delete Failed") message:NSLocalizedString(@"deleteImageFail_message", @"Image could not be deleted.") errorMessage:[error localizedDescription] dismiss:^{
+            [self hidePiwigoHUDWithCompletion:^{ [self updateBarButtons]; }];
+        } retry:^{
+            [self deleteImages];
+        }];
     }];
 }
 
@@ -1064,7 +1072,7 @@
     } else {
         [self showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
     }
-    
+
     // Retrieve image data
     self.selectedImagesToShare = [NSMutableArray new];
     self.selectedImageIdsToShare = [NSMutableArray arrayWithArray:[self.selectedImageIds mutableCopy]];
@@ -1106,14 +1114,14 @@
               }];
           }
       }
-    onFailure:^(NSURLSessionTask *task, NSError *error) {
+     onFailure:^(NSURLSessionTask *task, NSError *error) {
         // Failed — Ask user if he/she wishes to retry
         [self dismissRetryPiwigoErrorWithTitle:NSLocalizedString(@"imageDetailsFetchError_title", @"Image Details Fetch Failed") message:NSLocalizedString(@"imageDetailsFetchError_retryMessage", @"Fetching the image data failed\nTry again?") errorMessage:error.localizedDescription dismiss:^{
             [self hidePiwigoHUDWithCompletion:^{ [self updateBarButtons]; }];
         } retry:^{
             [self retrieveImageDataBeforeShare];
         }];
-    }];
+     }];
 }
 
 -(void)checkPhotoLibraryAccessBeforeShare
@@ -1154,6 +1162,7 @@
                             });
                         }
                     }];
+        
     }
 }
 
@@ -1199,9 +1208,9 @@
 //        NSLog(@"Activity Type selected: %@", activityType);
         if (completed) {
 //            NSLog(@"Selected activity was performed and returned error:%ld", (long)activityError.code);
-            // Delete shared file & remove observers
+            // Delete shared files & remove observers
             [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDidShare object:nil];
-            
+
             // Close HUD with success
             [self updatePiwigoHUDwithSuccessWithCompletion:^{
                 [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
@@ -1225,15 +1234,14 @@
                     [self setEnableStateOfButtons:YES];
                 }
 
-                // Cancel download tasks
+                // Cancel download task
                 [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCancelDownload object:nil];
                 
-                // Delete shared files & remove observers
+                // Delete shared file & remove observers
                 [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationDidShare object:nil];
 
                 // Close ActivityView
-                [self.presentedViewController dismissViewControllerAnimated:YES completion:nil];
-            }
+                [self.presentedViewController dismissViewControllerAnimated:YES completion:nil];            }
         }
     }];
     
@@ -1259,7 +1267,7 @@
     // Present album list for copying images into
     UIStoryboard *copySB = [UIStoryboard storyboardWithName:@"SelectCategoryViewController" bundle:nil];
     SelectCategoryViewController *copyVC = [copySB instantiateViewControllerWithIdentifier:@"SelectCategoryViewController"];
-    NSArray<id> *parameter = [[NSArray<id> alloc] initWithObjects:self.selectedImageIds, @(kPiwigoFavoritesCategoryId), nil];
+    NSArray<id> *parameter = [[NSArray<id> alloc] initWithObjects:self.selectedImageIds, @(kPiwigoTagsCategoryId), nil];
     [copyVC setInputWithParameter:parameter for:kPiwigoCategorySelectActionCopyImages];
     copyVC.delegate = self;                 // To re-enable toolbar
     copyVC.imageCopiedDelegate = self;      // To update image data after copy
@@ -1359,10 +1367,9 @@
 }
 
 
-#pragma mark - ShareImageActivityItemProviderDelegate
+#pragma mark - ShareImageActivityItemProviderDelegate Methods
 
--(void)imageActivityItemProviderPreprocessingDidBegin:(UIActivityItemProvider *)imageActivityItemProvider
-                                            withTitle:(NSString *)title
+-(void)imageActivityItemProviderPreprocessingDidBegin:(UIActivityItemProvider *)imageActivityItemProvider withTitle:(NSString *)title
 {
     // Show HUD to let the user know the image is being downloaded in the background.
     NSString *detailsLabel = [NSString stringWithFormat:@"%ld / %ld", (long)(self.totalNumberOfImages - self.selectedImageIds.count + 1), (long)self.totalNumberOfImages];
@@ -1386,7 +1393,7 @@
             // Remove image from selection
             [self.selectedImageIds removeObject:imageIdObject];
             [self updateBarButtons];
-            
+
             // Close HUD if last image
             if ([self.selectedImageIds count] == 0) {
                 [self.presentedViewController updatePiwigoHUDwithSuccessWithCompletion:^{

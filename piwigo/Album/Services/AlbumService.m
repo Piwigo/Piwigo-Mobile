@@ -28,7 +28,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
     return [self post:kPiwigoGetInfos
         URLParameters:nil
            parameters:nil
-       sessionManager:[Model sharedInstance].sessionManager
+       sessionManager:NetworkVars.shared.sessionManager
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
@@ -133,48 +133,49 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
     NSString *recursiveString = recursive ? @"true" : @"false";
 
     // Community extension active ?
-    NSString *fakedString = [Model sharedInstance].usesCommunityPluginV29 ? @"false" : @"true";
+    NSString *fakedString = NetworkVars.shared.usesCommunityPluginV29 ? @"false" : @"true";
     
     // Album thumbnail size
     NSString *thumbnailSize = @"thumb";
-    switch ([Model sharedInstance].defaultAlbumThumbnailSize) {
+    kPiwigoImageSize albumThumbnailSize = (kPiwigoImageSize)AlbumVars.shared.defaultAlbumThumbnailSize;
+    switch (albumThumbnailSize) {
         case kPiwigoImageSizeSquare:
-            if ([Model sharedInstance].hasSquareSizeImages) {
+            if (AlbumVars.shared.hasSquareSizeImages) {
                 thumbnailSize = @"square";
             }
             break;
         case kPiwigoImageSizeXXSmall:
-            if ([Model sharedInstance].hasXXSmallSizeImages) {
+            if (AlbumVars.shared.hasXXSmallSizeImages) {
                 thumbnailSize = @"2small";
             }
             break;
         case kPiwigoImageSizeXSmall:
-            if ([Model sharedInstance].hasXSmallSizeImages) {
+            if (AlbumVars.shared.hasXSmallSizeImages) {
                 thumbnailSize = @"xsmall";
             }
             break;
         case kPiwigoImageSizeSmall:
-            if ([Model sharedInstance].hasSmallSizeImages) {
+            if (AlbumVars.shared.hasSmallSizeImages) {
                 thumbnailSize = @"small";
             }
             break;
         case kPiwigoImageSizeMedium:
-            if ([Model sharedInstance].hasMediumSizeImages) {
+            if (AlbumVars.shared.hasMediumSizeImages) {
                 thumbnailSize = @"medium";
             }
             break;
         case kPiwigoImageSizeLarge:
-            if ([Model sharedInstance].hasLargeSizeImages) {
+            if (AlbumVars.shared.hasLargeSizeImages) {
                 thumbnailSize = @"large";
             }
             break;
         case kPiwigoImageSizeXLarge:
-            if ([Model sharedInstance].hasXLargeSizeImages) {
+            if (AlbumVars.shared.hasXLargeSizeImages) {
                 thumbnailSize = @"xlarge";
             }
             break;
         case kPiwigoImageSizeXXLarge:
-            if ([Model sharedInstance].hasXXLargeSizeImages) {
+            if (AlbumVars.shared.hasXXLargeSizeImages) {
                 thumbnailSize = @"xxlarge";
             }
             break;
@@ -198,7 +199,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
     return [self post:kPiwigoCategoriesGetList
         URLParameters:nil
            parameters:parameters
-       sessionManager:[Model sharedInstance].sessionManager
+       sessionManager:NetworkVars.shared.sessionManager
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
@@ -220,8 +221,8 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                       }
                       
                       // Update albums if Community extension installed (not needed for admins)
-                      if (![Model sharedInstance].hasAdminRights &&
-                           [Model sharedInstance].usesCommunityPluginV29) {
+                      if (!NetworkVars.shared.hasAdminRights &&
+                           NetworkVars.shared.usesCommunityPluginV29) {
                           [AlbumService setUploadRightsForCategory:categoryId inRecursiveMode:recursiveString];
                       }
 
@@ -314,7 +315,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 		{
 			NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
 			[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-			[dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:[Model sharedInstance].language]];
+			[dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:NetworkVars.shared.language]];
 			albumData.dateLast = [dateFormatter dateFromString:[category objectForKey:@"date_last"]];
 		}
         
@@ -362,7 +363,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
     return [self post:kCommunityCategoriesGetList
         URLParameters:nil
            parameters:parameters
-       sessionManager:[Model sharedInstance].sessionManager
+       sessionManager:NetworkVars.shared.sessionManager
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
@@ -412,7 +413,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
     return [self post:kPiwigoCategoriesAdd
         URLParameters:nil
            parameters:parameters
-       sessionManager:[Model sharedInstance].sessionManager
+       sessionManager:NetworkVars.shared.sessionManager
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
         
@@ -467,7 +468,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 						@"name" : categoryName,
                         @"comment" : categoryComment
                         }
-       sessionManager:[Model sharedInstance].sessionManager
+       sessionManager:NetworkVars.shared.sessionManager
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
 				  if(completion)
@@ -494,9 +495,9 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 		   parameters:@{
 						@"category_id" : [NSString stringWithFormat:@"%@", @(categoryId)],
                         @"photo_deletion_mode" : deletionMode,
-						@"pwg_token" : [Model sharedInstance].pwgToken
+						@"pwg_token" : NetworkVars.shared.pwgToken
                         }
-       sessionManager:[Model sharedInstance].sessionManager
+       sessionManager:NetworkVars.shared.sessionManager
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject)
     {
@@ -534,10 +535,10 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 		URLParameters:nil
 		   parameters:@{
 						@"category_id" : [NSString stringWithFormat:@"%@", @(categoryId)],
-						@"pwg_token" : [Model sharedInstance].pwgToken,
+						@"pwg_token" : NetworkVars.shared.pwgToken,
 						@"parent" : [NSString stringWithFormat:@"%@", @(categoryToMoveIntoId)]
                         }
-       sessionManager:[Model sharedInstance].sessionManager
+       sessionManager:NetworkVars.shared.sessionManager
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
 				  if(completion)
@@ -565,7 +566,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 						@"category_id" : [NSString stringWithFormat:@"%@", @(categoryId)],
 						@"image_id" : [NSString stringWithFormat:@"%@", @(imageId)]
                         }
-       sessionManager:[Model sharedInstance].sessionManager
+       sessionManager:NetworkVars.shared.sessionManager
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
 				  if(completion)
@@ -591,7 +592,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
            parameters:@{
                         @"category_id" : [NSString stringWithFormat:@"%@", @(categoryId)]
                         }
-       sessionManager:[Model sharedInstance].sessionManager
+       sessionManager:NetworkVars.shared.sessionManager
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   if(completion)

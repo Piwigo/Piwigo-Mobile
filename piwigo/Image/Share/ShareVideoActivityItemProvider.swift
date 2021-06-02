@@ -51,7 +51,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         self.imageData = imageData
 
         // We use the thumbnail cached in memory
-        let alreadyLoadedSize = Model.sharedInstance().defaultThumbnailSize
+        let alreadyLoadedSize = kPiwigoImageSize(AlbumVars.shared.defaultThumbnailSize)
         guard let thumbnailURL = URL(string: imageData.getURLFromImageSizeType(alreadyLoadedSize)) else {
             imageFileURL = URL(string: "")!
             super.init(placeholderItem: UIImage(named: "AppIconShare")!)
@@ -109,7 +109,8 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         }
 
         // Do we have the movie in cache?
-        if let cachedImageData = Model.sharedInstance().imageCache.cachedResponse(for: urlRequest)?.data,
+        if let cache = NetworkVars.shared.imageCache,
+           let cachedImageData = cache.cachedResponse(for: urlRequest)?.data,
             !cachedImageData.isEmpty {
             // Create file URL where the shared file is expected to be found
             imageFileURL = ShareUtilities.getFileUrl(ofImage: imageData, withURLrequest: urlRequest)
@@ -299,7 +300,9 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
                             else {
                                 // Store image in cache
                                 let cachedResponse = CachedURLResponse(response: response, data: data)
-                                Model.sharedInstance().imageCache.storeCachedResponse(cachedResponse, for: urlRequest)
+                                if let cache = NetworkVars.shared.imageCache {
+                                    cache.storeCachedResponse(cachedResponse, for: urlRequest)
+                                }
 
                                 // Set image file URL
                                 self.imageFileURL = fileURL
@@ -412,7 +415,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         let linkMetaData = LPLinkMetadata()
         
         // We use the thumbnail in cache
-        let alreadyLoadedSize = Model.sharedInstance().defaultThumbnailSize
+        let alreadyLoadedSize = kPiwigoImageSize(AlbumVars.shared.defaultThumbnailSize)
         if let thumbnailURL = URL(string: imageData.getURLFromImageSizeType(alreadyLoadedSize)) {
             // Retrieve thumbnail image
             let thumb = UIImageView()

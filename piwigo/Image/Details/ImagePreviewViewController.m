@@ -56,7 +56,7 @@
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
-    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    self.navigationController.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
     self.navigationController.navigationBar.tintColor = [UIColor piwigoColorOrange];
     self.navigationController.navigationBar.barTintColor = [UIColor piwigoColorBackground];
     self.navigationController.navigationBar.backgroundColor = [UIColor piwigoColorBackground];
@@ -82,14 +82,14 @@
     self.scrollView.playImage.hidden = !(imageData.isVideo);
 
     // Thumbnail image should be available in cache
-    NSString *thumbnailStr = [imageData getURLFromImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultThumbnailSize];
+    NSString *thumbnailStr = [imageData getURLFromImageSizeType:(kPiwigoImageSize)AlbumVars.shared.defaultThumbnailSize];
     NSURL *thumbnailURL = [NSURL URLWithString:thumbnailStr];
     UIImageView *thumb = [UIImageView new];
-    thumb.image = [[Model sharedInstance].thumbnailCache imageforRequest:[NSURLRequest requestWithURL:thumbnailURL] withAdditionalIdentifier:nil];
+    thumb.image = [NetworkVars.shared.thumbnailCache imageforRequest:[NSURLRequest requestWithURL:thumbnailURL] withAdditionalIdentifier:nil];
     self.scrollView.imageView.image = thumb.image ? thumb.image : [UIImage imageNamed:@"placeholderImage"];
 
     // Previewed image
-    NSString *previewStr = [imageData getURLFromImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultImagePreviewSize];
+    NSString *previewStr = [imageData getURLFromImageSizeType:(kPiwigoImageSize)ImageVars.shared.defaultImagePreviewSize];
     if (previewStr == nil) {
         // Image URL unknown => default to medium image size
         previewStr = [imageData getURLFromImageSizeType:kPiwigoImageSizeMedium];
@@ -102,7 +102,7 @@
     __weak typeof(self) weakSelf = self;
     
 //    NSLog(@"==> Start loading %@", previewURL.path);
-    self.downloadTask = [[Model sharedInstance].imagesSessionManager GET:previewURL.absoluteString
+    self.downloadTask = [NetworkVars.shared.imagesSessionManager GET:previewURL.absoluteString
         parameters:nil headers:nil
         progress:^(NSProgress * _Nonnull progress) {
                     dispatch_async(dispatch_get_main_queue(),
@@ -126,7 +126,7 @@
                  weakSelf.imageLoaded = YES;
                  // Store image in cache
                  NSCachedURLResponse *cachedResponse = [[NSCachedURLResponse alloc] initWithResponse:task.response data:UIImageJPEGRepresentation(image, 0.9)];
-                 [[Model sharedInstance].imageCache storeCachedResponse:cachedResponse forDataTask:weakSelf.downloadTask];
+                 [NetworkVars.shared.imageCache storeCachedResponse:cachedResponse forDataTask:weakSelf.downloadTask];
              }
              else {     // Keep thumbnail or placeholder if image could not be loaded
 #if defined(DEBUG)
@@ -232,7 +232,7 @@
     [alert addAction:dismissAction];
     alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
-        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
@@ -258,8 +258,8 @@ shouldWaitForResponseToAuthenticationChallenge:(NSURLAuthenticationChallenge *)a
     else if ([protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodHTTPBasic])
     {
         // HTTP basic authentification credentials
-        NSString *user = [Model sharedInstance].HttpUsername;
-        NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] account:user];
+        NSString *user = NetworkVars.shared.httpUsername;
+        NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", NetworkVars.shared.serverProtocol, NetworkVars.shared.serverPath] account:user];
         [authenticationChallenge.sender useCredential:[NSURLCredential credentialWithUser:user password:password
                                                        persistence:NSURLCredentialPersistenceSynchronizable] forAuthenticationChallenge:authenticationChallenge];
         [authenticationChallenge.sender continueWithoutCredentialForAuthenticationChallenge:authenticationChallenge];

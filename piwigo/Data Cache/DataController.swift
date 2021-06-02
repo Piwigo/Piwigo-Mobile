@@ -172,8 +172,7 @@ class DataController: NSObject {
                 }
                 
                 // Will inform user at restart
-                Model.sharedInstance()?.couldNotMigrateCoreDataStore = true
-                Model.sharedInstance()?.saveToDisk()
+                AppVars.shared.couldNotMigrateCoreDataStore = true
 
                 // Crash!
                 abort()

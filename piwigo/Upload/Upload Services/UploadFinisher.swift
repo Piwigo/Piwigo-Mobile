@@ -189,7 +189,7 @@ extension UploadManager{
             onFailure fail: @escaping (_ task: URLSessionTask?, _ error: Error?) -> Void) -> (Void) {
         
         // Check that we have a token
-        guard let pwgToken = Model.sharedInstance()?.pwgToken else {
+        guard !NetworkVars.shared.pwgToken.isEmpty else {
             fail(nil, UploadError.networkUnavailable)
             return
         }
@@ -198,7 +198,7 @@ extension UploadManager{
         NetworkHandler.post(kCommunityImagesUploadCompleted,
                 urlParameters: nil,
                 parameters: [
-                    "pwg_token": pwgToken,
+                    "pwg_token": NetworkVars.shared.pwgToken,
                     "image_id": imageId ?? "",
                     "category_id": NSNumber(value: categoryId)
                     ],

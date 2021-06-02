@@ -164,9 +164,9 @@
 	}
 	
     // Download the image of the requested resolution (or get it from the cache)
-    switch ([Model sharedInstance].defaultThumbnailSize) {
+    switch (AlbumVars.shared.defaultThumbnailSize) {
         case kPiwigoImageSizeSquare:
-            if ([Model sharedInstance].hasSquareSizeImages && (self.imageData.SquarePath) && (self.imageData.SquarePath > 0)) {
+            if (AlbumVars.shared.hasSquareSizeImages && (self.imageData.SquarePath) && (self.imageData.SquarePath > 0)) {
                 NSURL *URL = [NSURL URLWithString:self.imageData.SquarePath];
                 [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
@@ -175,10 +175,10 @@
             }
             break;
         case kPiwigoImageSizeXXSmall:
-            if ([Model sharedInstance].hasXXSmallSizeImages && (self.imageData.XXSmallPath.length > 0)) {
+            if (AlbumVars.shared.hasXXSmallSizeImages && (self.imageData.XXSmallPath.length > 0)) {
                 NSURL *URL = [NSURL URLWithString:self.imageData.XXSmallPath];
                 [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
-            } else if ([Model sharedInstance].hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
+            } else if (AlbumVars.shared.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
                     NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
                     [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
@@ -187,10 +187,10 @@
             }
             break;
         case kPiwigoImageSizeXSmall:
-            if ([Model sharedInstance].hasXSmallSizeImages && (self.imageData.XSmallPath.length > 0)) {
+            if (AlbumVars.shared.hasXSmallSizeImages && (self.imageData.XSmallPath.length > 0)) {
                 NSURL *URL = [NSURL URLWithString:self.imageData.XSmallPath];
                 [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
-            } else if ([Model sharedInstance].hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
+            } else if (AlbumVars.shared.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
                     NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
                     [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
@@ -199,10 +199,10 @@
             }
             break;
         case kPiwigoImageSizeSmall:
-            if ([Model sharedInstance].hasSmallSizeImages && (self.imageData.SmallPath.length > 0)) {
+            if (AlbumVars.shared.hasSmallSizeImages && (self.imageData.SmallPath.length > 0)) {
                 NSURL *URL = [NSURL URLWithString:self.imageData.SmallPath];
                 [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
-            } else if ([Model sharedInstance].hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
+            } else if (AlbumVars.shared.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
                     NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
                     [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
@@ -211,10 +211,10 @@
             }
             break;
         case kPiwigoImageSizeMedium:
-            if ([Model sharedInstance].hasMediumSizeImages && (self.imageData.MediumPath.length > 0)) {
+            if (AlbumVars.shared.hasMediumSizeImages && (self.imageData.MediumPath.length > 0)) {
                 NSURL *URL = [NSURL URLWithString:self.imageData.MediumPath];
                 [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
-            } else if ([Model sharedInstance].hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
+            } else if (AlbumVars.shared.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
                     NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
                     [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
@@ -223,10 +223,10 @@
             }
             break;
         case kPiwigoImageSizeLarge:
-            if ([Model sharedInstance].hasLargeSizeImages && (self.imageData.LargePath.length > 0)) {
+            if (AlbumVars.shared.hasLargeSizeImages && (self.imageData.LargePath.length > 0)) {
                 NSURL *URL = [NSURL URLWithString:self.imageData.LargePath];
                 [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
-            } else if ([Model sharedInstance].hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
+            } else if (AlbumVars.shared.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
                     NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
                     [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
@@ -235,10 +235,10 @@
             }
             break;
         case kPiwigoImageSizeXLarge:
-            if ([Model sharedInstance].hasXLargeSizeImages && (self.imageData.XLargePath.length > 0)) {
+            if (AlbumVars.shared.hasXLargeSizeImages && (self.imageData.XLargePath.length > 0)) {
                 NSURL *URL = [NSURL URLWithString:self.imageData.XLargePath];
                 [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
-            } else if ([Model sharedInstance].hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
+            } else if (AlbumVars.shared.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
                 NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
                 [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
@@ -247,11 +247,11 @@
             }
             break;
         case kPiwigoImageSizeXXLarge:
-            if ([Model sharedInstance].hasXXLargeSizeImages && (self.imageData.XXLargePath.length > 0)) {
+            if (AlbumVars.shared.hasXXLargeSizeImages && (self.imageData.XXLargePath.length > 0)) {
                 NSURL *URL = [NSURL URLWithString:self.imageData.XXLargePath];
                 [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             }
-            else if ([Model sharedInstance].hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
+            else if (AlbumVars.shared.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
                     NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
                     [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
@@ -262,7 +262,7 @@
         case kPiwigoImageSizeThumb:
         case kPiwigoImageSizeFullRes:
         default:
-            if ([Model sharedInstance].hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
+            if (AlbumVars.shared.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
                 NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
                 [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
@@ -273,7 +273,7 @@
     }
 
     // Title
-    if (([Model sharedInstance].displayImageTitles) ||
+    if ((AlbumVars.shared.displayImageTitles) ||
         (categoryId == kPiwigoVisitsCategoryId)     ||
         (categoryId == kPiwigoBestCategoryId)       ||
         (categoryId == kPiwigoRecentCategoryId)) {

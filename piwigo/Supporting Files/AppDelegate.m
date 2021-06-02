@@ -46,6 +46,9 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
+    // Read old settings file and create UserDefaults cached files
+    [[Model sharedInstance] readFromDisk];
+    
     // Register notifications for displaying number of uploads to perform in app badge
     if (@available(iOS 9.0, *)) {
         UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeBadge) categories:nil];
@@ -82,7 +85,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     } else {
         // Complete user interface initialization, login ?
         NSString *user, *password;
-        NSString *server = [Model sharedInstance].serverPath;
+        NSString *server = NetworkVars.shared.serverPath;
         [SAMKeychain setAccessibilityType:kSecAttrAccessibleAfterFirstUnlock];
         
         // Look for credentials if server address provided
@@ -98,13 +101,12 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
                 
                 // Store credentials with new method if found
                 if (user.length > 0) {
-                    [Model sharedInstance].username = user;
-                    [[Model sharedInstance] saveToDisk];
+                    NetworkVars.shared.username = user;
                     [SAMKeychain setPassword:password forService:server account:user];
                 }
             } else {
                 // Credentials available
-                user = [Model sharedInstance].username;
+                user = NetworkVars.shared.username;
                 if (user.length > 0) {
                     password = [SAMKeychain passwordForService:server account:user];
                 }
@@ -140,8 +142,8 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     [DataController saveContext];
 
     // Cancel tasks and close sessions
-    [[Model sharedInstance].sessionManager invalidateSessionCancelingTasks:YES resetSession:YES];
-    [[Model sharedInstance].imagesSessionManager invalidateSessionCancelingTasks:YES resetSession:YES];
+    [NetworkVars.shared.sessionManager invalidateSessionCancelingTasks:YES resetSession:YES];
+    [NetworkVars.shared.imagesSessionManager invalidateSessionCancelingTasks:YES resetSession:YES];
 
     // Disable network activity indicator
     [AFNetworkActivityIndicatorManager sharedManager].enabled = NO;
@@ -226,7 +228,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
         UIViewController *currentVC = rootVC.childViewControllers.firstObject;
         if ([currentVC isKindOfClass:[AlbumImagesViewController class]]) {
             // Determine for how long the session is opened
-            NSTimeInterval timeSinceLastLogin = [Model.sharedInstance.dateOfLastLogin timeIntervalSinceNow];
+            NSTimeInterval timeSinceLastLogin = [NetworkVars.shared.dateOfLastLogin timeIntervalSinceNow];
             if (timeSinceLastLogin < (NSTimeInterval)(-900)) { // i.e. 15 minutes (Piwigo 11 session duration defaults to an hour)
                 /// — Perform relogin
                 /// — Resume upload operations in background queue
@@ -325,11 +327,11 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
 
     // Color palette depends on system settings
     if (@available(iOS 13.0, *)) {
-        [Model sharedInstance].isSystemDarkModeActive = (self.loginVC.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
-//        NSLog(@"•••> iOS mode: %@, app mode: %@, Brightness: %.1ld/%ld, app: %@", [Model sharedInstance].isSystemDarkModeActive ? @"Dark" : @"Light", [Model sharedInstance].isDarkPaletteModeActive ? @"Dark" : @"Light", lroundf([[UIScreen mainScreen] brightness] * 100.0), (long)[Model sharedInstance].switchPaletteThreshold, [Model sharedInstance].isDarkPaletteActive ? @"Dark" : @"Light");
+        AppVars.shared.isSystemDarkModeActive = (self.loginVC.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+//        NSLog(@"•••> iOS mode: %@, app mode: %@, Brightness: %.1ld/%ld, app: %@", AppVars.shared.isSystemDarkModeActive ? @"Dark" : @"Light", [Model sharedInstance].isDarkPaletteModeActive ? @"Dark" : @"Light", lroundf([[UIScreen mainScreen] brightness] * 100.0), (long)[Model sharedInstance].switchPaletteThreshold, [Model sharedInstance].isDarkPaletteActive ? @"Dark" : @"Light");
     } else {
         // Fallback on earlier versions
-        [Model sharedInstance].isSystemDarkModeActive = NO;
+        AppVars.shared.isSystemDarkModeActive = NO;
     }
     
     // Apply color palette
@@ -350,9 +352,9 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
 
 -(void)reloginAndRetryWithCompletion:(void (^)(void))reloginCompletion
 {
-    BOOL hadOpenedSession = [Model sharedInstance].hadOpenedSession;
-    NSString *server = [Model sharedInstance].serverPath;
-    NSString *user = [Model sharedInstance].username;
+    BOOL hadOpenedSession = NetworkVars.shared.hadOpenedSession;
+    NSString *server = NetworkVars.shared.serverPath;
+    NSString *user = NetworkVars.shared.username;
     
     if(hadOpenedSession && (server.length > 0) && (user.length > 0))
     {
@@ -376,7 +378,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
 -(void)loadNavigation
 {
     // Display default album
-    AlbumImagesViewController *defaultAlbum = [[AlbumImagesViewController alloc] initWithAlbumId:[Model sharedInstance].defaultCategory inCache:NO];
+    AlbumImagesViewController *defaultAlbum = [[AlbumImagesViewController alloc] initWithAlbumId:AlbumVars.shared.defaultCategory inCache:NO];
     if (@available(iOS 13.0, *)) {
         SceneDelegate *sceneDelegate = (SceneDelegate *)[[UIApplication sharedApplication] connectedScenes].anyObject.delegate;
         sceneDelegate.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:defaultAlbum];
@@ -408,9 +410,9 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
 //#if defined(DEBUG)
 //        NSLog(@"!!!!!! Network Reachability Changed!");
 //        NSLog(@"       hadOpenedSession=%@, usesCommunityPluginV29=%@, hasAdminRights=%@",
-//              ([Model sharedInstance].hadOpenedSession ? @"YES" : @"NO"),
-//              ([Model sharedInstance].usesCommunityPluginV29 ? @"YES" : @"NO"),
-//              ([Model sharedInstance].hasAdminRights ? @"YES" : @"NO"));
+//              (NetworkVars.shared.hadOpenedSession ? @"YES" : @"NO"),
+//              (NetworkVars.shared.usesCommunityPluginV29 ? @"YES" : @"NO"),
+//              (NetworkVars.shared.hasAdminRights ? @"YES" : @"NO"));
 //#endif
 
 //        if ([AFNetworkReachabilityManager sharedManager].reachable) {
@@ -525,44 +527,44 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
 // and by traitCollectionDidChange: when the system switches between Light and Dark modes
 -(void)screenBrightnessChanged
 {
-    if ([Model sharedInstance].isLightPaletteModeActive)
+    if (AppVars.shared.isLightPaletteModeActive)
     {
-        if (![Model sharedInstance].isDarkPaletteActive) {
+        if (!AppVars.shared.isDarkPaletteActive) {
             // Already in light mode
             return;
         } else {
             // "Always Light Mode" selected
-            [Model sharedInstance].isDarkPaletteActive = NO;
+            AppVars.shared.isDarkPaletteActive = NO;
         }
     }
-    else if ([Model sharedInstance].isDarkPaletteModeActive)
+    else if (AppVars.shared.isDarkPaletteModeActive)
     {
-        if ([Model sharedInstance].isDarkPaletteActive) {
+        if (AppVars.shared.isDarkPaletteActive) {
             // Already showing dark palette
             return;
         } else {
             // "Always Dark Mode" selected or iOS Dark Mode active => Dark palette
-            [Model sharedInstance].isDarkPaletteActive = YES;
+            AppVars.shared.isDarkPaletteActive = YES;
         }
     }
-    else if ([Model sharedInstance].switchPaletteAutomatically)
+    else if (AppVars.shared.switchPaletteAutomatically)
     {
         // Dynamic palette mode chosen
         if (@available(iOS 13.0, *)) {
-            if ([Model sharedInstance].isSystemDarkModeActive) {
+            if (AppVars.shared.isSystemDarkModeActive) {
                 // System-wide dark mode active
-                if ([Model sharedInstance].isDarkPaletteActive) {
+                if (AppVars.shared.isDarkPaletteActive) {
                     // Keep dark palette
                     return;
                 } else {
                     // Switch to dark mode
-                    [Model sharedInstance].isDarkPaletteActive = YES;
+                    AppVars.shared.isDarkPaletteActive = YES;
                 }
             } else {
                 // System-wide light mode active
-                if ([Model sharedInstance].isDarkPaletteActive) {
+                if (AppVars.shared.isDarkPaletteActive) {
                     // Switch to light mode
-                    [Model sharedInstance].isDarkPaletteActive = NO;
+                    AppVars.shared.isDarkPaletteActive = NO;
                 } else {
                     // Keep light palette
                     return;
@@ -572,22 +574,22 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
         else {
             // Option managed by screen brightness
             NSInteger currentBrightness = lroundf([[UIScreen mainScreen] brightness] * 100.0);
-            if ([Model sharedInstance].isDarkPaletteActive) {
+            if (AppVars.shared.isDarkPaletteActive) {
                 // Dark palette displayed
-                if (currentBrightness > [Model sharedInstance].switchPaletteThreshold)
+                if (currentBrightness > AppVars.shared.switchPaletteThreshold)
                 {
                     // Screen brightness > thereshold, switch to light palette
-                    [Model sharedInstance].isDarkPaletteActive = NO;
+                    AppVars.shared.isDarkPaletteActive = NO;
                 } else {
                     // Keep dark palette
                     return;
                 }
             } else {
                 // Light palette displayed
-                if (currentBrightness < [Model sharedInstance].switchPaletteThreshold)
+                if (currentBrightness < AppVars.shared.switchPaletteThreshold)
                 {
                     // Screen brightness < threshold, switch to dark palette
-                    [Model sharedInstance].isDarkPaletteActive = YES;
+                    AppVars.shared.isDarkPaletteActive = YES;
                 } else {
                     // Keep light palette
                     return;
@@ -596,13 +598,10 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
         }
     } else {
         // Return to either static Light or Dark mode
-        [Model sharedInstance].isLightPaletteModeActive = ![Model sharedInstance].isSystemDarkModeActive;
-        [Model sharedInstance].isDarkPaletteModeActive = [Model sharedInstance].isSystemDarkModeActive;
-        [Model sharedInstance].isDarkPaletteActive = [Model sharedInstance].isSystemDarkModeActive;
+        AppVars.shared.isLightPaletteModeActive = !AppVars.shared.isSystemDarkModeActive;
+        AppVars.shared.isDarkPaletteModeActive = AppVars.shared.isSystemDarkModeActive;
+        AppVars.shared.isDarkPaletteActive = AppVars.shared.isSystemDarkModeActive;
     }
-    
-    // Store modified settings
-    [[Model sharedInstance] saveToDisk];
     
     // Tint colour
     [UIView appearance].tintColor = [UIColor piwigoColorOrange];
@@ -614,7 +613,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     [UITabBar appearance].barTintColor = [UIColor piwigoColorBackground];
 
     // Styles
-    if ([Model sharedInstance].isDarkPaletteActive)
+    if (AppVars.shared.isDarkPaletteActive)
     {
         [UITabBar appearance].barStyle = UIBarStyleBlack;
         [UIToolbar appearance].barStyle = UIBarStyleBlack;
@@ -649,7 +648,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     [newList addObject:categoryIdStr];
 
     // Get current list of recent albums
-    NSString *recentAlbumsStr = [Model sharedInstance].recentCategories;
+    NSString *recentAlbumsStr = AlbumVars.shared.recentCategories;
 
     // Add recent albums while avoiding duplicates
     if (recentAlbumsStr.length != 0) {
@@ -672,8 +671,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     }
 
     // Update list
-    [Model sharedInstance].recentCategories = [newList componentsJoinedByString:@","];
-    [[Model sharedInstance] saveToDisk];
+    AlbumVars.shared.recentCategories = [newList componentsJoinedByString:@","];
 //    NSLog(@"•••> Recent albums: %@ (max: %lu)", [Model sharedInstance].recentCategories, (unsigned long)[Model sharedInstance].maxNberRecentCategories);
 }
 
@@ -685,7 +683,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     if ((categoryId <= 0) || (categoryId == NSNotFound)) return;
 
     // Get current list of recent albums
-    NSString *recentAlbumsStr = [Model sharedInstance].recentCategories;
+    NSString *recentAlbumsStr = AlbumVars.shared.recentCategories;
     if (recentAlbumsStr.length == 0) return;
 
     // Non-empty list, continue
@@ -699,8 +697,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     if (recentCategories.count == 0) [recentCategories addObject:@"0"];
     
     // Update list
-    [Model sharedInstance].recentCategories = [recentCategories componentsJoinedByString:@","];
-    [[Model sharedInstance] saveToDisk];
+    AlbumVars.shared.recentCategories = [recentCategories componentsJoinedByString:@","];
 //    NSLog(@"•••> Recent albums: %@", [Model sharedInstance].recentCategories);
 }
 

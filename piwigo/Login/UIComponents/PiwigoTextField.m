@@ -21,7 +21,7 @@
         self.clearButtonMode = YES;
         self.autocapitalizationType = UITextAutocapitalizationTypeNone;
         self.autocorrectionType = UITextAutocorrectionTypeNo;
-        self.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
+        self.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
 	}
 	return self;
 }

@@ -68,7 +68,7 @@
         self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:0];
         
         self.albumData = [[AlbumData alloc] initWithCategoryId:categoryId andQuery:@""];
-        self.displayImageTitles = [Model sharedInstance].displayImageTitles;
+        self.displayImageTitles = AlbumVars.shared.displayImageTitles;
         if (categoryId == kPiwigoVisitsCategoryId) {
             self.currentSortCategory = kPiwigoSortVisitsDescending;
         } else if (categoryId == kPiwigoBestCategoryId) {
@@ -76,7 +76,7 @@
         } else if (categoryId == kPiwigoRecentCategoryId) {
             self.currentSortCategory = kPiwigoSortDatePostedDescending;
         } else {
-            self.currentSortCategory = [Model sharedInstance].defaultSort;
+            self.currentSortCategory = (kPiwigoSort)AlbumVars.shared.defaultSort;
         }
 
         // Initialise selection mode
@@ -140,14 +140,14 @@
     if (@available(iOS 11.0, *)) {
         self.navigationController.navigationBar.prefersLargeTitles = NO;
     }
-    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    self.navigationController.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
     self.navigationController.navigationBar.tintColor = [UIColor piwigoColorOrange];
     self.navigationController.navigationBar.barTintColor = [UIColor piwigoColorBackground];
     self.navigationController.navigationBar.backgroundColor = [UIColor piwigoColorBackground];
 
     // Collection view
     self.imagesCollection.backgroundColor = [UIColor piwigoColorBackground];
-    self.imagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
+    self.imagesCollection.indicatorStyle = AppVars.shared.isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self.imagesCollection reloadData];
 }
 
@@ -218,7 +218,7 @@
             NSInteger nberOfItems = [self.imagesCollection numberOfItemsInSection:0];
             if (self.imageOfInterest.item < nberOfItems) {
                 // Calculate the number of thumbnails displayed per page
-                NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.imagesCollection imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+                NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
                 
                 // Already loaded => scroll to image if necessary
 //                NSLog(@"=> Discover|Scroll down to item #%ld", (long)self.imageOfInterest.item);
@@ -288,7 +288,7 @@
     if (@available(iOS 13.0, *)) {
         BOOL hasUserInterfaceStyleChanged = (previousTraitCollection.userInterfaceStyle != self.traitCollection.userInterfaceStyle);
         if (hasUserInterfaceStyleChanged) {
-            [Model sharedInstance].isSystemDarkModeActive = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+            AppVars.shared.isSystemDarkModeActive = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
             [appDelegate screenBrightnessChanged];
         }
@@ -362,7 +362,7 @@
 
         // User can delete images/videos if he/she has:
         // — admin rights
-        if ([Model sharedInstance].hasAdminRights)
+        if (NetworkVars.shared.hasAdminRights)
         {
             // Interface depends on device and orientation
             if (([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) &&
@@ -795,7 +795,7 @@
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     // Calculate the optimum image size
-    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:collectionView imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:collectionView imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
     return CGSizeMake(size, size);
 }
 
@@ -820,7 +820,7 @@
     }
     
     // Calculate the number of thumbnails displayed per page
-    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:collectionView imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:collectionView imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
     
     // Load image data in advance if possible (page after page…)
     if ((indexPath.row > fmaxf(roundf(2 * imagesPerPage / 3.0), [collectionView numberOfItemsInSection:0] - roundf(imagesPerPage / 3.0))) &&
@@ -1081,7 +1081,7 @@
     // Present list of actions
     alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
-        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }

@@ -40,8 +40,8 @@
         self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:0];
         
         self.albumData = [[AlbumData alloc] initWithCategoryId:kPiwigoSearchCategoryId andQuery:@""];
-        self.currentSortCategory = [Model sharedInstance].defaultSort;
-        self.displayImageTitles = [Model sharedInstance].displayImageTitles;
+        self.currentSortCategory = (kPiwigoSort)AlbumVars.shared.defaultSort;
+        self.displayImageTitles = AlbumVars.shared.displayImageTitles;
         
         // Collection of images
         self.imagesCollection = [[UICollectionView alloc] initWithFrame:self.view.frame collectionViewLayout:[UICollectionViewFlowLayout new]];
@@ -83,14 +83,14 @@
     if (@available(iOS 11.0, *)) {
         self.navigationController.navigationBar.prefersLargeTitles = NO;
     }
-    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    self.navigationController.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
     self.navigationController.navigationBar.tintColor = [UIColor piwigoColorOrange];
     self.navigationController.navigationBar.barTintColor = [UIColor piwigoColorBackground];
     self.navigationController.navigationBar.backgroundColor = [UIColor piwigoColorBackground];
 
     // Collection view
     self.imagesCollection.backgroundColor = [UIColor piwigoColorBackground];
-    self.imagesCollection.indicatorStyle = [Model sharedInstance].isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
+    self.imagesCollection.indicatorStyle = AppVars.shared.isDarkPaletteActive ?UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -156,7 +156,7 @@
             NSInteger nberOfItems = [self.imagesCollection numberOfItemsInSection:0];
             if (self.imageOfInterest.item < nberOfItems) {
                 // Calculate the number of thumbnails displayed per page
-                NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.imagesCollection imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+                NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
                 
                 // Already loaded => scroll to image if necessary
 //                NSLog(@"=> Discover|Scroll down to item #%ld", (long)self.imageOfInterest.item);
@@ -218,7 +218,7 @@
     if (@available(iOS 13.0, *)) {
         BOOL hasUserInterfaceStyleChanged = (previousTraitCollection.userInterfaceStyle != self.traitCollection.userInterfaceStyle);
         if (hasUserInterfaceStyleChanged) {
-            [Model sharedInstance].isSystemDarkModeActive = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+            AppVars.shared.isSystemDarkModeActive = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
             [appDelegate screenBrightnessChanged];
         }
@@ -418,7 +418,7 @@
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     // Calculate the optimum image size
-    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:collectionView imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+    CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:collectionView imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
     return CGSizeMake(size, size);
 }
 
@@ -433,7 +433,7 @@
     }
     
     // Calculate the number of thumbnails displayed per page
-    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:collectionView imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:collectionView imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
     
     // Load image data in advance if possible (page after page…)
     if ((indexPath.row > fmaxf(roundf(2 * imagesPerPage / 3.0),
