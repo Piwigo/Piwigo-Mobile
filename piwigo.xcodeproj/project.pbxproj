@@ -368,7 +368,6 @@
 		AD460F9C25E446D100B09AFE /* Tag+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Tag+CoreDataProperties.swift"; path = "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/piwigo/Data Cache/Tags Data/Tag+CoreDataProperties.swift"; sourceTree = "<absolute>"; };
 		AD460F9E25E44EE200B09AFE /* Upload+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Upload+CoreDataClass.swift"; path = "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/piwigo/Data Cache/Uploads Data/Upload+CoreDataClass.swift"; sourceTree = "<absolute>"; };
 		AD460FA025E44EE400B09AFE /* Upload+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Upload+CoreDataProperties.swift"; path = "/Users/lelievre/Privé - GitHub/Piwigo-Mobile/piwigo/Data Cache/Uploads Data/Upload+CoreDataProperties.swift"; sourceTree = "<absolute>"; };
-		AD4768852440BA720099651E /* piwigoRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = piwigoRelease.entitlements; sourceTree = "<group>"; };
 		AD4902E224C2142800A96066 /* TagsViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TagsViewController.storyboard; sourceTree = "<group>"; };
 		AD4AAFB225A0A1E4007DCD54 /* PasteboardImagesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PasteboardImagesViewController.swift; sourceTree = "<group>"; };
 		AD4AAFB325A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = PasteboardImagesViewController.storyboard; sourceTree = "<group>"; };
@@ -378,6 +377,7 @@
 		AD563B3F2603FCDB00B6EF93 /* AutoUploadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoUploadViewController.swift; sourceTree = "<group>"; };
 		AD563B412603FCE800B6EF93 /* AutoUploadViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AutoUploadViewController.storyboard; sourceTree = "<group>"; };
 		AD563B43260945DC00B6EF93 /* LocalAlbumsViewControllerGrouped.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LocalAlbumsViewControllerGrouped.storyboard; sourceTree = "<group>"; };
+		AD56B7BB266905ED001D4E21 /* piwigoRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = piwigoRelease.entitlements; sourceTree = "<group>"; };
 		AD58F77E24EFC62F00ECF6BD /* UploadImageHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadImageHeaderView.swift; sourceTree = "<group>"; };
 		AD591A391F9116F9008D02B6 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD591A3A1F9116FA008D02B6 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/About.strings; sourceTree = "<group>"; };
@@ -1214,7 +1214,7 @@
 				D87C5A971A6F4F93001763BC /* Network */,
 				ADA6F19321CA99F7006C9DD5 /* Info.plist */,
 				AD97CFB3265A50EE00719ED5 /* piwigoDebug.entitlements */,
-				AD4768852440BA720099651E /* piwigoRelease.entitlements */,
+				AD56B7BB266905ED001D4E21 /* piwigoRelease.entitlements */,
 				D82B8CEE1A6790BF000E47CA /* piwigo-Prefix.pch */,
 				ADE03F3223D4CF1D00F21ED9 /* piwigo-Bridging-Header.h */,
 				ADAEED8622E2665000CB1B12 /* LaunchScreen.storyboard */,
@@ -1440,7 +1440,6 @@
 				AD084E422659A27100159FE1 /* Sources */,
 				AD084E432659A27100159FE1 /* Frameworks */,
 				AD084E442659A27100159FE1 /* Resources */,
-				AD084E552659AAB100159FE1 /* Auto-increment build version of release */,
 			);
 			buildRules = (
 			);
@@ -1778,24 +1777,6 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
-		};
-		AD084E552659AAB100159FE1 /* Auto-increment build version of release */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Auto-increment build version of release";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ $CONFIGURATION == Release ]; then\n    buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$INFOPLIST_FILE\")\n    buildNumber=$(($buildNumber + 1))\n    /usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"$INFOPLIST_FILE\"\nfi\n";
 		};
 		AD982C001EDD56FB0065BE3B /* Auto-increment build version of release */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2233,7 +2214,6 @@
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution";
 				CODE_SIGN_STYLE = Manual;
-				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
@@ -2678,10 +2658,11 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = piwigo/piwigo.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Distribution";
+				CODE_SIGN_ENTITLEMENTS = piwigo/piwigoRelease.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution";
 				CODE_SIGN_STYLE = Manual;
+				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 322;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = ZU5THW8T5W;
