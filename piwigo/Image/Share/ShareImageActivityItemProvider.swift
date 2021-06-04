@@ -11,6 +11,7 @@
 import Photos
 import UIKit
 import LinkPresentation
+import piwigoKit
 
 @objc
 class ShareImageActivityItemProvider: UIActivityItemProvider {
@@ -113,7 +114,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         }
 
         // Do we have the image in cache?
-        if let cache = NetworkVars.shared.imageCache,
+        if let cache = NetworkVarsObjc.shared.imageCache,
            let cachedImageData = cache.cachedResponse(for: urlRequest)?.data,
             !cachedImageData.isEmpty {
             // Create file URL where the shared file is expected to be found
@@ -320,7 +321,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
                             else {
                                 // Store image in cache
                                 let cachedResponse = CachedURLResponse(response: response, data: data)
-                                if let cache = NetworkVars.shared.imageCache {
+                                if let cache = NetworkVarsObjc.shared.imageCache {
                                     cache.storeCachedResponse(cachedResponse, for: urlRequest)
                                 }
 

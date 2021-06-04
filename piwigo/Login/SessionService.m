@@ -25,9 +25,9 @@
     return [self post:kReflectionGetMethodList
         URLParameters:nil
            parameters:nil
-       sessionManager:NetworkVars.shared.sessionManager
+       sessionManager:NetworkVarsObjc.shared.sessionManager
              progress:^(NSProgress * progress) {
-                 if (NetworkVars.shared.userCancelledCommunication) {
+                 if (NetworkVarsObjc.shared.userCancelledCommunication) {
                      [progress cancel];
                  }
              }
@@ -36,8 +36,8 @@
                   if(completion) {
                       
                       // Initialise flags
-                      NetworkVars.shared.usesCommunityPluginV29 = NO;
-                      NetworkVars.shared.usesUploadAsync = NO;
+                      NetworkVarsObjc.shared.usesCommunityPluginV29 = NO;
+                      NetworkVarsObjc.shared.usesUploadAsync = NO;
                       
                       // Did the server answer the request? (it should have)
                       if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
@@ -47,11 +47,11 @@
                           for (NSString *method in methodsList) {
                               // Check if the Community extension is installed and active (> 2.9a)
                               if([method isEqualToString:@"community.session.getStatus"]) {
-                                  NetworkVars.shared.usesCommunityPluginV29 = YES;
+                                  NetworkVarsObjc.shared.usesCommunityPluginV29 = YES;
                               }
                               // Check if the pwg.images.uploadAsync method is available
                               if ([method isEqualToString:@"pwg.images.uploadAsync"]) {
-                                  NetworkVars.shared.usesUploadAsync = YES;
+                                  NetworkVarsObjc.shared.usesUploadAsync = YES;
                               }
                           }
                           completion([[responseObject objectForKey:@"result"] objectForKey:@"methods"]);
@@ -82,9 +82,9 @@
         URLParameters:nil
            parameters:@{@"username" : user,
                         @"password" : password}
-       sessionManager:NetworkVars.shared.sessionManager
+       sessionManager:NetworkVarsObjc.shared.sessionManager
              progress:^(NSProgress * progress) {
-                 if (NetworkVars.shared.userCancelledCommunication) {
+                 if (NetworkVarsObjc.shared.userCancelledCommunication) {
                      [progress cancel];
                  }
              }
@@ -94,8 +94,8 @@
                      [[responseObject objectForKey:@"result"] boolValue])
                   {
                       // Login successful
-                      NetworkVars.shared.username = user;
-                      NetworkVars.shared.hadOpenedSession = YES;
+                      NetworkVarsObjc.shared.username = user;
+                      NetworkVarsObjc.shared.hadOpenedSession = YES;
                       if (completion) {
                           completion(YES, [responseObject objectForKey:@"result"]);
                       }
@@ -103,7 +103,7 @@
                   else
                   {
                       // Login failed
-                      NetworkVars.shared.hadOpenedSession = NO;
+                      NetworkVarsObjc.shared.hadOpenedSession = NO;
                       NSError *error = [NetworkHandler getPiwigoErrorFromResponse:responseObject
                                              path:kPiwigoSessionLogin andURLparams:nil];
                       if (completion) {
@@ -115,7 +115,7 @@
                   
                   if(fail)
                   {
-                      NetworkVars.shared.hadOpenedSession = NO;
+                      NetworkVarsObjc.shared.hadOpenedSession = NO;
                       fail(task, error);
                   }
               }];
@@ -134,9 +134,9 @@
     return [self post:kPiwigoSessionGetStatus
         URLParameters:nil
            parameters:nil
-       sessionManager:NetworkVars.shared.sessionManager
+       sessionManager:NetworkVarsObjc.shared.sessionManager
              progress:^(NSProgress * progress) {
-                 if (NetworkVars.shared.userCancelledCommunication) {
+                 if (NetworkVarsObjc.shared.userCancelledCommunication) {
                      [progress cancel];
                  }
              }
@@ -146,10 +146,10 @@
                   {
                       NSDictionary *result = [responseObject objectForKey:@"result"];
                       // Retrieve a potentially new token (required since the use of uploadAsync)
-                      NetworkVars.shared.pwgToken = [result objectForKey:@"pwg_token"];
+                      NetworkVarsObjc.shared.pwgToken = [result objectForKey:@"pwg_token"];
 
                       if (isLogginIn) {
-                          NetworkVars.shared.language = [result objectForKey:@"language"];
+                          NetworkVarsObjc.shared.language = [result objectForKey:@"language"];
                           
                           // Piwigo server version should be of format 1.2.3
                           NSMutableString *versionStr = [result objectForKey:@"version"];
@@ -168,61 +168,61 @@
                               default:
                                   break;
                           }
-                          NetworkVars.shared.version = [versionStr copy];
+                          NetworkVarsObjc.shared.version = [versionStr copy];
 
                           // Community users cannot upload with uploadAsync with Piwigo 11.0.0 and above
-                          if (NetworkVars.shared.usesCommunityPluginV29 &&
-                              !NetworkVars.shared.hasAdminRights &&
+                          if (NetworkVarsObjc.shared.usesCommunityPluginV29 &&
+                              !NetworkVarsObjc.shared.hasAdminRights &&
                               [@"11.0.0" compare:versionStr options:NSNumericSearch] != NSOrderedDescending) {
-                              NetworkVars.shared.usesUploadAsync = NO;
+                              NetworkVarsObjc.shared.usesUploadAsync = NO;
                           }
-                          NSLog(@"   version: %@, usesUploadAsync: %@", NetworkVars.shared.version,
-                                NetworkVars.shared.usesUploadAsync ? @"YES" : @"NO");
+                          NSLog(@"   version: %@, usesUploadAsync: %@", NetworkVarsObjc.shared.version,
+                                NetworkVarsObjc.shared.usesUploadAsync ? @"YES" : @"NO");
 
                           NSString *charset = [[result objectForKey:@"charset"] uppercaseString];
                           if ([charset isEqualToString:@"UTF-8"]) {
-                              NetworkVars.shared.stringEncoding = NSUTF8StringEncoding;
+                              NetworkVarsObjc.shared.stringEncoding = NSUTF8StringEncoding;
                           } else if ([charset isEqualToString:@"UTF-16"]) {
-                              NetworkVars.shared.stringEncoding = NSUTF16StringEncoding;
+                              NetworkVarsObjc.shared.stringEncoding = NSUTF16StringEncoding;
                           } else if ([charset isEqualToString:@"ISO-8859-1"]) {
-                              NetworkVars.shared.stringEncoding = NSWindowsCP1252StringEncoding;
+                              NetworkVarsObjc.shared.stringEncoding = NSWindowsCP1252StringEncoding;
                           } else if ([charset isEqualToString:@"US-ASCII"]) {
-                              NetworkVars.shared.stringEncoding = NSASCIIStringEncoding;
+                              NetworkVarsObjc.shared.stringEncoding = NSASCIIStringEncoding;
                           } else if ([charset isEqualToString:@"X-EUC"]) {
-                              NetworkVars.shared.stringEncoding = NSJapaneseEUCStringEncoding;
+                              NetworkVarsObjc.shared.stringEncoding = NSJapaneseEUCStringEncoding;
                           } else if ([charset isEqualToString:@"ISO-8859-3"]) {
-                              NetworkVars.shared.stringEncoding = NSISOLatin1StringEncoding;
+                              NetworkVarsObjc.shared.stringEncoding = NSISOLatin1StringEncoding;
                           } else if ([charset isEqualToString:@"ISO-8859-3"]) {
-                              NetworkVars.shared.stringEncoding = NSISOLatin1StringEncoding;
+                              NetworkVarsObjc.shared.stringEncoding = NSISOLatin1StringEncoding;
                           } else if ([charset isEqualToString:@"SHIFT-JIS"]) {
-                              NetworkVars.shared.stringEncoding = NSShiftJISStringEncoding;
+                              NetworkVarsObjc.shared.stringEncoding = NSShiftJISStringEncoding;
                           } else if ([charset isEqualToString:@"CP870"]) {
-                              NetworkVars.shared.stringEncoding = NSISOLatin2StringEncoding;
+                              NetworkVarsObjc.shared.stringEncoding = NSISOLatin2StringEncoding;
                           } else if ([charset isEqualToString:@"UNICODE"]) {
-                              NetworkVars.shared.stringEncoding = NSUnicodeStringEncoding;
+                              NetworkVarsObjc.shared.stringEncoding = NSUnicodeStringEncoding;
                           } else if ([charset isEqualToString:@"WINDOWS-1251"]) {
-                              NetworkVars.shared.stringEncoding = NSWindowsCP1251StringEncoding;
+                              NetworkVarsObjc.shared.stringEncoding = NSWindowsCP1251StringEncoding;
                           } else if ([charset isEqualToString:@"WINDOWS-1252"]) {
-                              NetworkVars.shared.stringEncoding = NSWindowsCP1252StringEncoding;
+                              NetworkVarsObjc.shared.stringEncoding = NSWindowsCP1252StringEncoding;
                           } else if ([charset isEqualToString:@"WINDOWS-1253"]) {
-                              NetworkVars.shared.stringEncoding = NSWindowsCP1253StringEncoding;
+                              NetworkVarsObjc.shared.stringEncoding = NSWindowsCP1253StringEncoding;
                           } else if ([charset isEqualToString:@"WINDOWS-1254"]) {
-                              NetworkVars.shared.stringEncoding = NSWindowsCP1254StringEncoding;
+                              NetworkVarsObjc.shared.stringEncoding = NSWindowsCP1254StringEncoding;
                           } else if ([charset isEqualToString:@"WINDOWS-1250"]) {
-                              NetworkVars.shared.stringEncoding = NSWindowsCP1250StringEncoding;
+                              NetworkVarsObjc.shared.stringEncoding = NSWindowsCP1250StringEncoding;
                           } else if ([charset isEqualToString:@"ISO-2022-JP"]) {
-                              NetworkVars.shared.stringEncoding = NSISO2022JPStringEncoding;
+                              NetworkVarsObjc.shared.stringEncoding = NSISO2022JPStringEncoding;
                           } else if ([charset isEqualToString:@"ISO-2022-JP"]) {
-                              NetworkVars.shared.stringEncoding = NSISO2022JPStringEncoding;
+                              NetworkVarsObjc.shared.stringEncoding = NSISO2022JPStringEncoding;
                           } else if ([charset isEqualToString:@"MACINTOSH"]) {
-                              NetworkVars.shared.stringEncoding = NSMacOSRomanStringEncoding;
+                              NetworkVarsObjc.shared.stringEncoding = NSMacOSRomanStringEncoding;
                           } else if ([charset isEqualToString:@"UNICODEFFFE"]) {
-                              NetworkVars.shared.stringEncoding = NSUTF16BigEndianStringEncoding;
+                              NetworkVarsObjc.shared.stringEncoding = NSUTF16BigEndianStringEncoding;
                           } else if ([charset isEqualToString:@"UTF-32"]) {
-                              NetworkVars.shared.stringEncoding = NSUTF32StringEncoding;
+                              NetworkVarsObjc.shared.stringEncoding = NSUTF32StringEncoding;
                           } else {
                               // UTF-8 string encoding by default
-                              NetworkVars.shared.stringEncoding = NSUTF8StringEncoding;
+                              NetworkVarsObjc.shared.stringEncoding = NSUTF8StringEncoding;
                           }
                           
                           // Upload chunk size is null if not provided by server
@@ -240,10 +240,10 @@
                           UploadVars.shared.serverFileTypes = [result objectForKey:@"upload_file_types"];
                           
                           // User rights are determined by Community extension (if installed)
-                          if(!NetworkVars.shared.usesCommunityPluginV29) {
+                          if(!NetworkVarsObjc.shared.usesCommunityPluginV29) {
                               NSString *userStatus = [result objectForKey:@"status"];
-                              NetworkVars.shared.hasAdminRights = ([userStatus isEqualToString:@"admin"] || [userStatus isEqualToString:@"webmaster"]);
-                              NetworkVars.shared.hasNormalRights = [userStatus isEqualToString:@"normal"];
+                              NetworkVarsObjc.shared.hasAdminRights = ([userStatus isEqualToString:@"admin"] || [userStatus isEqualToString:@"webmaster"]);
+                              NetworkVarsObjc.shared.hasNormalRights = [userStatus isEqualToString:@"normal"];
                           }
                           
                           // Collect the list of available sizes
@@ -507,9 +507,9 @@
     return [self post:kCommunitySessionGetStatus
         URLParameters:nil
            parameters:nil
-       sessionManager:NetworkVars.shared.sessionManager
+       sessionManager:NetworkVarsObjc.shared.sessionManager
              progress:^(NSProgress * progress) {
-                 if (NetworkVars.shared.userCancelledCommunication) {
+                 if (NetworkVarsObjc.shared.userCancelledCommunication) {
                      [progress cancel];
                  }
              }
@@ -519,16 +519,16 @@
                       if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
                       {
                           NSString *userStatus = [[responseObject objectForKey:@"result" ] objectForKey:@"real_user_status"];
-                          NetworkVars.shared.hasAdminRights = ([userStatus isEqualToString:@"admin"] || [userStatus isEqualToString:@"webmaster"]);
-                          NetworkVars.shared.hasNormalRights = [userStatus isEqualToString:@"normal"];
+                          NetworkVarsObjc.shared.hasAdminRights = ([userStatus isEqualToString:@"admin"] || [userStatus isEqualToString:@"webmaster"]);
+                          NetworkVarsObjc.shared.hasNormalRights = [userStatus isEqualToString:@"normal"];
 
                           completion([responseObject objectForKey:@"result"]);
                       }
                       else
                       {
-                          NetworkVars.shared.hasAdminRights = NO;
-                          NetworkVars.shared.hasNormalRights = NO;
-                          NetworkVars.shared.usesUploadAsync = NO;
+                          NetworkVarsObjc.shared.hasAdminRights = NO;
+                          NetworkVarsObjc.shared.hasNormalRights = NO;
+                          NetworkVarsObjc.shared.usesUploadAsync = NO;
                           completion(nil);
                       }
                   }
@@ -546,7 +546,7 @@
 	return [self post:kPiwigoSessionLogout
 		URLParameters:nil
            parameters:nil
-       sessionManager:NetworkVars.shared.sessionManager
+       sessionManager:NetworkVarsObjc.shared.sessionManager
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
 

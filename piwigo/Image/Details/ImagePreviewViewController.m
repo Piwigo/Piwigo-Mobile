@@ -85,7 +85,7 @@
     NSString *thumbnailStr = [imageData getURLFromImageSizeType:(kPiwigoImageSize)AlbumVars.shared.defaultThumbnailSize];
     NSURL *thumbnailURL = [NSURL URLWithString:thumbnailStr];
     UIImageView *thumb = [UIImageView new];
-    thumb.image = [NetworkVars.shared.thumbnailCache imageforRequest:[NSURLRequest requestWithURL:thumbnailURL] withAdditionalIdentifier:nil];
+    thumb.image = [NetworkVarsObjc.shared.thumbnailCache imageforRequest:[NSURLRequest requestWithURL:thumbnailURL] withAdditionalIdentifier:nil];
     self.scrollView.imageView.image = thumb.image ? thumb.image : [UIImage imageNamed:@"placeholderImage"];
 
     // Previewed image
@@ -102,7 +102,7 @@
     __weak typeof(self) weakSelf = self;
     
 //    NSLog(@"==> Start loading %@", previewURL.path);
-    self.downloadTask = [NetworkVars.shared.imagesSessionManager GET:previewURL.absoluteString
+    self.downloadTask = [NetworkVarsObjc.shared.imagesSessionManager GET:previewURL.absoluteString
         parameters:nil headers:nil
         progress:^(NSProgress * _Nonnull progress) {
                     dispatch_async(dispatch_get_main_queue(),
@@ -126,7 +126,7 @@
                  weakSelf.imageLoaded = YES;
                  // Store image in cache
                  NSCachedURLResponse *cachedResponse = [[NSCachedURLResponse alloc] initWithResponse:task.response data:UIImageJPEGRepresentation(image, 0.9)];
-                 [NetworkVars.shared.imageCache storeCachedResponse:cachedResponse forDataTask:weakSelf.downloadTask];
+                 [NetworkVarsObjc.shared.imageCache storeCachedResponse:cachedResponse forDataTask:weakSelf.downloadTask];
              }
              else {     // Keep thumbnail or placeholder if image could not be loaded
 #if defined(DEBUG)
@@ -258,8 +258,8 @@ shouldWaitForResponseToAuthenticationChallenge:(NSURLAuthenticationChallenge *)a
     else if ([protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodHTTPBasic])
     {
         // HTTP basic authentification credentials
-        NSString *user = NetworkVars.shared.httpUsername;
-        NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", NetworkVars.shared.serverProtocol, NetworkVars.shared.serverPath] account:user];
+        NSString *user = NetworkVarsObjc.shared.httpUsername;
+        NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.shared.serverProtocol, NetworkVarsObjc.shared.serverPath] account:user];
         [authenticationChallenge.sender useCredential:[NSURLCredential credentialWithUser:user password:password
                                                        persistence:NSURLCredentialPersistenceSynchronizable] forAuthenticationChallenge:authenticationChallenge];
         [authenticationChallenge.sender continueWithoutCredentialForAuthenticationChallenge:authenticationChallenge];

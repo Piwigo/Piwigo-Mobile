@@ -8,6 +8,7 @@
 
 import Photos
 import UIKit
+import piwigoKit
 
 let kClipboardPrefix = "Clipboard-"
 let kClipboardImageSuffix = "-img-"

@@ -134,7 +134,7 @@
              swipeSettings:(MGSwipeSettings*) swipeSettings expansionSettings:(MGSwipeExpansionSettings*) expansionSettings
 {
     // Only admins can rename, move and delete albums
-    if (!NetworkVars.shared.hasAdminRights) { return nil; }
+    if (!NetworkVarsObjc.shared.hasAdminRights) { return nil; }
     
     // Settings
     cell.swipeBackgroundColor = [UIColor piwigoColorOrange];

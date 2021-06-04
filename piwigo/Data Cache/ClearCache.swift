@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import piwigoKit
 
 @objc
 class ClearCache: NSObject {
@@ -27,8 +28,8 @@ class ClearCache: NSObject {
         if !exceptCategories { CategoriesData.sharedInstance().clearCache() }
 
         // URL requests
-        NetworkVars.shared.imageCache?.removeAllCachedResponses()
-        NetworkVars.shared.thumbnailCache?.removeAllImages()
+        NetworkVarsObjc.shared.imageCache?.removeAllCachedResponses()
+        NetworkVarsObjc.shared.thumbnailCache?.removeAllImages()
         
         // Clean up /tmp directory
         let appDelegate = UIApplication.shared.delegate as? AppDelegate

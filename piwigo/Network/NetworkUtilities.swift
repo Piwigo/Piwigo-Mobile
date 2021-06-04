@@ -5,6 +5,7 @@
 //  Created by Eddy Lelièvre-Berna on 29/12/2020.
 //  Copyright © 2020 Piwigo.org. All rights reserved.
 //
+import piwigoKit
 
 @objc
 class NetworkUtilities: NSObject {

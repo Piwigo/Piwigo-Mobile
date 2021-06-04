@@ -53,7 +53,7 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
 
     // Album comment
     if (self.albumData.comment.length == 0) {
-        if(NetworkVars.shared.hasAdminRights) {
+        if(NetworkVarsObjc.shared.hasAdminRights) {
             self.albumComment.text = [NSString stringWithFormat:@"(%@)", NSLocalizedString(@"createNewAlbumDescription_noDescription", @"no description")];
             self.albumComment.textColor = [UIColor piwigoColorRightLabel];
         } else {
@@ -98,7 +98,7 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     self.numberOfImages.font = [self.numberOfImages.font fontWithSize:[UIFont fontSizeForLabel:self.numberOfImages nberLines:1]];
 
     // Add renaming, moving and deleting capabilities when user has admin rights
-    if(NetworkVars.shared.hasAdminRights)
+    if(NetworkVarsObjc.shared.hasAdminRights)
     {
         // Handle
         self.handleButton.layer.cornerRadius = 7;

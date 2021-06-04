@@ -9,6 +9,7 @@
 
 import CoreData
 import Photos
+import piwigoKit
 
 @objc
 class UploadsProvider: NSObject {

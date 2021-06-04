@@ -10,6 +10,7 @@
 
 import MessageUI
 import UIKit
+import piwigoKit
 
 enum SettingsSection : Int {
     case server
@@ -1082,7 +1083,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let value = Float(AppVars.shared.diskCache)
 
                 // Slider configuration
-                let currentDiskSize = Float(NetworkVars.shared.imageCache?.currentDiskUsage ?? 0)
+                let currentDiskSize = Float(NetworkVarsObjc.shared.imageCache?.currentDiskUsage ?? 0)
                 let currentDiskSizeInMB: Float = currentDiskSize / (1024.0 * 1024.0)
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 var prefix:String
@@ -1103,7 +1104,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     // Update settings
                     AppVars.shared.diskCache = Int(newValue)
                     // Update disk cache size
-                    NetworkVars.shared.imageCache?.diskCapacity = AppVars.shared.diskCache * 1024 * 1024
+                    NetworkVarsObjc.shared.imageCache?.diskCapacity = AppVars.shared.diskCache * 1024 * 1024
                 }
                 cell.accessibilityIdentifier = "diskCache"
                 tableViewCell = cell
@@ -1117,7 +1118,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let value = Float(AppVars.shared.memoryCache)
 
                 // Slider configuration
-                let currentMemSize = Float(NetworkVars.shared.thumbnailCache?.memoryUsage ?? 0)
+                let currentMemSize = Float(NetworkVarsObjc.shared.thumbnailCache?.memoryUsage ?? 0)
                 let currentMemSizeInMB: Float = currentMemSize / (1024.0 * 1024.0)
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 var prefix:String
@@ -1138,7 +1139,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     // Update settings
                     AppVars.shared.memoryCache = Int(newValue)
                     // Update memory cache size
-                    NetworkVars.shared.thumbnailCache?.memoryCapacity = UInt64(AppVars.shared.memoryCache * 1024 * 1024)
+                    NetworkVarsObjc.shared.thumbnailCache?.memoryCapacity = UInt64(AppVars.shared.memoryCache * 1024 * 1024)
                 }
                 cell.accessibilityIdentifier = "memoryCache"
                 tableViewCell = cell
@@ -1840,9 +1841,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
     func closeSessionAndClearCache() {
         // Session closed
-        NetworkVars.shared.sessionManager?.invalidateSessionCancelingTasks(true, resetSession: true)
-        NetworkVars.shared.imagesSessionManager?.invalidateSessionCancelingTasks(true, resetSession: true)
-        NetworkVars.shared.imageCache?.removeAllCachedResponses()
+        NetworkVarsObjc.shared.sessionManager?.invalidateSessionCancelingTasks(true, resetSession: true)
+        NetworkVarsObjc.shared.imagesSessionManager?.invalidateSessionCancelingTasks(true, resetSession: true)
+        NetworkVarsObjc.shared.imageCache?.removeAllCachedResponses()
         NetworkVars.shared.hadOpenedSession = false
 
         // Back to default values

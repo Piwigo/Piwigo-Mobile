@@ -351,7 +351,7 @@
 
         // User can delete images/videos if he/she has:
         // — admin rights
-        if (NetworkVars.shared.hasAdminRights)
+        if (NetworkVarsObjc.shared.hasAdminRights)
         {
             // Interface depends on device and orientation
             if (([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) &&

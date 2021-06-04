@@ -9,6 +9,7 @@
 //
 
 import UIKit
+import piwigoKit
 
 //enum kPiwigoCategorySelectAction {
 //    case none

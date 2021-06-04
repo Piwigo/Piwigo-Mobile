@@ -600,7 +600,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         [displayHelpPagesWithIndex addObject:@0];   // i.e. multiple selection of images
     }
     NSInteger numberOfAlbums = [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count;
-    if ((self.categoryId != 0) && (numberOfAlbums > 2) && NetworkVars.shared.hasAdminRights &&
+    if ((self.categoryId != 0) && (numberOfAlbums > 2) && NetworkVarsObjc.shared.hasAdminRights &&
         ((AppVars.shared.didWatchHelpViews & 0b0000000000000100) == 0)) {
         [displayHelpPagesWithIndex addObject:@2];   // i.e. management of albums
     }
@@ -796,8 +796,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     // User can upload images/videos if he/she has:
     // — admin rights
     // — normal rights and upload access to the current category
-    if (NetworkVars.shared.hasAdminRights ||
-        (NetworkVars.shared.hasNormalRights && [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights]))
+    if (NetworkVarsObjc.shared.hasAdminRights ||
+        (NetworkVarsObjc.shared.hasNormalRights && [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights]))
     {
         // Show Upload button if needed
         if (self.addButton.isHidden)
@@ -974,8 +974,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             // Position of Home Album button depends on user's rights
             // — admin rights
             // — normal rights and upload access to the current category
-            if (NetworkVars.shared.hasAdminRights ||
-                (NetworkVars.shared.hasNormalRights && [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights]))
+            if (NetworkVarsObjc.shared.hasAdminRights ||
+                (NetworkVarsObjc.shared.hasNormalRights && [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights]))
             {
                 CGFloat xPos = self.addButton.frame.origin.x;
                 CGFloat yPos = self.addButton.frame.origin.y;
@@ -1184,7 +1184,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
     // User can delete images/videos if he/she has:
     // — admin rights
-    if (NetworkVars.shared.hasAdminRights)
+    if (NetworkVarsObjc.shared.hasAdminRights)
     {
         // iPhone in portrait mode
         if (([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) &&
@@ -1215,7 +1215,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     }
     // WRONG =====> 'normal' user with upload access to the current category can edit images
     // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by' values of images for checking rights
-    else if (NetworkVars.shared.hasNormalRights && [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
+    else if (NetworkVarsObjc.shared.hasNormalRights && [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
     {
         // iPhone in portrait mode
         if (([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) &&
@@ -1264,7 +1264,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 {
     // User can delete images/videos if he/she has:
     // — admin rights
-    if (NetworkVars.shared.hasAdminRights)
+    if (NetworkVarsObjc.shared.hasAdminRights)
     {
         // iPhone in portrait mode
         if (([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) &&
@@ -1296,7 +1296,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     }
     // WRONG =====> 'normal' user with upload access to the current category can edit images
     // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by' values of images for checking rights
-    else if (NetworkVars.shared.hasNormalRights && [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
+    else if (NetworkVarsObjc.shared.hasNormalRights && [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
     {
         // iPhone in portrait mode
         if (([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) &&
@@ -2131,8 +2131,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             EditImageParamsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageParams"];
             editImageVC.images = [self.selectedImagesToEdit copy];
             PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
-            editImageVC.hasTagCreationRights = NetworkVars.shared.hasAdminRights ||
-                (NetworkVars.shared.hasNormalRights && albumData.hasUploadRights);
+            editImageVC.hasTagCreationRights = NetworkVarsObjc.shared.hasAdminRights ||
+                (NetworkVarsObjc.shared.hasNormalRights && albumData.hasUploadRights);
             editImageVC.delegate = self;
             [self pushView:editImageVC];
             break;
@@ -3472,7 +3472,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     
     // Add actions
     [alert addAction:cancelAction];
-    if ([@"2.10.0" compare:NetworkVars.shared.version options:NSNumericSearch] != NSOrderedDescending)
+    if ([@"2.10.0" compare:NetworkVarsObjc.shared.version options:NSNumericSearch] != NSOrderedDescending)
     {
         [alert addAction:favoritesSelectorAction];
     }

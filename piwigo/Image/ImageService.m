@@ -56,7 +56,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     return [self post:kPiwigoCategoriesGetImages
 		URLParameters:nil
            parameters:parameters
-       sessionManager:NetworkVars.shared.sessionManager
+       sessionManager:NetworkVarsObjc.shared.sessionManager
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
 				  
@@ -124,13 +124,13 @@ NSString * const kGetImageOrderDescending = @"desc";
                                  };
     
     // Cancel active Search request if any
-    NSArray <NSURLSessionTask *> *searchTasks = [NetworkVars.shared.sessionManager tasks];
+    NSArray <NSURLSessionTask *> *searchTasks = [NetworkVarsObjc.shared.sessionManager tasks];
     for (NSURLSessionTask *task in searchTasks) {
         [task cancel];
     }
     
     // Cancel active image downloads if any
-    NSArray <NSURLSessionTask *> *downloadTasks = [NetworkVars.shared.imagesSessionManager tasks];
+    NSArray <NSURLSessionTask *> *downloadTasks = [NetworkVarsObjc.shared.imagesSessionManager tasks];
     for (NSURLSessionTask *task in downloadTasks) {
         [task cancel];
     }
@@ -139,7 +139,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     return [self post:kPiwigoImageSearch
         URLParameters:nil
            parameters:parameters
-       sessionManager:NetworkVars.shared.sessionManager
+       sessionManager:NetworkVarsObjc.shared.sessionManager
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
@@ -238,13 +238,13 @@ NSString * const kGetImageOrderDescending = @"desc";
     }
     
     // Cancel active Search request if any
-    NSArray <NSURLSessionTask *> *searchTasks = [NetworkVars.shared.sessionManager tasks];
+    NSArray <NSURLSessionTask *> *searchTasks = [NetworkVarsObjc.shared.sessionManager tasks];
     for (NSURLSessionTask *task in searchTasks) {
         [task cancel];
     }
     
     // Cancel active image downloads if any
-    NSArray <NSURLSessionTask *> *downloadTasks = [NetworkVars.shared.imagesSessionManager tasks];
+    NSArray <NSURLSessionTask *> *downloadTasks = [NetworkVarsObjc.shared.imagesSessionManager tasks];
     for (NSURLSessionTask *task in downloadTasks) {
         [task cancel];
     }
@@ -253,7 +253,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     return [self post:kPiwigoCategoriesGetImages
         URLParameters:nil
            parameters:parameters
-       sessionManager:NetworkVars.shared.sessionManager
+       sessionManager:NetworkVarsObjc.shared.sessionManager
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
@@ -334,13 +334,13 @@ NSString * const kGetImageOrderDescending = @"desc";
                                   };
     
     // Cancel active Search request if any
-    NSArray <NSURLSessionTask *> *searchTasks = [NetworkVars.shared.sessionManager tasks];
+    NSArray <NSURLSessionTask *> *searchTasks = [NetworkVarsObjc.shared.sessionManager tasks];
     for (NSURLSessionTask *task in searchTasks) {
         [task cancel];
     }
     
     // Cancel active image downloads if any
-    NSArray <NSURLSessionTask *> *downloadTasks = [NetworkVars.shared.imagesSessionManager tasks];
+    NSArray <NSURLSessionTask *> *downloadTasks = [NetworkVarsObjc.shared.imagesSessionManager tasks];
     for (NSURLSessionTask *task in downloadTasks) {
         [task cancel];
     }
@@ -349,7 +349,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     return [self post:kPiwigoTagsGetImages
         URLParameters:nil
            parameters:parameters
-       sessionManager:NetworkVars.shared.sessionManager
+       sessionManager:NetworkVarsObjc.shared.sessionManager
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
@@ -426,13 +426,13 @@ NSString * const kGetImageOrderDescending = @"desc";
                                  };
     
     // Cancel active Search request if any
-    NSArray <NSURLSessionTask *> *searchTasks = [NetworkVars.shared.sessionManager tasks];
+    NSArray <NSURLSessionTask *> *searchTasks = [NetworkVarsObjc.shared.sessionManager tasks];
     for (NSURLSessionTask *task in searchTasks) {
         [task cancel];
     }
     
     // Cancel active image downloads if any
-    NSArray <NSURLSessionTask *> *downloadTasks = [NetworkVars.shared.imagesSessionManager tasks];
+    NSArray <NSURLSessionTask *> *downloadTasks = [NetworkVarsObjc.shared.imagesSessionManager tasks];
     for (NSURLSessionTask *task in downloadTasks) {
         [task cancel];
     }
@@ -441,7 +441,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     return [self post:kPiwigoUserFavoritesGetList
         URLParameters:nil
            parameters:parameters
-       sessionManager:NetworkVars.shared.sessionManager
+       sessionManager:NetworkVarsObjc.shared.sessionManager
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
@@ -701,7 +701,7 @@ NSString * const kGetImageOrderDescending = @"desc";
 	return [self post:kPiwigoImagesGetInfo
 		URLParameters:nil
            parameters:parameters
-       sessionManager:NetworkVars.shared.sessionManager
+       sessionManager:NetworkVarsObjc.shared.sessionManager
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
 				  
@@ -1145,9 +1145,9 @@ NSString * const kGetImageOrderDescending = @"desc";
         URLParameters:nil
            parameters:@{
                         @"image_id" : listOfImageIds,
-                        @"pwg_token" : NetworkVars.shared.pwgToken
+                        @"pwg_token" : NetworkVarsObjc.shared.pwgToken
                         }
-       sessionManager:NetworkVars.shared.sessionManager
+       sessionManager:NetworkVarsObjc.shared.sessionManager
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject)
     {
@@ -1253,7 +1253,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     // Call pwg.images.setInfo to set image parameters
     return [self setImageInfoForImageWithId:imageData.imageId
                                 information:imageInformation
-                             sessionManager:NetworkVars.shared.sessionManager
+                             sessionManager:NetworkVarsObjc.shared.sessionManager
                                  onProgress:progress
                                OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
                       
@@ -1333,7 +1333,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                          @"file" : fileName,
                          @"single_value_mode" : @"replace"
                          }
-        sessionManager:NetworkVars.shared.sessionManager
+        sessionManager:NetworkVarsObjc.shared.sessionManager
               progress:progress
                success:^(NSURLSessionTask *task, id responseObject) {
                         if(completion) {
@@ -1381,7 +1381,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                              @"categories" : newImageCategories,
                              @"multiple_value_mode" : @"replace"
                              }
-            sessionManager:NetworkVars.shared.sessionManager
+            sessionManager:NetworkVarsObjc.shared.sessionManager
                   progress:progress
                    success:^(NSURLSessionTask *task, id responseObject)
     {
@@ -1420,7 +1420,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                 parameters:@{
                              @"image_id" : [NSString stringWithFormat:@"%ld", (long)imageId]
                              }
-            sessionManager:NetworkVars.shared.sessionManager
+            sessionManager:NetworkVarsObjc.shared.sessionManager
                   progress:progress
                    success:^(NSURLSessionTask *task, id responseObject) {
                        
@@ -1450,7 +1450,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                 parameters:@{
                              @"image_id" : [NSString stringWithFormat:@"%ld", (long)image.imageId]
                              }
-            sessionManager:NetworkVars.shared.sessionManager
+            sessionManager:NetworkVarsObjc.shared.sessionManager
                   progress:progress
                    success:^(NSURLSessionTask *task, id responseObject) {
                        

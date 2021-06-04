@@ -10,6 +10,7 @@
 
 import Photos
 import UIKit
+import piwigoKit
 
 enum SectionType: Int {
     case month

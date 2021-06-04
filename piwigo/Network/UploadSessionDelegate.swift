@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import piwigoKit
 
 @objc
 class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegate, URLSessionDataDelegate {

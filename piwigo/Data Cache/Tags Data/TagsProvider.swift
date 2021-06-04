@@ -8,6 +8,7 @@
 //  A class to fetch data from the remote server and save it to the Core Data store.
 
 import CoreData
+import piwigoKit
 
 class TagsProvider {
 
@@ -33,7 +34,7 @@ class TagsProvider {
     */
     func fetchTags(asAdmin: Bool, completionHandler: @escaping (Error?) -> Void) {
 
-        NetworkHandler.post(asAdmin ? kPiwigoTagsGetAdminList : kPiwigoTagsGetList, urlParameters: nil, parameters: nil, sessionManager: NetworkVars.shared.sessionManager, progress: nil, success: { (task, jsonData) in
+        NetworkHandler.post(asAdmin ? kPiwigoTagsGetAdminList : kPiwigoTagsGetList, urlParameters: nil, parameters: nil, sessionManager: NetworkVarsObjc.shared.sessionManager, progress: nil, success: { (task, jsonData) in
 
             // Alert the user if no data comes back.
             guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {
@@ -289,7 +290,7 @@ class TagsProvider {
     func addTag(with name: String, completionHandler: @escaping (Error?) -> Void) {
         
         NetworkHandler.post(kPiwigoTagsAdd, urlParameters: nil, parameters: ["name": name],
-                            sessionManager: NetworkVars.shared.sessionManager,
+                            sessionManager: NetworkVarsObjc.shared.sessionManager,
                             progress: nil,
                             success: { (task, jsonData) in
             // Alert the user if no data comes back.

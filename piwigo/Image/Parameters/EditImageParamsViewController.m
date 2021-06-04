@@ -467,7 +467,7 @@ typedef enum {
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     NSInteger nberOfRows = EditImageParamsOrderCount - (self.hasDatePicker == NO);
-    nberOfRows -= (!NetworkVars.shared.hasAdminRights ? 1 : 0);
+    nberOfRows -= (!NetworkVarsObjc.shared.hasAdminRights ? 1 : 0);
 
     return nberOfRows;
 }
@@ -477,7 +477,7 @@ typedef enum {
     CGFloat height = 44.0;
     NSInteger row = indexPath.row;
     row += (!self.hasDatePicker && (row > EditImageParamsOrderDate)) ? 1 : 0;
-    row += (!NetworkVars.shared.hasAdminRights && (row > EditImageParamsOrderDatePicker)) ? 1 : 0;
+    row += (!NetworkVarsObjc.shared.hasAdminRights && (row > EditImageParamsOrderDatePicker)) ? 1 : 0;
     switch (row)
     {
         case EditImageParamsOrderThumbnails:
@@ -516,7 +516,7 @@ typedef enum {
 
     NSInteger row = indexPath.row;
     row += (!self.hasDatePicker && (row > EditImageParamsOrderDate)) ? 1 : 0;
-    row += (!NetworkVars.shared.hasAdminRights && (row > EditImageParamsOrderDatePicker)) ? 1 : 0;
+    row += (!NetworkVarsObjc.shared.hasAdminRights && (row > EditImageParamsOrderDatePicker)) ? 1 : 0;
     switch (row)
 	{
         case EditImageParamsOrderThumbnails:
@@ -625,7 +625,7 @@ typedef enum {
 {
     NSInteger row = indexPath.row;
     row += (!self.hasDatePicker && (row > EditImageParamsOrderDate)) ? 1 : 0;
-    row += (!NetworkVars.shared.hasAdminRights && (row > EditImageParamsOrderDatePicker)) ? 1 : 0;
+    row += (!NetworkVarsObjc.shared.hasAdminRights && (row > EditImageParamsOrderDatePicker)) ? 1 : 0;
     switch (row)
     {
         case EditImageParamsOrderPrivacy:
@@ -677,7 +677,7 @@ typedef enum {
     BOOL result;
     NSInteger row = indexPath.row;
     row += (!self.hasDatePicker && (row > EditImageParamsOrderDate)) ? 1 : 0;
-    row += (!NetworkVars.shared.hasAdminRights && (row > EditImageParamsOrderDatePicker)) ? 1 : 0;
+    row += (!NetworkVarsObjc.shared.hasAdminRights && (row > EditImageParamsOrderDatePicker)) ? 1 : 0;
     switch (row)
     {
         case EditImageParamsOrderImageName:
@@ -1072,7 +1072,7 @@ typedef enum {
         // Refresh table row
         NSInteger row = EditImageParamsOrderTags;
         row -= !self.hasDatePicker ? 1 : 0;
-        row -= !NetworkVars.shared.hasAdminRights ? 1 : 0;
+        row -= !NetworkVarsObjc.shared.hasAdminRights ? 1 : 0;
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
         [self.editImageParamsTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     }

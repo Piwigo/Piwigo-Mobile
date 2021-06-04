@@ -7,6 +7,7 @@
 //
 
 import BackgroundTasks
+import piwigoKit
 
 extension UploadManager {
     

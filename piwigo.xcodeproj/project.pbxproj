@@ -19,12 +19,10 @@
 		AD0ED1002441C42200C69178 /* SliderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED0FF2441C42200C69178 /* SliderTableViewCell.swift */; };
 		AD0ED1022441CEC200C69178 /* SwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED1012441CEC200C69178 /* SwitchTableViewCell.swift */; };
 		AD0ED1042441F65B00C69178 /* TextFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED1032441F65B00C69178 /* TextFieldTableViewCell.swift */; };
-		AD0FD7F42622178200C85F99 /* UploadAuto.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0FD7F32622178200C85F99 /* UploadAuto.swift */; };
 		AD0FF9B821316ECE0094B907 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0FF9B721316ECE0094B907 /* SnapshotHelper.swift */; };
 		AD1092EB23D4E4D0006627B0 /* TagsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1092EA23D4E4D0006627B0 /* TagsProvider.swift */; };
 		AD11BDA22402C7E7003347BE /* UIColor+AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1F60012402B1B70099E5E5 /* UIColor+AppColors.swift */; };
 		AD11E46124A930B000C8876F /* piwigoWebAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD11E46024A930B000C8876F /* piwigoWebAPI.swift */; };
-		AD13EB892494DFBF005987A8 /* UploadVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD13EB882494DFBF005987A8 /* UploadVideo.swift */; };
 		AD196AA12438D2D6006C492A /* ShareMetadataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD196AA02438D2D5006C492A /* ShareMetadataViewController.swift */; };
 		AD1EBB68213404D50012FA44 /* piwigoGetPiwigo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1EBB67213404D50012FA44 /* piwigoGetPiwigo.swift */; };
 		AD1EBB70213404DB0012FA44 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1EBB6F213404DB0012FA44 /* SnapshotHelper.swift */; };
@@ -34,6 +32,20 @@
 		AD27A16F24C44EEC000AD203 /* EditImageThumbTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD27A16E24C44EEC000AD203 /* EditImageThumbTableViewCell.xib */; };
 		AD27B85D25A22A2400528F5F /* ShareImageActivityItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD27B85C25A22A2400528F5F /* ShareImageActivityItemProvider.swift */; };
 		AD27B87325A7A91800528F5F /* ShareUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD27B87225A7A91800528F5F /* ShareUtilities.swift */; };
+		AD2913CA2669480F00403026 /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2913B32669440000403026 /* Intents.framework */; };
+		AD2913CD2669480F00403026 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2913CC2669480F00403026 /* IntentHandler.swift */; };
+		AD2913D12669480F00403026 /* piwigoIntents.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = AD2913C92669480F00403026 /* piwigoIntents.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		AD2913D626695BB100403026 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = AD2913D526695BB100403026 /* Intents.intentdefinition */; };
+		AD2913D726695C3E00403026 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = AD2913D526695BB100403026 /* Intents.intentdefinition */; };
+		AD2913D926695EAD00403026 /* AutoUploadPhotosHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2913D826695EAD00403026 /* AutoUploadPhotosHandler.swift */; };
+		AD2913E126696A3100403026 /* UploadVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD13EB882494DFBF005987A8 /* UploadVideo.swift */; };
+		AD2913E226696A3100403026 /* UploadAuto.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0FD7F32622178200C85F99 /* UploadAuto.swift */; };
+		AD2913E326696A3100403026 /* UploadFinisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1D5F6A248553710004C8BC /* UploadFinisher.swift */; };
+		AD2913E426696A3100403026 /* UploadImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8A4520247714EF002360EA /* UploadImage.swift */; };
+		AD2913E526696A3100403026 /* UploadTransfer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8A452224771618002360EA /* UploadTransfer.swift */; };
+		AD2913E626696A3100403026 /* UploadVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3335442666CA46000A1487 /* UploadVars.swift */; };
+		AD2913E726696A3100403026 /* UploadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE69C042477D9B8002D953F /* UploadManager.swift */; };
+		AD2913E926696A9500403026 /* NetworkVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD97CFB7265B0DBE00719ED5 /* NetworkVars.swift */; };
 		AD2A21FE24310E65006B1A8A /* SelectPrivacyViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD2A21FD24310E65006B1A8A /* SelectPrivacyViewController.storyboard */; };
 		AD2B0A15243D001A00AF1FEE /* DefaultAlbumThumbnailSizeViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD2B0A14243D001A00AF1FEE /* DefaultAlbumThumbnailSizeViewController.storyboard */; };
 		AD2B0A17243D00CD00AF1FEE /* DefaultAlbumThumbnailSizeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2B0A16243D00CD00AF1FEE /* DefaultAlbumThumbnailSizeViewController.swift */; };
@@ -47,7 +59,6 @@
 		AD3203642184738F00BAD372 /* PrivacyPolicy.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD3203662184738F00BAD372 /* PrivacyPolicy.strings */; };
 		AD3207E9240AD93900F00FEB /* PrivacyPolicyViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD3207E8240AD93900F00FEB /* PrivacyPolicyViewController.storyboard */; };
 		AD3335432666B6D4000A1487 /* AppVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3335422666B6D4000A1487 /* AppVars.swift */; };
-		AD3335452666CA46000A1487 /* UploadVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3335442666CA46000A1487 /* UploadVars.swift */; };
 		AD3369BF23F035F700F3FA80 /* TagSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3369BC23F035F700F3FA80 /* TagSelectorViewController.swift */; };
 		AD3369C023F035F700F3FA80 /* TagSelectorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3369BD23F035F700F3FA80 /* TagSelectorCell.swift */; };
 		AD35A16B2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD35A16A2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift */; };
@@ -89,7 +100,6 @@
 		AD5F64F424C6091500660BE3 /* pwg.tags.getAdminList.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5F64F324C6091500660BE3 /* pwg.tags.getAdminList.json */; };
 		AD61D2FA2571555A00B8DEA0 /* HelpViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD61D2F92571555A00B8DEA0 /* HelpViewController.storyboard */; };
 		AD61D3142571598000B8DEA0 /* HelpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD61D3132571598000B8DEA0 /* HelpViewController.swift */; };
-		AD65236B248837D3007E2537 /* UploadFinisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1D5F6A248553710004C8BC /* UploadFinisher.swift */; };
 		AD6A128B24FAB56B00E3BBED /* pwg.images.uploadAsync.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6A128A24FAB56A00E3BBED /* pwg.images.uploadAsync.swift */; };
 		AD6A128C24FAB57300E3BBED /* pwg.images.uploadAsync.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6A128A24FAB56A00E3BBED /* pwg.images.uploadAsync.swift */; };
 		AD6B2E731F0930B40040EAD9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E751F0930B40040EAD9 /* Localizable.strings */; };
@@ -111,12 +121,9 @@
 		AD84E60523BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD84E60423BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib */; };
 		AD8709AB259A8E66008C4E4C /* Help04ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8709AA259A8E66008C4E4C /* Help04ViewController.swift */; };
 		AD870CD71F54AE110015BFA1 /* ImagesCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = AD870CD61F54AE110015BFA1 /* ImagesCollection.m */; };
-		AD8A4521247714EF002360EA /* UploadImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8A4520247714EF002360EA /* UploadImage.swift */; };
-		AD8A452324771618002360EA /* UploadTransfer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8A452224771618002360EA /* UploadTransfer.swift */; };
 		AD8F4B8B23F04B8C009483B6 /* TagSelectorViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD3369BE23F035F700F3FA80 /* TagSelectorViewController.storyboard */; };
 		AD92B8FE1F200083006E5B63 /* ReleaseNotes.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD92B9001F200083006E5B63 /* ReleaseNotes.strings */; };
 		AD97CFB5265AFFD900719ED5 /* UserDefaults+AppGroups.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD97CFB4265AFFD900719ED5 /* UserDefaults+AppGroups.swift */; };
-		AD97CFB9265B926D00719ED5 /* NetworkVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD97CFB7265B0DBE00719ED5 /* NetworkVars.swift */; };
 		AD97CFBD265D1AF800719ED5 /* AlbumVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD97CFBC265D1AF800719ED5 /* AlbumVars.swift */; };
 		AD98762F2626014500B964C5 /* UploadProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD98762E2626014500B964C5 /* UploadProperties.swift */; };
 		AD987634262606C600B964C5 /* UIViewController+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD987633262606C600B964C5 /* UIViewController+AppTools.swift */; };
@@ -163,6 +170,7 @@
 		ADD3C97825E44173008FEA2A /* Location+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD3C97725E44173008FEA2A /* Location+CoreDataClass.swift */; };
 		ADD3C97925E44173008FEA2A /* Location+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD3C97625E44173008FEA2A /* Location+CoreDataProperties.swift */; };
 		ADD3DD5925A9D53C00FD377F /* ImageMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD3DD5825A9D53C00FD377F /* ImageMetadata.swift */; };
+		ADD6018E26697710003CAC2F /* NetworkVarsObjc.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2913EC26696EC100403026 /* NetworkVarsObjc.swift */; };
 		ADD790E3265EDE5C00EA4DDB /* ImageVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD790E2265EDE5C00EA4DDB /* ImageVars.swift */; };
 		ADD79A3D24A9352500428C58 /* pwg.images.upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD79A3C24A9352500428C58 /* pwg.images.upload.swift */; };
 		ADD79A4224A942A700428C58 /* pwg.images.upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD79A3C24A9352500428C58 /* pwg.images.upload.swift */; };
@@ -178,7 +186,6 @@
 		ADE4C22625754B420060A203 /* Help03ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE4C22525754B420060A203 /* Help03ViewController.swift */; };
 		ADE4C23425755E660060A203 /* Help01ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE4C23325755E660060A203 /* Help01ViewController.swift */; };
 		ADE4C23E25756BC80060A203 /* Help02ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE4C23D25756BC80060A203 /* Help02ViewController.swift */; };
-		ADE69C052477D9B8002D953F /* UploadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE69C042477D9B8002D953F /* UploadManager.swift */; };
 		ADEAFB8D25F8182C00EEDB1D /* ColorPaletteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEAFB8C25F8182C00EEDB1D /* ColorPaletteViewController.swift */; };
 		ADEAFB8F25F8198800EEDB1D /* ColorPaletteViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADEAFB8E25F8198800EEDB1D /* ColorPaletteViewController.storyboard */; };
 		ADEC6B032455A3520011527C /* LocalAlbumsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADEC6B022455A3520011527C /* LocalAlbumsProvider.swift */; };
@@ -244,6 +251,13 @@
 			remoteGlobalIDString = D82B8CBA1A67820A000E47CA;
 			remoteInfo = piwigo;
 		};
+		AD2913CF2669480F00403026 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D82B8CB31A67820A000E47CA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AD2913C82669480F00403026;
+			remoteInfo = piwigoIntents;
+		};
 		AD30FD3921316DA8009AA30E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D82B8CB31A67820A000E47CA /* Project object */;
@@ -263,6 +277,17 @@
 				AD084E4E2659A27100159FE1 /* piwigoKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AD2913BC2669440000403026 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				AD2913D12669480F00403026 /* piwigoIntents.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -310,6 +335,13 @@
 		AD27A16E24C44EEC000AD203 /* EditImageThumbTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditImageThumbTableViewCell.xib; sourceTree = "<group>"; };
 		AD27B85C25A22A2400528F5F /* ShareImageActivityItemProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareImageActivityItemProvider.swift; sourceTree = "<group>"; };
 		AD27B87225A7A91800528F5F /* ShareUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareUtilities.swift; sourceTree = "<group>"; };
+		AD2913B32669440000403026 /* Intents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Intents.framework; path = System/Library/Frameworks/Intents.framework; sourceTree = SDKROOT; };
+		AD2913C92669480F00403026 /* piwigoIntents.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = piwigoIntents.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		AD2913CC2669480F00403026 /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
+		AD2913CE2669480F00403026 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AD2913D526695BB100403026 /* Intents.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = Intents.intentdefinition; sourceTree = "<group>"; };
+		AD2913D826695EAD00403026 /* AutoUploadPhotosHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoUploadPhotosHandler.swift; sourceTree = "<group>"; };
+		AD2913EC26696EC100403026 /* NetworkVarsObjc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NetworkVarsObjc.swift; path = piwigo/Network/NetworkVarsObjc.swift; sourceTree = SOURCE_ROOT; };
 		AD294B2A1F2CE87400CD3769 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/AppStore.strings; sourceTree = "<group>"; };
 		AD2A21FD24310E65006B1A8A /* SelectPrivacyViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SelectPrivacyViewController.storyboard; sourceTree = "<group>"; };
 		AD2B0A14243D001A00AF1FEE /* DefaultAlbumThumbnailSizeViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = DefaultAlbumThumbnailSizeViewController.storyboard; sourceTree = "<group>"; };
@@ -655,6 +687,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AD2913C62669480F00403026 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AD2913CA2669480F00403026 /* Intents.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AD30FD3121316DA7009AA30E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -682,6 +722,7 @@
 				B37F5B7464A6A11CDDABA253 /* libPods-piwigoTests.a */,
 				297CC11501571E3E266D8AB5 /* libPods-piwigoAppStore.a */,
 				F09C9ADFF1E09579418AB493 /* libPods-piwigoGetPiwigo.a */,
+				AD2913B32669440000403026 /* Intents.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -702,6 +743,7 @@
 		AD084E3B2659846400159FE1 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				AD2913E826696A8300403026 /* Network */,
 				AD97CFB6265B0B0700719ED5 /* Supporting Files */,
 			);
 			path = Shared;
@@ -769,6 +811,25 @@
 				AD23A1F02427C95700F662AB /* UploadError.swift */,
 			);
 			path = "Uploads Data";
+			sourceTree = "<group>";
+		};
+		AD2913CB2669480F00403026 /* piwigoIntents */ = {
+			isa = PBXGroup;
+			children = (
+				AD2913CC2669480F00403026 /* IntentHandler.swift */,
+				AD2913D526695BB100403026 /* Intents.intentdefinition */,
+				AD2913D826695EAD00403026 /* AutoUploadPhotosHandler.swift */,
+				AD2913CE2669480F00403026 /* Info.plist */,
+			);
+			path = piwigoIntents;
+			sourceTree = "<group>";
+		};
+		AD2913E826696A8300403026 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				AD97CFB7265B0DBE00719ED5 /* NetworkVars.swift */,
+			);
+			path = Network;
 			sourceTree = "<group>";
 		};
 		AD30FD3521316DA8009AA30E /* piwigoAppStore */ = {
@@ -1181,6 +1242,7 @@
 			isa = PBXGroup;
 			children = (
 				D82B8CBD1A67820A000E47CA /* piwigo */,
+				AD2913CB2669480F00403026 /* piwigoIntents */,
 				AD084E3B2659846400159FE1 /* Shared */,
 				AD084E3C265984B000159FE1 /* Supporting Targets */,
 				9BE2F03E92BB4BD667BAA1F0 /* Pods */,
@@ -1197,6 +1259,7 @@
 				AD1EBB65213404D50012FA44 /* piwigoGetPiwigo.xctest */,
 				AD11E45E24A930B000C8876F /* piwigoWebAPI.xctest */,
 				AD084E462659A27100159FE1 /* piwigoKit.framework */,
+				AD2913C92669480F00403026 /* piwigoIntents.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1325,7 +1388,7 @@
 				AD9A1BE624E03BFF00D22C86 /* pwg.tags */,
 				D82B8CE41A678ED2000E47CA /* NetworkHandler.h */,
 				D82B8CE51A678ED2000E47CA /* NetworkHandler.m */,
-				AD97CFB7265B0DBE00719ED5 /* NetworkVars.swift */,
+				AD2913EC26696EC100403026 /* NetworkVarsObjc.swift */,
 				ADC74CB1259BDE7600581ADE /* NetworkUtilities.swift */,
 				AD76906724D1957D00EE7EC0 /* UploadSessionDelegate.swift */,
 			);
@@ -1486,6 +1549,23 @@
 			productReference = AD1EBB65213404D50012FA44 /* piwigoGetPiwigo.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		AD2913C82669480F00403026 /* piwigoIntents */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AD2913D22669480F00403026 /* Build configuration list for PBXNativeTarget "piwigoIntents" */;
+			buildPhases = (
+				AD2913C52669480F00403026 /* Sources */,
+				AD2913C62669480F00403026 /* Frameworks */,
+				AD2913C72669480F00403026 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = piwigoIntents;
+			productName = piwigoIntents;
+			productReference = AD2913C92669480F00403026 /* piwigoIntents.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		AD30FD3321316DA7009AA30E /* piwigoAppStore */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = AD30FD3B21316DA8009AA30E /* Build configuration list for PBXNativeTarget "piwigoAppStore" */;
@@ -1516,11 +1596,13 @@
 				D82B8CB91A67820A000E47CA /* Resources */,
 				7A9296FADB36B3093B24E071 /* [CP] Copy Pods Resources */,
 				AD084E522659A27100159FE1 /* Embed Frameworks */,
+				AD2913BC2669440000403026 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				AD084E4C2659A27100159FE1 /* PBXTargetDependency */,
+				AD2913D02669480F00403026 /* PBXTargetDependency */,
 			);
 			name = piwigo;
 			productName = piwigo;
@@ -1533,7 +1615,7 @@
 		D82B8CB31A67820A000E47CA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1150;
+				LastSwiftUpdateCheck = 1250;
 				LastUpgradeCheck = 1220;
 				ORGANIZATIONNAME = Piwigo.org;
 				TargetAttributes = {
@@ -1548,6 +1630,9 @@
 						CreatedOnToolsVersion = 9.4.1;
 						LastSwiftMigration = 1020;
 						TestTargetID = D82B8CBA1A67820A000E47CA;
+					};
+					AD2913C82669480F00403026 = {
+						CreatedOnToolsVersion = 12.5;
 					};
 					AD30FD3321316DA7009AA30E = {
 						CreatedOnToolsVersion = 9.4.1;
@@ -1604,10 +1689,11 @@
 			projectRoot = "";
 			targets = (
 				D82B8CBA1A67820A000E47CA /* piwigo */,
+				AD084E452659A27100159FE1 /* piwigoKit */,
 				AD30FD3321316DA7009AA30E /* piwigoAppStore */,
 				AD1EBB64213404D50012FA44 /* piwigoGetPiwigo */,
 				AD11E45D24A930B000C8876F /* piwigoWebAPI */,
-				AD084E452659A27100159FE1 /* piwigoKit */,
+				AD2913C82669480F00403026 /* piwigoIntents */,
 			);
 		};
 /* End PBXProject section */
@@ -1631,6 +1717,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		AD1EBB63213404D50012FA44 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AD2913C72669480F00403026 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1799,6 +1892,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AD2913E926696A9500403026 /* NetworkVars.swift in Sources */,
 				AD97CFB5265AFFD900719ED5 /* UserDefaults+AppGroups.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1824,6 +1918,16 @@
 			files = (
 				AD1EBB68213404D50012FA44 /* piwigoGetPiwigo.swift in Sources */,
 				AD1EBB70213404DB0012FA44 /* SnapshotHelper.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AD2913C52669480F00403026 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AD2913D626695BB100403026 /* Intents.intentdefinition in Sources */,
+				AD2913CD2669480F00403026 /* IntentHandler.swift in Sources */,
+				AD2913D926695EAD00403026 /* AutoUploadPhotosHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1854,6 +1958,7 @@
 				ADF1CC75243D111600D75319 /* SelectCategoryViewController.swift in Sources */,
 				ADEAFB8D25F8182C00EEDB1D /* ColorPaletteViewController.swift in Sources */,
 				ADA24DB8243A767700864D1F /* DefaultImageSizeViewController.swift in Sources */,
+				AD2913D726695C3E00403026 /* Intents.intentdefinition in Sources */,
 				ADA24DB1243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift in Sources */,
 				AD61D3142571598000B8DEA0 /* HelpViewController.swift in Sources */,
 				ADE4C23425755E660060A203 /* Help01ViewController.swift in Sources */,
@@ -1871,6 +1976,7 @@
 				AD42D08524449FF000F0BAC1 /* LocalImageCollectionViewCell.swift in Sources */,
 				AD6A128B24FAB56B00E3BBED /* pwg.images.uploadAsync.swift in Sources */,
 				ADC8FAAA244C7307006BDA6A /* LocalImagesFooterReusableView.swift in Sources */,
+				AD2913E426696A3100403026 /* UploadImage.swift in Sources */,
 				ADE4C22625754B420060A203 /* Help03ViewController.swift in Sources */,
 				ADD3DD5925A9D53C00FD377F /* ImageMetadata.swift in Sources */,
 				AD439E4425E14C3600333A91 /* PasteboardObject.swift in Sources */,
@@ -1892,9 +1998,9 @@
 				AD82C04C2433DB0E00F774BA /* SelectPrivacyViewController.swift in Sources */,
 				ADD210432440DE5A00DD79A6 /* SettingsViewController.swift in Sources */,
 				AD27B87325A7A91800528F5F /* ShareUtilities.swift in Sources */,
-				AD97CFB9265B926D00719ED5 /* NetworkVars.swift in Sources */,
 				AD27B85D25A22A2400528F5F /* ShareImageActivityItemProvider.swift in Sources */,
 				AD5317E125ADC47C0027A26A /* ShareVideoActivityItemProvider.swift in Sources */,
+				AD2913E526696A3100403026 /* UploadTransfer.swift in Sources */,
 				ADFA89052438CFD800F73F0F /* ShareMetadataCell.swift in Sources */,
 				AD196AA12438D2D6006C492A /* ShareMetadataViewController.swift in Sources */,
 				AD0ED1002441C42200C69178 /* SliderTableViewCell.swift in Sources */,
@@ -1907,28 +2013,26 @@
 				ADF26FBF24C200040036E778 /* TagTableViewCell.swift in Sources */,
 				ADF26FC024C200040036E778 /* TagsViewController.swift in Sources */,
 				AD0ED1042441F65B00C69178 /* TextFieldTableViewCell.swift in Sources */,
+				AD2913E326696A3100403026 /* UploadFinisher.swift in Sources */,
 				AD58F77F24EFC62F00ECF6BD /* UploadImageHeaderView.swift in Sources */,
 				AD07A23425CF024A000EE016 /* URL+AppTools.swift in Sources */,
 				AD3335432666B6D4000A1487 /* AppVars.swift in Sources */,
 				AD23A1F52427DA3A00F662AB /* UploadError.swift in Sources */,
-				AD65236B248837D3007E2537 /* UploadFinisher.swift in Sources */,
-				AD8A4521247714EF002360EA /* UploadImage.swift in Sources */,
 				ADC019762471AA5200532A81 /* UploadImageTableViewCell.swift in Sources */,
 				AD9A1BE824E04F0000D22C86 /* UploadQueueHeaderView.swift in Sources */,
 				AD5B498124E5C02300BDF5B4 /* UploadQueueViewController.swift in Sources */,
 				AD97CFBD265D1AF800719ED5 /* AlbumVars.swift in Sources */,
 				ADC019782471ABA000532A81 /* UploadQueueViewControllerOld.swift in Sources */,
-				ADE69C052477D9B8002D953F /* UploadManager.swift in Sources */,
 				AD76906824D1957D00EE7EC0 /* UploadSessionDelegate.swift in Sources */,
-				AD8A452324771618002360EA /* UploadTransfer.swift in Sources */,
 				AD460F9D25E446D100B09AFE /* Tag+CoreDataProperties.swift in Sources */,
-				AD13EB892494DFBF005987A8 /* UploadVideo.swift in Sources */,
 				AD23A1F42427DA3800F662AB /* UploadsProvider.swift in Sources */,
 				AD6FD1FC24BF0321009AA3B7 /* UploadSwitchViewController.swift in Sources */,
 				ADA3CEDB24BF50E200694922 /* UploadParametersViewController.swift in Sources */,
 				ADA3CED924BF50D000694922 /* UploadSettingsViewController.swift in Sources */,
 				ADAC548C26170B1200301C1C /* SelectCategoryHeaderView.swift in Sources */,
 				AD35A16B2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift in Sources */,
+				AD2913E726696A3100403026 /* UploadManager.swift in Sources */,
+				ADD6018E26697710003CAC2F /* NetworkVarsObjc.swift in Sources */,
 				AD11BDA22402C7E7003347BE /* UIColor+AppColors.swift in Sources */,
 				ADFC3A4E2401DA4F004CD337 /* UIFont+AppFonts.swift in Sources */,
 				AD460FA425E453B700B09AFE /* Upload+CoreDataProperties.swift in Sources */,
@@ -1936,6 +2040,7 @@
 				AD38C04C24AF746000CDC765 /* community.images.uploadCompleted.swift in Sources */,
 				ADE216FE250E22F7003AE588 /* pwg.images.getInfo.swift in Sources */,
 				AD38C04424AF724100CDC765 /* pwg.images.setInfo.swift in Sources */,
+				AD2913E126696A3100403026 /* UploadVideo.swift in Sources */,
 				ADE03D2E25FCBA4B002F5C7B /* ColorPaletteViewControllerOld.swift in Sources */,
 				ADD79A4224A942A700428C58 /* pwg.images.upload.swift in Sources */,
 				AD5F64E924C6024200660BE3 /* pwg.tags.add.swift in Sources */,
@@ -1961,7 +2066,6 @@
 				ED9A42B51ACAD35300EA4421 /* LoginViewController_iPad.m in Sources */,
 				D863EECA1A6A484C00C0A6E9 /* PiwigoTextField.m in Sources */,
 				AD82C0482433D1A200F774BA /* main.m in Sources */,
-				AD0FD7F42622178200C85F99 /* UploadAuto.swift in Sources */,
 				AD39165E22A126CA00414E4B /* SearchImagesViewController.m in Sources */,
 				AD770FDD23B6A666007DAD50 /* EditImageDatePickerTableViewCell.m in Sources */,
 				D87C5A9A1A6F4FB0001763BC /* SessionService.m in Sources */,
@@ -1971,10 +2075,11 @@
 				AD07A23625CF07D8000EE016 /* Data+AppTools.swift in Sources */,
 				ADBCFE87235B7603001D6EE7 /* FavoritesImagesViewController.m in Sources */,
 				D8D3F7201A785DF800AEA7F1 /* AlbumImagesViewController.m in Sources */,
+				AD2913E226696A3100403026 /* UploadAuto.swift in Sources */,
 				D8B04C641A92B1BB00695281 /* EditImagePrivacyTableViewCell.m in Sources */,
 				D818E9FF1A74C2A000733991 /* PiwigoAlbumData.m in Sources */,
 				ADB607E81FC9D79000AF28DB /* VideoView.m in Sources */,
-				AD3335452666CA46000A1487 /* UploadVars.swift in Sources */,
+				AD2913E626696A3100403026 /* UploadVars.swift in Sources */,
 				D82B8D331A688E8F000E47CA /* ImageDetailViewController.m in Sources */,
 				D8E4D6211ABE34DF0057EB95 /* LoginNavigationController.m in Sources */,
 				ADAA57D122DD00B700EB4EAA /* DiscoverImagesViewController.m in Sources */,
@@ -2009,6 +2114,11 @@
 			platformFilter = ios;
 			target = D82B8CBA1A67820A000E47CA /* piwigo */;
 			targetProxy = AD1EBB6A213404D50012FA44 /* PBXContainerItemProxy */;
+		};
+		AD2913D02669480F00403026 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AD2913C82669480F00403026 /* piwigoIntents */;
+			targetProxy = AD2913CF2669480F00403026 /* PBXContainerItemProxy */;
 		};
 		AD30FD3A21316DA8009AA30E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2178,7 +2288,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Supporting Targets/piwigoKit/Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				INSTALL_PATH = "@executable_path/../Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2223,7 +2333,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Supporting Targets/piwigoKit/Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				INSTALL_PATH = "@executable_path/../Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2290,6 +2400,7 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -2304,6 +2415,7 @@
 				);
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo.piwigoWebAPI;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=macosx*]" = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -2336,6 +2448,7 @@
 					"@loader_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo.piwigoGetPiwigo;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=macosx*]" = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "1db8c18e-75fc-4fdf-b2c9-2aa2c895e936";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2359,7 +2472,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "Apple Distribution";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = "";
@@ -2372,14 +2485,91 @@
 					"@loader_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo.piwigoGetPiwigo;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=macosx*]" = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "1db8c18e-75fc-4fdf-b2c9-2aa2c895e936";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = piwigo;
+			};
+			name = Release;
+		};
+		AD2913D32669480F00403026 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = ZEC3W885H6;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = piwigoIntents/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 2.7;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "net.lelievre-berna.piwigo.intents";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "Dev profile for Piwigo";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_PRECOMPILE_BRIDGING_HEADER = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AD2913D42669480F00403026 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution";
+				CODE_SIGN_STYLE = Manual;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = ZU5THW8T5W;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = piwigoIntents/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 2.7;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo.intents;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "Piwigo iOS distribution";
+				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_PRECOMPILE_BRIDGING_HEADER = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -2407,6 +2597,7 @@
 					"@loader_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo.piwigoAppStore;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=macosx*]" = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "d3e37774-f832-404f-b43e-ee87b83b503b";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2430,10 +2621,10 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "Apple Distribution";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = ZU5THW8T5W;
+				DEVELOPMENT_TEAM = "";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "Supporting Targets/piwigoAppStore/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
@@ -2443,9 +2634,11 @@
 					"@loader_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo.piwigoAppStore;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=macosx*]" = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "d3e37774-f832-404f-b43e-ee87b83b503b";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
@@ -2592,7 +2785,6 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = piwigo/piwigoDebug.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 322;
 				DEAD_CODE_STRIPPING = YES;
@@ -2642,7 +2834,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "net.lelievre-berna.piwigo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "21fe80f9-851b-4da9-93bc-779c033d04e7";
-				PROVISIONING_PROFILE_SPECIFIER = "Dev profile for Piwigo";
+				PROVISIONING_PROFILE_SPECIFIER = "Dev profile for Piwigo App";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/$(PROJECT_NAME)/$(PROJECT_NAME)-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
@@ -2660,7 +2852,6 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = piwigo/piwigoRelease.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution";
 				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 322;
@@ -2741,6 +2932,15 @@
 			buildConfigurations = (
 				AD1EBB6D213404D50012FA44 /* Debug */,
 				AD1EBB6E213404D50012FA44 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AD2913D22669480F00403026 /* Build configuration list for PBXNativeTarget "piwigoIntents" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AD2913D32669480F00403026 /* Debug */,
+				AD2913D42669480F00403026 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

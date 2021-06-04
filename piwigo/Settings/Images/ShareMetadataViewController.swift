@@ -9,6 +9,7 @@
 //
 
 import UIKit
+import piwigoKit
 
 let kPiwigoActivityTypeMessenger = UIActivity.ActivityType(rawValue: "com.facebook.Messenger.ShareExtension")
 let kPiwigoActivityTypePostInstagram = UIActivity.ActivityType(rawValue: "com.burbn.instagram.shareextension")
@@ -474,7 +475,7 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
         }
 
         // Clear URL requests to force reload images before sharing
-        NetworkVars.shared.imageCache?.removeAllCachedResponses()
+        NetworkVarsObjc.shared.imageCache?.removeAllCachedResponses()
 
         // Clean up /tmp directory where shared files are temporarily stored
         let appDelegate = UIApplication.shared.delegate as? AppDelegate

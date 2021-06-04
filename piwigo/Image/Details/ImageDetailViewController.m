@@ -237,7 +237,7 @@ NSString * const kPiwigoNotificationDeletedImage = @"kPiwigoNotificationDeletedI
          [[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeRight)) {
             
         // iPhone or iPad in portrait mode
-        if (NetworkVars.shared.hasAdminRights)
+        if (NetworkVarsObjc.shared.hasAdminRights)
         {
             // User with admin rights can move, edit, delete images and set as album image
             [self.navigationItem setRightBarButtonItems:@[self.editBarButton]];
@@ -252,7 +252,7 @@ NSString * const kPiwigoNotificationDeletedImage = @"kPiwigoNotificationDeletedI
             BOOL isNavigationBarHidden = self.navigationController.isNavigationBarHidden;
             [self.navigationController setToolbarHidden:isNavigationBarHidden animated:YES];
         }
-        else if (NetworkVars.shared.hasNormalRights && [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
+        else if (NetworkVarsObjc.shared.hasNormalRights && [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
         {
             // WRONG =====> 'normal' user with upload access to the current category can edit images
             // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by' values of images for checking rights
@@ -280,7 +280,7 @@ NSString * const kPiwigoNotificationDeletedImage = @"kPiwigoNotificationDeletedI
         self.isToolbarRequired = NO;
         [self.navigationController setToolbarHidden:YES animated:YES];
 
-        if (NetworkVars.shared.hasAdminRights)
+        if (NetworkVarsObjc.shared.hasAdminRights)
         {
             // User with admin rights can edit, delete images and set as album image
             self.deleteBarButton.tintColor = [UIColor redColor];
@@ -626,8 +626,8 @@ NSString * const kPiwigoNotificationDeletedImage = @"kPiwigoNotificationDeletedI
     EditImageParamsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageParams"];
     editImageVC.images = @[self.imageData];
     PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
-    editImageVC.hasTagCreationRights = NetworkVars.shared.hasAdminRights ||
-                                        (NetworkVars.shared.hasNormalRights && albumData.hasUploadRights);
+    editImageVC.hasTagCreationRights = NetworkVarsObjc.shared.hasAdminRights ||
+                                        (NetworkVarsObjc.shared.hasNormalRights && albumData.hasUploadRights);
     editImageVC.delegate = self;
     [self pushView:editImageVC forButton:self.editBarButton];
 }

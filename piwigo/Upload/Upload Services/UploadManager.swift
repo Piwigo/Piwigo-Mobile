@@ -9,6 +9,7 @@
 
 import Foundation
 import Photos
+import piwigoKit
 
 @objc
 class UploadManager: NSObject, URLSessionDelegate {

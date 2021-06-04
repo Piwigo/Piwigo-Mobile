@@ -9,6 +9,7 @@
 import UIKit
 import AVFoundation
 import BackgroundTasks
+import piwigoKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 

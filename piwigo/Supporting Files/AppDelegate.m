@@ -85,7 +85,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     } else {
         // Complete user interface initialization, login ?
         NSString *user, *password;
-        NSString *server = NetworkVars.shared.serverPath;
+        NSString *server = NetworkVarsObjc.shared.serverPath;
         [SAMKeychain setAccessibilityType:kSecAttrAccessibleAfterFirstUnlock];
         
         // Look for credentials if server address provided
@@ -101,12 +101,12 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
                 
                 // Store credentials with new method if found
                 if (user.length > 0) {
-                    NetworkVars.shared.username = user;
+                    NetworkVarsObjc.shared.username = user;
                     [SAMKeychain setPassword:password forService:server account:user];
                 }
             } else {
                 // Credentials available
-                user = NetworkVars.shared.username;
+                user = NetworkVarsObjc.shared.username;
                 if (user.length > 0) {
                     password = [SAMKeychain passwordForService:server account:user];
                 }
@@ -142,8 +142,8 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     [DataController saveContext];
 
     // Cancel tasks and close sessions
-    [NetworkVars.shared.sessionManager invalidateSessionCancelingTasks:YES resetSession:YES];
-    [NetworkVars.shared.imagesSessionManager invalidateSessionCancelingTasks:YES resetSession:YES];
+    [NetworkVarsObjc.shared.sessionManager invalidateSessionCancelingTasks:YES resetSession:YES];
+    [NetworkVarsObjc.shared.imagesSessionManager invalidateSessionCancelingTasks:YES resetSession:YES];
 
     // Disable network activity indicator
     [AFNetworkActivityIndicatorManager sharedManager].enabled = NO;
@@ -228,7 +228,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
         UIViewController *currentVC = rootVC.childViewControllers.firstObject;
         if ([currentVC isKindOfClass:[AlbumImagesViewController class]]) {
             // Determine for how long the session is opened
-            NSTimeInterval timeSinceLastLogin = [NetworkVars.shared.dateOfLastLogin timeIntervalSinceNow];
+            NSTimeInterval timeSinceLastLogin = [NetworkVarsObjc.shared.dateOfLastLogin timeIntervalSinceNow];
             if (timeSinceLastLogin < (NSTimeInterval)(-900)) { // i.e. 15 minutes (Piwigo 11 session duration defaults to an hour)
                 /// — Perform relogin
                 /// — Resume upload operations in background queue
@@ -352,9 +352,9 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
 
 -(void)reloginAndRetryWithCompletion:(void (^)(void))reloginCompletion
 {
-    BOOL hadOpenedSession = NetworkVars.shared.hadOpenedSession;
-    NSString *server = NetworkVars.shared.serverPath;
-    NSString *user = NetworkVars.shared.username;
+    BOOL hadOpenedSession = NetworkVarsObjc.shared.hadOpenedSession;
+    NSString *server = NetworkVarsObjc.shared.serverPath;
+    NSString *user = NetworkVarsObjc.shared.username;
     
     if(hadOpenedSession && (server.length > 0) && (user.length > 0))
     {

@@ -329,15 +329,15 @@ NSInteger const kDelayPiwigoHUD = 500;
         
         // => Network variables stored in UserDefaults / App Group
 		self.serverProtocol = modelData.serverProtocol;
-        NetworkVars.shared.serverProtocol = modelData.serverProtocol;
+        NetworkVarsObjc.shared.serverProtocol = modelData.serverProtocol;
 		self.serverPath = modelData.serverPath;
-        NetworkVars.shared.serverPath = modelData.serverPath;
+        NetworkVarsObjc.shared.serverPath = modelData.serverPath;
         self.stringEncoding = modelData.stringEncoding;
-        NetworkVars.shared.stringEncoding = modelData.stringEncoding;
+        NetworkVarsObjc.shared.stringEncoding = modelData.stringEncoding;
         self.HttpUsername = modelData.HttpUsername;
-        NetworkVars.shared.httpUsername = modelData.HttpUsername;
+        NetworkVarsObjc.shared.httpUsername = modelData.HttpUsername;
         self.username = modelData.username;
-        NetworkVars.shared.username = modelData.username;
+        NetworkVarsObjc.shared.username = modelData.username;
 
         // Album variables stored in UserDefaults / Standard
         self.defaultCategory = modelData.defaultCategory;

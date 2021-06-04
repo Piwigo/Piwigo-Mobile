@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import piwigoKit
 
 class ShareUtilities {
     
@@ -262,7 +263,7 @@ class ShareUtilities {
                              completionHandler: @escaping (_ response: URLResponse?, _ filePath: URL?, _ error: Error?) -> Void
                              ) -> URLSessionDownloadTask? {
         // Download and save image in /tmp directory
-        guard let manager = NetworkVars.shared.imagesSessionManager else { return nil}
+        guard let manager = NetworkVarsObjc.shared.imagesSessionManager else { return nil}
         let task = manager.downloadTask(
             with: urlRequest,
             progress: progress,

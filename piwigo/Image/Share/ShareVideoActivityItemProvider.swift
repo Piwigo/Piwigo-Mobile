@@ -11,6 +11,7 @@
 import AVFoundation
 import UIKit
 import LinkPresentation
+import piwigoKit
 
 @objc
 class ShareVideoActivityItemProvider: UIActivityItemProvider {
@@ -109,7 +110,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
         }
 
         // Do we have the movie in cache?
-        if let cache = NetworkVars.shared.imageCache,
+        if let cache = NetworkVarsObjc.shared.imageCache,
            let cachedImageData = cache.cachedResponse(for: urlRequest)?.data,
             !cachedImageData.isEmpty {
             // Create file URL where the shared file is expected to be found
@@ -300,7 +301,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
                             else {
                                 // Store image in cache
                                 let cachedResponse = CachedURLResponse(response: response, data: data)
-                                if let cache = NetworkVars.shared.imageCache {
+                                if let cache = NetworkVarsObjc.shared.imageCache {
                                     cache.storeCachedResponse(cachedResponse, for: urlRequest)
                                 }
 
