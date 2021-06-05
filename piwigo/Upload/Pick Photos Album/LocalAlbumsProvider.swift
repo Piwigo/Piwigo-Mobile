@@ -9,22 +9,31 @@
 import Foundation
 import Photos
 
+enum LocalAlbumType {
+    case pasteboard
+    case localAlbums, eventsAlbums, syncedAlbums
+    case facesAlbums, sharedAlbums, mediaTypes
+    case otherAlbums
+}
+
 @objc
 protocol LocalAlbumsProviderDelegate: NSObjectProtocol {
     func didChangePhotoLibrary()
 }
 
 class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
-    
+
     // Singleton
     static let shared = LocalAlbumsProvider()
     
     // MARK: Properties
-    let maxNberOfAlbumsInSection = 23
-    var hasLimitedNberOfAlbums = [Bool]()
-    var localAlbumHeaders = [String]()
-    var fetchedLocalAlbums = [[PHAssetCollection]]()
-    var localAlbumsFooters = [String]()
+    var localAlbums  = [PHAssetCollection]()
+    var eventsAlbums = [PHAssetCollection]()
+    var syncedAlbums = [PHAssetCollection]()
+    var facesAlbums = [PHAssetCollection]()
+    var sharedAlbums = [PHAssetCollection]()
+    var mediaTypes = [PHAssetCollection]()
+    var otherAlbums = [PHAssetCollection]()
     
     // Smart albums
 //    var genericAlbum: PHFetchResult<PHAssetCollection>!
@@ -157,98 +166,43 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         PHPhotoLibrary.shared().unregisterChangeObserver(self)
     }
 
-
     // MARK: - Fetch Local Albums
     /**
      Fetches the local albums from the Photo Library
      Empty albums are not presented, left albums are sorted by localized title
     */
     func fetchLocalAlbums(completion: @escaping () -> Void) {
-        
-        var _hasLimitedNberOfAlbums = [Bool]()
-        var _localAlbumHeaders = [String]()
-        var _fetchedLocalAlbums = [[PHAssetCollection]]()
-        var _localAlbumsFooters = [String]()
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = .decimal
-        let albumStr = NSLocalizedString("categorySelection_title", comment: "Album")
-        let albumsStr = NSLocalizedString("tabBar_albums", comment: "Albums")
-
         // Local albums
         // Library, photo stream and favorites at the top
 //        var localAlbums = filter(fetchedAssetCollections: [userLibraryAlbum, CloudMyPhotoStream, favoritesAlbum].compactMap { $0 })
-        var localAlbums = filter(fetchedAssetCollections: [userLibraryAlbum, favoritesAlbum].compactMap { $0 })
-        // Followed by albums created in Photos
         let regular = filter(fetchedAssetCollections: [regularAlbums].compactMap { $0 })
-        if regular.count > 0 {
-            localAlbums.append(contentsOf: regular)
-        }
-        if localAlbums.count > 0 {
-            _hasLimitedNberOfAlbums.append(localAlbums.count > maxNberOfAlbumsInSection)
-            _localAlbumHeaders.append(NSLocalizedString("categoryUpload_LocalAlbums", comment: "Local Albums"))
-            _fetchedLocalAlbums.append(localAlbums)
-            _localAlbumsFooters.append(String(format: "%@ %@", numberFormatter.string(from: NSNumber(value: localAlbums.count)) ?? "", localAlbums.count > 1 ? albumsStr : albumStr))
-        }
+        localAlbums = filter(fetchedAssetCollections: [userLibraryAlbum, favoritesAlbum].compactMap { $0 })
+        // Followed by albums created in Photos
+        if regular.count > 0 { localAlbums.append(contentsOf: regular) }
         
         // Synced events
-        let eventsAlbums = filter(fetchedAssetCollections: [syncedEvent].compactMap { $0 })
-        if eventsAlbums.count > 0 {
-            _hasLimitedNberOfAlbums.append(eventsAlbums.count > maxNberOfAlbumsInSection)
-            _localAlbumHeaders.append(NSLocalizedString("categoryUpload_syncedEvents", comment: "iPhoto Events"))
-            _fetchedLocalAlbums.append(eventsAlbums)
-            _localAlbumsFooters.append(String(format: "%@ %@", numberFormatter.string(from: NSNumber(value: eventsAlbums.count)) ?? "", eventsAlbums.count > 1 ? albumsStr : albumStr))
-        }
-        
-        // Synced albums
-        let syncedAlbums = filter(fetchedAssetCollections: [syncedAlbum].compactMap { $0 })
-        if syncedAlbums.count > 0 {
-            _hasLimitedNberOfAlbums.append(syncedAlbums.count > maxNberOfAlbumsInSection)
-            _localAlbumHeaders.append(NSLocalizedString("categoryUpload_syncedAlbums", comment: "iPhoto Albums"))
-            _fetchedLocalAlbums.append(syncedAlbums)
-            _localAlbumsFooters.append(String(format: "%@ %@", numberFormatter.string(from: NSNumber(value: syncedAlbums.count)) ?? "", syncedAlbums.count > 1 ? albumsStr : albumStr))
-        }
-        
-        // Synced faces
-        let facesAlbums = filter(fetchedAssetCollections: [syncedFaces].compactMap { $0 })
-        if facesAlbums.count > 0 {
-            _hasLimitedNberOfAlbums.append(facesAlbums.count > maxNberOfAlbumsInSection)
-            _localAlbumHeaders.append(NSLocalizedString("categoryUpload_syncedFaces", comment: "iPhoto Faces"))
-            _fetchedLocalAlbums.append(facesAlbums)
-            _localAlbumsFooters.append(String(format: "%@ %@", numberFormatter.string(from: NSNumber(value: facesAlbums.count)) ?? "", facesAlbums.count > 1 ? albumsStr : albumStr))
-        }
-        
-        // Shared albums
-        let sharedAlbums = filter(fetchedAssetCollections: [CloudShared].compactMap { $0 })
-        if sharedAlbums.count > 0 {
-            _hasLimitedNberOfAlbums.append(sharedAlbums.count > maxNberOfAlbumsInSection)
-            _localAlbumHeaders.append(NSLocalizedString("categoryUpload_sharedAlbums", comment: "Shared Albums"))
-            _fetchedLocalAlbums.append(sharedAlbums)
-            _localAlbumsFooters.append(String(format: "%@ %@", numberFormatter.string(from: NSNumber(value: sharedAlbums.count)) ?? "", sharedAlbums.count > 1 ? albumsStr : albumStr))
-        }
-        
-        // Media types (selection of smart albums)
-        let mediaTypes = filter(fetchedAssetCollections: [videosAlbum, selfPortraitsAlbum, livePhotosAlbum, depthEffectAlbum, panoramasAlbum, timeLapsesAlbum, slowmoAlbum, burstsAlbum, longExposuresAlbum, screenshotsAlbum, animatedAlbum].compactMap { $0 })
-        if mediaTypes.count > 0 {
-            _hasLimitedNberOfAlbums.append(false)
-            _localAlbumHeaders.append(NSLocalizedString("categoryUpload_mediaTypes", comment: "Media Types"))
-            _fetchedLocalAlbums.append(mediaTypes)
-            _localAlbumsFooters.append(String(format: "%@ %@", numberFormatter.string(from: NSNumber(value: mediaTypes.count)) ?? "", mediaTypes.count > 1 ? albumsStr : albumStr))
-        }
-        
-        // Other albums
-        let otherAlbums = filter(fetchedAssetCollections: [allHiddenAlbum, importedAlbums].compactMap { $0 })
-        if otherAlbums.count > 0 {
-            _hasLimitedNberOfAlbums.append(otherAlbums.count > maxNberOfAlbumsInSection)
-            _localAlbumHeaders.append(NSLocalizedString("categoryUpload_otherAlbums", comment: "Other Albums"))
-            _fetchedLocalAlbums.append(otherAlbums)
-            _localAlbumsFooters.append(String(format: "%@ %@", numberFormatter.string(from: NSNumber(value: otherAlbums.count)) ?? "", otherAlbums.count > 1 ? albumsStr : albumStr))
-        }
+        eventsAlbums = filter(fetchedAssetCollections: [syncedEvent].compactMap { $0 })
 
-        // Store data in data source
-        hasLimitedNberOfAlbums = _hasLimitedNberOfAlbums
-        localAlbumHeaders = _localAlbumHeaders
-        fetchedLocalAlbums = _fetchedLocalAlbums
-        localAlbumsFooters = _localAlbumsFooters
+        // Synced albums
+        syncedAlbums = filter(fetchedAssetCollections: [syncedAlbum].compactMap { $0 })
+
+        // Synced faces
+        facesAlbums = filter(fetchedAssetCollections: [syncedFaces].compactMap { $0 })
+
+        // Shared albums
+        sharedAlbums = filter(fetchedAssetCollections: [CloudShared].compactMap { $0 })
+
+        // Media types (selection of smart albums)
+        mediaTypes = filter(fetchedAssetCollections: [videosAlbum, selfPortraitsAlbum,
+                                                      livePhotosAlbum, depthEffectAlbum,
+                                                      panoramasAlbum, timeLapsesAlbum,
+                                                      slowmoAlbum, burstsAlbum,
+                                                      longExposuresAlbum, screenshotsAlbum,
+                                                      animatedAlbum].compactMap { $0 })
+
+        // Other albums
+        otherAlbums = filter(fetchedAssetCollections: [allHiddenAlbum, importedAlbums].compactMap { $0 })
+
         completion()
     }
     
@@ -275,17 +229,6 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         return collections
     }
 
-    // Used when an iOS version does not apply the fetch option as expected
-//    private func sort(collections: [PHAssetCollection]) -> [PHAssetCollection] {
-//        // Sort collections by title
-//        let sortedCollections = collections.sorted { (arg0, arg1) -> Bool in
-//            let title0 = arg0.localizedTitle ?? "?"
-//            let title1 = arg1.localizedTitle ?? "?"
-//            return (title0.compare(title1) == .orderedAscending)
-//        }
-//        return sortedCollections
-//    }
-    
     // MARK: - Changes occured in the Photo library
     /**
      A delegate to give consumers a chance to update
@@ -398,5 +341,61 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         fetchLocalAlbums {
             self.fetchedLocalAlbumsDelegate?.didChangePhotoLibrary()
         }
+    }
+
+
+    // MARK: - Data Source Utilities
+    func titleForHeaderInSectionOf(albumType: LocalAlbumType) -> String {
+        var title: String
+        switch albumType {
+        case .pasteboard:
+            return ""
+        case .localAlbums:
+            title = NSLocalizedString("categoryUpload_LocalAlbums", comment: "Local Albums")
+        case .eventsAlbums:
+            title = NSLocalizedString("categoryUpload_syncedEvents", comment: "iPhoto Events")
+        case .syncedAlbums:
+            title = NSLocalizedString("categoryUpload_syncedAlbums", comment: "iPhoto Albums")
+        case .facesAlbums:
+            title = NSLocalizedString("categoryUpload_syncedFaces", comment: "iPhoto Faces")
+        case .sharedAlbums:
+            title = NSLocalizedString("categoryUpload_sharedAlbums", comment: "Shared Albums")
+        case .mediaTypes:
+            title = NSLocalizedString("categoryUpload_mediaTypes", comment: "Media Types")
+        case .otherAlbums:
+            title = NSLocalizedString("categoryUpload_otherAlbums", comment: "Other Albums")
+        }
+        return title
+    }
+
+    func titleForFooterInSectionOf(albumType: LocalAlbumType) -> String {
+        // Initialisation
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .decimal
+        let albumStr = NSLocalizedString("categorySelection_title", comment: "Album")
+        let albumsStr = NSLocalizedString("tabBar_albums", comment: "Albums")
+        
+        // Set footer
+        var count = 0
+        switch albumType {
+        case .pasteboard:
+            return ""
+        case .localAlbums:
+            count = localAlbums.count
+        case .eventsAlbums:
+            count = eventsAlbums.count
+        case .syncedAlbums:
+            count = syncedAlbums.count
+        case .facesAlbums:
+            count = facesAlbums.count
+        case .sharedAlbums:
+            count = sharedAlbums.count
+        case .mediaTypes:
+            count = mediaTypes.count
+        case .otherAlbums:
+            count = otherAlbums.count
+        }
+        let footer = String(format: "%@ %@", numberFormatter.string(from: NSNumber(value: count)) ?? "", count > 1 ? albumsStr : albumStr)
+        return footer
     }
 }
