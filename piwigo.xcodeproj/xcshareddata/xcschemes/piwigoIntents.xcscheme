@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
    LastUpgradeVersion = "1250"
-   version = "1.3">
+   wasCreatedForAppExtension = "YES"
+   version = "2.0">
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
@@ -9,14 +10,28 @@
          <BuildActionEntry
             buildForTesting = "YES"
             buildForRunning = "YES"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "NO">
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AD1EBB64213404D50012FA44"
-               BuildableName = "piwigoGetPiwigo.xctest"
-               BlueprintName = "piwigoGetPiwigo"
+               BlueprintIdentifier = "AD2913C82669480F00403026"
+               BuildableName = "piwigoIntents.appex"
+               BlueprintName = "piwigoIntents"
+               ReferencedContainer = "container:piwigo.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "D82B8CBA1A67820A000E47CA"
+               BuildableName = "piwigo.app"
+               BlueprintName = "piwigo"
                ReferencedContainer = "container:piwigo.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -26,57 +41,50 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "NO"
-      systemAttachmentLifetime = "keepNever"
-      userAttachmentLifetime = "keepAlways">
+      shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AD1EBB64213404D50012FA44"
-               BuildableName = "piwigoGetPiwigo.xctest"
-               BlueprintName = "piwigoGetPiwigo"
-               ReferencedContainer = "container:piwigo.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
-      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
-      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      selectedDebuggerIdentifier = ""
+      selectedLauncherIdentifier = "Xcode.IDEFoundation.Launcher.PosixSpawn"
       launchStyle = "0"
+      askForAppToLaunch = "Yes"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
-      allowLocationSimulation = "YES">
-      <MacroExpansion>
+      allowLocationSimulation = "YES"
+      launchAutomaticallySubstyle = "2">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "AD1EBB64213404D50012FA44"
-            BuildableName = "piwigoGetPiwigo.xctest"
-            BlueprintName = "piwigoGetPiwigo"
+            BlueprintIdentifier = "D82B8CBA1A67820A000E47CA"
+            BuildableName = "piwigo.app"
+            BlueprintName = "piwigo"
             ReferencedContainer = "container:piwigo.xcodeproj">
          </BuildableReference>
-      </MacroExpansion>
+      </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
-      debugDocumentVersioning = "YES">
-      <MacroExpansion>
+      debugDocumentVersioning = "YES"
+      launchAutomaticallySubstyle = "2">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "AD1EBB64213404D50012FA44"
-            BuildableName = "piwigoGetPiwigo.xctest"
-            BlueprintName = "piwigoGetPiwigo"
+            BlueprintIdentifier = "D82B8CBA1A67820A000E47CA"
+            BuildableName = "piwigo.app"
+            BlueprintName = "piwigo"
             ReferencedContainer = "container:piwigo.xcodeproj">
          </BuildableReference>
-      </MacroExpansion>
+      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
