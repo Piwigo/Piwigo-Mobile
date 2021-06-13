@@ -22,7 +22,6 @@
 
 NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedImage";
 NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationUpdateImageFileName";
-NSString * const kPiwigoNotificationDeletedImage = @"kPiwigoNotificationDeletedImage";
 
 @interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate, EditImageParamsDelegate, SelectCategoryDelegate, SelectCategoryImageCopiedDelegate, SelectCategoryImageRemovedDelegate, ShareImageActivityItemProviderDelegate, UIToolbarDelegate>
 

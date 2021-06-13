@@ -287,12 +287,12 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
 		albumData.nearestUpperCategory = albumData.upperCategories.count > 2 ? [[albumData.upperCategories objectAtIndex:albumData.upperCategories.count - 2] integerValue] : [[albumData.upperCategories objectAtIndex:0] integerValue];
 		
         if (![[category objectForKey:@"name"] isKindOfClass:[NSNull class]]) {
-            albumData.name = [NetworkUtilities utf8mb4StringFrom:[category objectForKey:@"name"]];
+            albumData.name = [NetworkObjcUtilities utf8mb4ObjcStringFrom:[category objectForKey:@"name"]];
         } else {
             albumData.name = @"Error…";
         }
         if (![[category objectForKey:@"comment"] isKindOfClass:[NSNull class]]) {
-            albumData.comment = [NetworkUtilities utf8mb4StringFrom:[category objectForKey:@"comment"]];
+            albumData.comment = [NetworkObjcUtilities utf8mb4ObjcStringFrom:[category objectForKey:@"comment"]];
         } else {
             albumData.comment = @"";
         }

@@ -41,8 +41,8 @@ class AlbumVars: NSObject {
     @objc var maxNberRecentCategories: Int
 
     /// - Default image sort option
-    @UserDefault("defaultSort", defaultValue: kPiwigoSortDateCreatedAscending.rawValue)
-    @objc var defaultSort: UInt32
+    @UserDefault("defaultSort", defaultValue: kPiwigoSort.dateCreatedAscending.rawValue)
+    @objc var defaultSort: Int16
 
     /// - Display images titles in collection views
     @UserDefault("displayImageTitles", defaultValue: true)

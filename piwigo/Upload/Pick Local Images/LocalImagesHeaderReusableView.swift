@@ -10,6 +10,7 @@
 
 import Photos
 import UIKit
+import piwigoKit
 
 enum SelectButtonState : Int {
     case none

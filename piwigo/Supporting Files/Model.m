@@ -64,7 +64,7 @@ NSInteger const kDelayPiwigoHUD = 500;
 @property (nonatomic, assign) kPiwigoImageSize defaultAlbumThumbnailSize;
 @property (nonatomic, strong) NSString *recentCategories;
 @property (nonatomic, assign) NSInteger maxNberRecentCategories;
-@property (nonatomic, assign) kPiwigoSort defaultSort;
+@property (nonatomic, assign) kPiwigoSortObjc defaultSort;
 @property (nonatomic, assign) BOOL displayImageTitles;
 @property (nonatomic, assign) kPiwigoImageSize defaultThumbnailSize;
 @property (nonatomic, assign) NSInteger thumbnailsPerRowInPortrait;
@@ -117,9 +117,9 @@ NSInteger const kDelayPiwigoHUD = 500;
 @property (nonatomic, assign) BOOL available;               // Unused, i.e. available flag
 
 // Default image upload settings
-@property (nonatomic, assign) kPiwigoSort localImagesSort;
+@property (nonatomic, assign) kPiwigoSortObjc localImagesSort;
 @property (nonatomic, strong) NSString *defaultAuthor;
-@property (nonatomic, assign) kPiwigoPrivacy defaultPrivacyLevel;
+@property (nonatomic, assign) kPiwigoPrivacyObjc defaultPrivacyLevel;
 @property (nonatomic, assign) BOOL stripGPSdataOnUpload;
 @property (nonatomic, assign) BOOL resizeImageOnUpload;
 @property (nonatomic, assign) NSInteger photoResize;
@@ -177,7 +177,7 @@ NSInteger const kDelayPiwigoHUD = 500;
         instance.maxNberRecentCategories = 5;
 
         // Sort images by date: old to new
-		instance.defaultSort = kPiwigoSortDateCreatedAscending;
+		instance.defaultSort = kPiwigoSortObjcDateCreatedAscending;
         
         // Display images titles in collection views
         instance.displayImageTitles = YES;
@@ -221,14 +221,14 @@ NSInteger const kDelayPiwigoHUD = 500;
         // Default image upload settings
         instance.uploadChunkSize = 500;             // 500 KB chunk size
         instance.defaultAuthor = @"";
-        instance.defaultPrivacyLevel = kPiwigoPrivacyEverybody;
+        instance.defaultPrivacyLevel = kPiwigoPrivacyObjcEverybody;
         instance.stripGPSdataOnUpload = NO;         // Upload images with private metadata
         instance.photoQuality = 95;                 // 95% image quality at compression
         instance.photoResize = 100;                 // Do not resize images
         instance.deleteImageAfterUpload = NO;
         instance.prefixFileNameBeforeUpload = NO;
         instance.defaultPrefix = @"";
-        instance.localImagesSort = kPiwigoSortDateCreatedDescending;    // i.e. new to old
+        instance.localImagesSort = kPiwigoSortObjcDateCreatedDescending;    // i.e. new to old
         instance.wifiOnlyUploading = NO;            // Wi-Fi only option
         instance.isAutoUploadActive = NO;           // Auto-upload On/Off
         instance.autoUploadAlbumId = @"";           // Unknown source Photos album
@@ -259,29 +259,27 @@ NSInteger const kDelayPiwigoHUD = 500;
 	return instance;
 }
 
--(NSString *)getNameForPrivacyLevel:(kPiwigoPrivacy)privacyLevel
+-(NSString *)getNameForPrivacyLevel:(kPiwigoPrivacyObjc)privacyLevel
 {
 	NSString *name = @"";
 	switch(privacyLevel)
 	{
-		case kPiwigoPrivacyAdmins:
+		case kPiwigoPrivacyObjcAdmins:
 			name = NSLocalizedString(@"privacyLevel_admin", @"Admins");
 			break;
-		case kPiwigoPrivacyAdminsFamily:
+		case kPiwigoPrivacyObjcAdminsFamily:
 			name = NSLocalizedString(@"privacyLevel_adminFamily", @"Admins, Family");
 			break;
-		case kPiwigoPrivacyAdminsFamilyFriends:
+		case kPiwigoPrivacyObjcAdminsFamilyFriends:
 			name = NSLocalizedString(@"privacyLevel_adminsFamilyFriends", @"Admins, Family, Friends");
 			break;
-		case kPiwigoPrivacyAdminsFamilyFriendsContacts:
+		case kPiwigoPrivacyObjcAdminsFamilyFriendsContacts:
 			name = NSLocalizedString(@"privacyLevel_adminsFamilyFriendsContacts", @"Admins, Family, Friends, Contacts");
 			break;
-		case kPiwigoPrivacyEverybody:
+		case kPiwigoPrivacyObjcEverybody:
 			name = NSLocalizedString(@"privacyLevel_everybody", @"Everybody");
 			break;
-            
-		case kPiwigoPrivacyCount:
-        case kPiwigoPrivacyUnknown:
+        default:
 			break;
 	}
 	
@@ -338,6 +336,10 @@ NSInteger const kDelayPiwigoHUD = 500;
         NetworkVarsObjc.shared.httpUsername = modelData.HttpUsername;
         self.username = modelData.username;
         NetworkVarsObjc.shared.username = modelData.username;
+
+        // Data cache variables stored in UserDefaults / App Group
+        self.couldNotMigrateCoreDataStore = modelData.couldNotMigrateCoreDataStore;
+        CacheVarsObjc.shared.couldNotMigrateCoreDataStore = modelData.couldNotMigrateCoreDataStore;
 
         // Album variables stored in UserDefaults / Standard
         self.defaultCategory = modelData.defaultCategory;
@@ -406,8 +408,6 @@ NSInteger const kDelayPiwigoHUD = 500;
         AppVars.shared.isDarkPaletteModeActive = modelData.isDarkPaletteModeActive;
         self.isLightPaletteModeActive = modelData.isLightPaletteModeActive;
         AppVars.shared.isLightPaletteModeActive = modelData.isLightPaletteModeActive;
-        self.couldNotMigrateCoreDataStore = modelData.couldNotMigrateCoreDataStore;
-        AppVars.shared.couldNotMigrateCoreDataStore = modelData.couldNotMigrateCoreDataStore;
         self.diskCache = modelData.diskCache;
         AppVars.shared.diskCache = modelData.diskCache;
         self.memoryCache = modelData.memoryCache;
@@ -418,41 +418,41 @@ NSInteger const kDelayPiwigoHUD = 500;
         AppVars.shared.dateOfLastTranslationRequest = modelData.dateOfLastTranslationRequest;
 
         self.defaultPrivacyLevel = modelData.defaultPrivacyLevel;
-        UploadVars.shared.defaultPrivacyLevel = modelData.defaultPrivacyLevel;
+        UploadVarsObjc.shared.defaultPrivacyLevel = modelData.defaultPrivacyLevel;
 		self.defaultAuthor = modelData.defaultAuthor;
-        UploadVars.shared.defaultAuthor = modelData.defaultAuthor;
+        UploadVarsObjc.shared.defaultAuthor = modelData.defaultAuthor;
 		self.photoQuality = modelData.photoQuality;
-        UploadVars.shared.photoQuality = modelData.photoQuality;
+        UploadVarsObjc.shared.photoQuality = modelData.photoQuality;
 		self.photoResize = modelData.photoResize;
-        UploadVars.shared.photoResize = modelData.photoResize;
+        UploadVarsObjc.shared.photoResize = modelData.photoResize;
 		self.resizeImageOnUpload = modelData.resizeImageOnUpload;
-        UploadVars.shared.resizeImageOnUpload = modelData.resizeImageOnUpload;
+        UploadVarsObjc.shared.resizeImageOnUpload = modelData.resizeImageOnUpload;
         self.stripGPSdataOnUpload = modelData.stripGPSdataOnUpload;
-        UploadVars.shared.stripGPSdataOnUpload = modelData.stripGPSdataOnUpload;
+        UploadVarsObjc.shared.stripGPSdataOnUpload = modelData.stripGPSdataOnUpload;
         self.compressImageOnUpload = modelData.compressImageOnUpload;
-        UploadVars.shared.compressImageOnUpload = modelData.compressImageOnUpload;
+        UploadVarsObjc.shared.compressImageOnUpload = modelData.compressImageOnUpload;
         self.deleteImageAfterUpload = modelData.deleteImageAfterUpload;
-        UploadVars.shared.deleteImageAfterUpload = modelData.deleteImageAfterUpload;
+        UploadVarsObjc.shared.deleteImageAfterUpload = modelData.deleteImageAfterUpload;
         self.uploadChunkSize = modelData.uploadChunkSize;
-        UploadVars.shared.uploadChunkSize = modelData.uploadChunkSize;
+        UploadVarsObjc.shared.uploadChunkSize = modelData.uploadChunkSize;
         self.prefixFileNameBeforeUpload = modelData.prefixFileNameBeforeUpload;
-        UploadVars.shared.prefixFileNameBeforeUpload = modelData.prefixFileNameBeforeUpload;
+        UploadVarsObjc.shared.prefixFileNameBeforeUpload = modelData.prefixFileNameBeforeUpload;
         self.defaultPrefix = modelData.defaultPrefix;
-        UploadVars.shared.defaultPrefix = modelData.defaultPrefix;
+        UploadVarsObjc.shared.defaultPrefix = modelData.defaultPrefix;
         self.localImagesSort = modelData.localImagesSort;
-        UploadVars.shared.localImagesSort = modelData.localImagesSort;
+        UploadVarsObjc.shared.localImagesSort = modelData.localImagesSort;
         self.wifiOnlyUploading = modelData.wifiOnlyUploading;
-        UploadVars.shared.wifiOnlyUploading = modelData.wifiOnlyUploading;
+        UploadVarsObjc.shared.wifiOnlyUploading = modelData.wifiOnlyUploading;
         self.isAutoUploadActive = modelData.isAutoUploadActive;
-        UploadVars.shared.isAutoUploadActive = modelData.isAutoUploadActive;
+        UploadVarsObjc.shared.isAutoUploadActive = modelData.isAutoUploadActive;
         self.autoUploadAlbumId = modelData.autoUploadAlbumId;
-        UploadVars.shared.autoUploadAlbumId = modelData.autoUploadAlbumId;
+        UploadVarsObjc.shared.autoUploadAlbumId = modelData.autoUploadAlbumId;
         self.autoUploadCategoryId = modelData.autoUploadCategoryId;
-        UploadVars.shared.autoUploadCategoryId = modelData.autoUploadCategoryId;
+        UploadVarsObjc.shared.autoUploadCategoryId = modelData.autoUploadCategoryId;
         self.autoUploadTagIds = modelData.autoUploadTagIds;
-        UploadVars.shared.autoUploadTagIds = modelData.autoUploadTagIds;
+        UploadVarsObjc.shared.autoUploadTagIds = modelData.autoUploadTagIds;
         self.autoUploadComments = modelData.autoUploadComments;
-        UploadVars.shared.autoUploadComments = modelData.autoUploadComments;
+        UploadVarsObjc.shared.autoUploadComments = modelData.autoUploadComments;
         
         // Delete file which is replaced by UserDefaults default and App Groups
         [NSFileManager.defaultManager removeItemAtPath:dataPath error:nil];
@@ -469,7 +469,7 @@ NSInteger const kDelayPiwigoHUD = 500;
     } else {
         self.serverPath = serverPath;
     }
-	self.defaultPrivacyLevel = (kPiwigoPrivacy)[[savedData objectAtIndex:1] integerValue];
+	self.defaultPrivacyLevel = (kPiwigoPrivacyObjc)[[savedData objectAtIndex:1] integerValue];
 	self.defaultAuthor = [savedData objectAtIndex:2];
 
     self.diskCache = MAX([[savedData objectAtIndex:3] integerValue], kPiwigoDiskCacheMin * 4);      // i.e. > 512 MB
@@ -492,9 +492,9 @@ NSInteger const kDelayPiwigoHUD = 500;
 		self.available = YES;
 	}
 	if(savedData.count > 9) {
-		self.defaultSort = (kPiwigoSort)[[savedData objectAtIndex:9] intValue];
+		self.defaultSort = (kPiwigoSortObjc)[[savedData objectAtIndex:9] intValue];
 	} else {
-		self.defaultSort = kPiwigoSortDateCreatedAscending;
+		self.defaultSort = kPiwigoSortObjcDateCreatedAscending;
 	}
 	if(savedData.count > 10) {
 		self.resizeImageOnUpload = [[savedData objectAtIndex:10] boolValue];
@@ -748,9 +748,9 @@ NSInteger const kDelayPiwigoHUD = 500;
         self.defaultPrefix = @"";       // No prefix to filenames by default value
     }
     if(savedData.count > 52) {
-        self.localImagesSort = (kPiwigoSort)[[savedData objectAtIndex:52] intValue];
+        self.localImagesSort = (kPiwigoSortObjc)[[savedData objectAtIndex:52] intValue];
     } else {
-        self.localImagesSort = kPiwigoSortDateCreatedDescending;
+        self.localImagesSort = kPiwigoSortObjcDateCreatedDescending;
     }
     if(savedData.count > 53) {
         self.wifiOnlyUploading = [[savedData objectAtIndex:53] boolValue];

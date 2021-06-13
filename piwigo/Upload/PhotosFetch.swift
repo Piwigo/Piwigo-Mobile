@@ -11,6 +11,7 @@
 import Foundation
 import Photos
 import UIKit
+import piwigoKit
 
 @objc
 class PhotosFetch: NSObject {

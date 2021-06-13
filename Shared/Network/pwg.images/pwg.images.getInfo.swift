@@ -1,24 +1,23 @@
 //
-//  pwg.images.uploadAsync.swift
+//  pwg.images.getInfo.swift
 //  piwigo
 //
-//  Created by Eddy Lelièvre-Berna on 29/08/2020.
+//  Created by Eddy Lelièvre-Berna on 13/09/2020.
 //  Copyright © 2020 Piwigo.org. All rights reserved.
 //
 
 import Foundation
 
-// MARK: - pwg.images.uploadAsync
-let kPiwigoImagesUploadAsync = "format=json&method=pwg.images.uploadAsync"
+// MARK: - pwg.images.getInfo
+public let kPiwigoImagesGetInfo = "format=json&method=pwg.images.getInfo"
 
-struct ImagesUploadAsyncJSON: Decodable {
+public struct ImagesGetInfoJSON: Decodable {
 
-    var status: String?
-    var chunks: ImagesUploadAsync!
-    var data: ImagesGetInfo!
-    var derivatives: Derivatives!
-    var errorCode = 0
-    var errorMessage = ""
+    public var status: String?
+    public var data: ImagesGetInfo!
+    public var derivatives: Derivatives!
+    public var errorCode = 0
+    public var errorMessage = ""
 
     private enum RootCodingKeys: String, CodingKey {
         case status = "stat"
@@ -26,7 +25,7 @@ struct ImagesUploadAsyncJSON: Decodable {
         case errorCode = "err"
         case errorMessage = "message"
     }
-
+    
     private enum ResultCodingKeys: String, CodingKey {
         case derivatives
     }
@@ -45,7 +44,12 @@ struct ImagesUploadAsyncJSON: Decodable {
         case xxLargeImage = "xxlarge"
     }
 
-    init(from decoder: Decoder) throws
+    private enum ErrorCodingKeys: String, CodingKey {
+        case code = "code"
+        case message = "msg"
+    }
+
+    public init(from decoder: Decoder) throws
     {
         // Root container keyed by RootCodingKeys
         let rootContainer = try decoder.container(keyedBy: RootCodingKeys.self)
@@ -55,21 +59,12 @@ struct ImagesUploadAsyncJSON: Decodable {
         status = try rootContainer.decodeIfPresent(String.self, forKey: .status)
         if (status == "ok")
         {
-            // Decodes response from the data and store them in the array
-            data = try? rootContainer.decode(ImagesGetInfo.self, forKey: .result)
+            // Image parameters
+            data = try rootContainer.decode(ImagesGetInfo.self, forKey: .result)
             
-            // Did the server returned the image parameters?
-            guard let _ = data, let _ = data.imageId else {
-                // The server returned the list of uploaded chunks
-                chunks = try rootContainer.decode(ImagesUploadAsync.self, forKey: .result)
-//                print("    > \(chunks.message ?? "Done - No message!")")
-                return
-            }
-
-            // The server returned pwg.images.getInfo data
             // Result container keyed by ResultCodingKeys
             let resultContainer = try rootContainer.nestedContainer(keyedBy: ResultCodingKeys.self, forKey: .result)
-//            dump(resultContainer)
+//                dump(resultContainer)
 
             // Decodes derivatives
             do {
@@ -79,7 +74,7 @@ struct ImagesUploadAsyncJSON: Decodable {
                 // Sometimes, width and height are provided as String instead of Int!
                 derivatives = Derivatives()
                 let derivativesContainer = try resultContainer.nestedContainer(keyedBy: DerivativesCodingKeys.self, forKey: .derivatives)
-//                dump(derivativesContainer)
+//                    dump(derivativesContainer)
                 
                 // Square image
                 do {
@@ -193,20 +188,109 @@ struct ImagesUploadAsyncJSON: Decodable {
         else if (status == "fail")
         {
             // Retrieve Piwigo server error
-            errorCode = try rootContainer.decode(Int.self, forKey: .errorCode)
-            errorMessage = try rootContainer.decode(String.self, forKey: .errorMessage)
+            do {
+                // Retrieve Piwigo server error
+                errorCode = try rootContainer.decode(Int.self, forKey: .errorCode)
+                errorMessage = try rootContainer.decode(String.self, forKey: .errorMessage)
+            }
+            catch {
+                // Error container keyed by ErrorCodingKeys ("format=json" forgotten in call)
+                let errorContainer = try rootContainer.nestedContainer(keyedBy: ErrorCodingKeys.self, forKey: .errorCode)
+                errorCode = Int(try errorContainer.decode(String.self, forKey: .code)) ?? NSNotFound
+                errorMessage = try errorContainer.decode(String.self, forKey: .message)
+            }
         }
         else {
             // Unexpected Piwigo server error
             errorCode = -1
-            errorMessage = "Unexpected error encountered while calling server method with provided parameters."
+            errorMessage = NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")
         }
     }
 }
 
 
-// MARK: - Result contains a message until all chunks have been uploaded
-struct ImagesUploadAsync: Decodable
+// MARK: - Result
+public struct ImagesGetInfo: Decodable
 {
-    let message: String?         // "chunks uploaded = 2,5"
+    public let imageId: Int?                   // 1042
+    public let imageTitle: String?             // "Title"
+    public let comment: String?                // "No description"
+    public let visits: Int?                    // 0
+    public let fileName: String?               // Image.jpg
+    public let datePosted: String?             // "yyyy-MM-dd HH:mm:ss"
+    public let dateCreated: String?            // "yyyy-MM-dd HH:mm:ss"
+
+    public let fullResWidth: Int?              // 4092
+    public let fullResHeight: Int?             // 2048
+    public let fullResPath: String?            // "https://…image.jpg"
+    
+    public let author: String?                 // "Eddy"
+    public let privacyLevel: String?           // "0"
+    public let tags: [TagProperties]?          // See TagProperties
+    public let ratingScore: Float?             // 0.0
+    public let fileSize: Int?                  // 3025
+    public let md5checksum: String?            // 2141e377254a429be151900e4bedb520
+
+    public enum CodingKeys: String, CodingKey {
+        case imageId = "id"
+        case imageTitle = "name"
+        case comment = "comment"
+        case visits = "hit"
+        case fileName = "file"
+        case datePosted = "date_available"
+        case dateCreated = "date_creation"
+
+        case fullResWidth = "width"
+        case fullResHeight = "height"
+        case fullResPath = "element_url"
+        
+        case author = "author"
+        case privacyLevel = "level"
+        case tags = "tags"
+        case ratingScore = "rating_score"
+        case fileSize = "filesize"
+        case md5checksum = "md5sum"
+    }
+}
+
+
+// MARK: - Derivatives
+public struct Derivatives: Decodable {
+    public var squareImage: Derivative?
+    public var thumbImage: Derivative?
+    public var mediumImage: Derivative?
+
+    public var smallImage: Derivative?
+    public var xSmallImage: Derivative?
+    public var xxSmallImage: Derivative?
+
+    public var largeImage: Derivative?
+    public var xLargeImage: Derivative?
+    public var xxLargeImage: Derivative?
+
+    public enum CodingKeys: String, CodingKey {
+        case squareImage = "square"
+        case thumbImage = "thumb"
+        case mediumImage = "medium"
+        
+        case smallImage = "small"
+        case xSmallImage = "xsmall"
+        case xxSmallImage = "2small"
+
+        case largeImage = "large"
+        case xLargeImage = "xlarge"
+        case xxLargeImage = "xxlarge"
+    }
+}
+
+public struct Derivative: Decodable {
+    public let url: String?
+    public let width: Int?
+    public let height: Int?
+}
+
+public struct DerivativeStr: Decodable {
+    public let url: String?
+    public let width: String?
+    public let height: String?
 }

@@ -44,7 +44,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
 NSString * const kPiwigoNotificationDidShare = @"kPiwigoNotificationDidShare";
 NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancelDownload";
 
-@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, UITextFieldDelegate, ImageDetailDelegate, EditImageParamsDelegate, CategorySortDelegate, CategoryCollectionViewCellDelegate, SelectCategoryDelegate, SelectCategoryImageCopiedDelegate, ShareImageActivityItemProviderDelegate, TagSelectorViewDelegate, ChangedSettingsDelegate>
+@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, UITextFieldDelegate, ImageDetailDelegate, EditImageParamsDelegate, CategoryCollectionViewCellDelegate, SelectCategoryDelegate, SelectCategoryImageCopiedDelegate, ShareImageActivityItemProviderDelegate, TagSelectorViewDelegate, ChangedSettingsDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
@@ -87,7 +87,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
 @property (nonatomic, strong) UIRefreshControl *refreshControl;     // iOS 9.x only
 
-@property (nonatomic, assign) kPiwigoSort currentSortCategory;
+@property (nonatomic, assign) kPiwigoSortObjc currentSortCategory;
 @property (nonatomic, strong) ImageDetailViewController *imageDetailView;
 
 @end
@@ -104,7 +104,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:1];
         
 		self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
-		self.currentSortCategory = (kPiwigoSort)AlbumVars.shared.defaultSort;
+		self.currentSortCategory = (kPiwigoSortObjc)AlbumVars.shared.defaultSort;
         self.displayImageTitles = AlbumVars.shared.displayImageTitles;
 		
         // Initialise selection mode
@@ -628,7 +628,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 //#endif
 
     // Inform user why the app crashed at start
-    if (AppVars.shared.couldNotMigrateCoreDataStore) {
+    if (CacheVarsObjc.shared.couldNotMigrateCoreDataStore) {
         UIAlertController* alert = [UIAlertController
                 alertControllerWithTitle:NSLocalizedString(@"CoreDataStore_WarningTitle", @"Warning")
                 message:NSLocalizedString(@"CoreDataStore_WarningMessage", @"A serious application error occurred…")
@@ -639,7 +639,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 style:UIAlertActionStyleCancel
                 handler:^(UIAlertAction * action) {
             // Reset flag
-            AppVars.shared.couldNotMigrateCoreDataStore = NO;
+            CacheVarsObjc.shared.couldNotMigrateCoreDataStore = NO;
         }];
         
         // Add actions
@@ -3238,16 +3238,16 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 }
 
 
-#pragma mark - CategorySortDelegate Methods
+#pragma mark - CategorySortObjcDelegate Methods
 
--(void)didSelectCategorySortType:(kPiwigoSort)sortType
-{
-	self.currentSortCategory = sortType;
-    [self.albumData updateImageSort:sortType OnCompletion:^{
-//        NSLog(@"didSelectCategorySortType:Sorting images…");
-        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
-    }];
-}
+//-(void)didSelectCategorySortType:(kPiwigoSortObjc)sortType
+//{
+//	self.currentSortCategory = sortType;
+//    [self.albumData updateImageSort:sortType OnCompletion:^{
+////        NSLog(@"didSelectCategorySortType:Sorting images…");
+//        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
+//    }];
+//}
 
 
 #pragma mark - Push Views (incl. CategoryCollectionViewCellDelegate Method)

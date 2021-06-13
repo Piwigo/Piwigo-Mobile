@@ -14,10 +14,10 @@ let kPiwigoMaxNberOfLocationsToDecode: Int = 10
 let a: Double = 6378137.0               // Equatorial radius in meters
 let e2: Double = 0.00669437999014       // Earth eccentricity squared
 
-class LocationsProvider: NSObject {
+public class LocationsProvider: NSObject {
     
     // Singleton
-    static let shared = LocationsProvider()
+    public static let shared = LocationsProvider()
     
     // Initialisation
     private var geocoder = CLGeocoder()
@@ -36,7 +36,7 @@ class LocationsProvider: NSObject {
     // MARK: - Core Data object context
     
     lazy var managedObjectContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = (UIApplication.shared.delegate as! AppDelegate).managedObjectContext
+        let context:NSManagedObjectContext = DataController.managedObjectContext
         return context
     }()
 
@@ -159,7 +159,7 @@ class LocationsProvider: NSObject {
 
                     DispatchQueue.global(qos: .background).async {
                         // Create a private queue context.
-                        let taskContext = DataController.getPrivateContext()
+                        let taskContext = DataController.privateManagedObjectContext
                                 
                         // Add new location to CoreData store
                         let newLocation = LocationProperties(coordinate: location.coordinate,
@@ -239,7 +239,7 @@ class LocationsProvider: NSObject {
     /**
      Clear cached Core Data location entry
     */
-    func clearLocations() {
+    public func clearLocations() {
         
         // Create a fetch request for the Tag entity
         let fetchRequest = NSFetchRequest<Location>(entityName: "Location")
@@ -262,7 +262,7 @@ class LocationsProvider: NSObject {
      Routine returning the place name of a location
      This routine adds an operation fetching the place name if necessary
      */
-    func getPlaceName(for location: CLLocation) -> [String : String]? {
+    public func getPlaceName(for location: CLLocation) -> [String : String]? {
 
         // Check coordinates
         if !CLLocationCoordinate2DIsValid(location.coordinate) {
@@ -373,7 +373,7 @@ class LocationsProvider: NSObject {
     /**
      A fetched results controller to fetch Location records sorted by name.
      */
-    lazy var fetchedResultsController: NSFetchedResultsController<Location> = {
+    public lazy var fetchedResultsController: NSFetchedResultsController<Location> = {
         
         // Create a fetch request for the Tag entity sorted by name.
         let fetchRequest = NSFetchRequest<Location>(entityName: "Location")

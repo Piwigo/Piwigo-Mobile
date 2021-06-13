@@ -9,47 +9,54 @@
 //
 
 import Foundation
+import piwigoKit
 
 @objc
 class CategoryImageSort: NSObject {
     
     @objc
+    class func getPiwigoSortObjcDescription(for typeObjc:kPiwigoSortObjc) -> String {
+        let type = kPiwigoSort(rawValue: Int16(typeObjc.rawValue))
+        let sortDesc = getPiwigoSortDescription(for: type!)
+        return sortDesc
+    }
+
     class func getPiwigoSortDescription(for type:kPiwigoSort) -> String {
         var sortDesc = ""
         switch type {
-        case kPiwigoSortNameAscending:          // Photo title, A → Z
+        case .nameAscending:          // Photo title, A → Z
             sortDesc = String(format: "%@ %@", kGetImageOrderName, kGetImageOrderAscending)
-        case kPiwigoSortNameDescending:         // Photo title, Z → A
+        case .nameDescending:         // Photo title, Z → A
             sortDesc = String(format: "%@ %@", kGetImageOrderName, kGetImageOrderDescending)
 
-        case kPiwigoSortFileNameAscending:      // File name, A → Z
+        case .fileNameAscending:      // File name, A → Z
             sortDesc = String(format: "%@ %@", kGetImageOrderFileName, kGetImageOrderAscending)
-        case kPiwigoSortFileNameDescending:     // File name, Z → A
+        case .fileNameDescending:     // File name, Z → A
             sortDesc = String(format: "%@ %@", kGetImageOrderFileName, kGetImageOrderDescending)
         
-        case kPiwigoSortDateCreatedAscending:   // Date created, old → new
+        case .dateCreatedAscending:   // Date created, old → new
             sortDesc = String(format: "%@ %@", kGetImageOrderDateCreated, kGetImageOrderAscending)
-        case kPiwigoSortDateCreatedDescending:  // Date created, new → old
+        case .dateCreatedDescending:  // Date created, new → old
             sortDesc = String(format: "%@ %@", kGetImageOrderDateCreated, kGetImageOrderDescending)
             
-        case kPiwigoSortDatePostedAscending:    // Date posted, new → old
+        case .datePostedAscending:    // Date posted, new → old
             sortDesc = String(format: "%@ %@", kGetImageOrderDatePosted, kGetImageOrderAscending)
-        case kPiwigoSortDatePostedDescending:   // Date posted, old → new
+        case .datePostedDescending:   // Date posted, old → new
             sortDesc = String(format: "%@ %@", kGetImageOrderDatePosted, kGetImageOrderDescending)
 
-        case kPiwigoSortRatingScoreDescending:  // Rating score, high → low
+        case .ratingScoreDescending:  // Rating score, high → low
             sortDesc = String(format: "%@ %@", kGetImageOrderRating, kGetImageOrderDescending)
-        case kPiwigoSortRatingScoreAscending:   // Rating score, low → high
+        case .ratingScoreAscending:   // Rating score, low → high
             sortDesc = String(format: "%@ %@", kGetImageOrderRating, kGetImageOrderAscending)
 
-        case kPiwigoSortVisitsAscending:        // Visits, high → low
+        case .visitsAscending:        // Visits, high → low
             sortDesc = String(format: "%@ %@", kGetImageOrderVisits, kGetImageOrderAscending)
-        case kPiwigoSortVisitsDescending:       // Visits, low → high
+        case .visitsDescending:       // Visits, low → high
             sortDesc = String(format: "%@ %@", kGetImageOrderVisits, kGetImageOrderDescending)
             
-        case kPiwigoSortManual,                 // Manual order
-             kPiwigoSortRandom,                 // Random order
-             kPiwigoSortCount:
+        case .manual,                 // Manual order
+             .random,                 // Random order
+             .count:
             fallthrough
         default:
             sortDesc = ""
@@ -59,6 +66,12 @@ class CategoryImageSort: NSObject {
     }
     
     @objc
+    class func sortObjcImages(_ images: [PiwigoImageData]?, for sortOrder: kPiwigoSortObjc) -> [PiwigoImageData] {
+        let type = kPiwigoSort(rawValue: Int16(sortOrder.rawValue))
+        let newImageList = sortImages(images, for: type!)
+        return newImageList
+    }
+    
     class func sortImages(_ images: [PiwigoImageData]?, for sortOrder: kPiwigoSort) -> [PiwigoImageData] {
         
         // Return empty image list if images is undefined or empty
@@ -68,7 +81,7 @@ class CategoryImageSort: NSObject {
         }
         
         switch sortOrder {
-        case kPiwigoSortNameAscending:          // Photo title, A → Z
+        case .nameAscending:          // Photo title, A → Z
             // Pre-sort the list by filename, as the server does
             let tempImageList = images.sorted(by: { (image1, image2) -> Bool in
                 return image1.fileName.localizedStandardCompare(image2.fileName) == .orderedAscending
@@ -82,7 +95,7 @@ class CategoryImageSort: NSObject {
                     return true
                 }
             })
-        case kPiwigoSortNameDescending:         // Photo title, Z → A
+        case .nameDescending:         // Photo title, Z → A
             // Pre-sort the list by filename, as the server does
             let tempImageList = images.sorted(by: { (image1, image2) -> Bool in
                 return image1.fileName.localizedStandardCompare(image2.fileName) == .orderedAscending
@@ -96,7 +109,7 @@ class CategoryImageSort: NSObject {
                     return true
                 }
             })
-        case kPiwigoSortDateCreatedDescending:  // Date created, new → old
+        case .dateCreatedDescending:  // Date created, new → old
             // Pre-sort the list by filename, as the server does
             let tempImageList = images.sorted(by: { (image1, image2) -> Bool in
                 return image1.fileName.localizedStandardCompare(image2.fileName) == .orderedAscending
@@ -109,7 +122,7 @@ class CategoryImageSort: NSObject {
                     return true
                 }
             })
-        case kPiwigoSortDateCreatedAscending:   // Date created, old → new
+        case .dateCreatedAscending:   // Date created, old → new
             // Pre-sort the list by filename, as the server does
             let tempImageList = images.sorted(by: { (image1, image2) -> Bool in
                 return image1.fileName.localizedStandardCompare(image2.fileName) == .orderedAscending
@@ -122,7 +135,7 @@ class CategoryImageSort: NSObject {
                     return true
                 }
             })
-        case kPiwigoSortDatePostedDescending:   // Date posted, new → old
+        case .datePostedDescending:   // Date posted, new → old
             // Pre-sort the list by filename, as the server does
             let tempImageList = images.sorted(by: { (image1, image2) -> Bool in
                 return image1.fileName.localizedStandardCompare(image2.fileName) == .orderedAscending
@@ -135,7 +148,7 @@ class CategoryImageSort: NSObject {
                     return true
                 }
             })
-        case kPiwigoSortDatePostedAscending:    // Date posted, old → new
+        case .datePostedAscending:    // Date posted, old → new
             // Pre-sort the list by filename, as the server does
             let tempImageList = images.sorted(by: { (image1, image2) -> Bool in
                 return image1.fileName.localizedStandardCompare(image2.fileName) == .orderedAscending
@@ -148,15 +161,15 @@ class CategoryImageSort: NSObject {
                     return true
                 }
             })
-        case kPiwigoSortFileNameAscending:      // File name, A → Z
+        case .fileNameAscending:      // File name, A → Z
             newImageList = images.sorted(by: { (image1, image2) -> Bool in
                 return image1.fileName.localizedStandardCompare(image2.fileName) == .orderedAscending
             })
-        case kPiwigoSortFileNameDescending:     // File name, Z → A
+        case .fileNameDescending:     // File name, Z → A
             newImageList = images.sorted(by: { (image1, image2) -> Bool in
                 return image1.fileName.localizedStandardCompare(image2.fileName) == .orderedDescending
             })
-        case kPiwigoSortVisitsDescending:       // Visits, high → low
+        case .visitsDescending:       // Visits, high → low
             // Pre-sort the list by filename, as the server does
             let tempImageList = images.sorted(by: { (image1, image2) -> Bool in
                 return image1.fileName.localizedStandardCompare(image2.fileName) == .orderedAscending
@@ -164,7 +177,7 @@ class CategoryImageSort: NSObject {
             newImageList = tempImageList.sorted(by: { (image1, image2) -> Bool in
                 return NSNumber(value: image1.visits).compare(NSNumber(value: image2.visits)) == .orderedDescending
             })
-        case kPiwigoSortVisitsAscending:        // Visits, low → high
+        case .visitsAscending:        // Visits, low → high
             // Pre-sort the list by filename, as the server does
             let tempImageList = images.sorted(by: { (image1, image2) -> Bool in
                 return image1.fileName.localizedStandardCompare(image2.fileName) == .orderedAscending
@@ -172,7 +185,7 @@ class CategoryImageSort: NSObject {
             newImageList = tempImageList.sorted(by: { (image1, image2) -> Bool in
                 return NSNumber(value: image1.visits).compare(NSNumber(value: image2.visits)) == .orderedAscending
             })
-        case kPiwigoSortRatingScoreDescending:  // Rating score, high → low
+        case .ratingScoreDescending:  // Rating score, high → low
             // Pre-sort the list by filename, as the server does
             let tempImageList = images.sorted(by: { (image1, image2) -> Bool in
                 return image1.fileName.localizedStandardCompare(image2.fileName) == .orderedAscending
@@ -180,7 +193,7 @@ class CategoryImageSort: NSObject {
             newImageList = tempImageList.sorted(by: { (image1, image2) -> Bool in
                 return NSNumber(value: image1.ratingScore).compare(NSNumber(value: image2.ratingScore)) == .orderedDescending
             })
-        case kPiwigoSortRatingScoreAscending:   // Rating score, low → high
+        case .ratingScoreAscending:   // Rating score, low → high
             // Pre-sort the list by filename, as the server does
             let tempImageList = images.sorted(by: { (image1, image2) -> Bool in
                 return image1.fileName.localizedStandardCompare(image2.fileName) == .orderedAscending
@@ -188,11 +201,11 @@ class CategoryImageSort: NSObject {
             newImageList = tempImageList.sorted(by: { (image1, image2) -> Bool in
                 return NSNumber(value: image1.ratingScore).compare(NSNumber(value: image2.ratingScore)) == .orderedAscending
             })
-        case kPiwigoSortManual:                 // Manual i.e. no sort
+        case .manual:                 // Manual i.e. no sort
             newImageList = images
-        case kPiwigoSortRandom:                 // Random order
+        case .random:                 // Random order
             newImageList = images.shuffled()
-        case kPiwigoSortCount:
+        case .count:
             fallthrough
         default:
             break

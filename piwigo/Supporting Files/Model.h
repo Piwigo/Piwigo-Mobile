@@ -37,41 +37,41 @@ typedef enum NSInteger {
 } kPiwigoImageSize;
 
 typedef enum {
-    kPiwigoSortNameAscending,               // Photo title, A → Z
-    kPiwigoSortNameDescending,              // Photo title, Z → A
+    kPiwigoSortObjcNameAscending,               // Photo title, A → Z
+    kPiwigoSortObjcNameDescending,              // Photo title, Z → A
     
-    kPiwigoSortDateCreatedDescending,       // Date created, new → old
-    kPiwigoSortDateCreatedAscending,        // Date created, old → new
+    kPiwigoSortObjcDateCreatedDescending,       // Date created, new → old
+    kPiwigoSortObjcDateCreatedAscending,        // Date created, old → new
     
-    kPiwigoSortDatePostedDescending,        // Date posted, new → old
-    kPiwigoSortDatePostedAscending,         // Date posted, old → new
+    kPiwigoSortObjcDatePostedDescending,        // Date posted, new → old
+    kPiwigoSortObjcDatePostedAscending,         // Date posted, old → new
     
-    kPiwigoSortFileNameAscending,           // File name, A → Z
-    kPiwigoSortFileNameDescending,          // File name, Z → A
+    kPiwigoSortObjcFileNameAscending,           // File name, A → Z
+    kPiwigoSortObjcFileNameDescending,          // File name, Z → A
     
-    kPiwigoSortRatingScoreDescending,       // Rating score, high → low
-    kPiwigoSortRatingScoreAscending,        // Rating score, low → high
+    kPiwigoSortObjcRatingScoreDescending,       // Rating score, high → low
+    kPiwigoSortObjcRatingScoreAscending,        // Rating score, low → high
 
-    kPiwigoSortVisitsDescending,            // Visits, high → low
-    kPiwigoSortVisitsAscending,             // Visits, low → high
+    kPiwigoSortObjcVisitsDescending,            // Visits, high → low
+    kPiwigoSortObjcVisitsAscending,             // Visits, low → high
 
-    kPiwigoSortManual,                      // Manual order
-    kPiwigoSortRandom,                      // Random order
-//    kPiwigoSortVideoOnly,
-//    kPiwigoSortImageOnly,
+    kPiwigoSortObjcManual,                      // Manual order
+    kPiwigoSortObjcRandom,                      // Random order
+//    kPiwigoSortObjcVideoOnly,
+//    kPiwigoSortObjcImageOnly,
     
-    kPiwigoSortCount
-} kPiwigoSort;
+    kPiwigoSortObjcCount
+} kPiwigoSortObjc;
 
 typedef enum {
-	kPiwigoPrivacyEverybody = 0,
-	kPiwigoPrivacyAdminsFamilyFriendsContacts = 1,
-	kPiwigoPrivacyAdminsFamilyFriends = 2,
-	kPiwigoPrivacyAdminsFamily = 4,
-	kPiwigoPrivacyAdmins = 8,
-	kPiwigoPrivacyCount = 5,
-    kPiwigoPrivacyUnknown = INT_MAX
-} kPiwigoPrivacy;
+	kPiwigoPrivacyObjcEverybody = 0,
+	kPiwigoPrivacyObjcAdminsFamilyFriendsContacts = 1,
+	kPiwigoPrivacyObjcAdminsFamilyFriends = 2,
+	kPiwigoPrivacyObjcAdminsFamily = 4,
+	kPiwigoPrivacyObjcAdmins = 8,
+	kPiwigoPrivacyObjcCount = 5,
+    kPiwigoPrivacyObjcUnknown = -1
+} kPiwigoPrivacyObjc;
 
 #define kPiwigoPrivacyString(enum) [@[@"Everybody", @"Admins, Family, Friends, Contacts", @"Admins, Family, Friends", @"3: not assigned", @"Admins, Family", @"5: Count", @"6: not assigned", @"7: not assigned", @"Admins"] objectAtIndex:enum]
 
@@ -97,6 +97,6 @@ typedef enum {
 
 +(Model*)sharedInstance;
 -(void)readFromDisk;
--(NSString *)getNameForPrivacyLevel:(kPiwigoPrivacy)privacyLevel;
+-(NSString *)getNameForPrivacyLevel:(kPiwigoPrivacyObjc)privacyLevel;
 
 @end

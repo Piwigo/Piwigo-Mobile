@@ -96,7 +96,7 @@ public class Upload: NSManagedObject {
 }
 
 extension Upload {
-    var state: kPiwigoUploadState {
+    public var state: kPiwigoUploadState {
         switch self.requestState {
         case kPiwigoUploadState.waiting.rawValue:
             return .waiting
@@ -133,32 +133,32 @@ extension Upload {
         }
     }
 
-    var stateLabel: String {
+    public var stateLabel: String {
         return state.stateInfo
     }
 
-    var privacy: kPiwigoPrivacy {
+    public var privacy: kPiwigoPrivacy {
         switch self.privacyLevel {
-        case Int16(kPiwigoPrivacyEverybody.rawValue):
-            return kPiwigoPrivacyEverybody
-        case Int16(kPiwigoPrivacyAdminsFamilyFriendsContacts.rawValue):
-            return kPiwigoPrivacyAdminsFamilyFriendsContacts
-        case Int16(kPiwigoPrivacyAdminsFamilyFriends.rawValue):
-            return kPiwigoPrivacyAdminsFamilyFriends
-        case Int16(kPiwigoPrivacyAdminsFamily.rawValue):
-            return kPiwigoPrivacyAdminsFamily
-        case Int16(kPiwigoPrivacyAdmins.rawValue):
-            return kPiwigoPrivacyAdmins
-        case Int16(kPiwigoPrivacyCount.rawValue):
-            return kPiwigoPrivacyCount
-        case Int16(kPiwigoPrivacyUnknown.rawValue):
-            return kPiwigoPrivacyUnknown
+        case kPiwigoPrivacy.everybody.rawValue:
+            return .everybody
+        case kPiwigoPrivacy.adminsFamilyFriendsContacts.rawValue:
+        return .adminsFamilyFriendsContacts
+        case kPiwigoPrivacy.adminsFamilyFriends.rawValue:
+        return .adminsFamilyFriends
+        case kPiwigoPrivacy.adminsFamily.rawValue:
+        return .adminsFamily
+        case kPiwigoPrivacy.admins.rawValue:
+        return .admins
+        case kPiwigoPrivacy.count.rawValue:
+        return .count
+        case kPiwigoPrivacy.unknown.rawValue:
+        return .unknown
         default:
-            return kPiwigoPrivacyUnknown
+            return .unknown
         }
     }
 
-    func getProperties() -> UploadProperties {
+    public func getProperties() -> UploadProperties {
         return UploadProperties(localIdentifier: self.localIdentifier,
             // Category ID of the album to upload to
             category: Int(self.category),
@@ -182,7 +182,7 @@ extension Upload {
             markedForAutoUpload: self.markedForAutoUpload)
     }
 
-    func getProperties(with state: kPiwigoUploadState, error: String) -> UploadProperties {
+    public func getProperties(with state: kPiwigoUploadState, error: String) -> UploadProperties {
         return UploadProperties(localIdentifier: self.localIdentifier,
             // Category ID of the album to upload to
             category: Int(self.category),
@@ -221,12 +221,12 @@ extension Upload {
 
 
 // MARK: - Section Keys
-enum SectionKeys: String {
+public enum SectionKeys: String {
     case Section1, Section2, Section3, Section4
 }
 
 extension SectionKeys {
-    var name: String {
+    public var name: String {
         switch self {
         case .Section1:
             return NSLocalizedString("uploadSection_impossible", comment: "Impossible Uploads")
@@ -244,8 +244,7 @@ extension SectionKeys {
 
 
 // MARK: - Upload States
-@objc
-enum kPiwigoUploadState : Int16 {
+public enum kPiwigoUploadState : Int16 {
     case waiting
     
     case preparing
@@ -267,7 +266,7 @@ enum kPiwigoUploadState : Int16 {
 }
 
 extension kPiwigoUploadState {
-    var stateInfo: String {
+    public var stateInfo: String {
         switch self {
         case .waiting:
             return NSLocalizedString("imageUploadTableCell_waiting", comment: "Waiting...")
@@ -303,7 +302,7 @@ extension kPiwigoUploadState {
         }
     }
     
-    var sectionKey: String {
+    public var sectionKey: String {
         switch self {
         case .preparingFail,
              .formatError:

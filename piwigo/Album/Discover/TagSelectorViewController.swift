@@ -10,6 +10,7 @@
 
 import UIKit
 import CoreData
+import piwigoKit
 
 @objc
 protocol TagSelectorViewDelegate {
@@ -27,7 +28,7 @@ class TagSelectorViewController: UITableViewController {
      and serves it to this table view.
      */
     private lazy var dataProvider: TagsProvider = {
-        let provider : TagsProvider = TagsProvider()
+        let provider : TagsProvider = TagsProvider.shared
         provider.fetchedResultsControllerDelegate = self
         return provider
     }()

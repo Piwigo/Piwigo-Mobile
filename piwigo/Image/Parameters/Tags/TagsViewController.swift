@@ -10,16 +10,22 @@
 
 import UIKit
 import CoreData
+import piwigoKit
 
-@objc
 protocol TagsViewControllerDelegate: NSObjectProtocol {
     func didSelectTags(_ selectedTags: [Tag])
 }
 
 @objc
+protocol TagsViewControllerObjcDelegate: NSObjectProtocol {
+    func didSelectTags(_ selectedTags: [PiwigoTagData])
+}
+
+@objc
 class TagsViewController: UITableViewController, UITextFieldDelegate {
 
-    @objc weak var delegate: TagsViewControllerDelegate?
+    weak var delegate: TagsViewControllerDelegate?
+    @objc weak var objcDelegate: TagsViewControllerObjcDelegate?
 
     // Called before uploading images (Tag class)
     private var selectedTagIds = [Int32]()
@@ -39,7 +45,7 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
      and serves it to this table view.
      */
     private lazy var dataProvider: TagsProvider = {
-        let provider : TagsProvider = TagsProvider()
+        let provider : TagsProvider = TagsProvider.shared
         provider.fetchedResultsControllerDelegate = self
         return provider
     }()
@@ -136,6 +142,18 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
 
         // Return list of selected tags
         delegate?.didSelectTags(selectedTags)
+        if objcDelegate != nil {
+            var selectedPiwigoTags = [PiwigoTagData]()
+            for selectedTag in selectedTags {
+                let piwigoTag = PiwigoTagData()
+                piwigoTag.tagId = Int(selectedTag.tagId)
+                piwigoTag.tagName = selectedTag.tagName
+                piwigoTag.lastModified = selectedTag.lastModified
+                piwigoTag.numberOfImagesUnderTag = selectedTag.numberOfImagesUnderTag
+                selectedPiwigoTags.append(piwigoTag)
+            }
+            objcDelegate?.didSelectTags(selectedPiwigoTags)
+        }
     }
 }
     

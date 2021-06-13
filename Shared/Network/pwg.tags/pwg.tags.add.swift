@@ -9,14 +9,14 @@
 import Foundation
 
 // MARK: - pwg.tags.add
-let kPiwigoTagsAdd = "format=json&method=pwg.tags.add"
+public let kPiwigoTagsAdd = "format=json&method=pwg.tags.add"
 
-struct TagAddJSON: Decodable {
+public struct TagAddJSON: Decodable {
 
-    var status: String?
-    var data = TagPropertiesAdd(id: 0, info: "")
-    var errorCode = 0
-    var errorMessage = ""
+    public var status: String?
+    public var data = TagPropertiesAdd(id: 0, info: "")
+    public var errorCode = 0
+    public var errorMessage = ""
 
     private enum RootCodingKeys: String, CodingKey {
         case status = "stat"
@@ -28,8 +28,13 @@ struct TagAddJSON: Decodable {
     private enum ResultCodingKeys: String, CodingKey {
         case tags
     }
+    
+    private enum ErrorCodingKeys: String, CodingKey {
+        case code = "code"
+        case message = "msg"
+    }
 
-    init(from decoder: Decoder) throws
+    public init(from decoder: Decoder) throws
     {
         // Root container keyed by RootCodingKeys
         let rootContainer = try decoder.container(keyedBy: RootCodingKeys.self)
@@ -44,8 +49,16 @@ struct TagAddJSON: Decodable {
         else if (status == "fail")
         {
             // Retrieve Piwigo server error
-            errorCode = try rootContainer.decode(Int.self, forKey: .errorCode)
-            errorMessage = try rootContainer.decode(String.self, forKey: .errorMessage)
+            do {
+                errorCode = try rootContainer.decode(Int.self, forKey: .errorCode)
+                errorMessage = try rootContainer.decode(String.self, forKey: .errorMessage)
+            }
+            catch {
+                // Error container keyed by ErrorCodingKeys ("format=json" forgotten in call)
+                let errorContainer = try rootContainer.nestedContainer(keyedBy: ErrorCodingKeys.self, forKey: .errorCode)
+                errorCode = Int(try errorContainer.decode(String.self, forKey: .code)) ?? NSNotFound
+                errorMessage = try errorContainer.decode(String.self, forKey: .message)
+            }
         }
         else {
             // Unexpected Piwigo server error
@@ -59,10 +72,10 @@ struct TagAddJSON: Decodable {
  A struct for decoding JSON returned by kPiwigoTagsAdd:
  All members are optional in case they are missing from the data.
 */
-struct TagPropertiesAdd: Decodable
+public struct TagPropertiesAdd: Decodable
 {
-    let id: Int32?                  // 1
+    public let id: Int32?                  // 1
     
     // The following data is not stored in cache
-    let info: String?               // "Birthday"
+    public let info: String?               // "Birthday"
 }

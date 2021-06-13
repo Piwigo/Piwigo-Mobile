@@ -9,20 +9,30 @@
 //
 
 import UIKit
+import piwigoKit
 
-@objc
 protocol SelectPrivacyDelegate: NSObjectProtocol {
     func didSelectPrivacyLevel(_ privacy: kPiwigoPrivacy)
 }
 
 @objc
+protocol SelectPrivacyObjcDelegate: NSObjectProtocol {
+    func didSelectPrivacyLevel(_ privacy: kPiwigoPrivacyObjc)
+}
+
+@objc
 class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    @objc weak var delegate: SelectPrivacyDelegate?
+    weak var delegate: SelectPrivacyDelegate?
+    @objc weak var objcDelegate: SelectPrivacyObjcDelegate?
 
-    @objc
     func setPrivacy(_ privacy: kPiwigoPrivacy) {
         _privacy = privacy
+    }
+
+    @objc
+    func setPrivacyObjc(_ privacy: kPiwigoPrivacyObjc) {
+        _privacy = kPiwigoPrivacy(rawValue: Int16(privacy.rawValue))
     }
 
     @IBOutlet var privacyTableView: UITableView!
@@ -30,7 +40,7 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
     private var _privacy: kPiwigoPrivacy?
     private var privacy: kPiwigoPrivacy {
         get {
-            return _privacy ?? kPiwigoPrivacyEverybody
+            return _privacy ?? .everybody
         }
         set(privacy) {
             _privacy = privacy
@@ -86,6 +96,8 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
 
         // Update cell of parent view
         delegate?.didSelectPrivacyLevel(privacy)
+        let privacyObjc = kPiwigoPrivacyObjc(Int32(privacy.rawValue))
+        objcDelegate?.didSelectPrivacyLevel(privacyObjc)
 
         // Unregister palette changes
         let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
@@ -160,7 +172,7 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
     // MARK: - UITableView - Rows
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return Int(kPiwigoPrivacyCount.rawValue)
+        return Int(kPiwigoPrivacy.count.rawValue)
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -182,7 +194,8 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
         cell.textLabel?.font = UIFont.piwigoFontNormal()
         cell.textLabel?.textColor = UIColor.piwigoColorLeftLabel()
         cell.textLabel?.adjustsFontSizeToFitWidth = false
-        cell.textLabel?.text = Model.sharedInstance().getNameForPrivacyLevel(privacyLevel)
+        let privacyLevelObjc = kPiwigoPrivacyObjc(Int32(privacyLevel.rawValue))
+        cell.textLabel?.text = Model.sharedInstance().getNameForPrivacyLevel(privacyLevelObjc)
         cell.tag = Int(privacyLevel.rawValue)
 
         return cell
@@ -216,17 +229,17 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
         var privacyLevel: kPiwigoPrivacy
         switch row {
             case 0:
-                privacyLevel = kPiwigoPrivacyEverybody
+                privacyLevel = .everybody
             case 1:
-                privacyLevel = kPiwigoPrivacyAdminsFamilyFriendsContacts
+                privacyLevel = .adminsFamilyFriendsContacts
             case 2:
-                privacyLevel = kPiwigoPrivacyAdminsFamilyFriends
+                privacyLevel = .adminsFamilyFriends
             case 3:
-                privacyLevel = kPiwigoPrivacyAdminsFamily
+                privacyLevel = .adminsFamily
             case 4:
-                privacyLevel = kPiwigoPrivacyAdmins
+                privacyLevel = .admins
             default:
-                privacyLevel = kPiwigoPrivacyEverybody
+                privacyLevel = .unknown
                 break
         }
 

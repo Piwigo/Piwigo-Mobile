@@ -5,48 +5,47 @@
 //  Created by Eddy Lelièvre-Berna on 13/04/2021.
 //  Copyright © 2021 Piwigo.org. All rights reserved.
 //
-import piwigoKit
 
 /**
  A struct for managing upload requests
 */
-struct UploadProperties
+public struct UploadProperties
 {
-    let localIdentifier: String             // Unique PHAsset identifier
-    let category: Int                       // 8
-    let serverPath: String                  // URL path of Piwigo server
-    var serverFileTypes: String             // File formats accepted by the server
-    let requestDate: TimeInterval           // "2020-08-22 19:18:43" as a number of seconds
-    var requestState: kPiwigoUploadState    // See enum above
-    var requestError: String
+    public let localIdentifier: String             // Unique PHAsset identifier
+    public let category: Int                       // 8
+    public let serverPath: String                  // URL path of Piwigo server
+    public var serverFileTypes: String             // File formats accepted by the server
+    public let requestDate: TimeInterval           // "2020-08-22 19:18:43" as a number of seconds
+    public var requestState: kPiwigoUploadState    // See enum above
+    public var requestError: String
 
-    var creationDate: TimeInterval          // "2012-08-23 09:18:43" as a number of seconds
-    var fileName: String                    // "IMG123.JPG"
-    var mimeType: String                    // "image/png"
-    var md5Sum: String                      // "8b1a9953c4611296a827abf8c47804d7"
-    var isVideo: Bool                       // true/false
+    public var creationDate: TimeInterval          // "2012-08-23 09:18:43" as a number of seconds
+    public var fileName: String                    // "IMG123.JPG"
+    public var mimeType: String                    // "image/png"
+    public var md5Sum: String                      // "8b1a9953c4611296a827abf8c47804d7"
+    public var isVideo: Bool                       // true/false
     
-    var author: String                      // "Author"
-    var privacyLevel: kPiwigoPrivacy        // 0
-    var imageTitle: String                  // "Image title"
-    var comment: String                     // "A comment…"
-    var tagIds: String                      // List of tag IDs
-    var imageId: Int                        // 1042
+    public var author: String                      // "Author"
+    public var privacyLevel: kPiwigoPrivacy        // 0
+    public var imageTitle: String                  // "Image title"
+    public var comment: String                     // "A comment…"
+    public var tagIds: String                      // List of tag IDs
+    public var imageId: Int                        // 1042
 
-    var stripGPSdataOnUpload: Bool
-    var resizeImageOnUpload: Bool
-    var photoResize: Int16
-    var compressImageOnUpload: Bool
-    var photoQuality: Int16
-    var prefixFileNameBeforeUpload: Bool
-    var defaultPrefix: String
-    var deleteImageAfterUpload: Bool
-    var markedForAutoUpload: Bool
+    public var stripGPSdataOnUpload: Bool
+    public var resizeImageOnUpload: Bool
+    public var photoResize: Int16
+    public var compressImageOnUpload: Bool
+    public var photoQuality: Int16
+    public var prefixFileNameBeforeUpload: Bool
+    public var defaultPrefix: String
+    public var deleteImageAfterUpload: Bool
+    public var markedForAutoUpload: Bool
 }
 
 extension UploadProperties {
     // Create new upload from localIdentifier and category
-    init(localIdentifier: String, category: Int) {
+    public init(localIdentifier: String, category: Int) {
         self.init(localIdentifier: localIdentifier,
             // Category ID of the album to upload to
             category: category,
@@ -67,7 +66,7 @@ extension UploadProperties {
             author: UploadVars.shared.defaultAuthor,
             
             // Privacy level defaults to level selected in Settings
-            privacyLevel: kPiwigoPrivacy(UploadVars.shared.defaultPrivacyLevel),
+            privacyLevel: kPiwigoPrivacy(rawValue: UploadVars.shared.defaultPrivacyLevel) ?? .everybody,
             
             // No title, comment, tag, filename by default, image ID unknown
             imageTitle: "", comment: "", tagIds: "", imageId: NSNotFound,
@@ -85,7 +84,7 @@ extension UploadProperties {
     }
     
     // Return string corresponding to the state
-    var stateLabel: String {
+    public var stateLabel: String {
         return requestState.stateInfo
     }
 }

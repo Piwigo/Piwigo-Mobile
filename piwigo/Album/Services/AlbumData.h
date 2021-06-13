@@ -21,7 +21,7 @@
 -(void)loadMoreImagesOnCompletion:(void (^)(void))completion;
 -(void)loadAllImagesOnCompletion:(void (^)(void))completion;
 
--(void)updateImageSort:(kPiwigoSort)imageSort OnCompletion:(void (^)(void))completion;
+-(void)updateImageSort:(kPiwigoSortObjc)imageSort OnCompletion:(void (^)(void))completion;
 
 -(void)updateImage:(PiwigoImageData *)params;
 

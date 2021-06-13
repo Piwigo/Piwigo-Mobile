@@ -165,7 +165,7 @@
         }];
         
         // Disallow user to delete the auto-upload destination album
-        if (self.albumData.albumId == UploadVars.shared.autoUploadCategoryId) {
+        if (self.albumData.albumId == UploadVarsObjc.shared.autoUploadCategoryId) {
             return @[move, rename];
         } else {
             expansionSettings.buttonIndex = 0;
@@ -540,8 +540,8 @@
     [topViewController showPiwigoHUDWithTitle:NSLocalizedString(@"deleteCategoryHUD_label", @"Deleting Album…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
     
     // Disable auto-upload if this album is the destination album
-    if (UploadVars.shared.autoUploadCategoryId == self.albumData.albumId) {
-        UploadVars.shared.isAutoUploadActive = NO;
+    if (UploadVarsObjc.shared.autoUploadCategoryId == self.albumData.albumId) {
+        UploadVarsObjc.shared.isAutoUploadActive = NO;
     }
 
     // Should we retrieve images before deleting the category?
@@ -564,7 +564,7 @@
 -(void)getMissingImagesBeforeDeletingInMode:deletionMode
                          withViewController:(UIViewController *)topViewController
 {
-    NSString *sortDesc = [CategoryImageSort getPiwigoSortDescriptionFor:(kPiwigoSort)AlbumVars.shared.defaultSort];
+    NSString *sortDesc = [CategoryImageSort getPiwigoSortObjcDescriptionFor:(kPiwigoSortObjc)AlbumVars.shared.defaultSort];
     [self.albumData loadCategoryImageDataChunkWithSort:sortDesc
         forProgress:nil OnCompletion:^(BOOL completed) {
         // Did the load succeed?

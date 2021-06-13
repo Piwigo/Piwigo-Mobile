@@ -129,7 +129,7 @@
         PiwigoTagData *newTagData = [PiwigoTagData new];
         newTagData.tagId = [[tagData objectForKey:@"id"] integerValue];
         if (![[tagData objectForKey:@"name"] isKindOfClass:[NSNull class]]) {
-            newTagData.tagName = [NetworkUtilities utf8mb4StringFrom:[tagData objectForKey:@"name"]];
+            newTagData.tagName = [NetworkObjcUtilities utf8mb4ObjcStringFrom:[tagData objectForKey:@"name"]];
         } else {
             newTagData.tagName = @"";
         }

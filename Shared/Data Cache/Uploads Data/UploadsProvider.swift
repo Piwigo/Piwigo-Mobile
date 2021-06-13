@@ -9,28 +9,15 @@
 
 import CoreData
 import Photos
-import piwigoKit
 
-@objc
-class UploadsProvider: NSObject {
+public let kPiwigoNotificationDeleteUploadFile = "kPiwigoNotificationDeleteUploadFile"
 
-    override init() {
-        super.init()
-        
-        // Register image deletion on Piwigo server
-        let name = NSNotification.Name(kPiwigoNotificationDeletedImage)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.didDeleteImageFromPiwigo(_:)), name: name, object: nil)
-    }
-    
-    deinit {
-        let name = NSNotification.Name(kPiwigoNotificationDeletedImage)
-        NotificationCenter.default.removeObserver(self, name: name, object: nil)
-    }
+public class UploadsProvider: NSObject {
 
     // MARK: - Core Data object context
     
     lazy var managedObjectContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = (UIApplication.shared.delegate as! AppDelegate).managedObjectContext
+        let context:NSManagedObjectContext = DataController.managedObjectContext
         return context
     }()
 
@@ -40,13 +27,13 @@ class UploadsProvider: NSObject {
      Adds or updates a batch of upload requests into the Core Data store on a private queue,
      processing the record in batches to avoid a high memory footprint.
     */
-    func importUploads(from uploadRequest: [UploadProperties],
-                       completionHandler: @escaping (Error?) -> Void) {
+    public func importUploads(from uploadRequest: [UploadProperties],
+                              completionHandler: @escaping (Error?) -> Void) {
         
         guard !uploadRequest.isEmpty else { return }
         
         // Create a private queue context.
-        let taskContext = DataController.getPrivateContext()
+        let taskContext = DataController.privateManagedObjectContext
                 
         // Process records in batches to avoid a high memory footprint.
         let batchSize = 256
@@ -83,7 +70,8 @@ class UploadsProvider: NSObject {
      catches throws within the closure and uses a return value to indicate
      whether the import is successful.
     */
-    private func importOneBatch(_ uploadsBatch: [UploadProperties], taskContext: NSManagedObjectContext) -> Bool {
+    private func importOneBatch(_ uploadsBatch: [UploadProperties],
+                                taskContext: NSManagedObjectContext) -> Bool {
         
         var success = false
                 
@@ -110,7 +98,6 @@ class UploadsProvider: NSObject {
             let cachedUploads = controller.fetchedObjects ?? []
 
             // Loop over new uploads
-            var nberOfUploadsToComplete = cachedUploads.count
             for uploadData in uploadsBatch {
                 // Index of this new upload in cache
                 if let index = cachedUploads.firstIndex( where: { $0.localIdentifier == uploadData.localIdentifier }) {
@@ -135,7 +122,6 @@ class UploadsProvider: NSObject {
                     // Populate the Upload's properties using the data.
                     do {
                         try upload.update(with: uploadData)
-                        nberOfUploadsToComplete += 1
                     }
                     catch UploadError.missingData {
                         // Delete invalid Upload from the private queue context.
@@ -171,18 +157,7 @@ class UploadsProvider: NSObject {
                 // Reset the taskContext to free the cache and lower the memory footprint.
                 taskContext.reset()
             }
-
             success = true
-
-            // Update badge and button
-            DispatchQueue.main.async {
-                // Update app badge
-                UIApplication.shared.applicationIconBadgeNumber = nberOfUploadsToComplete
-                // Update button of root album (or default album)
-                let uploadInfo: [String : Any] = ["nberOfUploadsToComplete" : nberOfUploadsToComplete]
-                let name = NSNotification.Name(rawValue: kPiwigoNotificationLeftUploads)
-                NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
-            }
         }
         return success
     }
@@ -194,14 +169,14 @@ class UploadsProvider: NSObject {
      and saving it to the persistent store, on a private queue. After saving,
      resets the context to clean up the cache and lower the memory footprint.
     */
-    func updatePropertiesOfUpload(with ID: NSManagedObjectID,
-                                  properties: UploadProperties,
-                                  completionHandler: @escaping (Error?) -> Void) -> (Void) {
+    public func updatePropertiesOfUpload(with ID: NSManagedObjectID,
+                                         properties: UploadProperties,
+                                         completionHandler: @escaping (Error?) -> Void) -> (Void) {
         // Check current queue
         print("•••>> updatePropertiesOfUpload() \(properties.fileName) | \(properties.stateLabel) in \(queueName())\r")
 
         // Create a private queue context.
-        let taskContext = DataController.getPrivateContext()
+        let taskContext = DataController.privateManagedObjectContext
                 
         // taskContext.performAndWait runs on the URLSession's delegate queue
         // so it won’t block the main thread.
@@ -249,14 +224,14 @@ class UploadsProvider: NSObject {
         completionHandler(nil)
     }
 
-    func updateStatusOfUpload(with ID: NSManagedObjectID,
-                              to status: kPiwigoUploadState, error: String?,
-                              completionHandler: @escaping (Error?) -> Void) -> (Void) {
+    public func updateStatusOfUpload(with ID: NSManagedObjectID,
+                                     to status: kPiwigoUploadState, error: String?,
+                                     completionHandler: @escaping (Error?) -> Void) -> (Void) {
         // Check current queue
         print("•••>> updateStatusOfUpload \(ID) to \(status.stateInfo) in \(queueName())\r")
 
         // Create a private queue context.
-        let taskContext = DataController.getPrivateContext()
+        let taskContext = DataController.privateManagedObjectContext
                 
         // taskContext.performAndWait runs on the URLSession's delegate queue
         // so it won’t block the main thread.
@@ -310,15 +285,12 @@ class UploadsProvider: NSObject {
      Update a single upload request on the private queue when an image is deleted from the Piwigo server.
      After saving, resets the context to clean up the cache and lower the memory footprint.
     */
-    @objc private func didDeleteImageFromPiwigo(_ notification: Notification) {
+    public func markAsDeletedPiwigoImage(withID imageId: Int64) {
         // Check current queue
 //        print("•••>> didDeleteImageWithId()", queueName())
 
-        // Collect image ID
-        guard let imageId = notification.userInfo?["imageId"] as? Int64 else { return }
-
         // Create a private queue context.
-        let taskContext = DataController.getPrivateContext()
+        let taskContext = DataController.privateManagedObjectContext
                 
         // taskContext.performAndWait
         taskContext.performAndWait {
@@ -380,13 +352,13 @@ class UploadsProvider: NSObject {
      Delete a batch of upload requests from the Core Data store on a private queue,
      processing the record in batches to avoid a high memory footprint.
     */
-    func delete(uploadRequests: [NSManagedObjectID],
-                completionHandler: @escaping (Error?) -> Void) {
+    public func delete(uploadRequests: [NSManagedObjectID],
+                       completionHandler: @escaping (Error?) -> Void) {
         
         guard !uploadRequests.isEmpty else { return }
         
         // Create a private queue context.
-        let taskContext = DataController.getPrivateContext()
+        let taskContext = DataController.privateManagedObjectContext
                 
         // Process records in batches to avoid a high memory footprint.
         let batchSize = 256
@@ -423,7 +395,8 @@ class UploadsProvider: NSObject {
      catches throws within the closure and uses a return value to indicate
      whether the import is successful.
     */
-    private func deleteOneBatch(_ uploadsBatch: [NSManagedObjectID], taskContext: NSManagedObjectContext) -> Bool {
+    private func deleteOneBatch(_ uploadsBatch: [NSManagedObjectID],
+                                taskContext: NSManagedObjectContext) -> Bool {
         // Check current queue
 //        print("•••>> deleteOneBatch()", queueName())
 
@@ -437,7 +410,9 @@ class UploadsProvider: NSObject {
                 let uploadToDelete = taskContext.object(with: uploadID) as! Upload
                 let filenamePrefix = uploadToDelete.localIdentifier.replacingOccurrences(of: "/", with: "-")
                 if !filenamePrefix.isEmpty {
-                    UploadManager.shared.deleteFilesInUploadsDirectory(with: filenamePrefix)
+                    let uploadInfo: [String : Any] = ["prefix" : filenamePrefix]
+                    let name = NSNotification.Name(rawValue: kPiwigoNotificationDeleteUploadFile)
+                    NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
                 }
 
                 // Delete upload record
@@ -469,15 +444,6 @@ class UploadsProvider: NSObject {
             }
 
             success = true
-
-            // Get uploads to complete in queue
-            // Considers only uploads to the server to which the user is logged in
-            let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
-                                                .preparingFail, .formatError, .prepared,
-                                                .uploading, .uploadingError, .uploaded,
-                                                .finishing, .finishingError]
-            // Update app badge and Upload button in root/default album
-            UploadManager.shared.nberOfUploadsToComplete = getRequestsIn(states: states).count
         }
         return success
     }
@@ -487,7 +453,7 @@ class UploadsProvider: NSObject {
     /**
      Fetches upload requests synchronously in the background
      */
-    func getRequestsIn(states: [kPiwigoUploadState]) -> [NSManagedObjectID] {
+    public func getRequestsIn(states: [kPiwigoUploadState]) -> [NSManagedObjectID] {
         // Check that states is not empty
         if states.count == 0 {
             assertionFailure("!!! getRequestsIn() called with no args !!!")
@@ -501,7 +467,7 @@ class UploadsProvider: NSObject {
         var uploadIDs = [NSManagedObjectID]()
         
         // Create a private queue context.
-        let taskContext = DataController.getPrivateContext()
+        let taskContext = DataController.privateManagedObjectContext
 
         // Perform the fetch
         taskContext.performAndWait {
@@ -546,7 +512,7 @@ class UploadsProvider: NSObject {
         return uploadIDs
     }
 
-    func getCompletedRequestsOfImagesToDelete() -> ([String], [NSManagedObjectID]) {
+    public func getCompletedRequestsOfImagesToDelete() -> ([String], [NSManagedObjectID]) {
         // Check current queue
         print("•••>> getCompletedRequestsOfImagesToDelete()", queueName())
 
@@ -555,7 +521,7 @@ class UploadsProvider: NSObject {
         var uploadIDs = [NSManagedObjectID]()
         
         // Create a private queue context.
-        let taskContext = DataController.getPrivateContext()
+        let taskContext = DataController.privateManagedObjectContext
 
         // Perform the fetch
         taskContext.performAndWait {
@@ -625,7 +591,7 @@ class UploadsProvider: NSObject {
         return (localIdentifiers, uploadIDs)
     }
 
-    func getAutoUploadRequestsIn(states: [kPiwigoUploadState]) -> ([String], [NSManagedObjectID]) {
+    public func getAutoUploadRequestsIn(states: [kPiwigoUploadState]) -> ([String], [NSManagedObjectID]) {
         // Check that states is not empty
         if states.count == 0 {
             assertionFailure("!!! getAutoUploadRequestsIn() called with no args !!!")
@@ -640,7 +606,7 @@ class UploadsProvider: NSObject {
         var uploadIDs = [NSManagedObjectID]()
 
         // Create a private queue context.
-        let taskContext = DataController.getPrivateContext()
+        let taskContext = DataController.privateManagedObjectContext
 
         // Perform the fetch
         taskContext.performAndWait {
@@ -693,7 +659,7 @@ class UploadsProvider: NSObject {
     /**
      Clear cached Core Data upload entry
     */
-    func clearUploads() {
+    public func clearUploads() {
         
         // Create a fetch request for the Tag entity
         let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
@@ -707,13 +673,13 @@ class UploadsProvider: NSObject {
     /**
      Remove from cache completed requests whose images do not exist in Photo Library.
     */
-    func clearCompletedUploads() {
+    public func clearCompletedUploads() {
 
         // Get completed upload requests
         let completedUploads = getRequestsIn(states: [.finished, .moderated])
 
         // Create a private queue context.
-        let taskContext = DataController.getPrivateContext()
+        let taskContext = DataController.privateManagedObjectContext
         
         // Which one should be deleted?
         var uploadsToDelete = [NSManagedObjectID]()
@@ -744,12 +710,12 @@ class UploadsProvider: NSObject {
     /**
      A fetched results controller delegate to give consumers a chance to upload the next images.
      */
-    @objc weak var fetchedResultsControllerDelegate: NSFetchedResultsControllerDelegate?
+    public weak var fetchedResultsControllerDelegate: NSFetchedResultsControllerDelegate?
     
     /**
      A fetched results controller to fetch Upload records sorted by local request date in the main queue.
      */
-    @objc lazy var fetchedResultsController: NSFetchedResultsController<Upload> = {
+    public lazy var fetchedResultsController: NSFetchedResultsController<Upload> = {
         
         // Create a fetch request for the Upload entity sorted by request date.
         let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
@@ -784,12 +750,12 @@ class UploadsProvider: NSObject {
     /**
      A fetched results controller delegate to update the UploadQueue table view
      */
-    @objc weak var fetchedNonCompletedResultsControllerDelegate: NSFetchedResultsControllerDelegate?
+    public weak var fetchedNonCompletedResultsControllerDelegate: NSFetchedResultsControllerDelegate?
     
     /**
      A fetched results controller to fetch Upload records sorted by state in the main queue for feeding the UploadQueue table view
      */
-    @objc lazy var fetchedNonCompletedResultsController: NSFetchedResultsController<Upload> = {
+    public lazy var fetchedNonCompletedResultsController: NSFetchedResultsController<Upload> = {
         
         // Create a fetch request for the Upload entity sorted by request date.
         let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
@@ -828,4 +794,34 @@ class UploadsProvider: NSObject {
         
         return controller
     }()
+}
+
+// MARK: - For checking operation queue
+/// The name/description of the current queue (Operation or Dispatch), if that can be found. Else, the name/description of the thread.
+public func queueName() -> String {
+    if let currentOperationQueue = OperationQueue.current {
+        if let currentDispatchQueue = currentOperationQueue.underlyingQueue {
+            return "dispatch queue: \(currentDispatchQueue.label.nonEmpty ?? currentDispatchQueue.description)"
+        }
+        else {
+            return "operation queue: \(currentOperationQueue.name?.nonEmpty ?? currentOperationQueue.description)"
+        }
+    }
+    else {
+        let currentThread = Thread.current
+        return "thread: \(currentThread.name?.nonEmpty ?? currentThread.description)"
+    }
+}
+
+public extension String {
+
+    /// Returns this string if it is not empty, else `nil`.
+    var nonEmpty: String? {
+        if self.isEmpty {
+            return nil
+        }
+        else {
+            return self
+        }
+    }
 }

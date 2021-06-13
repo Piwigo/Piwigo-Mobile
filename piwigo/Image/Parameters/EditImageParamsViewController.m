@@ -37,7 +37,7 @@ typedef enum {
 	EditImageParamsOrderCount
 } EditImageParamsOrder;
 
-@interface EditImageParamsViewController () <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UITextViewDelegate, EditImageThumbnailCellDelegate, EditImageDatePickerDelegate, EditImageShiftPickerDelegate, SelectPrivacyDelegate, TagsViewControllerDelegate>
+@interface EditImageParamsViewController () <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UITextViewDelegate, EditImageThumbnailCellDelegate, EditImageDatePickerDelegate, EditImageShiftPickerDelegate, SelectPrivacyObjcDelegate, TagsViewControllerObjcDelegate>
 
 @property (nonatomic, strong) PiwigoImageData *commonParameters;
 @property (nonatomic, weak)   IBOutlet UITableView *editImageParamsTableView;
@@ -170,7 +170,7 @@ typedef enum {
         if (self.commonParameters.privacyLevel == imageData.privacyLevel) continue;
         
         // Images privacy levels are different, display no level
-        self.commonParameters.privacyLevel = kPiwigoPrivacyUnknown;
+        self.commonParameters.privacyLevel = kPiwigoPrivacyObjcUnknown;
         break;
     }
     self.shouldUpdatePrivacyLevel = NO;
@@ -322,7 +322,7 @@ typedef enum {
         }
         
         // Update image privacy level?
-        if ((self.commonParameters.privacyLevel != kPiwigoPrivacyUnknown) && self.shouldUpdatePrivacyLevel) {
+        if ((self.commonParameters.privacyLevel != kPiwigoPrivacyObjcUnknown) && self.shouldUpdatePrivacyLevel) {
             imageData.privacyLevel = self.commonParameters.privacyLevel;
         }
         
@@ -639,8 +639,8 @@ typedef enum {
             // Create view controller
             UIStoryboard *privacySB = [UIStoryboard storyboardWithName:@"SelectPrivacyViewController" bundle:nil];
             SelectPrivacyViewController *privacyVC = [privacySB instantiateViewControllerWithIdentifier:@"SelectPrivacyViewController"];
-            privacyVC.delegate = self;
-            [privacyVC setPrivacy:(kPiwigoPrivacy)self.commonParameters.privacyLevel];
+            privacyVC.objcDelegate = self;
+            [privacyVC setPrivacyObjc:self.commonParameters.privacyLevel];
             [self.navigationController pushViewController:privacyVC animated:YES];
             break;
         }
@@ -656,7 +656,7 @@ typedef enum {
             // Create view controller
             UIStoryboard *tagsSB = [UIStoryboard storyboardWithName:@"TagsViewController" bundle:nil];
             TagsViewController *tagsVC = [tagsSB instantiateViewControllerWithIdentifier:@"TagsViewController"];
-            tagsVC.delegate = self;
+            tagsVC.objcDelegate = self;
             NSMutableArray *tagList = [NSMutableArray new];
             for (PiwigoTagData *tag in self.commonParameters.tags) {
                 [tagList addObject:[NSNumber numberWithLong:tag.tagId]];
@@ -987,9 +987,9 @@ typedef enum {
 }
 
 
-#pragma mark - SelectPrivacyDelegate Methods
+#pragma mark - SelectPrivacyObjcDelegate Methods
 
--(void)didSelectPrivacyLevel:(kPiwigoPrivacy)privacyLevel
+-(void)didSelectPrivacyLevel:(kPiwigoPrivacyObjc)privacyLevel
 {
     // Check if the user decided to leave the Edit mode
     if (![self.navigationController.visibleViewController isKindOfClass:[EditImageParamsViewController class]]) {
@@ -1015,9 +1015,9 @@ typedef enum {
 }
 
 
-#pragma mark - TagsViewControllerDelegate Methods
+#pragma mark - TagsViewControllerObjcDelegate Methods
 
--(void)didSelectTags:(NSArray<Tag *> *)selectedTags
+-(void)didSelectTags:(NSArray<PiwigoTagData *> *)newCommonTags
 {
     // Check if the user decided to leave the Edit mode
     if (![self.navigationController.visibleViewController isKindOfClass:[EditImageParamsViewController class]]) {
@@ -1027,18 +1027,6 @@ typedef enum {
             [self.delegate didFinishEditingParameters];
         }
         return;
-    }
-
-    // Build new list of common tags (i.e. Tag -> PiwigoTagData)
-    NSMutableArray<PiwigoTagData *>* newCommonTags = [NSMutableArray new];
-    for (Tag *selectedTag in selectedTags) {
-        PiwigoTagData *newTag = [PiwigoTagData new];
-        newTag.tagId = selectedTag.tagId;
-        newTag.tagName = selectedTag.tagName;
-        newTag.lastModified = selectedTag.lastModified;
-        newTag.numberOfImagesUnderTag = selectedTag.numberOfImagesUnderTag;
-        [newCommonTags addObject:newTag];
-//        NSLog(@"==> %@", newTag);
     }
 
     // Build list of added tags

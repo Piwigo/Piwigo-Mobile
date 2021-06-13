@@ -24,6 +24,10 @@ class UploadManager: NSObject, URLSessionDelegate {
         // Register app giving up its active status to another app.
         NotificationCenter.default.addObserver(self, selector: #selector(self.willResignActive),
             name: UIApplication.willResignActiveNotification, object: nil)
+
+        // Register palette changes
+        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationDeleteUploadFile)
+        NotificationCenter.default.addObserver(self, selector: #selector(deleteFilesWithPrefix), name: name, object: nil)
     }
     
     @objc var isPaused = false
@@ -51,7 +55,7 @@ class UploadManager: NSObject, URLSessionDelegate {
     /// Uploads directory into which image/video files are temporarily stored
     let applicationUploadsDirectory: URL = {
         let fm = FileManager.default
-        let anURL = DataController.applicationStoresDirectory.appendingPathComponent("Uploads")
+        let anURL = DataController.appGroupDirectory.appendingPathComponent("Uploads")
 
         // Create the Piwigo/Uploads directory if needed
         if !fm.fileExists(atPath: anURL.path) {
@@ -191,7 +195,7 @@ class UploadManager: NSObject, URLSessionDelegate {
             // Transfers encountered an error
             for uploadID in finishingIDs {
                 print("\(debugFormatter.string(from: Date())) >  Interrupted finish —> \(uploadID.uriRepresentation())")
-                uploadsProvider.updateStatusOfUpload(with: uploadID, to: .finishingError, error: UploadError.networkUnavailable.errorDescription) { [unowned self] (_) in
+                uploadsProvider.updateStatusOfUpload(with: uploadID, to: .finishingError, error: JsonError.networkUnavailable.errorDescription) { [unowned self] (_) in
                     self.findNextImageToUpload()
                     return
                 }
@@ -203,7 +207,7 @@ class UploadManager: NSObject, URLSessionDelegate {
             if !isUploading.contains(uploadID) {
                 // Transfer encountered an error
                 print("\(debugFormatter.string(from: Date())) >  Interrupted transfer —> \(uploadID.uriRepresentation())")
-                uploadsProvider.updateStatusOfUpload(with: uploadID, to: .uploadingError, error: UploadError.networkUnavailable.errorDescription) { [unowned self] (_) in
+                uploadsProvider.updateStatusOfUpload(with: uploadID, to: .uploadingError, error: JsonError.networkUnavailable.errorDescription) { [unowned self] (_) in
                     self.findNextImageToUpload()
                     return
                 }
@@ -372,7 +376,7 @@ class UploadManager: NSObject, URLSessionDelegate {
     @objc
     func resumeTransfersOfBckgTask() -> Void {
         // Get active upload tasks and initialise isUploading
-        let taskContext = DataController.getPrivateContext()
+        let taskContext = DataController.privateManagedObjectContext
         let uploadSession: URLSession = UploadSessionDelegate.shared.uploadSession
         uploadSession.getAllTasks { [unowned self] uploadTasks in
             // Loop over the tasks
@@ -450,7 +454,7 @@ class UploadManager: NSObject, URLSessionDelegate {
 
         // Retrieve upload request properties
         var uploadProperties: UploadProperties!
-        let taskContext = DataController.getPrivateContext()
+        let taskContext = DataController.privateManagedObjectContext
         do {
             let upload = try taskContext.existingObject(with: uploadID)
             if upload.isFault {
@@ -857,7 +861,7 @@ class UploadManager: NSObject, URLSessionDelegate {
 
         // Retrieve upload request properties
         var uploadProperties: UploadProperties!
-        let taskContext = DataController.getPrivateContext()
+        let taskContext = DataController.privateManagedObjectContext
         do {
             let upload = try taskContext.existingObject(with: uploadID)
             if upload.isFault {
@@ -987,7 +991,7 @@ class UploadManager: NSObject, URLSessionDelegate {
     private func moderate(completedRequests : [NSManagedObjectID]) -> Void {
         
         // Get completed upload requests
-        let taskContext = DataController.getPrivateContext()
+        let taskContext = DataController.privateManagedObjectContext
         var uploadedImages = [Upload]()
         completedRequests.forEach { (objectId) in
             uploadedImages.append(taskContext.object(with: objectId) as! Upload)
@@ -1044,6 +1048,11 @@ class UploadManager: NSObject, URLSessionDelegate {
         })
     }
     
+    @objc func didDeletePiwigoImage(withID imageId: Int) {
+        // Mark this uploaded image as deleted from the Piwigo server
+        uploadsProvider.markAsDeletedPiwigoImage(withID: Int64(imageId))
+    }
+    
    
     // MARK: - Failed Uploads Management
     
@@ -1055,7 +1064,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         isUploading = Set<NSManagedObjectID>()
         
         // Get active upload tasks
-        let taskContext = DataController.getPrivateContext()
+        let taskContext = DataController.privateManagedObjectContext
         let uploadSession: URLSession = UploadSessionDelegate.shared.uploadSession
         uploadSession.getAllTasks { uploadTasks in
             // Loop over the tasks
@@ -1121,7 +1130,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         var uploadsToUpdate = [UploadProperties]()
         
         // Create a private queue context.
-        let taskContext = DataController.getPrivateContext()
+        let taskContext = DataController.privateManagedObjectContext
 
         // Loop over the failed uploads
         for failedUploadID in failedUploads {
@@ -1156,7 +1165,14 @@ class UploadManager: NSObject, URLSessionDelegate {
         
         // Update failed uploads
         self.uploadsProvider.importUploads(from: uploadsToUpdate) { (error) in
+            // No need to update app badge and Upload button in root/default album
             completionHandler(error)
+        }
+    }
+    
+    @objc func deleteFilesWithPrefix(_ notification: Notification) {
+        if let prefix = notification.userInfo?["prefix"] as? String {
+            deleteFilesInUploadsDirectory(with: prefix)
         }
     }
     
@@ -1178,6 +1194,15 @@ class UploadManager: NSObject, URLSessionDelegate {
             for file in filesToDelete {
                 try fileManager.removeItem(at: file)
             }
+
+            // Get uploads to complete in queue
+            // Considers only uploads to the server to which the user is logged in
+            let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
+                                                .preparingFail, .formatError, .prepared,
+                                                .uploading, .uploadingError, .uploaded,
+                                                .finishing, .finishingError]
+            // Update app badge and Upload button in root/default album
+            UploadManager.shared.nberOfUploadsToComplete = uploadsProvider.getRequestsIn(states: states).count
 
             // For debugging
 //            let leftFiles = try fileManager.contentsOfDirectory(at: self.applicationUploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])

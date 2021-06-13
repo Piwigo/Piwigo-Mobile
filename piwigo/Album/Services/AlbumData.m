@@ -14,7 +14,7 @@
 @interface AlbumData()
 
 @property (nonatomic, assign) NSInteger categoryId;
-@property (nonatomic, assign) kPiwigoSort sortType;
+@property (nonatomic, assign) kPiwigoSortObjc sortType;
 
 @end
 
@@ -69,7 +69,7 @@
 	{
 //        NSLog(@"loadMoreImagesOnCompletion: we have all image data");
         // We have all the image data, just manually sort it (uploaded images are appended to cache)
-        self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList for:(kPiwigoSort)AlbumVars.shared.defaultSort];
+        self.images = [CategoryImageSort sortObjcImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList for:(kPiwigoSortObjc)AlbumVars.shared.defaultSort];
 		if(completion)
 		{
 			completion();
@@ -78,7 +78,7 @@
 	}
     
     // Set sort string parameter from sort type
-    NSString *sortDesc = [CategoryImageSort getPiwigoSortDescriptionFor:self.sortType];
+    NSString *sortDesc = [CategoryImageSort getPiwigoSortObjcDescriptionFor:self.sortType];
 	
     // Load more category image data
 	[[[CategoriesData sharedInstance] getCategoryById:self.categoryId]
@@ -87,7 +87,7 @@
     {
 		if(!completed) { return; }
         // We have all the image data, just manually sort it (uploaded images are appended to cache)
-        self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList for:self.sortType];
+        self.images = [CategoryImageSort sortObjcImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList for:self.sortType];
 		if(completion) { completion(); }
 	}];
 }
@@ -109,7 +109,7 @@
 
 #pragma mark - Image sorting
 
--(void)updateImageSort:(kPiwigoSort)imageSort
+-(void)updateImageSort:(kPiwigoSortObjc)imageSort
           OnCompletion:(void (^)(void))completion
 {
 	NSInteger downloadedImageDataCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;
@@ -118,7 +118,7 @@
 //    NSLog(@"updateImageSort: catId=%ld, downloaded:%ld, total:%ld", (long)self.categoryId, (long)downloadedImageDataCount, (long)totalImageCount);
 	if ((totalImageCount != NSNotFound) && (downloadedImageDataCount >= totalImageCount))
 	{	// We have all the image data, just manually sort it (uploaded images are appended to cache)
-        self.images = [CategoryImageSort sortImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList for:imageSort];
+        self.images = [CategoryImageSort sortObjcImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList for:imageSort];
 		if(completion)
 		{
 //            NSLog(@"updateImageSort: we have all image data i.e. %ld", (long)self.images.count);

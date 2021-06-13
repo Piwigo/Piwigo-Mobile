@@ -8,6 +8,7 @@
 
 import Photos
 import UIKit
+import piwigoKit
 
 @available(iOS 13.0, *)
 @objc
@@ -19,7 +20,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
      The UploadsProvider that collects upload data, saves it to Core Data, and serves it to the uploader.
      */
     lazy var managedObjectContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = (UIApplication.shared.delegate as! AppDelegate).managedObjectContext
+        let context:NSManagedObjectContext = DataController.managedObjectContext
         return context
     }()
 

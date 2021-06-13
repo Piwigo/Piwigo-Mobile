@@ -10,7 +10,6 @@
 
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationPinchedImage;
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationUpdateImageFileName;
-FOUNDATION_EXPORT NSString * const kPiwigoNotificationDeletedImage;
 
 @class PiwigoImageData;
 

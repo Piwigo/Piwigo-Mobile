@@ -32,7 +32,7 @@ class NetworkVarsObjc: NSObject {
     // Network variables stored in UserDefaults / App Group
     /// - Scheme of the URL, "https://" by default
     /// - Scheme of the URL, "https://" by default
-//    @UserDefault("serverProtocol", defaultValue: "http://", userDefaults: UserDefaults.dataSuite)
+//    @UserDefault("serverProtocol", defaultValue: "https://", userDefaults: UserDefaults.dataSuite)
     @objc var serverProtocol: String {
         get { return NetworkVars.shared.serverProtocol }
         set (value) { NetworkVars.shared.serverProtocol = value }

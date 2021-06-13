@@ -8,19 +8,19 @@
 //  A class to fetch data from the remote server and save it to the Core Data store.
 
 import CoreData
-import piwigoKit
 
-class TagsProvider {
+public class TagsProvider {
+
+    // Singleton
+    public static let shared = TagsProvider()
 
     // MARK: - Piwigo API methods
-
-    let kPiwigoTagsGetImages = "format=json&method=pwg.tags.getImages"
+    public let kPiwigoTagsGetImages = "format=json&method=pwg.tags.getImages"
     
     
     // MARK: - Core Data object context
-    
-    lazy var managedObjectContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = (UIApplication.shared.delegate as! AppDelegate).managedObjectContext
+        public lazy var managedObjectContext: NSManagedObjectContext = {
+        let context:NSManagedObjectContext = DataController.managedObjectContext
         return context
     }()
 
@@ -32,22 +32,33 @@ class TagsProvider {
      so we must call pwg.tags.getList to present tagged photos when the user has admin rights.
      Because we wish to keep the tag list up-to-date, calling pwg.tags.getList leads to the deletions of unused tags in the store.
     */
-    func fetchTags(asAdmin: Bool, completionHandler: @escaping (Error?) -> Void) {
+    public func fetchTags(asAdmin: Bool, completionHandler: @escaping (Error?) -> Void) {
 
-        NetworkHandler.post(asAdmin ? kPiwigoTagsGetAdminList : kPiwigoTagsGetList, urlParameters: nil, parameters: nil, sessionManager: NetworkVarsObjc.shared.sessionManager, progress: nil, success: { (task, jsonData) in
+        // Prepare Piwigo JSON request
+        let urlStr = "\(NetworkVars.shared.serverProtocol)\(NetworkVars.shared.serverPath)"
+        let url = URL(string: urlStr + "/ws.php?\(asAdmin ? kPiwigoTagsGetAdminList : kPiwigoTagsGetList)")
+        var request = URLRequest(url: url!)
+        request.httpMethod = "POST"
 
-            // Alert the user if no data comes back.
-            guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {
-                completionHandler(TagError.networkUnavailable)
+        // Launch the HTTP(S) request
+        let JSONsession = JSONsessionDelegate.shared
+        JSONsession.postRequest(withMethod: asAdmin ? kPiwigoTagsGetAdminList : kPiwigoTagsGetList,
+                                parameters: [:]) { jsonData, error in
+            // Any error?
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            if let error = error {
+                completionHandler(error)
                 return
             }
-
+            
             // Decode the JSON and import it into Core Data.
             DispatchQueue.global(qos: .background).async {
                 do {
                     // Decode the JSON into codable type TagJSON.
                     let decoder = JSONDecoder()
-                    let tagJSON = try decoder.decode(TagJSON.self, from: data)
+                    let tagJSON = try decoder.decode(TagJSON.self, from: jsonData)
 
                     // Piwigo error?
                     let error: NSError
@@ -67,8 +78,6 @@ class TagsProvider {
                 }
                 completionHandler(nil)
             }
-        }) { (task, error) in
-            completionHandler(TagError.networkUnavailable)
         }
     }
     
@@ -80,7 +89,7 @@ class TagsProvider {
     private func importTags(from tagPropertiesArray: [TagProperties]) throws {
         
         // Create a private queue context.
-        let taskContext = DataController.getPrivateContext()
+        let taskContext = DataController.privateManagedObjectContext
                 
         // We shall perform at least one import in case where
         // the user did delete all tags or untag all photos
@@ -287,23 +296,25 @@ class TagsProvider {
     /**
      Adds the tag to the remote Piwigo server, and imports it into Core Data (in the foreground).
     */
-    func addTag(with name: String, completionHandler: @escaping (Error?) -> Void) {
+    public func addTag(with name: String, completionHandler: @escaping (Error?) -> Void) {
         
-        NetworkHandler.post(kPiwigoTagsAdd, urlParameters: nil, parameters: ["name": name],
-                            sessionManager: NetworkVarsObjc.shared.sessionManager,
-                            progress: nil,
-                            success: { (task, jsonData) in
-            // Alert the user if no data comes back.
-            guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {
-                completionHandler(TagError.networkUnavailable)
+        let JSONsession = JSONsessionDelegate.shared
+        JSONsession.postRequest(withMethod: kPiwigoTagsAdd,
+                                parameters: ["name": name]) { jsonData, error in
+            // Any error?
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            if let error = error {
+                completionHandler(error)
                 return
             }
-
+            
             // Decode the JSON and import it into Core Data.
             do {
                 // Decode the JSON into codable type TagJSON.
                 let decoder = JSONDecoder()
-                let tagJSON = try decoder.decode(TagAddJSON.self, from: data)
+                let tagJSON = try decoder.decode(TagAddJSON.self, from: jsonData)
 
                 // Piwigo error?
                 let error: NSError
@@ -318,7 +329,7 @@ class TagsProvider {
                                            lastmodified: "", counter: 0, url_name: "", url: "")
 
                 // Import the new tag in a private queue context.
-                let taskContext = DataController.getPrivateContext()
+                let taskContext = DataController.privateManagedObjectContext
                 if self.importOneTag(newTag, taskContext: taskContext) {
                     completionHandler(nil)
                 } else {
@@ -330,9 +341,6 @@ class TagsProvider {
                 completionHandler(TagError.wrongDataFormat)
                 return
             }
-
-        }) { (task, error) in
-            completionHandler(TagError.networkUnavailable)
         }
     }
 
@@ -445,7 +453,7 @@ class TagsProvider {
     /**
      Clear cached Core Data tag entry
     */
-    func clearTags() {
+    public func clearTags() {
         
         // Create a fetch request for the Tag entity
         let fetchRequest = NSFetchRequest<Tag>(entityName: "Tag")
@@ -469,12 +477,12 @@ class TagsProvider {
      A fetched results controller delegate to give consumers a chance to update
      the user interface when content changes.
      */
-    weak var fetchedResultsControllerDelegate: NSFetchedResultsControllerDelegate?
+    public weak var fetchedResultsControllerDelegate: NSFetchedResultsControllerDelegate?
     
     /**
      A fetched results controller to fetch Tag records sorted by name.
      */
-    lazy var fetchedResultsController: NSFetchedResultsController<Tag> = {
+    public lazy var fetchedResultsController: NSFetchedResultsController<Tag> = {
         
         // Create a fetch request for the Tag entity sorted by name.
         let fetchRequest = NSFetchRequest<Tag>(entityName: "Tag")

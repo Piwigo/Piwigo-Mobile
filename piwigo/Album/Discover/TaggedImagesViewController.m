@@ -52,7 +52,7 @@
 
 @property (nonatomic, strong) UIBarButtonItem *tagSelectBarButton;
 
-@property (nonatomic, assign) kPiwigoSort currentSortCategory;
+@property (nonatomic, assign) kPiwigoSortObjc currentSortCategory;
 @property (nonatomic, strong) ImageDetailViewController *imageDetailView;
 
 @end
@@ -73,7 +73,7 @@
         self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:0];
         
         self.albumData = [[AlbumData alloc] initWithCategoryId:kPiwigoTagsCategoryId andQuery:@""];
-        self.currentSortCategory = (kPiwigoSort)AlbumVars.shared.defaultSort;
+        self.currentSortCategory = (kPiwigoSortObjc)AlbumVars.shared.defaultSort;
         self.displayImageTitles = AlbumVars.shared.displayImageTitles;
         
         // Initialise selection mode

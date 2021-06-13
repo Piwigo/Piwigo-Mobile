@@ -21,7 +21,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
      and serves it to this table view.
      */
     private lazy var tagsProvider: TagsProvider = {
-        let provider : TagsProvider = TagsProvider()
+        let provider : TagsProvider = TagsProvider.shared
         return provider
     }()
     

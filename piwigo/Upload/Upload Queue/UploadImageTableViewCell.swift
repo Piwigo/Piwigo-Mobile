@@ -8,6 +8,7 @@
 
 import Photos
 import UIKit
+import piwigoKit
 
 @objc
 class UploadImageTableViewCell: MGSwipeTableCell {
@@ -305,7 +306,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
             case .formatError:
                 error = UploadError.wrongDataFormat.localizedDescription
             case .uploadingError, .finishingError:
-                error = UploadError.networkUnavailable.localizedDescription
+                error = JsonError.networkUnavailable.localizedDescription
             default:
                 error = "— ? —"
             }

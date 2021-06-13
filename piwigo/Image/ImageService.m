@@ -765,7 +765,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     // Object "name"
     NSString *name = [imageJson objectForKey:@"name"];
     if ((name != nil) && ![name isKindOfClass:[NSNull class]]) {
-        imageData.imageTitle = [NetworkUtilities utf8mb4StringFrom:[imageJson objectForKey:@"name"]];
+        imageData.imageTitle = [NetworkObjcUtilities utf8mb4ObjcStringFrom:[imageJson objectForKey:@"name"]];
     } else {
         imageData.imageTitle = @"";
     }
@@ -773,7 +773,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     // Object "comment"
     NSString *comment = [imageJson objectForKey:@"comment"];
     if ((comment != nil) && ![comment isKindOfClass:[NSNull class]]) {
-        imageData.comment = [NetworkUtilities utf8mb4StringFrom:[imageJson objectForKey:@"comment"]];
+        imageData.comment = [NetworkObjcUtilities utf8mb4ObjcStringFrom:[imageJson objectForKey:@"comment"]];
     } else {
         imageData.comment = @"";
     }
@@ -788,7 +788,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     // Object "file"
     NSString *file = [imageJson objectForKey:@"file"];
     if ((file != nil) && ![file isKindOfClass:[NSNull class]]) {
-        imageData.fileName = [NetworkUtilities utf8mb4StringFrom:[imageJson objectForKey:@"file"]];
+        imageData.fileName = [NetworkObjcUtilities utf8mb4ObjcStringFrom:[imageJson objectForKey:@"file"]];
     } else {
         imageData.fileName = @"NoName.jpg";    // Filename should never be empty. Just in case…
     }
@@ -1056,7 +1056,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     // Object "author"
     NSString *author = [imageJson objectForKey:@"author"];
     if ((author != nil) && ![author isKindOfClass:[NSNull class]]) {
-        imageData.author = [NetworkUtilities utf8mb4StringFrom:author];
+        imageData.author = [NetworkObjcUtilities utf8mb4ObjcStringFrom:author];
     } else {
         imageData.author = @"NSNotFound";
     }
@@ -1064,9 +1064,9 @@ NSString * const kGetImageOrderDescending = @"desc";
     // Object "level"
     if ([imageJson objectForKey:@"level"] &&
         ![[imageJson objectForKey:@"level"] isKindOfClass:[NSNull class]]) {
-        imageData.privacyLevel = (kPiwigoPrivacy)[[imageJson objectForKey:@"level"] integerValue];
+        imageData.privacyLevel = (kPiwigoPrivacyObjc)[[imageJson objectForKey:@"level"] integerValue];
     } else {
-        imageData.privacyLevel = kPiwigoPrivacyUnknown;
+        imageData.privacyLevel = kPiwigoPrivacyObjcUnknown;
     }
     
     // Object "tags"
@@ -1079,7 +1079,7 @@ NSString * const kGetImageOrderDescending = @"desc";
             PiwigoTagData *tagData = [PiwigoTagData new];
             tagData.tagId = [[tag objectForKey:@"id"] integerValue];
             if (![[tag objectForKey:@"name"] isKindOfClass:[NSNull class]]) {
-                tagData.tagName = [NetworkUtilities utf8mb4StringFrom:[tag objectForKey:@"name"]];
+                tagData.tagName = [NetworkObjcUtilities utf8mb4ObjcStringFrom:[tag objectForKey:@"name"]];
             } else {
                 tagData.tagName = @"";
             }
@@ -1117,7 +1117,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     // Object "md5sum"
     NSString *md5sum = [imageJson objectForKey:@"md5sum"];
     if ((md5sum != nil) && ![md5sum isKindOfClass:[NSNull class]]) {
-        imageData.MD5checksum = [NetworkUtilities utf8mb4StringFrom:[imageJson objectForKey:@"md5sum"]];
+        imageData.MD5checksum = [NetworkObjcUtilities utf8mb4ObjcStringFrom:[imageJson objectForKey:@"md5sum"]];
     } else {
         imageData.MD5checksum = @"";
     }

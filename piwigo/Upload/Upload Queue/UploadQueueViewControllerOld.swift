@@ -8,6 +8,7 @@
 
 import Photos
 import UIKit
+import piwigoKit
 
 @objc
 class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITableViewDataSource {

@@ -13,7 +13,7 @@ import CoreData
 
 extension Upload {
 
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<Upload> {
+    public class func fetchRequest() -> NSFetchRequest<Upload> {
         return NSFetchRequest<Upload>(entityName: "Upload")
     }
 

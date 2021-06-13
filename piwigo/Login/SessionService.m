@@ -228,16 +228,16 @@
                           // Upload chunk size is null if not provided by server
                           NSInteger uploadChunkSize = [[result objectForKey:@"upload_form_chunk_size"] integerValue];
                           if (uploadChunkSize != 0) {
-                              UploadVars.shared.uploadChunkSize = [[result objectForKey:@"upload_form_chunk_size"] integerValue];
+                              UploadVarsObjc.shared.uploadChunkSize = [[result objectForKey:@"upload_form_chunk_size"] integerValue];
                           } else {
                               // Just in case…
-                              UploadVars.shared.uploadChunkSize = 500;
+                              UploadVarsObjc.shared.uploadChunkSize = 500;
                           }
 
                           // Images and videos can be uploaded if their file types are found.
                           // The iPhone creates mov files that will be uploaded in mp4 format.
                           // This string is nil if the server does not provide it.
-                          UploadVars.shared.serverFileTypes = [result objectForKey:@"upload_file_types"];
+                          UploadVarsObjc.shared.serverFileTypes = [result objectForKey:@"upload_file_types"];
                           
                           // User rights are determined by Community extension (if installed)
                           if(!NetworkVarsObjc.shared.usesCommunityPluginV29) {

@@ -8,6 +8,7 @@
 
 import Photos
 import MobileCoreServices
+import piwigoKit
 
 extension UploadManager {
     

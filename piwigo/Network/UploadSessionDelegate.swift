@@ -9,7 +9,6 @@
 import Foundation
 import piwigoKit
 
-@objc
 class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegate, URLSessionDataDelegate {
     
     // Singleton
@@ -108,7 +107,7 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
         }
 
         // Check validity of certificate
-        if checkValidity(of: serverTrust) {
+        if KeychainUtilities.isSSLtransactionValid(inState: serverTrust, for: domain) {
             let credential = URLCredential(trust: serverTrust)
             completionHandler(.useCredential, credential)
             return
@@ -122,7 +121,7 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
 
         // Check if the certificate is trusted by user (i.e. is in the Keychain)
         // Case where the certificate is e.g. self-signed
-        if certificateIsInKeychain(with: serverTrust) {
+        if KeychainUtilities.isCertKnownForSSLtransaction(inState: serverTrust, for: domain) {
             let credential = URLCredential(trust: serverTrust)
             completionHandler(.useCredential, credential)
             return
@@ -157,7 +156,7 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
         }
         
         // Get HTTP basic authentification credentials
-        guard let credential = credentialsFromKeychain() else {
+        guard let credential = KeychainUtilities.HTTPcredentialFromKeychain() else {
             completionHandler(.cancelAuthenticationChallenge, nil)
             return
         }
@@ -269,68 +268,6 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
                 UploadManager.shared.didCompleteUploadTask(dataTask, withData: data)
             }
         }
-    }
-
-
-    // MARK: - Certificate Validation
-    func checkValidity(of serverTrust: SecTrust) -> (Bool) {
-        // Define policy for validating domain name
-        let policy = SecPolicyCreateSSL(true, domain as CFString)
-        let status = SecTrustSetPolicies(serverTrust, policy)
-        if status != 0 { return false }     // Could not set policy
-        
-        // Evaluate certificate
-        var isValid = false
-        if #available(iOS 12.0, *) {
-            isValid = SecTrustEvaluateWithError(serverTrust, nil)
-        } else {
-            // Fallback on earlier versions
-            var result: SecTrustResultType = .invalid
-            SecTrustEvaluate(serverTrust, &result)
-            if status == errSecSuccess {
-                isValid = (result == .unspecified) || (result == .proceed)
-            }
-        }
-        
-        return isValid
-    }
-    
-    func certificateIsInKeychain(with serverTrust: SecTrust) -> (Bool) {
-        // Retrieve the certificate of the server
-        let certificate = SecTrustGetCertificateAtIndex(serverTrust, CFIndex(0))!
-
-        // Get certificate in Keychain (should exist)
-        // Certificates are stored in the Keychain with label "Piwigo:<host>"
-        let query = [kSecClass as String       : kSecClassCertificate,
-                     kSecAttrLabel as String   : "Piwigo:\(domain)",
-                     kSecReturnRef as String   : kCFBooleanTrue!] as [String : Any]
-
-        var dataTypeRef: AnyObject? = nil
-        let status: OSStatus = SecItemCopyMatching(query as CFDictionary, &dataTypeRef)
-
-        var isInKeychain = false
-        if status == errSecSuccess {
-            // A certificate exists for that host, does it match the one of the server?
-            let certData = SecCertificateCopyData(certificate)
-            let storedData = SecCertificateCopyData(dataTypeRef as! SecCertificate)
-            if certData == storedData {
-                // Certificates are identical
-                isInKeychain = true
-            }
-        }
-        return isInKeychain
-    }
-    
-    
-    // MARK: - HTTP Credentials
-    func credentialsFromKeychain() -> URLCredential? {
-        // Return credentials retrieved from the keychain
-        guard !NetworkVars.shared.httpUsername.isEmpty,
-            let password = SAMKeychain.password(forService:  "\(NetworkVars.shared.serverProtocol)\(NetworkVars.shared.serverPath)", account: NetworkVars.shared.httpUsername), !password.isEmpty else {
-                return nil
-        }
-        return URLCredential(user: NetworkVars.shared.httpUsername, password: password,
-                             persistence: .forSession)
     }
     
     

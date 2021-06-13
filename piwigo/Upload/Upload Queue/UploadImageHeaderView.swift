@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import piwigoKit
 
 class UploadImageHeaderView: UITableViewHeaderFooterView {
     

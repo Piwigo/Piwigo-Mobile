@@ -17,7 +17,7 @@ class ClearCache: NSObject {
                              completionHandler: @escaping () -> Void) {
         
         // Tags
-        let tagsProvider : TagsProvider = TagsProvider()
+        let tagsProvider = TagsProvider.shared
         tagsProvider.clearTags()
 
         // Locations with place names

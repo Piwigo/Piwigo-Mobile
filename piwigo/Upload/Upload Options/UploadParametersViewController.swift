@@ -24,7 +24,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
     private var shouldUpdateTitle = false
     var commonAuthor = UploadVars.shared.defaultAuthor
     private var shouldUpdateAuthor = false
-    var commonPrivacyLevel = kPiwigoPrivacy(UploadVars.shared.defaultPrivacyLevel)
+    var commonPrivacyLevel = kPiwigoPrivacy(rawValue: UploadVars.shared.defaultPrivacyLevel)
     private var shouldUpdatePrivacyLevel = false
     var commonTags = [Tag]()
     private var shouldUpdateTags = false
@@ -206,7 +206,8 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
             return EditImagePrivacyTableViewCell()
         }
         cell.setLeftLabelText(NSLocalizedString("editImageDetails_privacyLevel", comment: "Who can see this photo?"))
-        cell.setPrivacyLevel(commonPrivacyLevel, in: shouldUpdatePrivacyLevel ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
+        let privLevelObjc = kPiwigoPrivacyObjc(rawValue: Int32(commonPrivacyLevel?.rawValue ?? 0))
+        cell.setPrivacyLevel(privLevelObjc, in: shouldUpdatePrivacyLevel ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
         tableViewCell = cell
 
         case .tags:
@@ -273,7 +274,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
         let privacySB = UIStoryboard(name: "SelectPrivacyViewController", bundle: nil)
         let privacyVC = privacySB.instantiateViewController(withIdentifier: "SelectPrivacyViewController") as? SelectPrivacyViewController
         privacyVC?.delegate = self
-        privacyVC?.setPrivacy(commonPrivacyLevel)
+        privacyVC?.setPrivacy(commonPrivacyLevel ?? .everybody)
         if let privacyVC = privacyVC {
             navigationController?.pushViewController(privacyVC, animated: true)
         }

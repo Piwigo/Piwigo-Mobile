@@ -7,7 +7,8 @@
 //
 
 import UIKit
- 
+import piwigoKit
+
 class TagSelectorCell: UITableViewCell {
     
     @IBOutlet weak private var tagLabel: UILabel!

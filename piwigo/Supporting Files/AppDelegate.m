@@ -68,7 +68,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     keyboardManager.shouldShowToolbarPlaceholder = YES;
 
     // Cache data in Core Data storage
-    [self setManagedObjectContext:[DataController getContext]];
+//    [self setManagedObjectContext:[DataController getContext]];
 
     // Set Settings Bundle data
     [self setSettingsBundleData];
@@ -139,7 +139,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     
     // Save cached data
-    [DataController saveContext];
+//    [DataController saveContext];
 
     // Cancel tasks and close sessions
     [NetworkVarsObjc.shared.sessionManager invalidateSessionCancelingTasks:YES resetSession:YES];
@@ -165,7 +165,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
         /// - Schedule background tasks
     } else {
         // Save cached data
-        [DataController saveContext];
+//        [DataController saveContext];
     }
 }
 
@@ -180,7 +180,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
         /// - Delete files stored in /tmp directory
     } else {
         // Save cached data
-        [DataController saveContext];
+//        [DataController saveContext];
 
         // Disable network activity indicator
         [AFNetworkActivityIndicatorManager sharedManager].enabled = NO;
@@ -512,7 +512,7 @@ NSString * const kPiwigoBackgroundTaskUpload = @"org.piwigo.uploadManager";
         NSLog(@"    > Task completed with success");
         [task setTaskCompletedWithSuccess:YES];
         // Save cached data
-        [DataController saveContext];
+//        [DataController saveContext];
     }];
 
     // Start the operation

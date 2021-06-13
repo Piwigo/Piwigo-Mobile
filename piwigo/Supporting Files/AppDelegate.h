@@ -19,7 +19,7 @@ FOUNDATION_EXPORT NSString * const kPiwigoBackgroundTaskUpload;
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (nonatomic, strong) UIWindow *window;
-@property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
+//@property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 
 -(void)loadLoginView;
 -(void)loadNavigation;

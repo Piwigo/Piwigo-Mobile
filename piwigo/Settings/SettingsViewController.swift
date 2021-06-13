@@ -63,7 +63,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
      and serves it to this table view.
      */
     private lazy var tagsProvider: TagsProvider = {
-        let provider : TagsProvider = TagsProvider()
+        let provider : TagsProvider = TagsProvider.shared
         return provider
     }()
     /**
@@ -567,7 +567,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let defaultSort = CategorySortViewController.getNameForCategorySortType(kPiwigoSort(AlbumVars.shared.defaultSort))
+                let defSort = kPiwigoSort(rawValue: AlbumVars.shared.defaultSort)
+                let defaultSort = CategorySortViewController.getNameForCategorySortType(defSort!)
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 var title: String
                 if view.bounds.size.width > 414 {
@@ -799,7 +800,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let defaultLevel = Model.sharedInstance().getNameForPrivacyLevel(kPiwigoPrivacy(UploadVars.shared.defaultPrivacyLevel))!
+                let defLevelObjc = kPiwigoPrivacyObjc(Int32(UploadVars.shared.defaultPrivacyLevel))
+                let defaultLevel = Model.sharedInstance().getNameForPrivacyLevel(defLevelObjc)!
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 if view.bounds.size.width > 414 {
                     // i.e. larger than iPhones 6,7 Plus screen width
@@ -1547,7 +1549,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let privacySB = UIStoryboard(name: "SelectPrivacyViewController", bundle: nil)
                 guard let privacyVC = privacySB.instantiateViewController(withIdentifier: "SelectPrivacyViewController") as? SelectPrivacyViewController else { return }
                 privacyVC.delegate = self
-                privacyVC.setPrivacy(kPiwigoPrivacy(UploadVars.shared.defaultPrivacyLevel))
+                privacyVC.setPrivacy(kPiwigoPrivacy(rawValue: UploadVars.shared.defaultPrivacyLevel) ?? .everybody)
                 navigationController?.pushViewController(privacyVC, animated: true)
             case 10 /* Auto Upload */:
                 let autoUploadSB = UIStoryboard(name: "AutoUploadViewController", bundle: nil)
@@ -1994,7 +1996,7 @@ extension SettingsViewController: DefaultAlbumThumbnailSizeDelegate {
 extension SettingsViewController: CategorySortDelegate {
     func didSelectCategorySortType(_ sortType: kPiwigoSort) {
         // Do nothing if sort type is unchanged
-        if sortType == kPiwigoSort(AlbumVars.shared.defaultSort) { return }
+        if sortType == kPiwigoSort(rawValue: AlbumVars.shared.defaultSort) { return }
         
         // Save new choice
         AlbumVars.shared.defaultSort = sortType.rawValue
@@ -2041,7 +2043,7 @@ extension SettingsViewController: DefaultImageSizeDelegate {
 extension SettingsViewController: SelectPrivacyDelegate {
     func didSelectPrivacyLevel(_ privacyLevel: kPiwigoPrivacy) {
         // Do nothing if privacy level is unchanged
-        if privacyLevel == kPiwigoPrivacy(UploadVars.shared.defaultPrivacyLevel) { return }
+        if privacyLevel == kPiwigoPrivacy(rawValue: UploadVars.shared.defaultPrivacyLevel) { return }
         
         // Save new choice
         UploadVars.shared.defaultPrivacyLevel = privacyLevel.rawValue

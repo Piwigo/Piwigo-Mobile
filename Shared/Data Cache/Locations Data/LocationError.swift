@@ -9,7 +9,7 @@
 
 import Foundation
 
-enum LocationError: Error {
+public enum LocationError: Error {
     case creationError
     case missingData
 }
@@ -18,9 +18,11 @@ extension LocationError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .missingData:
-            return NSLocalizedString("CoreDataFetch_LocationMissingData", comment: "Found and will discard a location missing a valid identifier.")
+            return NSLocalizedString("CoreDataFetch_LocationMissingData",
+                                     comment: "Found and will discard a location missing a valid identifier.")
         case .creationError:
-            return NSLocalizedString("CoreDataFetch_LocationCreateFailed", comment: "Failed to create a new Location object.")
+            return NSLocalizedString("CoreDataFetch_LocationCreateFailed",
+                                     comment: "Failed to create a new Location object.")
         }
     }
 }

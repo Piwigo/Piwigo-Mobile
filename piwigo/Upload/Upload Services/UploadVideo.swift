@@ -9,6 +9,7 @@
 import AVFoundation
 import MobileCoreServices
 import Photos
+import piwigoKit
 
 extension UploadManager {
     

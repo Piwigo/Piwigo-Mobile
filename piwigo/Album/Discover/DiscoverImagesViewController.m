@@ -48,7 +48,7 @@
 @property (nonatomic, strong) NSMutableArray *selectedImagesToShare;
 @property (nonatomic, strong) PiwigoImageData *selectedImage;
 
-@property (nonatomic, assign) kPiwigoSort currentSortCategory;
+@property (nonatomic, assign) kPiwigoSortObjc currentSortCategory;
 @property (nonatomic, strong) ImageDetailViewController *imageDetailView;
 
 @end
@@ -70,13 +70,13 @@
         self.albumData = [[AlbumData alloc] initWithCategoryId:categoryId andQuery:@""];
         self.displayImageTitles = AlbumVars.shared.displayImageTitles;
         if (categoryId == kPiwigoVisitsCategoryId) {
-            self.currentSortCategory = kPiwigoSortVisitsDescending;
+            self.currentSortCategory = kPiwigoSortObjcVisitsDescending;
         } else if (categoryId == kPiwigoBestCategoryId) {
-            self.currentSortCategory = kPiwigoSortRatingScoreDescending;
+            self.currentSortCategory = kPiwigoSortObjcRatingScoreDescending;
         } else if (categoryId == kPiwigoRecentCategoryId) {
-            self.currentSortCategory = kPiwigoSortDatePostedDescending;
+            self.currentSortCategory = kPiwigoSortObjcDatePostedDescending;
         } else {
-            self.currentSortCategory = (kPiwigoSort)AlbumVars.shared.defaultSort;
+            self.currentSortCategory = (kPiwigoSortObjc)AlbumVars.shared.defaultSort;
         }
 
         // Initialise selection mode

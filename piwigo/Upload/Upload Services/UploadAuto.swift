@@ -7,6 +7,7 @@
 //
 
 import Photos
+import piwigoKit
 
 extension UploadManager {
     

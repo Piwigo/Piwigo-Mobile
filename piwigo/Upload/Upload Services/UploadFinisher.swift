@@ -14,7 +14,7 @@ extension UploadManager{
     // MARK: - Set Image Info
     func setImageParameters(for uploadID: NSManagedObjectID) {
         // Retrieve upload request parameters
-        let taskContext = DataController.getPrivateContext()
+        let taskContext = DataController.privateManagedObjectContext
         let upload = taskContext.object(with: uploadID) as! Upload
         print("\(debugFormatter.string(from: Date())) > finishing transfer of \(upload.fileName)…")
 
@@ -48,7 +48,7 @@ extension UploadManager{
                     // Check returned data
                     guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {
                         // Upload still ready for finish
-                        let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.invalidJSONobject.localizedDescription])
+                        let error = NSError(domain: "Piwigo", code: JsonError.invalidJSONobject.hashValue, userInfo: [NSLocalizedDescriptionKey : JsonError.invalidJSONobject.localizedDescription])
                         self.didSetParameters(for: uploadID, error: error)
                         return
                     }
@@ -191,7 +191,7 @@ extension UploadManager{
         
         // Check that we have a token
         guard !NetworkVars.shared.pwgToken.isEmpty else {
-            fail(nil, UploadError.networkUnavailable)
+            fail(nil, JsonError.networkUnavailable)
             return
         }
         

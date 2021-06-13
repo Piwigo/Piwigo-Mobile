@@ -24,13 +24,13 @@ public class NetworkVars: NSObject {
 
     // MARK: - Vars in UserDefaults / Standard
     // Network variables stored in UserDefaults / Standard
-    /// - None
+    /// - None k7ji}wx[bCcsihd@fg23  https://lelievre-berna.net/Piwigo/
 
     
     // MARK: - Vars in UserDefaults / App Group
     // Network variables stored in UserDefaults / App Group
     /// - Scheme of the URL, "https://" by default
-    @UserDefault("serverProtocol", defaultValue: "http://", userDefaults: UserDefaults.dataSuite)
+    @UserDefault("serverProtocol", defaultValue: "https://", userDefaults: UserDefaults.dataSuite)
     public var serverProtocol: String
     
     /// - Path of the server, e.g. lelievre-berna.net/Piwigo

@@ -35,10 +35,6 @@ class AppVars: NSObject {
     @objc var isDarkPaletteModeActive: Bool
     @UserDefault("isLightPaletteModeActive", defaultValue: false)
     @objc var isLightPaletteModeActive: Bool
-
-    /// - Core Data migration issue
-    @UserDefault("couldNotMigrateCoreDataStore", defaultValue: false)
-    @objc var couldNotMigrateCoreDataStore: Bool
     
     /// - Memory cache size
     let kPiwigoMemoryCacheInc = 8                   // Slider increment

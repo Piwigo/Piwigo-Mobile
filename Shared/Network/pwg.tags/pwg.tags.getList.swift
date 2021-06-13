@@ -9,15 +9,15 @@
 import Foundation
 
 // MARK: - pwg.tags.getList & pwg.tags.getAdminList
-let kPiwigoTagsGetList = "format=json&method=pwg.tags.getList"
-let kPiwigoTagsGetAdminList = "format=json&method=pwg.tags.getAdminList"
+public let kPiwigoTagsGetList = "format=json&method=pwg.tags.getList"
+public let kPiwigoTagsGetAdminList = "format=json&method=pwg.tags.getAdminList"
 
-struct TagJSON: Decodable {
+public struct TagJSON: Decodable {
 
-    var status: String?
-    var data = [TagProperties]()
-    var errorCode = 0
-    var errorMessage = ""
+    public var status: String?
+    public var data = [TagProperties]()
+    public var errorCode = 0
+    public var errorMessage = ""
 
     private enum RootCodingKeys: String, CodingKey {
         case status = "stat"
@@ -30,7 +30,12 @@ struct TagJSON: Decodable {
         case tags
     }
 
-    init(from decoder: Decoder) throws
+    private enum ErrorCodingKeys: String, CodingKey {
+        case code = "code"
+        case message = "msg"
+    }
+
+    public init(from decoder: Decoder) throws
     {
         // Root container keyed by RootCodingKeys
         let rootContainer = try decoder.container(keyedBy: RootCodingKeys.self)
@@ -63,8 +68,17 @@ struct TagJSON: Decodable {
         else if (status == "fail")
         {
             // Retrieve Piwigo server error
-            errorCode = try rootContainer.decode(Int.self, forKey: .errorCode)
-            errorMessage = try rootContainer.decode(String.self, forKey: .errorMessage)
+            do {
+                // Retrieve Piwigo server error
+                errorCode = try rootContainer.decode(Int.self, forKey: .errorCode)
+                errorMessage = try rootContainer.decode(String.self, forKey: .errorMessage)
+            }
+            catch {
+                // Error container keyed by ErrorCodingKeys ("format=json" forgotten in call)
+                let errorContainer = try rootContainer.nestedContainer(keyedBy: ErrorCodingKeys.self, forKey: .errorCode)
+                errorCode = Int(try errorContainer.decode(String.self, forKey: .code)) ?? NSNotFound
+                errorMessage = try errorContainer.decode(String.self, forKey: .message)
+            }
         }
         else {
             // Unexpected Piwigo server error
@@ -78,28 +92,28 @@ struct TagJSON: Decodable {
  A struct for decoding JSON returned by kPiwigoTagsGetList.
  All members are optional in case they are missing from the data.
 */
-struct TagProperties: Decodable
+public struct TagProperties: Decodable
 {
-    let id: Int32?                  // 1
-    let name: String?               // "Birthday"
-    let lastmodified: String?       // "2018-08-23 15:30:43"
-    let counter: Int64?             // 8
+    public let id: Int32?                  // 1
+    public let name: String?               // "Birthday"
+    public let lastmodified: String?       // "2018-08-23 15:30:43"
+    public let counter: Int64?             // 8
 
     // The following data is not stored in cache
-    let url_name: String?           // "birthday"
-    let url: String?                // "https:…"
+    public let url_name: String?           // "birthday"
+    public let url: String?                // "https:…"
 }
 
 /**
  A struct for decoding JSON returned by kPiwigoTagsGetAdminList:
  All members are optional in case they are missing from the data.
 */
-struct TagProperties4Admin: Decodable
+public struct TagProperties4Admin: Decodable
 {
-    let id: String?                 // 1 (String instead of Int)
-    let name: String?               // "Birthday"
-    let lastmodified: String?       // "2018-08-23 15:30:43"
+    public let id: String?                 // 1 (String instead of Int)
+    public let name: String?               // "Birthday"
+    public let lastmodified: String?       // "2018-08-23 15:30:43"
 
     // The following data is not stored in cache
-    let url_name: String?           // "birthday"
+    public let url_name: String?           // "birthday"
 }

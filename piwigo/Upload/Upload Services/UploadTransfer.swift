@@ -42,7 +42,7 @@ extension UploadManager {
                 // Check returned data
                 guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {
                     // Update upload request status
-                    let error = NSError(domain: "Piwigo", code: UploadError.invalidJSONobject.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.invalidJSONobject.localizedDescription])
+                    let error = NSError(domain: "Piwigo", code: JsonError.invalidJSONobject.hashValue, userInfo: [NSLocalizedDescriptionKey : JsonError.invalidJSONobject.localizedDescription])
                     self.didEndTransfer(for: uploadID, with: uploadProperties, error)
                     return
                 }
@@ -71,7 +71,7 @@ extension UploadManager {
                         imageData.isVideo = uploadProperties.isVideo
                         imageData.dateCreated = Date(timeIntervalSinceReferenceDate: uploadProperties.creationDate)
                         imageData.author = uploadProperties.author
-                        imageData.privacyLevel = uploadProperties.privacyLevel
+                        imageData.privacyLevel = kPiwigoPrivacyObjc(rawValue: Int32(uploadProperties.privacyLevel.rawValue))
 
                         // Add data returned by server
                         imageData.imageId = uploadJSON.data.image_id!
@@ -448,7 +448,7 @@ extension UploadManager {
                 print("\(debugFormatter.string(from: Date())) > \(md5sum) | no object URI!")
                 return
             }
-            let taskContext = DataController.getPrivateContext()
+            let taskContext = DataController.privateManagedObjectContext
             guard let uploadID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
                 print("\(debugFormatter.string(from: Date())) > \(md5sum) | no objectID!")
                 return
@@ -470,7 +470,7 @@ extension UploadManager {
                 // Investigate next upload request?
                 if self.isExecutingBackgroundUploadTask {
                     // In background task — stop here
-                    let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.networkUnavailable.localizedDescription])
+                    let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                     self.didEndTransfer(for: uploadID, with: UploadProperties(localIdentifier: "Unknown", category: 0), error, taskID: task.taskIdentifier)
                 } else {
                     // In foreground, consider next image
@@ -484,7 +484,7 @@ extension UploadManager {
 //                print("\(debugFormatter.string(from: Date())) > \(md5sum) | \(error.localizedDescription)")
                 self.didEndTransfer(for: uploadID, with: uploadProperties, error, taskID: task.taskIdentifier)
             } else {
-                let error = NSError(domain: "Piwigo", code: UploadError.networkUnavailable.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.networkUnavailable.localizedDescription])
+                let error = NSError(domain: "Piwigo", code: JsonError.networkUnavailable.hashValue, userInfo: [NSLocalizedDescriptionKey : JsonError.networkUnavailable.localizedDescription])
                 self.didEndTransfer(for: uploadID, with: uploadProperties, error, taskID: task.taskIdentifier)
             }
             return
@@ -510,7 +510,7 @@ extension UploadManager {
             print("\(debugFormatter.string(from: Date())) > \(md5sum) | no object URI!")
             return
         }
-        let taskContext = DataController.getPrivateContext()
+        let taskContext = DataController.privateManagedObjectContext
         guard let uploadID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
             print("\(debugFormatter.string(from: Date())) > \(md5sum) | no objectID!")
             return
@@ -532,7 +532,7 @@ extension UploadManager {
             // Investigate next upload request?
             if self.isExecutingBackgroundUploadTask {
                 // In background task — stop here
-                let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.networkUnavailable.localizedDescription])
+                let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                 self.didEndTransfer(for: uploadID, with: UploadProperties(localIdentifier: "Unknown", category: 0), error, taskID: task.taskIdentifier)
             } else {
                 // In foreground, consider next image
@@ -552,7 +552,7 @@ extension UploadManager {
         guard let _ = try? JSONSerialization.jsonObject(with: filteredData, options: []) as? [String: AnyObject] else {
             // Update upload request status
             print("\(debugFormatter.string(from: Date())) > Invalid JSON object: \(dataStr)")
-            let error = NSError(domain: "Piwigo", code: UploadError.invalidJSONobject.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.invalidJSONobject.localizedDescription])
+            let error = NSError(domain: "Piwigo", code: JsonError.invalidJSONobject.hashValue, userInfo: [NSLocalizedDescriptionKey : JsonError.invalidJSONobject.localizedDescription])
             self.didEndTransfer(for: uploadID, with: uploadProperties, error, taskID: task.taskIdentifier)
             return
         }
@@ -645,7 +645,7 @@ extension UploadManager {
 
                 imageData.author = NetworkUtilities.utf8mb4String(from: uploadJSON.data.author) ?? "NSNotFound"
                 if let privacyLevel = uploadJSON.data.privacyLevel {
-                    imageData.privacyLevel = kPiwigoPrivacy(rawValue: UInt32(privacyLevel) ?? kPiwigoPrivacyUnknown.rawValue)
+                    imageData.privacyLevel = kPiwigoPrivacyObjc(rawValue: Int32(privacyLevel) ?? kPiwigoPrivacyObjcUnknown.rawValue)
                 }
 
                 // Switch to old cache data format
@@ -725,60 +725,59 @@ extension UploadManager {
       return data as Data
     }
     
-    func essai() {
-        let url = URL(string: "https://lelievre-berna.net/Piwigo/ws.php?format=json&method=pwg.session.getStatus")
+//    private func essai() {
+//        let url = URL(string: "https://lelievre-berna.net/Piwigo/ws.php?format=json&method=pwg.session.getStatus")
+//
+//        var request = URLRequest(url: url!)
+//        request.httpMethod = "post"
+//        request.setValue("application/json", forHTTPHeaderField: "Accept")
+//        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+//        request.setValue("utf-8", forHTTPHeaderField: "Accept-Charset")
+//
+////        let jsonDict: [String:Any] = [:]
+////        let jsonData = try! JSONSerialization.data(withJSONObject: jsonDict, options: [])
+////        request.httpBody = jsonData
+//
+//        URLSession.shared.dataTask(with: request) { (data, response, error) in
+//            if let error = error {
+//                print("error:", error)
+//                return
+//            }
+//
+//            do {
+//                guard let data = data else { return }
+//                guard let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: AnyObject] else { return }
+//                print("json:", json)
+//            } catch {
+//                print("error:", error)
+//            }
+//        }.resume()
+//    }
 
-        var request = URLRequest(url: url!)
-        request.httpMethod = "post"
-        request.setValue("application/json", forHTTPHeaderField: "Accept")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("utf-8", forHTTPHeaderField: "Accept-Charset")
-
-//        let jsonDict: [String:Any] = [:]
-//        let jsonData = try! JSONSerialization.data(withJSONObject: jsonDict, options: [])
-//        request.httpBody = jsonData
-
-        URLSession.shared.dataTask(with: request) { (data, response, error) in
-            if let error = error {
-                print("error:", error)
-                return
-            }
-
-            do {
-                guard let data = data else { return }
-                guard let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: AnyObject] else { return }
-                print("json:", json)
-            } catch {
-                print("error:", error)
-            }
-        }.resume()
-    }
-
-    func essai2() {
-        let url = URL(string: "https://lelievre-berna.net/Piwigo/ws.php?format=json&method=pwg.images.getInfo&image_id=236")
-
-        var request = URLRequest(url: url!)
-        request.httpMethod = "get"
-        request.setValue("application/json", forHTTPHeaderField: "Accept")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("utf-8", forHTTPHeaderField: "Accept-Charset")
-
-        URLSession.shared.dataTask(with: request) { (data, response, error) in
-            if let error = error {
-                print("error:", error)
-                return
-            }
-
-            do {
-                guard let data = data else { return }
-                guard let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: AnyObject] else { return }
-                print("json:", json)
-            } catch {
-                print("error:", error)
-            }
-        }.resume()
-    }
-
+//    private func essai2() {
+//        let url = URL(string: "https://lelievre-berna.net/Piwigo/ws.php?format=json&method=pwg.images.getInfo&image_id=236")
+//
+//        var request = URLRequest(url: url!)
+//        request.httpMethod = "get"
+//        request.setValue("application/json", forHTTPHeaderField: "Accept")
+//        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+//        request.setValue("utf-8", forHTTPHeaderField: "Accept-Charset")
+//
+//        URLSession.shared.dataTask(with: request) { (data, response, error) in
+//            if let error = error {
+//                print("error:", error)
+//                return
+//            }
+//
+//            do {
+//                guard let data = data else { return }
+//                guard let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: AnyObject] else { return }
+//                print("json:", json)
+//            } catch {
+//                print("error:", error)
+//            }
+//        }.resume()
+//    }
 }
 
 extension NSMutableData {

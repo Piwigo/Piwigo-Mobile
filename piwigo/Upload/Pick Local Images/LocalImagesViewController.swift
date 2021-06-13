@@ -778,40 +778,40 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     private func getImageIndex(for indexPath:IndexPath) -> Int {
         switch sortType {
         case .month:
-            switch kPiwigoSort(UploadVars.shared.localImagesSort) {
-            case kPiwigoSortDateCreatedDescending:
+            switch kPiwigoSort(rawValue: UploadVars.shared.localImagesSort) {
+            case .dateCreatedDescending:
                 return indexOfImageSortedByMonth[indexPath.section].first! + indexPath.row
-            case kPiwigoSortDateCreatedAscending:
+            case .dateCreatedAscending:
                 let lastSection = indexOfImageSortedByMonth.endIndex - 1
                 return indexOfImageSortedByMonth[lastSection - indexPath.section].last! - indexPath.row
             default:
                 return 0
             }
         case .week:
-            switch kPiwigoSort(UploadVars.shared.localImagesSort) {
-            case kPiwigoSortDateCreatedDescending:
+            switch kPiwigoSort(rawValue: UploadVars.shared.localImagesSort) {
+            case .dateCreatedDescending:
                 return indexOfImageSortedByWeek[indexPath.section].first! + indexPath.row
-            case kPiwigoSortDateCreatedAscending:
+            case .dateCreatedAscending:
                 let lastSection = indexOfImageSortedByWeek.endIndex - 1
                 return indexOfImageSortedByWeek[lastSection - indexPath.section].last! - indexPath.row
             default:
                 return 0
             }
         case .day:
-            switch kPiwigoSort(UploadVars.shared.localImagesSort) {
-            case kPiwigoSortDateCreatedDescending:
+            switch kPiwigoSort(rawValue: UploadVars.shared.localImagesSort) {
+            case .dateCreatedDescending:
                 return indexOfImageSortedByDay[indexPath.section].first! + indexPath.row
-            case kPiwigoSortDateCreatedAscending:
+            case .dateCreatedAscending:
                 let lastSection = indexOfImageSortedByDay.endIndex - 1
                 return indexOfImageSortedByDay[lastSection - indexPath.section].last! - indexPath.row
             default:
                 return 0
             }
         case .all:
-            switch kPiwigoSort(UploadVars.shared.localImagesSort) {
-            case kPiwigoSortDateCreatedDescending:
+            switch kPiwigoSort(rawValue: UploadVars.shared.localImagesSort) {
+            case .dateCreatedDescending:
                 return indexPath.row
-            case kPiwigoSortDateCreatedAscending:
+            case .dateCreatedAscending:
                 return fetchedImages.count - 1 - indexPath.row
             default:
                 return 0
@@ -900,14 +900,14 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     // MARK: - Sort Images
     /// Icons used on iPhone and iPad on iOS 13 and earlier
     private func getSwapSortImage() -> UIImage {
-        switch kPiwigoSort(UploadVars.shared.localImagesSort) {
-        case kPiwigoSortDateCreatedAscending:
+        switch kPiwigoSort(rawValue: UploadVars.shared.localImagesSort) {
+        case .dateCreatedAscending:
             if #available(iOS 13.0, *) {
                 return UIImage(named: "dateDescending")!
             } else {
                 return UIImage(named: "dateDescendingLight")!
             }
-        case kPiwigoSortDateCreatedDescending:
+        case .dateCreatedDescending:
             if #available(iOS 13.0, *) {
                 return UIImage(named: "dateAscending")!
             } else {
@@ -920,14 +920,14 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
     /// Icons used on iPhone and iPad on iOS 13 and earlier
     private func getSwapSortCompactImage() -> UIImage {
-        switch kPiwigoSort(UploadVars.shared.localImagesSort) {
-        case kPiwigoSortDateCreatedAscending:
+        switch kPiwigoSort(rawValue: UploadVars.shared.localImagesSort) {
+        case .dateCreatedAscending:
             if #available(iOS 13.0, *) {
                 return UIImage(named: "dateDescendingCompact")!
             } else {
                 return UIImage(named: "dateDescendingLightCompact")!
             }
-        case kPiwigoSortDateCreatedDescending:
+        case .dateCreatedDescending:
             if #available(iOS 13.0, *) {
                 return UIImage(named: "dateAscendingCompact")!
             } else {
@@ -942,11 +942,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     private func getMenuForSorting() -> UIMenu {
         // Initialise menu items
         let swapOrder: UIAction!
-        switch kPiwigoSort(UploadVars.shared.localImagesSort) {
-        case kPiwigoSortDateCreatedAscending:
+        switch kPiwigoSort(rawValue: UploadVars.shared.localImagesSort) {
+        case .dateCreatedAscending:
             swapOrder = UIAction(title: NSLocalizedString("Date", comment: "Date"),
                                  image: UIImage(systemName: "arrow.up"), handler: { _ in self.swapSortOrder()})
-        case kPiwigoSortDateCreatedDescending:
+        case .dateCreatedDescending:
             swapOrder = UIAction(title: NSLocalizedString("Date", comment: "Date"),
                                  image: UIImage(systemName: "arrow.down"), handler: { _ in self.swapSortOrder()})
         default:
@@ -1009,11 +1009,11 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
     @objc func swapSortOrder() {
         // Swap between the two sort options
-        switch kPiwigoSort(UploadVars.shared.localImagesSort) {
-        case kPiwigoSortDateCreatedDescending:
-            UploadVars.shared.localImagesSort = kPiwigoSortDateCreatedAscending.rawValue
-        case kPiwigoSortDateCreatedAscending:
-            UploadVars.shared.localImagesSort = kPiwigoSortDateCreatedDescending.rawValue
+        switch kPiwigoSort(rawValue: UploadVars.shared.localImagesSort) {
+        case .dateCreatedDescending:
+            UploadVars.shared.localImagesSort = kPiwigoSort.dateCreatedAscending.rawValue
+        case .dateCreatedAscending:
+            UploadVars.shared.localImagesSort = kPiwigoSort.dateCreatedDescending.rawValue
         default:
             return
         }
@@ -1295,7 +1295,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
         // Get start and last indices of section
         let firstIndex: Int, lastIndex: Int
-        if UploadVars.shared.localImagesSort == kPiwigoSortDateCreatedDescending.rawValue {
+        if UploadVars.shared.localImagesSort == kPiwigoSort.dateCreatedDescending.rawValue {
             firstIndex = getImageIndex(for: IndexPath(item: 0, section: section))
             lastIndex = getImageIndex(for: IndexPath(item: nberOfImagesInSection - 1, section: section))
         } else {
@@ -1438,28 +1438,28 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Number of items depends on image sort type and date order
         switch sortType {
         case .month:
-            switch kPiwigoSort(UploadVars.shared.localImagesSort) {
-            case kPiwigoSortDateCreatedDescending:
+            switch kPiwigoSort(rawValue: UploadVars.shared.localImagesSort) {
+            case .dateCreatedDescending:
                 return indexOfImageSortedByMonth[section].count
-            case kPiwigoSortDateCreatedAscending:
+            case .dateCreatedAscending:
                 return indexOfImageSortedByMonth[indexOfImageSortedByMonth.count - 1 - section].count
             default:
                 return 0
             }
         case .week:
-            switch kPiwigoSort(UploadVars.shared.localImagesSort) {
-            case kPiwigoSortDateCreatedDescending:
+            switch kPiwigoSort(rawValue: UploadVars.shared.localImagesSort) {
+            case .dateCreatedDescending:
                 return indexOfImageSortedByWeek[section].count
-            case kPiwigoSortDateCreatedAscending:
+            case .dateCreatedAscending:
                 return indexOfImageSortedByWeek[indexOfImageSortedByWeek.count - 1 - section].count
             default:
                 return 0
             }
         case .day:
-            switch kPiwigoSort(UploadVars.shared.localImagesSort) {
-            case kPiwigoSortDateCreatedDescending:
+            switch kPiwigoSort(rawValue: UploadVars.shared.localImagesSort) {
+            case .dateCreatedDescending:
                 return indexOfImageSortedByDay[section].count
-            case kPiwigoSortDateCreatedAscending:
+            case .dateCreatedAscending:
                 return indexOfImageSortedByDay[indexOfImageSortedByDay.count - 1 - section].count
             default:
                 return 0
@@ -1601,7 +1601,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
     func didSelectImagesOfSection(_ section: Int) {
         let nberOfImagesInSection = localImagesCollection.numberOfItems(inSection: section)
         let firstIndex: Int, lastIndex: Int
-        if UploadVars.shared.localImagesSort == kPiwigoSortDateCreatedDescending.rawValue {
+        if UploadVars.shared.localImagesSort == kPiwigoSort.dateCreatedDescending.rawValue {
             firstIndex = getImageIndex(for: IndexPath(item: 0, section: section))
             lastIndex = getImageIndex(for: IndexPath(item: nberOfImagesInSection - 1, section: section))
         } else {

@@ -12,6 +12,8 @@ class AutoUploadPhotosHandler: NSObject, AutoUploadPhotosIntentHandling {
     
     func handle(intent: AutoUploadPhotosIntent, completion: @escaping (AutoUploadPhotosIntentResponse) -> Void) {
         print("•••>> AutoUploadPhotos shortcut launched ;-)")
-        completion(AutoUploadPhotosIntentResponse.success(nberPhotos: 12))
+        
+        
+        completion(AutoUploadPhotosIntentResponse.success(nberPhotos: 23))
     }
 }

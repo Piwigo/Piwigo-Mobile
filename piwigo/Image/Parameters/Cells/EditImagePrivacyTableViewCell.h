@@ -11,6 +11,6 @@
 @interface EditImagePrivacyTableViewCell : UITableViewCell
 
 -(void)setLeftLabelText:(NSString*)text;
--(void)setPrivacyLevel:(kPiwigoPrivacy)privacy inColor:(UIColor *)color;
+-(void)setPrivacyLevel:(kPiwigoPrivacyObjc)privacy inColor:(UIColor *)color;
 
 @end
