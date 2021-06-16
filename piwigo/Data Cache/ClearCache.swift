@@ -17,11 +17,10 @@ class ClearCache: NSObject {
                              completionHandler: @escaping () -> Void) {
         
         // Tags
-        let tagsProvider = TagsProvider.shared
-        tagsProvider.clearTags()
+        TagsProvider().clearTags()
 
         // Locations with place names
-        LocationsProvider.shared.clearLocations()
+        LocationsProvider().clearLocations()
 
         // Data
         TagsData.sharedInstance().clearCache()

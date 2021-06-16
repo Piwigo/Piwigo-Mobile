@@ -45,7 +45,7 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
      and serves it to this table view.
      */
     private lazy var dataProvider: TagsProvider = {
-        let provider : TagsProvider = TagsProvider.shared
+        let provider : TagsProvider = TagsProvider()
         provider.fetchedResultsControllerDelegate = self
         return provider
     }()

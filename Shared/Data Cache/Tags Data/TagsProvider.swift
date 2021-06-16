@@ -11,15 +11,14 @@ import CoreData
 
 public class TagsProvider {
 
-    // Singleton
-    public static let shared = TagsProvider()
-
+    public init() { }
+    
     // MARK: - Piwigo API methods
     public let kPiwigoTagsGetImages = "format=json&method=pwg.tags.getImages"
     
     
     // MARK: - Core Data object context
-        public lazy var managedObjectContext: NSManagedObjectContext = {
+    public lazy var managedObjectContext: NSManagedObjectContext = {
         let context:NSManagedObjectContext = DataController.managedObjectContext
         return context
     }()
@@ -63,7 +62,8 @@ public class TagsProvider {
                     // Piwigo error?
                     let error: NSError
                     if (tagJSON.errorCode != 0) {
-                        error = NSError(domain: "Piwigo", code: tagJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : tagJSON.errorMessage])
+                        error = NSError(domain: "Piwigo", code: tagJSON.errorCode,
+                                        userInfo: [NSLocalizedDescriptionKey : tagJSON.errorMessage])
                         completionHandler(error)
                         return
                     }
@@ -319,7 +319,8 @@ public class TagsProvider {
                 // Piwigo error?
                 let error: NSError
                 if (tagJSON.errorCode != 0) {
-                    error = NSError(domain: "Piwigo", code: tagJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : tagJSON.errorMessage])
+                    error = NSError(domain: "Piwigo", code: tagJSON.errorCode,
+                                    userInfo: [NSLocalizedDescriptionKey : tagJSON.errorMessage])
                     completionHandler(error)
                     return
                 }

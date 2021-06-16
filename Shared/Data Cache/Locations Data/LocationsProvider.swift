@@ -16,15 +16,7 @@ let e2: Double = 0.00669437999014       // Earth eccentricity squared
 
 public class LocationsProvider: NSObject {
     
-    // Singleton
-    public static let shared = LocationsProvider()
-    
-    // Initialisation
-    private var geocoder = CLGeocoder()
-    private var queue = OperationQueue()
-    private var queuedLocations: [LocationProperties]
-    
-    override init() {
+    public override init() {
         // Prepare list of operations
         queue.maxConcurrentOperationCount = 1   // Make it a serial queue
         queue.qualityOfService = .background    // fetch location names in the background
@@ -32,7 +24,12 @@ public class LocationsProvider: NSObject {
         queuedLocations = []
     }
     
+    // Initialisation
+    private var geocoder = CLGeocoder()
+    private var queue = OperationQueue()
+    private var queuedLocations: [LocationProperties]
 
+    
     // MARK: - Core Data object context
     
     lazy var managedObjectContext: NSManagedObjectContext = {

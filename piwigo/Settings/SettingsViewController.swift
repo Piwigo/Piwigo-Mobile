@@ -63,7 +63,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
      and serves it to this table view.
      */
     private lazy var tagsProvider: TagsProvider = {
-        let provider : TagsProvider = TagsProvider.shared
+        let provider : TagsProvider = TagsProvider()
         return provider
     }()
     /**
@@ -1596,7 +1596,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let clearLocationsAction = UIAlertAction(title: titleClearLocations,
                                                          style: .default, handler: { action in
                     // Delete all locations in background queue
-                    LocationsProvider.shared.clearLocations()
+                    LocationsProvider().clearLocations()
                 })
                 alert.addAction(clearLocationsAction)
                 
