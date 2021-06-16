@@ -67,7 +67,7 @@ public class NetworkUtilities: NSObject {
     
     // MARK: - UTF-8 encoding on 3 and 4 bytes
     public class
-    func utf8mb4String(from string: String?) -> String? {
+    func utf8mb4String(from string: String?) -> String {
         // Return empty string is nothing provided
         guard let strToConvert = string else {
             return ""
@@ -75,7 +75,7 @@ public class NetworkUtilities: NSObject {
         // Convert string to UTF-8 encoding
         let serverEncoding = String.Encoding(rawValue: NetworkVars.shared.stringEncoding )
         if let strData = strToConvert.data(using: serverEncoding, allowLossyConversion: true) {
-            return String(data: strData, encoding: .utf8)
+            return String(data: strData, encoding: .utf8) ?? strToConvert
         }
         return ""
     }
@@ -83,7 +83,7 @@ public class NetworkUtilities: NSObject {
     // Piwigo supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
     // See https://github.com/Piwigo/Piwigo-Mobile/issues/429, https://github.com/Piwigo/Piwigo/issues/750
     public class
-    func utf8mb3String(from string: String?) -> String? {
+    func utf8mb3String(from string: String?) -> String {
         // Return empty string is nothing provided
         guard let strToFilter = string else {
             return ""

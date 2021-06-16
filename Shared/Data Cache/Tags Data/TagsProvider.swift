@@ -41,9 +41,9 @@ public class TagsProvider {
         request.httpMethod = "POST"
 
         // Launch the HTTP(S) request
-        let JSONsession = JSONsessionDelegate.shared
-        JSONsession.postRequest(withMethod: asAdmin ? kPiwigoTagsGetAdminList : kPiwigoTagsGetList,
-                                parameters: [:]) { jsonData, error in
+        let JSONsession = PwgSessionDelegate.shared
+        JSONsession.postRequest(withMethod: asAdmin ? kPiwigoTagsGetAdminList : kPiwigoTagsGetList, paramDict: [:],
+                                countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { jsonData, error in
             // Any error?
             /// - Network communication errors
             /// - Returned JSON data is empty
@@ -298,9 +298,9 @@ public class TagsProvider {
     */
     public func addTag(with name: String, completionHandler: @escaping (Error?) -> Void) {
         
-        let JSONsession = JSONsessionDelegate.shared
-        JSONsession.postRequest(withMethod: kPiwigoTagsAdd,
-                                parameters: ["name": name]) { jsonData, error in
+        let JSONsession = PwgSessionDelegate.shared
+        JSONsession.postRequest(withMethod: kPiwigoTagsAdd, paramDict: ["name" : name],
+                                countOfBytesClientExpectsToReceive: 3000) { jsonData, error in
             // Any error?
             /// - Network communication errors
             /// - Returned JSON data is empty
@@ -325,7 +325,8 @@ public class TagsProvider {
                 }
 
                 // Import the tagJSON into Core Data.
-                let newTag = TagProperties(id: tagJSON.data.id, name: name,
+                let newTag = TagProperties(id: tagJSON.data.id,
+                                           name: NetworkUtilities.utf8mb4String(from: name),
                                            lastmodified: "", counter: 0, url_name: "", url: "")
 
                 // Import the new tag in a private queue context.

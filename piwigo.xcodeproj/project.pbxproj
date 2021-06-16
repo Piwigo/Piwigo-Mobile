@@ -126,7 +126,7 @@
 		ADAC548E26178BF500301C1C /* SelectCategoryViewControllerGrouped.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADAC548D26178BF500301C1C /* SelectCategoryViewControllerGrouped.storyboard */; };
 		ADAC5490261793F700301C1C /* CategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADAC548F261793F700301C1C /* CategoryTableViewCell.swift */; };
 		ADAEED8822E2665000CB1B12 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADAEED8622E2665000CB1B12 /* LaunchScreen.storyboard */; };
-		ADB274732676480D0002DD09 /* JSONsessionErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB274722676480D0002DD09 /* JSONsessionErrors.swift */; };
+		ADB274732676480D0002DD09 /* PwgSessionErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB274722676480D0002DD09 /* PwgSessionErrors.swift */; };
 		ADB27475267661980002DD09 /* ParseXMLData.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB27474267661980002DD09 /* ParseXMLData.swift */; };
 		ADB607E81FC9D79000AF28DB /* VideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = ADB607E71FC9D79000AF28DB /* VideoView.m */; };
 		ADBC08CE244604EB00BF82E8 /* NberImagesFooterCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBC08CD244604EB00BF82E8 /* NberImagesFooterCollectionReusableView.swift */; };
@@ -163,7 +163,7 @@
 		ADE03F3023D4CC6C00F21ED9 /* PiwigoTagData.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045AB1A94654D00A306FE /* PiwigoTagData.m */; };
 		ADE216FF250E23B0003AE588 /* pwg.images.getInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE216FD250E22F7003AE588 /* pwg.images.getInfo.swift */; };
 		ADE250D3266D767600285978 /* pwg.tags.getList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5F64EC24C607FC00660BE3 /* pwg.tags.getList.swift */; };
-		ADE250D5266FE99A00285978 /* JSONsessionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE250D4266FE99A00285978 /* JSONsessionDelegate.swift */; };
+		ADE250D5266FE99A00285978 /* PwgSessionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE250D4266FE99A00285978 /* PwgSessionDelegate.swift */; };
 		ADE250D72670016900285978 /* NetworkUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE250D62670016900285978 /* NetworkUtilities.swift */; };
 		ADE250D926708DF600285978 /* KeychainUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE250D826708DF600285978 /* KeychainUtilities.swift */; };
 		ADE46684242F978F002FEDE5 /* AboutViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADE46683242F978E002FEDE5 /* AboutViewController.storyboard */; };
@@ -521,7 +521,7 @@
 		ADAF3B7F23DDAC6D007B0ABA /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/AppStore.strings"; sourceTree = "<group>"; };
 		ADAF3B8023DDAC6D007B0ABA /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		ADAF3B8123DDAC6D007B0ABA /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/PrivacyPolicy.strings"; sourceTree = "<group>"; };
-		ADB274722676480D0002DD09 /* JSONsessionErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONsessionErrors.swift; sourceTree = "<group>"; };
+		ADB274722676480D0002DD09 /* PwgSessionErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PwgSessionErrors.swift; sourceTree = "<group>"; };
 		ADB27474267661980002DD09 /* ParseXMLData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseXMLData.swift; sourceTree = "<group>"; };
 		ADB433F523FB3CCB00A873A9 /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 		ADB607E61FC9D75700AF28DB /* VideoView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VideoView.h; sourceTree = "<group>"; };
@@ -575,7 +575,7 @@
 		ADE03F3523D4E3BD00F21ED9 /* TagError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagError.swift; sourceTree = "<group>"; };
 		ADE216FD250E22F7003AE588 /* pwg.images.getInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.images.getInfo.swift; sourceTree = "<group>"; };
 		ADE21700250E23EC003AE588 /* pwg.images.getinfo.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pwg.images.getinfo.json; sourceTree = "<group>"; };
-		ADE250D4266FE99A00285978 /* JSONsessionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONsessionDelegate.swift; sourceTree = "<group>"; };
+		ADE250D4266FE99A00285978 /* PwgSessionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PwgSessionDelegate.swift; sourceTree = "<group>"; };
 		ADE250D62670016900285978 /* NetworkUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkUtilities.swift; sourceTree = "<group>"; };
 		ADE250D826708DF600285978 /* KeychainUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainUtilities.swift; sourceTree = "<group>"; };
 		ADE46683242F978E002FEDE5 /* AboutViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AboutViewController.storyboard; sourceTree = "<group>"; };
@@ -848,8 +848,8 @@
 				AD97CFB7265B0DBE00719ED5 /* NetworkVars.swift */,
 				ADE250D62670016900285978 /* NetworkUtilities.swift */,
 				ADE250D826708DF600285978 /* KeychainUtilities.swift */,
-				ADE250D4266FE99A00285978 /* JSONsessionDelegate.swift */,
-				ADB274722676480D0002DD09 /* JSONsessionErrors.swift */,
+				ADE250D4266FE99A00285978 /* PwgSessionDelegate.swift */,
+				ADB274722676480D0002DD09 /* PwgSessionErrors.swift */,
 				ADB27474267661980002DD09 /* ParseXMLData.swift */,
 				AD9A1BE324E03AAF00D22C86 /* community */,
 				AD9A1BE624E03BFF00D22C86 /* pwg.tags */,
@@ -1964,8 +1964,8 @@
 				AD94F641266D6E1700EFC6A9 /* Location+CoreDataProperties.swift in Sources */,
 				AD94F640266D63AD00EFC6A9 /* CacheVars.swift in Sources */,
 				ADF40021266D7352004352B9 /* pwg.tags.add.swift in Sources */,
-				ADB274732676480D0002DD09 /* JSONsessionErrors.swift in Sources */,
-				ADE250D5266FE99A00285978 /* JSONsessionDelegate.swift in Sources */,
+				ADB274732676480D0002DD09 /* PwgSessionErrors.swift in Sources */,
+				ADE250D5266FE99A00285978 /* PwgSessionDelegate.swift in Sources */,
 				ADF4001E266D705C004352B9 /* Tag+CoreDataProperties.swift in Sources */,
 				AD94F644266D6E2100EFC6A9 /* LocationError.swift in Sources */,
 				ADF72E9C2670D73B0027E2CC /* pwg.images.upload.swift in Sources */,

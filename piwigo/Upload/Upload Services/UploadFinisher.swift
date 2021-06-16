@@ -30,11 +30,11 @@ extension UploadManager{
         let comment = NetworkUtilities.utf8mb3String(from: upload.comment)
         let imageParameters: [String : String] = [
             kPiwigoImagesUploadParamFileName: upload.fileName,
-            kPiwigoImagesUploadParamTitle: imageTitle ?? "",
-            kPiwigoImagesUploadParamAuthor: author ?? "",
+            kPiwigoImagesUploadParamTitle: imageTitle,
+            kPiwigoImagesUploadParamAuthor: author,
             kPiwigoImagesUploadParamCreationDate: creationDate,
             kPiwigoImagesUploadParamPrivacy: "\(NSNumber(value: upload.privacyLevel))",
-            kPiwigoImagesUploadParamDescription: comment ?? "",
+            kPiwigoImagesUploadParamDescription: comment,
             kPiwigoImagesUploadParamTags: upload.tagIds,
         ]
 

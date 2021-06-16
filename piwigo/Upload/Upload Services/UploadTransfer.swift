@@ -345,11 +345,11 @@ extension UploadManager {
             httpBody.appendString(convertFormField(named: "category", value: "\(uploadProperties.category)", using: boundary))
             httpBody.appendString(convertFormField(named: "filename", value: uploadProperties.fileName, using: boundary))
             let imageTitle = NetworkUtilities.utf8mb3String(from: uploadProperties.imageTitle)
-            httpBody.appendString(convertFormField(named: "name", value: imageTitle ?? "", using: boundary))
+            httpBody.appendString(convertFormField(named: "name", value: imageTitle, using: boundary))
             let author = NetworkUtilities.utf8mb3String(from: uploadProperties.author)
-            httpBody.appendString(convertFormField(named: "author", value: author ?? "", using: boundary))
+            httpBody.appendString(convertFormField(named: "author", value: author, using: boundary))
             let comment = NetworkUtilities.utf8mb3String(from: uploadProperties.comment)
-            httpBody.appendString(convertFormField(named: "comment", value: comment ?? "", using: boundary))
+            httpBody.appendString(convertFormField(named: "comment", value: comment, using: boundary))
             httpBody.appendString(convertFormField(named: "date_creation", value: creationDate, using: boundary))
             httpBody.appendString(convertFormField(named: "level", value: "\(NSNumber(value: uploadProperties.privacyLevel.rawValue))", using: boundary))
             httpBody.appendString(convertFormField(named: "tag_ids", value: uploadProperties.tagIds, using: boundary))
@@ -404,7 +404,7 @@ extension UploadManager {
             task.taskDescription = uploadID.uriRepresentation().absoluteString
             if #available(iOS 11.0, *) {
                 // Tell the system how many bytes are expected to be exchanged
-                task.countOfBytesClientExpectsToSend = Int64(httpBody.count)
+                task.countOfBytesClientExpectsToSend = Int64(httpBody.count + (request.allHTTPHeaderFields ?? [:]).count)
                 task.countOfBytesClientExpectsToReceive = 600
             }
             
@@ -643,7 +643,7 @@ extension UploadManager {
                 imageData.xxLargeWidth = uploadJSON.derivatives?.xxLargeImage?.width ?? 1
                 imageData.xxLargeHeight = uploadJSON.derivatives?.xxLargeImage?.height ?? 1
 
-                imageData.author = NetworkUtilities.utf8mb4String(from: uploadJSON.data.author) ?? "NSNotFound"
+                imageData.author = NetworkUtilities.utf8mb4String(from: uploadJSON.data.author)
                 if let privacyLevel = uploadJSON.data.privacyLevel {
                     imageData.privacyLevel = kPiwigoPrivacyObjc(rawValue: Int32(privacyLevel) ?? kPiwigoPrivacyObjcUnknown.rawValue)
                 }

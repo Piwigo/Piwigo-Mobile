@@ -24,7 +24,7 @@ public class Tag: NSManagedObject {
                 throw TagError.missingData
         }
         tagId = newId
-        tagName = newName
+        tagName = NetworkUtilities.utf8mb4String(from: newName)
 
         // In the absence of date, use today
         let dateFormatter = DateFormatter()

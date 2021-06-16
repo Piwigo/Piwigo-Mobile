@@ -1,5 +1,5 @@
 //
-//  JSONsessionErrors.swift
+//  PwgSessionErrors.swift
 //  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 13/06/2021.

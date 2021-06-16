@@ -368,7 +368,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
 
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
-        let newString = NetworkUtilities.utf8mb3String(from: string) ?? ""
+        let newString = NetworkUtilities.utf8mb3String(from: string)
         guard let finalString = (textField.text as NSString?)?.replacingCharacters(in: range, with: newString) else {
             return true
         }
@@ -403,7 +403,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
         switch tag {
         case .prefix:
             // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
-            defaultPrefix = NetworkUtilities.utf8mb3String(from: textField.text) ?? ""
+            defaultPrefix = NetworkUtilities.utf8mb3String(from: textField.text)
             if defaultPrefix.isEmpty { shouldUpdateDefaultPrefix = false }
         default:
             break

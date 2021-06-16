@@ -494,7 +494,7 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
                 // Determine index of added tag
                 if let index = selectedTags.firstIndex(where: {$0.tagId == tag.tagId}) {
                     let addAtIndexPath = IndexPath(row: index, section: 0)
-                    print(".insert =>", addAtIndexPath.debugDescription)
+//                    print(".insert =>", addAtIndexPath.debugDescription)
                     tagsTableView.insertRows(at: [addAtIndexPath], with: .automatic)
                 }
             } else {
@@ -503,7 +503,7 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
                 // Determine index of added tag
                 if let index = nonSelectedTags.firstIndex(where: {$0.tagId == tag.tagId}) {
                     let addAtIndexPath = IndexPath(row: index, section: 1)
-                    print(".insert =>", addAtIndexPath.debugDescription)
+//                    print(".insert =>", addAtIndexPath.debugDescription)
                     tagsTableView.insertRows(at: [addAtIndexPath], with: .automatic)
                 }
             }
