@@ -1,0 +1,107 @@
+/*
+ ReleaseNotes.strings
+ piwigo
+ 
+ Created by Eddy Lelièvre-Berna on 15/07/2017.
+ Copyright © 2017 Piwigo.org. All rights reserved.
+ */
+
+"v2.7.0_text" = "Version 2.7\n\n• Auto upload photos and videos\n• Minor bug fixes and improvements of the interface\n• Code modernization";
+
+"v2.6.4_text" = "Wersja 2.6.4\n\n• Poprawki drobnych błędów i ulepszenia interfejsu";
+
+"v2.6.3_text" = "Wersja 2.6.3\n11 maja 2021\n\n• Poprawki błędów";
+
+"v2.6.2_text" = "Wersja 2.6.2\n3 maja 2021\n\n• Pozwala wybranym użytkownikom Community tworzyć tagi\n• Naprawia problem kompatybilności z Piwigo 11\n• Poprawki drobnych błędów i ulepszenia interfejsu\n• Modernizacja kodu";
+
+"v2.6.1_text" = "Wersja 2.6.1\n19 marca 2021\n\n• Naprawia przypisywanie tagów wybranym zdjęciom\n• Przeprojektowane ustawienia wyglądu\n• Poprawia niezawodność przesyłania w tle\n• Poprawki drobnych błędów i ulepszenia interfejsu";
+
+"v2.6.0_text" = "Wersja 2.6\n3 marca 2021\n\n• Wklejanie/przesyłanie zdjęć i filmów ze schowka\n• Rozwiązanie problemu z kompatybilnością z Piwigo 11\n• Poprawki drobnych błędów i ulepszenia interfejsu";
+
+"v2.5.4_text" = "Wersja 2.5.4\n2 stycznia 2021\n\n• Poprawki drobnych błędów i ulepszenia interfejsu";
+
+"v2.5.3_text" = "Wersja 2.5.\n21 grudnia 2020\n\n• Kontroluj, do których zdjęć i filmów Piwigo ma dostęp\n• Wskazówki i porady, aby lepiej wykorzystywać aplikację\n• Poprawki błędów";
+
+"v2.5.2_text" = "Wersja 2.5.2\n3 grudnia 2020\n\n• Przesyłanie w tle (wymaga rozszerzenia uploadAsync lub Piwigo 2.11 lub nowszego)\n• Poprawki drobnych błędów i ulepszenia interfejsu";
+
+"v2.5.1_text" = "Wersja 2.5.1\n10 września 2020\n\n• Nowa opcja prezentowania zdjęć i filmów w losowej kolejności\n• Poprawki drobnych błędów i ulepszenia interfejsu";
+
+"v2.5.0_text" = "Wersja 2.5\n27 sierpnia 2020\n\n• Rejestracja żądań przesyłania\n• Przesyłanie zdjęć i filmów w miarę możliwości\n• Opcja przesyłania tylko przez Wi-Fi\n• Zawieszanie przesyłania w trybie oszczędzania energii\n• Znacznie szybszy dostęp do biblioteki zdjęć\n• Poprawki drobnych błędów i ulepszenia interfejsu\n• Modernizacja kodu\n\nPrzesyłanie w tle będzie dostępne po uaktualnieniu serwera.";
+
+"v2.4.8_text" = "Wersja 2.4.8\n25 marca 2020\n\n• Piwigo ostrzega, kiedy:\n - strona internetowa posiada niepoprawny certyfikat,\n - próbujesz ustanowić niezabezpieczone połączenie\n• Ulepszone zarządzanie pamięcią podręczną\n• Poprawki drobnych błędów i ulepszenia interfejsu";
+
+"v2.4.7_text" = "Wersja 2.4.7\n30 stycznia 2020\n\n• Dodano tłumaczenia: chiński (uproszczony), rosyjski i hiszpański\n• Naprawiono problem z odtwarzaniem filmów na niektórych serwerach";
+
+"v2.4.6_text" = "Wersja 2.4.6\n18 stycznia 2020\n\n• Możliwość edycji właściwości wybranych zdjęć\n• Możliwość zmiany daty utworzenia zdjęcia lub filmu\n• Opcja dodania prefiksu nazw plików przed przesłaniem\n• Poprawki drobnych błędów i ulepszenia interfejsu";
+
+"v2.4.5_text" = "Wersja 2.4.5\n6 listopada 2019\n\n• Wyświetla twoje ulubione zdjęcia (wymaga Piwigo 2.10 lub nowszego)\n• Opcja prezentacji zdjęć posortowanych ręcznie\n• Pozwala użytkownikom Community (z odpowiednimi uprawnieniami) tworzyć albumy\n• Poprawki drobnych błędów i ulepszenia interfejsu";
+
+"v2.4.4_text" = "Wersja 2.4.4\n1 października 2019\n\n• Naprawia problemy z przesyłaniem wideo na niektórych serwerach\n• Poprawki drobnych błędów i ulepszenia interfejsu";
+
+"v2.4.3_text" = "Wersja 2.4.3\n25 września 2019\n\n• Kompatybilność z iOS 13\n• Drobne poprawki błędów i ulepszenia interfejsu";
+
+"v2.4.2_text" = "Wersja 2.4.2\n3 września 2019\n\n• Dodaje możliwość tworzenia znaczników (tylko użytkownicy administracyjni)\n• Dodaje możliwość zmiany rozmiaru miniatur albumów\n• Dodaje zarządzanie wyświetlaniem Retina\n• Drobne poprawki błędów i ulepszenia interfejsu";
+
+"v2.4.1_text" = "Wersja 2.4.1\n10 sierpnia 2019\n\n• Dodaje albumy „Znaczniki”, „Najczęściej odwiedzane”, „Najlepiej oceniane” i „Najnowsze zdjęcia”\n• Drobne poprawki błędów i ulepszenia interfejsu";
+
+"v2.4.0_text" = "Wersja 2.4\n15 lipca 2019\n\n• Dodaje narzędzie wyszukiwania (wymaga systemu iOS 11 lub nowszego)\n• Dodaje sortowanie zdjęć według wyniku oceny\n• Szybsze pobieranie miniatur albumów (wymaga Piwigo 2.8 lub nowszego)\n• Tytuły przesłanych zdjęć nie są już domyślnie nazwami plików\n• Naprawiono niemożność usunięcia znaczników\n• Naprawia niedokładności informacji o zdjęciu w niektórych okolicznościach";
+
+"v2.3.5_text" = "Wersja 2.3.5\n6 czerwca 2019\n\n• Naprawia awarię, która czasami zdarza się podczas edycji adresu serwera po wylogowaniu";
+
+"v2.3.4_text" = "Wersja 2.3.4\n1 maja 2019\n\n• Udoskonala prezentację albumów na iPadzie (i iPhonie)\n• Drobne poprawki błędów i ulepszenie interfejsu";
+
+"v2.3.3_text" = "Wersja 2.3.3\n10 kwietnia 2019\n\n• Drobne poprawki błędów i ulepszenia interfejsu";
+
+"v2.3.2_text" = "Wersja 2.3.2\n27 marca 2019\n\n• Lokalne zdjęcia prezentowane w widoku osi czasu przed dniem przesłania\n• Poprawki drobnych błędów i ulepszenie interfejsu";
+
+"v2.3.1_text" = "Wersja 2.3.1\n15 lutego 2019\n\n• Drobne poprawki błędów i ulepszenia interfejsu\n• Poprawy tłumaczenia";
+
+"v2.3.0_text" = "Wersja 2.3\n2 lutego 2019\n\n• Udostępniaj zdjęcia i filmy\n• Zwiększa limit rozmiaru pamięci podręcznej\n• Drobne poprawki błędów i ulepszenia interfejsu\n• Poprawa tłumaczenia";
+
+"v2.2.7_text" = "Wersja 2.2.7\n29 grudnia 2018\n\n• Drobne poprawki błędów i ulepszenia interfejsu\n• Poprawa tłumaczenia";
+
+"v2.2.6_text" = "Wersja 2.2.6\n20 grudnia 2018\n\n• Poprawa tłumaczenia i obsługi iOS 12\n• Drobne poprawki błędów i ulepszenia interfejsu\n• Włoskie tłumaczenie";
+
+"v2.2.5_text" = "Wersja 2.2.5\n28 października 2018\n\n• Prześlij nam opinię e-mailem\n• Polityka prywatności\n• Poprawki błędów";
+
+"v2.2.4_text" = "Wersja 2.2.4\n23 września 2018\n\n• Poprawki błędów";
+
+"v2.2.3_text" = "Wersja 2.2.3\n27 sierpnia 2018\n\n• Nowy projekt albumu\n• Drobne poprawki błędów i ulepszenia interfejsu";
+
+"v2.2.2_text" = "Wersja 2.2.2\n14 sierpnia 2018\n\n• Kopiowanie i przenoszenie zdjęć pomiędzy albumami\n• Poprawki drobnych błędów i ulepszenia interfejsu";
+
+"v2.2.1_text" = "Wersja 2.2.1\n25 lipca 2018\n\n• Drobne poprawki błędów i ulepszenia interfejsu";
+
+"v2.2.0_text" = "Wersja 2.2 \n12 lipca 2018\n\n• Tworzenie podalbumów z dowolnego albumu\n• Poprawa zarządzania poprzez wprowadzenie domyślnego Albumu\n• Usprawniono prezentację albumów na iPad-ie (i iPhone-ie) \n• Wykrywanie zmian w Bibliotece zdjęć \n• Drobne poprawki błędów i ulepszenia interfejsu";
+
+"v2.1.9_text" = "Wersja 2.1.9\n14 maja 2018\n\n• Poprawki błędów";
+
+"v2.1.8_text" = "Wersja 2.1.8\n29 kwiecień 2018\n\n• Dodaje możliwość zmiany wielkości miniatur\n• HTTPS staje się domyślnym protokołem\n• Japońskie tłumaczenie\n• Poprawki błędów i usprawnienia interfejsu";
+
+"v2.1.7_text" = "Wersja 2.1.7\n3 lutego 2018\n\n• Naprawiono problemy z przesyłaniem wideo na niektórych serwerach";
+
+"v2.1.6_text" = "Wersja 2.1.6\n7 stycznia 2018\n\n• Tłumaczenie arabskie\n• Udoskonalono zarządzanie uwierzytelnianiem za pomocą podstawowego dostępu HTTP\n• Poprawki błędów i usprawnienia interfejsu";
+
+"v2.1.5_text" = "Wersja 2.1.5\n21 grudnia 2017\n\n• Dodano możliwość anulowania wysyłania\n• Dodano możliwość usuwania zdjęcia po wysłaniu\n• Dodano kompatybilność z Optymalizowaniem Magazynu (iCloud)\n• Zachowuje format obrazu po zmianie rozmiaru, gdy to możliwe\n• Tłumaczenia duńskie i indonezyjskie\n• Naprawiono tracenie części metadanych przy pobieraniu\n• Naprawiono zmianę formatu z PNG na JPG przed wysłaniem\n• Naprawiono błędy napotkane w iOS 11 i iPhone X\n• Naprawiono drobne błędy\n• Zmodernizowano kod";
+
+"v2.1.4_text" = "Wersja 2.1.4\n31 października 2017\n\n• Dodanie szwedzkiego tłumaczenia\n• Poprawki błędów";
+
+"v2.1.3_text" = "Wersja 2.1.3\n19 października 2017\n\n• Dodanie obsługi podstawowej autentykacji HTTP(S) \n• Dodanie możliwości anulowania auto podłączania\n• Poprawki interfejsu i wysyłania\n• Poprawki tłumaczenia i obsługi iOS 11\n• Poprawki kodu";
+
+"v2.1.2_text" = "Wersja 2.1.2\n7 września 2017\n\n• Poprawka odmowy logowania z wtyczką społeczność w wersji wtyczki < 2.9 \n• Poprawy tłumaczenia\n• Drobne poprawki";
+
+"v2.1.1_text" = "Wersja 2.1.1\n20 sierpnia 2017\n\n• Poprawki błędów napotkanych przy nieważnych certyfikatach SSL \n• Poprawa duńskiego tłumaczenia";
+
+"v2.1.0_text" = "Wersja 2.1\n14 sierpnia 2017\n\n• Dodanie kompatybilności z rozszerzeniem Community (Społeczność)\n• Dodanie duńskiego, francuskiego i polskiego tłumaczenia\n• Poprawki";
+
+"v2.0.4_text" = "Wersja 2.0.4\n28 lipca 2017 \n\n• iPad — naprawić rozmyte miniatury i niemożliwość edycji zdjęć na iPadzie \n• Filmy — poprawka wysyłania i pobierania problemy (wymagane na serwerze rozszerzenia VideoJS) \n• Ustawień — Dodaj opcje aby usunąć tytuły & zmiana miniatury rozdzielczość \n• Poprawić niezawodność połączeń i informuje, kiedy przesyłanie zakończone \n• Poprawki błędów i usprawnienia interfejsu";
+
+"v2.0.3_text" = "Wersja 2.0.3\n26 maja 2017\n\n• Dodaj opcję usunięcie metadanych GPS w ustawieniach strony \n• Dodaj bieżące użycie pamięci podręcznej w ustawienia strona \n• Poprawka pamięci podręcznej ustawienia czasami zapomniane/reset \n• Poprawka wysyłania obrazu ustawienia czasami stracił/reset";
+
+"v2.0.2_text" = "Wersja 2.0.2\n8 maja 2017\n\n• Kryteria sortowania teraz identyczne z aplikacją Web\n• Poprawka problemu z sortowaniem \n• Poprawka awarii napotkanych podczas dodawania znaczników do zdjęć przed wysłaniem \n• Poprawka sytuacji gdzie nie działało usunięcie zaznaczonych zdjęć \n• Poprawka sytuacji gdzie album nie pojawiał się po przeniesieniu \n• Rozwiązany problem ze zgodnością z systemem iOS 10 — przestarzały kod";
+
+"v2.0.1_text" = "Wersja 2.0.1\n26 czerwca 2015\n\nNowe ustawienia:\n - możliwość zmiany rozmiaru przesyłanych zdjęć\n  + jakość zdjęcia z zakresu 50 - 98%\n - możliwość ustawienia domyślnego rozmiaru podglądu zdjęcia\nPoprawki";
+
+"v2.0.0_text" = "Wersja 2.0\n24 kwiecień 2015\n\nNowa natywna aplikacja oferuje:\n - możliwość zarządzania albumami\n - przeglądanie Twoich zdjęć\n - hurtowe przesyłanie zdjęć\n - przesyłanie i odtwarzanie filmów (musi być zainstalowany dodatek VideoJS)";
+
+"v1.0.0_text" = "Wersja 1.0\n17 października 2011";

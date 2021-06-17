@@ -1,0 +1,107 @@
+/*
+ ReleaseNotes.strings
+ piwigo
+ 
+ Created by Eddy Lelièvre-Berna on 15/07/2017.
+ Copyright © 2017 Piwigo.org. All rights reserved.
+ */
+
+"v2.7.0_text" = "Version 2.7\n\n• Auto upload photos and videos\n• Minor bug fixes and improvements of the interface\n• Code modernization";
+
+"v2.6.4_text" = "Versie 2.6.4\n\n• Kleine foutjes verbeterd en verbetering van de interface";
+
+"v2.6.3_text" = "Versie 2.6.3\n11 Mei 2021\n\n• Foutjes verbeterd";
+
+"v2.6.2_text" = "Versie 2.6.2\n3 Mei 2021\n\n• Laat sommige gebruikers toe om tags te maken\n• Lost een compatibiliteitsprobleem op met Piwigo 11\n• Kleine foutjes hersteld en verbetering van de interface\n• Code modernisering";
+
+"v2.6.1_text" = "Version 2.6.1\n19 maart 2021\n\n• Lost een probleem op met het toekennen van tags aan een selectie van foto's\n• Hernieuwt ontwerp van de Uiterlijk instellingen\n• Verbetert betrouwbaarheid van het uploaden op de achtergrond\n• Kleine bugfixes en verbeteringen van het uiterlijk";
+
+"v2.6.0_text" = "Versie 2.6\n3 maart 2021\n\n• Kopiëren/plakken van foto's en video's vanaf het klembord\n• Compatibiliteitsproblemen met Piwigo 11 opgelost\n• Kleine bugfixes en verbeteringen aan de interface";
+
+"v2.5.4_text" = "Versie 2.5.4\n2 januari 2021\n\n• Kleine foutjes verbeterd en verbetering van de interface";
+
+"v2.5.3_text" = "Versie 2.5.3\n21 December 2020\n\n• Bepaal welke foto's en video's Piwigo toegang hebben tot\n• Tips en trucs voor een betere exploitatie van de app\n• Foutjes verbeterd";
+
+"v2.5.2_text" = "Versie 2.5.2\n3 December 2020\n\n• Achtergrond uploaden (vereist de uploadAsync-extensie of Piwigo 11 of hoger)\n• Kleine foutjes gerepareerd en verbetering van de interface";
+
+"v2.5.1_text" = "Versie 2.5.1\n10 September 2020\n\n• Nieuwe optie voor het presenteren van foto's en video's in willekeurige volgorde\n• Kleine foutjes verbeterd en verbetering van de interface";
+
+"v2.5.0_text" = "Versie 2.5\n27 augustus 2020\n\n• Records upload requests\n• Uploaden van foto's/video's indien mogelijk\n• \"Alleen Wi-Fi\" optie voor uploaden\n• Geen upload als in Low Power Modus\n• Veel snellere toegang tot de Photo Library\n• Kleine foutjes hersteld en verbetering van de interface\n• Code modernisatie\n\nAchtergrond uploaden zal beschikbaar zijn na een server update.";
+
+"v2.4.8_text" = "Versie 2.4.8\n25 maart 2020\n\n• Piwigo waarschuwt je wanneer:\n - een website heeft een certificaat dat niet geldig is,\n - voor het opzetten van een onveilige verbinding\n• Verbeterd cachebeheer\n• Kleine foutjes gerepareerd en verbeteringen van de interface";
+
+"v2.4.7_text" = "Versie 2.4.7\n30 januari 2020\n\n• Chinese vereenvoudigd, Russisch en Spaans vertalingen\n• Corrigeert een video afspeelprobleem op sommige servers";
+
+"v2.4.6_text" = "Versie 2.4.6\n18 januari 2020\n\n• Bewerk eigenschappen van een selectie foto's\n• Verander aanmaakdatum van foto of video\n• Optie voor voorvoegsel bestandsnaam voor upload\n• Kleine foutjes verbeterd en verbetering van de interface";
+
+"v2.4.5_text" = "Versie 2.4.5\n6 November 2019\n\n• Toont uw favoriete afbeeldingen (vereist Piwigo 2.10 of hoger)\n• Optie voor het handmatig presenteren van afbeeldingen\n• Hiermee kunnen Community gebruikers albums maken (met de juiste rechten)\n• Kleine foutjes hersteld en verbetering van de interface";
+
+"v2.4.4_text" = "Versie 2.4.4\n1 Oktober 2019\n\n• Problemen met video-uploads op sommige servers oplossen\n• Kleine foutjes hersteld en verbetering van de interface";
+
+"v2.4.3_text" = "Versie 2.4.3\n25 September 2019\n\n• iOS 13-compatibiliteit\n• Kleine foutjes hersteld en verbetering van de interface";
+
+"v2.4.2_text" = "Versie 2.4.2\n3 September 2019\n\n• Voegt de mogelijkheid om labels te maken toe (alleen voor admin gebruikers)\n• Voegt de mogelijkheid om de grootte van de album-miniaturen te veranderen\n• Voegt Retina beeldscherm-management toe\n• Kleine foutjes hersteld en verbetering van de interface";
+
+"v2.4.1_text" = "Versie 2.4.1\n\n• Voegt albums \"Labels\", \"Meest bezocht\", \"Best gewaardeerd\" en \"Recente foto's\" toe\n• Kleine foutjes verbeterd en verbetering van de interface";
+
+"v2.4.0_text" = "Versie 2.4\n15 Juli 2019\n\n• Voegt een zoekfunctie toe (vereist iOS 11 of hoger)\n• Voegt beeldsortering toe op scorewaarde\n• Sneller downloaden van albumminiaturen (vereist Piwigo 2.8 of hoger)\n• Titels van geüploade afbeeldingen veranderen niet meer standaard in bestandsnamen\n• Lost onmogelijkheid op om tags te verwijderen\n• Corrigeert in sommige omstandigheden onnauwkeurige afbeeldingsgegevens";
+
+"v2.3.5_text" = "Versie 2.3.5\n6 Juni 2019\n\n• Een crash verhelpen die soms optreedt bij het bewerken van het serveradres na het afmelden";
+
+"v2.3.4_text" = "Versie 2.3.4\n1 Mei 2019\n\n• Verbeterde albums presentatie op iPad (en iPhone)\n• Kleine foutjes gerepareerd en verbetering van de interface";
+
+"v2.3.3_text" = "Versie 2.3.3\n10 april 2019\n\n• Kleine foutjes gerepareerd en verbetering van de interface";
+
+"v2.3.2_text" = "Versie 2.3.2\n27 maart 2019\n\n• Lokale foto's die een dag vóór het uploaden worden weergegeven in een tijdlijnweergave\n• Kleine foutjes verbeterd en verbetering van de interface";
+
+"v2.3.1_text" = "Versie 2.3.1\n15 februari 2019\n\n• Kleine foutjes verbeterd en verbetering van de interface\n• Betere vertalingen";
+
+"v2.3.0_text" = "Versie 2.3\n2 februari 2019\n\n• Deel foto's en video's\n• Verhoog de cachegroottelimieten\n• Kleine foutjes verbeterd en verbetering van de interface\n• Betere vertalingen";
+
+"v2.2.7_text" = "Versie 2.2.7\n29 December 2018\n\n• Kleine foutjes verbeterd en verbetering van de interface\n• Betere vertalingen";
+
+"v2.2.6_text" = "Versie 2.2.6\n20 December 2018\n\n• Verbetering vertalingen en iOS 12-compatibiliteit\n• Kleine foutjes verbeterd en verbetering van de interface\n• Italiaanse vertaling";
+
+"v2.2.5_text" = "Versie 2.2.5\n28 Oktober 2018\n\n• Stuur ons feedback per e-mail\n• Privacybeleid\n• Foutjes verbeterd";
+
+"v2.2.4_text" = "Versie 2.2.4\n23 September 2018\n\n• Foutjes verbeterd";
+
+"v2.2.3_text" = "Versie 2.2.3\n27 Augustus 2018\n\n• Nieuw albumontwerp\n• Kleine foutjes gerepareerd en verbetering van de interface";
+
+"v2.2.2_text" = "Versie 2.2.2\n14 Augustus 2018\n\n• Kopieer en verplaats foto's naar de albums\n• Kleine foutjes gerepareerd en verbetering van de interface";
+
+"v2.2.1_text" = "Versie 2.2.1\n25 Juli 2018\n\n• Kleine foutjes gerepareerd en verbetering van de interface";
+
+"v2.2.0_text" = "Versie 2.2\n12 Juli 2018\n\n• Sub-album creaties vanuit elk album\n• Verbeterd beheer met het standaard album\n• Verbeterde albums presentatie op iPad (en iPhone)\n• Constatering van veranderingen van de Foto Bibliotheek\n• Kleine foutjes verbeterd en verbetering van de interface";
+
+"v2.1.9_text" = "Versie 2.1.9\n14 Mei 2018\n\n• Foutjes verbeterd";
+
+"v2.1.8_text" = "Versie 2.1.8\n29 April 2018\n\n• Voegt de mogelijkheid toe om de grootte van miniaturen te wijzigen\n• HTTPS wordt het standaardprotocol\n• Japanse vertaling\n• Kleine foutjes verbeterd en verbetering van de interface";
+
+"v2.1.7_text" = "Versie 2.1.7 \n3 februari 2018\n\n• Problemen met video-uploads op sommige servers oplossen";
+
+"v2.1.6_text" = "Versie 2.1.6\n7 Januari 2018\n\n• Arabische vertaling\n• Verbeterd HTTP-basistoegangsverificatiebeheer\n• Kleine foutjes verbeterd en verbetering van de interface";
+
+"v2.1.5_text" = "Versie 2.1.5\n21 December 2017\n\n• Toegevoegd mogelijkheid om uploads te annuleren\n• Optie toegevoegd om foto's te verwijderen na het uploaden\n• Compatibiliteit toegevoegd met Optimize Storage (iCloud)\n• Bewaar, waar mogelijk, het beeldformaat na het wijzigen van de afmetingen \n• Deense en Indonesische vertalingen\n• Verbeterd: PNG-formaat vervangen door JPEG vóór uploaden\n• Verbeterd: PNG-formaat vervangen door JPEG vóór uploaden\n• Problemen verholpen die zijn aangetroffen met iOS 11 en iPhone X\n• Kleine bugs verbeterd\n• Codemodernisering";
+
+"v2.1.4_text" = "Versie 2.1.4\n31 Oktober 2017\n\n• Zweedse vertaling\n• Foutjes verbeterd";
+
+"v2.1.3_text" = "Versie 2.1.3\nOktober 19, 2017\n\n• Toegevoegd basistoegangsauthenticatie\n• Toestaan dat de automatische verbinding wordt geannuleerd\n• Verbetering interface- en uploadbeheer\n• Verbetering vertalingen en iOS 11-compatibiliteit\n• Fout verbeterd die is aangetroffen met het filter \"Niet geüpload\"\n• Code modernisering\n________________________________________\n\n";
+
+"v2.1.2_text" = "Versie 2.1.2\n7 September 2017\n\n• Hersteld geweigerde aanmelding met Community-plug-in-versies <2.9\n• Verbeterde vertalingen\n• Onderhoudswerkzaamheden\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
+
+"v2.1.1_text" = "Versie 2.1.1\n20 Augustus 2017\n\n• Fout verbeterd die is aangetroffen met ongeldige SSL-certificaten\n• Verbeterde Deense vertaling\n‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_‎_\n\n";
+
+"v2.1.0_text" = "Versie 2.1\n14 Augustus 2017\n\n• Community extensie overeenstemming\n• Deense, Franse, Poolse vertalingen\n• Fouten verbeterd";
+
+"v2.0.4_text" = "Versie 2.0.4\n28 Juli 2017\n\n• iPad — Vage miniaturen verbeterd en de onmogelijkheid om foto's te bewerken op de iPad\n• Video's — Problemen met uploaden en downloaden verholpen ‎(VideoJS-extensie vereist op server‎)\n• Instellingen — Opties toegevoegd om titels te verwijderen en de resolutie van miniaturen te wijzigen\n• De betrouwbaarheid verbeterd van de verbinding en melding wanneer het uploaden is voltooid\n• Kleine foutjes verbeterd en verbetering van de interface";
+
+"v2.0.3_text" = "Versie 2.0.3\n26 Mei 2017\n\n• Optie toegevoegd om GPS-metadata te strippen op de pagina Instellingen\n• Huidige cache-gebruik toevoegen op de pagina Instellingen\n• Verbeterde cache-instellingen soms vergeten ‎/ opnieuw instellen\n• Verbeterde upload beeldinstellingen soms verloren ‎/ opnieuw instellen";
+
+"v2.0.2_text" = "Versie 2.0.2\n8 Mei 2017\n\n• Sorteercriteria zijn nu identiek aan die van de Web-app\n• Sorteerproblemen opgelost\n• Een crash verholpen die optrad bij het toevoegen van labels aan een foto vóór het uploaden\n• Verbeterde situaties waarin het verwijderen van een selectie van afbeeldingen niet werkte\n• Verbeterde situaties waarin een album niet te zien was na verplaatsing\n• Verbeterd een compatibiliteitsprobleem op iOS 10 - verouderde code";
+
+"v2.0.1_text" = "Versie 2.0.1\n26 Juni 2015\n\nNieuwe instellingen‎:\n - Optie om het formaat van afbeeldingen te wijzigen bij het uploaden\n   + De beeldkwaliteit is van een bereik van 50 - 98%\n - Mogelijkheid om een standaardfotovoorbeeld in te stellen\nFoutjes verbeterd";
+
+"v2.0.0_text" = "Versie 2.0\n24 April 2015\n\nNieuwe native applicatie met‎:\n - Mogelijkheid om albums te beheren\n - Bekijk je foto's\n - Bulk foto's uploaden\n - Video uploaden en afspelen ‎(VideoJS-plug-in moet zijn geïnstalleerd)";
+
+"v1.0.0_text" = "Versie 1.0\n17 Oktober 2011";

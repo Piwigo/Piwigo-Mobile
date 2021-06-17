@@ -1,0 +1,739 @@
+/*
+ Localizable.strings
+ piwigo
+ 
+ Created by Spencer Baker on 1/17/15.
+ Copyright (c) 2015 bakercrew. All rights reserved.
+ */
+// ===========================================================================
+// ==> GENERIC
+// ===========================================================================
+// Tab bar
+
+"tabBar_albums" = "相册";
+"tabBar_upload" = "上传";
+"tabBar_preferences" = "设置";
+
+// Alert buttons
+"alertOkButton" = "确认";
+"alertDismissButton" = "忽略";
+"alertYesButton" = "确定";
+"alertNoButton" = "取消";
+"alertTryAgainButton" = "重试";
+"alertCancelButton" = "取消";
+"alertAddButton" = "添加";
+"alertRetryButton" = "重试";
+"alertNextButton" = "下一张照片";
+"alertTryButton" = "尝试";
+"alertClearButton" = "清除";
+
+// HUD views
+"loadingHUD_label" = "加载中...";
+"completeHUD_label" = "完成";
+"errorHUD_label" = "错误";
+
+// Upload rights
+"uploadRights_title" = "需要上传权限";
+"uploadRights_message" = "您必须拥有上传权限才能上传照片或视频";
+
+// Errors
+"internetErrorGeneral_title" = "连接错误";
+"internetErrorGeneral_broken" = "抱歉，网络连接断开，请尝试重新登录";
+"internetCancellingConnection_button" = "正在取消连接…";
+"internetCancelledConnection_button" = "取消连接";
+"internetCancelledConnection_title" = "连接已取消";
+
+"PiwigoServer_wrongJSONobject" = "Piwigo服务器无法消化JSON对象。";
+"PiwigoServer_invalidJSONobject" = "Piwigo 服务器没有返回一个有效的 JSON 对象。";
+"PiwigoServer_emptyJSONobject" = "Piwigo server did return an empty JSON object.";
+
+// ===========================================================================
+// ==> CORE DATA
+// ===========================================================================
+"CoreDataStore_WarningTitle" = "警告";
+"CoreDataStore_WarningMessage" = "Piwigo缓存已损坏，因此将会建立新的缓存";
+"CoreDataFetch_DigestError" = "无法解析获取到的数据";
+
+// Tag objects
+"CoreDataFetch_TagError" = "获取标签时出现错误！";
+"CoreDataFetch_TagMissingData" = "获取到的标签缺少合法编号或名称";
+"CoreDataFetch_TagCreateFailed" = "无法创建标签";
+
+// Upload objects
+"CoreDataFetch_UploadCreateFailed" = "无法创建上传对象";
+"CoreDataFetch_UploadMissingAsset" = "无法获取图片";
+
+// ===========================================================================
+// ==> LOGIN / LOGOUT
+// ===========================================================================
+// Login
+"login" = "登录";
+"login_serverPlaceholder" = "example.com";
+"login_userPlaceholder" = "帐号 (可选)";
+"login_passwordPlaceholder" = "密码 (可选)";
+"login_loggingIn" = "登录中……";
+"login_connecting" = "连接中";
+"login_newSession" = "打开会话";
+"login_communityParameters" = "社区参数";
+"login_serverParameters" = "Piwigo参数";
+"login_connectionChanged" = "连接已更改！";
+"loginHTTP_title" = "HTTP凭证";
+"loginHTTP_message" = "Piwigo服务器需要基本访问验证：";
+"loginHTTPuser_placeholder" = "用户名";
+"loginHTTPpwd_placeholder" = "密码";
+"loginCertFailed_title" = "网络连接可能不安全";
+"loginCertFailed_message" = "你所连接的站点未能提供有效证书，是否仍然接受此证书？";
+"loginHTTPSfailed_title" = "未能建立安全连接";
+"loginHTTPSfailed_message" = "无法建立安全连接，是否降级到不安全的连接？";
+
+// Login — Errors
+"serverURLerror_title" = "不正确的 URL";
+"serverURLerror_message" = "请更正Piwigo站点地址。";
+"serverMethodsError_title" = "未知方法";
+"serverMethodsError_message" = "获取服务器连接方法失败。是否Piwigo服务器出现问题？";
+"serverInvalidMethodError_message" = "无法调用服务器方法";
+"serverMissingParamError_message" = "执行服务器方法失败，缺少参数";
+"serverInvalidParamError_message" = "无法以提供参数调用服务器方法";
+"serverUnknownError_message" = "以提供的参数调用服务器方法时遇到意外错误";
+
+"loginError_title" = "登录失败";
+"loginError_message" = "用户名和密码与给定的网站不匹配";
+"loginEmptyServer_title" = "输入一个网址";
+"loginEmptyServer_message" = "请选择一项协议，并输入一个Piwigo Web地址，以便继续。";
+
+"serverConnectionError_title" = "连接失败";
+"serverConnectionError_message" = "无法建立一个安全的 HTTPS 连接。请检查地址或者尝试未加密的 HTTP 模式？";
+
+"serverVersionNotCompatible_title" = "服务器不兼容";
+"serverVersionNotCompatible_message" = "您的Piwigo服务器版本为 %@. Piwigo Mobile仅支持高于2.7的版本。请更新您的服务器使用Piwigo Mobile。您仍然要继续吗？";
+
+"sessionStatusError_title" = "验证失败";
+"sessionStatusError_message" = "无法与服务器验证。请尝试再次登录。";
+
+"serverCommunityError_title" = "通讯错误";
+"serverCommunityError_message" = "获取通讯扩展参数失败。请尝试再次登录。";
+
+// Logout
+"logoutConfirmation_title" = "注销";
+"logoutConfirmation_message" = "您确定要注销吗？";
+
+// Logout — Errors
+"logoutFail_title" = "注销失败";
+
+// ===========================================================================
+// ==> ALBUMS
+// ===========================================================================
+// Albums view
+"categoryMainEmtpy" = "您的Piwigo没有相册。\n您可以尝试下拉刷新或重新登录。";
+"categoryTableView_photoCount" = "照片";
+"categoryTableView_photosCount" = "照片";
+"categoryTableView_subCategoryCount" = "子相册";
+"categoryTableView_subCategoriesCount" = "子相册";
+"categoryImageList_selectButton" = "选择";
+"categoryImageList_deselectButton" = "反选";
+"categoryImageList_noDataError" = "错误：没有数据";
+
+// Albums "Discover"
+"categoryDiscover_title" = "探索";
+"categoryDiscoverVisits_title" = "最多点击";
+"categoryDiscoverVisits_legend" = "次观看";
+"categoryDiscoverBest_title" = "评分最高";
+"categoryDiscoverRecent_title" = "最近图片";
+"categoryDiscoverFavorites_title" = "你的最爱";
+
+// Albums sort
+"categorySort_nameAscending" = "照片标题，A → Z";
+"categorySort_nameDescending" = "照片标题，Z → A";
+"categorySort_fileNameAscending" = "文件名，A → Z";
+"categorySort_fileNameDescending" = "文件名，Z → A";
+"categorySort_dateCreatedDescending" = "创建日期，新 → 旧";
+"categorySort_dateCreatedAscending" = "创建日期，旧 → 新";
+"categorySort_datePostedDescending" = "发布日期，新 → 旧";
+"categorySort_datePostedAscending" = "发布日期，旧 → 新";
+"categorySort_ratingScoreDescending" = "评分分数，高 → 低";
+"categorySort_ratingScoreAscending" = "评分分数，低 → 高";
+"categorySort_visitsDescending" = "点击量，高 → 低";
+"categorySort_visitsAscending" = "点击量，低 → 高";
+"categorySort_manual" = "手动排序";
+"categorySort_random" = "随机顺序";
+
+"categorySort_videosOnly" = "仅视频";
+"categorySort_imagesOnly" = "仅图片";
+
+// Album selection
+"categorySelection_title" = "相册";
+"categorySelection_titleSub" = "子相册";
+"categorySelection_root" = "根相册";
+"categorySelection_action" = "选择此相册的操作";
+"categorySelectionHUD_label" = "正在检索相册数据…";
+"categorySelection_allAlbums" = "All Albums";
+
+// Album upload
+"categoryUpload_noSubAlbum" = "找不到上传照片的子相册";
+"categoryUpload_chooseAlbum" = "选择一个子相册以上传图像";
+"categoryUpload_LocalAlbums" = "本地相册";
+"categoryUpload_chooseLocalAlbum" = "选择一个相册以获取图片";
+"categoryUpload_sharedAlbums" = "共享相册";
+"categoryUpload_iCloudAlbums" = "iCloud 相册";
+"categoryUpload_chooseiCloudAlbum" = "选择一个iCloud 相册以获取图片";
+"categoryUpload_syncedEvents" = "iPhoto事件";
+"categoryUpload_syncedAlbums" = "iPhoto相册";
+"categoryUpload_syncedFaces" = "iPhoto人脸";
+"categoryUpload_mediaTypes" = "媒体类型";
+"categoryUpload_otherAlbums" = "其他相册";
+"categoryUpload_pasteboard" = "剪切板";
+
+"categoyUpload_loadSubCategories" = "加载";
+"categoryUpload_images" = "上传图片";
+
+// Default album
+"setDefaultCategory_select" = "Please select an album or sub-album which will become the new root album.";
+"setDefaultCategory_title" = "默认相册";
+"setDefaultCategory_message" = "您确定要设置相册\"%@\"作为默认相册？";
+
+// Album create
+"createNewAlbum_title" = "新相册";
+"createNewAlbum_message" = "给这个相册取一个名字";
+"createNewAlbum_placeholder" = "相册名称";
+"createNewAlbumDescription_placeholder" = "描述";
+"createNewAlbumDescription_noDescription" = "没有描述";
+"createNewAlbumHUD_label" = "正在创建相册中...";
+
+// Album create — Errors
+"createAlbumError_title" = "无法创建相册";
+"createAlbumError_message" = "无法创建新相册";
+
+// Album options (swipe actions)
+"categoryCellOption_rename" = "重命名";
+"categoryCellOption_move" = "移动";
+"categoryCellOption_delete" = "删除";
+
+// Album rename
+"renameCategory_title" = "重命名相册";
+"renameCategory_message" = "给这个相册输入一个名字";
+"renameCategory_button" = "重命名";
+"renameCategoryHUD_label" = "重命名相册…";
+
+// Album rename — Errors
+"renameCategoyError_title" = "重命名失败";
+"renameCategoyError_message" = "重命名相册失败";
+
+// Album refresh representative
+"refreshCategoryHUD_label" = "正在刷新代表图像...";
+
+// Album refresh representative — Errors
+"refreshCategoyError_title" = "刷新失败";
+"refreshCategoyError_message" = "无法刷新代表图像";
+
+// Album delete
+"deleteCategory_title" = "删除相册";
+"deleteCategory_message" = "您确定要删除相册 “%@” 和所有 %@ 张照片？";
+"deleteCategory_empty" = "删除空相册";
+"deleteCategory_noImages" = "保留图像";
+"deleteCategory_orphanedImages" = "删除孤立图片";
+"deleteCategory_allImages" = "删除 %@ 张图片";
+"deleteCategoryConfirm_title" = "是否确定？";
+"deleteCategoryConfirm_message" = "请输入照片数量以删除此相册。照片数量： %@";
+"deleteCategoryConfirm_deleteButton" = "删除";
+"deleteCategoryHUD_label" = "删除相册…";
+
+// Album delete — errors
+"deleteCategoryMatchError_title" = "数字不匹配";
+"deleteCategoryMatchError_message" = "你所输入的数字与分类中已有的照片数目不同，请重试以删除该相册。";
+"deleteCategoryError_title" = "删除失败";
+"deleteCategoryError_message" = "删除相册失败";
+
+// Album move
+"moveCategory" = "移动相册";
+"moveCategory_select" = "Please select an album or sub-album to move album \"%@\" into.";
+"moveCategory_message" = "你确定要把\"%@\"移动到相册\"%@\"中吗？";
+"moveCategoryHUD_moving" = "移动相册中...";
+
+// Album move — Errors
+"moveCategoryError_title" = "移动操作失败";
+"moveCategoryError_message" = "移动相册失败";
+
+// Album set photo thumbnail
+"categorySelection_setThumbnail" = "Please select the album which will use the photo \"%@\" as a thumbnail.";
+"categorySelection_current" = "为该照片选择当前相册";
+"categorySelection_one" = "选择包含该照片的相册";
+"categorySelection_other" = "或者为该照片选择另一个相册";
+"categoryImageSet_title" = "相册封面";
+"categoryImageSet_message" = "你确定要把该照片移动到相册\"%@\"中吗？";
+"categoryImageSetHUD_updating" = "更新相册封面中…";
+
+// Album set photo thumbnail — Errors
+"categoryImageSetError_title" = "照片设置错误";
+"categoryImageSetError_message" = "无法设置相册封面";
+
+
+// ===========================================================================
+// ==> IMAGES
+// ===========================================================================
+"singleImage" = "照片";
+"singleVideo" = "视频";
+"singleAudio" = "音频";
+"severalImages" = "照片";
+"All Photos" = "所有照片";
+"severalVideos" = "视频";
+"noImages" = "没有照片";
+"pullToRefresh" = "刷新照片";
+"andMore" = " & 更多";
+"Months" = "月";
+"Weeks" = "周";
+"Days" = "天";
+"Date" = "日期";
+
+// Errors
+"albumPhotoError_title" = "无法获取相册中的照片";
+"albumPhotoError_message" = "无法获取相册中的照片(是否照片出现损坏？)";
+
+// Image sort
+"sortBy" = "排序方式";
+"imageSortTitle" = "排序图片";
+"imageSortMessage" = "请选择您希望如何排序照片";
+"imageSortingHUD" = "排序照片中...";
+"imageSelectingHUD" = "选择相片中...";
+"imageDeselectingHUD" = "反选相片中...";
+
+// Image options (actions)
+"imageOptions_title" = "照片选项";
+"imageOptions_edit" = "编辑";
+"imageOptions_download" = "下载";
+"imageOptions_setAlbumImage" = "设为相册封面";
+
+// Image details
+"imageDetailsView_title" = "属性";
+"editImageDetails_title" = "标题";
+"editImageDetails_titlePlaceholder" = "图像标题";
+"editImageDetails_author" = "作者";
+"editImageDetails_tags" = "标签";
+"editImageDetails_privacyLevel" = "谁可以看到此照片？";
+"editImageDetails_description" = "描述";
+"editImageDetails_comments" = "评论";
+"editImageDetails_dateCreation" = "创建日期";
+"editImageDetails_dateUnset" = "取消设置";
+"editImageDetails_dateToday" = "今天";
+"editImageDetails_dateMonthInc" = "下个月";
+"editImageDetails_dateMonthDec" = "上个月";
+"editImageDetails_dateYearInc" = "下一年";
+"editImageDetails_dateYearDec" = "上一年";
+"editImageDetailsHUD_updatingSingle" = "更新照片中...";
+"editImageDetailsHUD_updatingPlural" = "更新照片中...";
+
+// Image details — Errors
+"editImageDetailsError_title" = "更新失败";
+"editImageDetailsError_message" = "无法更新此次变更，是否重试？";
+"imageDetailsFetchError_title" = "无法获取照片的详细信息";
+"imageDetailsFetchError_retryMessage" = "无法获取照片数据，是否重试？";
+"imageDetailsFetchError_continueMessage" = "无法获取照片信息，是否继续？";
+
+// Image privacy levels
+"privacyLevel" = "权限级别";
+"privacyLevel_admin" = "管理员";
+"privacyLevel_adminFamily" = "管理员、家人";
+"privacyLevel_adminsFamilyFriends" = "管理员、家人、朋友";
+"privacyLevel_adminsFamilyFriendsContacts" = "管理员、家人、朋友、联系人";
+"privacyLevel_everybody" = "所有人";
+
+// Image tags
+"none" = "无";
+"tags" = "标签";
+"tag" = "标签";
+"tagsTitle_selectOne" = "选择一个标签";
+"tagsHeader_selected" = "已选";
+"tagsHeader_notSelected" = "未选中";
+"tagsHeader_all" = "所有";
+"tagsAdd_title" = "添加标签";
+"tagsAdd_message" = "为新标签输入一个名字";
+"tagsAdd_placeholder" = "新标签";
+"tagsAddHUD_label" = "创建标签中";
+
+// Image tags errors
+"tagsAddError_message" = "无法创建新标签";
+"tagsAddError_title" = "创建失败";
+
+// Image select
+"selectImages" = "选择照片";
+"selectImageSelected" = "已选择1张照片";
+"selectImagesSelected" = "已选择 %@ 张照片";
+"selectAll" = "全选";
+
+// Image rename (filename)
+"renameImage_title" = "原始文件";
+"renameImage_message" = "给这个照片输入一个新名字";
+"renameImageHUD_label" = "重命名文件中...";
+
+// Image rename — Errors
+"renameImageError_message" = "无法重命名图片文件";
+
+// Image delete
+"deleteImage_delete" = "删除";
+"deleteImageProgress_title" = "已经删除 %@%%";
+
+"deleteSingleImage_title" = "删除照片";
+"deleteSingleImageHUD_deleting" = "正在删除照片中...";
+"deleteSeveralImagesHUD_deleting" = "正在删除照片中...";
+"removeSingleImage_title" = "从相册中移除";
+"removeSingleImageHUD_removing" = "正在移除照片中...";
+"removeSeveralImagesHUD_removing" = "Removing Photos…";
+"deleteSingleImage_message" = "你确定要删除这张照片吗？此操作无法撤销！";
+"deleteSeveralImages_title" = "删除 %@ 张照片";
+"deleteSeveralImages_message" = "你确定要删除你所选择的 %@ 张照片吗？该操作无法撤销！";
+
+// Image delete — Errors
+"deleteImageFail_title" = "删除失败";
+"deleteImageFail_message" = "无法删除照片 %@";
+
+// Image download
+"downloadSingleImage_title" = "下载照片";
+"downloadSingleImage_confirmation" = "你确定要下载所选择的照片吗？";
+"downloadSeveralImages_title" = "下载 %@ 张照片";
+"downloadSeveralImage_confirmation" = "你确定要下载你所选择的 %@ 张照片吗？";
+
+"downloadingImage" = "正在下载照片中";
+"downloadingImages" = "正在下载照片中";
+"downloadingVideo" = "正在下载视频中";
+
+// Image download — Errors
+"downloadImageFail_title" = "下载失败";
+"downloadImageFail_message" = "无法下载照片！ %@";
+"downloadVideoFail_message" = "下载视频失败！\n%@";
+"downloadVideoFail_Photos" = "照片无法接受视频格式！";
+
+"imageSaveError_title" = "保存照片失败";
+"imageSaveError_message" = "保存照片失败。错误信息为 %@";
+
+"videoSaveError_title" = "保存视频失败";
+"videoSaveError_message" = "无法保存视频，错误信息为 %@";
+
+// Image move
+"moveImage_title" = "移动到相册";
+"moveSingleImage_selectAlbum" = "Please, select the album in which you wish to move the photo \"%@\".";
+"moveSeveralImages_selectAlbum" = "Please, select the album in which you wish to copy the photos.";
+"moveSingleImage_message" = "您确定要将照片\"%@\"移动到相册\"%@\"吗？";
+"moveSeveralImages_message" = "您确定要将照片移动到相册\"%@\"吗？";
+"moveSingleImageHUD_moving" = "正在移动照片…";
+"moveSeveralImagesHUD_moving" = "正在移动照片…";
+
+// Image move — Errors
+"moveImageError_title" = "移动失败";
+"moveSingleImageError_message" = "无法移动照片";
+"moveSeveralImagesError_message" = "Failed to move some photos";
+
+// Image copy
+"copyImage_title" = "复制到相册";
+"copySingleImage_selectAlbum" = "Please, select the album in which you wish to copy the photo \"%@\".";
+"copySeveralImages_selectAlbum" = "Please, select the album in which you wish to copy the photos.";
+"copySingleImage_message" = "你确定要把照片\"%@\"移动到相册\"%@\"中吗？";
+"copySeveralImages_message" = "你确定要把照片移动到相册 \"%@\" 吗？";
+"copySingleImageHUD_copying" = "复制照片中...";
+"copySeveralImagesHUD_copying" = "复制照片中...";
+
+// Image copy — Errors
+"copyImageError_title" = "复制失败";
+"copySingleImageError_message" = "无法复制照片";
+"copySeveralImagesError_message" = "Failed to copy some photos";
+
+// Images upload
+"imageUploadHeader" = "Please select the album or sub-album from which photos and videos of your device will be uploaded.";
+"imageUploadHeaderTitle_images" = "照片参数";
+"imageUploadHeaderText_images" = "请设置用于选择照片/视频的参数";
+"imageUploadHeaderTitle_upload" = "上传设置";
+"imageUploadHeaderText_upload" = "请设置用于选择照片/视频的上传参数";
+
+"imageUploadDetails_title" = "标题：";
+"imageUploadDetails_author" = "作者：";
+"imageUploadDetails_privacy" = "隐私：";
+"imageUploadDetails_tags" = "标签：";
+"imageUploadDetails_description" = "描述：";
+
+"imageUploadDetailsView_title" = "照片";
+"imageUploadDetailsButton_title" = "上传";
+"imageUploadDetailsEdit_title" = "编辑要上传的照片";
+"imageUploadDetailsUploading_title" = "正在被上传的照片";
+"imageUploadDetailsCell_uploadComplete" = "即将完成...";
+
+"imageUploadRemove" = "移除已上传的照片";
+
+"imageUploadTableCell_waiting" = "请稍等...";
+"imageUploadTableCell_preparing" = "正在准备...";
+"imageUploadTableCell_prepared" = "已准备好上传...";
+"imageUploadTableCell_uploading" = "上传中...";
+"imageUploadTableCell_uploaded" = "已上传";
+"imageUploadTableCell_finishing" = "结束中...";
+
+"imageUploadClearFailedSingle" = "清除失败的上传任务";
+"imageUploadClearFailedSeveral" = "清除 %@ 个失败的上传任务";
+"imageUploadClearCompletedSingle" = "清除已完成的上传任务";
+"imageUploadClearCompletedSeveral" = "清除 %@ 个已完成的上传任务";
+"imageUploadResumeSingle" = "继续上传";
+"imageUploadResumeSeveral" = "继续剩余的 %@ 个上传";
+
+"imageUploadProgressBar_zero" = "正在上传 0/0";
+"imageUploadProgressBar_nonZero" = "正在上传 %@/%@";
+"imageUploadProgressBar_completed" = "完成";
+"imageUploadCompleted_title" = "上传完成";
+"imageUploadCompleted_message" = "照片成功上传到你的Piwigo服务器";
+"imageUploadCompleted_message>1" = "照片成功上传到你的Piwigo服务器";
+
+
+// Image upload — Errors
+"uploadError_title" = "上传错误";
+"uploadError_message" = "无法上传你的照片，错误信息为 %@";
+"uploadCancelled_title" = "上传已取消";
+"uploadNoInternetNetwork" = "没有网络连接";
+"uploadNoWiFiNetwork" = "没有Wi-Fi连接";
+"uploadLowPowerMode" = "已开启低电量模式";
+"uploadSection_impossible" = "无法完成的上传任务";
+"uploadSection_resumable" = "可继续的上传任务";
+"uploadSection_queue" = "上传队列";
+
+"imageUploadError_title" = "照片上传错误";
+"imageUploadError_format" = "Piwigo服务器不支持这个文件格式";
+"imageUploadError_source" = "无法创建照片源";
+"imageUploadError_destination" = "无法创建照片目标";
+"imageUploadError_iCloud" = "找不到照片，错误信息为 %@";
+
+"audioUploadError_title" = "音频上传错误";
+"audioUploadError_format" = "抱歉，Piwigo Mobile不支持音频文件";
+
+"videoUploadError_title" = "视频上传错误";
+"videoUploadError_format" = "抱歉，Piwigo服务器无法接受.%@后缀名的视频文件";
+"videoUploadError_iCloud" = "找不到视频，错误信息为 %@";
+"videoUploadError_export" = "抱歉，找不到视频可以上传，错误信息为 %@";
+"videoUploadError_unknown" = "抱歉，视频在MP4转换过程中出现错误，错误信息为 %@";
+"videoUploadCancelled_message" = "视频上传已被取消";
+
+// Image share
+"shareImageMetadata_Title" = "共享元数据";
+"shareImageMetadata_subTitle1" = "分享照片时包含元数据";
+"shareImageMetadata_subTitle2" = "分享照片时不包含元数据";
+"shareActivityCode_AirDrop" = "使用AirDrop共享";
+"shareActivityCode_AirDrop>375px" = "使用AirDrop共享照片";
+"shareActivityCode_AssignToContact" = "分配给联系人";
+"shareActivityCode_AssignToContact>375px" = "将照片分配给联系人";
+"shareActivityCode_CopyToPasteboard" = "复制到剪贴板";
+"shareActivityCode_CopyToPasteboard>375px" = "将照片复制到粘贴板";
+"shareActivityCode_Mail" = "通过电子邮件发布";
+"shareActivityCode_Mail>375px" = "通过电子邮件发布照片";
+"shareActivityCode_Message" = "通过短信发布";
+"shareActivityCode_Message>375px" = "通过短信发布照片";
+"shareActivityCode_Facebook" = "发布到 Facebook";
+"shareActivityCode_Facebook>375px" = "将照片发布到 Facebook";
+"shareActivityCode_Messenger" = "发布到 Messenger";
+"shareActivityCode_Messenger>375px" = "将照片发布到 Messenger";
+"shareActivityCode_Flickr" = "发布到 Flickr";
+"shareActivityCode_Flickr>375px" = "将照片发布到 Flickr";
+"shareActivityCode_Instagram" = "发布到 Instagram";
+"shareActivityCode_Instagram>375px" = "将照片发布到 Instagram";
+"shareActivityCode_Signal" = "发布到 Signal";
+"shareActivityCode_Signal>375px" = "将照片发布到 Signal";
+"shareActivityCode_Snapchat" = "发布到 Snapchat";
+"shareActivityCode_Snapchat>375px" = "将照片发布到 Snapchat";
+"shareActivityCode_TencentWeibo" = "发布到腾讯微博";
+"shareActivityCode_TencentWeibo>375px" = "将照片发布到腾讯微博";
+"shareActivityCode_Twitter" = "发布到 Twitter";
+"shareActivityCode_Twitter>375px" = "将照片发布到 Twitter";
+"shareActivityCode_Vimeo" = "发布到 Vimeo";
+"shareActivityCode_Vimeo>375px" = "将视频发布到 Vimeo";
+"shareActivityCode_Weibo" = "发布到新浪微博";
+"shareActivityCode_Weibo>375px" = "将照片发布到新浪微博";
+"shareActivityCode_WhatsApp" = "发布到 WhatsApp";
+"shareActivityCode_WhatsApp>375px" = "将照片发布到 WhatsApp";
+"shareActivityCode_CameraRoll" = "保存到相册";
+"shareActivityCode_CameraRoll>375px" = "保存照片到相册";
+"shareActivityCode_Other" = "使用其他应用共享";
+"shareActivityCode_Other>375px" = "使用其他应用共享照片";
+
+"shareFailError_title" = "分享失败";
+"shareMetadataError_message" = "无法删除私有元数据";
+
+// ===========================================================================
+// ==> LOCAL ALBUMS & IMAGES / Photo Library
+// ===========================================================================
+"localAlbums" = "照片库";
+"localAlbums_accessible" = "可访问照片";
+
+// Local albums — Access not Authorized
+"localAlbums_photosNotAuthorized_title" = "无访问权限";
+"localAlbums_photosNiltitle" = "读取照片出现问题";
+"localAlbums_photosNnil_msg" = "读取本地照片库时出现问题";
+
+// Local albums — Tell user to change settings, how
+"localAlbums_photosNotAuthorized_msg" = "无法读取本地照片库，请进入设备设置菜单，为Piwigo授予相应权限";
+
+// Local images — Explain
+"localImages_deleteTitle" = "从相机卷删除";
+"localImages_deleteMessage" = "您想要从相机卷中删除上传的照片或视频吗？ 已删除的照片或视频仍可在 iOS 照片回收站中使用 30 天。";
+
+// ===========================================================================
+// ==> SETTINGS
+// ===========================================================================
+// Settings — Piwigo Server
+"settingsHeader_server" = "Piwigo服务器";
+"settingsHeader_notSecure" = "不安全的连接";
+"settings_server" = "站点地址";
+"settings_username" = "用户名";
+"settings_notLoggedIn" = " 未登录 ";
+"settings_logout" = "登出";
+"settingsFooter_formats" = "服务器接受以下文件类型";
+
+// Settings — Unused
+"settingsHeader_general" = "通用设置";
+"settingsHeader_thumbnails" = "缩略图";
+
+// Settings — Albums
+"defaultImageSort" = "排序";
+"defaultImageSort>320px" = "默认排序";
+"defaultImageSort>414px" = "默认照片排序";
+"defaultAlbumThumbnailFile>414px" = "相册封面文件";
+"defaultAlbumThumbnailSizeHeader" = "请选择相册封面大小";
+"maxNberOfRecentAlbums" = "最近的";
+"maxNberOfRecentAlbums>320px" = "最近的相册";
+"maxNberOfRecentAlbums>414px" = "最近相册的数量";
+
+"thumbnailSizeSquare" = "矩形";
+"thumbnailSizeThumbnail" = "缩略图";
+"thumbnailSizeXXSmall" = "极小";
+"thumbnailSizeXSmall" = "非常小";
+"thumbnailSizeSmall" = "小";
+"thumbnailSizeMedium" = "中等";
+"thumbnailSizeLarge" = "大";
+"thumbnailSizeXLarge" = "非常大";
+"thumbnailSizeXXLarge" = "极大";
+"thumbnailSizexFullRes" = "完整分辨率";
+
+// Settings — Images
+"settingsHeader_images" = "照片";
+
+"defaultThumbnailFile" = "文件";
+"defaultThumbnailFile>320px" = "缩略图文件";
+"defaultThumbnailFile>414px" = "照片缩略图文件";
+"defaultThumbnailSize" = "大小";
+"defaultThumbnailSize>320px" = "缩略图大小";
+"defaultThumbnailSize>414px" = "缩略图默认大小";
+"defaultNberOfThumbnails" = "数量";
+"defaultNberOfThumbnails>320px" = "每行数量";
+"defaultNberOfThumbnails>414px" = "每行数量";
+//"defaultThumbnailSizeTitle" = "Default Size";
+"defaultThumbnailSizeHeader" = "请选择照片缩略图大小";
+"settings_displayTitles" = "缩略图标题";
+"settings_displayTitles>320px" = "在缩略图上显示标题";
+
+"defaultPreviewFile" = "预览";
+"defaultPreviewFile>320px" = "预览文件";
+"defaultPreviewFile>414px" = "预览照片文件";
+"defaultImageSize" = "照片";
+"defaultImageSize>320px" = "照片大小";
+"defaultImageSize>414px" = "照片默认大小";
+//"defaultImageSizeTitle" = "Default Size";
+"defaultImageSizeHeader" = "请选择照片默认大小";
+"defaultImageSize_recommended" = "（推荐）";
+"defaultSize_disabled" = "（在服务器上禁用）";
+"defaultSizeFooter" = "灰色的尺寸不被Piwigo服务器支持";
+
+"settings_shareGPSdata" = "分享私密元数据";
+"settings_shareGPSdata>375px" = "共享时包含私密元数据";
+
+"imageSizeSquare" = "方形";
+"imageSizeThumbnail" = "缩略图";
+"imageSizeXXSmall" = "极小";
+"imageSizeXSmall" = "非常小";
+"imageSizeSmall" = "小";
+"imageSizeMedium" = "中等";
+"imageSizeLarge" = "大";
+"imageSizeXLarge" = "非常大";
+"imageSizeXXLarge" = "极大";
+"imageSizexFullRes" = "全尺寸";
+
+// Settings — Upload
+"settingsHeader_upload" = "默认上传设置";
+"settings_defaultAuthor" = "作者";
+"settings_defaultAuthor>320px" = "作者名称";
+"settings_defaultAuthorPlaceholder" = "作者名称";
+"settings_defaultPrivacy" = "隐私";
+"settings_defaultPrivacy>414px" = "请选择谁可以看到照片";
+"settings_stripGPSdata" = "去除私密元数据";
+"settings_stripGPSdata>375px" = "上传前删除私密元数据";
+"settings_photoResize" = "上传前调整大小";
+"settings_photoResize>375px" = "上传照片前调整大小";
+"settings_photoSize" = "大小";
+"settings_placeholderSize" = "输入5-100之间的照片大小";
+"settings_photoCompress" = "上传前压缩";
+"settings_photoCompress>375px" = "上传照片前压缩";
+"settings_photoQuality" = "质量";
+"settings_placeholderQuality" = "输入照片质量（50~98）";
+"settings_prefixFilename>414px" = "自动为上传的照片文件名增加前缀";
+"settings_prefixFilename>375px" = "自动为上传的文件名增加前缀";
+"settings_prefixFilename" = "照片文件名前缀";
+"settings_defaultPrefix" = "前缀";
+"settings_defaultPrefix>320px" = "文件名前缀";
+"settings_defaultPrefixPlaceholder" = "前缀";
+"settings_deleteImage>375px" = "上传后删除照片";
+"settings_wifiOnly" = "仅限Wi-Fi";
+"settings_deleteImage" = "上传后删除照片";
+"settings_autoUpload" = "Auto Upload";
+"settings_autoUpload>414px" = "Auto Upload Photos";
+"settings_autoUploadEnabled" = "On";
+"settings_autoUploadEnabledInfo" = "Photos will be automatically uploaded to your Piwigo.";
+"settings_autoUploadEnabledInfoAll" = "Photos and videos will be automatically uploaded to your Piwigo.";
+"settings_autoUploadDisabled" = "Off";
+"settings_autoUploadDisabledInfo" = "Photos will not be automatically uploaded to your Piwigo.";
+"settings_autoUploadSource" = "Source";
+"settings_autoUploadSourceInvalid" = "Invalid source album";
+"settings_autoUploadSourceInfo" = "Please select the album or sub-album from which photos and videos of your device will be auto-uploaded.";
+"settings_autoUploadDestination" = "Destination";
+"settings_autoUploadDestinationInvalid" = "Invalid destination album";
+"settings_autoUploadDestinationInfo" = "Please select the album or sub-album into which photos and videos will be auto-uploaded.";
+
+// Settings — Cache
+"settingsHeader_cache" = "缓存设置 (使用量/总量)";
+"settings_cacheDisk" = "磁盘";
+"settings_cacheMemory" = "内存";
+"settings_cacheMegabytes" = "MB";
+"settings_cacheClear" = "清除缓存";
+"settings_cacheClearAll" = "清除图像缓存";
+"settings_cacheClearMsg" = "您确定要清除图像缓存吗？这将使相册和图像需要一段时间才能再次加载。";
+
+// Settings — Appearance
+"settingsHeader_appearance" = "外观";
+"settingsHeader_colorPalette" = "色板";
+"settings_lightColor" = "暲";
+"settings_darkColor" = "黑";
+"settings_switchPalette" = "自动的";
+"settings_brightness" = "亮度";
+"settings_brightnessHelp" = "在环境亮度低的情况下，自动选项会使用黑色色调色板来使照片在黑暗背景下显露出来。";
+
+// Settings — Information
+"settings_appName" = "Piwigo Mobile";
+"settingsHeader_about" = "信息";
+"settings_twitter" = "@piwigo";
+"settings_twitterURL" = "https://twitter.com/piwigo";
+"settings_contactUs" = "联系我们 ";
+"settings_feedback" = "用户反馈";
+"settings_supportForum" = "支援论坛";
+"settings_releaseNotes" = "发布日志";
+"settings_rateInAppStore" = "评价 Piwigo Mobile";
+"settings_translateWithCrowdin" = "翻译 Piwigo Mobile";
+"settings_pwgForumURL" = "http://piwigo.org/forum";
+"settings_acknowledgements" = "致谢";
+"settings_privacy" = "隐私政策";
+"settings_users" = "用户";
+"settings_groups" = "群组";
+
+// Settings — Help
+"help01_header" = "多选";
+"help01_text" = "将您的手指从左向右滑动(或向右滑动)，然后向下滑动等。";
+"help02_header" = "后台上传";
+"help02_text" = "选择照片/视频，设置参数并点击上传。";
+"help02_text2" = "将设备插入充电器，让iOS在适当时启动上传。";
+"help02_text3" = "(需要 uploadAsync 扩展或 Piwigo 11)";
+"help03_header" = "管理员";
+"help03_text" = "创建、删除、移动和重命名相册。";
+"help04_text" = "从相机卷中删除的上传照片仍可在 iOS 照片回收站中使用30天。";
+"help05_header" = "上传照片";
+"help05_text" = "上传请求一旦提交，您可以浏览相册，提交其他请求或离开应用程序。";
+"help05_text2" = "点击根相册中的灰色按钮来管理上传。";
+"help06_header" = "上传管理";
+"help06_text" = "全局或单独监测、取消和恢复上传请求。";

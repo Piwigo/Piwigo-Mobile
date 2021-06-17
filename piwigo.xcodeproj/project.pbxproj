@@ -26,14 +26,13 @@
 		AD1EBB68213404D50012FA44 /* piwigoGetPiwigo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1EBB67213404D50012FA44 /* piwigoGetPiwigo.swift */; };
 		AD1EBB70213404DB0012FA44 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1EBB6F213404DB0012FA44 /* SnapshotHelper.swift */; };
 		AD21145A2122D3E4004FFC8C /* AlbumTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD2114592122D3E4004FFC8C /* AlbumTableViewCell.xib */; };
+		AD22401C267B6DD900269B84 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = AD22401A267B6DD900269B84 /* Intents.intentdefinition */; };
 		AD27A16F24C44EEC000AD203 /* EditImageThumbTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD27A16E24C44EEC000AD203 /* EditImageThumbTableViewCell.xib */; };
 		AD27B85D25A22A2400528F5F /* ShareImageActivityItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD27B85C25A22A2400528F5F /* ShareImageActivityItemProvider.swift */; };
 		AD27B87325A7A91800528F5F /* ShareUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD27B87225A7A91800528F5F /* ShareUtilities.swift */; };
 		AD2913CA2669480F00403026 /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2913B32669440000403026 /* Intents.framework */; };
 		AD2913CD2669480F00403026 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2913CC2669480F00403026 /* IntentHandler.swift */; };
 		AD2913D12669480F00403026 /* piwigoIntents.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = AD2913C92669480F00403026 /* piwigoIntents.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		AD2913D626695BB100403026 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = AD2913D526695BB100403026 /* Intents.intentdefinition */; };
-		AD2913D726695C3E00403026 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = AD2913D526695BB100403026 /* Intents.intentdefinition */; };
 		AD2913D926695EAD00403026 /* AutoUploadPhotosHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2913D826695EAD00403026 /* AutoUploadPhotosHandler.swift */; };
 		AD2913E926696A9500403026 /* NetworkVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD97CFB7265B0DBE00719ED5 /* NetworkVars.swift */; };
 		AD2A21FE24310E65006B1A8A /* SelectPrivacyViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD2A21FD24310E65006B1A8A /* SelectPrivacyViewController.storyboard */; };
@@ -337,6 +336,21 @@
 		AD1EBB6F213404DB0012FA44 /* SnapshotHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
 		AD1F60012402B1B70099E5E5 /* UIColor+AppColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+AppColors.swift"; sourceTree = "<group>"; };
 		AD2114592122D3E4004FFC8C /* AlbumTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AlbumTableViewCell.xib; sourceTree = "<group>"; };
+		AD22401D267B6DDF00269B84 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; name = Base; path = Base.lproj/Intents.intentdefinition; sourceTree = "<group>"; };
+		AD22401F267B6DF400269B84 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Intents.strings; sourceTree = "<group>"; };
+		AD224021267B6E0200269B84 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Intents.strings; sourceTree = "<group>"; };
+		AD224024267B7F2200269B84 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Intents.strings; sourceTree = "<group>"; };
+		AD224026267B7F2800269B84 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Intents.strings"; sourceTree = "<group>"; };
+		AD224028267B7F2900269B84 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/Intents.strings; sourceTree = "<group>"; };
+		AD22402A267B7F2A00269B84 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Intents.strings; sourceTree = "<group>"; };
+		AD22402C267B7F2B00269B84 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Intents.strings; sourceTree = "<group>"; };
+		AD22402E267B7F2C00269B84 /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Intents.strings; sourceTree = "<group>"; };
+		AD224030267B7F2D00269B84 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Intents.strings; sourceTree = "<group>"; };
+		AD224032267B7F2D00269B84 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Intents.strings; sourceTree = "<group>"; };
+		AD224034267B7F2E00269B84 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/Intents.strings; sourceTree = "<group>"; };
+		AD224036267B7F2F00269B84 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Intents.strings; sourceTree = "<group>"; };
+		AD224038267B7F3000269B84 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Intents.strings; sourceTree = "<group>"; };
+		AD22403A267B7F3100269B84 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Intents.strings; sourceTree = "<group>"; };
 		AD23A1F02427C95700F662AB /* UploadError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadError.swift; sourceTree = "<group>"; };
 		AD23A1F22427D2D900F662AB /* UploadsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadsProvider.swift; sourceTree = "<group>"; };
 		AD27A16D24C44CFF000AD203 /* EditImageParamsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EditImageParamsViewController.h; sourceTree = "<group>"; };
@@ -347,7 +361,6 @@
 		AD2913C92669480F00403026 /* piwigoIntents.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = piwigoIntents.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD2913CC2669480F00403026 /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
 		AD2913CE2669480F00403026 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AD2913D526695BB100403026 /* Intents.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = Intents.intentdefinition; sourceTree = "<group>"; };
 		AD2913D826695EAD00403026 /* AutoUploadPhotosHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoUploadPhotosHandler.swift; sourceTree = "<group>"; };
 		AD2913EC26696EC100403026 /* NetworkVarsObjc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NetworkVarsObjc.swift; path = piwigo/Network/NetworkVarsObjc.swift; sourceTree = SOURCE_ROOT; };
 		AD294B2A1F2CE87400CD3769 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/AppStore.strings; sourceTree = "<group>"; };
@@ -818,6 +831,19 @@
 			path = piwigoGetPiwigo;
 			sourceTree = "<group>";
 		};
+		AD224022267B7D8800269B84 /* Strings */ = {
+			isa = PBXGroup;
+			children = (
+				AD6B2E781F0930CE0040EAD9 /* About.strings */,
+				AD294B291F2CE87200CD3769 /* AppStore.strings */,
+				ADC06ADF1F40B15E0081B4FA /* InfoPlist.strings */,
+				AD6B2E751F0930B40040EAD9 /* Localizable.strings */,
+				AD3203662184738F00BAD372 /* PrivacyPolicy.strings */,
+				AD92B9001F200083006E5B63 /* ReleaseNotes.strings */,
+			);
+			name = Strings;
+			sourceTree = "<group>";
+		};
 		AD23A1EF2427C94000F662AB /* Uploads Data */ = {
 			isa = PBXGroup;
 			children = (
@@ -835,7 +861,7 @@
 			isa = PBXGroup;
 			children = (
 				AD2913CC2669480F00403026 /* IntentHandler.swift */,
-				AD2913D526695BB100403026 /* Intents.intentdefinition */,
+				AD22401A267B6DD900269B84 /* Intents.intentdefinition */,
 				AD2913D826695EAD00403026 /* AutoUploadPhotosHandler.swift */,
 				AD2913CE2669480F00403026 /* Info.plist */,
 			);
@@ -909,19 +935,6 @@
 				ADF88E782066DA9500D1CE26 /* OpenSansExtraBold.TTF */,
 			);
 			path = Fonts;
-			sourceTree = "<group>";
-		};
-		AD5C14B9266CC564007E8C99 /* Strings */ = {
-			isa = PBXGroup;
-			children = (
-				AD6B2E751F0930B40040EAD9 /* Localizable.strings */,
-				AD6B2E781F0930CE0040EAD9 /* About.strings */,
-				AD92B9001F200083006E5B63 /* ReleaseNotes.strings */,
-				AD294B291F2CE87200CD3769 /* AppStore.strings */,
-				ADC06ADF1F40B15E0081B4FA /* InfoPlist.strings */,
-				AD3203662184738F00BAD372 /* PrivacyPolicy.strings */,
-			);
-			path = Strings;
 			sourceTree = "<group>";
 		};
 		AD5F64E624C601B500660BE3 /* pwg.tags */ = {
@@ -1430,7 +1443,7 @@
 				ADAEED8622E2665000CB1B12 /* LaunchScreen.storyboard */,
 				AD35CA391E9C1EBC00E3B897 /* Images.xcassets */,
 				AD5C14B7266C2E3E007E8C99 /* Fonts */,
-				AD5C14B9266CC564007E8C99 /* Strings */,
+				AD224022267B7D8800269B84 /* Strings */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -1556,6 +1569,7 @@
 			buildConfigurationList = AD084E4F2659A27100159FE1 /* Build configuration list for PBXNativeTarget "piwigoKit" */;
 			buildPhases = (
 				AD084E412659A27100159FE1 /* Headers */,
+				AD7038A4267B931200A72CE1 /* Auto-increment build version of release */,
 				AD084E422659A27100159FE1 /* Sources */,
 				AD084E432659A27100159FE1 /* Frameworks */,
 				AD084E442659A27100159FE1 /* Resources */,
@@ -1609,6 +1623,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = AD2913D22669480F00403026 /* Build configuration list for PBXNativeTarget "piwigoIntents" */;
 			buildPhases = (
+				AD22403B267B8E3A00269B84 /* Auto-increment build version of release */,
 				AD2913C52669480F00403026 /* Sources */,
 				AD2913C62669480F00403026 /* Frameworks */,
 				AD2913C72669480F00403026 /* Resources */,
@@ -1927,6 +1942,42 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		AD22403B267B8E3A00269B84 /* Auto-increment build version of release */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Auto-increment build version of release";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ $CONFIGURATION == Release ]; then\n    buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$INFOPLIST_FILE\")\n    buildNumber=$(($buildNumber + 1))\n    /usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"$INFOPLIST_FILE\"\nfi\n";
+		};
+		AD7038A4267B931200A72CE1 /* Auto-increment build version of release */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Auto-increment build version of release";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ $CONFIGURATION == Release ]; then\n    buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$INFOPLIST_FILE\")\n    buildNumber=$(($buildNumber + 1))\n    /usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"$INFOPLIST_FILE\"\nfi\n";
+		};
 		AD982C001EDD56FB0065BE3B /* Auto-increment build version of release */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2010,7 +2061,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AD2913D626695BB100403026 /* Intents.intentdefinition in Sources */,
+				AD22401C267B6DD900269B84 /* Intents.intentdefinition in Sources */,
 				AD2913CD2669480F00403026 /* IntentHandler.swift in Sources */,
 				AD2913D926695EAD00403026 /* AutoUploadPhotosHandler.swift in Sources */,
 			);
@@ -2041,7 +2092,6 @@
 				ADF1CC75243D111600D75319 /* SelectCategoryViewController.swift in Sources */,
 				ADEAFB8D25F8182C00EEDB1D /* ColorPaletteViewController.swift in Sources */,
 				ADA24DB8243A767700864D1F /* DefaultImageSizeViewController.swift in Sources */,
-				AD2913D726695C3E00403026 /* Intents.intentdefinition in Sources */,
 				ADA24DB1243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift in Sources */,
 				ADF72EB5267286D60027E2CC /* UploadSessionDelegate.swift in Sources */,
 				AD61D3142571598000B8DEA0 /* HelpViewController.swift in Sources */,
@@ -2193,6 +2243,28 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		AD22401A267B6DD900269B84 /* Intents.intentdefinition */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AD22401D267B6DDF00269B84 /* Base */,
+				AD22401F267B6DF400269B84 /* en */,
+				AD224021267B6E0200269B84 /* fr */,
+				AD224024267B7F2200269B84 /* ar */,
+				AD224026267B7F2800269B84 /* zh-Hans */,
+				AD224028267B7F2900269B84 /* da */,
+				AD22402A267B7F2A00269B84 /* nl */,
+				AD22402C267B7F2B00269B84 /* de */,
+				AD22402E267B7F2C00269B84 /* id */,
+				AD224030267B7F2D00269B84 /* it */,
+				AD224032267B7F2D00269B84 /* ja */,
+				AD224034267B7F2E00269B84 /* pl */,
+				AD224036267B7F2F00269B84 /* ru */,
+				AD224038267B7F3000269B84 /* es */,
+				AD22403A267B7F3100269B84 /* sv */,
+			);
+			name = Intents.intentdefinition;
+			sourceTree = "<group>";
+		};
 		AD294B291F2CE87200CD3769 /* AppStore.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -2343,7 +2415,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 371;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = ZEC3W885H6;
@@ -2389,7 +2461,7 @@
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 371;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = ZU5THW8T5W;
@@ -2575,6 +2647,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 368;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = ZEC3W885H6;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -2614,6 +2687,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution";
 				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 368;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = ZU5THW8T5W;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
