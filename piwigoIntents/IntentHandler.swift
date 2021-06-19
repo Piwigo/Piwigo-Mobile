@@ -2,12 +2,13 @@
 //  IntentHandler.swift
 //  piwigoIntents
 //
-//  Created by Eddy Lelièvre-Berna on 03/06/2021.
+//  Created by Eddy Lelièvre-Berna on 19/06/2021.
 //  Copyright © 2021 Piwigo.org. All rights reserved.
 //
 
 import Intents
 
+@available(iOSApplicationExtension 13.0, *)
 class IntentHandler: INExtension {
     
     override func handler(for intent: INIntent) -> Any {

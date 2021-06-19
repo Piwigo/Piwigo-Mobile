@@ -24,10 +24,10 @@ public class UploadUtilities: NSObject {
     /// - image formats whcih can be converted with iOS
     /// - movie formats which can be converted with iOS
     /// See: https://developer.apple.com/documentation/uniformtypeidentifiers/uttype/system_declared_types
-    public static var acceptedImageFormats: String = {
+    @nonobjc public static let acceptedImageFormats: String = {
         return "png,heic,heif,tif,tiff,jpg,jpeg,raw,webp,gif,bmp,ico"
     }()
-    public static var acceptedMovieFormats: String = {
+    @nonobjc public static let acceptedMovieFormats: String = {
         return "mov,mpg,mpeg,mpeg2,mp4,avi"
     }()
 

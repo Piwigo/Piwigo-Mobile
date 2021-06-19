@@ -7,7 +7,7 @@
 	<key>INIntentDefinitionModelVersion</key>
 	<string>1.2</string>
 	<key>INIntentDefinitionNamespace</key>
-	<string>Q6o9pC</string>
+	<string>Y5qchL</string>
 	<key>INIntentDefinitionSystemVersion</key>
 	<string>20G5042c</string>
 	<key>INIntentDefinitionToolsBuildVersion</key>
@@ -24,9 +24,7 @@
 			<key>INIntentDescription</key>
 			<string>Auto-uploads photos as pre-defined in the settings of the app.</string>
 			<key>INIntentDescriptionID</key>
-			<string>AkZxm5</string>
-			<key>INIntentIneligibleForSuggestions</key>
-			<true/>
+			<string>xFMKf4</string>
 			<key>INIntentManagedParameterCombinations</key>
 			<dict>
 				<key></key>
@@ -34,24 +32,42 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Auto-Upload Photos</string>
+					<string>Auto-upload to my Piwigo</string>
 					<key>INIntentParameterCombinationTitleID</key>
-					<string>ohRnWU</string>
+					<string>VPZ15V</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
 					<true/>
 				</dict>
 			</dict>
 			<key>INIntentName</key>
 			<string>AutoUploadPhotos</string>
+			<key>INIntentParameterCombinations</key>
+			<dict>
+				<key></key>
+				<dict>
+					<key>INIntentParameterCombinationIsPrimary</key>
+					<true/>
+					<key>INIntentParameterCombinationSubtitle</key>
+					<string>Auto-uploads photos as pre-defined in the settings of the app.</string>
+					<key>INIntentParameterCombinationSubtitleID</key>
+					<string>B4Ax9B</string>
+					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
+					<true/>
+					<key>INIntentParameterCombinationTitle</key>
+					<string>Auto-upload to my Piwigo</string>
+					<key>INIntentParameterCombinationTitleID</key>
+					<string>YsoKwM</string>
+				</dict>
+			</dict>
 			<key>INIntentResponse</key>
 			<dict>
 				<key>INIntentResponseCodes</key>
 				<array>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>${nberPhotos} are being uploaded.</string>
+						<string>${nberPhotos} upload requests have been added to the queue.</string>
 						<key>INIntentResponseCodeFormatStringID</key>
-						<string>0ujcTO</string>
+						<string>HhSUx9</string>
 						<key>INIntentResponseCodeName</key>
 						<string>success</string>
 						<key>INIntentResponseCodeSuccess</key>
@@ -59,41 +75,55 @@
 					</dict>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>Could not launch the uploads.</string>
+						<string>${error}</string>
 						<key>INIntentResponseCodeFormatStringID</key>
-						<string>86Lqgi</string>
+						<string>xCqqij</string>
 						<key>INIntentResponseCodeName</key>
 						<string>failure</string>
 					</dict>
 				</array>
 				<key>INIntentResponseLastParameterTag</key>
-				<integer>4</integer>
+				<integer>3</integer>
 				<key>INIntentResponseParameters</key>
 				<array>
 					<dict>
 						<key>INIntentResponseParameterDisplayName</key>
 						<string>Nber Photos</string>
 						<key>INIntentResponseParameterDisplayNameID</key>
-						<string>656sT6</string>
+						<string>Lu2BW0</string>
 						<key>INIntentResponseParameterDisplayPriority</key>
 						<integer>1</integer>
 						<key>INIntentResponseParameterName</key>
 						<string>nberPhotos</string>
 						<key>INIntentResponseParameterTag</key>
-						<integer>4</integer>
+						<integer>2</integer>
 						<key>INIntentResponseParameterType</key>
 						<string>Integer</string>
+					</dict>
+					<dict>
+						<key>INIntentResponseParameterDisplayName</key>
+						<string>Error</string>
+						<key>INIntentResponseParameterDisplayNameID</key>
+						<string>fyDHqS</string>
+						<key>INIntentResponseParameterDisplayPriority</key>
+						<integer>2</integer>
+						<key>INIntentResponseParameterName</key>
+						<string>error</string>
+						<key>INIntentResponseParameterTag</key>
+						<integer>3</integer>
+						<key>INIntentResponseParameterType</key>
+						<string>String</string>
 					</dict>
 				</array>
 			</dict>
 			<key>INIntentTitle</key>
-			<string>Auto-Upload Photos</string>
+			<string>Auto-upload to my Piwigo</string>
 			<key>INIntentTitleID</key>
-			<string>AaGMwg</string>
+			<string>jYG1fV</string>
 			<key>INIntentType</key>
 			<string>Custom</string>
 			<key>INIntentVerb</key>
-			<string>Do</string>
+			<string>Run</string>
 		</dict>
 	</array>
 	<key>INTypes</key>
