@@ -16,7 +16,7 @@ extension UploadManager{
         // Retrieve upload request parameters
         let taskContext = DataController.privateManagedObjectContext
         let upload = taskContext.object(with: uploadID) as! Upload
-        print("\(debugFormatter.string(from: Date())) > finishing transfer of \(upload.fileName)…")
+        print("\(UploadUtilities.debugFormatter.string(from: Date())) > finishing transfer of \(upload.fileName)…")
 
         // Prepare creation date
         let dateFormat = DateFormatter()
@@ -120,7 +120,7 @@ extension UploadManager{
         }
 
         // Update state of finished upload
-        print("\(debugFormatter.string(from: Date())) > finished with \(uploadID) \(errorMsg)")
+        print("\(UploadUtilities.debugFormatter.string(from: Date())) > finished with \(uploadID) \(errorMsg)")
         uploadsProvider.updateStatusOfUpload(with: uploadID, to: newState, error: errorMsg) { [unowned self] (_) in
             // Consider next image
             self.didSetParameters()

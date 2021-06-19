@@ -129,7 +129,7 @@ extension UploadManager {
                    photoResize: nil, progress: nil, errorMsg: errorMsg)
 
         // Update state of upload request
-        print("\(debugFormatter.string(from: Date())) > prepared \(uploadID) i.e. \(properties.fileName) \(errorMsg)")
+        print("\(UploadUtilities.debugFormatter.string(from: Date())) > prepared \(uploadID) i.e. \(properties.fileName) \(errorMsg)")
         uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: newProperties) { [unowned self] (_) in
             // Upload ready for transfer
             self.didEndPreparation()
@@ -212,7 +212,7 @@ extension UploadManager {
     private func exportFullResolutionImage(from fullResImageData: Data,
                                            for uploadID: NSManagedObjectID, with upload: UploadProperties,
                                            completionHandler: @escaping (UploadProperties, Error?) -> Void) {
-        print("\(self.debugFormatter.string(from: Date())) > enters exportFullResolutionImage in", queueName())
+        print("\(UploadUtilities.debugFormatter.string(from: Date())) > enters exportFullResolutionImage in", queueName())
         // Initialisation
         var newUpload = upload
         
@@ -257,7 +257,7 @@ extension UploadManager {
                 
                 // Determine MD5 checksum of image file to upload
                 newUpload.md5Sum = fullResImageData.MD5checksum()
-                print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUpload.md5Sum))")
+                print("\(UploadUtilities.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUpload.md5Sum))")
                 countOfBytesPrepared += UInt64(fileURL.fileSize)
                 completionHandler(newUpload, nil)
                 return
@@ -299,7 +299,7 @@ extension UploadManager {
                     // Determine MD5 checksum of image file to upload
                     let error: NSError?
                     (newUpload.md5Sum, error) = fileURL.MD5checksum()
-                    print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUpload.md5Sum))")
+                    print("\(UploadUtilities.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUpload.md5Sum))")
                     if error != nil {
                         // Could not determine the MD5 checksum
                         completionHandler(upload, error)
@@ -341,7 +341,7 @@ extension UploadManager {
             // Determine MD5 checksum of image file to upload
             let error: NSError?
             (newUpload.md5Sum, error) = fileURL.MD5checksum()
-            print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUpload.md5Sum))")
+            print("\(UploadUtilities.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUpload.md5Sum))")
             if error != nil {
                 // Could not determine the MD5 checksum
                 completionHandler(newUpload, error)
@@ -457,7 +457,7 @@ extension UploadManager {
     private func exportResizedImage(for upload: UploadProperties,
                                     with fullResImageData: Data, andResized resizedImage: UIImage,
                                     completionHandler: @escaping (UploadProperties, Error?) -> Void) {
-        print("\(self.debugFormatter.string(from: Date())) > enters exportResizedImage in", queueName())
+        print("\(UploadUtilities.debugFormatter.string(from: Date())) > enters exportResizedImage in", queueName())
 
         // Create CGImage reference from full resolution image data
         guard let sourceFullRef: CGImageSource = CGImageSourceCreateWithData((fullResImageData as CFData), nil) else {
@@ -590,7 +590,7 @@ extension UploadManager {
         // Determine MD5 checksum of image file to upload
         let error: NSError?
         (newUpload.md5Sum, error) = fileURL.MD5checksum()
-        print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUpload.md5Sum))")
+        print("\(UploadUtilities.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUpload.md5Sum))")
         if error != nil {
             // Could not determine the MD5 checksum
             completionHandler(upload, error)

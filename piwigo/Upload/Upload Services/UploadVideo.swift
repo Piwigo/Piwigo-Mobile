@@ -49,7 +49,7 @@ extension UploadManager {
         // Determine MD5 checksum
         let error: NSError?
         (newUploadProperties.md5Sum, error) = originalFileURL.MD5checksum()
-        print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUploadProperties.md5Sum))")
+        print("\(UploadUtilities.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUploadProperties.md5Sum))")
         if error != nil {
             // Could not determine the MD5 checksum
             self.didPrepareVideo(for: uploadID, with: newUploadProperties, error)
@@ -140,7 +140,7 @@ extension UploadManager {
             // Determine MD5 checksum
             let error: NSError?
             (newUploadProperties.md5Sum, error) = originalFileURL.MD5checksum()
-            print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUploadProperties.md5Sum))")
+            print("\(UploadUtilities.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUploadProperties.md5Sum))")
             if error != nil {
                 // Could not determine the MD5 checksum
                 self.didPrepareVideo(for: uploadID, with: newUploadProperties, error)
@@ -206,7 +206,7 @@ extension UploadManager {
                    photoResize: nil, progress: nil, errorMsg: errorMsg)
 
         // Update state of upload request
-        print("\(debugFormatter.string(from: Date())) > prepared \(uploadID) \(errorMsg)")
+        print("\(UploadUtilities.debugFormatter.string(from: Date())) > prepared \(uploadID) \(errorMsg)")
         uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: newProperties) { [unowned self] (_) in
             // Upload ready for transfer
             self.didEndPreparation()
@@ -231,7 +231,7 @@ extension UploadManager {
     
     private func retrieveVideo(from imageAsset: PHAsset, with options: PHVideoRequestOptions,
                        completionHandler: @escaping (AVAsset?, PHVideoRequestOptions, Error?) -> Void) {
-        print("\(self.debugFormatter.string(from: Date())) > enters retrieveVideoAssetFrom in", queueName())
+        print("\(UploadUtilities.debugFormatter.string(from: Date())) > enters retrieveVideoAssetFrom in", queueName())
 
         // The block Photos calls periodically while downloading the video.
         options.progressHandler = { progress, error, stop, dict in
@@ -471,7 +471,7 @@ extension UploadManager {
             // MD5 checksum of exported video
             let error: NSError?
             (newUploadProperties.md5Sum, error) = outputURL.MD5checksum()
-            print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUploadProperties.md5Sum))")
+            print("\(UploadUtilities.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUploadProperties.md5Sum))")
             if error != nil {
                 // Could not determine the MD5 checksum
                 self.didPrepareVideo(for: uploadID, with: newUploadProperties, error)

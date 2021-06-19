@@ -11,6 +11,15 @@ import Photos
 
 public class UploadUtilities: NSObject {
 
+    // For logs
+    @nonobjc public static let debugFormatter: DateFormatter = {
+        var formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US")
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.ssssss"
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        return formatter
+    }()
+
     // - MARK: Constants returning the list of:
     /// - image formats whcih can be converted with iOS
     /// - movie formats which can be converted with iOS

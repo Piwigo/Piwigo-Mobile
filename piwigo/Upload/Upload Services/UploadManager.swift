@@ -37,16 +37,7 @@ class UploadManager: NSObject, URLSessionDelegate {
 //        print("\(debugFormatter.string(from: Date())) > willResignActive")
         appState = UIApplication.State.inactive
     }
-    
-    // For logs
-    let debugFormatter: DateFormatter = {
-        var formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US")
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.ssssss"
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
-        return formatter
-    }()
-    
+        
     /// Background queue in which uploads are managed
     let backgroundQueue: DispatchQueue = {
         return DispatchQueue(label: "org.piwigo.uploadBckgQueue", qos: .background)
@@ -161,8 +152,8 @@ class UploadManager: NSObject, URLSessionDelegate {
     @objc
     func findNextImageToUpload() -> Void {
         // Check current queue
-        print("\(debugFormatter.string(from: Date())) > findNextImageToUpload() in", queueName())
-        print("\(debugFormatter.string(from: Date())) > preparing:\(isPreparing ? "Yes" : "No"), uploading:\(isUploading.count), finishing:\(isFinishing ? "Yes" : "No")")
+        print("\(UploadUtilities.debugFormatter.string(from: Date())) > findNextImageToUpload() in", queueName())
+        print("\(UploadUtilities.debugFormatter.string(from: Date())) > preparing:\(isPreparing ? "Yes" : "No"), uploading:\(isUploading.count), finishing:\(isFinishing ? "Yes" : "No")")
 
         // Update app badge and Upload button in root/default album
         // Considers only uploads to the server to which the user is logged in
@@ -194,7 +185,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         if !isFinishing {
             // Transfers encountered an error
             for uploadID in finishingIDs {
-                print("\(debugFormatter.string(from: Date())) >  Interrupted finish —> \(uploadID.uriRepresentation())")
+                print("\(UploadUtilities.debugFormatter.string(from: Date())) >  Interrupted finish —> \(uploadID.uriRepresentation())")
                 uploadsProvider.updateStatusOfUpload(with: uploadID, to: .finishingError, error: JsonError.networkUnavailable.errorDescription) { [unowned self] (_) in
                     self.findNextImageToUpload()
                     return
@@ -206,7 +197,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         for uploadID in uploadingIDs {
             if !isUploading.contains(uploadID) {
                 // Transfer encountered an error
-                print("\(debugFormatter.string(from: Date())) >  Interrupted transfer —> \(uploadID.uriRepresentation())")
+                print("\(UploadUtilities.debugFormatter.string(from: Date())) >  Interrupted transfer —> \(uploadID.uriRepresentation())")
                 uploadsProvider.updateStatusOfUpload(with: uploadID, to: .uploadingError, error: JsonError.networkUnavailable.errorDescription) { [unowned self] (_) in
                     self.findNextImageToUpload()
                     return
@@ -218,7 +209,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         if !isPreparing {
             // Preparations encountered an error
             for uploadID in preparingIDs {
-                print("\(debugFormatter.string(from: Date())) >  Interrupted preparation —> \(uploadID.uriRepresentation())")
+                print("\(UploadUtilities.debugFormatter.string(from: Date())) >  Interrupted preparation —> \(uploadID.uriRepresentation())")
                 uploadsProvider.updateStatusOfUpload(with: uploadID, to: .preparingError, error: UploadError.missingAsset.errorDescription) { [unowned self] (_) in
                     self.findNextImageToUpload()
                     return
@@ -267,7 +258,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         if !isPreparing, nberPrepared < 2, nberFinishedWithError < 2,
            nberUploadedWithError < 2, nberPreparedWithError < 2,
            let uploadID = uploadsProvider.getRequestsIn(states: [.waiting]).first {
-            print("\(debugFormatter.string(from: Date())) > preparedWithError:\(nberPreparedWithError), uploadingWithError:\(nberUploadedWithError), finishedWithError:\(nberFinishedWithError)")
+            print("\(UploadUtilities.debugFormatter.string(from: Date())) > preparedWithError:\(nberPreparedWithError), uploadingWithError:\(nberUploadedWithError), finishedWithError:\(nberFinishedWithError)")
 
             // Pause upload manager if app not in the foreground
             // and not executed in a background task
@@ -303,7 +294,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         // Considers only uploads to the server to which the user is logged in
         let (imageIDs, uploadIDs) = uploadsProvider.getCompletedRequestsOfImagesToDelete()
         if !imageIDs.isEmpty, !uploadIDs.isEmpty {
-            print("\(debugFormatter.string(from: Date())) > (\(imageIDs.count),\(uploadIDs.count)) should be deleted")
+            print("\(UploadUtilities.debugFormatter.string(from: Date())) > (\(imageIDs.count),\(uploadIDs.count)) should be deleted")
             self.delete(uploadedImages: imageIDs, with: uploadIDs)
         }
     }
@@ -353,7 +344,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         if failedUploads.count > 0, failedUploads.count < 2 {
             // Will relaunch transfers with one which failed
             uploadRequestsToTransfer = Set(failedUploads[..<min(maxNberOfUploadsPerBckgTask, failedUploads.count)])
-            print("\(debugFormatter.string(from: Date())) >•• collected \(uploadRequestsToTransfer.count) failed uploads")
+            print("\(UploadUtilities.debugFormatter.string(from: Date())) >•• collected \(uploadRequestsToTransfer.count) failed uploads")
         }
         
         // Second, find upload requests ready for transfer
@@ -362,14 +353,14 @@ class UploadManager: NSObject, URLSessionDelegate {
             // Will relaunch transfers with a prepared upload
             uploadRequestsToTransfer = uploadRequestsToTransfer
                 .union(Set(preparedUploads[..<min(maxNberOfUploadsPerBckgTask,preparedUploads.count)]))
-            print("\(debugFormatter.string(from: Date())) >•• collected \(min(maxNberOfUploadsPerBckgTask,preparedUploads.count)) prepared uploads)")
+            print("\(UploadUtilities.debugFormatter.string(from: Date())) >•• collected \(min(maxNberOfUploadsPerBckgTask,preparedUploads.count)) prepared uploads)")
         }
         
         // Finally, get list of upload requests to prepare
         let diff = maxNberOfUploadsPerBckgTask - uploadRequestsToTransfer.count
         if diff <= 0 { return }
         let requestsToPrepare = uploadsProvider.getRequestsIn(states: [.waiting])
-        print("\(debugFormatter.string(from: Date())) >•• collected \(min(diff, requestsToPrepare.count)) uploads to prepare")
+        print("\(UploadUtilities.debugFormatter.string(from: Date())) >•• collected \(min(diff, requestsToPrepare.count)) uploads to prepare")
         uploadRequestsToPrepare = Set(requestsToPrepare[..<min(diff, requestsToPrepare.count)])
     }
     
@@ -386,15 +377,15 @@ class UploadManager: NSObject, URLSessionDelegate {
                     // Retrieve upload request properties
                     guard let taskDescription = task.taskDescription else { continue }
                     guard let objectURI = URL(string: taskDescription) else {
-                        print("\(self.debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no object URI!")
+                        print("\(UploadUtilities.debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no object URI!")
                         continue
                     }
                     guard let uploadID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
-                        print("\(self.debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no objectID!")
+                        print("\(UploadUtilities.debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no objectID!")
                         continue
                     }
                     // Remembers that this upload request is being dealt with
-                    print("\(self.debugFormatter.string(from: Date())) >> is uploading: \(uploadID)")
+                    print("\(UploadUtilities.debugFormatter.string(from: Date())) >> is uploading: \(uploadID)")
                     // Remembers that this upload request is being dealt with
                     self.isUploading.insert(uploadID)
                     
@@ -411,10 +402,10 @@ class UploadManager: NSObject, URLSessionDelegate {
             if self.isUploading.count < maxNberOfTransfers,
                let uploadID = self.uploadRequestsToTransfer.first {
                 // Launch transfer
-                print("\(self.debugFormatter.string(from: Date())) >•• launch transfer \(uploadID.uriRepresentation())")
+                print("\(UploadUtilities.debugFormatter.string(from: Date())) >•• launch transfer \(uploadID.uriRepresentation())")
                 self.launchTransfer(of: uploadID)
             } else {
-                print("\(self.debugFormatter.string(from: Date())) >•• no transfer to launch")
+                print("\(UploadUtilities.debugFormatter.string(from: Date())) >•• no transfer to launch")
             }
         }
     }
@@ -424,7 +415,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         // Add image preparation followed by transfer operations
         if countOfBytesPrepared < UInt64(maxCountOfBytesToUpload),
            let uploadID = uploadRequestsToPrepare.first {
-            print("\(debugFormatter.string(from: Date())) >•• prepare \(uploadID.uriRepresentation())")
+            print("\(UploadUtilities.debugFormatter.string(from: Date())) >•• prepare \(uploadID.uriRepresentation())")
             // Prepare image for transfer
             prepare(for: uploadID)
             // Remove objectID
@@ -446,7 +437,7 @@ class UploadManager: NSObject, URLSessionDelegate {
 
     @objc
     func prepare(for uploadID: NSManagedObjectID) -> Void {
-        print("\(debugFormatter.string(from: Date())) >> prepare \(uploadID.uriRepresentation())")
+        print("\(UploadUtilities.debugFormatter.string(from: Date())) >> prepare \(uploadID.uriRepresentation())")
 
         // Retrieve upload request properties
         var uploadProperties: UploadProperties!
@@ -463,7 +454,7 @@ class UploadManager: NSObject, URLSessionDelegate {
             }
         }
         catch {
-            print("\(debugFormatter.string(from: Date())) > missing Core Data object \(uploadID)!")
+            print("\(UploadUtilities.debugFormatter.string(from: Date())) > missing Core Data object \(uploadID)!")
             // Request not available…!?
             uploadsProvider.updateStatusOfUpload(with: uploadID, to: .preparingFail, error: UploadError.missingData.errorDescription) { [unowned self] (_) in
                 // Investigate next upload request?
@@ -572,7 +563,7 @@ class UploadManager: NSObject, URLSessionDelegate {
             if uploadProperties.serverFileTypes.contains("jpg"),
                UploadUtilities.acceptedImageFormats.contains(fileExt) {
                 // Try conversion to JPEG
-                print("\(debugFormatter.string(from: Date())) > converting photo \(uploadProperties.fileName)…")
+                print("\(UploadUtilities.debugFormatter.string(from: Date())) > converting photo \(uploadProperties.fileName)…")
                 
                 // Update state of upload
                 uploadProperties.requestState = .preparing
@@ -619,7 +610,7 @@ class UploadManager: NSObject, URLSessionDelegate {
             // Chek that the video format is accepted by the Piwigo server
             if uploadProperties.serverFileTypes.contains(fileExt) {
                 // Video file format accepted by the Piwigo server
-                print("\(debugFormatter.string(from: Date())) > preparing video \(uploadProperties.fileName)…")
+                print("\(UploadUtilities.debugFormatter.string(from: Date())) > preparing video \(uploadProperties.fileName)…")
 
                 // Update state of upload
                 uploadProperties.requestState = .preparing
@@ -634,7 +625,7 @@ class UploadManager: NSObject, URLSessionDelegate {
             if uploadProperties.serverFileTypes.contains("mp4"),
                UploadUtilities.acceptedMovieFormats.contains(fileExt) {
                 // Try conversion to MP4
-                print("\(debugFormatter.string(from: Date())) > converting video \(uploadProperties.fileName)…")
+                print("\(UploadUtilities.debugFormatter.string(from: Date())) > converting video \(uploadProperties.fileName)…")
 
                 // Update state of upload
                 uploadProperties.requestState = .preparing
@@ -731,7 +722,7 @@ class UploadManager: NSObject, URLSessionDelegate {
             if uploadProperties.serverFileTypes.contains("jpg"),
                UploadUtilities.acceptedImageFormats.contains(fileExt) {
                 // Try conversion to JPEG
-                print("\(debugFormatter.string(from: Date())) > converting photo \(uploadProperties.fileName)…")
+                print("\(UploadUtilities.debugFormatter.string(from: Date())) > converting photo \(uploadProperties.fileName)…")
                 
                 // Update state of upload
                 uploadProperties.requestState = .preparing
@@ -761,7 +752,7 @@ class UploadManager: NSObject, URLSessionDelegate {
             // Chek that the video format is accepted by the Piwigo server
             if uploadProperties.serverFileTypes.contains(fileExt) {
                 // Video file format accepted by the Piwigo server
-                print("\(debugFormatter.string(from: Date())) > preparing video \(uploadProperties.fileName)…")
+                print("\(UploadUtilities.debugFormatter.string(from: Date())) > preparing video \(uploadProperties.fileName)…")
 
                 // Update state of upload
                 uploadProperties.requestState = .preparing
@@ -775,7 +766,7 @@ class UploadManager: NSObject, URLSessionDelegate {
             if uploadProperties.serverFileTypes.contains("mp4"),
                UploadUtilities.acceptedMovieFormats.contains(fileExt) {
                 // Try conversion to MP4
-                print("\(debugFormatter.string(from: Date())) > converting video \(uploadProperties.fileName)…")
+                print("\(UploadUtilities.debugFormatter.string(from: Date())) > converting video \(uploadProperties.fileName)…")
 
                 // Update state of upload
                 uploadProperties.requestState = .preparing
@@ -853,7 +844,7 @@ class UploadManager: NSObject, URLSessionDelegate {
 
     @objc
     func launchTransfer(of uploadID: NSManagedObjectID) -> Void {
-        print("\(debugFormatter.string(from: Date())) >> launch transfer of \(uploadID.uriRepresentation())")
+        print("\(UploadUtilities.debugFormatter.string(from: Date())) >> launch transfer of \(uploadID.uriRepresentation())")
 
         // Update list of transfers
         if isUploading.contains(uploadID) { return }
@@ -874,7 +865,7 @@ class UploadManager: NSObject, URLSessionDelegate {
             }
         }
         catch {
-            print("\(debugFormatter.string(from: Date())) > missing Core Data object \(uploadID.uriRepresentation())!")
+            print("\(UploadUtilities.debugFormatter.string(from: Date())) > missing Core Data object \(uploadID.uriRepresentation())!")
             // Investigate next upload request?
             self.didEndTransfer(for: uploadID)
             return
@@ -958,7 +949,7 @@ class UploadManager: NSObject, URLSessionDelegate {
                     launchTransfer(of: uploadID)
                 }
             } else {
-                print("\(debugFormatter.string(from: Date())) >•• didEndTransfer | STOP (\(countOfBytesToUpload) transferred)")
+                print("\(UploadUtilities.debugFormatter.string(from: Date())) >•• didEndTransfer | STOP (\(countOfBytesToUpload) transferred)")
             }
         } else {
             // In foreground, always consider next file
@@ -1075,14 +1066,14 @@ class UploadManager: NSObject, URLSessionDelegate {
 //                    print("======>> task \(task.taskIdentifier) - \(task.taskDescription ?? "no description")")
                     guard let taskDescription = task.taskDescription else { continue }
                     guard let objectURI = URL(string: taskDescription) else {
-                        print("\(self.debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no object URI!")
+                        print("\(UploadUtilities.debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no object URI!")
                         continue
                     }
                     guard let uploadID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
-                        print("\(self.debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no objectID!")
+                        print("\(UploadUtilities.debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no objectID!")
                         continue
                     }
-                    print("\(self.debugFormatter.string(from: Date())) >> is uploading \(uploadID)")
+                    print("\(UploadUtilities.debugFormatter.string(from: Date())) >> is uploading \(uploadID)")
                     self.isUploading.insert(uploadID)
 
                 default:
@@ -1157,7 +1148,7 @@ class UploadManager: NSObject, URLSessionDelegate {
                 uploadsToUpdate.append(uploadProperties)
             }
             catch {
-                print("\(debugFormatter.string(from: Date())) > missing Core Data object \(failedUploadID)!")
+                print("\(UploadUtilities.debugFormatter.string(from: Date())) > missing Core Data object \(failedUploadID)!")
                 // Request not available…!?
                 continue
             }
@@ -1208,7 +1199,7 @@ class UploadManager: NSObject, URLSessionDelegate {
 //            let leftFiles = try fileManager.contentsOfDirectory(at: self.applicationUploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
 //            print("\(debugFormatter.string(from: Date())) > Remaining files in cache: \(leftFiles)")
         } catch {
-            print("\(debugFormatter.string(from: Date())) > could not clear the Uploads folder: \(error)")
+            print("\(UploadUtilities.debugFormatter.string(from: Date())) > could not clear the Uploads folder: \(error)")
         }
     }
 }
