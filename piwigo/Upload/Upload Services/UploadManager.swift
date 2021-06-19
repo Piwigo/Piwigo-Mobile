@@ -434,10 +434,6 @@ class UploadManager: NSObject, URLSessionDelegate {
     
     
     // MARK: - Prepare image
-    /// https://developer.apple.com/documentation/uniformtypeidentifiers/uttype/system_declared_types
-    let acceptedImageFormats = "png,heic,heif,tif,tiff,jpg,jpeg,raw,webp,gif,bmp,ico"
-    let acceptedMovieFormats = "mov,mpg,mpeg,mpeg2,mp4,avi"
-
     private var _isPreparing = false
     private var isPreparing: Bool {
         get {
@@ -573,7 +569,8 @@ class UploadManager: NSObject, URLSessionDelegate {
             }
             
             // Try to convert image if JPEG format is accepted by Piwigo server
-            if uploadProperties.serverFileTypes.contains("jpg"), acceptedImageFormats.contains(fileExt) {
+            if uploadProperties.serverFileTypes.contains("jpg"),
+               UploadUtilities.acceptedImageFormats.contains(fileExt) {
                 // Try conversion to JPEG
                 print("\(debugFormatter.string(from: Date())) > converting photo \(uploadProperties.fileName)…")
                 
@@ -634,7 +631,8 @@ class UploadManager: NSObject, URLSessionDelegate {
             }
             
             // Convert video if MP4 format is accepted by Piwigo server
-            if uploadProperties.serverFileTypes.contains("mp4"), acceptedMovieFormats.contains(fileExt) {
+            if uploadProperties.serverFileTypes.contains("mp4"),
+               UploadUtilities.acceptedMovieFormats.contains(fileExt) {
                 // Try conversion to MP4
                 print("\(debugFormatter.string(from: Date())) > converting video \(uploadProperties.fileName)…")
 
@@ -699,7 +697,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         }
         
         // Determine non-empty unique file name and extension from asset
-        var fileName = PhotosFetch.shared.getFileNameFomImageAsset(originalAsset)
+        var fileName = UploadUtilities.fileName(forImageAsset: originalAsset)
         if uploadProperties.prefixFileNameBeforeUpload {
             if !fileName.hasPrefix(uploadProperties.defaultPrefix) {
                 fileName = uploadProperties.defaultPrefix + fileName
@@ -730,7 +728,8 @@ class UploadManager: NSObject, URLSessionDelegate {
                 return
             }
             // Convert image if JPEG format is accepted by Piwigo server
-            if uploadProperties.serverFileTypes.contains("jpg"), acceptedImageFormats.contains(fileExt) {
+            if uploadProperties.serverFileTypes.contains("jpg"),
+               UploadUtilities.acceptedImageFormats.contains(fileExt) {
                 // Try conversion to JPEG
                 print("\(debugFormatter.string(from: Date())) > converting photo \(uploadProperties.fileName)…")
                 
@@ -773,7 +772,8 @@ class UploadManager: NSObject, URLSessionDelegate {
                 return
             }
             // Convert video if MP4 format is accepted by Piwigo server
-            if uploadProperties.serverFileTypes.contains("mp4"), acceptedMovieFormats.contains(fileExt) {
+            if uploadProperties.serverFileTypes.contains("mp4"),
+               UploadUtilities.acceptedMovieFormats.contains(fileExt) {
                 // Try conversion to MP4
                 print("\(debugFormatter.string(from: Date())) > converting video \(uploadProperties.fileName)…")
 

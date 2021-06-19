@@ -30,7 +30,6 @@
 		AD27A16F24C44EEC000AD203 /* EditImageThumbTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD27A16E24C44EEC000AD203 /* EditImageThumbTableViewCell.xib */; };
 		AD27B85D25A22A2400528F5F /* ShareImageActivityItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD27B85C25A22A2400528F5F /* ShareImageActivityItemProvider.swift */; };
 		AD27B87325A7A91800528F5F /* ShareUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD27B87225A7A91800528F5F /* ShareUtilities.swift */; };
-		AD2913CA2669480F00403026 /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2913B32669440000403026 /* Intents.framework */; };
 		AD2913CD2669480F00403026 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2913CC2669480F00403026 /* IntentHandler.swift */; };
 		AD2913D12669480F00403026 /* piwigoIntents.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = AD2913C92669480F00403026 /* piwigoIntents.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		AD2913D926695EAD00403026 /* AutoUploadPhotosHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2913D826695EAD00403026 /* AutoUploadPhotosHandler.swift */; };
@@ -85,6 +84,8 @@
 		AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E781F0930CE0040EAD9 /* About.strings */; };
 		AD6FD1FA24BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD6FD1F924BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard */; };
 		AD6FD1FC24BF0321009AA3B7 /* UploadSwitchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6FD1FB24BF0321009AA3B7 /* UploadSwitchViewController.swift */; };
+		AD7038A7267DE36700A72CE1 /* UploadUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD7038A6267DE36700A72CE1 /* UploadUtilities.swift */; };
+		AD7038A8267DED4200A72CE1 /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2913B32669440000403026 /* Intents.framework */; };
 		AD747C6825F970A00030253E /* DeviceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD747C6725F970A00030253E /* DeviceTableViewCell.swift */; };
 		AD770FD423B4BDA2007DAD50 /* EditImageParamsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD770FD323B4BDA2007DAD50 /* EditImageParamsViewController.m */; };
 		AD770FD623B4BDB5007DAD50 /* EditImageParams.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD770FD523B4BDB5007DAD50 /* EditImageParams.storyboard */; };
@@ -453,6 +454,7 @@
 		AD6B2E7A1F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/About.strings; sourceTree = "<group>"; };
 		AD6FD1F924BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = UploadSwitchViewController.storyboard; sourceTree = "<group>"; };
 		AD6FD1FB24BF0321009AA3B7 /* UploadSwitchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadSwitchViewController.swift; sourceTree = "<group>"; };
+		AD7038A6267DE36700A72CE1 /* UploadUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadUtilities.swift; sourceTree = "<group>"; };
 		AD747C6725F970A00030253E /* DeviceTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceTableViewCell.swift; sourceTree = "<group>"; };
 		AD76906724D1957D00EE7EC0 /* UploadSessionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadSessionDelegate.swift; sourceTree = "<group>"; };
 		AD770FD323B4BDA2007DAD50 /* EditImageParamsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditImageParamsViewController.m; sourceTree = "<group>"; };
@@ -720,7 +722,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AD2913CA2669480F00403026 /* Intents.framework in Frameworks */,
+				AD7038A8267DED4200A72CE1 /* Intents.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -772,6 +774,7 @@
 		AD084E3B2659846400159FE1 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				AD7038A5267DE21B00A72CE1 /* Upload */,
 				AD94F63A266D615000EFC6A9 /* Data Cache */,
 				AD2913E826696A8300403026 /* Network */,
 				AD97CFB6265B0B0700719ED5 /* Supporting Files */,
@@ -956,6 +959,14 @@
 				AD6FD1F924BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard */,
 			);
 			path = "Upload Options";
+			sourceTree = "<group>";
+		};
+		AD7038A5267DE21B00A72CE1 /* Upload */ = {
+			isa = PBXGroup;
+			children = (
+				AD7038A6267DE36700A72CE1 /* UploadUtilities.swift */,
+			);
+			path = Upload;
 			sourceTree = "<group>";
 		};
 		AD770FD123B4BD3B007DAD50 /* Parameters */ = {
@@ -2016,6 +2027,7 @@
 				AD94F640266D63AD00EFC6A9 /* CacheVars.swift in Sources */,
 				ADF40021266D7352004352B9 /* pwg.tags.add.swift in Sources */,
 				ADB274732676480D0002DD09 /* PwgSessionErrors.swift in Sources */,
+				AD7038A7267DE36700A72CE1 /* UploadUtilities.swift in Sources */,
 				ADE250D5266FE99A00285978 /* PwgSessionDelegate.swift in Sources */,
 				ADF4001E266D705C004352B9 /* Tag+CoreDataProperties.swift in Sources */,
 				AD94F644266D6E2100EFC6A9 /* LocationError.swift in Sources */,
@@ -2405,6 +2417,7 @@
 		AD084E502659A27100159FE1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -2451,6 +2464,7 @@
 		AD084E512659A27100159FE1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
