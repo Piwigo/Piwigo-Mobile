@@ -472,7 +472,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         }
         
         // Add category to list of recent albums
-        let userInfo = ["categoryId": String(uploadProperties.category)]
+        let userInfo = ["categoryId": uploadProperties.category]
         NotificationCenter.default.post(name: PwgNotifications.addRecentAlbum, object: nil, userInfo: userInfo)
 
         // Determine from where the file comes from:

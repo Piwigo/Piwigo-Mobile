@@ -987,7 +987,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
         DispatchQueue.global(qos: .userInitiated).async {
             // Add category to list of recent albums
-            let userInfo = ["categoryId": String(parentCatData.albumId)]
+            let userInfo = ["categoryId": parentCatData.albumId]
             NotificationCenter.default.post(name: PwgNotifications.addRecentAlbum, object: nil, userInfo: userInfo)
 
             AlbumService.moveCategory(self.inputCategoryId,
@@ -1113,7 +1113,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     // MARK: - Copy Images Methods
     private func copySingleImage(toCategory categoryData:PiwigoAlbumData) {
         // Add category to list of recent albums
-        let userInfo = ["categoryId": String(categoryData.albumId)]
+        let userInfo = ["categoryId": categoryData.albumId]
         NotificationCenter.default.post(name: PwgNotifications.addRecentAlbum, object: nil, userInfo: userInfo)
 
         // Check image data
@@ -1154,7 +1154,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     
     private func copySeveralImages(toCategory categoryData:PiwigoAlbumData) {
         // Add category to list of recent albums
-        let userInfo = ["categoryId": String(categoryData.albumId)]
+        let userInfo = ["categoryId": categoryData.albumId]
         NotificationCenter.default.post(name: PwgNotifications.addRecentAlbum, object: nil, userInfo: userInfo)
 
         // Jobe done?
@@ -1229,7 +1229,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     // MARK: - Move Images Methods
     private func moveSingleImage(toCategory categoryData:PiwigoAlbumData) {
         // Add category to list of recent albums
-        let userInfo = ["categoryId": String(categoryData.albumId)]
+        let userInfo = ["categoryId": categoryData.albumId]
         NotificationCenter.default.post(name: PwgNotifications.addRecentAlbum, object: nil, userInfo: userInfo)
 
         // Check image data
@@ -1270,7 +1270,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     
     private func moveSeveralImages(toCategory categoryData:PiwigoAlbumData) {
         // Add category to list of recent albums
-        let userInfo = ["categoryId": String(categoryData.albumId)]
+        let userInfo = ["categoryId": categoryData.albumId]
         NotificationCenter.default.post(name: PwgNotifications.addRecentAlbum, object: nil, userInfo: userInfo)
 
         // Jobe done?
