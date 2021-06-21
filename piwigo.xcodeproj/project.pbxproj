@@ -895,6 +895,17 @@
 			path = Network;
 			sourceTree = "<group>";
 		};
+		AD2A614C268115620070A6D2 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				ADE1AB87267E4BB0001C1EEB /* Info.plist */,
+				AD7783B2267E4AB700317F36 /* Intents.intentdefinition */,
+				AD778363267E35D200317F36 /* piwigoIntentsDebug.entitlements */,
+				AD778364267E35D200317F36 /* piwigoIntentsRelease.entitlements */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		AD30FD3521316DA8009AA30E /* piwigoAppStore */ = {
 			isa = PBXGroup;
 			children = (
@@ -1039,10 +1050,7 @@
 			children = (
 				AD778359267E34F800317F36 /* IntentHandler.swift */,
 				AD778368267E384500317F36 /* AutoUploadPhotosHandler.swift */,
-				ADE1AB87267E4BB0001C1EEB /* Info.plist */,
-				AD7783B2267E4AB700317F36 /* Intents.intentdefinition */,
-				AD778363267E35D200317F36 /* piwigoIntentsDebug.entitlements */,
-				AD778364267E35D200317F36 /* piwigoIntentsRelease.entitlements */,
+				AD2A614C268115620070A6D2 /* Resources */,
 			);
 			path = piwigoIntents;
 			sourceTree = "<group>";
@@ -2727,13 +2735,13 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = piwigoIntents/piwigoIntentsDebug.entitlements;
+				CODE_SIGN_ENTITLEMENTS = piwigoIntents/Resources/piwigoIntentsDebug.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = ZEC3W885H6;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = piwigoIntents/Info.plist;
+				INFOPLIST_FILE = piwigoIntents/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2766,14 +2774,14 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = piwigoIntents/piwigoIntentsRelease.entitlements;
+				CODE_SIGN_ENTITLEMENTS = piwigoIntents/Resources/piwigoIntentsRelease.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = ZU5THW8T5W;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = piwigoIntents/Info.plist;
+				INFOPLIST_FILE = piwigoIntents/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
