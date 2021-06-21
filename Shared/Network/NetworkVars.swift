@@ -24,7 +24,7 @@ public class NetworkVars: NSObject {
 
     // MARK: - Vars in UserDefaults / Standard
     // Network variables stored in UserDefaults / Standard
-    /// - None k7ji}wx[bCcsihd@fg23  https://lelievre-berna.net/Piwigo/
+    /// - None
 
     
     // MARK: - Vars in UserDefaults / App Group

@@ -61,8 +61,8 @@ class DefaultImageThumbnailSizeViewController: UIViewController, UITableViewData
         super.viewWillAppear(animated)
 
         // Register palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: PwgNotifications.paletteChanged, object: nil)
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -72,8 +72,7 @@ class DefaultImageThumbnailSizeViewController: UIViewController, UITableViewData
         delegate?.didSelectImageDefaultThumbnailSize(currentThumbnailSize)
 
         // Unregister palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.removeObserver(self, name: name, object: nil)
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }
 
     

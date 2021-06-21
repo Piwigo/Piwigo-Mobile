@@ -10,8 +10,6 @@
 
 #import "NetworkHandler.h"
 #import "Model.h"
-#import "KeychainAccess.h"
-#import "SAMKeychain.h"
 #import "MBProgressHUD.h"
 
 //#ifndef DEBUG_SESSION
@@ -465,16 +463,16 @@ NSInteger const loadingViewTag = 899;
     
     // Get HTTP basic authentification credentials
     NSString *user = NetworkVarsObjc.shared.httpUsername;
-    NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.shared.serverProtocol, NetworkVarsObjc.shared.serverPath] account:user];
+    NSString *password = [KeychainUtilitiesObjc passwordForService:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.shared.serverProtocol, NetworkVarsObjc.shared.serverPath] account:user];
     
     // Without HTTP credentials available, tries Piwigo credentials
     if ((user == nil) || (user.length <= 0) || (password == nil)) {
         user  = NetworkVarsObjc.shared.username;
-        password = [SAMKeychain passwordForService:NetworkVarsObjc.shared.serverPath account:user];
+        password = [KeychainUtilitiesObjc passwordForService:NetworkVarsObjc.shared.serverPath account:user];
         if (password == nil) password = @"";
         
         NetworkVarsObjc.shared.httpUsername = user;
-        [SAMKeychain setPassword:password forService:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.shared.serverProtocol, NetworkVarsObjc.shared.serverPath] account:user];
+        [KeychainUtilitiesObjc setPassword:password forService:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.shared.serverProtocol, NetworkVarsObjc.shared.serverPath] account:user];
     }
     
     // Supply requested credentials if not provided yet
@@ -488,7 +486,7 @@ NSInteger const loadingViewTag = 899;
     }
     
     // HTTP credentials refused... delete them in Keychain
-    [SAMKeychain deletePasswordForService:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.shared.serverProtocol, NetworkVarsObjc.shared.serverPath] account:user];
+    [KeychainUtilitiesObjc deletePasswordForService:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.shared.serverProtocol, NetworkVarsObjc.shared.serverPath] account:user];
 
     // Remember failed HTTP authentication
     NetworkVarsObjc.shared.didFailHTTPauthentication = YES;

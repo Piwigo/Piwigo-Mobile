@@ -24,14 +24,14 @@ class AutoUploadPhotosHandler: NSObject, AutoUploadPhotosIntentHandling {
         return provider
     }()
 
+    let maxNberOfUploadsPerBckgTask = 100             // i.e. 100 requests to be considered
+    var isUploading = Set<NSManagedObjectID>()
+    var uploadRequestsToPrepare = Set<NSManagedObjectID>()
+    var uploadRequestsToTransfer = Set<NSManagedObjectID>()
+
     func handle(intent: AutoUploadPhotosIntent, completion: @escaping (AutoUploadPhotosIntentResponse) -> Void) {
         print("•••>> handling AutoUploadPhotos shortcut…")
         
-        let maxNberOfUploadsPerBckgTask = 100             // i.e. 100 requests to be considered
-        var isUploading: Set<NSManagedObjectID>
-        var uploadRequestsToPrepare = Set<NSManagedObjectID>()
-        var uploadRequestsToTransfer = Set<NSManagedObjectID>()
-
         // Is auto-uploading enabled?
         if !UploadVars.shared.isAutoUploadActive {
             completion(AutoUploadPhotosIntentResponse.failure(error: "Auto-uploading is disabled in the app settings."))
@@ -79,7 +79,7 @@ class AutoUploadPhotosHandler: NSObject, AutoUploadPhotosIntentHandling {
 
 
     // MARK: - Add Auto-Upload Requests
-    func appendAutoUploadRequests() -> String {
+    private func appendAutoUploadRequests() -> String {
         // Check access to Photo Library album
         let collectionID = UploadVars.shared.autoUploadAlbumId
         guard !collectionID.isEmpty,
@@ -160,7 +160,7 @@ class AutoUploadPhotosHandler: NSObject, AutoUploadPhotosIntentHandling {
 
 
     // MARK: - Delete Auto-Upload Requests
-    func disableAutoUpload() {
+    private func disableAutoUpload() {
         // Disable auto-uploading
         UploadVars.shared.isAutoUploadActive = false
         
@@ -178,4 +178,51 @@ class AutoUploadPhotosHandler: NSObject, AutoUploadPhotosIntentHandling {
             }
         }
     }
+
+    
+    // MARK: Resume 
+//    func resumeTransfersOfBckgTask() -> Void {
+//        // Get active upload tasks and initialise isUploading
+//        let taskContext = DataController.privateManagedObjectContext
+//        let uploadSession: URLSession = UploadSessionDelegate.shared.uploadSession
+//        uploadSession.getAllTasks { [unowned self] uploadTasks in
+//            // Loop over the tasks
+//            for task in uploadTasks {
+//                switch task.state {
+//                case .running:
+//                    // Retrieve upload request properties
+//                    guard let taskDescription = task.taskDescription else { continue }
+//                    guard let objectURI = URL(string: taskDescription) else {
+//                        print("\(UploadUtilities.debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no object URI!")
+//                        continue
+//                    }
+//                    guard let uploadID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
+//                        print("\(UploadUtilities.debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no objectID!")
+//                        continue
+//                    }
+//                    // Remembers that this upload request is being dealt with
+//                    print("\(UploadUtilities.debugFormatter.string(from: Date())) >> is uploading: \(uploadID)")
+//                    // Remembers that this upload request is being dealt with
+//                    self.isUploading.insert(uploadID)
+//
+//                    // Avoids duplicates
+//                    uploadRequestsToTransfer.remove(uploadID)
+//                    uploadRequestsToPrepare.remove(uploadID)
+//
+//                default:
+//                    continue
+//                }
+//            }
+
+            // Relaunch transfers if necessary and possible
+//            if self.isUploading.count < maxNberOfTransfers,
+//               let uploadID = self.uploadRequestsToTransfer.first {
+//                // Launch transfer
+//                print("\(UploadUtilities.debugFormatter.string(from: Date())) >•• launch transfer \(uploadID.uriRepresentation())")
+//                self.launchTransfer(of: uploadID)
+//            } else {
+//                print("\(UploadUtilities.debugFormatter.string(from: Date())) >•• no transfer to launch")
+//            }
+//        }
+//    }
 }

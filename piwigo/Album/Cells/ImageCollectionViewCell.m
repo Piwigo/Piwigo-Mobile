@@ -11,7 +11,6 @@
 #import "PiwigoAlbumData.h"
 #import "Model.h"
 #import "NetworkHandler.h"
-#import "SAMKeychain.h"
 
 @interface ImageCollectionViewCell()
 

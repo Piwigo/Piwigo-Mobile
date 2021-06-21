@@ -9,14 +9,12 @@
 #import <AFNetworking/AFImageDownloader.h>
 #import <sys/utsname.h>
 
-#import "AppDelegate.h"
 #import "CategoriesData.h"
 #import "LoginViewController.h"
 #import "LoginViewController_iPhone.h"
 #import "LoginViewController_iPad.h"
 #import "MBProgressHUD.h"
 #import "Model.h"
-#import "SAMKeychain.h"
 #import "SessionService.h"
 
 #ifndef DEBUG_SESSION
@@ -76,7 +74,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 		self.passwordTextField = [PiwigoTextField new];
 		self.passwordTextField.placeholder = NSLocalizedString(@"login_passwordPlaceholder", @"Password (optional)");
 		self.passwordTextField.secureTextEntry = YES;
-		self.passwordTextField.text = [SAMKeychain passwordForService:NetworkVarsObjc.shared.serverPath account:NetworkVarsObjc.shared.username];
+		self.passwordTextField.text = [KeychainUtilitiesObjc passwordForService:NetworkVarsObjc.shared.serverPath account:NetworkVarsObjc.shared.username];
         self.passwordTextField.keyboardType = UIKeyboardTypeDefault;
 		self.passwordTextField.returnKeyType = UIReturnKeyGo;
 		[self.view addSubview:self.passwordTextField];
@@ -128,7 +126,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     }
 
     // Register palette changes
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:[PwgNotifications paletteChangedObjc] object:nil];
 
     return self;
 }
@@ -255,7 +253,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     if(self.userTextField.text.length > 0)
     {
         // Store credentials in Keychain
-        [SAMKeychain setPassword:self.passwordTextField.text forService:NetworkVarsObjc.shared.serverPath account:self.userTextField.text];
+        [KeychainUtilitiesObjc setPassword:self.passwordTextField.text forService:NetworkVarsObjc.shared.serverPath account:self.userTextField.text];
     }
 
     // Create permanent session managers for retrieving data and downloading images
@@ -425,7 +423,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 -(void)requestHttpCredentialsAfterError:(NSError *)error
 {
     NSString *user = NetworkVarsObjc.shared.httpUsername;
-    NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.shared.serverProtocol, NetworkVarsObjc.shared.serverPath] account:user];
+    NSString *password = [KeychainUtilitiesObjc passwordForService:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.shared.serverProtocol, NetworkVarsObjc.shared.serverPath] account:user];
     if (password == nil) password = @"";
 
     self.httpAlertController = [UIAlertController
@@ -471,8 +469,8 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
           style:UIAlertActionStyleDefault
           handler:^(UIAlertAction * action) {
               // Store credentials
-            NetworkVarsObjc.shared.httpUsername = [self.httpAlertController.textFields objectAtIndex:0].text;
-              [SAMKeychain setPassword:[self.httpAlertController.textFields objectAtIndex:1].text forService:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.shared.serverProtocol, NetworkVarsObjc.shared.serverPath] account:[self.httpAlertController.textFields objectAtIndex:0].text];
+              NetworkVarsObjc.shared.httpUsername = [self.httpAlertController.textFields objectAtIndex:0].text;
+              [KeychainUtilitiesObjc setPassword:[self.httpAlertController.textFields objectAtIndex:1].text forService:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.shared.serverProtocol, NetworkVarsObjc.shared.serverPath] account:[self.httpAlertController.textFields objectAtIndex:0].text];
               // Try logging in with new HTTP credentials
               [self launchLogin];
           }];
@@ -606,7 +604,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                      else
                      {
                          // Don't keep unaccepted credentials
-                         [SAMKeychain deletePasswordForService:NetworkVarsObjc.shared.serverPath account:self.userTextField.text];
+                         [KeychainUtilitiesObjc deletePasswordForService:NetworkVarsObjc.shared.serverPath account:self.userTextField.text];
 
                          // Session could not be opened
                          NSError *pwgError = (NSError *)response;
@@ -625,7 +623,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 	else     // No username or user cancelled communication, get only server status
 	{
         // Reset keychain and credentials
-        [SAMKeychain deletePasswordForService:NetworkVarsObjc.shared.serverPath account:NetworkVarsObjc.shared.username];
+        [KeychainUtilitiesObjc deletePasswordForService:NetworkVarsObjc.shared.serverPath account:NetworkVarsObjc.shared.username];
         NetworkVarsObjc.shared.username = @"";
 
         // Check Piwigo version, get token, available sizes, etc.
@@ -814,7 +812,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 
     // Perform re-login
     NSString *user = NetworkVarsObjc.shared.username;
-    NSString *password = [SAMKeychain passwordForService:NetworkVarsObjc.shared.serverPath account:user];
+    NSString *password = [KeychainUtilitiesObjc passwordForService:NetworkVarsObjc.shared.serverPath account:user];
     self.isAlreadyTryingToLogin = YES;
     [SessionService performLoginWithUser:user
                              andPassword:password
@@ -1060,7 +1058,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 	}
     else if (textField == self.userTextField) {
         // User entered username
-        NSString *pwd = [SAMKeychain passwordForService:self.serverTextField.text account:self.userTextField.text];
+        NSString *pwd = [KeychainUtilitiesObjc passwordForService:self.serverTextField.text account:self.userTextField.text];
         if (pwd != nil) {
             self.passwordTextField.text = pwd;
         }

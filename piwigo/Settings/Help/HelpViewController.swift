@@ -68,13 +68,21 @@ class HelpViewController: UIViewController {
         applyColorPalette()
 
         // Register palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: PwgNotifications.paletteChanged, object: nil)
     }
 
     @objc func applyColorPalette() {
         // Background color of the view
         view.backgroundColor = UIColor.piwigoColorBackground()
+    }
+
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        // Unregister palette changes
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }
 
     @IBAction func didSelectPage(_ sender: UIPageControl) {

@@ -473,8 +473,7 @@ class UploadManager: NSObject, URLSessionDelegate {
         
         // Add category to list of recent albums
         let userInfo = ["categoryId": String(uploadProperties.category)]
-        let name = NSNotification.Name(rawValue: kPiwigoNotificationAddRecentAlbum)
-        NotificationCenter.default.post(name: name, object: nil, userInfo: userInfo)
+        NotificationCenter.default.post(name: PwgNotifications.addRecentAlbum, object: nil, userInfo: userInfo)
 
         // Determine from where the file comes from:
         // => Photo Library: use PHAsset local identifier

@@ -78,8 +78,8 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
         applyColorPalette()
 
         // Register palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: PwgNotifications.paletteChanged, object: nil)
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -97,8 +97,7 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
         super.viewWillDisappear(animated)
         
         // Unregister palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.removeObserver(self, name: name, object: nil)
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }
 
     
@@ -479,7 +478,7 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
 
         // Clean up /tmp directory where shared files are temporarily stored
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        appDelegate?.cleanUpTemporaryDirectoryImmediately(true)
+        appDelegate?.cleanUpTemporaryDirectory(immediately: true)
     }
 
     private func getName(forActivity activity: UIActivity.ActivityType, forWidth width: CGFloat) -> String? {

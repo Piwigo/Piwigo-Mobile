@@ -97,8 +97,8 @@ class TagSelectorViewController: UITableViewController {
         applyColorPalette()
 
         // Register palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: PwgNotifications.paletteChanged, object: nil)
     }
 
     @objc private func quitTagSelect()
@@ -110,8 +110,7 @@ class TagSelectorViewController: UITableViewController {
         super.viewWillDisappear(animated)
         
         // Unregister palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.removeObserver(self, name: name, object: nil)
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }
 }
 

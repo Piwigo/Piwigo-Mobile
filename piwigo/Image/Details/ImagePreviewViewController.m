@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import "AppDelegate.h"
 #import "ImagePreviewViewController.h"
 #import "PiwigoImageData.h"
 #import "ImageScrollView.h"
@@ -14,7 +13,6 @@
 #import "VideoView.h"
 #import "Model.h"
 #import "NetworkHandler.h"
-#import "SAMKeychain.h"
 
 @interface ImagePreviewViewController () <AVAssetResourceLoaderDelegate>
 
@@ -35,7 +33,7 @@
         self.videoView = [VideoView new];
 
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:[PwgNotifications paletteChangedObjc] object:nil];
     }
 	return self;
 }
@@ -259,7 +257,7 @@ shouldWaitForResponseToAuthenticationChallenge:(NSURLAuthenticationChallenge *)a
     {
         // HTTP basic authentification credentials
         NSString *user = NetworkVarsObjc.shared.httpUsername;
-        NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.shared.serverProtocol, NetworkVarsObjc.shared.serverPath] account:user];
+        NSString *password = [KeychainUtilitiesObjc passwordForService:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.shared.serverProtocol, NetworkVarsObjc.shared.serverPath] account:user];
         [authenticationChallenge.sender useCredential:[NSURLCredential credentialWithUser:user password:password
                                                        persistence:NSURLCredentialPersistenceSynchronizable] forAuthenticationChallenge:authenticationChallenge];
         [authenticationChallenge.sender continueWithoutCredentialForAuthenticationChallenge:authenticationChallenge];

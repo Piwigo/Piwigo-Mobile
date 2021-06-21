@@ -216,8 +216,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         navigationItem.setRightBarButton(cancelBarButton, animated: true)
 
         // Register palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: PwgNotifications.paletteChanged, object: nil)
         
         // Retrieve image data if needed
         if [kPiwigoCategorySelectActionCopyImages,
@@ -276,8 +276,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         }
 
         // Unregister palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.removeObserver(self, name: name, object: nil)
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }
     
     @objc
@@ -989,8 +988,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         DispatchQueue.global(qos: .userInitiated).async {
             // Add category to list of recent albums
             let userInfo = ["categoryId": String(parentCatData.albumId)]
-            let name = NSNotification.Name(rawValue: kPiwigoNotificationAddRecentAlbum)
-            NotificationCenter.default.post(name: name, object: nil, userInfo: userInfo)
+            NotificationCenter.default.post(name: PwgNotifications.addRecentAlbum, object: nil, userInfo: userInfo)
 
             AlbumService.moveCategory(self.inputCategoryId,
                                       intoCategory: parentCatData.albumId) { task, movedSuccessfully in
@@ -1116,8 +1114,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     private func copySingleImage(toCategory categoryData:PiwigoAlbumData) {
         // Add category to list of recent albums
         let userInfo = ["categoryId": String(categoryData.albumId)]
-        let name = NSNotification.Name(rawValue: kPiwigoNotificationAddRecentAlbum)
-        NotificationCenter.default.post(name: name, object: nil, userInfo: userInfo)
+        NotificationCenter.default.post(name: PwgNotifications.addRecentAlbum, object: nil, userInfo: userInfo)
 
         // Check image data
         guard let imageData = self.inputImageData else {
@@ -1158,8 +1155,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     private func copySeveralImages(toCategory categoryData:PiwigoAlbumData) {
         // Add category to list of recent albums
         let userInfo = ["categoryId": String(categoryData.albumId)]
-        let name = NSNotification.Name(rawValue: kPiwigoNotificationAddRecentAlbum)
-        NotificationCenter.default.post(name: name, object: nil, userInfo: userInfo)
+        NotificationCenter.default.post(name: PwgNotifications.addRecentAlbum, object: nil, userInfo: userInfo)
 
         // Jobe done?
         if inputImagesData.count == 0 {
@@ -1234,8 +1230,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     private func moveSingleImage(toCategory categoryData:PiwigoAlbumData) {
         // Add category to list of recent albums
         let userInfo = ["categoryId": String(categoryData.albumId)]
-        let name = NSNotification.Name(rawValue: kPiwigoNotificationAddRecentAlbum)
-        NotificationCenter.default.post(name: name, object: nil, userInfo: userInfo)
+        NotificationCenter.default.post(name: PwgNotifications.addRecentAlbum, object: nil, userInfo: userInfo)
 
         // Check image data
         guard let imageData = self.inputImageData else {
@@ -1276,8 +1271,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     private func moveSeveralImages(toCategory categoryData:PiwigoAlbumData) {
         // Add category to list of recent albums
         let userInfo = ["categoryId": String(categoryData.albumId)]
-        let name = NSNotification.Name(rawValue: kPiwigoNotificationAddRecentAlbum)
-        NotificationCenter.default.post(name: name, object: nil, userInfo: userInfo)
+        NotificationCenter.default.post(name: PwgNotifications.addRecentAlbum, object: nil, userInfo: userInfo)
 
         // Jobe done?
         if inputImagesData.count == 0 {

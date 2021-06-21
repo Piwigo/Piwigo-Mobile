@@ -218,11 +218,11 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         updateNavBar()
 
         // Register palette changes
-        var name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: PwgNotifications.paletteChanged, object: nil)
         
         // Register upload progress
-        name = NSNotification.Name(kPiwigoNotificationUploadProgress)
+        var name = NSNotification.Name(kPiwigoNotificationUploadProgress)
         NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress), name: name, object: nil)
         
         // Register app becoming active for updating the pasteboard
@@ -277,16 +277,14 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
 
     deinit {
         // Unregister palette changes
-        var name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.removeObserver(self, name: name, object: nil)
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
         
         // Unregister upload progress
-        name = NSNotification.Name(kPiwigoNotificationUploadProgress)
+        let name = NSNotification.Name(kPiwigoNotificationUploadProgress)
         NotificationCenter.default.removeObserver(self, name: name, object: nil)
 
         // Unregister app becoming active for updating the pasteboard
-        name = NSNotification.Name(UIApplication.didBecomeActiveNotification.rawValue)
-        NotificationCenter.default.removeObserver(self, name: name, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
     }
 
     func updateNavBar() {

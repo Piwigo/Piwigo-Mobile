@@ -118,8 +118,8 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
         applyColorPalette()
 
         // Register palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: PwgNotifications.paletteChanged, object: nil)
         
         // Prepare data source
         self.selectedTags = dataProvider.fetchedResultsController.fetchedObjects?
@@ -137,8 +137,7 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
         super .viewWillDisappear(animated)
 
         // Unregister palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.removeObserver(self, name: name, object: nil)
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
 
         // Return list of selected tags
         delegate?.didSelectTags(selectedTags)

@@ -76,12 +76,12 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         cancelBarButton?.accessibilityIdentifier = "Cancel"
         
         // Register palette changes
-        var name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: PwgNotifications.paletteChanged, object: nil)
         
         // Register app becoming active for updating the pasteboard
-        name = NSNotification.Name(UIApplication.didBecomeActiveNotification.rawValue)
-        NotificationCenter.default.addObserver(self, selector: #selector(checkPasteboard), name: name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(checkPasteboard),
+                                               name: UIApplication.didBecomeActiveNotification, object: nil)
 
         // Use the LocalAlbumsProvider to fetch albums data.
         LocalAlbumsProvider.shared.fetchedLocalAlbumsDelegate = self
@@ -245,12 +245,10 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         }
 
         // Unregister palette changes
-        var name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.removeObserver(self, name: name, object: nil)
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
 
         // Unregister app becoming active for updating the pasteboard
-        name = NSNotification.Name(UIApplication.didBecomeActiveNotification.rawValue)
-        NotificationCenter.default.removeObserver(self, name: name, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
     }
 
     

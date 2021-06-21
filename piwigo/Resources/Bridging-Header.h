@@ -7,13 +7,11 @@
 #import "AFNetworkActivityIndicatorManager.h"
 #import <MBProgressHUD.h>
 #import <MGSwipeTableCell.h>
-#import <SAMKeychain.h>
 #import <UIImageView+AFNetworking.h>
 
 #import "AlbumImagesViewController.h"
 #import "AlbumService.h"
 #import "AlbumTableViewCell.h"
-#import "AppDelegate.h"
 #import "CategoriesData.h"
 #import "EditImageParamsViewController.h"
 #import "EditImageTextFieldTableViewCell.h"
@@ -23,7 +21,6 @@
 #import "ImageDetailViewController.h"
 #import "ImagesCollection.h"
 #import "ImageService.h"
-#import "KeychainAccess.h"
 #import "LoginNavigationController.h"
 #import "LoginViewController.h"
 #import "LoginViewController_iPhone.h"

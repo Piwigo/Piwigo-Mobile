@@ -6,7 +6,6 @@
 //  Copyright © 2019 Piwigo.org. All rights reserved.
 //
 
-#import "AppDelegate.h"
 #import "EditImageDatePickerTableViewCell.h"
 
 NSString * const kDatePickerTableCell_ID = @"DatePickerTableCell";
@@ -100,7 +99,7 @@ typedef enum {
     // => minDate:0 day, maxDate:101538 days
     
     // Register palette changes
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:[PwgNotifications paletteChangedObjc] object:nil];
 }
 
 -(void)applyColorPalette

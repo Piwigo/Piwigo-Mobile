@@ -138,8 +138,8 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         super.viewDidAppear(animated)
         
         // Register palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: PwgNotifications.paletteChanged, object: nil)
         
         // Register network reachability
         NotificationCenter.default.addObserver(self, selector: #selector(mainHeader), name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
@@ -157,8 +157,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         UIApplication.shared.isIdleTimerDisabled = false
 
         // Unregister palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.removeObserver(self, name: name, object: nil)
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
 
         // Unregister upload progress
         let name2: NSNotification.Name = NSNotification.Name(kPiwigoNotificationUploadProgress)

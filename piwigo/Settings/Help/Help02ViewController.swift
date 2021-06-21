@@ -63,8 +63,8 @@ class Help02ViewController: UIViewController {
         applyColorPalette()
 
         // Register palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: PwgNotifications.paletteChanged, object: nil)
     }
 
     @objc func applyColorPalette() {
@@ -74,5 +74,12 @@ class Help02ViewController: UIViewController {
         // Legend color
         legendTop.textColor = UIColor.piwigoColorText()
         legendBot.textColor = UIColor.piwigoColorText()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        // Unregister palette changes
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }
 }

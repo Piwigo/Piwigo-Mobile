@@ -104,10 +104,14 @@ extension UploadManager {
                     if let response = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? HTTPURLResponse,
                        response.statusCode == 401 {
                         // Try relogin
-                        let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                        appDelegate?.reloginAndRetry {
-                            // Image still ready for upload
-                            self.didEndTransfer(for: uploadID, with: uploadProperties, error)
+                        DispatchQueue.main.async {
+                            let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                            appDelegate?.reloginAndRetry {
+                                self.backgroundQueue.async {
+                                    // Image still ready for upload
+                                    self.didEndTransfer(for: uploadID, with: uploadProperties, error)
+                                }
+                            }
                         }
                     } else {
                         // Image still ready for upload
@@ -329,7 +333,7 @@ extension UploadManager {
 
         // Initialise credentials, boundary and upload session
         let username = NetworkVars.shared.username
-        let password = SAMKeychain.password(forService: uploadProperties.serverPath, account: username) ?? ""
+        let password = KeychainUtilities.password(forService: uploadProperties.serverPath, account: username) ?? ""
         let boundary = createBoundary(from: uploadProperties.md5Sum)
         for chunk in 0..<chunks {
             // Current chunk

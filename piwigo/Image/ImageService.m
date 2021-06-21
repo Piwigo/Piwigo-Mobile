@@ -6,14 +6,12 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import "AppDelegate.h"
 #import "ImageService.h"
 #import "Model.h"
 #import "PiwigoImageData.h"
 #import "PiwigoAlbumData.h"
 #import "CategoriesData.h"
 #import "PiwigoTagData.h"
-#import "SAMKeychain.h"
 #import "ImagesCollection.h"
 
 NSString * const kGetImageOrderId = @"id";

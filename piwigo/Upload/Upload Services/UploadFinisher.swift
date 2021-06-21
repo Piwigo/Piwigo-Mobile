@@ -93,10 +93,13 @@ extension UploadManager{
                         if let response = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? HTTPURLResponse,
                            response.statusCode == 401 {
                             // Try relogin
-                            let appDelegate = UIApplication.shared.delegate as? AppDelegate
-                            appDelegate?.reloginAndRetry {
-                                // Upload still ready for finish
-                                self.didSetParameters(for: uploadID, error: error)
+                            DispatchQueue.main.async {
+                                let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                                appDelegate?.reloginAndRetry {        // Upload still ready for finish
+                                    self.backgroundQueue.async {
+                                        self.didSetParameters(for: uploadID, error: error)
+                                    }
+                                }
                             }
                         } else {
                             // Upload still ready for finish

@@ -12,7 +12,6 @@
 #import "AlbumData.h"
 #import "AlbumImagesViewController.h"
 #import "AlbumService.h"
-#import "AppDelegate.h"
 #import "CategoriesData.h"
 #import "CategoryCollectionViewCell.h"
 #import "DiscoverImagesViewController.h"
@@ -25,7 +24,6 @@
 #import "MBProgressHUD.h"
 #import "Model.h"
 #import "NetworkHandler.h"
-#import "SAMKeychain.h"
 #import "SearchImagesViewController.h"
 
 //#ifndef DEBUG_LIFECYCLE
@@ -434,7 +432,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     [self applyColorPalette];
 
     // Register palette changes
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:[PwgNotifications paletteChangedObjc] object:nil];
 
     // Register root album changes
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnToDefaultCategory) name:kPiwigoNotificationBackToDefaultAlbum object:nil];
@@ -758,7 +756,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationRemovedImage object:nil];
 
     // Unregister palette changes
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationPaletteChanged object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:[PwgNotifications paletteChangedObjc] object:nil];
 
     // Unregister root album changes
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationBackToDefaultAlbum object:nil];
@@ -3053,8 +3051,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             if(!self.isSelect)
             {
                 // Add category to list of recent albums
-                NSDictionary *userInfo = @{@"categoryId" : [NSString stringWithFormat:@"%ld", (long)self.categoryId]};
-                [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationAddRecentAlbum object:nil userInfo:userInfo];
+                NSDictionary *userInfo = @{@"categoryId" : [NSNumber numberWithLong:self.categoryId]};
+                [[NSNotificationCenter defaultCenter] postNotificationName:[PwgNotifications addRecentAlbumObjc] object:nil userInfo:userInfo];
 
                 // Selection mode not active => display full screen image
                 self.imageDetailView = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId atImageIndex:indexPath.row withArray:[self.albumData.images copy]];

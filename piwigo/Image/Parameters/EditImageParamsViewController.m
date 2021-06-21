@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import "AppDelegate.h"
 #import "EditImageDatePickerTableViewCell.h"
 #import "EditImageParamsViewController.h"
 #import "EditImagePrivacyTableViewCell.h"
@@ -78,7 +77,7 @@ typedef enum {
     self.navigationItem.rightBarButtonItem = done;
 
     // Register palette changes
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:[PwgNotifications paletteChangedObjc] object:nil];
 }
 
 #pragma mark - View Lifecycle
@@ -261,7 +260,7 @@ typedef enum {
     [super viewWillDisappear:animated];
 
     // Unregister palette changes
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationPaletteChanged object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:[PwgNotifications paletteChangedObjc] object:nil];
 
     // Check if the user is still editing parameters
     if ([self.navigationController.visibleViewController isKindOfClass:[SelectPrivacyViewController class]] ||

@@ -6,7 +6,6 @@
 //  Copyright © 2019 Piwigo.org. All rights reserved.
 //
 
-#import "AppDelegate.h"
 #import "CategoriesData.h"
 #import "EditImageThumbCollectionViewCell.h"
 #import "ImageDetailViewController.h"
@@ -66,7 +65,7 @@ NSString * const kEditImageThumbCollectionCell_ID = @"EditImageThumbCollectionCe
     self.editImageButton.tintColor = [UIColor piwigoColorOrange];
     
     // Register palette changes
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:[PwgNotifications paletteChangedObjc] object:nil];
 }
 
 -(void)applyColorPalette

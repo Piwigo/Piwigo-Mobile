@@ -8,7 +8,6 @@
 
 #import "AlbumData.h"
 #import "AlbumService.h"
-#import "AppDelegate.h"
 #import "CategoriesData.h"
 #import "ImageCollectionViewCell.h"
 #import "ImageDetailViewController.h"
@@ -109,7 +108,7 @@
     [super viewDidAppear:animated];
     
     // Register palette changes
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:[PwgNotifications paletteChangedObjc] object:nil];
 
     // Register category data updates
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeImageFromCategory:) name:kPiwigoNotificationRemovedImage object:nil];
@@ -235,7 +234,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationRemovedImage object:nil];
 
     // Unregister palette changes
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationPaletteChanged object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:[PwgNotifications paletteChangedObjc] object:nil];
 }
 
 

@@ -156,10 +156,16 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
         }
         
         // Get HTTP basic authentification credentials
-        guard let credential = KeychainUtilities.HTTPcredentialFromKeychain() else {
+        let service = NetworkVars.shared.serverProtocol + NetworkVars.shared.serverPath
+        let account = NetworkVars.shared.httpUsername
+        let password = KeychainUtilities.password(forService: service, account: account)
+        if password.isEmpty {
             completionHandler(.cancelAuthenticationChallenge, nil)
             return
         }
+        let credential = URLCredential(user: account,
+                                       password: password,
+                                       persistence: .forSession)
         completionHandler(.useCredential, credential)
     }
 

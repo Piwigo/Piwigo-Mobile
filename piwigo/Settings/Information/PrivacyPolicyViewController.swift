@@ -74,8 +74,8 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
         navigationItem.setRightBarButtonItems([doneBarButton].compactMap { $0 }, animated: true)
         
         // Register palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: PwgNotifications.paletteChanged, object: nil)
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {

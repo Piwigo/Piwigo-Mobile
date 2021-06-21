@@ -14,7 +14,6 @@
 #import "Model.h"
 #import "NetworkHandler.h"
 #import "PiwigoAlbumData.h"
-#import "SAMKeychain.h"
 
 NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
 

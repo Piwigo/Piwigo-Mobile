@@ -11,6 +11,155 @@ import Foundation
 public
 class KeychainUtilities : NSObject {
     
+    // MARK: - Piwigo & HTTP Authentication
+    /// - https://www.osstatus.com/search/results?platform=all&framework=all&search=0
+    // Convention
+    /// Piwigo credentials are identified in the Keychain with:
+    /// - service: <host>
+    /// - account: <username>
+    /// HTTP credentials are stored in the Keychain with:
+    /// - service: <scheme>:<host>
+    /// - account: <httpUsername>
+    public class
+    func setPassword(_ password:String, forService service:String, account:String) {
+        // Check input parameters
+        guard !service.isEmpty, !account.isEmpty, !password.isEmpty,
+              let passwordData = password.data(using: .utf8) else { return }
+        
+        // Prepare query
+        let searchQuery = [kSecClass as String                : kSecClassGenericPassword,
+                           kSecAttrService as String          : service,
+                           kSecAttrAccount as String          : account,
+                           kSecAttrSynchronizable as String   : kSecAttrSynchronizableAny] as [String : Any]
+
+        // Already in Keychain?
+        var status = SecItemCopyMatching(searchQuery as CFDictionary, nil)
+        switch status {
+        case errSecSuccess:
+            // Already existing —> update it
+            let query = [kSecValueData as String            : passwordData,
+                         kSecAttrAccessible as String       : kSecAttrAccessibleAfterFirstUnlock] as [String : Any]
+            status = SecItemUpdate(searchQuery as CFDictionary, query as CFDictionary)
+
+        case errSecItemNotFound:
+            // Create new item in Keychain
+            let query = [kSecClass as String                : kSecClassGenericPassword,
+                         kSecAttrService as String          : service,
+                         kSecAttrAccount as String          : account,
+                         kSecAttrSynchronizable as String   : kSecAttrSynchronizableAny,
+                         kSecValueData as String            : passwordData,
+                         kSecAttrAccessible as String       : kSecAttrAccessibleAfterFirstUnlock] as [String : Any]
+            status = SecItemAdd(query as CFDictionary, nil)
+            
+        default:
+            // Log error
+            logOSStatus(status)
+        }
+        
+        if status != errSecSuccess { logOSStatus(status) }
+        return
+    }
+    
+    public class
+    func password(forService service:String, account:String) -> String {
+        // Check input parameters
+        guard !service.isEmpty, !account.isEmpty else { return "" }
+
+        // Prepare query
+        let query = [kSecClass as String                : kSecClassGenericPassword,
+                     kSecAttrService as String          : service,
+                     kSecAttrAccount as String          : account,
+                     kSecAttrSynchronizable as String   : kSecAttrSynchronizableAny,
+                     kSecReturnData as String           : kCFBooleanTrue!,
+                     kSecMatchLimit as String           : kSecMatchLimitOne] as [String: Any]
+
+        // Apply the query
+        var data: CFTypeRef?
+        let status = SecItemCopyMatching(query as CFDictionary, &data)
+
+        // Results?
+        guard status == errSecSuccess else {
+            if status == errSecItemNotFound {
+                // Security item not found -> try old method
+                /// Piwigo credentials are identified in the Keychain with:
+                /// - generic: "PiwigoLogin"
+                /// - attribute: <username>
+                let kKeychainAppID = "PiwigoLogin"
+                let query = [kSecClass as String            : kSecClassGenericPassword,
+                             kSecAttrGeneric as String      : kKeychainAppID,
+                             kSecReturnAttributes as String : kCFBooleanTrue!,
+                             kSecMatchLimit as String       : kSecMatchLimitOne] as [String: Any]
+
+                var data: CFTypeRef?
+                let status = SecItemCopyMatching(query as CFDictionary, &data)
+                guard status == errSecSuccess else {
+                    logOSStatus(status)
+                    return ""
+                }
+                
+                // Did found username
+                guard let username = String(data: data as! Data, encoding: .utf8),
+                      !username.isEmpty else { return "" }
+                if username == NetworkVars.shared.username {
+                    // Retrieve password
+                    let query = [kSecClass as String        : kSecClassGenericPassword,
+                                 kSecAttrGeneric as String  : kKeychainAppID,
+                                 kSecAttrAccount as String  : username,
+                                 kSecMatchLimit as String   : kSecMatchLimitOne] as [String: Any]
+
+                    var data: CFTypeRef?
+                    let status = SecItemCopyMatching(query as CFDictionary, &data)
+                    guard status == errSecSuccess else {
+                        logOSStatus(status)
+                        return ""
+                    }
+                    guard let password = String(data: data as! Data, encoding: .utf8),
+                          !password.isEmpty else { return "" }
+                    return password
+                }
+            }
+            logOSStatus(status)
+            return ""
+        }
+        guard let password = String(data: data as! Data, encoding: .utf8),
+              !password.isEmpty else {
+            logOSStatus(status)
+            return ""
+        }
+        return password
+    }
+    
+    public class
+    func deletePassword(forService service:String, account:String) {
+        // Check input parameters
+        guard !service.isEmpty, !account.isEmpty else { return }
+
+        // Prepare query
+        let query = [kSecClass as String                : kSecClassGenericPassword,
+                     kSecAttrService as String          : service,
+                     kSecAttrAccount as String          : account,
+                     kSecAttrSynchronizable as String   : kSecAttrSynchronizableAny] as [String: Any]
+
+        // Apply the query
+        let status = SecItemDelete(query as CFDictionary)
+        if status != errSecSuccess { logOSStatus(status) }
+        return
+    }
+    
+    public class
+    func logOSStatus(_ status:OSStatus) {
+        #if DEBUG
+        if #available(iOSApplicationExtension 11.3, *) {
+            let msg = SecCopyErrorMessageString(status, nil)
+            print("==>> OSStatus Error #\(status): \(msg as String?)")
+        } else {
+            let url = "https://www.osstatus.com/search/results?platform=all&framework=all&search=\(status)"
+            print("==>> OSStatus Error #\(status): \(url)")
+        }
+        #endif
+    }
+
+    
     // MARK: - SSL Certificate Validation
     public class
     func isSSLtransactionValid(inState serverTrust: SecTrust,
@@ -62,34 +211,5 @@ class KeychainUtilities : NSObject {
             }
         }
         return isInKeychain
-    }
-    
-    
-    // MARK: - HTTP Authentication challenge
-    public class
-    func HTTPcredentialFromKeychain() -> URLCredential? {
-        // Retrieve username stored in UserDefaults
-        let httpUsername = NetworkVars.shared.httpUsername
-        guard httpUsername.isEmpty else { return nil }
-        
-        // Retrieve password stored in Keychain
-        /// HTTP credentials are stored in the Keychain with:
-        /// - sevice: <scheme>:<host>
-        /// - account: <httpUsername>
-        let service = "\(NetworkVars.shared.serverProtocol)\(NetworkVars.shared.serverPath)"
-        let account = "\(httpUsername)".data(using: .utf8)!
-        let query = [kSecAttrService as String  : service,
-                     kSecAttrAccount as String  : account,
-                     kSecReturnData as String   : kCFBooleanTrue!,
-                     kSecMatchLimit as String   : kSecMatchLimitOne] as [String: Any]
-
-        var data: CFTypeRef?
-        let status: OSStatus = SecItemCopyMatching(query as CFDictionary, &data)
-
-        guard status == errSecSuccess else { return nil }
-        guard let password = String(data: data as! Data, encoding: .utf8),
-              !password.isEmpty else { return nil }
-        return URLCredential(user: httpUsername, password: password,
-                                 persistence: .forSession)
     }
 }

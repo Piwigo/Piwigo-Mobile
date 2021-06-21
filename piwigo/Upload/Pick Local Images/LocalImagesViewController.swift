@@ -289,8 +289,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         PHPhotoLibrary.shared().register(self)
 
         // Register palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: PwgNotifications.paletteChanged, object: nil)
         
         // Register upload progress
         let name2: NSNotification.Name = NSNotification.Name(kPiwigoNotificationUploadProgress)
@@ -347,8 +347,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         PHPhotoLibrary.shared().unregisterChangeObserver(self)
 
         // Unregister palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.removeObserver(self, name: name, object: nil)
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
         
         // Unregister upload progress
         let name2: NSNotification.Name = NSNotification.Name(kPiwigoNotificationUploadProgress)

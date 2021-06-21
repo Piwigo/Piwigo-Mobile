@@ -144,8 +144,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         navigationItem.setRightBarButtonItems([helpBarButton].compactMap { $0 }, animated: true)
 
         // Register palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: PwgNotifications.paletteChanged, object: nil)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -212,8 +212,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         super.viewWillDisappear(animated)
 
         // Unregister palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.removeObserver(self, name: name, object: nil)
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }
 
     @objc func quitSettings() {

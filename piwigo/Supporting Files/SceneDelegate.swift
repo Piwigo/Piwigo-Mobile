@@ -51,33 +51,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             window.makeKeyAndVisible()
 
             // Look for credentials if server address provided
-            var user: String = ""
-            var password: String = ""
-            let server = NetworkVars.shared.serverPath
-            SAMKeychain.setAccessibilityType(kSecAttrAccessibleAfterFirstUnlock)
-            if server.count > 0 {
-                // Known acounts for that server?
-                if let accounts = SAMKeychain.accounts(forService: server), accounts.count > 0 {
-                    // Credentials available
-                    let user = NetworkVars.shared.username
-                    if !user.isEmpty {
-                        password = SAMKeychain.password(forService: server, account: user) ?? ""
-                    }
-                } else {
-                    // No credentials available for that server. And with the old methods?
-                    user = KeychainAccess.getLoginUser() ?? ""
-                    password = KeychainAccess.getLoginPassword() ?? ""
+            let username = NetworkVars.shared.username
+            let service = NetworkVars.shared.serverPath
+            var password = ""
 
-                    // Store credentials with new method if found
-                    if user.count > 0 {
-                        NetworkVars.shared.username = user
-                        SAMKeychain.setPassword(password, forService: server, account: user)
-                    }
-                }
+            // Look for paswword in Keychain if server address and username are provided
+            if service.count > 0, username.count > 0 {
+                password = KeychainUtilities.password(forService: service, account: username)
             }
 
             // Login?
-            if server.count > 0 || (user.count > 0 && password.count > 0) {
+            if service.count > 0 || (username.count > 0 && password.count > 0) {
                 loginVC.launchLogin()
             }
         }
@@ -171,11 +155,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Schedule background tasks after cancelling pending onces
         BGTaskScheduler.shared.cancelAllTaskRequests()
         if NetworkVars.shared.usesUploadAsync {
-            (UIApplication.shared.delegate as! AppDelegate).scheduleNextUpload()
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate
+            appDelegate?.scheduleNextUpload()
         }
 
         // Clean up /tmp directory
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        appDelegate?.cleanUpTemporaryDirectoryImmediately(false)
+        appDelegate?.cleanUpTemporaryDirectory(immediately: false)
     }
 }

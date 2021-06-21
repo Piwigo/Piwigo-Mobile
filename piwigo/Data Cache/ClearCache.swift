@@ -32,7 +32,7 @@ class ClearCache: NSObject {
         
         // Clean up /tmp directory
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        appDelegate?.cleanUpTemporaryDirectoryImmediately(true)
+        appDelegate?.cleanUpTemporaryDirectory(immediately: true)
         
         // Job done
         completionHandler()

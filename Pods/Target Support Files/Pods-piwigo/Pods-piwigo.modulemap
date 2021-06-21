@@ -1,0 +1,6 @@
+module Pods_piwigo {
+  umbrella header "Pods-piwigo-umbrella.h"
+
+  export *
+  module * { export * }
+}

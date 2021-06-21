@@ -7,7 +7,6 @@
 //
 
 #import "AlbumService.h"
-#import "AppDelegate.h"
 #import "Model.h"
 #import "CategoriesData.h"
 
@@ -423,8 +422,8 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
               [[CategoriesData sharedInstance] addCategory:newCatId withParameters:parameters];
 
               // Add new category to list of recent albums
-              NSDictionary *userInfo = @{@"categoryId" : [NSString stringWithFormat:@"%ld", (long)newCatId]};
-              [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationAddRecentAlbum object:nil userInfo:userInfo];
+              NSDictionary *userInfo = @{@"categoryId" : [NSNumber numberWithLong:newCatId]};
+              [[NSNotificationCenter defaultCenter] postNotificationName:[PwgNotifications addRecentAlbumObjc] object:nil userInfo:userInfo];
               
               // Task completed successfully
               if(completion)
@@ -503,8 +502,8 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
     {
         if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
             // Remove category from list of recent albums
-            NSDictionary *userInfo = @{@"categoryId" : [NSString stringWithFormat:@"%ld", (long)categoryId]};
-            [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationRemoveRecentAlbum object:nil userInfo:userInfo];
+            NSDictionary *userInfo = @{@"categoryId" : [NSNumber numberWithLong:categoryId]};
+            [[NSNotificationCenter defaultCenter] postNotificationName:[PwgNotifications removeRecentAlbumObjc] object:nil userInfo:userInfo];
               if(completion)
               {
                   completion(task, YES);

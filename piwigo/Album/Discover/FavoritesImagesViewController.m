@@ -8,7 +8,6 @@
 
 #import "AlbumData.h"
 #import "AlbumService.h"
-#import "AppDelegate.h"
 #import "CategoriesData.h"
 #import "EditImageParamsViewController.h"
 #import "FavoritesImagesViewController.h"
@@ -239,7 +238,7 @@
     }
     
     // Register palette changes
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:[PwgNotifications paletteChangedObjc] object:nil];
 
     // Register category data updates
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
@@ -302,7 +301,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationRemovedImage object:nil];
 
     // Unregister palette changes
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationPaletteChanged object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:[PwgNotifications paletteChangedObjc] object:nil];
 }
 
 -(void)updateBarButtons

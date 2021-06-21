@@ -8,7 +8,6 @@
 
 #import <Photos/Photos.h>
 
-#import "AppDelegate.h"
 #import "CategoriesData.h"
 #import "EditImageParamsViewController.h"
 #import "ImageDetailViewController.h"
@@ -18,7 +17,6 @@
 #import "ImagesCollection.h"
 #import "Model.h"
 #import "MBProgressHUD.h"
-#import "SAMKeychain.h"
 
 NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedImage";
 NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationUpdateImageFileName";
@@ -131,7 +129,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateImageFileName:) name:kPiwigoNotificationUpdateImageFileName object:nil];
 
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:[PwgNotifications paletteChangedObjc] object:nil];
 	}
 	return self;
 }

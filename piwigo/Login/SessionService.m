@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import "AppDelegate.h"
 #import "ImagesCollection.h"
 #import "Model.h"
 #import "PiwigoImageData.h"

@@ -75,8 +75,8 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         applyColorPalette()
 
         // Register palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: PwgNotifications.paletteChanged, object: nil)
 
         // Pause UploadManager while changing settings
         UploadManager.shared.isPaused = true
@@ -86,8 +86,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         super.viewWillDisappear(animated)
         
         // Unregister palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.removeObserver(self, name: name, object: nil)
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
 
         // Check if the user is going to select a local album
         if let visibleVC = navigationController?.visibleViewController,
