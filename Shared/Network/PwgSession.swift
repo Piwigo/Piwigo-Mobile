@@ -91,6 +91,8 @@ class PwgSession: NSObject {
                     // No communication error returned,
                     // so Piwigo returned an error to be handled by the caller.
                     if let jsonData = data, !jsonData.isEmpty {
+                        let dataStr = String(decoding: jsonData, as: UTF8.self)
+                        print("\(UploadUtilities.debugFormatter.string(from: Date())) > JSON: \(dataStr.debugDescription)")
                         let filteredData = self.filterPiwigo(data: jsonData)
                         completionHandler(filteredData, nil)
                     } else {
@@ -115,9 +117,13 @@ class PwgSession: NSObject {
             // Check returned data
             /// - The following 2 lines are used to determine the count of returned bytes.
             /// - This value can then be used to provide the expected count of returned bytes.
+            /// - The last 2 lines display the content of the returned data for debugging.
             let countsOfByte = httpResponse.allHeaderFields.count * MemoryLayout<Dictionary<String, Any>>.stride +
                 jsonData.count * MemoryLayout<Data>.stride
             print("countsOfBytesReceived: \(countsOfByte) bytes")
+            let dataStr = String(decoding: jsonData, as: UTF8.self)
+            print("\(UploadUtilities.debugFormatter.string(from: Date())) > JSON: \(dataStr.debugDescription)")
+            
             let filteredData = self.filterPiwigo(data: jsonData)
             guard let _ = try? JSONSerialization.jsonObject(with: filteredData, options: []) as? [String: AnyObject] else {
                 // Update upload request status
