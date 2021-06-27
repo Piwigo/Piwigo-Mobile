@@ -464,12 +464,7 @@ public class TagsProvider {
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest as! NSFetchRequest<NSFetchRequestResult>)
 
         // Execute batch delete request
-        do {
-            try managedObjectContext.execute(batchDeleteRequest)
-        }
-        catch {
-            fatalError("Unresolved error \(error)")
-        }
+        try? managedObjectContext.executeAndMergeChanges(using: batchDeleteRequest)
     }
     
 
