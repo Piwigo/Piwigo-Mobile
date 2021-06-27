@@ -9,7 +9,7 @@
 import Foundation
 
 // MARK: - community.images.uploadCompleted
-public let kCommunityImagesUploadCompleted = "community.images.uploadCompleted"
+public let kCommunityImagesUploadCompleted = "format=json&method=community.images.uploadCompleted"
 
 public struct CommunityImagesUploadCompletedJSON: Decodable {
     
