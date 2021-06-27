@@ -9,7 +9,7 @@
 import AVFoundation
 import MobileCoreServices
 import Photos
-import piwigoKit
+import CoreData
 
 extension UploadManager {
     

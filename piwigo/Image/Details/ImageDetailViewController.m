@@ -129,7 +129,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateImageFileName:) name:kPiwigoNotificationUpdateImageFileName object:nil];
 
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:[PwgNotifications paletteChangedObjc] object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:[PwgNotificationsObjc paletteChanged] object:nil];
 	}
 	return self;
 }
@@ -149,14 +149,14 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     if (@available(iOS 11.0, *)) {
         self.navigationController.navigationBar.prefersLargeTitles = NO;
     }
-    self.navigationController.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    self.navigationController.navigationBar.barStyle = AppVars.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
     self.navigationController.navigationBar.tintColor = [UIColor piwigoColorOrange];
     self.navigationController.navigationBar.barTintColor = [UIColor piwigoColorBackground];
     self.navigationController.navigationBar.backgroundColor = [UIColor piwigoColorBackground];
     
     // Toolbar
     self.navigationController.toolbar.barTintColor = [UIColor piwigoColorBackground];
-    self.navigationController.toolbar.barStyle = AppVars.shared.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    self.navigationController.toolbar.barStyle = AppVars.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
 
     // Progress bar
     self.progressBar.progressTintColor = [UIColor piwigoColorOrange];
@@ -204,7 +204,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     if (@available(iOS 13.0, *)) {
         BOOL hasUserInterfaceStyleChanged = (previousTraitCollection.userInterfaceStyle != self.traitCollection.userInterfaceStyle);
         if (hasUserInterfaceStyleChanged) {
-            AppVars.shared.isSystemDarkModeActive = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+            AppVars.isSystemDarkModeActive = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
             [appDelegate screenBrightnessChanged];
         }
@@ -234,7 +234,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
          [[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeRight)) {
             
         // iPhone or iPad in portrait mode
-        if (NetworkVarsObjc.shared.hasAdminRights)
+        if (NetworkVarsObjc.hasAdminRights)
         {
             // User with admin rights can move, edit, delete images and set as album image
             [self.navigationItem setRightBarButtonItems:@[self.editBarButton]];
@@ -249,7 +249,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
             BOOL isNavigationBarHidden = self.navigationController.isNavigationBarHidden;
             [self.navigationController setToolbarHidden:isNavigationBarHidden animated:YES];
         }
-        else if (NetworkVarsObjc.shared.hasNormalRights && [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
+        else if (NetworkVarsObjc.hasNormalRights && [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
         {
             // WRONG =====> 'normal' user with upload access to the current category can edit images
             // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by' values of images for checking rights
@@ -277,7 +277,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
         self.isToolbarRequired = NO;
         [self.navigationController setToolbarHidden:YES animated:YES];
 
-        if (NetworkVarsObjc.shared.hasAdminRights)
+        if (NetworkVarsObjc.hasAdminRights)
         {
             // User with admin rights can edit, delete images and set as album image
             self.deleteBarButton.tintColor = [UIColor redColor];
@@ -472,7 +472,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
         return nil;
     }
     
-    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.view imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
+    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.view imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
     if ((currentIndex > (self.images.count - roundf(imagesPerPage / 3.0))) &&
         (self.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
     {
@@ -623,8 +623,8 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     EditImageParamsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageParams"];
     editImageVC.images = @[self.imageData];
     PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
-    editImageVC.hasTagCreationRights = NetworkVarsObjc.shared.hasAdminRights ||
-                                        (NetworkVarsObjc.shared.hasNormalRights && albumData.hasUploadRights);
+    editImageVC.hasTagCreationRights = NetworkVarsObjc.hasAdminRights ||
+                                        (NetworkVarsObjc.hasNormalRights && albumData.hasUploadRights);
     editImageVC.delegate = self;
     [self pushView:editImageVC forButton:self.editBarButton];
 }
@@ -676,7 +676,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     // Present list of actions
     alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
-        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
@@ -986,7 +986,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     // Present list of actions
     alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
-        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }

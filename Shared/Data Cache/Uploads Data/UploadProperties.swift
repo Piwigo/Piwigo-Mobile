@@ -6,6 +6,8 @@
 //  Copyright © 2021 Piwigo.org. All rights reserved.
 //
 
+import Foundation
+
 /**
  A struct for managing upload requests
 */
@@ -51,8 +53,8 @@ extension UploadProperties {
             category: category,
             
             // Server parameters
-            serverPath: NetworkVars.shared.serverPath,
-            serverFileTypes: UploadVars.shared.serverFileTypes,
+            serverPath: NetworkVars.serverPath,
+            serverFileTypes: UploadVars.serverFileTypes,
             
             // Upload request date is now and state is waiting
             requestDate: Date().timeIntervalSinceReferenceDate,
@@ -63,23 +65,23 @@ extension UploadProperties {
             mimeType: "", md5Sum: "", isVideo: false,
             
             // Photo author name defaults to name entered in Settings
-            author: UploadVars.shared.defaultAuthor,
+            author: UploadVars.defaultAuthor,
             
             // Privacy level defaults to level selected in Settings
-            privacyLevel: kPiwigoPrivacy(rawValue: UploadVars.shared.defaultPrivacyLevel) ?? .everybody,
+            privacyLevel: kPiwigoPrivacy(rawValue: UploadVars.defaultPrivacyLevel) ?? .everybody,
             
             // No title, comment, tag, filename by default, image ID unknown
             imageTitle: "", comment: "", tagIds: "", imageId: NSNotFound,
             
             // Upload settings
-            stripGPSdataOnUpload: UploadVars.shared.stripGPSdataOnUpload,
-            resizeImageOnUpload: UploadVars.shared.resizeImageOnUpload,
-            photoResize: UploadVars.shared.photoResize,
-            compressImageOnUpload: UploadVars.shared.compressImageOnUpload,
-            photoQuality: UploadVars.shared.photoQuality,
-            prefixFileNameBeforeUpload: UploadVars.shared.prefixFileNameBeforeUpload,
-            defaultPrefix: UploadVars.shared.defaultPrefix,
-            deleteImageAfterUpload: UploadVars.shared.deleteImageAfterUpload,
+            stripGPSdataOnUpload: UploadVars.stripGPSdataOnUpload,
+            resizeImageOnUpload: UploadVars.resizeImageOnUpload,
+            photoResize: UploadVars.photoResize,
+            compressImageOnUpload: UploadVars.compressImageOnUpload,
+            photoQuality: UploadVars.photoQuality,
+            prefixFileNameBeforeUpload: UploadVars.prefixFileNameBeforeUpload,
+            defaultPrefix: UploadVars.defaultPrefix,
+            deleteImageAfterUpload: UploadVars.deleteImageAfterUpload,
             markedForAutoUpload: false)
     }
     

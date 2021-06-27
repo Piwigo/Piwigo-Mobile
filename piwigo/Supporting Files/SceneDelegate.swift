@@ -40,19 +40,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             window.rootViewController?.view.setNeedsUpdateConstraints()
 
             // Color palette depends on system settings
-            AppVars.shared.isSystemDarkModeActive = loginVC.traitCollection.userInterfaceStyle == .dark
-//            print("•••> iOS mode: \(AppVars.shared.isSystemDarkModeActive ? "Dark" : "Light"), app mode: \(Model.sharedInstance().isDarkPaletteModeActive ? "Dark" : "Light"), Brightness: \(lroundf(Float(UIScreen.main.brightness) * 100.0))/\(Model.sharedInstance().switchPaletteThreshold), app: \(AppVars.shared.isDarkPaletteActive ? "Dark" : "Light")")
+            AppVars.isSystemDarkModeActive = loginVC.traitCollection.userInterfaceStyle == .dark
+//            print("•••> iOS mode: \(AppVars.isSystemDarkModeActive ? "Dark" : "Light"), app mode: \(Model.sharedInstance().isDarkPaletteModeActive ? "Dark" : "Light"), Brightness: \(lroundf(Float(UIScreen.main.brightness) * 100.0))/\(Model.sharedInstance().switchPaletteThreshold), app: \(AppVars.isDarkPaletteActive ? "Dark" : "Light")")
 
             // Apply color palette
-            (UIApplication.shared.delegate as! AppDelegate).screenBrightnessChanged()
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate
+            appDelegate?.screenBrightnessChanged()
 
             // Present login window
             self.window = window
             window.makeKeyAndVisible()
 
             // Look for credentials if server address provided
-            let username = NetworkVars.shared.username
-            let service = NetworkVars.shared.serverPath
+            let username = NetworkVars.username
+            let service = NetworkVars.serverPath
             var password = ""
 
             // Look for paswword in Keychain if server address and username are provided
@@ -95,7 +96,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let rootVC = self.window?.rootViewController,
            let _ = rootVC.children.first as? AlbumImagesViewController {
             // Determine for how long the session is opened
-            let timeSinceLastLogin = NetworkVars.shared.dateOfLastLogin.timeIntervalSinceNow
+            let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
             if timeSinceLastLogin < TimeInterval(-900) { // i.e. 15 minutes (Piwigo 11 session duration defaults to an hour)
                 /// - Perform relogin
                 /// - Resume upload operations in background queue
@@ -154,7 +155,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Schedule background tasks after cancelling pending onces
         BGTaskScheduler.shared.cancelAllTaskRequests()
-        if NetworkVars.shared.usesUploadAsync {
+        if NetworkVars.usesUploadAsync {
             let appDelegate = UIApplication.shared.delegate as? AppDelegate
             appDelegate?.scheduleNextUpload()
         }

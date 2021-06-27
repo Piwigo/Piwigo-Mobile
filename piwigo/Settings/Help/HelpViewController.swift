@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import piwigoKit
 
 class HelpViewController: UIViewController {
     

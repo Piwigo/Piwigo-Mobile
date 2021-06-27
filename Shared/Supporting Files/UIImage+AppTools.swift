@@ -7,10 +7,11 @@
 //
 
 import Foundation
+import UIKit
 
 extension UIImage {
     
-    func resize(to dimension: CGFloat, opaque: Bool, scale: CGFloat = UIScreen.main.scale,
+    public func resize(to dimension: CGFloat, opaque: Bool, scale: CGFloat = UIScreen.main.scale,
                 contentMode: UIView.ContentMode = .scaleAspectFit) -> UIImage {
         var width: CGFloat
         var height: CGFloat
@@ -58,7 +59,7 @@ extension UIImage {
         return newImage
     }
     
-    func fixOrientation() -> UIImage {
+    public func fixOrientation() -> UIImage {
         // No-op if the orientation is already correct
         if self.imageOrientation == .up {
             return self
@@ -120,7 +121,7 @@ extension UIImage {
         return img!
     }
     
-    func crop(width: CGFloat, height: CGFloat) -> UIImage?
+    public func crop(width: CGFloat, height: CGFloat) -> UIImage?
     {
         // Call crop(1.0,1.0) for obtaining a square image
         let imageScale = min(self.size.width / width,

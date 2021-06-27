@@ -14,14 +14,14 @@ extension UserDefaults {
     /// - Development: one chosen by the developer
     /// - Release: the official group.org.piwigo
     #if DEBUG
-    private static let AppGroup = "group.net.lelievre-berna.piwigo"
+    public static let appGroup = "group.net.lelievre-berna.piwigo"
     #else
-    private static let AppGroup = "group.org.piwigo"
+    public static let appGroup = "group.org.piwigo"
     #endif
     
     public static let dataSuite = { () -> UserDefaults in
-        guard let dataSuite = UserDefaults(suiteName: AppGroup) else {
-             fatalError("Could not load UserDefaults for app group \(AppGroup)")
+        guard let dataSuite = UserDefaults(suiteName: appGroup) else {
+             fatalError("Could not load UserDefaults for app group \(appGroup)")
         }
         
         return dataSuite

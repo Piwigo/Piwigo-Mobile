@@ -8,12 +8,26 @@
 // A UserDefaultsManager subclass that persists network settings.
 
 import Foundation
+import SystemConfiguration
 
 public class NetworkVars: NSObject {
 
-    // Singleton
-    public static let shared = NetworkVars()
-    
+    public static var domain: String = {
+        let strURL = "\(serverProtocol)\(serverPath)"
+        return URL(string: strURL)?.host ?? ""
+    }()
+
+    public static var isConnectedToWiFi: Bool = {
+        guard let reachability = SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, domain) else { return false }
+        var flags: SCNetworkReachabilityFlags = []
+        if !SCNetworkReachabilityGetFlags(reachability, &flags) { return false }
+        
+        let isReachable = flags.contains(.reachable)
+        let cellular = flags.contains(.isWWAN)
+        let needsConnection = flags.contains(.connectionRequired)
+        return (isReachable && !cellular && !needsConnection)
+    }()
+
     // Remove deprecated stored objects if needed
 //    override init() {
 //        // Deprecated data?
@@ -31,23 +45,23 @@ public class NetworkVars: NSObject {
     // Network variables stored in UserDefaults / App Group
     /// - Scheme of the URL, "https://" by default
     @UserDefault("serverProtocol", defaultValue: "https://", userDefaults: UserDefaults.dataSuite)
-    public var serverProtocol: String
+    public static var serverProtocol: String
     
     /// - Path of the server, e.g. lelievre-berna.net/Piwigo
     @UserDefault("serverPath", defaultValue: "", userDefaults: UserDefaults.dataSuite)
-    public var serverPath: String
+    public static var serverPath: String
     
     /// - String encoding of the server, UTF-8 by default
     @UserDefault("stringEncoding", defaultValue: String.Encoding.utf8.rawValue, userDefaults: UserDefaults.dataSuite)
-    public var stringEncoding: UInt
+    public static var stringEncoding: UInt
     
     /// -  Username provided to access a server requiring HTTP basic authentication
     @UserDefault("HttpUsername", defaultValue: "", userDefaults: UserDefaults.dataSuite)
-    public var httpUsername: String
+    public static var httpUsername: String
 
     /// - Username provided to access the Piwigo server
     @UserDefault("username", defaultValue: "", userDefaults: UserDefaults.dataSuite)
-    public var username: String
+    public static var username: String
 
     
     // MARK: - Vars in Memory
@@ -63,44 +77,44 @@ public class NetworkVars: NSObject {
 //    var thumbnailCache: AFAutoPurgingImageCache?
     
     /// - Community methods available, false by default (available since  version 2.9 of the plugin)
-    public var usesCommunityPluginV29 = false
+    public static var usesCommunityPluginV29 = false
     
     /// - uploadAsync method available, false by default (avaiable since Piwigo 11)
-    public var usesUploadAsync = false
+    public static var usesUploadAsync = false
     
     /// - Remembers that the HTTP authentication failed
-    public var didFailHTTPauthentication = false
+    public static var didFailHTTPauthentication = false
 
     /// - Remembers that the SSL certicate was approved
-    public var didApproveCertificate = false
+    public static var didApproveCertificate = false
     
     /// - Remembers that the SSL certificate was rejected
-    public var didRejectCertificate = false
+    public static var didRejectCertificate = false
     
     /// - Remembers certificate information
-    public var certificateInformation = ""
+    public static var certificateInformation = ""
 
     /// - Remembers that the user cancelled login attempt
-    public var userCancelledCommunication = false
+    public static var userCancelledCommunication = false
     
     /// - Logged user has normal rigths, false by default
-    public var hasNormalRights = false
+    public static var hasNormalRights = false
 
     /// - Logged user has admin rigths, false by default
-    public var hasAdminRights = false
+    public static var hasAdminRights = false
 
     /// - Did open session with success
-    public var hadOpenedSession = false
+    public static var hadOpenedSession = false
     
     /// - Remembers when the user logged in
-    public var dateOfLastLogin: Date = .distantPast
+    public static var dateOfLastLogin: Date = .distantPast
     
     /// - Piwigor server version
-    public var version = ""
+    public static var pwgVersion = ""
     
     /// - Token returned after login
-    public var pwgToken = ""
+    public static var pwgToken = ""
 
     /// - User's default language
-    public var language = ""
+    public static var language = ""
 }

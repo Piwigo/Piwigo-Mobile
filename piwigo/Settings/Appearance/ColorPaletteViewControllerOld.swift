@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import piwigoKit
 
 class ColorPaletteViewControllerOld: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
@@ -34,14 +35,14 @@ class ColorPaletteViewControllerOld: UIViewController, UITableViewDataSource, UI
         if #available(iOS 11.0, *) {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
 
         // Table view
         tableView.separatorColor = UIColor.piwigoColorSeparator()
-        tableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        tableView.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
         tableView.reloadData()
     }
 
@@ -113,7 +114,7 @@ class ColorPaletteViewControllerOld: UIViewController, UITableViewDataSource, UI
     
     // MARK: - UITableView - Rows
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2 + (AppVars.shared.switchPaletteAutomatically ? 1 : 0)
+        return 2 + (AppVars.switchPaletteAutomatically ? 1 : 0)
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -145,17 +146,17 @@ class ColorPaletteViewControllerOld: UIViewController, UITableViewDataSource, UI
                 return SwitchTableViewCell()
             }
             cell.configure(with: NSLocalizedString("settings_switchPalette", comment: "Automatic"))
-            cell.cellSwitch.setOn(AppVars.shared.switchPaletteAutomatically, animated: true)
+            cell.cellSwitch.setOn(AppVars.switchPaletteAutomatically, animated: true)
             cell.cellSwitchBlock = { switchState in
 
                 // Number of rows will change accordingly
-                AppVars.shared.switchPaletteAutomatically = switchState
+                AppVars.switchPaletteAutomatically = switchState
 
                 // What should we do?
                 if switchState {
                     // Switch off light/dark modes
-                    AppVars.shared.isLightPaletteModeActive = false
-                    AppVars.shared.isDarkPaletteModeActive = false
+                    AppVars.isLightPaletteModeActive = false
+                    AppVars.isDarkPaletteModeActive = false
 
                     // Add row presenting the brightness threshold
                     tableView.insertRows(at: [IndexPath(row: 2, section: 0)], with: .automatic)
@@ -176,14 +177,14 @@ class ColorPaletteViewControllerOld: UIViewController, UITableViewDataSource, UI
                 print("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!")
                 return SliderTableViewCell()
             }
-            let value = Float(AppVars.shared.switchPaletteThreshold)
+            let value = Float(AppVars.switchPaletteThreshold)
             let currentBrightness = UIScreen.main.brightness * 100
             let prefix = String(format: "%ld/", lroundf(Float(currentBrightness)))
             cell.configure(with: NSLocalizedString("settings_brightness", comment: "Brightness"), value: value, increment: 1, minValue: 0, maxValue: 100, prefix: prefix, suffix: "%")
             cell.cellSliderBlock = { newThreshold in
                 
                 // Update settings
-                AppVars.shared.switchPaletteThreshold = Int(newThreshold)
+                AppVars.switchPaletteThreshold = Int(newThreshold)
                 
                 // Update palette if needed
                 let appDelegate = UIApplication.shared.delegate as? AppDelegate
@@ -208,7 +209,7 @@ class ColorPaletteViewControllerOld: UIViewController, UITableViewDataSource, UI
         
         func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
             // Display the footer when the Automatic mode is active
-            if !AppVars.shared.switchPaletteAutomatically {
+            if !AppVars.switchPaletteAutomatically {
                 return 0.0
             }
             
@@ -226,7 +227,7 @@ class ColorPaletteViewControllerOld: UIViewController, UITableViewDataSource, UI
 
         func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
             // Display the footer when the Automatic mode is active
-            if !AppVars.shared.switchPaletteAutomatically {
+            if !AppVars.switchPaletteAutomatically {
                 return nil
             }
             

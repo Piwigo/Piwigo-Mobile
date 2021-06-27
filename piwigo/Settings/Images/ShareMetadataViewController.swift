@@ -54,14 +54,14 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
         if #available(iOS 11.0, *) {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
 
         // Table view
         shareMetadataTableView.separatorColor = UIColor.piwigoColorSeparator()
-        shareMetadataTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        shareMetadataTableView.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
         shareMetadataTableView.reloadData()
     }
 
@@ -474,7 +474,7 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
         }
 
         // Clear URL requests to force reload images before sharing
-        NetworkVarsObjc.shared.imageCache?.removeAllCachedResponses()
+        NetworkVarsObjc.imageCache?.removeAllCachedResponses()
 
         // Clean up /tmp directory where shared files are temporarily stored
         let appDelegate = UIApplication.shared.delegate as? AppDelegate

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import piwigoKit
 
 @objc
 protocol UploadSwitchDelegate: NSObjectProtocol {
@@ -99,7 +100,7 @@ class UploadSwitchViewController: UIViewController {
         if #available(iOS 11.0, *) {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
@@ -108,7 +109,7 @@ class UploadSwitchViewController: UIViewController {
         switchViewSegmentedControl.superview?.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.8)
         if #available(iOS 13.0, *) {
             // Keep standard background color
-            switchViewSegmentedControl.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+            switchViewSegmentedControl.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
         } else {
             switchViewSegmentedControl.backgroundColor = UIColor(red: 0.0, green: 0.0, blue: 0.08, alpha: 0.06666)
         }

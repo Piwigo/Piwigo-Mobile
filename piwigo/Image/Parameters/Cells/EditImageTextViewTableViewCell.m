@@ -44,7 +44,7 @@
     self.textView.text = imageDetail;
     self.textView.textColor = color;
     self.textView.backgroundColor = [UIColor piwigoColorBackground];
-    self.textView.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
+    self.textView.keyboardAppearance = AppVars.isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
 }
 
 -(void)prepareForReuse

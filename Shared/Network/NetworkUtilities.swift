@@ -10,61 +10,6 @@ import Foundation
 
 public class NetworkUtilities: NSObject {
     
-    let domain: String = {
-        let strURL = "\(NetworkVars.shared.serverProtocol)\(NetworkVars.shared.serverPath)"
-        return URL(string: strURL)?.host ?? ""
-    }()
-
-    // MARK: - Certificate Validation
-    func checkValidity(of serverTrust: SecTrust) -> (Bool) {
-        // Define policy for validating domain name
-        let policy = SecPolicyCreateSSL(true, domain as CFString)
-        let status = SecTrustSetPolicies(serverTrust, policy)
-        if status != 0 { return false }     // Could not set policy
-        
-        // Evaluate certificate
-        var isValid = false
-        if #available(iOS 12.0, *) {
-            isValid = SecTrustEvaluateWithError(serverTrust, nil)
-        } else {
-            // Fallback on earlier versions
-            var result: SecTrustResultType = .invalid
-            SecTrustEvaluate(serverTrust, &result)
-            if status == errSecSuccess {
-                isValid = (result == .unspecified) || (result == .proceed)
-            }
-        }
-        
-        return isValid
-    }
-    
-    func certificateIsInKeychain(with serverTrust: SecTrust) -> (Bool) {
-        // Retrieve the certificate of the server
-        let certificate = SecTrustGetCertificateAtIndex(serverTrust, CFIndex(0))!
-
-        // Get certificate in Keychain (should exist)
-        // Certificates are stored in the Keychain with label "Piwigo:<host>"
-        let query = [kSecClass as String       : kSecClassCertificate,
-                     kSecAttrLabel as String   : "Piwigo:\(domain)",
-                     kSecReturnRef as String   : kCFBooleanTrue!] as [String : Any]
-
-        var dataTypeRef: AnyObject? = nil
-        let status: OSStatus = SecItemCopyMatching(query as CFDictionary, &dataTypeRef)
-
-        var isInKeychain = false
-        if status == errSecSuccess {
-            // A certificate exists for that host, does it match the one of the server?
-            let certData = SecCertificateCopyData(certificate)
-            let storedData = SecCertificateCopyData(dataTypeRef as! SecCertificate)
-            if certData == storedData {
-                // Certificates are identical
-                isInKeychain = true
-            }
-        }
-        return isInKeychain
-    }
-    
-    
     // MARK: - UTF-8 encoding on 3 and 4 bytes
     public class
     func utf8mb4String(from string: String?) -> String {
@@ -73,7 +18,7 @@ public class NetworkUtilities: NSObject {
             return ""
         }
         // Convert string to UTF-8 encoding
-        let serverEncoding = String.Encoding(rawValue: NetworkVars.shared.stringEncoding )
+        let serverEncoding = String.Encoding(rawValue: NetworkVars.stringEncoding )
         if let strData = strToConvert.data(using: serverEncoding, allowLossyConversion: true) {
             return String(data: strData, encoding: .utf8) ?? strToConvert
         }
@@ -102,4 +47,113 @@ public class NetworkUtilities: NSObject {
         }
         return utf8mb3String
     }
+
+    
+    // MARK: - Clean URLs of Images
+    public class
+    func encodedImageURL(_ originalURL:String?) -> String? {
+        // Return nil if originalURL is nil and a placeholder will be used
+        guard let okURL = originalURL else { return nil }
+        
+        // Servers may return incorrect URLs (would lead to a crash)
+        // See https://tools.ietf.org/html/rfc3986#section-2
+        var serverURL = NSURL(string: okURL)
+        if serverURL == nil {
+            // URL not RFC compliant!
+            var leftURL = okURL
+
+            // Remove protocol header
+            if okURL.hasPrefix("http://") { leftURL.removeFirst(7) }
+            if okURL.hasPrefix("https://") { leftURL.removeFirst(8) }
+            
+            // Retrieve authority
+            guard let range1 = leftURL.range(of: "/") else {
+                // No path, incomplete URL —> return image.jpg but should never happen
+                return "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)/image.jpg"
+            }
+            let authority = String(leftURL.prefix(upTo: range1.upperBound)) + "/"
+            leftURL.removeFirst(authority.count)
+
+            // The Piwigo server may not be in the root e.g. example.com/piwigo/…
+            // So we remove the path to avoid a duplicate if necessary
+            if let loginURL = URL(string: "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"),
+               loginURL.path.count > 0, leftURL.hasPrefix(loginURL.path) {
+                leftURL.removeFirst(loginURL.path.count)
+            }
+
+            // Retrieve path
+            if let range2 = leftURL.range(of: "?") {
+                // URL seems to contain a query
+                let path = String(leftURL.prefix(upTo: range2.upperBound)) + "?"
+                guard let finalPath = path.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) else {
+                    // Could not apply percent encoding —> return image.jpg but should never happen
+                    return "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)/image.jpg"
+                }
+                leftURL.removeFirst(path.count)
+                guard let leftURL = leftURL.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+                    // Could not apply percent encoding —> return image.jpg but should never happen
+                    return "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)/image.jpg"
+                }
+                serverURL = NSURL(string: "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)\(finalPath)\(leftURL)")
+            } else {
+                // No query -> remaining string is a path
+                let finalPath = String(leftURL.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)!)
+                serverURL = NSURL(string: "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)\(finalPath)")
+            }
+            
+            // Last check
+            if serverURL == nil {
+                // Could not apply percent encoding —> return image.jpg but should never happen
+                return "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)/image.jpg"
+            }
+        }
+        
+        // Servers may return image URLs different from those used to login (e.g. wrong server settings)
+        // We only keep the path+query because we only accept to download images from the same server.
+        guard var cleanPath = serverURL?.path else {
+            return "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)/image.jpg"
+        }
+        if let paramStr = serverURL?.parameterString {
+            cleanPath.append(paramStr)
+        }
+        if let query = serverURL?.query {
+            cleanPath.append("?" + query)
+        }
+        if let fragment = serverURL?.fragment {
+            cleanPath.append("#" + fragment)
+        }
+
+        // The Piwigo server may not be in the root e.g. example.com/piwigo/…
+        // So we remove the path to avoid a duplicate if necessary
+        if let loginURL = URL(string: "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"),
+           loginURL.path.count > 0, cleanPath.hasPrefix(loginURL.path) {
+            cleanPath.removeFirst(loginURL.path.count)
+        }
+        
+        // Remove the .php?, i? prefixes if any
+        var prefix = ""
+        if let pos = cleanPath.range(of: "?") {
+            // The path contains .php? or i?
+            prefix = String(cleanPath.prefix(upTo: pos.upperBound))
+            cleanPath.removeFirst(prefix.count)
+        }
+
+        // Path may not be encoded
+        if let decodedPath = cleanPath.removingPercentEncoding, cleanPath == decodedPath,
+           let test = cleanPath.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) {
+            cleanPath = test
+        }
+
+        // Compile final URL using the one provided at login
+        let encodedImageURL = "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)\(prefix)\(cleanPath)"
+        #if DEBUG
+        if encodedImageURL != originalURL {
+            print("=> originalURL:\(String(describing: originalURL))")
+            print("    encodedURL:\(encodedImageURL)")
+            print("    path=\(String(describing: serverURL?.path)), parameterString=\(String(describing: serverURL?.parameterString)), query:\(String(describing: serverURL?.query)), fragment:\(String(describing: serverURL?.fragment))")
+        }
+        #endif
+        return encodedImageURL;
+    }
 }
+

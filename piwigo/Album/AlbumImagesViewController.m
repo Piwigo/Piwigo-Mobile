@@ -33,8 +33,6 @@
 CGFloat const kRadius = 25.0;
 CGFloat const kDeg2Rad = 3.141592654 / 180.0;
 NSString * const kPiwigoNotificationBackToDefaultAlbum = @"kPiwigoNotificationBackToDefaultAlbum";
-NSString * const kPiwigoNotificationLeftUploads = @"kPiwigoNotificationLeftUploads";
-NSString * const kPiwigoNotificationUploadProgress = @"kPiwigoNotificationUploadProgress";
 NSString * const kPiwigoNotificationUploadedImage = @"kPiwigoNotificationUploadedImage";
 NSString * const kPiwigoNotificationRemovedImage = @"kPiwigoNotificationRemovedImage";
 NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChangedAlbumData";
@@ -102,8 +100,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:1];
         
 		self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
-		self.currentSortCategory = (kPiwigoSortObjc)AlbumVars.shared.defaultSort;
-        self.displayImageTitles = AlbumVars.shared.displayImageTitles;
+		self.currentSortCategory = (kPiwigoSortObjc)AlbumVars.defaultSort;
+        self.displayImageTitles = AlbumVars.displayImageTitles;
 		
         // Initialise selection mode
         self.isSelect = NO;
@@ -347,7 +345,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     self.homeAlbumButton.backgroundColor = [UIColor piwigoColorRightLabel];
     self.homeAlbumButton.tintColor = [UIColor piwigoColorBackground];
 
-    if (AppVars.shared.isDarkPaletteActive) {
+    if (AppVars.isDarkPaletteActive) {
         [self.addButton.layer setShadowRadius:1.0];
         [self.addButton.layer setShadowOffset:CGSizeMake(0.0, 0.0)];
 
@@ -384,7 +382,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                                  };
     self.navigationController.navigationBar.titleTextAttributes = attributes;
     if (@available(iOS 11.0, *)) {
-        if (self.categoryId == AlbumVars.shared.defaultCategory) {
+        if (self.categoryId == AlbumVars.defaultCategory) {
             // Title
             NSDictionary *attributesLarge = @{
                                               NSForegroundColorAttributeName: [UIColor piwigoColorWhiteCream],
@@ -394,17 +392,17 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             self.navigationController.navigationBar.prefersLargeTitles = YES;
 
             // Search bar
-            self.navigationItem.searchController.searchBar.barStyle = AppVars.shared.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+            self.navigationItem.searchController.searchBar.barStyle = AppVars.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
             if (@available(iOS 13.0, *)) {
                 self.navigationItem.searchController.searchBar.searchTextField.textColor = [UIColor piwigoColorLeftLabel];
-                self.navigationItem.searchController.searchBar.searchTextField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceLight;
+                self.navigationItem.searchController.searchBar.searchTextField.keyboardAppearance = AppVars.isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceLight;
             }
         }
         else {
             self.navigationController.navigationBar.prefersLargeTitles = NO;
         }
     }
-    self.navigationController.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    self.navigationController.navigationBar.barStyle = AppVars.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
     self.navigationController.navigationBar.tintColor = [UIColor piwigoColorOrange];
     self.navigationController.navigationBar.barTintColor = [UIColor piwigoColorBackground];
     self.navigationController.navigationBar.backgroundColor = [UIColor piwigoColorBackground];
@@ -412,11 +410,11 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
     // Toolbar
     self.navigationController.toolbar.barTintColor =[UIColor piwigoColorBackground];
-    self.navigationController.toolbar.barStyle = AppVars.shared.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    self.navigationController.toolbar.barStyle = AppVars.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
     
     // Collection view
     self.imagesCollection.backgroundColor = [UIColor piwigoColorBackground];
-    self.imagesCollection.indicatorStyle = AppVars.shared.isDarkPaletteActive ? UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
+    self.imagesCollection.indicatorStyle = AppVars.isDarkPaletteActive ? UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self.imagesCollection reloadData];
 }
 
@@ -432,16 +430,17 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     [self applyColorPalette];
 
     // Register palette changes
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:[PwgNotifications paletteChangedObjc] object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:[PwgNotificationsObjc paletteChanged] object:nil];
 
     // Register root album changes
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(returnToDefaultCategory) name:kPiwigoNotificationBackToDefaultAlbum object:nil];
     
     // Register upload manager changes
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateNberOfUploads:) name:kPiwigoNotificationLeftUploads object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateNberOfUploads:)
+                                                 name:[PwgNotificationsObjc leftUploads] object:nil];
 
     // Register upload progress
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUploadQueueButtonWithProgress:) name:kPiwigoNotificationUploadProgress object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUploadQueueButtonWithProgress:) name:[PwgNotificationsObjc uploadProgress] object:nil];
 
     // Called before displaying SearchImagesViewController?
     UIViewController *presentedViewController = [self presentedViewController];
@@ -476,8 +475,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     }
     
     // Refresh image collection if displayImageTitles option changed in Settings
-    if (self.displayImageTitles != AlbumVars.shared.displayImageTitles) {
-        self.displayImageTitles = AlbumVars.shared.displayImageTitles;
+    if (self.displayImageTitles != AlbumVars.displayImageTitles) {
+        self.displayImageTitles = AlbumVars.displayImageTitles;
         if (self.categoryId != 0) {
             [self.albumData reloadAlbumOnCompletion:^{
                 [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
@@ -562,7 +561,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             NSInteger nberOfItems = [self.imagesCollection numberOfItemsInSection:1];
             if (self.imageOfInterest.item < nberOfItems) {
                 // Calculate the number of thumbnails displayed per page
-                NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
+                NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.imagesCollection imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
 
                 // Already loaded => scroll to image if necessary
 //                NSLog(@"=> Discover|Scroll down to item #%ld", (long)self.imageOfInterest.item);
@@ -594,12 +593,12 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     // Determine which help pages should be presented
     NSMutableArray *displayHelpPagesWithIndex = [[NSMutableArray alloc] initWithCapacity:2];
     if ((self.categoryId != 0) && ([self.albumData.images count] > 2) &&
-        ((AppVars.shared.didWatchHelpViews & 0b0000000000000001) == 0)) {
+        ((AppVars.didWatchHelpViews & 0b0000000000000001) == 0)) {
         [displayHelpPagesWithIndex addObject:@0];   // i.e. multiple selection of images
     }
     NSInteger numberOfAlbums = [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count;
-    if ((self.categoryId != 0) && (numberOfAlbums > 2) && NetworkVarsObjc.shared.hasAdminRights &&
-        ((AppVars.shared.didWatchHelpViews & 0b0000000000000100) == 0)) {
+    if ((self.categoryId != 0) && (numberOfAlbums > 2) && NetworkVarsObjc.hasAdminRights &&
+        ((AppVars.didWatchHelpViews & 0b0000000000000100) == 0)) {
         [displayHelpPagesWithIndex addObject:@2];   // i.e. management of albums
     }
     if (displayHelpPagesWithIndex.count > 0) {
@@ -626,7 +625,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 //#endif
 
     // Inform user why the app crashed at start
-    if (CacheVarsObjc.shared.couldNotMigrateCoreDataStore) {
+    if (CacheVarsObjc.couldNotMigrateCoreDataStore) {
         UIAlertController* alert = [UIAlertController
                 alertControllerWithTitle:NSLocalizedString(@"CoreDataStore_WarningTitle", @"Warning")
                 message:NSLocalizedString(@"CoreDataStore_WarningMessage", @"A serious application error occurred…")
@@ -637,7 +636,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 style:UIAlertActionStyleCancel
                 handler:^(UIAlertAction * action) {
             // Reset flag
-            CacheVarsObjc.shared.couldNotMigrateCoreDataStore = NO;
+            CacheVarsObjc.couldNotMigrateCoreDataStore = NO;
         }];
         
         // Add actions
@@ -646,7 +645,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         // Present list of actions
         alert.view.tintColor = UIColor.piwigoColorOrange;
         if (@available(iOS 13.0, *)) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+            alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
         } else {
             // Fallback on earlier versions
         }
@@ -727,7 +726,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     if (@available(iOS 13.0, *)) {
         BOOL hasUserInterfaceStyleChanged = (previousTraitCollection.userInterfaceStyle != self.traitCollection.userInterfaceStyle);
         if (hasUserInterfaceStyleChanged) {
-            AppVars.shared.isSystemDarkModeActive = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+            AppVars.isSystemDarkModeActive = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
             [appDelegate screenBrightnessChanged];
         }
@@ -756,16 +755,16 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationRemovedImage object:nil];
 
     // Unregister palette changes
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:[PwgNotifications paletteChangedObjc] object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:[PwgNotificationsObjc paletteChanged] object:nil];
 
     // Unregister root album changes
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationBackToDefaultAlbum object:nil];
     
     // Unregister upload manager changes
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationLeftUploads object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:[PwgNotificationsObjc leftUploads] object:nil];
 
     // Unregister upload progress
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationUploadProgress object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:[PwgNotificationsObjc uploadProgress] object:nil];
 }
 
 -(void)viewDidDisappear:(BOOL)animated
@@ -794,8 +793,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     // User can upload images/videos if he/she has:
     // — admin rights
     // — normal rights and upload access to the current category
-    if (NetworkVarsObjc.shared.hasAdminRights ||
-        (NetworkVarsObjc.shared.hasNormalRights && [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights]))
+    if (NetworkVarsObjc.hasAdminRights ||
+        (NetworkVarsObjc.hasNormalRights && [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights]))
     {
         // Show Upload button if needed
         if (self.addButton.isHidden)
@@ -809,19 +808,20 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 self.addButton.tintColor = [UIColor whiteColor];
             } completion:^(BOOL finished) {
                 // Show button on the left of the Add button if needed
-                if ((self.categoryId != 0) && (self.categoryId != AlbumVars.shared.defaultCategory)) {
+                if ((self.categoryId != 0) && (self.categoryId != AlbumVars.defaultCategory)) {
                     // Show Home button if not in root or default album
                     [self showHomeAlbumButtonIfNeeded];
                 } else {
                     // Show UploadQueue button if needed
                     NSInteger nberOfUploads = [[UIApplication sharedApplication] applicationIconBadgeNumber];
                     NSDictionary *userInfo = @{@"nberOfUploadsToComplete" : @(nberOfUploads)};
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationLeftUploads object:nil userInfo:userInfo];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:[PwgNotificationsObjc leftUploads]
+                                                                        object:nil userInfo:userInfo];
                 }
             }];
         } else {
             // Present Home button if needed and if not in root or default album
-            if ((self.categoryId != 0) && (self.categoryId != AlbumVars.shared.defaultCategory)) {
+            if ((self.categoryId != 0) && (self.categoryId != AlbumVars.defaultCategory)) {
                 [self showHomeAlbumButtonIfNeeded];
             }
         }
@@ -830,14 +830,14 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     {
         // Show Home button if not in root or default album
         [self.addButton setHidden:YES];
-        if ((self.categoryId != 0) && (self.categoryId != AlbumVars.shared.defaultCategory)) {
+        if ((self.categoryId != 0) && (self.categoryId != AlbumVars.defaultCategory)) {
             [self showHomeAlbumButtonIfNeeded];
         }
     }
     
     // Left side of navigation bar
     if ((self.categoryId == 0) ||
-        (self.categoryId == AlbumVars.shared.defaultCategory)){
+        (self.categoryId == AlbumVars.defaultCategory)){
         // Button for accessing settings
         [self.navigationItem setLeftBarButtonItems:@[self.settingsBarButton] animated:YES];
         [self.navigationItem setHidesBackButton:YES];
@@ -944,7 +944,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         self.addButton.tintColor = [UIColor whiteColor];
             
         // Show button on the left of the Add button if needed
-        if ((self.categoryId != 0) && (self.categoryId != AlbumVars.shared.defaultCategory)) {
+        if ((self.categoryId != 0) && (self.categoryId != AlbumVars.defaultCategory)) {
             // Show Home button if not in root or default album
             [self showHomeAlbumButtonIfNeeded];
         }
@@ -972,8 +972,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             // Position of Home Album button depends on user's rights
             // — admin rights
             // — normal rights and upload access to the current category
-            if (NetworkVarsObjc.shared.hasAdminRights ||
-                (NetworkVarsObjc.shared.hasNormalRights && [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights]))
+            if (NetworkVarsObjc.hasAdminRights ||
+                (NetworkVarsObjc.hasNormalRights && [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights]))
             {
                 CGFloat xPos = self.addButton.frame.origin.x;
                 CGFloat yPos = self.addButton.frame.origin.y;
@@ -997,7 +997,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
         // Only presented in the root or default album
         if ((nberOfUploads > 0) &&
-            ((self.categoryId == 0) || (self.categoryId == AlbumVars.shared.defaultCategory))) {
+            ((self.categoryId == 0) || (self.categoryId == AlbumVars.defaultCategory))) {
             // Set number of uploads
             NSString *nber = [NSString stringWithFormat:@"%lu", (unsigned long)nberOfUploads];
             if ([nber compare:self.nberOfUploadsLabel.text] == NSOrderedSame && !self.uploadQueueButton.hidden) {
@@ -1182,7 +1182,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
     // User can delete images/videos if he/she has:
     // — admin rights
-    if (NetworkVarsObjc.shared.hasAdminRights)
+    if (NetworkVarsObjc.hasAdminRights)
     {
         // iPhone in portrait mode
         if (([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) &&
@@ -1213,7 +1213,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     }
     // WRONG =====> 'normal' user with upload access to the current category can edit images
     // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by' values of images for checking rights
-    else if (NetworkVarsObjc.shared.hasNormalRights && [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
+    else if (NetworkVarsObjc.hasNormalRights && [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
     {
         // iPhone in portrait mode
         if (([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) &&
@@ -1262,7 +1262,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 {
     // User can delete images/videos if he/she has:
     // — admin rights
-    if (NetworkVarsObjc.shared.hasAdminRights)
+    if (NetworkVarsObjc.hasAdminRights)
     {
         // iPhone in portrait mode
         if (([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) &&
@@ -1294,7 +1294,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     }
     // WRONG =====> 'normal' user with upload access to the current category can edit images
     // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by' values of images for checking rights
-    else if (NetworkVarsObjc.shared.hasNormalRights && [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
+    else if (NetworkVarsObjc.hasNormalRights && [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
     {
         // iPhone in portrait mode
         if (([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) &&
@@ -1696,7 +1696,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             AlbumImagesViewController *thisViewController = (AlbumImagesViewController *) viewController;
             
             // Is this the view controller of the default album?
-            if (thisViewController.categoryId == AlbumVars.shared.defaultCategory) {
+            if (thisViewController.categoryId == AlbumVars.defaultCategory) {
                 // The view controller of the parent category already exist
                 rootAlbumViewController = thisViewController;
             }
@@ -1712,7 +1712,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     
     // The view controller of the default album does not exist yet
     if (!rootAlbumViewController) {
-        rootAlbumViewController = [[AlbumImagesViewController alloc] initWithAlbumId:AlbumVars.shared.defaultCategory inCache:NO];
+        rootAlbumViewController = [[AlbumImagesViewController alloc] initWithAlbumId:AlbumVars.defaultCategory inCache:NO];
         NSMutableArray *arrayOfVC = [[NSMutableArray alloc] initWithArray:self.navigationController.viewControllers];
         [arrayOfVC insertObject:rootAlbumViewController atIndex:index];
         self.navigationController.viewControllers = arrayOfVC;
@@ -1802,7 +1802,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         textField.placeholder = NSLocalizedString(@"createNewAlbum_placeholder", @"Album Name");
         textField.clearButtonMode = UITextFieldViewModeAlways;
         textField.keyboardType = UIKeyboardTypeDefault;
-        textField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
+        textField.keyboardAppearance = AppVars.isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
         textField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
         textField.autocorrectionType = UITextAutocorrectionTypeYes;
         textField.returnKeyType = UIReturnKeyContinue;
@@ -1813,7 +1813,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         textField.placeholder = NSLocalizedString(@"createNewAlbumDescription_placeholder", @"Description");
         textField.clearButtonMode = UITextFieldViewModeAlways;
         textField.keyboardType = UIKeyboardTypeDefault;
-        textField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
+        textField.keyboardAppearance = AppVars.isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
         textField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
         textField.autocorrectionType = UITextAutocorrectionTypeYes;
         textField.returnKeyType = UIReturnKeyContinue;
@@ -1844,7 +1844,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     [alert addAction:self.createAlbumAction];
     alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
-        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
@@ -2129,8 +2129,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             EditImageParamsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageParams"];
             editImageVC.images = [self.selectedImagesToEdit copy];
             PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
-            editImageVC.hasTagCreationRights = NetworkVarsObjc.shared.hasAdminRights ||
-                (NetworkVarsObjc.shared.hasNormalRights && albumData.hasUploadRights);
+            editImageVC.hasTagCreationRights = NetworkVarsObjc.hasAdminRights ||
+                (NetworkVarsObjc.hasNormalRights && albumData.hasUploadRights);
             editImageVC.delegate = self;
             [self pushView:editImageVC];
             break;
@@ -2291,7 +2291,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     // Present list of actions
     alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
-        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
@@ -2700,7 +2700,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     // Present list of actions
     alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
-        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
@@ -2961,7 +2961,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         default:            // Images
         {
             // Calculate the optimum image size
-            CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:collectionView imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
+            CGFloat size = (CGFloat)[ImagesCollection imageSizeForView:collectionView imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
             return CGSizeMake(size, size);
         }
     }
@@ -3012,7 +3012,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             }
             
             // Calculate the number of thumbnails displayed per page
-            NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:collectionView imagesPerRowInPortrait:AlbumVars.shared.thumbnailsPerRowInPortrait];
+            NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:collectionView imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
             
             // Load image data in advance if possible (page after page…)
             if ((indexPath.row > fmaxf(roundf(2 * imagesPerPage / 3.0), [collectionView numberOfItemsInSection:1] - roundf(imagesPerPage / 3.0))) &&
@@ -3052,7 +3052,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             {
                 // Add category to list of recent albums
                 NSDictionary *userInfo = @{@"categoryId" : [NSNumber numberWithLong:self.categoryId]};
-                [[NSNotificationCenter defaultCenter] postNotificationName:[PwgNotifications addRecentAlbumObjc] object:nil userInfo:userInfo];
+                [[NSNotificationCenter defaultCenter] postNotificationName:[PwgNotificationsObjc addRecentAlbum] object:nil userInfo:userInfo];
 
                 // Selection mode not active => display full screen image
                 self.imageDetailView = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId atImageIndex:indexPath.row withArray:[self.albumData.images copy]];
@@ -3221,7 +3221,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 -(void)didChangeDefaultAlbum
 {
     // Change default album
-    self.categoryId = AlbumVars.shared.defaultCategory;
+    self.categoryId = AlbumVars.defaultCategory;
 
     // Reset Add button icon
     if (self.categoryId == 0) {
@@ -3470,7 +3470,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     
     // Add actions
     [alert addAction:cancelAction];
-    if ([@"2.10.0" compare:NetworkVarsObjc.shared.version options:NSNumericSearch] != NSOrderedDescending)
+    if ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending)
     {
         [alert addAction:favoritesSelectorAction];
     }
@@ -3482,7 +3482,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     // Present list of Discover views
     alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
-        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }

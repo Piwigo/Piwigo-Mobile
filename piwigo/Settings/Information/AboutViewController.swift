@@ -9,6 +9,7 @@
 //
 
 import UIKit
+import piwigoKit
 
 class AboutViewController: UIViewController, UITextViewDelegate {
     
@@ -45,7 +46,7 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         if #available(iOS 11.0, *) {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()

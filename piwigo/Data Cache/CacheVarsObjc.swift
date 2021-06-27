@@ -10,9 +10,6 @@ import Foundation
 import piwigoKit
 
 class CacheVarsObjc: NSObject {
-
-    // Singleton
-    @objc static let shared = CacheVarsObjc()
     
     // Remove deprecated stored objects if needed
 //    override init() {
@@ -26,9 +23,9 @@ class CacheVarsObjc: NSObject {
     // Data cache variables stored in UserDefaults / Standard
     /// - Core Data migration issue
 //    @UserDefault("couldNotMigrateCoreDataStore", defaultValue: false)
-    @objc var couldNotMigrateCoreDataStore: Bool {
-        get { return CacheVars.shared.couldNotMigrateCoreDataStore }
-        set (value) { CacheVars.shared.couldNotMigrateCoreDataStore = value }
+    @objc static var couldNotMigrateCoreDataStore: Bool {
+        get { return CacheVars.couldNotMigrateCoreDataStore }
+        set (value) { CacheVars.couldNotMigrateCoreDataStore = value }
     }
 
     // MARK: - Vars in UserDefaults / App Group

@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import ImageIO
+import UIKit
 
 class ImageMetadata {
         
@@ -116,7 +118,7 @@ class ImageMetadata {
 extension CGImageMetadata {
     // Remove CGImage private metadata
     // The GPS metadata will be removed using the kCGImageMetadataShouldExcludeGPS option
-    func stripPrivateMetadata() -> CGImageMetadata {
+    public func stripPrivateMetadata() -> CGImageMetadata {
         guard let metadata = CGImageMetadataCreateMutableCopy(self) else {
             return self
         }
@@ -179,7 +181,7 @@ extension CGImageMetadata {
 
 extension Dictionary where Key == CFString, Value == Any {
     // Remove CGImage properties w/o GPS and other private data
-    func stripPrivateProperties() -> [CFString:Any] {
+    public func stripPrivateProperties() -> [CFString:Any] {
         var properties = self as [CFString:Any]
         
         // Remove GPS dictionary

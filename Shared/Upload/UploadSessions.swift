@@ -1,26 +1,58 @@
 //
-//  UploadSessionDelegate.swift
+//  UploadSessions.swift
 //  piwigo
 //
-//  Created by Eddy Lelièvre-Berna on 29/07/2020.
-//  Copyright © 2020 Piwigo.org. All rights reserved.
+//  Created by Eddy Lelièvre-Berna on 22/06/2021.
+//  Copyright © 2021 Piwigo.org. All rights reserved.
 //
 
 import Foundation
-import piwigoKit
 
-class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegate, URLSessionDataDelegate {
-    
+public class UploadSessions: NSObject {
+                
     // Singleton
-    @objc static var shared = UploadSessionDelegate()
-    
-    // Constants and variables
-    @objc let uploadSessionIdentifier:String! = "org.piwigo.uploadBckgSession"
-    @objc var uploadSessionCompletionHandler: (() -> Void)?
-            
-    // Create single instance
-    lazy var uploadSession: URLSession = {
-        let config = URLSessionConfiguration.background(withIdentifier: uploadSessionIdentifier)
+    public static var shared = UploadSessions()
+
+    // Session identifiers
+    public let uploadSessionIdentifier:String! = "org.piwigo.uploadSession"
+    public let uploadBckgSessionIdentifier:String! = "org.piwigo.uploadBckgSession"
+
+    // Foreground upload session
+    lazy var app: URLSession = {
+        let config = URLSessionConfiguration.default
+        
+        /// Indicates whether the request is allowed to use the built-in cellular radios to satisfy the request.
+        config.allowsCellularAccess = !(UploadVars.wifiOnlyUploading)
+        
+        /// How long a task should wait for additional data to arrive before giving up (10 seconds)
+        config.timeoutIntervalForRequest = 10
+        
+        /// How long an upload task should be allowed to be retried or transferred (1 minute).
+        config.timeoutIntervalForResource = 60
+        
+        /// Determines the maximum number of simultaneous connections made to the host by tasks (4 by default)
+        config.httpMaximumConnectionsPerHost = 4
+        
+        /// Do not return a response from the cache
+        config.urlCache = nil
+        config.requestCachePolicy = .reloadIgnoringLocalCacheData
+        
+        /// Do not send upload requests with cookie so that each upload session remains ephemeral.
+        /// The user session, if it exists, remains untouched and kept alive until it expires.
+        config.httpShouldSetCookies = true
+        config.httpCookieAcceptPolicy = .onlyFromMainDocumentDomain
+        
+        /// Allows a seamless handover from Wi-Fi to cellular
+        if #available(iOS 11.0, *) {
+            config.multipathServiceType = .handover
+        }
+        
+        return URLSession(configuration: config, delegate: self, delegateQueue: nil)
+    }()
+
+    // Background upload session
+    lazy var appBckg: URLSession = {
+        let config = URLSessionConfiguration.background(withIdentifier: uploadBckgSessionIdentifier)
         
         /// Background tasks can be scheduled at the discretion of the system for optimal performance
         config.isDiscretionary = false
@@ -32,7 +64,7 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
         config.shouldUseExtendedBackgroundIdleMode = true
 
         /// Indicates whether the request is allowed to use the built-in cellular radios to satisfy the request.
-        config.allowsCellularAccess = !(UploadVars.shared.wifiOnlyUploading)
+        config.allowsCellularAccess = !(UploadVars.wifiOnlyUploading)
         
         /// How long a task should wait for additional data to arrive before giving up (1 day)
         config.timeoutIntervalForRequest = 1 * 24 * 60 * 60
@@ -59,14 +91,10 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
         
         return URLSession(configuration: config, delegate: self, delegateQueue: nil)
     }()
-    
-    let domain: String = {
-        let strURL = NetworkHandler.getURLWithPath("", withURLParams: nil)!
-        return URL(string: strURL)?.host ?? ""
-    }()
 
-    
-    // MARK: - Byte Counters
+    // Constants and variables
+    public var uploadSessionCompletionHandler: (() -> Void)?
+
     // Counters for updating the progress bars of the UI
     // are set with: (localIdentifier, bytesSent, fileSize)
     lazy var bytesSentToPiwigoServer: [(String, Float, Float)] = []
@@ -83,19 +111,39 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
         }
     }
     
-    // MARK: - Session Delegate
-    func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
+
+    // MARK: - Cancel Tasks Related to a Specific Upload Request
+    func cancelTasksOfUpload(withID uploadIDStr:String, exceptedTaskIdentifier: Int) -> Void {
+        // Loop over all tasks
+        appBckg.getAllTasks { uploadTasks in
+            // Select remaining tasks related with this request if any
+            let tasksToCancel = uploadTasks.filter({ $0.taskDescription == uploadIDStr })
+                                           .filter({ $0.taskIdentifier != exceptedTaskIdentifier})
+            // Cancel remaining tasks related with this completed upload request
+            tasksToCancel.forEach({
+                print("\(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) > Cancel upload task \($0.taskIdentifier)")
+                $0.cancel()
+            })
+        }
+    }
+}
+
+
+// MARK: - Session Delegate
+extension UploadSessions: URLSessionDelegate {
+
+    public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
         print("    > The upload session has been invalidated")
     }
     
-    func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge,
+    public func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge,
                     completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-        print("    > Session-level authentication request from the remote server \(domain)")
+        print("    > Session-level authentication request from the remote server.")
         
         // Get protection space for current domain
         let protectionSpace = challenge.protectionSpace
         guard protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
-            protectionSpace.host.contains(domain) else {
+              protectionSpace.host.contains(NetworkVars.domain) else {
                 completionHandler(.rejectProtectionSpace, nil)
                 return
         }
@@ -107,7 +155,8 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
         }
 
         // Check validity of certificate
-        if KeychainUtilities.isSSLtransactionValid(inState: serverTrust, for: domain) {
+        if KeychainUtilities.isSSLtransactionValid(inState: serverTrust,
+                                                   for: NetworkVars.domain) {
             let credential = URLCredential(trust: serverTrust)
             completionHandler(.useCredential, credential)
             return
@@ -121,7 +170,8 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
 
         // Check if the certificate is trusted by user (i.e. is in the Keychain)
         // Case where the certificate is e.g. self-signed
-        if KeychainUtilities.isCertKnownForSSLtransaction(inState: serverTrust, for: domain) {
+        if KeychainUtilities.isCertKnownForSSLtransaction(inState: serverTrust,
+                                                          for: NetworkVars.domain) {
             let credential = URLCredential(trust: serverTrust)
             completionHandler(.useCredential, credential)
             return
@@ -131,7 +181,7 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
         completionHandler(.cancelAuthenticationChallenge, nil)
     }
     
-    func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
+    public func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
         print("    > Background session \(session.configuration.identifier ?? "") finished events.")
         
         // Execute completion handler, i.e. inform iOS that we collect data returned by Piwigo server
@@ -141,10 +191,13 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
             }
         }
     }
-    
+}
 
-    // MARK: - Session Task Delegate
-    func urlSession(_ session: URLSession, task: URLSessionTask, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+
+// MARK: - Session Task Delegate
+extension UploadSessions: URLSessionTaskDelegate {
+    
+    public func urlSession(_ session: URLSession, task: URLSessionTask, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
         print("    > Task-level authentication request from the remote server")
 
         // Check authentication method
@@ -156,8 +209,8 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
         }
         
         // Get HTTP basic authentification credentials
-        let service = NetworkVars.shared.serverProtocol + NetworkVars.shared.serverPath
-        let account = NetworkVars.shared.httpUsername
+        let service = NetworkVars.serverProtocol + NetworkVars.serverPath
+        let account = NetworkVars.httpUsername
         let password = KeychainUtilities.password(forService: service, account: account)
         if password.isEmpty {
             completionHandler(.cancelAuthenticationChallenge, nil)
@@ -169,7 +222,7 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
         completionHandler(.useCredential, credential)
     }
 
-    func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
+    public func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
 
         // Get upload info from the task
         // The size of the uploaded image is set in the Content-Length field.
@@ -201,27 +254,26 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
                                           "progressFraction" : progressFraction]
         DispatchQueue.main.async {
             // Update UploadQueue cell and button shown in root album (or default album)
-            let name = NSNotification.Name(rawValue: kPiwigoNotificationUploadProgress)
-            NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
+            NotificationCenter.default.post(name: PwgNotifications.uploadProgress, object: nil, userInfo: uploadInfo)
         }
     }
     
-    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+    public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         
         // Get upload info from task
-//        guard let md5sum = task.originalRequest?.value(forHTTPHeaderField: "md5sum"),
-//            let chunk = Int((task.originalRequest?.value(forHTTPHeaderField: "chunk"))!),
-//            let chunks = Int((task.originalRequest?.value(forHTTPHeaderField: "chunks"))!) else {
-//                print("   > Could not extract HTTP header fields !!!!!!")
-//                return
-//        }
+        guard let md5sum = task.originalRequest?.value(forHTTPHeaderField: "md5sum"),
+            let chunk = Int((task.originalRequest?.value(forHTTPHeaderField: "chunk"))!),
+            let chunks = Int((task.originalRequest?.value(forHTTPHeaderField: "chunks"))!) else {
+                print("   > Could not extract HTTP header fields !!!!!!")
+                return
+        }
 
         // Task did complete without error?
-//        if let error = error {
-//            print("    > Upload task \(task.taskIdentifier) of chunk \(chunk)/\(chunks) failed with error \(String(describing: error.localizedDescription)) [\(md5sum)]")
-//        } else {
-//            print("    > Upload task \(task.taskIdentifier) of chunk \(chunk)/\(chunks) finished transferring data at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
-//        }
+        if let error = error {
+            print("    > Upload task \(task.taskIdentifier) of chunk \(chunk)/\(chunks) failed with error \(String(describing: error.localizedDescription)) [\(md5sum)]")
+        } else {
+            print("    > Upload task \(task.taskIdentifier) of chunk \(chunk)/\(chunks) finished transferring data at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
+        }
 
         // The below code updates the stored cookie with the pwg_id returned by the server.
         // This allows to check that the upload session was well closed by the server.
@@ -249,46 +301,34 @@ class UploadSessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegat
 
         // Handle the response with the Upload Manager
         if UploadManager.shared.isExecutingBackgroundUploadTask {
-            UploadManager.shared.didCompleteUploadTask(task, withError: error)
+            UploadManager.shared.didCompleteBckgUploadTask(task, withError: error)
         } else {
             UploadManager.shared.backgroundQueue.async {
-                UploadManager.shared.didCompleteUploadTask(task, withError: error)
+                UploadManager.shared.didCompleteBckgUploadTask(task, withError: error)
             }
         }
     }
+}
 
-    //MARK: - Session Data Delegate
-    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+
+// MARK: - Session Data Delegate
+extension UploadSessions: URLSessionDataDelegate {
+    
+    public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         // Get upload info from task
-//        guard let md5sum = dataTask.originalRequest?.value(forHTTPHeaderField: "md5sum"),
-//            let chunk = Int((dataTask.originalRequest?.value(forHTTPHeaderField: "chunk"))!),
-//            let chunks = Int((dataTask.originalRequest?.value(forHTTPHeaderField: "chunks"))!) else {
-//                print("   > Could not extract HTTP header fields !!!!!!")
-//                return
-//        }
-//        print("    > Upload task \(dataTask.taskIdentifier) of chunk \(chunk)/\(chunks) did receive some data at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
+        guard let md5sum = dataTask.originalRequest?.value(forHTTPHeaderField: "md5sum"),
+            let chunk = Int((dataTask.originalRequest?.value(forHTTPHeaderField: "chunk"))!),
+            let chunks = Int((dataTask.originalRequest?.value(forHTTPHeaderField: "chunks"))!) else {
+                print("   > Could not extract HTTP header fields !!!!!!")
+                return
+        }
+        print("    > Upload task \(dataTask.taskIdentifier) of chunk \(chunk)/\(chunks) did receive some data at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
         if UploadManager.shared.isExecutingBackgroundUploadTask {
-            UploadManager.shared.didCompleteUploadTask(dataTask, withData: data)
+            UploadManager.shared.didCompleteBckgUploadTask(dataTask, withData: data)
         } else {
             UploadManager.shared.backgroundQueue.async {
-                UploadManager.shared.didCompleteUploadTask(dataTask, withData: data)
+                UploadManager.shared.didCompleteBckgUploadTask(dataTask, withData: data)
             }
-        }
-    }
-    
-    
-    // MARK: - Cancel Tasks Related to a Specific Upload Request
-    func cancelTasks(taskDescription: String, exceptedTaskIdentifier: Int) -> Void {
-        // Loop over all tasks
-        uploadSession.getAllTasks { uploadTasks in
-            // Select remaining tasks related with this request if any
-            let tasksToCancel = uploadTasks.filter({ $0.taskDescription == taskDescription })
-                                           .filter({ $0.taskIdentifier != exceptedTaskIdentifier})
-            // Cancel remaining tasks related with this completed upload request
-            tasksToCancel.forEach({
-                print("\(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) > Cancel upload task \($0.taskIdentifier)")
-                $0.cancel()
-            })
         }
     }
 }

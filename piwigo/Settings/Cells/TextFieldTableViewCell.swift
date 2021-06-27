@@ -30,11 +30,11 @@ class TextFieldTableViewCell: UITableViewCell {
         rightTextField.font = UIFont.piwigoFontNormal()
         rightTextField.textColor = UIColor.piwigoColorRightLabel()
         rightTextField.text = input
-        rightTextField.keyboardAppearance = AppVars.shared.isDarkPaletteActive ? .dark : .default
+        rightTextField.keyboardAppearance = AppVars.isDarkPaletteActive ? .dark : .default
         rightTextField.attributedPlaceholder = NSAttributedString(string: placeHolder, attributes: [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorPlaceHolder()
         ])
-        if AppVars.shared.isAppLanguageRTL {
+        if AppVars.isAppLanguageRTL {
             rightTextField.textAlignment = .left
         } else {
             rightTextField.textAlignment = .right

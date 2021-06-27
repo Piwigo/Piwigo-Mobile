@@ -12,9 +12,6 @@ import piwigoKit
 
 class NetworkVarsObjc: NSObject {
 
-    // Singleton
-    @objc static let shared = NetworkVarsObjc()
-    
     // Remove deprecated stored objects if needed
 //    override init() {
 //        // Deprecated data?
@@ -33,133 +30,133 @@ class NetworkVarsObjc: NSObject {
     /// - Scheme of the URL, "https://" by default
     /// - Scheme of the URL, "https://" by default
 //    @UserDefault("serverProtocol", defaultValue: "https://", userDefaults: UserDefaults.dataSuite)
-    @objc var serverProtocol: String {
-        get { return NetworkVars.shared.serverProtocol }
-        set (value) { NetworkVars.shared.serverProtocol = value }
+    @objc static var serverProtocol: String {
+        get { return NetworkVars.serverProtocol }
+        set (value) { NetworkVars.serverProtocol = value }
     }
     
     /// - Path of the server, e.g. lelievre-berna.net/Piwigo
 //    @UserDefault("serverPath", defaultValue: "", userDefaults: UserDefaults.dataSuite)
-    @objc var serverPath: String {
-        get { return NetworkVars.shared.serverPath }
-        set (value) { NetworkVars.shared.serverPath = value }
+    @objc static var serverPath: String {
+        get { return NetworkVars.serverPath }
+        set (value) { NetworkVars.serverPath = value }
     }
     
     /// - String encoding of the server, UTF-8 by default
 //    @UserDefault("stringEncoding", defaultValue: String.Encoding.utf8.rawValue, userDefaults: UserDefaults.dataSuite)
-    @objc var stringEncoding: UInt {
-        get { return NetworkVars.shared.stringEncoding }
-        set (value) { NetworkVars.shared.stringEncoding = value }
+    @objc static var stringEncoding: UInt {
+        get { return NetworkVars.stringEncoding }
+        set (value) { NetworkVars.stringEncoding = value }
     }
     
     /// -  Username provided to access a server requiring HTTP basic authentication
 //    @UserDefault("HttpUsername", defaultValue: "", userDefaults: UserDefaults.dataSuite)
-    @objc var httpUsername: String {
-        get { return NetworkVars.shared.httpUsername }
-        set (value) { NetworkVars.shared.httpUsername = value }
+    @objc static var httpUsername: String {
+        get { return NetworkVars.httpUsername }
+        set (value) { NetworkVars.httpUsername = value }
     }
 
     /// - Username provided to access the Piwigo server
 //    @UserDefault("username", defaultValue: "", userDefaults: UserDefaults.dataSuite)
-    @objc var username: String {
-        get { return NetworkVars.shared.username }
-        set (value) { NetworkVars.shared.username = value }
+    @objc static var username: String {
+        get { return NetworkVars.username }
+        set (value) { NetworkVars.username = value }
     }
 
     
     // MARK: - Vars in Memory
     // Network variables kept in memory
     /// - Session manager used to communicate with the Piwigo server
-    @objc var sessionManager: AFHTTPSessionManager?
+    @objc static var sessionManager: AFHTTPSessionManager?
     
     /// - Session manager used to download images
-    @objc var imagesSessionManager: AFHTTPSessionManager?
+    @objc static var imagesSessionManager: AFHTTPSessionManager?
     
     // - Image and thumbnail caches
-    @objc var imageCache: URLCache?
-    @objc var thumbnailCache: AFAutoPurgingImageCache?
+    @objc static var imageCache: URLCache?
+    @objc static var thumbnailCache: AFAutoPurgingImageCache?
 
     /// - Community methods available, false by default (available since  version 2.9 of the plugin)
-    @objc var usesCommunityPluginV29: Bool {
-        get { return NetworkVars.shared.usesCommunityPluginV29 }
-        set (value) { NetworkVars.shared.usesCommunityPluginV29 = value }
+    @objc static var usesCommunityPluginV29: Bool {
+        get { return NetworkVars.usesCommunityPluginV29 }
+        set (value) { NetworkVars.usesCommunityPluginV29 = value }
     }
     
     /// - uploadAsync method available, false by default (avaiable since Piwigo 11)
-    @objc var usesUploadAsync: Bool {
-        get { return NetworkVars.shared.usesUploadAsync }
-        set (value) { NetworkVars.shared.usesUploadAsync = value }
+    @objc static var usesUploadAsync: Bool {
+        get { return NetworkVars.usesUploadAsync }
+        set (value) { NetworkVars.usesUploadAsync = value }
     }
     
     /// - Remembers that the HTTP authentication failed
-    @objc var didFailHTTPauthentication: Bool {
-        get { return NetworkVars.shared.didFailHTTPauthentication }
-        set (value) { NetworkVars.shared.didFailHTTPauthentication = value }
+    @objc static var didFailHTTPauthentication: Bool {
+        get { return NetworkVars.didFailHTTPauthentication }
+        set (value) { NetworkVars.didFailHTTPauthentication = value }
     }
 
     /// - Remembers that the SSL certicate was approved
-    @objc var didApproveCertificate: Bool {
-        get { return NetworkVars.shared.didApproveCertificate }
-        set (value) { NetworkVars.shared.didApproveCertificate = value }
+    @objc static var didApproveCertificate: Bool {
+        get { return NetworkVars.didApproveCertificate }
+        set (value) { NetworkVars.didApproveCertificate = value }
     }
     
     /// - Remembers that the SSL certificate was rejected
-    @objc var didRejectCertificate: Bool {
-        get { return NetworkVars.shared.didRejectCertificate }
-        set (value) { NetworkVars.shared.didRejectCertificate = value }
+    @objc static var didRejectCertificate: Bool {
+        get { return NetworkVars.didRejectCertificate }
+        set (value) { NetworkVars.didRejectCertificate = value }
     }
     
     /// - Remembers certificate information
-    @objc var certificateInformation: String {
-        get { return NetworkVars.shared.certificateInformation }
-        set (value) { NetworkVars.shared.certificateInformation = value }
+    @objc static var certificateInformation: String {
+        get { return NetworkVars.certificateInformation }
+        set (value) { NetworkVars.certificateInformation = value }
     }
 
     /// - Remembers that the user cancelled login attempt
-    @objc var userCancelledCommunication: Bool {
-        get { return NetworkVars.shared.userCancelledCommunication }
-        set (value) { NetworkVars.shared.userCancelledCommunication = value }
+    @objc static var userCancelledCommunication: Bool {
+        get { return NetworkVars.userCancelledCommunication }
+        set (value) { NetworkVars.userCancelledCommunication = value }
     }
     
     /// - Logged user has normal rigths, false by default
-    @objc var hasNormalRights: Bool {
-        get { return NetworkVars.shared.hasNormalRights }
-        set (value) { NetworkVars.shared.hasNormalRights = value }
+    @objc static var hasNormalRights: Bool {
+        get { return NetworkVars.hasNormalRights }
+        set (value) { NetworkVars.hasNormalRights = value }
     }
 
     /// - Logged user has admin rigths, false by default
-    @objc var hasAdminRights: Bool {
-        get { return NetworkVars.shared.hasAdminRights }
-        set (value) { NetworkVars.shared.hasAdminRights = value }
+    @objc static var hasAdminRights: Bool {
+        get { return NetworkVars.hasAdminRights }
+        set (value) { NetworkVars.hasAdminRights = value }
     }
 
     /// - Did open session with success
-    @objc var hadOpenedSession: Bool {
-        get { return NetworkVars.shared.hadOpenedSession }
-        set (value) { NetworkVars.shared.hadOpenedSession = value }
+    @objc static var hadOpenedSession: Bool {
+        get { return NetworkVars.hadOpenedSession }
+        set (value) { NetworkVars.hadOpenedSession = value }
     }
     
     /// - Remembers when the user logged in
-    @objc var dateOfLastLogin: Date {
-        get { return NetworkVars.shared.dateOfLastLogin }
-        set (value) { NetworkVars.shared.dateOfLastLogin = value }
+    @objc static var dateOfLastLogin: Date {
+        get { return NetworkVars.dateOfLastLogin }
+        set (value) { NetworkVars.dateOfLastLogin = value }
     }
     
     /// - Piwigor server version
-    @objc var version: String {
-        get { return NetworkVars.shared.version }
-        set (value) { NetworkVars.shared.version = value }
+    @objc static var pwgVersion: String {
+        get { return NetworkVars.pwgVersion }
+        set (value) { NetworkVars.pwgVersion = value }
     }
     
     /// - Token returned after login
-    @objc var pwgToken: String {
-        get { return NetworkVars.shared.pwgToken }
-        set (value) { NetworkVars.shared.pwgToken = value }
+    @objc static var pwgToken: String {
+        get { return NetworkVars.pwgToken }
+        set (value) { NetworkVars.pwgToken = value }
     }
 
     /// - User's default language
-    @objc var language: String {
-        get { return NetworkVars.shared.language }
-        set (value) { NetworkVars.shared.language = value }
+    @objc static var language: String {
+        get { return NetworkVars.language }
+        set (value) { NetworkVars.language = value }
     }
 }

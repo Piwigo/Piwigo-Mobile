@@ -10,7 +10,7 @@ import AVFoundation
 
 extension Array where Element == AVMetadataItem {
     // Return whether metadata contains private data
-    func containsPrivateMetadata() -> Bool {
+    public func containsPrivateMetadata() -> Bool {
         let metadata = self as [AVMetadataItem]
 
         // Common Metadata Identifiers
@@ -90,7 +90,7 @@ extension Array where Element == AVMetadataItem {
 
 extension AVAssetTrack {
     // Return media format description
-    var mediaFormat: String {
+    public var mediaFormat: String {
         var format = ""
         let descriptions = self.formatDescriptions as! [CMFormatDescription]
         for (index, formatDesc) in descriptions.enumerated() {

@@ -51,7 +51,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         self.imageData = imageData
 
         // We use the thumbnail cached in memory
-        let alreadyLoadedSize = kPiwigoImageSize(AlbumVars.shared.defaultThumbnailSize)
+        let alreadyLoadedSize = kPiwigoImageSize(AlbumVars.defaultThumbnailSize)
         guard let thumbnailURL = URL(string: imageData.getURLFromImageSizeType(alreadyLoadedSize)) else {
             imageFileData = Data()
             imageFileURL = URL(string: "")!
@@ -114,7 +114,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         }
 
         // Do we have the image in cache?
-        if let cache = NetworkVarsObjc.shared.imageCache,
+        if let cache = NetworkVarsObjc.imageCache,
            let cachedImageData = cache.cachedResponse(for: urlRequest)?.data,
             !cachedImageData.isEmpty {
             // Create file URL where the shared file is expected to be found
@@ -321,7 +321,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
                             else {
                                 // Store image in cache
                                 let cachedResponse = CachedURLResponse(response: response, data: data)
-                                if let cache = NetworkVarsObjc.shared.imageCache {
+                                if let cache = NetworkVarsObjc.imageCache {
                                     cache.storeCachedResponse(cachedResponse, for: urlRequest)
                                 }
 
@@ -392,7 +392,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         let linkMetaData = LPLinkMetadata()
         
         // We use the thumbnail in cache
-        let alreadyLoadedSize = kPiwigoImageSize(AlbumVars.shared.defaultThumbnailSize)
+        let alreadyLoadedSize = kPiwigoImageSize(AlbumVars.defaultThumbnailSize)
         if let thumbnailURL = URL(string: imageData.getURLFromImageSizeType(alreadyLoadedSize)) {
             // Retrieve thumbnail image
             let thumb = UIImageView()

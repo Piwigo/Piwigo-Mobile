@@ -34,13 +34,13 @@ public class TagsProvider {
     public func fetchTags(asAdmin: Bool, completionHandler: @escaping (Error?) -> Void) {
 
         // Prepare Piwigo JSON request
-        let urlStr = "\(NetworkVars.shared.serverProtocol)\(NetworkVars.shared.serverPath)"
+        let urlStr = "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"
         let url = URL(string: urlStr + "/ws.php?\(asAdmin ? kPiwigoTagsGetAdminList : kPiwigoTagsGetList)")
         var request = URLRequest(url: url!)
         request.httpMethod = "POST"
 
         // Launch the HTTP(S) request
-        let JSONsession = PwgSessionDelegate.shared
+        let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: asAdmin ? kPiwigoTagsGetAdminList : kPiwigoTagsGetList, paramDict: [:],
                                 countOfBytesClientExpectsToReceive: NSURLSessionTransferSizeUnknown) { jsonData, error in
             // Any error?
@@ -298,7 +298,7 @@ public class TagsProvider {
     */
     public func addTag(with name: String, completionHandler: @escaping (Error?) -> Void) {
         
-        let JSONsession = PwgSessionDelegate.shared
+        let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoTagsAdd, paramDict: ["name" : name],
                                 countOfBytesClientExpectsToReceive: 3000) { jsonData, error in
             // Any error?

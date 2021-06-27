@@ -27,11 +27,11 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
     
     let hasTagCreationRights:Bool = {
         // Admin?
-        if NetworkVars.shared.hasAdminRights { return true }
+        if NetworkVars.hasAdminRights { return true }
         // Community user with upload rights?
-        let albumId = UploadVars.shared.autoUploadCategoryId
+        let albumId = UploadVars.autoUploadCategoryId
         if let albumData = CategoriesData.sharedInstance().getCategoryById(albumId),
-           (NetworkVars.shared.hasNormalRights && albumData.hasUploadRights) { return true }
+           (NetworkVars.hasNormalRights && albumData.hasUploadRights) { return true }
         return false
     }()
 
@@ -57,14 +57,14 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         if #available(iOS 11.0, *) {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
 
         // Table view
         autoUploadTableView.separatorColor = UIColor.piwigoColorSeparator()
-        autoUploadTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        autoUploadTableView.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
         autoUploadTableView.reloadData()
     }
 
@@ -78,6 +78,10 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: PwgNotifications.paletteChanged, object: nil)
 
+        // Register auto-upload option disabler
+        NotificationCenter.default.addObserver(self, selector: #selector(disableAutoUpload),
+                                               name: PwgNotifications.disableAutoUpload, object: nil)
+        
         // Pause UploadManager while changing settings
         UploadManager.shared.isPaused = true
     }
@@ -87,6 +91,9 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
+        
+        // Unregister auto-upload option disabler
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.disableAutoUpload, object: nil)
 
         // Check if the user is going to select a local album
         if let visibleVC = navigationController?.visibleViewController,
@@ -109,7 +116,18 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
 
+    @objc func disableAutoUpload(_ notification: Notification) {
+        // Change switch button state
+        autoUploadTableView?.reloadSections(IndexSet(integer: 0), with: .automatic)
+        
+        // Inform user if an error was reported
+        if let title = notification.userInfo?["title"] as? String, !title.isEmpty,
+           let message = notification.userInfo?["message"] as? String {
+            dismissPiwigoError(withTitle: title, message: message) { }
+        }
+    }
 
+    
     // MARK: - UITableView - Header
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -226,13 +244,13 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
             }
             let title = NSLocalizedString("settings_autoUpload", comment: "Auto Upload")
             cell.configure(with: title)
-            cell.cellSwitch.setOn(UploadVars.shared.isAutoUploadActive, animated: true)
+            cell.cellSwitch.setOn(UploadVars.isAutoUploadActive, animated: true)
             cell.cellSwitchBlock = { switchState in
                 // Enable/disable auto-upload option
                 UploadManager.shared.backgroundQueue.async {
                     if switchState {
                         // Enable auto-uploading
-                        UploadVars.shared.isAutoUploadActive = true
+                        UploadVars.isAutoUploadActive = true
                         UploadManager.shared.appendAutoUploadRequests()
                     } else {
                         // Disable auto-uploading
@@ -252,14 +270,14 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
             switch indexPath.row {
             case 0 /* Select Photos Library album */ :
                 title = NSLocalizedString("settings_autoUploadSource", comment: "Source")
-                let collectionID = UploadVars.shared.autoUploadAlbumId
+                let collectionID = UploadVars.autoUploadAlbumId
                 if !collectionID.isEmpty,
                    let collection = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [collectionID], options: nil).firstObject {
                     detail = collection.localizedTitle ?? ""
                 } else {
                     // Did not find the Photo Library album
-                    UploadVars.shared.autoUploadAlbumId = ""
-                    UploadVars.shared.isAutoUploadActive = false
+                    UploadVars.autoUploadAlbumId = ""
+                    UploadVars.isAutoUploadActive = false
                 }
                 cell.configure(with: title, detail: detail)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
@@ -267,13 +285,13 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
 
             case 1 /* Select Piwigo album*/ :
                 title = NSLocalizedString("settings_autoUploadDestination", comment: "Destination")
-                let categoryId = UploadVars.shared.autoUploadCategoryId
+                let categoryId = UploadVars.autoUploadCategoryId
                 if let albumData = CategoriesData.sharedInstance().getCategoryById(categoryId) {
                     detail = albumData.name ?? ""
                 } else {
                     // Did not find the Piwigo album
-                    UploadVars.shared.autoUploadCategoryId = NSNotFound
-                    UploadVars.shared.isAutoUploadActive = false
+                    UploadVars.autoUploadCategoryId = NSNotFound
+                    UploadVars.isAutoUploadActive = false
                 }
                 cell.configure(with: title, detail: detail)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
@@ -294,7 +312,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                 }
                 // Retrieve tags and switch to old cache data format
                 let tags = tagsProvider.fetchedResultsController.fetchedObjects
-                let tagIds = UploadVars.shared.autoUploadTagIds.components(separatedBy: ",").map({ Int32($0) })
+                let tagIds = UploadVars.autoUploadTagIds.components(separatedBy: ",").map({ Int32($0) })
                 var tagList = [PiwigoTagData]()
                 tagIds.forEach({ tagId in
                     if let id = tagId,
@@ -315,7 +333,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a EditImageTextViewTableViewCell!")
                     return EditImageTextViewTableViewCell()
                 }
-                cell.setComment(UploadVars.shared.autoUploadComments, in:UIColor.piwigoColorRightLabel())
+                cell.setComment(UploadVars.autoUploadComments, in:UIColor.piwigoColorRightLabel())
                 cell.textView.delegate = self
                 tableViewCell = cell
 
@@ -358,8 +376,8 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         // Any footer text?
         switch section {
         case 0:
-            if UploadVars.shared.isAutoUploadActive {
-                if UploadVars.shared.serverFileTypes.contains("mp4") {
+            if UploadVars.isAutoUploadActive {
+                if UploadVars.serverFileTypes.contains("mp4") {
                     footer = NSLocalizedString("settings_autoUploadEnabledInfoAll", comment: "Photos and videos will be automatically uploaded to your Piwigo.")
                 } else {
                     footer = NSLocalizedString("settings_autoUploadEnabledInfo", comment: "Photos will be automatically uploaded to your Piwigo.")
@@ -396,8 +414,8 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         // Any footer text?
         switch section {
         case 0:
-            if UploadVars.shared.isAutoUploadActive {
-                if UploadVars.shared.serverFileTypes.contains("mp4") {
+            if UploadVars.isAutoUploadActive {
+                if UploadVars.serverFileTypes.contains("mp4") {
                     footerLabel.text = NSLocalizedString("settings_autoUploadEnabledInfoAll", comment: "Photos and videos will be automatically uploaded to your Piwigo.")
                 } else {
                     footerLabel.text = NSLocalizedString("settings_autoUploadEnabledInfo", comment: "Photos will be automatically uploaded to your Piwigo.")
@@ -465,7 +483,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
             case 1 /* Select Piwigo album*/ :
                 let categorySB = UIStoryboard(name: "SelectCategoryViewControllerGrouped", bundle: nil)
                 guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewControllerGrouped") as? SelectCategoryViewController else { return }
-                categoryVC.setInput(parameter: UploadVars.shared.autoUploadCategoryId,
+                categoryVC.setInput(parameter: UploadVars.autoUploadCategoryId,
                                     for: kPiwigoCategorySelectActionSetAutoUploadAlbum)
                 categoryVC.delegate = self
                 navigationController?.pushViewController(categoryVC, animated: true)
@@ -481,11 +499,11 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                 let tagsSB = UIStoryboard(name: "TagsViewController", bundle: nil)
                 if let tagsVC = tagsSB.instantiateViewController(withIdentifier: "TagsViewController") as? TagsViewController {
                     tagsVC.delegate = self
-                    tagsVC.setPreselectedTagIds(UploadVars.shared.autoUploadTagIds
+                    tagsVC.setPreselectedTagIds(UploadVars.autoUploadTagIds
                                                     .components(separatedBy: ",")
                                                     .map { Int32($0) ?? nil }.compactMap {$0})
-                    let tagCreationRights = NetworkVars.shared.hasAdminRights ||
-                        (NetworkVars.shared.hasNormalRights && NetworkVars.shared.usesCommunityPluginV29)
+                    let tagCreationRights = NetworkVars.hasAdminRights ||
+                        (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)
                     tagsVC.setTagCreationRights(tagCreationRights)
                     navigationController?.pushViewController(tagsVC, animated: true)
                 }
@@ -509,12 +527,12 @@ extension AutoUploadViewController {
         // Check selection
         if photoAlbumId.isEmpty {
             // Did not select a Photo Library album
-            UploadVars.shared.autoUploadAlbumId = ""
-            UploadVars.shared.isAutoUploadActive = false
-        } else if photoAlbumId != UploadVars.shared.autoUploadAlbumId {
+            UploadVars.autoUploadAlbumId = ""
+            UploadVars.isAutoUploadActive = false
+        } else if photoAlbumId != UploadVars.autoUploadAlbumId {
             // Did select another album
-            UploadVars.shared.autoUploadAlbumId = photoAlbumId
-            UploadVars.shared.isAutoUploadActive = false
+            UploadVars.autoUploadAlbumId = photoAlbumId
+            UploadVars.isAutoUploadActive = false
         }
     }
 }
@@ -528,12 +546,12 @@ extension AutoUploadViewController {
         // Check selection
         if categoryId == NSNotFound {
             // Did not select a Piwigo album
-            UploadVars.shared.autoUploadCategoryId = NSNotFound
-            UploadVars.shared.isAutoUploadActive = false
-        } else if categoryId != UploadVars.shared.autoUploadCategoryId {
+            UploadVars.autoUploadCategoryId = NSNotFound
+            UploadVars.isAutoUploadActive = false
+        } else if categoryId != UploadVars.autoUploadCategoryId {
             // Did select another category
-            UploadVars.shared.autoUploadCategoryId = categoryId
-            UploadVars.shared.isAutoUploadActive = false
+            UploadVars.autoUploadCategoryId = categoryId
+            UploadVars.isAutoUploadActive = false
         }
     }
 }
@@ -545,7 +563,7 @@ extension AutoUploadViewController {
     // Collect selected tags
     func didSelectTags(_ selectedTags: [Tag]) {
         // Store selected tags
-        UploadVars.shared.autoUploadTagIds = String(selectedTags.map({"\($0.tagId),"})
+        UploadVars.autoUploadTagIds = String(selectedTags.map({"\($0.tagId),"})
                                                         .reduce("", +).dropLast(1))
 
         // Update cell
@@ -560,7 +578,7 @@ extension AutoUploadViewController {
     // Update comments and store them
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         let finalString = (textView.text as NSString).replacingCharacters(in: range, with: text)
-        UploadVars.shared.autoUploadComments = finalString
+        UploadVars.autoUploadComments = finalString
         return true
     }
 
@@ -570,6 +588,6 @@ extension AutoUploadViewController {
     }
 
     func textViewDidEndEditing(_ textView: UITextView) {
-        UploadVars.shared.autoUploadComments = textView.text
+        UploadVars.autoUploadComments = textView.text
     }
 }

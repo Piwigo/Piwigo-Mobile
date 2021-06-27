@@ -81,8 +81,8 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(setTableViewMainHeader), name: NSNotification.Name.NSProcessInfoPowerStateDidChange, object: nil)
 
         // Register upload progress
-        let name2: NSNotification.Name = NSNotification.Name(kPiwigoNotificationUploadProgress)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress), name: name2, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress),
+                                               name: PwgNotifications.uploadProgress, object: nil)
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -114,14 +114,14 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes
         navigationController?.navigationBar.prefersLargeTitles = false
-        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
 
         // Table view
         queueTableView.separatorColor = UIColor.piwigoColorSeparator()
-        queueTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        queueTableView.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
     }
     
     @objc func applyColorPalette() {
@@ -151,8 +151,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
 
         // Unregister upload progress
-        let name2: NSNotification.Name = NSNotification.Name(kPiwigoNotificationUploadProgress)
-        NotificationCenter.default.removeObserver(self, name: name2, object: nil)
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.uploadProgress, object: nil)
     }
 
     
@@ -207,7 +206,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
                                         })
                                     alert.addAction(cancelAction)
                                     alert.view.tintColor = UIColor.piwigoColorOrange()
-                                    alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+                                    alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
                                     self.present(alert, animated: true, completion: {
                                         // Bugfix: iOS9 - Tint not fully Applied without Reapplying
                                         alert.view.tintColor = UIColor.piwigoColorOrange()
@@ -259,7 +258,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         
         // Present list of actions
         alert.view.tintColor = UIColor.piwigoColorOrange()
-        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.barButtonItem = actionBarButton
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
@@ -308,7 +307,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
     
     @objc func setTableViewMainHeader() {
         DispatchQueue.main.async {
-            if AFNetworkReachabilityManager.shared().isReachableViaWWAN && UploadVars.shared.wifiOnlyUploading {
+            if AFNetworkReachabilityManager.shared().isReachableViaWWAN && UploadVars.wifiOnlyUploading {
                 // No Wi-Fi and user wishes to upload only on Wi-Fi
                 let headerView = UploadQueueHeaderView(frame: .zero)
                 headerView.configure(width: self.queueTableView.frame.size.width,

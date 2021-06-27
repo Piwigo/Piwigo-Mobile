@@ -100,7 +100,7 @@ class KeychainUtilities : NSObject {
                 // Did found username
                 guard let username = String(data: data as! Data, encoding: .utf8),
                       !username.isEmpty else { return "" }
-                if username == NetworkVars.shared.username {
+                if username == NetworkVars.username {
                     // Retrieve password
                     let query = [kSecClass as String        : kSecClassGenericPassword,
                                  kSecAttrGeneric as String  : kKeychainAppID,

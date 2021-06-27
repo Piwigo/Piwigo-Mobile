@@ -163,9 +163,9 @@
 	}
 	
     // Download the image of the requested resolution (or get it from the cache)
-    switch (AlbumVars.shared.defaultThumbnailSize) {
+    switch (AlbumVars.defaultThumbnailSize) {
         case kPiwigoImageSizeSquare:
-            if (AlbumVars.shared.hasSquareSizeImages && (self.imageData.SquarePath) && (self.imageData.SquarePath > 0)) {
+            if (AlbumVars.hasSquareSizeImages && (self.imageData.SquarePath) && (self.imageData.SquarePath > 0)) {
                 NSURL *URL = [NSURL URLWithString:self.imageData.SquarePath];
                 [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
@@ -174,10 +174,10 @@
             }
             break;
         case kPiwigoImageSizeXXSmall:
-            if (AlbumVars.shared.hasXXSmallSizeImages && (self.imageData.XXSmallPath.length > 0)) {
+            if (AlbumVars.hasXXSmallSizeImages && (self.imageData.XXSmallPath.length > 0)) {
                 NSURL *URL = [NSURL URLWithString:self.imageData.XXSmallPath];
                 [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
-            } else if (AlbumVars.shared.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
+            } else if (AlbumVars.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
                     NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
                     [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
@@ -186,10 +186,10 @@
             }
             break;
         case kPiwigoImageSizeXSmall:
-            if (AlbumVars.shared.hasXSmallSizeImages && (self.imageData.XSmallPath.length > 0)) {
+            if (AlbumVars.hasXSmallSizeImages && (self.imageData.XSmallPath.length > 0)) {
                 NSURL *URL = [NSURL URLWithString:self.imageData.XSmallPath];
                 [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
-            } else if (AlbumVars.shared.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
+            } else if (AlbumVars.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
                     NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
                     [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
@@ -198,10 +198,10 @@
             }
             break;
         case kPiwigoImageSizeSmall:
-            if (AlbumVars.shared.hasSmallSizeImages && (self.imageData.SmallPath.length > 0)) {
+            if (AlbumVars.hasSmallSizeImages && (self.imageData.SmallPath.length > 0)) {
                 NSURL *URL = [NSURL URLWithString:self.imageData.SmallPath];
                 [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
-            } else if (AlbumVars.shared.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
+            } else if (AlbumVars.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
                     NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
                     [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
@@ -210,10 +210,10 @@
             }
             break;
         case kPiwigoImageSizeMedium:
-            if (AlbumVars.shared.hasMediumSizeImages && (self.imageData.MediumPath.length > 0)) {
+            if (AlbumVars.hasMediumSizeImages && (self.imageData.MediumPath.length > 0)) {
                 NSURL *URL = [NSURL URLWithString:self.imageData.MediumPath];
                 [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
-            } else if (AlbumVars.shared.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
+            } else if (AlbumVars.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
                     NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
                     [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
@@ -222,10 +222,10 @@
             }
             break;
         case kPiwigoImageSizeLarge:
-            if (AlbumVars.shared.hasLargeSizeImages && (self.imageData.LargePath.length > 0)) {
+            if (AlbumVars.hasLargeSizeImages && (self.imageData.LargePath.length > 0)) {
                 NSURL *URL = [NSURL URLWithString:self.imageData.LargePath];
                 [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
-            } else if (AlbumVars.shared.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
+            } else if (AlbumVars.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
                     NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
                     [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
@@ -234,10 +234,10 @@
             }
             break;
         case kPiwigoImageSizeXLarge:
-            if (AlbumVars.shared.hasXLargeSizeImages && (self.imageData.XLargePath.length > 0)) {
+            if (AlbumVars.hasXLargeSizeImages && (self.imageData.XLargePath.length > 0)) {
                 NSURL *URL = [NSURL URLWithString:self.imageData.XLargePath];
                 [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
-            } else if (AlbumVars.shared.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
+            } else if (AlbumVars.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
                 NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
                 [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
@@ -246,11 +246,11 @@
             }
             break;
         case kPiwigoImageSizeXXLarge:
-            if (AlbumVars.shared.hasXXLargeSizeImages && (self.imageData.XXLargePath.length > 0)) {
+            if (AlbumVars.hasXXLargeSizeImages && (self.imageData.XXLargePath.length > 0)) {
                 NSURL *URL = [NSURL URLWithString:self.imageData.XXLargePath];
                 [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             }
-            else if (AlbumVars.shared.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
+            else if (AlbumVars.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
                     NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
                     [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
@@ -261,7 +261,7 @@
         case kPiwigoImageSizeThumb:
         case kPiwigoImageSizeFullRes:
         default:
-            if (AlbumVars.shared.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
+            if (AlbumVars.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
                 NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
                 [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
@@ -272,7 +272,7 @@
     }
 
     // Title
-    if ((AlbumVars.shared.displayImageTitles) ||
+    if ((AlbumVars.displayImageTitles) ||
         (categoryId == kPiwigoVisitsCategoryId)     ||
         (categoryId == kPiwigoBestCategoryId)       ||
         (categoryId == kPiwigoRecentCategoryId)) {

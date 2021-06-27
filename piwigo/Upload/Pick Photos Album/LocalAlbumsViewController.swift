@@ -11,6 +11,7 @@
 import Photos
 import PhotosUI
 import UIKit
+import piwigoKit
 
 @objc
 protocol LocalAlbumsSelectorDelegate: NSObjectProtocol {
@@ -133,7 +134,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         if #available(iOS 11.0, *) {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
@@ -141,7 +142,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         // Table view
         setTableViewMainHeader()
         localAlbumsTableView?.separatorColor = UIColor.piwigoColorSeparator()
-        localAlbumsTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        localAlbumsTableView?.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
         localAlbumsTableView?.reloadData()
     }
 

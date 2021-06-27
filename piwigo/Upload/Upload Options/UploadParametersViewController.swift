@@ -22,9 +22,9 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
 
     var commonTitle = ""
     private var shouldUpdateTitle = false
-    var commonAuthor = UploadVars.shared.defaultAuthor
+    var commonAuthor = UploadVars.defaultAuthor
     private var shouldUpdateAuthor = false
-    var commonPrivacyLevel = kPiwigoPrivacy(rawValue: UploadVars.shared.defaultPrivacyLevel)
+    var commonPrivacyLevel = kPiwigoPrivacy(rawValue: UploadVars.defaultPrivacyLevel)
     private var shouldUpdatePrivacyLevel = false
     var commonTags = [Tag]()
     private var shouldUpdateTags = false
@@ -46,7 +46,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
 
         // Table view
         paramsTableView.separatorColor = UIColor.piwigoColorSeparator()
-        paramsTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        paramsTableView.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
         paramsTableView.reloadData()
     }
 
@@ -143,7 +143,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // Don't present privacy level choice to non-admin users
         var nberOfRows = EditImageDetailsOrder.count.rawValue
-        nberOfRows -= (!NetworkVars.shared.hasAdminRights ? 1 : 0)
+        nberOfRows -= (!NetworkVars.hasAdminRights ? 1 : 0)
 
         return nberOfRows
     }
@@ -151,7 +151,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         // Don't present privacy level choice to non-admin users
         var row = indexPath.row
-        row += (!NetworkVars.shared.hasAdminRights && (row > 1)) ? 1 : 0
+        row += (!NetworkVars.hasAdminRights && (row > 1)) ? 1 : 0
 
         var height: CGFloat = 44.0
         switch EditImageDetailsOrder(rawValue: row) {
@@ -159,7 +159,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
                 height = 78.0
             case .comment:
                 height = 428.0
-                height += !NetworkVars.shared.hasAdminRights ? 78.0 : 0.0
+                height += !NetworkVars.hasAdminRights ? 78.0 : 0.0
             default:
                 break
         }
@@ -169,7 +169,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // Don't present privacy level choice to non-admin users
         var row = indexPath.row
-        row += (!NetworkVars.shared.hasAdminRights && (row > 1)) ? 1 : 0
+        row += (!NetworkVars.hasAdminRights && (row > 1)) ? 1 : 0
 
         var tableViewCell = UITableViewCell()
         switch EditImageDetailsOrder(rawValue: row) {
@@ -252,15 +252,15 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
 
         // Don't present privacy level choice to non-admin users
         var row = indexPath.row
-        row += (!NetworkVars.shared.hasAdminRights && (row > 1)) ? 1 : 0
+        row += (!NetworkVars.hasAdminRights && (row > 1)) ? 1 : 0
 
         switch EditImageDetailsOrder(rawValue: row) {
         case .author:
         if (commonAuthor == "NSNotFound") {
             // only update if not yet set, dont overwrite
-            if 0 < UploadVars.shared.defaultAuthor.count {
+            if 0 < UploadVars.defaultAuthor.count {
                 // must know the default author
-                commonAuthor = UploadVars.shared.defaultAuthor
+                commonAuthor = UploadVars.defaultAuthor
                 tableView.reloadRows(at: [indexPath], with: .automatic)
             }
         }
@@ -302,7 +302,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
     override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         // Don't present privacy level choice to non-admin users
         var row = indexPath.row
-        row += (!NetworkVars.shared.hasAdminRights && (row > 1)) ? 1 : 0
+        row += (!NetworkVars.hasAdminRights && (row > 1)) ? 1 : 0
 
         var result: Bool
         switch EditImageDetailsOrder(rawValue: row) {

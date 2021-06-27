@@ -53,7 +53,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     private var nberUsers = ""
     private var nberGroups = ""
     private var nberComments = ""
-    private var hasAutoUploadSettings = NetworkVars.shared.usesUploadAsync
+    private var hasAutoUploadSettings = NetworkVars.usesUploadAsync
 
 
     #if DEBUG
@@ -83,7 +83,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         super.viewDidLoad()
 
         // Get Server Infos if possible
-        if NetworkVars.shared.hasAdminRights {
+        if NetworkVars.hasAdminRights {
             getInfos()
         }
         
@@ -125,14 +125,14 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             navigationController?.navigationBar.largeTitleTextAttributes = attributesLarge
             navigationController?.navigationBar.prefersLargeTitles = true
         }
-        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
 
         // Table view
         settingsTableView?.separatorColor = UIColor.piwigoColorSeparator()
-        settingsTableView?.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        settingsTableView?.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
         settingsTableView?.reloadData()
     }
 
@@ -146,6 +146,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: PwgNotifications.paletteChanged, object: nil)
+
+        // Register auto-upload option disabler
+        NotificationCenter.default.addObserver(self, selector: #selector(disableAutoUpload),
+                                               name: PwgNotifications.disableAutoUpload, object: nil)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -155,9 +159,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             let langCode = NSLocale.current.languageCode
 //            print("=> langCode: ", String(describing: langCode))
 //            print(String(format: "=> now:%.0f > last:%.0f + %.0f", Date().timeIntervalSinceReferenceDate, Model.sharedInstance().dateOfLastTranslationRequest, k2WeeksInDays))
-            if (Date().timeIntervalSinceReferenceDate > AppVars.shared.dateOfLastTranslationRequest + AppVars.shared.kPiwigoOneMonth) && ((langCode == "ar") || (langCode == "fa") || (langCode == "pl") || (langCode == "pt-BR") || (langCode == "sk")) {
+            if (Date().timeIntervalSinceReferenceDate > AppVars.dateOfLastTranslationRequest + AppVars.kPiwigoOneMonth) && ((langCode == "ar") || (langCode == "fa") || (langCode == "pl") || (langCode == "pt-BR") || (langCode == "sk")) {
                 // Store date of last translation request
-                AppVars.shared.dateOfLastTranslationRequest = Date().timeIntervalSinceReferenceDate
+                AppVars.dateOfLastTranslationRequest = Date().timeIntervalSinceReferenceDate
 
                 // Request a translation
                 let alert = UIAlertController(title: kHelpUsTitle, message: kHelpUsTranslatePiwigo, preferredStyle: .alert)
@@ -175,7 +179,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 alert.addAction(defaultAction)
                 alert.view.tintColor = UIColor.piwigoColorOrange()
                 if #available(iOS 13.0, *) {
-                    alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+                    alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
                 } else {
                     // Fallback on earlier versions
                 }
@@ -213,6 +217,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
+        
+        // Unregister auto-upload option disabler
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.disableAutoUpload, object: nil)
     }
 
     @objc func quitSettings() {
@@ -241,15 +248,27 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         }
     }
 
+    @objc func disableAutoUpload(_ notification: Notification) {
+        // Change switch button state
+        let indexPath = IndexPath(row: 10, section: SettingsSection.imageUpload.rawValue)
+        settingsTableView?.reloadRows(at: [indexPath], with: .automatic)
+        
+        // Inform user if an error was reported
+        if let title = notification.userInfo?["title"] as? String, !title.isEmpty,
+           let message = notification.userInfo?["message"] as? String {
+            dismissPiwigoError(withTitle: title, message: message) { }
+        }
+    }
+
     
-// MARK: - UITableView - Header
+    // MARK: - UITableView - Header
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         // User can upload images/videos if he/she is logged in and has:
         // — admin rights
         // — normal rights with upload access to some categories with Community
         var activeSection = section
-        if !(NetworkVars.shared.hasAdminRights ||
-             (NetworkVars.shared.hasNormalRights && NetworkVars.shared.usesCommunityPluginV29)) {
+        if !(NetworkVars.hasAdminRights ||
+             (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)) {
             // Bypass the Upload section
             if activeSection > SettingsSection.images.rawValue {
                 activeSection += 1
@@ -261,14 +280,14 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         var textString = ""
         switch activeSection {
         case SettingsSection.server.rawValue:
-            if (NetworkVars.shared.serverProtocol == "https://") {
+            if (NetworkVars.serverProtocol == "https://") {
                 titleString = String(format: "%@ %@",
                                      NSLocalizedString("settingsHeader_server", comment: "Piwigo Server"),
-                                     NetworkVars.shared.version)
+                                     NetworkVars.pwgVersion)
             } else {
                 titleString = String(format: "%@ %@\n",
                                      NSLocalizedString("settingsHeader_server", comment: "Piwigo Server"),
-                                     NetworkVars.shared.version)
+                                     NetworkVars.pwgVersion)
                 textString = NSLocalizedString("settingsHeader_notSecure", comment: "Website Not Secure!")
             }
         case SettingsSection.logout.rawValue, SettingsSection.clear.rawValue:
@@ -317,7 +336,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // — admin rights
         // — normal rights with upload access to some categories with Community
         var activeSection = section
-        if !(NetworkVars.shared.hasAdminRights || (NetworkVars.shared.hasNormalRights && NetworkVars.shared.usesCommunityPluginV29)) {
+        if !(NetworkVars.hasAdminRights || (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)) {
             // Bypass the Upload section
             if activeSection > SettingsSection.images.rawValue {
                 activeSection += 1
@@ -329,14 +348,14 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         var textString = ""
         switch activeSection {
         case SettingsSection.server.rawValue:
-            if (NetworkVars.shared.serverProtocol == "https://") {
+            if (NetworkVars.serverProtocol == "https://") {
                 titleString = String(format: "%@ %@",
                                      NSLocalizedString("settingsHeader_server", comment: "Piwigo Server"),
-                                     NetworkVars.shared.version)
+                                     NetworkVars.pwgVersion)
             } else {
                 titleString = String(format: "%@ %@\n",
                                      NSLocalizedString("settingsHeader_server", comment: "Piwigo Server"),
-                                     NetworkVars.shared.version)
+                                     NetworkVars.pwgVersion)
                 textString = NSLocalizedString("settingsHeader_notSecure", comment: "Website Not Secure!")
             }
         case SettingsSection.logout.rawValue, SettingsSection.clear.rawValue:
@@ -399,8 +418,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
 // MARK: - UITableView - Rows
     func numberOfSections(in tableView: UITableView) -> Int {
-        let hasUploadSection = NetworkVars.shared.hasAdminRights ||
-                               (NetworkVars.shared.hasNormalRights && NetworkVars.shared.usesCommunityPluginV29)
+        let hasUploadSection = NetworkVars.hasAdminRights ||
+                               (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)
         return SettingsSection.count.rawValue - (hasUploadSection ? 0 : 1)
     }
 
@@ -409,8 +428,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // — admin rights
         // — normal rights with upload access to some categories with Community
         var activeSection = section
-        if !(NetworkVars.shared.hasAdminRights ||
-             (NetworkVars.shared.hasNormalRights && NetworkVars.shared.usesCommunityPluginV29)) {
+        if !(NetworkVars.hasAdminRights ||
+             (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)) {
             // Bypass the Upload section
             if activeSection > SettingsSection.images.rawValue {
                 activeSection += 1
@@ -428,10 +447,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case SettingsSection.images.rawValue:
             nberOfRows = 5
         case SettingsSection.imageUpload.rawValue:
-            nberOfRows = 7 + (NetworkVars.shared.hasAdminRights ? 1 : 0)
-            nberOfRows += (UploadVars.shared.resizeImageOnUpload ? 1 : 0)
-            nberOfRows += (UploadVars.shared.compressImageOnUpload ? 1 : 0)
-            nberOfRows += (UploadVars.shared.prefixFileNameBeforeUpload ? 1 : 0)
+            nberOfRows = 7 + (NetworkVars.hasAdminRights ? 1 : 0)
+            nberOfRows += (UploadVars.resizeImageOnUpload ? 1 : 0)
+            nberOfRows += (UploadVars.compressImageOnUpload ? 1 : 0)
+            nberOfRows += (UploadVars.prefixFileNameBeforeUpload ? 1 : 0)
             nberOfRows += hasAutoUploadSettings ? 1 : 0
         case SettingsSection.appearance.rawValue:
             nberOfRows = 1
@@ -456,8 +475,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // — admin rights
         // — normal rights with upload access to some categories with Community
         var activeSection = indexPath.section
-        if !(NetworkVars.shared.hasAdminRights ||
-             (NetworkVars.shared.hasNormalRights && NetworkVars.shared.usesCommunityPluginV29)) {
+        if !(NetworkVars.hasAdminRights ||
+             (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)) {
             // Bypass the Upload section
             if activeSection > SettingsSection.images.rawValue {
                 activeSection += 1
@@ -478,7 +497,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 let title = NSLocalizedString("settings_server", comment: "Address")
                 var detail: String
-                detail = String(format: "%@%@", NetworkVars.shared.serverProtocol, NetworkVars.shared.serverPath)
+                detail = String(format: "%@%@", NetworkVars.serverProtocol, NetworkVars.serverPath)
                 cell.configure(with: title, detail: detail)
                 cell.accessoryType = UITableViewCell.AccessoryType.none
                 cell.accessibilityIdentifier = "server"
@@ -486,10 +505,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             case 1:
                 let title = NSLocalizedString("settings_username", comment: "Username")
                 var detail: String
-                if NetworkVars.shared.username.isEmpty {
+                if NetworkVars.username.isEmpty {
                     detail = NSLocalizedString("settings_notLoggedIn", comment: " - Not Logged In - ")
                 } else {
-                    detail = NetworkVars.shared.username
+                    detail = NetworkVars.username
                 }
                 cell.configure(with: title, detail: detail)
                 cell.accessoryType = UITableViewCell.AccessoryType.none
@@ -505,7 +524,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 print("Error: tableView.dequeueReusableCell does not return a ButtonTableViewCell!")
                 return ButtonTableViewCell()
             }
-            if NetworkVars.shared.username.isEmpty {
+            if NetworkVars.username.isEmpty {
                 cell.configure(with: NSLocalizedString("login", comment: "Login"))
             } else {
                 cell.configure(with: NSLocalizedString("settings_logout", comment: "Logout"))
@@ -523,14 +542,14 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 }
                 let title = NSLocalizedString("setDefaultCategory_title", comment: "Default Album")
                 var detail: String
-                if AlbumVars.shared.defaultCategory == 0 {
+                if AlbumVars.defaultCategory == 0 {
                     detail = NSLocalizedString("categorySelection_root", comment: "Root Album")
                 } else {
-                    if let albumName = CategoriesData.sharedInstance().getCategoryById(AlbumVars.shared.defaultCategory).name {
+                    if let albumName = CategoriesData.sharedInstance().getCategoryById(AlbumVars.defaultCategory).name {
                         detail = albumName
                     } else {
                         detail = NSLocalizedString("categorySelection_root", comment: "Root Album")
-                        AlbumVars.shared.defaultCategory = 0
+                        AlbumVars.defaultCategory = 0
                     }
                 }
                 cell.configure(with: title, detail: detail)
@@ -543,7 +562,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let albumImageSize = kPiwigoImageSize(AlbumVars.shared.defaultAlbumThumbnailSize)
+                let albumImageSize = kPiwigoImageSize(AlbumVars.defaultAlbumThumbnailSize)
                 let defaultAlbum = PiwigoImageData.name(forAlbumThumbnailSizeType: albumImageSize, withInfo: false)!
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 var title: String
@@ -566,7 +585,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let defSort = kPiwigoSort(rawValue: AlbumVars.shared.defaultSort)
+                let defSort = kPiwigoSort(rawValue: AlbumVars.defaultSort)
                 let defaultSort = CategorySortViewController.getNameForCategorySortType(defSort!)
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 var title: String
@@ -590,7 +609,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     return SliderTableViewCell()
                 }
                 // Slider value
-                let value = Float(AlbumVars.shared.maxNberRecentCategories)
+                let value = Float(AlbumVars.maxNberRecentCategories)
 
                 // Slider configuration
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
@@ -607,7 +626,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.configure(with: title, value: value, increment: 1, minValue: 3, maxValue: 10, prefix: "", suffix: "/10")
                 cell.cellSliderBlock = { newValue in
                     // Update settings
-                    AlbumVars.shared.maxNberRecentCategories = Int(newValue)
+                    AlbumVars.maxNberRecentCategories = Int(newValue)
                 }
                 cell.accessibilityIdentifier = "maxNberRecentAlbums"
                 tableViewCell = cell
@@ -624,7 +643,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let defaultSize = PiwigoImageData.name(forImageThumbnailSizeType: kPiwigoImageSize(AlbumVars.shared.defaultThumbnailSize), withInfo: false)!
+                let defaultSize = PiwigoImageData.name(forImageThumbnailSizeType: kPiwigoImageSize(AlbumVars.defaultThumbnailSize), withInfo: false)!
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 var title: String
                 if view.bounds.size.width > 375 {
@@ -647,17 +666,17 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     return SliderTableViewCell()
                 }
                 // Min/max number of thumbnails per row depends on selected file
-                let defaultWidth = PiwigoImageData.width(forImageSizeType: kPiwigoImageSize(AlbumVars.shared.defaultThumbnailSize))
+                let defaultWidth = PiwigoImageData.width(forImageSizeType: kPiwigoImageSize(AlbumVars.defaultThumbnailSize))
                 let minNberOfImages = ImagesCollection.imagesPerRowInPortrait(for: nil, maxWidth: defaultWidth)
 
                 // Slider value, chek that default number fits inside selected range
-                if Float(AlbumVars.shared.thumbnailsPerRowInPortrait) > (2 * minNberOfImages) {
-                    AlbumVars.shared.thumbnailsPerRowInPortrait = Int(2 * minNberOfImages)
+                if Float(AlbumVars.thumbnailsPerRowInPortrait) > (2 * minNberOfImages) {
+                    AlbumVars.thumbnailsPerRowInPortrait = Int(2 * minNberOfImages)
                 }
-                if Float(AlbumVars.shared.thumbnailsPerRowInPortrait) < minNberOfImages {
-                    AlbumVars.shared.thumbnailsPerRowInPortrait = Int(minNberOfImages)
+                if Float(AlbumVars.thumbnailsPerRowInPortrait) < minNberOfImages {
+                    AlbumVars.thumbnailsPerRowInPortrait = Int(minNberOfImages)
                 }
-                let value = Float(AlbumVars.shared.thumbnailsPerRowInPortrait)
+                let value = Float(AlbumVars.thumbnailsPerRowInPortrait)
 
                 // Slider configuration
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
@@ -674,7 +693,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.configure(with: title, value: value, increment: 1, minValue: minNberOfImages, maxValue: minNberOfImages * 2, prefix: "", suffix: "/\(Int(minNberOfImages * 2))")
                 cell.cellSliderBlock = { newValue in
                     // Update settings
-                    AlbumVars.shared.thumbnailsPerRowInPortrait = Int(newValue)
+                    AlbumVars.thumbnailsPerRowInPortrait = Int(newValue)
                 }
                 cell.accessibilityIdentifier = "nberThumbnailFiles"
                 tableViewCell = cell
@@ -692,10 +711,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 }
                 
                 // Switch status
-                cell.cellSwitch.setOn(AlbumVars.shared.displayImageTitles, animated: true)
+                cell.cellSwitch.setOn(AlbumVars.displayImageTitles, animated: true)
                 cell.cellSwitch.accessibilityIdentifier = "switchImageTitles"
                 cell.cellSwitchBlock = { switchState in
-                    AlbumVars.shared.displayImageTitles = switchState
+                    AlbumVars.displayImageTitles = switchState
                 }
                 cell.accessibilityIdentifier = "displayImageTitles"
                 tableViewCell = cell
@@ -767,10 +786,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // MARK: Upload Settings
         case SettingsSection.imageUpload.rawValue /* Default Upload Settings */:
             var row = indexPath.row
-            row += (!NetworkVars.shared.hasAdminRights && (row > 0)) ? 1 : 0
-            row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 1 : 0
-            row += (!UploadVars.shared.compressImageOnUpload && (row > 5)) ? 1 : 0
-            row += (!UploadVars.shared.prefixFileNameBeforeUpload && (row > 7)) ? 1 : 0
+            row += (!NetworkVars.hasAdminRights && (row > 0)) ? 1 : 0
+            row += (!UploadVars.resizeImageOnUpload && (row > 3)) ? 1 : 0
+            row += (!UploadVars.compressImageOnUpload && (row > 5)) ? 1 : 0
+            row += (!UploadVars.prefixFileNameBeforeUpload && (row > 7)) ? 1 : 0
             row += (!hasAutoUploadSettings && (row > 9)) ? 1 : 0
             switch row {
             case 0 /* Author Name? */:
@@ -780,7 +799,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 }
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 var title: String
-                let input: String = UploadVars.shared.defaultAuthor
+                let input: String = UploadVars.defaultAuthor
                 let placeHolder: String = NSLocalizedString("settings_defaultAuthorPlaceholder", comment: "Author Name")
                 if view.bounds.size.width > 320 {
                     // i.e. larger than iPhone 5 screen width
@@ -799,7 +818,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let defLevelObjc = kPiwigoPrivacyObjc(Int32(UploadVars.shared.defaultPrivacyLevel))
+                let defLevelObjc = kPiwigoPrivacyObjc(Int32(UploadVars.defaultPrivacyLevel))
                 let defaultLevel = Model.sharedInstance().getNameForPrivacyLevel(defLevelObjc)!
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 if view.bounds.size.width > 414 {
@@ -824,9 +843,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 } else {
                     cell.configure(with: NSLocalizedString("settings_stripGPSdata", comment: "Strip Private Metadata"))
                 }
-                cell.cellSwitch.setOn(UploadVars.shared.stripGPSdataOnUpload, animated: true)
+                cell.cellSwitch.setOn(UploadVars.stripGPSdataOnUpload, animated: true)
                 cell.cellSwitchBlock = { switchState in
-                    UploadVars.shared.stripGPSdataOnUpload = switchState
+                    UploadVars.stripGPSdataOnUpload = switchState
                 }
                 cell.accessibilityIdentifier = "stripMetadataBeforeUpload"
                 tableViewCell = cell
@@ -843,12 +862,12 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 } else {
                     cell.configure(with: NSLocalizedString("settings_photoResize", comment: "Resize Before Upload"))
                 }
-                cell.cellSwitch.setOn(UploadVars.shared.resizeImageOnUpload, animated: true)
+                cell.cellSwitch.setOn(UploadVars.resizeImageOnUpload, animated: true)
                 cell.cellSwitchBlock = { switchState in
                     // Number of rows will change accordingly
-                    UploadVars.shared.resizeImageOnUpload = switchState
+                    UploadVars.resizeImageOnUpload = switchState
                     // Position of the row that should be added/removed
-                    let rowAtIndexPath = IndexPath(row: 3 + (NetworkVars.shared.hasAdminRights ? 1 : 0),
+                    let rowAtIndexPath = IndexPath(row: 3 + (NetworkVars.hasAdminRights ? 1 : 0),
                                                    section: SettingsSection.imageUpload.rawValue)
                     if switchState {
                         // Insert row in existing table
@@ -867,14 +886,14 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     return SliderTableViewCell()
                 }
                 // Slider value
-                let value = Float(UploadVars.shared.photoResize)
+                let value = Float(UploadVars.photoResize)
 
                 // Slider configuration
                 let title = String(format: "… %@", NSLocalizedString("settings_photoSize", comment: "Size"))
                 cell.configure(with: title, value: value, increment: 1, minValue: 5, maxValue: 100, prefix: "", suffix: "%")
                 cell.cellSliderBlock = { newValue in
                     // Update settings
-                    UploadVars.shared.photoResize = Int16(newValue)
+                    UploadVars.photoResize = Int16(newValue)
                 }
                 cell.accessibilityIdentifier = "maxNberRecentAlbums"
                 tableViewCell = cell
@@ -891,13 +910,13 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 } else {
                     cell.configure(with: NSLocalizedString("settings_photoCompress", comment: "Compress Before Upload"))
                 }
-                cell.cellSwitch.setOn(UploadVars.shared.compressImageOnUpload, animated: true)
+                cell.cellSwitch.setOn(UploadVars.compressImageOnUpload, animated: true)
                 cell.cellSwitchBlock = { switchState in
                     // Number of rows will change accordingly
-                    UploadVars.shared.compressImageOnUpload = switchState
+                    UploadVars.compressImageOnUpload = switchState
                     // Position of the row that should be added/removed
-                    let rowAtIndexPath = IndexPath(row: 4 + (NetworkVars.shared.hasAdminRights ? 1 : 0)
-                                                          + (UploadVars.shared.resizeImageOnUpload ? 1 : 0),
+                    let rowAtIndexPath = IndexPath(row: 4 + (NetworkVars.hasAdminRights ? 1 : 0)
+                                                          + (UploadVars.resizeImageOnUpload ? 1 : 0),
                                                    section: SettingsSection.imageUpload.rawValue)
                     if switchState {
                         // Insert row in existing table
@@ -916,14 +935,14 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     return SliderTableViewCell()
                 }
                 // Slider value
-                let value = Float(UploadVars.shared.photoQuality)
+                let value = Float(UploadVars.photoQuality)
 
                 // Slider configuration
                 let title = String(format: "… %@", NSLocalizedString("settings_photoQuality", comment: "Quality"))
                 cell.configure(with: title, value: value, increment: 1, minValue: 50, maxValue: 98, prefix: "", suffix: "%")
                 cell.cellSliderBlock = { newValue in
                     // Update settings
-                    UploadVars.shared.photoQuality = Int16(newValue)
+                    UploadVars.photoQuality = Int16(newValue)
                 }
                 cell.accessibilityIdentifier = "compressionRatio"
                 tableViewCell = cell
@@ -943,14 +962,14 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 } else {
                     cell.configure(with: NSLocalizedString("settings_prefixFilename", comment: "Prefix Filename"))
                 }
-                cell.cellSwitch.setOn(UploadVars.shared.prefixFileNameBeforeUpload, animated: true)
+                cell.cellSwitch.setOn(UploadVars.prefixFileNameBeforeUpload, animated: true)
                 cell.cellSwitchBlock = { switchState in
                     // Number of rows will change accordingly
-                    UploadVars.shared.prefixFileNameBeforeUpload = switchState
+                    UploadVars.prefixFileNameBeforeUpload = switchState
                     // Position of the row that should be added/removed
-                    let rowAtIndexPath = IndexPath(row: 5 + (NetworkVars.shared.hasAdminRights ? 1 : 0)
-                                                          + (UploadVars.shared.resizeImageOnUpload ? 1 : 0)
-                                                          + (UploadVars.shared.compressImageOnUpload ? 1 : 0),
+                    let rowAtIndexPath = IndexPath(row: 5 + (NetworkVars.hasAdminRights ? 1 : 0)
+                                                          + (UploadVars.resizeImageOnUpload ? 1 : 0)
+                                                          + (UploadVars.compressImageOnUpload ? 1 : 0),
                                                    section: SettingsSection.imageUpload.rawValue)
                     if switchState {
                         // Insert row in existing table
@@ -970,7 +989,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 }
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 var title: String
-                let input: String = UploadVars.shared.defaultPrefix
+                let input: String = UploadVars.defaultPrefix
                 let placeHolder: String = NSLocalizedString("settings_defaultPrefixPlaceholder", comment: "Prefix Filename")
                 if view.bounds.size.width > 320 {
                     // i.e. larger than iPhone 5 screen width
@@ -990,10 +1009,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     return SwitchTableViewCell()
                 }
                 cell.configure(with: NSLocalizedString("settings_wifiOnly", comment: "Wi-Fi Only"))
-                cell.cellSwitch.setOn(UploadVars.shared.wifiOnlyUploading, animated: true)
+                cell.cellSwitch.setOn(UploadVars.wifiOnlyUploading, animated: true)
                 cell.cellSwitchBlock = { switchState in
                     // Change option
-                    UploadVars.shared.wifiOnlyUploading = switchState
+                    UploadVars.wifiOnlyUploading = switchState
                     // Relaunch uploads in background queue if disabled
                     if switchState == false {
                         // Update upload tasks in background queue
@@ -1019,7 +1038,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     title = NSLocalizedString("settings_autoUpload", comment: "Auto Upload")
                 }
                 let detail: String
-                if UploadVars.shared.isAutoUploadActive == true {
+                if UploadVars.isAutoUploadActive == true {
                     detail = NSLocalizedString("settings_autoUploadEnabled", comment: "On")
                 } else {
                     detail = NSLocalizedString("settings_autoUploadDisabled", comment: "Off")
@@ -1041,9 +1060,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 } else {
                     cell.configure(with: NSLocalizedString("settings_deleteImage", comment: "Delete After Upload"))
                 }
-                cell.cellSwitch.setOn(UploadVars.shared.deleteImageAfterUpload, animated: true)
+                cell.cellSwitch.setOn(UploadVars.deleteImageAfterUpload, animated: true)
                 cell.cellSwitchBlock = { switchState in
-                    UploadVars.shared.deleteImageAfterUpload = switchState
+                    UploadVars.deleteImageAfterUpload = switchState
                 }
                 cell.accessibilityIdentifier = "deleteAfterUpload"
                 tableViewCell = cell
@@ -1060,9 +1079,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             }
             let title = NSLocalizedString("settingsHeader_colorPalette", comment: "Color Palette")
             let detail: String
-            if AppVars.shared.isLightPaletteModeActive == true {
+            if AppVars.isLightPaletteModeActive == true {
                 detail = NSLocalizedString("settings_lightColor", comment: "Light")
-            } else if AppVars.shared.isDarkPaletteModeActive == true {
+            } else if AppVars.isDarkPaletteModeActive == true {
                 detail = NSLocalizedString("settings_darkColor", comment: "Dark")
             } else {
                 detail = NSLocalizedString("settings_switchPalette", comment: "Automatic")
@@ -1081,10 +1100,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     return SliderTableViewCell()
                 }
                 // Slider value
-                let value = Float(AppVars.shared.diskCache)
+                let value = Float(AppVars.diskCache)
 
                 // Slider configuration
-                let currentDiskSize = Float(NetworkVarsObjc.shared.imageCache?.currentDiskUsage ?? 0)
+                let currentDiskSize = Float(NetworkVarsObjc.imageCache?.currentDiskUsage ?? 0)
                 let currentDiskSizeInMB: Float = currentDiskSize / (1024.0 * 1024.0)
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 var prefix:String
@@ -1097,15 +1116,15 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let suffix = NSLocalizedString("settings_cacheMegabytes", comment: "MB")
                 cell.configure(with: NSLocalizedString("settings_cacheDisk", comment: "Disk"),
                                value: value,
-                               increment: Float(AppVars.shared.kPiwigoDiskCacheInc),
-                               minValue: Float(AppVars.shared.kPiwigoDiskCacheMin),
-                               maxValue: Float(AppVars.shared.kPiwigoDiskCacheMax),
+                               increment: Float(AppVars.kPiwigoDiskCacheInc),
+                               minValue: Float(AppVars.kPiwigoDiskCacheMin),
+                               maxValue: Float(AppVars.kPiwigoDiskCacheMax),
                                prefix: prefix, suffix: suffix)
                 cell.cellSliderBlock = { newValue in
                     // Update settings
-                    AppVars.shared.diskCache = Int(newValue)
+                    AppVars.diskCache = Int(newValue)
                     // Update disk cache size
-                    NetworkVarsObjc.shared.imageCache?.diskCapacity = AppVars.shared.diskCache * 1024 * 1024
+                    NetworkVarsObjc.imageCache?.diskCapacity = AppVars.diskCache * 1024 * 1024
                 }
                 cell.accessibilityIdentifier = "diskCache"
                 tableViewCell = cell
@@ -1116,10 +1135,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     return SliderTableViewCell()
                 }
                 // Slider value
-                let value = Float(AppVars.shared.memoryCache)
+                let value = Float(AppVars.memoryCache)
 
                 // Slider configuration
-                let currentMemSize = Float(NetworkVarsObjc.shared.thumbnailCache?.memoryUsage ?? 0)
+                let currentMemSize = Float(NetworkVarsObjc.thumbnailCache?.memoryUsage ?? 0)
                 let currentMemSizeInMB: Float = currentMemSize / (1024.0 * 1024.0)
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 var prefix:String
@@ -1132,15 +1151,15 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let suffix = NSLocalizedString("settings_cacheMegabytes", comment: "MB")
                 cell.configure(with: NSLocalizedString("settings_cacheMemory", comment: "Memory"),
                                value: value,
-                               increment: Float(AppVars.shared.kPiwigoMemoryCacheInc),
-                               minValue: Float(AppVars.shared.kPiwigoMemoryCacheMin),
-                               maxValue: Float(AppVars.shared.kPiwigoMemoryCacheMax),
+                               increment: Float(AppVars.kPiwigoMemoryCacheInc),
+                               minValue: Float(AppVars.kPiwigoMemoryCacheMin),
+                               maxValue: Float(AppVars.kPiwigoMemoryCacheMax),
                                prefix: prefix, suffix: suffix)
                 cell.cellSliderBlock = { newValue in
                     // Update settings
-                    AppVars.shared.memoryCache = Int(newValue)
+                    AppVars.memoryCache = Int(newValue)
                     // Update memory cache size
-                    NetworkVarsObjc.shared.thumbnailCache?.memoryCapacity = UInt64(AppVars.shared.memoryCache * 1024 * 1024)
+                    NetworkVarsObjc.thumbnailCache?.memoryCapacity = UInt64(AppVars.memoryCache * 1024 * 1024)
                 }
                 cell.accessibilityIdentifier = "memoryCache"
                 tableViewCell = cell
@@ -1273,8 +1292,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // — admin rights
         // — normal rights with upload access to some categories with Community
         var activeSection = indexPath.section
-        if !(NetworkVars.shared.hasAdminRights ||
-             (NetworkVars.shared.hasNormalRights && NetworkVars.shared.usesCommunityPluginV29)) {
+        if !(NetworkVars.hasAdminRights ||
+             (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)) {
             // Bypass the Upload section
             if activeSection > SettingsSection.images.rawValue {
                 activeSection += 1
@@ -1317,10 +1336,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // MARK: Upload Settings
         case SettingsSection.imageUpload.rawValue /* Default Upload Settings */:
             var row = indexPath.row
-            row += (!NetworkVars.shared.hasAdminRights && (row > 0)) ? 1 : 0
-            row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 1 : 0
-            row += (!UploadVars.shared.compressImageOnUpload && (row > 5)) ? 1 : 0
-            row += (!UploadVars.shared.prefixFileNameBeforeUpload && (row > 7)) ? 1 : 0
+            row += (!NetworkVars.hasAdminRights && (row > 0)) ? 1 : 0
+            row += (!UploadVars.resizeImageOnUpload && (row > 3)) ? 1 : 0
+            row += (!UploadVars.compressImageOnUpload && (row > 5)) ? 1 : 0
+            row += (!UploadVars.prefixFileNameBeforeUpload && (row > 7)) ? 1 : 0
             row += (!hasAutoUploadSettings && (row > 9)) ? 1 : 0
             switch row {
             case 0  /* Author Name */,
@@ -1376,8 +1395,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // — admin rights
         // — normal rights with upload access to some categories with Community
         var activeSection = section
-        if !(NetworkVars.shared.hasAdminRights ||
-             (NetworkVars.shared.hasNormalRights && NetworkVars.shared.usesCommunityPluginV29)) {
+        if !(NetworkVars.hasAdminRights ||
+             (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)) {
             // Bypass the Upload section
             if activeSection > SettingsSection.images.rawValue {
                 activeSection += 1
@@ -1387,8 +1406,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // Any footer text?
         switch activeSection {
         case SettingsSection.logout.rawValue:
-            if (UploadVars.shared.serverFileTypes.count > 0) {
-                footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(UploadVars.shared.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
+            if (UploadVars.serverFileTypes.count > 0) {
+                footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(UploadVars.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
             }
         case SettingsSection.about.rawValue:
             if nberImages.count > 0 {
@@ -1424,8 +1443,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // — admin rights
         // — normal rights with upload access to some categories with Community
         var activeSection = section
-        if !(NetworkVars.shared.hasAdminRights ||
-             (NetworkVars.shared.hasNormalRights && NetworkVars.shared.usesCommunityPluginV29)) {
+        if !(NetworkVars.hasAdminRights ||
+             (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)) {
             // Bypass the Upload section
             if activeSection > SettingsSection.images.rawValue {
                 activeSection += 1
@@ -1435,8 +1454,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // Footer text
         switch activeSection {
         case SettingsSection.logout.rawValue:
-            if UploadVars.shared.serverFileTypes.count > 0 {
-                footerLabel.text = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(UploadVars.shared.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
+            if UploadVars.serverFileTypes.count > 0 {
+                footerLabel.text = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(UploadVars.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
             }
         case SettingsSection.about.rawValue:
             if nberImages.count > 0 {
@@ -1472,8 +1491,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // — admin rights
         // — normal rights with upload access to some categories with Community
         var activeSection = indexPath.section
-        if !(NetworkVars.shared.hasAdminRights ||
-             (NetworkVars.shared.hasNormalRights && NetworkVars.shared.usesCommunityPluginV29)) {
+        if !(NetworkVars.hasAdminRights ||
+             (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)) {
             // Bypass the Upload section
             if activeSection > SettingsSection.images.rawValue {
                 activeSection += 1
@@ -1496,7 +1515,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             case 0 /* Default album */:
                 let categorySB = UIStoryboard(name: "SelectCategoryViewControllerGrouped", bundle: nil)
                 guard let categoryVC = categorySB.instantiateViewController(withIdentifier: "SelectCategoryViewControllerGrouped") as? SelectCategoryViewController else { return }
-                categoryVC.setInput(parameter: AlbumVars.shared.defaultCategory,
+                categoryVC.setInput(parameter: AlbumVars.defaultCategory,
                                     for: kPiwigoCategorySelectActionSetDefaultAlbum)
                 categoryVC.delegate = self
                 navigationController?.pushViewController(categoryVC, animated: true)
@@ -1538,17 +1557,17 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // MARK: Upload Settings
         case SettingsSection.imageUpload.rawValue /* Default upload Settings */:
             var row = indexPath.row
-            row += (!NetworkVars.shared.hasAdminRights && (row > 0)) ? 1 : 0
-            row += (!UploadVars.shared.resizeImageOnUpload && (row > 3)) ? 1 : 0
-            row += (!UploadVars.shared.compressImageOnUpload && (row > 5)) ? 1 : 0
-            row += (!UploadVars.shared.prefixFileNameBeforeUpload && (row > 7)) ? 1 : 0
+            row += (!NetworkVars.hasAdminRights && (row > 0)) ? 1 : 0
+            row += (!UploadVars.resizeImageOnUpload && (row > 3)) ? 1 : 0
+            row += (!UploadVars.compressImageOnUpload && (row > 5)) ? 1 : 0
+            row += (!UploadVars.prefixFileNameBeforeUpload && (row > 7)) ? 1 : 0
             row += (!hasAutoUploadSettings && (row > 9)) ? 1 : 0
             switch row {
             case 1 /* Default privacy selection */:
                 let privacySB = UIStoryboard(name: "SelectPrivacyViewController", bundle: nil)
                 guard let privacyVC = privacySB.instantiateViewController(withIdentifier: "SelectPrivacyViewController") as? SelectPrivacyViewController else { return }
                 privacyVC.delegate = self
-                privacyVC.setPrivacy(kPiwigoPrivacy(rawValue: UploadVars.shared.defaultPrivacyLevel) ?? .everybody)
+                privacyVC.setPrivacy(kPiwigoPrivacy(rawValue: UploadVars.defaultPrivacyLevel) ?? .everybody)
                 navigationController?.pushViewController(privacyVC, animated: true)
             case 10 /* Auto Upload */:
                 let autoUploadSB = UIStoryboard(name: "AutoUploadViewController", bundle: nil)
@@ -1643,7 +1662,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 // Present list of actions
                 alert.view.tintColor = UIColor.piwigoColorOrange()
                 if #available(iOS 13.0, *) {
-                    alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+                    alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
                 } else {
                     // Fallback on earlier versions
                 }
@@ -1682,7 +1701,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     // Compile ticket number from current date
                     let dateFormatter = DateFormatter()
                     dateFormatter.dateFormat = "yyyyMMddHHmm"
-                    dateFormatter.locale = NSLocale(localeIdentifier: NetworkVars.shared.language) as Locale
+                    dateFormatter.locale = NSLocale(localeIdentifier: NetworkVars.language) as Locale
                     let date = Date()
                     let ticketDate = dateFormatter.string(from: date)
 
@@ -1749,7 +1768,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     
     // MARK: - Actions Methods
     func loginLogout() {
-        if NetworkVars.shared.username.isEmpty {
+        if NetworkVars.username.isEmpty {
             // Clear caches and display login view
             self.closeSessionAndClearCache()
             return
@@ -1779,7 +1798,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                         // Present list of actions
                         alert.view.tintColor = UIColor.piwigoColorOrange()
                         if #available(iOS 13.0, *) {
-                            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+                            alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
                         } else {
                             // Fallback on earlier versions
                         }
@@ -1805,7 +1824,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     // Present list of actions
                     alert.view.tintColor = UIColor.piwigoColorOrange()
                     if #available(iOS 13.0, *) {
-                        alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+                        alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
                     } else {
                         // Fallback on earlier versions
                     }
@@ -1827,7 +1846,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // Present list of actions
         alert.view.tintColor = UIColor.piwigoColorOrange()
         if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
         } else {
             // Fallback on earlier versions
         }
@@ -1842,16 +1861,16 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
     func closeSessionAndClearCache() {
         // Session closed
-        NetworkVarsObjc.shared.sessionManager?.invalidateSessionCancelingTasks(true, resetSession: true)
-        NetworkVarsObjc.shared.imagesSessionManager?.invalidateSessionCancelingTasks(true, resetSession: true)
-        NetworkVarsObjc.shared.imageCache?.removeAllCachedResponses()
-        NetworkVars.shared.hadOpenedSession = false
+        NetworkVarsObjc.sessionManager?.invalidateSessionCancelingTasks(true, resetSession: true)
+        NetworkVarsObjc.imagesSessionManager?.invalidateSessionCancelingTasks(true, resetSession: true)
+        NetworkVarsObjc.imageCache?.removeAllCachedResponses()
+        NetworkVars.hadOpenedSession = false
 
         // Back to default values
-        AlbumVars.shared.defaultCategory = 0
-        AlbumVars.shared.recentCategories = "0"
-        NetworkVars.shared.usesCommunityPluginV29 = false
-        NetworkVars.shared.hasAdminRights = false
+        AlbumVars.defaultCategory = 0
+        AlbumVars.recentCategories = "0"
+        NetworkVars.usesCommunityPluginV29 = false
+        NetworkVars.hasAdminRights = false
 
         // Erase cache
         ClearCache.clearAllCache(exceptCategories: false,
@@ -1902,9 +1921,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     func textFieldDidEndEditing(_ textField: UITextField) {
         switch textField.tag {
         case kImageUploadSetting.author.rawValue:
-            UploadVars.shared.defaultAuthor = textField.text ?? ""
+            UploadVars.defaultAuthor = textField.text ?? ""
         case kImageUploadSetting.prefix.rawValue:
-            UploadVars.shared.defaultPrefix = textField.text ?? ""
+            UploadVars.defaultPrefix = textField.text ?? ""
         default:
             break
         }
@@ -1963,11 +1982,11 @@ extension SettingsViewController: SelectCategoryDelegate {
     func didSelectCategory(withId categoryId: Int) {
         // Do nothing if new default album is unknown or unchanged
         if categoryId == NSNotFound ||
-            categoryId == AlbumVars.shared.defaultCategory
+            categoryId == AlbumVars.defaultCategory
         { return }
 
         // Save new choice
-        AlbumVars.shared.defaultCategory = categoryId
+        AlbumVars.defaultCategory = categoryId
 
         // Will load default album view when dismissing this view
         settingsDelegate?.didChangeDefaultAlbum()
@@ -1979,10 +1998,10 @@ extension SettingsViewController: SelectCategoryDelegate {
 extension SettingsViewController: DefaultAlbumThumbnailSizeDelegate {
     func didSelectAlbumDefaultThumbnailSize(_ thumbnailSize: kPiwigoImageSize) {
         // Do nothing if size is unchanged
-        if thumbnailSize == kPiwigoImageSize(AlbumVars.shared.defaultAlbumThumbnailSize) { return }
+        if thumbnailSize == kPiwigoImageSize(AlbumVars.defaultAlbumThumbnailSize) { return }
         
         // Save new choice
-        AlbumVars.shared.defaultAlbumThumbnailSize = thumbnailSize.rawValue
+        AlbumVars.defaultAlbumThumbnailSize = thumbnailSize.rawValue
 
         // Refresh settings
         let indexPath = IndexPath(row: 1, section: SettingsSection.albums.rawValue)
@@ -1995,10 +2014,10 @@ extension SettingsViewController: DefaultAlbumThumbnailSizeDelegate {
 extension SettingsViewController: CategorySortDelegate {
     func didSelectCategorySortType(_ sortType: kPiwigoSort) {
         // Do nothing if sort type is unchanged
-        if sortType == kPiwigoSort(rawValue: AlbumVars.shared.defaultSort) { return }
+        if sortType == kPiwigoSort(rawValue: AlbumVars.defaultSort) { return }
         
         // Save new choice
-        AlbumVars.shared.defaultSort = sortType.rawValue
+        AlbumVars.defaultSort = sortType.rawValue
 
         // Refresh settings
         let indexPath = IndexPath(row: 2, section: SettingsSection.albums.rawValue)
@@ -2011,10 +2030,10 @@ extension SettingsViewController: CategorySortDelegate {
 extension SettingsViewController: DefaultImageThumbnailSizeDelegate {
     func didSelectImageDefaultThumbnailSize(_ thumbnailSize: kPiwigoImageSize) {
         // Do nothing if size is unchanged
-        if thumbnailSize == kPiwigoImageSize(AlbumVars.shared.defaultThumbnailSize) { return }
+        if thumbnailSize == kPiwigoImageSize(AlbumVars.defaultThumbnailSize) { return }
         
         // Save new choice
-        AlbumVars.shared.defaultThumbnailSize = thumbnailSize.rawValue
+        AlbumVars.defaultThumbnailSize = thumbnailSize.rawValue
 
         // Refresh settings
         let indexPath = IndexPath(row: 0, section: SettingsSection.images.rawValue)
@@ -2042,10 +2061,10 @@ extension SettingsViewController: DefaultImageSizeDelegate {
 extension SettingsViewController: SelectPrivacyDelegate {
     func didSelectPrivacyLevel(_ privacyLevel: kPiwigoPrivacy) {
         // Do nothing if privacy level is unchanged
-        if privacyLevel == kPiwigoPrivacy(rawValue: UploadVars.shared.defaultPrivacyLevel) { return }
+        if privacyLevel == kPiwigoPrivacy(rawValue: UploadVars.defaultPrivacyLevel) { return }
         
         // Save new choice
-        UploadVars.shared.defaultPrivacyLevel = privacyLevel.rawValue
+        UploadVars.defaultPrivacyLevel = privacyLevel.rawValue
 
         // Refresh settings
         let indexPath = IndexPath(row: 1, section: SettingsSection.imageUpload.rawValue)

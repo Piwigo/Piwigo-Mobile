@@ -1,5 +1,5 @@
 //
-//  PwgSessionDelegate.swift
+//  PwgSession.swift
 //  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 08/06/2021.
@@ -8,10 +8,10 @@
 
 import Foundation
 
-class PwgSessionDelegate: NSObject, URLSessionDelegate {
+class PwgSession: NSObject {
     
     // Singleton
-    @objc static var shared = PwgSessionDelegate()
+    static var shared = PwgSession()
     
     // Create single instance
     lazy var dataSession: URLSession = {
@@ -51,18 +51,13 @@ class PwgSessionDelegate: NSObject, URLSessionDelegate {
         return URLSession(configuration: config, delegate: self, delegateQueue: nil)
     }()
     
-    let domain: String = {
-        let strURL = "\(NetworkVars.shared.serverProtocol)\(NetworkVars.shared.serverPath)"
-        return URL(string: strURL)?.host ?? ""
-    }()
-
 
     // MARK: - Session Methods
     func postRequest(withMethod method: String, paramDict: [String: Any],
                      countOfBytesClientExpectsToReceive:Int64,
                      completionHandler: @escaping (Data, Error?) -> Void) {
         // Create POST request
-        let urlStr = "\(NetworkVars.shared.serverProtocol)\(NetworkVars.shared.serverPath)"
+        let urlStr = "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"
         let url = URL(string: urlStr + "/ws.php?\(method)")
         var request = URLRequest(url: url!)
         request.httpMethod = "POST"
@@ -118,7 +113,8 @@ class PwgSessionDelegate: NSObject, URLSessionDelegate {
             }
 
             // Check returned data
-            /// The following 2 lines are used to determine the count of returned bytes.
+            /// - The following 2 lines are used to determine the count of returned bytes.
+            /// - This value can then be used to provide the expected count of returned bytes.
             let countsOfByte = httpResponse.allHeaderFields.count * MemoryLayout<Dictionary<String, Any>>.stride +
                 jsonData.count * MemoryLayout<Data>.stride
             print("countsOfBytesReceived: \(countsOfByte) bytes")
@@ -144,7 +140,7 @@ class PwgSessionDelegate: NSObject, URLSessionDelegate {
         task.resume()
     }
     
-    private func filterPiwigo(data:Data) -> Data {
+    func filterPiwigo(data:Data) -> Data {
         // Filter returned data (PHP may send a warning before the JSON object)
         let dataStr = String(decoding: data, as: UTF8.self)
         var filteredData = data
@@ -170,21 +166,24 @@ class PwgSessionDelegate: NSObject, URLSessionDelegate {
         }
         return data
     }
+}
 
 
-    // MARK: - Session Delegate
+// MARK: - Session Delegate
+extension PwgSession: URLSessionDelegate {
+
     func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
         print("    > The data session has been invalidated")
     }
     
     func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge,
                     completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-        print("    > Session-level authentication request from the remote server \(domain)")
+        print("    > Session-level authentication request from the remote server \(NetworkVars.domain)")
         
         // Get protection space for current domain
         let protectionSpace = challenge.protectionSpace
         guard protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
-            protectionSpace.host.contains(domain) else {
+              protectionSpace.host.contains(NetworkVars.domain) else {
                 completionHandler(.rejectProtectionSpace, nil)
                 return
         }
@@ -196,7 +195,7 @@ class PwgSessionDelegate: NSObject, URLSessionDelegate {
         }
 
         // Check validity of certificate
-        if KeychainUtilities.isSSLtransactionValid(inState: serverTrust, for: domain) {
+        if KeychainUtilities.isSSLtransactionValid(inState: serverTrust, for: NetworkVars.domain) {
             let credential = URLCredential(trust: serverTrust)
             completionHandler(.useCredential, credential)
             return
@@ -210,7 +209,7 @@ class PwgSessionDelegate: NSObject, URLSessionDelegate {
 
         // Check if the certificate is trusted by user (i.e. is in the Keychain)
         // Case where the certificate is e.g. self-signed
-        if KeychainUtilities.isCertKnownForSSLtransaction(inState: serverTrust, for: domain) {
+        if KeychainUtilities.isCertKnownForSSLtransaction(inState: serverTrust, for: NetworkVars.domain) {
             let credential = URLCredential(trust: serverTrust)
             completionHandler(.useCredential, credential)
             return
@@ -219,9 +218,12 @@ class PwgSessionDelegate: NSObject, URLSessionDelegate {
         // Cancel the upload
         completionHandler(.cancelAuthenticationChallenge, nil)
     }
+}
 
 
-    // MARK: - Session Task Delegate
+// MARK: - Session Task Delegate
+extension PwgSession: URLSessionDataDelegate {
+        
     func urlSession(_ session: URLSession, task: URLSessionTask, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
         print("    > Task-level authentication request from the remote server")
 
@@ -234,8 +236,8 @@ class PwgSessionDelegate: NSObject, URLSessionDelegate {
         }
         
         // Get HTTP basic authentification credentials
-        let service = NetworkVars.shared.serverProtocol + NetworkVars.shared.serverPath
-        let account = NetworkVars.shared.httpUsername
+        let service = NetworkVars.serverProtocol + NetworkVars.serverPath
+        let account = NetworkVars.httpUsername
         let password = KeychainUtilities.password(forService: service, account: account)
         if password.isEmpty {
             completionHandler(.cancelAuthenticationChallenge, nil)

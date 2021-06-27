@@ -33,8 +33,10 @@ class AutoUploadPhotosHandler: NSObject, AutoUploadPhotosIntentHandling {
         print("•••>> handling AutoUploadPhotos shortcut…")
         
         // Is auto-uploading enabled?
-        if !UploadVars.shared.isAutoUploadActive {
-            completion(AutoUploadPhotosIntentResponse.failure(error: "Auto-uploading is disabled in the app settings."))
+        if !UploadVars.isAutoUploadActive {
+            let errorMsg = NSLocalizedString("AutoUploadError_Disabled",
+                                             comment: "Auto-uploading is disabled in the app settings.")
+            completion(AutoUploadPhotosIntentResponse.failure(error: errorMsg))
             return
         }
         
@@ -74,6 +76,8 @@ class AutoUploadPhotosHandler: NSObject, AutoUploadPhotosIntentHandling {
         print("\(UploadUtilities.debugFormatter.string(from: Date())) >•• collected \(min(diff, requestsToPrepare.count)) uploads to prepare")
         uploadRequestsToPrepare = Set(requestsToPrepare[..<min(diff, requestsToPrepare.count)])
 
+        
+        
         completion(AutoUploadPhotosIntentResponse.success(nberPhotos: 23))
     }
 
@@ -81,21 +85,21 @@ class AutoUploadPhotosHandler: NSObject, AutoUploadPhotosIntentHandling {
     // MARK: - Add Auto-Upload Requests
     private func appendAutoUploadRequests() -> String {
         // Check access to Photo Library album
-        let collectionID = UploadVars.shared.autoUploadAlbumId
+        let collectionID = UploadVars.autoUploadAlbumId
         guard !collectionID.isEmpty,
            let collection = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [collectionID], options: nil).firstObject else {
             // Cannot access local album
-            UploadVars.shared.autoUploadAlbumId = ""               // Unknown source Photos album
+            UploadVars.autoUploadAlbumId = ""               // Unknown source Photos album
             disableAutoUpload()
             let message = String(format: "%@: %@", NSLocalizedString("settings_autoUploadSourceInvalid", comment:"Invalid source album"), NSLocalizedString("settings_autoUploadSourceInfo", comment: "Please select the album or sub-album from which photos and videos of your device will be auto-uploaded."))
             return message
         }
 
         // Check existence of Piwigo album
-        let categoryId = UploadVars.shared.autoUploadCategoryId
+        let categoryId = UploadVars.autoUploadCategoryId
         guard categoryId != NSNotFound else {
             // Cannot access local album
-            UploadVars.shared.autoUploadCategoryId = NSNotFound    // Unknown destination Piwigo album
+            UploadVars.autoUploadCategoryId = NSNotFound    // Unknown destination Piwigo album
             disableAutoUpload()
             let message = String(format: "%@: %@", NSLocalizedString("settings_autoUploadDestinationInvalid", comment:"Invalid destination album"), NSLocalizedString("settings_autoUploadSourceInfo", comment: "Please select the album or sub-album into which photos and videos will be auto-uploaded."))
             return message
@@ -121,7 +125,7 @@ class AutoUploadPhotosHandler: NSObject, AutoUploadPhotosIntentHandling {
 
         // Determine which local images are still not considered for upload
         var uploadRequestsToAppend = [UploadProperties]()
-        let serverFileTypes = UploadVars.shared.serverFileTypes
+        let serverFileTypes = UploadVars.serverFileTypes
         fetchedImages.enumerateObjects { image, idx, stop in
             // Keep images which had never been considered for upload
             if !imageIDs.contains(image.localIdentifier) {
@@ -141,8 +145,8 @@ class AutoUploadPhotosHandler: NSObject, AutoUploadPhotosIntentHandling {
                 var uploadRequest = UploadProperties(localIdentifier: image.localIdentifier,
                                                      category: categoryId)
                 uploadRequest.markedForAutoUpload = true
-                uploadRequest.tagIds = UploadVars.shared.autoUploadTagIds
-                uploadRequest.comment = UploadVars.shared.autoUploadComments
+                uploadRequest.tagIds = UploadVars.autoUploadTagIds
+                uploadRequest.comment = UploadVars.autoUploadComments
                 uploadRequestsToAppend.append(uploadRequest)
             }
         }
@@ -162,7 +166,7 @@ class AutoUploadPhotosHandler: NSObject, AutoUploadPhotosIntentHandling {
     // MARK: - Delete Auto-Upload Requests
     private func disableAutoUpload() {
         // Disable auto-uploading
-        UploadVars.shared.isAutoUploadActive = false
+        UploadVars.isAutoUploadActive = false
         
         // Collect objectIDs of images being considered for auto-uploading
         let states: [kPiwigoUploadState] = [.waiting, .preparingError,

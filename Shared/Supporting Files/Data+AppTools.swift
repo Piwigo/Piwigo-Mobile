@@ -17,7 +17,7 @@ import CryptoKit        // Requires iOS 13
 
 extension Data {
     // Return the MD5 checksum of data
-    func MD5checksum() -> String {
+    public func MD5checksum() -> String {
         var md5Checksum = ""
 
         // Determine MD5 checksum of video file to upload

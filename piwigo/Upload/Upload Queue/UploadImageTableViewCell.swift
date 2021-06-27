@@ -110,7 +110,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         // => Photo Library: use PHAsset local identifier
         // => UIPasteborad: use identifier of type "Clipboard-yyyyMMdd-HHmmssSSSS-typ-#"
         //    where "typ" is "img" (photo) or "mov" (video).
-        if upload.localIdentifier.contains(kClipboardPrefix) {
+        if upload.localIdentifier.contains(UploadManager.shared.kClipboardPrefix) {
             // Case of an image retrieved from the pasteboard
             prepareThumbnailFromFile(for: upload, availableWidth: availableWidth)
         } else {

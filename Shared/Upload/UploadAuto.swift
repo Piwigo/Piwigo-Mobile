@@ -7,27 +7,26 @@
 //
 
 import Photos
-import piwigoKit
 
 extension UploadManager {
     
     // MARK: - Add Auto-Upload Requests
-    func appendAutoUploadRequests() {
+    public func appendAutoUploadRequests() {
         // Check access to Photo Library album
-        let collectionID = UploadVars.shared.autoUploadAlbumId
+        let collectionID = UploadVars.autoUploadAlbumId
         guard !collectionID.isEmpty,
            let collection = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [collectionID], options: nil).firstObject else {
             // Cannot access local album
-            UploadVars.shared.autoUploadAlbumId = ""               // Unknown source Photos album
+            UploadVars.autoUploadAlbumId = ""               // Unknown source Photos album
             disableAutoUpload(withTitle: NSLocalizedString("settings_autoUploadSourceInvalid", comment:"Invalid source album"), message: NSLocalizedString("settings_autoUploadSourceInfo", comment: "Please select the album or sub-album from which photos and videos of your device will be auto-uploaded."))
             return
         }
 
         // Check existence of Piwigo album
-        let categoryId = UploadVars.shared.autoUploadCategoryId
+        let categoryId = UploadVars.autoUploadCategoryId
         guard categoryId != NSNotFound else {
             // Cannot access local album
-            UploadVars.shared.autoUploadCategoryId = NSNotFound    // Unknown destination Piwigo album
+            UploadVars.autoUploadCategoryId = NSNotFound    // Unknown destination Piwigo album
             disableAutoUpload(withTitle: NSLocalizedString("settings_autoUploadDestinationInvalid", comment:"Invalid destination album"), message: NSLocalizedString("settings_autoUploadSourceInfo", comment: "Please select the album or sub-album into which photos and videos will be auto-uploaded."))
             return
         }
@@ -52,7 +51,7 @@ extension UploadManager {
 
         // Determine which local images are still not considered for upload
         var uploadRequestsToAppend = [UploadProperties]()
-        let serverFileTypes = UploadVars.shared.serverFileTypes
+        let serverFileTypes = UploadVars.serverFileTypes
         fetchedImages.enumerateObjects { image, idx, stop in
             // Keep images which had never been considered for upload
             if !imageIDs.contains(image.localIdentifier) {
@@ -72,8 +71,8 @@ extension UploadManager {
                 var uploadRequest = UploadProperties(localIdentifier: image.localIdentifier,
                                                      category: categoryId)
                 uploadRequest.markedForAutoUpload = true
-                uploadRequest.tagIds = UploadVars.shared.autoUploadTagIds
-                uploadRequest.comment = UploadVars.shared.autoUploadComments
+                uploadRequest.tagIds = UploadVars.autoUploadTagIds
+                uploadRequest.comment = UploadVars.autoUploadComments
                 uploadRequestsToAppend.append(uploadRequest)
             }
         }
@@ -103,45 +102,28 @@ extension UploadManager {
 
             // Error encountered, inform user
             DispatchQueue.main.async {
-                // Look for the presented view controller
-                if var topViewController = UIApplication.shared.keyWindow?.rootViewController {
-                    while let presentedViewController = topViewController.presentedViewController {
-                        topViewController = presentedViewController
-                    }
-                    topViewController.dismissPiwigoError(withTitle: NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object."), message: error.localizedDescription) {
-                        // Restart UploadManager activities
-                        if UploadManager.shared.isPaused {
-                            UploadManager.shared.isPaused = false
-                            UploadManager.shared.backgroundQueue.async {
-                                UploadManager.shared.findNextImageToUpload()
-                            }
-                        }
-                    }
-                }
+                let userInfo: [String : Any] = ["message" : NSLocalizedString("CoreDataFetch_UploadCreateFailed",
+                                                                              comment: "Failed to create a new Upload object."),
+                                                "errorMsg" : error.localizedDescription];
+                NotificationCenter.default.post(name: PwgNotifications.appendAutoUploadRequestsFailed,
+                                                object: nil, userInfo: userInfo)
             }
         }
     }
     
+    
     // MARK: - Delete Auto-Upload Requests
-    func disableAutoUpload(withTitle title:String = "", message:String = "") {
+    public func disableAutoUpload(withTitle title:String = "", message:String = "") {
         // Disable auto-uploading
-        UploadVars.shared.isAutoUploadActive = false
+        UploadVars.isAutoUploadActive = false
         
-        // If the Settings page is displayed:
+        // If the Settings or Settings/AutoUpload view is displayed:
         /// - switch off Auto-Upload control
         /// - inform user in case of error
         DispatchQueue.main.async {
-            if let topViewController = UIApplication.shared.keyWindow?.rootViewController,
-               topViewController is UINavigationController,
-               let visibleVC = (topViewController as! UINavigationController).visibleViewController,
-               let autoUploadVC = visibleVC as? AutoUploadViewController {
-                // Change switch button state
-                autoUploadVC.autoUploadTableView.reloadSections(IndexSet(integer: 0), with: .automatic)
-                // Inform user if an error was reported
-                if !title.isEmpty {
-                    autoUploadVC.dismissPiwigoError(withTitle: title, message: message) { }
-                }
-            }
+            let userInfo: [String : Any] = ["title"   : title,
+                                            "message" : message];
+            NotificationCenter.default.post(name: PwgNotifications.disableAutoUpload, object: nil, userInfo: userInfo)
         }
 
         // Collect objectIDs of images being considered for auto-uploading
@@ -171,21 +153,9 @@ extension UploadManager {
                 
                 // Error encountered, inform user
                 DispatchQueue.main.async {
-                    if let topViewController = UIApplication.shared.keyWindow?.rootViewController,
-                       topViewController is UINavigationController,
-                       let visibleVC = (topViewController as! UINavigationController).visibleViewController {
-                        // Inform user
-                        let title = NSLocalizedString("settings_autoUpload", comment: "Auto Upload")
-                        visibleVC.dismissPiwigoError(withTitle: title, message: error.localizedDescription) {
-                            // Restart UploadManager activities
-                            if UploadManager.shared.isPaused {
-                                UploadManager.shared.isPaused = false
-                                UploadManager.shared.backgroundQueue.async {
-                                    UploadManager.shared.findNextImageToUpload()
-                                }
-                            }
-                        }
-                    }
+                    let userInfo: [String : Any] = ["message" : error.localizedDescription];
+                    NotificationCenter.default.post(name: PwgNotifications.appendAutoUploadRequestsFailed,
+                                                    object: nil, userInfo: userInfo)
                 }
             }
         }

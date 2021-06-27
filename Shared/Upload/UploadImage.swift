@@ -6,9 +6,10 @@
 //  Copyright © 2020 Piwigo.org. All rights reserved.
 //
 
-import Photos
+import CoreData
 import MobileCoreServices
-import piwigoKit
+import Photos
+import UIKit
 
 extension UploadManager {
     

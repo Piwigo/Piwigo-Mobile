@@ -171,7 +171,7 @@ public class DataController: NSObject {
                             moveIncompatibleStore(storeURL: oldURL)
                             
                             // Will inform user at restart
-                            CacheVars.shared.couldNotMigrateCoreDataStore = true
+                            CacheVars.couldNotMigrateCoreDataStore = true
 
                             // Crash!
                             abort()
@@ -187,7 +187,7 @@ public class DataController: NSObject {
                     moveIncompatibleStore(storeURL: oldURL)
                     
                     // Will inform user at restart
-                    CacheVars.shared.couldNotMigrateCoreDataStore = true
+                    CacheVars.couldNotMigrateCoreDataStore = true
 
                     // Crash!
                     abort()
@@ -206,7 +206,7 @@ public class DataController: NSObject {
                     moveIncompatibleStore(storeURL: storeURL)
                     
                     // Will inform user at restart
-                    CacheVars.shared.couldNotMigrateCoreDataStore = true
+                    CacheVars.couldNotMigrateCoreDataStore = true
 
                     // Crash!
                     abort()

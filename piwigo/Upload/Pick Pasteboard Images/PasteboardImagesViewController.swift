@@ -10,10 +10,6 @@ import Photos
 import UIKit
 import piwigoKit
 
-let kClipboardPrefix = "Clipboard-"
-let kClipboardImageSuffix = "-img-"
-let kClipboardMovieSuffix = "-mov-"
-
 @objc
 class PasteboardImagesViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIScrollViewDelegate, PasteboardImagesHeaderDelegate, UploadSwitchDelegate {
     
@@ -36,7 +32,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
     private var _categoryId: Int?
     private var categoryId: Int {
         get {
-            return _categoryId ?? AlbumVars.shared.defaultCategory
+            return _categoryId ?? AlbumVars.defaultCategory
         }
         set(categoryId) {
             _categoryId = categoryId
@@ -110,9 +106,11 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                 var identifier = ""
                 // Movies first because movies may contain images
                 if UIPasteboard.general.contains(pasteboardTypes: ["public.movie"], inItemSet: indexSet) {
-                    identifier = String(format: "%@%@%@%ld", kClipboardPrefix, pbDateTime, kClipboardMovieSuffix, idx)
+                    identifier = String(format: "%@%@%@%ld", UploadManager.shared.kClipboardPrefix,
+                                        pbDateTime, UploadManager.shared.kClipboardMovieSuffix, idx)
                 } else {
-                    identifier = String(format: "%@%@%@%ld", kClipboardPrefix, pbDateTime, kClipboardImageSuffix, idx)
+                    identifier = String(format: "%@%@%@%ld", UploadManager.shared.kClipboardPrefix,
+                                        pbDateTime, UploadManager.shared.kClipboardImageSuffix, idx)
                 }
                 let newObject = PasteboardObject(identifier: identifier, types: types[idx])
                 pbObjects.append(newObject)
@@ -182,7 +180,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         if #available(iOS 11.0, *) {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
@@ -194,14 +192,14 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
             legendBarItem = UIBarButtonItem(customView: legendLabel)
             toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
             navigationController?.toolbar.barTintColor = UIColor.piwigoColorBackground()
-            navigationController?.toolbar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
+            navigationController?.toolbar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
         }
         else {
             // Fallback on earlier versions
         }
 
         // Collection view
-        localImagesCollection.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        localImagesCollection.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
         localImagesCollection.reloadData()
     }
 
@@ -222,12 +220,12 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                                                name: PwgNotifications.paletteChanged, object: nil)
         
         // Register upload progress
-        var name = NSNotification.Name(kPiwigoNotificationUploadProgress)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress), name: name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress),
+                                               name: PwgNotifications.uploadProgress, object: nil)
         
         // Register app becoming active for updating the pasteboard
-        name = NSNotification.Name(UIApplication.didBecomeActiveNotification.rawValue)
-        NotificationCenter.default.addObserver(self, selector: #selector(checkPasteboard), name: name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(checkPasteboard),
+                                               name: UIApplication.didBecomeActiveNotification, object: nil)
 
         // Prevent device from sleeping if uploads are in progress
         let uploadsToPerform = uploadsProvider.fetchedResultsController.fetchedObjects?.map({
@@ -280,8 +278,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
         
         // Unregister upload progress
-        let name = NSNotification.Name(kPiwigoNotificationUploadProgress)
-        NotificationCenter.default.removeObserver(self, name: name, object: nil)
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.uploadProgress, object: nil)
 
         // Unregister app becoming active for updating the pasteboard
         NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
@@ -375,9 +372,11 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                 var identifier = ""
                 // Movies first because objects may contain both movies and images
                 if UIPasteboard.general.contains(pasteboardTypes: ["public.movie"], inItemSet: indexSet) {
-                    identifier = String(format: "%@%@%@%ld", kClipboardPrefix, pbDateTime, kClipboardMovieSuffix, idx)
+                    identifier = String(format: "%@%@%@%ld", UploadManager.shared.kClipboardPrefix,
+                                        pbDateTime, UploadManager.shared.kClipboardMovieSuffix, idx)
                 } else {
-                    identifier = String(format: "%@%@%@%ld", kClipboardPrefix, pbDateTime, kClipboardImageSuffix, idx)
+                    identifier = String(format: "%@%@%@%ld", UploadManager.shared.kClipboardPrefix,
+                                        pbDateTime, UploadManager.shared.kClipboardImageSuffix, idx)
                 }
                 let newObject = PasteboardObject(identifier: identifier, types: types[idx])
                 pbObjects.append(newObject)
@@ -511,7 +510,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         // Present list of actions
         alert.view.tintColor = UIColor.piwigoColorOrange()
         if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
         } else {
             // Fallback on earlier versions
         }
@@ -541,8 +540,8 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
 
             // Can the user create tags?
             let albumData = CategoriesData.sharedInstance()?.getCategoryById(categoryId)
-            if NetworkVars.shared.hasAdminRights ||
-                (NetworkVars.shared.hasNormalRights && albumData?.hasUploadRights ?? false) {
+            if NetworkVars.hasAdminRights ||
+                (NetworkVars.hasNormalRights && albumData?.hasUploadRights ?? false) {
                 uploadSwitchVC.hasTagCreationRights = true
             }
 
@@ -774,7 +773,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         // Calculate the optimum image size
-        let size = CGFloat(ImagesCollection.imageSize(for: collectionView, imagesPerRowInPortrait: AlbumVars.shared.thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup))
+        let size = CGFloat(ImagesCollection.imageSize(for: collectionView, imagesPerRowInPortrait: AlbumVars.thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup))
 
         return CGSize(width: size, height: size)
     }
@@ -803,7 +802,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         }
 
         // Configure cell
-        let thumbnailSize = ImagesCollection.imageSize(for: self.localImagesCollection, imagesPerRowInPortrait: AlbumVars.shared.thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup)
+        let thumbnailSize = ImagesCollection.imageSize(for: self.localImagesCollection, imagesPerRowInPortrait: AlbumVars.thumbnailsPerRowInPortrait, collectionType: kImageCollectionPopup)
         cell.configure(with: image, identifier: identifier, thumbnailSize: CGFloat(thumbnailSize))
         
         // Add pan gesture recognition

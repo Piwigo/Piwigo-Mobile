@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import piwigoKit
 
 class Help05ViewController: UIViewController {
     
@@ -47,7 +48,7 @@ class Help05ViewController: UIViewController {
         legendBot.attributedText = legendBotAttributedString
         
         // Remember that this view was watched
-        AppVars.shared.didWatchHelpViews = AppVars.shared.didWatchHelpViews | helpID
+        AppVars.didWatchHelpViews = AppVars.didWatchHelpViews | helpID
     }
 
     override func viewWillAppear(_ animated: Bool) {

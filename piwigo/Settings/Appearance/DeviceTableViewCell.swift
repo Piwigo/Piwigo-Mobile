@@ -40,7 +40,7 @@ class DeviceTableViewCell: UITableViewCell {
         
         // Buttons
         if #available(iOS 13.0, *) {
-            if AppVars.shared.isDarkPaletteActive {
+            if AppVars.isDarkPaletteActive {
                 lightButton.setImage(UIImage(systemName: "circle"), for: .normal)
                 lightButton.tintColor = UIColor.piwigoColorRightLabel()
                 darkButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
@@ -53,7 +53,7 @@ class DeviceTableViewCell: UITableViewCell {
             }
         } else {
             // Fallback on earlier versions
-            if AppVars.shared.isDarkPaletteActive {
+            if AppVars.isDarkPaletteActive {
                 lightButton.setImage(UIImage(named: "circle"), for: .normal)
                 lightButton.tintColor = UIColor.piwigoColorRightLabel()
                 darkButton.setImage(UIImage(named: "checkmark.circle.fill"), for: .normal)
@@ -69,9 +69,9 @@ class DeviceTableViewCell: UITableViewCell {
         
     @IBAction func didTapLightMode(_ sender: Any) {
         // Select static light mode
-        AppVars.shared.isLightPaletteModeActive = true
-        AppVars.shared.isDarkPaletteModeActive = false
-        AppVars.shared.switchPaletteAutomatically = false
+        AppVars.isLightPaletteModeActive = true
+        AppVars.isDarkPaletteModeActive = false
+        AppVars.switchPaletteAutomatically = false
 
         // Apply light color palette
         (UIApplication.shared.delegate as! AppDelegate).screenBrightnessChanged()
@@ -89,9 +89,9 @@ class DeviceTableViewCell: UITableViewCell {
     
     @IBAction func didTapDarkMode(_ sender: Any) {
         // Select static dark mode
-        AppVars.shared.isLightPaletteModeActive = false
-        AppVars.shared.isDarkPaletteModeActive = true
-        AppVars.shared.switchPaletteAutomatically = false
+        AppVars.isLightPaletteModeActive = false
+        AppVars.isDarkPaletteModeActive = true
+        AppVars.switchPaletteAutomatically = false
 
         // Apply dark color palette
         (UIApplication.shared.delegate as! AppDelegate).screenBrightnessChanged()

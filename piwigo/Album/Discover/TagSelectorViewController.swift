@@ -79,14 +79,14 @@ class TagSelectorViewController: UITableViewController {
         if #available(iOS 11.0, *) {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
 
         // Table view
         tagsTableView.separatorColor = UIColor.piwigoColorSeparator()
-        tagsTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        tagsTableView.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
         tagsTableView.reloadData()
     }
 

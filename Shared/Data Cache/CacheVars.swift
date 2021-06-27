@@ -10,9 +10,6 @@ import Foundation
 
 public class CacheVars: NSObject {
 
-    // Singleton
-    public static let shared = CacheVars()
-    
     // Remove deprecated stored objects if needed
 //    override init() {
 //        // Deprecated data?
@@ -25,7 +22,7 @@ public class CacheVars: NSObject {
     // Data cache variables stored in UserDefaults / Standard
     /// - Core Data migration issue
     @UserDefault("couldNotMigrateCoreDataStore", defaultValue: false)
-    public var couldNotMigrateCoreDataStore: Bool
+    public static var couldNotMigrateCoreDataStore: Bool
 
 
     // MARK: - Vars in UserDefaults / App Group

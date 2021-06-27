@@ -421,7 +421,8 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     }
 
     // Notify the Upload database that the image was deleted
-    [[UploadManager shared] didDeletePiwigoImageWithID: image.imageId];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate didDeletePiwigoImageWithID: image.imageId];
 }
 
 -(void)removeImage:(PiwigoImageData*)image fromCategory:(NSString *)category

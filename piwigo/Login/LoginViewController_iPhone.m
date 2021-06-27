@@ -34,7 +34,7 @@
     [super viewWillAppear:YES];
 
     // Inform user if the connection is not secure
-    self.websiteNotSecure.hidden = [NetworkVarsObjc.shared.serverProtocol isEqualToString:@"https://"];
+    self.websiteNotSecure.hidden = [NetworkVarsObjc.serverProtocol isEqualToString:@"https://"];
 }
 
 -(void)didReceiveMemoryWarning

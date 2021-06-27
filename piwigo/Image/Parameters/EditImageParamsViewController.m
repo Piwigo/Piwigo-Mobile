@@ -77,7 +77,7 @@ typedef enum {
     self.navigationItem.rightBarButtonItem = done;
 
     // Register palette changes
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:[PwgNotifications paletteChangedObjc] object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:[PwgNotificationsObjc paletteChanged] object:nil];
 }
 
 #pragma mark - View Lifecycle
@@ -96,7 +96,7 @@ typedef enum {
     if (@available(iOS 11.0, *)) {
         self.navigationController.navigationBar.prefersLargeTitles = NO;
     }
-    self.navigationController.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    self.navigationController.navigationBar.barStyle = AppVars.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
     self.navigationController.navigationBar.tintColor = [UIColor piwigoColorOrange];
     self.navigationController.navigationBar.barTintColor = [UIColor piwigoColorBackground];
     self.navigationController.navigationBar.backgroundColor = [UIColor piwigoColorBackground];
@@ -260,7 +260,7 @@ typedef enum {
     [super viewWillDisappear:animated];
 
     // Unregister palette changes
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:[PwgNotifications paletteChangedObjc] object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:[PwgNotificationsObjc paletteChanged] object:nil];
 
     // Check if the user is still editing parameters
     if ([self.navigationController.visibleViewController isKindOfClass:[SelectPrivacyViewController class]] ||
@@ -466,7 +466,7 @@ typedef enum {
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     NSInteger nberOfRows = EditImageParamsOrderCount - (self.hasDatePicker == NO);
-    nberOfRows -= (!NetworkVarsObjc.shared.hasAdminRights ? 1 : 0);
+    nberOfRows -= (!NetworkVarsObjc.hasAdminRights ? 1 : 0);
 
     return nberOfRows;
 }
@@ -476,7 +476,7 @@ typedef enum {
     CGFloat height = 44.0;
     NSInteger row = indexPath.row;
     row += (!self.hasDatePicker && (row > EditImageParamsOrderDate)) ? 1 : 0;
-    row += (!NetworkVarsObjc.shared.hasAdminRights && (row > EditImageParamsOrderDatePicker)) ? 1 : 0;
+    row += (!NetworkVarsObjc.hasAdminRights && (row > EditImageParamsOrderDatePicker)) ? 1 : 0;
     switch (row)
     {
         case EditImageParamsOrderThumbnails:
@@ -515,7 +515,7 @@ typedef enum {
 
     NSInteger row = indexPath.row;
     row += (!self.hasDatePicker && (row > EditImageParamsOrderDate)) ? 1 : 0;
-    row += (!NetworkVarsObjc.shared.hasAdminRights && (row > EditImageParamsOrderDatePicker)) ? 1 : 0;
+    row += (!NetworkVarsObjc.hasAdminRights && (row > EditImageParamsOrderDatePicker)) ? 1 : 0;
     switch (row)
 	{
         case EditImageParamsOrderThumbnails:
@@ -624,7 +624,7 @@ typedef enum {
 {
     NSInteger row = indexPath.row;
     row += (!self.hasDatePicker && (row > EditImageParamsOrderDate)) ? 1 : 0;
-    row += (!NetworkVarsObjc.shared.hasAdminRights && (row > EditImageParamsOrderDatePicker)) ? 1 : 0;
+    row += (!NetworkVarsObjc.hasAdminRights && (row > EditImageParamsOrderDatePicker)) ? 1 : 0;
     switch (row)
     {
         case EditImageParamsOrderPrivacy:
@@ -676,7 +676,7 @@ typedef enum {
     BOOL result;
     NSInteger row = indexPath.row;
     row += (!self.hasDatePicker && (row > EditImageParamsOrderDate)) ? 1 : 0;
-    row += (!NetworkVarsObjc.shared.hasAdminRights && (row > EditImageParamsOrderDatePicker)) ? 1 : 0;
+    row += (!NetworkVarsObjc.hasAdminRights && (row > EditImageParamsOrderDatePicker)) ? 1 : 0;
     switch (row)
     {
         case EditImageParamsOrderImageName:
@@ -1059,7 +1059,7 @@ typedef enum {
         // Refresh table row
         NSInteger row = EditImageParamsOrderTags;
         row -= !self.hasDatePicker ? 1 : 0;
-        row -= !NetworkVarsObjc.shared.hasAdminRights ? 1 : 0;
+        row -= !NetworkVarsObjc.hasAdminRights ? 1 : 0;
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
         [self.editImageParamsTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     }

@@ -69,7 +69,7 @@
 	{
 //        NSLog(@"loadMoreImagesOnCompletion: we have all image data");
         // We have all the image data, just manually sort it (uploaded images are appended to cache)
-        self.images = [CategoryImageSort sortObjcImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList for:(kPiwigoSortObjc)AlbumVars.shared.defaultSort];
+        self.images = [CategoryImageSort sortObjcImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList for:(kPiwigoSortObjc)AlbumVars.defaultSort];
 		if(completion)
 		{
 			completion();

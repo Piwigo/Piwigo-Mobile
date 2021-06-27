@@ -10,7 +10,7 @@
 import CoreData
 import Photos
 
-public let kPiwigoNotificationDeleteUploadFile = "kPiwigoNotificationDeleteUploadFile"
+//public let kPiwigoNotificationDeleteUploadFile = "kPiwigoNotificationDeleteUploadFile"
 
 public class UploadsProvider: NSObject {
 
@@ -410,9 +410,10 @@ public class UploadsProvider: NSObject {
                 let uploadToDelete = taskContext.object(with: uploadID) as! Upload
                 let filenamePrefix = uploadToDelete.localIdentifier.replacingOccurrences(of: "/", with: "-")
                 if !filenamePrefix.isEmpty {
-                    let uploadInfo: [String : Any] = ["prefix" : filenamePrefix]
-                    let name = NSNotification.Name(rawValue: kPiwigoNotificationDeleteUploadFile)
-                    NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
+                    UploadManager.shared.deleteFilesInUploadsDirectory(with: filenamePrefix)
+//                    let uploadInfo: [String : Any] = ["prefix" : filenamePrefix]
+//                    let name = NSNotification.Name(rawValue: kPiwigoNotificationDeleteUploadFile)
+//                    NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
                 }
 
                 // Delete upload record
@@ -483,8 +484,8 @@ public class UploadsProvider: NSObject {
                 predicates.append(NSPredicate(format: "requestState == %d", state.rawValue))
             }
             let statesPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: predicates)
-            let serverPredicate = NSPredicate(format: "serverPath == %@", NetworkVars.shared.serverPath)
-            if UploadVars.shared.isAutoUploadActive {
+            let serverPredicate = NSPredicate(format: "serverPath == %@", NetworkVars.serverPath)
+            if UploadVars.isAutoUploadActive {
                 // Select all requests
                 fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [statesPredicate, serverPredicate])
             } else {
@@ -537,7 +538,7 @@ public class UploadsProvider: NSObject {
             predicates.append(NSPredicate(format: "requestState == %d", kPiwigoUploadState.moderated.rawValue))
             let statesPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: predicates)
             let deletePredicate = NSPredicate(format: "deleteImageAfterUpload == YES")
-            let serverPredicate = NSPredicate(format: "serverPath == %@", NetworkVars.shared.serverPath)
+            let serverPredicate = NSPredicate(format: "serverPath == %@", NetworkVars.serverPath)
             fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [statesPredicate, deletePredicate, serverPredicate])
 
             // Create a fetched results controller and set its fetch request, context, and delegate.
@@ -623,8 +624,8 @@ public class UploadsProvider: NSObject {
             }
             let statesPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: predicates)
             let autoUploadPredicate = NSPredicate(format: "markedForAutoUpload == YES")
-            let categoryPredicate = NSPredicate(format: "category == %d", UploadVars.shared.autoUploadCategoryId)
-            let serverPredicate = NSPredicate(format: "serverPath == %@", NetworkVars.shared.serverPath)
+            let categoryPredicate = NSPredicate(format: "category == %d", UploadVars.autoUploadCategoryId)
+            let serverPredicate = NSPredicate(format: "serverPath == %@", NetworkVars.serverPath)
             fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [statesPredicate, autoUploadPredicate, categoryPredicate, serverPredicate])
 
             // Create a fetched results controller and set its fetch request, context, and delegate.
@@ -727,7 +728,7 @@ public class UploadsProvider: NSObject {
         /// — whose image has not been deleted from the Piwigo server
         /// — for the current server only
         let notDeletedPredicate = NSPredicate(format: "requestState != %d", kPiwigoUploadState.deleted.rawValue)
-        let serverPredicate = NSPredicate(format: "serverPath == %@", NetworkVars.shared.serverPath)
+        let serverPredicate = NSPredicate(format: "serverPath == %@", NetworkVars.serverPath)
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [notDeletedPredicate, serverPredicate])
 
         // Create a fetched results controller and set its fetch request, context, and delegate.
@@ -775,7 +776,7 @@ public class UploadsProvider: NSObject {
         let notFinishedPredicate = NSPredicate(format: "requestState != %d", kPiwigoUploadState.finished.rawValue)
         let notModeratedPredicate = NSPredicate(format: "requestState != %d", kPiwigoUploadState.moderated.rawValue)
         let notDeletedPredicate = NSPredicate(format: "requestState != %d", kPiwigoUploadState.deleted.rawValue)
-        let serverPredicate = NSPredicate(format: "serverPath == %@", NetworkVars.shared.serverPath)
+        let serverPredicate = NSPredicate(format: "serverPath == %@", NetworkVars.serverPath)
         fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [notFinishedPredicate, notModeratedPredicate, notDeletedPredicate, serverPredicate])
 
         // Create a fetched results controller and set its fetch request, context, and delegate.
@@ -796,32 +797,3 @@ public class UploadsProvider: NSObject {
     }()
 }
 
-// MARK: - For checking operation queue
-/// The name/description of the current queue (Operation or Dispatch), if that can be found. Else, the name/description of the thread.
-public func queueName() -> String {
-    if let currentOperationQueue = OperationQueue.current {
-        if let currentDispatchQueue = currentOperationQueue.underlyingQueue {
-            return "dispatch queue: \(currentDispatchQueue.label.nonEmpty ?? currentDispatchQueue.description)"
-        }
-        else {
-            return "operation queue: \(currentOperationQueue.name?.nonEmpty ?? currentOperationQueue.description)"
-        }
-    }
-    else {
-        let currentThread = Thread.current
-        return "thread: \(currentThread.name?.nonEmpty ?? currentThread.description)"
-    }
-}
-
-public extension String {
-
-    /// Returns this string if it is not empty, else `nil`.
-    var nonEmpty: String? {
-        if self.isEmpty {
-            return nil
-        }
-        else {
-            return self
-        }
-    }
-}

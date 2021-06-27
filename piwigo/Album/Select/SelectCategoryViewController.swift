@@ -192,7 +192,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         if #available(iOS 11.0, *) {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = AppVars.shared.isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
@@ -200,7 +200,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Table view
         setTableViewMainHeader()
         categoriesTableView.separatorColor = UIColor.piwigoColorSeparator()
-        categoriesTableView.indicatorStyle = AppVars.shared.isDarkPaletteActive ? .white : .black
+        categoriesTableView.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
         buildCategoryArray(usingCache: true, untilCompletion: { result in
             // Build complete list
             self.categoriesTableView.reloadData()
@@ -361,7 +361,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         alert.addAction(dismissAction)
         alert.view.tintColor = UIColor.piwigoColorOrange()
         if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
         } else {
             // Fallback on earlier versions
         }
@@ -595,16 +595,16 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             if let upperCat = categoryData.upperCategories {
                 depth += upperCat.filter({ $0 != String(categoryData.albumId )}).count
             }
-            if let defaultCategoryData = CategoriesData.sharedInstance().getCategoryById(AlbumVars.shared.defaultCategory), let upperCat = defaultCategoryData.upperCategories {
-                depth -= upperCat.filter({ $0 != String(AlbumVars.shared.defaultCategory )}).count
+            if let defaultCategoryData = CategoriesData.sharedInstance().getCategoryById(AlbumVars.defaultCategory), let upperCat = defaultCategoryData.upperCategories {
+                depth -= upperCat.filter({ $0 != String(AlbumVars.defaultCategory )}).count
             }
         }
         
         // No button if the user does not have upload rights
         var buttonState = kPiwigoCategoryTableCellButtonStateNone
         let allCategories: [PiwigoAlbumData] = CategoriesData.sharedInstance().allCategories
-        let filteredCat = allCategories.filter({ NetworkVars.shared.hasAdminRights ||
-                                                (NetworkVars.shared.hasNormalRights && $0.hasUploadRights) })
+        let filteredCat = allCategories.filter({ NetworkVars.hasAdminRights ||
+                                                (NetworkVars.hasNormalRights && $0.hasUploadRights) })
             .filter({ $0.nearestUpperCategory == categoryData.albumId })
             .filter({ $0.albumId != categoryData.albumId })
         if filteredCat.count > 0 {
@@ -787,7 +787,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             requestConfirmation(withTitle: title, message: message,
                                 forCategory: categoryData, at: indexPath, handler: { _ in
                 // Set new Default Album
-                if categoryData.albumId != AlbumVars.shared.defaultCategory {
+                if categoryData.albumId != AlbumVars.defaultCategory {
                     self.delegate?.didSelectCategory(withId: categoryData.albumId)
                 }
                 // Return to Settings
@@ -930,7 +930,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Present popover view
         alert.view.tintColor = UIColor.piwigoColorOrange()
         if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.shared.isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
         } else {
             // Fallback on earlier versions
         }
@@ -1354,7 +1354,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                                     untilCompletion completion: @escaping (_ result: Bool) -> Void,
                                     orFailure fail: @escaping (_ task: URLSessionTask?, _ error: Error?) -> Void) {
         // Show loading HUD when not using cache option,
-        if !(useCache && (AlbumVars.shared.defaultCategory == 0)) {
+        if !(useCache && (AlbumVars.defaultCategory == 0)) {
             // Show loading HD
             showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment: "Loading…"))
 
@@ -1397,8 +1397,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         /// - Smart albums should not be proposed
         /// - Non-admin Community users can only upload in specific albums
         let filteredCat = allCategories.filter({ $0.albumId > kPiwigoSearchCategoryId })
-            .filter({ NetworkVars.shared.hasAdminRights ||
-                        (NetworkVars.shared.hasNormalRights && $0.hasUploadRights) })
+            .filter({ NetworkVars.hasAdminRights ||
+                        (NetworkVars.hasNormalRights && $0.hasUploadRights) })
         for category in filteredCat {   // Don't use forEach to keep the order
             // Is this category already in displayed list?
             if !categories.contains(where: { $0.albumId == category.albumId }) {
@@ -1433,7 +1433,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     
     private func buildRecentCategoryArray() -> Void {
         // Current recent categories
-        let recentCatIds = AlbumVars.shared.recentCategories.components(separatedBy: ",")
+        let recentCatIds = AlbumVars.recentCategories.components(separatedBy: ",")
         if !recentCatIds.isEmpty { return }
 
         // Build list of recent categories
@@ -1456,7 +1456,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             recentCategories.append(categoryData)
 
             // Reach max number of recent categories?
-            if recentCategories.count == AlbumVars.shared.maxNberRecentCategories { break }
+            if recentCategories.count == AlbumVars.maxNberRecentCategories { break }
         }
     }
 
@@ -1475,8 +1475,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         /// - Only add sub-categories of tapped category
         /// - Do not add the current category
         let filteredCat = allCategories
-            .filter({ NetworkVars.shared.hasAdminRights ||
-                        (NetworkVars.shared.hasNormalRights && $0.hasUploadRights) })
+            .filter({ NetworkVars.hasAdminRights ||
+                        (NetworkVars.hasNormalRights && $0.hasUploadRights) })
             .filter({ $0.nearestUpperCategory == categoryTapped.albumId })
         for category in filteredCat {   // Don't use forEach to keep the order
             // Is this category already in displayed list?
