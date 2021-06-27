@@ -17,7 +17,7 @@ import piwigoKit
 @main
 @objc class AppDelegate: UIResponder, UIApplicationDelegate {
         
-    let kPiwigoBackgroundTaskUpload = "kPiwigoBackgroundTaskUpload"
+    let kPiwigoBackgroundTaskUpload = "org.piwigo.uploadManager"
 
     var window: UIWindow?
     
