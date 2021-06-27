@@ -72,7 +72,7 @@ extension UploadManager {
         let offset = chunkSize * chunk
         let thisChunkSize = length - offset > chunkSize ? chunkSize : length - offset
         let chunkData = imageData.subdata(in: offset..<offset + thisChunkSize)
-        print("\(UploadUtilities.debugFormatter.string(from: Date())) > #\(chunk) with chunkSize:", chunkSize, "thisChunkSize:", thisChunkSize, "total:", length)
+        print("\(UploadUtilities.debugFormatter.string(from: Date())) > #\(chunk+1) with chunkSize:", chunkSize, "thisChunkSize:", thisChunkSize, "total:", length)
 
         // Prepare URL
         let urlStr = "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"
@@ -84,7 +84,7 @@ extension UploadManager {
 
         // HTTP request body
         let httpBody = NSMutableData()
-        httpBody.appendString(convertFormField(named: "chunk", value: "0", using: boundary))
+        httpBody.appendString(convertFormField(named: "chunk", value: String(chunk), using: boundary))
         httpBody.appendString(convertFormField(named: "chunks", value: String(chunks), using: boundary))
         httpBody.appendString(convertFormField(named: "name", value: uploadProperties.fileName, using: boundary))
         httpBody.appendString(convertFormField(named: "category", value: "\(uploadProperties.category)", using: boundary))
@@ -113,7 +113,7 @@ extension UploadManager {
         request.addValue(String(imageData.count + chunks * 2170), forHTTPHeaderField: "fileSize")
 
         // As soon as a task is created, the timeout counter starts
-        let uploadSession: URLSession = UploadSessions.shared.fgrdSession
+        let uploadSession: URLSession = UploadSessions.shared.frgdSession
         let task = uploadSession.uploadTask(with: request, from: httpBody as Data)
         task.taskDescription = UploadSessions.shared.uploadSessionIdentifier
         if #available(iOS 11.0, *) {
@@ -123,7 +123,7 @@ extension UploadManager {
         }
         
         // Resume task
-        print("\(UploadUtilities.debugFormatter.string(from: Date())) > \(uploadProperties.md5Sum) upload task \(task.taskIdentifier) resumed (\(chunk)/\(chunks))")
+        print("\(UploadUtilities.debugFormatter.string(from: Date())) > \(uploadProperties.md5Sum) upload task \(task.taskIdentifier) resumed (\(chunk+1)/\(chunks))")
         task.resume()
 
         // Task now resumed -> Update upload request status
@@ -136,6 +136,9 @@ extension UploadManager {
         
         // Retrieve task parameters
         guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: "uploadID"),
+              let identifier = task.originalRequest?.value(forHTTPHeaderField: "identifier"),
+              let chunkStr = task.originalRequest?.value(forHTTPHeaderField: "chunk"), let chunk = Int(chunkStr),
+              let chunksStr = task.originalRequest?.value(forHTTPHeaderField: "chunks"), let chunks = Int(chunksStr),
               let md5sum = task.originalRequest?.value(forHTTPHeaderField: "md5sum") else {
             print("\(UploadUtilities.debugFormatter.string(from: Date())) > Could not extract HTTP header fields !!!!!!")
             return
@@ -184,6 +187,14 @@ extension UploadManager {
             }
             return
         }
+        
+        // Upload completed?
+        if chunk + 1 < chunks { return }
+
+        // Delete uploaded file from Piwigo/Uploads directory
+        print("\(UploadUtilities.debugFormatter.string(from: Date())) > \(md5sum) | delete file")
+        let imageFile = identifier.replacingOccurrences(of: "/", with: "-")
+        deleteFilesInUploadsDirectory(with: imageFile)
     }
 
     func didCompleteUploadTask(_ task: URLSessionTask, withData data: Data) {
@@ -225,8 +236,9 @@ extension UploadManager {
         }
 
         // Filter returned data (PHP may send a warning before the JSON object)
-        let dataStr = String(decoding: data, as: UTF8.self)
         let filteredData = PwgSession().filterPiwigo(data: data)
+        let dataStr = String(decoding: data, as: UTF8.self)
+        print("\(UploadUtilities.debugFormatter.string(from: Date())) > #\(chunk+1) done:", dataStr.debugDescription)
 
         // Check returned data
         guard let _ = try? JSONSerialization.jsonObject(with: filteredData, options: []) as? [String: AnyObject] else {
@@ -235,12 +247,6 @@ extension UploadManager {
             let error = NSError(domain: "Piwigo", code: JsonError.invalidJSONobject.hashValue, userInfo: [NSLocalizedDescriptionKey : JsonError.invalidJSONobject.localizedDescription])
             self.didEndTransfer(for: uploadID, with: uploadProperties, error, taskID: task.taskIdentifier)
             return
-        }
-
-        // Should we snd another chunk?
-        print("\(UploadUtilities.debugFormatter.string(from: Date())) > #\(chunk) done:", dataStr.debugDescription)
-        if chunk < chunks - 1 {
-            send(chunk: chunk + 1, of: chunks, for: uploadID, with: uploadProperties)
         }
         
         // Decode the JSON.
@@ -252,6 +258,12 @@ extension UploadManager {
             if (uploadJSON.errorCode != 0) {
                 let error = NSError(domain: "Piwigo", code: uploadJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
                 self.didEndTransfer(for: uploadID, with: uploadProperties, error)
+                return
+            }
+
+            // Upload completed?
+            if chunk + 1 < chunks {
+                send(chunk: chunk + 1, of: chunks, for: uploadID, with: uploadProperties)
                 return
             }
 
@@ -452,80 +464,6 @@ extension UploadManager {
     /**
      Sends iteratively chunks of the file.
      */
-//    private func sendChunk(_ imageData: Data?, withInformation imageParameters: [String : String],
-//                           forOffset offset: Int, onChunk count: Int, forTotalChunks chunks: Int,
-//                           onProgress: @escaping (_ progress: Progress?, _ currentChunk: Int, _ totalChunks: Int) -> Void,
-//                           onCompletion completion: @escaping (_ task: URLSessionTask?, _ response: Any?, _ updatedParameters: [String:String]) -> Void,
-//                           onFailure fail: @escaping (_ error: NSError?) -> Void) {
-//
-//        var parameters = imageParameters
-//        var offset = offset
-//
-//        // Calculate this chunk size
-//        let chunkSize = UploadVars.uploadChunkSize * 1024
-//        let length = imageData?.count ?? 0
-//        let thisChunkSize = length - offset > chunkSize ? chunkSize : length - offset
-//        let chunk = imageData?.subdata(in: offset..<offset + thisChunkSize)
-//        print("\(UploadUtilities.debugFormatter.string(from: Date())) > #\(count) with chunkSize:", chunkSize, "thisChunkSize:", thisChunkSize, "total:", imageData?.count ?? 0)
-//
-//        let chunkStr = String(format: "%ld", count)
-//        let chunksStr = String(format: "%ld", chunks)
-//
-//        let nextChunkNumber = count + 1
-//        offset += thisChunkSize
-//
-//        // Check current queue
-//        print("•••>> sendChunk() before portMultipart in ", queueName())
-//
-//        // Prepare URL
-//        let urlStr = "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"
-//        let url = URL(string: urlStr + "/ws.php?\(kPiwigoImagesUploadAsync)")
-//        guard let validUrl = url else { fatalError() }
-//
-//        // Initialise boundary of upload request
-//        let boundary = createBoundary(from: imageParameters["md5Sum"]!)
-//
-//        // HTTP request body
-//        let httpBody = NSMutableData()
-//        httpBody.appendString(convertFormField(named: "name", value: imageParameters["file"]!, using: boundary))
-//        httpBody.appendString(convertFormField(named: "chunk", value: chunkStr, using: boundary))
-//        httpBody.appendString(convertFormField(named: "chunks", value: chunksStr, using: boundary))
-//        httpBody.appendString(convertFormField(named: "category", value: imageParameters["category"]!, using: boundary))
-//        httpBody.appendString(convertFormField(named: "level", value: imageParameters["level"]!, using: boundary))
-//        httpBody.appendString(convertFormField(named: "pwg_token", value: NetworkVars.pwgToken, using: boundary))
-//
-//        // Chunk of data
-//        httpBody.append(convertFileData(fieldName: "file",
-//                                        fileName: imageParameters["file"]!,
-//                                        mimeType: imageParameters["mimeType"]!,
-//                                        fileData: chunk!,
-//                                        using: boundary))
-//
-//        httpBody.appendString("--\(boundary)--")
-//
-//        // Prepare URL Request Object
-//        var request = URLRequest(url: validUrl)
-//        request.httpMethod = "POST"
-//        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-//        request.addValue(imageParameters["identifier"]!, forHTTPHeaderField: "identifier")
-//        request.setValue(imageParameters["file"]!, forHTTPHeaderField: "filename")
-//        request.addValue(chunkStr, forHTTPHeaderField: "chunk")
-//        request.addValue(chunksStr, forHTTPHeaderField: "chunks")
-//
-//        // As soon as a task is created, the timeout counter starts
-//        let uploadSession: URLSession = UploadSessions.shared.app
-//        let task = uploadSession.uploadTask(with: request, from: httpBody as Data)
-//        task.taskDescription = "synchronous"
-//        if #available(iOS 11.0, *) {
-//            // Tell the system how many bytes are expected to be exchanged
-//            task.countOfBytesClientExpectsToSend = Int64(httpBody.count + (request.allHTTPHeaderFields ?? [:]).count)
-//            task.countOfBytesClientExpectsToReceive = 600
-//        }
-//
-//        // Resume task
-//        print("\(UploadUtilities.debugFormatter.string(from: Date())) > \(imageParameters["md5Sum"]!) upload task \(task.taskIdentifier) resumed (\(chunkStr)/\(chunksStr)")
-//        task.resume()
-//    }
         
 
 //        NetworkHandler.postMultiPart(kPiwigoImagesUpload, data: chunk, parameters: parameters,

@@ -29,18 +29,32 @@ extension UploadManager {
         let imageTitle = NetworkUtilities.utf8mb3String(from: upload.imageName)
         let author = NetworkUtilities.utf8mb3String(from: upload.author)
         let comment = NetworkUtilities.utf8mb3String(from: upload.comment)
-        let paramsDict: [String : Any] = ["file"            : upload.fileName,
-                                          "name"            : imageTitle,
-                                          "author"          : author == "NSNotFound" ? "" : author,
-                                          "date_creation"   : creationDate,
-                                          "privacyLevel"    : "\(NSNumber(value: upload.privacyLevel))",
-                                          "description"     : comment,
-                                          "tags"            : upload.tagIds]
+        let paramsDict: [String : Any] = ["image_id"            : "\(NSNumber(value: upload.imageId))",
+                                          "file"                : upload.fileName,
+                                          "name"                : imageTitle,
+                                          "author"              : author == "NSNotFound" ? "" : author,
+                                          "date_creation"       : creationDate,
+                                          "level"               : "\(NSNumber(value: upload.privacyLevel))",
+                                          "comment"             : comment,
+                                          "tag_ids"             : upload.tagIds,
+                                          "single_value_mode"   : "replace",
+                                          "multiple_value_mode" : "replace"]
         
+//        @"image_id" : @(imageId),
+//        @"file" : [imageInfo objectForKey:kPiwigoImagesUploadParamFileName],
+//        @"name" : [imageInfo objectForKey:kPiwigoImagesUploadParamTitle],
+//        @"author" : author,
+//        @"date_creation" : [imageInfo objectForKey:kPiwigoImagesUploadParamCreationDate],
+//        @"level" : [imageInfo objectForKey:kPiwigoImagesUploadParamPrivacy],
+//        @"comment" : [imageInfo objectForKey:kPiwigoImagesUploadParamDescription],
+//        @"single_value_mode" : @"replace",
+//        @"tag_ids" : [imageInfo objectForKey:kPiwigoImagesUploadParamTags],
+//        @"multiple_value_mode" : @"replace"
+
         // Launch request
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoImagesSetInfo, paramDict: paramsDict,
-                                countOfBytesClientExpectsToReceive: 3000) { jsonData, error in
+                                countOfBytesClientExpectsToReceive: 1000) { jsonData, error in
             print("\(UploadUtilities.debugFormatter.string(from: Date())) > setImageParameters() in", queueName())
             // Any error?
             /// - Network communication errors
@@ -211,11 +225,11 @@ extension UploadManager {
         
         // Launch request
         let JSONsession = PwgSession.shared
-        let paramDict: [String : Any] = ["pwg_token": NetworkVars.pwgToken,
-                                         "image_id": imageIds,
-                                         "category_id": NSNumber(value: categoryId)]
+        let paramDict: [String : Any] = ["image_id": imageIds,
+                                         "pwg_token": NetworkVars.pwgToken,
+                                         "category_id": "\(NSNumber(value: categoryId))"]
         JSONsession.postRequest(withMethod: kCommunityImagesUploadCompleted, paramDict: paramDict,
-                                countOfBytesClientExpectsToReceive: 3000) { jsonData, error in
+                                countOfBytesClientExpectsToReceive: 1000) { jsonData, error in
             print("\(UploadUtilities.debugFormatter.string(from: Date())) > moderateImages() in", queueName())
             // Any error?
             /// - Network communication errors

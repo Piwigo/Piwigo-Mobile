@@ -18,17 +18,17 @@ public class UploadSessions: NSObject {
     public let uploadBckgSessionIdentifier:String! = "org.piwigo.uploadBckgSession"
 
     // Foreground upload session
-    lazy var fgrdSession: URLSession = {
+    lazy var frgdSession: URLSession = {
         let config = URLSessionConfiguration.default
         
         /// Indicates whether the request is allowed to use the built-in cellular radios to satisfy the request.
         config.allowsCellularAccess = !(UploadVars.wifiOnlyUploading)
         
-        /// How long a task should wait for additional data to arrive before giving up (10 seconds)
-        config.timeoutIntervalForRequest = 10
+        /// How long a task should wait for additional data to arrive before giving up (1 minute)
+        config.timeoutIntervalForRequest = 60
         
-        /// How long an upload task should be allowed to be retried or transferred (1 minute).
-        config.timeoutIntervalForResource = 60
+        /// How long an upload task should be allowed to be retried or transferred (5 minute).
+        config.timeoutIntervalForResource = 300
         
         /// Determines the maximum number of simultaneous connections made to the host by tasks (4 by default)
         config.httpMaximumConnectionsPerHost = 4
@@ -270,9 +270,9 @@ extension UploadSessions: URLSessionTaskDelegate {
 
         // Task did complete without error?
         if let error = error {
-            print("    > Upload task \(task.taskIdentifier) of chunk \(chunk)/\(chunks) failed with error \(String(describing: error.localizedDescription)) [\(md5sum)]")
+            print("    > Upload task \(task.taskIdentifier) of chunk \(chunk+1)/\(chunks) failed with error \(String(describing: error.localizedDescription)) [\(md5sum)]")
         } else {
-            print("    > Upload task \(task.taskIdentifier) of chunk \(chunk)/\(chunks) finished transferring data at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
+            print("    > Upload task \(task.taskIdentifier) of chunk \(chunk+1)/\(chunks) finished transferring data at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
         }
 
         // The below code updates the stored cookie with the pwg_id returned by the server.
@@ -331,7 +331,7 @@ extension UploadSessions: URLSessionDataDelegate {
                 print("   > Could not extract HTTP header fields !!!!!!")
                 return
         }
-        print("    > Upload task \(dataTask.taskIdentifier) of chunk \(chunk)/\(chunks) did receive some data at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
+        print("    > Upload task \(dataTask.taskIdentifier) of chunk \(chunk+1)/\(chunks) did receive some data at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
         
         switch dataTask.taskDescription {
         case uploadSessionIdentifier:

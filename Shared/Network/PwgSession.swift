@@ -28,11 +28,11 @@ class PwgSession: NSObject {
         /// Indicates that the request is allowed to use the built-in cellular radios to satisfy the request.
         config.allowsCellularAccess = true
 
-        /// How long a task should wait for additional data to arrive before giving up (10 seconds)
-        config.timeoutIntervalForRequest = 10
+        /// How long a task should wait for additional data to arrive before giving up (30 seconds)
+        config.timeoutIntervalForRequest = 30
         
-        /// How long a task should be allowed to be retried or transferred (10 seconds).
-        config.timeoutIntervalForResource = 10
+        /// How long a task should be allowed to be retried or transferred (10 minutes).
+        config.timeoutIntervalForResource = 600
         
         /// Determines the maximum number of simultaneous connections made to the host by tasks (4 by default)
         config.httpMaximumConnectionsPerHost = 4
