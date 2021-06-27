@@ -237,9 +237,11 @@ extension UploadManager {
 
         // Filter returned data (PHP may send a warning before the JSON object)
         let filteredData = PwgSession().filterPiwigo(data: data)
+        #if DEBUG
         let dataStr = String(decoding: data, as: UTF8.self)
         print("\(UploadUtilities.debugFormatter.string(from: Date())) > #\(chunk+1) done:", dataStr.debugDescription)
-
+        #endif
+        
         // Check returned data
         guard let _ = try? JSONSerialization.jsonObject(with: filteredData, options: []) as? [String: AnyObject] else {
             // Update upload request status
@@ -766,13 +768,15 @@ extension UploadManager {
         }
 
         // Filter returned data (PHP may send a warning before the JSON object)
-        let dataStr = String(decoding: data, as: UTF8.self)
         let filteredData = PwgSession().filterPiwigo(data: data)
 
         // Check returned data
         guard let _ = try? JSONSerialization.jsonObject(with: filteredData, options: []) as? [String: AnyObject] else {
             // Update upload request status
+            #if DEBUG
+            let dataStr = String(decoding: data, as: UTF8.self)
             print("\(UploadUtilities.debugFormatter.string(from: Date())) > Invalid JSON object: \(dataStr)")
+            #endif
             let error = NSError(domain: "Piwigo", code: JsonError.invalidJSONobject.hashValue, userInfo: [NSLocalizedDescriptionKey : JsonError.invalidJSONobject.localizedDescription])
             self.didEndTransfer(for: uploadID, with: uploadProperties, error, taskID: task.taskIdentifier)
             return
