@@ -16,7 +16,6 @@
 #import "ImageService.h"
 #import "ImagesCollection.h"
 #import "MBProgressHUD.h"
-#import "Model.h"
 
 @interface DiscoverImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UIGestureRecognizerDelegate, ImageDetailDelegate, EditImageParamsDelegate, SelectCategoryDelegate, SelectCategoryImageCopiedDelegate, ShareImageActivityItemProviderDelegate>
 

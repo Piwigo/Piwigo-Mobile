@@ -9,7 +9,6 @@
 #import <AFNetworking/AFImageDownloader.h>
 
 #import "NetworkHandler.h"
-#import "Model.h"
 #import "MBProgressHUD.h"
 
 //#ifndef DEBUG_SESSION
@@ -288,7 +287,6 @@ NSInteger const loadingViewTag = 899;
     // Task-Specific Authentication Challenges
     // For servers performing HTTP Basic/Digest Authentication
     [imageUploadManager setAuthenticationChallengeHandler:^id _Nonnull(NSURLSession * _Nonnull session, NSURLSessionTask * _Nonnull task, NSURLAuthenticationChallenge * _Nonnull challenge, void (^ _Nonnull completionHandler)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable)) {
-//    [[Model sharedInstance].imageUploadManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
         
 #if defined(DEBUG_SESSION)
         NSLog(@"===>> didReceiveAuthenticationChallenge: %@", challenge.protectionSpace);

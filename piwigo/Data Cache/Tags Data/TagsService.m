@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import "Model.h"
 #import "TagsService.h"
 
 @implementation TagsService

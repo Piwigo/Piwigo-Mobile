@@ -386,7 +386,7 @@
 //    // Present list of actions
 //    alert.view.tintColor = UIColor.piwigoColorOrange;
 //    if (@available(iOS 13.0, *)) {
-//        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+//        alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
 //    } else {
 //        // Fallback on earlier versions
 //    }

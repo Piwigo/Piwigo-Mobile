@@ -11,7 +11,6 @@
 #import "ImageScrollView.h"
 #import "ImageService.h"
 #import "VideoView.h"
-#import "Model.h"
 #import "NetworkHandler.h"
 
 @interface ImagePreviewViewController () <AVAssetResourceLoaderDelegate>

@@ -15,7 +15,6 @@
 #import "ImageService.h"
 #import "ImageScrollView.h"
 #import "ImagesCollection.h"
-#import "Model.h"
 #import "MBProgressHUD.h"
 
 NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedImage";
@@ -238,7 +237,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
         {
             // User with admin rights can move, edit, delete images and set as album image
             [self.navigationItem setRightBarButtonItems:@[self.editBarButton]];
-//            if ([@"2.10.0" compare:[Model sharedInstance].version options:NSNumericSearch] == NSOrderedDescending) {
+//            if ([@"2.10.0" compare:AppVars.version options:NSNumericSearch] == NSOrderedDescending) {
                 self.toolbarItems = @[self.shareBarButton, self.spaceBetweenButtons, self.moveBarButton, self.spaceBetweenButtons, self.setThumbnailBarButton, self.spaceBetweenButtons, self.deleteBarButton];
 //            } else {
 //                self.toolbarItems = @[self.shareBarButton, self.spaceBetweenButtons, self.moveBarButton, self.spaceBetweenButtons, self.favoriteBarButton, self.spaceBetweenButtons, self.setThumbnailBarButton, self.spaceBetweenButtons, self.deleteBarButton];

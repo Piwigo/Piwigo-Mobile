@@ -11,7 +11,6 @@
 #import "CategoriesData.h"
 #import "ImageService.h"
 #import "MBProgressHUD.h"
-#import "Model.h"
 #import "NetworkHandler.h"
 #import "PiwigoAlbumData.h"
 

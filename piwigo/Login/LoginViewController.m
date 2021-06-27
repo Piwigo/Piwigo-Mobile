@@ -14,7 +14,6 @@
 #import "LoginViewController_iPhone.h"
 #import "LoginViewController_iPad.h"
 #import "MBProgressHUD.h"
-#import "Model.h"
 #import "SessionService.h"
 
 #ifndef DEBUG_SESSION

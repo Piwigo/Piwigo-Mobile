@@ -22,7 +22,6 @@
 #import "ImageService.h"
 #import "ImagesCollection.h"
 #import "MBProgressHUD.h"
-#import "Model.h"
 #import "NetworkHandler.h"
 #import "SearchImagesViewController.h"
 

@@ -11,7 +11,6 @@
 #import "ImageDetailViewController.h"
 #import "ImageService.h"
 #import "MBProgressHUD.h"
-#import "Model.h"
 
 NSString * const kEditImageThumbCollectionCell_ID = @"EditImageThumbCollectionCell";
 

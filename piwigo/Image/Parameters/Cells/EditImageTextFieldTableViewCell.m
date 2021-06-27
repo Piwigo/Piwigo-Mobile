@@ -7,7 +7,6 @@
 //
 
 #import "EditImageTextFieldTableViewCell.h"
-#import "Model.h"
 
 @interface EditImageTextFieldTableViewCell()
 

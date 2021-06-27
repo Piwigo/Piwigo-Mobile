@@ -7,7 +7,6 @@
 //
 
 #import "LoginViewController_iPad.h"
-#import "Model.h"
 
 @interface LoginViewController_iPad ()
 

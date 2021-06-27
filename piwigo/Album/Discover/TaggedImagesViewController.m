@@ -16,7 +16,6 @@
 #import "ImageService.h"
 #import "ImagesCollection.h"
 #import "MBProgressHUD.h"
-#import "Model.h"
 #import "TaggedImagesViewController.h"
 
 @interface TaggedImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UIGestureRecognizerDelegate, ImageDetailDelegate, EditImageParamsDelegate, SelectCategoryDelegate, SelectCategoryImageCopiedDelegate, ShareImageActivityItemProviderDelegate>

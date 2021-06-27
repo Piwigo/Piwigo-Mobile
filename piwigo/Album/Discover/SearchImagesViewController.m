@@ -12,7 +12,6 @@
 #import "ImageCollectionViewCell.h"
 #import "ImageDetailViewController.h"
 #import "ImagesCollection.h"
-#import "Model.h"
 #import "SearchImagesViewController.h"
 
 @interface SearchImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, ImageDetailDelegate>

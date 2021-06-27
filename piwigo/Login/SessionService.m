@@ -7,7 +7,6 @@
 //
 
 #import "ImagesCollection.h"
-#import "Model.h"
 #import "PiwigoImageData.h"
 #import "SessionService.h"
 

@@ -7,7 +7,6 @@
 //
 
 #import "AlbumService.h"
-#import "Model.h"
 #import "CategoriesData.h"
 
 NSString * const kCategoryDeletionModeNone = @"no_delete";

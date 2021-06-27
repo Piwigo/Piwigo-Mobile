@@ -8,7 +8,6 @@
 
 #import "PiwigoAlbumData.h"
 #import "ImageService.h"
-#import "Model.h"
 #import "CategoriesData.h"
 #import "ImagesCollection.h"
 
