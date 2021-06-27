@@ -13,12 +13,12 @@ public class UploadSessions: NSObject {
     // Singleton
     public static var shared = UploadSessions()
 
-    // Session identifiers
+    // Session identifiers / descriptions
     public let uploadSessionIdentifier:String! = "org.piwigo.uploadSession"
     public let uploadBckgSessionIdentifier:String! = "org.piwigo.uploadBckgSession"
 
     // Foreground upload session
-    lazy var app: URLSession = {
+    lazy var fgrdSession: URLSession = {
         let config = URLSessionConfiguration.default
         
         /// Indicates whether the request is allowed to use the built-in cellular radios to satisfy the request.
@@ -51,7 +51,7 @@ public class UploadSessions: NSObject {
     }()
 
     // Background upload session
-    lazy var appBckg: URLSession = {
+    lazy var bckgSession: URLSession = {
         let config = URLSessionConfiguration.background(withIdentifier: uploadBckgSessionIdentifier)
         
         /// Background tasks can be scheduled at the discretion of the system for optimal performance
@@ -115,7 +115,7 @@ public class UploadSessions: NSObject {
     // MARK: - Cancel Tasks Related to a Specific Upload Request
     func cancelTasksOfUpload(withID uploadIDStr:String, exceptedTaskIdentifier: Int) -> Void {
         // Loop over all tasks
-        appBckg.getAllTasks { uploadTasks in
+        bckgSession.getAllTasks { uploadTasks in
             // Select remaining tasks related with this request if any
             let tasksToCancel = uploadTasks.filter({ $0.taskDescription == uploadIDStr })
                                            .filter({ $0.taskIdentifier != exceptedTaskIdentifier})
@@ -300,12 +300,21 @@ extension UploadSessions: URLSessionTaskDelegate {
 //        }
 
         // Handle the response with the Upload Manager
-        if UploadManager.shared.isExecutingBackgroundUploadTask {
-            UploadManager.shared.didCompleteBckgUploadTask(task, withError: error)
-        } else {
+        switch task.taskDescription {
+        case uploadSessionIdentifier:
             UploadManager.shared.backgroundQueue.async {
-                UploadManager.shared.didCompleteBckgUploadTask(task, withError: error)
+                UploadManager.shared.didCompleteUploadTask(task, withError: error)
             }
+        case uploadBckgSessionIdentifier:
+            if UploadManager.shared.isExecutingBackgroundUploadTask {
+                UploadManager.shared.didCompleteBckgUploadTask(task, withError: error)
+            } else {
+                UploadManager.shared.backgroundQueue.async {
+                    UploadManager.shared.didCompleteBckgUploadTask(task, withError: error)
+                }
+            }
+        default:
+            fatalError("!!! unexpected session identifier !!!")
         }
     }
 }
@@ -323,12 +332,22 @@ extension UploadSessions: URLSessionDataDelegate {
                 return
         }
         print("    > Upload task \(dataTask.taskIdentifier) of chunk \(chunk)/\(chunks) did receive some data at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
-        if UploadManager.shared.isExecutingBackgroundUploadTask {
-            UploadManager.shared.didCompleteBckgUploadTask(dataTask, withData: data)
-        } else {
+        
+        switch dataTask.taskDescription {
+        case uploadSessionIdentifier:
             UploadManager.shared.backgroundQueue.async {
-                UploadManager.shared.didCompleteBckgUploadTask(dataTask, withData: data)
+                UploadManager.shared.didCompleteUploadTask(dataTask, withData: data)
             }
+        case uploadBckgSessionIdentifier:
+            if UploadManager.shared.isExecutingBackgroundUploadTask {
+                UploadManager.shared.didCompleteBckgUploadTask(dataTask, withData: data)
+            } else {
+                UploadManager.shared.backgroundQueue.async {
+                    UploadManager.shared.didCompleteBckgUploadTask(dataTask, withData: data)
+                }
+            }
+        default:
+            fatalError("!!! unexpected session identifier !!!")
         }
     }
 }

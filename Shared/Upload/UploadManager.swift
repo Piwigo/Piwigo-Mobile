@@ -363,7 +363,7 @@ public class UploadManager: NSObject {
     public func resumeTransfersOfBckgTask() -> Void {
         // Get active upload tasks and initialise isUploading
         let taskContext = DataController.privateManagedObjectContext
-        let uploadSession: URLSession = UploadSessions.shared.appBckg
+        let uploadSession: URLSession = UploadSessions.shared.bckgSession
         uploadSession.getAllTasks { [unowned self] uploadTasks in
             // Loop over the tasks
             for task in uploadTasks {
@@ -1047,7 +1047,7 @@ public class UploadManager: NSObject {
         
         // Get active upload tasks
         let taskContext = DataController.privateManagedObjectContext
-        let uploadSession: URLSession = UploadSessions.shared.appBckg
+        let uploadSession: URLSession = UploadSessions.shared.bckgSession
         uploadSession.getAllTasks { uploadTasks in
             // Loop over the tasks
             for task in uploadTasks {

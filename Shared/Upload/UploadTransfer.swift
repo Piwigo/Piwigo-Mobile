@@ -69,10 +69,10 @@ extension UploadManager {
         // Prepare chunk
         let chunkSize = UploadVars.uploadChunkSize * 1024
         let length = imageData.count
-        let offset = chunkSize * (chunk + 1)
+        let offset = chunkSize * chunk
         let thisChunkSize = length - offset > chunkSize ? chunkSize : length - offset
         let chunkData = imageData.subdata(in: offset..<offset + thisChunkSize)
-        print("\(UploadUtilities.debugFormatter.string(from: Date())) > #\(chunk+1) with chunkSize:", chunkSize, "thisChunkSize:", thisChunkSize, "total:", length)
+        print("\(UploadUtilities.debugFormatter.string(from: Date())) > #\(chunk) with chunkSize:", chunkSize, "thisChunkSize:", thisChunkSize, "total:", length)
 
         // Prepare URL
         let urlStr = "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"
@@ -107,15 +107,15 @@ extension UploadManager {
         request.setValue(uploadID.uriRepresentation().absoluteString, forHTTPHeaderField: "uploadID")
         request.setValue(uploadProperties.fileName, forHTTPHeaderField: "filename")
         request.addValue(uploadProperties.localIdentifier, forHTTPHeaderField: "identifier")
-        request.addValue("0", forHTTPHeaderField: "chunk")
+        request.addValue(String(chunk), forHTTPHeaderField: "chunk")
         request.addValue(String(chunks), forHTTPHeaderField: "chunks")
         request.addValue(uploadProperties.md5Sum, forHTTPHeaderField: "md5sum")
         request.addValue(String(imageData.count + chunks * 2170), forHTTPHeaderField: "fileSize")
 
         // As soon as a task is created, the timeout counter starts
-        let uploadSession: URLSession = UploadSessions.shared.app
+        let uploadSession: URLSession = UploadSessions.shared.fgrdSession
         let task = uploadSession.uploadTask(with: request, from: httpBody as Data)
-        task.taskDescription = "synchronous"
+        task.taskDescription = UploadSessions.shared.uploadSessionIdentifier
         if #available(iOS 11.0, *) {
             // Tell the system how many bytes are expected to be exchanged
             task.countOfBytesClientExpectsToSend = Int64(httpBody.count + (request.allHTTPHeaderFields ?? [:]).count)
@@ -123,7 +123,7 @@ extension UploadManager {
         }
         
         // Resume task
-        print("\(UploadUtilities.debugFormatter.string(from: Date())) > \(uploadProperties.md5Sum) upload task \(task.taskIdentifier) resumed (0/\(chunks)")
+        print("\(UploadUtilities.debugFormatter.string(from: Date())) > \(uploadProperties.md5Sum) upload task \(task.taskIdentifier) resumed (\(chunk)/\(chunks))")
         task.resume()
 
         // Task now resumed -> Update upload request status
@@ -685,9 +685,9 @@ extension UploadManager {
             request.addValue(String(imageData.count + chunks * 2170), forHTTPHeaderField: "fileSize")
 
             // As soon as tasks are created, the timeout counter starts
-            let uploadSession: URLSession = UploadSessions.shared.app
+            let uploadSession: URLSession = UploadSessions.shared.bckgSession
             let task = uploadSession.uploadTask(with: request, fromFile: fileURL)
-            task.taskDescription = "uploadAsync"
+            task.taskDescription = UploadSessions.shared.uploadBckgSessionIdentifier
             if #available(iOS 11.0, *) {
                 // Tell the system how many bytes are expected to be exchanged
                 task.countOfBytesClientExpectsToSend = Int64(httpBody.count + (request.allHTTPHeaderFields ?? [:]).count)
