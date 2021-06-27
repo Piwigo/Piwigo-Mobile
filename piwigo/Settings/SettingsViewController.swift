@@ -56,27 +56,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     private var hasAutoUploadSettings = NetworkVars.usesUploadAsync
 
 
-    #if DEBUG
-    // MARK: - Core Data
-    /**
-     The TagsProvider that fetches tag data, saves it to Core Data,
-     and serves it to this table view.
-     */
-    private lazy var tagsProvider: TagsProvider = {
-        let provider : TagsProvider = TagsProvider()
-        return provider
-    }()
-    /**
-     The UploadsProvider that collects upload data, saves it to Core Data,
-     and serves it to the uploader.
-     */
-    private lazy var uploadsProvider: UploadsProvider = {
-        let provider : UploadsProvider = UploadsProvider()
-        return provider
-    }()
-    #endif
-
-    
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
@@ -1605,7 +1584,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let clearTagsAction = UIAlertAction(title: "Clear All Tags",
                                                     style: .default, handler: { action in
                     // Delete all tags in background queue
-                    self.tagsProvider.clearTags()
+                    TagsProvider().clearTags()
                     TagsData.sharedInstance().clearCache()
                 })
                 alert.addAction(clearTagsAction)
@@ -1621,24 +1600,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let clearUploadsAction = UIAlertAction(title: "Clear All Upload Requests",
                                                        style: .default, handler: { action in
                     // Delete all upload requests in a private queue
-                    DispatchQueue.global(qos: .userInitiated).async {
-                        // Get all upload requests
-                        let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
-                                                            .preparingFail, .formatError, .prepared,
-                                                            .uploading, .uploadingError, .uploaded,
-                                                            .finishing, .finishingError, .finished,
-                                                            .moderated, .deleted]
-                        let (_, objectIDs) = self.uploadsProvider.getAutoUploadRequestsIn(states: states)
-                        self.uploadsProvider.delete(uploadRequests: objectIDs) { error in
-                            // Error encountered?
-                            if let error = error {
-                                DispatchQueue.main.async {
-                                    self.dismissPiwigoError(withTitle: "Clear All Upload Requests",
-                                                            message: error.localizedDescription) { }
-                                }
-                            }
-                        }
-                    }
+                    UploadsProvider().clearUploads()
                 })
                 alert.addAction(clearUploadsAction)
                 #endif
