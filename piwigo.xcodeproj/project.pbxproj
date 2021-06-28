@@ -796,7 +796,7 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		AD084E3B2659846400159FE1 /* Shared */ = {
+		AD084E3B2659846400159FE1 /* piwigoKit */ = {
 			isa = PBXGroup;
 			children = (
 				ADE1AB91267FBF3E001C1EEB /* PwgNotifications.swift */,
@@ -805,7 +805,7 @@
 				AD2913E826696A8300403026 /* Network */,
 				AD97CFB6265B0B0700719ED5 /* Supporting Files */,
 			);
-			path = Shared;
+			path = piwigoKit;
 			sourceTree = "<group>";
 		};
 		AD084E3C265984B000159FE1 /* Supporting Targets */ = {
@@ -1375,7 +1375,7 @@
 			children = (
 				D82B8CBD1A67820A000E47CA /* piwigo */,
 				AD778358267E34F800317F36 /* piwigoIntents */,
-				AD084E3B2659846400159FE1 /* Shared */,
+				AD084E3B2659846400159FE1 /* piwigoKit */,
 				AD084E3C265984B000159FE1 /* Supporting Targets */,
 				9BE2F03E92BB4BD667BAA1F0 /* Pods */,
 				1F042DC0C96A55B227088605 /* Frameworks */,
