@@ -592,11 +592,9 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         else {
             // Determine the depth before setting up the cell
             categoryData = categories[indexPath.row]
-            if let upperCat = categoryData.upperCategories {
+            if categoryData.parentAlbumId != 0,
+               let upperCat = categoryData.upperCategories {
                 depth += upperCat.filter({ $0 != String(categoryData.albumId )}).count
-            }
-            if let defaultCategoryData = CategoriesData.sharedInstance().getCategoryById(AlbumVars.defaultCategory), let upperCat = defaultCategoryData.upperCategories {
-                depth -= upperCat.filter({ $0 != String(AlbumVars.defaultCategory )}).count
             }
         }
         
