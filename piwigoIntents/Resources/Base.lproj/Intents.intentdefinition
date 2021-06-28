@@ -11,9 +11,9 @@
 	<key>INIntentDefinitionSystemVersion</key>
 	<string>20G5042c</string>
 	<key>INIntentDefinitionToolsBuildVersion</key>
-	<string>12E262</string>
+	<string>12E507</string>
 	<key>INIntentDefinitionToolsVersion</key>
-	<string>12.5</string>
+	<string>12.5.1</string>
 	<key>INIntents</key>
 	<array>
 		<dict>
@@ -22,7 +22,7 @@
 			<key>INIntentConfigurable</key>
 			<true/>
 			<key>INIntentDescription</key>
-			<string>Auto-uploads photos as pre-defined in the settings of the app.</string>
+			<string>Uploads photos as pre-defined in the settings of the app.</string>
 			<key>INIntentDescriptionID</key>
 			<string>xFMKf4</string>
 			<key>INIntentManagedParameterCombinations</key>
@@ -48,7 +48,7 @@
 					<key>INIntentParameterCombinationIsPrimary</key>
 					<true/>
 					<key>INIntentParameterCombinationSubtitle</key>
-					<string>Auto-uploads photos as pre-defined in the settings of the app.</string>
+					<string>Uploads photos &amp; videos as pre-defined in the settings of the app.</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
 					<string>B4Ax9B</string>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
@@ -65,7 +65,7 @@
 				<array>
 					<dict>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>${nberPhotos} upload requests have been added to the queue.</string>
+						<string>${nberPhotos} request(s) have been added to the upload queue.</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>HhSUx9</string>
 						<key>INIntentResponseCodeName</key>
