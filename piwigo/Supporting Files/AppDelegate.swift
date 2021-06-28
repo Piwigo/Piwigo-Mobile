@@ -40,22 +40,7 @@ import piwigoKit
     func application(_ application: UIApplication, didFinishLaunchingWithOptions
                         launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         // Read old settings file and create UserDefaults cached files
-//        let fm = FileManager.default
-//        let appDocsDirectory = fm.urls(for: .applicationDirectory, in: .userDomainMask).last
-//        if let codedDataURL = appDocsDirectory?.appendingPathComponent("data"),
-//           let codedData = try? Data(contentsOf: codedDataURL) as Data {
-//            let unarchiver = NSKeyedUnarchiver(forReadingWith: codedData)
-//            let modelData = unarchiver.decodeObject(forKey: "Model") as? Model
-//            Model.sharedInstance().readFromDisk()
-
-            // => Network variables stored in UserDefaults / App Group
-//            NetworkVarsObjc.serverProtocol = modelData.serverProtocol
-//            NetworkVarsObjc.serverPath = modelData.serverPath
-//            NetworkVarsObjc.stringEncoding = modelData.stringEncoding
-//            NetworkVarsObjc.httpUsername = modelData.HttpUsername
-//            NetworkVarsObjc.username = modelData.username
-
-//        }
+        Model.sharedInstance().readFromDisk()
 
         // Register notifications for displaying number of uploads to perform in app badge
         if #available(iOS 9.0, *) {
