@@ -22,7 +22,7 @@ extension UploadManager {
         // Get content of file to upload
         var imageData: Data = Data()
         do {
-            try imageData = NSData (contentsOf: fileURL) as Data
+            try imageData = Data(contentsOf: fileURL) as Data
         }
         catch let error as NSError {
             // Could not find the file to upload!
@@ -56,7 +56,7 @@ extension UploadManager {
         // Get content of file to upload
         var imageData: Data = Data()
         do {
-            try imageData = NSData (contentsOf: fileURL) as Data
+            try imageData = Data(contentsOf: fileURL) as Data
         }
         catch let error as NSError {
             // Could not find the file to upload!
@@ -515,7 +515,7 @@ extension UploadManager {
         // Get content of file to upload
         var imageData: Data = Data()
         do {
-            try imageData = NSData (contentsOf: fileURL) as Data
+            try imageData = Data(contentsOf: fileURL) as Data
         }
         catch let error as NSError {
             // Could not find the file to upload!
@@ -597,15 +597,13 @@ extension UploadManager {
             let fileURL = applicationUploadsDirectory.appendingPathComponent(chunkFileName)
             
             // Deletes temporary image file if exists (incomplete previous attempt?)
-            do {
-                try FileManager.default.removeItem(at: fileURL)
-            } catch {
-            }
+            do { try FileManager.default.removeItem(at: fileURL) } catch { }
 
             // Store chunk of image data into Piwigo/Uploads directory
             do {
                 try httpBody.write(to: fileURL)
-            } catch let error as NSError {
+            }
+            catch let error as NSError {
                 // Disk full? —> to be managed…
                 print(error)
                 return
