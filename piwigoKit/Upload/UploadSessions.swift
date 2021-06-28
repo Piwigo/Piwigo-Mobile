@@ -18,7 +18,7 @@ public class UploadSessions: NSObject {
     public let uploadBckgSessionIdentifier:String! = "org.piwigo.uploadBckgSession"
 
     // Foreground upload session
-    lazy var frgdSession: URLSession = {
+    public lazy var frgdSession: URLSession = {
         let config = URLSessionConfiguration.default
         
         /// Indicates whether the request is allowed to use the built-in cellular radios to satisfy the request.
@@ -51,7 +51,7 @@ public class UploadSessions: NSObject {
     }()
 
     // Background upload session
-    lazy var bckgSession: URLSession = {
+    public lazy var bckgSession: URLSession = {
         let config = URLSessionConfiguration.background(withIdentifier: uploadBckgSessionIdentifier)
         
         /// Background tasks can be scheduled at the discretion of the system for optimal performance

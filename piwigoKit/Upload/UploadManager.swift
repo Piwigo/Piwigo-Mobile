@@ -310,12 +310,12 @@ public class UploadManager: NSObject {
     /// - e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"org.piwigo.uploadManager"]
     /// - e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateExpirationForTaskWithIdentifier:@"org.piwigo.uploadManager"]
     public var isExecutingBackgroundUploadTask = false
-    public let maxNberOfUploadsPerBckgTask = 100             // i.e. 100 requests to be considered
-    var countOfBytesPrepared = UInt64(0)                    // Total amount of bytes of prepared files
-    var countOfBytesToUpload = 0                            // Total amount of bytes to be sent
-    let maxCountOfBytesToUpload = 50 * 1024 * 1024          // i.e. 50 MB every 30 min (100 MB/hour)
-    var uploadRequestsToPrepare = Set<NSManagedObjectID>()
-    var uploadRequestsToTransfer = Set<NSManagedObjectID>()
+    public let maxNberOfUploadsPerBckgTask = 100                    // i.e. 100 requests to be considered
+    var countOfBytesPrepared = UInt64(0)                            // Total amount of bytes of prepared files
+    var countOfBytesToUpload = 0                                    // Total amount of bytes to be sent
+    public let maxCountOfBytesToUpload = 50 * 1024 * 1024           // i.e. 50 MB every 30 min (100 MB/hour)
+    public var uploadRequestsToPrepare = Set<NSManagedObjectID>()
+    public var uploadRequestsToTransfer = Set<NSManagedObjectID>()
 
     public func initialiseBckgTask() -> Void {
         // UIApplication.shared.state must be called on the main thread
@@ -360,12 +360,14 @@ public class UploadManager: NSObject {
         uploadRequestsToPrepare = Set(requestsToPrepare[..<min(diff, requestsToPrepare.count)])
     }
     
-    public func resumeTransfersOfBckgTask() -> Void {
+    public func resumeTransfers() -> Void {
         // Get active upload tasks and initialise isUploading
         let taskContext = DataController.privateManagedObjectContext
-        let uploadSession: URLSession = UploadSessions.shared.bckgSession
-        uploadSession.getAllTasks { [unowned self] uploadTasks in
-            // Loop over the tasks
+        let frgdSession: URLSession = UploadSessions.shared.frgdSession
+        let bckgSession: URLSession = UploadSessions.shared.bckgSession
+
+        frgdSession.getAllTasks { [unowned self] uploadTasks in
+            // Loop over the tasks launched in the foreground
             for task in uploadTasks {
                 switch task.state {
                 case .running:
@@ -383,7 +385,7 @@ public class UploadManager: NSObject {
                     print("\(UploadUtilities.debugFormatter.string(from: Date())) >> is uploading: \(uploadID)")
                     // Remembers that this upload request is being dealt with
                     self.isUploading.insert(uploadID)
-                    
+
                     // Avoids duplicates
                     uploadRequestsToTransfer.remove(uploadID)
                     uploadRequestsToPrepare.remove(uploadID)
@@ -393,14 +395,45 @@ public class UploadManager: NSObject {
                 }
             }
 
-            // Relaunch transfers if necessary and possible
-            if self.isUploading.count < maxNberOfTransfers,
-               let uploadID = self.uploadRequestsToTransfer.first {
-                // Launch transfer
-                print("\(UploadUtilities.debugFormatter.string(from: Date())) >•• launch transfer \(uploadID.uriRepresentation())")
-                self.launchTransfer(of: uploadID)
-            } else {
-                print("\(UploadUtilities.debugFormatter.string(from: Date())) >•• no transfer to launch")
+            // Continue with background tasks
+            bckgSession.getAllTasks { [unowned self] uploadTasks in
+                // Loop over the tasks
+                for task in uploadTasks {
+                    switch task.state {
+                    case .running:
+                        // Retrieve upload request properties
+                        guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: "uploadID") else { continue }
+                        guard let objectURI = URL(string: objectURIstr) else {
+                            print("\(UploadUtilities.debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no object URI!")
+                            continue
+                        }
+                        guard let uploadID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
+                            print("\(UploadUtilities.debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no objectID!")
+                            continue
+                        }
+                        // Remembers that this upload request is being dealt with
+                        print("\(UploadUtilities.debugFormatter.string(from: Date())) >> is uploading: \(uploadID)")
+                        // Remembers that this upload request is being dealt with
+                        self.isUploading.insert(uploadID)
+                        
+                        // Avoids duplicates
+                        uploadRequestsToTransfer.remove(uploadID)
+                        uploadRequestsToPrepare.remove(uploadID)
+
+                    default:
+                        continue
+                    }
+                }
+
+                // Relaunch transfers if necessary and possible
+                if self.isUploading.count < maxNberOfTransfers,
+                   let uploadID = self.uploadRequestsToTransfer.first {
+                    // Launch transfer
+                    print("\(UploadUtilities.debugFormatter.string(from: Date())) >•• launch transfer \(uploadID.uriRepresentation())")
+                    self.launchTransfer(of: uploadID)
+                } else {
+                    print("\(UploadUtilities.debugFormatter.string(from: Date())) >•• no transfer to launch")
+                }
             }
         }
     }
@@ -825,16 +858,12 @@ public class UploadManager: NSObject {
     // MARK: - Transfer image
     let maxNberOfTransfers = 1
     private var _isUploading = Set<NSManagedObjectID>()
-    private var isUploading: Set<NSManagedObjectID> {
-        get {
-            return _isUploading
-        }
-        set(isUploading) {
-            _isUploading = isUploading
-        }
+    public var isUploading: Set<NSManagedObjectID> {
+        get { return _isUploading }
+        set(isUploading) { _isUploading = isUploading }
     }
 
-    func launchTransfer(of uploadID: NSManagedObjectID) -> Void {
+    public func launchTransfer(of uploadID: NSManagedObjectID) -> Void {
         print("\(UploadUtilities.debugFormatter.string(from: Date())) >> launch transfer of \(uploadID.uriRepresentation())")
 
         // Update list of transfers

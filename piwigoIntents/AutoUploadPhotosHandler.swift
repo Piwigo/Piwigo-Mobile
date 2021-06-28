@@ -24,11 +24,6 @@ class AutoUploadPhotosHandler: NSObject, AutoUploadPhotosIntentHandling {
         return provider
     }()
 
-    let maxNberOfUploadsPerBckgTask = 100             // i.e. 100 requests to be considered
-    var isUploading = Set<NSManagedObjectID>()
-    var uploadRequestsToPrepare = Set<NSManagedObjectID>()
-    var uploadRequestsToTransfer = Set<NSManagedObjectID>()
-
     func handle(intent: AutoUploadPhotosIntent, completion: @escaping (AutoUploadPhotosIntentResponse) -> Void) {
         print("•••>> handling AutoUploadPhotos shortcut…")
         
@@ -48,41 +43,70 @@ class AutoUploadPhotosHandler: NSObject, AutoUploadPhotosIntentHandling {
         }
         
         // Reset flags and requests to prepare and transfer
-        isUploading = Set<NSManagedObjectID>()
-        uploadRequestsToPrepare = Set<NSManagedObjectID>()
-        uploadRequestsToTransfer = Set<NSManagedObjectID>()
+        UploadManager.shared.isUploading = Set<NSManagedObjectID>()
+        UploadManager.shared.uploadRequestsToPrepare = Set<NSManagedObjectID>()
+        UploadManager.shared.uploadRequestsToTransfer = Set<NSManagedObjectID>()
 
-        // First, find upload requests whose transfer did fail
+        // First, find auto-upload requests whose transfer did fail
         let failedUploads = uploadsProvider.getAutoUploadRequestsIn(states: [.uploadingError]).1
         if failedUploads.count > 0, failedUploads.count < 2 {
             // Will relaunch transfers with one which failed
-            uploadRequestsToTransfer = Set(failedUploads[..<min(maxNberOfUploadsPerBckgTask, failedUploads.count)])
-            print("\(UploadUtilities.debugFormatter.string(from: Date())) >•• collected \(uploadRequestsToTransfer.count) failed uploads")
+            UploadManager.shared.uploadRequestsToTransfer = Set(failedUploads[..<min(UploadManager.shared.maxNberOfUploadsPerBckgTask, failedUploads.count)])
+            print("\(UploadUtilities.debugFormatter.string(from: Date())) >•• collected \(UploadManager.shared.uploadRequestsToTransfer.count) failed uploads")
         }
 
-        // Second, find upload requests ready for transfer
+        // Second, find auto-upload requests ready for transfer
         let preparedUploads = uploadsProvider.getAutoUploadRequestsIn(states: [.prepared]).1
-        if uploadRequestsToTransfer.count == 0, preparedUploads.count > 0 {
+        if UploadManager.shared.uploadRequestsToTransfer.count == 0,
+           preparedUploads.count > 0 {
             // Will relaunch transfers with a prepared upload
-            uploadRequestsToTransfer = uploadRequestsToTransfer
-                .union(Set(preparedUploads[..<min(maxNberOfUploadsPerBckgTask,preparedUploads.count)]))
-            print("\(UploadUtilities.debugFormatter.string(from: Date())) >•• collected \(min(maxNberOfUploadsPerBckgTask,preparedUploads.count)) prepared uploads)")
+            UploadManager.shared.uploadRequestsToTransfer = UploadManager.shared.uploadRequestsToTransfer
+                .union(Set(preparedUploads[..<min(UploadManager.shared.maxNberOfUploadsPerBckgTask,preparedUploads.count)]))
+            print("\(UploadUtilities.debugFormatter.string(from: Date())) >•• collected \(min(UploadManager.shared.maxNberOfUploadsPerBckgTask,preparedUploads.count)) prepared uploads)")
         }
         
-        // Finally, get list of upload requests to prepare
-        let diff = maxNberOfUploadsPerBckgTask - uploadRequestsToTransfer.count
-        if diff <= 0 { return }
-        let requestsToPrepare = uploadsProvider.getAutoUploadRequestsIn(states: [.waiting]).1
-        print("\(UploadUtilities.debugFormatter.string(from: Date())) >•• collected \(min(diff, requestsToPrepare.count)) uploads to prepare")
-        uploadRequestsToPrepare = Set(requestsToPrepare[..<min(diff, requestsToPrepare.count)])
+        // Finally, get list of auto-upload requests to prepare
+        let diff = UploadManager.shared.maxNberOfUploadsPerBckgTask -
+            UploadManager.shared.uploadRequestsToTransfer.count
+        if diff > 0 {
+            let requestsToPrepare = uploadsProvider.getAutoUploadRequestsIn(states: [.waiting]).1
+            print("\(UploadUtilities.debugFormatter.string(from: Date())) >•• collected \(min(diff, requestsToPrepare.count)) uploads to prepare")
+            UploadManager.shared.uploadRequestsToPrepare = Set(requestsToPrepare[..<min(diff, requestsToPrepare.count)])
+        }
+        let nberOfPhotos = UploadManager.shared.uploadRequestsToPrepare.count
 
+        // Create the operation queue
+        let uploadQueue = OperationQueue()
+        uploadQueue.maxConcurrentOperationCount = 1
         
+        // Initialise list of operations
+        var uploadOperations = [BlockOperation]()
+
+        // Resume transfers started in the foreground
+        let resumeOperation = BlockOperation {
+            UploadManager.shared.resumeTransfers()
+        }
+        uploadOperations.append(resumeOperation)
         
-        completion(AutoUploadPhotosIntentResponse.success(nberPhotos: 23))
+        // Add image preparation which will be followed by transfer operations
+        for _ in 0..<UploadManager.shared.maxNberOfUploadsPerBckgTask {
+            let uploadOperation = BlockOperation {
+                // Transfer image
+                UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
+            }
+            uploadOperation.addDependency(uploadOperations.last!)
+            uploadOperations.append(uploadOperation)
+        }
+
+        // Start the operation
+        print("    > Start upload operations in background task...");
+        uploadQueue.addOperations(uploadOperations, waitUntilFinished: true)
+
+        completion(AutoUploadPhotosIntentResponse.success(nberPhotos: NSNumber(value: nberOfPhotos)))
     }
 
 
-    // MARK: - Add Auto-Upload Requests
+    // MARK: - Add / Remove Auto-Upload Requests
     private func appendAutoUploadRequests() -> String {
         // Check access to Photo Library album
         let collectionID = UploadVars.autoUploadAlbumId
@@ -162,8 +186,6 @@ class AutoUploadPhotosHandler: NSObject, AutoUploadPhotosIntentHandling {
         return ""
     }
 
-
-    // MARK: - Delete Auto-Upload Requests
     private func disableAutoUpload() {
         // Disable auto-uploading
         UploadVars.isAutoUploadActive = false
@@ -182,51 +204,4 @@ class AutoUploadPhotosHandler: NSObject, AutoUploadPhotosIntentHandling {
             }
         }
     }
-
-    
-    // MARK: Resume 
-//    func resumeTransfersOfBckgTask() -> Void {
-//        // Get active upload tasks and initialise isUploading
-//        let taskContext = DataController.privateManagedObjectContext
-//        let uploadSession: URLSession = UploadSessionDelegate.shared.uploadSession
-//        uploadSession.getAllTasks { [unowned self] uploadTasks in
-//            // Loop over the tasks
-//            for task in uploadTasks {
-//                switch task.state {
-//                case .running:
-//                    // Retrieve upload request properties
-//                    guard let taskDescription = task.taskDescription else { continue }
-//                    guard let objectURI = URL(string: taskDescription) else {
-//                        print("\(UploadUtilities.debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no object URI!")
-//                        continue
-//                    }
-//                    guard let uploadID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
-//                        print("\(UploadUtilities.debugFormatter.string(from: Date())) > task \(task.taskIdentifier) | no objectID!")
-//                        continue
-//                    }
-//                    // Remembers that this upload request is being dealt with
-//                    print("\(UploadUtilities.debugFormatter.string(from: Date())) >> is uploading: \(uploadID)")
-//                    // Remembers that this upload request is being dealt with
-//                    self.isUploading.insert(uploadID)
-//
-//                    // Avoids duplicates
-//                    uploadRequestsToTransfer.remove(uploadID)
-//                    uploadRequestsToPrepare.remove(uploadID)
-//
-//                default:
-//                    continue
-//                }
-//            }
-
-            // Relaunch transfers if necessary and possible
-//            if self.isUploading.count < maxNberOfTransfers,
-//               let uploadID = self.uploadRequestsToTransfer.first {
-//                // Launch transfer
-//                print("\(UploadUtilities.debugFormatter.string(from: Date())) >•• launch transfer \(uploadID.uriRepresentation())")
-//                self.launchTransfer(of: uploadID)
-//            } else {
-//                print("\(UploadUtilities.debugFormatter.string(from: Date())) >•• no transfer to launch")
-//            }
-//        }
-//    }
 }

@@ -328,7 +328,7 @@ import piwigoKit
         // Resume transfers
         let resumeOperation = BlockOperation {
             // Transfer image
-            UploadManager.shared.resumeTransfersOfBckgTask()
+            UploadManager.shared.resumeTransfers()
         }
         resumeOperation.addDependency(uploadOperations.last!)
         uploadOperations.append(resumeOperation)
