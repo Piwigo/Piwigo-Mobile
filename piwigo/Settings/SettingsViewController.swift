@@ -53,7 +53,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     private var nberUsers = ""
     private var nberGroups = ""
     private var nberComments = ""
-    private var hasAutoUploadSettings = NetworkVars.usesUploadAsync
 
 
     // MARK: - View Lifecycle
@@ -228,9 +227,18 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
 
     @objc func disableAutoUpload(_ notification: Notification) {
+        // NOP if the option is not available
+        if !NetworkVars.usesUploadAsync { return }
+        
+        // Position of the row that should be updated
+        let rowAtIndexPath = IndexPath(row: 7 + (NetworkVars.hasAdminRights ? 1 : 0)
+                                              + (UploadVars.resizeImageOnUpload ? 1 : 0)
+                                              + (UploadVars.compressImageOnUpload ? 1 : 0)
+                                              + (UploadVars.prefixFileNameBeforeUpload ? 1 : 0),
+                                       section: SettingsSection.imageUpload.rawValue)
+
         // Change switch button state
-        let indexPath = IndexPath(row: 10, section: SettingsSection.imageUpload.rawValue)
-        settingsTableView?.reloadRows(at: [indexPath], with: .automatic)
+        settingsTableView?.reloadRows(at: [rowAtIndexPath], with: .automatic)
         
         // Inform user if an error was reported
         if let title = notification.userInfo?["title"] as? String, !title.isEmpty,
@@ -430,7 +438,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             nberOfRows += (UploadVars.resizeImageOnUpload ? 1 : 0)
             nberOfRows += (UploadVars.compressImageOnUpload ? 1 : 0)
             nberOfRows += (UploadVars.prefixFileNameBeforeUpload ? 1 : 0)
-            nberOfRows += hasAutoUploadSettings ? 1 : 0
+            nberOfRows += (NetworkVars.usesUploadAsync ? 1 : 0)
         case SettingsSection.appearance.rawValue:
             nberOfRows = 1
         case SettingsSection.cache.rawValue:
@@ -769,7 +777,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             row += (!UploadVars.resizeImageOnUpload && (row > 3)) ? 1 : 0
             row += (!UploadVars.compressImageOnUpload && (row > 5)) ? 1 : 0
             row += (!UploadVars.prefixFileNameBeforeUpload && (row > 7)) ? 1 : 0
-            row += (!hasAutoUploadSettings && (row > 9)) ? 1 : 0
+            row += (!NetworkVars.usesUploadAsync && (row > 9)) ? 1 : 0
             switch row {
             case 0 /* Author Name? */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as? TextFieldTableViewCell else {
@@ -1319,7 +1327,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             row += (!UploadVars.resizeImageOnUpload && (row > 3)) ? 1 : 0
             row += (!UploadVars.compressImageOnUpload && (row > 5)) ? 1 : 0
             row += (!UploadVars.prefixFileNameBeforeUpload && (row > 7)) ? 1 : 0
-            row += (!hasAutoUploadSettings && (row > 9)) ? 1 : 0
+            row += (!NetworkVars.usesUploadAsync && (row > 9)) ? 1 : 0
             switch row {
             case 0  /* Author Name */,
                  2  /* Strip private Metadata */,
@@ -1540,7 +1548,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             row += (!UploadVars.resizeImageOnUpload && (row > 3)) ? 1 : 0
             row += (!UploadVars.compressImageOnUpload && (row > 5)) ? 1 : 0
             row += (!UploadVars.prefixFileNameBeforeUpload && (row > 7)) ? 1 : 0
-            row += (!hasAutoUploadSettings && (row > 9)) ? 1 : 0
+            row += (!NetworkVars.usesUploadAsync && (row > 9)) ? 1 : 0
             switch row {
             case 1 /* Default privacy selection */:
                 let privacySB = UIStoryboard(name: "SelectPrivacyViewController", bundle: nil)
