@@ -15,8 +15,10 @@ class KeychainUtilities : NSObject {
     private class
     func getAccessGroup() -> String {
         let teamID = Bundle.main.infoDictionary!["AppIdentifierPrefix"] as! String
-        let bundleID = Bundle.main.bundleIdentifier!
-        return teamID + bundleID
+        let bundleID = Bundle.main.bundleIdentifier!.components(separatedBy: ".")
+        let pos = bundleID.firstIndex(of: "piwigo")
+        let mainBundleID = bundleID[0...pos!].joined(separator: ".")
+        return teamID + mainBundleID
     }
     
     // MARK: - Piwigo & HTTP Authentication
