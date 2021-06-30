@@ -13,11 +13,7 @@ extension UserDefaults {
     // We use different App Groups:
     /// - Development: one chosen by the developer
     /// - Release: the official group.org.piwigo
-    #if DEBUG
-    public static let appGroup = "group.net.lelievre-berna.piwigo"
-    #else
-    public static let appGroup = "group.org.piwigo"
-    #endif
+    public static let appGroup = "group." + Bundle.main.bundleIdentifier!
     
     public static let dataSuite = { () -> UserDefaults in
         guard let dataSuite = UserDefaults(suiteName: appGroup) else {
