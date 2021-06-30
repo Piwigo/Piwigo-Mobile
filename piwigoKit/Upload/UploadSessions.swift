@@ -89,6 +89,9 @@ public class UploadSessions: NSObject {
             config.multipathServiceType = .handover
         }
         
+        /// The identifier for the shared container into which files in background URL sessions should be downloaded.
+        config.sharedContainerIdentifier = UserDefaults.appGroup
+        
         return URLSession(configuration: config, delegate: self, delegateQueue: nil)
     }()
 
