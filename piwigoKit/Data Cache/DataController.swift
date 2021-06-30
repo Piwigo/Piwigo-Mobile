@@ -28,11 +28,10 @@ public class DataController: NSObject {
 
         // Get path of group container
         let fm = FileManager.default
-        let applicationName: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as! String
         let containerDirectory = fm.containerURL(forSecurityApplicationGroupIdentifier: AppGroup)
         let piwigoURL = containerDirectory?.appendingPathComponent("Library")
             .appendingPathComponent("Application Support")
-            .appendingPathComponent(applicationName)
+            .appendingPathComponent("Piwigo")
 
         // Create the Piwigo directory in the container if needed
         if !(fm.fileExists(atPath: piwigoURL?.path ?? "")) {
@@ -60,9 +59,8 @@ public class DataController: NSObject {
     ///   and files to upload before the creation of extensions.
     public static var appSupportDirectory: URL = {
         let fm = FileManager.default
-        let applicationName: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as! String
         let applicationSupportDirectory = fm.urls(for: .applicationSupportDirectory, in: .userDomainMask).last
-        let piwigoURL = applicationSupportDirectory?.appendingPathComponent(applicationName)
+        let piwigoURL = applicationSupportDirectory?.appendingPathComponent("Piwigo")
 
         // Create the Piwigo directory in "Library/Application Support" if needed
         if !(fm.fileExists(atPath: piwigoURL?.path ?? "")) {
