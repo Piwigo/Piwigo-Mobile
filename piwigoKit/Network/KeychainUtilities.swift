@@ -11,6 +11,14 @@ import Foundation
 public
 class KeychainUtilities : NSObject {
     
+    // Access group
+    private class
+    func getAccessGroup() -> String {
+        let teamID = Bundle.main.infoDictionary!["AppIdentifierPrefix"] as! String
+        let bundleID = Bundle.main.bundleIdentifier!
+        return teamID + bundleID
+    }
+    
     // MARK: - Piwigo & HTTP Authentication
     /// - https://www.osstatus.com/search/results?platform=all&framework=all&search=0
     // Convention
@@ -30,6 +38,7 @@ class KeychainUtilities : NSObject {
         let searchQuery = [kSecClass as String                : kSecClassGenericPassword,
                            kSecAttrService as String          : service,
                            kSecAttrAccount as String          : account,
+                           kSecAttrAccessGroup as String      : getAccessGroup(),
                            kSecAttrSynchronizable as String   : kSecAttrSynchronizableAny] as [String : Any]
 
         // Already in Keychain?
@@ -46,6 +55,7 @@ class KeychainUtilities : NSObject {
             let query = [kSecClass as String                : kSecClassGenericPassword,
                          kSecAttrService as String          : service,
                          kSecAttrAccount as String          : account,
+                         kSecAttrAccessGroup as String      : getAccessGroup(),
                          kSecAttrSynchronizable as String   : kSecAttrSynchronizableAny,
                          kSecValueData as String            : passwordData,
                          kSecAttrAccessible as String       : kSecAttrAccessibleAfterFirstUnlock] as [String : Any]
@@ -69,6 +79,7 @@ class KeychainUtilities : NSObject {
         let query = [kSecClass as String                : kSecClassGenericPassword,
                      kSecAttrService as String          : service,
                      kSecAttrAccount as String          : account,
+                     kSecAttrAccessGroup as String      : getAccessGroup(),
                      kSecAttrSynchronizable as String   : kSecAttrSynchronizableAny,
                      kSecReturnData as String           : kCFBooleanTrue!,
                      kSecMatchLimit as String           : kSecMatchLimitOne] as [String: Any]
@@ -102,10 +113,11 @@ class KeychainUtilities : NSObject {
                       !username.isEmpty else { return "" }
                 if username == NetworkVars.username {
                     // Retrieve password
-                    let query = [kSecClass as String        : kSecClassGenericPassword,
-                                 kSecAttrGeneric as String  : kKeychainAppID,
-                                 kSecAttrAccount as String  : username,
-                                 kSecMatchLimit as String   : kSecMatchLimitOne] as [String: Any]
+                    let query = [kSecClass as String            : kSecClassGenericPassword,
+                                 kSecAttrGeneric as String      : kKeychainAppID,
+                                 kSecAttrAccount as String      : username,
+                                 kSecAttrAccessGroup as String  : getAccessGroup(),
+                                 kSecMatchLimit as String       : kSecMatchLimitOne] as [String: Any]
 
                     var data: CFTypeRef?
                     let status = SecItemCopyMatching(query as CFDictionary, &data)
@@ -138,6 +150,7 @@ class KeychainUtilities : NSObject {
         let query = [kSecClass as String                : kSecClassGenericPassword,
                      kSecAttrService as String          : service,
                      kSecAttrAccount as String          : account,
+                     kSecAttrAccessGroup as String      : getAccessGroup(),
                      kSecAttrSynchronizable as String   : kSecAttrSynchronizableAny] as [String: Any]
 
         // Apply the query
@@ -193,9 +206,10 @@ class KeychainUtilities : NSObject {
 
         // Get certificate in Keychain (should exist)
         // Certificates are stored in the Keychain with label "Piwigo:<host>"
-        let query = [kSecClass as String       : kSecClassCertificate,
-                     kSecAttrLabel as String   : "Piwigo:\(domain)",
-                     kSecReturnRef as String   : kCFBooleanTrue!] as [String : Any]
+        let query = [kSecClass as String            : kSecClassCertificate,
+                     kSecAttrLabel as String        : "Piwigo:\(domain)",
+                     kSecAttrAccessGroup as String  : getAccessGroup(),
+                     kSecReturnRef as String        : kCFBooleanTrue!] as [String : Any]
 
         var dataTypeRef: AnyObject? = nil
         let status: OSStatus = SecItemCopyMatching(query as CFDictionary, &dataTypeRef)
