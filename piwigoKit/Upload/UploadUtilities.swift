@@ -55,6 +55,7 @@ public class UploadUtilities: NSObject {
                     }
                 }
             }
+            resources?.removeAll(keepingCapacity: false)
         }
         
         // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
