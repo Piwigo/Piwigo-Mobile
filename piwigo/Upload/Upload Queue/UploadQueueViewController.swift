@@ -367,6 +367,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
             for cell in visibleCells {
                 if cell.localIdentifier == localIdentifier {
                     cell.update(with: notification.userInfo!)
+                    break
                 }
             }
         }
