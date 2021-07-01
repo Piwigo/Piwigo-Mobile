@@ -266,7 +266,7 @@ extension UploadManager {
         // Available export session presets?
         PHImageManager.default().requestAVAsset(forVideo: imageAsset,
                                                 options: options,
-                                                resultHandler: { avasset, audioMix, info in
+                                                resultHandler: { [unowned self] avasset, audioMix, info in
             // ====>> For debugging…
 //            if let metadata = avasset?.metadata {
 //                print("=> Metadata: \(metadata)")
