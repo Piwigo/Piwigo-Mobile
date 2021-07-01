@@ -161,10 +161,10 @@ extension UploadManager {
         autoreleasepool {
             if #available(iOS 13.0, *) {
                 PHImageManager.default().requestImageDataAndOrientation(for: imageAsset, options: options,
-                                                                        resultHandler: { imageData, dataUTI, orientation, info in
+                                                                        resultHandler: { [unowned self] imageData, dataUTI, orientation, info in
                     // resultHandler redirected to the main thread by default!
                     if self.isExecutingBackgroundUploadTask {
-//                        print("\(self.debugFormatter.string(from: Date())) > exits retrieveFullSizeAssetDataFromImage in", queueName())
+//                        print("\(UploadUtilities.debugFormatter.string(from: Date())) > exits retrieveFullSizeAssetDataFromImage in", queueName())
                         if info?[PHImageErrorKey] != nil || ((imageData?.count ?? 0) == 0) {
                             completionHandler(nil, info?[PHImageErrorKey] as? Error)
                         } else {
@@ -172,7 +172,7 @@ extension UploadManager {
                         }
                     } else {
                         self.backgroundQueue.async {
-//                            print("\(self.debugFormatter.string(from: Date())) > exits retrieveFullSizeAssetDataFromImage in", queueName())
+//                            print("\(UploadUtilities.debugFormatter.string(from: Date())) > exits retrieveFullSizeAssetDataFromImage in", queueName())
                             if info?[PHImageErrorKey] != nil || ((imageData?.count ?? 0) == 0) {
                                 completionHandler(nil, info?[PHImageErrorKey] as? Error)
                             } else {
@@ -403,7 +403,7 @@ extension UploadManager {
         var error: Error?
         var fixedImageObject: UIImage?
         PHImageManager.default().requestImage(for: imageAsset, targetSize: size, contentMode: .default,
-                                              options: options, resultHandler: { imageObject, info in
+                                              options: options, resultHandler: { [unowned self] imageObject, info in
 
             // resultHandler redirected to the main thread by default!
             if self.isExecutingBackgroundUploadTask {
