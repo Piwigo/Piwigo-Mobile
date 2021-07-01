@@ -20,9 +20,11 @@ extension UploadManager {
         let fileURL = applicationUploadsDirectory.appendingPathComponent(fileName)
         
         // Get content of file to upload
+        /// https://developer.apple.com/forums/thread/115401
         var imageData: Data = Data()
         do {
-            try imageData = Data(contentsOf: fileURL) as Data
+            try imageData = NSData(contentsOf: fileURL, options: .alwaysMapped) as Data
+//            try imageData = Data(contentsOf: fileURL, options: .alwaysMapped) as Data
         }
         catch let error as NSError {
             // Could not find the file to upload!
@@ -54,9 +56,11 @@ extension UploadManager {
         let fileURL = applicationUploadsDirectory.appendingPathComponent(fileName)
         
         // Get content of file to upload
+        /// https://developer.apple.com/forums/thread/115401
         var imageData: Data = Data()
         do {
-            try imageData = Data(contentsOf: fileURL) as Data
+            try imageData = NSData(contentsOf: fileURL, options: .alwaysMapped) as Data
+//            try imageData = Data(contentsOf: fileURL, options: .alwaysMapped) as Data
         }
         catch let error as NSError {
             // Could not find the file to upload!
@@ -71,7 +75,7 @@ extension UploadManager {
         let length = imageData.count
         let offset = chunkSize * chunk
         let thisChunkSize = length - offset > chunkSize ? chunkSize : length - offset
-        let chunkData = imageData.subdata(in: offset..<offset + thisChunkSize)
+        var chunkData = imageData.subdata(in: offset..<offset + thisChunkSize)
         print("\(UploadUtilities.debugFormatter.string(from: Date())) > #\(chunk+1) with chunkSize:", chunkSize, "thisChunkSize:", thisChunkSize, "total:", length)
 
         // Prepare URL
@@ -83,13 +87,13 @@ extension UploadManager {
         let boundary = createBoundary(from: uploadProperties.md5Sum)
 
         // HTTP request body
-        let httpBody = NSMutableData()
-        httpBody.appendString(convertFormField(named: "chunk", value: String(chunk), using: boundary))
-        httpBody.appendString(convertFormField(named: "chunks", value: String(chunks), using: boundary))
-        httpBody.appendString(convertFormField(named: "name", value: uploadProperties.fileName, using: boundary))
-        httpBody.appendString(convertFormField(named: "category", value: "\(uploadProperties.category)", using: boundary))
-        httpBody.appendString(convertFormField(named: "level", value: "\(NSNumber(value: uploadProperties.privacyLevel.rawValue))", using: boundary))
-        httpBody.appendString(convertFormField(named: "pwg_token", value: NetworkVars.pwgToken, using: boundary))
+        var httpBody = Data()
+        httpBody.append(convertFormField(named: "chunk", value: String(chunk), using: boundary).data(using: .utf8)!)
+        httpBody.append(convertFormField(named: "chunks", value: String(chunks), using: boundary).data(using: .utf8)!)
+        httpBody.append(convertFormField(named: "name", value: uploadProperties.fileName, using: boundary).data(using: .utf8)!)
+        httpBody.append(convertFormField(named: "category", value: "\(uploadProperties.category)", using: boundary).data(using: .utf8)!)
+        httpBody.append(convertFormField(named: "level", value: "\(NSNumber(value: uploadProperties.privacyLevel.rawValue))", using: boundary).data(using: .utf8)!)
+        httpBody.append(convertFormField(named: "pwg_token", value: NetworkVars.pwgToken, using: boundary).data(using: .utf8)!)
 
         // Chunk of data
         httpBody.append(convertFileData(fieldName: "file",
@@ -98,7 +102,7 @@ extension UploadManager {
                                         fileData: chunkData,
                                         using: boundary))
 
-        httpBody.appendString("--\(boundary)--")
+        httpBody.append("--\(boundary)--".data(using: .utf8)!)
 
         // Prepare URL Request Object
         var request = URLRequest(url: validUrl)
@@ -114,7 +118,7 @@ extension UploadManager {
 
         // As soon as a task is created, the timeout counter starts
         let uploadSession: URLSession = UploadSessions.shared.frgdSession
-        let task = uploadSession.uploadTask(with: request, from: httpBody as Data)
+        let task = uploadSession.uploadTask(with: request, from: httpBody)
         task.taskDescription = UploadSessions.shared.uploadSessionIdentifier
         if #available(iOS 11.0, *) {
             // Tell the system how many bytes are expected to be exchanged
@@ -130,6 +134,10 @@ extension UploadManager {
         if chunk == 0 {
             uploadsProvider.updateStatusOfUpload(with: uploadID, to: .uploading, error: "") { (_) in }
         }
+        
+        // Release memory
+        httpBody.removeAll()
+        chunkData.removeAll()
     }
 
     func didCompleteUploadTask(_ task: URLSessionTask, withError error: Error?) {
@@ -513,9 +521,12 @@ extension UploadManager {
         let fileURL = applicationUploadsDirectory.appendingPathComponent(fileName)
         
         // Get content of file to upload
-        var imageData: Data = Data()
+        /// https://developer.apple.com/forums/thread/115401
+        var imageData = Data()
+//        var imageData = InputStream()
         do {
-            try imageData = Data(contentsOf: fileURL) as Data
+            try imageData = Data(contentsOf: fileURL, options: .alwaysMapped)
+//            try imageData = NSData(contentsOf: fileURL, options: .alwaysMapped) as Data
         }
         catch let error as NSError {
             // Could not find the file to upload!
@@ -553,98 +564,105 @@ extension UploadManager {
         let creationDate = dateFormat.string(from: date)
 
         // Initialise credentials, boundary and upload session
+        let uploadSession: URLSession = UploadSessions.shared.bckgSession
         let username = NetworkVars.username
         let password = KeychainUtilities.password(forService: uploadProperties.serverPath, account: username) 
         let boundary = createBoundary(from: uploadProperties.md5Sum)
+
+        // Loop over all chunks
         for chunk in 0..<chunks {
-            // Current chunk
-            let chunkStr = String(format: "%ld", chunk)
-            
-            // HTTP request body
-            let httpBody = NSMutableData()
-            httpBody.appendString(convertFormField(named: "username", value: username, using: boundary))
-            httpBody.appendString(convertFormField(named: "password", value: password, using: boundary))
-            httpBody.appendString(convertFormField(named: "chunk", value: chunkStr, using: boundary))
-            httpBody.appendString(convertFormField(named: "chunks", value: chunksStr, using: boundary))
-            httpBody.appendString(convertFormField(named: "original_sum", value: uploadProperties.md5Sum, using: boundary))
-            httpBody.appendString(convertFormField(named: "category", value: "\(uploadProperties.category)", using: boundary))
-            httpBody.appendString(convertFormField(named: "filename", value: uploadProperties.fileName, using: boundary))
-            let imageTitle = NetworkUtilities.utf8mb3String(from: uploadProperties.imageTitle)
-            httpBody.appendString(convertFormField(named: "name", value: imageTitle, using: boundary))
-            let author = NetworkUtilities.utf8mb3String(from: uploadProperties.author)
-            httpBody.appendString(convertFormField(named: "author", value: author, using: boundary))
-            let comment = NetworkUtilities.utf8mb3String(from: uploadProperties.comment)
-            httpBody.appendString(convertFormField(named: "comment", value: comment, using: boundary))
-            httpBody.appendString(convertFormField(named: "date_creation", value: creationDate, using: boundary))
-            httpBody.appendString(convertFormField(named: "level", value: "\(NSNumber(value: uploadProperties.privacyLevel.rawValue))", using: boundary))
-            httpBody.appendString(convertFormField(named: "tag_ids", value: uploadProperties.tagIds, using: boundary))
+            autoreleasepool {
+                // Current chunk
+                let chunkStr = String(format: "%ld", chunk)
+                
+                // HTTP request body
+                var httpBody = Data()
+                httpBody.append(convertFormField(named: "username", value: username, using: boundary).data(using: .utf8)!)
+                httpBody.append(convertFormField(named: "password", value: password, using: boundary).data(using: .utf8)!)
+                httpBody.append(convertFormField(named: "chunk", value: chunkStr, using: boundary).data(using: .utf8)!)
+                httpBody.append(convertFormField(named: "chunks", value: chunksStr, using: boundary).data(using: .utf8)!)
+                httpBody.append(convertFormField(named: "original_sum", value: uploadProperties.md5Sum, using: boundary).data(using: .utf8)!)
+                httpBody.append(convertFormField(named: "category", value: "\(uploadProperties.category)", using: boundary).data(using: .utf8)!)
+                httpBody.append(convertFormField(named: "filename", value: uploadProperties.fileName, using: boundary).data(using: .utf8)!)
+                let imageTitle = NetworkUtilities.utf8mb3String(from: uploadProperties.imageTitle)
+                httpBody.append(convertFormField(named: "name", value: imageTitle, using: boundary).data(using: .utf8)!)
+                let author = NetworkUtilities.utf8mb3String(from: uploadProperties.author)
+                httpBody.append(convertFormField(named: "author", value: author, using: boundary).data(using: .utf8)!)
+                let comment = NetworkUtilities.utf8mb3String(from: uploadProperties.comment)
+                httpBody.append(convertFormField(named: "comment", value: comment, using: boundary).data(using: .utf8)!)
+                httpBody.append(convertFormField(named: "date_creation", value: creationDate, using: boundary).data(using: .utf8)!)
+                httpBody.append(convertFormField(named: "level", value: "\(NSNumber(value: uploadProperties.privacyLevel.rawValue))", using: boundary).data(using: .utf8)!)
+                httpBody.append(convertFormField(named: "tag_ids", value: uploadProperties.tagIds, using: boundary).data(using: .utf8)!)
 
-            // Chunk of data
-            let chunkOfData = imageData.subdata(in: chunk * chunkSize..<min((chunk+1)*chunkSize, imageData.count))
-            let md5Checksum = chunkOfData.MD5checksum()
-            httpBody.appendString(convertFormField(named: "chunk_sum", value: md5Checksum, using: boundary))
-            httpBody.append(convertFileData(fieldName: "file",
-                                            fileName: uploadProperties.fileName,
-                                            mimeType: uploadProperties.mimeType,
-                                            fileData: chunkOfData,
-                                            using: boundary))
+                // Chunk of data
+                let chunkOfData = imageData.subdata(in: chunk * chunkSize..<min((chunk+1)*chunkSize, imageData.count))
+                let md5Checksum = chunkOfData.MD5checksum()
+                httpBody.append(convertFormField(named: "chunk_sum", value: md5Checksum, using: boundary).data(using: .utf8)!)
+                httpBody.append(self.convertFileData(fieldName: "file",
+                                                fileName: uploadProperties.fileName,
+                                                mimeType: uploadProperties.mimeType,
+                                                fileData: chunkOfData,
+                                                using: boundary))
 
-            httpBody.appendString("--\(boundary)--")
+                httpBody.append("--\(boundary)--".data(using: .utf8)!)
 
-            // File name of chunk data stored into Piwigo/Uploads directory
-            // This file will be deleted after a successful upload of the chunk
-            let chunkFileName = fileName + "." + numberFormatter.string(from: NSNumber(value: chunk))!
-            let fileURL = applicationUploadsDirectory.appendingPathComponent(chunkFileName)
-            
-            // Deletes temporary image file if exists (incomplete previous attempt?)
-            do { try FileManager.default.removeItem(at: fileURL) } catch { }
+                // File name of chunk data stored into Piwigo/Uploads directory
+                // This file will be deleted after a successful upload of the chunk
+                let chunkFileName = fileName + "." + numberFormatter.string(from: NSNumber(value: chunk))!
+                let fileURL = self.applicationUploadsDirectory.appendingPathComponent(chunkFileName)
+                
+                // Deletes temporary image file if exists (incomplete previous attempt?)
+                do { try FileManager.default.removeItem(at: fileURL) } catch { }
 
-            // Store chunk of image data into Piwigo/Uploads directory
-            do {
-                try httpBody.write(to: fileURL)
+                // Store chunk of image data into Piwigo/Uploads directory
+                do {
+                    try httpBody.write(to: fileURL)
+                }
+                catch let error as NSError {
+                    // Disk full? —> to be managed…
+                    print(error)
+                    return
+                }
+                
+                // Prepare URL Request Object
+                var request = URLRequest(url: validUrl)
+                request.httpMethod = "POST"
+                request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+                request.setValue(uploadID.uriRepresentation().absoluteString, forHTTPHeaderField: "uploadID")
+                request.setValue(uploadProperties.fileName, forHTTPHeaderField: "filename")
+                request.addValue(uploadProperties.localIdentifier, forHTTPHeaderField: "identifier")
+                request.addValue(chunkStr, forHTTPHeaderField: "chunk")
+                request.addValue(chunksStr, forHTTPHeaderField: "chunks")
+                request.addValue("1", forHTTPHeaderField: "tries")
+                request.addValue(uploadProperties.md5Sum, forHTTPHeaderField: "md5sum")
+                request.addValue(String(imageData.count + chunks * 2170), forHTTPHeaderField: "fileSize")
+
+                // As soon as tasks are created, the timeout counter starts
+                let task = uploadSession.uploadTask(with: request, fromFile: fileURL)
+                task.taskDescription = UploadSessions.shared.uploadBckgSessionIdentifier
+                if #available(iOS 11.0, *) {
+                    // Tell the system how many bytes are expected to be exchanged
+                    task.countOfBytesClientExpectsToSend = Int64(httpBody.count + (request.allHTTPHeaderFields ?? [:]).count)
+                    task.countOfBytesClientExpectsToReceive = 600
+                }
+                
+                // Adds bytes expected to be sent to counter
+                if isExecutingBackgroundUploadTask {
+                    countOfBytesToUpload += httpBody.count
+                    print("\(UploadUtilities.debugFormatter.string(from: Date())) >•• countOfBytesToUpload: \(countOfBytesToUpload)")
+                }
+                
+                // Resume task
+                print("\(UploadUtilities.debugFormatter.string(from: Date())) > \(uploadProperties.md5Sum) upload task \(task.taskIdentifier) resumed (\(chunk)/\(chunks))")
+                task.resume()
             }
-            catch let error as NSError {
-                // Disk full? —> to be managed…
-                print(error)
-                return
-            }
-            
-            // Prepare URL Request Object
-            var request = URLRequest(url: validUrl)
-            request.httpMethod = "POST"
-            request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-            request.setValue(uploadID.uriRepresentation().absoluteString, forHTTPHeaderField: "uploadID")
-            request.setValue(uploadProperties.fileName, forHTTPHeaderField: "filename")
-            request.addValue(uploadProperties.localIdentifier, forHTTPHeaderField: "identifier")
-            request.addValue(chunkStr, forHTTPHeaderField: "chunk")
-            request.addValue(chunksStr, forHTTPHeaderField: "chunks")
-            request.addValue("1", forHTTPHeaderField: "tries")
-            request.addValue(uploadProperties.md5Sum, forHTTPHeaderField: "md5sum")
-            request.addValue(String(imageData.count + chunks * 2170), forHTTPHeaderField: "fileSize")
-
-            // As soon as tasks are created, the timeout counter starts
-            let uploadSession: URLSession = UploadSessions.shared.bckgSession
-            let task = uploadSession.uploadTask(with: request, fromFile: fileURL)
-            task.taskDescription = UploadSessions.shared.uploadBckgSessionIdentifier
-            if #available(iOS 11.0, *) {
-                // Tell the system how many bytes are expected to be exchanged
-                task.countOfBytesClientExpectsToSend = Int64(httpBody.count + (request.allHTTPHeaderFields ?? [:]).count)
-                task.countOfBytesClientExpectsToReceive = 600
-            }
-            
-            // Adds bytes expected to be sent to counter
-            if isExecutingBackgroundUploadTask {
-                countOfBytesToUpload += httpBody.count
-                print("\(UploadUtilities.debugFormatter.string(from: Date())) >•• countOfBytesToUpload: \(countOfBytesToUpload)")
-            }
-            
-            // Resume task
-            print("\(UploadUtilities.debugFormatter.string(from: Date())) > \(uploadProperties.md5Sum) upload task \(task.taskIdentifier) resumed (\(chunk)/\(chunks)")
-            task.resume()
         }
 
         // All tasks are now resumed -> Add delay for next upload request, update upload request status
         uploadsProvider.updateStatusOfUpload(with: uploadID, to: .uploading, error: "") { (_) in }
+        
+        // Release memory
+        imageData.removeAll()
     }
 
     func didCompleteBckgUploadTask(_ task: URLSessionTask, withError error: Error?) {
@@ -974,23 +992,14 @@ extension UploadManager {
       return fieldString
     }
     
-    func convertFileData(fieldName: String, fileName: String, mimeType: String, fileData: Data, using boundary: String) -> Data {
-      let data = NSMutableData()
-
-      data.appendString("--\(boundary)\r\n")
-      data.appendString("Content-Disposition: form-data; name=\"\(fieldName)\"; filename=\"\(fileName)\"\r\n")
-      data.appendString("Content-Type: \(mimeType)\r\n\r\n")
-      data.append(fileData)
-      data.appendString("\r\n")
-
-      return data as Data
+    func convertFileData(fieldName: String, fileName: String, mimeType: String,
+                         fileData: Data, using boundary: String) -> Data {
+        var data = Data()
+        data.append("--\(boundary)\r\n".data(using: .utf8)!)
+        data.append("Content-Disposition: form-data; name=\"\(fieldName)\"; filename=\"\(fileName)\"\r\n".data(using: .utf8)!)
+        data.append("Content-Type: \(mimeType)\r\n\r\n".data(using: .utf8)!)
+        data.append(fileData)
+        data.append("\r\n".data(using: .utf8)!)
+        return data
     }
-}
-
-extension NSMutableData {
-  func appendString(_ string: String) {
-    if let data = string.data(using: .utf8) {
-      self.append(data)
-    }
-  }
 }
