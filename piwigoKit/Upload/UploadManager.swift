@@ -1190,20 +1190,19 @@ public class UploadManager: NSObject {
         let fileManager = FileManager.default
         do {
             // Get list of files
-            var filesToDelete: [URL] = []
-            let files = try fileManager.contentsOfDirectory(at: self.applicationUploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+            var filesToDelete = try fileManager.contentsOfDirectory(at: self.applicationUploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
             if let prefix = prefix {
-                // Will delete files with given prefix
-                filesToDelete = files.filter({$0.lastPathComponent.hasPrefix(prefix)})
-            } else {
-                // Will delete all files
-                filesToDelete = files
+                // Will delete files with given prefix only
+                filesToDelete.removeAll(where: { !$0.lastPathComponent.hasPrefix(prefix) })
             }
 
             // Delete files
             for file in filesToDelete {
                 try fileManager.removeItem(at: file)
             }
+            
+            // Release memory
+            filesToDelete.removeAll()
 
             // Get uploads to complete in queue
             // Considers only uploads to the server to which the user is logged in
