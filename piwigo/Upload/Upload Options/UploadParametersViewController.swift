@@ -16,7 +16,7 @@ enum EditImageDetailsOrder : Int {
     case count
 }
 
-class UploadParametersViewController: UITableViewController, UITextFieldDelegate, UITextViewDelegate, SelectPrivacyDelegate, TagsViewControllerDelegate {
+class UploadParametersViewController: UITableViewController, UITextFieldDelegate, UITextViewDelegate {
 
     @IBOutlet var paramsTableView: UITableView!
 
@@ -273,7 +273,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
         let privacySB = UIStoryboard(name: "SelectPrivacyViewController", bundle: nil)
         let privacyVC = privacySB.instantiateViewController(withIdentifier: "SelectPrivacyViewController") as? SelectPrivacyViewController
         privacyVC?.delegate = self
-        privacyVC?.setPrivacy(commonPrivacyLevel ?? .everybody)
+        privacyVC?.privacy = commonPrivacyLevel ?? .everybody
         if let privacyVC = privacyVC {
             navigationController?.pushViewController(privacyVC, animated: true)
         }
@@ -410,9 +410,10 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
     func textViewDidEndEditing(_ textView: UITextView) {
         commonComment = textView.text
     }
+}
 
-
-    // MARK: - SelectedPrivacyDelegate Methods
+// MARK: - SelectPrivacyDelegate Methods
+extension UploadParametersViewController: SelectPrivacyDelegate {
     func didSelectPrivacyLevel(_ privacyLevel: kPiwigoPrivacy) {
         // Update image parameter
         commonPrivacyLevel = privacyLevel
@@ -424,9 +425,10 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
         let indexPath = IndexPath(row: EditImageDetailsOrder.privacy.rawValue, section: 0)
         paramsTableView.reloadRows(at: [indexPath], with: .automatic)
     }
-    
-    
-    // MARK: - TagsViewControllerDelegate Methods
+}
+
+// MARK: - TagsViewControllerDelegate Methods
+extension UploadParametersViewController: TagsViewControllerDelegate {
     func didSelectTags(_ selectedTags: [Tag]) {
         // Update image parameter
         commonTags = selectedTags

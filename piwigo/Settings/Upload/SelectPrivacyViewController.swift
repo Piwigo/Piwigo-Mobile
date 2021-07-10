@@ -26,10 +26,6 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
     weak var delegate: SelectPrivacyDelegate?
     @objc weak var objcDelegate: SelectPrivacyObjcDelegate?
 
-    func setPrivacy(_ privacy: kPiwigoPrivacy) {
-        _privacy = privacy
-    }
-
     @objc
     func setPrivacyObjc(_ privacy: kPiwigoPrivacyObjc) {
         _privacy = kPiwigoPrivacy(rawValue: Int16(privacy.rawValue))
@@ -38,7 +34,7 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
     @IBOutlet var privacyTableView: UITableView!
     
     private var _privacy: kPiwigoPrivacy?
-    private var privacy: kPiwigoPrivacy {
+    var privacy: kPiwigoPrivacy {
         get {
             return _privacy ?? .everybody
         }
