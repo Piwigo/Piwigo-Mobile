@@ -11,6 +11,7 @@
 @objc
 class DeviceUtilities: NSObject {
     
+    // MARK: - Device names
     @objc
     class func name(forCode deviceCode: String?) -> String {
         // See https://everyi.com/ipod-iphone-ipad-identification/index-how-to-identify-my-ipod-iphone-ipad.html
@@ -361,6 +362,186 @@ class DeviceUtilities: NSObject {
         }
         if (deviceCode == "x86_64") {
             return "Simulator"
+        }
+
+        return deviceCode
+    }
+
+
+    // MARK: - Camera Resolutions
+    class func cameraResolution(forCode deviceCode: String?) -> String {
+        guard let deviceCode = deviceCode else {
+            return ""
+        }
+        
+        // MARK: - iPhone
+        if (deviceCode == "iPhone1,1")  ||
+            (deviceCode == "iPhone1,2") {
+            return "2 Mpx"
+        }
+        if (deviceCode == "iPhone2,1") {
+            return "3 Mpx"
+        }
+        if (deviceCode == "iPhone3,1")  ||
+            (deviceCode == "iPhone3,2") ||
+            (deviceCode == "iPhone3,3") {
+            return "5 Mpx"
+        }
+        if (deviceCode == "iPhone4,1")  ||
+            (deviceCode == "iPhone5,1") ||
+            (deviceCode == "iPhone5,2") ||
+            (deviceCode == "iPhone5,3") ||
+            (deviceCode == "iPhone5,4") ||
+            (deviceCode == "iPhone6,1") ||
+            (deviceCode == "iPhone6,2") ||
+            (deviceCode == "iPhone7,1") ||
+            (deviceCode == "iPhone7,2") {
+            return "8 Mpx"
+        }
+        if (deviceCode == "iPhone8,1")  ||
+            (deviceCode == "iPhone8,2") ||
+            (deviceCode == "iPhone8,4") ||
+            (deviceCode == "iPhone9,1") ||
+            (deviceCode == "iPhone9,2") ||
+            (deviceCode == "iPhone9,3") ||
+            (deviceCode == "iPhone9,4") ||
+            (deviceCode == "iPhone10,1") ||
+            (deviceCode == "iPhone10,2") ||
+            (deviceCode == "iPhone10,3") ||
+            (deviceCode == "iPhone10,4") ||
+            (deviceCode == "iPhone10,5") ||
+            (deviceCode == "iPhone10,6") ||
+            (deviceCode == "iPhone11,2") ||
+            (deviceCode == "iPhone11,6") ||
+            (deviceCode == "iPhone11,8") ||
+            (deviceCode == "iPhone12,1") ||
+            (deviceCode == "iPhone12,3") ||
+            (deviceCode == "iPhone12,5") ||
+            (deviceCode == "iPhone12,8") ||
+            (deviceCode == "iPhone13,1") ||
+            (deviceCode == "iPhone13,2") ||
+            (deviceCode == "iPhone13,3") ||
+            (deviceCode == "iPhone13,4") {
+            return "12 Mpx"
+        }
+
+        // MARK: - iPad
+        if (deviceCode == "iPad1,1") {
+            return ""
+        }
+        if (deviceCode == "iPad2,1")  ||
+            (deviceCode == "iPad2,2") ||
+            (deviceCode == "iPad2,3") ||
+            (deviceCode == "iPad2,4") {
+            return "0.92 Mpx"
+        }
+        if (deviceCode == "iPad3,1") ||
+            (deviceCode == "iPad3,2") ||
+            (deviceCode == "iPad3,3") ||
+            (deviceCode == "iPad3,4") ||
+            (deviceCode == "iPad3,5") ||
+            (deviceCode == "iPad3,6") {
+            return "5 Mpx"
+        }
+        if (deviceCode == "iPad6,11")  ||
+            (deviceCode == "iPad6,12") ||
+            (deviceCode == "iPad7,5")  ||
+            (deviceCode == "iPad7,6")  ||
+            (deviceCode == "iPad7,11") ||
+            (deviceCode == "iPad7,12") ||
+            (deviceCode == "iPad11,6") ||
+            (deviceCode == "iPad11,7") {
+            return "8 Mpx"
+        }
+
+        // MARK: - iPad Air
+        if (deviceCode == "iPad4,1")  ||
+            (deviceCode == "iPad4,2") {
+            return "5 Mpx"
+        }
+        if (deviceCode == "iPad5,3")   ||
+            (deviceCode == "iPad5,4")  ||
+            (deviceCode == "iPad11,3") ||
+            (deviceCode == "iPad11,4") {
+            return "8 Mpx"
+        }
+        if (deviceCode == "iPad13,1") ||
+            (deviceCode == "iPad13,2") {
+            return "12 Mpx"
+        }
+
+        // MARK: - iPad Pro
+        if (deviceCode == "iPad6,3") ||
+            (deviceCode == "iPad6,4") {
+            return "12 Mpx"
+        }
+        if (deviceCode == "iPad6,7") ||
+            (deviceCode == "iPad6,8") ||
+            (deviceCode == "iPad6,7") ||
+            (deviceCode == "iPad6,8") {
+            return "8 Mpx"
+        }
+        if (deviceCode == "iPad7,3")  ||
+            (deviceCode == "iPad7,4") ||
+            (deviceCode == "iPad7,1") ||
+            (deviceCode == "iPad7,2") ||
+            (deviceCode == "iPad7,3") ||
+            (deviceCode == "iPad7,4") ||
+            (deviceCode == "iPad8,1") ||
+            (deviceCode == "iPad8,2") ||
+            (deviceCode == "iPad8,3") ||
+            (deviceCode == "iPad8,4") ||
+            (deviceCode == "iPad8,5") ||
+            (deviceCode == "iPad8,6") ||
+            (deviceCode == "iPad8,7") ||
+            (deviceCode == "iPad8,8") ||
+            (deviceCode == "iPad8,9") ||
+            (deviceCode == "iPad8,10") ||
+            (deviceCode == "iPad8,11") ||
+            (deviceCode == "iPad8,12") {
+            return "12 Mpx"
+        }
+
+        // MARK: - iPad mini
+        if (deviceCode == "iPad2,5")  ||
+            (deviceCode == "iPad2,6") ||
+            (deviceCode == "iPad2,7") ||
+            (deviceCode == "iPad4,4") ||
+            (deviceCode == "iPad4,5") ||
+            (deviceCode == "iPad4,7") ||
+            (deviceCode == "iPad4,8") {
+            return "5 Mpx"
+        }
+        if (deviceCode == "iPad5,1")   ||
+            (deviceCode == "iPad5,2")  ||
+            (deviceCode == "iPad11,1") ||
+            (deviceCode == "iPad11,2") {
+            return "8 Mpx"
+        }
+
+        // MARK: - iPod
+        if (deviceCode == "iPod1,1")  ||
+            (deviceCode == "iPod2,1") ||
+            (deviceCode == "iPod3,1") {
+            return ""
+        }
+        if (deviceCode == "iPod4,1") {
+            return "0.92 Mpx"
+        }
+        if (deviceCode == "iPod5,1") {
+            return "5 Mpx"
+        }
+        if (deviceCode == "iPod7,1") ||
+            (deviceCode == "iPod9,1") {
+            return "8 Mpx"
+        }
+
+        // MARK: - Simulator
+        if (deviceCode == "i386") {
+            return "! Mpx"
+        }
+        if (deviceCode == "x86_64") {
+            return "! Mpx"
         }
 
         return deviceCode
