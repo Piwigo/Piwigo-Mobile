@@ -8,9 +8,10 @@
 //  Converted to Swift 5.2 by Eddy Lelièvre-Berna on 10/01/2021.
 //
 
+import LinkPresentation
+import MobileCoreServices
 import Photos
 import UIKit
-import LinkPresentation
 import piwigoKit
 
 @objc
@@ -384,7 +385,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
     }
     
     override func activityViewController(_ activityViewController: UIActivityViewController, dataTypeIdentifierForActivityType activityType: UIActivity.ActivityType?) -> String {
-        return "public.image"
+        return kUTTypeImage as String
     }
     
     @available(iOS 13.0, *)

@@ -9,8 +9,9 @@
 //
 
 import AVFoundation
-import UIKit
 import LinkPresentation
+import MobileCoreServices
+import UIKit
 import piwigoKit
 
 @objc
@@ -408,7 +409,7 @@ class ShareVideoActivityItemProvider: UIActivityItemProvider {
     }
     
     override func activityViewController(_ activityViewController: UIActivityViewController, dataTypeIdentifierForActivityType activityType: UIActivity.ActivityType?) -> String {
-        return "public.movie"
+        return kUTTypeMovie as String
     }
     
     @available(iOS 13.0, *)
