@@ -1554,7 +1554,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let privacySB = UIStoryboard(name: "SelectPrivacyViewController", bundle: nil)
                 guard let privacyVC = privacySB.instantiateViewController(withIdentifier: "SelectPrivacyViewController") as? SelectPrivacyViewController else { return }
                 privacyVC.delegate = self
-                privacyVC.setPrivacy(kPiwigoPrivacy(rawValue: UploadVars.defaultPrivacyLevel) ?? .everybody)
+                privacyVC.privacy = kPiwigoPrivacy(rawValue: UploadVars.defaultPrivacyLevel) ?? .everybody
                 navigationController?.pushViewController(privacyVC, animated: true)
             case 10 /* Auto Upload */:
                 let autoUploadSB = UIStoryboard(name: "AutoUploadViewController", bundle: nil)
