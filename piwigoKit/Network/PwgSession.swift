@@ -93,7 +93,7 @@ class PwgSession: NSObject {
                     if let jsonData = data, !jsonData.isEmpty {
                         #if DEBUG
                         let dataStr = String(decoding: jsonData, as: UTF8.self)
-                        print("\(UploadUtilities.debugFormatter.string(from: Date())) > JSON: \(dataStr.debugDescription)")
+                        print(" > JSON: \(dataStr.debugDescription)")
                         #endif
                         let filteredData = self.filterPiwigo(data: jsonData)
                         completionHandler(filteredData, nil)
@@ -125,7 +125,7 @@ class PwgSession: NSObject {
                 jsonData.count * MemoryLayout<Data>.stride
             print("countsOfBytesReceived: \(countsOfByte) bytes")
             let dataStr = String(decoding: jsonData, as: UTF8.self)
-            print("\(UploadUtilities.debugFormatter.string(from: Date())) > JSON: \(dataStr.debugDescription)")
+            print(" > JSON: \(dataStr.debugDescription)")
             #endif
             
             let filteredData = self.filterPiwigo(data: jsonData)
