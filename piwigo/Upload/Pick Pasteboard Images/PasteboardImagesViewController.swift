@@ -6,6 +6,7 @@
 //  Copyright © 2020 Piwigo.org. All rights reserved.
 //
 
+import MobileCoreServices
 import Photos
 import UIKit
 import piwigoKit
@@ -82,7 +83,8 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         }
                                                                                         
         // Retrieve pasteboard object indexes and types, then create identifiers
-        if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: ["public.image", "public.movie"]),
+        if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: [kUTTypeImage as String,
+                                                                             kUTTypeMovie as String]),
            let types = UIPasteboard.general.types(forItemSet: indexSet) {
 
             // Initialise cached indexed uploads
@@ -105,7 +107,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                 let indexSet = IndexSet(integer: idx)
                 var identifier = ""
                 // Movies first because movies may contain images
-                if UIPasteboard.general.contains(pasteboardTypes: ["public.movie"], inItemSet: indexSet) {
+                if UIPasteboard.general.contains(pasteboardTypes: [kUTTypeMovie as String], inItemSet: indexSet) {
                     identifier = String(format: "%@%@%@%ld", UploadManager.shared.kClipboardPrefix,
                                         pbDateTime, UploadManager.shared.kClipboardMovieSuffix, idx)
                 } else {
@@ -348,7 +350,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
     /// Called by the notification center when the pasteboard content is updated
     @objc func checkPasteboard() {
         // Do nothing if the clipboard was emptied assuming that pasteboard objects are already stored
-        if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: ["public.image", "public.movie"]),
+        if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: [kUTTypeImage as String, "public.movie"]),
            let types = UIPasteboard.general.types(forItemSet: indexSet) {
 
             // Reinitialise cached indexed uploads, deselect images
@@ -371,7 +373,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                 let indexSet = IndexSet(integer: idx)
                 var identifier = ""
                 // Movies first because objects may contain both movies and images
-                if UIPasteboard.general.contains(pasteboardTypes: ["public.movie"], inItemSet: indexSet) {
+                if UIPasteboard.general.contains(pasteboardTypes: [kUTTypeMovie as String], inItemSet: indexSet) {
                     identifier = String(format: "%@%@%@%ld", UploadManager.shared.kClipboardPrefix,
                                         pbDateTime, UploadManager.shared.kClipboardMovieSuffix, idx)
                 } else {
@@ -795,8 +797,8 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
             image = pbObjects[indexPath.row].image
             cell.md5sum = pbObjects[indexPath.row].md5Sum
         }
-        else if let data = UIPasteboard.general.data(forPasteboardType: "public.image",
-                                                       inItemSet: IndexSet(integer: indexPath.row))?.first {
+        else if let data = UIPasteboard.general.data(forPasteboardType: kUTTypeImage as String,
+                                                     inItemSet: IndexSet(integer: indexPath.row))?.first {
             image = UIImage(data: data) ?? imagePlaceholder
             cell.md5sum = ""
         }

@@ -8,6 +8,7 @@
 //  Converted to Swift 5.1 by Eddy Lelièvre-Berna on 13/04/2020
 //
 
+import MobileCoreServices
 import Photos
 import PhotosUI
 import UIKit
@@ -165,7 +166,8 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
             navigationController?.navigationBar.accessibilityIdentifier = "LocalAlbumsNav"
 
             // Check if there are photos/videos in the pasteboard
-            if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: ["public.image", "public.movie"]),
+            if let indexSet = UIPasteboard.general.itemSet(withPasteboardTypes: [kUTTypeImage as String,
+                                                                                 kUTTypeMovie as String]),
                indexSet.count > 0, let _ = UIPasteboard.general.types(forItemSet: indexSet) {
                 hasImagesInPasteboard = true
             }
@@ -209,8 +211,10 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         if wantedAction == .setAutoUploadAlbum { return }
         
         // Are there images in the pasteboard?
-        let testTypes = UIPasteboard.general.contains(pasteboardTypes: ["public.image", "public.movie"]) ? true : false
-        let nberPhotos = UIPasteboard.general.itemSet(withPasteboardTypes: ["public.image", "public.movie"])?.count ?? 0
+        let testTypes = UIPasteboard.general.contains(pasteboardTypes: [kUTTypeImage as String,
+                                                                        kUTTypeMovie as String]) ? true : false
+        let nberPhotos = UIPasteboard.general.itemSet(withPasteboardTypes: [kUTTypeImage as String,
+                                                                            kUTTypeMovie as String])?.count ?? 0
         hasImagesInPasteboard = testTypes && (nberPhotos > 0)
 
         // Reload tableView
@@ -410,7 +414,8 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
                 return LocalAlbumsNoDatesTableViewCell()
             }
             let title = NSLocalizedString("categoryUpload_pasteboard", comment: "Clipboard")
-            let nberPhotos = UIPasteboard.general.itemSet(withPasteboardTypes: ["public.image", "public.movie"])?.count ?? NSNotFound
+            let nberPhotos = UIPasteboard.general.itemSet(withPasteboardTypes: [kUTTypeImage as String,
+                                                                                kUTTypeMovie as String])?.count ?? NSNotFound
             cell.configure(with: title, nberPhotos: nberPhotos)
             cell.isAccessibilityElement = true
             return cell
