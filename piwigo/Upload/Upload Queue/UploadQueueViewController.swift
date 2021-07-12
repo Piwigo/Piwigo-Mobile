@@ -397,7 +397,7 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
         // If all upload requests are done, delete all temporary files (in case some would not be deleted)
         if snapshot.numberOfItems == 0 {
             // Delete remaining files from Upload directory (if any)
-            UploadManager.shared.deleteFilesInUploadsDirectory(with: nil)
+            UploadManager.shared.deleteFilesInUploadsDirectory()
             // Close the view when there is no more upload request to display
             self.dismiss(animated: true, completion: nil)
         }

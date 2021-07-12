@@ -13,11 +13,11 @@ extension UploadManager {
     
     // MARK: - Set Image Info
     func setImageParameters(for uploadID: NSManagedObjectID) {
-        print("\(UploadUtilities.debugFormatter.string(from: Date())) > setImageParameters() in", queueName())
+        print("\(debugFormatter.string(from: Date())) > setImageParameters() in", queueName())
         // Retrieve upload request parameters
         let taskContext = DataController.privateManagedObjectContext
         let upload = taskContext.object(with: uploadID) as! Upload
-        print("\(UploadUtilities.debugFormatter.string(from: Date())) > finishing transfer of \(upload.fileName)…")
+        print("\(debugFormatter.string(from: Date())) > finishing transfer of \(upload.fileName)…")
 
         // Prepare creation date
         let dateFormat = DateFormatter()
@@ -55,7 +55,7 @@ extension UploadManager {
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoImagesSetInfo, paramDict: paramsDict,
                                 countOfBytesClientExpectsToReceive: 1000) { jsonData, error in
-            print("\(UploadUtilities.debugFormatter.string(from: Date())) > setImageParameters() in", queueName())
+            print("\(self.debugFormatter.string(from: Date())) > setImageParameters() in", queueName())
             // Any error?
             /// - Network communication errors
             /// - Returned JSON data is empty
@@ -194,7 +194,7 @@ extension UploadManager {
         }
 
         // Update state of finished upload
-        print("\(UploadUtilities.debugFormatter.string(from: Date())) > finished with \(uploadID) \(errorMsg)")
+        print("\(debugFormatter.string(from: Date())) > finished with \(uploadID) \(errorMsg)")
         uploadsProvider.updateStatusOfUpload(with: uploadID, to: newState, error: errorMsg) { [unowned self] (_) in
             // Consider next image
             self.didSetParameters()
@@ -211,7 +211,7 @@ extension UploadManager {
                         inCategory categoryId: Int,
                         completionHandler: @escaping (Bool) -> Void) -> (Void) {
         
-        print("\(UploadUtilities.debugFormatter.string(from: Date())) > moderateImages() in", queueName())
+        print("\(debugFormatter.string(from: Date())) > moderateImages() in", queueName())
         // Check that we have a token
         guard !NetworkVars.pwgToken.isEmpty else {
             // // We shall retry later —> Continue in background queue!
@@ -230,7 +230,7 @@ extension UploadManager {
                                          "category_id": "\(NSNumber(value: categoryId))"]
         JSONsession.postRequest(withMethod: kCommunityImagesUploadCompleted, paramDict: paramDict,
                                 countOfBytesClientExpectsToReceive: 1000) { jsonData, error in
-            print("\(UploadUtilities.debugFormatter.string(from: Date())) > moderateImages() in", queueName())
+            print("\(self.debugFormatter.string(from: Date())) > moderateImages() in", queueName())
             // Any error?
             /// - Network communication errors
             /// - Returned JSON data is empty

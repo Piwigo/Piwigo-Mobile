@@ -7,85 +7,149 @@
 //
 
 import Foundation
+import MobileCoreServices
 import Photos
 
-public class UploadUtilities: NSObject {
-
-    // For logs
-    @nonobjc public static let debugFormatter: DateFormatter = {
-        var formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US")
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.ssssss"
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
-        return formatter
-    }()
-
-    // - MARK: Constants returning the list of:
-    /// - image formats whcih can be converted with iOS
-    /// - movie formats which can be converted with iOS
-    /// See: https://developer.apple.com/documentation/uniformtypeidentifiers/uttype/system_declared_types
-    @nonobjc public static let acceptedImageFormats: String = {
-        return "png,heic,heif,tif,tiff,jpg,jpeg,raw,webp,gif,bmp,ico"
-    }()
-    @nonobjc public static let acceptedMovieFormats: String = {
-        return "mov,mpg,mpeg,mpeg2,mp4,avi"
-    }()
-
-    // MARK: - File name from PHAsset
-    public class func fileName(forImageAsset imageAsset: PHAsset?) -> String {
-        var fileName = ""
+extension UploadManager {
+    
+    // MARK: - Upload File Utilities
+    /// - Get URL of final upload file to be stored into Piwigo/Uploads directory
+    /// - Delete existing file if demanded (failed previous attempt?)
+    public func getUploadFileURL(from properties:UploadProperties, withSuffix suffix:String = "",
+                                  deleted deleteIt:Bool = false) -> URL {
+        // File name of image data to be stored into Piwigo/Uploads directory
+        let fileName = properties.localIdentifier.replacingOccurrences(of: "/", with: "-").appending(suffix)
+        if fileName.count ==  0 { fatalError("!!!! No Upload Filename !!!!")}
+        let fileURL = applicationUploadsDirectory.appendingPathComponent(fileName)
         
-        // Asset resource available?
-        if imageAsset != nil {
-            // Get file name from image asset
-            var resources: [PHAssetResource]? = nil
-            if let imageAsset = imageAsset {
-                resources = PHAssetResource.assetResources(for: imageAsset)
-            }
-            // Shared assets may not return resources
-            if (resources?.count ?? 0) > 0 {
-                for resource in resources ?? [] {
-                    if resource.type == .adjustmentData {
-                        continue
-                    }
-                    fileName = resource.originalFilename
-                    if (resource.type == .photo) || (resource.type == .video) || (resource.type == .audio) {
-                        // We preferably select the original filename
-                        break
-                    }
-                }
-            }
-            resources?.removeAll(keepingCapacity: false)
+        // Should we delete it?
+        if deleteIt {
+            // Deletes temporary image file if it exists (incomplete previous attempt?)
+            do { try FileManager.default.removeItem(at: fileURL) } catch { }
         }
         
-        // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
-        var utf8mb3Filename = NetworkUtilities.utf8mb3String(from: fileName)
+        return fileURL
+    }
 
-        // If encodedFileName is empty, build one from the current date
-        if utf8mb3Filename.count == 0 {
-            // No filename => Build filename from creation date
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyyMMdd-HHmmssSSSS"
-            if let creation = imageAsset?.creationDate {
-                utf8mb3Filename = dateFormatter.string(from: creation)
-            } else {
-                utf8mb3Filename = dateFormatter.string(from: Date())
+    /// - Rename Upload file if needed
+    /// - Get MD5 checksum and MIME type
+    /// - Update upload session counter
+    /// -> return updated upload properties w/ or w/o error
+    public func finalizeImageFile(atURL originalFileURL:URL, with properties: UploadProperties,
+                                  completionHandler: @escaping (UploadProperties, Error?) -> Void) {
+
+        // File name of image data to be stored into Piwigo/Uploads directory
+        let fileURL = getUploadFileURL(from: properties)
+
+        // Should we rename the file to adopt the Upload Manager convention?
+        if originalFileURL != fileURL {
+            // Deletes temporary Upload file if it exists (incomplete previous attempt?)
+            do { try FileManager.default.removeItem(at: fileURL) } catch { }
+
+            // Adopts Upload filename convention (e.g. removes the "-original" suffix)
+            do {
+                try FileManager.default.moveItem(at: originalFileURL, to: fileURL)
             }
-
-            // Filename extension required by Piwigo so that it knows how to deal with it
-            if imageAsset?.mediaType == .image {
-                // Adopt JPEG photo format by default, will be rechecked
-                utf8mb3Filename = URL(fileURLWithPath: utf8mb3Filename).appendingPathExtension("jpg").lastPathComponent
-            } else if imageAsset?.mediaType == .video {
-                // Videos are exported in MP4 format
-                utf8mb3Filename = URL(fileURLWithPath: utf8mb3Filename).appendingPathExtension("mp4").lastPathComponent
-            } else if imageAsset?.mediaType == .audio {
-                // Arbitrary extension, not managed yet
-                utf8mb3Filename = URL(fileURLWithPath: utf8mb3Filename).appendingPathExtension("m4a").lastPathComponent
+            catch {
+                // Update upload request
+                completionHandler(properties, error)
             }
         }
+        
+        // Determine MD5 checksum of image file to upload
+        let error: NSError?
+        var uploadProperties = properties
+        (uploadProperties.md5Sum, error) = fileURL.MD5checksum()
+        print("\(debugFormatter.string(from: Date())) > MD5: \(String(describing: uploadProperties.md5Sum))")
+        if error != nil {
+            // Could not determine the MD5 checksum
+            completionHandler(uploadProperties, error)
+            return
+        }
 
-//        print("=> adopted filename = \(utf8mb3Filename)")
-        return utf8mb3Filename
+        // Get MIME type from file extension
+        let fileExt = (URL(fileURLWithPath: properties.fileName).pathExtension).lowercased()
+        guard let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExt as NSString, nil)?.takeRetainedValue() else {
+            let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+            completionHandler(uploadProperties, error)
+            return
+        }
+        guard let mimeType = (UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue()) as String? else  {
+            let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+            completionHandler(uploadProperties, error)
+            return
+        }
+        print("\(debugFormatter.string(from: Date())) > MIME type: \(String(describing: mimeType))")
+        uploadProperties.mimeType = mimeType
+
+        // Done -> append file size to counter
+        countOfBytesPrepared += UInt64(fileURL.fileSize)
+        completionHandler(uploadProperties, nil)
+    }
+
+    /// - Delete Upload files w/ or w/o prefix
+    public func deleteFilesInUploadsDirectory(withPrefix prefix: String = "") -> Void {
+        let fileManager = FileManager.default
+        do {
+            // Get list of files
+            var filesToDelete = try fileManager.contentsOfDirectory(at: self.applicationUploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+            if !prefix.isEmpty {
+                // Will delete files with given prefix only
+                filesToDelete.removeAll(where: { !$0.lastPathComponent.hasPrefix(prefix) })
+            }
+
+            // Delete files
+            for file in filesToDelete {
+                try fileManager.removeItem(at: file)
+            }
+            
+            // Release memory
+            filesToDelete.removeAll()
+
+            // Get uploads to complete in queue
+            // Considers only uploads to the server to which the user is logged in
+            let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
+                                                .preparingFail, .formatError, .prepared,
+                                                .uploading, .uploadingError, .uploaded,
+                                                .finishing, .finishingError]
+            // Update app badge and Upload button in root/default album
+            UploadManager.shared.nberOfUploadsToComplete = uploadsProvider.getRequestsIn(states: states).count
+
+            // For debugging
+//            let leftFiles = try fileManager.contentsOfDirectory(at: self.applicationUploadsDirectory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+//            print("\(debugFormatter.string(from: Date())) > Remaining files in cache: \(leftFiles)")
+        } catch {
+            print("\(debugFormatter.string(from: Date())) > could not clear the Uploads folder: \(error)")
+        }
+    }
+
+}
+
+// MARK: - For checking operation queue
+/// The name/description of the current queue (Operation or Dispatch), if that can be found. Else, the name/description of the thread.
+public func queueName() -> String {
+    if let currentOperationQueue = OperationQueue.current {
+        if let currentDispatchQueue = currentOperationQueue.underlyingQueue {
+            return "dispatch queue: \(currentDispatchQueue.label.nonEmpty ?? currentDispatchQueue.description)"
+        }
+        else {
+            return "operation queue: \(currentOperationQueue.name?.nonEmpty ?? currentOperationQueue.description)"
+        }
+    }
+    else {
+        let currentThread = Thread.current
+        return "thread: \(currentThread.name?.nonEmpty ?? currentThread.description)"
+    }
+}
+
+public extension String {
+    /// Returns this string if it is not empty, else `nil`.
+    var nonEmpty: String? {
+        if self.isEmpty {
+            return nil
+        }
+        else {
+            return self
+        }
     }
 }

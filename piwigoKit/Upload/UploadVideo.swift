@@ -32,33 +32,10 @@ extension UploadManager {
             return
         }
         
-        // Get MIME type
-        guard let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, originalFileURL.pathExtension as NSString, nil)?.takeRetainedValue() else {
-            let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-            self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
-            return
-        }
-        guard let mimeType = (UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue()) as String? else  {
-            let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-            self.didPrepareVideo(for: uploadID, with: uploadProperties, error)
-            return
-        }
-        var newUploadProperties = uploadProperties
-        newUploadProperties.mimeType = mimeType
-
-        // Determine MD5 checksum
-        let error: NSError?
-        (newUploadProperties.md5Sum, error) = originalFileURL.MD5checksum()
-        print("\(UploadUtilities.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUploadProperties.md5Sum))")
-        if error != nil {
-            // Could not determine the MD5 checksum
+        // Get MD5 checksum and MIME type, update counter
+        finalizeImageFile(atURL: originalFileURL, with: uploadProperties) { newUploadProperties, error in
             self.didPrepareVideo(for: uploadID, with: newUploadProperties, error)
-            return
         }
-
-        // Upload video with tags and properties
-        self.countOfBytesPrepared += originalFileURL.fileSize
-        self.didPrepareVideo(for: uploadID, with: newUploadProperties, nil)
     }
 
     // Case of a video from the Pasteboard which is in a format not accepted by the Piwigo server
@@ -140,7 +117,7 @@ extension UploadManager {
             // Determine MD5 checksum
             let error: NSError?
             (newUploadProperties.md5Sum, error) = originalFileURL.MD5checksum()
-            print("\(UploadUtilities.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUploadProperties.md5Sum))")
+            print("\(self.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUploadProperties.md5Sum))")
             if error != nil {
                 // Could not determine the MD5 checksum
                 self.didPrepareVideo(for: uploadID, with: newUploadProperties, error)
@@ -203,10 +180,10 @@ extension UploadManager {
 
         // Update UI
         updateCell(with: newProperties.localIdentifier, stateLabel: newProperties.stateLabel,
-                   photoResize: nil, progress: nil, errorMsg: errorMsg)
+                   photoMaxSize: nil, progress: nil, errorMsg: errorMsg)
 
         // Update state of upload request
-        print("\(UploadUtilities.debugFormatter.string(from: Date())) > prepared \(uploadID) \(errorMsg)")
+        print("\(debugFormatter.string(from: Date())) > prepared \(uploadID) \(errorMsg)")
         uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: newProperties) { [unowned self] (_) in
             // Upload ready for transfer
             self.didEndPreparation()
@@ -231,7 +208,7 @@ extension UploadManager {
     
     private func retrieveVideo(from imageAsset: PHAsset, with options: PHVideoRequestOptions,
                        completionHandler: @escaping (AVAsset?, PHVideoRequestOptions, Error?) -> Void) {
-        print("\(UploadUtilities.debugFormatter.string(from: Date())) > enters retrieveVideoAssetFrom in", queueName())
+        print("\(debugFormatter.string(from: Date())) > enters retrieveVideoAssetFrom in", queueName())
 
         // The block Photos calls periodically while downloading the video.
         options.progressHandler = { progress, error, stop, dict in
@@ -361,12 +338,11 @@ extension UploadManager {
         
         // Determine video size
         let videoSize = videoAsset.tracks(withMediaType: .video).first?.naturalSize ?? CGSize(width: 640, height: 480)
-        var maxPixels = max(videoSize.width, videoSize.height)
+        var maxPixels = Int16(max(videoSize.width, videoSize.height))
                                                 
         // Resize frames
         if uploadProperties.resizeImageOnUpload {
-            let dimension = CGFloat(uploadProperties.photoResize) / 100.0
-            maxPixels *= dimension
+            maxPixels = pwgPhotoMaxSizes[Int(uploadProperties.photoMaxSize)].0
         }
 
         // The 'presets' array never contains AVAssetExportPresetPassthrough,
@@ -442,16 +418,7 @@ extension UploadManager {
         newUploadProperties.fileName = URL(fileURLWithPath: uploadProperties.fileName).deletingPathExtension().appendingPathExtension("MP4").lastPathComponent
 
         // File name of final video data to be stored into Piwigo/Uploads directory
-        let fileName = uploadProperties.localIdentifier.replacingOccurrences(of: "/", with: "-")
-        exportSession.outputURL = self.applicationUploadsDirectory.appendingPathComponent(fileName)
-
-        // Deletes temporary video file if exists (incomplete previous attempt?)
-        do {
-            if let outputURL = exportSession.outputURL {
-                try FileManager.default.removeItem(at: outputURL)
-            }
-        } catch {
-        }
+        exportSession.outputURL = getUploadFileURL(from: uploadProperties, deleted: true)
 
         // Export temporary video for upload
         exportSession.exportAsynchronously(completionHandler: {
@@ -468,24 +435,11 @@ extension UploadManager {
                 return
             }
 
-            // MD5 checksum of exported video
-            let error: NSError?
-            (newUploadProperties.md5Sum, error) = outputURL.MD5checksum()
-            print("\(UploadUtilities.debugFormatter.string(from: Date())) > MD5: \(String(describing: newUploadProperties.md5Sum))")
-            if error != nil {
-                // Could not determine the MD5 checksum
-                self.didPrepareVideo(for: uploadID, with: newUploadProperties, error)
-                return
+            // Get MD5 checksum and MIME type, update counter
+            self.finalizeImageFile(atURL: outputURL, with: newUploadProperties) { [unowned self] finalProperties, error in
+                // Update upload request
+                self.didPrepareVideo(for: uploadID, with: finalProperties, nil)
             }
-            self.countOfBytesPrepared += outputURL.fileSize
-            self.didPrepareVideo(for: uploadID, with: newUploadProperties, nil)
-            return
         })
     }
-
-//    private func FourCCString(_ code: FourCharCode) -> String? {
-//        let result = "\(Int((code >> 24)) & 0xff)\(Int((code >> 16)) & 0xff)\(Int((code >> 8)) & 0xff)\(code & 0xff)"
-//        let characterSet = CharacterSet.whitespaces
-//        return result.trimmingCharacters(in: characterSet)
-//    }
 }

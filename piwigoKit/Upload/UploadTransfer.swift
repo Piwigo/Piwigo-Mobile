@@ -76,7 +76,7 @@ extension UploadManager {
         let offset = chunkSize * chunk
         let thisChunkSize = length - offset > chunkSize ? chunkSize : length - offset
         var chunkData = imageData.subdata(in: offset..<offset + thisChunkSize)
-        print("\(UploadUtilities.debugFormatter.string(from: Date())) > #\(chunk+1) with chunkSize:", chunkSize, "thisChunkSize:", thisChunkSize, "total:", length)
+        print("\(debugFormatter.string(from: Date())) > #\(chunk+1) with chunkSize:", chunkSize, "thisChunkSize:", thisChunkSize, "total:", length)
 
         // Prepare URL
         let urlStr = "\(NetworkVars.serverProtocol)\(NetworkVars.serverPath)"
@@ -127,7 +127,7 @@ extension UploadManager {
         }
         
         // Resume task
-        print("\(UploadUtilities.debugFormatter.string(from: Date())) > \(uploadProperties.md5Sum) upload task \(task.taskIdentifier) resumed (\(chunk+1)/\(chunks))")
+        print("\(debugFormatter.string(from: Date())) > \(uploadProperties.md5Sum) upload task \(task.taskIdentifier) resumed (\(chunk+1)/\(chunks))")
         task.resume()
 
         // Task now resumed -> Update upload request status
@@ -148,7 +148,7 @@ extension UploadManager {
               let chunkStr = task.originalRequest?.value(forHTTPHeaderField: "chunk"), let chunk = Int(chunkStr),
               let chunksStr = task.originalRequest?.value(forHTTPHeaderField: "chunks"), let chunks = Int(chunksStr),
               let md5sum = task.originalRequest?.value(forHTTPHeaderField: "md5sum") else {
-            print("\(UploadUtilities.debugFormatter.string(from: Date())) > Could not extract HTTP header fields !!!!!!")
+            print("\(debugFormatter.string(from: Date())) > Could not extract HTTP header fields !!!!!!")
             return
         }
 
@@ -158,12 +158,12 @@ extension UploadManager {
             
             // Retrieve upload request properties
             guard let objectURI = URL(string: objectURIstr) else {
-                print("\(UploadUtilities.debugFormatter.string(from: Date())) > \(md5sum) | no object URI!")
+                print("\(debugFormatter.string(from: Date())) > \(md5sum) | no object URI!")
                 return
             }
             let taskContext = DataController.privateManagedObjectContext
             guard let uploadID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
-                print("\(UploadUtilities.debugFormatter.string(from: Date())) > \(md5sum) | no objectID!")
+                print("\(debugFormatter.string(from: Date())) > \(md5sum) | no objectID!")
                 return
             }
             var uploadProperties: UploadProperties
@@ -179,7 +179,7 @@ extension UploadManager {
                 }
             }
             catch {
-                print("\(UploadUtilities.debugFormatter.string(from: Date())) > \(md5sum) | missing Core Data object!")
+                print("\(debugFormatter.string(from: Date())) > \(md5sum) | missing Core Data object!")
                 // In foreground, consider next image
                 self.findNextImageToUpload()
                 return
@@ -187,7 +187,7 @@ extension UploadManager {
 
             // Update upload request status
             if let error = error as NSError? {
-                print("\(UploadUtilities.debugFormatter.string(from: Date())) > \(md5sum) | \(error.localizedDescription)")
+                print("\(debugFormatter.string(from: Date())) > \(md5sum) | \(error.localizedDescription)")
                 self.didEndTransfer(for: uploadID, with: uploadProperties, error, taskID: task.taskIdentifier)
             } else {
                 let error = NSError(domain: "Piwigo", code: JsonError.networkUnavailable.hashValue, userInfo: [NSLocalizedDescriptionKey : JsonError.networkUnavailable.localizedDescription])
@@ -199,10 +199,10 @@ extension UploadManager {
         // Upload completed?
         if chunk + 1 < chunks { return }
 
-        // Delete uploaded file from Piwigo/Uploads directory
-        print("\(UploadUtilities.debugFormatter.string(from: Date())) > \(md5sum) | delete file")
+        // Delete uploaded files from Piwigo/Uploads directory
+        print("\(debugFormatter.string(from: Date())) > \(md5sum) | delete left files")
         let imageFile = identifier.replacingOccurrences(of: "/", with: "-")
-        deleteFilesInUploadsDirectory(with: imageFile)
+        deleteFilesInUploadsDirectory(withPrefix: imageFile)
     }
 
     func didCompleteUploadTask(_ task: URLSessionTask, withData data: Data) {
@@ -216,12 +216,12 @@ extension UploadManager {
         
         // Retrieve upload request properties
         guard let objectURI = URL(string: objectURIstr) else {
-            print("\(UploadUtilities.debugFormatter.string(from: Date())) > \(md5sum) | no object URI!")
+            print("\(debugFormatter.string(from: Date())) > \(md5sum) | no object URI!")
             return
         }
         let taskContext = DataController.privateManagedObjectContext
         guard let uploadID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
-            print("\(UploadUtilities.debugFormatter.string(from: Date())) > \(md5sum) | no objectID!")
+            print("\(debugFormatter.string(from: Date())) > \(md5sum) | no objectID!")
             return
         }
         var uploadProperties: UploadProperties
@@ -238,7 +238,7 @@ extension UploadManager {
         }
         catch {
             // In foreground, consider next image
-            print("\(UploadUtilities.debugFormatter.string(from: Date())) > \(md5sum) | missing Core Data object!")
+            print("\(debugFormatter.string(from: Date())) > \(md5sum) | missing Core Data object!")
             self.findNextImageToUpload()
             return
         }
@@ -247,13 +247,13 @@ extension UploadManager {
         let filteredData = PwgSession().filterPiwigo(data: data)
         #if DEBUG
         let dataStr = String(decoding: data, as: UTF8.self)
-        print("\(UploadUtilities.debugFormatter.string(from: Date())) > #\(chunk+1) done:", dataStr.debugDescription)
+        print("\(debugFormatter.string(from: Date())) > #\(chunk+1) done:", dataStr.debugDescription)
         #endif
         
         // Check returned data
         guard let _ = try? JSONSerialization.jsonObject(with: filteredData, options: []) as? [String: AnyObject] else {
             // Update upload request status
-            print("\(UploadUtilities.debugFormatter.string(from: Date())) > Invalid JSON object: \(dataStr)")
+            print("\(debugFormatter.string(from: Date())) > Invalid JSON object: \(dataStr)")
             let error = NSError(domain: "Piwigo", code: JsonError.invalidJSONobject.hashValue, userInfo: [NSLocalizedDescriptionKey : JsonError.invalidJSONobject.localizedDescription])
             self.didEndTransfer(for: uploadID, with: uploadProperties, error, taskID: task.taskIdentifier)
             return
@@ -316,199 +316,6 @@ extension UploadManager {
         }
     }
 
-
-
-
-//        // Prepare image parameters
-//        let imageParameters: [String : String] = [
-//            "identifier"    : uploadProperties.localIdentifier,
-//            "file"          : uploadProperties.fileName,
-//            "category"      : "\(NSNumber(value: uploadProperties.category))",
-//            "level"         : "\(NSNumber(value: uploadProperties.privacyLevel.rawValue))",
-//            "mimeType"      : uploadProperties.mimeType,
-//            "md5Sum"        : uploadProperties.md5Sum]
-//            kPiwigoImagesUploadParamFileName: uploadProperties.fileName,
-//            kPiwigoImagesUploadParamCategory: "\(NSNumber(value: uploadProperties.category))",
-//            kPiwigoImagesUploadParamPrivacy: "\(NSNumber(value: uploadProperties.privacyLevel.rawValue))",
-//            kPiwigoImagesUploadParamMimeType: uploadProperties.mimeType
-//        ]
-
-//        // Get URL of file to upload
-//        let fileName = uploadProperties.localIdentifier.replacingOccurrences(of: "/", with: "-")
-//        let fileURL = applicationUploadsDirectory.appendingPathComponent(fileName)
-
-        // Launch transfer
-//        startUploading(fileURL: fileURL, with: imageParameters,
-//            onProgress: { (progress, currentChunk, totalChunks) in
-//                // Update UI
-//                let chunkProgress: Float = Float(currentChunk) / Float(totalChunks)
-//                self.updateCell(with: uploadProperties.localIdentifier,
-//                                stateLabel: kPiwigoUploadState.uploading.stateInfo,
-//                                photoResize: nil, progress: chunkProgress,
-//                                errorMsg: uploadProperties.requestError)
-//            },
-//            onCompletion: { [unowned self] (task, jsonData) in
-////                    print("•••> completion: \(String(describing: jsonData))")
-//                // Check returned data
-//                guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {
-//                    // Update upload request status
-//                    let error = NSError(domain: "Piwigo", code: JsonError.invalidJSONobject.hashValue, userInfo: [NSLocalizedDescriptionKey : JsonError.invalidJSONobject.localizedDescription])
-//                    self.didEndTransfer(for: uploadID, with: uploadProperties, error)
-//                    return
-//                }
-//
-//                // Decode the JSON.
-//                do {
-//                    // Decode the JSON into codable type ImagesUploadJSON.
-//                    let uploadJSON = try self.decoder.decode(ImagesUploadJSON.self, from: data)
-//
-//                    // Piwigo error?
-//                    if (uploadJSON.errorCode != 0) {
-//                        let error = NSError(domain: "Piwigo", code: uploadJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
-//                        self.didEndTransfer(for: uploadID, with: uploadProperties, error)
-//                        return
-//                    }
-//
-//                    // Add image to cache when uploaded by admin users
-//                    if NetworkVars.hasAdminRights {
-//                        // Get Upload properties
-//                        var userInfo = [String : Any](minimumCapacity: 12)
-//                        userInfo["datePosted"]      = Date()
-//                        userInfo["fileSize"]        = NSNotFound // will trigger pwg.images.getInfo
-//                        userInfo["imageTitle"]      = uploadProperties.imageTitle
-//                        userInfo["categoryId"]       = uploadProperties.category
-//                        userInfo["fileName"]        = uploadProperties.fileName
-//                        userInfo["isVideo"]         = uploadProperties.isVideo
-//                        userInfo["dateCreated"]     = Date(timeIntervalSinceReferenceDate: uploadProperties.creationDate)
-//                        userInfo["author"]          = uploadProperties.author
-//                        userInfo["privacyLevel"]    = Int32(uploadProperties.privacyLevel.rawValue)
-//
-//                        // Get data returned by the server
-//                        userInfo["imageId"]         = uploadJSON.data.image_id!
-//                        userInfo["squarePath"]      = uploadJSON.data.square_src
-//                        userInfo["thumbPath"]       = uploadJSON.data.src
-//
-//                        // Add image to CategoriesData cache
-//                        NotificationCenter.default.post(name: PwgNotifications.addUploadedImageToCache,
-//                                                        object: nil, userInfo: userInfo)
-//                    }
-//
-//                    // Update state of upload
-//                    var newUploadProperties = uploadProperties
-//                    newUploadProperties.imageId = uploadJSON.data.image_id!
-//                    newUploadProperties.requestState = .uploaded
-//                    newUploadProperties.requestError = ""
-//                    self.didEndTransfer(for: uploadID, with: newUploadProperties, nil)
-//                    return
-//                } catch {
-//                    // Data cannot be digested, image still ready for upload
-//                    let error = NSError(domain: "Piwigo", code: UploadError.wrongJSONobject.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongJSONobject.localizedDescription])
-//                    self.didEndTransfer(for: uploadID, with: uploadProperties, error)
-//                    return
-//                }
-//            },
-//            onFailure: { (error) in
-//                if let error = error as NSError? {
-//                    // Image still ready for upload
-//                    self.didEndTransfer(for: uploadID, with: uploadProperties, error)
-//                }
-//            })
-//    }
-
-    /**
-     Initialises the transfer of an image or a video with a Piwigo server.
-     The file is uploaded by sending chunks whose size is defined on the server.
-     */
-//    func startUploading(fileURL: URL, with imageParameters: [String : String],
-//                        onProgress: @escaping (_ progress: Progress?, _ currentChunk: Int, _ totalChunks: Int) -> Void,
-//                        onCompletion completion: @escaping (_ task: URLSessionTask?, _ response: Any?) -> Void,
-//                        onFailure fail: @escaping (_ error: NSError?) -> Void) {
-//
-//        // Calculate chunk size
-//        let chunkSize = UploadVars.uploadChunkSize * 1024
-//
-//        // Get file to upload
-//        var imageData: Data? = nil
-//        do {
-//            try imageData = NSData (contentsOf: fileURL) as Data
-//            // Swift bug - https://forums.developer.apple.com/thread/115401
-////                    try imageData = Data(contentsOf: exportSession.outputURL!)
-//        } catch let error as NSError {
-//            // define error !!!!
-//            fail(error)
-//            return
-//        }
-//
-//        // Calculate number of chunks
-//        var chunks = (imageData?.count ?? 0) / chunkSize
-//        if (imageData?.count ?? 0) % chunkSize != 0 {
-//            chunks += 1
-//        }
-//
-//        // Start sending data to server
-//        self.sendChunk(imageData, withInformation: imageParameters,
-//                       forOffset: 0, onChunk: 0, forTotalChunks: chunks,
-//                       onProgress: onProgress,
-//                       onCompletion: { task, response, updatedParameters in
-//                            // Delete uploaded file from Piwigo/Uploads directory
-//                            do {
-//                                try FileManager.default.removeItem(at: fileURL)
-//                            } catch {
-//                                // Not a big issue, will clean up the directory later
-//                                completion(task, response)
-//                                return
-//                            }
-//                            // Done, return
-//                            completion(task, response)
-//                            // Close upload session
-////                            imageUploadManager.invalidateSessionCancelingTasks(true, resetSession: true)
-//                        },
-//                       onFailure: { error in
-//                            // Close upload session
-////                            imageUploadManager.invalidateSessionCancelingTasks(true, resetSession: true)
-//                            // Done, return
-//                            fail(error as NSError?)
-//                        })
-//    }
-
-    /**
-     Sends iteratively chunks of the file.
-     */
-        
-
-//        NetworkHandler.postMultiPart(kPiwigoImagesUpload, data: chunk, parameters: parameters,
-//                                     sessionManager: sessionManager,
-//           progress: { progress in
-//                if progress != nil {
-//                    onProgress(progress, count + 1, chunks)
-//                }
-//            },
-//           success: { task, responseObject in
-//                // Continue in background queue!
-//                self.backgroundQueue.async {
-//                    // Continue?
-//                    print("\(UploadUtilities.debugFormatter.string(from: Date())) > #\(count) done:", responseObject.debugDescription)
-//                    if count >= chunks - 1 {
-//                        // Done, return
-//                        print("=>> MimeType:", task?.response?.mimeType as Any)
-//                        completion(task, responseObject, parameters)
-//                    } else {
-//                        // Keep going!
-//                        self.sendChunk(imageData, withInformation: parameters,
-//                                       forOffset: offset, onChunk: nextChunkNumber, forTotalChunks: chunks,
-//                                       onProgress: onProgress, onCompletion: completion, onFailure: fail)
-//                    }
-//                }
-//            },
-//           failure: { task, error in
-//                // Continue in background queue!
-//                self.backgroundQueue.async {
-//                    // failed!
-//                    fail(task, error as NSError?)
-//                }
-//            })
-//    }
-
     
     // MARK: - Transfer Image in Background
     // See https://tools.ietf.org/html/rfc7578
@@ -523,7 +330,6 @@ extension UploadManager {
         // Get content of file to upload
         /// https://developer.apple.com/forums/thread/115401
         var imageData = Data()
-//        var imageData = InputStream()
         do {
             try imageData = Data(contentsOf: fileURL, options: .alwaysMapped)
 //            try imageData = NSData(contentsOf: fileURL, options: .alwaysMapped) as Data
@@ -649,11 +455,11 @@ extension UploadManager {
                 // Adds bytes expected to be sent to counter
                 if isExecutingBackgroundUploadTask {
                     countOfBytesToUpload += httpBody.count
-                    print("\(UploadUtilities.debugFormatter.string(from: Date())) >•• countOfBytesToUpload: \(countOfBytesToUpload)")
+                    print("\(debugFormatter.string(from: Date())) >•• countOfBytesToUpload: \(countOfBytesToUpload)")
                 }
                 
                 // Resume task
-                print("\(UploadUtilities.debugFormatter.string(from: Date())) > \(uploadProperties.md5Sum) upload task \(task.taskIdentifier) resumed (\(chunk)/\(chunks))")
+                print("\(debugFormatter.string(from: Date())) > \(uploadProperties.md5Sum) upload task \(task.taskIdentifier) resumed (\(chunk)/\(chunks))")
                 task.resume()
             }
         }
@@ -671,8 +477,9 @@ extension UploadManager {
         guard let objectURIstr = task.originalRequest?.value(forHTTPHeaderField: "uploadID"),
               let identifier = task.originalRequest?.value(forHTTPHeaderField: "identifier"),
               let md5sum = task.originalRequest?.value(forHTTPHeaderField: "md5sum"),
-              let chunk = Int((task.originalRequest?.value(forHTTPHeaderField: "chunk"))!) else {
-            print("\(UploadUtilities.debugFormatter.string(from: Date())) > Could not extract HTTP header fields !!!!!!")
+              let chunkStr = task.originalRequest?.value(forHTTPHeaderField: "chunk"),
+              let chunk = Int(chunkStr) else {
+            print("\(debugFormatter.string(from: Date())) > Could not extract HTTP header fields !!!!!!")
             return
         }
 
@@ -687,12 +494,12 @@ extension UploadManager {
             
             // Retrieve upload request properties
             guard let objectURI = URL(string: objectURIstr) else {
-                print("\(UploadUtilities.debugFormatter.string(from: Date())) > \(md5sum) | no object URI!")
+                print("\(debugFormatter.string(from: Date())) > \(md5sum) | no object URI!")
                 return
             }
             let taskContext = DataController.privateManagedObjectContext
             guard let uploadID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
-                print("\(UploadUtilities.debugFormatter.string(from: Date())) > \(md5sum) | no objectID!")
+                print("\(debugFormatter.string(from: Date())) > \(md5sum) | no objectID!")
                 return
             }
             var uploadProperties: UploadProperties
@@ -708,7 +515,7 @@ extension UploadManager {
                 }
             }
             catch {
-                print("\(UploadUtilities.debugFormatter.string(from: Date())) > \(md5sum) | missing Core Data object!")
+                print("\(debugFormatter.string(from: Date())) > \(md5sum) | missing Core Data object!")
                 // Investigate next upload request?
                 if self.isExecutingBackgroundUploadTask {
                     // In background task — stop here
@@ -733,10 +540,10 @@ extension UploadManager {
         }
 
         // Delete chunk file uploaded successfully from Piwigo/Uploads directory
-        print("\(UploadUtilities.debugFormatter.string(from: Date())) > \(md5sum) | delete chunk \(chunk)")
+        print("\(debugFormatter.string(from: Date())) > \(md5sum) | delete chunk \(chunk)")
         let imageFile = identifier.replacingOccurrences(of: "/", with: "-")
         let chunkFileName = imageFile + "." + numberFormatter.string(from: NSNumber(value: chunk))!
-        deleteFilesInUploadsDirectory(with: chunkFileName)
+        deleteFilesInUploadsDirectory(withPrefix: chunkFileName)
     }
 
     func didCompleteBckgUploadTask(_ task: URLSessionTask, withData data: Data) {
@@ -749,12 +556,12 @@ extension UploadManager {
         
         // Retrieve upload request properties
         guard let objectURI = URL(string: objectURIstr) else {
-            print("\(UploadUtilities.debugFormatter.string(from: Date())) > \(md5sum) | no object URI!")
+            print("\(debugFormatter.string(from: Date())) > \(md5sum) | no object URI!")
             return
         }
         let taskContext = DataController.privateManagedObjectContext
         guard let uploadID = taskContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: objectURI) else {
-            print("\(UploadUtilities.debugFormatter.string(from: Date())) > \(md5sum) | no objectID!")
+            print("\(debugFormatter.string(from: Date())) > \(md5sum) | no objectID!")
             return
         }
         var uploadProperties: UploadProperties
@@ -770,7 +577,7 @@ extension UploadManager {
             }
         }
         catch {
-            print("\(UploadUtilities.debugFormatter.string(from: Date())) > \(md5sum) | missing Core Data object!")
+            print("\(debugFormatter.string(from: Date())) > \(md5sum) | missing Core Data object!")
             // Investigate next upload request?
             if self.isExecutingBackgroundUploadTask {
                 // In background task — stop here
@@ -791,7 +598,7 @@ extension UploadManager {
             // Update upload request status
             #if DEBUG
             let dataStr = String(decoding: data, as: UTF8.self)
-            print("\(UploadUtilities.debugFormatter.string(from: Date())) > Invalid JSON object: \(dataStr)")
+            print("\(debugFormatter.string(from: Date())) > Invalid JSON object: \(dataStr)")
             #endif
             let error = NSError(domain: "Piwigo", code: JsonError.invalidJSONobject.hashValue, userInfo: [NSLocalizedDescriptionKey : JsonError.invalidJSONobject.localizedDescription])
             self.didEndTransfer(for: uploadID, with: uploadProperties, error, taskID: task.taskIdentifier)
@@ -805,7 +612,7 @@ extension UploadManager {
 
             // Piwigo error?
             if (uploadJSON.errorCode != 0) {
-                print("\(UploadUtilities.debugFormatter.string(from: Date())) > \(md5sum) | Piwigo error \(uploadJSON.errorCode)")
+                print("\(debugFormatter.string(from: Date())) > \(md5sum) | Piwigo error \(uploadJSON.errorCode)")
                 let error = NSError(domain: "Piwigo", code: uploadJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
                 self.didEndTransfer(for: uploadID, with: uploadProperties, error, taskID: task.taskIdentifier)
                return
@@ -835,7 +642,7 @@ extension UploadManager {
                 if !isExecutingBackgroundUploadTask {
                     updateCell(with: identifier,
                                stateLabel: kPiwigoUploadState.uploading.stateInfo,
-                               photoResize: nil, progress: Float(1), errorMsg: nil)
+                               photoMaxSize: nil, progress: Float(1), errorMsg: nil)
                 }
 
                 // Prepare image for cache
@@ -902,13 +709,8 @@ extension UploadManager {
             }
 
             // Delete uploaded file
-            let fileName = uploadProperties.localIdentifier.replacingOccurrences(of: "/", with: "-")
-            let fileURL = applicationUploadsDirectory.appendingPathComponent(fileName)
-            do {
-                try FileManager.default.removeItem(at: fileURL)
-            } catch {
-                print("\(UploadUtilities.debugFormatter.string(from: Date())) > \(md5sum) | could not delete upload file: \(error)")
-            }
+            let imageFile = identifier.replacingOccurrences(of: "/", with: "-")
+            deleteFilesInUploadsDirectory(withPrefix: imageFile)
 
             // Update state of upload
             var newUploadProperties = uploadProperties
@@ -919,7 +721,7 @@ extension UploadManager {
             return
         } catch {
             // JSON object cannot be digested, image still ready for upload
-            print("\(UploadUtilities.debugFormatter.string(from: Date())) > \(md5sum) | wrong JSON object!")
+            print("\(debugFormatter.string(from: Date())) > \(md5sum) | wrong JSON object!")
             let error = NSError(domain: "Piwigo", code: UploadError.wrongJSONobject.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongJSONobject.localizedDescription])
             self.didEndTransfer(for: uploadID, with: uploadProperties, error, taskID: task.taskIdentifier)
             return
@@ -930,11 +732,11 @@ extension UploadManager {
     // MARK: - Transfer Failed/Completed
     private func didEndTransfer(for uploadID: NSManagedObjectID,
                                 with properties: UploadProperties, _ error: NSError?, taskID: Int = Int.max) {
-        print("\(UploadUtilities.debugFormatter.string(from: Date())) > didEndTransfer in", queueName())
+        print("\(debugFormatter.string(from: Date())) > didEndTransfer in", queueName())
         
         // Error?
         if let error = error {
-            print("\(UploadUtilities.debugFormatter.string(from: Date())) > task \(taskID) returned \(error.localizedDescription)")
+            print("\(debugFormatter.string(from: Date())) > task \(taskID) returned \(error.localizedDescription)")
             // Cancel related tasks
             if taskID != Int.max {
                 let objectURIstr = uploadID.uriRepresentation().absoluteString
@@ -957,7 +759,7 @@ extension UploadManager {
         }
 
         // Update state of upload request
-        print("\(UploadUtilities.debugFormatter.string(from: Date())) > transferred \(uploadID.uriRepresentation())")
+        print("\(debugFormatter.string(from: Date())) > transferred \(uploadID.uriRepresentation())")
         uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: properties) { (_) in
             // Get uploads to complete in queue
             // Considers only uploads to the server to which the user is logged in

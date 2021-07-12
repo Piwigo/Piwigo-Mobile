@@ -410,7 +410,7 @@ public class UploadsProvider: NSObject {
                 let uploadToDelete = taskContext.object(with: uploadID) as! Upload
                 let filenamePrefix = uploadToDelete.localIdentifier.replacingOccurrences(of: "/", with: "-")
                 if !filenamePrefix.isEmpty {
-                    UploadManager.shared.deleteFilesInUploadsDirectory(with: filenamePrefix)
+                    UploadManager.shared.deleteFilesInUploadsDirectory(withPrefix: filenamePrefix)
 //                    let uploadInfo: [String : Any] = ["prefix" : filenamePrefix]
 //                    let name = NSNotification.Name(rawValue: kPiwigoNotificationDeleteUploadFile)
 //                    NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
