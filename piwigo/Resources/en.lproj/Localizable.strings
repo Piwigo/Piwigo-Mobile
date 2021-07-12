@@ -617,7 +617,7 @@
 "defaultNberOfThumbnails>320px" = "Number/Row";
 "defaultNberOfThumbnails>414px" = "Number per Row";
 //"defaultThumbnailSizeTitle" = "Default Size";
-"defaultThumbnailSizeHeader" = "Please select an photo thumbnail size";
+"defaultThumbnailSizeHeader" = "Please select a photo thumbnail size";
 "settings_displayTitles" = "Titles on Thumbnails";
 "settings_displayTitles>320px" = "Display Titles on Thumbnails";
 
@@ -628,7 +628,7 @@
 "defaultImageSize>320px" = "Photos Size";
 "defaultImageSize>414px" = "Default Size of Photos";
 //"defaultImageSizeTitle" = "Default Size";
-"defaultImageSizeHeader" = "Please select an photo size";
+"defaultImageSizeHeader" = "Please select a photo size";
 "defaultImageSize_recommended" = " (recommended)";
 "defaultSize_disabled" = " (disabled on server)";
 "defaultSizeFooter" = "Greyed sizes are not advised or not available on Piwigo server.";
