@@ -13,7 +13,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
     
     var stripGPSdataOnUpload = UploadVars.stripGPSdataOnUpload
     var resizeImageOnUpload = UploadVars.resizeImageOnUpload
-    var photoResize: Int16 = UploadVars.photoResize
+    var photoMaxSize: Int16 = UploadVars.photoMaxSize
     var compressImageOnUpload = UploadVars.compressImageOnUpload
     var photoQuality: Int16 = UploadVars.photoQuality
     var prefixFileNameBeforeUpload = UploadVars.prefixFileNameBeforeUpload
@@ -178,13 +178,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
                 print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                 return SwitchTableViewCell()
             }
-            // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-            if view.bounds.size.width > 375 {
-                // i.e. larger than iPhones 6,7 screen width
-                cell.configure(with: NSLocalizedString("settings_photoResize>375px", comment: "Resize Image Before Upload"))
-            } else {
-                cell.configure(with: NSLocalizedString("settings_photoResize", comment: "Resize Before Upload"))
-            }
+            cell.configure(with: NSLocalizedString("settings_photoResize", comment: "Resize Before Upload"))
             cell.cellSwitch.setOn(resizeImageOnUpload, animated: true)
             cell.cellSwitchBlock = { switchState in
                 // Number of rows will change accordingly
@@ -202,24 +196,17 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
             cell.accessibilityIdentifier = "resizeBeforeUpload"
             tableViewCell = cell
             
-        case 2 /* Image Size slider */:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!")
-                return SliderTableViewCell()
+        case 2 /* Upload Photo Max Size */:
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
+                print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
+                return LabelTableViewCell()
             }
-            // Slider value
-            let value = Float(photoResize)
-
-            // Slider configuration
-            let title = String(format: "… %@", NSLocalizedString("settings_photoSize", comment: "Size"))
-            cell.configure(with: title, value: value, increment: 1, minValue: 5, maxValue: 100, prefix: "", suffix: "%")
-            cell.cellSliderBlock = { newValue in
-                // Update settings
-                self.photoResize = Int16(newValue)
-            }
-            cell.accessibilityIdentifier = "maxNberRecentAlbums"
+            cell.configure(with: "… " + NSLocalizedString("severalImages", comment: "Photos"),
+                           detail: pwgPhotoMaxSizes[Int(photoMaxSize)].1)
+            cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+            cell.accessibilityIdentifier = "uploadPhotoSize"
             tableViewCell = cell
-            
+
         case 3 /* Compress before Upload? */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
                 print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
@@ -350,7 +337,32 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
     }
 
     override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
-        return false
+        var row = indexPath.row
+        row += (!resizeImageOnUpload && (row > 1)) ? 1 : 0
+        row += (!compressImageOnUpload && (row > 3)) ? 1 : 0
+        row += (!prefixFileNameBeforeUpload && (row > 5)) ? 1 : 0
+        switch row {
+        case 2 /* Upload Photo Size */:
+            return true
+        default:
+            return false
+        }
+    }
+
+
+    // MARK: - UITableViewDelegate Methods
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+
+        // Check if this is the right cell
+        if indexPath.row != 2 { return }
+        
+        // Present the Upload Photo Size selector
+        let uploadPhotoSizeSB = UIStoryboard(name: "UploadPhotoSizeViewController", bundle: nil)
+        guard let uploadPhotoSizeVC = uploadPhotoSizeSB.instantiateViewController(withIdentifier: "UploadPhotoSizeViewController") as? UploadPhotoSizeViewController else { return }
+        uploadPhotoSizeVC.delegate = self
+        uploadPhotoSizeVC.photoMaxSize = photoMaxSize
+        navigationController?.pushViewController(uploadPhotoSizeVC, animated: true)
     }
 
 
@@ -411,5 +423,19 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
         let indexPath = IndexPath(row: kImageUploadSetting.prefix.rawValue, section: 0)
         settingsTableView.reloadRows(at: [indexPath], with: .automatic)
     }
+}
 
+// MARK: - UploadPhotoSizeDelegate Methods
+extension UploadSettingsViewController: UploadPhotoSizeDelegate {
+    func didSelectUploadPhotoSize(_ selectedSize: Int16) {
+        // Do nothing if the max upload photo size is unchanged
+        if selectedSize == photoMaxSize { return }
+        
+        // Save new choice
+        photoMaxSize = selectedSize
+        
+        // Refresh settings
+        let indexPath = IndexPath(row: 4, section: SettingsSection.imageUpload.rawValue)
+        settingsTableView.reloadRows(at: [indexPath], with: .automatic)
+    }
 }

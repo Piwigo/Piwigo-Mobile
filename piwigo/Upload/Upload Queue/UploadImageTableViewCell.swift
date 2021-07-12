@@ -133,9 +133,10 @@ class UploadImageTableViewCell: MGSwipeTableCell {
 
         // Bottom label
         let errorDescription = (userInfo["Error"] ?? "") as! String
-        if errorDescription.count == 0, let photoResize = userInfo["photoResize"] as? Int16,
+        if errorDescription.count == 0, let photoMaxSize = userInfo["photoMaxSize"] as? Int16,
             let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [localIdentifier], options: nil).firstObject {
-            imageInfoLabel.text = getImageInfo(from: imageAsset, for: Int(bounds.size.width), scale: photoResize)
+            imageInfoLabel.text = getImageInfo(from: imageAsset, for: Int(bounds.size.width),
+                                               scale: pwgPhotoMaxSizes[Int(photoMaxSize)].0)
         } else if errorDescription.count > 0 {
             imageInfoLabel.text = errorDescription
         }
@@ -212,7 +213,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
             // Display image information
             imageInfoLabel.text = getImageInfo(from: image ?? imagePlaceholder,
                                                for: availableWidth - 2*Int(indentationWidth),
-                                               scale: upload.photoResize)
+                                               scale: pwgPhotoMaxSizes[Int(upload.photoMaxSize)].0)
         }
     }
 
@@ -236,7 +237,8 @@ class UploadImageTableViewCell: MGSwipeTableCell {
             }
         } else {
             // Display image information
-            imageInfoLabel.text = getImageInfo(from: imageAsset, for: availableWidth - 2*Int(indentationWidth), scale: upload.photoResize)
+            imageInfoLabel.text = getImageInfo(from: imageAsset, for: availableWidth - 2*Int(indentationWidth),
+                                               scale: pwgPhotoMaxSizes[Int(upload.photoMaxSize)].0)
         }
 
         // Cell image: retrieve data of right size and crop image

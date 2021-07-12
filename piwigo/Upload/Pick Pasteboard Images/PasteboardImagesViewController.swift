@@ -973,11 +973,11 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                 if let resizeImageOnUpload = uploadParameters["resizeImageOnUpload"] as? Bool {
                     updatedRequest.resizeImageOnUpload = resizeImageOnUpload
                     if resizeImageOnUpload {
-                        if let photoResize = uploadParameters["photoResize"] as? Int16 {
-                            updatedRequest.photoResize = photoResize
+                        if let photoMaxSize = uploadParameters["photoMaxSize"] as? Int16 {
+                            updatedRequest.photoMaxSize = photoMaxSize
                         }
                     } else {
-                        updatedRequest.photoResize = 100
+                        updatedRequest.photoMaxSize = 5 // i.e. 4K
                     }
                 }
                 if let compressImageOnUpload = uploadParameters["compressImageOnUpload"] as? Bool {

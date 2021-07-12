@@ -18,6 +18,16 @@ public enum kPiwigoPrivacy : Int16 {
     case unknown = -1
 }
 
+public let pwgPhotoMaxSizes : [(Int16, String)] = [(640, "nHD | 0.23 Mpx"),
+                                                   (960, "qHD | 0.52 Mpx"),
+                                                   (1280, "HD | 0.92 Mpx"),
+                                                   (1920, "Full HD | 2.07 Mpx"),
+                                                   (2048, "2K | 2.21 Mpx"),
+                                                   (3840, "4K | 8.29 Mpx"),
+                                                   (5120, "5K | 14.7 Mpx"),
+                                                   (7680, "8K UHD | 33.2 Mpx"),
+                                                   (17280, "16K UHD | 132.7 Mpx")]
+
 public enum kPiwigoSort : Int16 {
     case nameAscending = 0              // Photo title, A → Z
     case nameDescending                 // Photo title, Z → A
@@ -48,12 +58,12 @@ public enum kPiwigoSort : Int16 {
 public class UploadVars: NSObject {
     
     // Remove deprecated stored objects if needed
-//    override init() {
-//        // Deprecated data?
-//        if let _ = UserDefaults.dataSuite.object(forKey: "test") {
-//            UserDefaults.dataSuite.removeObject(forKey: "test")
-//        }
-//    }
+    override init() {
+        // Deprecated data?
+        if let _ = UserDefaults.dataSuite.object(forKey: "photoResize") {
+            UserDefaults.dataSuite.removeObject(forKey: "photoResize")
+        }
+    }
 
     // MARK: - Vars in UserDefaults / Standard
     // Upload variables stored in UserDefaults / Standard
@@ -82,9 +92,18 @@ public class UploadVars: NSObject {
     @UserDefault("resizeImageOnUpload", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public static var resizeImageOnUpload: Bool
     
-    /// - Fraction of the photo size to apply when resizing
-    @UserDefault("photoResize", defaultValue: 100, userDefaults: UserDefaults.dataSuite)
-    public static var photoResize : Int16
+    /// - Max photo size to apply when resizing
+    /// - before version 2.7, we stored in 'photoResize' the fraction of the photo size to apply when resizing.
+    @UserDefault("photoMaxSize", defaultValue: 5, userDefaults: UserDefaults.dataSuite)
+    public static var photoMaxSize: Int16
+    public class func selectedSizeFromSize(_ size:Int16) -> Int16 {
+        for index in 0..<pwgPhotoMaxSizes.count {
+            if size < pwgPhotoMaxSizes[index].0 {
+                return Int16(index)
+            }
+        }
+        return 0
+    }
     
     /// - Compress photo before uploading
     @UserDefault("compressImageOnUpload", defaultValue: false, userDefaults: UserDefaults.dataSuite)

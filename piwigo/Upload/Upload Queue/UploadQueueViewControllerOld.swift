@@ -457,19 +457,19 @@ extension UploadQueueViewControllerOld: NSFetchedResultsControllerDelegate {
         switch upload.state {
         case .waiting, .preparing, .prepared, .formatError, .uploadingError:
             uploadInfo = ["localIdentifier" : upload.localIdentifier,
-                          "photoResize" : upload.photoResize,
+                          "photoMaxSize" : upload.photoMaxSize,
                           "stateLabel" : upload.stateLabel,
                           "Error" : upload.requestError,
                           "progressFraction" : Float(0.0)]
         case .uploaded, .finishing, .finishingError, .finished:
             uploadInfo = ["localIdentifier" : upload.localIdentifier,
-                          "photoResize" : upload.photoResize,
+                          "photoMaxSize" : upload.photoMaxSize,
                           "stateLabel" : upload.stateLabel,
                           "Error" : upload.requestError,
                           "progressFraction" : Float(1.0)]
         default:
             uploadInfo = ["localIdentifier" : upload.localIdentifier,
-                          "photoResize" : upload.photoResize,
+                          "photoMaxSize" : upload.photoMaxSize,
                           "stateLabel" : upload.stateLabel,
                           "Error" : upload.requestError]
         }

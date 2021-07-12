@@ -69,7 +69,7 @@ public class Upload: NSManagedObject {
         // Upload settings
         stripGPSdataOnUpload = uploadProperties.stripGPSdataOnUpload
         resizeImageOnUpload = uploadProperties.resizeImageOnUpload
-        photoResize = Int16(uploadProperties.photoResize)
+        photoMaxSize = uploadProperties.photoMaxSize
         compressImageOnUpload = uploadProperties.compressImageOnUpload
         photoQuality = Int16(uploadProperties.photoQuality)
         prefixFileNameBeforeUpload = uploadProperties.prefixFileNameBeforeUpload
@@ -175,7 +175,7 @@ extension Upload {
             tagIds: self.tagIds, imageId: Int(self.imageId),
             // Upload settings
             stripGPSdataOnUpload: self.stripGPSdataOnUpload,
-            resizeImageOnUpload: self.resizeImageOnUpload, photoResize: self.photoResize,
+            resizeImageOnUpload: self.resizeImageOnUpload, photoMaxSize: self.photoMaxSize,
             compressImageOnUpload: self.compressImageOnUpload, photoQuality: self.photoQuality,
             prefixFileNameBeforeUpload: self.prefixFileNameBeforeUpload, defaultPrefix: self.defaultPrefix,
             deleteImageAfterUpload: self.deleteImageAfterUpload,
@@ -199,7 +199,7 @@ extension Upload {
             tagIds: self.tagIds, imageId: Int(self.imageId),
             // Upload settings
             stripGPSdataOnUpload: self.stripGPSdataOnUpload,
-            resizeImageOnUpload: self.resizeImageOnUpload, photoResize: self.photoResize,
+            resizeImageOnUpload: self.resizeImageOnUpload, photoMaxSize: self.photoMaxSize,
             compressImageOnUpload: self.compressImageOnUpload, photoQuality: self.photoQuality,
             prefixFileNameBeforeUpload: self.prefixFileNameBeforeUpload, defaultPrefix: self.defaultPrefix,
             deleteImageAfterUpload: self.deleteImageAfterUpload,

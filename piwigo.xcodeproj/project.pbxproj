@@ -164,6 +164,8 @@
 		ADD210412440CC7600DD79A6 /* SettingsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADD210402440CC7600DD79A6 /* SettingsViewController.storyboard */; };
 		ADD210432440DE5A00DD79A6 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD210422440DE5A00DD79A6 /* SettingsViewController.swift */; };
 		ADD6018E26697710003CAC2F /* NetworkVarsObjc.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2913EC26696EC100403026 /* NetworkVarsObjc.swift */; };
+		ADD741F62699974800B47056 /* UploadPhotoSizeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD741F52699974800B47056 /* UploadPhotoSizeViewController.swift */; };
+		ADD741F82699976100B47056 /* UploadPhotoSizeViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADD741F72699976100B47056 /* UploadPhotoSizeViewController.storyboard */; };
 		ADD790E3265EDE5C00EA4DDB /* ImageVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD790E2265EDE5C00EA4DDB /* ImageVars.swift */; };
 		ADD79A3D24A9352500428C58 /* pwg.images.upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD79A3C24A9352500428C58 /* pwg.images.upload.swift */; };
 		ADDB396F23BF574400AB584B /* EditImageShiftPickerTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ADDB396B23BF4F9C00AB584B /* EditImageShiftPickerTableViewCell.m */; };
@@ -603,6 +605,8 @@
 		ADD6AEA122E25DA800347BC8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
 		ADD6AEA222E25DA800347BC8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		ADD6AEA322E25DA800347BC8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/AppStore.strings; sourceTree = "<group>"; };
+		ADD741F52699974800B47056 /* UploadPhotoSizeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadPhotoSizeViewController.swift; sourceTree = "<group>"; };
+		ADD741F72699976100B47056 /* UploadPhotoSizeViewController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = UploadPhotoSizeViewController.storyboard; path = piwigo/Settings/Upload/UploadPhotoSizeViewController.storyboard; sourceTree = SOURCE_ROOT; };
 		ADD790E2265EDE5C00EA4DDB /* ImageVars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageVars.swift; sourceTree = "<group>"; };
 		ADD79A3C24A9352500428C58 /* pwg.images.upload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pwg.images.upload.swift; sourceTree = "<group>"; };
 		ADD79A3F24A93B5600428C58 /* pwg.images.upload2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.images.upload2.json; sourceTree = "<group>"; };
@@ -876,7 +880,6 @@
 		AD23A1EF2427C94000F662AB /* Uploads Data */ = {
 			isa = PBXGroup;
 			children = (
-				AD3335442666CA46000A1487 /* UploadVars.swift */,
 				ADFFD446268A2953001F00E8 /* Upload+CoreDataClass.swift */,
 				ADFFD445268A2952001F00E8 /* Upload+CoreDataProperties.swift */,
 				AD98762E2626014500B964C5 /* UploadProperties.swift */,
@@ -991,7 +994,7 @@
 		AD7038A5267DE21B00A72CE1 /* Upload */ = {
 			isa = PBXGroup;
 			children = (
-				AD0B6AC8268A2166007DEE70 /* UploadUtilities.swift */,
+				AD3335442666CA46000A1487 /* UploadVars.swift */,
 				AD0B6ACA268A2187007DEE70 /* UploadSessions.swift */,
 				AD0B6ACC268A218F007DEE70 /* UploadManager.swift */,
 				AD0B6ACE268A219B007DEE70 /* UploadImage.swift */,
@@ -999,6 +1002,7 @@
 				AD0B6AD2268A21AD007DEE70 /* UploadTransfer.swift */,
 				AD0B6AD4268A21B7007DEE70 /* UploadFinisher.swift */,
 				AD0B6AD6268A21C0007DEE70 /* UploadAuto.swift */,
+				AD0B6AC8268A2166007DEE70 /* UploadUtilities.swift */,
 			);
 			path = Upload;
 			sourceTree = "<group>";
@@ -1215,6 +1219,8 @@
 			children = (
 				AD82C04A2433D71C00F774BA /* SelectPrivacyViewController.swift */,
 				AD2A21FD24310E65006B1A8A /* SelectPrivacyViewController.storyboard */,
+				ADD741F52699974800B47056 /* UploadPhotoSizeViewController.swift */,
+				ADD741F72699976100B47056 /* UploadPhotoSizeViewController.storyboard */,
 				AD563B3F2603FCDB00B6EF93 /* AutoUploadViewController.swift */,
 				AD563B412603FCE800B6EF93 /* AutoUploadViewController.storyboard */,
 			);
@@ -1871,6 +1877,7 @@
 				AD563B422603FCE800B6EF93 /* AutoUploadViewController.storyboard in Resources */,
 				ADEAFB8F25F8198800EEDB1D /* ColorPaletteViewController.storyboard in Resources */,
 				ADFA89042438CF4500F73F0F /* ShareMetadataViewController.storyboard in Resources */,
+				ADD741F82699976100B47056 /* UploadPhotoSizeViewController.storyboard in Resources */,
 				AD6FD1FA24BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard in Resources */,
 				ADC019742471A70F00532A81 /* UploadQueueViewController.storyboard in Resources */,
 				AD8F4B8B23F04B8C009483B6 /* TagSelectorViewController.storyboard in Resources */,
@@ -2215,6 +2222,7 @@
 				D82B8D331A688E8F000E47CA /* ImageDetailViewController.m in Sources */,
 				D8E4D6211ABE34DF0057EB95 /* LoginNavigationController.m in Sources */,
 				ADAA57D122DD00B700EB4EAA /* DiscoverImagesViewController.m in Sources */,
+				ADD741F62699974800B47056 /* UploadPhotoSizeViewController.swift in Sources */,
 				ADC80E4B23BDD2DD003A6960 /* EditImageThumbTableViewCell.m in Sources */,
 				D8D3F7241A785E1B00AEA7F1 /* ImageCollectionViewCell.m in Sources */,
 				D8F325171A87F212007CBDAC /* EditImageTextViewTableViewCell.m in Sources */,

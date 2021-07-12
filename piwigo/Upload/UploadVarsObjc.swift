@@ -16,14 +16,6 @@ class UploadVarsObjc: NSObject {
         set (value) { UploadManager.shared.isExecutingBackgroundUploadTask = value }
     }
 
-    // Remove deprecated stored objects if needed
-//    override init() {
-//        // Deprecated data?
-//        if let _ = UserDefaults.dataSuite.object(forKey: "test") {
-//            UserDefaults.dataSuite.removeObject(forKey: "test")
-//        }
-//    }
-
     // MARK: - Vars in UserDefaults / Standard
     // Upload variables stored in UserDefaults / Standard
     /// - None
@@ -66,11 +58,15 @@ class UploadVarsObjc: NSObject {
         set (value) { UploadVars.resizeImageOnUpload = value }
     }
     
-    /// - Fraction of the photo size to apply when resizing
-//    @UserDefault("photoResize", defaultValue: 100, userDefaults: UserDefaults.dataSuite)
-    @objc static var photoResize : Int16 {
-        get { return UploadVars.photoResize }
-        set (value) { UploadVars.photoResize = value }
+    /// - Max photo size to apply when resizing
+    /// - before version 2.7, we stored in 'photoResize' the fraction of the photo size to apply when resizing.
+//    @UserDefault("photoMaxSize", defaultValue: 5, userDefaults: UserDefaults.dataSuite)
+    @objc static var photoMaxSize : Int16 {
+        get { return UploadVars.photoMaxSize }
+        set (value) { UploadVars.photoMaxSize = value }
+    }
+    @objc class func selectedSizeFromSize(_ size:Int16) -> Int16 {
+        return UploadVars.selectedSizeFromSize(size)
     }
     
     /// - Compress photo before uploading

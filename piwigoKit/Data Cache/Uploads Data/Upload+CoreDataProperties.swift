@@ -32,7 +32,7 @@ extension Upload {
     @NSManaged public var md5Sum: String
     @NSManaged public var mimeType: String
     @NSManaged public var photoQuality: Int16
-    @NSManaged public var photoResize: Int16
+    @NSManaged public var photoMaxSize: Int16
     @NSManaged public var prefixFileNameBeforeUpload: Bool
     @NSManaged public var privacyLevel: Int16
     @NSManaged public var requestDate: TimeInterval

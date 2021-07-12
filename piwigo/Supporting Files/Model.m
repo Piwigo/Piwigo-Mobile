@@ -287,17 +287,6 @@ NSInteger const kDelayPiwigoHUD = 500;
 }
 
 
-#pragma mark - Getter
-
--(NSInteger)photoResize {
-    if (_photoResize < 5) {
-        _photoResize = 5;
-    } else if (_photoResize > 100) {
-        _photoResize = 100;
-    }
-    return _photoResize;
-}
-
 -(NSInteger)photoQuality {
     if (_photoQuality < 50) {
         _photoQuality = 50;
@@ -326,37 +315,23 @@ NSInteger const kDelayPiwigoHUD = 500;
 		Model *modelData = [unarchiver decodeObjectForKey:@"Model"];
         
         // => Network variables stored in UserDefaults / App Group
-		self.serverProtocol = modelData.serverProtocol;
         NetworkVarsObjc.serverProtocol = modelData.serverProtocol;
-		self.serverPath = modelData.serverPath;
         NetworkVarsObjc.serverPath = modelData.serverPath;
-        self.stringEncoding = modelData.stringEncoding;
         NetworkVarsObjc.stringEncoding = modelData.stringEncoding;
-        self.HttpUsername = modelData.HttpUsername;
         NetworkVarsObjc.httpUsername = modelData.HttpUsername;
-        self.username = modelData.username;
         NetworkVarsObjc.username = modelData.username;
 
         // Data cache variables stored in UserDefaults / App Group
-        self.couldNotMigrateCoreDataStore = modelData.couldNotMigrateCoreDataStore;
         CacheVarsObjc.couldNotMigrateCoreDataStore = modelData.couldNotMigrateCoreDataStore;
 
         // Album variables stored in UserDefaults / Standard
-        self.defaultCategory = modelData.defaultCategory;
         AlbumVars.defaultCategory = modelData.defaultCategory;
-        self.defaultAlbumThumbnailSize = modelData.defaultAlbumThumbnailSize;
         AlbumVars.defaultAlbumThumbnailSize = modelData.defaultAlbumThumbnailSize;
-        self.recentCategories = modelData.recentCategories;
         AlbumVars.recentCategories = modelData.recentCategories;
-        self.maxNberRecentCategories = modelData.maxNberRecentCategories;
         AlbumVars.maxNberRecentCategories = modelData.maxNberRecentCategories;
-        self.defaultSort = modelData.defaultSort;
         AlbumVars.defaultSort = modelData.defaultSort;
-        self.displayImageTitles = modelData.displayImageTitles;
         AlbumVars.displayImageTitles = modelData.displayImageTitles;
-        self.defaultThumbnailSize = modelData.defaultThumbnailSize;
         AlbumVars.defaultThumbnailSize = modelData.defaultThumbnailSize;
-        self.thumbnailsPerRowInPortrait = modelData.thumbnailsPerRowInPortrait;
         AlbumVars.thumbnailsPerRowInPortrait = modelData.thumbnailsPerRowInPortrait;
 
         self.defaultImagePreviewSize = modelData.defaultImagePreviewSize;
@@ -367,35 +342,20 @@ NSInteger const kDelayPiwigoHUD = 500;
         ImageVars.shared.shareMetadataTypeAssignToContact = modelData.shareMetadataTypeAssignToContact;
         self.shareMetadataTypeCopyToPasteboard = modelData.shareMetadataTypeCopyToPasteboard;
         ImageVars.shared.shareMetadataTypeCopyToPasteboard = modelData.shareMetadataTypeCopyToPasteboard;
-        self.shareMetadataTypeMail = modelData.shareMetadataTypeMail;
         ImageVars.shared.shareMetadataTypeMail = modelData.shareMetadataTypeMail;
-        self.shareMetadataTypeMessage = modelData.shareMetadataTypeMessage;
         ImageVars.shared.shareMetadataTypeMessage = modelData.shareMetadataTypeMessage;
-        self.shareMetadataTypePostToFacebook = modelData.shareMetadataTypePostToFacebook;
         ImageVars.shared.shareMetadataTypePostToFacebook = modelData.shareMetadataTypePostToFacebook;
-        self.shareMetadataTypeMessenger = modelData.shareMetadataTypeMessenger;
         ImageVars.shared.shareMetadataTypeMessenger = modelData.shareMetadataTypeMessenger;
-        self.shareMetadataTypePostToFlickr = modelData.shareMetadataTypePostToFlickr;
         ImageVars.shared.shareMetadataTypePostToFlickr = modelData.shareMetadataTypePostToFlickr;
-        self.shareMetadataTypePostInstagram = modelData.shareMetadataTypePostInstagram;
         ImageVars.shared.shareMetadataTypePostInstagram = modelData.shareMetadataTypePostInstagram;
-        self.shareMetadataTypePostToSignal = modelData.shareMetadataTypePostToSignal;
         ImageVars.shared.shareMetadataTypePostToSignal = modelData.shareMetadataTypePostToSignal;
-        self.shareMetadataTypePostToSnapchat = modelData.shareMetadataTypePostToSnapchat;
         ImageVars.shared.shareMetadataTypePostToSnapchat = modelData.shareMetadataTypePostToSnapchat;
-        self.shareMetadataTypePostToTencentWeibo = modelData.shareMetadataTypePostToTencentWeibo;
         ImageVars.shared.shareMetadataTypePostToTencentWeibo = modelData.shareMetadataTypePostToTencentWeibo;
-        self.shareMetadataTypePostToTwitter = modelData.shareMetadataTypePostToTwitter;
         ImageVars.shared.shareMetadataTypePostToTwitter = modelData.shareMetadataTypePostToTwitter;
-        self.shareMetadataTypePostToVimeo = modelData.shareMetadataTypePostToVimeo;
         ImageVars.shared.shareMetadataTypePostToVimeo = modelData.shareMetadataTypePostToVimeo;
-        self.shareMetadataTypePostToWeibo = modelData.shareMetadataTypePostToWeibo;
         ImageVars.shared.shareMetadataTypePostToWeibo = modelData.shareMetadataTypePostToWeibo;
-        self.shareMetadataTypePostToWhatsApp = modelData.shareMetadataTypePostToWhatsApp;
         ImageVars.shared.shareMetadataTypePostToWhatsApp = modelData.shareMetadataTypePostToWhatsApp;
-        self.shareMetadataTypeSaveToCameraRoll = modelData.shareMetadataTypeSaveToCameraRoll;
         ImageVars.shared.shareMetadataTypeSaveToCameraRoll = modelData.shareMetadataTypeSaveToCameraRoll;
-        self.shareMetadataTypeOther = modelData.shareMetadataTypeOther;
         ImageVars.shared.shareMetadataTypeOther = modelData.shareMetadataTypeOther;
 
         self.isDarkPaletteActive = modelData.isDarkPaletteActive;
@@ -406,15 +366,10 @@ NSInteger const kDelayPiwigoHUD = 500;
         AppVars.switchPaletteThreshold = modelData.switchPaletteThreshold;
         self.isDarkPaletteModeActive = modelData.isDarkPaletteModeActive;
         AppVars.isDarkPaletteModeActive = modelData.isDarkPaletteModeActive;
-        self.isLightPaletteModeActive = modelData.isLightPaletteModeActive;
         AppVars.isLightPaletteModeActive = modelData.isLightPaletteModeActive;
-        self.diskCache = modelData.diskCache;
         AppVars.diskCache = modelData.diskCache;
-        self.memoryCache = modelData.memoryCache;
         AppVars.memoryCache = modelData.memoryCache;
-        self.didWatchHelpViews = modelData.didWatchHelpViews;
         AppVars.didWatchHelpViews = modelData.didWatchHelpViews;
-        self.dateOfLastTranslationRequest = modelData.dateOfLastTranslationRequest;
         AppVars.dateOfLastTranslationRequest = modelData.dateOfLastTranslationRequest;
 
         self.defaultPrivacyLevel = modelData.defaultPrivacyLevel;
@@ -424,34 +379,20 @@ NSInteger const kDelayPiwigoHUD = 500;
 		self.photoQuality = modelData.photoQuality;
         UploadVarsObjc.photoQuality = modelData.photoQuality;
 		self.photoResize = modelData.photoResize;
-        UploadVarsObjc.photoResize = modelData.photoResize;
-		self.resizeImageOnUpload = modelData.resizeImageOnUpload;
+        UploadVarsObjc.photoMaxSize = [UploadVarsObjc selectedSizeFromSize:size];
         UploadVarsObjc.resizeImageOnUpload = modelData.resizeImageOnUpload;
-        self.stripGPSdataOnUpload = modelData.stripGPSdataOnUpload;
         UploadVarsObjc.stripGPSdataOnUpload = modelData.stripGPSdataOnUpload;
-        self.compressImageOnUpload = modelData.compressImageOnUpload;
         UploadVarsObjc.compressImageOnUpload = modelData.compressImageOnUpload;
-        self.deleteImageAfterUpload = modelData.deleteImageAfterUpload;
         UploadVarsObjc.deleteImageAfterUpload = modelData.deleteImageAfterUpload;
-        self.uploadChunkSize = modelData.uploadChunkSize;
         UploadVarsObjc.uploadChunkSize = modelData.uploadChunkSize;
-        self.prefixFileNameBeforeUpload = modelData.prefixFileNameBeforeUpload;
         UploadVarsObjc.prefixFileNameBeforeUpload = modelData.prefixFileNameBeforeUpload;
-        self.defaultPrefix = modelData.defaultPrefix;
         UploadVarsObjc.defaultPrefix = modelData.defaultPrefix;
-        self.localImagesSort = modelData.localImagesSort;
         UploadVarsObjc.localImagesSort = modelData.localImagesSort;
-        self.wifiOnlyUploading = modelData.wifiOnlyUploading;
         UploadVarsObjc.wifiOnlyUploading = modelData.wifiOnlyUploading;
-        self.isAutoUploadActive = modelData.isAutoUploadActive;
         UploadVarsObjc.isAutoUploadActive = modelData.isAutoUploadActive;
-        self.autoUploadAlbumId = modelData.autoUploadAlbumId;
         UploadVarsObjc.autoUploadAlbumId = modelData.autoUploadAlbumId;
-        self.autoUploadCategoryId = modelData.autoUploadCategoryId;
         UploadVarsObjc.autoUploadCategoryId = modelData.autoUploadCategoryId;
-        self.autoUploadTagIds = modelData.autoUploadTagIds;
         UploadVarsObjc.autoUploadTagIds = modelData.autoUploadTagIds;
-        self.autoUploadComments = modelData.autoUploadComments;
         UploadVarsObjc.autoUploadComments = modelData.autoUploadComments;
         
         // Delete file which is replaced by UserDefaults default and App Groups

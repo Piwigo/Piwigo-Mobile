@@ -162,7 +162,7 @@ class UploadSwitchViewController: UIViewController {
             if let settingsCtrl = child as? UploadSettingsViewController {
                 uploadParameters["stripGPSdataOnUpload"] = settingsCtrl.stripGPSdataOnUpload
                 uploadParameters["resizeImageOnUpload"] = settingsCtrl.resizeImageOnUpload
-                uploadParameters["photoResize"] = settingsCtrl.photoResize
+                uploadParameters["photoMaxSize"] = settingsCtrl.photoMaxSize
                 uploadParameters["compressImageOnUpload"] = settingsCtrl.compressImageOnUpload
                 uploadParameters["photoQuality"] = settingsCtrl.photoQuality
                 uploadParameters["prefixFileNameBeforeUpload"] = settingsCtrl.prefixFileNameBeforeUpload
