@@ -141,7 +141,7 @@ extension CGImageMetadata {
             let prefix = CGImageMetadataTagCopyPrefix(tag)!
             let name = CGImageMetadataTagCopyName(tag)!
             let path = ((prefix as String) + ":" + (name as String)) as CFString
-//            print("=> Tag: \(prefix):\(name)")
+            print("=> Tag: \(prefix):\(name)")
 
             // Check presence of dictionary
             if let properties = dictOfKeys[prefix] {
@@ -240,13 +240,13 @@ extension Dictionary where Key == CFString, Value == Any {
         // Extract image source container properties
         if let sourceMetadata = CGImageSourceCopyProperties(source, nil) as? [CFString : Any] {
             // Update TIFF, GIF, etc. metadata from properties found in the container
-            metadata = metadata.fixProperties(from: sourceMetadata)
+            metadata.fixProperties(from: sourceMetadata)
         }
 
         // Extract image properties from image data
         if let imageMetadata = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString : Any] {
             // Update TIFF, GIF, etc. metadata from properties found in the image
-            metadata = metadata.fixProperties(from: imageMetadata)
+            metadata.fixProperties(from: imageMetadata)
         
             // Update/add DPI height from image properties
             if let DPIheight = imageMetadata[kCGImagePropertyDPIHeight] {
@@ -310,8 +310,8 @@ extension Dictionary where Key == CFString, Value == Any {
         return metadata
     }
 
-    // Fix image properties from (resized) imaga metadata
-    func fixProperties(from imageMetadata: [CFString:Any]) -> [CFString:Any] {
+    // Fix image properties from (resized) image metadata
+    mutating func fixProperties(from imageMetadata: [CFString:Any]) {
         var metadata = self
 
         // Update TIFF dictionary from image metadata
@@ -470,6 +470,6 @@ extension Dictionary where Key == CFString, Value == Any {
             }
         }
 
-        return metadata
+        self = metadata
     }
 }
