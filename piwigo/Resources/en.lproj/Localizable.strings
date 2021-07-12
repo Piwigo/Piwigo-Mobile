@@ -657,7 +657,6 @@
 "settings_stripGPSdata" = "Strip Private Metadata";
 "settings_stripGPSdata>375px" = "Strip Private Metadata Before Upload";
 "settings_photoResize" = "Resize Before Upload";
-"settings_photoResize>375px" = "Resize Photo Before Upload";
 "settings_photoSize" = "Size";
 "settings_placeholderSize" = "Enter a Photo Size from 5 - 100";
 "settings_photoCompress" = "Compress Before Upload";
@@ -686,6 +685,12 @@
 "settings_autoUploadDestination" = "Destination";
 "settings_autoUploadDestinationInvalid" = "Invalid destination album";
 "settings_autoUploadDestinationInfo" = "Please select the album or sub-album into which photos and videos will be auto-uploaded.";
+
+// Settings — Upload Photo Size
+"UploadPhotoSize_title" = "Max Photo Size";
+"UploadPhotoSize_header" = "Please select the maximum size of the photos which will be uploaded.";
+"UploadPhotoSize_pixels" = "pixels";
+"UploadPhotoSize_resolution" = "Maximum resolution of the built-in cameras:";
 
 // Settings — Cache
 "settingsHeader_cache" = "Cache Settings (Used/Total)";

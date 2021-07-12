@@ -842,13 +842,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                     return SwitchTableViewCell()
                 }
-                // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                if view.bounds.size.width > 375 {
-                    // i.e. larger than iPhones 6,7 screen width
-                    cell.configure(with: NSLocalizedString("settings_photoResize>375px", comment: "Resize Image Before Upload"))
-                } else {
-                    cell.configure(with: NSLocalizedString("settings_photoResize", comment: "Resize Before Upload"))
-                }
+                cell.configure(with: NSLocalizedString("settings_photoResize", comment: "Resize Before Upload"))
                 cell.cellSwitch.setOn(UploadVars.resizeImageOnUpload, animated: true)
                 cell.cellSwitchBlock = { switchState in
                     // Number of rows will change accordingly
@@ -867,22 +861,16 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.accessibilityIdentifier = "resizeBeforeUpload"
                 tableViewCell = cell
                 
-            case 4 /* Image Size slider */:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell else {
-                    print("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!")
-                    return SliderTableViewCell()
+            case 4 /* Upload Photo Size */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
+                    return LabelTableViewCell()
                 }
-                // Slider value
-                let value = Float(UploadVars.photoResize)
-
-                // Slider configuration
-                let title = String(format: "… %@", NSLocalizedString("settings_photoSize", comment: "Size"))
-                cell.configure(with: title, value: value, increment: 1, minValue: 5, maxValue: 100, prefix: "", suffix: "%")
-                cell.cellSliderBlock = { newValue in
-                    // Update settings
-                    UploadVars.photoResize = Int16(newValue)
-                }
-                cell.accessibilityIdentifier = "maxNberRecentAlbums"
+                let indexSize = Int(UploadVars.photoMaxSize)
+                cell.configure(with: "… " + NSLocalizedString("severalImages", comment: "Photos"),
+                               detail: pwgPhotoMaxSizes[indexSize].1)
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                cell.accessibilityIdentifier = "defaultUploadPhotoSize"
                 tableViewCell = cell
                 
             case 5 /* Compress before Upload? */:
@@ -1301,23 +1289,19 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             switch indexPath.row {
             case 0 /* Default album */, 1 /* Default Thumbnail File */, 2 /* Default Sort */:
                 result = true
-            case 3 /* Nber Rcent albums */:
-                result = false
             default:
-                break
+                result = false
             }
 
         // MARK: Images
         case SettingsSection.images.rawValue /* Images */:
             switch indexPath.row {
-            case 0 /* Default Thumbnail File */:
-                result = true
-            case 1 /* Number of thumbnails */, 2 /* Display titles on thumbnails */:
-                result = false
-            case 3 /* Default Size of Previewed Images */, 4 /* Share Image Metadata Options */:
+            case 0 /* Default Thumbnail File */,
+                 3 /* Default Size of Previewed Images */,
+                 4 /* Share Image Metadata Options */:
                 result = true
             default:
-                break
+                result = false
             }
             
         // MARK: Upload Settings
@@ -1329,22 +1313,12 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             row += (!UploadVars.prefixFileNameBeforeUpload && (row > 7)) ? 1 : 0
             row += (!NetworkVars.usesUploadAsync && (row > 9)) ? 1 : 0
             switch row {
-            case 0  /* Author Name */,
-                 2  /* Strip private Metadata */,
-                 3  /* Resize Before Upload */,
-                 4  /* Image Size slider */,
-                 5  /* Compress Before Upload switch */,
-                 6  /* Image Quality slider */,
-                 7  /* Prefix Filename Before Upload switch */,
-                 8  /* Filename Prefix */,
-                 9  /* Wi-Fi Only */,
-                 11 /* Delete image after upload */:
-                result = false
             case 1  /* Privacy Level */,
+                 4  /* Upload Photo Size */,
                  10 /* Auto upload */:
                 result = true
             default:
-                break
+                result = false
             }
 
         // MARK: Appearance
@@ -1365,10 +1339,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             case 0 /* Twitter */, 2 /* Support Forum */, 3 /* Rate Piwigo Mobile */, 4 /* Translate Piwigo Mobile */, 5 /* Release Notes */, 6 /* Acknowledgements */, 7 /* Privacy Policy */:
                 result = true
             default:
-                break
+                result = false
             }
         default:
-            break
+            result = false
         }
         return result
     }
@@ -1556,6 +1530,12 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 privacyVC.delegate = self
                 privacyVC.privacy = kPiwigoPrivacy(rawValue: UploadVars.defaultPrivacyLevel) ?? .everybody
                 navigationController?.pushViewController(privacyVC, animated: true)
+            case 4 /* Upload Photo Size */:
+                let uploadPhotoSizeSB = UIStoryboard(name: "UploadPhotoSizeViewController", bundle: nil)
+                guard let uploadPhotoSizeVC = uploadPhotoSizeSB.instantiateViewController(withIdentifier: "UploadPhotoSizeViewController") as? UploadPhotoSizeViewController else { return }
+                uploadPhotoSizeVC.delegate = self
+                uploadPhotoSizeVC.photoMaxSize = UploadVars.photoMaxSize
+                navigationController?.pushViewController(uploadPhotoSizeVC, animated: true)
             case 10 /* Auto Upload */:
                 let autoUploadSB = UIStoryboard(name: "AutoUploadViewController", bundle: nil)
                 guard let autoUploadVC = autoUploadSB.instantiateViewController(withIdentifier: "AutoUploadViewController") as? AutoUploadViewController else { return }
@@ -2026,6 +2006,20 @@ extension SettingsViewController: DefaultImageSizeDelegate {
     }
 }
 
+// MARK: - UploadPhotoSizeDelegate Methods
+extension SettingsViewController: UploadPhotoSizeDelegate {
+    func didSelectUploadPhotoSize(_ newSize: Int16) {
+        // Do nothing if the max upload photo size is unchanged
+        if newSize == UploadVars.photoMaxSize { return }
+        
+        // Save new choice after verification
+        UploadVars.photoMaxSize = newSize
+
+        // Refresh settings
+        let indexPath = IndexPath(row: 4, section: SettingsSection.imageUpload.rawValue)
+        settingsTableView.reloadRows(at: [indexPath], with: .automatic)
+    }
+}
 
 // MARK: - SelectedPrivacyDelegate Methods
 extension SettingsViewController: SelectPrivacyDelegate {
