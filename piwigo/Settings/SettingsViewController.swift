@@ -866,9 +866,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let indexSize = Int(UploadVars.photoMaxSize)
                 cell.configure(with: "… " + NSLocalizedString("severalImages", comment: "Photos"),
-                               detail: pwgPhotoMaxSizes[indexSize].1)
+                               detail: pwgPhotoMaxSizes(rawValue: UploadVars.photoMaxSize)?.name ?? pwgPhotoMaxSizes(rawValue: 0)!.name)
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.accessibilityIdentifier = "defaultUploadPhotoSize"
                 tableViewCell = cell
@@ -2006,21 +2005,6 @@ extension SettingsViewController: DefaultImageSizeDelegate {
     }
 }
 
-// MARK: - UploadPhotoSizeDelegate Methods
-extension SettingsViewController: UploadPhotoSizeDelegate {
-    func didSelectUploadPhotoSize(_ newSize: Int16) {
-        // Do nothing if the max upload photo size is unchanged
-        if newSize == UploadVars.photoMaxSize { return }
-        
-        // Save new choice after verification
-        UploadVars.photoMaxSize = newSize
-
-        // Refresh settings
-        let indexPath = IndexPath(row: 4, section: SettingsSection.imageUpload.rawValue)
-        settingsTableView.reloadRows(at: [indexPath], with: .automatic)
-    }
-}
-
 // MARK: - SelectedPrivacyDelegate Methods
 extension SettingsViewController: SelectPrivacyDelegate {
     func didSelectPrivacyLevel(_ privacyLevel: kPiwigoPrivacy) {
@@ -2032,6 +2016,22 @@ extension SettingsViewController: SelectPrivacyDelegate {
 
         // Refresh settings
         let indexPath = IndexPath(row: 1, section: SettingsSection.imageUpload.rawValue)
+        settingsTableView.reloadRows(at: [indexPath], with: .automatic)
+    }
+}
+
+// MARK: - UploadPhotoSizeDelegate Methods
+extension SettingsViewController: UploadPhotoSizeDelegate {
+    func didSelectUploadPhotoSize(_ newSize: Int16) {
+        // Do nothing if the max upload photo size is unchanged
+        if newSize == UploadVars.photoMaxSize { return }
+        
+        // Save new choice after verification
+        UploadVars.photoMaxSize = newSize
+
+        // Refresh settings
+        let indexPath = IndexPath(row: 3 + (NetworkVars.hasAdminRights ? 1 : 0),
+                                  section: SettingsSection.imageUpload.rawValue)
         settingsTableView.reloadRows(at: [indexPath], with: .automatic)
     }
 }

@@ -202,7 +202,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
                 return LabelTableViewCell()
             }
             cell.configure(with: "… " + NSLocalizedString("severalImages", comment: "Photos"),
-                           detail: pwgPhotoMaxSizes[Int(photoMaxSize)].1)
+                           detail: pwgPhotoMaxSizes(rawValue: photoMaxSize)?.name ?? pwgPhotoMaxSizes(rawValue: 0)!.name)
             cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
             cell.accessibilityIdentifier = "uploadPhotoSize"
             tableViewCell = cell
@@ -415,13 +415,19 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
         case .prefix:
             // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
             defaultPrefix = NetworkUtilities.utf8mb3String(from: textField.text)
-            if defaultPrefix.isEmpty { shouldUpdateDefaultPrefix = false }
+            if defaultPrefix == UploadVars.defaultPrefix {
+                shouldUpdateDefaultPrefix = false
+            }
+
+            // Update cell
+            let indexPath = IndexPath(row: 3 + (resizeImageOnUpload ? 1 : 0)
+                                             + (compressImageOnUpload ? 1 : 0)
+                                             + (prefixFileNameBeforeUpload ? 1 : 0),
+                                      section: 0)
+            settingsTableView.reloadRows(at: [indexPath], with: .automatic)
         default:
             break
         }
-        // Update cell
-        let indexPath = IndexPath(row: kImageUploadSetting.prefix.rawValue, section: 0)
-        settingsTableView.reloadRows(at: [indexPath], with: .automatic)
     }
 }
 
@@ -435,7 +441,7 @@ extension UploadSettingsViewController: UploadPhotoSizeDelegate {
         photoMaxSize = selectedSize
         
         // Refresh settings
-        let indexPath = IndexPath(row: 4, section: SettingsSection.imageUpload.rawValue)
+        let indexPath = IndexPath(row: 2, section: 0)
         settingsTableView.reloadRows(at: [indexPath], with: .automatic)
     }
 }

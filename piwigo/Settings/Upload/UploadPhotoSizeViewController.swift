@@ -23,11 +23,11 @@ class UploadPhotoSizeViewController: UIViewController, UITableViewDataSource, UI
     private var _photoMaxSize: Int16?
     var photoMaxSize: Int16 {
         get {
-            return _photoMaxSize ?? 5   // i.e. 4K
+            return _photoMaxSize ?? pwgPhotoMaxSizes.fullResolution.rawValue
         }
         set(photoSize) {
-            if photoSize < 0 || photoSize >= pwgPhotoMaxSizes.count {
-                _photoMaxSize = 5
+            if photoSize < 0 || photoSize > pwgPhotoMaxSizes.allCases.count {
+                _photoMaxSize = pwgPhotoMaxSizes.fullResolution.rawValue
             } else {
                 _photoMaxSize = photoSize
             }
@@ -158,7 +158,7 @@ class UploadPhotoSizeViewController: UIViewController, UITableViewDataSource, UI
     // MARK: - UITableView - Rows
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return pwgPhotoMaxSizes.count
+        return pwgPhotoMaxSizes.allCases.count
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -174,15 +174,7 @@ class UploadPhotoSizeViewController: UIViewController, UITableViewDataSource, UI
         cell.textLabel?.font = UIFont.piwigoFontNormal()
         cell.textLabel?.textColor = UIColor.piwigoColorLeftLabel()
         cell.textLabel?.adjustsFontSizeToFitWidth = false
-        if indexPath.row == 0 {
-            // Full resolution
-            cell.textLabel?.text = pwgPhotoMaxSizes[indexPath.row].1
-        } else {
-            // Downscaling
-            let sizeName = String(format: "%@ | <= %ld px", pwgPhotoMaxSizes[indexPath.row].1,
-                                  pwgPhotoMaxSizes[indexPath.row].0)
-            cell.textLabel?.text = sizeName
-        }
+        cell.textLabel?.text = indexPath.row == 0 ? pwgPhotoMaxSizes(rawValue: Int16(indexPath.row))!.name  : String(format: "%@ | <= %ld px", pwgPhotoMaxSizes(rawValue: Int16(indexPath.row))!.name, pwgPhotoMaxSizes(rawValue: Int16(indexPath.row))!.pixels)
 
         // Add checkmark in front of selected item
         if indexPath.row == photoMaxSize {

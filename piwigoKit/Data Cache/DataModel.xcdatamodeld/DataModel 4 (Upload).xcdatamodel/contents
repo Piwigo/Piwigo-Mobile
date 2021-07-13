@@ -34,7 +34,7 @@
         <attribute name="markedForAutoUpload" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="md5Sum" attributeType="String" defaultValueString=""/>
         <attribute name="mimeType" attributeType="String" defaultValueString=""/>
-        <attribute name="photoMaxSize" attributeType="Integer 16" defaultValueString="5" usesScalarValueType="YES"/>
+        <attribute name="photoMaxSize" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="photoQuality" attributeType="Integer 16" defaultValueString="98" usesScalarValueType="YES"/>
         <attribute name="prefixFileNameBeforeUpload" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="privacyLevel" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>

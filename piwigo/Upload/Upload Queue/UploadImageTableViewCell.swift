@@ -136,7 +136,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         if errorDescription.count == 0, let photoMaxSize = userInfo["photoMaxSize"] as? Int16,
             let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [localIdentifier], options: nil).firstObject {
             imageInfoLabel.text = getImageInfo(from: imageAsset, for: Int(bounds.size.width),
-                                               scale: pwgPhotoMaxSizes[Int(photoMaxSize)].0)
+                                               maxSize: photoMaxSize)
         } else if errorDescription.count > 0 {
             imageInfoLabel.text = errorDescription
         }
@@ -213,7 +213,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
             // Display image information
             imageInfoLabel.text = getImageInfo(from: image ?? imagePlaceholder,
                                                for: availableWidth - 2*Int(indentationWidth),
-                                               scale: pwgPhotoMaxSizes[Int(upload.photoMaxSize)].0)
+                                               maxSize: upload.photoMaxSize)
         }
     }
 
@@ -238,7 +238,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         } else {
             // Display image information
             imageInfoLabel.text = getImageInfo(from: imageAsset, for: availableWidth - 2*Int(indentationWidth),
-                                               scale: pwgPhotoMaxSizes[Int(upload.photoMaxSize)].0)
+                                               maxSize: upload.photoMaxSize)
         }
 
         // Cell image: retrieve data of right size and crop image
@@ -272,14 +272,23 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         playImage.isHidden = imageAsset.mediaType == .video ? false : true
     }
     
-    private func getImageInfo(from imageAsset: PHAsset, for availableWidth: Int, scale: Int16) -> String {
-        let pixelWidth = (Float(imageAsset.pixelWidth * Int(scale)) / 100.0).rounded()
-        let pixelHeight = (Float(imageAsset.pixelHeight * Int(scale)) / 100.0).rounded()
+    private func getImageInfo(from imageAsset: PHAsset, for availableWidth: Int, maxSize: Int16) -> String {
+        var pixelWidth = Float(imageAsset.pixelWidth)
+        var pixelHeight = Float(imageAsset.pixelHeight)
+        let imageSize = max(pixelWidth, pixelHeight)
+        let maxPhotoSize = pwgPhotoMaxSizes(rawValue: maxSize)?.pixels ?? Int.max
+        if imageSize > Float(maxPhotoSize) {
+            // Will be downsized
+            pixelWidth *= Float(maxPhotoSize) / imageSize
+            pixelHeight *= Float(maxPhotoSize) / imageSize
+        }
         switch imageAsset.mediaType {
         case .image:
-            return imageInfo(for: availableWidth, pixelWidth: pixelWidth, pixelHeight: pixelHeight, creationDate: imageAsset.creationDate)
+            return imageInfo(for: availableWidth, pixelWidth: pixelWidth, pixelHeight: pixelHeight,
+                             creationDate: imageAsset.creationDate)
         case .video:
-            return videoInfo(for: availableWidth, pixelWidth: pixelWidth, pixelHeight: pixelHeight, duration: imageAsset.duration, creationDate: imageAsset.creationDate)
+            return videoInfo(for: availableWidth, pixelWidth: pixelWidth, pixelHeight: pixelHeight,
+                             duration: imageAsset.duration, creationDate: imageAsset.creationDate)
         default:
             if let creationDate = imageAsset.creationDate {
                 return DateFormatter.localizedString(from: creationDate, dateStyle: .full, timeStyle: .none)
@@ -288,9 +297,16 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         return ""
     }
 
-    private func getImageInfo(from image: UIImage, for availableWidth: Int, scale: Int16) -> String {
-        let pixelWidth = (Float(image.size.width * CGFloat(scale)) / 100.0).rounded()
-        let pixelHeight = (Float(image.size.height * CGFloat(scale)) / 100.0).rounded()
+    private func getImageInfo(from image: UIImage, for availableWidth: Int, maxSize: Int16) -> String {
+        var pixelWidth = Float(image.size.width)
+        var pixelHeight = Float(image.size.height)
+        let imageSize = max(pixelWidth, pixelHeight)
+        let maxPhotoSize = pwgPhotoMaxSizes(rawValue: maxSize)?.pixels ?? Int.max
+        if imageSize > Float(maxPhotoSize) {
+            // Will be downsized
+            pixelWidth *= Float(maxPhotoSize) / imageSize
+            pixelHeight *= Float(maxPhotoSize) / imageSize
+        }
         return imageInfo(for: availableWidth, pixelWidth: pixelWidth, pixelHeight: pixelHeight, creationDate: Date())
     }
 

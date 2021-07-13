@@ -338,11 +338,11 @@ extension UploadManager {
         
         // Determine video size
         let videoSize = videoAsset.tracks(withMediaType: .video).first?.naturalSize ?? CGSize(width: 640, height: 480)
-        var maxPixels = Int16(max(videoSize.width, videoSize.height))
+        var maxPixels = Int(max(videoSize.width, videoSize.height))
                                                 
         // Resize frames
-        if uploadProperties.resizeImageOnUpload {
-            maxPixels = pwgPhotoMaxSizes[Int(uploadProperties.photoMaxSize)].0
+        if uploadProperties.resizeImageOnUpload, uploadProperties.photoMaxSize != 0 {
+            maxPixels = pwgPhotoMaxSizes(rawValue: uploadProperties.photoMaxSize)?.pixels ?? Int.max
         }
 
         // The 'presets' array never contains AVAssetExportPresetPassthrough,

@@ -21,9 +21,8 @@ extension UploadManager {
                       for uploadID: NSManagedObjectID, with properties: UploadProperties) -> Void {
         
         // Upload the file as is if the user did not request any modification of the photo
-        if !properties.resizeImageOnUpload,
-           !properties.compressImageOnUpload,
-           !properties.stripGPSdataOnUpload
+        if !properties.resizeImageOnUpload, properties.photoMaxSize == 0,
+           !properties.compressImageOnUpload, !properties.stripGPSdataOnUpload
         {
             // Get MD5 checksum and MIME type, update counter
             finalizeImageFile(atURL: originalFileURL, with: properties) { [unowned self] finalProperties, error in
@@ -35,7 +34,7 @@ extension UploadManager {
         
         // The user only requested a removal of private metadata
         // We do it w/o recompression of the image.
-        if !properties.resizeImageOnUpload,
+        if !properties.resizeImageOnUpload, properties.photoMaxSize == 0,
            !properties.compressImageOnUpload
         {
             stripMetadataOfImage(atURL: originalFileURL, with: properties) { fileURL, error in
@@ -216,9 +215,9 @@ extension UploadManager {
             for imageIndex in 0..<nberOfImages {
                 // Should we resize the images?
                 var image:CGImage
-                if properties.resizeImageOnUpload {
+                if properties.resizeImageOnUpload, properties.photoMaxSize != 0 {
                     // Set options for retrieving the primary image
-                    let maxSize = pwgPhotoMaxSizes[Int(properties.photoMaxSize)].0
+                    let maxSize = pwgPhotoMaxSizes(rawValue: properties.photoMaxSize)?.pixels ?? Int.max
                     let resizeOptions = [kCGImageSourceCreateThumbnailFromImageAlways : true,
                                          kCGImageSourceCreateThumbnailWithTransform   : false,
                                          kCGImageSourceThumbnailMaxPixelSize          : maxSize] as [CFString : Any]
@@ -304,9 +303,9 @@ extension UploadManager {
             
             // Should we resize the image?
             var image:CGImage
-            if properties.resizeImageOnUpload {
+            if properties.resizeImageOnUpload, properties.photoMaxSize != 0 {
                 // Set options for retrieving the primary image
-                let maxSize = pwgPhotoMaxSizes[Int(properties.photoMaxSize)].0
+                let maxSize = pwgPhotoMaxSizes(rawValue: properties.photoMaxSize)?.pixels ?? Int.max
                 let resizeOptions = [kCGImageSourceCreateThumbnailFromImageAlways : true,
                                      kCGImageSourceCreateThumbnailWithTransform   : false,
                                      kCGImageSourceThumbnailMaxPixelSize          : maxSize] as [CFString : Any]

@@ -8,6 +8,7 @@
 
 import Foundation
 
+// MARK: - Privacy Levels
 public enum kPiwigoPrivacy : Int16 {
     case everybody = 0
     case adminsFamilyFriendsContacts = 1
@@ -18,16 +19,44 @@ public enum kPiwigoPrivacy : Int16 {
     case unknown = -1
 }
 
-public let pwgPhotoMaxSizes : [(Int16, String)] = [(640, "nHD | 0.23 Mpx"),
-                                                   (960, "qHD | 0.52 Mpx"),
-                                                   (1280, "HD | 0.92 Mpx"),
-                                                   (1920, "Full HD | 2.07 Mpx"),
-                                                   (2048, "2K | 2.21 Mpx"),
-                                                   (3840, "4K | 8.29 Mpx"),
-                                                   (5120, "5K | 14.7 Mpx"),
-                                                   (7680, "8K UHD | 33.2 Mpx"),
-                                                   (17280, "16K UHD | 132.7 Mpx")]
+// MARK: - Max Photo Sizes
+public enum pwgPhotoMaxSizes: Int16, CaseIterable {
+    case fullResolution = 0, UHD16K, UHD8K, Retina5K, UHD4K, DCI2K, FullHD, HD, qHD, nHD
+}
 
+extension pwgPhotoMaxSizes {
+    public var pixels: Int {
+        switch self {
+        case .fullResolution:   return Int.max
+        case .UHD16K:           return 17280
+        case .UHD8K:            return 7680
+        case .Retina5K:         return 5120
+        case .UHD4K:            return 3840
+        case .DCI2K:            return 2048
+        case .FullHD:           return 1920
+        case .HD:               return 1280
+        case .qHD:              return 960
+        case .nHD:              return 640
+        }
+    }
+    
+    public var name: String {
+        switch self {
+        case .fullResolution:   return NSLocalizedString("UploadPhotoSize_original", comment: "No Downsizing")
+        case .UHD16K:           return "16K UHD | 132.7 Mpx"
+        case .UHD8K:            return "8K UHD | 33.2 Mpx"
+        case .Retina5K:         return "5K | 14.7 Mpx"
+        case .UHD4K:            return "4K | 8.29 Mpx"
+        case .DCI2K:            return "2K | 2.21 Mpx"
+        case .FullHD:           return "Full HD | 2.07 Mpx"
+        case .HD:               return "HD | 0.92 Mpx"
+        case .qHD:              return "qHD | 0.52 Mpx"
+        case .nHD:              return "nHD | 0.23 Mpx"
+        }
+    }
+}
+
+// MARK: - Photo Sort Options
 public enum kPiwigoSort : Int16 {
     case nameAscending = 0              // Photo title, A → Z
     case nameDescending                 // Photo title, Z → A
@@ -94,11 +123,11 @@ public class UploadVars: NSObject {
     
     /// - Max photo size to apply when resizing
     /// - before version 2.7, we stored in 'photoResize' the fraction of the photo size to apply when resizing.
-    @UserDefault("photoMaxSize", defaultValue: 5, userDefaults: UserDefaults.dataSuite)
+    @UserDefault("photoMaxSize", defaultValue: 0, userDefaults: UserDefaults.dataSuite)
     public static var photoMaxSize: Int16
     public class func selectedSizeFromSize(_ size:Int16) -> Int16 {
-        for index in 0..<pwgPhotoMaxSizes.count {
-            if size < pwgPhotoMaxSizes[index].0 {
+        for index in pwgPhotoMaxSizes.allCases.count-1...0 {
+            if size < pwgPhotoMaxSizes(rawValue: Int16(index))?.pixels ?? 0 {
                 return Int16(index)
             }
         }
