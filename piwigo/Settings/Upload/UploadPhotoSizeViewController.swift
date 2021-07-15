@@ -94,7 +94,7 @@ class UploadPhotoSizeViewController: UIViewController, UITableViewDataSource, UI
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         
         // Title
-        let titleString = "\(NSLocalizedString("UploadPhotoSize_title", comment: "Photo Size"))\n"
+        let titleString = "\(NSLocalizedString("UploadPhotoSize_title", comment: "Max Photo Size"))\n"
         let titleAttributes = [
             NSAttributedString.Key.font: UIFont.piwigoFontBold()
         ]
@@ -188,12 +188,12 @@ class UploadPhotoSizeViewController: UIViewController, UITableViewDataSource, UI
 
     
     // MARK: - UITableView - Footer
-    private func cameraResolution() -> String {
+    private func devicePhotoResolution() -> String {
         // Collect system and device data
         var systemInfo = utsname()
         uname(&systemInfo)
         let size = Int(_SYS_NAMELEN) // is 32, but posix AND its init is 256....
-        let resolution: String = DeviceUtilities.cameraResolution(forCode: withUnsafeMutablePointer(to: &systemInfo.machine) {p in
+        let resolution: String = DeviceUtilities.devicePotoResolution(forCode: withUnsafeMutablePointer(to: &systemInfo.machine) {p in
             p.withMemoryRebound(to: CChar.self, capacity: size, {p2 in
                 return String(cString: p2)
             })
@@ -203,9 +203,9 @@ class UploadPhotoSizeViewController: UIViewController, UITableViewDataSource, UI
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         // Footer height?
-        let resolution = cameraResolution()
+        let resolution = devicePhotoResolution()
         if resolution.isEmpty { return 0.0 }
-        let footer = String(format: "%@ %@.", NSLocalizedString("UploadPhotoSize_resolution", comment: "Maximum resolution of the built-in cameras:"), resolution)
+        let footer = String(format: "%@ %@.", NSLocalizedString("UploadPhotoSize_resolution", comment: "Built-in cameras maximum resolution:"), resolution)
         let attributes = [
             NSAttributedString.Key.font: UIFont.piwigoFontSmall()
         ]
@@ -224,7 +224,7 @@ class UploadPhotoSizeViewController: UIViewController, UITableViewDataSource, UI
         footerLabel.textColor = UIColor.piwigoColorHeader()
         footerLabel.textAlignment = .center
         footerLabel.numberOfLines = 0
-        footerLabel.text = String(format: "%@ %@.", NSLocalizedString("UploadPhotoSize_resolution", comment: "Maximum resolution of the built-in cameras:"), cameraResolution())
+        footerLabel.text = String(format: "%@ %@.", NSLocalizedString("UploadPhotoSize_resolution", comment: "Built-in cameras maximum resolution:"), devicePhotoResolution())
         footerLabel.adjustsFontSizeToFitWidth = false
         footerLabel.lineBreakMode = .byWordWrapping
 

@@ -689,7 +689,10 @@
 // Settings — Upload Photo Size
 "UploadPhotoSize_title" = "Max Photo Size";
 "UploadPhotoSize_header" = "Please select the maximum size of the photos which will be uploaded.";
-"UploadPhotoSize_resolution" = "Maximum resolution of the built-in cameras:";
+"UploadPhotoSize_resolution" = "Built-in cameras maximum resolution:";
+"UploadVideoSize_title" = "Max Video Size";
+"UploadVideoSize_header" = "Please select the maximum size of the videos which will be uploaded.";
+"UploadVideoSize_resolution" = "Built-in cameras maximum specifications:";
 "UploadPhotoSize_original" = "No Downsizing";
 
 // Settings — Cache

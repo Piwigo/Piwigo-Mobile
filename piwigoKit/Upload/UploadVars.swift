@@ -21,15 +21,13 @@ public enum kPiwigoPrivacy : Int16 {
 
 // MARK: - Max Photo Sizes
 public enum pwgPhotoMaxSizes: Int16, CaseIterable {
-    case fullResolution = 0, UHD16K, UHD8K, Retina5K, UHD4K, DCI2K, FullHD, HD, qHD, nHD
+    case fullResolution = 0, Retina5K, UHD4K, DCI2K, FullHD, HD, qHD, nHD
 }
 
 extension pwgPhotoMaxSizes {
     public var pixels: Int {
         switch self {
         case .fullResolution:   return Int.max
-        case .UHD16K:           return 17280
-        case .UHD8K:            return 7680
         case .Retina5K:         return 5120
         case .UHD4K:            return 3840
         case .DCI2K:            return 2048
@@ -43,8 +41,6 @@ extension pwgPhotoMaxSizes {
     public var name: String {
         switch self {
         case .fullResolution:   return NSLocalizedString("UploadPhotoSize_original", comment: "No Downsizing")
-        case .UHD16K:           return "16K UHD | 132.7 Mpx"
-        case .UHD8K:            return "8K UHD | 33.2 Mpx"
         case .Retina5K:         return "5K | 14.7 Mpx"
         case .UHD4K:            return "4K | 8.29 Mpx"
         case .DCI2K:            return "2K | 2.21 Mpx"
@@ -76,11 +72,11 @@ extension pwgVideoMaxSizes {
     public var name: String {
         switch self {
         case .fullResolution:   return NSLocalizedString("UploadPhotoSize_original", comment: "No Downsizing")
-        case .UHD4K:            return "4K | ≈?? Mbps"
-        case .FullHD:           return "Full HD | ≈8.5 Mbps"
-        case .HD:               return "HD | ≈10.5 Mbps"
-        case .qHD:              return "qHD | ≈5.3 Mbps"
-        case .nHD:              return "nHD | ≈2.8 Mbps"
+        case .UHD4K:            return "4K | ≈26.7 Mbit/s"
+        case .FullHD:           return "Full HD | ≈15.6 Mbit/s"
+        case .HD:               return "HD | ≈11.3 Mbit/s"
+        case .qHD:              return "qHD | ≈5.8 Mbit/s"
+        case .nHD:              return "nHD | ≈2.8 Mbit/s"
         }
     }
 }
