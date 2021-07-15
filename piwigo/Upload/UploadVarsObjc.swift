@@ -58,17 +58,28 @@ class UploadVarsObjc: NSObject {
         set (value) { UploadVars.resizeImageOnUpload = value }
     }
     
-    /// - Max photo size to apply when resizing
+    /// - Max photo size to apply when downsizing
     /// - before version 2.7, we stored in 'photoResize' the fraction of the photo size to apply when resizing.
-//    @UserDefault("photoMaxSize", defaultValue: 5, userDefaults: UserDefaults.dataSuite)
+//    @UserDefault("photoMaxSize", defaultValue: 0, userDefaults: UserDefaults.dataSuite)
     @objc static var photoMaxSize : Int16 {
         get { return UploadVars.photoMaxSize }
         set (value) { UploadVars.photoMaxSize = value }
     }
-    @objc class func selectedSizeFromSize(_ size:Int16) -> Int16 {
-        return UploadVars.selectedSizeFromSize(size)
+    @objc class func selectedPhotoSizeFromSize(_ size:Int16) -> Int16 {
+        return UploadVars.selectedPhotoSizeFromSize(size)
     }
-    
+
+    /// - Max video size to apply when downsizing
+    /// - before version 2.7, we stored in 'photoResize' the fraction of the photo or video size to apply when resizing.
+//    @UserDefault("videoMaxSize", defaultValue: 0, userDefaults: UserDefaults.dataSuite)
+    @objc static var videoMaxSize : Int16 {
+        get { return UploadVars.videoMaxSize }
+        set (value) { UploadVars.videoMaxSize = value }
+    }
+    @objc class func selectedVideoSizeFromSize(_ size:Int16) -> Int16 {
+        return UploadVars.selectedVideoSizeFromSize(size)
+    }
+
     /// - Compress photo before uploading
 //    @UserDefault("compressImageOnUpload", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     @objc static var compressImageOnUpload: Bool {

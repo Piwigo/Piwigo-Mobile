@@ -435,7 +435,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             nberOfRows = 5
         case SettingsSection.imageUpload.rawValue:
             nberOfRows = 7 + (NetworkVars.hasAdminRights ? 1 : 0)
-            nberOfRows += (UploadVars.resizeImageOnUpload ? 1 : 0)
+            nberOfRows += (UploadVars.resizeImageOnUpload ? 2 : 0)
             nberOfRows += (UploadVars.compressImageOnUpload ? 1 : 0)
             nberOfRows += (UploadVars.prefixFileNameBeforeUpload ? 1 : 0)
             nberOfRows += (NetworkVars.usesUploadAsync ? 1 : 0)
@@ -774,10 +774,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case SettingsSection.imageUpload.rawValue /* Default Upload Settings */:
             var row = indexPath.row
             row += (!NetworkVars.hasAdminRights && (row > 0)) ? 1 : 0
-            row += (!UploadVars.resizeImageOnUpload && (row > 3)) ? 1 : 0
-            row += (!UploadVars.compressImageOnUpload && (row > 5)) ? 1 : 0
-            row += (!UploadVars.prefixFileNameBeforeUpload && (row > 7)) ? 1 : 0
-            row += (!NetworkVars.usesUploadAsync && (row > 9)) ? 1 : 0
+            row += (!UploadVars.resizeImageOnUpload && (row > 3)) ? 2 : 0
+            row += (!UploadVars.compressImageOnUpload && (row > 6)) ? 1 : 0
+            row += (!UploadVars.prefixFileNameBeforeUpload && (row > 8)) ? 1 : 0
+            row += (!NetworkVars.usesUploadAsync && (row > 10)) ? 1 : 0
             switch row {
             case 0 /* Author Name? */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as? TextFieldTableViewCell else {
@@ -848,14 +848,16 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     // Number of rows will change accordingly
                     UploadVars.resizeImageOnUpload = switchState
                     // Position of the row that should be added/removed
-                    let rowAtIndexPath = IndexPath(row: 3 + (NetworkVars.hasAdminRights ? 1 : 0),
+                    let photoAtIndexPath = IndexPath(row: 3 + (NetworkVars.hasAdminRights ? 1 : 0),
+                                                   section: SettingsSection.imageUpload.rawValue)
+                    let videoAtIndexPath = IndexPath(row: 4 + (NetworkVars.hasAdminRights ? 1 : 0),
                                                    section: SettingsSection.imageUpload.rawValue)
                     if switchState {
                         // Insert row in existing table
-                        self.settingsTableView?.insertRows(at: [rowAtIndexPath], with: .automatic)
+                        self.settingsTableView?.insertRows(at: [photoAtIndexPath, videoAtIndexPath], with: .automatic)
                     } else {
                         // Remove row in existing table
-                        self.settingsTableView?.deleteRows(at: [rowAtIndexPath], with: .automatic)
+                        self.settingsTableView?.deleteRows(at: [photoAtIndexPath, videoAtIndexPath], with: .automatic)
                     }
                 }
                 cell.accessibilityIdentifier = "resizeBeforeUpload"
@@ -872,7 +874,18 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.accessibilityIdentifier = "defaultUploadPhotoSize"
                 tableViewCell = cell
                 
-            case 5 /* Compress before Upload? */:
+            case 5 /* Upload Video Size */:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
+                    return LabelTableViewCell()
+                }
+                cell.configure(with: "… " + NSLocalizedString("severalVideos", comment: "Videos"),
+                               detail: pwgVideoMaxSizes(rawValue: UploadVars.videoMaxSize)?.name ?? pwgVideoMaxSizes(rawValue: 0)!.name)
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+                cell.accessibilityIdentifier = "defaultUploadVideoSize"
+                tableViewCell = cell
+                
+            case 6 /* Compress before Upload? */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
                     print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                     return SwitchTableViewCell()
@@ -890,7 +903,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     UploadVars.compressImageOnUpload = switchState
                     // Position of the row that should be added/removed
                     let rowAtIndexPath = IndexPath(row: 4 + (NetworkVars.hasAdminRights ? 1 : 0)
-                                                          + (UploadVars.resizeImageOnUpload ? 1 : 0),
+                                                          + (UploadVars.resizeImageOnUpload ? 2 : 0),
                                                    section: SettingsSection.imageUpload.rawValue)
                     if switchState {
                         // Insert row in existing table
@@ -903,7 +916,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.accessibilityIdentifier = "compressBeforeUpload"
                 tableViewCell = cell
                 
-            case 6 /* Image Quality slider */:
+            case 7 /* Image Quality slider */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell else {
                     print("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!")
                     return SliderTableViewCell()
@@ -921,7 +934,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.accessibilityIdentifier = "compressionRatio"
                 tableViewCell = cell
                 
-            case 7 /* Prefix Filename Before Upload switch */:
+            case 8 /* Prefix Filename Before Upload switch */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
                     print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                     return SwitchTableViewCell()
@@ -942,7 +955,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     UploadVars.prefixFileNameBeforeUpload = switchState
                     // Position of the row that should be added/removed
                     let rowAtIndexPath = IndexPath(row: 5 + (NetworkVars.hasAdminRights ? 1 : 0)
-                                                          + (UploadVars.resizeImageOnUpload ? 1 : 0)
+                                                          + (UploadVars.resizeImageOnUpload ? 2 : 0)
                                                           + (UploadVars.compressImageOnUpload ? 1 : 0),
                                                    section: SettingsSection.imageUpload.rawValue)
                     if switchState {
@@ -956,7 +969,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.accessibilityIdentifier = "prefixBeforeUpload"
                 tableViewCell = cell
                 
-            case 8 /* Filename prefix? */:
+            case 9 /* Filename prefix? */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as? TextFieldTableViewCell else {
                     print("Error: tableView.dequeueReusableCell does not return a TextFieldTableViewCell!")
                     return TextFieldTableViewCell()
@@ -977,7 +990,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.accessibilityIdentifier = "prefixFileName"
                 tableViewCell = cell
                 
-            case 9 /* Wi-Fi Only? */:
+            case 10 /* Wi-Fi Only? */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
                     print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                     return SwitchTableViewCell()
@@ -999,7 +1012,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.accessibilityIdentifier = "wifiOnly"
                 tableViewCell = cell
 
-            case 10 /* Auto-upload */:
+            case 11 /* Auto-upload */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
@@ -1022,7 +1035,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.accessibilityIdentifier = "autoUpload"
                 tableViewCell = cell
 
-            case 11 /* Delete image after upload? */:
+            case 12 /* Delete image after upload? */:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
                     print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                     return SwitchTableViewCell()
@@ -1307,13 +1320,14 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case SettingsSection.imageUpload.rawValue /* Default Upload Settings */:
             var row = indexPath.row
             row += (!NetworkVars.hasAdminRights && (row > 0)) ? 1 : 0
-            row += (!UploadVars.resizeImageOnUpload && (row > 3)) ? 1 : 0
-            row += (!UploadVars.compressImageOnUpload && (row > 5)) ? 1 : 0
-            row += (!UploadVars.prefixFileNameBeforeUpload && (row > 7)) ? 1 : 0
-            row += (!NetworkVars.usesUploadAsync && (row > 9)) ? 1 : 0
+            row += (!UploadVars.resizeImageOnUpload && (row > 3)) ? 2 : 0
+            row += (!UploadVars.compressImageOnUpload && (row > 6)) ? 1 : 0
+            row += (!UploadVars.prefixFileNameBeforeUpload && (row > 8)) ? 1 : 0
+            row += (!NetworkVars.usesUploadAsync && (row > 10)) ? 1 : 0
             switch row {
             case 1  /* Privacy Level */,
                  4  /* Upload Photo Size */,
+                 5  /* Upload Video Size */,
                  10 /* Auto upload */:
                 result = true
             default:
@@ -1518,10 +1532,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case SettingsSection.imageUpload.rawValue /* Default upload Settings */:
             var row = indexPath.row
             row += (!NetworkVars.hasAdminRights && (row > 0)) ? 1 : 0
-            row += (!UploadVars.resizeImageOnUpload && (row > 3)) ? 1 : 0
-            row += (!UploadVars.compressImageOnUpload && (row > 5)) ? 1 : 0
-            row += (!UploadVars.prefixFileNameBeforeUpload && (row > 7)) ? 1 : 0
-            row += (!NetworkVars.usesUploadAsync && (row > 9)) ? 1 : 0
+            row += (!UploadVars.resizeImageOnUpload && (row > 3)) ? 2 : 0
+            row += (!UploadVars.compressImageOnUpload && (row > 6)) ? 1 : 0
+            row += (!UploadVars.prefixFileNameBeforeUpload && (row > 8)) ? 1 : 0
+            row += (!NetworkVars.usesUploadAsync && (row > 10)) ? 1 : 0
             switch row {
             case 1 /* Default privacy selection */:
                 let privacySB = UIStoryboard(name: "SelectPrivacyViewController", bundle: nil)
@@ -1535,7 +1549,13 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 uploadPhotoSizeVC.delegate = self
                 uploadPhotoSizeVC.photoMaxSize = UploadVars.photoMaxSize
                 navigationController?.pushViewController(uploadPhotoSizeVC, animated: true)
-            case 10 /* Auto Upload */:
+            case 5 /* Upload Video Size */:
+                let uploadVideoSizeSB = UIStoryboard(name: "UploadVideoSizeViewController", bundle: nil)
+                guard let uploadVideoSizeVC = uploadVideoSizeSB.instantiateViewController(withIdentifier: "UploadVideoSizeViewController") as? UploadVideoSizeViewController else { return }
+                uploadVideoSizeVC.delegate = self
+                uploadVideoSizeVC.videoMaxSize = UploadVars.videoMaxSize
+                navigationController?.pushViewController(uploadVideoSizeVC, animated: true)
+            case 11 /* Auto Upload */:
                 let autoUploadSB = UIStoryboard(name: "AutoUploadViewController", bundle: nil)
                 guard let autoUploadVC = autoUploadSB.instantiateViewController(withIdentifier: "AutoUploadViewController") as? AutoUploadViewController else { return }
                 navigationController?.pushViewController(autoUploadVC, animated: true)
@@ -2023,15 +2043,63 @@ extension SettingsViewController: SelectPrivacyDelegate {
 // MARK: - UploadPhotoSizeDelegate Methods
 extension SettingsViewController: UploadPhotoSizeDelegate {
     func didSelectUploadPhotoSize(_ newSize: Int16) {
-        // Do nothing if the max upload photo size is unchanged
-        if newSize == UploadVars.photoMaxSize { return }
+        // Was the size modified?
+        if newSize != UploadVars.photoMaxSize {
+            // Save new choice
+            UploadVars.photoMaxSize = newSize
+            
+            // Refresh corresponding row
+            let indexPath = IndexPath(row: 4, section: SettingsSection.imageUpload.rawValue)
+            settingsTableView.reloadRows(at: [indexPath], with: .automatic)
+        }
         
-        // Save new choice after verification
-        UploadVars.photoMaxSize = newSize
+        // Hide rows if needed
+        if UploadVars.photoMaxSize == 0, UploadVars.videoMaxSize == 0 {
+            UploadVars.resizeImageOnUpload = false
+            // Position of the rows which should be removed
+            let photoAtIndexPath = IndexPath(row: 3 + (NetworkVars.hasAdminRights ? 1 : 0),
+                                           section: SettingsSection.imageUpload.rawValue)
+            let videoAtIndexPath = IndexPath(row: 4 + (NetworkVars.hasAdminRights ? 1 : 0),
+                                           section: SettingsSection.imageUpload.rawValue)
+            // Remove row in existing table
+            settingsTableView?.deleteRows(at: [photoAtIndexPath, videoAtIndexPath], with: .automatic)
 
-        // Refresh settings
-        let indexPath = IndexPath(row: 3 + (NetworkVars.hasAdminRights ? 1 : 0),
-                                  section: SettingsSection.imageUpload.rawValue)
-        settingsTableView.reloadRows(at: [indexPath], with: .automatic)
+            // Refresh flag
+            let indexPath = IndexPath(row: 2 + (NetworkVars.hasAdminRights ? 1 : 0),
+                                      section: SettingsSection.imageUpload.rawValue)
+            settingsTableView?.reloadRows(at: [indexPath], with: .automatic)
+        }
+    }
+}
+
+// MARK: - UploadVideoSizeDelegate Methods
+extension SettingsViewController: UploadVideoSizeDelegate {
+    func didSelectUploadVideoSize(_ newSize: Int16) {
+        // Was the size modified?
+        if newSize != UploadVars.videoMaxSize {
+            // Save new choice after verification
+            UploadVars.videoMaxSize = newSize
+
+            // Refresh corresponding row
+            let indexPath = IndexPath(row: 5, section: SettingsSection.imageUpload.rawValue)
+            settingsTableView.reloadRows(at: [indexPath], with: .automatic)
+        }
+        
+        // Hide rows if needed
+        if UploadVars.photoMaxSize == 0, UploadVars.videoMaxSize == 0 {
+            UploadVars.resizeImageOnUpload = false
+            // Position of the rows which should be removed
+            let photoAtIndexPath = IndexPath(row: 3 + (NetworkVars.hasAdminRights ? 1 : 0),
+                                           section: SettingsSection.imageUpload.rawValue)
+            let videoAtIndexPath = IndexPath(row: 4 + (NetworkVars.hasAdminRights ? 1 : 0),
+                                           section: SettingsSection.imageUpload.rawValue)
+            // Remove rows in existing table
+            settingsTableView?.deleteRows(at: [photoAtIndexPath, videoAtIndexPath], with: .automatic)
+
+            // Refresh flag
+            let indexPath = IndexPath(row: 2 + (NetworkVars.hasAdminRights ? 1 : 0),
+                                      section: SettingsSection.imageUpload.rawValue)
+            settingsTableView?.reloadRows(at: [indexPath], with: .automatic)
+        }
     }
 }

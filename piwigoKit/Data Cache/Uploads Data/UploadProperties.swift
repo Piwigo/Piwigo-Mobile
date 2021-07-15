@@ -37,6 +37,7 @@ public struct UploadProperties
     public var stripGPSdataOnUpload: Bool
     public var resizeImageOnUpload: Bool
     public var photoMaxSize: Int16
+    public var videoMaxSize: Int16
     public var compressImageOnUpload: Bool
     public var photoQuality: Int16
     public var prefixFileNameBeforeUpload: Bool
@@ -77,6 +78,7 @@ extension UploadProperties {
             stripGPSdataOnUpload: UploadVars.stripGPSdataOnUpload,
             resizeImageOnUpload: UploadVars.resizeImageOnUpload,
             photoMaxSize: UploadVars.photoMaxSize,
+            videoMaxSize: UploadVars.videoMaxSize,
             compressImageOnUpload: UploadVars.compressImageOnUpload,
             photoQuality: UploadVars.photoQuality,
             prefixFileNameBeforeUpload: UploadVars.prefixFileNameBeforeUpload,

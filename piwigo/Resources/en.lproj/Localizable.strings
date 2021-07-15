@@ -689,7 +689,6 @@
 // Settings — Upload Photo Size
 "UploadPhotoSize_title" = "Max Photo Size";
 "UploadPhotoSize_header" = "Please select the maximum size of the photos which will be uploaded.";
-"UploadPhotoSize_pixels" = "pixels";
 "UploadPhotoSize_resolution" = "Maximum resolution of the built-in cameras:";
 "UploadPhotoSize_original" = "No Downsizing";
 

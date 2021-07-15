@@ -1670,8 +1670,12 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                         if let photoMaxSize = uploadParameters["photoMaxSize"] as? Int16 {
                             updatedRequest.photoMaxSize = photoMaxSize
                         }
-                    } else {
-                        updatedRequest.photoMaxSize = 5 // i.e. 4K
+                        if let videoMaxSize = uploadParameters["videoMaxSize"] as? Int16 {
+                            updatedRequest.videoMaxSize = videoMaxSize
+                        }
+                    } else {    // No downsizing
+                        updatedRequest.photoMaxSize = 0
+                        updatedRequest.videoMaxSize = 0
                     }
                 }
                 if let compressImageOnUpload = uploadParameters["compressImageOnUpload"] as? Bool {

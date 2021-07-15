@@ -47,6 +47,7 @@
         <attribute name="serverPath" attributeType="String" defaultValueString=""/>
         <attribute name="stripGPSdataOnUpload" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="tagIds" attributeType="String" defaultValueString=""/>
+        <attribute name="videoMaxSize" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="localIdentifier"/>
@@ -56,6 +57,6 @@
     <elements>
         <element name="Location" positionX="-60.984375" positionY="-122.5" width="128" height="104"/>
         <element name="Tag" positionX="-61.69140625" positionY="-237.2265625" width="128" height="89"/>
-        <element name="Upload" positionX="-403.19921875" positionY="-201.09375" width="128" height="449"/>
+        <element name="Upload" positionX="-403.19921875" positionY="-201.09375" width="128" height="464"/>
     </elements>
 </model>

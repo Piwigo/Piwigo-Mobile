@@ -56,6 +56,35 @@ extension pwgPhotoMaxSizes {
     }
 }
 
+// MARK: - Max Video Sizes
+public enum pwgVideoMaxSizes: Int16, CaseIterable {
+    case fullResolution = 0, UHD4K, FullHD, HD, qHD, nHD
+}
+
+extension pwgVideoMaxSizes {
+    public var pixels: Int {
+        switch self {
+        case .fullResolution:   return Int.max
+        case .UHD4K:            return 3840
+        case .FullHD:           return 1920
+        case .HD:               return 1280
+        case .qHD:              return 960
+        case .nHD:              return 640
+        }
+    }
+    
+    public var name: String {
+        switch self {
+        case .fullResolution:   return NSLocalizedString("UploadPhotoSize_original", comment: "No Downsizing")
+        case .UHD4K:            return "4K | ≈?? Mbps"
+        case .FullHD:           return "Full HD | ≈8.5 Mbps"
+        case .HD:               return "HD | ≈10.5 Mbps"
+        case .qHD:              return "qHD | ≈5.3 Mbps"
+        case .nHD:              return "nHD | ≈2.8 Mbps"
+        }
+    }
+}
+
 // MARK: - Photo Sort Options
 public enum kPiwigoSort : Int16 {
     case nameAscending = 0              // Photo title, A → Z
@@ -121,13 +150,26 @@ public class UploadVars: NSObject {
     @UserDefault("resizeImageOnUpload", defaultValue: false, userDefaults: UserDefaults.dataSuite)
     public static var resizeImageOnUpload: Bool
     
-    /// - Max photo size to apply when resizing
+    /// - Max photo size to apply when downsizing
     /// - before version 2.7, we stored in 'photoResize' the fraction of the photo size to apply when resizing.
     @UserDefault("photoMaxSize", defaultValue: 0, userDefaults: UserDefaults.dataSuite)
     public static var photoMaxSize: Int16
-    public class func selectedSizeFromSize(_ size:Int16) -> Int16 {
+    public class func selectedPhotoSizeFromSize(_ size:Int16) -> Int16 {
         for index in pwgPhotoMaxSizes.allCases.count-1...0 {
             if size < pwgPhotoMaxSizes(rawValue: Int16(index))?.pixels ?? 0 {
+                return Int16(index)
+            }
+        }
+        return 0
+    }
+    
+    /// - Max video size to apply when downsizing
+    /// - before version 2.7, we stored in 'photoResize' the fraction of the photo or video size to apply when resizing.
+    @UserDefault("videoMaxSize", defaultValue: 0, userDefaults: UserDefaults.dataSuite)
+    public static var videoMaxSize: Int16
+    public class func selectedVideoSizeFromSize(_ size:Int16) -> Int16 {
+        for index in pwgVideoMaxSizes.allCases.count-1...0 {
+            if size < pwgVideoMaxSizes(rawValue: Int16(index))?.pixels ?? 0 {
                 return Int16(index)
             }
         }

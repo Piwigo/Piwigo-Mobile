@@ -14,6 +14,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
     var stripGPSdataOnUpload = UploadVars.stripGPSdataOnUpload
     var resizeImageOnUpload = UploadVars.resizeImageOnUpload
     var photoMaxSize: Int16 = UploadVars.photoMaxSize
+    var videoMaxSize: Int16 = UploadVars.videoMaxSize
     var compressImageOnUpload = UploadVars.compressImageOnUpload
     var photoQuality: Int16 = UploadVars.photoQuality
     var prefixFileNameBeforeUpload = UploadVars.prefixFileNameBeforeUpload
@@ -141,7 +142,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 4 + (resizeImageOnUpload ? 1 : 0)
+        return 4 + (resizeImageOnUpload ? 2 : 0)
                  + (compressImageOnUpload ? 1 : 0)
                  + (prefixFileNameBeforeUpload ? 1 : 0)
                  + (canDeleteImages ? 1 : 0)
@@ -150,9 +151,9 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var tableViewCell = UITableViewCell()
         var row = indexPath.row
-        row += (!resizeImageOnUpload && (row > 1)) ? 1 : 0
-        row += (!compressImageOnUpload && (row > 3)) ? 1 : 0
-        row += (!prefixFileNameBeforeUpload && (row > 5)) ? 1 : 0
+        row += (!resizeImageOnUpload && (row > 1)) ? 2 : 0
+        row += (!compressImageOnUpload && (row > 4)) ? 1 : 0
+        row += (!prefixFileNameBeforeUpload && (row > 6)) ? 1 : 0
         switch row {
         case 0 /* Strip private Metadata? */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
@@ -184,13 +185,14 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
                 // Number of rows will change accordingly
                 self.resizeImageOnUpload = switchState
                 // Position of the row that should be added/removed
-                let rowAtIndexPath = IndexPath(row: 2, section: 0)
+                let photoAtIndexPath = IndexPath(row: 2, section: 0)
+                let videoAtIndexPath = IndexPath(row: 3, section: 0)
                 if switchState {
                     // Insert row in existing table
-                    self.settingsTableView?.insertRows(at: [rowAtIndexPath], with: .automatic)
+                    self.settingsTableView?.insertRows(at: [photoAtIndexPath, videoAtIndexPath], with: .automatic)
                 } else {
                     // Remove row in existing table
-                    self.settingsTableView?.deleteRows(at: [rowAtIndexPath], with: .automatic)
+                    self.settingsTableView?.deleteRows(at: [photoAtIndexPath, videoAtIndexPath], with: .automatic)
                 }
             }
             cell.accessibilityIdentifier = "resizeBeforeUpload"
@@ -207,7 +209,18 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
             cell.accessibilityIdentifier = "uploadPhotoSize"
             tableViewCell = cell
 
-        case 3 /* Compress before Upload? */:
+        case 3 /* Upload Max Video Size */:
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "LabelTableViewCell", for: indexPath) as? LabelTableViewCell else {
+                print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
+                return LabelTableViewCell()
+            }
+            cell.configure(with: "… " + NSLocalizedString("severalVideos", comment: "Videos"),
+                           detail: pwgVideoMaxSizes(rawValue: videoMaxSize)?.name ?? pwgVideoMaxSizes(rawValue: 0)!.name)
+            cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+            cell.accessibilityIdentifier = "defaultUploadVideoSize"
+            tableViewCell = cell
+            
+        case 4 /* Compress before Upload? */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
                 print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                 return SwitchTableViewCell()
@@ -224,7 +237,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
                 // Number of rows will change accordingly
                 self.compressImageOnUpload = switchState
                 // Position of the row that should be added/removed
-                let rowAtIndexPath = IndexPath(row: 3 + (self.resizeImageOnUpload ? 1 : 0), section: 0)
+                let rowAtIndexPath = IndexPath(row: 3 + (self.resizeImageOnUpload ? 2 : 0), section: 0)
                 if switchState {
                     // Insert row in existing table
                     self.settingsTableView?.insertRows(at: [rowAtIndexPath], with: .automatic)
@@ -236,7 +249,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
             cell.accessibilityIdentifier = "compressBeforeUpload"
             tableViewCell = cell
             
-        case 4 /* Image Quality slider */:
+        case 5 /* Image Quality slider */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SliderTableViewCell", for: indexPath) as? SliderTableViewCell else {
                 print("Error: tableView.dequeueReusableCell does not return a SliderTableViewCell!")
                 return SliderTableViewCell()
@@ -254,7 +267,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
             cell.accessibilityIdentifier = "compressionRatio"
             tableViewCell = cell
             
-        case 5 /* Prefix Filename Before Upload switch */:
+        case 6 /* Prefix Filename Before Upload switch */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
                 print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                 return SwitchTableViewCell()
@@ -274,7 +287,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
                 // Number of rows will change accordingly
                 self.prefixFileNameBeforeUpload = switchState
                 // Position of the row that should be added/removed
-                let rowAtIndexPath = IndexPath(row: 4 + (self.resizeImageOnUpload ? 1 : 0)
+                let rowAtIndexPath = IndexPath(row: 4 + (self.resizeImageOnUpload ? 2 : 0)
                                                       + (self.compressImageOnUpload ? 1 : 0),section: 0)
                 if switchState {
                     // Insert row in existing table
@@ -287,7 +300,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
             cell.accessibilityIdentifier = "prefixBeforeUpload"
             tableViewCell = cell
             
-        case 6 /* Filename prefix? */:
+        case 7 /* Filename prefix? */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as? TextFieldTableViewCell else {
                 print("Error: tableView.dequeueReusableCell does not return a TextFieldTableViewCell!")
                 return TextFieldTableViewCell()
@@ -309,7 +322,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
             cell.accessibilityIdentifier = "prefixFileName"
             tableViewCell = cell
             
-        case 7 /* Delete image after upload? */:
+        case 8 /* Delete image after upload? */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
                 print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
                 return SwitchTableViewCell()
@@ -338,11 +351,12 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
 
     override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         var row = indexPath.row
-        row += (!resizeImageOnUpload && (row > 1)) ? 1 : 0
+        row += (!resizeImageOnUpload && (row > 1)) ? 2 : 0
         row += (!compressImageOnUpload && (row > 3)) ? 1 : 0
         row += (!prefixFileNameBeforeUpload && (row > 5)) ? 1 : 0
         switch row {
-        case 2 /* Upload Photo Size */:
+        case 2 /* Upload Photo Size */,
+             3 /* Upload Video Size */:
             return true
         default:
             return false
@@ -353,16 +367,28 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
     // MARK: - UITableViewDelegate Methods
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-
-        // Check if this is the right cell
-        if indexPath.row != 2 { return }
-        
-        // Present the Upload Photo Size selector
-        let uploadPhotoSizeSB = UIStoryboard(name: "UploadPhotoSizeViewController", bundle: nil)
-        guard let uploadPhotoSizeVC = uploadPhotoSizeSB.instantiateViewController(withIdentifier: "UploadPhotoSizeViewController") as? UploadPhotoSizeViewController else { return }
-        uploadPhotoSizeVC.delegate = self
-        uploadPhotoSizeVC.photoMaxSize = photoMaxSize
-        navigationController?.pushViewController(uploadPhotoSizeVC, animated: true)
+        var row = indexPath.row
+        row += (!resizeImageOnUpload && (row > 1)) ? 2 : 0
+        row += (!compressImageOnUpload && (row > 3)) ? 1 : 0
+        row += (!prefixFileNameBeforeUpload && (row > 5)) ? 1 : 0
+        switch row {
+        case 2 /* Upload Photo Size */:
+            // Present the Upload Photo Size selector
+            let uploadPhotoSizeSB = UIStoryboard(name: "UploadPhotoSizeViewController", bundle: nil)
+            guard let uploadPhotoSizeVC = uploadPhotoSizeSB.instantiateViewController(withIdentifier: "UploadPhotoSizeViewController") as? UploadPhotoSizeViewController else { return }
+            uploadPhotoSizeVC.delegate = self
+            uploadPhotoSizeVC.photoMaxSize = photoMaxSize
+            navigationController?.pushViewController(uploadPhotoSizeVC, animated: true)
+        case 3 /* Upload Video Size */:
+            // Present the Upload Photo Size selector
+            let uploadVideoSizeSB = UIStoryboard(name: "UploadVideoSizeViewController", bundle: nil)
+            guard let uploadVideoSizeVC = uploadVideoSizeSB.instantiateViewController(withIdentifier: "UploadVideoSizeViewController") as? UploadVideoSizeViewController else { return }
+            uploadVideoSizeVC.delegate = self
+            uploadVideoSizeVC.videoMaxSize = videoMaxSize
+            navigationController?.pushViewController(uploadVideoSizeVC, animated: true)
+        default:
+            break
+        }
     }
 
 
@@ -434,14 +460,59 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
 // MARK: - UploadPhotoSizeDelegate Methods
 extension UploadSettingsViewController: UploadPhotoSizeDelegate {
     func didSelectUploadPhotoSize(_ selectedSize: Int16) {
-        // Do nothing if the max upload photo size is unchanged
-        if selectedSize == photoMaxSize { return }
+        // Was the size modified?
+        if selectedSize != photoMaxSize {
+            // Save new choice
+            photoMaxSize = selectedSize
+            
+            // Refresh corresponding row
+            let indexPath = IndexPath(row: 2, section: 0)
+            settingsTableView.reloadRows(at: [indexPath], with: .automatic)
+        }
         
-        // Save new choice
-        photoMaxSize = selectedSize
+        // Hide rows if needed
+        if photoMaxSize == 0, videoMaxSize == 0 {
+            resizeImageOnUpload = false
+            // Position of the rows which should be removed
+            let photoAtIndexPath = IndexPath(row: 2, section: 0)
+            let videoAtIndexPath = IndexPath(row: 3, section: 0)
+            
+            // Remove row in existing table
+            settingsTableView?.deleteRows(at: [photoAtIndexPath, videoAtIndexPath], with: .automatic)
+
+            // Refresh flag
+            let indexPath = IndexPath(row: 1, section: 0)
+            settingsTableView?.reloadRows(at: [indexPath], with: .automatic)
+        }
+    }
+}
+
+// MARK: - UploadVideoSizeDelegate Methods
+extension UploadSettingsViewController: UploadVideoSizeDelegate {
+    func didSelectUploadVideoSize(_ selectedSize: Int16) {
+        // Was the size modified?
+        if selectedSize != videoMaxSize {
+            // Save new choice
+            videoMaxSize = selectedSize
+            
+            // Refresh corresponding row
+            let indexPath = IndexPath(row: 3, section: 0)
+            settingsTableView.reloadRows(at: [indexPath], with: .automatic)
+        }
         
-        // Refresh settings
-        let indexPath = IndexPath(row: 2, section: 0)
-        settingsTableView.reloadRows(at: [indexPath], with: .automatic)
+        // Hide rows if needed
+        if photoMaxSize == 0, videoMaxSize == 0 {
+            resizeImageOnUpload = false
+            // Position of the rows which should be removed
+            let photoAtIndexPath = IndexPath(row: 2, section: 0)
+            let videoAtIndexPath = IndexPath(row: 3, section: 0)
+            
+            // Remove row in existing table
+            settingsTableView?.deleteRows(at: [photoAtIndexPath, videoAtIndexPath], with: .automatic)
+
+            // Refresh flag
+            let indexPath = IndexPath(row: 1, section: 0)
+            settingsTableView?.reloadRows(at: [indexPath], with: .automatic)
+        }
     }
 }

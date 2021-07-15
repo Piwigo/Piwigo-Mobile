@@ -33,6 +33,7 @@ extension Upload {
     @NSManaged public var mimeType: String
     @NSManaged public var photoQuality: Int16
     @NSManaged public var photoMaxSize: Int16
+    @NSManaged public var videoMaxSize: Int16
     @NSManaged public var prefixFileNameBeforeUpload: Bool
     @NSManaged public var privacyLevel: Int16
     @NSManaged public var requestDate: TimeInterval

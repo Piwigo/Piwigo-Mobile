@@ -341,8 +341,8 @@ extension UploadManager {
         var maxPixels = Int(max(videoSize.width, videoSize.height))
                                                 
         // Resize frames
-        if uploadProperties.resizeImageOnUpload, uploadProperties.photoMaxSize != 0 {
-            maxPixels = pwgPhotoMaxSizes(rawValue: uploadProperties.photoMaxSize)?.pixels ?? Int.max
+        if uploadProperties.resizeImageOnUpload, uploadProperties.videoMaxSize != 0 {
+            maxPixels = pwgVideoMaxSizes(rawValue: uploadProperties.videoMaxSize)?.pixels ?? Int.max
         }
 
         // The 'presets' array never contains AVAssetExportPresetPassthrough,

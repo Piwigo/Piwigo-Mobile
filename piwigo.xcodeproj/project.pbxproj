@@ -161,6 +161,8 @@
 		ADC8167B244B5EDE00650223 /* LocalImagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC8167A244B5EDE00650223 /* LocalImagesViewController.swift */; };
 		ADC8167D244B5FA800650223 /* LocalImagesViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADC8167C244B5FA800650223 /* LocalImagesViewController.storyboard */; };
 		ADC8FAAA244C7307006BDA6A /* LocalImagesFooterReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC8FAA9244C7307006BDA6A /* LocalImagesFooterReusableView.swift */; };
+		ADD063B726A04BFE002558D2 /* UploadVideoSizeViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADD063B626A04BFE002558D2 /* UploadVideoSizeViewController.storyboard */; };
+		ADD063B926A04C12002558D2 /* UploadVideoSizeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD063B826A04C12002558D2 /* UploadVideoSizeViewController.swift */; };
 		ADD210412440CC7600DD79A6 /* SettingsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADD210402440CC7600DD79A6 /* SettingsViewController.storyboard */; };
 		ADD210432440DE5A00DD79A6 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD210422440DE5A00DD79A6 /* SettingsViewController.swift */; };
 		ADD6018E26697710003CAC2F /* NetworkVarsObjc.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2913EC26696EC100403026 /* NetworkVarsObjc.swift */; };
@@ -597,6 +599,8 @@
 		ADC8167C244B5FA800650223 /* LocalImagesViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LocalImagesViewController.storyboard; sourceTree = "<group>"; };
 		ADC8FAA9244C7307006BDA6A /* LocalImagesFooterReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalImagesFooterReusableView.swift; sourceTree = "<group>"; };
 		ADCC996425B452670034CB4A /* UIImage+AppTools.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+AppTools.swift"; sourceTree = "<group>"; };
+		ADD063B626A04BFE002558D2 /* UploadVideoSizeViewController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = UploadVideoSizeViewController.storyboard; sourceTree = "<group>"; };
+		ADD063B826A04C12002558D2 /* UploadVideoSizeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadVideoSizeViewController.swift; sourceTree = "<group>"; };
 		ADD210402440CC7600DD79A6 /* SettingsViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SettingsViewController.storyboard; sourceTree = "<group>"; };
 		ADD210422440DE5A00DD79A6 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		ADD3DD5825A9D53C00FD377F /* ImageMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageMetadata.swift; sourceTree = "<group>"; };
@@ -1221,6 +1225,8 @@
 				AD2A21FD24310E65006B1A8A /* SelectPrivacyViewController.storyboard */,
 				ADD741F52699974800B47056 /* UploadPhotoSizeViewController.swift */,
 				ADD741F72699976100B47056 /* UploadPhotoSizeViewController.storyboard */,
+				ADD063B826A04C12002558D2 /* UploadVideoSizeViewController.swift */,
+				ADD063B626A04BFE002558D2 /* UploadVideoSizeViewController.storyboard */,
 				AD563B3F2603FCDB00B6EF93 /* AutoUploadViewController.swift */,
 				AD563B412603FCE800B6EF93 /* AutoUploadViewController.storyboard */,
 			);
@@ -1870,6 +1876,7 @@
 				ADAC548E26178BF500301C1C /* SelectCategoryViewControllerGrouped.storyboard in Resources */,
 				AD3207E9240AD93900F00FEB /* PrivacyPolicyViewController.storyboard in Resources */,
 				AD5B498724E6FCF000BDF5B4 /* UploadQueueViewControllerOld.storyboard in Resources */,
+				ADD063B726A04BFE002558D2 /* UploadVideoSizeViewController.storyboard in Resources */,
 				AD31F5F7242FABF300BD65FC /* ReleaseNotesViewController.storyboard in Resources */,
 				AD2A21FE24310E65006B1A8A /* SelectPrivacyViewController.storyboard in Resources */,
 				AD27A16F24C44EEC000AD203 /* EditImageThumbTableViewCell.xib in Resources */,
@@ -2186,6 +2193,7 @@
 				AD35A16B2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift in Sources */,
 				ADD6018E26697710003CAC2F /* NetworkVarsObjc.swift in Sources */,
 				AD11BDA22402C7E7003347BE /* UIColor+AppColors.swift in Sources */,
+				ADD063B926A04C12002558D2 /* UploadVideoSizeViewController.swift in Sources */,
 				ADFC3A4E2401DA4F004CD337 /* UIFont+AppFonts.swift in Sources */,
 				ADE03D2E25FCBA4B002F5C7B /* ColorPaletteViewControllerOld.swift in Sources */,
 				AD94F63E266D637D00EFC6A9 /* CacheVarsObjc.swift in Sources */,
