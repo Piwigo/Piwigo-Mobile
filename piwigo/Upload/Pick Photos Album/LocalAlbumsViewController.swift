@@ -53,7 +53,8 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
     private var hasImagesInPasteboard: Bool = false
 
     private let maxNberOfAlbumsInSection = 23
-    private var hasLimitedNberOfAlbums: [LocalAlbumType : Bool] = [.localAlbums  : false,
+    private var hasLimitedNberOfAlbums: [LocalAlbumType : Bool] = [.pasteboard   : false,
+                                                                   .localAlbums  : false,
                                                                    .eventsAlbums : false,
                                                                    .syncedAlbums : false,
                                                                    .facesAlbums  : false,
