@@ -98,7 +98,7 @@ public class DataController: NSObject {
             // Retrieve the model version string (from the .plist file located in the .momd package)
             // in order to avoid having to update the code each time there is a new model version.
             // Avoids the warning "Failed to load optimized model at path…" for iOS
-            if #available(iOS 13.0, *) {
+            if #available(iOS 13.0, *) { } else {
                 let versionInfoURL = modelURL.appendingPathComponent("VersionInfo.plist")
                 if let versionInfoNSDictionary = NSDictionary(contentsOf: versionInfoURL),
                     let version = versionInfoNSDictionary.object(forKey: "NSManagedObjectModel_CurrentVersionName") as? String {
