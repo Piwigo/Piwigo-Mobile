@@ -21,7 +21,7 @@ extension UploadManager {
                       for uploadID: NSManagedObjectID, with properties: UploadProperties) -> Void {
         
         // Upload the file as is if the user did not request any modification of the photo
-        if !properties.resizeImageOnUpload, properties.photoMaxSize == 0,
+        if (!properties.resizeImageOnUpload || properties.photoMaxSize == 0),
            !properties.compressImageOnUpload, !properties.stripGPSdataOnUpload
         {
             // Get MD5 checksum and MIME type, update counter
@@ -34,7 +34,7 @@ extension UploadManager {
         
         // The user only requested a removal of private metadata
         // We do it w/o recompression of the image.
-        if !properties.resizeImageOnUpload, properties.photoMaxSize == 0,
+        if (!properties.resizeImageOnUpload || properties.photoMaxSize == 0),
            !properties.compressImageOnUpload
         {
             stripMetadataOfImage(atURL: originalFileURL, with: properties) { fileURL, error in
