@@ -287,6 +287,17 @@ NSInteger const kDelayPiwigoHUD = 500;
 }
 
 
+#pragma mark - Getter
+
+-(NSInteger)photoResize {
+    if (_photoResize < 5) {
+        _photoResize = 5;
+    } else if (_photoResize > 100) {
+        _photoResize = 100;
+    }
+    return _photoResize;
+}
+
 -(NSInteger)photoQuality {
     if (_photoQuality < 50) {
         _photoQuality = 50;
