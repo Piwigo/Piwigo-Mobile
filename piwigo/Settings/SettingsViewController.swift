@@ -901,7 +901,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 if view.bounds.size.width > 375 {
                     // i.e. larger than iPhones 6,7 screen width
-                    cell.configure(with: NSLocalizedString("settings_photoCompress>375px", comment: "Compress Image Before Upload"))
+                    cell.configure(with: NSLocalizedString("settings_photoCompress>375px", comment: "Compress Photo Before Upload"))
                 } else {
                     cell.configure(with: NSLocalizedString("settings_photoCompress", comment: "Compress Before Upload"))
                 }
