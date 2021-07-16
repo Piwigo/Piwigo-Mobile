@@ -530,7 +530,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let title = NSLocalizedString("setDefaultCategory_title", comment: "Default Album")
                 var detail: String
                 if AlbumVars.defaultCategory == 0 {
-                    detail = NSLocalizedString("categorySelection_root", comment: "Root Album")
+                    if view.bounds.size.width > 375 {
+                        detail = NSLocalizedString("categorySelection_root", comment: "Root Album")
+                    } else {
+                        detail = NSLocalizedString("categorySelection_root<375pt", comment: "Root")
+                    }
                 } else {
                     if let albumName = CategoriesData.sharedInstance().getCategoryById(AlbumVars.defaultCategory).name {
                         detail = albumName

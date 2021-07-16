@@ -164,6 +164,7 @@
 "categorySelection_title" = "Album";
 "categorySelection_titleSub" = "Sub-Albums";
 "categorySelection_root" = "Root Album";
+"categorySelection_root<375pt" = "Root";
 "categorySelection_action" = "Select an action for this album";
 "categorySelectionHUD_label" = "Retrieving Albums Data…";
 "categorySelection_allAlbums" = "All Albums";
