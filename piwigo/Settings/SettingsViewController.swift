@@ -1963,7 +1963,11 @@ extension SettingsViewController: SelectCategoryDelegate {
         // Save new choice
         AlbumVars.defaultCategory = categoryId
 
-        // Will load default album view when dismissing this view
+        // Refresh settings row
+        let indexPath = IndexPath(row: 0, section: SettingsSection.albums.rawValue)
+        settingsTableView.reloadRows(at: [indexPath], with: .automatic)
+
+        // Switch to new default album
         settingsDelegate?.didChangeDefaultAlbum()
     }
 }
