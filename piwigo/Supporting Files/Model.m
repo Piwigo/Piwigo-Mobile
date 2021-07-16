@@ -290,8 +290,8 @@ NSInteger const kDelayPiwigoHUD = 500;
 -(NSInteger)photoQuality {
     if (_photoQuality < 50) {
         _photoQuality = 50;
-    } else if (_photoQuality > 100) {
-        _photoQuality = 100;
+    } else if (_photoQuality > 98) {
+        _photoQuality = 98;
     }
     return _photoQuality;
 }
