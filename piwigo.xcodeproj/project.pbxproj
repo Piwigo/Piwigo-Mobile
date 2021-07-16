@@ -175,7 +175,6 @@
 		ADE03D3025FCC1B7002F5C7B /* ColorPaletteViewControllerOld.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADE03D2F25FCC1B7002F5C7B /* ColorPaletteViewControllerOld.storyboard */; };
 		ADE03F3023D4CC6C00F21ED9 /* PiwigoTagData.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045AB1A94654D00A306FE /* PiwigoTagData.m */; };
 		ADE1AB8A267E4D43001C1EEB /* piwigoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; };
-		ADE1AB8B267E4D43001C1EEB /* piwigoKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		ADE1AB90267F45B8001C1EEB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE1AB8F267F45B8001C1EEB /* AppDelegate.swift */; };
 		ADE216FF250E23B0003AE588 /* pwg.images.getInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE216FD250E22F7003AE588 /* pwg.images.getInfo.swift */; };
 		ADE250D3266D767600285978 /* pwg.tags.getList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5F64EC24C607FC00660BE3 /* pwg.tags.getList.swift */; };
@@ -319,7 +318,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				ADE1AB8B267E4D43001C1EEB /* piwigoKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
