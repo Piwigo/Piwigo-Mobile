@@ -7,3 +7,4 @@
 */
 
 "AutoUploadError_Disabled" = "Auto-uploading is disabled in the app settings.";
+"AutoUploadError_Failed" = "Several transfers failed and the upload queue is on hold. Please check with the app.";

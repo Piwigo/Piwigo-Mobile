@@ -49,45 +49,71 @@ class AutoUploadPhotosHandler: NSObject, AutoUploadPhotosIntentHandling {
 
         // First, find auto-upload requests whose transfer did fail
         let failedUploads = uploadsProvider.getAutoUploadRequestsIn(states: [.uploadingError]).1
-        if failedUploads.count > 0, failedUploads.count < 2 {
-            // Will relaunch transfers with one which failed
+        if failedUploads.count > 0 {
+            // Will try to relaunch transfers
             UploadManager.shared.uploadRequestsToTransfer = Set(failedUploads[..<min(UploadManager.shared.maxNberOfUploadsPerBckgTask, failedUploads.count)])
-            print("\(UploadUtilities.debugFormatter.string(from: Date())) >•• collected \(UploadManager.shared.uploadRequestsToTransfer.count) failed uploads")
+            print(" >•• collected \(UploadManager.shared.uploadRequestsToTransfer.count) failed uploads")
+            
+            // Stop here?
+            if failedUploads.count > 5 {
+                let errorMsg = NSLocalizedString("AutoUploadError_Failed",
+                                                 comment: "Several transfers failed and the upload queue is on hold. Please check with the app.")
+                completion(AutoUploadPhotosIntentResponse.failure(error: errorMsg))
+                return
+            }
         }
 
         // Second, find auto-upload requests ready for transfer
         let preparedUploads = uploadsProvider.getAutoUploadRequestsIn(states: [.prepared]).1
-        if UploadManager.shared.uploadRequestsToTransfer.count == 0,
+        if UploadManager.shared.uploadRequestsToTransfer.count < 2,
            preparedUploads.count > 0 {
-            // Will relaunch transfers with a prepared upload
+            // Will launch transfers of prepared files
             UploadManager.shared.uploadRequestsToTransfer = UploadManager.shared.uploadRequestsToTransfer
                 .union(Set(preparedUploads[..<min(UploadManager.shared.maxNberOfUploadsPerBckgTask,preparedUploads.count)]))
-            print("\(UploadUtilities.debugFormatter.string(from: Date())) >•• collected \(min(UploadManager.shared.maxNberOfUploadsPerBckgTask,preparedUploads.count)) prepared uploads)")
         }
-        
-        // Finally, get list of auto-upload requests to prepare
+        let toTransfer = UploadManager.shared.uploadRequestsToTransfer.count
+        print(" >•• collected \(toTransfer) prepared uploads")
+
+        // Can we still add upload requests to the queue?
         let diff = UploadManager.shared.maxNberOfUploadsPerBckgTask -
             UploadManager.shared.uploadRequestsToTransfer.count
-        if diff > 0 {
-            let requestsToPrepare = uploadsProvider.getAutoUploadRequestsIn(states: [.waiting]).1
-            print("\(UploadUtilities.debugFormatter.string(from: Date())) >•• collected \(min(diff, requestsToPrepare.count)) uploads to prepare")
-            UploadManager.shared.uploadRequestsToPrepare = Set(requestsToPrepare[..<min(diff, requestsToPrepare.count)])
+        if diff <= 0 {
+            completion(AutoUploadPhotosIntentResponse.success(toPrepare: NSNumber(value: 0),
+                                                              inQueue: NSNumber(value: toTransfer)))
+            return
         }
-        let nberOfPhotos = UploadManager.shared.uploadRequestsToPrepare.count
-
+        
+        // Get list of auto-upload requests to prepare
+        let requestsToPrepare = uploadsProvider.getAutoUploadRequestsIn(states: [.waiting]).1
+        UploadManager.shared.uploadRequestsToPrepare = Set(requestsToPrepare[..<min(diff, requestsToPrepare.count)])
+        let toPrepare = UploadManager.shared.uploadRequestsToPrepare.count
+        print(" >•• collected \(toPrepare) uploads to prepare")
+        
         // Create the operation queue
         let uploadQueue = OperationQueue()
         uploadQueue.maxConcurrentOperationCount = 1
         
+        // Add operation setting flag and selecting upload requests
+        let initOperation = BlockOperation {
+            // Decisions will be taken as for a background task
+            UploadManager.shared.isExecutingBackgroundUploadTask = true
+
+            // Reset variables
+            UploadManager.shared.countOfBytesPrepared = 0
+            UploadManager.shared.countOfBytesToUpload = 0
+        }
+
         // Initialise list of operations
         var uploadOperations = [BlockOperation]()
+        uploadOperations.append(initOperation)
 
         // Resume transfers started in the foreground
         let resumeOperation = BlockOperation {
             UploadManager.shared.resumeTransfers()
         }
+        resumeOperation.addDependency(uploadOperations.last!)
         uploadOperations.append(resumeOperation)
-        
+
         // Add image preparation which will be followed by transfer operations
         for _ in 0..<UploadManager.shared.maxNberOfUploadsPerBckgTask {
             let uploadOperation = BlockOperation {
@@ -100,9 +126,10 @@ class AutoUploadPhotosHandler: NSObject, AutoUploadPhotosIntentHandling {
 
         // Start the operation
         print("    > Start upload operations in background task...");
-        uploadQueue.addOperations(uploadOperations, waitUntilFinished: true)
+        uploadQueue.addOperations(uploadOperations, waitUntilFinished: false)
 
-        completion(AutoUploadPhotosIntentResponse.success(nberPhotos: NSNumber(value: nberOfPhotos)))
+        completion(AutoUploadPhotosIntentResponse.success(toPrepare: NSNumber(value: toPrepare),
+                                                          inQueue: NSNumber(value: toTransfer + toPrepare)))
     }
 
 
@@ -149,23 +176,10 @@ class AutoUploadPhotosHandler: NSObject, AutoUploadPhotosIntentHandling {
 
         // Determine which local images are still not considered for upload
         var uploadRequestsToAppend = [UploadProperties]()
-        let serverFileTypes = UploadVars.serverFileTypes
         fetchedImages.enumerateObjects { image, idx, stop in
             // Keep images which had never been considered for upload
             if !imageIDs.contains(image.localIdentifier) {
-                // Rejects videos if the server cannot accept them
-                if image.mediaType == .video {
-                    // Retrieve image file extension (slow)
-                    let fileName = UploadUtilities.fileName(forImageAsset: image)
-                    let fileExt = (URL(fileURLWithPath: fileName).pathExtension).lowercased()
-                    // Check file format
-                    let unacceptedFileFormat = !serverFileTypes.contains(fileExt)
-                    let mp4NotAccepted = !serverFileTypes.contains("mp4")
-                    let notConvertible = !UploadUtilities.acceptedMovieFormats.contains(fileExt)
-                    if unacceptedFileFormat && (mp4NotAccepted || notConvertible) { return }
-                }
-
-                // Format should be acceptable, create upload request
+                // Create new upload request
                 var uploadRequest = UploadProperties(localIdentifier: image.localIdentifier,
                                                      category: categoryId)
                 uploadRequest.markedForAutoUpload = true
