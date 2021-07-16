@@ -2760,7 +2760,7 @@
 				DEVELOPMENT_TEAM = ZEC3W885H6;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = piwigoIntents/Resources/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2800,7 +2800,7 @@
 				DEVELOPMENT_TEAM = ZU5THW8T5W;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = piwigoIntents/Resources/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
