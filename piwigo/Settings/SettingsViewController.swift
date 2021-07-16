@@ -539,7 +539,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     if let albumName = CategoriesData.sharedInstance().getCategoryById(AlbumVars.defaultCategory).name {
                         detail = albumName
                     } else {
-                        detail = NSLocalizedString("categorySelection_root", comment: "Root Album")
+                        if view.bounds.size.width > 375 {
+                            detail = NSLocalizedString("categorySelection_root", comment: "Root Album")
+                        } else {
+                            detail = NSLocalizedString("categorySelection_root<375pt", comment: "Root")
+                        }
                         AlbumVars.defaultCategory = 0
                     }
                 }
