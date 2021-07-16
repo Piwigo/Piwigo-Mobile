@@ -78,8 +78,7 @@ class AutoUploadPhotosHandler: NSObject, AutoUploadPhotosIntentHandling {
         let diff = UploadManager.shared.maxNberOfUploadsPerBckgTask -
             UploadManager.shared.uploadRequestsToTransfer.count
         if diff <= 0 {
-            completion(AutoUploadPhotosIntentResponse.success(toPrepare: NSNumber(value: 0),
-                                                              inQueue: NSNumber(value: toTransfer)))
+            completion(AutoUploadPhotosIntentResponse.success(nberPhotos: NSNumber(value: toTransfer)))
             return
         }
         
@@ -128,8 +127,7 @@ class AutoUploadPhotosHandler: NSObject, AutoUploadPhotosIntentHandling {
         print("    > Start upload operations in background task...");
         uploadQueue.addOperations(uploadOperations, waitUntilFinished: false)
 
-        completion(AutoUploadPhotosIntentResponse.success(toPrepare: NSNumber(value: toPrepare),
-                                                          inQueue: NSNumber(value: toTransfer + toPrepare)))
+        completion(AutoUploadPhotosIntentResponse.success(nberPhotos: NSNumber(value: toTransfer + toPrepare)))
     }
 
 
