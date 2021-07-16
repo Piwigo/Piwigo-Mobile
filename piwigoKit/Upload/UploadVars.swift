@@ -151,7 +151,7 @@ public class UploadVars: NSObject {
     @UserDefault("photoMaxSize", defaultValue: 0, userDefaults: UserDefaults.dataSuite)
     public static var photoMaxSize: Int16
     public class func selectedPhotoSizeFromSize(_ size:Int16) -> Int16 {
-        for index in pwgPhotoMaxSizes.allCases.count-1...0 {
+        for index in (0...pwgPhotoMaxSizes.allCases.count-1).reversed() {
             if size < pwgPhotoMaxSizes(rawValue: Int16(index))?.pixels ?? 0 {
                 return Int16(index)
             }
@@ -164,7 +164,7 @@ public class UploadVars: NSObject {
     @UserDefault("videoMaxSize", defaultValue: 0, userDefaults: UserDefaults.dataSuite)
     public static var videoMaxSize: Int16
     public class func selectedVideoSizeFromSize(_ size:Int16) -> Int16 {
-        for index in pwgVideoMaxSizes.allCases.count-1...0 {
+        for index in (0...pwgVideoMaxSizes.allCases.count-1).reversed() {
             if size < pwgVideoMaxSizes(rawValue: Int16(index))?.pixels ?? 0 {
                 return Int16(index)
             }
