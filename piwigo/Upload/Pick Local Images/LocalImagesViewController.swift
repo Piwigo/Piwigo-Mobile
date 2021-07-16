@@ -778,30 +778,54 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         case .month:
             switch kPiwigoSort(rawValue: UploadVars.localImagesSort) {
             case .dateCreatedDescending:
-                return indexOfImageSortedByMonth[indexPath.section].first! + indexPath.row
+                if let index = indexOfImageSortedByMonth[indexPath.section].first {
+                    return index + indexPath.row
+                } else {
+                    return 0
+                }
             case .dateCreatedAscending:
                 let lastSection = indexOfImageSortedByMonth.endIndex - 1
-                return indexOfImageSortedByMonth[lastSection - indexPath.section].last! - indexPath.row
+                if let index = indexOfImageSortedByMonth[lastSection - indexPath.section].last {
+                    return index - indexPath.row
+                } else {
+                    return 0
+                }
             default:
                 return 0
             }
         case .week:
             switch kPiwigoSort(rawValue: UploadVars.localImagesSort) {
             case .dateCreatedDescending:
-                return indexOfImageSortedByWeek[indexPath.section].first! + indexPath.row
+                if let index = indexOfImageSortedByWeek[indexPath.section].first {
+                    return index + indexPath.row
+                } else {
+                    return 0
+                }
             case .dateCreatedAscending:
                 let lastSection = indexOfImageSortedByWeek.endIndex - 1
-                return indexOfImageSortedByWeek[lastSection - indexPath.section].last! - indexPath.row
+                if let index = indexOfImageSortedByWeek[lastSection - indexPath.section].last {
+                    return index - indexPath.row
+                } else {
+                    return 0
+                }
             default:
                 return 0
             }
         case .day:
             switch kPiwigoSort(rawValue: UploadVars.localImagesSort) {
             case .dateCreatedDescending:
-                return indexOfImageSortedByDay[indexPath.section].first! + indexPath.row
+                if let index = indexOfImageSortedByDay[indexPath.section].first {
+                    return index + indexPath.row
+                } else {
+                    return 0
+                }
             case .dateCreatedAscending:
                 let lastSection = indexOfImageSortedByDay.endIndex - 1
-                return indexOfImageSortedByDay[lastSection - indexPath.section].last! - indexPath.row
+                if let index = indexOfImageSortedByDay[lastSection - indexPath.section].last {
+                    return index - indexPath.row
+                } else {
+                    return 0
+                }
             default:
                 return 0
             }
@@ -810,7 +834,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             case .dateCreatedDescending:
                 return indexPath.row
             case .dateCreatedAscending:
-                return fetchedImages.count - 1 - indexPath.row
+                return max(0, fetchedImages.count - 1 - indexPath.row)
             default:
                 return 0
             }
