@@ -164,6 +164,7 @@
 "categorySelection_title" = "Album";
 "categorySelection_titleSub" = "Unter-Alben";
 "categorySelection_root" = "Haupt-Album";
+"categorySelection_root<375pt" = "Root";
 "categorySelection_action" = "Wähle eine Aktion für dieses Album";
 "categorySelectionHUD_label" = "Albumdaten abrufen…";
 "categorySelection_allAlbums" = "Alle Alben";
@@ -628,7 +629,7 @@
 "defaultImageSize>320px" = "Fotogröße";
 "defaultImageSize>414px" = "Standardgröße der Fotos";
 //"defaultImageSizeTitle" = "Default Size";
-"defaultImageSizeHeader" = "Bitte wähle eine Fotogröße";
+"defaultImageSizeHeader" = "Bitte wählen Sie eine Fotogröße";
 "defaultImageSize_recommended" = " (empfohlen)";
 "defaultSize_disabled" = " (auf Server deaktiviert)";
 "defaultSizeFooter" = "Ausgegraute Größen werden nicht empfohlen oder sind nicht auf dem Piwigo Server verfügbar.";
@@ -657,7 +658,6 @@
 "settings_stripGPSdata" = "Private Metadaten entfernen";
 "settings_stripGPSdata>375px" = "Private Metadaten vor dem Hochladen entfernen";
 "settings_photoResize" = "Vor dem Hochladen Größe anpassen";
-"settings_photoResize>375px" = "Fotogröße vor dem Hochladen anpassen";
 "settings_photoSize" = "Größe";
 "settings_placeholderSize" = "Gib eine Fotogröße von 1-100 an";
 "settings_photoCompress" = "Vor dem Hochladen komprimieren";
@@ -686,6 +686,15 @@
 "settings_autoUploadDestination" = "Ziel";
 "settings_autoUploadDestinationInvalid" = "Ungültiges Zielalbum";
 "settings_autoUploadDestinationInfo" = "Bitte wählen Sie das Album oder das Unter-Album, in das Fotos und Videos automatisch hochgeladen werden.";
+
+// Settings — Upload Photo Size
+"UploadPhotoSize_title" = "Max Photo Size";
+"UploadPhotoSize_header" = "Please select the maximum size of the photos which will be uploaded.";
+"UploadPhotoSize_resolution" = "Built-in cameras maximum resolution:";
+"UploadVideoSize_title" = "Max Video Size";
+"UploadVideoSize_header" = "Please select the maximum size of the videos which will be uploaded.";
+"UploadVideoSize_resolution" = "Built-in cameras maximum specifications:";
+"UploadPhotoSize_original" = "No Downsizing";
 
 // Settings — Cache
 "settingsHeader_cache" = "Cache-Einstellungen (Verwendet/Total)";

@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.7.0_text" = "Version 2.7\n\n• Auto upload photos and videos\n• Minor bug fixes and improvements of the interface\n• Code modernization";
+"v2.7.0_text" = "Version 2.7\n\n• Auto upload photos and videos\n• Improved photo and video downsizing options\n• Minor bug fixes and improvements of the interface\n• Code modernization";
 
 "v2.6.4_text" = "バージョン 2.6.4\n\n• 軽微なバグの修正とインタフェースの改善";
 

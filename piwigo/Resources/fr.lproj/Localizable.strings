@@ -45,7 +45,7 @@
 
 "PiwigoServer_wrongJSONobject" = "Impossible d'analyser l'objet JSON retourné par le serveur Piwigo.";
 "PiwigoServer_invalidJSONobject" = "Le serveur Piwigo n'a pas renvoyé un objet JSON valide.";
-"PiwigoServer_emptyJSONobject" = "Piwigo server did return an empty JSON object.";
+"PiwigoServer_emptyJSONobject" = "Le serveur Piwigo a retourné un fichier JSON vide.";
 
 // ===========================================================================
 // ==> CORE DATA
@@ -164,6 +164,7 @@
 "categorySelection_title" = "Album";
 "categorySelection_titleSub" = "Sous-Albums";
 "categorySelection_root" = "Album Racine";
+"categorySelection_root<375pt" = "Racine";
 "categorySelection_action" = "Choisissez une action pour cet album";
 "categorySelectionHUD_label" = "Récupération des Données d'Albums…";
 "categorySelection_allAlbums" = "Tous les albums";
@@ -656,8 +657,7 @@
 "settings_defaultPrivacy>414px" = "Veuillez sélectionner qui pourra visualiser les photos";
 "settings_stripGPSdata" = "Suppr. Métadonnées Privées";
 "settings_stripGPSdata>375px" = "Supprimer les Métadonnées privées avant Envoi";
-"settings_photoResize" = "Redimensionner avant Envoi";
-"settings_photoResize>375px" = "Redimensionner les photos avant envoi";
+"settings_photoResize" = "Réduire avant téléchargement";
 "settings_photoSize" = "Taille";
 "settings_placeholderSize" = "Entrez une Taille de Photo de 5 à 100";
 "settings_photoCompress" = "Compresser avant Envoi";
@@ -686,6 +686,15 @@
 "settings_autoUploadDestination" = "Destination";
 "settings_autoUploadDestinationInvalid" = "Album de destination invalide";
 "settings_autoUploadDestinationInfo" = "Veuillez sélectionner l'album ou le sous-album dans lequel les photos et les vidéos seront automatiquement téléchargées.";
+
+// Settings — Upload Photo Size
+"UploadPhotoSize_title" = "Taille maximale des photos";
+"UploadPhotoSize_header" = "Veuillez sélectionner la taille maximale des photos qui seront téléchargées.";
+"UploadPhotoSize_resolution" = "Résolution maximale des caméras intégrées :";
+"UploadVideoSize_title" = "Taille maximale des vidéos";
+"UploadVideoSize_header" = "Veuillez sélectionner la taille maximale des vidéos qui seront téléchargées.";
+"UploadVideoSize_resolution" = "Performances maximales des caméras intégrées :";
+"UploadPhotoSize_original" = "Sans réduction";
 
 // Settings — Cache
 "settingsHeader_cache" = "Paramètres de Cache (Utilisé/Total)";

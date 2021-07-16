@@ -164,6 +164,7 @@
 "categorySelection_title" = "相册";
 "categorySelection_titleSub" = "子相册";
 "categorySelection_root" = "根相册";
+"categorySelection_root<375pt" = "Root";
 "categorySelection_action" = "选择此相册的操作";
 "categorySelectionHUD_label" = "正在检索相册数据…";
 "categorySelection_allAlbums" = "All Albums";
@@ -657,7 +658,6 @@
 "settings_stripGPSdata" = "去除私密元数据";
 "settings_stripGPSdata>375px" = "上传前删除私密元数据";
 "settings_photoResize" = "上传前调整大小";
-"settings_photoResize>375px" = "上传照片前调整大小";
 "settings_photoSize" = "大小";
 "settings_placeholderSize" = "输入5-100之间的照片大小";
 "settings_photoCompress" = "上传前压缩";
@@ -686,6 +686,15 @@
 "settings_autoUploadDestination" = "Destination";
 "settings_autoUploadDestinationInvalid" = "Invalid destination album";
 "settings_autoUploadDestinationInfo" = "Please select the album or sub-album into which photos and videos will be auto-uploaded.";
+
+// Settings — Upload Photo Size
+"UploadPhotoSize_title" = "Max Photo Size";
+"UploadPhotoSize_header" = "Please select the maximum size of the photos which will be uploaded.";
+"UploadPhotoSize_resolution" = "Built-in cameras maximum resolution:";
+"UploadVideoSize_title" = "Max Video Size";
+"UploadVideoSize_header" = "Please select the maximum size of the videos which will be uploaded.";
+"UploadVideoSize_resolution" = "Built-in cameras maximum specifications:";
+"UploadPhotoSize_original" = "No Downsizing";
 
 // Settings — Cache
 "settingsHeader_cache" = "缓存设置 (使用量/总量)";

@@ -164,6 +164,7 @@
 "categorySelection_title" = "Album";
 "categorySelection_titleSub" = "Under album";
 "categorySelection_root" = "Rodalbum";
+"categorySelection_root<375pt" = "Root";
 "categorySelection_action" = "Vælg en handling for dette album";
 "categorySelectionHUD_label" = "Henter albumdata…";
 "categorySelection_allAlbums" = "All Albums";
@@ -657,7 +658,6 @@
 "settings_stripGPSdata" = "Fjern private metadata";
 "settings_stripGPSdata>375px" = "Fjern private Metadata før Upload";
 "settings_photoResize" = "Ændr størrelse før Upload";
-"settings_photoResize>375px" = "Ændr størrelse på billedet før Upload";
 "settings_photoSize" = "Størrelse";
 "settings_placeholderSize" = "Angiv en fotostørrelse fra 5-100";
 "settings_photoCompress" = "Komprimer før Upload";
@@ -686,6 +686,15 @@
 "settings_autoUploadDestination" = "Destination";
 "settings_autoUploadDestinationInvalid" = "Invalid destination album";
 "settings_autoUploadDestinationInfo" = "Please select the album or sub-album into which photos and videos will be auto-uploaded.";
+
+// Settings — Upload Photo Size
+"UploadPhotoSize_title" = "Max Photo Size";
+"UploadPhotoSize_header" = "Please select the maximum size of the photos which will be uploaded.";
+"UploadPhotoSize_resolution" = "Built-in cameras maximum resolution:";
+"UploadVideoSize_title" = "Max Video Size";
+"UploadVideoSize_header" = "Please select the maximum size of the videos which will be uploaded.";
+"UploadVideoSize_resolution" = "Built-in cameras maximum specifications:";
+"UploadPhotoSize_original" = "No Downsizing";
 
 // Settings — Cache
 "settingsHeader_cache" = "Cacheindstillinger (Brugt/Total)";

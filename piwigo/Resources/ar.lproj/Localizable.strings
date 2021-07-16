@@ -164,6 +164,7 @@
 "categorySelection_title" = "ألبوم";
 "categorySelection_titleSub" = "ألبومات فرعية";
 "categorySelection_root" = "ألبوم الجذر";
+"categorySelection_root<375pt" = "Root";
 "categorySelection_action" = "حدد إجراء لهذا الألبوم";
 "categorySelectionHUD_label" = "استرداد بيانات الألبومات...";
 "categorySelection_allAlbums" = "All Albums";
@@ -617,7 +618,7 @@
 "defaultNberOfThumbnails>320px" = "Number/Row";
 "defaultNberOfThumbnails>414px" = "Number per Row";
 //"defaultThumbnailSizeTitle" = "Default Size";
-"defaultThumbnailSizeHeader" = "Please select an photo thumbnail size";
+"defaultThumbnailSizeHeader" = "Please select a photo thumbnail size";
 "settings_displayTitles" = "العناوين على الصور المصغرة";
 "settings_displayTitles>320px" = "عرض العناوين على الصور المصغرة";
 
@@ -657,7 +658,6 @@
 "settings_stripGPSdata" = "قطاع البيانات الوصفية الخاصة";
 "settings_stripGPSdata>375px" = "جرد البيانات الوصفية الخاصة قبل التحميل";
 "settings_photoResize" = "تغيير الحجم قبل التحميل";
-"settings_photoResize>375px" = "تغيير حجم الصورة قبل التحميل";
 "settings_photoSize" = "الحجم";
 "settings_placeholderSize" = "أدخل حجم الصورة من 5 - 100";
 "settings_photoCompress" = "التضغيط قبل التحميل";
@@ -686,6 +686,15 @@
 "settings_autoUploadDestination" = "Destination";
 "settings_autoUploadDestinationInvalid" = "Invalid destination album";
 "settings_autoUploadDestinationInfo" = "Please select the album or sub-album into which photos and videos will be auto-uploaded.";
+
+// Settings — Upload Photo Size
+"UploadPhotoSize_title" = "Max Photo Size";
+"UploadPhotoSize_header" = "Please select the maximum size of the photos which will be uploaded.";
+"UploadPhotoSize_resolution" = "Built-in cameras maximum resolution:";
+"UploadVideoSize_title" = "Max Video Size";
+"UploadVideoSize_header" = "Please select the maximum size of the videos which will be uploaded.";
+"UploadVideoSize_resolution" = "Built-in cameras maximum specifications:";
+"UploadPhotoSize_original" = "No Downsizing";
 
 // Settings — Cache
 "settingsHeader_cache" = "ذاكرة الإعدادات المؤقة (المستخدم / الإجمالي)";

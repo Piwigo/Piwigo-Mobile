@@ -164,6 +164,7 @@
 "categorySelection_title" = "Album";
 "categorySelection_titleSub" = "Sub-album";
 "categorySelection_root" = "Album di radice";
+"categorySelection_root<375pt" = "Root";
 "categorySelection_action" = "Seleziona un'azione per questo album";
 "categorySelectionHUD_label" = "Recupero dati dell'album…";
 "categorySelection_allAlbums" = "All Albums";
@@ -657,7 +658,6 @@
 "settings_stripGPSdata" = "Metadati privati";
 "settings_stripGPSdata>375px" = "Separa i metadati privati prima del caricamento";
 "settings_photoResize" = "Ridimensionare, prima di caricare";
-"settings_photoResize>375px" = "Ridimensionare, prima di caricare";
 "settings_photoSize" = "Dimensione";
 "settings_placeholderSize" = "Immettere una dimensione foto da 5-100";
 "settings_photoCompress" = "Comprimere, prima di caricare";
@@ -686,6 +686,15 @@
 "settings_autoUploadDestination" = "Destination";
 "settings_autoUploadDestinationInvalid" = "Invalid destination album";
 "settings_autoUploadDestinationInfo" = "Please select the album or sub-album into which photos and videos will be auto-uploaded.";
+
+// Settings — Upload Photo Size
+"UploadPhotoSize_title" = "Max Photo Size";
+"UploadPhotoSize_header" = "Please select the maximum size of the photos which will be uploaded.";
+"UploadPhotoSize_resolution" = "Built-in cameras maximum resolution:";
+"UploadVideoSize_title" = "Max Video Size";
+"UploadVideoSize_header" = "Please select the maximum size of the videos which will be uploaded.";
+"UploadVideoSize_resolution" = "Built-in cameras maximum specifications:";
+"UploadPhotoSize_original" = "No Downsizing";
 
 // Settings — Cache
 "settingsHeader_cache" = "Impostazioni della cache (usata/totale)";
