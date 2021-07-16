@@ -403,7 +403,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         return header
     }
 
-// MARK: - UITableView - Rows
+    // MARK: - UITableView - Rows
     func numberOfSections(in tableView: UITableView) -> Int {
         let hasUploadSection = NetworkVars.hasAdminRights ||
                                (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)
@@ -1328,7 +1328,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             case 1  /* Privacy Level */,
                  4  /* Upload Photo Size */,
                  5  /* Upload Video Size */,
-                 10 /* Auto upload */:
+                 11 /* Auto upload */:
                 result = true
             default:
                 result = false
@@ -1349,7 +1349,13 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             switch indexPath.row {
             case 1 /* Contact Us */:
                 result = MFMailComposeViewController.canSendMail() ? true : false
-            case 0 /* Twitter */, 2 /* Support Forum */, 3 /* Rate Piwigo Mobile */, 4 /* Translate Piwigo Mobile */, 5 /* Release Notes */, 6 /* Acknowledgements */, 7 /* Privacy Policy */:
+            case 0 /* Twitter */,
+                 2 /* Support Forum */,
+                 3 /* Rate Piwigo Mobile */,
+                 4 /* Translate Piwigo Mobile */,
+                 5 /* Release Notes */,
+                 6 /* Acknowledgements */,
+                 7 /* Privacy Policy */:
                 result = true
             default:
                 result = false
@@ -1360,7 +1366,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         return result
     }
 
-// MARK: - UITableView - Footer
+    // MARK: - UITableView - Footer
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         // No footer by default (nil => 0 point)
         var footer = ""
@@ -1972,7 +1978,7 @@ extension SettingsViewController: DefaultAlbumThumbnailSizeDelegate {
         // Save new choice
         AlbumVars.defaultAlbumThumbnailSize = thumbnailSize.rawValue
 
-        // Refresh settings
+        // Refresh settings row
         let indexPath = IndexPath(row: 1, section: SettingsSection.albums.rawValue)
         settingsTableView.reloadRows(at: [indexPath], with: .automatic)
     }
