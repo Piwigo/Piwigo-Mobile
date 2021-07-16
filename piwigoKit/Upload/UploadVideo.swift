@@ -24,7 +24,7 @@ extension UploadManager {
         // Check if the user wants to:
         /// - reduce the frame size
         /// - remove the private metadata
-        if uploadProperties.resizeImageOnUpload ||
+        if (uploadProperties.resizeImageOnUpload && uploadProperties.videoMaxSize != 0) ||
             (uploadProperties.stripGPSdataOnUpload && originalVideo.metadata.containsPrivateMetadata()) {
             // Check that the video can be exported
             self.checkVideoExportability(of: originalVideo,
@@ -75,7 +75,7 @@ extension UploadManager {
             // Check if the user wants to:
             /// - reduce the frame size
             /// - remove the private metadata
-            if uploadProperties.resizeImageOnUpload ||
+            if (uploadProperties.resizeImageOnUpload && uploadProperties.videoMaxSize != 0) ||
                 (uploadProperties.stripGPSdataOnUpload && originalVideo.metadata.containsPrivateMetadata()) {
                 // Check that the video can be exported
                 self.checkVideoExportability(of: originalVideo,
