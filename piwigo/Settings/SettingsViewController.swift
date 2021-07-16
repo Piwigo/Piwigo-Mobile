@@ -2067,8 +2067,9 @@ extension SettingsViewController: UploadPhotoSizeDelegate {
             UploadVars.photoMaxSize = newSize
             
             // Refresh corresponding row
-            let indexPath = IndexPath(row: 4, section: SettingsSection.imageUpload.rawValue)
-            settingsTableView.reloadRows(at: [indexPath], with: .automatic)
+            let photoAtIndexPath = IndexPath(row: 3 + (NetworkVars.hasAdminRights ? 1 : 0),
+                                             section: SettingsSection.imageUpload.rawValue)
+            settingsTableView.reloadRows(at: [photoAtIndexPath], with: .automatic)
         }
         
         // Hide rows if needed
@@ -2076,9 +2077,9 @@ extension SettingsViewController: UploadPhotoSizeDelegate {
             UploadVars.resizeImageOnUpload = false
             // Position of the rows which should be removed
             let photoAtIndexPath = IndexPath(row: 3 + (NetworkVars.hasAdminRights ? 1 : 0),
-                                           section: SettingsSection.imageUpload.rawValue)
+                                             section: SettingsSection.imageUpload.rawValue)
             let videoAtIndexPath = IndexPath(row: 4 + (NetworkVars.hasAdminRights ? 1 : 0),
-                                           section: SettingsSection.imageUpload.rawValue)
+                                             section: SettingsSection.imageUpload.rawValue)
             // Remove row in existing table
             settingsTableView?.deleteRows(at: [photoAtIndexPath, videoAtIndexPath], with: .automatic)
 
@@ -2099,8 +2100,9 @@ extension SettingsViewController: UploadVideoSizeDelegate {
             UploadVars.videoMaxSize = newSize
 
             // Refresh corresponding row
-            let indexPath = IndexPath(row: 5, section: SettingsSection.imageUpload.rawValue)
-            settingsTableView.reloadRows(at: [indexPath], with: .automatic)
+            let videoAtIndexPath = IndexPath(row: 4 + (NetworkVars.hasAdminRights ? 1 : 0),
+                                             section: SettingsSection.imageUpload.rawValue)
+            settingsTableView.reloadRows(at: [videoAtIndexPath], with: .automatic)
         }
         
         // Hide rows if needed
