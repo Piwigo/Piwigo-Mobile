@@ -19,6 +19,7 @@ public class UploadManager: NSObject {
     
     // Constants used to name and identify media
     let kOriginalSuffix = "-original"
+    public let kIntentPrefix = "Intent-"
     public let kClipboardPrefix = "Clipboard-"
     public let kImageSuffix = "-img-"
     public let kMovieSuffix = "-mov-"
@@ -516,12 +517,71 @@ public class UploadManager: NSObject {
         // => Photo Library: use PHAsset local identifier
         // => UIPasteborad: use identifier of type "Clipboard-yyyyMMdd-HHmmssSSSS-typ-#"
         //    where "typ" is "img" (photo) or "mov" (video).
-        if uploadProperties.localIdentifier.contains(kClipboardPrefix) {
+        // => Intent: use identifier of type "Intent-yyyyMMdd-HHmmssSSSS-typ-#"
+        //    where "typ" is "img" (photo) or "mov" (video).
+        if uploadProperties.localIdentifier.hasPrefix(kIntentPrefix) {
+            // Case of an image submitted by an intent
+            prepareImageFromIntent(for: uploadID, with: uploadProperties)
+        } else if uploadProperties.localIdentifier.hasPrefix(kClipboardPrefix) {
             // Case of an image retrieved from the pasteboard
             prepareImageInPasteboard(for: uploadID, with: uploadProperties)
         } else {
             // Case of an image from the local Photo Library
             prepareImageInPhotoLibrary(for: uploadID, with: uploadProperties)
+        }
+    }
+    
+    private func prepareImageFromIntent(for uploadID: NSManagedObjectID, with properties: UploadProperties) {
+        // Will update upload properties
+        var uploadProperties = properties
+
+        // Determine non-empty unique file name and extension from identifier
+        var files = [URL]()
+        do {
+            // Get complete filename by searching in the Uploads directory
+            files = try FileManager.default.contentsOfDirectory(at: applicationUploadsDirectory,
+                        includingPropertiesForKeys: nil,
+                        options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+        }
+        catch {
+            files = []
+        }
+        guard files.count > 0, let fileURL = files.filter({$0.lastPathComponent.hasPrefix(uploadProperties.localIdentifier)}).first else {
+            // File not available… deleted?
+            uploadsProvider.updateStatusOfUpload(with: uploadID, to: .preparingFail, error: UploadError.missingAsset.errorDescription) { [unowned self] (_) in
+
+                // Update UI
+                updateCell(with: uploadProperties.localIdentifier, stateLabel: uploadProperties.stateLabel,
+                           photoMaxSize: nil, progress: nil, errorMsg: kPiwigoUploadState.preparingFail.stateInfo)
+ 
+                // Investigate next upload request?
+                self.didEndPreparation()
+            }
+            return
+        }
+        
+        // Add prefix if requested by user
+        var fileName = uploadProperties.fileName
+        if uploadProperties.prefixFileNameBeforeUpload {
+            if !fileName.hasPrefix(uploadProperties.defaultPrefix) {
+                fileName = uploadProperties.defaultPrefix + fileName
+            }
+        }
+        
+        // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
+        uploadProperties.fileName = NetworkUtilities.utf8mb3String(from: fileName)
+
+        // Launch preparation job (limited to stripping metadata)
+        if fileURL.lastPathComponent.contains("img") {
+            uploadProperties.isVideo = false
+
+            // Update state of upload
+            uploadProperties.requestState = .preparing
+            uploadsProvider.updatePropertiesOfUpload(with: uploadID, properties: uploadProperties) { [unowned self] (_) in
+                // Launch preparation job
+                self.prepareImage(atURL: fileURL, for: uploadID, with: uploadProperties)
+            }
+            return
         }
     }
     
@@ -562,7 +622,7 @@ public class UploadManager: NSObject {
         }
 
         // Launch preparation job if file format accepted by Piwigo server
-        let fileExt = (URL(fileURLWithPath: fileName).pathExtension).lowercased()
+        let fileExt = fileURL.pathExtension.lowercased()
         if fileName.contains("img") {
             uploadProperties.isVideo = false
 
