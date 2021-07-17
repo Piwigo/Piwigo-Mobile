@@ -146,7 +146,7 @@ class UploadSwitchViewController: UIViewController {
 
         // Retrieve custom image parameters and upload settings from child views
         var imageParameters = [String:Any](minimumCapacity: 5)
-        var uploadParameters = [String:Any](minimumCapacity: 8)
+        var uploadParameters = [String:Any](minimumCapacity: 9)
         children.forEach { (child) in
             
             // Image parameters
