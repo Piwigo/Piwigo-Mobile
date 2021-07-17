@@ -454,73 +454,23 @@ public class UploadsProvider: NSObject {
     /**
      Fetches upload requests synchronously in the background
      */
-    public func getRequestsIn(states: [kPiwigoUploadState]) -> [NSManagedObjectID] {
+    public func getRequests(inStates states: [kPiwigoUploadState],
+                            markedForDeletion: Bool = false,
+                            markedForAutoUpload: Bool = false,
+                            triggeredByIntent: Bool = false) -> ([String], [NSManagedObjectID]) {
         // Check that states is not empty
         if states.count == 0 {
-            assertionFailure("!!! getRequestsIn() called with no args !!!")
-            return [NSManagedObjectID]()
+            assertionFailure("!!! getRequests() called with no args !!!")
+            return ([], [NSManagedObjectID]())
         }
         
         // Check current queue
-//        print("•••>> getRequestsIn(states:)", queueName())
-
-        // Initialisation
-        var uploadIDs = [NSManagedObjectID]()
-        
-        // Create a private queue context.
-        let taskContext = DataController.privateManagedObjectContext
-
-        // Perform the fetch
-        taskContext.performAndWait {
-
-            // Retrieve existing completed uploads
-            // Create a fetch request for the Upload entity sorted by localIdentifier
-            let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "requestDate", ascending: true)]
-            
-            // Predicate
-            var predicates = [NSPredicate]()
-            states.forEach { (state) in
-                predicates.append(NSPredicate(format: "requestState == %d", state.rawValue))
-            }
-            let statesPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: predicates)
-            let serverPredicate = NSPredicate(format: "serverPath == %@", NetworkVars.serverPath)
-            if UploadVars.isAutoUploadActive {
-                // Select all requests
-                fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [statesPredicate, serverPredicate])
-            } else {
-                // Select only those not marked as "auto-upload"
-                let autoUploadPredicate = NSPredicate(format: "markedForAutoUpload == NO")
-                fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [autoUploadPredicate, statesPredicate, serverPredicate])
-            }
-
-            // Create a fetched results controller and set its fetch request, context, and delegate.
-            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                managedObjectContext: taskContext,
-                                                  sectionNameKeyPath: nil, cacheName: nil)
-
-            // Perform the fetch.
-            do {
-                try controller.performFetch()
-            } catch {
-                fatalError("Unresolved error \(error)")
-            }
-            uploadIDs = ((controller.fetchedObjects ?? [Upload]()) as [Upload]).map({$0.objectID})
-            
-            // Reset the taskContext to free the cache and lower the memory footprint.
-            taskContext.reset()
-        }
-        return uploadIDs
-    }
-
-    public func getCompletedRequestsOfImagesToDelete() -> ([String], [NSManagedObjectID]) {
-        // Check current queue
-        print("•••>> getCompletedRequestsOfImagesToDelete()", queueName())
+//        print("•••>> getRequests()", queueName())
 
         // Initialisation
         var localIdentifiers = [String]()
         var uploadIDs = [NSManagedObjectID]()
-        
+
         // Create a private queue context.
         let taskContext = DataController.privateManagedObjectContext
 
@@ -532,20 +482,32 @@ public class UploadsProvider: NSObject {
             let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: "requestDate", ascending: true)]
             
-            // Predicate
-            var predicates = [NSPredicate]()
-            predicates.append(NSPredicate(format: "requestState == %d", kPiwigoUploadState.finished.rawValue))
-            predicates.append(NSPredicate(format: "requestState == %d", kPiwigoUploadState.moderated.rawValue))
-            let statesPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: predicates)
-            let deletePredicate = NSPredicate(format: "deleteImageAfterUpload == YES")
-            let serverPredicate = NSPredicate(format: "serverPath == %@", NetworkVars.serverPath)
-            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [statesPredicate, deletePredicate, serverPredicate])
+            // OR subpredicates
+            var orSubpredicates = [NSPredicate]()
+            states.forEach { (state) in
+                orSubpredicates.append(NSPredicate(format: "requestState == %d", state.rawValue))
+            }
+            let statesPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: orSubpredicates)
+            
+            // AND subpredicates
+            var andSubpredicates:[NSPredicate] = [statesPredicate]
+            andSubpredicates.append(NSPredicate(format: "serverPath == %@", NetworkVars.serverPath))
+            if !UploadVars.isAutoUploadActive {
+                // User disabled auto-upload mode
+                andSubpredicates.append(NSPredicate(format: "markedForAutoUpload == NO"))
+            } else if markedForAutoUpload {
+                // Auto-upload mode enabled and only auto-upload requests are wanted
+                andSubpredicates.append(NSPredicate(format: "markedForAutoUpload == YES"))
+            }
+            if markedForDeletion {
+                andSubpredicates.append(NSPredicate(format: "deleteImageAfterUpload == YES"))
+            }
+            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andSubpredicates)
 
             // Create a fetched results controller and set its fetch request, context, and delegate.
             let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
                                                 managedObjectContext: taskContext,
                                                   sectionNameKeyPath: nil, cacheName: nil)
-
             // Perform the fetch.
             do {
                 try controller.performFetch()
@@ -553,12 +515,16 @@ public class UploadsProvider: NSObject {
                 fatalError("Unresolved error \(error)")
             }
             
-            // Reset flag of upload requests to prevent another demand for deleting images
+            // Loop over the fetched upload requests
             if let uploads = controller.fetchedObjects {
                 for upload in uploads {
-                    // Reset flag
-                    upload.deleteImageAfterUpload = false
-                    // Collect data to return
+                    // Reset flag if needed to prevent another deletion request
+                    if markedForDeletion { upload.deleteImageAfterUpload = false }
+                    // Filter upload requests if requested
+                    if triggeredByIntent,
+                       !upload.localIdentifier.hasPrefix(UploadManager.shared.kIntentPrefix) {
+                        continue
+                    }
                     localIdentifiers.append(upload.localIdentifier)
                     uploadIDs.append(upload.objectID)
                 }
@@ -585,70 +551,7 @@ public class UploadsProvider: NSObject {
                     fatalError("Failure to save context: \(error)")
                 }
             }
-
-            // Reset the taskContext to free the cache and lower the memory footprint.
-            taskContext.reset()
-        }
-        return (localIdentifiers, uploadIDs)
-    }
-
-    public func getAutoUploadRequestsIn(states: [kPiwigoUploadState]) -> ([String], [NSManagedObjectID]) {
-        // Check that states is not empty
-        if states.count == 0 {
-            assertionFailure("!!! getAutoUploadRequestsIn() called with no args !!!")
-            return ([], [NSManagedObjectID]())
-        }
-        
-        // Check current queue
-        print("•••>> getAutoUploadRequestsIn()", queueName())
-
-        // Initialisation
-        var localIdentifiers = [String]()
-        var uploadIDs = [NSManagedObjectID]()
-
-        // Create a private queue context.
-        let taskContext = DataController.privateManagedObjectContext
-
-        // Perform the fetch
-        taskContext.performAndWait {
-
-            // Retrieve upload requests marked as "auto-upload"
-            // Create a fetch request for the Upload entity sorted by localIdentifier
-            let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "requestDate", ascending: true)]
             
-            // Predicate
-            var predicates = [NSPredicate]()
-            states.forEach { (state) in
-                predicates.append(NSPredicate(format: "requestState == %d", state.rawValue))
-            }
-            let statesPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: predicates)
-            let autoUploadPredicate = NSPredicate(format: "markedForAutoUpload == YES")
-            let categoryPredicate = NSPredicate(format: "category == %d", UploadVars.autoUploadCategoryId)
-            let serverPredicate = NSPredicate(format: "serverPath == %@", NetworkVars.serverPath)
-            fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [statesPredicate, autoUploadPredicate, categoryPredicate, serverPredicate])
-
-            // Create a fetched results controller and set its fetch request, context, and delegate.
-            let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                managedObjectContext: taskContext,
-                                                  sectionNameKeyPath: nil, cacheName: nil)
-
-            // Perform the fetch.
-            do {
-                try controller.performFetch()
-            } catch {
-                fatalError("Unresolved error \(error)")
-            }
-            
-            // Reset flag of upload requests to prevent another demand for deleting images
-            if let uploads = controller.fetchedObjects {
-                for upload in uploads {
-                    // Collect localIdentifier to return
-                    localIdentifiers.append(upload.localIdentifier)
-                    uploadIDs.append(upload.objectID)
-                }
-            }
-
             // Reset the taskContext to free the cache and lower the memory footprint.
             taskContext.reset()
         }
@@ -677,7 +580,7 @@ public class UploadsProvider: NSObject {
     public func clearCompletedUploads() {
 
         // Get completed upload requests
-        let completedUploads = getRequestsIn(states: [.finished, .moderated])
+        let (localIds, uploadIds) = getRequests(inStates: [.finished, .moderated])
 
         // Create a private queue context.
         let taskContext = DataController.privateManagedObjectContext
@@ -685,15 +588,13 @@ public class UploadsProvider: NSObject {
         // Which one should be deleted?
         var uploadsToDelete = [NSManagedObjectID]()
         taskContext.performAndWait {
-            for uploadID in completedUploads {
-                // Get record
-                let upload = taskContext.object(with: uploadID) as! Upload
+            for index in 0..<localIds.count {
                 // Check presence in Photo Library
-                if let _ = PHAsset.fetchAssets(withLocalIdentifiers: [upload.localIdentifier], options: nil).firstObject {
+                if let _ = PHAsset.fetchAssets(withLocalIdentifiers: [localIds[index]], options: nil).firstObject {
                     continue
                 }
                 // Asset not available… will delete it
-                uploadsToDelete.append(uploadID)
+                uploadsToDelete.append(uploadIds[index])
             }
         }
 

@@ -165,7 +165,7 @@ public class UploadManager: NSObject {
                                             .preparingFail, .formatError, .prepared,
                                             .uploading, .uploadingError, .uploaded,
                                             .finishing, .finishingError]
-        nberOfUploadsToComplete = uploadsProvider.getRequestsIn(states: states).count
+        nberOfUploadsToComplete = uploadsProvider.getRequests(inStates: states).0.count
 //        return // for debugging background tasks
 
         // Pause upload manager if:
@@ -186,7 +186,7 @@ public class UploadManager: NSObject {
 
         // Interrupted work shoulds be set as if an error was encountered
         /// - case of finishes
-        let finishingIDs = uploadsProvider.getRequestsIn(states: [.finishing])
+        let finishingIDs = uploadsProvider.getRequests(inStates: [.finishing]).1
         if !isFinishing {
             // Transfers encountered an error
             for uploadID in finishingIDs {
@@ -198,7 +198,7 @@ public class UploadManager: NSObject {
             }
         }
         /// - case of transfers (a few transfers may be running in parallel)
-        let uploadingIDs = uploadsProvider.getRequestsIn(states: [.uploading])
+        let uploadingIDs = uploadsProvider.getRequests(inStates: [.uploading]).1
         for uploadID in uploadingIDs {
             if !isUploading.contains(uploadID) {
                 // Transfer encountered an error
@@ -210,7 +210,7 @@ public class UploadManager: NSObject {
             }
         }
         /// - case of preparations
-        let preparingIDs = uploadsProvider.getRequestsIn(states: [.preparing])
+        let preparingIDs = uploadsProvider.getRequests(inStates: [.preparing]).1
         if !isPreparing {
             // Preparations encountered an error
             for uploadID in preparingIDs {
@@ -225,9 +225,9 @@ public class UploadManager: NSObject {
         // Not finishing and upload request to finish?
         // Only called when uploading with the pwg.images.upload method
         // because the title cannot be set during the upload.
-        let nberFinishedWithError = uploadsProvider.getRequestsIn(states: [.finishingError]).count
+        let nberFinishedWithError = uploadsProvider.getRequests(inStates: [.finishingError]).0.count
         if !isFinishing, nberFinishedWithError < 2,
-           let uploadID = uploadsProvider.getRequestsIn(states: [.uploaded]).first {
+           let uploadID = uploadsProvider.getRequests(inStates: [.uploaded]).1.first {
             
             // Pause upload manager if the app is not in the foreground anymore
             if isPaused { return }
@@ -243,9 +243,9 @@ public class UploadManager: NSObject {
         }
 
         // Not transferring and file ready for transfer?
-        let nberUploadedWithError = uploadsProvider.getRequestsIn(states: [.uploadingError]).count
+        let nberUploadedWithError = uploadsProvider.getRequests(inStates: [.uploadingError]).0.count
         if isUploading.count < maxNberOfTransfers, nberFinishedWithError < 2, nberUploadedWithError < 2,
-           let uploadID = uploadsProvider.getRequestsIn(states: [.prepared]).first {
+           let uploadID = uploadsProvider.getRequests(inStates: [.prepared]).1.first {
 
             // Pause upload manager if the app is not in the foreground anymore
             if isPaused { return }
@@ -256,11 +256,11 @@ public class UploadManager: NSObject {
         }
         
         // Not preparing and upload request waiting?
-        let nberPrepared = uploadsProvider.getRequestsIn(states: [.prepared]).count
-        let nberPreparedWithError = uploadsProvider.getRequestsIn(states: [.preparingError]).count
+        let nberPrepared = uploadsProvider.getRequests(inStates: [.prepared]).0.count
+        let nberPreparedWithError = uploadsProvider.getRequests(inStates: [.preparingError]).0.count
         if !isPreparing, nberPrepared < 2, nberFinishedWithError < 2,
            nberUploadedWithError < 2, nberPreparedWithError < 2,
-           let uploadID = uploadsProvider.getRequestsIn(states: [.waiting]).first {
+           let uploadID = uploadsProvider.getRequests(inStates: [.waiting]).1.first {
             print("\(debugFormatter.string(from: Date())) > preparedWithError:\(nberPreparedWithError), uploadingWithError:\(nberUploadedWithError), finishedWithError:\(nberFinishedWithError)")
 
             // Pause upload manager if the app is not in the foreground anymore
@@ -275,7 +275,7 @@ public class UploadManager: NSObject {
         // No more image to transfer ;-)
         // Moderate images uploaded by Community regular user
         // Considers only uploads to the server to which the user is logged in
-        let finishedUploads = uploadsProvider.getRequestsIn(states: [.finished])
+        let finishedUploads = uploadsProvider.getRequests(inStates: [.finished]).1
         if NetworkVars.hasNormalRights,
            NetworkVars.usesCommunityPluginV29, finishedUploads.count > 0 {
 
@@ -289,11 +289,12 @@ public class UploadManager: NSObject {
 
         // Suggest to delete images from Photo Library if user wanted it
         // The deletion will only be suggested once and after completion of all uploads
-        if uploadsProvider.getRequestsIn(states: states).count > 0 { return }
+        if uploadsProvider.getRequests(inStates: states).0.count > 0 { return }
         
         // Upload requests are completed
         // Considers only uploads to the server to which the user is logged in
-        let (imageIDs, uploadIDs) = uploadsProvider.getCompletedRequestsOfImagesToDelete()
+        let (imageIDs, uploadIDs) = uploadsProvider.getRequests(inStates: [.finished, .moderated],
+                                                                markedForDeletion: true)
         if !imageIDs.isEmpty, !uploadIDs.isEmpty {
             print("\(debugFormatter.string(from: Date())) > (\(imageIDs.count),\(uploadIDs.count)) should be deleted")
             self.delete(uploadedImages: imageIDs, with: uploadIDs)
@@ -321,12 +322,12 @@ public class UploadManager: NSObject {
     public var uploadRequestsToPrepare = Set<NSManagedObjectID>()
     public var uploadRequestsToTransfer = Set<NSManagedObjectID>()
 
-    public func initialiseBckgTask() -> Void {
+    public func initialiseBckgTask(triggeredByIntent: Bool = false) -> Void {
         // Decisions will be taken for a background task
         isExecutingBackgroundUploadTask = true
         
         // Append auto-upload requests if needed
-        if UploadVars.isAutoUploadActive {
+        if UploadVars.isAutoUploadActive && !triggeredByIntent {
             appendAutoUploadRequests()
         }
         
@@ -340,7 +341,8 @@ public class UploadManager: NSObject {
         uploadRequestsToTransfer = Set<NSManagedObjectID>()
 
         // First, find upload requests whose transfer did fail
-        let failedUploads = uploadsProvider.getRequestsIn(states: [.uploadingError])
+        let failedUploads = uploadsProvider.getRequests(inStates: [.uploadingError],
+                                                        triggeredByIntent: triggeredByIntent).1
         if failedUploads.count > 0 {
             // Will relaunch transfers with one which failed
             uploadRequestsToTransfer = Set(failedUploads[..<min(maxNberOfUploadsPerBckgTask, failedUploads.count)])
@@ -353,7 +355,8 @@ public class UploadManager: NSObject {
         }
         
         // Second, find upload requests ready for transfer
-        let preparedUploads = uploadsProvider.getRequestsIn(states: [.prepared])
+        let preparedUploads = uploadsProvider.getRequests(inStates: [.prepared],
+                                                          triggeredByIntent: triggeredByIntent).1
         if uploadRequestsToTransfer.count == 0, preparedUploads.count > 0 {
             // Will relaunch transfers with a prepared upload
             uploadRequestsToTransfer = uploadRequestsToTransfer
@@ -364,7 +367,8 @@ public class UploadManager: NSObject {
         // Finally, get list of upload requests to prepare
         let diff = maxNberOfUploadsPerBckgTask - uploadRequestsToTransfer.count
         if diff <= 0 { return }
-        let requestsToPrepare = uploadsProvider.getRequestsIn(states: [.waiting])
+        let requestsToPrepare = uploadsProvider.getRequests(inStates: [.waiting],
+                                                            triggeredByIntent: triggeredByIntent).1
         print("\(debugFormatter.string(from: Date())) >•• collected \(min(diff, requestsToPrepare.count)) uploads to prepare")
         uploadRequestsToPrepare = Set(requestsToPrepare[..<min(diff, requestsToPrepare.count)])
     }
@@ -908,7 +912,7 @@ public class UploadManager: NSObject {
         if isExecutingBackgroundUploadTask {
             if countOfBytesToUpload < maxCountOfBytesToUpload {
                 // In background task, launch a transfer if possible
-                let preparedUploadRequests = uploadsProvider.getRequestsIn(states: [.prepared])
+                let preparedUploadRequests = uploadsProvider.getRequests(inStates: [.prepared]).1
                 if isUploading.count < maxNberOfTransfers,
                    let uploadID = preparedUploadRequests.first {
                     launchTransfer(of: uploadID)
@@ -978,13 +982,13 @@ public class UploadManager: NSObject {
             if self.isExecutingBackgroundUploadTask { return }
 
             // Stop here if there no image to prepare
-            if uploadsProvider.getRequestsIn(states: [.waiting]).count == 0 { return }
+            if uploadsProvider.getRequests(inStates: [.waiting]).0.count == 0 { return }
 
             // Should we prepare the next image in parallel?
-            let uploadIDsToPrepare = uploadsProvider.getRequestsIn(states: [.waiting])
-            let nberFinishedWithError = uploadsProvider.getRequestsIn(states: [.finishingError]).count
-            let nberUploadedWithError = uploadsProvider.getRequestsIn(states: [.uploadingError]).count
-            let nberPreparedWithError = uploadsProvider.getRequestsIn(states: [.preparingError]).count
+            let uploadIDsToPrepare = uploadsProvider.getRequests(inStates: [.waiting]).1
+            let nberFinishedWithError = uploadsProvider.getRequests(inStates: [.finishingError]).1.count
+            let nberUploadedWithError = uploadsProvider.getRequests(inStates: [.uploadingError]).1.count
+            let nberPreparedWithError = uploadsProvider.getRequests(inStates: [.preparingError]).1.count
             if !self.isPreparing, let uploadID = uploadIDsToPrepare.first,
                nberFinishedWithError < 2, nberUploadedWithError < 2, nberPreparedWithError < 2 {
 
@@ -1001,13 +1005,13 @@ public class UploadManager: NSObject {
                 self.transferImage(for: uploadID, with: uploadProperties)
 
                 // Stop here if there no image to prepare
-                if uploadsProvider.getRequestsIn(states: [.waiting]).count == 0 { return }
+                if uploadsProvider.getRequests(inStates: [.waiting]).1.count == 0 { return }
 
                 // Should we prepare the next image in parallel?
-                let uploadIDsToPrepare = uploadsProvider.getRequestsIn(states: [.waiting])
-                let nberFinishedWithError = uploadsProvider.getRequestsIn(states: [.finishingError]).count
-                let nberUploadedWithError = uploadsProvider.getRequestsIn(states: [.uploadingError]).count
-                let nberPreparedWithError = uploadsProvider.getRequestsIn(states: [.preparingError]).count
+                let uploadIDsToPrepare = uploadsProvider.getRequests(inStates: [.waiting]).1
+                let nberFinishedWithError = uploadsProvider.getRequests(inStates: [.finishingError]).1.count
+                let nberUploadedWithError = uploadsProvider.getRequests(inStates: [.uploadingError]).1.count
+                let nberPreparedWithError = uploadsProvider.getRequests(inStates: [.preparingError]).1.count
                 if !self.isPreparing, let uploadID = uploadIDsToPrepare.first,
                    nberFinishedWithError < 2, nberUploadedWithError < 2, nberPreparedWithError < 2 {
 
@@ -1030,7 +1034,7 @@ public class UploadManager: NSObject {
         if isExecutingBackgroundUploadTask {
             if countOfBytesToUpload < maxCountOfBytesToUpload {
                 // In background task, launch a transfer if possible
-                let preparedUploadRequests = uploadsProvider.getRequestsIn(states: [.prepared])
+                let preparedUploadRequests = uploadsProvider.getRequests(inStates: [.prepared]).1
                 if isUploading.count < maxNberOfTransfers,
                    let uploadID = preparedUploadRequests.first {
                     launchTransfer(of: uploadID)
@@ -1172,7 +1176,7 @@ public class UploadManager: NSObject {
                 // Considers only uploads to the server to which the user is logged in
                 let states: [kPiwigoUploadState] = [.preparingError, .preparingFail, .formatError,
                                                     .uploadingError, .finishingError]
-                let failedUploads = self.uploadsProvider.getRequestsIn(states: states)
+                let failedUploads = self.uploadsProvider.getRequests(inStates: states).1
                 if failedUploads.count > 0 {
                     // Resume failed uploads
                     self.resume(failedUploads: failedUploads) { (_) in

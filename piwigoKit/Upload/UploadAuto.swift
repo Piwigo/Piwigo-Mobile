@@ -47,7 +47,7 @@ extension UploadManager {
                                             .uploading, .uploadingError, .uploaded,
                                             .finishing, .finishingError, .finished,
                                             .moderated, .deleted]
-        let (imageIDs, _) = uploadsProvider.getAutoUploadRequestsIn(states: states)
+        let imageIDs = uploadsProvider.getRequests(inStates: states, markedForAutoUpload: true).0
 
         // Determine which local images are still not considered for upload
         var uploadRequestsToAppend = [UploadProperties]()
@@ -118,7 +118,7 @@ extension UploadManager {
                                             .preparingFail, .formatError, .prepared,
                                             .uploadingError, .uploaded,
                                             .finishingError]
-        let (_, objectIDs) = uploadsProvider.getAutoUploadRequestsIn(states: states)
+        let objectIDs = uploadsProvider.getRequests(inStates: states, markedForAutoUpload: true).1
 
         // Remove non-completed upload requests marked for auto-upload from the upload queue
         if !objectIDs.isEmpty {
