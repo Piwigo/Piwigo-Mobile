@@ -109,10 +109,10 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                 // Movies first because movies may contain images
                 if UIPasteboard.general.contains(pasteboardTypes: [kUTTypeMovie as String], inItemSet: indexSet) {
                     identifier = String(format: "%@%@%@%ld", UploadManager.shared.kClipboardPrefix,
-                                        pbDateTime, UploadManager.shared.kClipboardMovieSuffix, idx)
+                                        pbDateTime, UploadManager.shared.kMovieSuffix, idx)
                 } else {
                     identifier = String(format: "%@%@%@%ld", UploadManager.shared.kClipboardPrefix,
-                                        pbDateTime, UploadManager.shared.kClipboardImageSuffix, idx)
+                                        pbDateTime, UploadManager.shared.kImageSuffix, idx)
                 }
                 let newObject = PasteboardObject(identifier: identifier, types: types[idx])
                 pbObjects.append(newObject)
@@ -375,10 +375,10 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                 // Movies first because objects may contain both movies and images
                 if UIPasteboard.general.contains(pasteboardTypes: [kUTTypeMovie as String], inItemSet: indexSet) {
                     identifier = String(format: "%@%@%@%ld", UploadManager.shared.kClipboardPrefix,
-                                        pbDateTime, UploadManager.shared.kClipboardMovieSuffix, idx)
+                                        pbDateTime, UploadManager.shared.kMovieSuffix, idx)
                 } else {
                     identifier = String(format: "%@%@%@%ld", UploadManager.shared.kClipboardPrefix,
-                                        pbDateTime, UploadManager.shared.kClipboardImageSuffix, idx)
+                                        pbDateTime, UploadManager.shared.kImageSuffix, idx)
                 }
                 let newObject = PasteboardObject(identifier: identifier, types: types[idx])
                 pbObjects.append(newObject)

@@ -17,11 +17,11 @@ public class UploadManager: NSObject {
     // Singleton
     public static let shared = UploadManager()
     
-    // Constants used to name and identify media in clipboard
+    // Constants used to name and identify media
     let kOriginalSuffix = "-original"
     public let kClipboardPrefix = "Clipboard-"
-    public let kClipboardImageSuffix = "-img-"
-    public let kClipboardMovieSuffix = "-mov-"
+    public let kImageSuffix = "-img-"
+    public let kMovieSuffix = "-mov-"
     
     // Constants returning the list of:
     /// - image formats whcih can be converted with iOS
@@ -44,25 +44,7 @@ public class UploadManager: NSObject {
     }()
 
     // MARK: - Initialisation
-    override init() {
-        super.init()
-        
-        // Register app giving up its active status to another app.
-//        NotificationCenter.default.addObserver(self, selector: #selector(self.willResignActive),
-//            name: UIApplication.willResignActiveNotification, object: nil)
-
-        // Register Upload file deletion
-//        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationDeleteUploadFile)
-//        NotificationCenter.default.addObserver(self, selector: #selector(deleteFilesWithPrefix), name: name, object: nil)
-    }
-    
     public var isPaused = false
-//    private var appState = UIApplication.State.active
-//    func willResignActive() -> Void {
-//        // Executed in the main queue when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-//        print("\(debugFormatter.string(from: Date())) > willResignActive")
-//        appState = UIApplication.State.inactive
-//    }
         
     /// Background queue in which uploads are managed
     public let backgroundQueue: DispatchQueue = {
@@ -582,10 +564,10 @@ public class UploadManager: NSObject {
 
             // Set filename by
             /// - removing the "Clipboard-" prefix i.e. kClipboardPrefix
-            /// - removing the "SSSS-img-#" suffix i.e. "SSSS%@-#" where %@ is kClipboardImageSuffix
+            /// - removing the "SSSS-img-#" suffix i.e. "SSSS%@-#" where %@ is kImageSuffix
             /// - adding the file extension
             if let prefixRange = fileName.range(of: kClipboardPrefix),
-               let suffixRange = fileName.range(of: kClipboardImageSuffix) {
+               let suffixRange = fileName.range(of: kImageSuffix) {
                 fileName = String(fileName[prefixRange.upperBound..<suffixRange.lowerBound].dropLast(4)) + ".\(fileExt)"
             }
 
@@ -642,10 +624,10 @@ public class UploadManager: NSObject {
 
             // Set filename by
             /// - removing the "Clipboard-" prefix i.e. kClipboardPrefix
-            /// - removing the "SSSS-mov-#" suffix i.e. "SSSS%@-#" where %@ is kClipboardMovieSuffix
+            /// - removing the "SSSS-mov-#" suffix i.e. "SSSS%@-#" where %@ is kMovieSuffix
             /// - adding the file extension
             if let prefixRange = fileName.range(of: kClipboardPrefix),
-               let suffixRange = fileName.range(of: kClipboardMovieSuffix) {
+               let suffixRange = fileName.range(of: kMovieSuffix) {
                 fileName = String(fileName[prefixRange.upperBound..<suffixRange.lowerBound].dropLast(4)) + ".\(fileExt)"
             }
 
