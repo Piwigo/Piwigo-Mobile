@@ -10,8 +10,6 @@
 import CoreData
 import Photos
 
-//public let kPiwigoNotificationDeleteUploadFile = "kPiwigoNotificationDeleteUploadFile"
-
 public class UploadsProvider: NSObject {
 
     // MARK: - Core Data object context
@@ -173,7 +171,7 @@ public class UploadsProvider: NSObject {
                                          properties: UploadProperties,
                                          completionHandler: @escaping (Error?) -> Void) -> (Void) {
         // Check current queue
-        print("•••>> updatePropertiesOfUpload() \(properties.fileName) | \(properties.stateLabel) in \(queueName())\r")
+//        print("•••>> updatePropertiesOfUpload() \(properties.fileName) | \(properties.stateLabel) in \(queueName())\r")
 
         // Create a private queue context.
         let taskContext = DataController.privateManagedObjectContext
@@ -401,47 +399,28 @@ public class UploadsProvider: NSObject {
 //        print("•••>> deleteOneBatch()", queueName())
 
         var success = false
+        var uploadsToDelete = [NSManagedObjectID]()
         taskContext.performAndWait {
-            
             // Loop over uploads to delete
             for uploadID in uploadsBatch {
-            
                 // Delete corresponding temporary files if any
                 let uploadToDelete = taskContext.object(with: uploadID) as! Upload
                 let filenamePrefix = uploadToDelete.localIdentifier.replacingOccurrences(of: "/", with: "-")
                 if !filenamePrefix.isEmpty {
                     UploadManager.shared.deleteFilesInUploadsDirectory(withPrefix: filenamePrefix)
-//                    let uploadInfo: [String : Any] = ["prefix" : filenamePrefix]
-//                    let name = NSNotification.Name(rawValue: kPiwigoNotificationDeleteUploadFile)
-//                    NotificationCenter.default.post(name: name, object: nil, userInfo: uploadInfo)
                 }
 
-                // Delete upload record
-                taskContext.delete(uploadToDelete)
+                // Append upload to delete
+                uploadsToDelete.append(uploadID)
             }
             
-            // Save all insertions and deletions from the context to the store.
-            if taskContext.hasChanges {
-                do {
-                    try taskContext.save()
-                    
-                    // Performs a task in the main queue and wait until this tasks finishes
-                    DispatchQueue.main.async {
-                        self.managedObjectContext.performAndWait {
-                            do {
-                                // Saves the data from the child to the main context to be stored properly
-                                try self.managedObjectContext.save()
-                            } catch {
-                                fatalError("Failure to save context: \(error)")
-                            }
-                        }
-                    }
-                }
-                catch {
-                    fatalError("Failure to save context: \(error)")
-                }
-                // Reset the taskContext to free the cache and lower the memory footprint.
-                taskContext.reset()
+            // Delete upload requests
+            if uploadsToDelete.count > 0 {
+                // Create batch delete request
+                let batchDeleteRequest = NSBatchDeleteRequest(objectIDs: uploadsToDelete)
+
+                // Execute batch delete request
+                try? taskContext.executeAndMergeChanges(using: batchDeleteRequest)
             }
 
             success = true
