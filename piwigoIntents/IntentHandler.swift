@@ -16,8 +16,8 @@ class IntentHandler: INExtension {
         // you can override this and return the handler you want for that particular intent.
         
         switch intent {
-        case is AutoUploadPhotosIntent:
-            return AutoUploadPhotosHandler()
+        case is UploadPhotosIntent:
+            return UploadPhotosHandler()
         default:
             fatalError("!!! No handler for this intent !!!")
         }

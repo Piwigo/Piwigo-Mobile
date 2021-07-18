@@ -8,6 +8,7 @@
 //  Converted to Swift 5 by Eddy Lelièvre-Berna on 12/04/2020.
 //
 
+import Intents
 import MessageUI
 import UIKit
 import piwigoKit

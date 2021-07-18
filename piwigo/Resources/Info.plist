@@ -37,9 +37,11 @@
 	</dict>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>so that it will be able to download images to Photos and upload images to your Piwigo.</string>
+	<key>NSSiriUsageDescription</key>
+	<string>so that Piwigo will be able to upload images with Siri.</string>
 	<key>NSUserActivityTypes</key>
 	<array>
-		<string>AutoUploadPhotosIntent</string>
+		<string>UploadPhotosIntent</string>
 	</array>
 	<key>PHPhotoLibraryPreventAutomaticLimitedAccessAlert</key>
 	<true/>

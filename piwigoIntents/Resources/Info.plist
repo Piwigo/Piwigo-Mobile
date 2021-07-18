@@ -32,7 +32,7 @@
 			<array/>
 			<key>IntentsSupported</key>
 			<array>
-				<string>AutoUploadPhotosIntent</string>
+				<string>UploadPhotosIntent</string>
 			</array>
 		</dict>
 		<key>NSExtensionPointIdentifier</key>

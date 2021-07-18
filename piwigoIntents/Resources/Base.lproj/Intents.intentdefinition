@@ -22,17 +22,25 @@
 			<key>INIntentConfigurable</key>
 			<true/>
 			<key>INIntentDescription</key>
-			<string>Uploads photos as pre-defined in the settings of the app.</string>
+			<string>Upload photos in formats accepted by the server</string>
 			<key>INIntentDescriptionID</key>
 			<string>xFMKf4</string>
+			<key>INIntentIneligibleForSuggestions</key>
+			<true/>
+			<key>INIntentInput</key>
+			<string>files</string>
+			<key>INIntentKeyParameter</key>
+			<string>files</string>
+			<key>INIntentLastParameterTag</key>
+			<integer>6</integer>
 			<key>INIntentManagedParameterCombinations</key>
 			<dict>
-				<key></key>
+				<key>files,title</key>
 				<dict>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Auto-upload to my Piwigo</string>
+					<string>Upload ${files} to my Piwigo</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>VPZ15V</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
@@ -40,32 +48,159 @@
 				</dict>
 			</dict>
 			<key>INIntentName</key>
-			<string>AutoUploadPhotos</string>
-			<key>INIntentParameterCombinations</key>
-			<dict>
-				<key></key>
+			<string>UploadPhotos</string>
+			<key>INIntentParameters</key>
+			<array>
 				<dict>
-					<key>INIntentParameterCombinationIsPrimary</key>
+					<key>INIntentParameterArraySizes</key>
+					<array>
+						<dict>
+							<key>INIntentParameterArraySizeSize</key>
+							<integer>1</integer>
+							<key>INIntentParameterArraySizeSizeClass</key>
+							<string>Small</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterArraySizeSize</key>
+							<integer>4</integer>
+							<key>INIntentParameterArraySizeSizeClass</key>
+							<string>Medium</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterArraySizeSize</key>
+							<integer>8</integer>
+							<key>INIntentParameterArraySizeSizeClass</key>
+							<string>Large</string>
+						</dict>
+					</array>
+					<key>INIntentParameterConfigurable</key>
 					<true/>
-					<key>INIntentParameterCombinationSubtitle</key>
-					<string>Uploads photos &amp; videos as pre-defined in the settings of the app.</string>
-					<key>INIntentParameterCombinationSubtitleID</key>
-					<string>B4Ax9B</string>
-					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
+					<key>INIntentParameterDisplayName</key>
+					<string>Photos</string>
+					<key>INIntentParameterDisplayNameID</key>
+					<string>6sT3j2</string>
+					<key>INIntentParameterDisplayPriority</key>
+					<integer>1</integer>
+					<key>INIntentParameterFixedSizeArray</key>
+					<integer>1</integer>
+					<key>INIntentParameterMetadata</key>
+					<dict>
+						<key>INIntentParameterMetadataCustomUTIs</key>
+						<array>
+							<dict>
+								<key>UTI</key>
+								<string>public.image</string>
+							</dict>
+							<dict>
+								<key>UTI</key>
+								<string>public.movie</string>
+							</dict>
+						</array>
+						<key>INIntentParameterMetadataType</key>
+						<string>Image</string>
+					</dict>
+					<key>INIntentParameterName</key>
+					<string>files</string>
+					<key>INIntentParameterPromptDialogs</key>
+					<array>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogFormatString</key>
+							<string>Photos?</string>
+							<key>INIntentParameterPromptDialogFormatStringID</key>
+							<string>jTDfxV</string>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>Configuration</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogFormatString</key>
+							<string>Which photos would you like to upload?</string>
+							<key>INIntentParameterPromptDialogFormatStringID</key>
+							<string>wk4oRD</string>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>Primary</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogFormatString</key>
+							<string>There are ${count} options matching ‘${files}’.</string>
+							<key>INIntentParameterPromptDialogFormatStringID</key>
+							<string>o0bkte</string>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>DisambiguationIntroduction</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogFormatString</key>
+							<string>Just to confirm, you wanted ‘${files}’?</string>
+							<key>INIntentParameterPromptDialogFormatStringID</key>
+							<string>ZtuirN</string>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>Confirmation</string>
+						</dict>
+					</array>
+					<key>INIntentParameterSupportsMultipleValues</key>
 					<true/>
-					<key>INIntentParameterCombinationTitle</key>
-					<string>Auto-upload to my Piwigo</string>
-					<key>INIntentParameterCombinationTitleID</key>
-					<string>YsoKwM</string>
+					<key>INIntentParameterTag</key>
+					<integer>4</integer>
+					<key>INIntentParameterType</key>
+					<string>File</string>
 				</dict>
-			</dict>
+				<dict>
+					<key>INIntentParameterConfigurable</key>
+					<true/>
+					<key>INIntentParameterDisplayName</key>
+					<string>Title</string>
+					<key>INIntentParameterDisplayNameID</key>
+					<string>CWhS4M</string>
+					<key>INIntentParameterDisplayPriority</key>
+					<integer>2</integer>
+					<key>INIntentParameterMetadata</key>
+					<dict>
+						<key>INIntentParameterMetadataCapitalization</key>
+						<string>Sentences</string>
+						<key>INIntentParameterMetadataDefaultValueID</key>
+						<string>clrcvZ</string>
+					</dict>
+					<key>INIntentParameterName</key>
+					<string>title</string>
+					<key>INIntentParameterPromptDialogs</key>
+					<array>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>Configuration</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>Primary</string>
+						</dict>
+					</array>
+					<key>INIntentParameterTag</key>
+					<integer>6</integer>
+					<key>INIntentParameterType</key>
+					<string>String</string>
+				</dict>
+			</array>
 			<key>INIntentResponse</key>
 			<dict>
 				<key>INIntentResponseCodes</key>
 				<array>
 					<dict>
+						<key>INIntentResponseCodeConciseFormatString</key>
+						<string>${nberPhotos} photo(s) added to the upload queue.</string>
+						<key>INIntentResponseCodeConciseFormatStringID</key>
+						<string>5J83Tl</string>
 						<key>INIntentResponseCodeFormatString</key>
-						<string>${nberPhotos} request(s) have been added to the upload queue.</string>
+						<string>${nberPhotos} photo(s) added to the upload queue.</string>
 						<key>INIntentResponseCodeFormatStringID</key>
 						<string>HhSUx9</string>
 						<key>INIntentResponseCodeName</key>
@@ -88,7 +223,7 @@
 				<array>
 					<dict>
 						<key>INIntentResponseParameterDisplayName</key>
-						<string>Nber Photos</string>
+						<string>Photos</string>
 						<key>INIntentResponseParameterDisplayNameID</key>
 						<string>Lu2BW0</string>
 						<key>INIntentResponseParameterDisplayPriority</key>
@@ -117,13 +252,13 @@
 				</array>
 			</dict>
 			<key>INIntentTitle</key>
-			<string>Auto-upload to my Piwigo</string>
+			<string>Upload Photos</string>
 			<key>INIntentTitleID</key>
 			<string>jYG1fV</string>
 			<key>INIntentType</key>
 			<string>Custom</string>
 			<key>INIntentVerb</key>
-			<string>Run</string>
+			<string>Do</string>
 		</dict>
 	</array>
 	<key>INTypes</key>
