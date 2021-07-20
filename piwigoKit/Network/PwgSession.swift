@@ -61,6 +61,7 @@ class PwgSession: NSObject {
         let url = URL(string: urlStr + "/ws.php?\(method)")
         var request = URLRequest(url: url!)
         request.httpMethod = "POST"
+        request.networkServiceType = .responsiveData
 
         // Combine percent encoded parameters
         var encPairs = [String]()
