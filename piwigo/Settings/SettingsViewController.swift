@@ -1914,6 +1914,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             UploadVars.defaultAuthor = textField.text ?? ""
         case kImageUploadSetting.prefix.rawValue:
             UploadVars.defaultPrefix = textField.text ?? ""
+            UploadVars.prefixFileNameBeforeUpload = !UploadVars.defaultPrefix.isEmpty
         default:
             break
         }
