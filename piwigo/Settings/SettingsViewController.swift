@@ -235,7 +235,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         settingsTableView?.reloadSections(IndexSet(integer: SettingsSection.imageUpload.rawValue), with: .automatic)
         
         // Inform user if the AutoUploadViewController is not presented
-        children.forEach { if $0.isKind(of: AutoUploadViewController.self) { return } }
+        children.forEach { if $0 is AutoUploadViewController { return } }
         if let title = notification.userInfo?["title"] as? String, !title.isEmpty,
            let message = notification.userInfo?["message"] as? String {
             dismissPiwigoError(withTitle: title, message: message) { }

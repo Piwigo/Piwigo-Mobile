@@ -97,15 +97,15 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
 
         // Check if the user is going to select a local album
         if let visibleVC = navigationController?.visibleViewController,
-           visibleVC.isKind(of: LocalAlbumsViewController.self) { return }
+           visibleVC is LocalAlbumsViewController { return }
             
         // Check if the user is going to select a Piwigo album
         if let visibleVC = navigationController?.visibleViewController,
-           visibleVC.isKind(of: SelectCategoryViewController.self) { return }
+           visibleVC is SelectCategoryViewController { return }
 
         // Check if the user is going to select/deselect tags
         if let visibleVC = navigationController?.visibleViewController,
-           visibleVC.isKind(of: TagsViewController.self) { return }
+           visibleVC is TagsViewController { return }
 
         // Restart UploadManager activities
         if UploadManager.shared.isPaused {

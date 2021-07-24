@@ -153,7 +153,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
 
         // Determine what to do after selection
         if let caller = delegate {
-            if caller.isKind(of: AutoUploadViewController.self) {
+            if caller is AutoUploadViewController {
                 wantedAction = .setAutoUploadAlbum
             } else {
                 wantedAction = .none
