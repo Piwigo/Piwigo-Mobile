@@ -1914,7 +1914,20 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             UploadVars.defaultAuthor = textField.text ?? ""
         case kImageUploadSetting.prefix.rawValue:
             UploadVars.defaultPrefix = textField.text ?? ""
-            UploadVars.prefixFileNameBeforeUpload = !UploadVars.defaultPrefix.isEmpty
+            if UploadVars.defaultPrefix.isEmpty {
+                UploadVars.prefixFileNameBeforeUpload = false
+                // Remove row in existing table
+                let prefixIndexPath = IndexPath(row: 5 + (NetworkVars.hasAdminRights ? 1 : 0)
+                                                       + (UploadVars.resizeImageOnUpload ? 2 : 0)
+                                                       + (UploadVars.compressImageOnUpload ? 1 : 0),
+                                                section: SettingsSection.imageUpload.rawValue)
+                settingsTableView?.deleteRows(at: [prefixIndexPath], with: .automatic)
+
+                // Refresh flag
+                let indexPath = IndexPath(row: prefixIndexPath.row - 1,
+                                          section: SettingsSection.imageUpload.rawValue)
+                settingsTableView?.reloadRows(at: [indexPath], with: .automatic)
+            }
         default:
             break
         }
@@ -2092,7 +2105,7 @@ extension SettingsViewController: UploadPhotoSizeDelegate {
             settingsTableView?.deleteRows(at: [photoAtIndexPath, videoAtIndexPath], with: .automatic)
 
             // Refresh flag
-            let indexPath = IndexPath(row: 2 + (NetworkVars.hasAdminRights ? 1 : 0),
+            let indexPath = IndexPath(row: photoAtIndexPath.row - 1,
                                       section: SettingsSection.imageUpload.rawValue)
             settingsTableView?.reloadRows(at: [indexPath], with: .automatic)
         }
@@ -2125,7 +2138,7 @@ extension SettingsViewController: UploadVideoSizeDelegate {
             settingsTableView?.deleteRows(at: [photoAtIndexPath, videoAtIndexPath], with: .automatic)
 
             // Refresh flag
-            let indexPath = IndexPath(row: 2 + (NetworkVars.hasAdminRights ? 1 : 0),
+            let indexPath = IndexPath(row: photoAtIndexPath.row - 1,
                                       section: SettingsSection.imageUpload.rawValue)
             settingsTableView?.reloadRows(at: [indexPath], with: .automatic)
         }
