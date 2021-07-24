@@ -234,7 +234,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // Reload section instead of row because user's rights may have changed after logout/login
         settingsTableView?.reloadSections(IndexSet(integer: SettingsSection.imageUpload.rawValue), with: .automatic)
         
-        // Inform user if an error was reported
+        // Inform user if the AutoUploadViewController is not presented
+        children.forEach { if $0.isKind(of: AutoUploadViewController.self) { return } }
         if let title = notification.userInfo?["title"] as? String, !title.isEmpty,
            let message = notification.userInfo?["message"] as? String {
             dismissPiwigoError(withTitle: title, message: message) { }
