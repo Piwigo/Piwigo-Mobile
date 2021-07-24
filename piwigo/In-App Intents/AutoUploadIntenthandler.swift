@@ -117,13 +117,13 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
             // Save the database when the operation completes
             let lastOperation = uploadOperations.last!
             lastOperation.completionBlock = {
-                print("    > Intent completed with success.")
+                debugPrint("    > In-app intent completed with success.")
                 // Save cached data
                 DataController.saveContext()
             }
 
             // Start the operations
-            print("    > Restart transfers in the background...");
+            print("    > In-app intent restarts transfers...");
             uploadQueue.addOperations(uploadOperations, waitUntilFinished: false)
 
             completion(AutoUploadIntentResponse.success(photos: NSNumber(value: 0)))
@@ -131,6 +131,7 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
         }
 
         // Append auto-upload requests to database
+        let photosToPrepare = uploadRequestsToAppend.compactMap{ $0 }.count
         uploadsProvider.importUploads(from: uploadRequestsToAppend.compactMap{ $0 }) { error in
             // Show an alert if there was an error.
             guard let error = error else {
@@ -170,14 +171,11 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
                 // Save the database when the operation completes
                 let lastOperation = uploadOperations.last!
                 lastOperation.completionBlock = {
-                    print("    > Intent completed with success.")
-                    // Save cached data
-                    DataController.saveContext()
+                    debugPrint("    > In-app intent completed with success.")
                 }
 
                 // Start the operations
-                let photosToPrepare = UploadManager.shared.uploadRequestsToPrepare.count
-                print("    > Resume transfers and append upload requests in the background...");
+                debugPrint("    > In-app intent resumes transfers and append upload requests...");
                 uploadQueue.addOperations(uploadOperations, waitUntilFinished: false)
 
                 // Inform user that the shortcut was excuted with success
