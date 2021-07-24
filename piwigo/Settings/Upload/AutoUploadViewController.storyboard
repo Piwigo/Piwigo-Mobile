@@ -29,7 +29,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999998807907104" translatesAutoresizingMaskIntoConstraints="NO" id="3aI-6T-cUb">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3aI-6T-cUb">
                                             <rect key="frame" x="20" y="10" width="48" height="23.5"/>
                                             <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
                                             <nil key="textColor"/>
@@ -47,7 +47,7 @@
                                         <constraint firstItem="3aI-6T-cUb" firstAttribute="centerY" secondItem="EFw-Wy-xBp" secondAttribute="centerY" id="fBT-qX-8MP"/>
                                         <constraint firstItem="xMm-4k-pMU" firstAttribute="centerY" secondItem="EFw-Wy-xBp" secondAttribute="centerY" id="mx2-Gg-uk0"/>
                                         <constraint firstAttribute="trailing" secondItem="xMm-4k-pMU" secondAttribute="trailing" constant="20" symbolic="YES" id="nrZ-7X-Q8W"/>
-                                        <constraint firstItem="3aI-6T-cUb" firstAttribute="trailing" relation="lessThanOrEqual" secondItem="EFw-Wy-xBp" secondAttribute="trailing" constant="-71" id="vza-m1-NfE"/>
+                                        <constraint firstItem="3aI-6T-cUb" firstAttribute="trailing" relation="lessThanOrEqual" secondItem="EFw-Wy-xBp" secondAttribute="trailing" constant="-81" id="vza-m1-NfE"/>
                                         <constraint firstItem="3aI-6T-cUb" firstAttribute="leading" secondItem="EFw-Wy-xBp" secondAttribute="leading" constant="20" symbolic="YES" id="yue-l8-Ktr"/>
                                     </constraints>
                                 </tableViewCellContentView>
@@ -63,16 +63,13 @@
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xU2-JK-3Sc">
-                                            <rect key="frame" x="20" y="10" width="50" height="23.5"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="50" id="MIQ-v4-QXP"/>
-                                            </constraints>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xU2-JK-3Sc">
+                                            <rect key="frame" x="20" y="10" width="48" height="23.5"/>
                                             <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Info" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2rE-88-1L7">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Info" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2rE-88-1L7">
                                             <rect key="frame" x="362.5" y="10" width="31.5" height="23.5"/>
                                             <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
                                             <nil key="textColor"/>
