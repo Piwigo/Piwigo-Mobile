@@ -673,6 +673,8 @@
 "settings_deleteImage>375px" = "حذف الصورة بعد تحميل";
 "settings_wifiOnly" = "Wi-Fi Only";
 "settings_deleteImage" = "الحذف بعد التحميل";
+
+// Settings — Auto-Upload
 "settings_autoUpload" = "Auto Upload";
 "settings_autoUpload>414px" = "Auto Upload Photos";
 "settings_autoUploadEnabled" = "On";
@@ -686,6 +688,8 @@
 "settings_autoUploadDestination" = "Destination";
 "settings_autoUploadDestinationInvalid" = "Invalid destination album";
 "settings_autoUploadDestinationInfo" = "Please select the album or sub-album into which photos and videos will be auto-uploaded.";
+"AutoUploadError_Disabled" = "The Auto-Upload option is disabled in the app settings.";
+"AutoUploadError_Failed" = "Several transfers failed and the upload queue is on hold. Please check in the app.";
 
 // Settings — Upload Photo Size
 "UploadPhotoSize_title" = "Max Photo Size";

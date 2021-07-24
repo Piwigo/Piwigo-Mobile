@@ -107,6 +107,7 @@
 		AD84E60523BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD84E60423BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib */; };
 		AD8709AB259A8E66008C4E4C /* Help04ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8709AA259A8E66008C4E4C /* Help04ViewController.swift */; };
 		AD870CD71F54AE110015BFA1 /* ImagesCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = AD870CD61F54AE110015BFA1 /* ImagesCollection.m */; };
+		AD8D212626ACC15F0008E907 /* InAppIntents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = AD8D212826ACC15F0008E907 /* InAppIntents.intentdefinition */; };
 		AD8F4B8B23F04B8C009483B6 /* TagSelectorViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD3369BE23F035F700F3FA80 /* TagSelectorViewController.storyboard */; };
 		AD92B8FE1F200083006E5B63 /* ReleaseNotes.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD92B9001F200083006E5B63 /* ReleaseNotes.strings */; };
 		AD94F63B266D61AB00EFC6A9 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB433F523FB3CCB00A873A9 /* DataController.swift */; };
@@ -147,7 +148,6 @@
 		ADC06AE11F40B15E0081B4FA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = ADC06ADF1F40B15E0081B4FA /* InfoPlist.strings */; };
 		ADC328072480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC328062480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift */; };
 		ADC3280B2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC3280A2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift */; };
-		ADC339FA26A7EAA900173F8A /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = ADC339F926A7EAA900173F8A /* Intents.intentdefinition */; };
 		ADC339FD26A7ECF000173F8A /* AutoUploadIntenthandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC339FC26A7ECF000173F8A /* AutoUploadIntenthandler.swift */; };
 		ADC709C525115943009CA711 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC709C425115943009CA711 /* SceneDelegate.swift */; };
 		ADC74CB2259BDE7600581ADE /* NetworkObjcUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC74CB1259BDE7600581ADE /* NetworkObjcUtilities.swift */; };
@@ -483,6 +483,21 @@
 		AD8709AA259A8E66008C4E4C /* Help04ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help04ViewController.swift; sourceTree = "<group>"; };
 		AD870CD61F54AE110015BFA1 /* ImagesCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagesCollection.m; sourceTree = "<group>"; };
 		AD870CD81F54AE230015BFA1 /* ImagesCollection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImagesCollection.h; sourceTree = "<group>"; };
+		AD8D212726ACC15F0008E907 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; name = Base; path = Base.lproj/InAppIntents.intentdefinition; sourceTree = "<group>"; };
+		AD8D212A26ACC1660008E907 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InAppIntents.strings; sourceTree = "<group>"; };
+		AD8D212E26ACC1700008E907 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/InAppIntents.strings; sourceTree = "<group>"; };
+		AD8D213026ACC1710008E907 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InAppIntents.strings"; sourceTree = "<group>"; };
+		AD8D213226ACC1720008E907 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/InAppIntents.strings; sourceTree = "<group>"; };
+		AD8D213426ACC1720008E907 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/InAppIntents.strings; sourceTree = "<group>"; };
+		AD8D213626ACC1730008E907 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InAppIntents.strings; sourceTree = "<group>"; };
+		AD8D213826ACC1740008E907 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InAppIntents.strings; sourceTree = "<group>"; };
+		AD8D213A26ACC1740008E907 /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/InAppIntents.strings; sourceTree = "<group>"; };
+		AD8D213C26ACC1750008E907 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/InAppIntents.strings; sourceTree = "<group>"; };
+		AD8D213E26ACC1750008E907 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InAppIntents.strings; sourceTree = "<group>"; };
+		AD8D214026ACC1760008E907 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/InAppIntents.strings; sourceTree = "<group>"; };
+		AD8D214226ACC1760008E907 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InAppIntents.strings; sourceTree = "<group>"; };
+		AD8D214426ACC1770008E907 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InAppIntents.strings; sourceTree = "<group>"; };
+		AD8D214626ACC1790008E907 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/InAppIntents.strings; sourceTree = "<group>"; };
 		AD92B9011F200092006E5B63 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
 		AD94F63D266D637D00EFC6A9 /* CacheVarsObjc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheVarsObjc.swift; sourceTree = "<group>"; };
 		AD94F63F266D63AD00EFC6A9 /* CacheVars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheVars.swift; sourceTree = "<group>"; };
@@ -553,7 +568,6 @@
 		ADC06AE41F40B2BC0081B4FA /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADC328062480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalAlbumsNoDatesTableViewCell.swift; sourceTree = "<group>"; };
 		ADC3280A2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAlbumsMoreTableViewCell.swift; sourceTree = "<group>"; };
-		ADC339F926A7EAA900173F8A /* Intents.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = Intents.intentdefinition; sourceTree = "<group>"; };
 		ADC339FC26A7ECF000173F8A /* AutoUploadIntenthandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoUploadIntenthandler.swift; sourceTree = "<group>"; };
 		ADC709C425115943009CA711 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		ADC74CB1259BDE7600581ADE /* NetworkObjcUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkObjcUtilities.swift; sourceTree = "<group>"; };
@@ -1172,7 +1186,7 @@
 		ADC339FB26A7EC8500173F8A /* In-App Intents */ = {
 			isa = PBXGroup;
 			children = (
-				ADC339F926A7EAA900173F8A /* Intents.intentdefinition */,
+				AD8D212826ACC15F0008E907 /* InAppIntents.intentdefinition */,
 				ADC339FC26A7ECF000173F8A /* AutoUploadIntenthandler.swift */,
 			);
 			path = "In-App Intents";
@@ -2124,7 +2138,7 @@
 				AD42D08524449FF000F0BAC1 /* LocalImageCollectionViewCell.swift in Sources */,
 				ADC8FAAA244C7307006BDA6A /* LocalImagesFooterReusableView.swift in Sources */,
 				ADE4C22625754B420060A203 /* Help03ViewController.swift in Sources */,
-				ADC339FA26A7EAA900173F8A /* Intents.intentdefinition in Sources */,
+				AD8D212626ACC15F0008E907 /* InAppIntents.intentdefinition in Sources */,
 				AD439E4425E14C3600333A91 /* PasteboardObject.swift in Sources */,
 				AD45D8AB2444D1CD00CBE206 /* LocalImagesHeaderReusableView.swift in Sources */,
 				ADC8167B244B5EDE00650223 /* LocalImagesViewController.swift in Sources */,
@@ -2339,6 +2353,28 @@
 				AD7783B1267E4AB700317F36 /* Base */,
 			);
 			name = Intents.intentdefinition;
+			sourceTree = "<group>";
+		};
+		AD8D212826ACC15F0008E907 /* InAppIntents.intentdefinition */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AD8D212726ACC15F0008E907 /* Base */,
+				AD8D212A26ACC1660008E907 /* en */,
+				AD8D212E26ACC1700008E907 /* ar */,
+				AD8D213026ACC1710008E907 /* zh-Hans */,
+				AD8D213226ACC1720008E907 /* da */,
+				AD8D213426ACC1720008E907 /* nl */,
+				AD8D213626ACC1730008E907 /* fr */,
+				AD8D213826ACC1740008E907 /* de */,
+				AD8D213A26ACC1740008E907 /* id */,
+				AD8D213C26ACC1750008E907 /* it */,
+				AD8D213E26ACC1750008E907 /* ja */,
+				AD8D214026ACC1760008E907 /* pl */,
+				AD8D214226ACC1760008E907 /* ru */,
+				AD8D214426ACC1770008E907 /* es */,
+				AD8D214626ACC1790008E907 /* sv */,
+			);
+			name = InAppIntents.intentdefinition;
 			sourceTree = "<group>";
 		};
 		AD92B9001F200083006E5B63 /* ReleaseNotes.strings */ = {

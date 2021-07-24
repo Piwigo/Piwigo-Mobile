@@ -673,6 +673,8 @@
 "settings_deleteImage>375px" = "Effacer la photo après envoi";
 "settings_wifiOnly" = "Wi-Fi uniquement";
 "settings_deleteImage" = "Effacer après Envoi";
+
+// Settings — Auto-Upload
 "settings_autoUpload" = "Télécharger automatiquement";
 "settings_autoUpload>414px" = "Télécharger automatiquement des photos";
 "settings_autoUploadEnabled" = "Activé";
@@ -686,6 +688,8 @@
 "settings_autoUploadDestination" = "Destination";
 "settings_autoUploadDestinationInvalid" = "Album de destination invalide";
 "settings_autoUploadDestinationInfo" = "Veuillez sélectionner l'album ou le sous-album dans lequel les photos et les vidéos seront automatiquement téléchargées.";
+"AutoUploadError_Disabled" = "Le téléchargement automatique est désactivé dans les paramètres de l'application.";
+"AutoUploadError_Failed" = "Plusieurs transferts ont échoué et la file d'attente est en pause. Veuillez vérifier dans l'application.";
 
 // Settings — Upload Photo Size
 "UploadPhotoSize_title" = "Taille maximale des photos";
