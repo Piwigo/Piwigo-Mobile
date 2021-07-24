@@ -436,7 +436,7 @@ public class UploadsProvider: NSObject {
     public func getRequests(inStates states: [kPiwigoUploadState],
                             markedForDeletion: Bool = false,
                             markedForAutoUpload: Bool = false,
-                            triggeredByIntent: Bool = false) -> ([String], [NSManagedObjectID]) {
+                            triggeredByExtension: Bool = false) -> ([String], [NSManagedObjectID]) {
         // Check that states is not empty
         if states.count == 0 {
             assertionFailure("!!! getRequests() called with no args !!!")
@@ -444,7 +444,7 @@ public class UploadsProvider: NSObject {
         }
         
         // Check current queue
-//        print("•••>> getRequests()", queueName())
+        debugPrint("•••>> getRequests()", queueName())
 
         // Initialisation
         var localIdentifiers = [String]()
@@ -500,7 +500,7 @@ public class UploadsProvider: NSObject {
                     // Reset flag if needed to prevent another deletion request
                     if markedForDeletion { upload.deleteImageAfterUpload = false }
                     // Filter upload requests if requested
-                    if triggeredByIntent,
+                    if triggeredByExtension,
                        !upload.localIdentifier.hasPrefix(UploadManager.shared.kIntentPrefix) {
                         continue
                     }
@@ -510,7 +510,7 @@ public class UploadsProvider: NSObject {
             }
 
             // Save all modifications from the context to the store.
-            if taskContext.hasChanges {
+            if markedForDeletion, taskContext.hasChanges {
                 do {
                     try taskContext.save()
                     

@@ -323,12 +323,13 @@ public class UploadManager: NSObject {
     public var uploadRequestsToPrepare = Set<NSManagedObjectID>()
     public var uploadRequestsToTransfer = Set<NSManagedObjectID>()
 
-    public func initialiseBckgTask(triggeredByIntent: Bool = false) -> Void {
+    public func initialiseBckgTask(autoUploadOnly: Bool = false,
+                                   triggeredByExtension: Bool = false) -> Void {
         // Decisions will be taken for a background task
         isExecutingBackgroundUploadTask = true
         
         // Append auto-upload requests if needed
-        if UploadVars.isAutoUploadActive && !triggeredByIntent {
+        if UploadVars.isAutoUploadActive && !triggeredByExtension {
             appendAutoUploadRequests()
         }
         
@@ -343,7 +344,8 @@ public class UploadManager: NSObject {
 
         // First, find upload requests whose transfer did fail
         let failedUploads = uploadsProvider.getRequests(inStates: [.uploadingError],
-                                                        triggeredByIntent: triggeredByIntent).1
+                                                        markedForAutoUpload: autoUploadOnly,
+                                                        triggeredByExtension: triggeredByExtension).1
         if failedUploads.count > 0 {
             // Will relaunch transfers with one which failed
             uploadRequestsToTransfer = Set(failedUploads[..<min(maxNberOfUploadsPerBckgTask, failedUploads.count)])
@@ -357,8 +359,9 @@ public class UploadManager: NSObject {
         
         // Second, find upload requests ready for transfer
         let preparedUploads = uploadsProvider.getRequests(inStates: [.prepared],
-                                                          triggeredByIntent: triggeredByIntent).1
-        if uploadRequestsToTransfer.count == 0, preparedUploads.count > 0 {
+                                                          markedForAutoUpload: autoUploadOnly,
+                                                          triggeredByExtension: triggeredByExtension).1
+        if preparedUploads.count > 0 {
             // Will relaunch transfers with a prepared upload
             uploadRequestsToTransfer = uploadRequestsToTransfer
                 .union(Set(preparedUploads[..<min(maxNberOfUploadsPerBckgTask,preparedUploads.count)]))
@@ -369,7 +372,8 @@ public class UploadManager: NSObject {
         let diff = maxNberOfUploadsPerBckgTask - uploadRequestsToTransfer.count
         if diff <= 0 { return }
         let requestsToPrepare = uploadsProvider.getRequests(inStates: [.waiting],
-                                                            triggeredByIntent: triggeredByIntent).1
+                                                            markedForAutoUpload: autoUploadOnly,
+                                                            triggeredByExtension: triggeredByExtension).1
         print("\(debugFormatter.string(from: Date())) >•• collected \(min(diff, requestsToPrepare.count)) uploads to prepare")
         uploadRequestsToPrepare = Set(requestsToPrepare[..<min(diff, requestsToPrepare.count)])
     }

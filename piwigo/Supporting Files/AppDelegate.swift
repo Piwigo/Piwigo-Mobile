@@ -9,12 +9,13 @@
 import AVFoundation
 import BackgroundTasks
 import Foundation
+import Intents
 import UIKit
 
 import IQKeyboardManagerSwift
 import piwigoKit
 
-@main
+@UIApplicationMain
 @objc class AppDelegate: UIResponder, UIApplicationDelegate {
         
     let kPiwigoBackgroundTaskUpload = "org.piwigo.uploadManager"
@@ -434,7 +435,41 @@ import piwigoKit
         }
     }
 
-
+    // MARK: - Intents
+    
+    @available(iOS 14.0, *)
+    func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any? {
+        switch intent {
+        case is AutoUploadIntent:
+            return AutoUploadIntentHandler()
+        default:
+            return nil
+        }
+    }
+    
+    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        debugPrint(userActivity)
+        return true
+    }
+    
+//    @available(iOS 10.0, *)
+//    func application(_ application: UIApplication, handle intent: INIntent, completionHandler: @escaping (INIntentResponse) -> Void) {
+//        if #available(iOS 12.0, *) {
+//            switch intent {
+//            case is AutoUploadIntent:
+//                let handler = AutoUploadIntentHandler()
+//                handler.handle(intent: intent as! AutoUploadIntent) { response in
+//                    completionHandler(response)
+//                }
+//            default:
+//                break
+//            }
+//        } else {
+//            // Fallback on earlier versions
+//        }
+//    }
+    
+    
     // MARK: - Settings bundle
 
     // Updates the version and build numbers in the app's settings bundle.

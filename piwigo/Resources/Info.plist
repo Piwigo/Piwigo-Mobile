@@ -26,6 +26,10 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
 	<string>377</string>
+	<key>INIntentsSupported</key>
+	<array>
+		<string>AutoUploadIntent</string>
+	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
@@ -41,7 +45,7 @@
 	<string>so that Piwigo will be able to upload images with Siri.</string>
 	<key>NSUserActivityTypes</key>
 	<array>
-		<string>UploadPhotosIntent</string>
+		<string>AutoUploadIntent</string>
 	</array>
 	<key>PHPhotoLibraryPreventAutomaticLimitedAccessAlert</key>
 	<true/>
@@ -56,7 +60,7 @@
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
-		<false/>
+		<true/>
 		<key>UISceneConfigurations</key>
 		<dict>
 			<key>UIWindowSceneSessionRoleApplication</key>

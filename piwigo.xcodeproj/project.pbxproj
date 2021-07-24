@@ -147,6 +147,8 @@
 		ADC06AE11F40B15E0081B4FA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = ADC06ADF1F40B15E0081B4FA /* InfoPlist.strings */; };
 		ADC328072480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC328062480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift */; };
 		ADC3280B2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC3280A2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift */; };
+		ADC339FA26A7EAA900173F8A /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = ADC339F926A7EAA900173F8A /* Intents.intentdefinition */; };
+		ADC339FD26A7ECF000173F8A /* AutoUploadIntenthandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC339FC26A7ECF000173F8A /* AutoUploadIntenthandler.swift */; };
 		ADC709C525115943009CA711 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC709C425115943009CA711 /* SceneDelegate.swift */; };
 		ADC74CB2259BDE7600581ADE /* NetworkObjcUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC74CB1259BDE7600581ADE /* NetworkObjcUtilities.swift */; };
 		ADC74CCE259C9E9C00581ADE /* Help05ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC74CCD259C9E9C00581ADE /* Help05ViewController.swift */; };
@@ -551,6 +553,8 @@
 		ADC06AE41F40B2BC0081B4FA /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADC328062480238300D5D11D /* LocalAlbumsNoDatesTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalAlbumsNoDatesTableViewCell.swift; sourceTree = "<group>"; };
 		ADC3280A2480311100D5D11D /* LocalAlbumsMoreTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAlbumsMoreTableViewCell.swift; sourceTree = "<group>"; };
+		ADC339F926A7EAA900173F8A /* Intents.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = Intents.intentdefinition; sourceTree = "<group>"; };
+		ADC339FC26A7ECF000173F8A /* AutoUploadIntenthandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoUploadIntenthandler.swift; sourceTree = "<group>"; };
 		ADC709C425115943009CA711 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		ADC74CB1259BDE7600581ADE /* NetworkObjcUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkObjcUtilities.swift; sourceTree = "<group>"; };
 		ADC74CCD259C9E9C00581ADE /* Help05ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help05ViewController.swift; sourceTree = "<group>"; };
@@ -1165,6 +1169,15 @@
 			path = "Upload Queue";
 			sourceTree = "<group>";
 		};
+		ADC339FB26A7EC8500173F8A /* In-App Intents */ = {
+			isa = PBXGroup;
+			children = (
+				ADC339F926A7EAA900173F8A /* Intents.intentdefinition */,
+				ADC339FC26A7ECF000173F8A /* AutoUploadIntenthandler.swift */,
+			);
+			path = "In-App Intents";
+			sourceTree = "<group>";
+		};
 		ADD714512301E0B000A1B7B2 /* Images */ = {
 			isa = PBXGroup;
 			children = (
@@ -1377,6 +1390,7 @@
 				ADE535901F65C01000372CBD /* Image */,
 				D8BDCB601A6F6B5000D106A8 /* Upload */,
 				D8BDCB611A6F6B5400D106A8 /* Settings */,
+				ADC339FB26A7EC8500173F8A /* In-App Intents */,
 				D8D3F7621A7AF27C00AEA7F1 /* Data Cache */,
 				D818E9FC1A74C25900733991 /* Piwigo Data Wrappers */,
 				D87C5A971A6F4F93001763BC /* Network */,
@@ -2110,11 +2124,13 @@
 				AD42D08524449FF000F0BAC1 /* LocalImageCollectionViewCell.swift in Sources */,
 				ADC8FAAA244C7307006BDA6A /* LocalImagesFooterReusableView.swift in Sources */,
 				ADE4C22625754B420060A203 /* Help03ViewController.swift in Sources */,
+				ADC339FA26A7EAA900173F8A /* Intents.intentdefinition in Sources */,
 				AD439E4425E14C3600333A91 /* PasteboardObject.swift in Sources */,
 				AD45D8AB2444D1CD00CBE206 /* LocalImagesHeaderReusableView.swift in Sources */,
 				ADC8167B244B5EDE00650223 /* LocalImagesViewController.swift in Sources */,
 				ADC74CB2259BDE7600581ADE /* NetworkObjcUtilities.swift in Sources */,
 				ADBC08CE244604EB00BF82E8 /* NberImagesFooterCollectionReusableView.swift in Sources */,
+				ADC339FD26A7ECF000173F8A /* AutoUploadIntenthandler.swift in Sources */,
 				AD4AAFB925A0A1E4007DCD54 /* PasteboardImageCollectionViewCell.swift in Sources */,
 				AD4AAFB825A0A1E4007DCD54 /* PasteboardImagesHeaderReusableView.swift in Sources */,
 				AD4AAFB625A0A1E4007DCD54 /* PasteboardImagesViewController.swift in Sources */,
