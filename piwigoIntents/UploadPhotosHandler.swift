@@ -110,7 +110,7 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
             }
             
             // Create the upload request
-            let categoryId = 399        // !!!!! "Shortcut tests" album
+            let categoryId = UploadVars.autoUploadCategoryId
             var uploadProperties = UploadProperties(localIdentifier: identifier, category: categoryId)
             uploadProperties.md5Sum = md5Sum
             uploadProperties.fileName = selectedFiles[idx].lastPathComponent
@@ -129,65 +129,63 @@ class UploadPhotosHandler: NSObject, UploadPhotosIntentHandling {
         }
 
         // Add selected images to upload queue
-        DispatchQueue.global(qos: .userInitiated).async {
-            self.uploadsProvider.importUploads(from: selectedImages) { error in
-                // Show an alert if there was an error.
-                guard let error = error else {
-                    // Create the operation queue
-                    let uploadQueue = OperationQueue()
-                    uploadQueue.maxConcurrentOperationCount = 1
-                    
-                    // Add operation setting flag and selecting upload requests
-                    let initOperation = BlockOperation {
-                        // Initialse variables and determine upload requests to prepare and transfer
-                        UploadManager.shared.initialiseBckgTask(triggeredByIntent: true)
-                    }
+        uploadsProvider.importUploads(from: selectedImages) { error in
+            // Show an alert if there was an error.
+            guard let error = error else {
+                // Create the operation queue
+                let uploadQueue = OperationQueue()
+                uploadQueue.maxConcurrentOperationCount = 1
+                
+                // Add operation setting flag and selecting upload requests
+                let initOperation = BlockOperation {
+                    // Initialse variables and determine upload requests to prepare and transfer
+                    UploadManager.shared.initialiseBckgTask(triggeredByExtension: true)
+                }
 
-                    // Initialise list of operations
-                    var uploadOperations = [BlockOperation]()
-                    uploadOperations.append(initOperation)
+                // Initialise list of operations
+                var uploadOperations = [BlockOperation]()
+                uploadOperations.append(initOperation)
 
-                    // Resume transfers
-                    let resumeOperation = BlockOperation {
+                // Resume transfers
+                let resumeOperation = BlockOperation {
+                    // Transfer image
+                    UploadManager.shared.resumeTransfers()
+                }
+                resumeOperation.addDependency(uploadOperations.last!)
+                uploadOperations.append(resumeOperation)
+
+                // Add image preparation which will be followed by transfer operations
+                for _ in 0..<UploadManager.shared.maxNberOfUploadsPerBckgTask {
+                    let uploadOperation = BlockOperation {
                         // Transfer image
-                        UploadManager.shared.resumeTransfers()
+                        UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
                     }
-                    resumeOperation.addDependency(uploadOperations.last!)
-                    uploadOperations.append(resumeOperation)
-
-                    // Add image preparation which will be followed by transfer operations
-                    for _ in 0..<UploadManager.shared.maxNberOfUploadsPerBckgTask {
-                        let uploadOperation = BlockOperation {
-                            // Transfer image
-                            UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
-                        }
-                        uploadOperation.addDependency(uploadOperations.last!)
-                        uploadOperations.append(uploadOperation)
-                    }
-                    
-                    // Inform the system that the background task is complete
-                    // when the operation completes
-                    let lastOperation = uploadOperations.last!
-                    lastOperation.completionBlock = {
-                        print("    > Task completed with success.")
-                        // Save cached data
-                        DataController.saveContext()
-                    }
-
-                    // Start the operations
-                    print("    > Start upload operations in background task...");
-                    uploadQueue.addOperations(uploadOperations, waitUntilFinished: true)
-
-                    // Inform user that the shortcut was excuted with success
-                    completion(UploadPhotosIntentResponse.success(nberPhotos: NSNumber(value: selectedImages.count)))
-                    return
+                    uploadOperation.addDependency(uploadOperations.last!)
+                    uploadOperations.append(uploadOperation)
                 }
                 
-                // Error encountered…
-                DispatchQueue.main.async {
-                    let errorMsg = String(format: "%@: %@", NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object."), error.localizedDescription)
-                    completion(UploadPhotosIntentResponse.failure(error: errorMsg))
+                // Inform the system that the background task is complete
+                // when the operation completes
+                let lastOperation = uploadOperations.last!
+                lastOperation.completionBlock = {
+                    print("    > Task completed with success.")
+                    // Save cached data
+                    DataController.saveContext()
                 }
+
+                // Start the operations
+                print("    > Start upload operations in background task...");
+                uploadQueue.addOperations(uploadOperations, waitUntilFinished: false)
+
+                // Inform user that the shortcut was excuted with success
+                completion(UploadPhotosIntentResponse.success(nberPhotos: NSNumber(value: selectedImages.count)))
+                return
+            }
+            
+            // Error encountered…
+            DispatchQueue.main.async {
+                let errorMsg = String(format: "%@: %@", NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object."), error.localizedDescription)
+                completion(UploadPhotosIntentResponse.failure(error: errorMsg))
             }
         }
     }

@@ -101,7 +101,6 @@
 		AD770FDD23B6A666007DAD50 /* EditImageDatePickerTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AD770FDC23B6A666007DAD50 /* EditImageDatePickerTableViewCell.m */; };
 		AD77109D22F49A6000E64797 /* TaggedImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD77109C22F49A6000E64797 /* TaggedImagesViewController.m */; };
 		AD778357267E34F800317F36 /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2913B32669440000403026 /* Intents.framework */; };
-		AD77835E267E34F800317F36 /* piwigoIntents.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = AD778356267E34F800317F36 /* piwigoIntents.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		AD7823072061BE7F00D5CA70 /* OpenSansRegular.TTF in Resources */ = {isa = PBXBuildFile; fileRef = AD7823062061BC0000D5CA70 /* OpenSansRegular.TTF */; };
 		AD7B4C1620E031B0003E403A /* AlbumTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D818EA011A74C7BA00733991 /* AlbumTableViewCell.m */; };
 		AD82C04C2433DB0E00F774BA /* SelectPrivacyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD82C04A2433D71C00F774BA /* SelectPrivacyViewController.swift */; };
@@ -156,10 +155,8 @@
 		ADC8167B244B5EDE00650223 /* LocalImagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC8167A244B5EDE00650223 /* LocalImagesViewController.swift */; };
 		ADC8167D244B5FA800650223 /* LocalImagesViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADC8167C244B5FA800650223 /* LocalImagesViewController.storyboard */; };
 		ADC8FAAA244C7307006BDA6A /* LocalImagesFooterReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC8FAA9244C7307006BDA6A /* LocalImagesFooterReusableView.swift */; };
-		ADCC950C26A1FE3100E139F1 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = AD7783B2267E4AB700317F36 /* Intents.intentdefinition */; };
 		ADD063B726A04BFE002558D2 /* UploadVideoSizeViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADD063B626A04BFE002558D2 /* UploadVideoSizeViewController.storyboard */; };
 		ADD063B926A04C12002558D2 /* UploadVideoSizeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD063B826A04C12002558D2 /* UploadVideoSizeViewController.swift */; };
-		ADD063BA26A088CA002558D2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD62CC7926824EEA00CA66C5 /* Localizable.strings */; };
 		ADD063BB26A0895E002558D2 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD778359267E34F800317F36 /* IntentHandler.swift */; };
 		ADD063BC26A08961002558D2 /* UploadPhotosHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD778368267E384500317F36 /* UploadPhotosHandler.swift */; };
 		ADD063BD26A08973002558D2 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = AD7783B2267E4AB700317F36 /* Intents.intentdefinition */; };
@@ -274,13 +271,6 @@
 			remoteGlobalIDString = D82B8CBA1A67820A000E47CA;
 			remoteInfo = piwigo;
 		};
-		AD77835C267E34F800317F36 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D82B8CB31A67820A000E47CA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = AD778355267E34F800317F36;
-			remoteInfo = piwigoIntents;
-		};
 		ADE1AB8C267E4D43001C1EEB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D82B8CB31A67820A000E47CA /* Project object */;
@@ -300,17 +290,6 @@
 				AD084E4E2659A27100159FE1 /* piwigoKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AD2913BC2669440000403026 /* Embed App Extensions */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 13;
-			files = (
-				AD77835E267E34F800317F36 /* piwigoIntents.appex in Embed App Extensions */,
-			);
-			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		ADE1AB8E267E4D43001C1EEB /* Embed Frameworks */ = {
@@ -460,7 +439,6 @@
 		AD5FCE2122EC629D00F37B1E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AD61D2F92571555A00B8DEA0 /* HelpViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = HelpViewController.storyboard; path = "../New Group/HelpViewController.storyboard"; sourceTree = "<group>"; };
 		AD61D3132571598000B8DEA0 /* HelpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpViewController.swift; sourceTree = "<group>"; };
-		AD62CC7926824EEA00CA66C5 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		AD6A128A24FAB56A00E3BBED /* pwg.images.uploadAsync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.images.uploadAsync.swift; sourceTree = "<group>"; };
 		AD6B2E791F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD6B2E7A1F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/About.strings; sourceTree = "<group>"; };
@@ -898,7 +876,6 @@
 			children = (
 				ADE1AB87267E4BB0001C1EEB /* Info.plist */,
 				AD7783B2267E4AB700317F36 /* Intents.intentdefinition */,
-				AD62CC7926824EEA00CA66C5 /* Localizable.strings */,
 				AD778363267E35D200317F36 /* piwigoIntentsDebug.entitlements */,
 				AD778364267E35D200317F36 /* piwigoIntentsRelease.entitlements */,
 			);
@@ -1693,13 +1670,11 @@
 				AD982C001EDD56FB0065BE3B /* Auto-increment build version of release */,
 				D82B8CB91A67820A000E47CA /* Resources */,
 				AD084E522659A27100159FE1 /* Embed Frameworks */,
-				AD2913BC2669440000403026 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				AD084E4C2659A27100159FE1 /* PBXTargetDependency */,
-				AD77835D267E34F800317F36 /* PBXTargetDependency */,
 			);
 			name = piwigo;
 			productName = piwigo;
@@ -1831,7 +1806,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ADD063BA26A088CA002558D2 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2190,7 +2164,6 @@
 				D86044111A99922F0067E5D1 /* ImageScrollView.m in Sources */,
 				D863EEBD1A6A440600C0A6E9 /* PiwigoButton.m in Sources */,
 				D89045BF1A950FF700A306FE /* EditImageTagsTableViewCell.m in Sources */,
-				ADCC950C26A1FE3100E139F1 /* Intents.intentdefinition in Sources */,
 				AD770FDA23B4CE79007DAD50 /* EditImageThumbCollectionViewCell.m in Sources */,
 				AD987634262606C600B964C5 /* UIViewController+AppTools.swift in Sources */,
 				ADD790E3265EDE5C00EA4DDB /* ImageVars.swift in Sources */,
@@ -2251,11 +2224,6 @@
 			platformFilter = ios;
 			target = D82B8CBA1A67820A000E47CA /* piwigo */;
 			targetProxy = AD30FD3921316DA8009AA30E /* PBXContainerItemProxy */;
-		};
-		AD77835D267E34F800317F36 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = AD778355267E34F800317F36 /* piwigoIntents */;
-			targetProxy = AD77835C267E34F800317F36 /* PBXContainerItemProxy */;
 		};
 		ADE1AB8D267E4D43001C1EEB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
