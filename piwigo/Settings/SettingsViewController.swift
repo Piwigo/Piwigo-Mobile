@@ -231,15 +231,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // NOP if the option is not available
         if !NetworkVars.usesUploadAsync { return }
         
-        // Position of the row that should be updated
-        let rowAtIndexPath = IndexPath(row: 7 + (NetworkVars.hasAdminRights ? 1 : 0)
-                                              + (UploadVars.resizeImageOnUpload ? 1 : 0)
-                                              + (UploadVars.compressImageOnUpload ? 1 : 0)
-                                              + (UploadVars.prefixFileNameBeforeUpload ? 1 : 0),
-                                       section: SettingsSection.imageUpload.rawValue)
-
-        // Change switch button state
-        settingsTableView?.reloadRows(at: [rowAtIndexPath], with: .automatic)
+        // Reload section instead of row because user's rights may have changed after logout/login
+        settingsTableView?.reloadSections(IndexSet(integer: SettingsSection.imageUpload.rawValue), with: .automatic)
         
         // Inform user if an error was reported
         if let title = notification.userInfo?["title"] as? String, !title.isEmpty,
