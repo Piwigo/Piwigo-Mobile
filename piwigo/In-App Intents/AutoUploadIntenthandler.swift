@@ -73,7 +73,7 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
                                                 .uploading, .uploadingError, .uploaded,
                                                 .finishing, .finishingError, .finished,
                                                 .moderated, .deleted]
-            let imageIDs = uploadsProvider.getRequests(inStates: states, markedForAutoUpload: true).0
+            let imageIDs = uploadsProvider.getRequests(inStates: states).0
 
             // Determine which local images are still not considered for upload
             fetchedImages.enumerateObjects { image, idx, stop in
