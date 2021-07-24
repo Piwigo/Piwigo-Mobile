@@ -84,6 +84,18 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
         // Set colors, fonts, etc.
         applyColorPalette()
+        
+        // Check whether we should display the max size options
+        if UploadVars.resizeImageOnUpload,
+           UploadVars.photoMaxSize == 0, UploadVars.videoMaxSize == 0 {
+            UploadVars.resizeImageOnUpload = false
+        }
+        
+        // Check whether we should show the prefix option
+        if UploadVars.prefixFileNameBeforeUpload,
+           UploadVars.defaultPrefix.isEmpty {
+            UploadVars.prefixFileNameBeforeUpload = false
+        }
     }
 
     @objc func applyColorPalette() {
