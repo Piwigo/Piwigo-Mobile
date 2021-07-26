@@ -223,18 +223,18 @@ extension Dictionary where Key == CFString, Value == Any {
         return properties
     }
     
-    // Fix image container properties from UIImage
-    func fixContents(from image:UIImage) -> [CFString : Any] {
+    // Fix image properties from resized/converted image
+    mutating func fixContents(from image:CGImage) {
         var metadata = self
 
-        // Extract image data from UIImage object
-        guard let imageData = image.jpegData(compressionQuality: 1.0) else {
-            return self
+        // Extract image data from UIImage object (orientation managed)
+        guard let imageData = UIImage(cgImage: image).jpegData(compressionQuality: 1.0) else {
+            return
         }
-        
+
         // Create image source from image data
         guard let source = CGImageSourceCreateWithData(imageData as CFData, nil) else {
-            return self
+            return
         }
 
         // Extract image source container properties
@@ -274,7 +274,7 @@ extension Dictionary where Key == CFString, Value == Any {
             }
 
             // Update/add orientation from image properties
-            if let orientation = imageMetadata[kCGImagePropertyOrientation] {
+            if let orientation = CGImagePropertyOrientation(rawValue: imageMetadata[kCGImagePropertyOrientation] as! UInt32) {
                 metadata[kCGImagePropertyOrientation] = orientation
             }
 
@@ -302,12 +302,9 @@ extension Dictionary where Key == CFString, Value == Any {
             if let iccProfile = imageMetadata[kCGImagePropertyProfileName] {
                 metadata[kCGImagePropertyProfileName] = iccProfile
             }
-            
-            // Compression quality (1.0 for lossless)
-//            metadata[kCGImageDestinationLossyCompressionQuality] = 0.99
         }
         
-        return metadata
+        self = metadata
     }
 
     // Fix image properties from (resized) image metadata

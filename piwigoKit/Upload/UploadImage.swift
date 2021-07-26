@@ -207,6 +207,9 @@ extension UploadManager {
                     options = containerProperties
                 }
                 
+                // Fix properties
+                options.fixProperties(from: containerProperties)
+                
                 // Copy metadata w/o private infos
                 CGImageDestinationSetProperties(destinationRef, options as CFDictionary)
             }
@@ -254,6 +257,9 @@ extension UploadManager {
                         // Copy metadata attributed to this image
                         imageOptions = imageProperties
                     }
+                    
+                    // Fix metadata for resized image
+                    imageOptions.fixContents(from: image)
                 }
                 
                 // Should we compress the image?
@@ -366,6 +372,9 @@ extension UploadManager {
                     options = containerProperties
                 }
                 
+                // Fix properties
+                options.fixProperties(from: containerProperties)
+                
                 // Copy metadata w/o private infos
                 CGImageDestinationSetProperties(destinationRef, options as CFDictionary)
             }
@@ -383,6 +392,9 @@ extension UploadManager {
                     // Copy metadata attributed to this image
                     imageOptions = imageProperties
                 }
+                
+                // Fix metadata for converted/resized image
+                imageOptions.fixContents(from: image)
             }
             
             // Should we compress the image?
@@ -391,7 +403,7 @@ extension UploadManager {
                 imageOptions.updateValue(quality as CFNumber, forKey: kCGImageDestinationLossyCompressionQuality)
             }
                     
-            // Add image to destination w/ appropriate metadatab
+            // Add image to destination w/ appropriate metadata
             CGImageDestinationAddImage(destinationRef, image, imageOptions as CFDictionary)
 
             // Save image file
