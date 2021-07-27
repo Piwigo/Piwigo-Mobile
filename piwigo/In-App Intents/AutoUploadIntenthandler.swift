@@ -76,7 +76,6 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
             let imageIDs = uploadsProvider.getRequests(inStates: states).0
 
             // Determine which local images are still not considered for upload
-            debugPrint("Total: ", fetchedImages.count)
             fetchedImages.enumerateObjects { image, _, stop in
                 // Keep images which had never been considered for upload
                 if !imageIDs.contains(image.localIdentifier) {
@@ -89,7 +88,6 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
                     uploadRequestsToAppend.append(uploadRequest)
 
                     // Check if we have reached the max number of requests to append
-                    debugPrint("Requests: ", uploadRequestsToAppend.count)
                     if uploadRequestsToAppend.count >= UploadManager.shared.maxNberAutoUploadPerCheck {
                         stop.pointee = true
                     }
