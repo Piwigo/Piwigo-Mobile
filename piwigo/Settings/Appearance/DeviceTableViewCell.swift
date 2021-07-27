@@ -21,14 +21,45 @@ class DeviceTableViewCell: UITableViewCell {
     func configure() {
         // Images
         if UIDevice.current.userInterfaceIdiom == .phone {
-            lightImage.setImage(UIImage(named: "lightPhone"), for: .normal)
+            // iPhone — light mode
+            guard let lightUrl = Bundle.main.url(forResource: "lightPhone", withExtension: "png") else {
+                fatalError("!!! Could not find lightPhone image !!!")
+            }
+            lightImage.layoutIfNeeded() // Ensure buttonView is in its final size.
+            var size = lightImage.bounds.size
+            var scale = lightImage.traitCollection.displayScale
+            lightImage.setImage(ImageUtilities.downsample(imageAt: lightUrl, to: size, scale: scale), for: .normal)
             lightImage.layer.cornerRadius = 8
-            darkImage.setImage(UIImage(named: "darkPhone"), for: .normal)
+            
+            // iPhone - dark mode
+            guard let darkUrl = Bundle.main.url(forResource: "darkPhone", withExtension: "png") else {
+                fatalError("!!! Could not find darkPhone image !!!")
+            }
+            darkImage.layoutIfNeeded() // Ensure buttonView is in its final size.
+            size = darkImage.bounds.size
+            scale = darkImage.traitCollection.displayScale
+            darkImage.setImage(ImageUtilities.downsample(imageAt: darkUrl, to: size, scale: scale), for: .normal)
             darkImage.layer.cornerRadius = 8
-        } else {
-            lightImage.setImage(UIImage(named: "lightPad"), for: .normal)
+        }
+        else {
+            // iPad — light mode
+            guard let lightUrl = Bundle.main.url(forResource: "lightPad", withExtension: "png") else {
+                fatalError("!!! Could not find lightPad image !!!")
+            }
+            lightImage.layoutIfNeeded() // Ensure buttonView is in its final size.
+            var size = lightImage.bounds.size
+            var scale = lightImage.traitCollection.displayScale
+            lightImage.setImage(ImageUtilities.downsample(imageAt: lightUrl, to: size, scale: scale), for: .normal)
             lightImage.layer.cornerRadius = 5
-            darkImage.setImage(UIImage(named: "darkPad"), for: .normal)
+            
+            // iPad - dark mode
+            guard let darkUrl = Bundle.main.url(forResource: "darkPad", withExtension: "png") else {
+                fatalError("!!! Could not find darkPad image !!!")
+            }
+            darkImage.layoutIfNeeded() // Ensure buttonView is in its final size.
+            size = darkImage.bounds.size
+            scale = darkImage.traitCollection.displayScale
+            darkImage.setImage(ImageUtilities.downsample(imageAt: darkUrl, to: size, scale: scale), for: .normal)
             darkImage.layer.cornerRadius = 5
         }
 
