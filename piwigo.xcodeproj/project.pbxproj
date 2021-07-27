@@ -108,6 +108,21 @@
 		AD8709AB259A8E66008C4E4C /* Help04ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8709AA259A8E66008C4E4C /* Help04ViewController.swift */; };
 		AD870CD71F54AE110015BFA1 /* ImagesCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = AD870CD61F54AE110015BFA1 /* ImagesCollection.m */; };
 		AD8D212626ACC15F0008E907 /* InAppIntents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = AD8D212826ACC15F0008E907 /* InAppIntents.intentdefinition */; };
+		AD8D214A26B094DC0008E907 /* Help07ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8D214926B094DC0008E907 /* Help07ViewController.swift */; };
+		AD8D214C26B0A4450008E907 /* ImageUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8D214B26B0A4450008E907 /* ImageUtilities.swift */; };
+		AD8D217926B0B16A0008E907 /* help03.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D217026B0B1690008E907 /* help03.png */; };
+		AD8D217A26B0B16A0008E907 /* help02-bot.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D217126B0B1690008E907 /* help02-bot.png */; };
+		AD8D217B26B0B16A0008E907 /* help04.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D217226B0B1690008E907 /* help04.png */; };
+		AD8D217C26B0B16A0008E907 /* help02-top.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D217326B0B1690008E907 /* help02-top.png */; };
+		AD8D217D26B0B16A0008E907 /* help01.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D217426B0B1690008E907 /* help01.png */; };
+		AD8D217E26B0B16A0008E907 /* help06.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D217526B0B1690008E907 /* help06.png */; };
+		AD8D217F26B0B16A0008E907 /* help05-bot.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D217626B0B16A0008E907 /* help05-bot.png */; };
+		AD8D218026B0B16A0008E907 /* help07-top.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D217726B0B16A0008E907 /* help07-top.png */; };
+		AD8D218126B0B16A0008E907 /* help05-top.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D217826B0B16A0008E907 /* help05-top.png */; };
+		AD8D218626B0B46A0008E907 /* darkPhone.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D218226B0B46A0008E907 /* darkPhone.png */; };
+		AD8D218726B0B46A0008E907 /* lightPad.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D218326B0B46A0008E907 /* lightPad.png */; };
+		AD8D218826B0B46A0008E907 /* darkPad.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D218426B0B46A0008E907 /* darkPad.png */; };
+		AD8D218926B0B46A0008E907 /* lightPhone.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D218526B0B46A0008E907 /* lightPhone.png */; };
 		AD8F4B8B23F04B8C009483B6 /* TagSelectorViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD3369BE23F035F700F3FA80 /* TagSelectorViewController.storyboard */; };
 		AD92B8FE1F200083006E5B63 /* ReleaseNotes.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD92B9001F200083006E5B63 /* ReleaseNotes.strings */; };
 		AD94F63B266D61AB00EFC6A9 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB433F523FB3CCB00A873A9 /* DataController.swift */; };
@@ -498,6 +513,21 @@
 		AD8D214226ACC1760008E907 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InAppIntents.strings; sourceTree = "<group>"; };
 		AD8D214426ACC1770008E907 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InAppIntents.strings; sourceTree = "<group>"; };
 		AD8D214626ACC1790008E907 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/InAppIntents.strings; sourceTree = "<group>"; };
+		AD8D214926B094DC0008E907 /* Help07ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Help07ViewController.swift; sourceTree = "<group>"; };
+		AD8D214B26B0A4450008E907 /* ImageUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUtilities.swift; sourceTree = "<group>"; };
+		AD8D217026B0B1690008E907 /* help03.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = help03.png; sourceTree = "<group>"; };
+		AD8D217126B0B1690008E907 /* help02-bot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help02-bot.png"; sourceTree = "<group>"; };
+		AD8D217226B0B1690008E907 /* help04.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = help04.png; sourceTree = "<group>"; };
+		AD8D217326B0B1690008E907 /* help02-top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help02-top.png"; sourceTree = "<group>"; };
+		AD8D217426B0B1690008E907 /* help01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = help01.png; sourceTree = "<group>"; };
+		AD8D217526B0B1690008E907 /* help06.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = help06.png; sourceTree = "<group>"; };
+		AD8D217626B0B16A0008E907 /* help05-bot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help05-bot.png"; sourceTree = "<group>"; };
+		AD8D217726B0B16A0008E907 /* help07-top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help07-top.png"; sourceTree = "<group>"; };
+		AD8D217826B0B16A0008E907 /* help05-top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help05-top.png"; sourceTree = "<group>"; };
+		AD8D218226B0B46A0008E907 /* darkPhone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = darkPhone.png; sourceTree = "<group>"; };
+		AD8D218326B0B46A0008E907 /* lightPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lightPad.png; sourceTree = "<group>"; };
+		AD8D218426B0B46A0008E907 /* darkPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = darkPad.png; sourceTree = "<group>"; };
+		AD8D218526B0B46A0008E907 /* lightPhone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lightPhone.png; sourceTree = "<group>"; };
 		AD92B9011F200092006E5B63 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
 		AD94F63D266D637D00EFC6A9 /* CacheVarsObjc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheVarsObjc.swift; sourceTree = "<group>"; };
 		AD94F63F266D63AD00EFC6A9 /* CacheVars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheVars.swift; sourceTree = "<group>"; };
@@ -1101,9 +1131,30 @@
 				AD8709AA259A8E66008C4E4C /* Help04ViewController.swift */,
 				ADC74CCD259C9E9C00581ADE /* Help05ViewController.swift */,
 				AD3CD639259DE34C000C26ED /* Help06ViewController.swift */,
+				AD8D214926B094DC0008E907 /* Help07ViewController.swift */,
 				AD61D2F92571555A00B8DEA0 /* HelpViewController.storyboard */,
 			);
 			path = Help;
+			sourceTree = "<group>";
+		};
+		AD8D214D26B0A53C0008E907 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				AD8D218426B0B46A0008E907 /* darkPad.png */,
+				AD8D218226B0B46A0008E907 /* darkPhone.png */,
+				AD8D218326B0B46A0008E907 /* lightPad.png */,
+				AD8D218526B0B46A0008E907 /* lightPhone.png */,
+				AD8D217426B0B1690008E907 /* help01.png */,
+				AD8D217126B0B1690008E907 /* help02-bot.png */,
+				AD8D217326B0B1690008E907 /* help02-top.png */,
+				AD8D217026B0B1690008E907 /* help03.png */,
+				AD8D217226B0B1690008E907 /* help04.png */,
+				AD8D217626B0B16A0008E907 /* help05-bot.png */,
+				AD8D217826B0B16A0008E907 /* help05-top.png */,
+				AD8D217526B0B1690008E907 /* help06.png */,
+				AD8D217726B0B16A0008E907 /* help07-top.png */,
+			);
+			path = Images;
 			sourceTree = "<group>";
 		};
 		AD94F63A266D615000EFC6A9 /* Data Cache */ = {
@@ -1261,6 +1312,7 @@
 				D8083A531A7D66CD00A95605 /* ImageService.h */,
 				D8083A541A7D66CD00A95605 /* ImageService.m */,
 				ADD790E2265EDE5C00EA4DDB /* ImageVars.swift */,
+				AD8D214B26B0A4450008E907 /* ImageUtilities.swift */,
 				D818EA031A74D32100733991 /* Details */,
 				AD0CC81121EA8A050009FFF6 /* Share */,
 				AD770FD123B4BD3B007DAD50 /* Parameters */,
@@ -1483,6 +1535,7 @@
 				AD56B7BB266905ED001D4E21 /* release.entitlements */,
 				ADAEED8622E2665000CB1B12 /* LaunchScreen.storyboard */,
 				AD35CA391E9C1EBC00E3B897 /* Images.xcassets */,
+				AD8D214D26B0A53C0008E907 /* Images */,
 				AD5C14B7266C2E3E007E8C99 /* Fonts */,
 				AD224022267B7D8800269B84 /* Strings */,
 			);
@@ -1841,16 +1894,20 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AD8D217C26B0B16A0008E907 /* help02-top.png in Resources */,
 				ADA6DA4721B2AD9900F941F1 /* Settings.bundle in Resources */,
 				AD563B44260945DC00B6EF93 /* LocalAlbumsViewControllerGrouped.storyboard in Resources */,
 				AD21145A2122D3E4004FFC8C /* AlbumTableViewCell.xib in Resources */,
 				ADE46684242F978F002FEDE5 /* AboutViewController.storyboard in Resources */,
 				AD2B0A1B243D086000AF1FEE /* CategorySortViewController.storyboard in Resources */,
+				AD8D218626B0B46A0008E907 /* darkPhone.png in Resources */,
 				AD61D2FA2571555A00B8DEA0 /* HelpViewController.storyboard in Resources */,
 				ADEFBD632074E19000DFAD26 /* CategoryTableViewCell.xib in Resources */,
 				AD2B0A15243D001A00AF1FEE /* DefaultAlbumThumbnailSizeViewController.storyboard in Resources */,
 				ADF1CC77243D132100D75319 /* SelectCategoryViewController.storyboard in Resources */,
+				AD8D217926B0B16A0008E907 /* help03.png in Resources */,
 				ADA24DB6243A74C200864D1F /* DefaultImageSizeViewController.storyboard in Resources */,
+				AD8D218826B0B46A0008E907 /* darkPad.png in Resources */,
 				ADA24DAF243A68FA00864D1F /* DefaultImageThumbnailSizeViewController.storyboard in Resources */,
 				AD84E60523BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib in Resources */,
 				AD770FD623B4BDB5007DAD50 /* EditImageParams.storyboard in Resources */,
@@ -1860,6 +1917,7 @@
 				ADE03D3025FCC1B7002F5C7B /* ColorPaletteViewControllerOld.storyboard in Resources */,
 				ADC8167D244B5FA800650223 /* LocalImagesViewController.storyboard in Resources */,
 				ADAC548E26178BF500301C1C /* SelectCategoryViewControllerGrouped.storyboard in Resources */,
+				AD8D218026B0B16A0008E907 /* help07-top.png in Resources */,
 				AD3207E9240AD93900F00FEB /* PrivacyPolicyViewController.storyboard in Resources */,
 				AD5B498724E6FCF000BDF5B4 /* UploadQueueViewControllerOld.storyboard in Resources */,
 				ADD063B726A04BFE002558D2 /* UploadVideoSizeViewController.storyboard in Resources */,
@@ -1867,12 +1925,17 @@
 				AD2A21FE24310E65006B1A8A /* SelectPrivacyViewController.storyboard in Resources */,
 				AD27A16F24C44EEC000AD203 /* EditImageThumbTableViewCell.xib in Resources */,
 				ADD210412440CC7600DD79A6 /* SettingsViewController.storyboard in Resources */,
+				AD8D218926B0B46A0008E907 /* lightPhone.png in Resources */,
+				AD8D217A26B0B16A0008E907 /* help02-bot.png in Resources */,
 				AD563B422603FCE800B6EF93 /* AutoUploadViewController.storyboard in Resources */,
+				AD8D218126B0B16A0008E907 /* help05-top.png in Resources */,
 				ADEAFB8F25F8198800EEDB1D /* ColorPaletteViewController.storyboard in Resources */,
+				AD8D218726B0B46A0008E907 /* lightPad.png in Resources */,
 				ADFA89042438CF4500F73F0F /* ShareMetadataViewController.storyboard in Resources */,
 				ADD741F82699976100B47056 /* UploadPhotoSizeViewController.storyboard in Resources */,
 				AD6FD1FA24BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard in Resources */,
 				ADC019742471A70F00532A81 /* UploadQueueViewController.storyboard in Resources */,
+				AD8D217D26B0B16A0008E907 /* help01.png in Resources */,
 				AD8F4B8B23F04B8C009483B6 /* TagSelectorViewController.storyboard in Resources */,
 				AD4902E324C2142800A96066 /* TagsViewController.storyboard in Resources */,
 				ADAEED8822E2665000CB1B12 /* LaunchScreen.storyboard in Resources */,
@@ -1880,7 +1943,10 @@
 				AD4AAFB725A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard in Resources */,
 				ADF88E7B2066DAE700D1CE26 /* OpenSansLight.TTF in Resources */,
 				AD7823072061BE7F00D5CA70 /* OpenSansRegular.TTF in Resources */,
+				AD8D217E26B0B16A0008E907 /* help06.png in Resources */,
 				ADA36E0F21D777DA00133708 /* OpenSansSemiBold.TTF in Resources */,
+				AD8D217F26B0B16A0008E907 /* help05-bot.png in Resources */,
+				AD8D217B26B0B16A0008E907 /* help04.png in Resources */,
 				ADF88E772066D04600D1CE26 /* OpenSansBold.TTF in Resources */,
 				ADF88E792066DA9600D1CE26 /* OpenSansExtraBold.TTF in Resources */,
 				AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */,
@@ -2148,6 +2214,7 @@
 				AD4AAFB925A0A1E4007DCD54 /* PasteboardImageCollectionViewCell.swift in Sources */,
 				AD4AAFB825A0A1E4007DCD54 /* PasteboardImagesHeaderReusableView.swift in Sources */,
 				AD4AAFB625A0A1E4007DCD54 /* PasteboardImagesViewController.swift in Sources */,
+				AD8D214C26B0A4450008E907 /* ImageUtilities.swift in Sources */,
 				ADBE45272449969C00AE0001 /* PhotosFetch.swift in Sources */,
 				ADFC3A4C2401D704004CD337 /* PrivacyPolicyViewController.swift in Sources */,
 				AD31F5F9242FB76900BD65FC /* ReleaseNotesViewController.swift in Sources */,
@@ -2171,6 +2238,7 @@
 				AD3335432666B6D4000A1487 /* AppVars.swift in Sources */,
 				ADC019762471AA5200532A81 /* UploadImageTableViewCell.swift in Sources */,
 				AD9A1BE824E04F0000D22C86 /* UploadQueueHeaderView.swift in Sources */,
+				AD8D214A26B094DC0008E907 /* Help07ViewController.swift in Sources */,
 				AD5B498124E5C02300BDF5B4 /* UploadQueueViewController.swift in Sources */,
 				AD97CFBD265D1AF800719ED5 /* AlbumVars.swift in Sources */,
 				ADC019782471ABA000532A81 /* UploadQueueViewControllerOld.swift in Sources */,

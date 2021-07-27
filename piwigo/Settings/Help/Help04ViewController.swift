@@ -12,6 +12,7 @@ import piwigoKit
 class Help04ViewController: UIViewController {
     
     @IBOutlet weak var legend: UILabel!
+    @IBOutlet weak var imageView: UIImageView!
     private let helpID: UInt16 = 0b00000000_00001000
 
     // MARK: - View Lifecycle
@@ -35,6 +36,15 @@ class Help04ViewController: UIViewController {
 
         // Set legend
         legend.attributedText = legendAttributedString
+        
+        // Set image view
+        guard let imageUrl = Bundle.main.url(forResource: "help04", withExtension: "png") else {
+            fatalError("!!! Could not find help04 image !!!")
+        }
+        imageView.layoutIfNeeded() // Ensure imageView is in its final size.
+        let size = imageView.bounds.size
+        let scale = imageView.traitCollection.displayScale
+        imageView.image = ImageUtilities.downsample(imageAt: imageUrl, to: size, scale: scale)
         
         // Remember that this view was watched
         AppVars.didWatchHelpViews = AppVars.didWatchHelpViews | helpID

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -23,7 +23,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="v2A-0U-1lw">
-                                <rect key="frame" x="153.33333333333334" y="864" width="121.33333333333334" height="28"/>
+                                <rect key="frame" x="154" y="865.66666666666663" width="120.33333333333331" height="26.333333333333371"/>
                                 <color key="tintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="pageIndicatorTintColor" systemColor="systemGray5Color"/>
                                 <color key="currentPageIndicatorTintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -42,7 +42,7 @@
                                 </connections>
                             </button>
                             <containerView opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wzx-O6-YNR">
-                                <rect key="frame" x="20" y="88" width="388" height="776"/>
+                                <rect key="frame" x="20" y="88" width="388" height="777.66666666666663"/>
                                 <connections>
                                     <segue destination="hMF-co-LFw" kind="embed" id="eI5-1L-cR8"/>
                                 </connections>
@@ -99,7 +99,7 @@
                                 </attributedString>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" image="help03" translatesAutoresizingMaskIntoConstraints="NO" id="G33-FO-oKS">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="G33-FO-oKS">
                                 <rect key="frame" x="0.0" y="39.333333333333314" width="428" height="832.66666666666674"/>
                             </imageView>
                         </subviews>
@@ -117,6 +117,7 @@
                     </view>
                     <modalPageSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <connections>
+                        <outlet property="imageView" destination="G33-FO-oKS" id="Dh8-IX-eTP"/>
                         <outlet property="legend" destination="ge9-Dp-NFm" id="fjH-Me-4gf"/>
                     </connections>
                 </viewController>
@@ -145,7 +146,7 @@
                                 </attributedString>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="250" image="help01" translatesAutoresizingMaskIntoConstraints="NO" id="gTP-ir-xHk">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="gTP-ir-xHk">
                                 <rect key="frame" x="0.0" y="39.333333333333314" width="428" height="832.66666666666674"/>
                             </imageView>
                         </subviews>
@@ -163,6 +164,7 @@
                     </view>
                     <modalPageSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <connections>
+                        <outlet property="imageView" destination="gTP-ir-xHk" id="bZj-hM-LXT"/>
                         <outlet property="legend" destination="bzQ-eN-DYj" id="oBU-rp-tZ1"/>
                     </connections>
                 </viewController>
@@ -190,20 +192,20 @@
                                 </attributedString>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" image="help02-top" translatesAutoresizingMaskIntoConstraints="NO" id="td4-F8-5Eo">
-                                <rect key="frame" x="44" y="39.333333333333343" width="340" height="360"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="td4-F8-5Eo">
+                                <rect key="frame" x="0.0" y="39.333333333333343" width="428" height="453.33333333333326"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="td4-F8-5Eo" secondAttribute="height" multiplier="13700:14506" id="kAr-A0-aPV"/>
                                 </constraints>
                             </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" image="help02-bot" translatesAutoresizingMaskIntoConstraints="NO" id="ohK-97-rdx">
-                                <rect key="frame" x="44" y="752" width="340" height="120"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="ohK-97-rdx">
+                                <rect key="frame" x="0.0" y="721" width="428" height="151"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="ohK-97-rdx" secondAttribute="height" multiplier="13700:4835" id="FGp-Mb-oV0"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="legendBot" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2RD-k5-pvP">
-                                <rect key="frame" x="20" y="407.33333333333326" width="388" height="336.66666666666674"/>
+                                <rect key="frame" x="20" y="500.66666666666669" width="388" height="212.33333333333331"/>
                                 <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -229,6 +231,8 @@
                     </view>
                     <modalPageSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <connections>
+                        <outlet property="imageViewBot" destination="ohK-97-rdx" id="FZk-RW-cnf"/>
+                        <outlet property="imageViewTop" destination="td4-F8-5Eo" id="eAg-aI-KD4"/>
                         <outlet property="legendBot" destination="2RD-k5-pvP" id="WbR-em-TOS"/>
                         <outlet property="legendTop" destination="UKU-ae-d6K" id="xIu-KC-Io4"/>
                     </connections>
@@ -257,7 +261,7 @@
                                 </attributedString>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" image="help04" translatesAutoresizingMaskIntoConstraints="NO" id="cz8-At-lX0">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="cz8-At-lX0">
                                 <rect key="frame" x="0.0" y="39.333333333333314" width="428" height="832.66666666666674"/>
                             </imageView>
                         </subviews>
@@ -275,6 +279,7 @@
                     </view>
                     <modalPageSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <connections>
+                        <outlet property="imageView" destination="cz8-At-lX0" id="jj9-M6-amA"/>
                         <outlet property="legend" destination="Zhb-FF-P3o" id="06Z-5y-pA9"/>
                     </connections>
                 </viewController>
@@ -302,20 +307,20 @@
                                 </attributedString>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" image="help05-top" translatesAutoresizingMaskIntoConstraints="NO" id="Qc7-uf-mw7">
-                                <rect key="frame" x="44" y="39.333333333333343" width="340" height="360"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="Qc7-uf-mw7">
+                                <rect key="frame" x="0.0" y="39.333333333333343" width="428" height="453.33333333333326"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="Qc7-uf-mw7" secondAttribute="height" multiplier="13700:14506" id="zPg-KV-Sqa"/>
                                 </constraints>
                             </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" image="help05-bot" translatesAutoresizingMaskIntoConstraints="NO" id="l3h-Mi-qdc">
-                                <rect key="frame" x="44" y="752" width="340" height="120"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="l3h-Mi-qdc">
+                                <rect key="frame" x="0.0" y="721" width="428" height="151"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="l3h-Mi-qdc" secondAttribute="height" multiplier="13700:4835" id="dPo-ba-w5M"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="legendBot" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MCO-fs-FAJ">
-                                <rect key="frame" x="20" y="407.33333333333326" width="388" height="336.66666666666674"/>
+                                <rect key="frame" x="20" y="500.66666666666669" width="388" height="212.33333333333331"/>
                                 <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -341,6 +346,8 @@
                     </view>
                     <modalPageSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <connections>
+                        <outlet property="imageViewBot" destination="l3h-Mi-qdc" id="nrC-4U-kNO"/>
+                        <outlet property="imageViewTop" destination="Qc7-uf-mw7" id="FwT-0f-iyJ"/>
                         <outlet property="legendBot" destination="MCO-fs-FAJ" id="iX9-0Y-2dz"/>
                         <outlet property="legendTop" destination="ubK-e5-1Rt" id="vC5-wP-yVu"/>
                     </connections>
@@ -369,7 +376,7 @@
                                 </attributedString>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" image="help06" translatesAutoresizingMaskIntoConstraints="NO" id="Dm6-5K-Ngx">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="Dm6-5K-Ngx">
                                 <rect key="frame" x="0.0" y="39.333333333333314" width="428" height="832.66666666666674"/>
                             </imageView>
                         </subviews>
@@ -387,6 +394,7 @@
                     </view>
                     <modalPageSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <connections>
+                        <outlet property="imageView" destination="Dm6-5K-Ngx" id="Bju-w4-DpW"/>
                         <outlet property="legend" destination="Xqr-EG-5O7" id="M2g-SS-v5R"/>
                     </connections>
                 </viewController>
@@ -394,16 +402,77 @@
             </objects>
             <point key="canvasLocation" x="3817" y="-612"/>
         </scene>
+        <!--Help07 View Controller-->
+        <scene sceneID="Qxy-K5-K3X">
+            <objects>
+                <viewController storyboardIdentifier="help07" useStoryboardIdentifierAsRestorationIdentifier="YES" id="6MD-My-xuu" customClass="Help07ViewController" customModule="piwigo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" id="wJC-et-fbk">
+                        <rect key="frame" x="0.0" y="0.0" width="428" height="872"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" preservesSuperviewLayoutMargins="YES" usesAttributedText="YES" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vFC-Z8-0aM">
+                                <rect key="frame" x="20" y="0.0" width="388" height="23.333333333333332"/>
+                                <attributedString key="attributedText">
+                                    <fragment content="legend top">
+                                        <attributes>
+                                            <font key="NSFont" size="17" name="OpenSans"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="N2H-8c-Oxe" userLabel="help07-top">
+                                <rect key="frame" x="0.0" y="39.333333333333343" width="428" height="453.33333333333326"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="N2H-8c-Oxe" secondAttribute="height" multiplier="13700:14506" id="f9x-Po-387"/>
+                                </constraints>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="6DD-ef-j2B">
+                                <rect key="frame" x="0.0" y="721" width="428" height="151"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="6DD-ef-j2B" secondAttribute="height" multiplier="13700:4835" id="yQi-at-VQe"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="legendBot" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ruf-jb-KlD">
+                                <rect key="frame" x="20" y="500.66666666666669" width="388" height="212.33333333333331"/>
+                                <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="H9U-Tv-mXo"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="6DD-ef-j2B" secondAttribute="bottom" id="2qh-Yd-mZY"/>
+                            <constraint firstItem="ruf-jb-KlD" firstAttribute="leading" secondItem="vFC-Z8-0aM" secondAttribute="leading" id="428-1w-Kwy"/>
+                            <constraint firstItem="ruf-jb-KlD" firstAttribute="top" secondItem="N2H-8c-Oxe" secondAttribute="bottom" constant="8" symbolic="YES" id="45Z-Lg-tVd"/>
+                            <constraint firstItem="N2H-8c-Oxe" firstAttribute="centerX" secondItem="wJC-et-fbk" secondAttribute="centerX" id="5WC-tt-T8L"/>
+                            <constraint firstItem="6DD-ef-j2B" firstAttribute="leading" secondItem="N2H-8c-Oxe" secondAttribute="leading" id="DO8-3R-uLK"/>
+                            <constraint firstAttribute="trailing" secondItem="vFC-Z8-0aM" secondAttribute="trailing" constant="20" id="Fa8-Nb-gDc"/>
+                            <constraint firstItem="6DD-ef-j2B" firstAttribute="trailing" secondItem="N2H-8c-Oxe" secondAttribute="trailing" id="Hb5-HR-Jrt"/>
+                            <constraint firstItem="6DD-ef-j2B" firstAttribute="top" secondItem="ruf-jb-KlD" secondAttribute="bottom" constant="8" symbolic="YES" id="Jix-nH-exa"/>
+                            <constraint firstItem="vFC-Z8-0aM" firstAttribute="top" secondItem="wJC-et-fbk" secondAttribute="top" id="e2M-dH-8Bw"/>
+                            <constraint firstItem="N2H-8c-Oxe" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="wJC-et-fbk" secondAttribute="leading" id="hVF-Gf-DRg"/>
+                            <constraint firstItem="N2H-8c-Oxe" firstAttribute="top" secondItem="vFC-Z8-0aM" secondAttribute="bottom" constant="16" id="qFT-18-DUm"/>
+                            <constraint firstItem="ruf-jb-KlD" firstAttribute="trailing" secondItem="vFC-Z8-0aM" secondAttribute="trailing" id="uGM-Oe-N2U"/>
+                            <constraint firstItem="vFC-Z8-0aM" firstAttribute="leading" secondItem="wJC-et-fbk" secondAttribute="leading" constant="20" id="xb4-uB-sTy"/>
+                        </constraints>
+                    </view>
+                    <modalPageSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <connections>
+                        <outlet property="imageViewBot" destination="6DD-ef-j2B" id="tQJ-UY-0ZG"/>
+                        <outlet property="imageViewTop" destination="N2H-8c-Oxe" id="X6U-Uz-5AR"/>
+                        <outlet property="legendBot" destination="ruf-jb-KlD" id="pno-rU-mmq"/>
+                        <outlet property="legendTop" destination="vFC-Z8-0aM" id="ZXU-BL-4w4"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="T60-Xe-VOB" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4451" y="-612"/>
+        </scene>
     </scenes>
     <resources>
-        <image name="help01" width="229.66667175292969" height="455"/>
-        <image name="help02-bot" width="340" height="120"/>
-        <image name="help02-top" width="340" height="360"/>
-        <image name="help03" width="229.66667175292969" height="455"/>
-        <image name="help04" width="229.66667175292969" height="455"/>
-        <image name="help05-bot" width="340" height="119.66666412353516"/>
-        <image name="help05-top" width="340" height="360"/>
-        <image name="help06" width="229.66667175292969" height="455"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
