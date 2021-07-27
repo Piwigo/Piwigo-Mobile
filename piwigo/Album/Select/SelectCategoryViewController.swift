@@ -603,8 +603,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         let allCategories: [PiwigoAlbumData] = CategoriesData.sharedInstance().allCategories
         let filteredCat = allCategories.filter({ NetworkVars.hasAdminRights ||
                                                 (NetworkVars.hasNormalRights && $0.hasUploadRights) })
-            .filter({ $0.nearestUpperCategory == categoryData.albumId })
-            .filter({ $0.albumId != categoryData.albumId })
+//            .filter({ $0.nearestUpperCategory == categoryData.albumId })
+//            .filter({ $0.albumId != categoryData.albumId })
         if filteredCat.count > 0 {
             buttonState = categoriesThatShowSubCategories.contains(categoryData.albumId) ? kPiwigoCategoryTableCellButtonStateHideSubAlbum : kPiwigoCategoryTableCellButtonStateShowSubAlbum
         }
@@ -627,22 +627,31 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             }
         case kPiwigoCategorySelectActionMoveAlbum:
             // User cannot move album to current parent album or in itself
-            if categoryData.albumId == 0 {  // upperCategories is nil for root
+            if categoryData.albumId == 0 {  // Special case: upperCategories is nil for root
+                // Root album => No button
                 cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
+                // Is the root album parent of the input album?
                 if inputCategoryData.parentAlbumId == 0 {
+                    // Yes => Change text colour
                     cell.categoryLabel.textColor = UIColor.piwigoColorRightLabel()
                 }
-            } else if categoryData.albumId == inputCategoryData.parentAlbumId ||
-                categoryData.upperCategories.contains(String(inputCategoryId)) {
+            }
+            else if (recentCategories.count > 0) && (indexPath.section == 0) {
+                // Don't present sub-albums in Recent Albums section
+                cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
+            }
+            else if categoryData.albumId == inputCategoryData.parentAlbumId {
+                // This album is the parent of the input album => Change text colour
+                cell.configure(with: categoryData, atDepth: depth, andButtonState: buttonState)
+                cell.categoryLabel.textColor = UIColor.piwigoColorRightLabel()
+            }
+            else if categoryData.upperCategories.contains(String(inputCategoryId)) {
+                // This album is a sub-album of the input album => No button
                 cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
                 cell.categoryLabel.textColor = UIColor.piwigoColorRightLabel()
             } else {
-                // Don't present sub-albums in Recent Albums section
-                if (recentCategories.count > 0) && (indexPath.section == 0) {
-                    cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
-                } else {
-                    cell.configure(with: categoryData, atDepth: depth, andButtonState: buttonState)
-                }
+                // Not a parent of a sub-album of the input album
+                cell.configure(with: categoryData, atDepth: depth, andButtonState: buttonState)
             }
         case kPiwigoCategorySelectActionSetAlbumThumbnail:
             // The root album is not available
@@ -715,7 +724,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             if categoryData.albumId == inputCategoryId { return false }
             
         case kPiwigoCategorySelectActionMoveAlbum:
-            // Do nothing if this is the current default category
+            // Do nothing if this is the input category
             if categoryData.albumId == inputCategoryId { return false }
             // User cannot move album to current parent album or in itself
             if categoryData.albumId == 0 {  // upperCategories is nil for root
