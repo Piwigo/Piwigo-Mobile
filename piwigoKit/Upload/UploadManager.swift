@@ -317,6 +317,7 @@ public class UploadManager: NSObject {
     /// - e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateExpirationForTaskWithIdentifier:@"org.piwigo.uploadManager"]
     public var isExecutingBackgroundUploadTask = false
     public let maxNberOfUploadsPerBckgTask = 100                    // i.e. 100 requests to be considered
+    public let maxNberAutoUploadPerCheck = 500                      // i.e. not more than 500 requests appended each time
     public var countOfBytesPrepared = UInt64(0)                     // Total amount of bytes of prepared files
     public var countOfBytesToUpload = 0                             // Total amount of bytes to be sent
     public let maxCountOfBytesToUpload = 50 * 1024 * 1024           // i.e. 50 MB every 30 min (100 MB/hour)

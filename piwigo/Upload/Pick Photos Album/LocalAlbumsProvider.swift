@@ -217,7 +217,7 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         fetchOptions.fetchLimit = 1
         for fetchResult in fetchedAssetCollections {
             // Keep only non-empty albums
-            fetchResult.enumerateObjects { (collection, idx, stop) in
+            fetchResult.enumerateObjects { (collection, _, _) in
                 if PHAsset.fetchAssets(in: collection, options: fetchOptions).count > 0 {
                     collections.append(collection)
                 }
