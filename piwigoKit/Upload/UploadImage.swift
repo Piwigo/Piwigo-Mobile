@@ -222,7 +222,7 @@ extension UploadManager {
                     // Set options for retrieving the primary image
                     let maxSize = pwgPhotoMaxSizes(rawValue: properties.photoMaxSize)?.pixels ?? Int.max
                     let resizeOptions = [kCGImageSourceCreateThumbnailFromImageAlways : true,
-                                         kCGImageSourceCreateThumbnailWithTransform   : false,
+                                         kCGImageSourceCreateThumbnailWithTransform   : true,
                                          kCGImageSourceThumbnailMaxPixelSize          : maxSize] as [CFString : Any]
                     // Get image
                     guard let resized = CGImageSourceCreateThumbnailAtIndex(sourceRef, imageIndex,
@@ -313,7 +313,7 @@ extension UploadManager {
                 // Set options for retrieving the primary image
                 let maxSize = pwgPhotoMaxSizes(rawValue: properties.photoMaxSize)?.pixels ?? Int.max
                 let resizeOptions = [kCGImageSourceCreateThumbnailFromImageAlways : true,
-                                     kCGImageSourceCreateThumbnailWithTransform   : false,
+                                     kCGImageSourceCreateThumbnailWithTransform   : true,
                                      kCGImageSourceThumbnailMaxPixelSize          : maxSize] as [CFString : Any]
                 // Get image
                 guard let resized = CGImageSourceCreateThumbnailAtIndex(sourceRef, imageIndex,

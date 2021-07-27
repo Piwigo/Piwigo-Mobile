@@ -274,8 +274,8 @@ extension Dictionary where Key == CFString, Value == Any {
             }
 
             // Update/add orientation from image properties
-            if let orientation = CGImagePropertyOrientation(rawValue: imageMetadata[kCGImagePropertyOrientation] as! UInt32) {
-                metadata[kCGImagePropertyOrientation] = orientation
+            if let orientation = imageMetadata[kCGImagePropertyOrientation] as? UInt32 {
+                metadata[kCGImagePropertyOrientation] = CGImagePropertyOrientation(rawValue: orientation)
             }
 
             // Update/add isFloat from image properties
