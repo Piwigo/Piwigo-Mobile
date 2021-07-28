@@ -1863,6 +1863,13 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         AlbumVars.recentCategories = "0"
         NetworkVars.usesCommunityPluginV29 = false
         NetworkVars.hasAdminRights = false
+        
+        // Disable Auto-Uploading and clear settings
+        UploadVars.isAutoUploadActive = false
+        UploadVars.autoUploadCategoryId = NSNotFound
+        UploadVars.autoUploadAlbumId = ""
+        UploadVars.autoUploadTagIds = ""
+        UploadVars.autoUploadComments = ""
 
         // Erase cache
         ClearCache.clearAllCache(exceptCategories: false,
