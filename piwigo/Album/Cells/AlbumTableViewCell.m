@@ -139,19 +139,28 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     {
         // Load album thumbnail
         __weak typeof(self) weakSelf = self;
+        CGSize size = self.backgroundImage.bounds.size;
+        CGFloat scale = fmax(1.0, self.backgroundImage.traitCollection.displayScale);
         NSURL *URL = [NSURL URLWithString:albumData.albumThumbnailUrl];
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
         [self.backgroundImage setImageWithURLRequest:request
                                     placeholderImage:[UIImage imageNamed:@"placeholder"]
                                              success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-                                                 albumData.categoryImage = image;
-                                                 weakSelf.backgroundImage.image = image;
-                                             }
-                                             failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+            CGSize imageSize = image.size;
+            if (fmax(imageSize.width, imageSize.height) > fmax(size.width, size.height) * scale) {
+                UIImage *albumImage = [ImageUtilities downsampleWithImage:image to:size scale:scale];
+                albumData.categoryImage = albumImage;
+                weakSelf.backgroundImage.image = albumImage;
+            } else {
+                albumData.categoryImage = image;
+                weakSelf.backgroundImage.image = image;
+            }
+         }
+         failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 #if defined(DEBUG)
-                                                 NSLog(@"setupWithAlbumData — Fail to get album bg image for album at %@", albumData.albumThumbnailUrl);
+             NSLog(@"setupWithAlbumData — Fail to get album bg image for album at %@", albumData.albumThumbnailUrl);
 #endif
-                                             }];
+         }];
     }
 }
 
