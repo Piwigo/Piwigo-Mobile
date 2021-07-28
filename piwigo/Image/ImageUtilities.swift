@@ -16,7 +16,9 @@ class ImageUtilities: NSObject {
         let imageSourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
         let imageSource = CGImageSourceCreateWithURL(imageURL as CFURL, imageSourceOptions)!
         
-        let maxDimensionInPixels = max(pointSize.width, pointSize.height) * scale
+        // The default display scale for a trait collection is 0.0 (indicating unspecified).
+        // We therefore adopt a scale of 1.0 when the display scale is unspecified.
+        let maxDimensionInPixels = max(pointSize.width, pointSize.height) * max(scale, 1.0)
         let downsampleOptions = [kCGImageSourceCreateThumbnailFromImageAlways: true,
                                  kCGImageSourceShouldCacheImmediately: true,
                                  kCGImageSourceCreateThumbnailWithTransform: true,
