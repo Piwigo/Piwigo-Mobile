@@ -750,3 +750,5 @@
 "help05_text2" = "Tippen Sie auf die graue Schaltfläche, die im Root-Album angezeigt wird, um Uploads zu verwalten.";
 "help06_header" = "Uploadverwaltung";
 "help06_text" = "Upload-Anfragen global oder einzeln überwachen, abbrechen und fortsetzen.";
+"help07_header" = "Auto-Uploading";
+"help07_text" = "Select source and destination albums in Piwigo, create automations in Shortcuts.";

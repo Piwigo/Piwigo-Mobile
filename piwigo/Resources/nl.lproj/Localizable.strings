@@ -750,3 +750,5 @@
 "help05_text2" = "Tik op de grijze knop gepresenteerd in het hoofdalbum om de upload te beheren.";
 "help06_header" = "Upload beheer";
 "help06_text" = "Monitoren, annuleren en hervatten upload verzoeken globaal of individueel.";
+"help07_header" = "Auto-Uploading";
+"help07_text" = "Select source and destination albums in Piwigo, create automations in Shortcuts.";

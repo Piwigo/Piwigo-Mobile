@@ -750,3 +750,5 @@
 "help05_text2" = "Appuyez sur le bouton gris présenté dans l'album racine pour gérer les téléchargements.";
 "help06_header" = "Gestion des téléchargements";
 "help06_text" = "Surveillez, annulez et relancez les demandes de téléchargement globalement ou individuellement.";
+"help07_header" = "Téléchargement Auto";
+"help07_text" = "Sélectionnez les albums source et destination dans Piwigo, créez des automatisations dans Raccourcis.";

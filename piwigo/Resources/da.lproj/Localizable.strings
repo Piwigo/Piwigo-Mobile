@@ -750,3 +750,5 @@
 "help05_text2" = "Tryk på den grå knap i rodalbummet for at administrere uploads.";
 "help06_header" = "Upload Håndtering";
 "help06_text" = "Overvåg, annullere og genoptage upload anmodninger globalt eller individuelt.";
+"help07_header" = "Auto-Uploading";
+"help07_text" = "Select source and destination albums in Piwigo, create automations in Shortcuts.";

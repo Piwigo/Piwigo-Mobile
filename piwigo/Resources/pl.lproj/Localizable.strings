@@ -750,3 +750,5 @@
 "help05_text2" = "Dotknij szarego przycisku w głównym albumie, aby zarządzać przesyłaniami.";
 "help06_header" = "Zarządzanie przesyłaniem";
 "help06_text" = "Monitoruj, anuluj i wznawiaj żądania przesyłania globalnie lub pojedynczo.";
+"help07_header" = "Auto-Uploading";
+"help07_text" = "Select source and destination albums in Piwigo, create automations in Shortcuts.";

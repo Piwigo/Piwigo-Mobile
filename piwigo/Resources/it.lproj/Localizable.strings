@@ -750,3 +750,5 @@
 "help05_text2" = "Tocca il pulsante grigio presentato nell'album di root per gestire i caricamenti.";
 "help06_header" = "Gestione Upload";
 "help06_text" = "Monitora, cancella e riprendi le richieste di upload a livello globale o individuale.";
+"help07_header" = "Auto-Uploading";
+"help07_text" = "Select source and destination albums in Piwigo, create automations in Shortcuts.";

@@ -750,3 +750,5 @@
 "help05_text2" = "Tryck på den grå knappen som visas i rotalbumet för att hantera uppladdningar.";
 "help06_header" = "Ladda upp hantering";
 "help06_text" = "Övervaka, avbryta och återuppta uppladdningsförfrågningar globalt eller individuellt.";
+"help07_header" = "Auto-Uploading";
+"help07_text" = "Select source and destination albums in Piwigo, create automations in Shortcuts.";

@@ -750,3 +750,5 @@
 "help05_text2" = "Pulse el botón gris que aparece en el álbum raíz para gestionar las subidas.";
 "help06_header" = "Gestión de subidas";
 "help06_text" = "Supervise, cancele y reanude las solicitudes de subida de forma global o individual.";
+"help07_header" = "Auto-Uploading";
+"help07_text" = "Select source and destination albums in Piwigo, create automations in Shortcuts.";

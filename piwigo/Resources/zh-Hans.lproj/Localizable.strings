@@ -750,3 +750,5 @@
 "help05_text2" = "点击根相册中的灰色按钮来管理上传。";
 "help06_header" = "上传管理";
 "help06_text" = "全局或单独监测、取消和恢复上传请求。";
+"help07_header" = "Auto-Uploading";
+"help07_text" = "Select source and destination albums in Piwigo, create automations in Shortcuts.";
