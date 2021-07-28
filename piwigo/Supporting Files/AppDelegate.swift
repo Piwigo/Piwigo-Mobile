@@ -682,7 +682,7 @@ import piwigoKit
 
         // Notify palette change to views
         NotificationCenter.default.post(name: PwgNotifications.paletteChanged, object: nil)
-//        print("•••> app changed to %@ mode", AppVars.isDarkPaletteActive ? "Dark" : "Light");
+//        print("•••> app changed to \(AppVars.isDarkPaletteActive ? "dark" : "light") mode");
     }
 
 
