@@ -93,7 +93,7 @@
 		AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E781F0930CE0040EAD9 /* About.strings */; };
 		AD6FD1FA24BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD6FD1F924BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard */; };
 		AD6FD1FC24BF0321009AA3B7 /* UploadSwitchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6FD1FB24BF0321009AA3B7 /* UploadSwitchViewController.swift */; };
-		AD747C6825F970A00030253E /* DeviceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD747C6725F970A00030253E /* DeviceTableViewCell.swift */; };
+		AD747C6825F970A00030253E /* PhoneTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD747C6725F970A00030253E /* PhoneTableViewCell.swift */; };
 		AD767BD62680B4E200EBD6E8 /* KeychainUtilitiesObjc.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD767BD52680B4E200EBD6E8 /* KeychainUtilitiesObjc.swift */; };
 		AD770FD423B4BDA2007DAD50 /* EditImageParamsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD770FD323B4BDA2007DAD50 /* EditImageParamsViewController.m */; };
 		AD770FD623B4BDB5007DAD50 /* EditImageParams.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD770FD523B4BDB5007DAD50 /* EditImageParams.storyboard */; };
@@ -123,6 +123,7 @@
 		AD8D218726B0B46A0008E907 /* lightPad.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D218326B0B46A0008E907 /* lightPad.png */; };
 		AD8D218826B0B46A0008E907 /* darkPad.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D218426B0B46A0008E907 /* darkPad.png */; };
 		AD8D218926B0B46A0008E907 /* lightPhone.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D218526B0B46A0008E907 /* lightPhone.png */; };
+		AD8D218B26B20D6E0008E907 /* PadTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8D218A26B20D6E0008E907 /* PadTableViewCell.swift */; };
 		AD8F4B8B23F04B8C009483B6 /* TagSelectorViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD3369BE23F035F700F3FA80 /* TagSelectorViewController.storyboard */; };
 		AD92B8FE1F200083006E5B63 /* ReleaseNotes.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD92B9001F200083006E5B63 /* ReleaseNotes.strings */; };
 		AD94F63B266D61AB00EFC6A9 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB433F523FB3CCB00A873A9 /* DataController.swift */; };
@@ -461,7 +462,7 @@
 		AD6B2E7A1F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/About.strings; sourceTree = "<group>"; };
 		AD6FD1F924BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = UploadSwitchViewController.storyboard; sourceTree = "<group>"; };
 		AD6FD1FB24BF0321009AA3B7 /* UploadSwitchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadSwitchViewController.swift; sourceTree = "<group>"; };
-		AD747C6725F970A00030253E /* DeviceTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceTableViewCell.swift; sourceTree = "<group>"; };
+		AD747C6725F970A00030253E /* PhoneTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneTableViewCell.swift; sourceTree = "<group>"; };
 		AD767BD52680B4E200EBD6E8 /* KeychainUtilitiesObjc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainUtilitiesObjc.swift; sourceTree = "<group>"; };
 		AD770FD323B4BDA2007DAD50 /* EditImageParamsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditImageParamsViewController.m; sourceTree = "<group>"; };
 		AD770FD523B4BDB5007DAD50 /* EditImageParams.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = EditImageParams.storyboard; sourceTree = "<group>"; };
@@ -528,6 +529,7 @@
 		AD8D218326B0B46A0008E907 /* lightPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lightPad.png; sourceTree = "<group>"; };
 		AD8D218426B0B46A0008E907 /* darkPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = darkPad.png; sourceTree = "<group>"; };
 		AD8D218526B0B46A0008E907 /* lightPhone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lightPhone.png; sourceTree = "<group>"; };
+		AD8D218A26B20D6E0008E907 /* PadTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PadTableViewCell.swift; sourceTree = "<group>"; };
 		AD92B9011F200092006E5B63 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
 		AD94F63D266D637D00EFC6A9 /* CacheVarsObjc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheVarsObjc.swift; sourceTree = "<group>"; };
 		AD94F63F266D63AD00EFC6A9 /* CacheVars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheVars.swift; sourceTree = "<group>"; };
@@ -1324,7 +1326,8 @@
 			isa = PBXGroup;
 			children = (
 				ADEAFB8C25F8182C00EEDB1D /* ColorPaletteViewController.swift */,
-				AD747C6725F970A00030253E /* DeviceTableViewCell.swift */,
+				AD747C6725F970A00030253E /* PhoneTableViewCell.swift */,
+				AD8D218A26B20D6E0008E907 /* PadTableViewCell.swift */,
 				ADEAFB8E25F8198800EEDB1D /* ColorPaletteViewController.storyboard */,
 				ADE03D2D25FCBA4B002F5C7B /* ColorPaletteViewControllerOld.swift */,
 				ADE03D2F25FCC1B7002F5C7B /* ColorPaletteViewControllerOld.storyboard */,
@@ -2182,7 +2185,7 @@
 				AD074F6623F8498B00D6016A /* ClearCache.swift in Sources */,
 				ADF3EC0C2516515500379E53 /* DeviceUtilities.swift in Sources */,
 				AD2B0A17243D00CD00AF1FEE /* DefaultAlbumThumbnailSizeViewController.swift in Sources */,
-				AD747C6825F970A00030253E /* DeviceTableViewCell.swift in Sources */,
+				AD747C6825F970A00030253E /* PhoneTableViewCell.swift in Sources */,
 				ADF1CC75243D111600D75319 /* SelectCategoryViewController.swift in Sources */,
 				ADEAFB8D25F8182C00EEDB1D /* ColorPaletteViewController.swift in Sources */,
 				ADA24DB8243A767700864D1F /* DefaultImageSizeViewController.swift in Sources */,
@@ -2192,6 +2195,7 @@
 				ADE4C23E25756BC80060A203 /* Help02ViewController.swift in Sources */,
 				AD8709AB259A8E66008C4E4C /* Help04ViewController.swift in Sources */,
 				ADC74CCE259C9E9C00581ADE /* Help05ViewController.swift in Sources */,
+				AD8D218B26B20D6E0008E907 /* PadTableViewCell.swift in Sources */,
 				AD3CD63A259DE34C000C26ED /* Help06ViewController.swift in Sources */,
 				ADBDD9372441AB3800F19DFC /* LabelTableViewCell.swift in Sources */,
 				ADEC6B032455A3520011527C /* LocalAlbumsProvider.swift in Sources */,

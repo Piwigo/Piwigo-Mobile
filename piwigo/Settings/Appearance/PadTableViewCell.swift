@@ -1,14 +1,14 @@
 //
-//  DeviceTableViewCell.swift
+//  PadTableViewCell.swift
 //  piwigo
 //
-//  Created by Eddy Lelièvre-Berna on 10/03/2021.
+//  Created by Eddy Lelièvre-Berna on 29/07/2021.
 //  Copyright © 2021 Piwigo.org. All rights reserved.
 //
 
 import UIKit
 
-class DeviceTableViewCell: UITableViewCell {
+class PadTableViewCell: UITableViewCell {
     
     @IBOutlet weak var lightImage: UIButton!
     @IBOutlet weak var lightLabel: UIButton!
@@ -19,49 +19,25 @@ class DeviceTableViewCell: UITableViewCell {
     @IBOutlet weak var darkButton: UIButton!
     
     func configure() {
-        // Images
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            // iPhone — light mode
-            guard let lightUrl = Bundle.main.url(forResource: "lightPhone", withExtension: "png") else {
-                fatalError("!!! Could not find lightPhone image !!!")
-            }
-            lightImage.layoutIfNeeded() // Ensure buttonView is in its final size.
-            var size = lightImage.bounds.size
-            var scale = lightImage.traitCollection.displayScale
-            lightImage.setImage(ImageUtilities.downsample(imageAt: lightUrl, to: size, scale: scale), for: .normal)
-            lightImage.layer.cornerRadius = 8
-            
-            // iPhone - dark mode
-            guard let darkUrl = Bundle.main.url(forResource: "darkPhone", withExtension: "png") else {
-                fatalError("!!! Could not find darkPhone image !!!")
-            }
-            darkImage.layoutIfNeeded() // Ensure buttonView is in its final size.
-            size = darkImage.bounds.size
-            scale = darkImage.traitCollection.displayScale
-            darkImage.setImage(ImageUtilities.downsample(imageAt: darkUrl, to: size, scale: scale), for: .normal)
-            darkImage.layer.cornerRadius = 8
+        // iPad — light mode
+        guard let lightUrl = Bundle.main.url(forResource: "lightPad", withExtension: "png") else {
+            fatalError("!!! Could not find lightPad image !!!")
         }
-        else {
-            // iPad — light mode
-            guard let lightUrl = Bundle.main.url(forResource: "lightPad", withExtension: "png") else {
-                fatalError("!!! Could not find lightPad image !!!")
-            }
-            lightImage.layoutIfNeeded() // Ensure buttonView is in its final size.
-            var size = lightImage.bounds.size
-            var scale = lightImage.traitCollection.displayScale
-            lightImage.setImage(ImageUtilities.downsample(imageAt: lightUrl, to: size, scale: scale), for: .normal)
-            lightImage.layer.cornerRadius = 5
-            
-            // iPad - dark mode
-            guard let darkUrl = Bundle.main.url(forResource: "darkPad", withExtension: "png") else {
-                fatalError("!!! Could not find darkPad image !!!")
-            }
-            darkImage.layoutIfNeeded() // Ensure buttonView is in its final size.
-            size = darkImage.bounds.size
-            scale = darkImage.traitCollection.displayScale
-            darkImage.setImage(ImageUtilities.downsample(imageAt: darkUrl, to: size, scale: scale), for: .normal)
-            darkImage.layer.cornerRadius = 5
+        lightImage.layoutIfNeeded() // Ensure buttonView is in its final size.
+        var size = lightImage.bounds.size
+        var scale = lightImage.traitCollection.displayScale
+        lightImage.setImage(ImageUtilities.downsample(imageAt: lightUrl, to: size, scale: scale), for: .normal)
+        lightImage.layer.cornerRadius = 5
+        
+        // iPad - dark mode
+        guard let darkUrl = Bundle.main.url(forResource: "darkPad", withExtension: "png") else {
+            fatalError("!!! Could not find darkPad image !!!")
         }
+        darkImage.layoutIfNeeded() // Ensure buttonView is in its final size.
+        size = darkImage.bounds.size
+        scale = darkImage.traitCollection.displayScale
+        darkImage.setImage(ImageUtilities.downsample(imageAt: darkUrl, to: size, scale: scale), for: .normal)
+        darkImage.layer.cornerRadius = 5
 
         // Labels
         lightLabel.setTitle(NSLocalizedString("settings_lightColor", comment: "Light"), for: .normal)

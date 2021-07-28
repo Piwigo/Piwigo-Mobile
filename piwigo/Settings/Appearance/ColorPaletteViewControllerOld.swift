@@ -120,7 +120,7 @@ class ColorPaletteViewControllerOld: UIViewController, UITableViewDataSource, UI
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.row {
         case 0:
-            return 207.0
+            return 214.0
         case 1...2:
             return 44.0
         default:
@@ -133,13 +133,22 @@ class ColorPaletteViewControllerOld: UIViewController, UITableViewDataSource, UI
 
         switch indexPath.row {
         case 0 /* Ligh and Dark options */:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "DeviceTableViewCell", for: indexPath) as? DeviceTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a DeviceTableViewCell!")
-                return LabelTableViewCell()
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "PhoneTableViewCell", for: indexPath) as? PhoneTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a PhoneTableViewCell!")
+                    return LabelTableViewCell()
+                }
+                cell.configure()
+                tableViewCell = cell
+            } else {
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "PadTableViewCell", for: indexPath) as? PadTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a PadTableViewCell!")
+                    return LabelTableViewCell()
+                }
+                cell.configure()
+                tableViewCell = cell
             }
-            cell.configure()
-            tableViewCell = cell
-            
+
         case 1 /* Automatic mode? */:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
                 print("Error: tableView.dequeueReusableCell does not return a SwitchTableViewCell!")
@@ -167,7 +176,8 @@ class ColorPaletteViewControllerOld: UIViewController, UITableViewDataSource, UI
                 }
 
                 // Notify palette change
-                (UIApplication.shared.delegate as! AppDelegate).screenBrightnessChanged()
+                let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                appDelegate?.screenBrightnessChanged()
             }
             cell.accessibilityIdentifier = "switchColourAuto"
             tableViewCell = cell
