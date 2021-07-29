@@ -30,7 +30,7 @@
 		self.images = [NSArray new];
         self.searchQuery = [NSString stringWithString:query];
 		self.categoryId = categoryId;
-		self.sortType = -1;
+		self.sortType = (kPiwigoSortObjc)AlbumVars.defaultSort;
 	}
 	return self;
 }
