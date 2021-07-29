@@ -591,7 +591,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
     // Determine which help pages should be presented
     NSMutableArray *displayHelpPagesWithIndex = [[NSMutableArray alloc] initWithCapacity:2];
-    if ((self.categoryId != 0) && ([self.albumData.images count] > 2) &&
+    if ((self.categoryId != 0) && ([self.albumData.images count] > 5) &&
         ((AppVars.didWatchHelpViews & 0b0000000000000001) == 0)) {
         [displayHelpPagesWithIndex addObject:@0];   // i.e. multiple selection of images
     }
@@ -601,7 +601,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         [displayHelpPagesWithIndex addObject:@2];   // i.e. management of albums
     }
     if (displayHelpPagesWithIndex.count > 0) {
-        // Present unseen upload management help views
+        // Present unseen help views
         UIStoryboard *helpSB = [UIStoryboard storyboardWithName:@"HelpViewController" bundle:nil];
         HelpViewController *helpVC = [helpSB instantiateViewControllerWithIdentifier:@"HelpViewController"];
         helpVC.displayHelpPagesWithIndex = displayHelpPagesWithIndex;

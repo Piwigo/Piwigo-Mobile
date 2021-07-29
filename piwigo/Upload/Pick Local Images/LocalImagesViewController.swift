@@ -1762,6 +1762,10 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
            (AppVars.didWatchHelpViews & 0b00000000_00000010) == 0 {
             displayHelpPagesWithIndex.append(1)     // i.e. use background uploading
         }
+        if #available(iOS 14, *),
+           (AppVars.didWatchHelpViews & 0b00000000_01000000) == 0 {
+            displayHelpPagesWithIndex.append(6)     // i.e. use auto-uploading
+        }
         if displayHelpPagesWithIndex.count > 0 {
             // Present unseen upload management help views
             let helpSB = UIStoryboard(name: "HelpViewController", bundle: nil)
