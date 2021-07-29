@@ -143,6 +143,7 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
         CGFloat scale = fmax(1.0, self.backgroundImage.traitCollection.displayScale);
         NSURL *URL = [NSURL URLWithString:albumData.albumThumbnailUrl];
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
+        [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
         [self.backgroundImage setImageWithURLRequest:request
                                     placeholderImage:[UIImage imageNamed:@"placeholder"]
                                              success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
