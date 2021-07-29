@@ -610,6 +610,14 @@
 		ADC8167A244B5EDE00650223 /* LocalImagesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalImagesViewController.swift; sourceTree = "<group>"; };
 		ADC8167C244B5FA800650223 /* LocalImagesViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LocalImagesViewController.storyboard; sourceTree = "<group>"; };
 		ADC8FAA9244C7307006BDA6A /* LocalImagesFooterReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalImagesFooterReusableView.swift; sourceTree = "<group>"; };
+		ADCA95CD26B3434300F27123 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/InAppIntents.strings; sourceTree = "<group>"; };
+		ADCA95CE26B3434300F27123 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/Intents.strings; sourceTree = "<group>"; };
+		ADCA95CF26B3434300F27123 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/About.strings; sourceTree = "<group>"; };
+		ADCA95D026B3434300F27123 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/AppStore.strings; sourceTree = "<group>"; };
+		ADCA95D126B3434400F27123 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		ADCA95D226B3434400F27123 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/Localizable.strings; sourceTree = "<group>"; };
+		ADCA95D326B3434400F27123 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
+		ADCA95D426B3434400F27123 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
 		ADCC996425B452670034CB4A /* UIImage+AppTools.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+AppTools.swift"; sourceTree = "<group>"; };
 		ADD063B626A04BFE002558D2 /* UploadVideoSizeViewController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = UploadVideoSizeViewController.storyboard; sourceTree = "<group>"; };
 		ADD063B826A04C12002558D2 /* UploadVideoSizeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadVideoSizeViewController.swift; sourceTree = "<group>"; };
@@ -1838,6 +1846,7 @@
 				es,
 				ru,
 				"zh-Hans",
+				hu,
 			);
 			mainGroup = D82B8CB21A67820A000E47CA;
 			productRefGroup = D82B8CBC1A67820A000E47CA /* Products */;
@@ -2352,6 +2361,7 @@
 				ADAF3B7323DDAC2F007B0ABA /* es */,
 				ADAF3B7923DDAC55007B0ABA /* ru */,
 				ADAF3B7F23DDAC6D007B0ABA /* zh-Hans */,
+				ADCA95D026B3434300F27123 /* hu */,
 			);
 			name = AppStore.strings;
 			sourceTree = "<group>";
@@ -2373,6 +2383,7 @@
 				ADAF3B7523DDAC2F007B0ABA /* es */,
 				ADAF3B7B23DDAC55007B0ABA /* ru */,
 				ADAF3B8123DDAC6D007B0ABA /* zh-Hans */,
+				ADCA95D326B3434400F27123 /* hu */,
 			);
 			name = PrivacyPolicy.strings;
 			sourceTree = "<group>";
@@ -2394,6 +2405,7 @@
 				ADAF3B7023DDAC2F007B0ABA /* es */,
 				ADAF3B7623DDAC55007B0ABA /* ru */,
 				ADAF3B7C23DDAC6D007B0ABA /* zh-Hans */,
+				ADCA95D226B3434400F27123 /* hu */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -2415,6 +2427,7 @@
 				ADAF3B7123DDAC2F007B0ABA /* es */,
 				ADAF3B7723DDAC55007B0ABA /* ru */,
 				ADAF3B7D23DDAC6D007B0ABA /* zh-Hans */,
+				ADCA95CF26B3434300F27123 /* hu */,
 			);
 			name = About.strings;
 			sourceTree = "<group>";
@@ -2423,6 +2436,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				AD7783B1267E4AB700317F36 /* Base */,
+				ADCA95CE26B3434300F27123 /* hu */,
 			);
 			name = Intents.intentdefinition;
 			sourceTree = "<group>";
@@ -2445,6 +2459,7 @@
 				AD8D214226ACC1760008E907 /* ru */,
 				AD8D214426ACC1770008E907 /* es */,
 				AD8D214626ACC1790008E907 /* sv */,
+				ADCA95CD26B3434300F27123 /* hu */,
 			);
 			name = InAppIntents.intentdefinition;
 			sourceTree = "<group>";
@@ -2466,6 +2481,7 @@
 				ADAF3B7223DDAC2F007B0ABA /* es */,
 				ADAF3B7823DDAC55007B0ABA /* ru */,
 				ADAF3B7E23DDAC6D007B0ABA /* zh-Hans */,
+				ADCA95D426B3434400F27123 /* hu */,
 			);
 			name = ReleaseNotes.strings;
 			sourceTree = "<group>";
@@ -2495,6 +2511,7 @@
 				ADAF3B7423DDAC2F007B0ABA /* es */,
 				ADAF3B7A23DDAC55007B0ABA /* ru */,
 				ADAF3B8023DDAC6D007B0ABA /* zh-Hans */,
+				ADCA95D126B3434400F27123 /* hu */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";

@@ -689,7 +689,7 @@
 "settings_autoUploadDestinationInvalid" = "Album de destination invalide";
 "settings_autoUploadDestinationInfo" = "Veuillez sélectionner l'album ou le sous-album dans lequel les photos et les vidéos seront automatiquement téléchargées.";
 "AutoUploadError_Disabled" = "Le téléchargement automatique est désactivé dans les paramètres de l'application.";
-"AutoUploadError_Failed" = "Plusieurs transferts ont échoué et la file d'attente est en pause. Veuillez vérifier dans l'application.";
+"AutoUploadError_Failed" = "Plusieurs transferts ont échoué et la file d'attente est en pause. Veuillez vérifier dans l'application s'il vous plaît.";
 
 // Settings — Upload Photo Size
 "UploadPhotoSize_title" = "Taille maximale des photos";
