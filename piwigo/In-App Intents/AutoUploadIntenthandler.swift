@@ -219,7 +219,13 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
             // Remove non-completed upload requests marked for auto-upload from the upload queue
             if !objectIDs.isEmpty {
                 uploadsProvider.delete(uploadRequests: objectIDs) { error in
-                    // Job done
+                    // Update app badge and Upload button in root/default album
+                    // Considers only uploads to the server to which the user is logged in
+                    let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
+                                                        .preparingFail, .formatError, .prepared,
+                                                        .uploading, .uploadingError, .uploaded,
+                                                        .finishing, .finishingError]
+                    UploadManager.shared.nberOfUploadsToComplete = self.uploadsProvider.getRequests(inStates: states).0.count
                 }
             }
         }
