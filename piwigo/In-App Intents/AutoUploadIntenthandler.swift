@@ -65,80 +65,40 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
         let fetchedImages = PHAsset.fetchAssets(in: collection, options: fetchOptions)
         
         // Extract images not already in the upload queue
-        var uploadRequestsToAppend = [UploadProperties]()
-        if fetchedImages.count > 0 {
-            // Collect localIdentifiers of uploaded and not yet uploaded images in the Upload cache
-            let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
-                                                .preparingFail, .formatError, .prepared,
-                                                .uploading, .uploadingError, .uploaded,
-                                                .finishing, .finishingError, .finished,
-                                                .moderated, .deleted]
-            let imageIDs = uploadsProvider.getRequests(inStates: states).0
+        UploadManager.shared.backgroundQueue.async { [unowned self] in
+            var uploadRequestsToAppend = [UploadProperties]()
+            if fetchedImages.count > 0 {
+                // Collect localIdentifiers of uploaded and not yet uploaded images in the Upload cache
+                let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
+                                                    .preparingFail, .formatError, .prepared,
+                                                    .uploading, .uploadingError, .uploaded,
+                                                    .finishing, .finishingError, .finished,
+                                                    .moderated, .deleted]
+                let imageIDs = self.uploadsProvider.getRequests(inStates: states).0
 
-            // Determine which local images are still not considered for upload
-            fetchedImages.enumerateObjects { image, _, stop in
-                // Keep images which had never been considered for upload
-                if !imageIDs.contains(image.localIdentifier) {
-                    // Create upload request
-                    var uploadRequest = UploadProperties(localIdentifier: image.localIdentifier,
-                                                         category: categoryId)
-                    uploadRequest.markedForAutoUpload = true
-                    uploadRequest.tagIds = UploadVars.autoUploadTagIds
-                    uploadRequest.comment = UploadVars.autoUploadComments
-                    uploadRequestsToAppend.append(uploadRequest)
+                // Determine which local images are still not considered for upload
+                fetchedImages.enumerateObjects { image, _, stop in
+                    // Keep images which had never been considered for upload
+                    if !imageIDs.contains(image.localIdentifier) {
+                        // Create upload request
+                        var uploadRequest = UploadProperties(localIdentifier: image.localIdentifier,
+                                                             category: categoryId)
+                        uploadRequest.markedForAutoUpload = true
+                        uploadRequest.tagIds = UploadVars.autoUploadTagIds
+                        uploadRequest.comment = UploadVars.autoUploadComments
+                        uploadRequestsToAppend.append(uploadRequest)
 
-                    // Check if we have reached the max number of requests to append
-                    if uploadRequestsToAppend.count >= UploadManager.shared.maxNberAutoUploadPerCheck {
-                        stop.pointee = true
+                        // Check if we have reached the max number of requests to append
+                        if uploadRequestsToAppend.count >= UploadManager.shared.maxNberAutoUploadPerCheck {
+                            stop.pointee = true
+                        }
                     }
                 }
             }
-        }
-        
-        // Relaunch transfers if there is no new image to append to the upload queue
-        let photosToPrepare = uploadRequestsToAppend.compactMap{ $0 }.count
-        if photosToPrepare == 0 {
-            // Create the operation queue
-            let uploadQueue = OperationQueue()
-            uploadQueue.maxConcurrentOperationCount = 1
             
-            // Add operation setting flags and selecting upload requests
-            let initOperation = BlockOperation {
-                // Initialse variables and determine upload requests to prepare and transfer
-                UploadManager.shared.initialiseBckgTask(autoUploadOnly: true)
-            }
-
-            // Initialise list of operations
-            var uploadOperations = [BlockOperation]()
-            uploadOperations.append(initOperation)
-
-            // Resume transfers
-            let resumeOperation = BlockOperation {
-                // Transfer image
-                UploadManager.shared.resumeTransfers()
-            }
-            resumeOperation.addDependency(uploadOperations.last!)
-            uploadOperations.append(resumeOperation)
-
-            // Save the database when the operation completes
-            let lastOperation = uploadOperations.last!
-            lastOperation.completionBlock = {
-                debugPrint("    > In-app intent completed with success.")
-            }
-
-            // Start the operations
-            print("    > In-app intent restarts transfers...");
-            uploadQueue.addOperations(uploadOperations, waitUntilFinished: false)
-
-            completion(AutoUploadIntentResponse.success(photos: NSNumber(value: 0)))
-            return
-        }
-
-        // Append auto-upload requests to database
-        uploadsProvider.importUploads(from: uploadRequestsToAppend.compactMap{ $0 }) { error in
-            // Show an alert if there was an error.
-            guard let error = error else {
-
+            // Relaunch transfers if there is no new image to append to the upload queue
+            let photosToPrepare = uploadRequestsToAppend.compactMap{ $0 }.count
+            if photosToPrepare == 0 {
                 // Create the operation queue
                 let uploadQueue = OperationQueue()
                 uploadQueue.maxConcurrentOperationCount = 1
@@ -161,15 +121,6 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
                 resumeOperation.addDependency(uploadOperations.last!)
                 uploadOperations.append(resumeOperation)
 
-                // Add first image preparation which will be followed by transfer operations
-                // We prepare only one image due to the 10s limit.
-                let uploadOperation = BlockOperation {
-                    // Transfer image
-                    UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
-                }
-                uploadOperation.addDependency(uploadOperations.last!)
-                uploadOperations.append(uploadOperation)
-                
                 // Save the database when the operation completes
                 let lastOperation = uploadOperations.last!
                 lastOperation.completionBlock = {
@@ -177,18 +128,78 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
                 }
 
                 // Start the operations
-                debugPrint("    > In-app intent resumes transfers and append upload requests...");
+                print("    > In-app intent restarts transfers...");
                 uploadQueue.addOperations(uploadOperations, waitUntilFinished: false)
 
-                // Inform user that the shortcut was excuted with success
-                completion(AutoUploadIntentResponse.success(photos: NSNumber(value: photosToPrepare)))
+                completion(AutoUploadIntentResponse.success(photos: NSNumber(value: 0)))
                 return
             }
-            
-            // Error encountered…
-            DispatchQueue.main.async {
-                let errorMsg = String(format: "%@: %@", NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object."), error.localizedDescription)
-                completion(AutoUploadIntentResponse.failure(error: errorMsg))
+
+            // Append auto-upload requests to database
+            self.uploadsProvider.importUploads(from: uploadRequestsToAppend.compactMap{ $0 }) { error in
+
+                // Update app badge and Upload button in root/default album
+                // Considers only uploads to the server to which the user is logged in
+                let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
+                                                    .preparingFail, .formatError, .prepared,
+                                                    .uploading, .uploadingError, .uploaded,
+                                                    .finishing, .finishingError]
+                UploadManager.shared.nberOfUploadsToComplete = self.uploadsProvider.getRequests(inStates: states).0.count
+
+                // Show an alert if there was an error.
+                guard let error = error else {
+
+                    // Create the operation queue
+                    let uploadQueue = OperationQueue()
+                    uploadQueue.maxConcurrentOperationCount = 1
+                    
+                    // Add operation setting flags and selecting upload requests
+                    let initOperation = BlockOperation {
+                        // Initialse variables and determine upload requests to prepare and transfer
+                        UploadManager.shared.initialiseBckgTask(autoUploadOnly: true)
+                    }
+
+                    // Initialise list of operations
+                    var uploadOperations = [BlockOperation]()
+                    uploadOperations.append(initOperation)
+
+                    // Resume transfers
+                    let resumeOperation = BlockOperation {
+                        // Transfer image
+                        UploadManager.shared.resumeTransfers()
+                    }
+                    resumeOperation.addDependency(uploadOperations.last!)
+                    uploadOperations.append(resumeOperation)
+
+                    // Add first image preparation which will be followed by transfer operations
+                    // We prepare only one image due to the 10s limit.
+                    let uploadOperation = BlockOperation {
+                        // Transfer image
+                        UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
+                    }
+                    uploadOperation.addDependency(uploadOperations.last!)
+                    uploadOperations.append(uploadOperation)
+                    
+                    // Save the database when the operation completes
+                    let lastOperation = uploadOperations.last!
+                    lastOperation.completionBlock = {
+                        debugPrint("    > In-app intent completed with success.")
+                    }
+
+                    // Start the operations
+                    debugPrint("    > In-app intent resumes transfers and append upload requests...");
+                    uploadQueue.addOperations(uploadOperations, waitUntilFinished: true)
+
+                    // Inform user that the shortcut was excuted with success
+                    completion(AutoUploadIntentResponse.success(photos: NSNumber(value: photosToPrepare)))
+                    return
+                }
+                
+                // Error encountered…
+                DispatchQueue.main.async {
+                    let errorMsg = String(format: "%@: %@", NSLocalizedString("CoreDataFetch_UploadCreateFailed", comment: "Failed to create a new Upload object."), error.localizedDescription)
+                    completion(AutoUploadIntentResponse.failure(error: errorMsg))
+                }
             }
         }
     }
@@ -198,16 +209,18 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
         UploadVars.isAutoUploadActive = false
         
         // Collect objectIDs of images being considered for auto-uploading
-        let states: [kPiwigoUploadState] = [.waiting, .preparingError,
-                                            .preparingFail, .formatError, .prepared,
-                                            .uploadingError, .uploaded,
-                                            .finishingError]
-        let objectIDs = uploadsProvider.getRequests(inStates: states, markedForAutoUpload: true).1
+        UploadManager.shared.backgroundQueue.async { [unowned self] in
+            let states: [kPiwigoUploadState] = [.waiting, .preparingError,
+                                                .preparingFail, .formatError, .prepared,
+                                                .uploadingError, .uploaded,
+                                                .finishingError]
+            let objectIDs = uploadsProvider.getRequests(inStates: states, markedForAutoUpload: true).1
 
-        // Remove non-completed upload requests marked for auto-upload from the upload queue
-        if !objectIDs.isEmpty {
-            uploadsProvider.delete(uploadRequests: objectIDs) { error in
-                // Job done
+            // Remove non-completed upload requests marked for auto-upload from the upload queue
+            if !objectIDs.isEmpty {
+                uploadsProvider.delete(uploadRequests: objectIDs) { error in
+                    // Job done
+                }
             }
         }
     }
