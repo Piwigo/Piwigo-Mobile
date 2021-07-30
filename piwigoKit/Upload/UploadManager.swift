@@ -462,6 +462,8 @@ public class UploadManager: NSObject {
            let uploadID = uploadRequestsToPrepare.first {
             // Prepare image for transfer
             prepare(for: uploadID)
+        }
+        if !uploadRequestsToPrepare.isEmpty {
             // Remove objectID
             uploadRequestsToPrepare.removeFirst()
         }
