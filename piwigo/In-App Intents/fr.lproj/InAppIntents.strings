@@ -12,9 +12,9 @@
 
 "OEvuBy" = "Téléchargement automatique des photos";
 
-"QlzJjd" = "Commence à télécharger les photos récentes en appliquant les paramètres de téléchargement automatique.";
+"QlzJjd" = "Ajoute les photos récentes à la file d'attente de téléchargement en arrière-plan conformément aux paramètres de téléchargement automatique.";
 
-"Vz5KMD" = "Commence à télécharger les photos récentes en appliquant les paramètres de téléchargement automatique.";
+"Vz5KMD" = "Ajoute les photos récentes à la file d'attente de téléchargement en arrière-plan.";
 
 "YtBidq" = "${photos} photo(s) ajoutée(s) à la file d'attente.";
 

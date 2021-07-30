@@ -12,10 +12,10 @@
 
 "OEvuBy" = "Auto-Upload Photos";
 
-"QlzJjd" = "Starts uploading recent photos by applying the Auto-Upload settings.";
+"QlzJjd" = "Appends recent photos to the background upload queue following Auto-Upload settings.";
 
-"Vz5KMD" = "Starts uploading recent photos by applying the Auto-Upload settings.";
+"Vz5KMD" = "Appends recent photos to the background upload queue.";
 
 "YtBidq" = "${photos} photo(s) added to the upload queue.";
 
-"pSuJbF" = "Error";
+"pSuJbF" = "エラー";

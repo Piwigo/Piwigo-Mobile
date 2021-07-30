@@ -22,7 +22,7 @@
 			<key>INIntentConfigurable</key>
 			<true/>
 			<key>INIntentDescription</key>
-			<string>Starts uploading recent photos by applying the Auto-Upload settings.</string>
+			<string>Appends recent photos to the background upload queue following Auto-Upload settings.</string>
 			<key>INIntentDescriptionID</key>
 			<string>QlzJjd</string>
 			<key>INIntentManagedParameterCombinations</key>
@@ -48,7 +48,7 @@
 					<key>INIntentParameterCombinationIsPrimary</key>
 					<true/>
 					<key>INIntentParameterCombinationSubtitle</key>
-					<string>Starts uploading recent photos by applying the Auto-Upload settings.</string>
+					<string>Appends recent photos.</string>
 					<key>INIntentParameterCombinationSubtitleID</key>
 					<string>Vz5KMD</string>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>

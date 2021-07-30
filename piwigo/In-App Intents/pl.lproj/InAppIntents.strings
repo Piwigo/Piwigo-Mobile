@@ -12,9 +12,9 @@
 
 "OEvuBy" = "Automatyczne przesyłanie zdjęć";
 
-"QlzJjd" = "Rozpoczyna przesyłanie ostatnich zdjęć, stosując ustawienia automatycznego wysyłania.";
+"QlzJjd" = "Dodaje ostatnie zdjęcia do kolejki przesyłania w tle po ustawieniach automatycznego wysyłania.";
 
-"Vz5KMD" = "Rozpoczyna przesyłanie ostatnich zdjęć, stosując ustawienia automatycznego wysyłania.";
+"Vz5KMD" = "Dołącza ostatnie zdjęcia do kolejki przesyłania w tle.";
 
 "YtBidq" = "${photos} zdjęć dodano do kolejki przesyłania.";
 
