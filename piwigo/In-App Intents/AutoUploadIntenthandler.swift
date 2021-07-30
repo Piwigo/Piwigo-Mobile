@@ -96,7 +96,8 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
         }
         
         // Relaunch transfers if there is no new image to append to the upload queue
-        if uploadRequestsToAppend.count == 0 {
+        let photosToPrepare = uploadRequestsToAppend.compactMap{ $0 }.count
+        if photosToPrepare == 0 {
             // Create the operation queue
             let uploadQueue = OperationQueue()
             uploadQueue.maxConcurrentOperationCount = 1
@@ -123,8 +124,6 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
             let lastOperation = uploadOperations.last!
             lastOperation.completionBlock = {
                 debugPrint("    > In-app intent completed with success.")
-                // Save cached data
-                DataController.saveContext()
             }
 
             // Start the operations
@@ -136,7 +135,6 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
         }
 
         // Append auto-upload requests to database
-        let photosToPrepare = uploadRequestsToAppend.compactMap{ $0 }.count
         uploadsProvider.importUploads(from: uploadRequestsToAppend.compactMap{ $0 }) { error in
             // Show an alert if there was an error.
             guard let error = error else {
@@ -163,15 +161,14 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
                 resumeOperation.addDependency(uploadOperations.last!)
                 uploadOperations.append(resumeOperation)
 
-                // Add image preparation which will be followed by transfer operations
-                for _ in 0..<UploadManager.shared.maxNberOfUploadsPerBckgTask {
-                    let uploadOperation = BlockOperation {
-                        // Transfer image
-                        UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
-                    }
-                    uploadOperation.addDependency(uploadOperations.last!)
-                    uploadOperations.append(uploadOperation)
+                // Add first image preparation which will be followed by transfer operations
+                // We prepare only one image due to the 10s limit.
+                let uploadOperation = BlockOperation {
+                    // Transfer image
+                    UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
                 }
+                uploadOperation.addDependency(uploadOperations.last!)
+                uploadOperations.append(uploadOperation)
                 
                 // Save the database when the operation completes
                 let lastOperation = uploadOperations.last!
