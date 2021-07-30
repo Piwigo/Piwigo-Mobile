@@ -1,21 +1,21 @@
 "0qYUsE" = "${error}";
 
-"1yW2tL" = "${photos} photo(s) added to the upload queue.";
+"1yW2tL" = "${photos} изображений добавлено в очередь загрузки.";
 
-"61lMsg" = "Auto-Upload Photos";
+"61lMsg" = "Автозагрузка изображений";
 
-"7zXloB" = "photos";
+"7zXloB" = "изображения";
 
-"85qLPb" = "Auto-Upload Photos";
+"85qLPb" = "Автозагрузка изображений";
 
 "DYv5Ms" = "${error}";
 
-"OEvuBy" = "Auto-Upload Photos";
+"OEvuBy" = "Автозагрузка изображений";
 
-"QlzJjd" = "Starts uploading recent photos by applying the Auto-Upload settings.";
+"QlzJjd" = "Согласно настройки, автоматическая загрузка начинается с последних изображений в списке.";
 
-"Vz5KMD" = "Starts uploading recent photos by applying the Auto-Upload settings.";
+"Vz5KMD" = "Согласно настройки, автоматическая загрузка начинается с последних изображений в списке.";
 
-"YtBidq" = "${photos} photo(s) added to the upload queue.";
+"YtBidq" = "${photos} изображений добавлено в очередь загрузки.";
 
-"pSuJbF" = "Error";
+"pSuJbF" = "Ошибка";
