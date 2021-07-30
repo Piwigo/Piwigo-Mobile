@@ -6,13 +6,13 @@
   Copyright (c) 2015 bakercrew. All rights reserved.
 */
 
-"authors1" = "By Spencer Baker, Olaf Greck";
-"authors2" = "and Eddy Lelièvre-Berna";
-"version" = "Version:";
+"authors1" = "Spencer Baker, Olaf Greck";
+"authors2" = "és Eddy Lelièvre-Berna";
+"version" = "Verzió:";
 
-"translators_text" = "We sincerely thank the following users for contributing their time and efforts in translating Piwigo:\n\n- Arabic: Rachid Haddani,\n- Chinese (simplified): Benjamin Chris,\n- Danish: Thomas Christfort,\n- Dutch: Robert Mulder and Wim Woonings,\n- French: Eddy Lelièvre-Berna,\n- German: Jörg Knörchen,\n- Indonesian: Arvin Noer and Alfian Silaban,\n- Italian: Alessio Perilli,\n- Japanese: Takahiro Yakoh,\n- Polish: Michał Majchrowicz and T00kie,\n- Russian: Eugene Vivdich,\n- Spanish: Armando Bello and Albert Parera,\n- Swedish: Elger Lindgren.";
+"translators_text" = "Nagyon köszönjük a következő felhasználók befektetett idejét és energiáját a Piwigo fordításáért:\n\n- Arab: Rachid Haddani,\n- Dán: Thomas Christfort,\n- Francia: Eddy Lelièvre-Berna,\n- Holland: Robert Mulder and Wim Woonings,\n- Indonéz: Arvin Noer and Alfian Silaban,\n- Japán: Takahiro Yakoh,\n- Kínai (egyszerűsített): Benjamin Chris,\n- Lengyel: Michał Majchrowicz and T00kie,\n- Magyar: Bagi Miklós,\n- Német: Jörg Knörchen,\n- Olasz: Alessio Perilli,\n- Orosz: Eugene Vivdich,\n- Spanyol: Armando Bello and Albert Parera,\n- Svéd: Elger Lindgren.";
 
-"about_text" = "This software contains some third party software that are redistributed under the terms and conditions of their original licenses.\n\n";
+"about_text" = "Ez a szoftver harmadik féltől származó kódot tartalmaz, melyek az eredeti licensz alapján kerülnek továbbterjesztésre.\n\n";
 
 "licenceAFN_text" = "AFNetworking\nThe MIT License (MIT)\n\nCopyright © 2011-2016 Alamofire Software Foundation\n(http://alamofire.org/)";
 

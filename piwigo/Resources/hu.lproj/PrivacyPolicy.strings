@@ -6,57 +6,57 @@
   Copyright © 2018 Piwigo.org. All rights reserved.
 */
 
-"privacy_text" = "Piwigo-Android and Piwigo-Mobile are free, libre and open source client applications for Piwigo galleries. This privacy policy applies to these native Android and iOS applications, connecting to Piwigo sites which are out of the control of the authors. Check the privacy policy of the corresponding sites before configuring an account in Piwigo-Android or Piwigo-Mobile to connect to a gallery.\n\nLast updated October 25, 2018";
+"privacy_text" = "A Piwigo-Android és Piwigo-Mobile ingyenes, szabad és nyílt forráskódú kliens alkalmazások Piwigo galériákhoz. Ez az adatvédelmi szabályzat csak ezekre az Android és iOS alkalmazásokra vonatkozik. A Piwigo helyek, melyekhez csatlakoznak, a készítők hatáskörén kívül esnek. Nézze át az adatvédelmi szabályzatot, mielőtt bejelentkezne fiókjába a Piwigo-Androidban, vagy Piwigo-Mobileban, galériához csatlakozás céljából!\n\nFrissítve: 2018 Október 15-én";
 
-"intro_title" = "Introduction";
+"intro_title" = "Bevezetés";
 
-"intro_text1" = "Developers of Piwigo-Android and Piwigo-Mobile, we (or “us” or “our”) respect the privacy of our users (“user” or “you”). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our mobile applications (the “Applications”). Our names can be extracted from the meta data in the git repositories and the Acknowledgements section within the Applications.";
+"intro_text1" = "A Piwigo-Android és Piwigo-Mobile fejlesztői, mi (vagy \"mi\", vagy \"miénk\") tiszteletben tartjuk felhasználóink (\"felhasználó\" vagy \"Ön\") személyes adatait. Ez az adatbiztonsági szabályzat kifejti hogyan gyűjtjük, használjuk, hozzuk nyilvánosságra, és védjük az Ön adatait, mikor a mobilalkalmazásokat (az \"Alkalmazások\") használja. Neveink hozzáférhetőek a git adattár metaadataiban, és a Köszönetnyilvánítás szekcióban az Alkalmazásokban.";
 
-"intro_text2" = "Please read this Privacy Policy carefully. If you do not agree with the terms of this Privacy Policy, please do not access the Applications.";
+"intro_text2" = "Kérem figyelmesen olvassa ezt az adatvédelmi szabályzatot! Amennyiben nem ért egyet az Adatvédelmi Szabályzat feltételeivel, kérjük ne használja az Alkalmazásokat!";
 
-"intro_text3" = "We reserve the right to make changes to this Privacy Policy at any time and for any reason. We will alert you about any changes by updating the “Last updated” date of this Privacy Policy.";
+"intro_text3" = "Fenntartjuk a jogot, hogy bármikor és bármilyen okból kifolyólag változtassunk az Adatvédelmi Szabályzaton. A változásokról úgy értesülhet, hogy az Adatvédelmi Szabályzatban található \"Frissítve\" szekció dátuma megváltozik.";
 
-"intro_text4" = "You are encouraged to periodically review this Privacy Policy to stay informed of updates. You will be deemed to have been made aware of, will be subject to, and will be deemed to have accepted the changes in any revised Privacy Policy by your continued use of the Applications after the date such revised Privacy Policy is posted.";
+"intro_text4" = "Arra ösztönözzük, hogy időről időre fussa át ezt az Adatvédelmi Szabályzatot, hogy naprakész legyen az esetleges változásokkal az Adatvédelmi Szabályzattal összefüggésben. Az alkalmazás továbbhasználatából eredően úgy fogjuk tekinteni, hogy minden változásról értesült, egyetért, és elfogadta a frissített Adatvédelmi Szabályzatot.";
 
-"intro_text5" = "This Privacy Policy does not apply to the third-party online/mobile store from which you install the Applications or make payments, including any in-app virtual items, which may also collect and use data about you. We are not responsible for any of the data collected by any such third party.";
+"intro_text5" = "Az Adatvédelmi Szabályzat nem vonatkozik harmadik fél által üzemeltetett online/mobil alkalmazásboltokra, ahonnan telepíti az Alkalmazásokat, fizet rajtuk, beleértve az alkalmazáson belüli virtuális eszközöket, melyek további adatokat gyűjthetnek. Nem áll módunkban felelősséget vállalni ilyen harmadik fél által gyűjtött adatokért.";
 
-"what_title" = "What data is processed and stored?";
+"what_title" = "Milyen adatokat kezelünk és tárolunk?";
 
-"what_subTitle1" = "Piwigo Gallery Data";
+"what_subTitle1" = "Piwigo Galéria Adatok";
 
-"what_subText1a" = "Account credentials are stored by the Applications and submitted to the configured sites to connect to one or several Piwigo galleries. Beside that, all the photos, videos and other files that are selected for download/upload and the entered content is stored, processed and transmitted to the configured gallery site.";
+"what_subText1a" = "A fiók hozzáférési adatait az Alkalmazások tárolják, elküldik a beállított weboldalnak, hogy egy vagy több Piwigo galériához biztosítsanak hozzáférést. Ezen túlmenően minden fotó, videó és egyéb állomány ami letöltésre/feltöltésre lett kiválasztva, illetve a beírt adatok is tárolásra-, feldolgozásra-, és továbbításra kerülnek a beállított galéria-oldalhoz.";
 
-"what_subTitle2" = "Geo-Location Information";
+"what_subTitle2" = "Földrajzi Helyadatok";
 
-"what_subText2a" = "We may request access or permission to and track location-based information from your mobile device, either continuously or while you are using the Applications, to provide location-based services. If you wish to change our access or permissions, you may do so in your device’s settings.";
+"what_subText2a" = "Fenntartjuk a jogot, hogy engedélyt kérjünk a mobileszköz helyadatainak hozzáféréséhez, és kövessük azt folymatosan az Alkalmazások használata közben, hogy hely-alapú szolgáltatásokat tudjunk nyújtani. Amennyiben meg szeretné változtatni ezeket az jogosultságokat, a készülék beállításaiban szabadon megteheti.";
 
-"what_subTitle3" = "Mobile Device Access";
+"what_subTitle3" = "Hozzáférés a Mobil Eszközhöz";
 
-"what_subText3a" = "The Applications may request access or permission to certain features from your mobile device, including your mobile device’s photo library and file storage, the Android AccountManager, the Apple Keychain, foreign and cloud based storage folders, geolocalisation, and other features. If you wish to change our access or permissions, you may do so in your device’s settings but be aware that some accesses are necessary to upload media files of your mobile to the Piwigo gallery or to store Piwigo media files in your mobile.";
+"what_subText3a" = "Az Alkalmazások hozzáférést kérhetnek bizonyos, a mobil eszközökön elérhető szolgáltatásokhoz, beleértve a mobil eszköz fotókönyvtárát, tárhelyét, az Android AccountManagert, az Apple Keychaint, külső és felhő alapú tárolók mappáit, lokalizációs adatokat, és egyéb funkciókat. Amennyiben meg szeretné változtatni ezeket az jogosultságokat, a készülék beállításaiban szabadon megteheti, de vegye figyelembe, hogy néhány ezek közül elengedhetetlen a mediafájlok mobilról történő feltöltéséhez a Piwigo galériába, vagy éppen a Piwigo media fájlok mobil eszközön történő tárolásához.";
 
-"what_subTitle4" = "Mobile Device Data";
+"what_subTitle4" = "Mobil Eszköz Adatai";
 
-"what_subText4a" = "When contacting the support team, device information such as your mobile device ID, model, and manufacturer, version of your operating system, email, country, location, and any other data you choose to provide may be transmitted to the development team of the Applications. Beside the data explicitly shared by the user with the developers no content will be stored, transmitted or processed by us.";
+"what_subText4a" = "Mikor a támogatási részlegünkhöz fordul, az eszközzel kapcsolatos bizonyos információk, mint a mobil eszköz egyedi azonosítója, gyártója, az operációs rendszer verziója, az Ön e-mail címe, tartózkódási országa és helye, valamint egyéb, Ön által szabadon megválasztott adataok eljutnak az Alkalmazások fejlesztő csapatainak. Azon túl, hogy ezek az adatok eljutnak a fejlesztőkhöz, nem tároljuk, továbbítjuk, vagy kezeljük ezeket az adatokat.";
 
-"why_title" = "Why does the mobile app store data?";
+"why_title" = "Miért tárol a mobilalkalmazás adatokat?";
 
-"why_text1" = "The Applications store only data to satisfy one intention: accessing a Piwigo gallery hosted on a remote webserver. No data is collected, transmitted or stored that is not required for its intended functionality.";
+"why_text1" = "Az Alkalmazások egyetlen szándék által vezérelve tárolnak adatokat: hogy távoli szerveren üzemeltetett Piwigo galériához biztosítsanak hozzáférést. Semmi olyan adat nem kerül gyűjtésre, továbbításra vagy tárolásra, mely ezen a funkcionalitáson kívül esik.";
 
-"why_text2" = "When you access the Applications, your personal information is not collected through the use of tracking technology. We only use caching mechanisms to help customize the Applications and improve your experience. You can disable or clear caches, but be aware that such action could affect the availability and functionality of the Applications.";
+"why_text2" = "Mikor elindítja az Alkalmazásokat, személyes adatai nem valamely követési technológia által kerülnek gyűjtésre. Kizárólag gyorsítótárazási mechanizmusokat használunk az Alkalmazások testreszabhatósága és az Ön felhasználói élményének javítása érdekében. Kikapcsolhatja és törölheti a gyorsítótár tartalmát, de vegye figyelembe, hogy ez befolyásolhatja az alkalmazások elérhetőségét és funkcionalitását.";
 
-"how_title" = "How is the data protected?";
+"how_title" = "Hogyan védjük az adatokat?";
 
-"how_text1" = "The Applications store data locally on the device it is executed on. You are responsible to protect the stored data from unauthorized access. We strongly recommend to use HTTPS to protect data during transmission and the Applications try to use encrypted connections over HTTPS the first time the user establishes a connection with a Piwigo gallery. Keeping certificates and libraries for HTTPS access up to date is under responsibility of the Piwigo server operator. When the Applications cannot use HTTPS, they switches to HTTP and data are not encrypted during transmission.";
+"how_text1" = "Az Alkalmazások csak lokálisan tárolnak adatokat az eszközön, amin futnak. Az Ön felelőssége, hogy ezeket az adatokat illetéktelen kezektől megvédje. Erősen ajánlott a HTTPS használata az adatok küldése közbeni védelem biztosítása okán, illetve az Alkalmazások megpróbálnak titkosított kapcsolatot létrehozni HTTPS alatt az első alkalommal, mikor a Felhasználó csatlakozik a Piwigo galériához. A tanúsítványok és programkönyvtárak naprakészen tartása a Piwigo szerver üzemeltetőjének felelőssége. Amennyiben az Alkalmazások nem tudnak HTTPS kapcsolatot létrehozni, HTTP-re váltanak, ahol adatátvitel során nincs titkosítás.";
 
-"how_text2" = "When you upload images to a Piwigo gallery, images may contain private data like GPS coordinates or comments. The Applications provide an option for removing these data from image files before upload in the Settings section. It is the responsibility of the user to decide whether those private data are uploaded.";
+"how_text2" = "Mikor képeket tölt fel a Piwigo galériába, a képek tartalmazhatnak személyes adatokat, mint GPS koordináták, vagy megjegyzések. Az Alkalmazások lehetőséget adnak ezen adatok feltöltést megelőző eltávolítására a Beállítások részben. A döntés, hogy ezen adatok feltöltésre kerülnek-e, a Felhasználó kezében van.";
 
-"security_title" = "Security of your information";
+"security_title" = "Az Ön információinak biztonsága";
 
-"security_text" = "We use technical security measures to help protect your personal information. While we have taken reasonable steps to secure the personal information you provide to us, please be aware that despite our efforts, no security measures are perfect or impenetrable, and no method of data transmission can be guaranteed against any interception or other type of misuse. Any information disclosed online is vulnerable to interception and misuse by unauthorized parties. Therefore, we cannot guarantee complete security if you provide personal information.";
+"security_text" = "Technológiai biztonsági megoldásokat alkalmazunk annak érdekében, hogy segítsük az Ön személyes adatainak védelmét. Noha konkrét lépéseket tettünk személyes információjának védelme érdekében, legyen tisztában vele, hogy ennek ellenére nem létezik olyan biztonsági megoldás, amely tökéletes, feltörhetetlen, és olyan adattovábbítási módszer sem létezik, mely folyamán garantálható lenne a védelem lehallgatás, vagy egyéb visszaélésekkel szemben. Ennél fogva nem tudunk teljes biztonságot garantálni, amennyiben Ön személyes adatokat ad meg.";
 
-"contact_title" = "Contact us";
+"contact_title" = "Kapcsolat";
 
-"contact_text" = "If you have questions or comments about this Privacy Policy, please contact us at:";
+"contact_text" = "Amennyiben kérdése, vagy megjegyzése van az Adatvédelmi Szabályzattal kapcsolatban, írjon nekünk:";
 
 "contact_address" = "Piwigo, 42 rue des Vignes, 21800 Quetigny (France)";
 

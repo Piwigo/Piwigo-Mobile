@@ -5,750 +5,750 @@
  Created by Spencer Baker on 1/17/15.
  Copyright (c) 2015 bakercrew. All rights reserved.
  */
-
 // ===========================================================================
 // ==> GENERIC
 // ===========================================================================
 // Tab bar
-"tabBar_albums" = "Albums";
-"tabBar_upload" = "Upload";
-"tabBar_preferences" = "Settings";
+
+"tabBar_albums" = "Albumok";
+"tabBar_upload" = "Feltöltés";
+"tabBar_preferences" = "Beállítások";
 
 // Alert buttons
 "alertOkButton" = "OK";
-"alertDismissButton" = "Dismiss";
-"alertYesButton" = "Yes";
-"alertNoButton" = "No";
-"alertTryAgainButton" = "Try Again";
-"alertCancelButton" = "Cancel";
-"alertAddButton" = "Add";
-"alertRetryButton" = "Retry";
-"alertNextButton" = "Next Photo";
-"alertTryButton" = "Try";
-"alertClearButton" = "Clear";
+"alertDismissButton" = "Elvetés";
+"alertYesButton" = "Igen";
+"alertNoButton" = "Nem";
+"alertTryAgainButton" = "Újrapróbálkozás";
+"alertCancelButton" = "Mégsem";
+"alertAddButton" = "Új";
+"alertRetryButton" = "Újra";
+"alertNextButton" = "Következő fotó";
+"alertTryButton" = "Próba";
+"alertClearButton" = "Törlés";
 
 // HUD views
-"loadingHUD_label" = "Loading…";
-"completeHUD_label" = "Complete";
-"errorHUD_label" = "Error";
+"loadingHUD_label" = "Betöltés…";
+"completeHUD_label" = "Kész";
+"errorHUD_label" = "Hiba";
 
 // Upload rights
-"uploadRights_title" = "Upload Rights Needed";
-"uploadRights_message" = "You must have upload rights to be able to upload photos or videos.";
+"uploadRights_title" = "Feltöltési jogok szükségesek";
+"uploadRights_message" = "Muszály rendelkezned feltöltési jogokkal fotók, vagy videók feltöltéséhez.";
 
 // Errors
-"internetErrorGeneral_title" = "Connection Error";
-"internetErrorGeneral_broken" = "Sorry, the communication was broken. Try logging in again.";
-"internetCancellingConnection_button" = "Cancelling Connection…";
-"internetCancelledConnection_button" = "Cancel Connection";
-"internetCancelledConnection_title" = "Connection Cancelled";
+"internetErrorGeneral_title" = "Kapcsolódási Hiba";
+"internetErrorGeneral_broken" = "Elnézést, de a kommunikáció megszakadt. Próbálj meg mégegyszer belépni!";
+"internetCancellingConnection_button" = "Kapcsolat megszakítása…";
+"internetCancelledConnection_button" = "Megszakítás";
+"internetCancelledConnection_title" = "Kapcsolat megszakítva";
 
-"PiwigoServer_wrongJSONobject" = "Could not digest JSON object returned by Piwigo server.";
-"PiwigoServer_invalidJSONobject" = "Piwigo server did not return a valid JSON object.";
-"PiwigoServer_emptyJSONobject" = "Piwigo server did return an empty JSON object.";
+"PiwigoServer_wrongJSONobject" = "Nem sikerült értelmezni a Piwigo szervertől érkező JSON objektumot.";
+"PiwigoServer_invalidJSONobject" = "A Piwigo szerver érvénytelen JSON objektummal válaszolt.";
+"PiwigoServer_emptyJSONobject" = "Üres JSON objektum érkezett a Piwigo szervertől.";
 
 // ===========================================================================
 // ==> CORE DATA
 // ===========================================================================
-"CoreDataStore_WarningTitle" = "Warning";
-"CoreDataStore_WarningMessage" = "A serious application error occurred while Piwigo tried to read the data cache. A new cache has therefore been created.";
-"CoreDataFetch_DigestError" = "Could not digest the fetched data.";
+"CoreDataStore_WarningTitle" = "Figyelem";
+"CoreDataStore_WarningMessage" = "Komoly hibára futottunk, miközben a Piwigo a gyorsítótár adatait próbálta olvasni. Új gyorsítótárat kellett létrehozni.";
+"CoreDataFetch_DigestError" = "Értelmezhetetlen a letöltött adat.";
 
 // Tag objects
-"CoreDataFetch_TagError" = "Fetch tags error!";
-"CoreDataFetch_TagMissingData" = "Found and will discard a tag missing a valid code or name.";
-"CoreDataFetch_TagCreateFailed" = "Failed to create a new Tag object.";
+"CoreDataFetch_TagError" = "Hiba a címkék letöltésekor!";
+"CoreDataFetch_TagMissingData" = "Kaptunk, és elvetettünk egy címkét, aminek nem volt megfelelő kódja, vagy neve.";
+"CoreDataFetch_TagCreateFailed" = "Nem sikerült létrehozni az új címkeobjektumot.";
 
 // Upload objects
-"CoreDataFetch_UploadCreateFailed" = "Failed to create a new Upload object.";
-"CoreDataFetch_UploadMissingAsset" = "Failed to retrieve photo.";
+"CoreDataFetch_UploadCreateFailed" = "Nem sikerült létrehozni az új feltöltésobjektumot.";
+"CoreDataFetch_UploadMissingAsset" = "Fotó letöltése sikertelen.";
 
 // ===========================================================================
 // ==> LOGIN / LOGOUT
 // ===========================================================================
 // Login
-"login" = "Login";
-"login_serverPlaceholder" = "example.com";
-"login_userPlaceholder" = "Username (optional)";
-"login_passwordPlaceholder" = "Password (optional)";
-"login_loggingIn" = "Logging In...";
-"login_connecting" = "Connecting";
-"login_newSession" = "Opening Session";
-"login_communityParameters" = "Community Parameters";
-"login_serverParameters" = "Piwigo Parameters";
-"login_connectionChanged" = "Connection Changed!";
-"loginHTTP_title" = "HTTP Credentials";
-"loginHTTP_message" = "Basic access authentification is required by the Piwigo server:";
-"loginHTTPuser_placeholder" = "Username";
-"loginHTTPpwd_placeholder" = "Password";
-"loginCertFailed_title" = "Connection Not Private";
-"loginCertFailed_message" = "Piwigo warns you when a website has a certificate that is not valid. Do you still want to accept this certificate?";
-"loginHTTPSfailed_title" = "Secure Connection Failed";
-"loginHTTPSfailed_message" = "Piwigo cannot establish a secure connection. Do you want to try to establish an insecure connection?";
+"login" = "Bejelentkezés";
+"login_serverPlaceholder" = "példa.hu";
+"login_userPlaceholder" = "Felhasználónév (opcionális)";
+"login_passwordPlaceholder" = "Jelszó (opcionális)";
+"login_loggingIn" = "Bejelentkezés...";
+"login_connecting" = "Kapcsolódás";
+"login_newSession" = "Munkamenet megnyitása";
+"login_communityParameters" = "Community paraméterek";
+"login_serverParameters" = "Piwigo paraméterek";
+"login_connectionChanged" = "A kapcsolat megváltozott!";
+"loginHTTP_title" = "HTTP azonosítók";
+"loginHTTP_message" = "A Piwigo szerver alapszintű hozzáférési hitelesítést kér:";
+"loginHTTPuser_placeholder" = "Felhasználónév";
+"loginHTTPpwd_placeholder" = "Jelszó";
+"loginCertFailed_title" = "A kapcsolat nem biztonságos";
+"loginCertFailed_message" = "A Piwigo figyelmeztetést küld, amennyiben a weboldal tanúsítványa nem megfelelő. Biztos el akarod fogadni ezt a tanúsítványt?";
+"loginHTTPSfailed_title" = "Biztonságos kapcsolat létrehozása sikertelen";
+"loginHTTPSfailed_message" = "A Piwigo nem tud létrehozni biztonságos kapcsolatot. Szeretnéd, hogy megpróbáljon nem-biztonságos kapcsolatot létrehozni?";
 
 // Login — Errors
-"serverURLerror_title" = "Incorrect URL";
-"serverURLerror_message" ="Please correct the Piwigo web server address.";
-"serverMethodsError_title" = "Unknown Methods";
-"serverMethodsError_message" = "Failed to get server methods. Problem with Piwigo server?";
-"serverInvalidMethodError_message" = "Failed to call server method.";
-"serverMissingParamError_message" = "Failed to execute server method with missing parameter.";
-"serverInvalidParamError_message" = "Failed to call server method with provided parameters.";
-"serverUnknownError_message" = "Unexpected error encountered while calling server method with provided parameters.";
+"serverURLerror_title" = "Hibás URL";
+"serverURLerror_message" = "Kérlek javítsd a Piwigo web szerver címét!";
+"serverMethodsError_title" = "Ismeretlen metódusok";
+"serverMethodsError_message" = "Hiba a szerver metódusainak letöltésekor. Lehet ez szerverhiba?";
+"serverInvalidMethodError_message" = "Hiba a szerver-metódus hívásakor.";
+"serverMissingParamError_message" = "Nem sikerült a szerver-metódust futtatni hiányzó paraméter miatt.";
+"serverInvalidParamError_message" = "Nem sikerült meghívni a szerver-metódust a megadott paraméterekkel.";
+"serverUnknownError_message" = "Ismeretlen hiba történt a szerver-metódus megadott paraméterekkel történő meghívásakor.";
 
-"loginError_title" = "Login Fail";
-"loginError_message" = "The username and password don't match on the given web address";
-"loginEmptyServer_title" = "Enter a Web Address";
-"loginEmptyServer_message" = "Please select a protocol and enter a Piwigo web address in order to proceed.";
+"loginError_title" = "Bejelentkezési Hiba";
+"loginError_message" = "A felhasználó és jelszó párosa nem megfelelő a megadott weboldalhoz";
+"loginEmptyServer_title" = "Adj meg egy web címet";
+"loginEmptyServer_message" = "Kérlek válassz protocollt, és add meg a Piwigo web címet a továbblépéshez!";
 
-"serverConnectionError_title" = "Connection Failed";
-"serverConnectionError_message" = "A secured HTTPS connection could not be established. Please check the address or try in unencrypted HTTP mode?";
+"serverConnectionError_title" = "Csatlakozási hiba";
+"serverConnectionError_message" = "Nem sikerült biztonságos HTTPS kapcsolatot létrehozni. Kérlek ellenőrizd a web címet, vagy próbálkozz HTTP móddal?";
 
-"serverVersionNotCompatible_title" = "Server Incompatible";
-"serverVersionNotCompatible_message" = "Your Piwigo server version is %@. Piwigo Mobile only supports a version of at least 2.8. Please update your server to use Piwigo Mobile. Do you still want to continue?";
+"serverVersionNotCompatible_title" = "Szerver nem kompatibilis";
+"serverVersionNotCompatible_message" = "A Piwigo szervered verziója %@. A Piwigo Mobile használatához legalább 2.8-as verzióra van szükség. Kérlek frissítsd a szervered, hogy használni tudd a Piwigo Mobile-t. Folytassuk a kapcsolódást ennek ellenére?";
 
-"sessionStatusError_title" = "Authentication Fail";
-"sessionStatusError_message" = "Failed to authenticate with the server. Try logging in again.";
+"sessionStatusError_title" = "Hitelesítés sikertelen";
+"sessionStatusError_message" = "Nem sikerült bejelentkezni a szerverre. Kérlek próbáld újra!";
 
-"serverCommunityError_title" = "Community Error";
-"serverCommunityError_message" = "Failed to get Community extension parameters. Try logging in again.";
+"serverCommunityError_title" = "Közösségi Hiba";
+"serverCommunityError_message" = "A közösségi bővítmény paraméterei nem elérhetőek. Kérlek jelentkezz be újra!";
 
 // Logout
-"logoutConfirmation_title" = "Logout";
-"logoutConfirmation_message" = "Are you sure you want to logout?";
+"logoutConfirmation_title" = "Kijelentkezés";
+"logoutConfirmation_message" = "Biztos ki akarsz jelentkezni?";
 
 // Logout — Errors
-"logoutFail_title" = "Logout Failed";
+"logoutFail_title" = "Sikertelen kijelentkezés";
 
 // ===========================================================================
 // ==> ALBUMS
 // ===========================================================================
 // Albums view
-"categoryMainEmtpy" = "No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.";
-"categoryTableView_photoCount" = "photo";
-"categoryTableView_photosCount" = "photos";
-"categoryTableView_subCategoryCount" = "sub-album";
-"categoryTableView_subCategoriesCount" = "sub-albums";
-"categoryImageList_selectButton" = "Select";
-"categoryImageList_deselectButton" = "Deselect";
-"categoryImageList_noDataError" = "Error No Data";
+"categoryMainEmtpy" = "Még nincsenek albumok a Piwigoban.\nLefelé húzással frissítheted a képernyőt, illetve megpróbálhatsz újra bejelentkezni.";
+"categoryTableView_photoCount" = "fotó";
+"categoryTableView_photosCount" = "fotók";
+"categoryTableView_subCategoryCount" = "alalbum";
+"categoryTableView_subCategoriesCount" = "alalbum";
+"categoryImageList_selectButton" = "Kiválaszt";
+"categoryImageList_deselectButton" = "Elvet";
+"categoryImageList_noDataError" = "Hiba: nincs adat";
 
 // Albums "Discover"
-"categoryDiscover_title" = "Discover";
-"categoryDiscoverVisits_title" = "Most visited";
-"categoryDiscoverVisits_legend" = "hits";
-"categoryDiscoverBest_title" = "Best rated";
-"categoryDiscoverRecent_title" = "Recent photos";
-"categoryDiscoverFavorites_title" = "Your favorites";
+"categoryDiscover_title" = "Felfedezés";
+"categoryDiscoverVisits_title" = "Legtöbbet látogatott";
+"categoryDiscoverVisits_legend" = "megtekintés";
+"categoryDiscoverBest_title" = "Legjobbra értékelt";
+"categoryDiscoverRecent_title" = "Friss fotók";
+"categoryDiscoverFavorites_title" = "Kedvencek";
 
 // Albums sort
-"categorySort_nameAscending" = "Photo Title, A → Z";
-"categorySort_nameDescending" = "Photo Title, Z → A";
-"categorySort_fileNameAscending" = "File Name, A → Z";
-"categorySort_fileNameDescending" = "File Name, Z → A";
-"categorySort_dateCreatedDescending" = "Date Created, new → old";
-"categorySort_dateCreatedAscending" = "Date Created, old → new";
-"categorySort_datePostedDescending" = "Date Posted, new → old";
-"categorySort_datePostedAscending" = "Date Posted, old → new";
-"categorySort_ratingScoreDescending" = "Rating Score, high → low";
-"categorySort_ratingScoreAscending" = "Rating Score, low → high";
-"categorySort_visitsDescending" = "Visits, high → low";
-"categorySort_visitsAscending" = "Visits, low → high";
-"categorySort_manual" = "Manual Order";
-"categorySort_random" = "Random Order";
+"categorySort_nameAscending" = "Név szerint, A → Z";
+"categorySort_nameDescending" = "Név szerint, Z → A";
+"categorySort_fileNameAscending" = "Vezetéknév, A → Z";
+"categorySort_fileNameDescending" = "Vezetéknév, Z → A";
+"categorySort_dateCreatedDescending" = "Létrehozás, új → régi";
+"categorySort_dateCreatedAscending" = "Létrehozás, régi → új";
+"categorySort_datePostedDescending" = "Feltöltés, új → régi";
+"categorySort_datePostedAscending" = "Feltöltés, régi → új";
+"categorySort_ratingScoreDescending" = "Értékelés, magas → alacsony";
+"categorySort_ratingScoreAscending" = "Értékelés, alacsony → magas";
+"categorySort_visitsDescending" = "Népszerűség, magas → alacsony";
+"categorySort_visitsAscending" = "Népszerűség, alacsony → magas";
+"categorySort_manual" = "Kézi rendezés";
+"categorySort_random" = "Véletlen sorrend";
 
-"categorySort_videosOnly" = "Videos Only";
-"categorySort_imagesOnly" = "Photos Only";
+"categorySort_videosOnly" = "Videók";
+"categorySort_imagesOnly" = "Fotók";
 
 // Album selection
 "categorySelection_title" = "Album";
-"categorySelection_titleSub" = "Sub-Albums";
-"categorySelection_root" = "Root Album";
-"categorySelection_root<375pt" = "Root";
-"categorySelection_action" = "Select an action for this album";
-"categorySelectionHUD_label" = "Retrieving Albums Data…";
-"categorySelection_allAlbums" = "All Albums";
+"categorySelection_titleSub" = "Alalbumok";
+"categorySelection_root" = "Főalbum";
+"categorySelection_root<375pt" = "Gyökér";
+"categorySelection_action" = "Az albumon végrehajtandó feladat";
+"categorySelectionHUD_label" = "Album adatainak betöltése…";
+"categorySelection_allAlbums" = "Albumok";
 
 // Album upload
-"categoryUpload_noSubAlbum" = "There is no sub-album to upload photos to";
-"categoryUpload_chooseAlbum" = "Select a sub-album to upload photos to";
-"categoryUpload_LocalAlbums" = "Local Albums";
-"categoryUpload_chooseLocalAlbum" = "Select an album to get photos from";
-"categoryUpload_sharedAlbums" = "Shared Albums";
-"categoryUpload_iCloudAlbums" = "iCloud Albums";
-"categoryUpload_chooseiCloudAlbum" = "Select an iCloud album to get photos from";
-"categoryUpload_syncedEvents" = "iPhoto Events";
-"categoryUpload_syncedAlbums" = "iPhoto Albums";
-"categoryUpload_syncedFaces" = "iPhoto Faces";
-"categoryUpload_mediaTypes" = "Media Types";
-"categoryUpload_otherAlbums" = "Other Albums";
-"categoryUpload_pasteboard" = "Clipboard";
+"categoryUpload_noSubAlbum" = "Nincs alalbum, ahova fotókat lehetne tölteni";
+"categoryUpload_chooseAlbum" = "Választható alalbumok";
+"categoryUpload_LocalAlbums" = "Helyi albumok";
+"categoryUpload_chooseLocalAlbum" = "Elérhető helyi fotóalbumok";
+"categoryUpload_sharedAlbums" = "Megosztott albumok";
+"categoryUpload_iCloudAlbums" = "iCloud albumok";
+"categoryUpload_chooseiCloudAlbum" = "Elérhető iCloud fotóalbumok";
+"categoryUpload_syncedEvents" = "iPhoto események";
+"categoryUpload_syncedAlbums" = "iPhoto albumok";
+"categoryUpload_syncedFaces" = "iPhone szelfik";
+"categoryUpload_mediaTypes" = "Médiatípusok";
+"categoryUpload_otherAlbums" = "Egyéb albumok";
+"categoryUpload_pasteboard" = "Vágólap";
 
-"categoyUpload_loadSubCategories" = "load";
-"categoryUpload_images" = "Upload Photos";
+"categoyUpload_loadSubCategories" = "betöltés";
+"categoryUpload_images" = "Képek feltöltése";
 
 // Default album
-"setDefaultCategory_select" = "Please select an album or sub-album which will become the new root album.";
-"setDefaultCategory_title" = "Default Album";
-"setDefaultCategory_message" = "Are you sure you want to set the album \"%@\" as default album?";
+"setDefaultCategory_select" = "Válaszd ki az új főalbumot!";
+"setDefaultCategory_title" = "Alapértelmezett Album";
+"setDefaultCategory_message" = "Biztos, hogy a \"%@\" nevű albumot szeretnéd alapértelmezettnek jelölni?";
 
 // Album create
-"createNewAlbum_title" = "New Album";
-"createNewAlbum_message" = "Enter a name for this album:";
-"createNewAlbum_placeholder" = "Album Name";
-"createNewAlbumDescription_placeholder" = "Description";
-"createNewAlbumDescription_noDescription" = "no description";
-"createNewAlbumHUD_label" = "Creating Album…";
+"createNewAlbum_title" = "Új Album";
+"createNewAlbum_message" = "Adj nevet az albumnak:";
+"createNewAlbum_placeholder" = "Album Neve";
+"createNewAlbumDescription_placeholder" = "Leírás";
+"createNewAlbumDescription_noDescription" = "nincs leírás";
+"createNewAlbumHUD_label" = "Album létrehozása…";
 
 // Album create — Errors
-"createAlbumError_title" = "Create Album Error";
-"createAlbumError_message" = "Failed to create a new album";
+"createAlbumError_title" = "Hiba az album létrehozásakor";
+"createAlbumError_message" = "Nem sikerült létrehozni az albumot";
 
 // Album options (swipe actions)
-"categoryCellOption_rename" = "Rename";
-"categoryCellOption_move" = "Move";
-"categoryCellOption_delete" = "Delete";
+"categoryCellOption_rename" = "Átnevezés";
+"categoryCellOption_move" = "Mozgatás";
+"categoryCellOption_delete" = "Törlés";
 
 // Album rename
-"renameCategory_title" = "Rename Album";
-"renameCategory_message" = "Enter a new name for this album";
-"renameCategory_button" = "Rename";
-"renameCategoryHUD_label" = "Renaming Album…";
+"renameCategory_title" = "Album átnevezése";
+"renameCategory_message" = "Adj új nevet az albumnak";
+"renameCategory_button" = "Átnevezés";
+"renameCategoryHUD_label" = "Album átnevezése…";
 
 // Album rename — Errors
-"renameCategoyError_title" = "Rename Fail";
-"renameCategoyError_message" = "Failed to rename your album";
+"renameCategoyError_title" = "Átnevezés sikertelen";
+"renameCategoyError_message" = "Nem sikerült átnevezni az albumot";
 
 // Album refresh representative
-"refreshCategoryHUD_label" = "Refreshing Representative…";
+"refreshCategoryHUD_label" = "Frissítés…";
 
 // Album refresh representative — Errors
-"refreshCategoyError_title" = "Refresh Fail";
-"refreshCategoyError_message" = "Failed to refresh your album representative";
+"refreshCategoyError_title" = "Sikertelen frissítés";
+"refreshCategoyError_message" = "Nem sikerült frissíteni az albumot";
 
 // Album delete
-"deleteCategory_title" = "DELETE ALBUM";
-"deleteCategory_message" = "ARE YOU SURE YOU WANT TO DELETE THE ALBUM \"%@\" AND ALL %@ PHOTOS?";
-"deleteCategory_empty" = "Delete Empty Album";
-"deleteCategory_noImages" = "Keep Photos";
-"deleteCategory_orphanedImages" = "Delete Orphans";
-"deleteCategory_allImages" = "Delete %@ Photos";
-"deleteCategoryConfirm_title" = "Are you sure?";
-"deleteCategoryConfirm_message" = "Please enter the number of photos in order to delete this album. Number of photos: %@";
-"deleteCategoryConfirm_deleteButton" = "DELETE";
-"deleteCategoryHUD_label" = "Deleting Album…";
+"deleteCategory_title" = "ALBUM TÖRLÉSE";
+"deleteCategory_message" = "BIZTOS VAGY BENNE, HOGY KI AKAROD TÖRÖLNI A(Z) \"%@\" ALBUMOT ÉS AZ ÖSSZES %@DB FOTÓT BENNE?";
+"deleteCategory_empty" = "Üres Album Törlése";
+"deleteCategory_noImages" = "Fotók megtartása";
+"deleteCategory_orphanedImages" = "Árvák törlése";
+"deleteCategory_allImages" = "Mind a(z) %@ fotó törlése";
+"deleteCategoryConfirm_title" = "Biztos vagy benne?";
+"deleteCategoryConfirm_message" = "Kérlek add meg a fotók pontos számát az album törléséhez. A fotók száma: %@";
+"deleteCategoryConfirm_deleteButton" = "TÖRLÉS";
+"deleteCategoryHUD_label" = "Album törlése…";
 
 // Album delete — errors
-"deleteCategoryMatchError_title" = "Number Doesn't Match";
-"deleteCategoryMatchError_message" = "The number of photos you entered doesn't match the number of photos in the category. Please try again if you desire to delete this album";
-"deleteCategoryError_title" = "Delete Fail";
-"deleteCategoryError_message" = "Failed to delete your album";
+"deleteCategoryMatchError_title" = "A megadott érték helytelen";
+"deleteCategoryMatchError_message" = "A fotók száma nem egyezik az általad megadott értékkel ebben a kategóriában. Kérlek próbáld újra, ha tényleg ki akarod törölni az albumot";
+"deleteCategoryError_title" = "A törlés nem sikerült";
+"deleteCategoryError_message" = "Nem sikerült kitörölni az albumot";
 
 // Album move
-"moveCategory" = "Move Album";
-"moveCategory_select" = "Please select an album or sub-album to move album \"%@\" into.";
-"moveCategory_message" = "Are you sure you want to move \"%@\" into the album \"%@\"?";
-"moveCategoryHUD_moving" = "Moving Album…";
+"moveCategory" = "Album mozgatása";
+"moveCategory_select" = "Kérlek válassz egy albumot, vagy alalbumot, ahova \"%@\" albumot áthelyeznéd!";
+"moveCategory_message" = "Biztosan át szeretnéd helyezni \"%@\" albumot \"%@\" albumba?";
+"moveCategoryHUD_moving" = "Album áthelyezése…";
 
 // Album move — Errors
-"moveCategoryError_title" = "Move Fail";
-"moveCategoryError_message" = "Failed to move your album";
+"moveCategoryError_title" = "Sikertelen áthelyezés";
+"moveCategoryError_message" = "Nem sikerült áthelyezni az albumot";
 
 // Album set photo thumbnail
-"categorySelection_setThumbnail" = "Please select the album which will use the photo \"%@\" as a thumbnail.";
-"categorySelection_current" = "Select the current album for this photo";
-"categorySelection_one" = "Select one of the albums containing this photo";
-"categorySelection_other" = "Or select another album for this photo";
-"categoryImageSet_title" = "Album Thumbnail";
-"categoryImageSet_message" = "Are you sure you want to apply this photo to the album \"%@\"?";
-"categoryImageSetHUD_updating" = "Updating Album Thumbnail…";
+"categorySelection_setThumbnail" = "Melyik album bélyegképe legyen a \"%@\" fotó?";
+"categorySelection_current" = "Jelenlegi album kiválasztása";
+"categorySelection_one" = "Válassz a további albumok közül, melyek ezt a fotót tartalmazzák";
+"categorySelection_other" = "Vagy válassz egy másik albumot";
+"categoryImageSet_title" = "Album kezdőképe";
+"categoryImageSet_message" = "Biztos alkalmazni akarod azt a fotót a(z) \"%@\" albumra?";
+"categoryImageSetHUD_updating" = "Bélyegkép frissítése…";
 
 // Album set photo thumbnail — Errors
-"categoryImageSetError_title" = "Photo Set Error";
-"categoryImageSetError_message" = "Failed to set the album photo";
+"categoryImageSetError_title" = "Fotóbeállítási hiba";
+"categoryImageSetError_message" = "Hiba történt a fotó beállításakor";
 
 
 // ===========================================================================
 // ==> IMAGES
 // ===========================================================================
-"singleImage" = "Photo";
-"singleVideo" = "Video";
-"singleAudio" = "Audio";
-"severalImages" = "Photos";
-"All Photos" = "All Photos";
-"severalVideos" = "Videos";
-"noImages" = "No Photos";
-"pullToRefresh" = "Reload Photos";
-"andMore" = " & more";
-"Months" = "Months";
-"Weeks" = "Weeks";
-"Days" = "Days";
-"Date" = "Date";
+"singleImage" = "Fotó";
+"singleVideo" = "Videó";
+"singleAudio" = "Hang";
+"severalImages" = "Fotók";
+"All Photos" = "Összes fotó";
+"severalVideos" = "Videók";
+"noImages" = "Összes videó";
+"pullToRefresh" = "Fotók újratöltése";
+"andMore" = " és több";
+"Months" = "Hónap";
+"Weeks" = "Hét";
+"Days" = "Nap";
+"Date" = "Dátum";
 
 // Errors
-"albumPhotoError_title" = "Get Album Photos Error";
-"albumPhotoError_message" = "Failed to get album photos (corrupt photo in your album?)";
+"albumPhotoError_title" = "Albumfotók letöltése nem sikerült";
+"albumPhotoError_message" = "Nem sikerült letölteni a fotókat az albumból (lehet, hogy hibás fotó van az albumban?)";
 
 // Image sort
-"sortBy" = "Sort by";
-"imageSortTitle" = "Sort Photos";
-"imageSortMessage" = "Please select how you wish to sort photos";
-"imageSortingHUD" = "Sorting Photos…";
-"imageSelectingHUD" = "Selecting Photos…";
-"imageDeselectingHUD" = "Deselecting Photos…";
+"sortBy" = "Rendezés";
+"imageSortTitle" = "Fotók rendezése";
+"imageSortMessage" = "Milyen szempont alapján rendezzük a fotókat?";
+"imageSortingHUD" = "Rendezés…";
+"imageSelectingHUD" = "Fotók kiválasztása…";
+"imageDeselectingHUD" = "Fotók kiválasztásának törlése…";
 
 // Image options (actions)
-"imageOptions_title" = "Photo Options";
-"imageOptions_edit" = "Edit";
-"imageOptions_download" = "Download";
-"imageOptions_setAlbumImage" = "Set Album Thumbnail";
+"imageOptions_title" = "Fotó opciók";
+"imageOptions_edit" = "Módosítás";
+"imageOptions_download" = "Letöltés";
+"imageOptions_setAlbumImage" = "Album bélyegkép beállítása";
 
 // Image details
-"imageDetailsView_title" = "Properties";
-"editImageDetails_title" = "Title";
-"editImageDetails_titlePlaceholder" = "Image Title";
-"editImageDetails_author" = "Author";
-"editImageDetails_tags" = "Tags";
-"editImageDetails_privacyLevel" = "Who can see this photo?";
-"editImageDetails_description" = "Description";
-"editImageDetails_comments" = "Comments";
-"editImageDetails_dateCreation" = "Creation Date";
-"editImageDetails_dateUnset" = "Unset";
-"editImageDetails_dateToday" = "Today";
-"editImageDetails_dateMonthInc" = "+1 Month";
-"editImageDetails_dateMonthDec" = "-1 Month";
-"editImageDetails_dateYearInc" = "+1 Year";
-"editImageDetails_dateYearDec" = "-1 Year";
-"editImageDetailsHUD_updatingSingle" = "Updating Photo…";
-"editImageDetailsHUD_updatingPlural" = "Updating Photos…";
+"imageDetailsView_title" = "Tulajdonságok";
+"editImageDetails_title" = "Cím";
+"editImageDetails_titlePlaceholder" = "Fotó címe";
+"editImageDetails_author" = "Készítő";
+"editImageDetails_tags" = "Címkék";
+"editImageDetails_privacyLevel" = "Ki láthatja ezt a fotót?";
+"editImageDetails_description" = "Leírás";
+"editImageDetails_comments" = "Hozzászólások";
+"editImageDetails_dateCreation" = "Létrehozás dátuma";
+"editImageDetails_dateUnset" = "Idő nélkül";
+"editImageDetails_dateToday" = "Ma";
+"editImageDetails_dateMonthInc" = "+1 Hónap";
+"editImageDetails_dateMonthDec" = "-1 Hónap";
+"editImageDetails_dateYearInc" = "+1 Év";
+"editImageDetails_dateYearDec" = "-1 Év";
+"editImageDetailsHUD_updatingSingle" = "Fotó módosítása…";
+"editImageDetailsHUD_updatingPlural" = "Fotók módosítása…";
 
 // Image details — Errors
-"editImageDetailsError_title" = "Failed to Update";
-"editImageDetailsError_message" = "Failed to update your changes with your server. Try again?";
-"imageDetailsFetchError_title" = "Photo Details Fetch Failed";
-"imageDetailsFetchError_retryMessage" = "Fetching the photo data failed. Try again?";
-"imageDetailsFetchError_continueMessage" = "Fetching the photo data failed. Continue?";
+"editImageDetailsError_title" = "Sikertelen frissítés";
+"editImageDetailsError_message" = "Nem sikerült menteni a változásokat a szerverre. Megpróbáljuk újra?";
+"imageDetailsFetchError_title" = "A fotó adatai nem letölthetőek";
+"imageDetailsFetchError_retryMessage" = "Hiba a fotó adatainak betöltésénél. Megpróbáljuk újra?";
+"imageDetailsFetchError_continueMessage" = "Hiba a fotó adatainak betöltésénél. Tovább?";
 
 // Image privacy levels
-"privacyLevel" = "Privacy Level";
-"privacyLevel_admin" = "Admins";
-"privacyLevel_adminFamily" = "Admins, Family";
-"privacyLevel_adminsFamilyFriends" = "Admins, Family, Friends";
-"privacyLevel_adminsFamilyFriendsContacts" = "Admins, Family, Friends, Contacts";
-"privacyLevel_everybody" = "Everybody";
+"privacyLevel" = "Adatvédelem szintje";
+"privacyLevel_admin" = "Adminok";
+"privacyLevel_adminFamily" = "Adminok, Család";
+"privacyLevel_adminsFamilyFriends" = "Adminok, Család, Barátok";
+"privacyLevel_adminsFamilyFriendsContacts" = "Adminok, Család, Barátok, Ismerősök";
+"privacyLevel_everybody" = "Mindenki";
 
 // Image tags
-"none" = "none";
-"tags" = "Tags";
-"tag"  = "Tag";
-"tagsTitle_selectOne" = "Select a Tag";
-"tagsHeader_selected" = "Selected";
-"tagsHeader_notSelected" = "Not Selected";
-"tagsHeader_all" = "All";
-"tagsAdd_title" = "Add Tag";
-"tagsAdd_message" = "Enter a name for this new tag";
-"tagsAdd_placeholder" = "New tag";
-"tagsAddHUD_label" = "Creating Tag…";
+"none" = "semmi";
+"tags" = "Címkék";
+"tag" = "Címke";
+"tagsTitle_selectOne" = "Címke kiválasztása";
+"tagsHeader_selected" = "Kijelölt";
+"tagsHeader_notSelected" = "Nem kijelölt";
+"tagsHeader_all" = "Mind";
+"tagsAdd_title" = "Új címke";
+"tagsAdd_message" = "Adj nevet a címkének";
+"tagsAdd_placeholder" = "Új címke";
+"tagsAddHUD_label" = "Címke létrehozása folyamatban…";
 
 // Image tags errors
-"tagsAddError_message" = "Failed to create new tag";
-"tagsAddError_title" = "Create Fail";
+"tagsAddError_message" = "Nem sikerült létrehozni a címkét";
+"tagsAddError_title" = "Nem sikerült létrehozni";
 
 // Image select
-"selectImages" = "Select Photos";
-"selectImageSelected" = "1 Photo Selected";
-"selectImagesSelected" = "%@ Photos Selected";
-"selectAll" = "Select All";
+"selectImages" = "Fotók kiválasztása";
+"selectImageSelected" = "1 kiválasztott fotó";
+"selectImagesSelected" = "%@ kiválasztott fotó";
+"selectAll" = "Minden kijelölése";
 
 // Image rename (filename)
-"renameImage_title" = "Original File";
-"renameImage_message" = "Enter a new file name for this photo";
-"renameImageHUD_label" = "Renaming File…";
+"renameImage_title" = "Eredeti fájl";
+"renameImage_message" = "Adj új nevet a fotónak";
+"renameImageHUD_label" = "Fájl átnevezése…";
 
 // Image rename — Errors
-"renameImageError_message" = "Failed to rename photo file";
+"renameImageError_message" = "Nem sikerült átnevezni a fájlt";
 
 // Image delete
-"deleteImage_delete" = "Delete";
-"deleteImageProgress_title" = "Deleting %@%% Done";
+"deleteImage_delete" = "Törlés";
+"deleteImageProgress_title" = "%@%% sikeresen törölve";
 
-"deleteSingleImage_title" = "Delete Photo";
-"deleteSingleImageHUD_deleting" = "Deleting Photo…";
-"deleteSeveralImagesHUD_deleting" = "Deleting Photos…";
-"removeSingleImage_title" = "Remove from Album";
-"removeSingleImageHUD_removing" = "Removing Photo…";
-"removeSeveralImagesHUD_removing" = "Removing Photos…";
-"deleteSingleImage_message" = "Are you sure you want to delete this photo? This cannot be undone!";
-"deleteSeveralImages_title" = "Delete %@ Photos";
-"deleteSeveralImages_message" = "Are you sure you want to delete the selected %@ photos? This cannot be undone!";
+"deleteSingleImage_title" = "Fotó törlése";
+"deleteSingleImageHUD_deleting" = "Fotó törlése…";
+"deleteSeveralImagesHUD_deleting" = "Fotók törlése…";
+"removeSingleImage_title" = "Eltávolítás az albumból";
+"removeSingleImageHUD_removing" = "Fotó eltávolítása…";
+"removeSeveralImagesHUD_removing" = "Fotók eltávolítása…";
+"deleteSingleImage_message" = "Biztos törlöd a fotót? Ez végleges törlés!";
+"deleteSeveralImages_title" = "%@ fotó törlése";
+"deleteSeveralImages_message" = "Biztos ki akarod törölni a kiválasztott %@ fotót? Ez végleges törlés!";
 
 // Image delete — Errors
-"deleteImageFail_title" = "Delete Failed";
-"deleteImageFail_message" = "Photo could not be deleted.";
+"deleteImageFail_title" = "A törlés nem sikerült";
+"deleteImageFail_message" = "A fotót nem sikerült törölni.";
 
 // Image download
-"downloadSingleImage_title" = "Download Photo";
-"downloadSingleImage_confirmation" = "Are you sure you want to download the selected photo?";
-"downloadSeveralImages_title" = "Download %@ Photos";
-"downloadSeveralImage_confirmation" = "Are you sure you want to download the selected %@ photos?";
+"downloadSingleImage_title" = "Fotó letöltése";
+"downloadSingleImage_confirmation" = "Biztos le akarod tölteni a kiválasztott fotót?";
+"downloadSeveralImages_title" = "%@ fotó letöltése";
+"downloadSeveralImage_confirmation" = "Biztos le akarod tölteni a kiválasztott %@ fotót?";
 
-"downloadingImage" = "Downloading Photo";
-"downloadingImages" = "Downloading Photos";
-"downloadingVideo" = "Downloading Video";
+"downloadingImage" = "Fotó letöltése";
+"downloadingImages" = "Fotók letöltése";
+"downloadingVideo" = "Videó letöltése";
 
 // Image download — Errors
-"downloadImageFail_title" = "Download Fail";
-"downloadImageFail_message" = "Failed to download photo!\n%@";
-"downloadVideoFail_message" = "Failed to download video!\n%@";
-"downloadVideoFail_Photos" = "Video format not accepted by Photos!";
+"downloadImageFail_title" = "A letöltés nem sikerült";
+"downloadImageFail_message" = "Nem sikerült letölteni a fotót!\n%@";
+"downloadVideoFail_message" = "Nem sikerült letölteni a videót!\n%@";
+"downloadVideoFail_Photos" = "Ezt a videóformátumot nem támogatja a Fotók app!";
 
-"imageSaveError_title" = "Fail Saving Photo";
-"imageSaveError_message" = "Failed to save photo. Error: %@";
+"imageSaveError_title" = "Fotómentés sikertelen";
+"imageSaveError_message" = "A fotó mentése nem sikerült. Hiba: %@";
 
-"videoSaveError_title" = "Fail Saving Video";
-"videoSaveError_message" = "Failed to save video. Error: %@";
+"videoSaveError_title" = "Videómentés sikertelen";
+"videoSaveError_message" = "A videó mentése nem sikerült. Hiba: %@";
 
 // Image move
-"moveImage_title" = "Move to Album";
-"moveSingleImage_selectAlbum" = "Please, select the album in which you wish to move the photo \"%@\".";
-"moveSeveralImages_selectAlbum" = "Please, select the album in which you wish to copy the photos.";
-"moveSingleImage_message" = "Are you sure you want to move the photo \"%@\" to the album \"%@\"?";
-"moveSeveralImages_message" = "Are you sure you want to move the photos to the album \"%@\"?";
-"moveSingleImageHUD_moving" = "Moving Photo…";
-"moveSeveralImagesHUD_moving" = "Moving Photos…";
+"moveImage_title" = "Albumba mozgatás";
+"moveSingleImage_selectAlbum" = "Melyik albumba kerüljön a \"%@\" fotó?";
+"moveSeveralImages_selectAlbum" = "Melyik albumba másoljuk a fotókat?";
+"moveSingleImage_message" = "Biztos, hogy a(z) \"%@\" fotót át szeretnéd helyezni a(z) \"%@\" albumba?";
+"moveSeveralImages_message" = "Biztos, hogy a(z) \"%@\" albumba szeretnéd áttenni a fotókat?";
+"moveSingleImageHUD_moving" = "Fotó áthelyezése…";
+"moveSeveralImagesHUD_moving" = "Fotók áthelyezése…";
 
 // Image move — Errors
-"moveImageError_title" = "Move Fail";
-"moveSingleImageError_message" = "Failed to move your photo";
-"moveSeveralImagesError_message" = "Failed to move some photos";
+"moveImageError_title" = "Mozgatási hiba";
+"moveSingleImageError_message" = "Nem sikerült áthelyezni a fotót";
+"moveSeveralImagesError_message" = "Néhány fotót nem sikerült áthelyezni";
 
 // Image copy
-"copyImage_title" = "Copy to Album";
-"copySingleImage_selectAlbum" = "Please, select the album in which you wish to copy the photo \"%@\".";
-"copySeveralImages_selectAlbum" = "Please, select the album in which you wish to copy the photos.";
-"copySingleImage_message" = "Are you sure you want to copy the photo \"%@\" to the album \"%@\"?";
-"copySeveralImages_message" = "Are you sure you want to copy the photos to the album \"%@\"?";
-"copySingleImageHUD_copying" = "Copying Photo…";
-"copySeveralImagesHUD_copying" = "Copying Photos…";
+"copyImage_title" = "Másolás albumba";
+"copySingleImage_selectAlbum" = "Melyik albumba másoljuk a \"%@\" fotót?";
+"copySeveralImages_selectAlbum" = "Melyik albumba másoljuk a fotókat?";
+"copySingleImage_message" = "Biztos, hogy a(z) \"%@\" fotót át szeretnéd másolni a(z) \"%@\" albumba?";
+"copySeveralImages_message" = "Biztos, hogy a(z) \"%@\" albumba szeretnéd másolni a fotókat?";
+"copySingleImageHUD_copying" = "Fotó másolása…";
+"copySeveralImagesHUD_copying" = "Fotók másolása…";
 
 // Image copy — Errors
-"copyImageError_title" = "Copy Fail";
-"copySingleImageError_message" = "Failed to copy your photo";
-"copySeveralImagesError_message" = "Failed to copy some photos";
+"copyImageError_title" = "Másolási hiba";
+"copySingleImageError_message" = "A fotó másolása nem sikerült";
+"copySeveralImagesError_message" = "Néhány fotó másolása nem sikerült";
 
 // Images upload
-"imageUploadHeader" = "Please select the album or sub-album from which photos and videos of your device will be uploaded.";
-"imageUploadHeaderTitle_images" = "Photos Parameters";
-"imageUploadHeaderText_images" = "Please set the parameters to apply to the selection of photos/videos";
-"imageUploadHeaderTitle_upload" = "Upload Settings";
-"imageUploadHeaderText_upload" = "Please set the upload parameters to apply to the selection of photos/videos";
+"imageUploadHeader" = "Melyik albumból, vagy alalbumból szeretnéd feltölteni a fotókat és videókat?";
+"imageUploadHeaderTitle_images" = "Fotók paraméterei";
+"imageUploadHeaderText_images" = "Kérlek állítsd be a kiválasztott fotókra/videókra alkalmazandó paramétereket!";
+"imageUploadHeaderTitle_upload" = "Feltöltési beállítások";
+"imageUploadHeaderText_upload" = "Kérlek állítsd be a kiválasztott fotókra/videókra alkalmazandó feltöltési paramétereket!";
 
-"imageUploadDetails_title" = "Title:";
-"imageUploadDetails_author" = "Author:";
-"imageUploadDetails_privacy" = "Privacy:";
-"imageUploadDetails_tags" = "Tags:";
-"imageUploadDetails_description" = "Description:";
+"imageUploadDetails_title" = "Cím:";
+"imageUploadDetails_author" = "Készítő:";
+"imageUploadDetails_privacy" = "Adatvédelem:";
+"imageUploadDetails_tags" = "Címkék:";
+"imageUploadDetails_description" = "Leírás:";
 
-"imageUploadDetailsView_title" = "Photos";
-"imageUploadDetailsButton_title" = "Upload";
-"imageUploadDetailsEdit_title" = "Edit Photos to Upload";
-"imageUploadDetailsUploading_title" = "Photos that are Being Uploaded";
-"imageUploadDetailsCell_uploadComplete" = "Completed! Finishing up...";
+"imageUploadDetailsView_title" = "Fotók";
+"imageUploadDetailsButton_title" = "Feltöltés";
+"imageUploadDetailsEdit_title" = "Feltöltendő fotók szerkesztése";
+"imageUploadDetailsUploading_title" = "Fotók feltöltés alatt";
+"imageUploadDetailsCell_uploadComplete" = "Kész! Már csak pár pillanat...";
 
-"imageUploadRemove" = "Removing uploaded photos";
+"imageUploadRemove" = "Feltöltött fotók eltávolítása";
 
-"imageUploadTableCell_waiting" = "Waiting...";
-"imageUploadTableCell_preparing" = "Preparing...";
-"imageUploadTableCell_prepared" = "Ready for upload...";
-"imageUploadTableCell_uploading" = "Uploading...";
-"imageUploadTableCell_uploaded" = "Uploaded";
-"imageUploadTableCell_finishing" = "Finishing...";
+"imageUploadTableCell_waiting" = "Várakozás...";
+"imageUploadTableCell_preparing" = "Előkészítés...";
+"imageUploadTableCell_prepared" = "Feltöltésre kész...";
+"imageUploadTableCell_uploading" = "Feltöltés...";
+"imageUploadTableCell_uploaded" = "Feltöltve";
+"imageUploadTableCell_finishing" = "Már csak pár pillanat...";
 
-"imageUploadClearFailedSingle" = "Clear Failed Upload";
-"imageUploadClearFailedSeveral" = "Clear %@ Failed Uploads";
-"imageUploadClearCompletedSingle" = "Clear Completed Upload";
-"imageUploadClearCompletedSeveral" = "Clear %@ Completed Uploads";
-"imageUploadResumeSingle" = "Resume Upload";
-"imageUploadResumeSeveral" = "Resume %@ Uploads";
+"imageUploadClearFailedSingle" = "Hibás feltöltések kipucolása";
+"imageUploadClearFailedSeveral" = "%@ hibás feltöltés eltávolítása";
+"imageUploadClearCompletedSingle" = "Hibás feltöltések eltávolítva";
+"imageUploadClearCompletedSeveral" = "%@ befejezett feltöltés eltávolítása";
+"imageUploadResumeSingle" = "Feltöltés folytatása";
+"imageUploadResumeSeveral" = "%@ feltöltés folytatása";
 
-"imageUploadProgressBar_zero" = "Uploading 0/0";
-"imageUploadProgressBar_nonZero" = "Uploading %@/%@";
-"imageUploadProgressBar_completed" = "Completed";
-"imageUploadCompleted_title" = "Upload Completed";
-"imageUploadCompleted_message" = "photo uploaded to your Piwigo server.";
-"imageUploadCompleted_message>1" = "photos uploaded to your Piwigo server.";
+"imageUploadProgressBar_zero" = "Feltöltés 0/0";
+"imageUploadProgressBar_nonZero" = "Feltöltés %@/%@";
+"imageUploadProgressBar_completed" = "Befejezve";
+"imageUploadCompleted_title" = "A feltöltés befejeződött";
+"imageUploadCompleted_message" = "fotó feltöltve a Piwigo szerveredre.";
+"imageUploadCompleted_message>1" = "fotók feltöltve a Piwigo szerveredre.";
 
 
 // Image upload — Errors
-"uploadError_title" = "Upload Error";
-"uploadError_message" = "Could not upload your photo. Error: %@";
-"uploadCancelled_title" = "Upload Cancelled";
-"uploadNoInternetNetwork" = "No Internet Connection";
-"uploadNoWiFiNetwork" = "No Wi-Fi Connection";
-"uploadLowPowerMode" = "Low Power Mode enabled";
-"uploadSection_impossible" = "Impossible Uploads";
-"uploadSection_resumable" = "Resumable Uploads";
-"uploadSection_queue" = "Uploads Queue";
+"uploadError_title" = "Feltöltési hiba";
+"uploadError_message" = "Nem sikerült feltölteni a fotót. Hiba: %@";
+"uploadCancelled_title" = "Feltöltés megszakítva";
+"uploadNoInternetNetwork" = "Nincs internetkapcsolat";
+"uploadNoWiFiNetwork" = "Nincs elérhető Wi-Fi kapcsolat";
+"uploadLowPowerMode" = "Az alacsony töltöttségű mód be van kapcsolva";
+"uploadSection_impossible" = "Nem feltölthető";
+"uploadSection_resumable" = "Folytatható feltöltés";
+"uploadSection_queue" = "Feltöltési sor";
 
-"imageUploadError_title" = "Photo Upload Error";
-"imageUploadError_format" = "File format not accepted by Piwigo server.";
-"imageUploadError_source" = "cannot create photo source";
-"imageUploadError_destination" = "cannot create photo destination";
-"imageUploadError_iCloud" = "Could not retrieve photo. Error: %@";
+"imageUploadError_title" = "Fotófeltöltési hiba";
+"imageUploadError_format" = "Ezt a formátumot nem fogadja el a Piwigo szerver.";
+"imageUploadError_source" = "nem hozható létre a fotó forrása";
+"imageUploadError_destination" = "nem hozható létre a fotó a célhelyen";
+"imageUploadError_iCloud" = "Nem sikerült betölteni a fotót. Hiba: %@";
 
-"audioUploadError_title" = "Audio Upload Error";
-"audioUploadError_format" = "Sorry, audio files are not supported by Piwigo Mobile yet.";
+"audioUploadError_title" = "Hangfeltöltési hiba";
+"audioUploadError_format" = "Sajnáljuk, a Piwigo mobile egyelőre nem támogat hangfájlokat.";
 
-"videoUploadError_title" = "Video Upload Error";
-"videoUploadError_format" = "Sorry, video files with extension .%@ are not accepted by the Piwigo server.";
-"videoUploadError_iCloud" = "Could not retrieve video. Error: %@";
-"videoUploadError_export" = "Sorry, the video could not be retrieved for the upload. Error: %@";
-"videoUploadError_unknown" = "Sorry, the upload of the video has failed for an unknown error during the MP4 conversion. Error: %@";
-"videoUploadCancelled_message" = "The upload of the video has been cancelled.";
+"videoUploadError_title" = "Videófeltöltési hiba";
+"videoUploadError_format" = "A %@ kiterjesztésű videókat sajnos a Piwigo szerver nem támogatja.";
+"videoUploadError_iCloud" = "Nem tölthető be a videó. Hiba: %@";
+"videoUploadError_export" = "A videó sajnos nem elérhető a feltöltéshez. Hiba: %@";
+"videoUploadError_unknown" = "Ismeretlen hiba a videó feltöltése utáni MP4-re konvertálás során. Hiba: %@";
+"videoUploadCancelled_message" = "A videó feltöltése megszakadt.";
 
 // Image share
-"shareImageMetadata_Title" = "Share Metadata";
-"shareImageMetadata_subTitle1" = "Actions sharing photos with private metadata";
-"shareImageMetadata_subTitle2" = "Actions sharing photos without private metadata";
-"shareActivityCode_AirDrop" = "Transfer with AirDrop";
-"shareActivityCode_AirDrop>375px" = "Transfer photos with AirDrop";
-"shareActivityCode_AssignToContact" = "Assign to Contact";
-"shareActivityCode_AssignToContact>375px" = "Assign photo to Contact";
-"shareActivityCode_CopyToPasteboard" = "Copy to Pasteboard";
-"shareActivityCode_CopyToPasteboard>375px" = "Copy photos to Pasteboard";
-"shareActivityCode_Mail" = "Post by Email";
-"shareActivityCode_Mail>375px" = "Post photos by Email";
-"shareActivityCode_Message" = "Post with Message";
-"shareActivityCode_Message>375px" = "Post photos with the Message app";
-"shareActivityCode_Facebook" = "Post to Facebook";
-"shareActivityCode_Facebook>375px" = "Post photos to Facebook";
-"shareActivityCode_Messenger" = "Post with Messenger";
-"shareActivityCode_Messenger>375px" = "Post photos with the Messenger app";
-"shareActivityCode_Flickr" = "Post to Flickr";
-"shareActivityCode_Flickr>375px" = "Post photos to Flickr";
-"shareActivityCode_Instagram" = "Post to Instagram";
-"shareActivityCode_Instagram>375px" = "Post photos to Instagram";
-"shareActivityCode_Signal" = "Post with Signal";
-"shareActivityCode_Signal>375px" = "Post photos with the Signal app";
-"shareActivityCode_Snapchat" = "Post to Snapchat";
-"shareActivityCode_Snapchat>375px" = "Post photos to Snapchat app";
-"shareActivityCode_TencentWeibo" = "Post to TencentWeibo";
-"shareActivityCode_TencentWeibo>375px" = "Post photos to TencentWeibo";
-"shareActivityCode_Twitter" = "Post to Twitter";
-"shareActivityCode_Twitter>375px" = "Post photos to Twitter";
-"shareActivityCode_Vimeo" = "Post to Vimeo";
-"shareActivityCode_Vimeo>375px" = "Post videos to Vimeo";
-"shareActivityCode_Weibo" = "Post to Weibo";
-"shareActivityCode_Weibo>375px" = "Post photos to Weibo";
-"shareActivityCode_WhatsApp" = "Post with WhatsApp";
-"shareActivityCode_WhatsApp>375px" = "Post photos with the WhatsApp app";
-"shareActivityCode_CameraRoll" = "Save to Camera Roll";
-"shareActivityCode_CameraRoll>375px" = "Save photos to Camera Roll";
-"shareActivityCode_Other" = "Share with other apps";
-"shareActivityCode_Other>375px" = "Share photos with other apps";
+"shareImageMetadata_Title" = "Metaadatok megosztása";
+"shareImageMetadata_subTitle1" = "Lehetőségek fotók megsztására privát metaadatokkal";
+"shareImageMetadata_subTitle2" = "Lehetőségek fotók megosztására minden metaadattal";
+"shareActivityCode_AirDrop" = "AirDrop átvitel";
+"shareActivityCode_AirDrop>375px" = "Fotók küldése AirDrop-on keresztül";
+"shareActivityCode_AssignToContact" = "Kontakthoz rendelés";
+"shareActivityCode_AssignToContact>375px" = "Fotó hozzárendelése kontakthoz";
+"shareActivityCode_CopyToPasteboard" = "Pasteboard-ra másolás";
+"shareActivityCode_CopyToPasteboard>375px" = "Fotók másolása Pasteboard-ra";
+"shareActivityCode_Mail" = "Küldés e-mailben";
+"shareActivityCode_Mail>375px" = "Fotók küldése e-mailben";
+"shareActivityCode_Message" = "Küldés Üzenetként";
+"shareActivityCode_Message>375px" = "Fotók küldése az Üzenetek appal";
+"shareActivityCode_Facebook" = "Feltöltés Facebookra";
+"shareActivityCode_Facebook>375px" = "Fotók feltöltése Facebookra";
+"shareActivityCode_Messenger" = "Küldés Messengerben";
+"shareActivityCode_Messenger>375px" = "Fotók küldése a Messenger appal";
+"shareActivityCode_Flickr" = "Feltöltés Flickr-re";
+"shareActivityCode_Flickr>375px" = "Fotók feltöltése Flickr-re";
+"shareActivityCode_Instagram" = "Feltöltés Instagramra";
+"shareActivityCode_Instagram>375px" = "Fotók feltöltése Instagramra";
+"shareActivityCode_Signal" = "Küldés Signalban";
+"shareActivityCode_Signal>375px" = "Fotók küldése Signalban";
+"shareActivityCode_Snapchat" = "Küldés Snapchaten";
+"shareActivityCode_Snapchat>375px" = "Fotók feltöltése Snapchatre";
+"shareActivityCode_TencentWeibo" = "Küldés TencentWeibon";
+"shareActivityCode_TencentWeibo>375px" = "Fotók feltöltése TeicentWeibora";
+"shareActivityCode_Twitter" = "Twitter üzenet";
+"shareActivityCode_Twitter>375px" = "Fotók feltöltése Tweetbe";
+"shareActivityCode_Vimeo" = "Feltöltés Vimeora";
+"shareActivityCode_Vimeo>375px" = "Videók feltöltése Vimeora";
+"shareActivityCode_Weibo" = "Feltöltés Weibora";
+"shareActivityCode_Weibo>375px" = "Fotók feltöltése Weibora";
+"shareActivityCode_WhatsApp" = "Küldés WhatsAppban";
+"shareActivityCode_WhatsApp>375px" = "Fotók küldése WhatsAppban";
+"shareActivityCode_CameraRoll" = "Mentés a Filmtekercsbe";
+"shareActivityCode_CameraRoll>375px" = "Fotók mentése a Filmtekercsbe";
+"shareActivityCode_Other" = "Megosztás egyéb appokban";
+"shareActivityCode_Other>375px" = "Fotók megosztása egyéb appokban";
 
-"shareFailError_title" = "Share Fail";
-"shareMetadataError_message" = "Cannot strip private metadata";
+"shareFailError_title" = "Sikertelen megosztás";
+"shareMetadataError_message" = "Nem sikerült eltávolítani a privát metaadatokat";
 
 // ===========================================================================
 // ==> LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
-"localAlbums" = "Photo Library";
-"localAlbums_accessible" = "Accessible Photos";
+"localAlbums" = "Fotókönyvtár";
+"localAlbums_accessible" = "Elérhető fotók";
 
 // Local albums — Access not Authorized
-"localAlbums_photosNotAuthorized_title" = "No Access";
-"localAlbums_photosNiltitle" = "Problem Reading Photos";
-"localAlbums_photosNnil_msg" = "There is a problem reading your local photo library.";
+"localAlbums_photosNotAuthorized_title" = "Nincs hozzáférés";
+"localAlbums_photosNiltitle" = "Hiba a fotók beolvasásakor";
+"localAlbums_photosNnil_msg" = "Hiba történt a fotókönyvtár beolvasásakor.";
 
 // Local albums — Tell user to change settings, how
-"localAlbums_photosNotAuthorized_msg" = "Cannot open local photo library. Please go into the Settings app and enable access for Piwigo.";
+"localAlbums_photosNotAuthorized_msg" = "Nem sikerült megnyitni a helyi fotókönyvtárat. Kérlek nézd meg, hogy a Beállításokban van-e a Piwigo appnak hozzáférése a fotókhoz!";
 
 // Local images — Explain
-"localImages_deleteTitle" = "Remove from Camera Roll";
-"localImages_deleteMessage" = "Do you wish to delete the uploaded photos or videos from the camera roll? The deleted photos or videos will still be available in the iOS Photos Trash for 30 days.";
+"localImages_deleteTitle" = "Eltávolítás a Fotók appból";
+"localImages_deleteMessage" = "Biztos törölni szeretnéd a feltöltött fotókat a Fotók appból? A törölt fotók és videók további 30 napig elérhetőek az iOS Fotók app Nemrég törölt menüpontja alatt.";
 
 // ===========================================================================
 // ==> SETTINGS
 // ===========================================================================
 // Settings — Piwigo Server
-"settingsHeader_server" = "Piwigo Server";
-"settingsHeader_notSecure" = "Website Not Secure!";
-"settings_server" = "Address";
-"settings_username" = "Username";
-"settings_notLoggedIn" = " - Not Logged In - ";
-"settings_logout" = "Logout";
-"settingsFooter_formats" = "The server accepts the following file types";
+"settingsHeader_server" = "Piwigo Szerver";
+"settingsHeader_notSecure" = "A website nem biztonságos!";
+"settings_server" = "Szerver URL";
+"settings_username" = "Felhasználó";
+"settings_notLoggedIn" = " - Nincs Bejelentkezve - ";
+"settings_logout" = "Kijelentkezés";
+"settingsFooter_formats" = "A szerver a következő fájlformátumokat fogadja";
 
 // Settings — Unused
-"settingsHeader_general" = "General Settings";
-"settingsHeader_thumbnails" = "Thumbnails";
+"settingsHeader_general" = "Általános beállítások";
+"settingsHeader_thumbnails" = "Bélyegképek";
 
 // Settings — Albums
-"defaultImageSort" = "Sort";
-"defaultImageSort>320px" = "Default Sort";
-"defaultImageSort>414px" = "Default Sort of Photos";
-"defaultAlbumThumbnailFile>414px" = "Albums Thumbnail File";
-"defaultAlbumThumbnailSizeHeader" = "Please select an album thumbnail size";
-"maxNberOfRecentAlbums" = "Recent";
-"maxNberOfRecentAlbums>320px" = "Recent Albums";
-"maxNberOfRecentAlbums>414px" = "Number of Recent Albums";
+"defaultImageSort" = "Rendezés";
+"defaultImageSort>320px" = "Alapértelmezett rendezés";
+"defaultImageSort>414px" = "Fotók alapértelmezett rendezése";
+"defaultAlbumThumbnailFile>414px" = "Albumok bélyegképe";
+"defaultAlbumThumbnailSizeHeader" = "Elérhető bélyegképméretek";
+"maxNberOfRecentAlbums" = "Újdonságok";
+"maxNberOfRecentAlbums>320px" = "Új albumok";
+"maxNberOfRecentAlbums>414px" = "Legújabb albumok száma";
 
-"thumbnailSizeSquare" = "Square";
-"thumbnailSizeThumbnail" = "Thumbnail";
-"thumbnailSizeXXSmall" = "Tiny";
-"thumbnailSizeXSmall" = "Extra Small";
-"thumbnailSizeSmall" = "Small";
-"thumbnailSizeMedium" = "Medium";
-"thumbnailSizeLarge" = "Large";
-"thumbnailSizeXLarge" = "Extra Large";
-"thumbnailSizeXXLarge" = "Huge";
-"thumbnailSizexFullRes" = "Full Resolution";
+"thumbnailSizeSquare" = "Négyzet";
+"thumbnailSizeThumbnail" = "Bélyegkép";
+"thumbnailSizeXXSmall" = "Legkisebb";
+"thumbnailSizeXSmall" = "Nagyon kicsi";
+"thumbnailSizeSmall" = "Kicsi";
+"thumbnailSizeMedium" = "Közepes";
+"thumbnailSizeLarge" = "Nagy";
+"thumbnailSizeXLarge" = "Nagyon nagy";
+"thumbnailSizeXXLarge" = "Hatalmas";
+"thumbnailSizexFullRes" = "Teljes felbontás";
 
 // Settings — Images
-"settingsHeader_images" = "Photos";
+"settingsHeader_images" = "Fotók";
 
-"defaultThumbnailFile" = "File";
-"defaultThumbnailFile>320px" = "Thumbnail File";
-"defaultThumbnailFile>414px" = "Photos Thumbnail File";
-"defaultThumbnailSize" = "Size";
-"defaultThumbnailSize>320px" = "Thumbnails Size";
-"defaultThumbnailSize>414px" = "Default Size of Thumbnails";
-"defaultNberOfThumbnails" = "Number";
-"defaultNberOfThumbnails>320px" = "Number/Row";
-"defaultNberOfThumbnails>414px" = "Number per Row";
+"defaultThumbnailFile" = "Fájl";
+"defaultThumbnailFile>320px" = "Bélyegkép";
+"defaultThumbnailFile>414px" = "Fotók bélyegképe";
+"defaultThumbnailSize" = "Méret";
+"defaultThumbnailSize>320px" = "Bélyegképek mérete";
+"defaultThumbnailSize>414px" = "Alapértelmezett bélyegkép-méretek";
+"defaultNberOfThumbnails" = "Darab";
+"defaultNberOfThumbnails>320px" = "Darab/sor";
+"defaultNberOfThumbnails>414px" = "Darab soronként";
 //"defaultThumbnailSizeTitle" = "Default Size";
-"defaultThumbnailSizeHeader" = "Please select a photo thumbnail size";
-"settings_displayTitles" = "Titles on Thumbnails";
-"settings_displayTitles>320px" = "Display Titles on Thumbnails";
+"defaultThumbnailSizeHeader" = "Elérhető bélyegképméretek";
+"settings_displayTitles" = "Cím a bélyegképen";
+"settings_displayTitles>320px" = "Cím mutatása a bélyegképen";
 
-"defaultPreviewFile" = "Preview";
-"defaultPreviewFile>320px" = "Preview File";
-"defaultPreviewFile>414px" = "Preview Photo File";
-"defaultImageSize" = "Photos";
-"defaultImageSize>320px" = "Photos Size";
-"defaultImageSize>414px" = "Default Size of Photos";
+"defaultPreviewFile" = "Előnézet";
+"defaultPreviewFile>320px" = "Előnézet mérete";
+"defaultPreviewFile>414px" = "Fotó előnézetének mérete";
+"defaultImageSize" = "Fotók";
+"defaultImageSize>320px" = "Fotóméretek";
+"defaultImageSize>414px" = "Fotók alapmérete";
 //"defaultImageSizeTitle" = "Default Size";
-"defaultImageSizeHeader" = "Please select a photo size";
-"defaultImageSize_recommended" = " (recommended)";
-"defaultSize_disabled" = " (disabled on server)";
-"defaultSizeFooter" = "Greyed sizes are not advised or not available on Piwigo server.";
+"defaultImageSizeHeader" = "Válassz méretet";
+"defaultImageSize_recommended" = " (ajánlott)";
+"defaultSize_disabled" = " (szerveren kikapcsolva)";
+"defaultSizeFooter" = "A szürkével jelölt méretek nem ajánlottak, vagy nem elérhetőek a Piwigo szerveren.";
 
-"settings_shareGPSdata" = "Share Private Metadata";
-"settings_shareGPSdata>375px" = "Share with Private Metadata";
+"settings_shareGPSdata" = "Privát Metaadatok";
+"settings_shareGPSdata>375px" = "Megosztár privát metaadatokkal együtt";
 
-"imageSizeSquare" = "Square";
-"imageSizeThumbnail" = "Thumbnail";
-"imageSizeXXSmall" = "Tiny";
-"imageSizeXSmall" = "Extra Small";
-"imageSizeSmall" = "Small";
-"imageSizeMedium" = "Medium";
-"imageSizeLarge" = "Large";
-"imageSizeXLarge" = "Extra Large";
-"imageSizeXXLarge" = "Huge";
-"imageSizexFullRes" = "Full Resolution";
+"imageSizeSquare" = "Négyzet";
+"imageSizeThumbnail" = "Bélyegkép";
+"imageSizeXXSmall" = "Legkisebb";
+"imageSizeXSmall" = "Nagyon kicsi";
+"imageSizeSmall" = "Kicsi";
+"imageSizeMedium" = "Közepes";
+"imageSizeLarge" = "Nagy";
+"imageSizeXLarge" = "Nagyon nagy";
+"imageSizeXXLarge" = "Hatalmas";
+"imageSizexFullRes" = "Teljes felbontás";
 
 // Settings — Upload
-"settingsHeader_upload" = "Default Upload Settings";
-"settings_defaultAuthor" = "Author";
-"settings_defaultAuthor>320px" = "Author Name";
-"settings_defaultAuthorPlaceholder" = "Author Name";
-"settings_defaultPrivacy" = "Privacy";
-"settings_defaultPrivacy>414px" = "Please select who will be able to see photos";
-"settings_stripGPSdata" = "Strip Private Metadata";
-"settings_stripGPSdata>375px" = "Strip Private Metadata Before Upload";
-"settings_photoResize" = "Downsize Before Upload";
-"settings_photoSize" = "Size";
-"settings_placeholderSize" = "Enter a Photo Size from 5 - 100";
-"settings_photoCompress" = "Compress Before Upload";
-"settings_photoCompress>375px" = "Compress Photo Before Upload";
-"settings_photoQuality" = "Quality";
-"settings_placeholderQuality" = "Enter an Photo Quality from 50 - 98";
-"settings_prefixFilename>414px" = "Prefix Photo Filename Before Upload";
-"settings_prefixFilename>375px" = "Prefix Filename Before Upload";
-"settings_prefixFilename" = "Prefix Photo Filename";
-"settings_defaultPrefix" = "Prefix";
-"settings_defaultPrefix>320px" = "Filename Prefix";
-"settings_defaultPrefixPlaceholder" = "Prefix";
-"settings_deleteImage>375px" = "Delete Photo After Upload";
-"settings_wifiOnly" = "Wi-Fi Only";
-"settings_deleteImage" = "Delete After Upload";
+"settingsHeader_upload" = "Feltöltési beállítások";
+"settings_defaultAuthor" = "Készítő";
+"settings_defaultAuthor>320px" = "Készítő neve";
+"settings_defaultAuthorPlaceholder" = "Készítő neve";
+"settings_defaultPrivacy" = "Adatvédelem";
+"settings_defaultPrivacy>414px" = "Kérlek válaszd ki, hogy ki láthatja a fotókat";
+"settings_stripGPSdata" = "Privát metaadatok eltávolítása";
+"settings_stripGPSdata>375px" = "Privát metaadatok eltávolítása feltöltés előtt";
+"settings_photoResize" = "Méretcsökkentés feltöltés előtt";
+"settings_photoSize" = "Méret";
+"settings_placeholderSize" = "Fotó mérete 5-100-as skálán";
+"settings_photoCompress" = "Tömörítés feltöltés előtt";
+"settings_photoCompress>375px" = "Fotó tömörítése feltöltés előtt";
+"settings_photoQuality" = "Minőség";
+"settings_placeholderQuality" = "Minőségcél 50-98-as skálán";
+"settings_prefixFilename>414px" = "Fotó fájlnév előtagozása feltöltés előtt";
+"settings_prefixFilename>375px" = "Fájlnév előtagozása feltöltés előtt";
+"settings_prefixFilename" = "Fájlnév előtagozása";
+"settings_defaultPrefix" = "Előtag";
+"settings_defaultPrefix>320px" = "Fájlnév-előtag";
+"settings_defaultPrefixPlaceholder" = "Előtag";
+"settings_deleteImage>375px" = "Fotó törlése feltöltés után";
+"settings_wifiOnly" = "Csak Wi-Fi-n";
+"settings_deleteImage" = "Törlés feltöltés után";
 
 // Settings — Auto-Upload
-"settings_autoUpload" = "Auto Upload";
-"settings_autoUpload>414px" = "Auto Upload Photos";
-"settings_autoUploadEnabled" = "On";
-"settings_autoUploadEnabledInfo" = "Photos will be automatically uploaded to your Piwigo.";
-"settings_autoUploadEnabledInfoAll" = "Photos and videos will be automatically uploaded to your Piwigo.";
-"settings_autoUploadDisabled" = "Off";
-"settings_autoUploadDisabledInfo" = "Photos will not be automatically uploaded to your Piwigo.";
-"settings_autoUploadSource" = "Source";
-"settings_autoUploadSourceInvalid" = "Invalid source album";
-"settings_autoUploadSourceInfo" = "Please select the album or sub-album from which photos and videos of your device will be auto-uploaded.";
-"settings_autoUploadDestination" = "Destination";
-"settings_autoUploadDestinationInvalid" = "Invalid destination album";
-"settings_autoUploadDestinationInfo" = "Please select the album or sub-album into which photos and videos will be auto-uploaded.";
-"AutoUploadError_Disabled" = "The Auto-Upload option is disabled in the app settings.";
-"AutoUploadError_Failed" = "Several transfers failed and the upload queue is on hold. Please check in the app.";
+"settings_autoUpload" = "Automata feltöltés";
+"settings_autoUpload>414px" = "Fotók automatikus feltöltése";
+"settings_autoUploadEnabled" = "Be";
+"settings_autoUploadEnabledInfo" = "A fotók automatikusan feltöltésre kerülnek a Piwigoba.";
+"settings_autoUploadEnabledInfoAll" = "Fotók és videók automatikusan feltöltésre kerülnek a Piwigoba.";
+"settings_autoUploadDisabled" = "Ki";
+"settings_autoUploadDisabledInfo" = "A fotók nem fognak automatikusan feltöltődni a Piwigoba.";
+"settings_autoUploadSource" = "Forrás";
+"settings_autoUploadSourceInvalid" = "Érvénytelen forrásalbum";
+"settings_autoUploadSourceInfo" = "Melyik albumból vagy alalbumból szeretnéd automatikusan feltölteni a fotókat és videókat?";
+"settings_autoUploadDestination" = "Cél";
+"settings_autoUploadDestinationInvalid" = "Érvénytelen célalbum";
+"settings_autoUploadDestinationInfo" = "Melyik albumba vagy alalbumba szeretnéd automatikusan feltölteni a fotókat és videókat?";
+"AutoUploadError_Disabled" = "Az automatikus feltöltés ki van kapcsolva a beállításokban.";
+"AutoUploadError_Failed" = "Több feltöltési kísérlet sikertelen volt, így a feltöltési sor felfüggesztésre került. Részletek az appban.";
 
 // Settings — Upload Photo Size
-"UploadPhotoSize_title" = "Max Photo Size";
-"UploadPhotoSize_header" = "Please select the maximum size of the photos which will be uploaded.";
-"UploadPhotoSize_resolution" = "Built-in cameras maximum resolution:";
-"UploadVideoSize_title" = "Max Video Size";
-"UploadVideoSize_header" = "Please select the maximum size of the videos which will be uploaded.";
-"UploadVideoSize_resolution" = "Built-in cameras maximum specifications:";
-"UploadPhotoSize_original" = "No Downsizing";
+"UploadPhotoSize_title" = "Max fotóméret";
+"UploadPhotoSize_header" = "Mekkora legyen a legnagyobb fotó, ami feltöltésre kerül?";
+"UploadPhotoSize_resolution" = "A beépített kamera maximum felbontása:";
+"UploadVideoSize_title" = "Max videóméret";
+"UploadVideoSize_header" = "Mekkora legyen a legnagyobb videó, ami feltöltésre kerül?";
+"UploadVideoSize_resolution" = "Beépített kamera maximum specifikációi:";
+"UploadPhotoSize_original" = "Méretcsökkentés nélkül";
 
 // Settings — Cache
-"settingsHeader_cache" = "Cache Settings (Used/Total)";
-"settings_cacheDisk" = "Disk";
-"settings_cacheMemory" = "Memory";
+"settingsHeader_cache" = "Gyorsítótár beállításai (Felhasznált/Összes)";
+"settings_cacheDisk" = "Tárhely";
+"settings_cacheMemory" = "Memória";
 "settings_cacheMegabytes" = "MB";
-"settings_cacheClear" = "Clear Cache";
-"settings_cacheClearAll" = "Clear Photo Cache";
-"settings_cacheClearMsg" = "Are you sure you want to clear the photo cache? This will make albums and photos take a while to load again.";
+"settings_cacheClear" = "Gyorsítótár törlése";
+"settings_cacheClearAll" = "Fotó-gyorsítótár törlése";
+"settings_cacheClearMsg" = "Biztosan ki akarod törölni a fotók gyorsítótárát? Ettől átmenetileg lassabb lesz az albumok és fotók betöltése.";
 
 // Settings — Appearance
-"settingsHeader_appearance" = "Appearance";
-"settingsHeader_colorPalette" = "Color Palette";
-"settings_lightColor" = "Light";
-"settings_darkColor" = "Dark";
-"settings_switchPalette" = "Automatic";
-"settings_brightness" = "Brightness";
-"settings_brightnessHelp" = "In low ambient brightness, the Automatic option uses a darker color palette to make photos stand out against darker backgrounds.";
+"settingsHeader_appearance" = "Megjelenés";
+"settingsHeader_colorPalette" = "Színpaletta";
+"settings_lightColor" = "Világos";
+"settings_darkColor" = "Sötét";
+"settings_switchPalette" = "Automatikus";
+"settings_brightness" = "Fényerő";
+"settings_brightnessHelp" = "Az automata opció használatával sötétebb színpaletta kerül alkalmazásra, amennyiben kevés a környezetből érkező fény. Így a fotók élénkebbnek tűnnek a sötétebb hátterek miatt.";
 
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";
-"settingsHeader_about" = "Information";
+"settingsHeader_about" = "Információ";
 "settings_twitter" = "@piwigo";
 "settings_twitterURL" = "https://twitter.com/piwigo";
-"settings_contactUs" = "Contact Us";
-"settings_feedback" = "Feedback";
-"settings_supportForum" = "Support Forum";
-"settings_releaseNotes" = "Release Notes";
-"settings_rateInAppStore" = "Rate Piwigo Mobile";
-"settings_translateWithCrowdin" = "Translate Piwigo Mobile";
+"settings_contactUs" = "Kapcsolat";
+"settings_feedback" = "Visszajelzés";
+"settings_supportForum" = "Közösségi támogatás";
+"settings_releaseNotes" = "Verziónapló";
+"settings_rateInAppStore" = "Piwigo Mobile értékelése";
+"settings_translateWithCrowdin" = "Piwigo Mobile Fordítása";
 "settings_pwgForumURL" = "http://piwigo.org/forum";
-"settings_acknowledgements" = "Acknowledgements";
-"settings_privacy" = "Privacy Policy";
-"settings_users" = "Users";
-"settings_groups" = "Groups";
+"settings_acknowledgements" = "Köszönetnyilvánítás";
+"settings_privacy" = "Adatvédelmi Szabályzat";
+"settings_users" = "Felhasználók";
+"settings_groups" = "Csoportok";
 
 // Settings — Help
-"help01_header" = "Multiple Selection";
-"help01_text" = "Slide your finger from left to right (or right to left) then down, etc.";
-"help02_header" = "Background Uploading";
-"help02_text" = "Select photos/videos, set parameters and tap Upload.";
-"help02_text2" = "Plug the device to its charger and let iOS launch the uploads whenever appropriate.";
-"help02_text3" = "(requires the uploadAsync extension or Piwigo 11)";
-"help03_header" = "Administrators";
-"help03_text" = "Create, delete, move and rename albums.";
-"help04_text" = "Uploaded photos removed from the camera roll remain available in the iOS Photos trash for 30 days.";
-"help05_header" = "Uploading Photos";
-"help05_text" = "Once upload requests are submitted, you can browse albums, submit other requests or leave the app.";
-"help05_text2" = "Tap the grey button presented in the root album to manage uploads.";
-"help06_header" = "Upload Management";
-"help06_text" = "Monitor, cancel and resume upload requests globally or individually.";
-"help07_header" = "Auto-Uploading";
-"help07_text" = "Select source and destination albums in Piwigo, create automations in Shortcuts.";
+"help01_header" = "Több elem kiválasztása";
+"help01_text" = "Hújd az ujjad balról jobbra (vagy jobbról balra), aztán le, stb.";
+"help02_header" = "Háttérfeltöltés";
+"help02_text" = "Válaszd ki a fotókat/videókat, állítsd be a paramétereket, és nyomj a Feltöltésre!";
+"help02_text2" = "Csatlakoztasd a töltőt, és élvezd, hogy az iOS magától feltölt a megfelelő időpontban!";
+"help02_text3" = "(uploadSync bővítmény, vagy Piwigo 11 szükséges)";
+"help03_header" = "Adminisztrátorok";
+"help03_text" = "Hozz létre, törölj, mozgass albumokat!";
+"help04_text" = "A feltöltés után törölt képek még 30 napig elérhetőek lesznek az iOS Fotók app Nemrég Törölt elemei között.";
+"help05_header" = "Fotók feltöltése";
+"help05_text" = "Feltöltési kérelmet követően böngészhetsz az albumok között, kezdeményezhetsz új feltöltést, vagy akár kilőheted az appot.";
+"help05_text2" = "A főalbumban, a szürke gomb megnyomásával megnézheted a feltöltés részleteit.";
+"help06_header" = "Feltöltések menedzselése";
+"help06_text" = "Nyomonkövetheted, megszakíthatod, vagy folytathatod a feltöltéseket akár egyenként is.";
+"help07_header" = "Automata feltöltés";
+"help07_text" = "Válassz forrás- és célalbumot a Piwigoban, automatizálj a Parancsok appal!";

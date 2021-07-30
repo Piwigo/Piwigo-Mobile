@@ -1,22 +1,21 @@
 "0qYUsE" = "${error}";
 
-"1yW2tL" = "${photos} photo(s) added to the upload queue.";
+"1yW2tL" = "${photos} fotó(k) a feltöltési sorban.";
 
-"61lMsg" = "Auto-Upload Photos";
+"61lMsg" = "Automata feltöltés";
 
-"7zXloB" = "photos";
+"7zXloB" = "fotók";
 
-"85qLPb" = "Auto-Upload Photos";
+"85qLPb" = "Automata feltöltés";
 
 "DYv5Ms" = "${error}";
 
-"OEvuBy" = "Auto-Upload Photos";
+"OEvuBy" = "Automata feltöltés";
 
-"QlzJjd" = "Starts uploading recent photos by applying the Auto-Upload settings.";
+"QlzJjd" = "Hozzáfűzi a legutóbbi fényképeket a háttérben lévő feltöltési sorhoz az automatikus feltöltés beállításait követve.";
 
-"Vz5KMD" = "Starts uploading recent photos by applying the Auto-Upload settings.";
+"Vz5KMD" = "Hozzáfűzi a legutóbbi fényképeket a háttérben lévő feltöltési sorhoz.";
 
-"YtBidq" = "${photos} photo(s) added to the upload queue.";
+"YtBidq" = "${photos} fotó(k) felvéve a feltöltési sorba.";
 
-"pSuJbF" = "Error";
-
+"pSuJbF" = "Hiba";

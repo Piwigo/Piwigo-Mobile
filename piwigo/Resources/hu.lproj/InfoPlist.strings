@@ -6,4 +6,4 @@
   Copyright © 2017 Piwigo.org. All rights reserved.
 */
 
-"NSPhotoLibraryUsageDescription" = "so that it will be able to store photos in the Photos app and upload photos to your Piwigo.";
+"NSPhotoLibraryUsageDescription" = "hogy tárolhasson képeket a Fotók alkalmazásban, és fel tudjon tölteni fotókat a saját Piwigodba.";
