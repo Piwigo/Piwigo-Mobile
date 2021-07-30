@@ -1,0 +1,25 @@
+/* 
+  About.strings
+  piwigo
+
+  Created by Spencer Baker on 2/19/15.
+  Copyright (c) 2015 bakercrew. All rights reserved.
+*/
+
+"authors1" = "Spencer Baker, Olaf Greck";
+"authors2" = "és Eddy Lelièvre-Berna";
+"version" = "Verzió:";
+
+"translators_text" = "Nagyon köszönjük a következő felhasználók befektetett idejét és energiáját a Piwigo fordításáért:\n\n- Arab: Rachid Haddani,\n- Dán: Thomas Christfort,\n- Francia: Eddy Lelièvre-Berna,\n- Holland: Robert Mulder and Wim Woonings,\n- Indonéz: Arvin Noer and Alfian Silaban,\n- Japán: Takahiro Yakoh,\n- Kínai (egyszerűsített): Benjamin Chris,\n- Lengyel: Michał Majchrowicz and T00kie,\n- Magyar: Bagi Miklós,\n- Német: Jörg Knörchen,\n- Olasz: Alessio Perilli,\n- Orosz: Eugene Vivdich,\n- Spanyol: Armando Bello and Albert Parera,\n- Svéd: Elger Lindgren.";
+
+"about_text" = "Ez a szoftver harmadik féltől származó kódot tartalmaz, melyek az eredeti licensz alapján kerülnek továbbterjesztésre.\n\n";
+
+"licenceAFN_text" = "AFNetworking\nThe MIT License (MIT)\n\nCopyright © 2011-2016 Alamofire Software Foundation\n(http://alamofire.org/)";
+
+"licenceIQkeyboard_text" = "IQKeyboardManager\nThe MIT License (MIT)\n\nCopyright © 2013-2017 Iftekhar Qurashi";
+
+"licenceMBProgHUD_text" = "MBProgressHUD\nThe MIT License (MIT)\n\nCopyright © 2009-2016 Matej Bukovinski";
+
+"licenceMGSTC_text" = "MGSwipeTableCell\nThe MIT License (MIT)\n\nCopyright © 2016 Imanol Fernandez @MortimerGoro";
+
+"licenceMIT_text" = "The MIT License (MIT)\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.";
