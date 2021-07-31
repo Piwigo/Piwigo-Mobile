@@ -223,6 +223,11 @@ public class UploadVars: NSObject {
     /// - Comments to add to the photos to auto-upload
     @UserDefault("autoUploadComments", defaultValue: "", userDefaults: UserDefaults.dataSuite)
     public static var autoUploadComments: String
+    
+    /// - When the latest deletion of Photo Library images was accomplished
+    static let kPiwigoOneDay = (TimeInterval)(24 * 60 * 60)     // i.e. 1 day
+    @UserDefault("dateOfLastPhotoLibraryDeletion", defaultValue: Date.distantPast.timeIntervalSinceReferenceDate, userDefaults: UserDefaults.dataSuite)
+    public static var dateOfLastPhotoLibraryDeletion: TimeInterval
 
     
     // MARK: - Vars in Memory

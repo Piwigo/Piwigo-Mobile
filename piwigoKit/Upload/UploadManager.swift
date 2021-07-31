@@ -1268,6 +1268,21 @@ public class UploadManager: NSObject {
             self.disableAutoUpload()
         }
         
+        // Propose to deleted uploaded image of the photo Library once a day maximum (at least 10)
+        if Date().timeIntervalSinceReferenceDate > UploadVars.dateOfLastPhotoLibraryDeletion + UploadVars.kPiwigoOneDay {
+            // Are there images to delete from the Photo Library?
+            let (imageIDs, uploadIDs) = uploadsProvider.getRequests(inStates: [.finished, .moderated],
+                                                                    markedForDeletion: true)
+            if imageIDs.count > 9, uploadIDs.count > 9 {
+                // Store date of last deletion
+                UploadVars.dateOfLastPhotoLibraryDeletion = Date().timeIntervalSinceReferenceDate
+
+                // Suggest to delete images from the Photo Library
+                print("\(debugFormatter.string(from: Date())) > (\(imageIDs.count),\(uploadIDs.count)) should be deleted")
+                self.delete(uploadedImages: imageIDs, with: uploadIDs)
+            }
+        }
+
         // Pursue the work
         self.findNextImageToUpload()
     }
