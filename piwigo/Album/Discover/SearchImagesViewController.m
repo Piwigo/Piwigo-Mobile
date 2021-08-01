@@ -225,10 +225,8 @@
     }
 }
 
--(void)viewWillDisappear:(BOOL)animated
+-(void)dealloc
 {
-    [super viewWillDisappear:animated];
-    
     // Unregister category data updates
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationRemovedImage object:nil];
 
