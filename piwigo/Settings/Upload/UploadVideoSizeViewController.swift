@@ -83,7 +83,9 @@ class UploadVideoSizeViewController: UIViewController, UITableViewDataSource, UI
 
         // Return selected image thumbnail size
         delegate?.didSelectUploadVideoSize(videoMaxSize)
-
+    }
+    
+    deinit {
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }

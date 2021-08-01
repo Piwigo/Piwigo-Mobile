@@ -83,11 +83,12 @@ class UploadPhotoSizeViewController: UIViewController, UITableViewDataSource, UI
 
         // Return selected image thumbnail size
         delegate?.didSelectUploadPhotoSize(photoMaxSize)
+    }
 
+    deinit {
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }
-
     
     // MARK: - UITableView - Header
     

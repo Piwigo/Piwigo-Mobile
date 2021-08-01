@@ -94,11 +94,13 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
         delegate?.didSelectPrivacyLevel(privacy)
         let privacyObjc = kPiwigoPrivacyObjc(Int32(privacy.rawValue))
         objcDelegate?.didSelectPrivacyLevel(privacyObjc)
+    }
 
+    deinit {
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }
-
+    
     
     // MARK: - UITableView - Header
     
