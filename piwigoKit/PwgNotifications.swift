@@ -29,8 +29,11 @@ public class PwgNotifications: NSObject {
     /// - Update progress bars of upload requests
     public static let uploadProgress = Notification.Name("kPiwigoNotificationUploadProgress")
     
-    /// - Disable auto-uploading when appendAutoUploadRequests() fails
-    public static let disableAutoUpload = Notification.Name("kPiwigoNotificationDisableAutoUpload")
+    /// - Notifies that auto-uploading is enabled by user
+    public static let autoUploadEnabled = Notification.Name("kPiwigoNotificationAutoUploadEnabled")
+
+    /// - Notifies that auto-uploading was disabled by appendAutoUploadRequests()
+    public static let autoUploadDisabled = Notification.Name("kPiwigoNotificationAutoUploadDisabled")
 
     /// - Displays error when appendAutoUploadRequests() fails and resume upload manager operations
     public static let appendAutoUploadRequestsFailed = Notification.Name("kPiwigoNotificationAppendAutoUploadRequestsFail")

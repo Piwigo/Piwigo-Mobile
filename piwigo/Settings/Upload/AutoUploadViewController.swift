@@ -80,7 +80,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
 
         // Register auto-upload option disabler
         NotificationCenter.default.addObserver(self, selector: #selector(disableAutoUpload),
-                                               name: PwgNotifications.disableAutoUpload, object: nil)
+                                               name: PwgNotifications.autoUploadDisabled, object: nil)
         
         // Pause UploadManager while changing settings
         UploadManager.shared.isPaused = true
@@ -89,12 +89,6 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
-        
-        // Unregister auto-upload option disabler
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.disableAutoUpload, object: nil)
-
         // Check if the user is going to select a local album
         if let visibleVC = navigationController?.visibleViewController,
            visibleVC is LocalAlbumsViewController { return }
@@ -116,15 +110,12 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
 
-    @objc func disableAutoUpload(_ notification: Notification) {
-        // Change switch button state
-        autoUploadTableView?.reloadSections(IndexSet(integer: 0), with: .automatic)
+    deinit {
+        // Unregister palette changes
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
         
-        // Inform user if an error was reported
-        if let title = notification.userInfo?["title"] as? String, !title.isEmpty,
-           let message = notification.userInfo?["message"] as? String {
-            dismissPiwigoError(withTitle: title, message: message) { }
-        }
+        // Unregister auto-upload option disabler
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.autoUploadDisabled, object: nil)
     }
 
     
@@ -252,6 +243,10 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                         // Enable auto-uploading
                         UploadVars.isAutoUploadActive = true
                         UploadManager.shared.appendAutoUploadRequests()
+                        // Update Settings tableview
+                        DispatchQueue.main.async {
+                            NotificationCenter.default.post(name: PwgNotifications.autoUploadEnabled, object: nil, userInfo: nil)
+                        }
                     } else {
                         // Disable auto-uploading
                         UploadManager.shared.disableAutoUpload()
@@ -514,6 +509,20 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
             
         default:
             break
+        }
+    }
+    
+    
+    // MARK: - Auto-Upload option disabled during execution
+    
+    @objc func disableAutoUpload(_ notification: Notification) {
+        // Change switch button state
+        autoUploadTableView?.reloadSections(IndexSet(integer: 0), with: .automatic)
+        
+        // Inform user if an error was reported
+        if let title = notification.userInfo?["title"] as? String, !title.isEmpty,
+           let message = notification.userInfo?["message"] as? String {
+            dismissPiwigoError(withTitle: title, message: message) { }
         }
     }
 }

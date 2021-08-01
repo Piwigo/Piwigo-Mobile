@@ -138,9 +138,13 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: PwgNotifications.paletteChanged, object: nil)
 
-        // Register auto-upload option disabler
-        NotificationCenter.default.addObserver(self, selector: #selector(disableAutoUpload),
-                                               name: PwgNotifications.disableAutoUpload, object: nil)
+        // Register auto-upload option enabled
+        NotificationCenter.default.addObserver(self, selector: #selector(updateAutoUpload),
+                                               name: PwgNotifications.autoUploadEnabled, object: nil)
+
+        // Register auto-upload option disabled
+        NotificationCenter.default.addObserver(self, selector: #selector(updateAutoUpload),
+                                               name: PwgNotifications.autoUploadDisabled, object: nil)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -207,8 +211,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
         
+        // Unregister auto-upload option enabler
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.autoUploadEnabled, object: nil)
+
         // Unregister auto-upload option disabler
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.disableAutoUpload, object: nil)
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.autoUploadDisabled, object: nil)
     }
 
     @objc func quitSettings() {
@@ -239,7 +246,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         }
     }
 
-    @objc func disableAutoUpload(_ notification: Notification) {
+    @objc func updateAutoUpload(_ notification: Notification) {
         // NOP if the option is not available
         if !NetworkVars.usesUploadAsync { return }
         
