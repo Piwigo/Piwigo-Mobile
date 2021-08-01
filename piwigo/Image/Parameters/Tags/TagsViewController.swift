@@ -136,9 +136,6 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
     override func viewWillDisappear(_ animated: Bool) {
         super .viewWillDisappear(animated)
 
-        // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
-
         // Return list of selected tags
         delegate?.didSelectTags(selectedTags)
         if objcDelegate != nil {
@@ -154,8 +151,13 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
             objcDelegate?.didSelectTags(selectedPiwigoTags)
         }
     }
-}
     
+    deinit {
+        // Unregister palette changes
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
+    }
+}
+
     
 // MARK: - UITableViewDataSource
 
