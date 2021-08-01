@@ -87,15 +87,12 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
 
         //Reload the tableview on orientation change, to match the new width of the table.
         coordinator.animate(alongsideTransition: { context in
-
             // Reload table view
             self.shareMetadataTableView.reloadData()
         })
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
+    deinit {
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }

@@ -71,11 +71,12 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
 
         // Return selected image thumbnail size
         delegate?.didSelectImageDefaultSize(currentImageSize)
+    }
 
+    deinit {
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }
-
     
     // MARK: - UITableView - Header
     
