@@ -536,10 +536,10 @@ class DeviceUtilities: NSObject {
 
         // MARK: - Simulator
         if (deviceCode == "i386") {
-            return ";-) Mpx"
+            return "? Mpx"
         }
         if (deviceCode == "x86_64") {
-            return ";-) Mpx"
+            return "? Mpx"
         }
 
         return "? Mpx"
@@ -716,10 +716,10 @@ class DeviceUtilities: NSObject {
 
         // MARK: - Simulator
         if (deviceCode == "i386") {
-            return ";-) Mpx"
+            return "? Mpx"
         }
         if (deviceCode == "x86_64") {
-            return ";-) Mpx"
+            return "? Mpx"
         }
 
         return "? Mpx"
