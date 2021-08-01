@@ -112,10 +112,12 @@ extension UploadManager {
         // If the Settings or Settings/AutoUpload view is displayed:
         /// - switch off Auto-Upload control
         /// - inform user in case of error
-        DispatchQueue.main.async {
-            let userInfo: [String : Any] = ["title"   : title,
-                                            "message" : message];
-            NotificationCenter.default.post(name: PwgNotifications.disableAutoUpload, object: nil, userInfo: userInfo)
+        if !self.isExecutingBackgroundUploadTask {
+            DispatchQueue.main.async {
+                let userInfo: [String : Any] = ["title"   : title,
+                                                "message" : message];
+                NotificationCenter.default.post(name: PwgNotifications.autoUploadDisabled, object: nil, userInfo: userInfo)
+            }
         }
 
         // Collect objectIDs of images being considered for auto-uploading
