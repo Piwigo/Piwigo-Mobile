@@ -745,7 +745,18 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
     // Hide upload button during transition
     [self.addButton setHidden:YES];
+}
 
+-(void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    
+    // Make sure buttons are back to initial state
+    [self didCancelTapAddButton];
+}
+
+-(void)dealloc
+{
     // Unregister category data updates
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationGetCategoryData object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationCategoryDataUpdated object:nil];
@@ -763,14 +774,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
     // Unregister upload progress
     [[NSNotificationCenter defaultCenter] removeObserver:self name:[PwgNotificationsObjc uploadProgress] object:nil];
-}
-
--(void)viewDidDisappear:(BOOL)animated
-{
-    [super viewDidDisappear:animated];
-    
-    // Make sure buttons are back to initial state
-    [self didCancelTapAddButton];
 }
 
 
