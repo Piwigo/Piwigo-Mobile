@@ -97,9 +97,7 @@ class Help07ViewController: UIViewController {
         legendBot.textColor = UIColor.piwigoColorText()
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        
+    deinit {
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }

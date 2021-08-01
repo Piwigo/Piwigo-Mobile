@@ -78,10 +78,7 @@ class HelpViewController: UIViewController {
         view.backgroundColor = UIColor.piwigoColorBackground()
     }
 
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        
+    deinit {
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }
