@@ -259,9 +259,6 @@ typedef enum {
 {
     [super viewWillDisappear:animated];
 
-    // Unregister palette changes
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:[PwgNotificationsObjc paletteChanged] object:nil];
-
     // Check if the user is still editing parameters
     if ([self.navigationController.visibleViewController isKindOfClass:[SelectPrivacyViewController class]] ||
         [self.navigationController.visibleViewController isKindOfClass:[TagsViewController class]]) {
@@ -273,6 +270,11 @@ typedef enum {
     {
         [self.delegate didFinishEditingParameters];
     }
+}
+
+-(void)dealloc {
+    // Unregister palette changes
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:[PwgNotificationsObjc paletteChanged] object:nil];
 }
 
 
