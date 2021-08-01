@@ -68,9 +68,10 @@
     [self applyColorPalette];    
 }
 
--(void)viewWillDisappear:(BOOL)animated
+-(void)dealloc
 {
-    [super viewWillDisappear:animated];
+    // Unregister palette changes
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:[PwgNotificationsObjc paletteChanged] object:nil];
 }
 
 -(void)setImageScrollViewWithImageData:(PiwigoImageData*)imageData

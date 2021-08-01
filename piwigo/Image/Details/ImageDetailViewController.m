@@ -224,6 +224,19 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     }
 }
 
+-(void)dealloc
+{
+    // Register image pinches
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationPinchedImage object:nil];
+
+    // Register image data updates
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationUpdateImageFileName object:nil];
+
+    // Unregister palette changes
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:[PwgNotificationsObjc paletteChanged] object:nil];
+}
+
+
 -(void)updateNavBar
 {
     // Interface depends on device and orientation

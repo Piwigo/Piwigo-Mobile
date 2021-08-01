@@ -272,7 +272,8 @@ typedef enum {
     }
 }
 
--(void)dealloc {
+-(void)dealloc
+{
     // Unregister palette changes
     [[NSNotificationCenter defaultCenter] removeObserver:self name:[PwgNotificationsObjc paletteChanged] object:nil];
 }
