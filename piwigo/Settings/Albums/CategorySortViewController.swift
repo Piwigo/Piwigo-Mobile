@@ -118,11 +118,13 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
 
         // Return selected album
         sortDelegate?.didSelectCategorySortType(currentCategorySortType ?? .dateCreatedAscending)
+    }
 
+    deinit {
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }
-
+    
     
     // MARK: - UITableView - Header
     

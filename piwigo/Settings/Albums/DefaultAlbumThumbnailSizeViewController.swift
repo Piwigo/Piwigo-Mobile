@@ -71,13 +71,15 @@ class DefaultAlbumThumbnailSizeViewController: UIViewController, UITableViewData
         
         // Return selected album thumbnail size
         delegate?.didSelectAlbumDefaultThumbnailSize(currentThumbnailSize)
+    }
 
+    deinit {
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }
-
     
-// MARK: - UITableView - Header
+    
+    // MARK: - UITableView - Header
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         // Title
