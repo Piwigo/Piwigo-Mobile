@@ -101,16 +101,14 @@ class TagSelectorViewController: UITableViewController {
                                                name: PwgNotifications.paletteChanged, object: nil)
     }
 
+    deinit {
+        // Unregister palette changes
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
+    }
+
     @objc private func quitTagSelect()
     {
         dismiss(animated: true, completion: nil)
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }
 }
 
