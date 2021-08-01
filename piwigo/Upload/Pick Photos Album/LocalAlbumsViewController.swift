@@ -249,7 +249,9 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
            LocalAlbumsProvider.shared.otherAlbums.isEmpty  {
                 delegate?.didSelectPhotoAlbum(withId: "")
         }
-
+    }
+    
+    deinit {
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
 
