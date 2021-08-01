@@ -124,9 +124,6 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 		[self performSelector:@selector(setupAutoLayout) withObject:nil]; // now located in child VC, thus import .h files
     }
 
-    // Register palette changes
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:[PwgNotificationsObjc paletteChanged] object:nil];
-
     return self;
 }
 
@@ -146,6 +143,9 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     
     // Not yet trying to login
     self.isAlreadyTryingToLogin = NO;
+
+    // Register palette changes
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:[PwgNotificationsObjc paletteChanged] object:nil];
 }
 
 -(void)applyColorPalette
@@ -187,9 +187,10 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     }
 }
 
--(void)viewWillDisappear:(BOOL)animated
+-(void)dealloc
 {
-    [super viewWillDisappear:animated];
+    // Unregister palette changes
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:[PwgNotificationsObjc paletteChanged] object:nil];
 }
 
 
