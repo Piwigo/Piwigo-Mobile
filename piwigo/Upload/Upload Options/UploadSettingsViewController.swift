@@ -60,9 +60,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
         }
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
+    deinit {
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }

@@ -126,16 +126,14 @@ class UploadSwitchViewController: UIViewController {
                                                name: PwgNotifications.paletteChanged, object: nil)
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
-    }
-    
     override func viewDidDisappear(_ animated: Bool) {
         // Update navigation bar of parent view
         delegate?.uploadSettingsDidDisappear()
+    }
+    
+    deinit {
+        // Unregister palette changes
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }
 
     
