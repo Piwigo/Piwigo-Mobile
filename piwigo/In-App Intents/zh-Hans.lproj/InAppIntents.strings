@@ -1,21 +1,21 @@
 "0qYUsE" = "${error}";
 
-"1yW2tL" = "${photos} photo(s) added to the upload queue.";
+"1yW2tL" = "已添加 ${photos} 张照片到上传队列";
 
-"61lMsg" = "Auto-Upload Photos";
+"61lMsg" = "自动上传照片";
 
-"7zXloB" = "photos";
+"7zXloB" = "照片";
 
-"85qLPb" = "Auto-Upload Photos";
+"85qLPb" = "自动上传照片";
 
 "DYv5Ms" = "${error}";
 
-"OEvuBy" = "Auto-Upload Photos";
+"OEvuBy" = "自动上传照片";
 
-"QlzJjd" = "Appends recent photos to the background upload queue following Auto-Upload settings.";
+"QlzJjd" = "按照自动上传设置将最近的照片添加到后台上传队列中";
 
-"Vz5KMD" = "Appends recent photos to the background upload queue.";
+"Vz5KMD" = "将最近的照片添加到后台上传队列";
 
-"YtBidq" = "${photos} photo(s) added to the upload queue.";
+"YtBidq" = "已添加 ${photos} 张照片到上传队列";
 
-"pSuJbF" = "Error";
+"pSuJbF" = "错误";

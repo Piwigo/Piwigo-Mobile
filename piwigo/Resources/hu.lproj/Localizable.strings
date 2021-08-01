@@ -68,7 +68,7 @@
 // ===========================================================================
 // Login
 "login" = "Bejelentkezés";
-"login_serverPlaceholder" = "példa.hu";
+"login_serverPlaceholder" = "https://az.en.piwigom.hu";
 "login_userPlaceholder" = "Felhasználónév (opcionális)";
 "login_passwordPlaceholder" = "Jelszó (opcionális)";
 "login_loggingIn" = "Bejelentkezés...";
@@ -126,7 +126,7 @@
 // Albums view
 "categoryMainEmtpy" = "Még nincsenek albumok a Piwigoban.\nLefelé húzással frissítheted a képernyőt, illetve megpróbálhatsz újra bejelentkezni.";
 "categoryTableView_photoCount" = "fotó";
-"categoryTableView_photosCount" = "fotók";
+"categoryTableView_photosCount" = "fotó";
 "categoryTableView_subCategoryCount" = "alalbum";
 "categoryTableView_subCategoriesCount" = "alalbum";
 "categoryImageList_selectButton" = "Kiválaszt";
@@ -259,7 +259,7 @@
 "categorySelection_current" = "Jelenlegi album kiválasztása";
 "categorySelection_one" = "Válassz a további albumok közül, melyek ezt a fotót tartalmazzák";
 "categorySelection_other" = "Vagy válassz egy másik albumot";
-"categoryImageSet_title" = "Album kezdőképe";
+"categoryImageSet_title" = "Album bélyegképe";
 "categoryImageSet_message" = "Biztos alkalmazni akarod azt a fotót a(z) \"%@\" albumra?";
 "categoryImageSetHUD_updating" = "Bélyegkép frissítése…";
 
@@ -578,7 +578,7 @@
 "settings_username" = "Felhasználó";
 "settings_notLoggedIn" = " - Nincs Bejelentkezve - ";
 "settings_logout" = "Kijelentkezés";
-"settingsFooter_formats" = "A szerver a következő fájlformátumokat fogadja";
+"settingsFooter_formats" = "A szerver a következő fájlformátumokat fogadja el";
 
 // Settings — Unused
 "settingsHeader_general" = "Általános beállítások";
@@ -737,13 +737,13 @@
 
 // Settings — Help
 "help01_header" = "Több elem kiválasztása";
-"help01_text" = "Hújd az ujjad balról jobbra (vagy jobbról balra), aztán le, stb.";
+"help01_text" = "Húzd az ujjad balról jobbra (vagy jobbról balra), aztán le, stb.";
 "help02_header" = "Háttérfeltöltés";
 "help02_text" = "Válaszd ki a fotókat/videókat, állítsd be a paramétereket, és nyomj a Feltöltésre!";
 "help02_text2" = "Csatlakoztasd a töltőt, és élvezd, hogy az iOS magától feltölt a megfelelő időpontban!";
 "help02_text3" = "(uploadSync bővítmény, vagy Piwigo 11 szükséges)";
 "help03_header" = "Adminisztrátorok";
-"help03_text" = "Hozz létre, törölj, mozgass albumokat!";
+"help03_text" = "Hozzatok létre, töröljetek, mozgassatok albumokat!";
 "help04_text" = "A feltöltés után törölt képek még 30 napig elérhetőek lesznek az iOS Fotók app Nemrég Törölt elemei között.";
 "help05_header" = "Fotók feltöltése";
 "help05_text" = "Feltöltési kérelmet követően böngészhetsz az albumok között, kezdeményezhetsz új feltöltést, vagy akár kilőheted az appot.";

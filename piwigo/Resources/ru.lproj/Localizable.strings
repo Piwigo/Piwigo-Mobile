@@ -677,10 +677,10 @@
 // Settings — Auto-Upload
 "settings_autoUpload" = "Автозагрузка";
 "settings_autoUpload>414px" = "Автозагрузка изображений";
-"settings_autoUploadEnabled" = "Вкл.";
+"settings_autoUploadEnabled" = "Вкл";
 "settings_autoUploadEnabledInfo" = "Изображения будут автоматически загружены в Ваш Piwigo.";
 "settings_autoUploadEnabledInfoAll" = "Изображения и видео будут автоматически загружены в Ваш Piwigo.";
-"settings_autoUploadDisabled" = "Выкл.";
+"settings_autoUploadDisabled" = "Выкл";
 "settings_autoUploadDisabledInfo" = "Изображения не будут автоматически загружены в Ваш Piwigo.";
 "settings_autoUploadSource" = "Источник";
 "settings_autoUploadSourceInvalid" = "Недопустимый источник альбома";
