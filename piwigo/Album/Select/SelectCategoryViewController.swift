@@ -274,7 +274,9 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             kPiwigoCategorySelectActionMoveImages].contains(wantedAction) {
             self.delegate?.didSelectCategory(withId: selectedCategoryId)
         }
-
+    }
+    
+    deinit {
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }
