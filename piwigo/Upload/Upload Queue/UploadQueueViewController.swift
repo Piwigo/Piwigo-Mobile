@@ -146,14 +146,21 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
     override func viewWillDisappear(_ animated: Bool) {
         // Allow device to sleep
         UIApplication.shared.isIdleTimerDisabled = false
+    }
 
+    deinit {
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
+
+        // Unregister network reachability
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
+
+        // Unregister Low Power Mode status
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.NSProcessInfoPowerStateDidChange, object: nil)
 
         // Unregister upload progress
         NotificationCenter.default.removeObserver(self, name: PwgNotifications.uploadProgress, object: nil)
     }
-
     
     // MARK: - Action Menu
     
