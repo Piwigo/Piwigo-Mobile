@@ -459,7 +459,9 @@ public class UploadsProvider: NSObject {
             // Retrieve existing completed uploads
             // Create a fetch request for the Upload entity sorted by localIdentifier
             let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "requestDate", ascending: true)]
+            
+            // Predicate
+            var sortDescriptors = [NSSortDescriptor(key: "requestDate", ascending: true)]
             
             // OR subpredicates
             var orSubpredicates = [NSPredicate]()
@@ -477,10 +479,14 @@ public class UploadsProvider: NSObject {
             } else if markedForAutoUpload {
                 // Auto-upload mode enabled and only auto-upload requests are wanted
                 andSubpredicates.append(NSPredicate(format: "markedForAutoUpload == YES"))
+            } else {
+                // Priority to uploads requested manually
+                sortDescriptors.append(NSSortDescriptor(key: "markedForAutoUpload", ascending: true))
             }
             if markedForDeletion {
                 andSubpredicates.append(NSPredicate(format: "deleteImageAfterUpload == YES"))
             }
+            fetchRequest.sortDescriptors = sortDescriptors
             fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andSubpredicates)
 
             // Create a fetched results controller and set its fetch request, context, and delegate.
