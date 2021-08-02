@@ -732,8 +732,6 @@
 "settings_pwgForumURL" = "http://Piwigo.org/forum";
 "settings_acknowledgements" = "Tack till och erkännanden";
 "settings_privacy" = "Integritetspolicy";
-"settings_users" = "Användare";
-"settings_groups" = "Grupper";
 
 // Settings — Help
 "help01_header" = "Multipla val";
@@ -752,3 +750,11 @@
 "help06_text" = "Övervaka, avbryta och återuppta uppladdningsförfrågningar globalt eller individuellt.";
 "help07_header" = "Auto-Uploading";
 "help07_text" = "Select source and destination albums in Piwigo, create automations in Shortcuts.";
+
+// Settings - About
+"settings_images" = "Bilder";
+"settings_albums" = "Album";
+"settings_tags" = "Etiketter";
+"settings_users" = "Användare";
+"settings_groups" = "Grupper";
+"settings_comments" = "Kommentarer";

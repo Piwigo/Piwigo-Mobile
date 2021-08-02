@@ -732,8 +732,6 @@
 "settings_pwgForumURL" = "http://fr.piwigo.org";
 "settings_acknowledgements" = "Remerciements";
 "settings_privacy" = "Politique de Confidentialité";
-"settings_users" = "Utilisateurs";
-"settings_groups" = "Groupes";
 
 // Settings — Help
 "help01_header" = "Sélection multiple";
@@ -752,3 +750,11 @@
 "help06_text" = "Surveillez, annulez et relancez les demandes de téléchargement globalement ou individuellement.";
 "help07_header" = "Téléchargement Auto";
 "help07_text" = "Sélectionnez les albums source et destination dans Piwigo, créez des automatisations dans Raccourcis.";
+
+// Settings - About
+"settings_images" = "Photos";
+"settings_albums" = "Albums";
+"settings_tags" = "Tags";
+"settings_users" = "Utilisateurs";
+"settings_groups" = "Groupes";
+"settings_comments" = "Commentaires";

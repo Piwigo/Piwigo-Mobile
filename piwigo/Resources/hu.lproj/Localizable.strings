@@ -732,8 +732,6 @@
 "settings_pwgForumURL" = "http://piwigo.org/forum";
 "settings_acknowledgements" = "Köszönetnyilvánítás";
 "settings_privacy" = "Adatvédelmi Szabályzat";
-"settings_users" = "Felhasználók";
-"settings_groups" = "Csoportok";
 
 // Settings — Help
 "help01_header" = "Több elem kiválasztása";
@@ -752,3 +750,11 @@
 "help06_text" = "Nyomonkövetheted, megszakíthatod, vagy folytathatod a feltöltéseket akár egyenként is.";
 "help07_header" = "Automata feltöltés";
 "help07_text" = "Válassz forrás- és célalbumot a Piwigoban, automatizálj a Parancsok appal!";
+
+// Settings - About
+"settings_images" = "fotó";
+"settings_albums" = "album";
+"settings_tags" = "címke";
+"settings_users" = "felhasználó";
+"settings_groups" = "csoport";
+"settings_comments" = "megjegyzés";

@@ -1406,7 +1406,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             }
         case SettingsSection.about.rawValue:
             if nberImages.count > 0 {
-                footer = "\(nberImages) \(NSLocalizedString("severalImages", comment: "Photos")), \(nberCategories) \(NSLocalizedString("tabBar_albums", comment: "Albums")), \(nberTags) \(NSLocalizedString("tags", comment: "Tags")), \(nberUsers) \(NSLocalizedString("settings_users", comment: "Users")), \(nberGroups) \(NSLocalizedString("settings_groups", comment: "Groups")), \(nberComments) \(NSLocalizedString("editImageDetails_comments", comment: "Comments"))"
+                footer = "\(nberImages) \(NSLocalizedString("settings_images", comment: "Photos")), \(nberCategories) \(NSLocalizedString("settings_albums", comment: "Albums")), \(nberTags) \(NSLocalizedString("settings_tags", comment: "Tags")), \(nberUsers) \(NSLocalizedString("settings_users", comment: "Users")), \(nberGroups) \(NSLocalizedString("settings_groups", comment: "Groups")), \(nberComments) \(NSLocalizedString("settings_comments", comment: "Comments"))"
             }
         default:
             return 16.0
@@ -1454,7 +1454,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             }
         case SettingsSection.about.rawValue:
             if nberImages.count > 0 {
-                footerLabel.text = "\(nberImages) \(NSLocalizedString("severalImages", comment: "Photos")), \(nberCategories) \(NSLocalizedString("tabBar_albums", comment: "Albums")), \(nberTags) \(NSLocalizedString("tags", comment: "Tags")), \(nberUsers) \(NSLocalizedString("settings_users", comment: "Users")), \(nberGroups) \(NSLocalizedString("settings_groups", comment: "Groups")), \(nberComments) \(NSLocalizedString("editImageDetails_comments", comment: "Comments"))"
+                footerLabel.text = "\(nberImages) \(NSLocalizedString("settings_images", comment: "Photos")), \(nberCategories) \(NSLocalizedString("settings_albums", comment: "Albums")), \(nberTags) \(NSLocalizedString("settings_tags", comment: "Tags")), \(nberUsers) \(NSLocalizedString("settings_users", comment: "Users")), \(nberGroups) \(NSLocalizedString("settings_groups", comment: "Groups")), \(nberComments) \(NSLocalizedString("settings_comments", comment: "Comments"))"
             }
         default:
             break

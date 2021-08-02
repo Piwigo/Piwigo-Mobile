@@ -732,8 +732,6 @@
 "settings_pwgForumURL" = "http://pl.piwigo.org/forum";
 "settings_acknowledgements" = "Podziękowania";
 "settings_privacy" = "Polityka prywatności";
-"settings_users" = "Użytkownicy";
-"settings_groups" = "Grupy";
 
 // Settings — Help
 "help01_header" = "Wybór wielokrotny";
@@ -752,3 +750,11 @@
 "help06_text" = "Monitoruj, anuluj i wznawiaj żądania przesyłania globalnie lub pojedynczo.";
 "help07_header" = "Automatyczne przesyłanie";
 "help07_text" = "Wybierz albumy źródłowe i docelowe w Piwigo, utwórz automaty w Skrótach.";
+
+// Settings - About
+"settings_images" = "Zdjęcia";
+"settings_albums" = "Albumy";
+"settings_tags" = "Tagi";
+"settings_users" = "Użytkownicy";
+"settings_groups" = "Grupy";
+"settings_comments" = "Komentarze";

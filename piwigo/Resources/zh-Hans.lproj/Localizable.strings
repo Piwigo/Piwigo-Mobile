@@ -732,8 +732,6 @@
 "settings_pwgForumURL" = "http://piwigo.org/forum";
 "settings_acknowledgements" = "致谢";
 "settings_privacy" = "隐私政策";
-"settings_users" = "用户";
-"settings_groups" = "群组";
 
 // Settings — Help
 "help01_header" = "多选";
@@ -752,3 +750,11 @@
 "help06_text" = "全局或单独监测、取消和恢复上传请求。";
 "help07_header" = "Auto-Uploading";
 "help07_text" = "Select source and destination albums in Piwigo, create automations in Shortcuts.";
+
+// Settings - About
+"settings_images" = "照片";
+"settings_albums" = "相册";
+"settings_tags" = "标签";
+"settings_users" = "用户";
+"settings_groups" = "群组";
+"settings_comments" = "评论";

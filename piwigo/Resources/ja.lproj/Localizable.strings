@@ -732,8 +732,6 @@
 "settings_pwgForumURL" = "http://piwigo.org/forum";
 "settings_acknowledgements" = "謝辞";
 "settings_privacy" = "プライバシーポリシー";
-"settings_users" = "ユーザー";
-"settings_groups" = "グループ";
 
 // Settings — Help
 "help01_header" = "複数選択";
@@ -752,3 +750,11 @@
 "help06_text" = "監視、キャンセル、およびグローバルまたは個別にアップロードリクエストを再開します。";
 "help07_header" = "Auto-Uploading";
 "help07_text" = "Select source and destination albums in Piwigo, create automations in Shortcuts.";
+
+// Settings - About
+"settings_images" = "写真";
+"settings_albums" = "アルバム";
+"settings_tags" = "タグ";
+"settings_users" = "ユーザー";
+"settings_groups" = "グループ";
+"settings_comments" = "コメント";

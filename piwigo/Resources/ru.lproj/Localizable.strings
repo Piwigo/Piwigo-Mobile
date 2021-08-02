@@ -732,8 +732,6 @@
 "settings_pwgForumURL" = "http://ru.piwigo.org/forum";
 "settings_acknowledgements" = "Благодарности";
 "settings_privacy" = "Политика конфиденциальности";
-"settings_users" = "Пользователи";
-"settings_groups" = "Группы";
 
 // Settings — Help
 "help01_header" = "Выбор нескольких";
@@ -752,3 +750,11 @@
 "help06_text" = "Отслеживать, отменять и возобновлять запросы на загрузку глобально или индивидуально.";
 "help07_header" = "Автозагрузка";
 "help07_text" = "Выберите исходные и целевые альбомы в Piwigo, создайте автоматически ярлыки.";
+
+// Settings - About
+"settings_images" = "Фото";
+"settings_albums" = "Альбомы";
+"settings_tags" = "Теги";
+"settings_users" = "Пользователи";
+"settings_groups" = "Группы";
+"settings_comments" = "Комментарии";
