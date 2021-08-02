@@ -365,7 +365,7 @@ class piwigoAppStore: XCTestCase {
             app.images.element(boundBy: 0).pinch(withScale: 0.733, velocity: -2.0)
         }
         else if deviceType == "iPhone 11 Pro Max" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 23).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 19).tap()
             sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
             app.images.element(boundBy: 0).pinch(withScale: 0.675, velocity: -2.0)
@@ -414,7 +414,7 @@ class piwigoAppStore: XCTestCase {
             app.collectionViews.children(matching: .cell).element(boundBy: 6).tap()
         }
         else if deviceType == "iPhone 11 Pro Max" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 10).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 6).tap()
         }
         else if deviceType == "iPad Pro 9.7\"" {
             app.collectionViews.children(matching: .cell).element(boundBy: 18).tap()
