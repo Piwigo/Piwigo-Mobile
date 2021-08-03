@@ -286,7 +286,7 @@ class piwigoAppStore: XCTestCase {
         
         // Screenshot #2: collection of images with titles
         app.collectionViews.children(matching: .cell).element(boundBy: 2).tap()
-        sleep(1);
+        sleep(2);
         if deviceType.hasPrefix("iPhone") {
             app.collectionViews.children(matching: .cell).element(boundBy: 0).swipeUp()
             sleep(2);
@@ -390,7 +390,7 @@ class piwigoAppStore: XCTestCase {
             sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
         }
-        else if deviceType == "iPad Pro 5 12.9\"" {
+        else if deviceType == "iPad Pro 3 12.9\"" {
             app.collectionViews.children(matching: .cell).element(boundBy: 25).tap()
             sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
@@ -436,7 +436,7 @@ class piwigoAppStore: XCTestCase {
             sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
         }
-        else if deviceType == "iPad Pro 5 12.9\"" {
+        else if deviceType == "iPad Pro 3 12.9\"" {
             app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
             sleep(2)
             app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
