@@ -121,7 +121,16 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
                 resumeOperation.addDependency(uploadOperations.last!)
                 uploadOperations.append(resumeOperation)
 
-                // Save the database when the operation completes
+                // Add next image preparation which will be followed by transfer operations
+                // We prepare only one image due to the 10s limit.
+                let uploadOperation = BlockOperation {
+                    // Transfer image
+                    UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
+                }
+                uploadOperation.addDependency(uploadOperations.last!)
+                uploadOperations.append(uploadOperation)
+                
+                // Print log when the operation completes
                 let lastOperation = uploadOperations.last!
                 lastOperation.completionBlock = {
                     debugPrint("    > In-app intent completed with success.")
@@ -180,7 +189,7 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
                     uploadOperation.addDependency(uploadOperations.last!)
                     uploadOperations.append(uploadOperation)
                     
-                    // Save the database when the operation completes
+                    // Print log when the operation completes
                     let lastOperation = uploadOperations.last!
                     lastOperation.completionBlock = {
                         debugPrint("    > In-app intent completed with success.")
