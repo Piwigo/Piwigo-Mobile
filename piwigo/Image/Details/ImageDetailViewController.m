@@ -723,7 +723,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
                 // Hide HUD
                 [self updatePiwigoHUDwithSuccessWithCompletion:^{
                     [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
-                        // Dispaly preceding/next image or return to album view
+                        // Display preceding/next image or return to album view
                         [self didRemoveImageWithId:self.imageData.imageId];
                     }];
                 }];
@@ -765,7 +765,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
          // Hide HUD
         [self updatePiwigoHUDwithSuccessWithCompletion:^{
             [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
-                // Dispaly preceding/next image or return to album view
+                // Display preceding/next image or return to album view
                 [self didRemoveImageWithId:self.imageData.imageId];
             }];
         }];
