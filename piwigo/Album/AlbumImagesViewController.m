@@ -1671,11 +1671,14 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                     footer.noImagesLabel.text = [NSString stringWithFormat:@"%@ %@", [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]], totalImageCount > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
                 }
 
-                // Set navigation bar buttons
-                if (self.isSelect == YES) {
-                    [self updateButtonsInSelectionMode];
-                } else {
-                    [self updateButtonsInPreviewMode];
+                // Set navigation bar buttons if the AlbumImagesViewController is visible
+                UIViewController *visibleViewController = self.navigationController.visibleViewController;
+                if ([visibleViewController isKindOfClass:[AlbumImagesViewController class]]) {
+                    if (self.isSelect == YES) {
+                        [self updateButtonsInSelectionMode];
+                    } else {
+                        [self updateButtonsInPreviewMode];
+                    }
                 }
             }];
         }];
