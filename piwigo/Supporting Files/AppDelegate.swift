@@ -359,7 +359,9 @@ import piwigoKit
             print("    > Task completed with success.")
             task.setTaskCompleted(success: true)
             // Save cached data
-//            DataController.saveContext()
+            DispatchQueue.main.async {
+                DataController.saveContext()
+            }
         }
 
         // Start the operation

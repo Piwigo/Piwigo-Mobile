@@ -105,8 +105,11 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
                 
                 // Add operation setting flags and selecting upload requests
                 let initOperation = BlockOperation {
-                    // Initialse variables and determine upload requests to prepare and transfer
-                    UploadManager.shared.initialiseBckgTask(autoUploadOnly: true)
+                    // Initialise variables and determine upload requests to prepare and transfer
+                    /// - Considers only auto-upload requests
+                    /// - Called by an extension (don't try to append auto-upload requests again)
+                    UploadManager.shared.initialiseBckgTask(autoUploadOnly: true,
+                                                            triggeredByExtension: true)
                 }
 
                 // Initialise list of operations
@@ -122,7 +125,7 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
                 uploadOperations.append(resumeOperation)
 
                 // Add next image preparation which will be followed by transfer operations
-                // We prepare only one image due to the 10s limit.
+                /// - prepares only one image due to the 10s limit.
                 let uploadOperation = BlockOperation {
                     // Transfer image
                     UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
@@ -130,15 +133,18 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
                 uploadOperation.addDependency(uploadOperations.last!)
                 uploadOperations.append(uploadOperation)
                 
-                // Print log when the operation completes
+                // Save cached data
                 let lastOperation = uploadOperations.last!
                 lastOperation.completionBlock = {
+                    DispatchQueue.main.async {
+                        DataController.saveContext()
+                    }
                     debugPrint("    > In-app intent completed with success.")
                 }
 
                 // Start the operations
                 print("    > In-app intent restarts transfers...");
-                uploadQueue.addOperations(uploadOperations, waitUntilFinished: false)
+                uploadQueue.addOperations(uploadOperations, waitUntilFinished: true)
 
                 completion(AutoUploadIntentResponse.success(photos: NSNumber(value: 0)))
                 return
@@ -165,7 +171,10 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
                     // Add operation setting flags and selecting upload requests
                     let initOperation = BlockOperation {
                         // Initialse variables and determine upload requests to prepare and transfer
-                        UploadManager.shared.initialiseBckgTask(autoUploadOnly: true)
+                        /// - Considers only auto-upload requests
+                        /// - Called by an extension (don't try to append auto-upload requests again)
+                        UploadManager.shared.initialiseBckgTask(autoUploadOnly: true,
+                                                                triggeredByExtension: true)
                     }
 
                     // Initialise list of operations
@@ -181,7 +190,7 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
                     uploadOperations.append(resumeOperation)
 
                     // Add first image preparation which will be followed by transfer operations
-                    // We prepare only one image due to the 10s limit.
+                    /// - prepares only one image due to the 10s limit.
                     let uploadOperation = BlockOperation {
                         // Transfer image
                         UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
@@ -189,9 +198,12 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
                     uploadOperation.addDependency(uploadOperations.last!)
                     uploadOperations.append(uploadOperation)
                     
-                    // Print log when the operation completes
+                    // Save cached data
                     let lastOperation = uploadOperations.last!
                     lastOperation.completionBlock = {
+                        DispatchQueue.main.async {
+                            DataController.saveContext()
+                        }
                         debugPrint("    > In-app intent completed with success.")
                     }
 

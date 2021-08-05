@@ -435,8 +435,7 @@ public class UploadsProvider: NSObject {
      */
     public func getRequests(inStates states: [kPiwigoUploadState],
                             markedForDeletion: Bool = false,
-                            markedForAutoUpload: Bool = false,
-                            triggeredByExtension: Bool = false) -> ([String], [NSManagedObjectID]) {
+                            markedForAutoUpload: Bool = false) -> ([String], [NSManagedObjectID]) {
         // Check that states is not empty
         if states.count == 0 {
             assertionFailure("!!! getRequests() called with no args !!!")
@@ -503,13 +502,12 @@ public class UploadsProvider: NSObject {
             // Loop over the fetched upload requests
             if let uploads = controller.fetchedObjects {
                 for upload in uploads {
-                    // Reset flag if needed to prevent another deletion request
-                    if markedForDeletion { upload.deleteImageAfterUpload = false }
-                    // Filter upload requests if requested
-                    if triggeredByExtension,
-                       !upload.localIdentifier.hasPrefix(UploadManager.shared.kIntentPrefix) {
-                        continue
+                    // Did we collect upload requests marked for deletion?
+                    if markedForDeletion {
+                        // Reset flag if needed to prevent another deletion request
+                        upload.deleteImageAfterUpload = false
                     }
+                    // Gather identifiers and objectIDs
                     localIdentifiers.append(upload.localIdentifier)
                     uploadIDs.append(upload.objectID)
                 }
