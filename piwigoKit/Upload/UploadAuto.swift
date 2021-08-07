@@ -16,8 +16,10 @@ extension UploadManager {
         let collectionID = UploadVars.autoUploadAlbumId
         guard !collectionID.isEmpty,
            let collection = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [collectionID], options: nil).firstObject else {
-            // Cannot access local album
+            // Cannot access local album -> Reset album ID
             UploadVars.autoUploadAlbumId = ""               // Unknown source Photos album
+
+            // Delete remaining upload requests and inform user
             disableAutoUpload(withTitle: NSLocalizedString("settings_autoUploadSourceInvalid", comment:"Invalid source album"), message: NSLocalizedString("settings_autoUploadSourceInfo", comment: "Please select the album or sub-album from which photos and videos of your device will be auto-uploaded."))
             return
         }
@@ -25,58 +27,20 @@ extension UploadManager {
         // Check existence of Piwigo album
         let categoryId = UploadVars.autoUploadCategoryId
         guard categoryId != NSNotFound else {
-            // Cannot access local album
+            // Cannot access Piwigo album -> Reset album ID
             UploadVars.autoUploadCategoryId = NSNotFound    // Unknown destination Piwigo album
+
+            // Delete remaining upload requests and inform user
             disableAutoUpload(withTitle: NSLocalizedString("settings_autoUploadDestinationInvalid", comment:"Invalid destination album"), message: NSLocalizedString("settings_autoUploadSourceInfo", comment: "Please select the album or sub-album into which photos and videos will be auto-uploaded."))
             return
         }
         
-        // Collect IDs of images to upload
-        let fetchOptions = PHFetchOptions()
-        fetchOptions.includeHiddenAssets = false
-        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-        let fetchedImages = PHAsset.fetchAssets(in: collection, options: fetchOptions)
-        if fetchedImages.count == 0 {
-            // Nothing to add to the upload queue - Job done
-            return
-        }
-
-        // Collect localIdentifiers of uploaded and not yet uploaded images in the Upload cache
-        let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
-                                            .preparingFail, .formatError, .prepared,
-                                            .uploading, .uploadingError, .uploaded,
-                                            .finishing, .finishingError, .finished,
-                                            .moderated, .deleted]
-        let imageIDs = uploadsProvider.getRequests(inStates: states).0
-
-        // Determine which local images are still not considered for upload
-        var uploadRequestsToAppend = [UploadProperties]()
-        fetchedImages.enumerateObjects { image, _, stop in
-            // Keep images which had never been considered for upload
-            if !imageIDs.contains(image.localIdentifier) {
-                // Create upload request
-                var uploadRequest = UploadProperties(localIdentifier: image.localIdentifier,
-                                                     category: categoryId)
-                uploadRequest.markedForAutoUpload = true
-                uploadRequest.tagIds = UploadVars.autoUploadTagIds
-                uploadRequest.comment = UploadVars.autoUploadComments
-                uploadRequestsToAppend.append(uploadRequest)
-
-                // Check if we have reached the max number of requests to append
-                if uploadRequestsToAppend.count >= UploadManager.shared.maxNberAutoUploadPerCheck {
-                    stop.pointee = true
-                }
-            }
-        }
+        // Get new local images to be uploaded
+        let uploadRequestsToAppend = getNewRequests(inCollection: collection, toBeUploadedIn: categoryId)
+            .compactMap{ $0 }
         
-        // Are there images to upload?
-        if uploadRequestsToAppend.count == 0 {
-            // Nothing to add to the upload queue - Job done
-            return
-        }
-
         // Record upload requests in database
-        uploadsProvider.importUploads(from: uploadRequestsToAppend.compactMap{ $0 }) { error in
+        uploadsProvider.importUploads(from: uploadRequestsToAppend) { error in
             // Job done in background task
             if self.isExecutingBackgroundUploadTask { return }
 
@@ -101,6 +65,50 @@ extension UploadManager {
                                                 object: nil, userInfo: userInfo)
             }
         }
+    }
+    
+    public func getNewRequests(inCollection collection:PHAssetCollection,
+                               toBeUploadedIn categoryId:Int) -> [UploadProperties] {
+        // Collect IDs of images to upload
+        let fetchOptions = PHFetchOptions()
+        fetchOptions.includeHiddenAssets = false
+        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        let fetchedImages = PHAsset.fetchAssets(in: collection, options: fetchOptions)
+        if fetchedImages.count == 0 {
+            // No new photos - Job done
+            return [UploadProperties]()
+        }
+
+        // Collect localIdentifiers of uploaded and not yet uploaded images in the Upload cache
+        let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
+                                            .preparingFail, .formatError, .prepared,
+                                            .uploading, .uploadingError, .uploaded,
+                                            .finishing, .finishingError, .finished,
+                                            .moderated, .deleted]
+        let imageIDs = uploadsProvider.getRequests(inStates: states).0
+
+        // Determine which local images are still not considered for upload
+        var uploadRequestsToAppend = [UploadProperties]()
+        fetchedImages.enumerateObjects { image, _, stop in
+            // Keep images which had never been considered for upload
+            if !imageIDs.contains(image.localIdentifier) {
+                // Create upload request
+                var uploadRequest = UploadProperties(localIdentifier: image.localIdentifier,
+                                                     category: categoryId)
+                uploadRequest.markedForAutoUpload = true
+                uploadRequest.tagIds = UploadVars.autoUploadTagIds
+                uploadRequest.comment = UploadVars.autoUploadComments
+                uploadRequestsToAppend.append(uploadRequest)
+
+                // Check if we have reached the max number of requests to append
+                if uploadRequestsToAppend.count >= UploadManager.shared.maxNberOfAutoUploadsPerCheck {
+                    stop.pointee = true
+                }
+            }
+        }
+        
+        // Return properties of new upload requests
+        return uploadRequestsToAppend
     }
     
     
