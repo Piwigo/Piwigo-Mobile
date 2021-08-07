@@ -337,7 +337,7 @@ import piwigoKit
         // Add image preparation which will be followed by transfer operations
         for _ in 0..<UploadManager.shared.maxNberOfUploadsPerBckgTask {
             let uploadOperation = BlockOperation {
-                // Transfer image
+                // Prepare then transfer image
                 UploadManager.shared.appendUploadRequestsToPrepareToBckgTask()
             }
             uploadOperation.addDependency(uploadOperations.last!)
