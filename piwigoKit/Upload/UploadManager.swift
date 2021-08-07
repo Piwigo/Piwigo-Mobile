@@ -317,7 +317,7 @@ public class UploadManager: NSObject {
     /// - e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateExpirationForTaskWithIdentifier:@"org.piwigo.uploadManager"]
     public var isExecutingBackgroundUploadTask = false
     public let maxNberOfUploadsPerBckgTask = 100                    // i.e. 100 requests to be considered
-    public let maxNberAutoUploadPerCheck = 500                      // i.e. not more than 500 requests appended each time
+    public let maxNberOfAutoUploadsPerCheck = 500                   // i.e. do not add more than 500 requests at a time
     public var countOfBytesPrepared = UInt64(0)                     // Total amount of bytes of prepared files
     public var countOfBytesToUpload = 0                             // Total amount of bytes to be sent
     public let maxCountOfBytesToUpload = 50 * 1024 * 1024           // i.e. 50 MB every 30 min (100 MB/hour)
@@ -352,7 +352,7 @@ public class UploadManager: NSObject {
         // Will retry a few…
         if failedUploads.count > 0 {
             // Will relaunch transfers with one which failed
-            uploadRequestsToTransfer = Set(failedUploads[..<min(maxNberOfUploadsPerBckgTask, failedUploads.count)])
+            uploadRequestsToTransfer = Set(failedUploads)
             print("\(debugFormatter.string(from: Date())) >•• collected \(uploadRequestsToTransfer.count) failed uploads")
         }
         
@@ -360,7 +360,7 @@ public class UploadManager: NSObject {
         let preparedUploads = uploadsProvider.getRequests(inStates: [.prepared],
                                                           markedForAutoUpload: autoUploadOnly).1
         if preparedUploads.count > 0 {
-            // Will relaunch transfers with a first prepared upload
+            // Will then launch transfers of prepared uploads
             uploadRequestsToTransfer = uploadRequestsToTransfer
                 .union(Set(preparedUploads[..<min(maxNberOfUploadsPerBckgTask,preparedUploads.count)]))
             print("\(debugFormatter.string(from: Date())) >•• collected \(min(maxNberOfUploadsPerBckgTask,preparedUploads.count)) prepared uploads")
