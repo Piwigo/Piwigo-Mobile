@@ -28,7 +28,10 @@ public class UploadsProvider: NSObject {
     public func importUploads(from uploadRequest: [UploadProperties],
                               completionHandler: @escaping (Error?) -> Void) {
         
-        guard !uploadRequest.isEmpty else { return }
+        guard !uploadRequest.isEmpty else {
+            completionHandler(nil)
+            return
+        }
         
         // Create a private queue context.
         let taskContext = DataController.privateManagedObjectContext
@@ -443,7 +446,7 @@ public class UploadsProvider: NSObject {
         }
         
         // Check current queue
-        debugPrint("•••>> getRequests()", queueName())
+//        debugPrint("•••>> getRequests()", queueName())
 
         // Initialisation
         var localIdentifiers = [String]()
