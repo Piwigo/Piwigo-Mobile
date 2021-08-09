@@ -1860,7 +1860,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
                     }
                 }
                 // Update corresponding cell
-                updateCellAndSectionHedaer(for: upload)
+                updateCellAndSectionHeader(for: upload)
             }
         case .delete:
 //            print("••• LocalImagesViewController controller:delete...")
@@ -1880,7 +1880,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
                     selectedImages[index] = nil
                 }
                 // Update corresponding cell
-                updateCellAndSectionHedaer(for: upload)
+                updateCellAndSectionHeader(for: upload)
             }
         case .move:
 //            print("••• LocalImagesViewController controller:move...")
@@ -1898,7 +1898,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
                     indexedUploadsInQueue[indexOfUploadedImage]?.1 = kPiwigoUploadState(rawValue: upload.requestState)!
                 }
                 // Update corresponding cell
-                updateCellAndSectionHedaer(for: upload)
+                updateCellAndSectionHeader(for: upload)
             }
         @unknown default:
             fatalError("LocalImagesViewController: unknown NSFetchedResultsChangeType")
@@ -1912,7 +1912,7 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
         updateNavBar()
     }
 
-    func updateCellAndSectionHedaer(for upload: Upload) {
+    func updateCellAndSectionHeader(for upload: Upload) {
         DispatchQueue.main.async {
             // Get indices of visible items
             let indexPathsForVisibleItems = self.localImagesCollection.indexPathsForVisibleItems
