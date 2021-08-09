@@ -82,7 +82,7 @@ extension UploadManager {
         // Collect localIdentifiers of uploaded and not yet uploaded images in the Upload cache
         let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
                                             .preparingFail, .formatError, .prepared,
-                                            .uploading, .uploadingError, .uploaded,
+                                            .uploading, .uploadingError, .uploadingFail, .uploaded,
                                             .finishing, .finishingError, .finished,
                                             .moderated, .deleted]
         let imageIDs = uploadsProvider.getRequests(inStates: states).0
@@ -131,7 +131,7 @@ extension UploadManager {
         // Collect objectIDs of images being considered for auto-uploading
         let states: [kPiwigoUploadState] = [.waiting, .preparingError,
                                             .preparingFail, .formatError, .prepared,
-                                            .uploadingError, .uploaded,
+                                            .uploadingError, .uploadingFail, .uploaded,
                                             .finishingError]
         let objectIDs = uploadsProvider.getRequests(inStates: states, markedForAutoUpload: true).1
 

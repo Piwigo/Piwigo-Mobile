@@ -463,13 +463,15 @@ extension UploadQueueViewControllerOld: NSFetchedResultsControllerDelegate {
         guard let cell = queueTableView.cellForRow(at: indexPath) as? UploadImageTableViewCell else { return }
         var uploadInfo: [String : Any]
         switch upload.state {
-        case .waiting, .preparing, .prepared, .formatError, .uploadingError:
+        case .waiting,
+             .preparing, .preparingError, .preparingFail, .formatError, .prepared,
+             .uploadingError, .uploadingFail:
             uploadInfo = ["localIdentifier" : upload.localIdentifier,
                           "photoMaxSize" : upload.photoMaxSize,
                           "stateLabel" : upload.stateLabel,
                           "Error" : upload.requestError,
                           "progressFraction" : Float(0.0)]
-        case .uploaded, .finishing, .finishingError, .finished:
+        case .uploaded, .finishing, .finishingError, .finished, .moderated, .deleted:
             uploadInfo = ["localIdentifier" : upload.localIdentifier,
                           "photoMaxSize" : upload.photoMaxSize,
                           "stateLabel" : upload.stateLabel,

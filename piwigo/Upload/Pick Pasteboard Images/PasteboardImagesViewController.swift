@@ -828,7 +828,8 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                     cell.cellUploading = true
                 case .finished, .moderated:
                     cell.cellUploaded = true
-                case .preparingFail, .preparingError, .formatError, .uploadingError, .finishingError:
+                case .preparingFail, .preparingError, .formatError,
+                     .uploadingError, .uploadingFail, .finishingError:
                     cell.cellFailed = true
                 }
             } else {
@@ -845,7 +846,8 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
                     cell.cellUploading = true
                 case .finished, .moderated:
                     cell.cellUploaded = true
-                case .preparingFail, .preparingError, .formatError, .uploadingError, .finishingError:
+                case .preparingFail, .preparingError, .formatError,
+                     .uploadingError, .uploadingFail, .finishingError:
                     cell.cellFailed = true
                 case .none:
                     cell.cellSelected = false
@@ -1122,7 +1124,7 @@ extension PasteboardImagesViewController: NSFetchedResultsControllerDelegate {
                         cell.cellUploading = true
                     case .finished, .moderated:
                         cell.cellUploaded = true
-                    case .preparingFail, .preparingError, .formatError, .uploadingError, .finishingError:
+                    case .preparingFail, .preparingError, .formatError, .uploadingError, .uploadingFail, .finishingError:
                         cell.cellFailed = true
                     }
                     cell.reloadInputViews()

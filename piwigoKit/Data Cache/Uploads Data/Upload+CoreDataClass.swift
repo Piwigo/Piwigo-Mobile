@@ -117,6 +117,8 @@ extension Upload {
             return .uploading
         case kPiwigoUploadState.uploadingError.rawValue:
             return .uploadingError
+        case kPiwigoUploadState.uploadingFail.rawValue:
+            return .uploadingFail
         case kPiwigoUploadState.uploaded.rawValue:
             return .uploaded
 
@@ -266,6 +268,7 @@ public enum kPiwigoUploadState : Int16 {
     case moderated
     
     case deleted
+    case uploadingFail
 }
 
 extension kPiwigoUploadState {
@@ -286,7 +289,7 @@ extension kPiwigoUploadState {
 
         case .uploading:
             return NSLocalizedString("imageUploadTableCell_uploading", comment: "Uploading...")
-        case .uploadingError:
+        case .uploadingError, .uploadingFail:
             return NSLocalizedString("imageUploadTableCell_uploading", comment: "Uploading...") + " " +
                    NSLocalizedString("errorHUD_label", comment: "Error")
         case .uploaded:
@@ -308,7 +311,8 @@ extension kPiwigoUploadState {
     public var sectionKey: String {
         switch self {
         case .preparingFail,
-             .formatError:
+             .formatError,
+             .uploadingFail:
             return SectionKeys.Section1.rawValue
             
         case .preparingError,

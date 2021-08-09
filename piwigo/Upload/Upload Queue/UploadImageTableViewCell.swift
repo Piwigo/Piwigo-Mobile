@@ -54,10 +54,14 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         uploadInfoLabel.text = upload.stateLabel
         
         // Uploading progress bar
-        if [.waiting, .preparing, .preparingError, .preparingFail, .prepared, .formatError, .uploadingError].contains(upload.state) {
+        switch upload.state {
+        case .waiting,
+             .preparing, .preparingError, .preparingFail, .formatError, .prepared,
+             .uploadingError, .uploadingFail:
             uploadingProgress?.setProgress(0.0, animated: false)
-        }
-        if [.uploaded, .finishing, .finishingError, .finished].contains(upload.state) {
+        case .uploaded, .finishing, .finishingError, .finished:
+            uploadingProgress?.setProgress(1.0, animated: false)
+        default:
             uploadingProgress?.setProgress(1.0, animated: false)
         }
 
@@ -95,7 +99,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
                     }
                     return true
                 })]
-        case .preparingFail, .formatError, .finished, .moderated:
+        case .preparingFail, .formatError, .uploadingFail, .finished, .moderated:
             rightButtons = [
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeTrashSmall.png"), backgroundColor: UIColor.red, callback: { sender in
                     DispatchQueue.global(qos: .userInitiated).async {
@@ -129,17 +133,17 @@ class UploadImageTableViewCell: MGSwipeTableCell {
 
         // Progress bar
         if let progressFraction = userInfo["progressFraction"] as? Float {
-            let progress = max(uploadingProgress.progress, progressFraction)
-            uploadingProgress?.setProgress(progress, animated: true)
+            if progressFraction == Float(0.0) {
+                uploadingProgress?.setProgress(0.0, animated: true)
+            } else {
+                let progress = max(uploadingProgress.progress, progressFraction)
+                uploadingProgress?.setProgress(progress, animated: true)
+            }
         }
 
         // Bottom label
-        let errorDescription = (userInfo["Error"] ?? "") as! String
-        if errorDescription.count == 0, let photoMaxSize = userInfo["photoMaxSize"] as? Int16,
-            let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [localIdentifier], options: nil).firstObject {
-            imageInfoLabel.text = getImageInfo(from: imageAsset, for: Int(bounds.size.width),
-                                               maxSize: photoMaxSize)
-        } else if errorDescription.count > 0 {
+        if let errorDescription = userInfo["Error"] as? String,
+           !errorDescription.isEmpty {
             imageInfoLabel.text = errorDescription
         }
     }
@@ -204,13 +208,11 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         cellImage.image = image.crop(width: 1.0, height: 1.0)?.resize(to: 58.0, opaque: true)
         cellImage.layer.cornerRadius = 10 - 3
 
-        // Image available?
-        if [.preparingError, .preparingFail, .formatError, .uploadingError, .finishingError].contains(upload.state) {
+        // Image available
+        if [.preparingError, .preparingFail, .formatError,
+            .uploadingError, .uploadingFail, .finishingError].contains(upload.state) {
             // Display error message
             imageInfoLabel.text = errorDescription(for: upload)
-            if [.preparingError, .preparingFail, .formatError].contains(upload.state) {
-                uploadingProgress?.setProgress(0.0, animated: false)
-            }
         } else {
             // Display image information
             imageInfoLabel.text = getImageInfo(from: image ?? imagePlaceholder,
@@ -231,12 +233,10 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         }
         
         // Image asset available
-        if [.preparingError, .preparingFail, .formatError, .uploadingError, .finishingError].contains(upload.state) {
+        if [.preparingError, .preparingFail, .formatError,
+            .uploadingError, .uploadingFail, .finishingError].contains(upload.state) {
             // Display error message
             imageInfoLabel.text = errorDescription(for: upload)
-            if [.preparingError, .preparingFail, .formatError].contains(upload.state) {
-                uploadingProgress?.setProgress(0.0, animated: false)
-            }
         } else {
             // Display image information
             imageInfoLabel.text = getImageInfo(from: imageAsset, for: availableWidth - 2*Int(indentationWidth),
@@ -325,7 +325,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
                 error = UploadError.missingAsset.localizedDescription
             case .formatError:
                 error = UploadError.wrongDataFormat.localizedDescription
-            case .uploadingError, .finishingError:
+            case .uploadingError, .uploadingFail, .finishingError:
                 error = JsonError.networkUnavailable.localizedDescription
             default:
                 error = "— ? —"

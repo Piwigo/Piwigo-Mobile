@@ -28,9 +28,11 @@ extension UploadManager {
         }
         catch let error as NSError {
             // Could not find the file to upload!
-            print(error.localizedDescription)
-            let transferError = NSError(domain: "Piwigo", code: UploadError.missingFile.hashValue, userInfo: [NSLocalizedDescriptionKey : error.localizedDescription])
-            didEndTransfer(for: uploadID, with: uploadProperties, transferError)
+            debugPrint(error.localizedDescription)
+            var properties = uploadProperties
+            properties.requestState = .preparingFail
+            properties.requestError = error.localizedDescription.replacingOccurrences(of: fileName, with: "…")
+            didEndTransfer(for: uploadID, with: properties)
             return
         }
 
@@ -40,8 +42,10 @@ extension UploadManager {
         let chunks = Int(chunksDiv.rounded(.up))
         if chunks == 0, uploadProperties.fileName.isEmpty,
            uploadProperties.md5Sum.isEmpty, uploadProperties.category == 0 {
-            let error = NSError(domain: "Piwigo", code: UploadError.missingFile.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingFile.localizedDescription])
-            didEndTransfer(for: uploadID, with: uploadProperties, error)
+            var properties = uploadProperties
+            properties.requestState = .preparingFail
+            properties.requestError = UploadError.missingFile.localizedDescription
+            didEndTransfer(for: uploadID, with: properties)
         }
 
         // Prepare first chunk
@@ -65,8 +69,10 @@ extension UploadManager {
         catch let error as NSError {
             // Could not find the file to upload!
             print(error.localizedDescription)
-            let transferError = NSError(domain: "Piwigo", code: UploadError.missingFile.hashValue, userInfo: [NSLocalizedDescriptionKey : error.localizedDescription])
-            didEndTransfer(for: uploadID, with: uploadProperties, transferError)
+            var properties = uploadProperties
+            properties.requestState = .preparingFail
+            properties.requestError = error.localizedDescription.replacingOccurrences(of: fileName, with: "…")
+            didEndTransfer(for: uploadID, with: properties)
             return
         }
 
@@ -187,11 +193,26 @@ extension UploadManager {
 
             // Update upload request status
             if let error = error as NSError? {
-                print("\(debugFormatter.string(from: Date())) > \(md5sum) | \(error.localizedDescription)")
-                self.didEndTransfer(for: uploadID, with: uploadProperties, error, taskID: task.taskIdentifier)
-            } else {
-                let error = NSError(domain: "Piwigo", code: JsonError.networkUnavailable.hashValue, userInfo: [NSLocalizedDescriptionKey : JsonError.networkUnavailable.localizedDescription])
-                self.didEndTransfer(for: uploadID, with: uploadProperties, error, taskID: task.taskIdentifier)
+                uploadProperties.requestState = .uploadingError
+                uploadProperties.requestError = error.localizedDescription
+                self.didEndTransfer(for: uploadID, with: uploadProperties, taskID: task.taskIdentifier)
+            }
+            else if let httpResponse = task.response as? HTTPURLResponse {
+                if (400...499).contains(httpResponse.statusCode) {
+                    uploadProperties.requestState = .uploadingFail
+                } else {
+                    uploadProperties.requestState = .uploadingError
+                }
+                if uploadProperties.requestError.isEmpty {
+                    // The Piwigo server did not return an error message -> catch the one from the response
+                    uploadProperties.requestError = HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
+                }
+                self.didEndTransfer(for: uploadID, with: uploadProperties, taskID: task.taskIdentifier)
+            }
+            else {
+                uploadProperties.requestState = .uploadingError
+                uploadProperties.requestError = JsonError.networkUnavailable.localizedDescription
+                self.didEndTransfer(for: uploadID, with: uploadProperties, taskID: task.taskIdentifier)
             }
             return
         }
@@ -239,7 +260,10 @@ extension UploadManager {
         catch {
             // In foreground, consider next image
             print("\(debugFormatter.string(from: Date())) > \(md5sum) | missing Core Data object!")
-            self.findNextImageToUpload()
+            var properties = UploadProperties(localIdentifier: "Unknown", category: 0)
+            properties.requestState = .uploadingFail
+            properties.requestError = UploadError.missingAsset.localizedDescription
+            self.didEndTransfer(for: uploadID, with: properties, taskID: task.taskIdentifier)
             return
         }
 
@@ -253,8 +277,9 @@ extension UploadManager {
             let dataStr = String(decoding: data, as: UTF8.self)
             print("\(debugFormatter.string(from: Date())) > Invalid JSON object: \(dataStr)")
             #endif
-            let error = NSError(domain: "Piwigo", code: JsonError.invalidJSONobject.hashValue, userInfo: [NSLocalizedDescriptionKey : JsonError.invalidJSONobject.localizedDescription])
-            self.didEndTransfer(for: uploadID, with: uploadProperties, error, taskID: task.taskIdentifier)
+            uploadProperties.requestState = .uploadingError
+            uploadProperties.requestError = JsonError.invalidJSONobject.localizedDescription
+            self.didEndTransfer(for: uploadID, with: uploadProperties, taskID: task.taskIdentifier)
             return
         }
         
@@ -265,8 +290,13 @@ extension UploadManager {
 
             // Piwigo error?
             if (uploadJSON.errorCode != 0) {
-                let error = NSError(domain: "Piwigo", code: uploadJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
-                self.didEndTransfer(for: uploadID, with: uploadProperties, error)
+                if (400...499).contains(uploadJSON.errorCode) {
+                    uploadProperties.requestState = .uploadingFail
+                } else {
+                    uploadProperties.requestState = .uploadingError
+                }
+                uploadProperties.requestError = uploadJSON.errorMessage
+                self.didEndTransfer(for: uploadID, with: uploadProperties)
                 return
             }
 
@@ -305,12 +335,13 @@ extension UploadManager {
             newUploadProperties.imageId = uploadJSON.data.image_id!
             newUploadProperties.requestState = .uploaded
             newUploadProperties.requestError = ""
-            self.didEndTransfer(for: uploadID, with: newUploadProperties, nil)
+            self.didEndTransfer(for: uploadID, with: newUploadProperties)
             return
         } catch {
             // Data cannot be digested, image still ready for upload
-            let error = NSError(domain: "Piwigo", code: UploadError.wrongJSONobject.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongJSONobject.localizedDescription])
-            self.didEndTransfer(for: uploadID, with: uploadProperties, error)
+            uploadProperties.requestState = .uploadingError
+            uploadProperties.requestError = UploadError.wrongJSONobject.localizedDescription
+            self.didEndTransfer(for: uploadID, with: uploadProperties)
             return
         }
     }
@@ -336,8 +367,10 @@ extension UploadManager {
         catch let error as NSError {
             // Could not find the file to upload!
             print(error.localizedDescription)
-            let transferError = NSError(domain: "Piwigo", code: UploadError.missingFile.hashValue, userInfo: [NSLocalizedDescriptionKey : error.localizedDescription])
-            didEndTransfer(for: uploadID, with: uploadProperties, transferError)
+            var properties = uploadProperties
+            properties.requestState = .preparingFail
+            properties.requestError = error.localizedDescription.replacingOccurrences(of: fileName, with: "…")
+            didEndTransfer(for: uploadID, with: properties)
             return
         }
 
@@ -348,8 +381,10 @@ extension UploadManager {
         let chunksStr = String(format: "%ld", chunks)
         if chunks == 0, uploadProperties.fileName.isEmpty,
            uploadProperties.md5Sum.isEmpty, uploadProperties.category == 0 {
-            let error = NSError(domain: "Piwigo", code: UploadError.missingFile.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingFile.localizedDescription])
-            didEndTransfer(for: uploadID, with: uploadProperties, error)
+            var properties = uploadProperties
+            properties.requestState = .preparingFail
+            properties.requestError = UploadError.missingFile.localizedDescription
+            didEndTransfer(for: uploadID, with: properties)
         }
         
         // For producing filename suffixes
@@ -518,8 +553,10 @@ extension UploadManager {
                 // Investigate next upload request?
                 if self.isExecutingBackgroundUploadTask {
                     // In background task — stop here
-                    let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                    self.didEndTransfer(for: uploadID, with: UploadProperties(localIdentifier: "Unknown", category: 0), error, taskID: task.taskIdentifier)
+                    var properties = UploadProperties(localIdentifier: "Unknown", category: 0)
+                    properties.requestState = .uploadingError
+                    properties.requestError = UploadError.missingAsset.localizedDescription
+                    self.didEndTransfer(for: uploadID, with: properties, taskID: task.taskIdentifier)
                 } else {
                     // In foreground, consider next image
                     self.findNextImageToUpload()
@@ -529,11 +566,26 @@ extension UploadManager {
 
             // Update upload request status
             if let error = error as NSError? {
-//                print("\(debugFormatter.string(from: Date())) > \(md5sum) | \(error.localizedDescription)")
-                self.didEndTransfer(for: uploadID, with: uploadProperties, error, taskID: task.taskIdentifier)
-            } else {
-                let error = NSError(domain: "Piwigo", code: JsonError.networkUnavailable.hashValue, userInfo: [NSLocalizedDescriptionKey : JsonError.networkUnavailable.localizedDescription])
-                self.didEndTransfer(for: uploadID, with: uploadProperties, error, taskID: task.taskIdentifier)
+                uploadProperties.requestState = .uploadingError
+                uploadProperties.requestError = error.localizedDescription
+                self.didEndTransfer(for: uploadID, with: uploadProperties, taskID: task.taskIdentifier)
+            }
+            else if let httpResponse = task.response as? HTTPURLResponse {
+                if (400...499).contains(httpResponse.statusCode) {
+                    uploadProperties.requestState = .uploadingFail
+                } else {
+                    uploadProperties.requestState = .uploadingError
+                }
+                if uploadProperties.requestError.isEmpty {
+                    // The Piwigo server did not return an error message -> catch the one from the response
+                    uploadProperties.requestError = HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
+                }
+                self.didEndTransfer(for: uploadID, with: uploadProperties, taskID: task.taskIdentifier)
+            }
+            else {
+                uploadProperties.requestState = .uploadingError
+                uploadProperties.requestError = JsonError.networkUnavailable.localizedDescription
+                self.didEndTransfer(for: uploadID, with: uploadProperties, taskID: task.taskIdentifier)
             }
             return
         }
@@ -577,15 +629,10 @@ extension UploadManager {
         }
         catch {
             print("\(debugFormatter.string(from: Date())) > \(md5sum) | missing Core Data object!")
-            // Investigate next upload request?
-            if self.isExecutingBackgroundUploadTask {
-                // In background task — stop here
-                let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
-                self.didEndTransfer(for: uploadID, with: UploadProperties(localIdentifier: "Unknown", category: 0), error, taskID: task.taskIdentifier)
-            } else {
-                // In foreground, consider next image
-                self.findNextImageToUpload()
-            }
+            var properties = UploadProperties(localIdentifier: "Unknown", category: 0)
+            properties.requestState = .uploadingFail
+            properties.requestError = UploadError.missingAsset.localizedDescription
+            self.didEndTransfer(for: uploadID, with: properties, taskID: task.taskIdentifier)
             return
         }
 
@@ -599,8 +646,9 @@ extension UploadManager {
             let dataStr = String(decoding: data, as: UTF8.self)
             print("\(debugFormatter.string(from: Date())) > Invalid JSON object: \(dataStr)")
             #endif
-            let error = NSError(domain: "Piwigo", code: JsonError.invalidJSONobject.hashValue, userInfo: [NSLocalizedDescriptionKey : JsonError.invalidJSONobject.localizedDescription])
-            self.didEndTransfer(for: uploadID, with: uploadProperties, error, taskID: task.taskIdentifier)
+            uploadProperties.requestState = .uploadingError
+            uploadProperties.requestError = JsonError.invalidJSONobject.localizedDescription
+            self.didEndTransfer(for: uploadID, with: uploadProperties, taskID: task.taskIdentifier)
             return
         }
 
@@ -612,8 +660,13 @@ extension UploadManager {
             // Piwigo error?
             if (uploadJSON.errorCode != 0) {
                 print("\(debugFormatter.string(from: Date())) > \(md5sum) | Piwigo error \(uploadJSON.errorCode)")
-                let error = NSError(domain: "Piwigo", code: uploadJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
-                self.didEndTransfer(for: uploadID, with: uploadProperties, error, taskID: task.taskIdentifier)
+                if (400...499).contains(uploadJSON.errorCode) {
+                    uploadProperties.requestState = .uploadingFail
+                } else {
+                    uploadProperties.requestState = .uploadingError
+                }
+                uploadProperties.requestError = uploadJSON.errorMessage
+                self.didEndTransfer(for: uploadID, with: uploadProperties, taskID: task.taskIdentifier)
                return
             }
             
@@ -716,13 +769,14 @@ extension UploadManager {
             newUploadProperties.imageId = uploadJSON.data.imageId!
             newUploadProperties.requestState = .finished
             newUploadProperties.requestError = ""
-            self.didEndTransfer(for: uploadID, with: newUploadProperties, nil)
+            self.didEndTransfer(for: uploadID, with: newUploadProperties)
             return
         } catch {
             // JSON object cannot be digested, image still ready for upload
             print("\(debugFormatter.string(from: Date())) > \(md5sum) | wrong JSON object!")
-            let error = NSError(domain: "Piwigo", code: UploadError.wrongJSONobject.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongJSONobject.localizedDescription])
-            self.didEndTransfer(for: uploadID, with: uploadProperties, error, taskID: task.taskIdentifier)
+            uploadProperties.requestState = .uploadingError
+            uploadProperties.requestError = UploadError.wrongJSONobject.localizedDescription
+            self.didEndTransfer(for: uploadID, with: uploadProperties, taskID: task.taskIdentifier)
             return
         }
     }
@@ -730,12 +784,12 @@ extension UploadManager {
     
     // MARK: - Transfer Failed/Completed
     private func didEndTransfer(for uploadID: NSManagedObjectID,
-                                with properties: UploadProperties, _ error: NSError?, taskID: Int = Int.max) {
+                                with properties: UploadProperties, taskID: Int = Int.max) {
         print("\(debugFormatter.string(from: Date())) > didEndTransfer in", queueName())
         
         // Error?
-        if let error = error {
-            print("\(debugFormatter.string(from: Date())) > task \(taskID) returned \(error.localizedDescription)")
+        if !properties.requestError.isEmpty {
+            print("\(debugFormatter.string(from: Date())) > task \(taskID) returned \(properties.requestError)")
             // Cancel related tasks
             if taskID != Int.max {
                 let objectURIstr = uploadID.uriRepresentation().absoluteString
@@ -745,12 +799,18 @@ extension UploadManager {
             }
 
             // Update state of upload request
-            var requestError: kPiwigoUploadState = .uploadingError
-            if (error.code == UploadError.missingFile.hashValue) {
-                // Could not retrieve image file to transfer
-                requestError = .preparingError
-            }
-            uploadsProvider.updateStatusOfUpload(with: uploadID, to: requestError, error: error.localizedDescription) { [unowned self] (_) in
+            uploadsProvider.updateStatusOfUpload(with: uploadID, to: properties.requestState,
+                                                 error: properties.requestError) { [unowned self] (_) in
+                // Update UI
+                let uploadInfo: [String : Any] = ["localIdentifier" : properties.localIdentifier,
+                                                  "stateLabel" : properties.requestState.stateInfo,
+                                                  "progressFraction" : Float(0.0),
+                                                  "Error" : properties.requestError]
+                DispatchQueue.main.async {
+                    // Update UploadQueue cell and button shown in root album (or default album)
+                    NotificationCenter.default.post(name: PwgNotifications.uploadProgress, object: nil, userInfo: uploadInfo)
+                }
+
                 // Consider next image?
                 self.didEndTransfer(for: uploadID)
             }
@@ -764,7 +824,7 @@ extension UploadManager {
             // Considers only uploads to the server to which the user is logged in
             let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
                                                 .preparingFail, .formatError, .prepared,
-                                                .uploading, .uploadingError, .uploaded,
+                                                .uploading, .uploadingError, .uploadingFail, .uploaded,
                                                 .finishing, .finishingError]
             // Update app badge and Upload button in root/default album
             self.nberOfUploadsToComplete = self.uploadsProvider.getRequests(inStates: states).0.count

@@ -85,7 +85,7 @@ class AutoUploadIntentHandler: NSObject, AutoUploadIntentHandling {
                 // Considers only uploads to the server to which the user is logged in
                 let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
                                                     .preparingFail, .formatError, .prepared,
-                                                    .uploading, .uploadingError, .uploaded,
+                                                    .uploading, .uploadingError, .uploadingFail, .uploaded,
                                                     .finishing, .finishingError]
                 UploadManager.shared.nberOfUploadsToComplete = self.uploadsProvider.getRequests(inStates: states).0.count
 

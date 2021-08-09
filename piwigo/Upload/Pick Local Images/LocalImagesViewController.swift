@@ -1533,7 +1533,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     cell.cellUploading = true
                 case .finished, .moderated:
                     cell.cellUploaded = true
-                case .preparingFail, .preparingError, .formatError, .uploadingError, .finishingError:
+                case .preparingFail, .preparingError, .formatError,
+                     .uploadingError, .uploadingFail, .finishingError:
                     cell.cellFailed = true
                 }
             } else {
@@ -1549,7 +1550,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     cell.cellUploading = true
                 case .finished, .moderated:
                     cell.cellUploaded = true
-                case .preparingFail, .preparingError, .formatError, .uploadingError, .finishingError:
+                case .preparingFail, .preparingError, .formatError,
+                     .uploadingError, .uploadingFail, .finishingError:
                     cell.cellFailed = true
                 case .none:
                     cell.cellSelected = false
@@ -1931,7 +1933,8 @@ extension LocalImagesViewController: NSFetchedResultsControllerDelegate {
                         cell.cellUploading = true
                     case .finished, .moderated:
                         cell.cellUploaded = true
-                    case .preparingFail, .preparingError, .formatError, .uploadingError, .finishingError:
+                    case .preparingFail, .preparingError, .formatError,
+                         .uploadingError, .uploadingFail, .finishingError:
                         cell.cellFailed = true
                     }
                     cell.reloadInputViews()

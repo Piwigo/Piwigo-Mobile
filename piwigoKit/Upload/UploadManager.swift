@@ -73,7 +73,6 @@ public class UploadManager: NSObject {
         return anURL
     }()
     
-//    let sessionManager: AFHTTPSessionManager = NetworkHandler.createUploadSessionManager()
     let decoder = JSONDecoder()
     
     deinit {
@@ -164,7 +163,7 @@ public class UploadManager: NSObject {
         // Considers only uploads to the server to which the user is logged in
         let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
                                             .preparingFail, .formatError, .prepared,
-                                            .uploading, .uploadingError, .uploaded,
+                                            .uploading, .uploadingError, .uploadingFail, .uploaded,
                                             .finishing, .finishingError]
         nberOfUploadsToComplete = uploadsProvider.getRequests(inStates: states).0.count
 //        return // for debugging background tasks
@@ -223,11 +222,16 @@ public class UploadManager: NSObject {
             }
         }
 
+        // How many upload requests did fail?
+        let failedUploads = uploadsProvider.getRequests(inStates: [.preparingError, .preparingFail,
+                                                                   .uploadingError, .uploadingFail]).1.count
+        // Too many failures?
+        if failedUploads >= maxNberOfFailedUploads { return }
+
         // Not finishing and upload request to finish?
         // Only called when uploading with the pwg.images.upload method
         // because the title cannot be set during the upload.
-        let nberFinishedWithError = uploadsProvider.getRequests(inStates: [.finishingError]).0.count
-        if !isFinishing, nberFinishedWithError < 2,
+        if !isFinishing,
            let uploadID = uploadsProvider.getRequests(inStates: [.uploaded]).1.first {
             
             // Pause upload manager if the app is not in the foreground anymore
@@ -244,8 +248,7 @@ public class UploadManager: NSObject {
         }
 
         // Not transferring and file ready for transfer?
-        let nberUploadedWithError = uploadsProvider.getRequests(inStates: [.uploadingError]).0.count
-        if isUploading.count < maxNberOfTransfers, nberFinishedWithError < 2, nberUploadedWithError < 2,
+        if isUploading.count < maxNberOfTransfers,
            let uploadID = uploadsProvider.getRequests(inStates: [.prepared]).1.first {
 
             // Pause upload manager if the app is not in the foreground anymore
@@ -258,11 +261,8 @@ public class UploadManager: NSObject {
         
         // Not preparing and upload request waiting?
         let nberPrepared = uploadsProvider.getRequests(inStates: [.prepared]).0.count
-        let nberPreparedWithError = uploadsProvider.getRequests(inStates: [.preparingError]).0.count
-        if !isPreparing, nberPrepared < 2, nberFinishedWithError < 2,
-           nberUploadedWithError < 2, nberPreparedWithError < 2,
+        if !isPreparing, nberPrepared < maxNberPreparedUploads,
            let uploadID = uploadsProvider.getRequests(inStates: [.waiting]).1.first {
-            print("\(debugFormatter.string(from: Date())) > preparedWithError:\(nberPreparedWithError), uploadingWithError:\(nberUploadedWithError), finishedWithError:\(nberFinishedWithError)")
 
             // Pause upload manager if the app is not in the foreground anymore
             if isPaused { return }
@@ -344,10 +344,11 @@ public class UploadManager: NSObject {
         uploadRequestsToTransfer = Set<NSManagedObjectID>()
 
         // First, find upload requests whose transfer did fail
-        let failedUploads = uploadsProvider.getRequests(inStates: [.uploadingError],
+        let failedUploads = uploadsProvider.getRequests(inStates: [.preparingError, .preparingFail,
+                                                                   .uploadingError, .uploadingFail],
                                                         markedForAutoUpload: autoUploadOnly).1
         // Too many failures?
-        if failedUploads.count > 5 { return }
+        if failedUploads.count >= maxNberOfFailedUploads { return }
 
         // Will retry a few…
         if failedUploads.count > 0 {
@@ -367,7 +368,7 @@ public class UploadManager: NSObject {
         }
         
         // Finally, get list of upload requests to prepare
-        let diff = maxNberOfUploadsPerBckgTask - uploadRequestsToTransfer.count
+        let diff = maxNberPreparedUploads - uploadRequestsToTransfer.count
         if diff <= 0 { return }
         let requestsToPrepare = uploadsProvider.getRequests(inStates: [.waiting],
                                                             markedForAutoUpload: autoUploadOnly).1
@@ -465,6 +466,7 @@ public class UploadManager: NSObject {
     
     
     // MARK: - Prepare image
+    public let maxNberPreparedUploads = 10
     private var _isPreparing = false
     private var isPreparing: Bool {
         get {
@@ -974,7 +976,11 @@ public class UploadManager: NSObject {
             if countOfBytesToUpload < maxCountOfBytesToUpload {
                 // In background task, launch a transfer if possible
                 let preparedUploadRequests = uploadsProvider.getRequests(inStates: [.prepared]).1
+                let nberOfFailedUploads = uploadsProvider.getRequests(inStates: [.preparingError, .preparingFail,
+                                                                                 .uploadingError, .uploadingFail,
+                                                                                 .finishingError]).1.count
                 if isUploading.count < maxNberOfTransfers,
+                   nberOfFailedUploads < maxNberOfFailedUploads,
                    let uploadID = preparedUploadRequests.first {
                     launchTransfer(of: uploadID)
                 }
@@ -989,6 +995,7 @@ public class UploadManager: NSObject {
     
     // MARK: - Transfer image
     let maxNberOfTransfers = 1
+    public let maxNberOfFailedUploads = 5
     private var _isUploading = Set<NSManagedObjectID>()
     public var isUploading: Set<NSManagedObjectID> {
         get { return _isUploading }
@@ -1047,11 +1054,11 @@ public class UploadManager: NSObject {
 
             // Should we prepare the next image in parallel?
             let uploadIDsToPrepare = uploadsProvider.getRequests(inStates: [.waiting]).1
-            let nberFinishedWithError = uploadsProvider.getRequests(inStates: [.finishingError]).1.count
-            let nberUploadedWithError = uploadsProvider.getRequests(inStates: [.uploadingError]).1.count
-            let nberPreparedWithError = uploadsProvider.getRequests(inStates: [.preparingError]).1.count
+            let nberOfFailedUploads = uploadsProvider.getRequests(inStates: [.preparingError, .preparingFail,
+                                                                             .uploadingError, .uploadingFail,
+                                                                             .finishingError]).1.count
             if !self.isPreparing, let uploadID = uploadIDsToPrepare.first,
-               nberFinishedWithError < 2, nberUploadedWithError < 2, nberPreparedWithError < 2 {
+               nberOfFailedUploads < maxNberOfFailedUploads {
 
                 // Prepare the next upload
                 self.isPreparing = true
@@ -1070,11 +1077,11 @@ public class UploadManager: NSObject {
 
                 // Should we prepare the next image in parallel?
                 let uploadIDsToPrepare = uploadsProvider.getRequests(inStates: [.waiting]).1
-                let nberFinishedWithError = uploadsProvider.getRequests(inStates: [.finishingError]).1.count
-                let nberUploadedWithError = uploadsProvider.getRequests(inStates: [.uploadingError]).1.count
-                let nberPreparedWithError = uploadsProvider.getRequests(inStates: [.preparingError]).1.count
+                let nberOfFailedUploads = uploadsProvider.getRequests(inStates: [.preparingError, .preparingFail,
+                                                                                 .uploadingError, .uploadingFail,
+                                                                                 .finishingError]).1.count
                 if !self.isPreparing, let uploadID = uploadIDsToPrepare.first,
-                   nberFinishedWithError < 2, nberUploadedWithError < 2, nberPreparedWithError < 2 {
+                   nberOfFailedUploads < maxNberOfFailedUploads {
 
                     // Prepare the next upload
                     self.isPreparing = true
@@ -1096,12 +1103,16 @@ public class UploadManager: NSObject {
             if countOfBytesToUpload < maxCountOfBytesToUpload {
                 // In background task, launch a transfer if possible
                 let preparedUploadRequests = uploadsProvider.getRequests(inStates: [.prepared]).1
+                let nberOfFailedUploads = uploadsProvider.getRequests(inStates: [.preparingError, .preparingFail,
+                                                                                 .uploadingError, .uploadingFail,
+                                                                                 .finishingError]).1.count
                 if isUploading.count < maxNberOfTransfers,
+                   nberOfFailedUploads < maxNberOfFailedUploads,
                    let uploadID = preparedUploadRequests.first {
                     launchTransfer(of: uploadID)
                 }
             } else {
-                print("\(debugFormatter.string(from: Date())) >•• didEndTransfer | STOP (\(countOfBytesToUpload) transferred)")
+                debugPrint("\(debugFormatter.string(from: Date())) >•• didEndTransfer | STOP (\(countOfBytesToUpload) transferred)")
             }
         } else {
             // In foreground, always consider next file
@@ -1261,7 +1272,7 @@ public class UploadManager: NSObject {
             self.disableAutoUpload()
         }
         
-        // Propose to deleted uploaded image of the photo Library once a day maximum (at least 10)
+        // Propose to delete uploaded image of the photo Library once a day maximum (at least 10)
         if Date().timeIntervalSinceReferenceDate > UploadVars.dateOfLastPhotoLibraryDeletion + UploadVars.kPiwigoOneDay {
             // Are there images to delete from the Photo Library?
             let (imageIDs, uploadIDs) = uploadsProvider.getRequests(inStates: [.finished, .moderated],
