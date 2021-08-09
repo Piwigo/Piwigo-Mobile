@@ -1235,8 +1235,7 @@ public class UploadManager: NSObject {
             // Resume failed uploads and pursue the work
             self.backgroundQueue.async { [unowned self] in
                 // Considers only uploads to the server to which the user is logged in
-                let states: [kPiwigoUploadState] = [.preparingError, .preparingFail, .formatError,
-                                                    .uploadingError, .finishingError]
+                let states: [kPiwigoUploadState] = [.preparingError, .uploadingError, .finishingError]
                 let failedUploads = self.uploadsProvider.getRequests(inStates: states).1
                 if failedUploads.count > 0 {
                     // Resume failed uploads
