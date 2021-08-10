@@ -359,7 +359,12 @@ public class UploadsProvider: NSObject {
         guard !uploadRequests.isEmpty else { return }
         
         // Create a private queue context.
-        let taskContext = DataController.privateManagedObjectContext
+        var taskContext: NSManagedObjectContext
+        if Thread.isMainThread {
+            taskContext = DataController.managedObjectContext
+        } else {
+            taskContext = DataController.privateManagedObjectContext
+        }
                 
         // Process records in batches to avoid a high memory footprint.
         let batchSize = 256

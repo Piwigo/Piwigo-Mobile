@@ -1634,7 +1634,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 
                 let clearUploadsAction = UIAlertAction(title: "Clear All Upload Requests",
                                                        style: .default, handler: { action in
-                    // Delete all upload requests in a private queue
+                    // Delete all upload requests in the main thread
                     UploadsProvider().clearUploads()
                 })
                 alert.addAction(clearUploadsAction)

@@ -1193,10 +1193,8 @@ public class UploadManager: NSObject {
                 PHAssetChangeRequest.deleteAssets(assetsToDelete as NSFastEnumeration)
             }, completionHandler: { success, error in
                 if success == true {
-                    // Delete upload requests in the private queue
-                    self.backgroundQueue.async {
-                        self.uploadsProvider.delete(uploadRequests: uploadIDs) { _ in }
-                    }
+                    // Delete upload requests in the main thread
+                    self.uploadsProvider.delete(uploadRequests: uploadIDs) { _ in }
                 }
             })
         })

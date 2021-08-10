@@ -239,15 +239,13 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
                     if let _ = self.diffableDataSource.snapshot().indexOfSection(SectionKeys.Section1.rawValue) {
                         // Get IDs of upload requests which won't be possible to perform
                         let uploadIds = self.diffableDataSource.snapshot().itemIdentifiers(inSection: SectionKeys.Section1.rawValue)
-                        // Delete failed uploads in a private queue
-                        DispatchQueue.global(qos: .userInitiated).async {
-                            self.uploadsProvider.delete(uploadRequests: uploadIds) { error in
-                                // Error encountered?
-                                if let error = error {
-                                    DispatchQueue.main.async {
-                                        self.dismissPiwigoError(withTitle: titleClear,
-                                                                message: error.localizedDescription) { }
-                                    }
+                        // Delete failed uploads in the main thread
+                        self.uploadsProvider.delete(uploadRequests: uploadIds) { error in
+                            // Error encountered?
+                            if let error = error {
+                                DispatchQueue.main.async {
+                                    self.dismissPiwigoError(withTitle: titleClear,
+                                                            message: error.localizedDescription) { }
                                 }
                             }
                         }
@@ -404,7 +402,9 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
         // If all upload requests are done, delete all temporary files (in case some would not be deleted)
         if snapshot.numberOfItems == 0 {
             // Delete remaining files from Upload directory (if any)
-            UploadManager.shared.deleteFilesInUploadsDirectory()
+            UploadManager.shared.backgroundQueue.async {
+                UploadManager.shared.deleteFilesInUploadsDirectory()
+            }
             // Close the view when there is no more upload request to display
             self.dismiss(animated: true, completion: nil)
         }

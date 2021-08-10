@@ -247,18 +247,16 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
 				}
 				// Get uploads to delete
 				let uploadIds = allUploads.filter({ (($0.state == .preparingFail) || ($0.state == .formatError))}).map({$0.objectID})
-				// Delete failed uploads in a private queue
-				DispatchQueue.global(qos: .userInitiated).async {
-					self.uploadsProvider.delete(uploadRequests: uploadIds) { error in
-                        // Error encountered?
-                        if let error = error {
-                            DispatchQueue.main.async {
-                                self.dismissPiwigoError(withTitle: titleClear,
-                                                        message: error.localizedDescription) { }
-                            }
+				// Delete failed uploads in the main thread
+                self.uploadsProvider.delete(uploadRequests: uploadIds) { error in
+                    // Error encountered?
+                    if let error = error {
+                        DispatchQueue.main.async {
+                            self.dismissPiwigoError(withTitle: titleClear,
+                                                    message: error.localizedDescription) { }
                         }
                     }
-				}
+                }
 			})
 			alert.addAction(clearAction)
 		}
