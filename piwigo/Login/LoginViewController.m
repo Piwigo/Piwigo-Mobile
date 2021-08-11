@@ -67,6 +67,9 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 		self.userTextField.text = NetworkVarsObjc.username;
         self.userTextField.keyboardType = UIKeyboardTypeDefault;
 		self.userTextField.returnKeyType = UIReturnKeyNext;
+        if (@available(iOS 11.0, *)) {
+            self.userTextField.textContentType = UITextContentTypeUsername;
+        }
 		self.userTextField.delegate = self;
 		[self.view addSubview:self.userTextField];
 		
@@ -75,6 +78,9 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 		self.passwordTextField.secureTextEntry = YES;
 		self.passwordTextField.text = [KeychainUtilitiesObjc passwordForService:NetworkVarsObjc.serverPath account:NetworkVarsObjc.username];
         self.passwordTextField.keyboardType = UIKeyboardTypeDefault;
+        if (@available(iOS 11.0, *)) {
+            self.passwordTextField.textContentType = UITextContentTypePassword;
+        }
 		self.passwordTextField.returnKeyType = UIReturnKeyGo;
 		[self.view addSubview:self.passwordTextField];
 		
