@@ -9,6 +9,7 @@
 //
 
 import UIKit
+import piwigoKit
 
 let kPiwigoActivityTypeMessenger = UIActivity.ActivityType(rawValue: "com.facebook.Messenger.ShareExtension")
 let kPiwigoActivityTypePostInstagram = UIActivity.ActivityType(rawValue: "com.burbn.instagram.shareextension")
@@ -53,14 +54,14 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
         if #available(iOS 11.0, *) {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = Model.sharedInstance().isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
 
         // Table view
         shareMetadataTableView.separatorColor = UIColor.piwigoColorSeparator()
-        shareMetadataTableView.indicatorStyle = Model.sharedInstance().isDarkPaletteActive ? .white : .black
+        shareMetadataTableView.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
         shareMetadataTableView.reloadData()
     }
 
@@ -77,8 +78,8 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
         applyColorPalette()
 
         // Register palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: PwgNotifications.paletteChanged, object: nil)
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -86,18 +87,14 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
 
         //Reload the tableview on orientation change, to match the new width of the table.
         coordinator.animate(alongsideTransition: { context in
-
             // Reload table view
             self.shareMetadataTableView.reloadData()
         })
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
+    deinit {
         // Unregister palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.removeObserver(self, name: name, object: nil)
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }
 
     
@@ -335,92 +332,92 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
         var activitiesNotSharing = [UIActivity.ActivityType]()
         
         // Prepare data source from actual settings
-        if Model.sharedInstance().shareMetadataTypeAirDrop {
+        if ImageVars.shared.shareMetadataTypeAirDrop {
             activitiesSharing.append(.airDrop)
         } else {
             activitiesNotSharing.append(.airDrop)
         }
-        if Model.sharedInstance().shareMetadataTypeAssignToContact {
+        if ImageVars.shared.shareMetadataTypeAssignToContact {
             activitiesSharing.append(.assignToContact)
         } else {
             activitiesNotSharing.append(.assignToContact)
         }
-        if Model.sharedInstance().shareMetadataTypeCopyToPasteboard {
+        if ImageVars.shared.shareMetadataTypeCopyToPasteboard {
             activitiesSharing.append(.copyToPasteboard)
         } else {
             activitiesNotSharing.append(.copyToPasteboard)
         }
-        if Model.sharedInstance().shareMetadataTypeMail {
+        if ImageVars.shared.shareMetadataTypeMail {
             activitiesSharing.append(.mail)
         } else {
             activitiesNotSharing.append(.mail)
         }
-        if Model.sharedInstance().shareMetadataTypeMessage {
+        if ImageVars.shared.shareMetadataTypeMessage {
             activitiesSharing.append(.message)
         } else {
             activitiesNotSharing.append(.message)
         }
-        if Model.sharedInstance().shareMetadataTypePostToFacebook {
+        if ImageVars.shared.shareMetadataTypePostToFacebook {
             activitiesSharing.append(.postToFacebook)
         } else {
             activitiesNotSharing.append(.postToFacebook)
         }
-        if Model.sharedInstance().shareMetadataTypeMessenger {
+        if ImageVars.shared.shareMetadataTypeMessenger {
             activitiesSharing.append(kPiwigoActivityTypeMessenger)
         } else {
             activitiesNotSharing.append(kPiwigoActivityTypeMessenger)
         }
-        if Model.sharedInstance().shareMetadataTypePostToFlickr {
+        if ImageVars.shared.shareMetadataTypePostToFlickr {
             activitiesSharing.append(.postToFlickr)
         } else {
             activitiesNotSharing.append(.postToFlickr)
         }
-        if Model.sharedInstance().shareMetadataTypePostInstagram {
+        if ImageVars.shared.shareMetadataTypePostInstagram {
             activitiesSharing.append(kPiwigoActivityTypePostInstagram)
         } else {
             activitiesNotSharing.append(kPiwigoActivityTypePostInstagram)
         }
-        if Model.sharedInstance().shareMetadataTypePostToSignal {
+        if ImageVars.shared.shareMetadataTypePostToSignal {
             activitiesSharing.append(kPiwigoActivityTypePostToSignal)
         } else {
             activitiesNotSharing.append(kPiwigoActivityTypePostToSignal)
         }
-        if Model.sharedInstance().shareMetadataTypePostToSnapchat {
+        if ImageVars.shared.shareMetadataTypePostToSnapchat {
             activitiesSharing.append(kPiwigoActivityTypePostToSnapchat)
         } else {
             activitiesNotSharing.append(kPiwigoActivityTypePostToSnapchat)
         }
-        if Model.sharedInstance().shareMetadataTypePostToTencentWeibo {
+        if ImageVars.shared.shareMetadataTypePostToTencentWeibo {
             activitiesSharing.append(.postToTencentWeibo)
         } else {
             activitiesNotSharing.append(.postToTencentWeibo)
         }
-        if Model.sharedInstance().shareMetadataTypePostToTwitter {
+        if ImageVars.shared.shareMetadataTypePostToTwitter {
             activitiesSharing.append(.postToTwitter)
         } else {
             activitiesNotSharing.append(.postToTwitter)
         }
-        if Model.sharedInstance().shareMetadataTypePostToVimeo {
+        if ImageVars.shared.shareMetadataTypePostToVimeo {
             activitiesSharing.append(.postToVimeo)
         } else {
             activitiesNotSharing.append(.postToVimeo)
         }
-        if Model.sharedInstance().shareMetadataTypePostToWeibo {
+        if ImageVars.shared.shareMetadataTypePostToWeibo {
             activitiesSharing.append(.postToWeibo)
         } else {
             activitiesNotSharing.append(.postToWeibo)
         }
-        if Model.sharedInstance().shareMetadataTypePostToWhatsApp {
+        if ImageVars.shared.shareMetadataTypePostToWhatsApp {
             activitiesSharing.append(kPiwigoActivityTypePostToWhatsApp)
         } else {
             activitiesNotSharing.append(kPiwigoActivityTypePostToWhatsApp)
         }
-        if Model.sharedInstance().shareMetadataTypeSaveToCameraRoll {
+        if ImageVars.shared.shareMetadataTypeSaveToCameraRoll {
             activitiesSharing.append(.saveToCameraRoll)
         } else {
             activitiesNotSharing.append(.saveToCameraRoll)
         }
-        if Model.sharedInstance().shareMetadataTypeOther {
+        if ImageVars.shared.shareMetadataTypeOther {
             activitiesSharing.append(kPiwigoActivityTypeOther)
         } else {
             activitiesNotSharing.append(kPiwigoActivityTypeOther)
@@ -434,54 +431,51 @@ class ShareMetadataViewController: UIViewController, UITableViewDelegate, UITabl
         // Change the boolean status of the selected activity
         switch activity {
         case .airDrop:
-            Model.sharedInstance().shareMetadataTypeAirDrop = newState
+            ImageVars.shared.shareMetadataTypeAirDrop = newState
         case .assignToContact:
-            Model.sharedInstance().shareMetadataTypeAssignToContact = newState
+            ImageVars.shared.shareMetadataTypeAssignToContact = newState
         case .copyToPasteboard:
-            Model.sharedInstance().shareMetadataTypeCopyToPasteboard = newState
+            ImageVars.shared.shareMetadataTypeCopyToPasteboard = newState
         case .mail:
-            Model.sharedInstance().shareMetadataTypeMail = newState
+            ImageVars.shared.shareMetadataTypeMail = newState
         case .message:
-            Model.sharedInstance().shareMetadataTypeMessage = newState
+            ImageVars.shared.shareMetadataTypeMessage = newState
         case .postToFacebook:
-            Model.sharedInstance().shareMetadataTypePostToFacebook = newState
+            ImageVars.shared.shareMetadataTypePostToFacebook = newState
         case kPiwigoActivityTypeMessenger:
-            Model.sharedInstance().shareMetadataTypeMessenger = newState
+            ImageVars.shared.shareMetadataTypeMessenger = newState
         case .postToFlickr:
-            Model.sharedInstance().shareMetadataTypePostToFlickr = newState
+            ImageVars.shared.shareMetadataTypePostToFlickr = newState
         case kPiwigoActivityTypePostInstagram:
-            Model.sharedInstance().shareMetadataTypePostInstagram = newState
+            ImageVars.shared.shareMetadataTypePostInstagram = newState
         case kPiwigoActivityTypePostToSignal:
-            Model.sharedInstance().shareMetadataTypePostToSignal = newState
+            ImageVars.shared.shareMetadataTypePostToSignal = newState
         case kPiwigoActivityTypePostToSnapchat:
-            Model.sharedInstance().shareMetadataTypePostToSnapchat = newState
+            ImageVars.shared.shareMetadataTypePostToSnapchat = newState
         case .postToTencentWeibo:
-            Model.sharedInstance().shareMetadataTypePostToTencentWeibo = newState
+            ImageVars.shared.shareMetadataTypePostToTencentWeibo = newState
         case .postToTwitter:
-            Model.sharedInstance().shareMetadataTypePostToTwitter = newState
+            ImageVars.shared.shareMetadataTypePostToTwitter = newState
         case .postToVimeo:
-            Model.sharedInstance().shareMetadataTypePostToVimeo = newState
+            ImageVars.shared.shareMetadataTypePostToVimeo = newState
         case .postToWeibo:
-            Model.sharedInstance().shareMetadataTypePostToWeibo = newState
+            ImageVars.shared.shareMetadataTypePostToWeibo = newState
         case kPiwigoActivityTypePostToWhatsApp:
-            Model.sharedInstance().shareMetadataTypePostToWhatsApp = newState
+            ImageVars.shared.shareMetadataTypePostToWhatsApp = newState
         case .saveToCameraRoll:
-            Model.sharedInstance().shareMetadataTypeSaveToCameraRoll = newState
+            ImageVars.shared.shareMetadataTypeSaveToCameraRoll = newState
         case kPiwigoActivityTypeOther:
-            Model.sharedInstance().shareMetadataTypeOther = newState
+            ImageVars.shared.shareMetadataTypeOther = newState
             default:
                 print("Error: Unknown activity \(String(describing: activity))")
         }
 
-        // Save modified settings
-        Model.sharedInstance().saveToDisk()
-        
         // Clear URL requests to force reload images before sharing
-        Model.sharedInstance()?.imageCache.removeAllCachedResponses()
+        NetworkVarsObjc.imageCache?.removeAllCachedResponses()
 
         // Clean up /tmp directory where shared files are temporarily stored
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        appDelegate?.cleanUpTemporaryDirectoryImmediately(true)
+        appDelegate?.cleanUpTemporaryDirectory(immediately: true)
     }
 
     private func getName(forActivity activity: UIActivity.ActivityType, forWidth width: CGFloat) -> String? {

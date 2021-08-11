@@ -7,7 +7,6 @@
 //
 
 #import "LoginViewController_iPhone.h"
-#import "Model.h"
 
 @interface LoginViewController_iPhone ()
 
@@ -34,7 +33,7 @@
     [super viewWillAppear:YES];
 
     // Inform user if the connection is not secure
-    self.websiteNotSecure.hidden = [[Model sharedInstance].serverProtocol isEqualToString:@"https://"];
+    self.websiteNotSecure.hidden = [NetworkVarsObjc.serverProtocol isEqualToString:@"https://"];
 }
 
 -(void)didReceiveMemoryWarning

@@ -9,6 +9,7 @@
 //
 
 import UIKit
+import piwigoKit
 
 class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
     
@@ -43,7 +44,7 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
         if #available(iOS 11.0, *) {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = Model.sharedInstance().isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
@@ -74,8 +75,8 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
         navigationItem.setRightBarButtonItems([doneBarButton].compactMap { $0 }, animated: true)
         
         // Register palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: PwgNotifications.paletteChanged, object: nil)
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -95,14 +96,15 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
     }
 
     @objc func quitSettings() {
-
-        // Unregister palette changes
-        NotificationCenter.default.removeObserver(self)
-
         // Close Settings view
         dismiss(animated: true)
     }
     
+    deinit {
+        // Unregister palette changes
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
+    }
+
     
     // MARK: - Pricay Policy
 
@@ -327,7 +329,7 @@ class PrivacyPolicyViewController: UIViewController, UITextViewDelegate {
         privacyAttributedString.append(spacerAttributedString)
 
         // Piwigo-Mobile URLs
-        let noRange = NSRange.init(location: NSNotFound, length: 0)
+        let noRange = NSRange(location: NSNotFound, length: 0)
         let iOS_URL = URL(string: "https://github.com/Piwigo/Piwigo-Mobile")
         var iOS_Range = (privacyAttributedString.string as NSString).range(of: "Piwigo-Mobile")
         while !NSEqualRanges(iOS_Range, noRange) {

@@ -8,7 +8,6 @@
 
 #import "ImagesCollection.h"
 #import "PiwigoImageData.h"
-#import "Model.h"
 
 @implementation PiwigoImageData
 

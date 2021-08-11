@@ -6,11 +6,11 @@
   Copyright (c) 2015 bakercrew. All rights reserved.
 */
 
-"authors1" = "由Spencer Baker, Olaf Greck开发";
-"authors2" = "由Eddy Lelièvre-Berna辅助开发";
+"authors1" = "由 Spencer Baker 和 Olaf Greck 开发";
+"authors2" = "由 Eddy Lelièvre-Berna 辅助开发";
 "version" = "版本：";
 
-"translators_text" = "真诚感谢以下用户为翻译Piwigo所付出的时间与精力：\n\n- 阿拉伯语: Rachid Haddani\n- 中文（简体）：Benjamin Chris\n- 丹麦语: Thomas Christfort\n- 荷兰语: Robert Mulder 与 Wim Woonings\n- 法语: Eddy Lelièvre-Berna\n- 德语: Jörg Knörchen\n- 印度尼西亚语: Arvin Noer and Alfian Silaban\n- 意大利语: Alessio Perilli\n- 日语: Takahiro Yakoh\n- 波兰语: Michał Majchrowicz 与 T00kie\n- 俄语：Eugene Vivdich\n- 西班牙语：Armando Bello 与 Albert Parera\n- 瑞典语: Elger Lindgren";
+"translators_text" = "真诚感谢以下用户为翻译Piwigo所付出的时间与精力：\n\n- 阿拉伯语: Rachid Haddani\n- 中文(简体): Benjamin Chris\n- 丹麦语: Thomas Christfort\n- 荷兰语: Robert Mulder 和 Wim Woonings\n- 法语: Eddy Lelièvre-Berna\n- 德语: Jörg Knörchen\n- 匈牙利语: Miklos Bagi\n- 印度尼西亚语: Arvin Noer 和 Alfian Silaban\n- 意大利语: Alessio Perilli\n- 日语: Takahiro Yakoh\n- 波兰语: Michał Majchrowicz 和 T00kie\n- 俄语：Eugene Vivdich\n- 西班牙语：Armando Bello 和 Albert Parera\n- 瑞典语: Elger Lindgren";
 
 "about_text" = "本软件所包含的部分其他第三方软件将按照它们的原始协议进行重发行。\n\n";
 
@@ -21,9 +21,5 @@
 "licenceMBProgHUD_text" = "MBProgressHUD\nThe MIT License (MIT)\n\nCopyright © 2009-2016 Matej Bukovinski";
 
 "licenceMGSTC_text" = "MGSwipeTableCell\n\nThe MIT License (MIT)\n\nCopyright © 2016 Imanol Fernandez @MortimerGoro\n________________________________________\n\n";
-
-"licenceSAM_text" = "SAMKeychain\nThe MIT License (MIT)\n\nCopyright © 2010-2016 Sam Soffes\n(http://soff.es)";
-
-"licenceUICL_text" = "UICountingLabel\nThe MIT License (MIT)\n\nCopyright © 2013 Tim Gostony";
 
 "licenceMIT_text" = "The MIT License (MIT)\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.";

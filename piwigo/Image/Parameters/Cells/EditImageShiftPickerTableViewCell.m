@@ -6,7 +6,6 @@
 //  Copyright © 2019 Piwigo.org. All rights reserved.
 //
 
-#import "AppDelegate.h"
 #import "EditImageShiftPickerTableViewCell.h"
 
 NSString * const kShiftPickerTableCell_ID = @"ShiftPickerTableCell";
@@ -50,7 +49,7 @@ typedef enum {
     [super awakeFromNib];
     
     // Register palette changes
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:[PwgNotificationsObjc paletteChanged] object:nil];
 }
 
 -(void)applyColorPalette

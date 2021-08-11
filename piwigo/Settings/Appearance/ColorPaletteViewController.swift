@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import piwigoKit
 
 class ColorPaletteViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
@@ -34,14 +35,14 @@ class ColorPaletteViewController: UIViewController, UITableViewDataSource, UITab
         if #available(iOS 11.0, *) {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = Model.sharedInstance().isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
 
         // Table view
         tableView.separatorColor = UIColor.piwigoColorSeparator()
-        tableView.indicatorStyle = Model.sharedInstance().isDarkPaletteActive ? .white : .black
+        tableView.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
         tableView.reloadData()
     }
 
@@ -52,16 +53,13 @@ class ColorPaletteViewController: UIViewController, UITableViewDataSource, UITab
         applyColorPalette()
 
         // Register palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: PwgNotifications.paletteChanged, object: nil)
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
+    deinit {
         // Unregister palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.removeObserver(self, name: name, object: nil)
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }
 
 
@@ -120,7 +118,7 @@ class ColorPaletteViewController: UIViewController, UITableViewDataSource, UITab
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.row {
         case 0:
-            return 207.0
+            return 214.0
         case 1:
             return 44.0
         default:
@@ -133,12 +131,21 @@ class ColorPaletteViewController: UIViewController, UITableViewDataSource, UITab
 
         switch indexPath.row {
         case 0:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "DeviceTableViewCell", for: indexPath) as? DeviceTableViewCell else {
-                print("Error: tableView.dequeueReusableCell does not return a DeviceTableViewCell!")
-                return LabelTableViewCell()
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "PhoneTableViewCell", for: indexPath) as? PhoneTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a PhoneTableViewCell!")
+                    return LabelTableViewCell()
+                }
+                cell.configure()
+                tableViewCell = cell
+            } else {
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "PadTableViewCell", for: indexPath) as? PadTableViewCell else {
+                    print("Error: tableView.dequeueReusableCell does not return a PadTableViewCell!")
+                    return LabelTableViewCell()
+                }
+                cell.configure()
+                tableViewCell = cell
             }
-            cell.configure()
-            tableViewCell = cell
             
         case 1:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchTableViewCell", for: indexPath) as? SwitchTableViewCell else {
@@ -146,24 +153,22 @@ class ColorPaletteViewController: UIViewController, UITableViewDataSource, UITab
                 return SwitchTableViewCell()
             }
             cell.configure(with: NSLocalizedString("settings_switchPalette", comment: "Automatic"))
-            cell.cellSwitch.setOn(Model.sharedInstance().switchPaletteAutomatically, animated: true)
+            cell.cellSwitch.setOn(AppVars.switchPaletteAutomatically, animated: true)
             cell.cellSwitchBlock = { switchState in
 
                 // Number of rows will change accordingly
-                Model.sharedInstance().switchPaletteAutomatically = switchState
+                AppVars.switchPaletteAutomatically = switchState
 
                 // What should we do?
                 if switchState {
                     // Switch off light/dark modes
-                    Model.sharedInstance().isLightPaletteModeActive = false
-                    Model.sharedInstance().isDarkPaletteModeActive = false
+                    AppVars.isLightPaletteModeActive = false
+                    AppVars.isDarkPaletteModeActive = false
                 }
 
-                // Store modified setting
-                Model.sharedInstance().saveToDisk()
-
                 // Notify palette change
-                (UIApplication.shared.delegate as! AppDelegate).screenBrightnessChanged()
+                let appDelegate = UIApplication.shared.delegate as? AppDelegate
+                appDelegate?.screenBrightnessChanged()
             }
             cell.accessibilityIdentifier = "switchColourAuto"
             tableViewCell = cell

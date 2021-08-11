@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import piwigoKit
 
 @objc
 protocol UploadSwitchDelegate: NSObjectProtocol {
@@ -21,8 +22,8 @@ class UploadSwitchViewController: UIViewController {
 
     private var cancelBarButton: UIBarButtonItem?
     private var uploadBarButton: UIBarButtonItem?
-    private var switchViewSegmentedControl = UISegmentedControl.init(items: [UIImage.init(named: "imageAll")!,
-                                                                             UIImage.init(named: "settings")!])
+    private var switchViewSegmentedControl = UISegmentedControl(items: [UIImage(named: "imageAll")!,
+                                                                        UIImage(named: "settings")!])
     @IBOutlet weak var parametersView: UIView!
     @IBOutlet weak var settingsView: UIView!
 
@@ -63,7 +64,8 @@ class UploadSwitchViewController: UIViewController {
         uploadBarButton = UIBarButtonItem(title: NSLocalizedString("tabBar_upload", comment: "Upload"), style: .done, target: self, action: #selector(didTapUploadButton))
         
         // Segmented control (choice for presenting common image parameters or upload settings)
-        switchViewSegmentedControl = UISegmentedControl.init(items: [UIImage.init(named: "imageAll")!, UIImage.init(named: "settings")!])
+        switchViewSegmentedControl = UISegmentedControl(items: [UIImage(named: "imageAll")!,
+                                                                UIImage(named: "settings")!])
         if #available(iOS 13.0, *) {
             switchViewSegmentedControl.selectedSegmentTintColor = UIColor.piwigoColorOrange()
         } else {
@@ -98,7 +100,7 @@ class UploadSwitchViewController: UIViewController {
         if #available(iOS 11.0, *) {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = Model.sharedInstance().isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
@@ -107,7 +109,7 @@ class UploadSwitchViewController: UIViewController {
         switchViewSegmentedControl.superview?.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.8)
         if #available(iOS 13.0, *) {
             // Keep standard background color
-            switchViewSegmentedControl.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+            switchViewSegmentedControl.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
         } else {
             switchViewSegmentedControl.backgroundColor = UIColor(red: 0.0, green: 0.0, blue: 0.08, alpha: 0.06666)
         }
@@ -120,21 +122,18 @@ class UploadSwitchViewController: UIViewController {
         applyColorPalette()
 
         // Register palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        // Unregister palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.removeObserver(self, name: name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: PwgNotifications.paletteChanged, object: nil)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         // Update navigation bar of parent view
         delegate?.uploadSettingsDidDisappear()
+    }
+    
+    deinit {
+        // Unregister palette changes
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }
 
     
@@ -144,8 +143,8 @@ class UploadSwitchViewController: UIViewController {
         UploadManager.shared.isPaused = true
 
         // Retrieve custom image parameters and upload settings from child views
-        var imageParameters = [String:Any].init(minimumCapacity: 5)
-        var uploadParameters = [String:Any].init(minimumCapacity: 8)
+        var imageParameters = [String:Any](minimumCapacity: 5)
+        var uploadParameters = [String:Any](minimumCapacity: 9)
         children.forEach { (child) in
             
             // Image parameters
@@ -161,7 +160,8 @@ class UploadSwitchViewController: UIViewController {
             if let settingsCtrl = child as? UploadSettingsViewController {
                 uploadParameters["stripGPSdataOnUpload"] = settingsCtrl.stripGPSdataOnUpload
                 uploadParameters["resizeImageOnUpload"] = settingsCtrl.resizeImageOnUpload
-                uploadParameters["photoResize"] = settingsCtrl.photoResize
+                uploadParameters["photoMaxSize"] = settingsCtrl.photoMaxSize
+                uploadParameters["videoMaxSize"] = settingsCtrl.videoMaxSize
                 uploadParameters["compressImageOnUpload"] = settingsCtrl.compressImageOnUpload
                 uploadParameters["photoQuality"] = settingsCtrl.photoQuality
                 uploadParameters["prefixFileNameBeforeUpload"] = settingsCtrl.prefixFileNameBeforeUpload

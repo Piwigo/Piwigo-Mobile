@@ -43,8 +43,9 @@
 "internetCancelledConnection_button" = "取消连接";
 "internetCancelledConnection_title" = "连接已取消";
 
-"PiwigoServer_wrongJSONobject" = "Piwigo服务器无法消化JSON对象。";
-"PiwigoServer_invalidJSONobject" = "Piwigo 服务器没有返回一个有效的 JSON 对象。";
+"PiwigoServer_wrongJSONobject" = "无法接受 Piwigo 服务器传送的 JSON 对象";
+"PiwigoServer_invalidJSONobject" = "Piwigo 服务器没有返回有效的 JSON 对象";
+"PiwigoServer_emptyJSONobject" = "Piwigo 服务器返回了空的 JSON 对象";
 
 // ===========================================================================
 // ==> CORE DATA
@@ -163,9 +164,10 @@
 "categorySelection_title" = "相册";
 "categorySelection_titleSub" = "子相册";
 "categorySelection_root" = "根相册";
+"categorySelection_root<375pt" = "根目录";
 "categorySelection_action" = "选择此相册的操作";
 "categorySelectionHUD_label" = "正在检索相册数据…";
-"categorySelection_allAlbums" = "All Albums";
+"categorySelection_allAlbums" = "所有相册";
 
 // Album upload
 "categoryUpload_noSubAlbum" = "找不到上传照片的子相册";
@@ -180,13 +182,13 @@
 "categoryUpload_syncedFaces" = "iPhoto人脸";
 "categoryUpload_mediaTypes" = "媒体类型";
 "categoryUpload_otherAlbums" = "其他相册";
-"categoryUpload_pasteboard" = "剪切板";
+"categoryUpload_pasteboard" = "剪贴板";
 
 "categoyUpload_loadSubCategories" = "加载";
 "categoryUpload_images" = "上传图片";
 
 // Default album
-"setDefaultCategory_select" = "Please select an album or sub-album which will become the new root album.";
+"setDefaultCategory_select" = "请选择一个相册或子相册作为新的根相册";
 "setDefaultCategory_title" = "默认相册";
 "setDefaultCategory_message" = "您确定要设置相册\"%@\"作为默认相册？";
 
@@ -244,7 +246,7 @@
 
 // Album move
 "moveCategory" = "移动相册";
-"moveCategory_select" = "Please select an album or sub-album to move album \"%@\" into.";
+"moveCategory_select" = "将相册 “%@” 移动到其他的相册或子相册中";
 "moveCategory_message" = "你确定要把\"%@\"移动到相册\"%@\"中吗？";
 "moveCategoryHUD_moving" = "移动相册中...";
 
@@ -253,7 +255,7 @@
 "moveCategoryError_message" = "移动相册失败";
 
 // Album set photo thumbnail
-"categorySelection_setThumbnail" = "Please select the album which will use the photo \"%@\" as a thumbnail.";
+"categorySelection_setThumbnail" = "将照片 “%@” 作为所选择相册的缩略图";
 "categorySelection_current" = "为该照片选择当前相册";
 "categorySelection_one" = "选择包含该照片的相册";
 "categorySelection_other" = "或者为该照片选择另一个相册";
@@ -375,7 +377,7 @@
 "deleteSeveralImagesHUD_deleting" = "正在删除照片中...";
 "removeSingleImage_title" = "从相册中移除";
 "removeSingleImageHUD_removing" = "正在移除照片中...";
-"removeSeveralImagesHUD_removing" = "Removing Photos…";
+"removeSeveralImagesHUD_removing" = "正在删除照片...";
 "deleteSingleImage_message" = "你确定要删除这张照片吗？此操作无法撤销！";
 "deleteSeveralImages_title" = "删除 %@ 张照片";
 "deleteSeveralImages_message" = "你确定要删除你所选择的 %@ 张照片吗？该操作无法撤销！";
@@ -408,8 +410,8 @@
 
 // Image move
 "moveImage_title" = "移动到相册";
-"moveSingleImage_selectAlbum" = "Please, select the album in which you wish to move the photo \"%@\".";
-"moveSeveralImages_selectAlbum" = "Please, select the album in which you wish to copy the photos.";
+"moveSingleImage_selectAlbum" = "将照片 “%@” 移动到相册";
+"moveSeveralImages_selectAlbum" = "将照片移动到相册";
 "moveSingleImage_message" = "您确定要将照片\"%@\"移动到相册\"%@\"吗？";
 "moveSeveralImages_message" = "您确定要将照片移动到相册\"%@\"吗？";
 "moveSingleImageHUD_moving" = "正在移动照片…";
@@ -418,12 +420,12 @@
 // Image move — Errors
 "moveImageError_title" = "移动失败";
 "moveSingleImageError_message" = "无法移动照片";
-"moveSeveralImagesError_message" = "Failed to move some photos";
+"moveSeveralImagesError_message" = "部分照片无法移动";
 
 // Image copy
 "copyImage_title" = "复制到相册";
-"copySingleImage_selectAlbum" = "Please, select the album in which you wish to copy the photo \"%@\".";
-"copySeveralImages_selectAlbum" = "Please, select the album in which you wish to copy the photos.";
+"copySingleImage_selectAlbum" = "将照片 “%@” 复制到相册";
+"copySeveralImages_selectAlbum" = "将照片复制到相册";
 "copySingleImage_message" = "你确定要把照片\"%@\"移动到相册\"%@\"中吗？";
 "copySeveralImages_message" = "你确定要把照片移动到相册 \"%@\" 吗？";
 "copySingleImageHUD_copying" = "复制照片中...";
@@ -432,14 +434,14 @@
 // Image copy — Errors
 "copyImageError_title" = "复制失败";
 "copySingleImageError_message" = "无法复制照片";
-"copySeveralImagesError_message" = "Failed to copy some photos";
+"copySeveralImagesError_message" = "部分照片无法复制";
 
 // Images upload
-"imageUploadHeader" = "Please select the album or sub-album from which photos and videos of your device will be uploaded.";
+"imageUploadHeader" = "请选择相册或子相册，其中的照片和视频会被上传";
 "imageUploadHeaderTitle_images" = "照片参数";
-"imageUploadHeaderText_images" = "请设置用于选择照片/视频的参数";
+"imageUploadHeaderText_images" = "请配置所选择照片或视频的参数";
 "imageUploadHeaderTitle_upload" = "上传设置";
-"imageUploadHeaderText_upload" = "请设置用于选择照片/视频的上传参数";
+"imageUploadHeaderText_upload" = "请配置所选择照片或视频的上传参数";
 
 "imageUploadDetails_title" = "标题：";
 "imageUploadDetails_author" = "作者：";
@@ -552,7 +554,7 @@
 // ==> LOCAL ALBUMS & IMAGES / Photo Library
 // ===========================================================================
 "localAlbums" = "照片库";
-"localAlbums_accessible" = "可访问照片";
+"localAlbums_accessible" = "可访问的照片";
 
 // Local albums — Access not Authorized
 "localAlbums_photosNotAuthorized_title" = "无访问权限";
@@ -564,7 +566,7 @@
 
 // Local images — Explain
 "localImages_deleteTitle" = "从相机卷删除";
-"localImages_deleteMessage" = "您想要从相机卷中删除上传的照片或视频吗？ 已删除的照片或视频仍可在 iOS 照片回收站中使用 30 天。";
+"localImages_deleteMessage" = "您想要从相机卷中删除上传的照片或视频吗？ 已删除的照片或视频在被彻底删除前会在 iOS 照片回收站中保留 30 天";
 
 // ===========================================================================
 // ==> SETTINGS
@@ -627,7 +629,7 @@
 "defaultImageSize>320px" = "照片大小";
 "defaultImageSize>414px" = "照片默认大小";
 //"defaultImageSizeTitle" = "Default Size";
-"defaultImageSizeHeader" = "请选择照片默认大小";
+"defaultImageSizeHeader" = "请选择照片大小";
 "defaultImageSize_recommended" = "（推荐）";
 "defaultSize_disabled" = "（在服务器上禁用）";
 "defaultSizeFooter" = "灰色的尺寸不被Piwigo服务器支持";
@@ -655,8 +657,7 @@
 "settings_defaultPrivacy>414px" = "请选择谁可以看到照片";
 "settings_stripGPSdata" = "去除私密元数据";
 "settings_stripGPSdata>375px" = "上传前删除私密元数据";
-"settings_photoResize" = "上传前调整大小";
-"settings_photoResize>375px" = "上传照片前调整大小";
+"settings_photoResize" = "上传前缩小大小";
 "settings_photoSize" = "大小";
 "settings_placeholderSize" = "输入5-100之间的照片大小";
 "settings_photoCompress" = "上传前压缩";
@@ -672,24 +673,35 @@
 "settings_deleteImage>375px" = "上传后删除照片";
 "settings_wifiOnly" = "仅限Wi-Fi";
 "settings_deleteImage" = "上传后删除照片";
-"settings_autoUpload" = "Auto Upload";
-"settings_autoUpload>414px" = "Auto Upload Photos";
-"settings_autoUploadEnabled" = "On";
-"settings_autoUploadEnabledInfo" = "Photos will be automatically uploaded to your Piwigo.";
-"settings_autoUploadEnabledInfoAll" = "Photos and videos will be automatically uploaded to your Piwigo.";
-"settings_autoUploadDisabled" = "Off";
-"settings_autoUploadDisabledInfo" = "Photos will not be automatically uploaded to your Piwigo.";
-"settings_autoUploadSource" = "Source";
-"settings_autoUploadSourceInvalid" = "Invalid source album";
-"settings_autoUploadSourceInfo" = "Please select the album or sub-album from which photos and videos of your device will be auto-uploaded.";
-"settings_autoUploadDestination" = "Destination";
-"settings_autoUploadDestinationInvalid" = "Invalid destination album";
-"settings_autoUploadDestinationInfo" = "Please select the album or sub-album into which photos and videos will be auto-uploaded.";
+
+// Settings — Auto-Upload
+"settings_autoUpload" = "自动上传";
+"settings_autoUpload>414px" = "自动上传照片";
+"settings_autoUploadEnabled" = "打开";
+"settings_autoUploadEnabledInfo" = "照片将被自动上传到您的 Piwigo";
+"settings_autoUploadEnabledInfoAll" = "照片和视频将被自动上传到您的 Piwigo";
+"settings_autoUploadDisabled" = "关闭";
+"settings_autoUploadDisabledInfo" = "照片将不会被自动上传到你的 Piwigo";
+"settings_autoUploadSource" = "来源";
+"settings_autoUploadSourceInvalid" = "无效的来源相册";
+"settings_autoUploadSourceInfo" = "请选择相册或子相册，其中的照片和视频会被自动上传";
+"settings_autoUploadDestination" = "目的地";
+"settings_autoUploadDestinationInvalid" = "无效的目标相册";
+"settings_autoUploadDestinationInfo" = "请选择照片和视频自动上传到的相册或子相册";
+"AutoUploadError_Disabled" = "自动上传选项在应用设置中被禁用";
+"AutoUploadError_Failed" = "由于出现多次传输失败，上传队列已暂停，请检查";
+
+// Settings — Upload Photo Size
+"UploadPhotoSize_title" = "最大照片大小";
+"UploadPhotoSize_header" = "请选择要上传的照片的最大大小";
+"UploadPhotoSize_resolution" = "内置摄像头最大分辨率";
+"UploadVideoSize_title" = "最大视频大小";
+"UploadVideoSize_header" = "请选择要上传的视频的最大大小";
+"UploadVideoSize_resolution" = "内置摄像头最大规格";
+"UploadPhotoSize_original" = "不缩小大小";
 
 // Settings — Cache
 "settingsHeader_cache" = "缓存设置 (使用量/总量)";
-"settings_loadAllCategories" = "启动后下载所有相册";
-"settings_loadAllCategories>320px" = "启动后下载所有相册（如果有问题则取消）";
 "settings_cacheDisk" = "磁盘";
 "settings_cacheMemory" = "内存";
 "settings_cacheMegabytes" = "MB";
@@ -699,12 +711,12 @@
 
 // Settings — Appearance
 "settingsHeader_appearance" = "外观";
-"settingsHeader_colorPalette" = "色板";
-"settings_lightColor" = "暲";
-"settings_darkColor" = "黑";
-"settings_switchPalette" = "自动的";
+"settingsHeader_colorPalette" = "调色板";
+"settings_lightColor" = "亮色";
+"settings_darkColor" = "暗色";
+"settings_switchPalette" = "自动";
 "settings_brightness" = "亮度";
-"settings_brightnessHelp" = "在环境亮度低的情况下，自动选项会使用黑色色调色板来使照片在黑暗背景下显露出来。";
+"settings_brightnessHelp" = "在环境亮度低的情况下，自动选项会使用暗色外观来使照片在黑暗背景下易于观看";
 
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";
@@ -725,16 +737,18 @@
 
 // Settings — Help
 "help01_header" = "多选";
-"help01_text" = "将您的手指从左向右滑动(或向右滑动)，然后向下滑动等。";
-"help02_header" = "后台上传";
-"help02_text" = "选择照片/视频，设置参数并点击上传。";
-"help02_text2" = "将设备插入充电器，让iOS在适当时启动上传。";
-"help02_text3" = "(需要 uploadAsync 扩展或 Piwigo 11)";
+"help01_text" = "将您的手指从左向右或从右向左滑动，然后向下滑动";
+"help02_header" = "后台上传中";
+"help02_text" = "选择照片或视频，设置参数并点击上传";
+"help02_text2" = "将设备插入充电器，让 iOS 在合适的时候启动上传";
+"help02_text3" = "(需要安装 uploadAsync 扩展或升级到 Piwigo 11)";
 "help03_header" = "管理员";
-"help03_text" = "创建、删除、移动和重命名相册。";
-"help04_text" = "从相机卷中删除的上传照片仍可在 iOS 照片回收站中使用30天。";
-"help05_header" = "上传照片";
-"help05_text" = "上传请求一旦提交，您可以浏览相册，提交其他请求或离开应用程序。";
-"help05_text2" = "点击根相册中的灰色按钮来管理上传。";
+"help03_text" = "创建、删除、移动和重命名相册";
+"help04_text" = "从相机卷中删除的上传照片仍会在 iOS 照片回收站中保留30天";
+"help05_header" = "上传照片中...";
+"help05_text" = "上传请求一旦提交，您可以浏览相册，提交其他请求或离开";
+"help05_text2" = "点击根相册中的灰色按钮来管理上传";
 "help06_header" = "上传管理";
-"help06_text" = "全局或单独监测、取消和恢复上传请求。";
+"help06_text" = "单独或批量管理上传请求";
+"help07_header" = "自动上传中";
+"help07_text" = "选择 Piwigo 中的上传来源和目标相册，在 “快捷指令” APP 中创建自动化";

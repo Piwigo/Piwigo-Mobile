@@ -45,6 +45,7 @@
 
 "PiwigoServer_wrongJSONobject" = "Nie można przejąć obiektu JSON zwróconego przez serwer Piwigo.";
 "PiwigoServer_invalidJSONobject" = "Serwer Piwigo nie zwrócił poprawnego obiektu JSON.";
+"PiwigoServer_emptyJSONobject" = "Serwer Piwigo zwrócił pusty obiekt JSON.";
 
 // ===========================================================================
 // ==> CORE DATA
@@ -163,6 +164,7 @@
 "categorySelection_title" = "Album";
 "categorySelection_titleSub" = "Podalbumy";
 "categorySelection_root" = "Album główny";
+"categorySelection_root<375pt" = "Główny";
 "categorySelection_action" = "Wybierz akcję dla tego albumu";
 "categorySelectionHUD_label" = "Pobieranie danych o albumach…";
 "categorySelection_allAlbums" = "Wszystkie albumy";
@@ -656,7 +658,6 @@
 "settings_stripGPSdata" = "Usuń prywatne metadane";
 "settings_stripGPSdata>375px" = "Usuń prywatne metadane przed wysłaniem";
 "settings_photoResize" = "Zmień rozmiar przed przesłaniem";
-"settings_photoResize>375px" = "Zmień rozmiar zdjęcia przed przesłaniem";
 "settings_photoSize" = "Rozmiar";
 "settings_placeholderSize" = "Wprowadź Rozmiar Zdjęcia z Zakresu 5 - 100";
 "settings_photoCompress" = "Skompresuj przed wysłaniem";
@@ -672,6 +673,8 @@
 "settings_deleteImage>375px" = "Usuń zdjęcie po przesłaniu";
 "settings_wifiOnly" = "Tylko przez Wi-Fi";
 "settings_deleteImage" = "Usuń po wysłaniu";
+
+// Settings — Auto-Upload
 "settings_autoUpload" = "Automatyczne przesyłanie";
 "settings_autoUpload>414px" = "Automatyczne przesyłanie zdjęć";
 "settings_autoUploadEnabled" = "Wł.";
@@ -685,11 +688,20 @@
 "settings_autoUploadDestination" = "Cel";
 "settings_autoUploadDestinationInvalid" = "Nieprawidłowy album docelowy";
 "settings_autoUploadDestinationInfo" = "Wybierz album lub podalbum, do którego zdjęcia i filmy z twojego urządzenia będą automatycznie przesyłane.";
+"AutoUploadError_Disabled" = "Opcja automatycznego wysyłania jest wyłączona w ustawieniach aplikacji.";
+"AutoUploadError_Failed" = "Kilka transferów nie powiodło się i kolejka przesyłania została wstrzymana. Proszę sprawdzić w aplikacji.";
+
+// Settings — Upload Photo Size
+"UploadPhotoSize_title" = "Maksymalny rozmiar zdjęcia";
+"UploadPhotoSize_header" = "Wybierz maksymalny rozmiar zdjęć, które zostaną przesłane.";
+"UploadPhotoSize_resolution" = "Maksymalna rozdzielczość wbudowanych kamer:";
+"UploadVideoSize_title" = "Maksymalny rozmiar filmu";
+"UploadVideoSize_header" = "Wybierz maksymalny rozmiar filmów, które zostaną przesłane.";
+"UploadVideoSize_resolution" = "Maksymalne specyfikacje wbudowanych kamer:";
+"UploadPhotoSize_original" = "Nie zmniejszaj";
 
 // Settings — Cache
 "settingsHeader_cache" = "Podręczna (Używany/Całkowity)";
-"settings_loadAllCategories" = "Pobierz wszystkie Albumy na Start";
-"settings_loadAllCategories>320px" = "Pobierz wszystkie albumy przy uruchomieniu (odznacz w razie problemów)";
 "settings_cacheDisk" = "Dysk";
 "settings_cacheMemory" = "Pamięć";
 "settings_cacheMegabytes" = "MB";
@@ -738,3 +750,5 @@
 "help05_text2" = "Dotknij szarego przycisku w głównym albumie, aby zarządzać przesyłaniami.";
 "help06_header" = "Zarządzanie przesyłaniem";
 "help06_text" = "Monitoruj, anuluj i wznawiaj żądania przesyłania globalnie lub pojedynczo.";
+"help07_header" = "Automatyczne przesyłanie";
+"help07_text" = "Wybierz albumy źródłowe i docelowe w Piwigo, utwórz automaty w Skrótach.";

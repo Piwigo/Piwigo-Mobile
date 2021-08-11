@@ -9,9 +9,6 @@
 #import <AFNetworking/AFImageDownloader.h>
 
 #import "NetworkHandler.h"
-#import "Model.h"
-#import "KeychainAccess.h"
-#import "SAMKeychain.h"
 #import "MBProgressHUD.h"
 
 //#ifndef DEBUG_SESSION
@@ -105,20 +102,20 @@ NSInteger const loadingViewTag = 899;
     }
     
     // Create session manager
-    [Model sharedInstance].sessionManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath]] sessionConfiguration:config];
+    NetworkVarsObjc.sessionManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath]] sessionConfiguration:config];
     
     // Security policy
     AFSecurityPolicy *policy = [AFSecurityPolicy defaultPolicy];
-    [[Model sharedInstance].sessionManager setSecurityPolicy:policy];
+    [NetworkVarsObjc.sessionManager setSecurityPolicy:policy];
     
     // Add "text/plain" to response serializer
     AFJSONResponseSerializer *serializer = [AFJSONResponseSerializer serializer];
     serializer.acceptableContentTypes = [serializer.acceptableContentTypes setByAddingObject:@"text/plain"];
-    [Model sharedInstance].sessionManager.responseSerializer = serializer;
+    NetworkVarsObjc.sessionManager.responseSerializer = serializer;
 
     // Session-Wide Authentication Challenges
     // Perform server trust authentication (certificate validation)
-    [[Model sharedInstance].sessionManager setSessionDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession * _Nonnull session, NSURLAuthenticationChallenge * _Nonnull challenge, NSURLCredential * _Nullable __autoreleasing * _Nullable credential) {
+    [NetworkVarsObjc.sessionManager setSessionDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession * _Nonnull session, NSURLAuthenticationChallenge * _Nonnull challenge, NSURLCredential * _Nullable __autoreleasing * _Nullable credential) {
         
 #if defined(DEBUG_SESSION)
         NSLog(@"===>> didReceiveAuthenticationChallenge: %@", challenge.protectionSpace);
@@ -138,7 +135,7 @@ NSInteger const loadingViewTag = 899;
 
     // Task-Specific Authentication Challenges
     // For servers performing HTTP Basic/Digest Authentication
-    [[Model sharedInstance].sessionManager setAuthenticationChallengeHandler:^id _Nonnull(NSURLSession * _Nonnull session, NSURLSessionTask * _Nonnull task, NSURLAuthenticationChallenge * _Nonnull challenge, void (^ _Nonnull completionHandler)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable)) {
+    [NetworkVarsObjc.sessionManager setAuthenticationChallengeHandler:^id _Nonnull(NSURLSession * _Nonnull session, NSURLSessionTask * _Nonnull task, NSURLAuthenticationChallenge * _Nonnull challenge, void (^ _Nonnull completionHandler)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable)) {
         
 #if defined(DEBUG_SESSION)
         NSLog(@"===>> didReceiveAuthenticationChallenge: %@", challenge.protectionSpace);
@@ -160,9 +157,9 @@ NSInteger const loadingViewTag = 899;
 {
     // AFNetworking only uses a memory cache so we store thumbnails in it and
     // rely on NSURLCache to store shared and previewed images in disk cache.
-    [Model sharedInstance].imageCache = [[NSURLCache alloc]
+    NetworkVarsObjc.imageCache = [[NSURLCache alloc]
                              initWithMemoryCapacity:0
-                                       diskCapacity:[Model sharedInstance].diskCache * 1024 * 1024
+                                       diskCapacity:AppVars.diskCache * 1024 * 1024
                                            diskPath:@"com.alamofire.imagedownloader"];
     // Configuration
     NSURLSessionConfiguration *config = [AFImageDownloader defaultURLSessionConfiguration];
@@ -171,7 +168,7 @@ NSInteger const loadingViewTag = 899;
     config.HTTPMaximumConnectionsPerHost = 4;       // 4 is the advised default value
     config.HTTPShouldSetCookies = YES;
     config.HTTPCookieAcceptPolicy = NSHTTPCookieAcceptPolicyAlways;
-    config.URLCache = [Model sharedInstance].imageCache;
+    config.URLCache = NetworkVarsObjc.imageCache;
     config.requestCachePolicy = NSURLRequestReturnCacheDataElseLoad;
     if (@available(iOS 11.0, *)) {
         config.multipathServiceType = NSURLSessionMultipathServiceTypeHandover;
@@ -180,26 +177,26 @@ NSInteger const loadingViewTag = 899;
     }
 
     // Create session manager
-    [Model sharedInstance].imagesSessionManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath]] sessionConfiguration:config];
+    NetworkVarsObjc.imagesSessionManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath]] sessionConfiguration:config];
     
     // Create image downloader
-    [Model sharedInstance].thumbnailCache = [[AFAutoPurgingImageCache alloc] initWithMemoryCapacity:[Model sharedInstance].memoryCache * 1024 * 1024 preferredMemoryCapacity:[Model sharedInstance].memoryCache * 1024 * 768];
-    AFImageDownloader *imageDownloader = [[AFImageDownloader alloc] initWithSessionManager:[Model sharedInstance].imagesSessionManager downloadPrioritization:AFImageDownloadPrioritizationFIFO maximumActiveDownloads:4 imageCache:[Model sharedInstance].thumbnailCache];
+    NetworkVarsObjc.thumbnailCache = [[AFAutoPurgingImageCache alloc] initWithMemoryCapacity:AppVars.memoryCache * 1024 * 1024 preferredMemoryCapacity:AppVars.memoryCache * 1024 * 768];
+    AFImageDownloader *imageDownloader = [[AFImageDownloader alloc] initWithSessionManager:NetworkVarsObjc.imagesSessionManager downloadPrioritization:AFImageDownloadPrioritizationFIFO maximumActiveDownloads:4 imageCache:NetworkVarsObjc.thumbnailCache];
     [UIImageView setSharedImageDownloader:imageDownloader];
     
     // Security policy
     AFSecurityPolicy *policy = [AFSecurityPolicy defaultPolicy];
-    [[Model sharedInstance].imagesSessionManager setSecurityPolicy:policy];
+    [NetworkVarsObjc.imagesSessionManager setSecurityPolicy:policy];
     
     // Add "text/plain" and "text/html" to response serializer (cases where URLs are forwarded)
     AFImageResponseSerializer *serializer = [[AFImageResponseSerializer alloc] init];
     serializer.acceptableContentTypes = [serializer.acceptableContentTypes setByAddingObject:@"text/plain"];
     serializer.acceptableContentTypes = [serializer.acceptableContentTypes setByAddingObject:@"text/html"];
-    [Model sharedInstance].imagesSessionManager.responseSerializer = serializer;
+    NetworkVarsObjc.imagesSessionManager.responseSerializer = serializer;
 
     // Session-Wide Authentication Challenges
     // Perform server trust authentication (certificate validation)
-    [[Model sharedInstance].imagesSessionManager setSessionDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession * _Nonnull session, NSURLAuthenticationChallenge * _Nonnull challenge, NSURLCredential * _Nullable __autoreleasing * _Nullable credential) {
+    [NetworkVarsObjc.imagesSessionManager setSessionDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession * _Nonnull session, NSURLAuthenticationChallenge * _Nonnull challenge, NSURLCredential * _Nullable __autoreleasing * _Nullable credential) {
         
 #if defined(DEBUG_SESSION)
         NSLog(@"===>> didReceiveAuthenticationChallenge: %@", challenge.protectionSpace);
@@ -218,8 +215,8 @@ NSInteger const loadingViewTag = 899;
 
     // Task-Specific Authentication Challenges
     // For servers performing HTTP Basic/Digest Authentication
-    [[Model sharedInstance].imagesSessionManager setAuthenticationChallengeHandler:^id _Nonnull(NSURLSession * _Nonnull session, NSURLSessionTask * _Nonnull task, NSURLAuthenticationChallenge * _Nonnull challenge, void (^ _Nonnull completionHandler)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable)) {
-//    [[Model sharedInstance].imagesSessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
+    [NetworkVarsObjc.imagesSessionManager setAuthenticationChallengeHandler:^id _Nonnull(NSURLSession * _Nonnull session, NSURLSessionTask * _Nonnull task, NSURLAuthenticationChallenge * _Nonnull challenge, void (^ _Nonnull completionHandler)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable)) {
+//    [NetworkVars.imagesSessionManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
 
 #if defined(DEBUG_SESSION)
         NSLog(@"===>> didReceiveAuthenticationChallenge: %@", challenge.protectionSpace);
@@ -256,7 +253,7 @@ NSInteger const loadingViewTag = 899;
     }
 
     // Create session manager
-    AFHTTPSessionManager *imageUploadManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath]] sessionConfiguration:config];
+    AFHTTPSessionManager *imageUploadManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath]] sessionConfiguration:config];
     
     // Security policy
     AFSecurityPolicy *policy = [AFSecurityPolicy defaultPolicy];
@@ -290,7 +287,6 @@ NSInteger const loadingViewTag = 899;
     // Task-Specific Authentication Challenges
     // For servers performing HTTP Basic/Digest Authentication
     [imageUploadManager setAuthenticationChallengeHandler:^id _Nonnull(NSURLSession * _Nonnull session, NSURLSessionTask * _Nonnull task, NSURLAuthenticationChallenge * _Nonnull challenge, void (^ _Nonnull completionHandler)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable)) {
-//    [[Model sharedInstance].imageUploadManager setTaskDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing *credential) {
         
 #if defined(DEBUG_SESSION)
         NSLog(@"===>> didReceiveAuthenticationChallenge: %@", challenge.protectionSpace);
@@ -316,11 +312,11 @@ NSInteger const loadingViewTag = 899;
                                withPolicy:(AFSecurityPolicy *)policy
 {
     // Initialise SSL certificate approval flag
-    [Model sharedInstance].didRejectCertificate = NO;
+    NetworkVarsObjc.didRejectCertificate = NO;
 
     // Evaluate the trust the standard way.
     SecTrustRef trust = challenge.protectionSpace.serverTrust;
-    NSString *strURL = [NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath];
+    NSString *strURL = [NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath];
     NSURL *serverURL = [NSURL URLWithString:strURL];
     BOOL trusted = [policy evaluateServerTrust:trust forDomain:serverURL.host];
 #if defined(DEBUG_SESSION)
@@ -334,7 +330,7 @@ NSInteger const loadingViewTag = 899;
     // If there is no certificate, report an error (should rarely happen)
     if (SecTrustGetCertificateCount(trust) == 0) {
         // No certificate!
-        [Model sharedInstance].didRejectCertificate = YES;
+        NetworkVarsObjc.didRejectCertificate = YES;
         return nil;
     }
 
@@ -376,7 +372,7 @@ NSInteger const loadingViewTag = 899;
     NSLog(@"===>> non-trusted certificate of server not found in Keychain ;-)");
 #endif
     // Does the user trust this server?
-    if ([Model sharedInstance].didApproveCertificate) {
+    if (NetworkVarsObjc.didApproveCertificate) {
         // The user trusts this server.
         if (storedCertificate) {
             // Delete certificate in Keychain (updating the certificate data is not sufficient)
@@ -418,7 +414,7 @@ NSInteger const loadingViewTag = 899;
 
         // Will reject a connection if the certificate is changed during a session
         // but it will still be possible to logout.
-        [Model sharedInstance].didApproveCertificate = NO;
+        NetworkVarsObjc.didApproveCertificate = NO;
         
         // Accept connection
         return [NSURLCredential credentialForTrust:trust];
@@ -450,8 +446,8 @@ NSInteger const loadingViewTag = 899;
         }
     }
     [certString appendString:@")"];
-    [Model sharedInstance].certificateInformation = [certString copy];
-    [Model sharedInstance].didRejectCertificate = YES;
+    NetworkVarsObjc.certificateInformation = [certString copy];
+    NetworkVarsObjc.didRejectCertificate = YES;
 #if defined(DEBUG_SESSION)
     NSLog(@"===>> Certificate: %@", certString);
 #endif
@@ -461,21 +457,20 @@ NSInteger const loadingViewTag = 899;
 +(NSURLCredential *)didRequestHTTPBasicAuthentication:(NSURLAuthenticationChallenge *)challenge
 {
     // Initialise HTTP authentication flag
-    [Model sharedInstance].didFailHTTPauthentication = NO;
+    NetworkVarsObjc.didFailHTTPauthentication = NO;
     
     // Get HTTP basic authentification credentials
-    NSString *user = [Model sharedInstance].HttpUsername;
-    NSString *password = [SAMKeychain passwordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] account:user];
+    NSString *user = NetworkVarsObjc.httpUsername;
+    NSString *password = [KeychainUtilitiesObjc passwordForService:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath] account:user];
     
     // Without HTTP credentials available, tries Piwigo credentials
     if ((user == nil) || (user.length <= 0) || (password == nil)) {
-        user  = [Model sharedInstance].username;
-        password = [SAMKeychain passwordForService:[Model sharedInstance].serverPath account:user];
+        user  = NetworkVarsObjc.username;
+        password = [KeychainUtilitiesObjc passwordForService:NetworkVarsObjc.serverPath account:user];
         if (password == nil) password = @"";
         
-        [Model sharedInstance].HttpUsername = user;
-        [[Model sharedInstance] saveToDisk];
-        [SAMKeychain setPassword:password forService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] account:user];
+        NetworkVarsObjc.httpUsername = user;
+        [KeychainUtilitiesObjc setPassword:password forService:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath] account:user];
     }
     
     // Supply requested credentials if not provided yet
@@ -489,10 +484,10 @@ NSInteger const loadingViewTag = 899;
     }
     
     // HTTP credentials refused... delete them in Keychain
-    [SAMKeychain deletePasswordForService:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath] account:user];
+    [KeychainUtilitiesObjc deletePasswordForService:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath] account:user];
 
     // Remember failed HTTP authentication
-    [Model sharedInstance].didFailHTTPauthentication = YES;
+    NetworkVarsObjc.didFailHTTPauthentication = YES;
     return nil;
 }
 
@@ -525,14 +520,14 @@ NSInteger const loadingViewTag = 899;
         if (range.location == NSNotFound) {
             // No path, incomplete URL —> return image.jpg but should never happen
             return [NSString stringWithFormat:@"%@%@/image.jpg",
-                    [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath];
+                    NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath];
         }
         authority = [leftURL substringWithRange:NSMakeRange(0, range.location)];
         leftURL = [leftURL stringByReplacingOccurrencesOfString:authority withString:@"" options:0 range:NSMakeRange(0, authority.length)];
         
         // The Piwigo server may not be in the root e.g. example.com/piwigo/…
         // So we remove the path to avoid a duplicate if necessary
-        NSURL *loginURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath]];
+        NSURL *loginURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath]];
         if ([loginURL.path length] > 0) {
             if ([leftURL hasPrefix:loginURL.path]) {
                 leftURL = [leftURL stringByReplacingOccurrencesOfString:loginURL.path withString:@"" options:0 range:NSMakeRange(0, loginURL.path.length)];
@@ -545,7 +540,7 @@ NSInteger const loadingViewTag = 899;
             // No query -> remaining string is a path
             path = [leftURL stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLPathAllowedCharacterSet]];
             originalURL = [NSString stringWithFormat:@"%@%@%@",
-                           [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath, path];
+                           NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath, path];
         }
         else {
             // URL seems to contain a query
@@ -554,7 +549,7 @@ NSInteger const loadingViewTag = 899;
             leftURL = [leftURL stringByReplacingOccurrencesOfString:path withString:@"" options:0 range:NSMakeRange(0, path.length)];
             leftURL = [leftURL stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
             originalURL = [NSString stringWithFormat:@"%@%@%@%@",
-                           [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath, path, leftURL];
+                           NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath, path, leftURL];
         }
     }
     
@@ -562,7 +557,7 @@ NSInteger const loadingViewTag = 899;
     if (serverURL == nil) {
         // The URL is still not RFC compliant —> return image.jpg to avoid a crash
         return [NSString stringWithFormat:@"%@%@/image.jpg",
-                [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath];
+                NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath];
     }
 
     // Servers may return image URLs different from those used to login (e.g. wrong server settings)
@@ -582,7 +577,7 @@ NSInteger const loadingViewTag = 899;
 
     // The Piwigo server may not be in the root e.g. example.com/piwigo/…
     // So we remove the path to avoid a duplicate if necessary
-    NSURL *loginURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath]];
+    NSURL *loginURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath]];
     if ([loginURL.path length] > 0) {
         if ([cleanPath hasPrefix:loginURL.path]) {
             cleanPath = [cleanPath stringByReplacingOccurrencesOfString:loginURL.path withString:@"" options:0 range:NSMakeRange(0, loginURL.path.length)];
@@ -610,7 +605,7 @@ NSInteger const loadingViewTag = 899;
     
     // Compile final URL using the one provided at login
     NSString *encodedImageURL = [NSString stringWithFormat:@"%@%@%@%@",
-                            [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath, prefix, cleanPath];
+                                 NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath, prefix, cleanPath];
     
 #if defined(DEBUG_SESSION)
     if (![encodedImageURL isEqualToString:originalURL]) {
@@ -632,7 +627,7 @@ NSInteger const loadingViewTag = 899;
     if (serverURL == nil) {
         // The URL is incorrect —> return image.jpg in server home page to avoid a crash
         return [NSString stringWithFormat:@"%@%@/image.jpg",
-                [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath];
+                NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath];
     }
     
     // Servers may return image URLs different from those used to login
@@ -652,7 +647,7 @@ NSInteger const loadingViewTag = 899;
 
     // The Piwigo server may not be in the root e.g. example.com/piwigo/…
     // So we remove the path to avoid a duplicate if necessary
-    NSURL *loginURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath]];
+    NSURL *loginURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath]];
     if ([loginURL.path length] > 0) {
         if ([cleanPath hasPrefix:loginURL.path]) {
             cleanPath = [cleanPath stringByReplacingOccurrencesOfString:loginURL.path withString:@"" options:0 range:NSMakeRange(0, loginURL.path.length)];
@@ -688,7 +683,7 @@ NSInteger const loadingViewTag = 899;
     
     // Compile final URL
     NSString *url = [NSString stringWithFormat:@"%@%@/ws.php?%@%@",
-                     [Model sharedInstance].serverProtocol, [Model sharedInstance].serverPath, prefix, cleanPath];
+                     NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath, prefix, cleanPath];
     
 #if defined(DEBUG_SESSION)
     if (![url isEqualToString:originalURL]) {
@@ -715,11 +710,13 @@ NSInteger const loadingViewTag = 899;
                               parameters:parameters headers:nil
                               progress:progress
                               success:^(NSURLSessionTask *task, id responseObject) {
-//       NSLog(@"==> post: %@", task.originalRequest.allHTTPHeaderFields);
-//       NSLog(@"==> post: %@", task.response.URL);
-//       NSLog(@"==> post: %@", task.response.MIMEType);
-//       NSLog(@"==> post: %@", task.response.textEncodingName);
-//       NSLog(@"==> post: %@", task.response.description);
+//        NSLog(@"==> post request URL: %@", task.originalRequest.URL);
+//        NSLog(@"==> post request HTTP headers: %@", task.originalRequest.allHTTPHeaderFields);
+//        NSLog(@"==> post request HttpBody: %@ i.e. \"%@\"", task.originalRequest.HTTPBody, [[NSString alloc] initWithData:task.originalRequest.HTTPBody encoding:NSUTF8StringEncoding]);
+//        
+//        NSLog(@"==> post response URL: %@", task.response.URL);
+//        NSLog(@"==> post response MIME: %@", task.response.MIMEType);
+//        NSLog(@"==> post response Encoding: %@", task.response.textEncodingName);
                                    if (success) {
                                        success(task, responseObject);
                                    }
@@ -774,7 +771,7 @@ NSInteger const loadingViewTag = 899;
 
                     [formData appendPartWithFormData:[[parameters valueForKey:kPiwigoImagesUploadParamPrivacy] dataUsingEncoding:NSUTF8StringEncoding] name:@"level"];
 
-                    [formData appendPartWithFormData:[[Model sharedInstance].pwgToken dataUsingEncoding:NSUTF8StringEncoding] name:@"pwg_token"];
+                    [formData appendPartWithFormData:[NetworkVarsObjc.pwgToken dataUsingEncoding:NSUTF8StringEncoding] name:@"pwg_token"];
                 }
                                   progress:progress
                                    success:^(NSURLSessionTask *task, id responseObject) {
@@ -852,7 +849,7 @@ NSInteger const loadingViewTag = 899;
     [alert addAction:defaultAction];
     alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
-        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }

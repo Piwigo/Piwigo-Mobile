@@ -6,8 +6,6 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import "AppDelegate.h"
-#import "Model.h"
 #import "TagsService.h"
 
 @implementation TagsService
@@ -19,7 +17,7 @@
     return [self post: isAdmin ? kPiwigoTagsGetAdminList : kPiwigoTagsGetList
 		URLParameters:nil
            parameters:nil
-       sessionManager:[Model sharedInstance].sessionManager
+       sessionManager:NetworkVarsObjc.sessionManager
              progress:nil
 			  success:completion
 			  failure:fail];
@@ -32,7 +30,7 @@
     return [self post:kPiwigoTagsAdd
         URLParameters:nil
            parameters:@{@"name": tagName}
-       sessionManager:[Model sharedInstance].sessionManager
+       sessionManager:NetworkVarsObjc.sessionManager
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   

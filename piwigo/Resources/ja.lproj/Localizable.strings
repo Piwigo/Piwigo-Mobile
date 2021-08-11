@@ -45,6 +45,7 @@
 
 "PiwigoServer_wrongJSONobject" = "Piwigoサーバが返すJSONオブジェクトを要約できませんでした。";
 "PiwigoServer_invalidJSONobject" = "Piwigoサーバは有効なJSONオブジェクトを返しませんでした。";
+"PiwigoServer_emptyJSONobject" = "Piwigo server did return an empty JSON object.";
 
 // ===========================================================================
 // ==> CORE DATA
@@ -163,6 +164,7 @@
 "categorySelection_title" = "アルバム";
 "categorySelection_titleSub" = "サブアルバム";
 "categorySelection_root" = "ルートアルバム";
+"categorySelection_root<375pt" = "Root";
 "categorySelection_action" = "このアルバムのためのアクションを選択します";
 "categorySelectionHUD_label" = "アルバムのデータを取得しています...";
 "categorySelection_allAlbums" = "All Albums";
@@ -656,7 +658,6 @@
 "settings_stripGPSdata" = "プライベートなメタデータを取り除きます";
 "settings_stripGPSdata>375px" = "アップロードする前にプライベートなメタデータを取り除きます";
 "settings_photoResize" = "アップロードする前にサイズを変更します";
-"settings_photoResize>375px" = "アップロードする前に写真のサイズを変更します";
 "settings_photoSize" = "サイズ";
 "settings_placeholderSize" = "写真のサイズを 5 - 100 の範囲で入力して下さい";
 "settings_photoCompress" = "アップロードする前に圧縮します";
@@ -672,6 +673,8 @@
 "settings_deleteImage>375px" = "アップロード後に写真を削除します";
 "settings_wifiOnly" = "Wi-Fiのみ";
 "settings_deleteImage" = "アップロード後に削除します";
+
+// Settings — Auto-Upload
 "settings_autoUpload" = "Auto Upload";
 "settings_autoUpload>414px" = "Auto Upload Photos";
 "settings_autoUploadEnabled" = "On";
@@ -685,11 +688,20 @@
 "settings_autoUploadDestination" = "Destination";
 "settings_autoUploadDestinationInvalid" = "Invalid destination album";
 "settings_autoUploadDestinationInfo" = "Please select the album or sub-album into which photos and videos will be auto-uploaded.";
+"AutoUploadError_Disabled" = "The Auto-Upload option is disabled in the app settings.";
+"AutoUploadError_Failed" = "Several transfers failed and the upload queue is on hold. Please check in the app.";
+
+// Settings — Upload Photo Size
+"UploadPhotoSize_title" = "Max Photo Size";
+"UploadPhotoSize_header" = "Please select the maximum size of the photos which will be uploaded.";
+"UploadPhotoSize_resolution" = "Built-in cameras maximum resolution:";
+"UploadVideoSize_title" = "Max Video Size";
+"UploadVideoSize_header" = "Please select the maximum size of the videos which will be uploaded.";
+"UploadVideoSize_resolution" = "Built-in cameras maximum specifications:";
+"UploadPhotoSize_original" = "No Downsizing";
 
 // Settings — Cache
 "settingsHeader_cache" = "キャッシュ設定 (使用済み／総計)";
-"settings_loadAllCategories" = "起動時にすべてのアルバムをダウンロードします";
-"settings_loadAllCategories>320px" = "起動時にすべてのアルバムをダウンロード (トラブルの場合はチェックを外す)";
 "settings_cacheDisk" = "ディスク";
 "settings_cacheMemory" = "メモリ";
 "settings_cacheMegabytes" = "MB";
@@ -738,3 +750,5 @@
 "help05_text2" = "アップロードを管理するには、ルートアルバムに表示されているグレーのボタンをタップします。";
 "help06_header" = "アップロード管理";
 "help06_text" = "監視、キャンセル、およびグローバルまたは個別にアップロードリクエストを再開します。";
+"help07_header" = "Auto-Uploading";
+"help07_text" = "Select source and destination albums in Piwigo, create automations in Shortcuts.";

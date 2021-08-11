@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import piwigoKit
 
 class ShareUtilities {
     
@@ -262,7 +263,8 @@ class ShareUtilities {
                              completionHandler: @escaping (_ response: URLResponse?, _ filePath: URL?, _ error: Error?) -> Void
                              ) -> URLSessionDownloadTask? {
         // Download and save image in /tmp directory
-        let task = Model.sharedInstance().imagesSessionManager.downloadTask(
+        guard let manager = NetworkVarsObjc.imagesSessionManager else { return nil}
+        let task = manager.downloadTask(
             with: urlRequest,
             progress: progress,
             destination: { targetPath, response in
@@ -272,7 +274,6 @@ class ShareUtilities {
         task.resume()
         return task
     }
-    
 }
 
 
@@ -323,81 +324,81 @@ extension UIActivity.ActivityType: Comparable {
         if #available(iOS 10, *) {
             switch self {
             case .airDrop:
-                if !Model.sharedInstance().shareMetadataTypeAirDrop {
+                if !ImageVars.shared.shareMetadataTypeAirDrop {
                     return true
                 }
             case .assignToContact:
-                if !Model.sharedInstance().shareMetadataTypeAssignToContact {
+                if !ImageVars.shared.shareMetadataTypeAssignToContact {
                     return true
                 }
             case .copyToPasteboard:
-                if !Model.sharedInstance().shareMetadataTypeCopyToPasteboard {
+                if !ImageVars.shared.shareMetadataTypeCopyToPasteboard {
                     return true
                 }
             case .mail:
-                if !Model.sharedInstance().shareMetadataTypeMail {
+                if !ImageVars.shared.shareMetadataTypeMail {
                     return true
                 }
             case .message:
-                if !Model.sharedInstance().shareMetadataTypeMessage {
+                if !ImageVars.shared.shareMetadataTypeMessage {
                     return true
                 }
             case .postToFacebook:
-                if !Model.sharedInstance().shareMetadataTypePostToFacebook {
+                if !ImageVars.shared.shareMetadataTypePostToFacebook {
                     return true
                 }
             case kPiwigoActivityTypeMessenger:
-                if !Model.sharedInstance().shareMetadataTypeMessenger {
+                if !ImageVars.shared.shareMetadataTypeMessenger {
                     return true
                 }
             case .postToFlickr:
-                if !Model.sharedInstance().shareMetadataTypePostToFlickr {
+                if !ImageVars.shared.shareMetadataTypePostToFlickr {
                     return true
                 }
             case kPiwigoActivityTypePostInstagram:
-                if !Model.sharedInstance().shareMetadataTypePostInstagram {
+                if !ImageVars.shared.shareMetadataTypePostInstagram {
                     return true
                 }
             case kPiwigoActivityTypePostToSignal:
-                if !Model.sharedInstance().shareMetadataTypePostToSignal {
+                if !ImageVars.shared.shareMetadataTypePostToSignal {
                     return true
                 }
             case kPiwigoActivityTypePostToSnapchat:
-                if !Model.sharedInstance().shareMetadataTypePostToSnapchat {
+                if !ImageVars.shared.shareMetadataTypePostToSnapchat {
                     return true
                 }
             case .postToTencentWeibo:
-                if !Model.sharedInstance().shareMetadataTypePostToTencentWeibo {
+                if !ImageVars.shared.shareMetadataTypePostToTencentWeibo {
                     return true
                 }
             case .postToTwitter:
-                if !Model.sharedInstance().shareMetadataTypePostToTwitter {
+                if !ImageVars.shared.shareMetadataTypePostToTwitter {
                     return true
                 }
             case .postToVimeo:
-                if !Model.sharedInstance().shareMetadataTypePostToVimeo {
+                if !ImageVars.shared.shareMetadataTypePostToVimeo {
                     return true
                 }
             case .postToWeibo:
-                if !Model.sharedInstance().shareMetadataTypePostToWeibo {
+                if !ImageVars.shared.shareMetadataTypePostToWeibo {
                     return true
                 }
             case kPiwigoActivityTypePostToWhatsApp:
-                if !Model.sharedInstance().shareMetadataTypePostToWhatsApp {
+                if !ImageVars.shared.shareMetadataTypePostToWhatsApp {
                     return true
                 }
             case .saveToCameraRoll:
-                if !Model.sharedInstance().shareMetadataTypeSaveToCameraRoll {
+                if !ImageVars.shared.shareMetadataTypeSaveToCameraRoll {
                     return true
                 }
             default:
-                if !Model.sharedInstance().shareMetadataTypeOther {
+                if !ImageVars.shared.shareMetadataTypeOther {
                     return true
                 }
             }
         } else {
             // Single On/Off share metadata option (use first boolean)
-            if !Model.sharedInstance().shareMetadataTypeAirDrop {
+            if !ImageVars.shared.shareMetadataTypeAirDrop {
                 return true
             }
         }

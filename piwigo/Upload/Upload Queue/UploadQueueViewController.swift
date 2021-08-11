@@ -8,6 +8,7 @@
 
 import Photos
 import UIKit
+import piwigoKit
 
 @available(iOS 13.0, *)
 @objc
@@ -19,7 +20,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
      The UploadsProvider that collects upload data, saves it to Core Data, and serves it to the uploader.
      */
     lazy var managedObjectContext: NSManagedObjectContext = {
-        let context:NSManagedObjectContext = (UIApplication.shared.delegate as! AppDelegate).managedObjectContext
+        let context:NSManagedObjectContext = DataController.managedObjectContext
         return context
     }()
 
@@ -70,8 +71,8 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         setTableViewMainHeader()
         
         // Register palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: PwgNotifications.paletteChanged, object: nil)
         
         // Register network reachability
         NotificationCenter.default.addObserver(self, selector: #selector(setTableViewMainHeader), name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
@@ -80,8 +81,8 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(setTableViewMainHeader), name: NSNotification.Name.NSProcessInfoPowerStateDidChange, object: nil)
 
         // Register upload progress
-        let name2: NSNotification.Name = NSNotification.Name(kPiwigoNotificationUploadProgress)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress), name: name2, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyUploadProgress),
+                                               name: PwgNotifications.uploadProgress, object: nil)
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -113,14 +114,14 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         ]
         navigationController?.navigationBar.titleTextAttributes = attributes
         navigationController?.navigationBar.prefersLargeTitles = false
-        navigationController?.navigationBar.barStyle = Model.sharedInstance().isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
 
         // Table view
         queueTableView.separatorColor = UIColor.piwigoColorSeparator()
-        queueTableView.indicatorStyle = Model.sharedInstance().isDarkPaletteActive ? .white : .black
+        queueTableView.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
     }
     
     @objc func applyColorPalette() {
@@ -145,16 +146,21 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
     override func viewWillDisappear(_ animated: Bool) {
         // Allow device to sleep
         UIApplication.shared.isIdleTimerDisabled = false
-
-        // Unregister palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.removeObserver(self, name: name, object: nil)
-
-        // Unregister upload progress
-        let name2: NSNotification.Name = NSNotification.Name(kPiwigoNotificationUploadProgress)
-        NotificationCenter.default.removeObserver(self, name: name2, object: nil)
     }
 
+    deinit {
+        // Unregister palette changes
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
+
+        // Unregister network reachability
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.AFNetworkingReachabilityDidChange, object: nil)
+
+        // Unregister Low Power Mode status
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.NSProcessInfoPowerStateDidChange, object: nil)
+
+        // Unregister upload progress
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.uploadProgress, object: nil)
+    }
     
     // MARK: - Action Menu
     
@@ -192,7 +198,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         if let _ = diffableDataSource.snapshot().indexOfSection(SectionKeys.Section2.rawValue) {
             let failedUploads = diffableDataSource.snapshot().numberOfItems(inSection: SectionKeys.Section2.rawValue)
             if failedUploads > 0 {
-                let titleResume = failedUploads > 1 ? String(format: NSLocalizedString("imageUploadResumeSeveral", comment: "Resume %@ Failed Uploads"), NumberFormatter.localizedString(from: NSNumber.init(value: failedUploads), number: .decimal)) : NSLocalizedString("imageUploadResumeSingle", comment: "Resume Failed Upload")
+                let titleResume = failedUploads > 1 ? String(format: NSLocalizedString("imageUploadResumeSeveral", comment: "Resume %@ Failed Uploads"), NumberFormatter.localizedString(from: NSNumber(value: failedUploads), number: .decimal)) : NSLocalizedString("imageUploadResumeSingle", comment: "Resume Failed Upload")
                 let resumeAction = UIAlertAction(title: titleResume, style: .default, handler: { action in
                     if let _ = self.diffableDataSource.snapshot().indexOfSection(SectionKeys.Section2.rawValue) {
                         // Get IDs of upload requests which can be resumed
@@ -207,7 +213,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
                                         })
                                     alert.addAction(cancelAction)
                                     alert.view.tintColor = UIColor.piwigoColorOrange()
-                                    alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+                                    alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
                                     self.present(alert, animated: true, completion: {
                                         // Bugfix: iOS9 - Tint not fully Applied without Reapplying
                                         alert.view.tintColor = UIColor.piwigoColorOrange()
@@ -228,14 +234,20 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         if let _ = diffableDataSource.snapshot().indexOfSection(SectionKeys.Section1.rawValue) {
             let impossibleUploads = diffableDataSource.snapshot().numberOfItems(inSection: SectionKeys.Section1.rawValue)
             if impossibleUploads > 0 {
-                let titleClear = impossibleUploads > 1 ? String(format: NSLocalizedString("imageUploadClearFailedSeveral", comment: "Clear %@ Failed"), NumberFormatter.localizedString(from: NSNumber.init(value: impossibleUploads), number: .decimal)) : NSLocalizedString("imageUploadClearFailedSingle", comment: "Clear 1 Failed")
+                let titleClear = impossibleUploads > 1 ? String(format: NSLocalizedString("imageUploadClearFailedSeveral", comment: "Clear %@ Failed"), NumberFormatter.localizedString(from: NSNumber(value: impossibleUploads), number: .decimal)) : NSLocalizedString("imageUploadClearFailedSingle", comment: "Clear 1 Failed")
                 let clearAction = UIAlertAction(title: titleClear, style: .default, handler: { action in
                     if let _ = self.diffableDataSource.snapshot().indexOfSection(SectionKeys.Section1.rawValue) {
                         // Get IDs of upload requests which won't be possible to perform
                         let uploadIds = self.diffableDataSource.snapshot().itemIdentifiers(inSection: SectionKeys.Section1.rawValue)
-                        // Delete failed uploads in a private queue
-                        DispatchQueue.global(qos: .userInitiated).async {
-                            self.uploadsProvider.delete(uploadRequests: uploadIds)
+                        // Delete failed uploads in the main thread
+                        self.uploadsProvider.delete(uploadRequests: uploadIds) { error in
+                            // Error encountered?
+                            if let error = error {
+                                DispatchQueue.main.async {
+                                    self.dismissPiwigoError(withTitle: titleClear,
+                                                            message: error.localizedDescription) { }
+                                }
+                            }
                         }
                     }
                 })
@@ -251,7 +263,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
         
         // Present list of actions
         alert.view.tintColor = UIColor.piwigoColorOrange()
-        alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+        alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
         alert.popoverPresentationController?.barButtonItem = actionBarButton
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
@@ -300,7 +312,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
     
     @objc func setTableViewMainHeader() {
         DispatchQueue.main.async {
-            if AFNetworkReachabilityManager.shared().isReachableViaWWAN && Model.sharedInstance().wifiOnlyUploading {
+            if AFNetworkReachabilityManager.shared().isReachableViaWWAN && UploadVars.wifiOnlyUploading {
                 // No Wi-Fi and user wishes to upload only on Wi-Fi
                 let headerView = UploadQueueHeaderView(frame: .zero)
                 headerView.configure(width: self.queueTableView.frame.size.width,
@@ -341,7 +353,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
             print("Error: tableView.dequeueReusableHeaderFooterView does not return a UploadImageHeaderView!")
             return UploadImageHeaderView()
         }
-        let sectionKey = SectionKeys.init(rawValue: diffableDataSource.snapshot().sectionIdentifiers[section]) ?? SectionKeys.Section4
+        let sectionKey = SectionKeys(rawValue: diffableDataSource.snapshot().sectionIdentifiers[section]) ?? SectionKeys.Section4
         header.config(with: sectionKey)
         return header
     }
@@ -360,6 +372,7 @@ class UploadQueueViewController: UIViewController, UITableViewDelegate {
             for cell in visibleCells {
                 if cell.localIdentifier == localIdentifier {
                     cell.update(with: notification.userInfo!)
+                    break
                 }
             }
         }
@@ -376,14 +389,22 @@ extension UploadQueueViewController: NSFetchedResultsControllerDelegate {
         // Update UI
         let snapshot = snapshot as NSDiffableDataSourceSnapshot<String,NSManagedObjectID>
         DispatchQueue.main.async {
+            // Apply modifications
             self.diffableDataSource.apply(snapshot, animatingDifferences: self.queueTableView.window != nil)
+            
+            // Update the navigation bar
             self.updateNavBar()
+            
+            // Refresh header informing user on network status when UploadManager restarted running
+            self.setTableViewMainHeader()
         }
         
         // If all upload requests are done, delete all temporary files (in case some would not be deleted)
         if snapshot.numberOfItems == 0 {
             // Delete remaining files from Upload directory (if any)
-            UploadManager.shared.deleteFilesInUploadsDirectory(with: nil)
+            UploadManager.shared.backgroundQueue.async {
+                UploadManager.shared.deleteFilesInUploadsDirectory()
+            }
             // Close the view when there is no more upload request to display
             self.dismiss(animated: true, completion: nil)
         }

@@ -45,6 +45,7 @@
 
 "PiwigoServer_wrongJSONobject" = "Konnte das vom Piwigo-Server zurückgegebene JSON-Objekt nicht auswerten.";
 "PiwigoServer_invalidJSONobject" = "Der Piwigo-Server hat kein gültiges JSON-Objekt zurückgegeben.";
+"PiwigoServer_emptyJSONobject" = "Der Piwigo Server hat ein leeres JSON-Objekt zurückgegeben.";
 
 // ===========================================================================
 // ==> CORE DATA
@@ -163,6 +164,7 @@
 "categorySelection_title" = "Album";
 "categorySelection_titleSub" = "Unter-Alben";
 "categorySelection_root" = "Haupt-Album";
+"categorySelection_root<375pt" = "Stammverzeichnis";
 "categorySelection_action" = "Wähle eine Aktion für dieses Album";
 "categorySelectionHUD_label" = "Albumdaten abrufen…";
 "categorySelection_allAlbums" = "Alle Alben";
@@ -616,7 +618,7 @@
 "defaultNberOfThumbnails>320px" = "Anzahl/Zeile";
 "defaultNberOfThumbnails>414px" = "Anzahl pro Zeile";
 //"defaultThumbnailSizeTitle" = "Default Size";
-"defaultThumbnailSizeHeader" = "Bitte wähle eine Miniaturfotogröße";
+"defaultThumbnailSizeHeader" = "Bitte wählen Sie eine Miniaturfotogröße";
 "settings_displayTitles" = "Titel bei Miniaturfotos";
 "settings_displayTitles>320px" = "Titel bei Miniaturfotos anzeigen";
 
@@ -627,7 +629,7 @@
 "defaultImageSize>320px" = "Fotogröße";
 "defaultImageSize>414px" = "Standardgröße der Fotos";
 //"defaultImageSizeTitle" = "Default Size";
-"defaultImageSizeHeader" = "Bitte wähle eine Fotogröße";
+"defaultImageSizeHeader" = "Bitte wählen Sie eine Fotogröße";
 "defaultImageSize_recommended" = " (empfohlen)";
 "defaultSize_disabled" = " (auf Server deaktiviert)";
 "defaultSizeFooter" = "Ausgegraute Größen werden nicht empfohlen oder sind nicht auf dem Piwigo Server verfügbar.";
@@ -655,8 +657,7 @@
 "settings_defaultPrivacy>414px" = "Bitte wählen Sie, wer in der Lage sein soll, Fotos zu sehen";
 "settings_stripGPSdata" = "Private Metadaten entfernen";
 "settings_stripGPSdata>375px" = "Private Metadaten vor dem Hochladen entfernen";
-"settings_photoResize" = "Vor dem Hochladen Größe anpassen";
-"settings_photoResize>375px" = "Fotogröße vor dem Hochladen anpassen";
+"settings_photoResize" = "Vor dem Hochladen Größe verkleinern";
 "settings_photoSize" = "Größe";
 "settings_placeholderSize" = "Gib eine Fotogröße von 1-100 an";
 "settings_photoCompress" = "Vor dem Hochladen komprimieren";
@@ -672,6 +673,8 @@
 "settings_deleteImage>375px" = "Foto nach dem Hochladen löschen";
 "settings_wifiOnly" = "Nur WLAN";
 "settings_deleteImage" = "Nach dem Hochladen löschen";
+
+// Settings — Auto-Upload
 "settings_autoUpload" = "Automatisches Hochladen";
 "settings_autoUpload>414px" = "Fotos automatisch hochladen";
 "settings_autoUploadEnabled" = "An";
@@ -685,11 +688,20 @@
 "settings_autoUploadDestination" = "Ziel";
 "settings_autoUploadDestinationInvalid" = "Ungültiges Zielalbum";
 "settings_autoUploadDestinationInfo" = "Bitte wählen Sie das Album oder das Unter-Album, in das Fotos und Videos automatisch hochgeladen werden.";
+"AutoUploadError_Disabled" = "Die Option Auto-Upload ist in den App-Einstellungen deaktiviert.";
+"AutoUploadError_Failed" = "Mehrere Übertragungen sind fehlgeschlagen und die Upload-Warteschlange wurde angehalten. Bitte überprüfen Sie dies in der App.";
+
+// Settings — Upload Photo Size
+"UploadPhotoSize_title" = "Max. Foto-Größe";
+"UploadPhotoSize_header" = "Bitte wählen Sie die maximale Größe für hochgeladene Fotos aus.";
+"UploadPhotoSize_resolution" = "Integrierte Kameras maximale Auflösung:";
+"UploadVideoSize_title" = "Max. Video-Größe";
+"UploadVideoSize_header" = "Bitte wählen Sie die maximale Größe für hochgeladene Videos aus.";
+"UploadVideoSize_resolution" = "Integrierte Kameras maximale Spezifikationen:";
+"UploadPhotoSize_original" = "Keine Verkleinerung";
 
 // Settings — Cache
 "settingsHeader_cache" = "Cache-Einstellungen (Verwendet/Total)";
-"settings_loadAllCategories" = "Alle Alben beim Start herunterladen";
-"settings_loadAllCategories>320px" = "Alle Alben beim Start herunterladen (bei Problemen deaktivieren)";
 "settings_cacheDisk" = "Festplatte";
 "settings_cacheMemory" = "Speicher";
 "settings_cacheMegabytes" = "MB";
@@ -738,3 +750,5 @@
 "help05_text2" = "Tippen Sie auf die graue Schaltfläche, die im Root-Album angezeigt wird, um Uploads zu verwalten.";
 "help06_header" = "Uploadverwaltung";
 "help06_text" = "Upload-Anfragen global oder einzeln überwachen, abbrechen und fortsetzen.";
+"help07_header" = "Automatisches Hochladen";
+"help07_text" = "Wählen Sie Quell- und Zielalben in Piwigo, erstellen Sie Automatisierungen in Verknüpfungen.";

@@ -7,7 +7,6 @@
 //
 
 #import "ImagesCollection.h"
-#import "Model.h"
 
 CGFloat const kAlbumCellSpacing = 8;              // Spacing between albums (horizontally and vertically)
 CGFloat const kAlbumMarginsSpacing = 4;           // Left and right margins for albums

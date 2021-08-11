@@ -8,7 +8,6 @@
 
 #import "PiwigoAlbumData.h"
 #import "ImageService.h"
-#import "Model.h"
 #import "CategoriesData.h"
 #import "ImagesCollection.h"
 
@@ -219,7 +218,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
             }
 
             self.lastImageBulkCount += count;
-            if (count >= [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait]) {
+            if (count >= [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait]) {
                 self.onPage++;
             }
             self.isLoadingMoreImages = NO;
@@ -253,7 +252,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
              [alert addAction:defaultAction];
              alert.view.tintColor = UIColor.piwigoColorOrange;
              if (@available(iOS 13.0, *)) {
-                 alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+                 alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
              } else {
                  // Fallback on earlier versions
              }

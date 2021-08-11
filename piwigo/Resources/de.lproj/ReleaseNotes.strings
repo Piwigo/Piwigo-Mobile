@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.6.4_text" = "Version 2.6.4\n\n• Kleinere Fehlerbehebungen und Verbesserungen der Benutzeroberfläche";
+"v2.7.0_text" = "Version 2.7\n\n• Automatisches Hochladen von Fotos und Videos\n• Verbesserte Optionen zum Verkleinern von Fotos und Videos\n• Kleinere Fehlerbehebungen und Verbesserungen der Benutzeroberfläche\n• Code-Modernisierung";
+
+"v2.6.4_text" = "Version 2.6.4\n18. Mai 2021\n\n• Kleinere Fehlerbehebungen und Verbesserungen der Benutzeroberfläche";
 
 "v2.6.3_text" = "Version 2.6.3\n11. Mai 2021\n\n• Fehlerbehebungen";
 

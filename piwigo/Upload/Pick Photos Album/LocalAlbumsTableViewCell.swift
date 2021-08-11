@@ -51,7 +51,7 @@ class LocalAlbumsTableViewCell: UITableViewCell {
                         if startDateComponents.day == endDateComponents.day {
                             // Photos from the same day
                             if UIScreen.main.bounds.size.width > 414 {
-                                let dateFormatter1 = DateFormatter.init(), dateFormatter2 = DateFormatter.init()
+                                let dateFormatter1 = DateFormatter(), dateFormatter2 = DateFormatter()
                                 dateFormatter1.locale = .current
                                 dateFormatter2.locale = .current
                                 dateFormatter1.setLocalizedDateFormatFromTemplate("EEEE MMMMYYYYd HH:mm")
@@ -61,14 +61,14 @@ class LocalAlbumsTableViewCell: UITableViewCell {
                                     subtitle.append(" — " + dateFormatter2.string(from: endDate))
                                 }
                             } else {
-                                let dateFormatter = DateFormatter.init()
+                                let dateFormatter = DateFormatter()
                                 dateFormatter.locale = .current
                                 dateFormatter.setLocalizedDateFormatFromTemplate("MMMMYYYYd")
                                 subtitle.append(dateFormatter.string(from: startDate))
                             }
                         } else {
                             // Photos from different days in the same month
-                            let dateFormatter1 = DateFormatter.init(), dateFormatter2 = DateFormatter.init()
+                            let dateFormatter1 = DateFormatter(), dateFormatter2 = DateFormatter()
                             dateFormatter1.locale = .current
                             dateFormatter2.locale = .current
                             if UIScreen.main.bounds.size.width > 414 {
@@ -84,7 +84,7 @@ class LocalAlbumsTableViewCell: UITableViewCell {
                         }
                     } else {
                         // Photos from different months in the same year
-                        let dateFormatter1 = DateFormatter.init(), dateFormatter2 = DateFormatter.init()
+                        let dateFormatter1 = DateFormatter(), dateFormatter2 = DateFormatter()
                         dateFormatter1.locale = .current
                         dateFormatter2.locale = .current
                         if UIScreen.main.bounds.size.width > 414 {

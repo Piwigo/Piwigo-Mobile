@@ -7,7 +7,6 @@
 //
 
 #import "EditImageTextViewTableViewCell.h"
-#import "Model.h"
 
 @interface EditImageTextViewTableViewCell()
 
@@ -44,7 +43,7 @@
     self.textView.text = imageDetail;
     self.textView.textColor = color;
     self.textView.backgroundColor = [UIColor piwigoColorBackground];
-    self.textView.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
+    self.textView.keyboardAppearance = AppVars.isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
 }
 
 -(void)prepareForReuse

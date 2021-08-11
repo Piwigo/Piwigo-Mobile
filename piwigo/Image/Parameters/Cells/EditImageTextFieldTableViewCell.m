@@ -7,7 +7,6 @@
 //
 
 #import "EditImageTextFieldTableViewCell.h"
-#import "Model.h"
 
 @interface EditImageTextFieldTableViewCell()
 
@@ -44,7 +43,7 @@
     if ([placeHolder length] > 0) {
         self.cellTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeHolder attributes:@{NSForegroundColorAttributeName: [UIColor piwigoColorPlaceHolder]}];
     }
-    self.cellTextField.keyboardAppearance = [Model sharedInstance].isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
+    self.cellTextField.keyboardAppearance = AppVars.isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
 }
 
 -(void)prepareForReuse

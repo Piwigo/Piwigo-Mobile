@@ -45,6 +45,7 @@
 
 "PiwigoServer_wrongJSONobject" = "Could not digest JSON object returned by Piwigo server.";
 "PiwigoServer_invalidJSONobject" = "Piwigo server did not return a valid JSON object.";
+"PiwigoServer_emptyJSONobject" = "Piwigo server did return an empty JSON object.";
 
 // ===========================================================================
 // ==> CORE DATA
@@ -163,6 +164,7 @@
 "categorySelection_title" = "Album";
 "categorySelection_titleSub" = "Sub-Albums";
 "categorySelection_root" = "Root Album";
+"categorySelection_root<375pt" = "Root";
 "categorySelection_action" = "Select an action for this album";
 "categorySelectionHUD_label" = "Retrieving Albums Data…";
 "categorySelection_allAlbums" = "All Albums";
@@ -616,7 +618,7 @@
 "defaultNberOfThumbnails>320px" = "Number/Row";
 "defaultNberOfThumbnails>414px" = "Number per Row";
 //"defaultThumbnailSizeTitle" = "Default Size";
-"defaultThumbnailSizeHeader" = "Please select an photo thumbnail size";
+"defaultThumbnailSizeHeader" = "Please select a photo thumbnail size";
 "settings_displayTitles" = "Titles on Thumbnails";
 "settings_displayTitles>320px" = "Display Titles on Thumbnails";
 
@@ -627,7 +629,7 @@
 "defaultImageSize>320px" = "Photos Size";
 "defaultImageSize>414px" = "Default Size of Photos";
 //"defaultImageSizeTitle" = "Default Size";
-"defaultImageSizeHeader" = "Please select an photo size";
+"defaultImageSizeHeader" = "Please select a photo size";
 "defaultImageSize_recommended" = " (recommended)";
 "defaultSize_disabled" = " (disabled on server)";
 "defaultSizeFooter" = "Greyed sizes are not advised or not available on Piwigo server.";
@@ -655,8 +657,7 @@
 "settings_defaultPrivacy>414px" = "Please select who will be able to see photos";
 "settings_stripGPSdata" = "Strip Private Metadata";
 "settings_stripGPSdata>375px" = "Strip Private Metadata Before Upload";
-"settings_photoResize" = "Resize Before Upload";
-"settings_photoResize>375px" = "Resize Photo Before Upload";
+"settings_photoResize" = "Downsize Before Upload";
 "settings_photoSize" = "Size";
 "settings_placeholderSize" = "Enter a Photo Size from 5 - 100";
 "settings_photoCompress" = "Compress Before Upload";
@@ -672,6 +673,8 @@
 "settings_deleteImage>375px" = "Delete Photo After Upload";
 "settings_wifiOnly" = "Wi-Fi Only";
 "settings_deleteImage" = "Delete After Upload";
+
+// Settings — Auto-Upload
 "settings_autoUpload" = "Auto Upload";
 "settings_autoUpload>414px" = "Auto Upload Photos";
 "settings_autoUploadEnabled" = "On";
@@ -685,6 +688,17 @@
 "settings_autoUploadDestination" = "Destination";
 "settings_autoUploadDestinationInvalid" = "Invalid destination album";
 "settings_autoUploadDestinationInfo" = "Please select the album or sub-album into which photos and videos will be auto-uploaded.";
+"AutoUploadError_Disabled" = "The Auto-Upload option is disabled in the app settings.";
+"AutoUploadError_Failed" = "Several transfers failed and the upload queue is on hold. Please check in the app.";
+
+// Settings — Upload Photo Size
+"UploadPhotoSize_title" = "Max Photo Size";
+"UploadPhotoSize_header" = "Please select the maximum size of the photos which will be uploaded.";
+"UploadPhotoSize_resolution" = "Built-in cameras maximum resolution:";
+"UploadVideoSize_title" = "Max Video Size";
+"UploadVideoSize_header" = "Please select the maximum size of the videos which will be uploaded.";
+"UploadVideoSize_resolution" = "Built-in cameras maximum specifications:";
+"UploadPhotoSize_original" = "No Downsizing";
 
 // Settings — Cache
 "settingsHeader_cache" = "Cache Settings (Used/Total)";
@@ -736,3 +750,5 @@
 "help05_text2" = "Tap the grey button presented in the root album to manage uploads.";
 "help06_header" = "Upload Management";
 "help06_text" = "Monitor, cancel and resume upload requests globally or individually.";
+"help07_header" = "Auto-Uploading";
+"help07_text" = "Select source and destination albums in Piwigo, create automations in Shortcuts.";

@@ -11,7 +11,7 @@
 // Tab bar
 
 "tabBar_albums" = "Альбомы";
-"tabBar_upload" = "Загрузить";
+"tabBar_upload" = "Загрузка";
 "tabBar_preferences" = "Настройки";
 
 // Alert buttons
@@ -45,6 +45,7 @@
 
 "PiwigoServer_wrongJSONobject" = "Не удалось оформить объект JSON, возвращённый сервером Piwigo.";
 "PiwigoServer_invalidJSONobject" = "Сервер Piwigo не вернул действительный объект JSON.";
+"PiwigoServer_emptyJSONobject" = "Сервер Piwigo вернул пустой объект JSON.";
 
 // ===========================================================================
 // ==> CORE DATA
@@ -163,9 +164,10 @@
 "categorySelection_title" = "Альбом";
 "categorySelection_titleSub" = "Подальбомы";
 "categorySelection_root" = "Корневой альбом";
+"categorySelection_root<375pt" = "Root";
 "categorySelection_action" = "Выберите действие для этого альбома";
 "categorySelectionHUD_label" = "Получение данных об альбомах…";
-"categorySelection_allAlbums" = "All Albums";
+"categorySelection_allAlbums" = "Все альбомы";
 
 // Album upload
 "categoryUpload_noSubAlbum" = "Нет вложенных альбомов для загрузки фото в";
@@ -186,7 +188,7 @@
 "categoryUpload_images" = "Загрузить фото";
 
 // Default album
-"setDefaultCategory_select" = "Please select an album or sub-album which will become the new root album.";
+"setDefaultCategory_select" = "Пожалуйста, выберите альбом или подальбом, который станет Вашим новым корневым альбомом.";
 "setDefaultCategory_title" = "Альбом по умолчанию";
 "setDefaultCategory_message" = "Вы уверены, что хотите установить альбом \"%@\" как альбом по умолчанию?";
 
@@ -244,7 +246,7 @@
 
 // Album move
 "moveCategory" = "Переместить альбом";
-"moveCategory_select" = "Please select an album or sub-album to move album \"%@\" into.";
+"moveCategory_select" = "Пожалуйста, выберите альбом или подальбом для перемещения альбома в \"%@\".";
 "moveCategory_message" = "Вы уверены, что хотите перенести \"%@\" в альбом \"%@\"?";
 "moveCategoryHUD_moving" = "Перемещение альбома…";
 
@@ -253,7 +255,7 @@
 "moveCategoryError_message" = "Не удалось переместить ваш альбом";
 
 // Album set photo thumbnail
-"categorySelection_setThumbnail" = "Please select the album which will use the photo \"%@\" as a thumbnail.";
+"categorySelection_setThumbnail" = "Пожалуйста, выберите альбом, который будет использовать фотографию \"%@\" в качестве миниатюры.";
 "categorySelection_current" = "Выберите текущий альбом для этого фото";
 "categorySelection_one" = "Выберите один из альбомов, содержащий эту фотографию";
 "categorySelection_other" = "Или выберите другой альбом для этого фото";
@@ -375,7 +377,7 @@
 "deleteSeveralImagesHUD_deleting" = "Удаление фотографий…";
 "removeSingleImage_title" = "Удалить из альбома";
 "removeSingleImageHUD_removing" = "Удаление фото…";
-"removeSeveralImagesHUD_removing" = "Removing Photos…";
+"removeSeveralImagesHUD_removing" = "Удаление изображений…";
 "deleteSingleImage_message" = "Вы уверены, что ходите удалить это фотографию? Это действие нельзя будет отменить!";
 "deleteSeveralImages_title" = "Удаление %@ фотографий";
 "deleteSeveralImages_message" = "Вы уверены, что ходите удалить %@ фотографий? Это действие нельзя будет отменить!";
@@ -408,8 +410,8 @@
 
 // Image move
 "moveImage_title" = "Переместить в альбом";
-"moveSingleImage_selectAlbum" = "Please, select the album in which you wish to move the photo \"%@\".";
-"moveSeveralImages_selectAlbum" = "Please, select the album in which you wish to copy the photos.";
+"moveSingleImage_selectAlbum" = "Пожалуйста, выберите альбом, в котором Вы хотите переместить фотографию \"%@\".";
+"moveSeveralImages_selectAlbum" = "Пожалуйста, выберите альбом, в который Вы хотите переместить фотографию \"%@\".";
 "moveSingleImage_message" = "Вы уверены, что хотите переместить фотографию \"%@\" в альбом \"%@\"?";
 "moveSeveralImages_message" = "Вы уверены, что хотите переместить фотографии в альбом \"%@\"?";
 "moveSingleImageHUD_moving" = "Перемещение фото…";
@@ -418,12 +420,12 @@
 // Image move — Errors
 "moveImageError_title" = "Перемещение не удалось";
 "moveSingleImageError_message" = "Не удалось переместить Ваше фото";
-"moveSeveralImagesError_message" = "Failed to move some photos";
+"moveSeveralImagesError_message" = "Не удалось переместить некоторые изображения";
 
 // Image copy
 "copyImage_title" = "Копирование в альбом";
-"copySingleImage_selectAlbum" = "Please, select the album in which you wish to copy the photo \"%@\".";
-"copySeveralImages_selectAlbum" = "Please, select the album in which you wish to copy the photos.";
+"copySingleImage_selectAlbum" = "Пожалуйста, выберите альбом, в который Вы хотите скопировать фотографию \"%@\".";
+"copySeveralImages_selectAlbum" = "Пожалуйста, выберите альбом, в который Вы хотите скопировать изображения.";
 "copySingleImage_message" = "Вы уверены, что хотите скопировать фотографии \"%@\" в альбом \"%@\"?";
 "copySeveralImages_message" = "Вы уверены, что хотите скопировать фотографий в альбом \"%@\"?";
 "copySingleImageHUD_copying" = "Копирование фото…";
@@ -432,10 +434,10 @@
 // Image copy — Errors
 "copyImageError_title" = "Копирование не удалось";
 "copySingleImageError_message" = "Не удалось скопировать Ваше фотографию";
-"copySeveralImagesError_message" = "Failed to copy some photos";
+"copySeveralImagesError_message" = "Не удалось скопировать некоторые изображения";
 
 // Images upload
-"imageUploadHeader" = "Please select the album or sub-album from which photos and videos of your device will be uploaded.";
+"imageUploadHeader" = "Пожалуйста, выберите альбом или подальбом, из которого будут загружены изображения и видео с Вашего устройства.";
 "imageUploadHeaderTitle_images" = "Параметры фотографий";
 "imageUploadHeaderText_images" = "Пожалуйста, установите параметры, применимые к выбору фотографий/видео";
 "imageUploadHeaderTitle_upload" = "Настройки загрузки";
@@ -656,7 +658,6 @@
 "settings_stripGPSdata" = "Обрезать приватные метаданные";
 "settings_stripGPSdata>375px" = "Удаление личных метаданных перед загрузкой";
 "settings_photoResize" = "Изменить размер перед загрузкой";
-"settings_photoResize>375px" = "Изменить размер фото перед загрузкой";
 "settings_photoSize" = "Размер";
 "settings_placeholderSize" = "Введите размер фотографии от 5 до 100";
 "settings_photoCompress" = "Сжать перед загрузкой";
@@ -672,24 +673,35 @@
 "settings_deleteImage>375px" = "Удалить фотографию после загрузки";
 "settings_wifiOnly" = "Только Wi-Fi";
 "settings_deleteImage" = "Удалить после загрузки";
-"settings_autoUpload" = "Auto Upload";
-"settings_autoUpload>414px" = "Auto Upload Photos";
-"settings_autoUploadEnabled" = "On";
-"settings_autoUploadEnabledInfo" = "Photos will be automatically uploaded to your Piwigo.";
-"settings_autoUploadEnabledInfoAll" = "Photos and videos will be automatically uploaded to your Piwigo.";
-"settings_autoUploadDisabled" = "Off";
-"settings_autoUploadDisabledInfo" = "Photos will not be automatically uploaded to your Piwigo.";
-"settings_autoUploadSource" = "Source";
-"settings_autoUploadSourceInvalid" = "Invalid source album";
-"settings_autoUploadSourceInfo" = "Please select the album or sub-album from which photos and videos of your device will be auto-uploaded.";
-"settings_autoUploadDestination" = "Destination";
-"settings_autoUploadDestinationInvalid" = "Invalid destination album";
-"settings_autoUploadDestinationInfo" = "Please select the album or sub-album into which photos and videos will be auto-uploaded.";
+
+// Settings — Auto-Upload
+"settings_autoUpload" = "Автозагрузка";
+"settings_autoUpload>414px" = "Автозагрузка изображений";
+"settings_autoUploadEnabled" = "Вкл";
+"settings_autoUploadEnabledInfo" = "Изображения будут автоматически загружены в Ваш Piwigo.";
+"settings_autoUploadEnabledInfoAll" = "Изображения и видео будут автоматически загружены в Ваш Piwigo.";
+"settings_autoUploadDisabled" = "Выкл";
+"settings_autoUploadDisabledInfo" = "Изображения не будут автоматически загружены в Ваш Piwigo.";
+"settings_autoUploadSource" = "Источник";
+"settings_autoUploadSourceInvalid" = "Недопустимый источник альбома";
+"settings_autoUploadSourceInfo" = "Пожалуйста, выберите альбом или подальбом, из которого автоматически будут загружены изображения и видео с Вашего устройства.";
+"settings_autoUploadDestination" = "Папка для сохранения";
+"settings_autoUploadDestinationInvalid" = "Недопустимый адрес альбома";
+"settings_autoUploadDestinationInfo" = "Пожалуйста, выберите альбом или подальбом в который будут автоматически загружены изображения и видео.";
+"AutoUploadError_Disabled" = "Функция автозагрузки отключена в настройках приложения.";
+"AutoUploadError_Failed" = "Не удалось выполнить несколько перемещений, и очередь выгрузки на сервере задерживается. Пожалуйста, проверьте приложение.";
+
+// Settings — Upload Photo Size
+"UploadPhotoSize_title" = "Максимальный размер изображения";
+"UploadPhotoSize_header" = "Пожалуйста, выберите максимальный размер изображений, которые будут загружены.";
+"UploadPhotoSize_resolution" = "Максимальное разрешение камеры:";
+"UploadVideoSize_title" = "Максимальный размер видео";
+"UploadVideoSize_header" = "Пожалуйста, выберите максимальный размер видео, которое будет загружено.";
+"UploadVideoSize_resolution" = "Встроенные спецификации камер:";
+"UploadPhotoSize_original" = "Без уменьшения";
 
 // Settings — Cache
 "settingsHeader_cache" = "Настройки кэша (Использовано/Всего)";
-"settings_loadAllCategories" = "Скачать все альбомы при запуске";
-"settings_loadAllCategories>320px" = "Скачать все альбомы при запуске (снимите флажок, если возникнут проблемы)";
 "settings_cacheDisk" = "Диск";
 "settings_cacheMemory" = "Память";
 "settings_cacheMegabytes" = "МБ";
@@ -738,3 +750,5 @@
 "help05_text2" = "Нажмите серую кнопку, представленную в корневом альбоме, чтобы управлять загрузками.";
 "help06_header" = "Управление загрузками";
 "help06_text" = "Отслеживать, отменять и возобновлять запросы на загрузку глобально или индивидуально.";
+"help07_header" = "Автозагрузка";
+"help07_text" = "Выберите исходные и целевые альбомы в Piwigo, создайте автоматически ярлыки.";

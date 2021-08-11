@@ -5,6 +5,7 @@
 //  Created by Eddy Lelièvre-Berna on 15/07/2020.
 //  Copyright © 2020 Piwigo.org. All rights reserved.
 //
+import piwigoKit
 
 enum EditImageDetailsOrder : Int {
     case imageName
@@ -15,15 +16,15 @@ enum EditImageDetailsOrder : Int {
     case count
 }
 
-class UploadParametersViewController: UITableViewController, UITextFieldDelegate, UITextViewDelegate, SelectPrivacyDelegate, TagsViewControllerDelegate {
+class UploadParametersViewController: UITableViewController, UITextFieldDelegate, UITextViewDelegate {
 
     @IBOutlet var paramsTableView: UITableView!
 
     var commonTitle = ""
     private var shouldUpdateTitle = false
-    var commonAuthor = Model.sharedInstance()?.defaultAuthor ?? ""
+    var commonAuthor = UploadVars.defaultAuthor
     private var shouldUpdateAuthor = false
-    var commonPrivacyLevel: kPiwigoPrivacy = Model.sharedInstance()?.defaultPrivacyLevel ?? kPiwigoPrivacyEverybody
+    var commonPrivacyLevel = kPiwigoPrivacy(rawValue: UploadVars.defaultPrivacyLevel)
     private var shouldUpdatePrivacyLevel = false
     var commonTags = [Tag]()
     private var shouldUpdateTags = false
@@ -45,7 +46,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
 
         // Table view
         paramsTableView.separatorColor = UIColor.piwigoColorSeparator()
-        paramsTableView.indicatorStyle = Model.sharedInstance().isDarkPaletteActive ? .white : .black
+        paramsTableView.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
         paramsTableView.reloadData()
     }
 
@@ -56,23 +57,20 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
         applyColorPalette()
 
         // Register palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: PwgNotifications.paletteChanged, object: nil)
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
+    deinit {
         // Unregister palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.removeObserver(self, name: name, object: nil)
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }
 
 
     // MARK: - UITableView - Header
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         // Title
-        let titleString = "\(NSLocalizedString("imageUploadHeaderTitle_images", comment: "Photos Parameters"))\n"
+        let titleString = "\(NSLocalizedString("imageDetailsView_title", comment: "Properties"))\n"
         let titleAttributes = [
             NSAttributedString.Key.font: UIFont.piwigoFontBold()
         ]
@@ -93,7 +91,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
         let headerAttributedString = NSMutableAttributedString(string: "")
 
         // Title
-        let titleString = "\(NSLocalizedString("imageUploadHeaderTitle_images", comment: "Photos Parameters"))\n"
+        let titleString = "\(NSLocalizedString("imageDetailsView_title", comment: "Properties"))\n"
         let titleAttributedString = NSMutableAttributedString(string: titleString)
         titleAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: NSRange(location: 0, length: titleString.count))
         headerAttributedString.append(titleAttributedString)
@@ -143,7 +141,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // Don't present privacy level choice to non-admin users
         var nberOfRows = EditImageDetailsOrder.count.rawValue
-        nberOfRows -= (!Model.sharedInstance().hasAdminRights ? 1 : 0)
+        nberOfRows -= (!NetworkVars.hasAdminRights ? 1 : 0)
 
         return nberOfRows
     }
@@ -151,15 +149,15 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         // Don't present privacy level choice to non-admin users
         var row = indexPath.row
-        row += (!Model.sharedInstance().hasAdminRights && (row > 1)) ? 1 : 0
+        row += (!NetworkVars.hasAdminRights && (row > 1)) ? 1 : 0
 
         var height: CGFloat = 44.0
         switch EditImageDetailsOrder(rawValue: row) {
-        case .privacy, .tags:
+            case .privacy, .tags:
                 height = 78.0
-        case .comment:
+            case .comment:
                 height = 428.0
-                height += !Model.sharedInstance().hasAdminRights ? 78.0 : 0.0
+                height += !NetworkVars.hasAdminRights ? 78.0 : 0.0
             default:
                 break
         }
@@ -169,7 +167,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // Don't present privacy level choice to non-admin users
         var row = indexPath.row
-        row += (!Model.sharedInstance().hasAdminRights && (row > 1)) ? 1 : 0
+        row += (!NetworkVars.hasAdminRights && (row > 1)) ? 1 : 0
 
         var tableViewCell = UITableViewCell()
         switch EditImageDetailsOrder(rawValue: row) {
@@ -205,7 +203,8 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
             return EditImagePrivacyTableViewCell()
         }
         cell.setLeftLabelText(NSLocalizedString("editImageDetails_privacyLevel", comment: "Who can see this photo?"))
-        cell.setPrivacyLevel(commonPrivacyLevel, in: shouldUpdatePrivacyLevel ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
+        let privLevelObjc = kPiwigoPrivacyObjc(rawValue: Int32(commonPrivacyLevel?.rawValue ?? 0))
+        cell.setPrivacyLevel(privLevelObjc, in: shouldUpdatePrivacyLevel ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
         tableViewCell = cell
 
         case .tags:
@@ -216,7 +215,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
         // Switch to old cache data format
         var tagList = [PiwigoTagData]()
         commonTags.forEach { (tag) in
-            let newTag = PiwigoTagData.init()
+            let newTag = PiwigoTagData()
             newTag.tagId = Int(tag.tagId)
             newTag.tagName = tag.tagName
             newTag.lastModified = tag.lastModified
@@ -229,7 +228,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
         case .comment:
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "comment", for: indexPath) as? EditImageTextViewTableViewCell else {
             print("Error: tableView.dequeueReusableCell does not return a EditImageTextViewTableViewCell!")
-            return EditImageTagsTableViewCell()
+            return EditImageTextViewTableViewCell()
         }
         cell.setComment(commonComment, in: shouldUpdateComment ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
         cell.textView.delegate = self
@@ -251,15 +250,15 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
 
         // Don't present privacy level choice to non-admin users
         var row = indexPath.row
-        row += (!Model.sharedInstance().hasAdminRights && (row > 1)) ? 1 : 0
+        row += (!NetworkVars.hasAdminRights && (row > 1)) ? 1 : 0
 
         switch EditImageDetailsOrder(rawValue: row) {
         case .author:
         if (commonAuthor == "NSNotFound") {
             // only update if not yet set, dont overwrite
-            if 0 < Model.sharedInstance()?.defaultAuthor.count ?? 1 {
+            if 0 < UploadVars.defaultAuthor.count {
                 // must know the default author
-                commonAuthor = Model.sharedInstance().defaultAuthor
+                commonAuthor = UploadVars.defaultAuthor
                 tableView.reloadRows(at: [indexPath], with: .automatic)
             }
         }
@@ -272,7 +271,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
         let privacySB = UIStoryboard(name: "SelectPrivacyViewController", bundle: nil)
         let privacyVC = privacySB.instantiateViewController(withIdentifier: "SelectPrivacyViewController") as? SelectPrivacyViewController
         privacyVC?.delegate = self
-        privacyVC?.setPrivacy(commonPrivacyLevel)
+        privacyVC?.privacy = commonPrivacyLevel ?? .everybody
         if let privacyVC = privacyVC {
             navigationController?.pushViewController(privacyVC, animated: true)
         }
@@ -301,7 +300,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
     override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         // Don't present privacy level choice to non-admin users
         var row = indexPath.row
-        row += (!Model.sharedInstance().hasAdminRights && (row > 1)) ? 1 : 0
+        row += (!NetworkVars.hasAdminRights && (row > 1)) ? 1 : 0
 
         var result: Bool
         switch EditImageDetailsOrder(rawValue: row) {
@@ -371,7 +370,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
                 commonTitle = typedText
             }
             // Update cell
-            let indexPath = IndexPath.init(row: EditImageDetailsOrder.imageName.rawValue, section: 0)
+            let indexPath = IndexPath(row: EditImageDetailsOrder.imageName.rawValue, section: 0)
             paramsTableView.reloadRows(at: [indexPath], with: .automatic)
         case .author:
             if let typedText = textField.text, typedText.count > 0 {
@@ -380,7 +379,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
                 commonAuthor = "NSNotFound"
             }
             // Update cell
-            let indexPath = IndexPath.init(row: EditImageDetailsOrder.author.rawValue, section: 0)
+            let indexPath = IndexPath(row: EditImageDetailsOrder.author.rawValue, section: 0)
             paramsTableView.reloadRows(at: [indexPath], with: .automatic)
         default:
             break
@@ -409,9 +408,10 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
     func textViewDidEndEditing(_ textView: UITextView) {
         commonComment = textView.text
     }
+}
 
-
-    // MARK: - SelectedPrivacyDelegate Methods
+// MARK: - SelectPrivacyDelegate Methods
+extension UploadParametersViewController: SelectPrivacyDelegate {
     func didSelectPrivacyLevel(_ privacyLevel: kPiwigoPrivacy) {
         // Update image parameter
         commonPrivacyLevel = privacyLevel
@@ -420,12 +420,13 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
         shouldUpdatePrivacyLevel = true
 
         // Update cell
-        let indexPath = IndexPath.init(row: EditImageDetailsOrder.privacy.rawValue, section: 0)
+        let indexPath = IndexPath(row: EditImageDetailsOrder.privacy.rawValue, section: 0)
         paramsTableView.reloadRows(at: [indexPath], with: .automatic)
     }
-    
-    
-    // MARK: - TagsViewControllerDelegate Methods
+}
+
+// MARK: - TagsViewControllerDelegate Methods
+extension UploadParametersViewController: TagsViewControllerDelegate {
     func didSelectTags(_ selectedTags: [Tag]) {
         // Update image parameter
         commonTags = selectedTags
@@ -434,7 +435,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
         shouldUpdateTags = true
 
         // Update cell
-        let indexPath = IndexPath.init(row: EditImageDetailsOrder.tags.rawValue, section: 0)
+        let indexPath = IndexPath(row: EditImageDetailsOrder.tags.rawValue, section: 0)
         paramsTableView.reloadRows(at: [indexPath], with: .automatic)
     }
 }

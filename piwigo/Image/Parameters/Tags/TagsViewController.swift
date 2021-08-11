@@ -10,16 +10,22 @@
 
 import UIKit
 import CoreData
+import piwigoKit
 
-@objc
 protocol TagsViewControllerDelegate: NSObjectProtocol {
     func didSelectTags(_ selectedTags: [Tag])
 }
 
 @objc
+protocol TagsViewControllerObjcDelegate: NSObjectProtocol {
+    func didSelectTags(_ selectedTags: [PiwigoTagData])
+}
+
+@objc
 class TagsViewController: UITableViewController, UITextFieldDelegate {
 
-    @objc weak var delegate: TagsViewControllerDelegate?
+    weak var delegate: TagsViewControllerDelegate?
+    @objc weak var objcDelegate: TagsViewControllerObjcDelegate?
 
     // Called before uploading images (Tag class)
     private var selectedTagIds = [Int32]()
@@ -94,14 +100,14 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
         if #available(iOS 11.0, *) {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = Model.sharedInstance().isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
 
         // Table view
         tagsTableView?.separatorColor = UIColor.piwigoColorSeparator()
-        tagsTableView?.indicatorStyle = Model.sharedInstance().isDarkPaletteActive ? .white : .black
+        tagsTableView?.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
         tagsTableView?.reloadData()
     }
 
@@ -112,8 +118,8 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
         applyColorPalette()
 
         // Register palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: PwgNotifications.paletteChanged, object: nil)
         
         // Prepare data source
         self.selectedTags = dataProvider.fetchedResultsController.fetchedObjects?
@@ -130,15 +136,28 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
     override func viewWillDisappear(_ animated: Bool) {
         super .viewWillDisappear(animated)
 
-        // Unregister palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.removeObserver(self, name: name, object: nil)
-
         // Return list of selected tags
         delegate?.didSelectTags(selectedTags)
+        if objcDelegate != nil {
+            var selectedPiwigoTags = [PiwigoTagData]()
+            for selectedTag in selectedTags {
+                let piwigoTag = PiwigoTagData()
+                piwigoTag.tagId = Int(selectedTag.tagId)
+                piwigoTag.tagName = selectedTag.tagName
+                piwigoTag.lastModified = selectedTag.lastModified
+                piwigoTag.numberOfImagesUnderTag = selectedTag.numberOfImagesUnderTag
+                selectedPiwigoTags.append(piwigoTag)
+            }
+            objcDelegate?.didSelectTags(selectedPiwigoTags)
+        }
+    }
+    
+    deinit {
+        // Unregister palette changes
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }
 }
-    
+
     
 // MARK: - UITableViewDataSource
 
@@ -148,7 +167,7 @@ extension TagsViewController {
     // Compile index
     private func updateSectionIndex() {
         // Build section index
-        let firstCharacters = NSMutableSet.init(capacity: 0)
+        let firstCharacters = NSMutableSet(capacity: 0)
         for tag in nonSelectedTags {
             firstCharacters.add(tag.tagName.prefix(1).uppercased())
         }
@@ -330,7 +349,7 @@ extension TagsViewController {
             textField.placeholder = NSLocalizedString("tagsAdd_placeholder", comment: "New tag")
             textField.clearButtonMode = .always
             textField.keyboardType = .default
-            textField.keyboardAppearance = Model.sharedInstance().isDarkPaletteActive ? .dark : .default
+            textField.keyboardAppearance = AppVars.isDarkPaletteActive ? .dark : .default
             textField.autocapitalizationType = .sentences
             textField.autocorrectionType = .yes
             textField.returnKeyType = .continue
@@ -353,7 +372,7 @@ extension TagsViewController {
         }
         alert.view.tintColor = UIColor.piwigoColorOrange()
         if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
         } else {
             // Fallback on earlier versions
         }
@@ -450,7 +469,7 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
                 selectedTags.remove(at: index)
                 selectedTagIds.removeAll(where: {$0 == tag.tagId})
                 // Delete tag from table view
-                let deleteAtIndexPath = IndexPath.init(row: selectedTagIdsBeforeUpdate.firstIndex(where: {$0 == tag.tagId})!, section: 0)
+                let deleteAtIndexPath = IndexPath(row: selectedTagIdsBeforeUpdate.firstIndex(where: {$0 == tag.tagId})!, section: 0)
 //                print(".delete =>", deleteAtIndexPath.debugDescription)
                 tagsTableView.deleteRows(at: [deleteAtIndexPath], with: .automatic)
             }
@@ -459,7 +478,7 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
                 // Remove non-selected tag from data source
                 nonSelectedTags.remove(at: index)
                 // Delete tag from table view
-                let deleteAtIndexPath = IndexPath.init(row: nonSelectedTagIdsBeforeUpdate.firstIndex(where: {$0 == tag.tagId})!, section: 1)
+                let deleteAtIndexPath = IndexPath(row: nonSelectedTagIdsBeforeUpdate.firstIndex(where: {$0 == tag.tagId})!, section: 1)
 //                print(".delete =>", deleteAtIndexPath.debugDescription)
                 tagsTableView.deleteRows(at: [deleteAtIndexPath], with: .automatic)
             }
@@ -475,8 +494,8 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
                 selectedTags.append(tag)
                 // Determine index of added tag
                 if let index = selectedTags.firstIndex(where: {$0.tagId == tag.tagId}) {
-                    let addAtIndexPath = IndexPath.init(row: index, section: 0)
-                    print(".insert =>", addAtIndexPath.debugDescription)
+                    let addAtIndexPath = IndexPath(row: index, section: 0)
+//                    print(".insert =>", addAtIndexPath.debugDescription)
                     tagsTableView.insertRows(at: [addAtIndexPath], with: .automatic)
                 }
             } else {
@@ -484,8 +503,8 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
                 nonSelectedTags.append(tag)
                 // Determine index of added tag
                 if let index = nonSelectedTags.firstIndex(where: {$0.tagId == tag.tagId}) {
-                    let addAtIndexPath = IndexPath.init(row: index, section: 1)
-                    print(".insert =>", addAtIndexPath.debugDescription)
+                    let addAtIndexPath = IndexPath(row: index, section: 1)
+//                    print(".insert =>", addAtIndexPath.debugDescription)
                     tagsTableView.insertRows(at: [addAtIndexPath], with: .automatic)
                 }
             }
@@ -499,7 +518,7 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
             guard let tag: Tag = anObject as? Tag else { return }
             // List of selected tags
             if let index = selectedTags.firstIndex(where: {$0.tagId == tag.tagId}) {
-                let updateAtIndexPath = IndexPath.init(row: index, section: 0)
+                let updateAtIndexPath = IndexPath(row: index, section: 0)
 //                print(".update =>", updateAtIndexPath.debugDescription)
                 if let cell = tableView.cellForRow(at: updateAtIndexPath) as? TagTableViewCell {
                     cell.configure(with: tag, andEditOption: .remove)
@@ -507,7 +526,7 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
             }
             // List of not selected tags
             else if let index = nonSelectedTags.firstIndex(where: {$0.tagId == tag.tagId}) {
-                let updateAtIndexPath = IndexPath.init(row: index, section: 1)
+                let updateAtIndexPath = IndexPath(row: index, section: 1)
 //                print(".update =>", updateAtIndexPath.debugDescription)
                 if let cell = tableView.cellForRow(at: updateAtIndexPath) as? TagTableViewCell {
                     cell.configure(with: tag, andEditOption: .add)
@@ -530,6 +549,6 @@ extension TagsViewController: NSFetchedResultsControllerDelegate {
         nonSelectedTags.sort { (tag1,tag2) in
             tag1.tagName.localizedCaseInsensitiveCompare(tag2.tagName) == .orderedAscending
         }
-        tableView.reloadSections(IndexSet.init(integer: 1), with: .automatic)
+        tableView.reloadSections(IndexSet(integer: 1), with: .automatic)
     }
 }

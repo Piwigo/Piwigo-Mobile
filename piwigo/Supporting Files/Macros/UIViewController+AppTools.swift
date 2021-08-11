@@ -100,7 +100,7 @@ extension UIViewController {
     }
 
     
-    // MARK: - Dismiss Alert View
+    // MARK: - Dismiss Alert Views
     func dismissPiwigoError(withTitle title:String, message:String = "", errorMessage:String = "",
                             completion: @escaping () -> Void) {
         // Prepare message
@@ -110,8 +110,8 @@ extension UIViewController {
         }
         
         // Prepare actions
-        let dismissAction = UIAlertAction.init(title: NSLocalizedString("alertDismissButton", comment:"Dismiss"),
-                                               style: .cancel) { _ in completion() }
+        let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment:"Dismiss"),
+                                          style: .cancel) { _ in completion() }
 
         // Present alert
         self.presentPiwigoAlert(withTitle: title, message: wholeMessage,
@@ -158,7 +158,7 @@ extension UIViewController {
                                 actions: [cancelAction, dismissAction, retryAction])
     }
 
-    private func presentPiwigoAlert(withTitle title:String, message:String, actions:[UIAlertAction]) {
+    func presentPiwigoAlert(withTitle title:String, message:String, actions:[UIAlertAction]) {
         // Create alert view controller
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
 
@@ -170,7 +170,7 @@ extension UIViewController {
         // Present alert
         alert.view.tintColor = UIColor.piwigoColorOrange()
         if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
+            alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
         } else {
             // Fallback on earlier versions
         }

@@ -8,6 +8,7 @@
 
 import Photos
 import UIKit
+import piwigoKit
 
 @objc
 class UploadImageTableViewCell: MGSwipeTableCell {
@@ -53,10 +54,14 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         uploadInfoLabel.text = upload.stateLabel
         
         // Uploading progress bar
-        if [.waiting, .preparing, .preparingError, .preparingFail, .prepared, .formatError, .uploadingError].contains(upload.state) {
+        switch upload.state {
+        case .waiting,
+             .preparing, .preparingError, .preparingFail, .formatError, .prepared,
+             .uploadingError, .uploadingFail:
             uploadingProgress?.setProgress(0.0, animated: false)
-        }
-        if [.uploaded, .finishing, .finishingError, .finished].contains(upload.state) {
+        case .uploaded, .finishing, .finishingError, .finished:
+            uploadingProgress?.setProgress(1.0, animated: false)
+        default:
             uploadingProgress?.setProgress(1.0, animated: false)
         }
 
@@ -74,30 +79,26 @@ class UploadImageTableViewCell: MGSwipeTableCell {
             rightButtons = [
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeRetry.png"), backgroundColor: UIColor.piwigoColorOrange(), callback: { sender in
                     UploadManager.shared.backgroundQueue.async {
-                        UploadManager.shared.resume(failedUploads: [upload.objectID], completionHandler: { (_) in })
+                        UploadManager.shared.resume(failedUploads: [upload.objectID], completionHandler: { (_) in
+                            UploadManager.shared.findNextImageToUpload()
+                        })
                     }
                     return true
                 }),
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeCancel.png"), backgroundColor: UIColor.piwigoColorBrown(), callback: { sender in
-                    DispatchQueue.global(qos: .userInitiated).async {
-                        self.uploadsProvider.delete(uploadRequests: [upload.objectID])
-                    }
+                    self.uploadsProvider.delete(uploadRequests: [upload.objectID]) { _ in }
                     return true
                 })]
-        case .waiting:
+        case .waiting, .deleted:
             rightButtons = [
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeCancel.png"), backgroundColor: UIColor.piwigoColorBrown(), callback: { sender in
-                    DispatchQueue.global(qos: .userInitiated).async {
-                        self.uploadsProvider.delete(uploadRequests: [upload.objectID])
-                    }
+                    self.uploadsProvider.delete(uploadRequests: [upload.objectID]) { _ in }
                     return true
                 })]
-        case .preparingFail, .formatError, .finished, .moderated:
+        case .preparingFail, .formatError, .uploadingFail, .finished, .moderated:
             rightButtons = [
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeTrashSmall.png"), backgroundColor: UIColor.red, callback: { sender in
-                    DispatchQueue.global(qos: .userInitiated).async {
-                        self.uploadsProvider.delete(uploadRequests: [upload.objectID])
-                    }
+                    self.uploadsProvider.delete(uploadRequests: [upload.objectID]) { _ in }
                     return true
                 })]
         }
@@ -109,7 +110,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         // => Photo Library: use PHAsset local identifier
         // => UIPasteborad: use identifier of type "Clipboard-yyyyMMdd-HHmmssSSSS-typ-#"
         //    where "typ" is "img" (photo) or "mov" (video).
-        if upload.localIdentifier.contains(kClipboardPrefix) {
+        if upload.localIdentifier.contains(UploadManager.shared.kClipboardPrefix) {
             // Case of an image retrieved from the pasteboard
             prepareThumbnailFromFile(for: upload, availableWidth: availableWidth)
         } else {
@@ -126,16 +127,17 @@ class UploadImageTableViewCell: MGSwipeTableCell {
 
         // Progress bar
         if let progressFraction = userInfo["progressFraction"] as? Float {
-            let progress = max(uploadingProgress.progress, progressFraction)
-            uploadingProgress?.setProgress(progress, animated: true)
+            if progressFraction == Float(0.0) {
+                uploadingProgress?.setProgress(0.0, animated: true)
+            } else {
+                let progress = max(uploadingProgress.progress, progressFraction)
+                uploadingProgress?.setProgress(progress, animated: true)
+            }
         }
 
         // Bottom label
-        let errorDescription = (userInfo["Error"] ?? "") as! String
-        if errorDescription.count == 0, let photoResize = userInfo["photoResize"] as? Int16,
-            let imageAsset = PHAsset.fetchAssets(withLocalIdentifiers: [localIdentifier], options: nil).firstObject {
-            imageInfoLabel.text = getImageInfo(from: imageAsset, for: Int(bounds.size.width), scale: photoResize)
-        } else if errorDescription.count > 0 {
+        if let errorDescription = userInfo["Error"] as? String,
+           !errorDescription.isEmpty {
             imageInfoLabel.text = errorDescription
         }
     }
@@ -170,7 +172,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
             catch let error as NSError {
                 // Could not find the file to upload!
                 print(error.localizedDescription)
-                let error = NSError.init(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
+                let error = NSError(domain: "Piwigo", code: UploadError.missingAsset.hashValue, userInfo: [NSLocalizedDescriptionKey : UploadError.missingAsset.localizedDescription])
                 return
             }
 
@@ -200,18 +202,17 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         cellImage.image = image.crop(width: 1.0, height: 1.0)?.resize(to: 58.0, opaque: true)
         cellImage.layer.cornerRadius = 10 - 3
 
-        // Image available?
-        if [.preparingError, .preparingFail, .formatError, .uploadingError, .finishingError].contains(upload.state) {
+        // Image available
+        if [.preparingError, .preparingFail, .formatError,
+            .uploadingError, .uploadingFail, .finishingError].contains(upload.state) {
             // Display error message
             imageInfoLabel.text = errorDescription(for: upload)
-            if [.preparingError, .preparingFail, .formatError].contains(upload.state) {
-                uploadingProgress?.setProgress(0.0, animated: false)
-            }
         } else {
             // Display image information
+            let maxSize = upload.resizeImageOnUpload ? upload.photoMaxSize : Int16.max
             imageInfoLabel.text = getImageInfo(from: image ?? imagePlaceholder,
                                                for: availableWidth - 2*Int(indentationWidth),
-                                               scale: upload.photoResize)
+                                               maxSize: maxSize)
         }
     }
 
@@ -227,15 +228,15 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         }
         
         // Image asset available
-        if [.preparingError, .preparingFail, .formatError, .uploadingError, .finishingError].contains(upload.state) {
+        if [.preparingError, .preparingFail, .formatError,
+            .uploadingError, .uploadingFail, .finishingError].contains(upload.state) {
             // Display error message
             imageInfoLabel.text = errorDescription(for: upload)
-            if [.preparingError, .preparingFail, .formatError].contains(upload.state) {
-                uploadingProgress?.setProgress(0.0, animated: false)
-            }
         } else {
             // Display image information
-            imageInfoLabel.text = getImageInfo(from: imageAsset, for: availableWidth - 2*Int(indentationWidth), scale: upload.photoResize)
+            let maxSize = upload.resizeImageOnUpload ? upload.photoMaxSize : Int16.max
+            imageInfoLabel.text = getImageInfo(from: imageAsset, for: availableWidth - 2*Int(indentationWidth),
+                                               maxSize: maxSize)
         }
 
         // Cell image: retrieve data of right size and crop image
@@ -269,14 +270,23 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         playImage.isHidden = imageAsset.mediaType == .video ? false : true
     }
     
-    private func getImageInfo(from imageAsset: PHAsset, for availableWidth: Int, scale: Int16) -> String {
-        let pixelWidth = (Float(imageAsset.pixelWidth * Int(scale)) / 100.0).rounded()
-        let pixelHeight = (Float(imageAsset.pixelHeight * Int(scale)) / 100.0).rounded()
+    private func getImageInfo(from imageAsset: PHAsset, for availableWidth: Int, maxSize: Int16) -> String {
+        var pixelWidth = Float(imageAsset.pixelWidth)
+        var pixelHeight = Float(imageAsset.pixelHeight)
+        let imageSize = max(pixelWidth, pixelHeight)
+        let maxPhotoSize = pwgPhotoMaxSizes(rawValue: maxSize)?.pixels ?? Int.max
+        if imageSize > Float(maxPhotoSize) {
+            // Will be downsized
+            pixelWidth *= Float(maxPhotoSize) / imageSize
+            pixelHeight *= Float(maxPhotoSize) / imageSize
+        }
         switch imageAsset.mediaType {
         case .image:
-            return imageInfo(for: availableWidth, pixelWidth: pixelWidth, pixelHeight: pixelHeight, creationDate: imageAsset.creationDate)
+            return imageInfo(for: availableWidth, pixelWidth: pixelWidth, pixelHeight: pixelHeight,
+                             creationDate: imageAsset.creationDate)
         case .video:
-            return videoInfo(for: availableWidth, pixelWidth: pixelWidth, pixelHeight: pixelHeight, duration: imageAsset.duration, creationDate: imageAsset.creationDate)
+            return videoInfo(for: availableWidth, pixelWidth: pixelWidth, pixelHeight: pixelHeight,
+                             duration: imageAsset.duration, creationDate: imageAsset.creationDate)
         default:
             if let creationDate = imageAsset.creationDate {
                 return DateFormatter.localizedString(from: creationDate, dateStyle: .full, timeStyle: .none)
@@ -285,9 +295,16 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         return ""
     }
 
-    private func getImageInfo(from image: UIImage, for availableWidth: Int, scale: Int16) -> String {
-        let pixelWidth = (Float(image.size.width * CGFloat(scale)) / 100.0).rounded()
-        let pixelHeight = (Float(image.size.height * CGFloat(scale)) / 100.0).rounded()
+    private func getImageInfo(from image: UIImage, for availableWidth: Int, maxSize: Int16) -> String {
+        var pixelWidth = Float(image.size.width)
+        var pixelHeight = Float(image.size.height)
+        let imageSize = max(pixelWidth, pixelHeight)
+        let maxPhotoSize = pwgPhotoMaxSizes(rawValue: maxSize)?.pixels ?? Int.max
+        if imageSize > Float(maxPhotoSize) {
+            // Will be downsized
+            pixelWidth *= Float(maxPhotoSize) / imageSize
+            pixelHeight *= Float(maxPhotoSize) / imageSize
+        }
         return imageInfo(for: availableWidth, pixelWidth: pixelWidth, pixelHeight: pixelHeight, creationDate: Date())
     }
 
@@ -304,8 +321,8 @@ class UploadImageTableViewCell: MGSwipeTableCell {
                 error = UploadError.missingAsset.localizedDescription
             case .formatError:
                 error = UploadError.wrongDataFormat.localizedDescription
-            case .uploadingError, .finishingError:
-                error = UploadError.networkUnavailable.localizedDescription
+            case .uploadingError, .uploadingFail, .finishingError:
+                error = JsonError.networkUnavailable.localizedDescription
             default:
                 error = "— ? —"
             }

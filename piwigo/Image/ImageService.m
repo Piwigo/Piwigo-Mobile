@@ -6,14 +6,11 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import "AppDelegate.h"
 #import "ImageService.h"
-#import "Model.h"
 #import "PiwigoImageData.h"
 #import "PiwigoAlbumData.h"
 #import "CategoriesData.h"
 #import "PiwigoTagData.h"
-#import "SAMKeychain.h"
 #import "ImagesCollection.h"
 
 NSString * const kGetImageOrderId = @"id";
@@ -42,7 +39,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                               onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {    
     // Calculate the number of thumbnails displayed per page
-    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
 
     // Compile parameters
     NSDictionary *parameters = @{
@@ -56,7 +53,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     return [self post:kPiwigoCategoriesGetImages
 		URLParameters:nil
            parameters:parameters
-       sessionManager:[Model sharedInstance].sessionManager
+       sessionManager:NetworkVarsObjc.sessionManager
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
 				  
@@ -113,7 +110,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     //                            "xxlarge":{"url":"https:…-xx.jpg","width":1656,"height":1102}}
     
     // Calculate the number of thumbnails displayed per page
-    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
     
     // Compile parameters
     NSDictionary *parameters = @{
@@ -124,13 +121,13 @@ NSString * const kGetImageOrderDescending = @"desc";
                                  };
     
     // Cancel active Search request if any
-    NSArray <NSURLSessionTask *> *searchTasks = [[Model sharedInstance].sessionManager tasks];
+    NSArray <NSURLSessionTask *> *searchTasks = [NetworkVarsObjc.sessionManager tasks];
     for (NSURLSessionTask *task in searchTasks) {
         [task cancel];
     }
     
     // Cancel active image downloads if any
-    NSArray <NSURLSessionTask *> *downloadTasks = [[Model sharedInstance].imagesSessionManager tasks];
+    NSArray <NSURLSessionTask *> *downloadTasks = [NetworkVarsObjc.imagesSessionManager tasks];
     for (NSURLSessionTask *task in downloadTasks) {
         [task cancel];
     }
@@ -139,7 +136,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     return [self post:kPiwigoImageSearch
         URLParameters:nil
            parameters:parameters
-       sessionManager:[Model sharedInstance].sessionManager
+       sessionManager:NetworkVarsObjc.sessionManager
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
@@ -201,7 +198,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                                  onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
     // Calculate the number of thumbnails displayed per page
-    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
     
     // Compile parameters
     NSDictionary *parameters = [NSDictionary new];
@@ -238,13 +235,13 @@ NSString * const kGetImageOrderDescending = @"desc";
     }
     
     // Cancel active Search request if any
-    NSArray <NSURLSessionTask *> *searchTasks = [[Model sharedInstance].sessionManager tasks];
+    NSArray <NSURLSessionTask *> *searchTasks = [NetworkVarsObjc.sessionManager tasks];
     for (NSURLSessionTask *task in searchTasks) {
         [task cancel];
     }
     
     // Cancel active image downloads if any
-    NSArray <NSURLSessionTask *> *downloadTasks = [[Model sharedInstance].imagesSessionManager tasks];
+    NSArray <NSURLSessionTask *> *downloadTasks = [NetworkVarsObjc.imagesSessionManager tasks];
     for (NSURLSessionTask *task in downloadTasks) {
         [task cancel];
     }
@@ -253,7 +250,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     return [self post:kPiwigoCategoriesGetImages
         URLParameters:nil
            parameters:parameters
-       sessionManager:[Model sharedInstance].sessionManager
+       sessionManager:NetworkVarsObjc.sessionManager
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
@@ -324,7 +321,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     //            "file":…
     
     // Calculate the number of thumbnails displayed per page
-    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
     
     // Compile parameters
     NSDictionary *parameters = @{@"tag_id"         : @(tagId),
@@ -334,13 +331,13 @@ NSString * const kGetImageOrderDescending = @"desc";
                                   };
     
     // Cancel active Search request if any
-    NSArray <NSURLSessionTask *> *searchTasks = [[Model sharedInstance].sessionManager tasks];
+    NSArray <NSURLSessionTask *> *searchTasks = [NetworkVarsObjc.sessionManager tasks];
     for (NSURLSessionTask *task in searchTasks) {
         [task cancel];
     }
     
     // Cancel active image downloads if any
-    NSArray <NSURLSessionTask *> *downloadTasks = [[Model sharedInstance].imagesSessionManager tasks];
+    NSArray <NSURLSessionTask *> *downloadTasks = [NetworkVarsObjc.imagesSessionManager tasks];
     for (NSURLSessionTask *task in downloadTasks) {
         [task cancel];
     }
@@ -349,7 +346,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     return [self post:kPiwigoTagsGetImages
         URLParameters:nil
            parameters:parameters
-       sessionManager:[Model sharedInstance].sessionManager
+       sessionManager:NetworkVarsObjc.sessionManager
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
@@ -417,7 +414,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     //          {"id":…
     
     // Calculate the number of thumbnails displayed per page
-    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
     
     // Compile parameters
     NSDictionary *parameters = @{@"per_page"       : @(imagesPerPage),
@@ -426,13 +423,13 @@ NSString * const kGetImageOrderDescending = @"desc";
                                  };
     
     // Cancel active Search request if any
-    NSArray <NSURLSessionTask *> *searchTasks = [[Model sharedInstance].sessionManager tasks];
+    NSArray <NSURLSessionTask *> *searchTasks = [NetworkVarsObjc.sessionManager tasks];
     for (NSURLSessionTask *task in searchTasks) {
         [task cancel];
     }
     
     // Cancel active image downloads if any
-    NSArray <NSURLSessionTask *> *downloadTasks = [[Model sharedInstance].imagesSessionManager tasks];
+    NSArray <NSURLSessionTask *> *downloadTasks = [NetworkVarsObjc.imagesSessionManager tasks];
     for (NSURLSessionTask *task in downloadTasks) {
         [task cancel];
     }
@@ -441,7 +438,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     return [self post:kPiwigoUserFavoritesGetList
         URLParameters:nil
            parameters:parameters
-       sessionManager:[Model sharedInstance].sessionManager
+       sessionManager:NetworkVarsObjc.sessionManager
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
@@ -701,7 +698,7 @@ NSString * const kGetImageOrderDescending = @"desc";
 	return [self post:kPiwigoImagesGetInfo
 		URLParameters:nil
            parameters:parameters
-       sessionManager:[Model sharedInstance].sessionManager
+       sessionManager:NetworkVarsObjc.sessionManager
              progress:nil
 			  success:^(NSURLSessionTask *task, id responseObject) {
 				  
@@ -765,7 +762,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     // Object "name"
     NSString *name = [imageJson objectForKey:@"name"];
     if ((name != nil) && ![name isKindOfClass:[NSNull class]]) {
-        imageData.imageTitle = [NetworkUtilities utf8mb4StringFrom:[imageJson objectForKey:@"name"]];
+        imageData.imageTitle = [NetworkObjcUtilities utf8mb4ObjcStringFrom:[imageJson objectForKey:@"name"]];
     } else {
         imageData.imageTitle = @"";
     }
@@ -773,7 +770,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     // Object "comment"
     NSString *comment = [imageJson objectForKey:@"comment"];
     if ((comment != nil) && ![comment isKindOfClass:[NSNull class]]) {
-        imageData.comment = [NetworkUtilities utf8mb4StringFrom:[imageJson objectForKey:@"comment"]];
+        imageData.comment = [NetworkObjcUtilities utf8mb4ObjcStringFrom:[imageJson objectForKey:@"comment"]];
     } else {
         imageData.comment = @"";
     }
@@ -788,7 +785,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     // Object "file"
     NSString *file = [imageJson objectForKey:@"file"];
     if ((file != nil) && ![file isKindOfClass:[NSNull class]]) {
-        imageData.fileName = [NetworkUtilities utf8mb4StringFrom:[imageJson objectForKey:@"file"]];
+        imageData.fileName = [NetworkObjcUtilities utf8mb4ObjcStringFrom:[imageJson objectForKey:@"file"]];
     } else {
         imageData.fileName = @"NoName.jpg";    // Filename should never be empty. Just in case…
     }
@@ -1056,7 +1053,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     // Object "author"
     NSString *author = [imageJson objectForKey:@"author"];
     if ((author != nil) && ![author isKindOfClass:[NSNull class]]) {
-        imageData.author = [NetworkUtilities utf8mb4StringFrom:author];
+        imageData.author = [NetworkObjcUtilities utf8mb4ObjcStringFrom:author];
     } else {
         imageData.author = @"NSNotFound";
     }
@@ -1064,9 +1061,9 @@ NSString * const kGetImageOrderDescending = @"desc";
     // Object "level"
     if ([imageJson objectForKey:@"level"] &&
         ![[imageJson objectForKey:@"level"] isKindOfClass:[NSNull class]]) {
-        imageData.privacyLevel = (kPiwigoPrivacy)[[imageJson objectForKey:@"level"] integerValue];
+        imageData.privacyLevel = (kPiwigoPrivacyObjc)[[imageJson objectForKey:@"level"] integerValue];
     } else {
-        imageData.privacyLevel = kPiwigoPrivacyUnknown;
+        imageData.privacyLevel = kPiwigoPrivacyObjcUnknown;
     }
     
     // Object "tags"
@@ -1079,7 +1076,7 @@ NSString * const kGetImageOrderDescending = @"desc";
             PiwigoTagData *tagData = [PiwigoTagData new];
             tagData.tagId = [[tag objectForKey:@"id"] integerValue];
             if (![[tag objectForKey:@"name"] isKindOfClass:[NSNull class]]) {
-                tagData.tagName = [NetworkUtilities utf8mb4StringFrom:[tag objectForKey:@"name"]];
+                tagData.tagName = [NetworkObjcUtilities utf8mb4ObjcStringFrom:[tag objectForKey:@"name"]];
             } else {
                 tagData.tagName = @"";
             }
@@ -1117,7 +1114,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     // Object "md5sum"
     NSString *md5sum = [imageJson objectForKey:@"md5sum"];
     if ((md5sum != nil) && ![md5sum isKindOfClass:[NSNull class]]) {
-        imageData.MD5checksum = [NetworkUtilities utf8mb4StringFrom:[imageJson objectForKey:@"md5sum"]];
+        imageData.MD5checksum = [NetworkObjcUtilities utf8mb4ObjcStringFrom:[imageJson objectForKey:@"md5sum"]];
     } else {
         imageData.MD5checksum = @"";
     }
@@ -1127,45 +1124,6 @@ NSString * const kGetImageOrderDescending = @"desc";
 
 
 #pragma mark - Delete images
-
-+(NSURLSessionTask*)deleteImage:(PiwigoImageData*)image
-               ListOnCompletion:(void (^)(NSURLSessionTask *task))completion
-                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
-{
-    return [self post:kPiwigoImageDelete
-		URLParameters:nil
-		   parameters:@{
-                        @"image_id" : [NSString stringWithFormat:@"%ld", (long)image.imageId],
-                        @"pwg_token" : [Model sharedInstance].pwgToken
-                        }
-       sessionManager:[Model sharedInstance].sessionManager
-             progress:nil
-			  success:^(NSURLSessionTask *task, id responseObject)
-    {
-        if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
-            // Remove image from cache and update UI
-            [[CategoriesData sharedInstance] removeImage:image];
-            if(completion) {
-                completion(task);
-            }
-        } else {
-            if(fail) {
-                NSError *error = [NetworkHandler getPiwigoErrorFromResponse:responseObject
-                                 path:kPiwigoImageDelete andURLparams:nil];
-                fail(task, error);
-            }
-        }
-    }
-              failure:^(NSURLSessionTask *task, NSError *error)
-    {
-#if defined(DEBUG)
-        NSLog(@"=> deleteImage — Fail: %@", [error description]);
-#endif
-        if(fail) {
-            fail(task, error);
-        }
-    }];
-}
 
 +(NSURLSessionTask*)deleteImages:(NSArray *)images
                 ListOnCompletion:(void (^)(NSURLSessionTask *task))completion
@@ -1184,16 +1142,16 @@ NSString * const kGetImageOrderDescending = @"desc";
         URLParameters:nil
            parameters:@{
                         @"image_id" : listOfImageIds,
-                        @"pwg_token" : [Model sharedInstance].pwgToken
+                        @"pwg_token" : NetworkVarsObjc.pwgToken
                         }
-       sessionManager:[Model sharedInstance].sessionManager
+       sessionManager:NetworkVarsObjc.sessionManager
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject)
     {
         if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"]) {
             for (PiwigoImageData *image in images) {
-              // Remove image from cache and update UI
-              [[CategoriesData sharedInstance] removeImage:image];
+              // Remove image from cache, update UI and Upload database
+              [[CategoriesData sharedInstance] deleteImage:image];
             }
             if(completion) {
                 completion(task);
@@ -1292,7 +1250,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     // Call pwg.images.setInfo to set image parameters
     return [self setImageInfoForImageWithId:imageData.imageId
                                 information:imageInformation
-                             sessionManager:[Model sharedInstance].sessionManager
+                             sessionManager:NetworkVarsObjc.sessionManager
                                  onProgress:progress
                                OnCompletion:^(NSURLSessionTask *task, NSDictionary *response) {
                       
@@ -1372,7 +1330,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                          @"file" : fileName,
                          @"single_value_mode" : @"replace"
                          }
-        sessionManager:[Model sharedInstance].sessionManager
+        sessionManager:NetworkVarsObjc.sessionManager
               progress:progress
                success:^(NSURLSessionTask *task, id responseObject) {
                         if(completion) {
@@ -1420,7 +1378,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                              @"categories" : newImageCategories,
                              @"multiple_value_mode" : @"replace"
                              }
-            sessionManager:[Model sharedInstance].sessionManager
+            sessionManager:NetworkVarsObjc.sessionManager
                   progress:progress
                    success:^(NSURLSessionTask *task, id responseObject)
     {
@@ -1459,7 +1417,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                 parameters:@{
                              @"image_id" : [NSString stringWithFormat:@"%ld", (long)imageId]
                              }
-            sessionManager:[Model sharedInstance].sessionManager
+            sessionManager:NetworkVarsObjc.sessionManager
                   progress:progress
                    success:^(NSURLSessionTask *task, id responseObject) {
                        
@@ -1489,7 +1447,7 @@ NSString * const kGetImageOrderDescending = @"desc";
                 parameters:@{
                              @"image_id" : [NSString stringWithFormat:@"%ld", (long)image.imageId]
                              }
-            sessionManager:[Model sharedInstance].sessionManager
+            sessionManager:NetworkVarsObjc.sessionManager
                   progress:progress
                    success:^(NSURLSessionTask *task, id responseObject) {
                        

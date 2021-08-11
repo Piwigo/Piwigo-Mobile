@@ -73,7 +73,7 @@
 //      (comments), (comments_paging), (coi)
 //
 @property (nonatomic, strong) NSString *author;                 // author
-@property (nonatomic, assign) kPiwigoPrivacy privacyLevel;      // level
+@property (nonatomic, assign) kPiwigoPrivacyObjc privacyLevel;  // level
 @property (nonatomic, strong) NSArray<PiwigoTagData*> *tags;    // tags
 @property (nonatomic, assign) float ratingScore;                // rating score
 @property (nonatomic, assign) NSInteger fileSize;               // filesize

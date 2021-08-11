@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import "AppDelegate.h"
 #import "EditImageDatePickerTableViewCell.h"
 #import "EditImageParamsViewController.h"
 #import "EditImagePrivacyTableViewCell.h"
@@ -37,7 +36,7 @@ typedef enum {
 	EditImageParamsOrderCount
 } EditImageParamsOrder;
 
-@interface EditImageParamsViewController () <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UITextViewDelegate, EditImageThumbnailCellDelegate, EditImageDatePickerDelegate, EditImageShiftPickerDelegate, SelectPrivacyDelegate, TagsViewControllerDelegate>
+@interface EditImageParamsViewController () <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UITextViewDelegate, EditImageThumbnailCellDelegate, EditImageDatePickerDelegate, EditImageShiftPickerDelegate, SelectPrivacyObjcDelegate, TagsViewControllerObjcDelegate>
 
 @property (nonatomic, strong) PiwigoImageData *commonParameters;
 @property (nonatomic, weak)   IBOutlet UITableView *editImageParamsTableView;
@@ -78,7 +77,7 @@ typedef enum {
     self.navigationItem.rightBarButtonItem = done;
 
     // Register palette changes
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:[PwgNotificationsObjc paletteChanged] object:nil];
 }
 
 #pragma mark - View Lifecycle
@@ -97,7 +96,7 @@ typedef enum {
     if (@available(iOS 11.0, *)) {
         self.navigationController.navigationBar.prefersLargeTitles = NO;
     }
-    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    self.navigationController.navigationBar.barStyle = AppVars.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
     self.navigationController.navigationBar.tintColor = [UIColor piwigoColorOrange];
     self.navigationController.navigationBar.barTintColor = [UIColor piwigoColorBackground];
     self.navigationController.navigationBar.backgroundColor = [UIColor piwigoColorBackground];
@@ -170,7 +169,7 @@ typedef enum {
         if (self.commonParameters.privacyLevel == imageData.privacyLevel) continue;
         
         // Images privacy levels are different, display no level
-        self.commonParameters.privacyLevel = kPiwigoPrivacyUnknown;
+        self.commonParameters.privacyLevel = kPiwigoPrivacyObjcUnknown;
         break;
     }
     self.shouldUpdatePrivacyLevel = NO;
@@ -260,9 +259,6 @@ typedef enum {
 {
     [super viewWillDisappear:animated];
 
-    // Unregister palette changes
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationPaletteChanged object:nil];
-
     // Check if the user is still editing parameters
     if ([self.navigationController.visibleViewController isKindOfClass:[SelectPrivacyViewController class]] ||
         [self.navigationController.visibleViewController isKindOfClass:[TagsViewController class]]) {
@@ -274,6 +270,12 @@ typedef enum {
     {
         [self.delegate didFinishEditingParameters];
     }
+}
+
+-(void)dealloc
+{
+    // Unregister palette changes
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:[PwgNotificationsObjc paletteChanged] object:nil];
 }
 
 
@@ -322,7 +324,7 @@ typedef enum {
         }
         
         // Update image privacy level?
-        if ((self.commonParameters.privacyLevel != kPiwigoPrivacyUnknown) && self.shouldUpdatePrivacyLevel) {
+        if ((self.commonParameters.privacyLevel != kPiwigoPrivacyObjcUnknown) && self.shouldUpdatePrivacyLevel) {
             imageData.privacyLevel = self.commonParameters.privacyLevel;
         }
         
@@ -467,7 +469,7 @@ typedef enum {
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     NSInteger nberOfRows = EditImageParamsOrderCount - (self.hasDatePicker == NO);
-    nberOfRows -= (![Model sharedInstance].hasAdminRights ? 1 : 0);
+    nberOfRows -= (!NetworkVarsObjc.hasAdminRights ? 1 : 0);
 
     return nberOfRows;
 }
@@ -477,7 +479,7 @@ typedef enum {
     CGFloat height = 44.0;
     NSInteger row = indexPath.row;
     row += (!self.hasDatePicker && (row > EditImageParamsOrderDate)) ? 1 : 0;
-    row += (![Model sharedInstance].hasAdminRights && (row > EditImageParamsOrderDatePicker)) ? 1 : 0;
+    row += (!NetworkVarsObjc.hasAdminRights && (row > EditImageParamsOrderDatePicker)) ? 1 : 0;
     switch (row)
     {
         case EditImageParamsOrderThumbnails:
@@ -516,7 +518,7 @@ typedef enum {
 
     NSInteger row = indexPath.row;
     row += (!self.hasDatePicker && (row > EditImageParamsOrderDate)) ? 1 : 0;
-    row += (![Model sharedInstance].hasAdminRights && (row > EditImageParamsOrderDatePicker)) ? 1 : 0;
+    row += (!NetworkVarsObjc.hasAdminRights && (row > EditImageParamsOrderDatePicker)) ? 1 : 0;
     switch (row)
 	{
         case EditImageParamsOrderThumbnails:
@@ -625,7 +627,7 @@ typedef enum {
 {
     NSInteger row = indexPath.row;
     row += (!self.hasDatePicker && (row > EditImageParamsOrderDate)) ? 1 : 0;
-    row += (![Model sharedInstance].hasAdminRights && (row > EditImageParamsOrderDatePicker)) ? 1 : 0;
+    row += (!NetworkVarsObjc.hasAdminRights && (row > EditImageParamsOrderDatePicker)) ? 1 : 0;
     switch (row)
     {
         case EditImageParamsOrderPrivacy:
@@ -639,8 +641,8 @@ typedef enum {
             // Create view controller
             UIStoryboard *privacySB = [UIStoryboard storyboardWithName:@"SelectPrivacyViewController" bundle:nil];
             SelectPrivacyViewController *privacyVC = [privacySB instantiateViewControllerWithIdentifier:@"SelectPrivacyViewController"];
-            privacyVC.delegate = self;
-            [privacyVC setPrivacy:(kPiwigoPrivacy)self.commonParameters.privacyLevel];
+            privacyVC.objcDelegate = self;
+            [privacyVC setPrivacyObjc:self.commonParameters.privacyLevel];
             [self.navigationController pushViewController:privacyVC animated:YES];
             break;
         }
@@ -656,7 +658,7 @@ typedef enum {
             // Create view controller
             UIStoryboard *tagsSB = [UIStoryboard storyboardWithName:@"TagsViewController" bundle:nil];
             TagsViewController *tagsVC = [tagsSB instantiateViewControllerWithIdentifier:@"TagsViewController"];
-            tagsVC.delegate = self;
+            tagsVC.objcDelegate = self;
             NSMutableArray *tagList = [NSMutableArray new];
             for (PiwigoTagData *tag in self.commonParameters.tags) {
                 [tagList addObject:[NSNumber numberWithLong:tag.tagId]];
@@ -677,7 +679,7 @@ typedef enum {
     BOOL result;
     NSInteger row = indexPath.row;
     row += (!self.hasDatePicker && (row > EditImageParamsOrderDate)) ? 1 : 0;
-    row += (![Model sharedInstance].hasAdminRights && (row > EditImageParamsOrderDatePicker)) ? 1 : 0;
+    row += (!NetworkVarsObjc.hasAdminRights && (row > EditImageParamsOrderDatePicker)) ? 1 : 0;
     switch (row)
     {
         case EditImageParamsOrderImageName:
@@ -987,9 +989,9 @@ typedef enum {
 }
 
 
-#pragma mark - SelectPrivacyDelegate Methods
+#pragma mark - SelectPrivacyObjcDelegate Methods
 
--(void)didSelectPrivacyLevel:(kPiwigoPrivacy)privacyLevel
+-(void)didSelectPrivacyLevel:(kPiwigoPrivacyObjc)privacyLevel
 {
     // Check if the user decided to leave the Edit mode
     if (![self.navigationController.visibleViewController isKindOfClass:[EditImageParamsViewController class]]) {
@@ -1015,9 +1017,9 @@ typedef enum {
 }
 
 
-#pragma mark - TagsViewControllerDelegate Methods
+#pragma mark - TagsViewControllerObjcDelegate Methods
 
--(void)didSelectTags:(NSArray<Tag *> *)selectedTags
+-(void)didSelectTags:(NSArray<PiwigoTagData *> *)newCommonTags
 {
     // Check if the user decided to leave the Edit mode
     if (![self.navigationController.visibleViewController isKindOfClass:[EditImageParamsViewController class]]) {
@@ -1027,18 +1029,6 @@ typedef enum {
             [self.delegate didFinishEditingParameters];
         }
         return;
-    }
-
-    // Build new list of common tags (i.e. Tag -> PiwigoTagData)
-    NSMutableArray<PiwigoTagData *>* newCommonTags = [NSMutableArray new];
-    for (Tag *selectedTag in selectedTags) {
-        PiwigoTagData *newTag = [PiwigoTagData new];
-        newTag.tagId = selectedTag.tagId;
-        newTag.tagName = selectedTag.tagName;
-        newTag.lastModified = selectedTag.lastModified;
-        newTag.numberOfImagesUnderTag = selectedTag.numberOfImagesUnderTag;
-        [newCommonTags addObject:newTag];
-//        NSLog(@"==> %@", newTag);
     }
 
     // Build list of added tags
@@ -1072,7 +1062,7 @@ typedef enum {
         // Refresh table row
         NSInteger row = EditImageParamsOrderTags;
         row -= !self.hasDatePicker ? 1 : 0;
-        row -= ![Model sharedInstance].hasAdminRights ? 1 : 0;
+        row -= !NetworkVarsObjc.hasAdminRights ? 1 : 0;
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
         [self.editImageParamsTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     }

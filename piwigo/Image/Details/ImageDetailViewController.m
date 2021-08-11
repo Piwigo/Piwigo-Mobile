@@ -8,7 +8,6 @@
 
 #import <Photos/Photos.h>
 
-#import "AppDelegate.h"
 #import "CategoriesData.h"
 #import "EditImageParamsViewController.h"
 #import "ImageDetailViewController.h"
@@ -16,13 +15,10 @@
 #import "ImageService.h"
 #import "ImageScrollView.h"
 #import "ImagesCollection.h"
-#import "Model.h"
 #import "MBProgressHUD.h"
-#import "SAMKeychain.h"
 
 NSString * const kPiwigoNotificationPinchedImage = @"kPiwigoNotificationPinchedImage";
 NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationUpdateImageFileName";
-NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage";
 
 @interface ImageDetailViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ImagePreviewDelegate, EditImageParamsDelegate, SelectCategoryDelegate, SelectCategoryImageCopiedDelegate, SelectCategoryImageRemovedDelegate, ShareImageActivityItemProviderDelegate, UIToolbarDelegate>
 
@@ -132,7 +128,7 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateImageFileName:) name:kPiwigoNotificationUpdateImageFileName object:nil];
 
         // Register palette changes
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:kPiwigoNotificationPaletteChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:[PwgNotificationsObjc paletteChanged] object:nil];
 	}
 	return self;
 }
@@ -152,14 +148,14 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
     if (@available(iOS 11.0, *)) {
         self.navigationController.navigationBar.prefersLargeTitles = NO;
     }
-    self.navigationController.navigationBar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    self.navigationController.navigationBar.barStyle = AppVars.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
     self.navigationController.navigationBar.tintColor = [UIColor piwigoColorOrange];
     self.navigationController.navigationBar.barTintColor = [UIColor piwigoColorBackground];
     self.navigationController.navigationBar.backgroundColor = [UIColor piwigoColorBackground];
     
     // Toolbar
     self.navigationController.toolbar.barTintColor = [UIColor piwigoColorBackground];
-    self.navigationController.toolbar.barStyle = [Model sharedInstance].isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    self.navigationController.toolbar.barStyle = AppVars.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
 
     // Progress bar
     self.progressBar.progressTintColor = [UIColor piwigoColorOrange];
@@ -207,7 +203,7 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
     if (@available(iOS 13.0, *)) {
         BOOL hasUserInterfaceStyleChanged = (previousTraitCollection.userInterfaceStyle != self.traitCollection.userInterfaceStyle);
         if (hasUserInterfaceStyleChanged) {
-            [Model sharedInstance].isSystemDarkModeActive = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
+            AppVars.isSystemDarkModeActive = (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark);
             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
             [appDelegate screenBrightnessChanged];
         }
@@ -228,6 +224,19 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
     }
 }
 
+-(void)dealloc
+{
+    // Register image pinches
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationPinchedImage object:nil];
+
+    // Register image data updates
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kPiwigoNotificationUpdateImageFileName object:nil];
+
+    // Unregister palette changes
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:[PwgNotificationsObjc paletteChanged] object:nil];
+}
+
+
 -(void)updateNavBar
 {
     // Interface depends on device and orientation
@@ -237,11 +246,11 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
          [[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeRight)) {
             
         // iPhone or iPad in portrait mode
-        if ([Model sharedInstance].hasAdminRights)
+        if (NetworkVarsObjc.hasAdminRights)
         {
             // User with admin rights can move, edit, delete images and set as album image
             [self.navigationItem setRightBarButtonItems:@[self.editBarButton]];
-//            if ([@"2.10.0" compare:[Model sharedInstance].version options:NSNumericSearch] == NSOrderedDescending) {
+//            if ([@"2.10.0" compare:AppVars.version options:NSNumericSearch] == NSOrderedDescending) {
                 self.toolbarItems = @[self.shareBarButton, self.spaceBetweenButtons, self.moveBarButton, self.spaceBetweenButtons, self.setThumbnailBarButton, self.spaceBetweenButtons, self.deleteBarButton];
 //            } else {
 //                self.toolbarItems = @[self.shareBarButton, self.spaceBetweenButtons, self.moveBarButton, self.spaceBetweenButtons, self.favoriteBarButton, self.spaceBetweenButtons, self.setThumbnailBarButton, self.spaceBetweenButtons, self.deleteBarButton];
@@ -252,7 +261,7 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
             BOOL isNavigationBarHidden = self.navigationController.isNavigationBarHidden;
             [self.navigationController setToolbarHidden:isNavigationBarHidden animated:YES];
         }
-        else if ([Model sharedInstance].hasNormalRights && [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
+        else if (NetworkVarsObjc.hasNormalRights && [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
         {
             // WRONG =====> 'normal' user with upload access to the current category can edit images
             // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by' values of images for checking rights
@@ -280,7 +289,7 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
         self.isToolbarRequired = NO;
         [self.navigationController setToolbarHidden:YES animated:YES];
 
-        if ([Model sharedInstance].hasAdminRights)
+        if (NetworkVarsObjc.hasAdminRights)
         {
             // User with admin rights can edit, delete images and set as album image
             self.deleteBarButton.tintColor = [UIColor redColor];
@@ -344,7 +353,7 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
     [self setEnableStateOfButtons:NO];
     
     // Image data is not complete after an upload with pwg.images.upload
-    BOOL shouldUpdateImage = [imageData getURLFromImageSizeType:(kPiwigoImageSize)[Model sharedInstance].defaultImagePreviewSize] == nil;
+    BOOL shouldUpdateImage = [imageData getURLFromImageSizeType:(kPiwigoImageSize)ImageVars.shared.defaultImagePreviewSize] == nil;
 
     // Required by Copy, Delete, Move actions (may also be used to show albums image belongs to)
     [ImageService getImageInfoById:imageData.imageId
@@ -475,7 +484,7 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
         return nil;
     }
     
-    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.view imagesPerRowInPortrait:[Model sharedInstance].thumbnailsPerRowInPortrait];
+    NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:self.view imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
     if ((currentIndex > (self.images.count - roundf(imagesPerPage / 3.0))) &&
         (self.images.count != [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
     {
@@ -626,8 +635,8 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
     EditImageParamsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageParams"];
     editImageVC.images = @[self.imageData];
     PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
-    editImageVC.hasTagCreationRights = [Model sharedInstance].hasAdminRights ||
-                                        ([Model sharedInstance].hasNormalRights && albumData.hasUploadRights);
+    editImageVC.hasTagCreationRights = NetworkVarsObjc.hasAdminRights ||
+                                        (NetworkVarsObjc.hasNormalRights && albumData.hasUploadRights);
     editImageVC.delegate = self;
     [self pushView:editImageVC forButton:self.editBarButton];
 }
@@ -679,7 +688,7 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
     // Present list of actions
     alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
-        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }
@@ -714,7 +723,7 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
                 // Hide HUD
                 [self updatePiwigoHUDwithSuccessWithCompletion:^{
                     [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
-                        // Dispaly preceding/next image or return to album view
+                        // Display preceding/next image or return to album view
                         [self didRemoveImageWithId:self.imageData.imageId];
                     }];
                 }];
@@ -750,13 +759,13 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
     [self showPiwigoHUDWithTitle:NSLocalizedString(@"deleteSingleImageHUD_deleting", @"Deleting Image…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
     
     // Send request to Piwigo server
-    [ImageService deleteImage:self.imageData
+    [ImageService deleteImages:@[self.imageData]
              ListOnCompletion:^(NSURLSessionTask *task)
     {
          // Hide HUD
         [self updatePiwigoHUDwithSuccessWithCompletion:^{
             [self hidePiwigoHUDAfterDelay:kDelayPiwigoHUD completion:^{
-                // Dispaly preceding/next image or return to album view
+                // Display preceding/next image or return to album view
                 [self didRemoveImageWithId:self.imageData.imageId];
             }];
         }];
@@ -797,7 +806,7 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
     // Check autorisation to access Photo Library (camera roll)
     // Check autorisation to access Photo Library (camera roll)
     if (@available(iOS 14, *)) {
-        [[PhotosFetch sharedInstance] checkPhotoLibraryAuthorizationStatusFor:PHAccessLevelAddOnly for:self
+        [PhotosFetch.shared checkPhotoLibraryAuthorizationStatusFor:PHAccessLevelAddOnly for:self
             onAccess:^{
             // User allowed to save image in camera roll
             [self presentShareImageViewControllerWithCameraRollAccess:YES];
@@ -814,7 +823,7 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
         }];
     } else {
         // Fallback on earlier versions
-        [[PhotosFetch sharedInstance] checkPhotoLibraryAccessForViewController:nil
+        [PhotosFetch .shared checkPhotoLibraryAccessForViewController:nil
             onAuthorizedAccess:^{
                 // User allowed to save image in camera roll
                 [self presentShareImageViewControllerWithCameraRollAccess:YES];
@@ -989,7 +998,7 @@ NSString * const kPiwigoNotificationMovedImage = @"kPiwigoNotificationMovedImage
     // Present list of actions
     alert.view.tintColor = UIColor.piwigoColorOrange;
     if (@available(iOS 13.0, *)) {
-        alert.overrideUserInterfaceStyle = [Model sharedInstance].isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+        alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
     } else {
         // Fallback on earlier versions
     }

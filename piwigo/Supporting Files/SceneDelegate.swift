@@ -9,6 +9,7 @@
 import UIKit
 import AVFoundation
 import BackgroundTasks
+import piwigoKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -16,9 +17,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     let loginVC: LoginViewController = {
         if UIDevice.current.userInterfaceIdiom == .phone {
-            return LoginViewController_iPhone.init()
+            return LoginViewController_iPhone()
         } else {
-            return LoginViewController_iPad.init()
+            return LoginViewController_iPad()
         }
     }()
 
@@ -27,6 +28,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
+        if let userActivity = connectionOptions.userActivities.first {
+            debugPrint(userActivity)
+        }
+
         guard let _ = (scene as? UIWindowScene) else { return }
         if let windowScene = scene as? UIWindowScene {
             // Show login view
@@ -39,45 +44,29 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             window.rootViewController?.view.setNeedsUpdateConstraints()
 
             // Color palette depends on system settings
-            Model.sharedInstance().isSystemDarkModeActive = loginVC.traitCollection.userInterfaceStyle == .dark
-//            print("•••> iOS mode: \(Model.sharedInstance().isSystemDarkModeActive ? "Dark" : "Light"), app mode: \(Model.sharedInstance().isDarkPaletteModeActive ? "Dark" : "Light"), Brightness: \(lroundf(Float(UIScreen.main.brightness) * 100.0))/\(Model.sharedInstance().switchPaletteThreshold), app: \(Model.sharedInstance().isDarkPaletteActive ? "Dark" : "Light")")
+            AppVars.isSystemDarkModeActive = loginVC.traitCollection.userInterfaceStyle == .dark
+//            print("•••> iOS mode: \(AppVars.isSystemDarkModeActive ? "Dark" : "Light"), app mode: \(AppVars.isDarkPaletteModeActive ? "Dark" : "Light"), Brightness: \(lroundf(Float(UIScreen.main.brightness) * 100.0))/\(AppVars.switchPaletteThreshold), app: \(AppVars.isDarkPaletteActive ? "Dark" : "Light")")
 
             // Apply color palette
-            (UIApplication.shared.delegate as! AppDelegate).screenBrightnessChanged()
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate
+            appDelegate?.screenBrightnessChanged()
 
             // Present login window
             self.window = window
             window.makeKeyAndVisible()
 
             // Look for credentials if server address provided
-            var user: String = ""
-            var password: String = ""
-            let server = Model.sharedInstance()?.serverPath ?? ""
-            SAMKeychain.setAccessibilityType(kSecAttrAccessibleAfterFirstUnlock)
-            if server.count > 0 {
-                // Known acounts for that server?
-                if let accounts = SAMKeychain.accounts(forService: server), accounts.count > 0 {
-                    // Credentials available
-                    user = Model.sharedInstance().username ?? ""
-                    if user.count > 0 {
-                        password = SAMKeychain.password(forService: server, account: user) ?? ""
-                    }
-                } else {
-                    // No credentials available for that server. And with the old methods?
-                    user = KeychainAccess.getLoginUser() ?? ""
-                    password = KeychainAccess.getLoginPassword() ?? ""
+            let username = NetworkVars.username
+            let service = NetworkVars.serverPath
+            var password = ""
 
-                    // Store credentials with new method if found
-                    if user.count > 0 {
-                        Model.sharedInstance().username = user
-                        Model.sharedInstance().saveToDisk()
-                        SAMKeychain.setPassword(password, forService: server, account: user)
-                    }
-                }
+            // Look for paswword in Keychain if server address and username are provided
+            if service.count > 0, username.count > 0 {
+                password = KeychainUtilities.password(forService: service, account: username)
             }
 
             // Login?
-            if server.count > 0 || (user.count > 0 && password.count > 0) {
+            if service.count > 0 || (username.count > 0 && password.count > 0) {
                 loginVC.launchLogin()
             }
         }
@@ -111,7 +100,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let rootVC = self.window?.rootViewController,
            let _ = rootVC.children.first as? AlbumImagesViewController {
             // Determine for how long the session is opened
-            let timeSinceLastLogin = Model.sharedInstance()?.dateOfLastLogin.timeIntervalSinceNow ?? TimeInterval(-3600.0)
+            let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
             if timeSinceLastLogin < TimeInterval(-900) { // i.e. 15 minutes (Piwigo 11 session duration defaults to an hour)
                 /// - Perform relogin
                 /// - Resume upload operations in background queue
@@ -170,12 +159,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Schedule background tasks after cancelling pending onces
         BGTaskScheduler.shared.cancelAllTaskRequests()
-        if Model.sharedInstance()?.usesUploadAsync ?? false {
-            (UIApplication.shared.delegate as! AppDelegate).scheduleNextUpload()
+        if NetworkVars.usesUploadAsync {
+            let appDelegate = UIApplication.shared.delegate as? AppDelegate
+            appDelegate?.scheduleNextUpload()
         }
 
         // Clean up /tmp directory
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        appDelegate?.cleanUpTemporaryDirectoryImmediately(false)
+        appDelegate?.cleanUpTemporaryDirectory(immediately: false)
     }
 }

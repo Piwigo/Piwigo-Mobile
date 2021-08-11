@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import piwigoKit
 
 @objc
 class ClearCache: NSObject {
@@ -16,23 +17,22 @@ class ClearCache: NSObject {
                              completionHandler: @escaping () -> Void) {
         
         // Tags
-        let tagsProvider : TagsProvider = TagsProvider()
-        tagsProvider.clearTags()
+        TagsProvider().clearTags()
 
         // Locations with place names
-        LocationsProvider.sharedInstance().clearLocations()
+        LocationsProvider().clearLocations()
 
         // Data
         TagsData.sharedInstance().clearCache()
         if !exceptCategories { CategoriesData.sharedInstance().clearCache() }
 
         // URL requests
-        Model.sharedInstance()?.imageCache.removeAllCachedResponses()
-        Model.sharedInstance()?.thumbnailCache.removeAllImages()
+        NetworkVarsObjc.imageCache?.removeAllCachedResponses()
+        NetworkVarsObjc.thumbnailCache?.removeAllImages()
         
         // Clean up /tmp directory
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        appDelegate?.cleanUpTemporaryDirectoryImmediately(true)
+        appDelegate?.cleanUpTemporaryDirectory(immediately: true)
         
         // Job done
         completionHandler()

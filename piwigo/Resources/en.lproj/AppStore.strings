@@ -6,7 +6,7 @@
   Copyright © 2017 Piwigo.org. All rights reserved.
 */
 
-"description" = "Piwigo for iPhone/iPad/iPod supplements the photo gallery software in the cloud Piwigo (v2.8 or higher):\n\n• Browse your albums,\n• Create, delete, move and rename albums,\n• Search, edit, download and delete photos and videos,\n• Copy and move photos and videos between albums,\n• Set a photo as album image,\n• Upload photos:\n - of modifiable size and quality,\n - with description, author, tags, EXIF metadata,\n - with or without GPS metadata.\n• Upload videos,\n• Share photos and videos.\n\nPiwigo empowers you to create your own photo gallery on the web. It includes many powerful features such as albums, tags, geolocation, many levels of customization, upload by visitors, privacy, calendar or statistics.\n\nPiwigo is free and opensource.";
+"description" = "Piwigo for iPhone/iPad/iPod supplements the photo gallery software in the cloud Piwigo (v2.8 or higher):\n\n• Browse your albums,\n• Create, delete, move and rename albums,\n• Search, edit, download and delete photos and videos,\n• Copy and move photos and videos between albums,\n• Set a photo as album image,\n• Upload photos and videos:\n - of modifiable size and quality,\n - with description, author, tags, EXIF metadata,\n - with or without GPS metadata.\n• Share photos and videos.\n\nPiwigo empowers you to create your own photo gallery on the web. It includes many powerful features such as albums, tags, geolocation, many levels of customization, upload by visitors, privacy, calendar or statistics.\n\nPiwigo is free and opensource.";
 
 "compatibility" = "Piwigo is also compatible with the following extensions:\n- Community: allows non-admin users to add photos\n- piwigo-videojs: adds video support";
 

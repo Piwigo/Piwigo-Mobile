@@ -9,6 +9,7 @@
 //
 
 import UIKit
+import piwigoKit
 
 class ReleaseNotesViewController: UIViewController {
     
@@ -45,7 +46,7 @@ class ReleaseNotesViewController: UIViewController {
         if #available(iOS 11.0, *) {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = Model.sharedInstance().isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
@@ -89,8 +90,8 @@ class ReleaseNotesViewController: UIViewController {
         navigationItem.setRightBarButtonItems([doneBarButton].compactMap { $0 }, animated: true)
         
         // Register palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: PwgNotifications.paletteChanged, object: nil)
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -130,12 +131,13 @@ class ReleaseNotesViewController: UIViewController {
     }
 
     @objc func quitSettings() {
-        
-        // Unregister palette changes
-        NotificationCenter.default.removeObserver(self)
-
         // Close Settings view
         dismiss(animated: true)
+    }
+
+    deinit {
+        // Unregister palette changes
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }
 
     
@@ -148,14 +150,14 @@ class ReleaseNotesViewController: UIViewController {
         spacerAttributedString.addAttribute(.font, value: UIFont.piwigoFontTiny(), range: spacerRange)
 
         // Release 2.7.0 — Bundle string
-//        let v270String = NSLocalizedString("v2.7.0_text", tableName: "ReleaseNotes", bundle: Bundle.main, value: "", comment: "v2.7.0 Release Notes text")
-//        let v270AttributedString = NSMutableAttributedString(string: v270String)
-//        var v270Range = NSRange(location: 0, length: v270String.count)
-//        v270AttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: v270Range)
-//        v270Range = NSRange(location: 0, length: (v270String as NSString).range(of: "\n").location)
-//        v270AttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: v270Range)
-//        notesAttributedString.append(v270AttributedString)
-//        notesAttributedString.append(spacerAttributedString)
+        let v270String = NSLocalizedString("v2.7.0_text", tableName: "ReleaseNotes", bundle: Bundle.main, value: "", comment: "v2.7.0 Release Notes text")
+        let v270AttributedString = NSMutableAttributedString(string: v270String)
+        var v270Range = NSRange(location: 0, length: v270String.count)
+        v270AttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: v270Range)
+        v270Range = NSRange(location: 0, length: (v270String as NSString).range(of: "\n").location)
+        v270AttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: v270Range)
+        notesAttributedString.append(v270AttributedString)
+        notesAttributedString.append(spacerAttributedString)
 
         // Release 2.6.4 — Bundle string
         let v264String = NSLocalizedString("v2.6.4_text", tableName: "ReleaseNotes", bundle: Bundle.main, value: "", comment: "v2.6.4 Release Notes text")

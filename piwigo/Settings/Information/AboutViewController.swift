@@ -9,6 +9,7 @@
 //
 
 import UIKit
+import piwigoKit
 
 class AboutViewController: UIViewController, UITextViewDelegate {
     
@@ -45,7 +46,7 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         if #available(iOS 11.0, *) {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = Model.sharedInstance().isDarkPaletteActive ? .black : .default
+        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
         navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
@@ -89,8 +90,8 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         navigationItem.setRightBarButtonItems([doneBarButton].compactMap { $0 }, animated: true)
 
         // Register palette changes
-        let name: NSNotification.Name = NSNotification.Name(kPiwigoNotificationPaletteChanged)
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette), name: name, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: PwgNotifications.paletteChanged, object: nil)
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -130,15 +131,16 @@ class AboutViewController: UIViewController, UITextViewDelegate {
     }
 
     @objc func quitSettings() {
-        
-        // Unregister palette changes
-        NotificationCenter.default.removeObserver(self)
-
         // Close Settings view
         dismiss(animated: true)
     }
 
+    deinit {
+        // Unregister palette changes
+        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
+    }
 
+    
     // MARK: - Acknowledgements
 
     func aboutAttributedString() -> NSMutableAttributedString? {
@@ -201,26 +203,6 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         mgstcRange = NSRange(location: 0, length: (mgstcString as NSString).range(of: "\n").location)
         mgstcAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: mgstcRange)
         aboutAttributedString.append(mgstcAttributedString)
-        aboutAttributedString.append(spacerAttributedString)
-
-        // SAMKeychain Licence — Bundle string
-        let samString = NSLocalizedString("licenceSAM_text", tableName: "About", bundle: Bundle.main, value: "", comment: "SAMKeychain licence text")
-        let samAttributedString = NSMutableAttributedString(string: samString)
-        var samRange = NSRange(location: 0, length: samString.count)
-        samAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: samRange)
-        samRange = NSRange(location: 0, length: (samString as NSString).range(of: "\n").location)
-        samAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: samRange)
-        aboutAttributedString.append(samAttributedString)
-        aboutAttributedString.append(spacerAttributedString)
-
-        // UICountingLabel Licence — Bundle string
-        let uiclString = NSLocalizedString("licenceUICL_text", tableName: "About", bundle: Bundle.main, value: "", comment: "UICountingLabel licence text")
-        let uiclAttributedString = NSMutableAttributedString(string: uiclString)
-        var uiclRange = NSRange(location: 0, length: uiclString.count)
-        uiclAttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: uiclRange)
-        uiclRange = NSRange(location: 0, length: (uiclString as NSString).range(of: "\n").location)
-        uiclAttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: uiclRange)
-        aboutAttributedString.append(uiclAttributedString)
         aboutAttributedString.append(spacerAttributedString)
 
         // MIT Licence — Bundle string

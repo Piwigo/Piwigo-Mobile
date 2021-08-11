@@ -11,18 +11,13 @@
 import Foundation
 import Photos
 import UIKit
+import piwigoKit
 
 @objc
 class PhotosFetch: NSObject {
     
     // Singleton
-    @objc static var instance: PhotosFetch = PhotosFetch()
-
-    @objc
-    class func sharedInstance() -> PhotosFetch {
-        // `dispatch_once()` call was converted to a static variable initializer
-        return instance
-    }
+    @objc static let shared = PhotosFetch()
     
     // MARK: - Photo Library Access
     /// Called before saving photos to the Photo Library or uploading photo of the Library
@@ -227,12 +222,9 @@ class PhotosFetch: NSObject {
         }
     }
 
-    private func requestPhotoLibraryAccess(in viewController: UIViewController?) {
+    func requestPhotoLibraryAccess(in viewController: UIViewController?) {
         // Invite user to provide access to photos
-        let alert = UIAlertController(title: NSLocalizedString("localAlbums_photosNotAuthorized_title", comment: "No Access"), message: NSLocalizedString("localAlbums_photosNotAuthorized_msg", comment: "tell user to change settings, how"), preferredStyle: .alert)
-
-        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .destructive, handler: { action in
-            })
+        let cancelAction = UIAlertAction(title: NSLocalizedString("alertCancelButton", comment: "Cancel"), style: .destructive, handler: { action in })
 
         let prefsAction = UIAlertAction(title: NSLocalizedString("alertOkButton", comment: "OK"), style: .default, handler: { action in
                 // Redirect user to Settings app
@@ -241,99 +233,14 @@ class PhotosFetch: NSObject {
                 }
             })
 
-        // Add actions
-        alert.addAction(cancelAction)
-        alert.addAction(prefsAction)
-
-        // Present list of actions
-        alert.view.tintColor = UIColor.piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
-        viewController?.present(alert, animated: true) {
-            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange()
-        }
+        // Present alert
+        let title = NSLocalizedString("localAlbums_photosNotAuthorized_title", comment: "No Access")
+        let message = NSLocalizedString("localAlbums_photosNotAuthorized_msg", comment: "tell user to change settings, how")
+        viewController?.presentPiwigoAlert(withTitle: title, message: message,
+                                actions: [cancelAction, prefsAction])
     }
 
     func showPhotosLibraryAccessRestricted(in viewController: UIViewController?) {
-        let alert = UIAlertController(title: NSLocalizedString("localAlbums_photosNiltitle", comment: "Problem Reading Photos"), message: NSLocalizedString("localAlbums_photosNnil_msg", comment: "There is a problem reading your local photo library."), preferredStyle: .alert)
-
-        let dismissAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .cancel, handler: { action in
-            })
-
-        // Present alert
-        alert.addAction(dismissAction)
-        alert.view.tintColor = UIColor.piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = Model.sharedInstance().isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
-        viewController?.present(alert, animated: true) {
-            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange()
-        }
-    }
-
-
-    // MARK: - File name from PHAsset
-    @objc
-    func getFileNameFomImageAsset(_ imageAsset: PHAsset?) -> String {
-        var fileName = ""
-        
-        // Asset resource available?
-        if imageAsset != nil {
-            // Get file name from image asset
-            var resources: [PHAssetResource]? = nil
-            if let imageAsset = imageAsset {
-                resources = PHAssetResource.assetResources(for: imageAsset)
-            }
-            // Shared assets may not return resources
-            if (resources?.count ?? 0) > 0 {
-                for resource in resources ?? [] {
-                    if resource.type == .adjustmentData {
-                        continue
-                    }
-                    fileName = resource.originalFilename
-                    if (resource.type == .photo) || (resource.type == .video) || (resource.type == .audio) {
-                        // We preferably select the original filename
-                        break
-                    }
-                }
-            }
-        }
-        
-        // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
-        var utf8mb3Filename = NetworkUtilities.utf8mb3String(from: fileName) ?? ""
-
-        // If encodedFileName is empty, build one from the current date
-        if utf8mb3Filename.count == 0 {
-            // No filename => Build filename from creation date
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyyMMdd-HHmmssSSSS"
-            if let creation = imageAsset?.creationDate {
-                utf8mb3Filename = dateFormatter.string(from: creation)
-            } else {
-                utf8mb3Filename = dateFormatter.string(from: Date())
-            }
-
-            // Filename extension required by Piwigo so that it knows how to deal with it
-            if imageAsset?.mediaType == .image {
-                // Adopt JPEG photo format by default, will be rechecked
-                utf8mb3Filename = URL(fileURLWithPath: utf8mb3Filename).appendingPathExtension("jpg").lastPathComponent
-            } else if imageAsset?.mediaType == .video {
-                // Videos are exported in MP4 format
-                utf8mb3Filename = URL(fileURLWithPath: utf8mb3Filename).appendingPathExtension("mp4").lastPathComponent
-            } else if imageAsset?.mediaType == .audio {
-                // Arbitrary extension, not managed yet
-                utf8mb3Filename = URL(fileURLWithPath: utf8mb3Filename).appendingPathExtension("m4a").lastPathComponent
-            }
-        }
-
-//        print("=> adopted filename = \(utf8mb3Filename)")
-        return utf8mb3Filename
+        viewController?.dismissPiwigoError(withTitle: NSLocalizedString("localAlbums_photosNiltitle", comment: "Problem Reading Photos"), message: NSLocalizedString("localAlbums_photosNnil_msg", comment: "There is a problem reading your local photo library."), completion: {})
     }
 }

@@ -1,0 +1,107 @@
+/*
+ ReleaseNotes.strings
+ piwigo
+ 
+ Created by Eddy Lelièvre-Berna on 15/07/2017.
+ Copyright © 2017 Piwigo.org. All rights reserved.
+ */
+
+"v2.7.0_text" = "2.7-es verzió\n\n• Fotók és videók automatikus feltöltése\n• Fotó is videó méretcsökkentési lehetőségek továbbfejlesztése\n• Kisebb hibajavítások és fejlesztések a felületen\n• Kódmodernizálás";
+
+"v2.6.4_text" = "2.6.4-es verzió\n2021 Május 18\n\n• Kisebb hibajavítások és fejlesztések a felületen";
+
+"v2.6.3_text" = "2.6.3-as verzió\n2021 Május 11\n\n• Hibajavítások";
+
+"v2.6.2_text" = "2.6.2-es verzió\n2021 Május 3\n\n• Közösségi felhasználók is létrehozhatnak címkéket\n• Piwigo 11 kompatibilitási probléma javítása\n• Kisebb hibajavítások és fejlesztések a felületen\n• Kódmodernizálás";
+
+"v2.6.1_text" = "2.6.1-es verzió\n2021 Március 19\n\n• Kiválasztott fotók címkehozzárendelésének javítása\n• Újratervezett Megjelenítés-beállítások\n• Háttérfeltöltés megbízhatóságának továbbfejlesztése\n• Kisebb hibajavítások és fejlesztések a felületen";
+
+"v2.6.0_text" = "2.6-os verzió\n2021 Március 3\n\n• Beillesztés/Fotók és videók feltöltése vágólapról\n• Piwigo 11 kompatibilitási probléma javítása\n• Kisebb hibajavítások és fejlesztések a felületen";
+
+"v2.5.4_text" = "2.5.4-es verzió\n2021 Január 2\n\n• Kisebb hibajavítások és fejlesztések a felületen";
+
+"v2.5.3_text" = "2.5.3-as verzió\n2020 December 21\n\n• Piwigo fotó- és videóhozzáférésének vezérlése\n• Tippek és trükkök az alkalmazás gyorsabb megértése érdekében\n• Hibajavítások";
+
+"v2.5.2_text" = "2.5.2-es verzió\n2020 December 3\n\n• Feltöltés a háttérben (kell hozzá az uploadAsync bővítmény, vagy Piwigo 11 vagy újabb)\n• Kisebb hibajavítások és fejlesztések a felületen";
+
+"v2.5.1_text" = "2.5.1-es verzió\n2020 Szeptember 10\n\n• Új opció a fotók is videók véletlenszerű bemutatásához\n• Kisebb hibajavítások és fejlesztések a felületen";
+
+"v2.5.0_text" = "2.5-ös verzió\n2020 Augusztus 27\n\n• Feltöltési kérelmek rögzítése\n• Fotók és videók feltöltése, mikor az lehetséges\n• \"Csak Wi-Fi-n\" opció a feltöltésekhez\n• Nincs feltöltés \"Alacsony töltöttségű mód\"-ban\n• Sokkal gyorsabb hozzáférés a fotókönyvtárhoz\n• Kisebb hibajavítások és fejlesztések a felületen\n• Kódmodernizálás\n\nA háttérfeltöltéshez a szervert is frissíteni kell.";
+
+"v2.4.8_text" = "2.4.8-as verzió\n2020 Március 25\n\n• A Piwigo figyelmeztet, amikor:\n - a weboldal tanúsítványa nem megfelelő,\n - nem biztonságos kapcsolat létrehozásakor\n• Továbbfejlesztett gyorsítótár-menedzsment\n• Kisebb hibajavítások és fejlesztések a felületen";
+
+"v2.4.7_text" = "2.4.7-es verzió\n2020 Január 30\n\n• Egyszerűsített Kínai, Orosz és Spanyol fordítások\n• Javítja a videó-lejátszás hibáját néhány szerveren";
+
+"v2.4.6_text" = "2.4.6-os verzió\n2020 Január 18\n\n• Kiválasztott fotók tulajdonságainak szerkesztése\n• Fotók és videók létrehozási dátumának változtatása\n• Fájlnevek feltöltés előtti előtagozásának lehetősége\n• Kisebb hibajavítások és fejlesztések a felületen";
+
+"v2.4.5_text" = "2.4.5-ös verzió\n2019 November 6\n\n• Displays your favorite photos (requires Piwigo 2.10 or later)\n• Fotók mutatása egyedi rendezés szerint\n• Közösségi felhasználók is hozhatnak létre albumokat (megfelelő jogosultságok függvényében)\n• Kisebb hibajavítások és fejlesztések a felületen";
+
+"v2.4.4_text" = "2.4.4-es verzió\n2019 Október 1\n\n• Videó-feltöltés problémáinak javítása néhány szerver esetében\n• Kisebb hibajavítások és fejlesztések a felületen";
+
+"v2.4.3_text" = "2.4.3-as verzió\n2019 Szeptember 25\n\n• iOS 13 kompatibilitás\n• Kisebb hibajavítások és fejlesztések a felületen";
+
+"v2.4.2_text" = "2.4.2-es verzió\n2019 Szeptember 3\n\n• Admin felhasználók létrehozhatnak címkéket\n• Lehetőség az albumok indexkép-méretének változtatására\n• Retinaképernyő-menedzsment\n• Kisebb hibajavítások és fejlesztések a felületen";
+
+"v2.4.1_text" = "2.4.1-es verzió\n2019 Augusztus 10\n\n• Elérhetőek lettek a \"címkék\", \"legtöbbet látogatott\", \"legjobbra értékelt\", és \"új fotók\" albumok\n• Kisebb hibajavítások és fejlesztések a felületen";
+
+"v2.4.0_text" = "2.4-es verzió\n2019 Július 15\n\n• Elérhető lett a keresés (iOS 11 vagy újabb esetén)\n• Fotók értékelési pontszám alapján történő rendezése\n• Album-index képek gyorsabb letöltése (Piwigo 2.8 vagy újabb esetén)\n• A feltöltött képek nevei mostantól nem a fájlnevet használják alapértelmezettként\n• Javítja a hibát, amitől a címkéket nem lehetett eltávolítani\n• Javítja az esetenkénti pontatlan fotóadatok hibáját";
+
+"v2.3.5_text" = "2.3.5-ös verzió\n2019 Június 6\n\n• Javítja a hibát amitől néha, kijelentkezett állapotban történő szerver-cím frissítésnél összeomlott az alkalmazás";
+
+"v2.3.4_text" = "2.3.4-es verzió\n2019 Május 1\n\n• Továbbfejlesztett albummegjelenítés iPad-en (és iPhone-on)\n• Kisebb hibajavítások és fejlesztések a felületen";
+
+"v2.3.3_text" = "2.3.3-as verzió\n2019 Április 10\n\n• Kisebb hibajavítások és fejlesztések a felületen";
+
+"v2.3.2_text" = "2.3.2-es verzió\n2019 Március 27\n\n• A helyi fotók, napi bontású idővonal-nézetben jelennek meg feltöltés előtt\n• Kisebb hibajavítások és fejlesztések a felületen";
+
+"v2.3.1_text" = "2.3.1-es verzió\n2019 Február 15\n\n• Kisebb hibajavítások és fejlesztések a felületen\n• Továbbfejlesztett fordítások";
+
+"v2.3.0_text" = "2.3-as verzió\n2019 Február 2\n\n• Fotók és videók megosztása\n• Gyorsítótár méretkorlátainak növése \n• Kisebb hibajavítások és fejlesztések a felületen\n• Továbbfejlesztett fordítások";
+
+"v2.2.7_text" = "2.2.7-es verzió\n2018 December 29\n\n• Kisebb hibajavítások és fejlesztések a felületen\n• Továbbfejlesztett fordítások";
+
+"v2.2.6_text" = "2.2.6-os verzió\n2018 December 20\n\n• Továbbfejlesztett fordítások és iOS 12 kompatibilitás\n• Kisebb hibajavítások és fejlesztések a felületen\n• Olasz fordítás";
+
+"v2.2.5_text" = "2.2.5-ös verzió\n2018 Október 28\n\n• Visszajelzés e-mailben\n• Adatvédelmi szabályzat\n• Hibajavítások";
+
+"v2.2.4_text" = "2.2.4-es verzió\n2018 Szeptember 23\n\n• Hibajavítások";
+
+"v2.2.3_text" = "2.2.3-as verzió\n2018 Augusztus 27\n\n• Új kinézet az albumoknak\n• Kisebb hibajavítások és fejlesztések a felületen";
+
+"v2.2.2_text" = "2.2.2-es verzió\n2018 Augusztus 14\n\n• Fotók másolása és mozgatása albumok között\n• Kisebb hibajavítások és fejlesztések a felületen";
+
+"v2.2.1_text" = "2.2.1-es verzió\n2018 Július 25\n\n• Kisebb hibajavítások és fejlesztések a felületen";
+
+"v2.2.0_text" = "2.2-es verzió\n2018 Július 12\n\n• Minden albumban létre lehet hozni alalbumot\n• Az alapértelmezett album egyszerűbb menedzselése\n• Az albumok megjelenítésének továbbfejlesztése iPad-en (és iPhone-on)\n• Fotókönyvtár változásainak automatikus felismerése\n• Kisebb hibajavítások és fejlesztések a felületen";
+
+"v2.1.9_text" = "2.1.9-es verzió\n2018 Május 14\n\n• Hibajavítások";
+
+"v2.1.8_text" = "2.1.8-as verzió\n2018 Április 29\n\n• Bélyegképek méretének változtatása \n• Az alapértelmezett protocoll HTTPS lett\n• Japán fordítás\n• Kisebb hibajavítások és fejlesztések a felületen";
+
+"v2.1.7_text" = "2.1.7-es verzió\n2018 Február 3\n\n• A néhány szerver esetében előforduló videófeltöltési hiba javítása";
+
+"v2.1.6_text" = "2.1.6-os verzió\n2018 Január 7\n\n• Arab fordítás\n• Továbbfejlesztett HTTP alapszintű azonosítás-menedzsment\n• Kisebb hibajavítások és fejlesztések a felületen";
+
+"v2.1.5_text" = "2.1.5-ös verzió\n2017 December 21\n\n• Új lehetőség a feltöltések leállítására\n• Új lehetőség a fotók törlésére feltöltés után\n• Kompatibilitás a Tárhely Optimizálással (iCloud)\n• Fotóformátum megtartása átméretezés után, amennyiben lehetséges\n• Dán és Indonéz fordítás\n• Kijavítja a hibát, amitől a metadatok egy része elveszett letöltés után\n• Kijavít egy hibát, amitől a PNG formátum JPEG-re váltott feltöltés előtt\n• iOS 11 és iPhone X specifikus hibajavítások\n• Kisebb hibajavítások\n• Kódmodernizálás";
+
+"v2.1.4_text" = "2.1.4-es verzió\n2017 Október 31\n\n• Svéd fordítás\n• Hibajavítások";
+
+"v2.1.3_text" = "2.1.3-as verzió\n2017 Október 17\n\n• Új alapszintű hitelesítés\n• Lehetővé teszi az automata kapcsolódás leállítását\n• Interfész és feltöltés-menedzsment továbbfejlesztése\n• Fordítások továbbfejlesztése, és iOS 11 kompatibilitás\n• Kijavítja a \"Nincs feltöltve\" szűrő hibáját\n• Kódmodernizálás";
+
+"v2.1.2_text" = "2.1.2-es verzió\n2017 Szeptember 7\n\n• Kijavítja a Közösségi bővítmény 2.9 előtti verzióinál tapasztalt elutasított bejelentkezés problémáját\n• Fordítások továbbfejlesztése\n• Karbantartási munkálatok";
+
+"v2.1.1_text" = "2.1.1-es verzió\n2017 Augusztus 20\n\n• Kijavít egy hibát amely a nem megfelelő SSL tanúsítványok esetében jelentkezett\n• Továbbfejlesztett Dán fordítás";
+
+"v2.1.0_text" = "2.1-es verzió\n2017 Augusztus 17\n\n• Közösségi bővítmény-kompatibilitás\n• Dán, Francia és Lengyel fordítás\n• Hibajavítások";
+
+"v2.0.4_text" = "2.0.4-es verzió\n2017 Július 28\n\n• iPad — Kijavítja az elmosódott bélyegképek, és a szerkesztési lehetőség elvesztésének problémáját.\n• Videók — Kijavítja a feltöltés és letöltés hibáit (VideoJS bővítményre szükség van a szerveren)\n• Beállítások — Add options to remove titles & change thumbnails resolution\n• Kapcsolat megbízhatóságának továbbfejlesztése, és a feltöltés befejezését megerősítő információ\n• Kisebb hibajavítások és fejlesztések a felületen";
+
+"v2.0.3_text" = "2.0.3-as verzió\n2017 Május 26\n\n• Új lehetőség a GPS metaadatok eltávolítására a beállítások oldalon\n• Jelenlegi gyorsítótár használati adatok mutatása a beállítások oldalon\n• Kijavít egy hibát, amitől a gyorsítótár beállításainak mentése/alaphelyzetbe állítása sikertelen volt\n• Kijavít egy hibát, amitől a fotók feltöltési beállításai néha elvesztek/alaphelyzetbe álltak vissza";
+
+"v2.0.2_text" = "2.0.2-es verzió\n2017 Május 8\n\n• Rendezési kritériumok immár egyeznek a webfelületen láthatóakkal\n• Kijavítja a rendezés hibáit\n• Kijavít egy hibát, amitől a feltöltés előtti fotókhoz felvett címkék az alkalmazás összeomlásához vezettek\n• Kijavítja a kiválasztott fotók törlése során tapasztalt hibákat\n• Kijavítja a hibát, amitől az albumok eltűntek mozgatást követően\n• Kijavít egy iOS 10 kompatibilitási problémát — elavult kód";
+
+"v2.0.1_text" = "2.0.1-es verzió\n2015 Június 25\n\nÚj beállítások:\n - Fotók átméretezésének lehetősége feltöltéskor\n   + Kép minőségi beállításai 50 - 98%-os tartományban\n - Lehetőség alapértelmezett fotó-előnézteti kép méretének beállítására\nHibajavítások";
+
+"v2.0.0_text" = "2.0-ás verzió\n2015 Április 24\n\nÚj natív alkalmazás a következőkkel:\n - Lehetőség albumok menedzselésére\n - Saját fotók megtekintése\n - Tömeges fotófeltöltés\n - Videófeltöltés és lejátszás (a VideoJS bővítménynek telepítve kell lennie)";
+
+"v1.0.0_text" = "1.0-ás verzió\n2011 Október 17";

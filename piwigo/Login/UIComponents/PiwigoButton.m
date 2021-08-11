@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import "Model.h"
 #import "PiwigoButton.h"
 
 @implementation PiwigoButton
@@ -27,7 +26,7 @@
 {
 	[super setHighlighted:highlighted];
     
-    if ([Model sharedInstance].isDarkPaletteActive) {
+    if (AppVars.isDarkPaletteActive) {
         if (highlighted) {
             self.backgroundColor = [UIColor piwigoColorOrange];
         } else {

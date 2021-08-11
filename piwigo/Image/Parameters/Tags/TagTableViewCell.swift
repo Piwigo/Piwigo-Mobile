@@ -9,6 +9,7 @@
 //
 
 import UIKit
+import piwigoKit
 
 enum kPiwigoEditOption : Int {
     case none

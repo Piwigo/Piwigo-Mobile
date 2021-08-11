@@ -1,0 +1,19 @@
+/* 
+  AppStore.strings
+  piwigo
+
+  Created by Eddy Lelièvre-Berna on 29/07/2017.
+  Copyright © 2017 Piwigo.org. All rights reserved.
+*/
+
+"description" = "A Piwigo for iPhone/iPad/iPod a Piwigo (v2.8 vagy újabb) cloud fotógaléria-szoftver kiegészítője.\n\n• Böngészhetsz az albumjaidban,\n• Létrehozhatsz, törölhetsz, mozgathatsz és átnevezhetsz albumokat,\n• Kereshetsz, szerkeszthetsz, letölthetsz és törölhetsz fotókat és videókat,\n• Másolhatsz, mozgathatsz fotókat és videókat albumok között,\n• Beállíthatod albumok nyitóképét,\n• Feltölthetsz fotókat és videókat:\n - változtatható méretben és minőségben,\n - megjegyzésekkel, szerzői információval, címkékkel és EXIF adatokkal,\n - GPS adatokkal, vagy akár nélkülük is.\n• Megoszthatsz fotókat és videókat.\n\nA Piwigoval saját fotógalériát hozhatsz létre a weben. Számos hatékony funkciót tartalmaz, mint például albumok, címkék, helymeghatározás, több szintű testreszabhatóság, látogatók általi feltöltések, adatvédelem, naptár és statisztikák.\n\nA Piwigo ingyenes és nyílt forráskódú.";
+
+"compatibility" = "A Piwigo a következő bővítményekkel is kompatibilis:\n- Community: nem-admin felhasználók is tölthetnek fel képeket\n- piwigo-videojs: videófájlok támogatása";
+
+"feedback" = "Visszajelzés vagy kérdések?\nA Piwigo ingyenes támogatást nyújt a %@ címen, írj nekünk.";
+
+"promotional_text" = "Az ingyenes Piwigo felhő-fotókönyvtár mindig kéznél van!";
+
+"subtitle" = "Fotóid a saját felhődben";
+
+"keywords" = "Piwigo, Felhő, album, fotó, videó, kép, feltöltés, letöltés";

@@ -10,6 +10,7 @@
 
 import Photos
 import UIKit
+import piwigoKit
 
 enum SelectButtonState : Int {
     case none
@@ -109,7 +110,7 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
 
     @objc private func setLabelsFromDatesAndLocation(location: CLLocation) {
         // Get place name from location (will geodecode location for future use if needed)
-        guard let placeNames = LocationsProvider.sharedInstance().getPlaceName(for: location) else {
+        guard let placeNames = LocationsProvider().getPlaceName(for: location) else {
             placeLabel.text = dateLabelText
             dateLabel.text = optionalDateLabelText
             return
@@ -172,7 +173,7 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
                 if (firstImageWeek == lastImageWeek) {
                     // Images taken during the same week
                     // => Display dates of week
-                    let dateFormatter1 = DateFormatter.init(), dateFormatter2 = DateFormatter.init()
+                    let dateFormatter1 = DateFormatter(), dateFormatter2 = DateFormatter()
                     dateFormatter1.locale = .current
                     dateFormatter2.locale = .current
                     dateFormatter1.setLocalizedDateFormatFromTemplate("d")
@@ -196,7 +197,7 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
                 if (firstImageMonth == lastImageMonth) {
                     // Images taken during the sme month
                     // => Display month instead of dates
-                    let dateFormatter = DateFormatter.init()
+                    let dateFormatter = DateFormatter()
                     dateFormatter.locale = .current
                     dateFormatter.setLocalizedDateFormatFromTemplate("MMMMYYYY")
                     dateLabelText = dateFormatter.string(from: dateCreated1)
@@ -219,7 +220,7 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
                     // Images taken during the sme year
                     // => Display day/month followed by year
                     // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
-                    let dateFormatter1 = DateFormatter.init(), dateFormatter2 = DateFormatter.init()
+                    let dateFormatter1 = DateFormatter(), dateFormatter2 = DateFormatter()
                     dateFormatter1.locale = .current
                     dateFormatter2.locale = .current
                     if UIScreen.main.bounds.size.width > 414 {
@@ -236,7 +237,7 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
                 }
                 
                 // => Images taken on several years
-                let dateFormatter = DateFormatter.init()
+                let dateFormatter = DateFormatter()
                 dateFormatter.locale = .current
                 if UIScreen.main.bounds.size.width > 414 {
                     // i.e. larger than iPhones 6, 7 screen width
@@ -254,11 +255,11 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
     
     private func getLocation(of images: [PHAsset]) -> CLLocation {
         // Initialise location of section with invalid location
-        var locationForSection = CLLocation.init(coordinate: kCLLocationCoordinate2DInvalid,
-                                                 altitude: CLLocationDistance(0.0),
-                                                 horizontalAccuracy: CLLocationAccuracy(0.0),
-                                                 verticalAccuracy: CLLocationAccuracy(0.0),
-                                                 timestamp: Date())
+        var locationForSection = CLLocation(coordinate: kCLLocationCoordinate2DInvalid,
+                                            altitude: CLLocationDistance(0.0),
+                                            horizontalAccuracy: CLLocationAccuracy(0.0),
+                                            verticalAccuracy: CLLocationAccuracy(0.0),
+                                            timestamp: Date())
 
         // Loop over images in section
         for imageAsset in images {
