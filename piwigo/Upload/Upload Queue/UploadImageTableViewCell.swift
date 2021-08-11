@@ -209,9 +209,10 @@ class UploadImageTableViewCell: MGSwipeTableCell {
             imageInfoLabel.text = errorDescription(for: upload)
         } else {
             // Display image information
+            let maxSize = upload.resizeImageOnUpload ? upload.photoMaxSize : Int16.max
             imageInfoLabel.text = getImageInfo(from: image ?? imagePlaceholder,
                                                for: availableWidth - 2*Int(indentationWidth),
-                                               maxSize: upload.photoMaxSize)
+                                               maxSize: maxSize)
         }
     }
 
@@ -233,8 +234,9 @@ class UploadImageTableViewCell: MGSwipeTableCell {
             imageInfoLabel.text = errorDescription(for: upload)
         } else {
             // Display image information
+            let maxSize = upload.resizeImageOnUpload ? upload.photoMaxSize : Int16.max
             imageInfoLabel.text = getImageInfo(from: imageAsset, for: availableWidth - 2*Int(indentationWidth),
-                                               maxSize: upload.photoMaxSize)
+                                               maxSize: maxSize)
         }
 
         // Cell image: retrieve data of right size and crop image
