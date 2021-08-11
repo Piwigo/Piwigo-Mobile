@@ -164,8 +164,9 @@
             return NO;
         }];
         
-        // Disallow user to delete the auto-upload destination album
-        if (self.albumData.albumId == UploadVarsObjc.autoUploadCategoryId) {
+        // Disallow user to delete the active auto-upload destination album
+        if ((self.albumData.albumId == UploadVarsObjc.autoUploadCategoryId)
+            && UploadVarsObjc.isAutoUploadActive) {
             return @[move, rename];
         } else {
             expansionSettings.buttonIndex = 0;
@@ -539,9 +540,9 @@
     // Display HUD during the deletion
     [topViewController showPiwigoHUDWithTitle:NSLocalizedString(@"deleteCategoryHUD_label", @"Deleting Album…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
     
-    // Disable auto-upload if this album is the destination album
+    // Remove this album from the auto-upload destination
     if (UploadVarsObjc.autoUploadCategoryId == self.albumData.albumId) {
-        UploadVarsObjc.isAutoUploadActive = NO;
+        UploadVarsObjc.autoUploadCategoryId = NSNotFound;
     }
 
     // Should we retrieve images before deleting the category?
