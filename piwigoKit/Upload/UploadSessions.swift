@@ -120,7 +120,7 @@ public class UploadSessions: NSObject {
         // Loop over all tasks
         bckgSession.getAllTasks { uploadTasks in
             // Select remaining tasks related with this request if any
-            let tasksToCancel = uploadTasks.filter({ $0.taskDescription == uploadIDStr })
+            let tasksToCancel = uploadTasks.filter({ $0.originalRequest?.value(forHTTPHeaderField: "uploadID") == uploadIDStr })
                                            .filter({ $0.taskIdentifier != exceptedTaskIdentifier})
             // Cancel remaining tasks related with this completed upload request
             tasksToCancel.forEach({
