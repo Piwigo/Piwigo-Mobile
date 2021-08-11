@@ -264,19 +264,19 @@ extension UploadSessions: URLSessionTaskDelegate {
     public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         
         // Get upload info from task
-        guard let md5sum = task.originalRequest?.value(forHTTPHeaderField: "md5sum"),
-            let chunk = Int((task.originalRequest?.value(forHTTPHeaderField: "chunk"))!),
-            let chunks = Int((task.originalRequest?.value(forHTTPHeaderField: "chunks"))!) else {
-                print("   > Could not extract HTTP header fields !!!!!!")
-                return
-        }
+//        guard let md5sum = task.originalRequest?.value(forHTTPHeaderField: "md5sum"),
+//            let chunk = Int((task.originalRequest?.value(forHTTPHeaderField: "chunk"))!),
+//            let chunks = Int((task.originalRequest?.value(forHTTPHeaderField: "chunks"))!) else {
+//                print("   > Could not extract HTTP header fields !!!!!!")
+//                return
+//        }
 
         // Task did complete without error?
-        if let error = error {
-            print("    > Upload task \(task.taskIdentifier) of chunk \(chunk+1)/\(chunks) failed with error \(String(describing: error.localizedDescription)) [\(md5sum)]")
-        } else {
-            print("    > Upload task \(task.taskIdentifier) of chunk \(chunk+1)/\(chunks) finished transferring data at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
-        }
+//        if let error = error {
+//            print("    > Upload task \(task.taskIdentifier) of chunk \(chunk+1)/\(chunks) failed with error \(String(describing: error.localizedDescription)) [\(md5sum)]")
+//        } else {
+//            print("    > Upload task \(task.taskIdentifier) of chunk \(chunk+1)/\(chunks) finished transferring data at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
+//        }
 
         // The below code updates the stored cookie with the pwg_id returned by the server.
         // This allows to check that the upload session was well closed by the server.
@@ -328,13 +328,13 @@ extension UploadSessions: URLSessionDataDelegate {
     
     public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         // Get upload info from task
-        guard let md5sum = dataTask.originalRequest?.value(forHTTPHeaderField: "md5sum"),
-            let chunk = Int((dataTask.originalRequest?.value(forHTTPHeaderField: "chunk"))!),
-            let chunks = Int((dataTask.originalRequest?.value(forHTTPHeaderField: "chunks"))!) else {
-                print("   > Could not extract HTTP header fields !!!!!!")
-                return
-        }
-        print("    > Upload task \(dataTask.taskIdentifier) of chunk \(chunk+1)/\(chunks) did receive some data at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
+//        guard let md5sum = dataTask.originalRequest?.value(forHTTPHeaderField: "md5sum"),
+//            let chunk = Int((dataTask.originalRequest?.value(forHTTPHeaderField: "chunk"))!),
+//            let chunks = Int((dataTask.originalRequest?.value(forHTTPHeaderField: "chunks"))!) else {
+//                print("   > Could not extract HTTP header fields !!!!!!")
+//                return
+//        }
+//        print("    > Upload task \(dataTask.taskIdentifier) of chunk \(chunk+1)/\(chunks) did receive some data at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
         
         switch dataTask.taskDescription {
         case uploadSessionIdentifier:
@@ -342,6 +342,8 @@ extension UploadSessions: URLSessionDataDelegate {
                 UploadManager.shared.didCompleteUploadTask(dataTask, withData: data)
             }
         case uploadBckgSessionIdentifier:
+            fallthrough
+        default:
             if UploadManager.shared.isExecutingBackgroundUploadTask {
                 UploadManager.shared.didCompleteBckgUploadTask(dataTask, withData: data)
             } else {
@@ -349,8 +351,7 @@ extension UploadSessions: URLSessionDataDelegate {
                     UploadManager.shared.didCompleteBckgUploadTask(dataTask, withData: data)
                 }
             }
-        default:
-            fatalError("!!! unexpected session identifier !!!")
+//            fatalError("!!! unexpected session identifier !!!")
         }
     }
 }
