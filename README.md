@@ -28,11 +28,10 @@ Piwigo Mobile is a native iOS Application for [Piwigo](http://piwigo.org).
 - Search, edit, download and delete photos and videos,
 - Copy and move photos and videos between albums,
 - Set a photo as album image,
-- Upload photos:
+- Upload photos and videos:
    - of modifiable size and quality,
    - with description, author, tags/keywords, EXIF metadata,
    - with or without GPS metadata,
-- Upload videos,
 - Share photos and videos.
 
 [Piwigo Mobile](https://itunes.apple.com/us/app/piwigo/id472225196?mt=8) is compatible with the following [extensions](https://piwigo.org/ext/):
