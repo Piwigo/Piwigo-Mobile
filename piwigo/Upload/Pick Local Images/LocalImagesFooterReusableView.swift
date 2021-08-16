@@ -24,8 +24,12 @@ class LocalImagesFooterReusableView: UICollectionReusableView {
             nberOfImagesLabel.text = NSLocalizedString("noImages", comment: "No Images")
         } else {
             // Display number of images…
-            nberOfImagesLabel.text = String(format: "%ld %@", nberOfImages,
-                                            (nberOfImages > 1 ? NSLocalizedString("categoryTableView_photosCount", comment: "photos") :                 NSLocalizedString("categoryTableView_photoCount", comment: "photo")))
+            let numberFormatter = NumberFormatter()
+            numberFormatter.numberStyle = .decimal
+            let nberPhotos = (numberFormatter.string(from: NSNumber(value: nberOfImages)) ?? "0") as String
+            nberOfImagesLabel.text = nberOfImages > 1 ?
+                String(format: NSLocalizedString("severalImagesCount", comment: "%@ photos"), nberPhotos) :
+                String(format: NSLocalizedString("singleImageCount", comment: "%@ photo"), nberPhotos)
         }
     }
 }

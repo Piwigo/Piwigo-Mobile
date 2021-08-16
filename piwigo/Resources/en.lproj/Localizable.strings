@@ -125,8 +125,6 @@
 // ===========================================================================
 // Albums view
 "categoryMainEmtpy" = "No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.";
-"categoryTableView_photoCount" = "photo";
-"categoryTableView_photosCount" = "photos";
 "categoryTableView_subCategoryCount" = "sub-album";
 "categoryTableView_subCategoriesCount" = "sub-albums";
 "categoryImageList_selectButton" = "Select";
@@ -272,9 +270,11 @@
 // ==> IMAGES
 // ===========================================================================
 "singleImage" = "Photo";
+"singleImageCount" = "%@ photo";
 "singleVideo" = "Video";
 "singleAudio" = "Audio";
 "severalImages" = "Photos";
+"severalImagesCount" = "%@ photos";
 "All Photos" = "All Photos";
 "severalVideos" = "Videos";
 "noImages" = "No Photos";

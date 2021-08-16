@@ -1412,9 +1412,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(UploadVars.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
             }
         case SettingsSection.about.rawValue:
-            if nberImages.count > 0 {
-                footer = "\(nberImages) \(NSLocalizedString("severalImages", comment: "Photos")), \(nberCategories) \(NSLocalizedString("tabBar_albums", comment: "Albums")), \(nberTags) \(NSLocalizedString("tags", comment: "Tags")), \(nberUsers) \(NSLocalizedString("settings_users", comment: "Users")), \(nberGroups) \(NSLocalizedString("settings_groups", comment: "Groups")), \(nberComments) \(NSLocalizedString("editImageDetails_comments", comment: "Comments"))"
-            }
+            footer = getFooterText()
         default:
             return 16.0
         }
@@ -1460,9 +1458,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 footerLabel.text = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(UploadVars.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
             }
         case SettingsSection.about.rawValue:
-            if nberImages.count > 0 {
-                footerLabel.text = "\(nberImages) \(NSLocalizedString("severalImages", comment: "Photos")), \(nberCategories) \(NSLocalizedString("tabBar_albums", comment: "Albums")), \(nberTags) \(NSLocalizedString("tags", comment: "Tags")), \(nberUsers) \(NSLocalizedString("settings_users", comment: "Users")), \(nberGroups) \(NSLocalizedString("settings_groups", comment: "Groups")), \(nberComments) \(NSLocalizedString("editImageDetails_comments", comment: "Comments"))"
-            }
+            footerLabel.text = getFooterText()
         default:
             break
         }
@@ -1481,6 +1477,15 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             "footer": footerLabel
             ]))
         }
+
+        return footer
+    }
+    
+    private func getFooterText() -> String {
+        var footer = ""
+        
+        if nberImages.count > 0 { footer.append(nberImages) }
+        footer.append(" | \(nberCategories) \(NSLocalizedString("tabBar_albums", comment: "Albums")), \(nberTags) \(NSLocalizedString("tags", comment: "Tags")), \(nberUsers) \(NSLocalizedString("settings_users", comment: "Users")), \(nberGroups) \(NSLocalizedString("settings_groups", comment: "Groups")), \(nberComments) \(NSLocalizedString("editImageDetails_comments", comment: "Comments"))")
 
         return footer
     }
@@ -1951,25 +1956,33 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     // MARK: - Get Server Infos
         
     func getInfos() {
+        // Initialisation
+        self.nberImages = ""
+        self.nberCategories = ""
+        self.nberTags = ""
+        self.nberUsers = ""
+        self.nberGroups = ""
+        self.nberComments = ""
+        
+        // Collect stats from server
         AlbumService.getInfosOnCompletion({ task, infos in
 
             // Check returned infos
-            guard let JSONdata: [Any] = infos else {
-                self.nberCategories = ""
-                self.nberImages = ""
-                return
-            }
+            guard let JSONdata: [Any] = infos else { return }
  
             // Update data
             let numberFormatter = NumberFormatter()
             numberFormatter.numberStyle = .decimal
             for info in JSONdata {
-                guard let info = info as? [String : Any] else {
-                    continue
-                }
+                guard let info = info as? [String : Any] else { continue }
                 switch info["name"] as? String {
                 case "nb_elements":
-                    self.nberImages = numberFormatter.string(from: numberFormatter.number(from: info["value"] as! String) ?? 0)!
+                    if let value = info["value"] as? String, let nber = Int(value),
+                       let nberPhotos = numberFormatter.string(from: NSNumber(value: nber)) {
+                        self.nberImages = nber > 1 ?
+                            String(format: NSLocalizedString("severalImagesCount", comment: "%@ photos"), nberPhotos) :
+                            String(format: NSLocalizedString("singleImageCount", comment: "%@ photo"), nberPhotos)
+                    }
                 case "nb_categories":
                     self.nberCategories = numberFormatter.string(from: numberFormatter.number(from: info["value"] as! String) ?? 0)!
                 case "nb_tags":
@@ -1987,10 +2000,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
             // Refresh table with infos
             self.settingsTableView?.reloadData()
-        }, onFailure: { task, error in
-            self.nberCategories = ""
-            self.nberImages = ""
-        })
+        },
+        onFailure: { _, _ in })
     }
 }
 
