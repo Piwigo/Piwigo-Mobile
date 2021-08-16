@@ -60,9 +60,12 @@ class CategoryTableViewCell: UITableViewCell {
             subCategoriesLabel.text = ""
             showHideSubCategoriesImage.isHidden = true
         } else {
-            subCategoriesLabel.text = String(format: "%ld %@",
-                                   categoryData.numberOfSubCategories,
-                                   categoryData.numberOfSubCategories > 1 ? NSLocalizedString("categoryTableView_subCategoriesCount", comment:"sub-albums") : NSLocalizedString("categoryTableView_subCategoryCount", comment:"sub-album"))
+            let numberFormatter = NumberFormatter()
+            numberFormatter.numberStyle = .decimal
+            let nberAlbums = numberFormatter.string(from: NSNumber(value: categoryData.numberOfSubCategories)) ?? "0"
+            subCategoriesLabel.text = categoryData.numberOfSubCategories > 1 ?
+                String(format: NSLocalizedString("severalSubAlbumsCount", comment: "%@ sub-albums"), nberAlbums) :
+                String(format: NSLocalizedString("singleSubAlbumCount", comment: "%@ sub-album"), nberAlbums);
             
             if buttonState == kPiwigoCategoryTableCellButtonStateShowSubAlbum {
                 if #available(iOS 13.0, *) {
