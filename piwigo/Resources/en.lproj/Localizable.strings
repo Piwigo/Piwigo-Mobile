@@ -729,6 +729,8 @@
 "severalUsersCount" = "%@ users";
 "singleGroupCount" = "%@ group";
 "severalGroupsCount" = "%@ groups";
+"singleCommentCount" = "%@ comment";
+"severalCommentsCount" = "%@ comments";
 
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";

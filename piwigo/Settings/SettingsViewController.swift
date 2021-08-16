@@ -1497,8 +1497,14 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             if footer.isEmpty { footer.append(nberUsers)
             } else { footer.append(" | " + nberUsers) }
         }
-        footer.append(" | \(nberGroups) \(NSLocalizedString("settings_groups", comment: "Groups")), \(nberComments) \(NSLocalizedString("editImageDetails_comments", comment: "Comments"))")
-
+        if !nberGroups.isEmpty {
+            if footer.isEmpty { footer.append(nberGroups)
+            } else { footer.append(" | " + nberGroups) }
+        }
+        if !nberComments.isEmpty {
+            if footer.isEmpty { footer.append(nberComments)
+            } else { footer.append(" | " + nberComments) }
+        }
         return footer
     }
 
@@ -1559,7 +1565,12 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                             String(format: NSLocalizedString("singleGroupCount", comment: "%@ group"), nberGroups)
                     }
                 case "nb_comments":
-                    self.nberComments = numberFormatter.string(from: numberFormatter.number(from: info["value"] as! String) ?? 0)!
+                    if let value = info["value"] as? String, let nber = Int(value),
+                       let nberComments = numberFormatter.string(from: NSNumber(value: nber)) {
+                        self.nberComments = nber > 1 ?
+                            String(format: NSLocalizedString("severalCommentsCount", comment: "%@ comments"), nberComments) :
+                            String(format: NSLocalizedString("singleCommentCount", comment: "%@ comment"), nberComments)
+                    }
                 default:
                     break
                 }
