@@ -1486,20 +1486,18 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         
         if !nberImages.isEmpty { footer.append(nberImages) }
         if !nberCategories.isEmpty {
-            if footer.isEmpty {
-                footer.append(nberCategories)
-            } else {
-                footer.append(" | " + nberCategories)
-            }
+            if footer.isEmpty { footer.append(nberCategories)
+            } else { footer.append(" | " + nberCategories) }
         }
         if !nberTags.isEmpty {
-            if footer.isEmpty {
-                footer.append(nberTags)
-            } else {
-                footer.append(" | " + nberTags)
-            }
+            if footer.isEmpty { footer.append(nberTags)
+            } else { footer.append(" | " + nberTags) }
         }
-        footer.append(" | \(nberUsers) \(NSLocalizedString("settings_users", comment: "Users")), \(nberGroups) \(NSLocalizedString("settings_groups", comment: "Groups")), \(nberComments) \(NSLocalizedString("editImageDetails_comments", comment: "Comments"))")
+        if !nberUsers.isEmpty {
+            if footer.isEmpty { footer.append(nberUsers)
+            } else { footer.append(" | " + nberUsers) }
+        }
+        footer.append(" | \(nberGroups) \(NSLocalizedString("settings_groups", comment: "Groups")), \(nberComments) \(NSLocalizedString("editImageDetails_comments", comment: "Comments"))")
 
         return footer
     }
@@ -1547,7 +1545,12 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                             String(format: NSLocalizedString("singleTagCount", comment: "%@ tag"), nberTags)
                     }
                 case "nb_users":
-                    self.nberUsers = numberFormatter.string(from: numberFormatter.number(from: info["value"] as! String) ?? 0)!
+                    if let value = info["value"] as? String, let nber = Int(value),
+                       let nberUsers = numberFormatter.string(from: NSNumber(value: nber)) {
+                        self.nberUsers = nber > 1 ?
+                            String(format: NSLocalizedString("severalUsersCount", comment: "%@ users"), nberUsers) :
+                            String(format: NSLocalizedString("singleUserCount", comment: "%@ user"), nberUsers)
+                    }
                 case "nb_groups":
                     self.nberGroups = numberFormatter.string(from: numberFormatter.number(from: info["value"] as! String) ?? 0)!
                 case "nb_comments":

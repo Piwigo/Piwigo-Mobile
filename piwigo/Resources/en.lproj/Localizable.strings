@@ -724,6 +724,12 @@
 "settings_brightness" = "Brightness";
 "settings_brightnessHelp" = "In low ambient brightness, the Automatic option uses a darker color palette to make photos stand out against darker backgrounds.";
 
+// Settings - Administration
+"singleUserCount" = "%@ user";
+"severalUsersCount" = "%@ users";
+"singleGroup" = "%@ group";
+"severalGroups" = "%@ groups";
+
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";
 "settingsHeader_about" = "Information";
@@ -738,8 +744,6 @@
 "settings_pwgForumURL" = "http://piwigo.org/forum";
 "settings_acknowledgements" = "Acknowledgements";
 "settings_privacy" = "Privacy Policy";
-"settings_users" = "Users";
-"settings_groups" = "Groups";
 
 // Settings — Help
 "help01_header" = "Multiple Selection";
