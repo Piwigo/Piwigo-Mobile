@@ -343,8 +343,10 @@
 
 // Image tags
 "none" = "none";
-"tags" = "Tags";
 "tag"  = "Tag";
+"tags" = "Tags";
+"singleTagCount" = "%@ tag";
+"severalTagsCount" = "%@ tags";
 "tagsTitle_selectOne" = "Select a Tag";
 "tagsHeader_selected" = "Selected";
 "tagsHeader_notSelected" = "Not Selected";

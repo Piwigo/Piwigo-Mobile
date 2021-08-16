@@ -1492,7 +1492,14 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 footer.append(" | " + nberCategories)
             }
         }
-        footer.append(" | \(nberTags) \(NSLocalizedString("tags", comment: "Tags")), \(nberUsers) \(NSLocalizedString("settings_users", comment: "Users")), \(nberGroups) \(NSLocalizedString("settings_groups", comment: "Groups")), \(nberComments) \(NSLocalizedString("editImageDetails_comments", comment: "Comments"))")
+        if !nberTags.isEmpty {
+            if footer.isEmpty {
+                footer.append(nberTags)
+            } else {
+                footer.append(" | " + nberTags)
+            }
+        }
+        footer.append(" | \(nberUsers) \(NSLocalizedString("settings_users", comment: "Users")), \(nberGroups) \(NSLocalizedString("settings_groups", comment: "Groups")), \(nberComments) \(NSLocalizedString("editImageDetails_comments", comment: "Comments"))")
 
         return footer
     }
@@ -1527,13 +1534,18 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     }
                 case "nb_categories":
                     if let value = info["value"] as? String, let nber = Int(value),
-                       let nberCat = numberFormatter.string(from: NSNumber(value: nber)) {
+                       let nberCats = numberFormatter.string(from: NSNumber(value: nber)) {
                         self.nberCategories = nber > 1 ?
-                            String(format: NSLocalizedString("severalAlbumsCount", comment: "%@ albums"), nberCat) :
-                            String(format: NSLocalizedString("singleAlbumCount", comment: "%@ album"), nberCat)
+                            String(format: NSLocalizedString("severalAlbumsCount", comment: "%@ albums"), nberCats) :
+                            String(format: NSLocalizedString("singleAlbumCount", comment: "%@ album"), nberCats)
                     }
                 case "nb_tags":
-                    self.nberTags = numberFormatter.string(from: numberFormatter.number(from: info["value"] as! String) ?? 0)!
+                    if let value = info["value"] as? String, let nber = Int(value),
+                       let nberTags = numberFormatter.string(from: NSNumber(value: nber)) {
+                        self.nberTags = nber > 1 ?
+                            String(format: NSLocalizedString("severalTagsCount", comment: "%@ tags"), nberTags) :
+                            String(format: NSLocalizedString("singleTagCount", comment: "%@ tag"), nberTags)
+                    }
                 case "nb_users":
                     self.nberUsers = numberFormatter.string(from: numberFormatter.number(from: info["value"] as! String) ?? 0)!
                 case "nb_groups":

@@ -228,10 +228,7 @@ extension TagSelectorViewController {
     // Return the height and width of the footer
     override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         // Footer height?
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = .decimal
-        let numberOfTags = dataProvider.fetchedResultsController.fetchedObjects?.count ?? 0
-        let footer = "\(numberFormatter.string(from: NSNumber(value: numberOfTags)) ?? "") \(numberOfTags > 1 ? NSLocalizedString("tags", comment: "Tags").lowercased() : NSLocalizedString("tag", comment: "Tag").lowercased())"
+        let footer = getFooter()
         let attributes = [
             NSAttributedString.Key.font: UIFont.piwigoFontLight()
         ]
@@ -251,12 +248,8 @@ extension TagSelectorViewController {
         footerLabel.textColor = UIColor.piwigoColorHeader()
         footerLabel.textAlignment = .center
         footerLabel.numberOfLines = 1
-
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = .decimal
-        let numberOfTags = dataProvider.fetchedResultsController.fetchedObjects?.count ?? 0
-        footerLabel.text = "\(numberFormatter.string(from: NSNumber(value: numberOfTags)) ?? "") \(numberOfTags > 1 ? NSLocalizedString("tags", comment: "Tags").lowercased() : NSLocalizedString("tag", comment: "Tag").lowercased())"
         footerLabel.adjustsFontSizeToFitWidth = false
+        footerLabel.text = getFooter()
 
         // Footer view
         let footer = UIView()
@@ -273,6 +266,17 @@ extension TagSelectorViewController {
             ]))
         }
 
+        return footer
+    }
+    
+    private func getFooter() -> String {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .decimal
+        let nberOfTags = dataProvider.fetchedResultsController.fetchedObjects?.count ?? 0
+        let nberAsStr = numberFormatter.string(from: NSNumber(value: nberOfTags)) ?? "0"
+        let footer = nberOfTags > 1 ?
+            String(format: NSLocalizedString("severalTagsCount", comment: "%@ tags"), nberAsStr) :
+            String(format: NSLocalizedString("singleTagCount", comment: "%@ tag"), nberAsStr)
         return footer
     }
 
