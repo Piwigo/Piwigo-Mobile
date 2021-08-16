@@ -372,8 +372,6 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         // Initialisation
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal
-        let albumStr = NSLocalizedString("categorySelection_title", comment: "Album")
-        let albumsStr = NSLocalizedString("tabBar_albums", comment: "Albums")
         
         // Set footer
         var count = 0
@@ -395,7 +393,10 @@ class LocalAlbumsProvider: NSObject, PHPhotoLibraryChangeObserver {
         case .otherAlbums:
             count = otherAlbums.count
         }
-        let footer = String(format: "%@ %@", numberFormatter.string(from: NSNumber(value: count)) ?? "", count > 1 ? albumsStr : albumStr)
+        let nberOfAlbums = numberFormatter.string(from: NSNumber(value: count)) ?? ""
+        let footer = count > 1 ?
+            String(format: NSLocalizedString("severalAlbumsCount", comment: "%@ albums"), nberOfAlbums) :
+            String(format: NSLocalizedString("singleAlbumCount", comment: "%@ album"), nberOfAlbums)
         return footer
     }
 }

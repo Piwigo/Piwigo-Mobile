@@ -1484,11 +1484,73 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     private func getFooterText() -> String {
         var footer = ""
         
-        if nberImages.count > 0 { footer.append(nberImages) }
-        footer.append(" | \(nberCategories) \(NSLocalizedString("tabBar_albums", comment: "Albums")), \(nberTags) \(NSLocalizedString("tags", comment: "Tags")), \(nberUsers) \(NSLocalizedString("settings_users", comment: "Users")), \(nberGroups) \(NSLocalizedString("settings_groups", comment: "Groups")), \(nberComments) \(NSLocalizedString("editImageDetails_comments", comment: "Comments"))")
+        if !nberImages.isEmpty { footer.append(nberImages) }
+        if !nberCategories.isEmpty {
+            if footer.isEmpty {
+                footer.append(nberCategories)
+            } else {
+                footer.append(" | " + nberCategories)
+            }
+        }
+        footer.append(" | \(nberTags) \(NSLocalizedString("tags", comment: "Tags")), \(nberUsers) \(NSLocalizedString("settings_users", comment: "Users")), \(nberGroups) \(NSLocalizedString("settings_groups", comment: "Groups")), \(nberComments) \(NSLocalizedString("editImageDetails_comments", comment: "Comments"))")
 
         return footer
     }
+
+    private func getInfos() {
+        // Initialisation
+        self.nberImages = ""
+        self.nberCategories = ""
+        self.nberTags = ""
+        self.nberUsers = ""
+        self.nberGroups = ""
+        self.nberComments = ""
+        
+        // Collect stats from server
+        AlbumService.getInfosOnCompletion({ _, infos in
+
+            // Check returned infos
+            guard let JSONdata: [Any] = infos else { return }
+ 
+            // Update data
+            let numberFormatter = NumberFormatter()
+            numberFormatter.numberStyle = .decimal
+            for info in JSONdata {
+                guard let info = info as? [String : Any] else { continue }
+                switch info["name"] as? String {
+                case "nb_elements":
+                    if let value = info["value"] as? String, let nber = Int(value),
+                       let nberPhotos = numberFormatter.string(from: NSNumber(value: nber)) {
+                        self.nberImages = nber > 1 ?
+                            String(format: NSLocalizedString("severalImagesCount", comment: "%@ photos"), nberPhotos) :
+                            String(format: NSLocalizedString("singleImageCount", comment: "%@ photo"), nberPhotos)
+                    }
+                case "nb_categories":
+                    if let value = info["value"] as? String, let nber = Int(value),
+                       let nberCat = numberFormatter.string(from: NSNumber(value: nber)) {
+                        self.nberCategories = nber > 1 ?
+                            String(format: NSLocalizedString("severalAlbumsCount", comment: "%@ albums"), nberCat) :
+                            String(format: NSLocalizedString("singleAlbumCount", comment: "%@ album"), nberCat)
+                    }
+                case "nb_tags":
+                    self.nberTags = numberFormatter.string(from: numberFormatter.number(from: info["value"] as! String) ?? 0)!
+                case "nb_users":
+                    self.nberUsers = numberFormatter.string(from: numberFormatter.number(from: info["value"] as! String) ?? 0)!
+                case "nb_groups":
+                    self.nberGroups = numberFormatter.string(from: numberFormatter.number(from: info["value"] as! String) ?? 0)!
+                case "nb_comments":
+                    self.nberComments = numberFormatter.string(from: numberFormatter.number(from: info["value"] as! String) ?? 0)!
+                default:
+                    break
+                }
+            }
+
+            // Refresh table with infos
+            self.settingsTableView?.reloadData()
+        },
+        onFailure: { _, _ in })
+    }
+
 
     // MARK: - UITableViewDelegate Methods
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -1950,58 +2012,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         default:
             break
         }
-    }
-
-    
-    // MARK: - Get Server Infos
-        
-    func getInfos() {
-        // Initialisation
-        self.nberImages = ""
-        self.nberCategories = ""
-        self.nberTags = ""
-        self.nberUsers = ""
-        self.nberGroups = ""
-        self.nberComments = ""
-        
-        // Collect stats from server
-        AlbumService.getInfosOnCompletion({ task, infos in
-
-            // Check returned infos
-            guard let JSONdata: [Any] = infos else { return }
- 
-            // Update data
-            let numberFormatter = NumberFormatter()
-            numberFormatter.numberStyle = .decimal
-            for info in JSONdata {
-                guard let info = info as? [String : Any] else { continue }
-                switch info["name"] as? String {
-                case "nb_elements":
-                    if let value = info["value"] as? String, let nber = Int(value),
-                       let nberPhotos = numberFormatter.string(from: NSNumber(value: nber)) {
-                        self.nberImages = nber > 1 ?
-                            String(format: NSLocalizedString("severalImagesCount", comment: "%@ photos"), nberPhotos) :
-                            String(format: NSLocalizedString("singleImageCount", comment: "%@ photo"), nberPhotos)
-                    }
-                case "nb_categories":
-                    self.nberCategories = numberFormatter.string(from: numberFormatter.number(from: info["value"] as! String) ?? 0)!
-                case "nb_tags":
-                    self.nberTags = numberFormatter.string(from: numberFormatter.number(from: info["value"] as! String) ?? 0)!
-                case "nb_users":
-                    self.nberUsers = numberFormatter.string(from: numberFormatter.number(from: info["value"] as! String) ?? 0)!
-                case "nb_groups":
-                    self.nberGroups = numberFormatter.string(from: numberFormatter.number(from: info["value"] as! String) ?? 0)!
-                case "nb_comments":
-                    self.nberComments = numberFormatter.string(from: numberFormatter.number(from: info["value"] as! String) ?? 0)!
-                default:
-                    break
-                }
-            }
-
-            // Refresh table with infos
-            self.settingsTableView?.reloadData()
-        },
-        onFailure: { _, _ in })
     }
 }
 
