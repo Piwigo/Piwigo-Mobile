@@ -727,8 +727,8 @@
 // Settings - Administration
 "singleUserCount" = "%@ user";
 "severalUsersCount" = "%@ users";
-"singleGroup" = "%@ group";
-"severalGroups" = "%@ groups";
+"singleGroupCount" = "%@ group";
+"severalGroupsCount" = "%@ groups";
 
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";

@@ -1552,7 +1552,12 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                             String(format: NSLocalizedString("singleUserCount", comment: "%@ user"), nberUsers)
                     }
                 case "nb_groups":
-                    self.nberGroups = numberFormatter.string(from: numberFormatter.number(from: info["value"] as! String) ?? 0)!
+                    if let value = info["value"] as? String, let nber = Int(value),
+                       let nberGroups = numberFormatter.string(from: NSNumber(value: nber)) {
+                        self.nberGroups = nber > 1 ?
+                            String(format: NSLocalizedString("severalGroupsCount", comment: "%@ groups"), nberGroups) :
+                            String(format: NSLocalizedString("singleGroupCount", comment: "%@ group"), nberGroups)
+                    }
                 case "nb_comments":
                     self.nberComments = numberFormatter.string(from: numberFormatter.number(from: info["value"] as! String) ?? 0)!
                 default:
