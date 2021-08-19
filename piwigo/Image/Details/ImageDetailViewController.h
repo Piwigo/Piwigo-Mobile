@@ -15,7 +15,7 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationUpdateImageFileName;
 
 @protocol ImageDetailDelegate <NSObject>
 
--(void)didFinishPreviewOfImageWithId:(NSInteger)imageId;
+-(void)didSelectImageWithId:(NSInteger)imageId;
 -(void)didDeleteImage:(PiwigoImageData*)image atIndex:(NSInteger)index;
 -(void)needToLoadMoreImages;
 

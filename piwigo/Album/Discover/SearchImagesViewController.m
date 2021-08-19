@@ -477,15 +477,18 @@
 
 #pragma mark - ImageDetailDelegate Methods
 
--(void)didFinishPreviewOfImageWithId:(NSInteger)imageId
+-(void)didSelectImageWithId:(NSInteger)imageId
 {
-    NSInteger index = 0;
-    for (PiwigoImageData *image in self.albumData.images) {
-        if (image.imageId == imageId) break;
-        index++;
+    // Determine index of image
+    NSInteger indexOfImage = [self.albumData.images indexOfObjectPassingTest:^BOOL(PiwigoImageData *image, NSUInteger index, BOOL * _Nonnull stop) {
+     return image.imageId == imageId;
+    }];
+    
+    // Scroll view to center image
+    if (indexOfImage != NSNotFound) {
+        self.imageOfInterest = [NSIndexPath indexPathForItem:indexOfImage inSection:0];
+        [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
     }
-    if (index < [self.albumData.images count])
-        self.imageOfInterest = [NSIndexPath indexPathForItem:index inSection:0];
 }
 
 -(void)didDeleteImage:(PiwigoImageData *)image atIndex:(NSInteger)index

@@ -213,17 +213,6 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     }
 }
 
--(void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-    
-    // Scroll previewed image to visible area
-    if([self.imgDetailDelegate respondsToSelector:@selector(didFinishPreviewOfImageWithId:)])
-    {
-        [self.imgDetailDelegate didFinishPreviewOfImageWithId:self.imageData.imageId];
-    }
-}
-
 -(void)dealloc
 {
     // Register image pinches
@@ -599,6 +588,12 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     if(self.imageData.isVideo)
     {
         self.progressBar.hidden = YES;
+    }
+    
+    // Scroll album collection view to keep the selected image centered on the screen
+    if ([self.imgDetailDelegate respondsToSelector:@selector(didSelectImageWithId:)])
+    {
+        [self.imgDetailDelegate didSelectImageWithId:self.imageData.imageId];
     }
 }
 

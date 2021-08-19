@@ -1360,14 +1360,17 @@
 
 #pragma mark - ImageDetailDelegate Methods
 
--(void)didFinishPreviewOfImageWithId:(NSInteger)imageId
+-(void)didSelectImageWithId:(NSInteger)imageId
 {
     // Determine index of image
     NSInteger indexOfImage = [self.albumData.images indexOfObjectPassingTest:^BOOL(PiwigoImageData *image, NSUInteger index, BOOL * _Nonnull stop) {
      return image.imageId == imageId;
     }];
+    
+    // Scroll view to center image
     if (indexOfImage != NSNotFound) {
-        self.imageOfInterest = [NSIndexPath indexPathForItem:indexOfImage inSection:1];
+        self.imageOfInterest = [NSIndexPath indexPathForItem:indexOfImage inSection:0];
+        [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
     }
 }
 
