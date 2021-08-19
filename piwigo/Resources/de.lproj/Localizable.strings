@@ -124,10 +124,10 @@
 // ==> ALBUMS
 // ===========================================================================
 // Generic
-"singleAlbumCount" = "%@ album";
-"severalAlbumsCount" = "%@ albums";
-"singleSubAlbumCount" = "%@ sub-album";
-"severalSubAlbumsCount" = "%@ sub-albums";
+"singleAlbumCount" = "%@ Album";
+"severalAlbumsCount" = "%@ Alben";
+"singleSubAlbumCount" = "%@ Unter-Album";
+"severalSubAlbumsCount" = "%@ Unter-Alben";
 
 // Albums view
 "categoryMainEmtpy" = "Bislang keine Alben in Ihrem Piwigo enthalten. Sie können zur Aktualisierung nach unten ziehen oder Sich erneut anmelden.";
@@ -274,11 +274,11 @@
 // ==> IMAGES
 // ===========================================================================
 "singleImage" = "Foto";
-"singleImageCount" = "%@ photo";
+"singleImageCount" = "%@ Foto";
 "singleVideo" = "Video";
 "singleAudio" = "Audio";
 "severalImages" = "Fotos";
-"severalImagesCount" = "%@ photos";
+"severalImagesCount" = "%@ Fotos";
 "All Photos" = "Alle Fotos";
 "severalVideos" = "Videos";
 "noImages" = "Keine Fotos";
@@ -345,8 +345,8 @@
 "none" = "keine";
 "tag" = "Schlagwort";
 "tags" = "Schlagwörter";
-"singleTagCount" = "%@ tag";
-"severalTagsCount" = "%@ tags";
+"singleTagCount" = "%@ Tag";
+"severalTagsCount" = "%@ Tags";
 "tagsTitle_selectOne" = "Ein Schlagwort auswählen";
 "tagsHeader_selected" = "Ausgewählt";
 "tagsHeader_notSelected" = "Nicht ausgewählt";
@@ -725,12 +725,12 @@
 "settings_brightnessHelp" = "Bei geringer Umgebungshelligkeit verwendet die Option \"Automatisch\" eine dunklere Farbpalette, um Fotos vor einem dunkleren Hintergrund hervorzuheben.";
 
 // Settings - Administration
-"singleUserCount" = "%@ user";
-"severalUsersCount" = "%@ users";
-"singleGroupCount" = "%@ group";
-"severalGroupsCount" = "%@ groups";
-"singleCommentCount" = "%@ comment";
-"severalCommentsCount" = "%@ comments";
+"singleUserCount" = "%@ Benutzer";
+"severalUsersCount" = "%@ Benutzer";
+"singleGroupCount" = "%@ Gruppe";
+"severalGroupsCount" = "%@ Gruppen";
+"singleCommentCount" = "%@ Kommentar";
+"severalCommentsCount" = "%@ Kommentare";
 
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";
