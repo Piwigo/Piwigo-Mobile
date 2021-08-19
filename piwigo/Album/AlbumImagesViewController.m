@@ -2750,7 +2750,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 footer.noImagesLabel.textColor = [UIColor piwigoColorHeader];
 
                 // Get number of images
-                NSInteger totalImageCount = 0;
+                NSInteger totalImageCount = NSNotFound;
                 if (self.categoryId == 0) {
                     // Only albums in Root Album => total number of images
                     for (PiwigoAlbumData *albumData in [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId]) {
@@ -2828,7 +2828,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         {
             NSString *footer = @"";
             // Get number of images
-            NSInteger totalImageCount = 0;
+            NSInteger totalImageCount = NSNotFound;
             if (self.categoryId == 0) {
                 // Only albums in Root Album => total number of images
                 for (PiwigoAlbumData *albumData in [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId]) {
