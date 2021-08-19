@@ -1407,7 +1407,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                          searchController.hidesNavigationBarDuringPresentation = YES;
                          searchController.searchResultsUpdater = self;
                          
-                         searchController.searchBar.tintColor = [UIColor piwigoColorOrange];
                          searchController.searchBar.searchBarStyle = UISearchBarStyleMinimal;
                          searchController.searchBar.translucent = NO;
                          searchController.searchBar.showsCancelButton = NO;
