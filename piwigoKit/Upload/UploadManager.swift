@@ -841,6 +841,13 @@ public class UploadManager: NSObject {
                                    for: uploadID, with: uploadProperties)
             }
         }
+        else {
+            // Asset not available… deleted?
+            uploadsProvider.updateStatusOfUpload(with: uploadID, to: .preparingFail, error: UploadError.missingAsset.errorDescription) { [unowned self] (_) in
+                // Investigate next upload request?
+                self.didEndPreparation()
+            }
+        }
         
         // Release memory
         resources.removeAll(keepingCapacity: false)
