@@ -123,12 +123,14 @@
 // ===========================================================================
 // ==> ALBUMS
 // ===========================================================================
+// Generic
+"singleAlbumCount" = "%@ album";
+"severalAlbumsCount" = "%@ albums";
+"singleSubAlbumCount" = "%@ sub-album";
+"severalSubAlbumsCount" = "%@ sub-albums";
+
 // Albums view
 "categoryMainEmtpy" = "Todavía no hay álbumes en tu Piwigo.\nPuedes tirar hacia abajo para actualizar, o volver a iniciar sesión.";
-"categoryTableView_photoCount" = "foto";
-"categoryTableView_photosCount" = "fotos";
-"categoryTableView_subCategoryCount" = "subálbum";
-"categoryTableView_subCategoriesCount" = "subálbumes";
 "categoryImageList_selectButton" = "Seleccionar";
 "categoryImageList_deselectButton" = "Deseleccionar";
 "categoryImageList_noDataError" = "Error Sin datos";
@@ -272,9 +274,11 @@
 // ==> IMAGES
 // ===========================================================================
 "singleImage" = "Foto";
+"singleImageCount" = "%@ photo";
 "singleVideo" = "Vídeo";
 "singleAudio" = "Audio";
 "severalImages" = "Fotos";
+"severalImagesCount" = "%@ photos";
 "All Photos" = "Todas las fotos";
 "severalVideos" = "Vídeos";
 "noImages" = "No hay fotos";
@@ -339,8 +343,10 @@
 
 // Image tags
 "none" = "ninguna";
-"tags" = "Etiquetas";
 "tag" = "Etiqueta";
+"tags" = "Etiquetas";
+"singleTagCount" = "%@ tag";
+"severalTagsCount" = "%@ tags";
 "tagsTitle_selectOne" = "Selecciona una etiqueta";
 "tagsHeader_selected" = "Seleccionado";
 "tagsHeader_notSelected" = "No seleccionado";
@@ -718,6 +724,14 @@
 "settings_brightness" = "Brillo";
 "settings_brightnessHelp" = "En ambientes poco iluminados, la opción Automático utiliza una paleta de colores más oscura para hacer que las fotos destaquen contra los fondos más oscuros.";
 
+// Settings - Administration
+"singleUserCount" = "%@ user";
+"severalUsersCount" = "%@ users";
+"singleGroupCount" = "%@ group";
+"severalGroupsCount" = "%@ groups";
+"singleCommentCount" = "%@ comment";
+"severalCommentsCount" = "%@ comments";
+
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";
 "settingsHeader_about" = "Información";
@@ -732,8 +746,6 @@
 "settings_pwgForumURL" = "http://piwigo.org/forum";
 "settings_acknowledgements" = "Agradecimientos";
 "settings_privacy" = "Política de privacidad";
-"settings_users" = "Usuarios";
-"settings_groups" = "Grupos";
 
 // Settings — Help
 "help01_header" = "Selección Múltiple";

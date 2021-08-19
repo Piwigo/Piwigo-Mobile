@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.7.0_text" = "Version 2.7\n\n• Auto upload photos and videos\n• Improved photo and video downsizing options\n• Minor bug fixes and improvements of the interface\n• Code modernization";
+"v2.7.1_text" = "Versión 2.7.1\n\n• Corrección de errores menores y mejoras en la interfaz\n• Traducciones mejoradas";
+
+"v2.7.0_text" = "Versión 2.7\n12 de agosto de 2021\n\n• Auto subir fotos y vídeos\n• Mejoras en las opciones de reducción de tamaño de fotos y vídeo\n• Correcciones y mejoras menores de la interfaz\n• Modernización de código";
 
 "v2.6.4_text" = "Versión 2.6.4\n18 de mayo de 2021\n\n• Corrección de errores menores y mejoras en la interfaz";
 

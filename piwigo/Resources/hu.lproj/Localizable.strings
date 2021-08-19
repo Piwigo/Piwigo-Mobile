@@ -123,12 +123,14 @@
 // ===========================================================================
 // ==> ALBUMS
 // ===========================================================================
+// Generic
+"singleAlbumCount" = "%@ album";
+"severalAlbumsCount" = "%@ albums";
+"singleSubAlbumCount" = "%@ sub-album";
+"severalSubAlbumsCount" = "%@ sub-albums";
+
 // Albums view
 "categoryMainEmtpy" = "Még nincsenek albumok a Piwigoban.\nLefelé húzással frissítheted a képernyőt, illetve megpróbálhatsz újra bejelentkezni.";
-"categoryTableView_photoCount" = "fotó";
-"categoryTableView_photosCount" = "fotó";
-"categoryTableView_subCategoryCount" = "alalbum";
-"categoryTableView_subCategoriesCount" = "alalbum";
 "categoryImageList_selectButton" = "Kiválaszt";
 "categoryImageList_deselectButton" = "Elvet";
 "categoryImageList_noDataError" = "Hiba: nincs adat";
@@ -272,9 +274,11 @@
 // ==> IMAGES
 // ===========================================================================
 "singleImage" = "Fotó";
+"singleImageCount" = "%@ photo";
 "singleVideo" = "Videó";
 "singleAudio" = "Hang";
 "severalImages" = "Fotók";
+"severalImagesCount" = "%@ photos";
 "All Photos" = "Összes fotó";
 "severalVideos" = "Videók";
 "noImages" = "Összes videó";
@@ -339,8 +343,10 @@
 
 // Image tags
 "none" = "semmi";
-"tags" = "Címkék";
 "tag" = "Címke";
+"tags" = "Címkék";
+"singleTagCount" = "%@ tag";
+"severalTagsCount" = "%@ tags";
 "tagsTitle_selectOne" = "Címke kiválasztása";
 "tagsHeader_selected" = "Kijelölt";
 "tagsHeader_notSelected" = "Nem kijelölt";
@@ -718,6 +724,14 @@
 "settings_brightness" = "Fényerő";
 "settings_brightnessHelp" = "Az automata opció használatával sötétebb színpaletta kerül alkalmazásra, amennyiben kevés a környezetből érkező fény. Így a fotók élénkebbnek tűnnek a sötétebb hátterek miatt.";
 
+// Settings - Administration
+"singleUserCount" = "%@ user";
+"severalUsersCount" = "%@ users";
+"singleGroupCount" = "%@ group";
+"severalGroupsCount" = "%@ groups";
+"singleCommentCount" = "%@ comment";
+"severalCommentsCount" = "%@ comments";
+
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";
 "settingsHeader_about" = "Információ";
@@ -732,8 +746,6 @@
 "settings_pwgForumURL" = "http://piwigo.org/forum";
 "settings_acknowledgements" = "Köszönetnyilvánítás";
 "settings_privacy" = "Adatvédelmi Szabályzat";
-"settings_users" = "Felhasználók";
-"settings_groups" = "Csoportok";
 
 // Settings — Help
 "help01_header" = "Több elem kiválasztása";

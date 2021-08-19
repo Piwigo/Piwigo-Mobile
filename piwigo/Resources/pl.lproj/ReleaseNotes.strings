@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.7.0_text" = "Wersja 2.7\n\n• Automatyczne przesyłanie zdjęć i filmów\n• Poprawione opcje zmniejszania zdjęć i filmów\n• Poprawki drobnych błędów i ulepszenia interfejsu\n• Modernizacja kodu";
+"v2.7.1_text" = "Wersja 2.7.1\n\n• Drobne poprawki błędów i ulepszenia interfejsu\n• Poprawy tłumaczenia";
+
+"v2.7.0_text" = "Wersja 2.7\n12 sierpnia 2021\n\n• Automatyczne przesyłanie zdjęć i filmów\n• Poprawione opcje zmniejszania zdjęć i filmów\n• Poprawki drobnych błędów i ulepszenia interfejsu\n• Modernizacja kodu";
 
 "v2.6.4_text" = "Wersja 2.6.4\n18 maja 2021\n\n• Poprawki drobnych błędów i ulepszenia interfejsu";
 

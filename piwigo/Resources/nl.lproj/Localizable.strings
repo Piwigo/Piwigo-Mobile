@@ -123,12 +123,14 @@
 // ===========================================================================
 // ==> ALBUMS
 // ===========================================================================
+// Generic
+"singleAlbumCount" = "%@ album";
+"severalAlbumsCount" = "%@ albums";
+"singleSubAlbumCount" = "%@ sub-album";
+"severalSubAlbumsCount" = "%@ sub-albums";
+
 // Albums view
 "categoryMainEmtpy" = "Nog geen albums in jouw Piwigo.\nGebruik de pull down om te vernieuwen, of meld opnieuw aan.";
-"categoryTableView_photoCount" = "foto";
-"categoryTableView_photosCount" = "foto's";
-"categoryTableView_subCategoryCount" = "sub-album";
-"categoryTableView_subCategoriesCount" = "sub-albums";
 "categoryImageList_selectButton" = "Selecteer";
 "categoryImageList_deselectButton" = "Deselecteren";
 "categoryImageList_noDataError" = "Fout geen gegevens";
@@ -272,9 +274,11 @@
 // ==> IMAGES
 // ===========================================================================
 "singleImage" = "Foto";
+"singleImageCount" = "%@ photo";
 "singleVideo" = "Video";
 "singleAudio" = "Audio";
 "severalImages" = "Foto's";
+"severalImagesCount" = "%@ photos";
 "All Photos" = "Alle foto's";
 "severalVideos" = "Video's";
 "noImages" = "Geen foto's";
@@ -339,8 +343,10 @@
 
 // Image tags
 "none" = "niets";
-"tags" = "Labels";
 "tag" = "Label";
+"tags" = "Labels";
+"singleTagCount" = "%@ tag";
+"severalTagsCount" = "%@ tags";
 "tagsTitle_selectOne" = "Selecteer een Label";
 "tagsHeader_selected" = "Geselecteerd";
 "tagsHeader_notSelected" = "Niet geselecteerd";
@@ -718,6 +724,14 @@
 "settings_brightness" = "Helderheid";
 "settings_brightnessHelp" = "Bij een lage helderheid zal de automatische optie gebruik maken van een donker kleurenpalet zodat foto's duidelijker zichtbaar zijn.";
 
+// Settings - Administration
+"singleUserCount" = "%@ user";
+"severalUsersCount" = "%@ users";
+"singleGroupCount" = "%@ group";
+"severalGroupsCount" = "%@ groups";
+"singleCommentCount" = "%@ comment";
+"severalCommentsCount" = "%@ comments";
+
 // Settings — Information
 "settings_appName" = "Piwigo Mobiel";
 "settingsHeader_about" = "Informatie";
@@ -732,8 +746,6 @@
 "settings_pwgForumURL" = "http://piwigo.org/forum";
 "settings_acknowledgements" = "Dank";
 "settings_privacy" = "Privacybeleid";
-"settings_users" = "Gebruikers";
-"settings_groups" = "Groepen";
 
 // Settings — Help
 "help01_header" = "Meerdere selecties";

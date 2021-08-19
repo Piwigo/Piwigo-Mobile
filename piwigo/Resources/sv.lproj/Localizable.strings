@@ -123,12 +123,14 @@
 // ===========================================================================
 // ==> ALBUMS
 // ===========================================================================
+// Generic
+"singleAlbumCount" = "%@ album";
+"severalAlbumsCount" = "%@ albums";
+"singleSubAlbumCount" = "%@ sub-album";
+"severalSubAlbumsCount" = "%@ sub-albums";
+
 // Albums view
 "categoryMainEmtpy" = "Inga album i din Piwigo ännu.\nProva med att dra ner för att uppdatera, eller logga in igen.";
-"categoryTableView_photoCount" = "bild";
-"categoryTableView_photosCount" = "bilder";
-"categoryTableView_subCategoryCount" = "underalbum";
-"categoryTableView_subCategoriesCount" = "underalbum";
 "categoryImageList_selectButton" = "Välj";
 "categoryImageList_deselectButton" = "Avmarkera";
 "categoryImageList_noDataError" = "Fel inga Data";
@@ -272,9 +274,11 @@
 // ==> IMAGES
 // ===========================================================================
 "singleImage" = "Bild";
+"singleImageCount" = "%@ photo";
 "singleVideo" = "Video";
 "singleAudio" = "Ljud";
 "severalImages" = "Bilder";
+"severalImagesCount" = "%@ photos";
 "All Photos" = "Alla foton";
 "severalVideos" = "Videor";
 "noImages" = "Inga bilder";
@@ -339,8 +343,10 @@
 
 // Image tags
 "none" = "ingen";
-"tags" = "Etiketter";
 "tag" = "Etikett";
+"tags" = "Etiketter";
+"singleTagCount" = "%@ tag";
+"severalTagsCount" = "%@ tags";
 "tagsTitle_selectOne" = "Välj en Etikett";
 "tagsHeader_selected" = "Valda";
 "tagsHeader_notSelected" = "Inte markerad";
@@ -718,6 +724,14 @@
 "settings_brightness" = "Ljusstyrka";
 "settings_brightnessHelp" = "I låg omgivande ljusstyrka, Automatiska alternativet använder en mörkare färgpalett för att göra bilder sticker ut mot mörkare bakgrunder.";
 
+// Settings - Administration
+"singleUserCount" = "%@ user";
+"severalUsersCount" = "%@ users";
+"singleGroupCount" = "%@ group";
+"severalGroupsCount" = "%@ groups";
+"singleCommentCount" = "%@ comment";
+"severalCommentsCount" = "%@ comments";
+
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";
 "settingsHeader_about" = "Information";
@@ -732,8 +746,6 @@
 "settings_pwgForumURL" = "http://Piwigo.org/forum";
 "settings_acknowledgements" = "Tack till och erkännanden";
 "settings_privacy" = "Integritetspolicy";
-"settings_users" = "Användare";
-"settings_groups" = "Grupper";
 
 // Settings — Help
 "help01_header" = "Multipla val";
