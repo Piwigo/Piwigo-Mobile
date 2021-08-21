@@ -605,8 +605,6 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         let allCategories: [PiwigoAlbumData] = CategoriesData.sharedInstance().allCategories
         let filteredCat = allCategories.filter({ NetworkVars.hasAdminRights ||
                                                 (NetworkVars.hasNormalRights && $0.hasUploadRights) })
-//            .filter({ $0.nearestUpperCategory == categoryData.albumId })
-//            .filter({ $0.albumId != categoryData.albumId })
         if filteredCat.count > 0 {
             buttonState = categoriesThatShowSubCategories.contains(categoryData.albumId) ? kPiwigoCategoryTableCellButtonStateHideSubAlbum : kPiwigoCategoryTableCellButtonStateShowSubAlbum
         }

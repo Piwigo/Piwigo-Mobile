@@ -19,7 +19,7 @@ protocol CategoryCellDelegate: NSObjectProtocol {
     func tappedDisclosure(of categoryTapped: PiwigoAlbumData)
 }
 
-class CategoryTableViewCell: UITableViewCell {
+class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
     
     @objc weak var delegate: CategoryCellDelegate?
     
@@ -29,6 +29,7 @@ class CategoryTableViewCell: UITableViewCell {
     @IBOutlet weak var showHideSubCategoriesGestureArea: UIView!
     
     private var categoryData:PiwigoAlbumData!
+    private var buttonState = kPiwigoCategoryTableCellButtonStateNone
     
     @objc func configure(with category:PiwigoAlbumData, atDepth depth:Int,
                          andButtonState buttonState:kPiwigoCategoryTableCellButtonState) {
@@ -67,31 +68,36 @@ class CategoryTableViewCell: UITableViewCell {
                 String(format: NSLocalizedString("severalSubAlbumsCount", comment: "%@ sub-albums"), nberAlbums) :
                 String(format: NSLocalizedString("singleSubAlbumCount", comment: "%@ sub-album"), nberAlbums);
             
-            if buttonState == kPiwigoCategoryTableCellButtonStateShowSubAlbum {
-                if #available(iOS 13.0, *) {
-                    showHideSubCategoriesImage.image = UIImage(systemName: "plus")
-                } else {
-                    // Fallback on earlier versions
-                    showHideSubCategoriesImage.image = UIImage(named: "cellOpen")
-                }
-            } else {
-                if #available(iOS 13.0, *) {
-                    showHideSubCategoriesImage.image = UIImage(systemName: "multiply")
-                } else {
-                    // Fallback on earlier versions
-                    showHideSubCategoriesImage.image = UIImage(named: "cellClose")
-                }
-            }
-            showHideSubCategoriesImage.tintColor = UIColor.piwigoColorOrange()  // required on iOS 9
+            self.buttonState = buttonState  // Remember button state
             showHideSubCategoriesImage.isHidden = false
-        }
+            showHideSubCategoriesImage.tintColor = UIColor.piwigoColorOrange()  // required on iOS 9
+            if #available(iOS 13.0, *) {
+                showHideSubCategoriesImage.image = UIImage(systemName: "chevron.forward")
+            } else {
+                // Fallback on earlier versions
+                showHideSubCategoriesImage.image = UIImage(named: "openClose")
+            }
+            if buttonState == kPiwigoCategoryTableCellButtonStateHideSubAlbum {
+                self.showHideSubCategoriesImage.transform = CGAffineTransform(rotationAngle: CGFloat(.pi/2.0))
+            } else {
+                self.showHideSubCategoriesImage.transform = CGAffineTransform.identity
+            }
 
-        // Execute tappedLoadView whenever tapped
-        showHideSubCategoriesGestureArea.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tappedLoadView)))
+            // Execute tappedLoadView whenever tapped
+            showHideSubCategoriesGestureArea.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tappedLoadView)))
+        }
     }
     
     @objc func tappedLoadView() {
-        delegate?.tappedDisclosure(of: categoryData)
+        // Rotate icon
+        let sign = buttonState == kPiwigoCategoryTableCellButtonStateShowSubAlbum ? +1.0 : -1.0
+        UIView.animate(withDuration: 0.25, delay: 0, options: .curveLinear) {
+            self.showHideSubCategoriesImage.transform = self.showHideSubCategoriesImage.transform.rotated(by: CGFloat(sign * .pi/2.0))
+            self.layoutIfNeeded()
+        } completion: { [unowned self] _ in
+            // Add/remove sub-categories
+            self.delegate?.tappedDisclosure(of: self.categoryData)
+        }
     }
     
     override func prepareForReuse() {

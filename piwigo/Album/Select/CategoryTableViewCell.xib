@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19158" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18092"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19141"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -31,21 +31,20 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="subCategoriesLabel" textAlignment="right" lineBreakMode="clip" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DJY-mf-etU">
-                        <rect key="frame" x="292.5" y="10" width="150.5" height="23.5"/>
+                        <rect key="frame" x="292" y="10" width="150.5" height="23.5"/>
                         <fontDescription key="fontDescription" name="OpenSans-Light" family="Open Sans" pointSize="17"/>
                         <color key="textColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" image="cellOpen" translatesAutoresizingMaskIntoConstraints="NO" id="Zfo-EN-xzn">
-                        <rect key="frame" x="451" y="14" width="15" height="15"/>
+                    <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" image="openClose" translatesAutoresizingMaskIntoConstraints="NO" id="Zfo-EN-xzn">
+                        <rect key="frame" x="442.5" y="10" width="23.5" height="23.5"/>
                         <color key="tintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="15" id="MGX-M8-WmT"/>
-                            <constraint firstAttribute="width" constant="15" id="pWa-DF-xev"/>
+                            <constraint firstAttribute="width" secondItem="Zfo-EN-xzn" secondAttribute="height" multiplier="1:1" id="fcX-44-Lze"/>
                         </constraints>
                     </imageView>
                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Q74-gm-pPI">
-                        <rect key="frame" x="292.5" y="0.0" width="176.5" height="43"/>
+                        <rect key="frame" x="292" y="0.0" width="177" height="43"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </view>
@@ -53,6 +52,7 @@
                 <constraints>
                     <constraint firstAttribute="trailing" secondItem="Q74-gm-pPI" secondAttribute="trailing" constant="5" id="0ms-S7-5Ds"/>
                     <constraint firstAttribute="bottom" secondItem="Q74-gm-pPI" secondAttribute="bottom" id="3Cs-iQ-RFl"/>
+                    <constraint firstItem="Zfo-EN-xzn" firstAttribute="height" secondItem="DJY-mf-etU" secondAttribute="height" id="3z5-N2-019"/>
                     <constraint firstItem="Q74-gm-pPI" firstAttribute="centerY" secondItem="NIn-Ig-Teh" secondAttribute="centerY" id="AZw-2J-ghX"/>
                     <constraint firstItem="Q74-gm-pPI" firstAttribute="top" secondItem="NIn-Ig-Teh" secondAttribute="top" id="DYA-kh-qZu"/>
                     <constraint firstItem="H4A-sH-yFL" firstAttribute="leading" secondItem="NIn-Ig-Teh" secondAttribute="leadingMargin" id="MDY-d6-RUd"/>
@@ -62,7 +62,7 @@
                     <constraint firstItem="DJY-mf-etU" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="H4A-sH-yFL" secondAttribute="trailing" constant="10" id="lPE-wp-y8J"/>
                     <constraint firstAttribute="trailing" secondItem="Zfo-EN-xzn" secondAttribute="trailing" constant="8" id="mdb-4y-MQ1"/>
                     <constraint firstItem="Zfo-EN-xzn" firstAttribute="centerY" secondItem="NIn-Ig-Teh" secondAttribute="centerY" id="uT3-Yx-EuF"/>
-                    <constraint firstItem="Zfo-EN-xzn" firstAttribute="leading" secondItem="DJY-mf-etU" secondAttribute="trailing" constant="8" id="xfr-Al-H92"/>
+                    <constraint firstItem="Zfo-EN-xzn" firstAttribute="leading" secondItem="DJY-mf-etU" secondAttribute="trailing" id="xfr-Al-H92"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
@@ -75,6 +75,6 @@
         </tableViewCell>
     </objects>
     <resources>
-        <image name="cellOpen" width="13" height="13"/>
+        <image name="openClose" width="13" height="13"/>
     </resources>
 </document>

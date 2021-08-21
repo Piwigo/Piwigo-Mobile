@@ -611,7 +611,6 @@
 		ADC8167C244B5FA800650223 /* LocalImagesViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LocalImagesViewController.storyboard; sourceTree = "<group>"; };
 		ADC8FAA9244C7307006BDA6A /* LocalImagesFooterReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalImagesFooterReusableView.swift; sourceTree = "<group>"; };
 		ADCA95CD26B3434300F27123 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/InAppIntents.strings; sourceTree = "<group>"; };
-		ADCA95CE26B3434300F27123 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/Intents.strings; sourceTree = "<group>"; };
 		ADCA95CF26B3434300F27123 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/About.strings; sourceTree = "<group>"; };
 		ADCA95D026B3434300F27123 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/AppStore.strings; sourceTree = "<group>"; };
 		ADCA95D126B3434400F27123 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -2440,7 +2439,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				AD7783B1267E4AB700317F36 /* Base */,
-				ADCA95CE26B3434300F27123 /* hu */,
 			);
 			name = Intents.intentdefinition;
 			sourceTree = "<group>";
