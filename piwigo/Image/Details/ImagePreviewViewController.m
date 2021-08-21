@@ -58,6 +58,20 @@
     self.navigationController.navigationBar.barTintColor = [UIColor piwigoColorBackground];
     self.navigationController.navigationBar.backgroundColor = [UIColor piwigoColorBackground];
     self.navigationBarHidden = YES;
+
+    if (@available(iOS 15.0, *)) {
+        /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
+        /// which by default produces a transparent background, to all navigation bars.
+        UINavigationBarAppearance *barAppearance = [[UINavigationBarAppearance alloc] init];
+        [barAppearance configureWithOpaqueBackground];
+        [barAppearance setBackgroundColor:[UIColor piwigoColorBackground]];
+        self.navigationController.navigationBar.standardAppearance = barAppearance;
+        self.navigationController.navigationBar.scrollEdgeAppearance = self.navigationController.navigationBar.standardAppearance;
+        
+        UIToolbarAppearance *toolbarAppearance = [[UIToolbarAppearance alloc] initWithBarAppearance:barAppearance];
+        self.navigationController.toolbar.standardAppearance = toolbarAppearance;
+        self.navigationController.toolbar.scrollEdgeAppearance = self.navigationController.toolbar.standardAppearance;
+    }
 }
 
 -(void)viewWillAppear:(BOOL)animated
