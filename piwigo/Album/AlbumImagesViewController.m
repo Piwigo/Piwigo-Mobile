@@ -2753,8 +2753,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 NSInteger totalImageCount = NSNotFound;
                 if (self.categoryId == 0) {
                     // Only albums in Root Album => total number of images
-                    totalImageCount = 0;
                     for (PiwigoAlbumData *albumData in [[CategoriesData sharedInstance] getCategoriesForParentCategory:0]) {
+                        if (totalImageCount == NSNotFound) { totalImageCount = 0; }
                         totalImageCount += albumData.totalNumberOfImages;
                     }
                 } else {
