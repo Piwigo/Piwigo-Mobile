@@ -123,12 +123,14 @@
 // ===========================================================================
 // ==> ALBUMS
 // ===========================================================================
+// Generic
+"singleAlbumCount" = "%@ album";
+"severalAlbumsCount" = "%@ albums";
+"singleSubAlbumCount" = "%@ sub-album";
+"severalSubAlbumsCount" = "%@ sub-albums";
+
 // Albums view
 "categoryMainEmtpy" = "لا توجد ألبومات في Piwigo حتى الآن.\nيمكنك السحب إلى الأسفل لتحديث أو إعادة تسجيل الدخول.";
-"categoryTableView_photoCount" = "صورة";
-"categoryTableView_photosCount" = "صور";
-"categoryTableView_subCategoryCount" = "ألبوم فرعي";
-"categoryTableView_subCategoriesCount" = "ألبومات فرعية";
 "categoryImageList_selectButton" = "حدد";
 "categoryImageList_deselectButton" = "Deselect";
 "categoryImageList_noDataError" = "خطأ لا توجد بيانات";
@@ -272,9 +274,11 @@
 // ==> IMAGES
 // ===========================================================================
 "singleImage" = "صورة";
+"singleImageCount" = "%@ photo";
 "singleVideo" = "فيديو";
 "singleAudio" = "الصوت";
 "severalImages" = "الصور";
+"severalImagesCount" = "%@ photos";
 "All Photos" = "All Photos";
 "severalVideos" = "Videos";
 "noImages" = "لا توجد صور";
@@ -339,8 +343,10 @@
 
 // Image tags
 "none" = "لا شيء";
-"tags" = "العلامات";
 "tag" = "Tag";
+"tags" = "العلامات";
+"singleTagCount" = "%@ tag";
+"severalTagsCount" = "%@ tags";
 "tagsTitle_selectOne" = "Select a Tag";
 "tagsHeader_selected" = "تم تحديدها";
 "tagsHeader_notSelected" = "Not Selected";
@@ -718,6 +724,14 @@
 "settings_brightness" = "السطوع";
 "settings_brightnessHelp" = "In low ambient brightness, the Automatic option uses a darker color palette to make photos stand out against darker backgrounds.";
 
+// Settings - Administration
+"singleUserCount" = "%@ user";
+"severalUsersCount" = "%@ users";
+"singleGroupCount" = "%@ group";
+"severalGroupsCount" = "%@ groups";
+"singleCommentCount" = "%@ comment";
+"severalCommentsCount" = "%@ comments";
+
 // Settings — Information
 "settings_appName" = "Piwigo موبايل";
 "settingsHeader_about" = "معلومة";
@@ -732,8 +746,6 @@
 "settings_pwgForumURL" = "http://piwigo.org/forum";
 "settings_acknowledgements" = "شكر وتقدير";
 "settings_privacy" = "سياسة الخصوصية";
-"settings_users" = "المستخدمين";
-"settings_groups" = "المجموعات";
 
 // Settings — Help
 "help01_header" = "Multiple Selection";

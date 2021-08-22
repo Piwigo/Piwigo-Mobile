@@ -123,12 +123,14 @@
 // ===========================================================================
 // ==> ALBUMS
 // ===========================================================================
+// Generic
+"singleAlbumCount" = "%@ альбом";
+"severalAlbumsCount" = "%@ альбомов";
+"singleSubAlbumCount" = "%@ подальбом";
+"severalSubAlbumsCount" = "%@ подальбомов";
+
 // Albums view
 "categoryMainEmtpy" = "В вашем Piwigo пока нет альбомов.\nВы можете потянуть вниз для обновления или повторного входа.";
-"categoryTableView_photoCount" = "фото";
-"categoryTableView_photosCount" = "фото";
-"categoryTableView_subCategoryCount" = "подальбом";
-"categoryTableView_subCategoriesCount" = "подальбомы";
 "categoryImageList_selectButton" = "Выбрать";
 "categoryImageList_deselectButton" = "Отменить выбор";
 "categoryImageList_noDataError" = "Ошибка: нет данных";
@@ -272,9 +274,11 @@
 // ==> IMAGES
 // ===========================================================================
 "singleImage" = "Фото";
+"singleImageCount" = "%@ фото";
 "singleVideo" = "Видео";
 "singleAudio" = "Аудио";
 "severalImages" = "Фото";
+"severalImagesCount" = "%@ фото";
 "All Photos" = "Все фото";
 "severalVideos" = "Видео";
 "noImages" = "Нет фото";
@@ -339,8 +343,10 @@
 
 // Image tags
 "none" = "нет";
-"tags" = "Теги";
 "tag" = "Тег";
+"tags" = "Теги";
+"singleTagCount" = "%@ тег";
+"severalTagsCount" = "%@ тегов";
 "tagsTitle_selectOne" = "Выберите тег";
 "tagsHeader_selected" = "Выбрано";
 "tagsHeader_notSelected" = "Не выбрано";
@@ -718,6 +724,14 @@
 "settings_brightness" = "Яркость";
 "settings_brightnessHelp" = "При низкой яркости окружающей среды параметр «Автоматически» использует более темную цветовую палитру, чтобы фотографии выделялись на более темном фоне.";
 
+// Settings - Administration
+"singleUserCount" = "%@ пользователь";
+"severalUsersCount" = "%@ пользователей";
+"singleGroupCount" = "%@ группа";
+"severalGroupsCount" = "%@ группы";
+"singleCommentCount" = "%@ комментарий";
+"severalCommentsCount" = "%@ комментариев";
+
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";
 "settingsHeader_about" = "Информация";
@@ -732,8 +746,6 @@
 "settings_pwgForumURL" = "http://ru.piwigo.org/forum";
 "settings_acknowledgements" = "Благодарности";
 "settings_privacy" = "Политика конфиденциальности";
-"settings_users" = "Пользователи";
-"settings_groups" = "Группы";
 
 // Settings — Help
 "help01_header" = "Выбор нескольких";

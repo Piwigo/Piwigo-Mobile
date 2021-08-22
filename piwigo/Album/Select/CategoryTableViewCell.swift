@@ -19,16 +19,18 @@ protocol CategoryCellDelegate: NSObjectProtocol {
     func tappedDisclosure(of categoryTapped: PiwigoAlbumData)
 }
 
-class CategoryTableViewCell: UITableViewCell {
+class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
     
     @objc weak var delegate: CategoryCellDelegate?
     
     @IBOutlet weak var categoryLabel: UILabel!
+    @IBOutlet weak var leadingConstraint: NSLayoutConstraint!
     @IBOutlet weak var subCategoriesLabel: UILabel!
     @IBOutlet weak var showHideSubCategoriesImage: UIImageView!
     @IBOutlet weak var showHideSubCategoriesGestureArea: UIView!
     
     private var categoryData:PiwigoAlbumData!
+    private var buttonState = kPiwigoCategoryTableCellButtonStateNone
     
     @objc func configure(with category:PiwigoAlbumData, atDepth depth:Int,
                          andButtonState buttonState:kPiwigoCategoryTableCellButtonState) {
@@ -42,17 +44,13 @@ class CategoryTableViewCell: UITableViewCell {
         // Is this a sub-category?
         categoryLabel.font = UIFont.piwigoFontNormal()
         categoryLabel.textColor = UIColor.piwigoColorLeftLabel()
+        categoryLabel.text = categoryData.name
         if depth == 0 {
             // Categories in root album or root album itself
-            categoryLabel.text = categoryData.name
+            leadingConstraint.constant = 20.0
         } else {
-            // Append "—" characters to sub-category names
-            let subAlbumPrefix = "".padding(toLength: depth, withPad: "…", startingAt: 0)
-            if AppVars.isAppLanguageRTL {
-                categoryLabel.text = String(format: "%@ %@", categoryData.name, subAlbumPrefix)
-            } else {
-                categoryLabel.text = String(format: "%@ %@", subAlbumPrefix, categoryData.name)
-            }
+            // Shift sub-category names to the right
+            leadingConstraint.constant = 20.0 + 12.0 * CGFloat(min(depth,4))
         }
         
         // Show open/close button (# sub-albums) if there are sub-categories
@@ -60,35 +58,48 @@ class CategoryTableViewCell: UITableViewCell {
             subCategoriesLabel.text = ""
             showHideSubCategoriesImage.isHidden = true
         } else {
-            subCategoriesLabel.text = String(format: "%ld %@",
-                                   categoryData.numberOfSubCategories,
-                                   categoryData.numberOfSubCategories > 1 ? NSLocalizedString("categoryTableView_subCategoriesCount", comment:"sub-albums") : NSLocalizedString("categoryTableView_subCategoryCount", comment:"sub-album"))
+            let numberFormatter = NumberFormatter()
+            numberFormatter.numberStyle = .decimal
+            let nberAlbums = numberFormatter.string(from: NSNumber(value: categoryData.numberOfSubCategories)) ?? "0"
+            subCategoriesLabel.text = categoryData.numberOfSubCategories > 1 ?
+                String(format: NSLocalizedString("severalSubAlbumsCount", comment: "%@ sub-albums"), nberAlbums) :
+                String(format: NSLocalizedString("singleSubAlbumCount", comment: "%@ sub-album"), nberAlbums);
             
-            if buttonState == kPiwigoCategoryTableCellButtonStateShowSubAlbum {
-                if #available(iOS 13.0, *) {
-                    showHideSubCategoriesImage.image = UIImage(systemName: "plus")
-                } else {
-                    // Fallback on earlier versions
-                    showHideSubCategoriesImage.image = UIImage(named: "cellOpen")
-                }
-            } else {
-                if #available(iOS 13.0, *) {
-                    showHideSubCategoriesImage.image = UIImage(systemName: "multiply")
-                } else {
-                    // Fallback on earlier versions
-                    showHideSubCategoriesImage.image = UIImage(named: "cellClose")
-                }
-            }
-            showHideSubCategoriesImage.tintColor = UIColor.piwigoColorOrange()  // required on iOS 9
+            self.buttonState = buttonState  // Remember button state
             showHideSubCategoriesImage.isHidden = false
-        }
+            showHideSubCategoriesImage.tintColor = UIColor.piwigoColorOrange()  // required on iOS 9
+            if #available(iOS 13.0, *) {
+                showHideSubCategoriesImage.image = UIImage(systemName: "chevron.forward")
+            } else {
+                // Fallback on earlier versions
+                showHideSubCategoriesImage.image = UIImage(named: "openClose")
+            }
+            if buttonState == kPiwigoCategoryTableCellButtonStateHideSubAlbum {
+                self.showHideSubCategoriesImage.transform = CGAffineTransform(rotationAngle: CGFloat(.pi/2.0))
+            } else {
+                self.showHideSubCategoriesImage.transform = CGAffineTransform.identity
+            }
 
-        // Execute tappedLoadView whenever tapped
-        showHideSubCategoriesGestureArea.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tappedLoadView)))
+            // Execute tappedLoadView whenever tapped
+            showHideSubCategoriesGestureArea.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tappedLoadView)))
+        }
     }
     
     @objc func tappedLoadView() {
-        delegate?.tappedDisclosure(of: categoryData)
+        // Rotate icon
+        let sign = buttonState == kPiwigoCategoryTableCellButtonStateShowSubAlbum ? +1.0 : -1.0
+        UIView.animate(withDuration: 0.25, delay: 0, options: .curveLinear) { [unowned self] in
+            // Rotate the chevron
+            self.showHideSubCategoriesImage.transform = self.showHideSubCategoriesImage.transform.rotated(by: CGFloat(sign * .pi/2.0))
+            if self.buttonState == kPiwigoCategoryTableCellButtonStateHideSubAlbum {
+                self.buttonState = kPiwigoCategoryTableCellButtonStateShowSubAlbum
+            } else {
+                self.buttonState = kPiwigoCategoryTableCellButtonStateHideSubAlbum
+            }
+            
+            // Add/remove sub-categories
+            self.delegate?.tappedDisclosure(of: self.categoryData)
+        }
     }
     
     override func prepareForReuse() {

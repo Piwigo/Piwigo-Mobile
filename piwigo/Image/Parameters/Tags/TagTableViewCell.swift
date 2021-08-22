@@ -33,11 +33,15 @@ class TagTableViewCell: UITableViewCell {
         if (nber == 0) || (nber == Int64.max) {
             // Unknown number of images
             leftLabel.text = tag.tagName
-        } else if nber > 1 {
-            // Known number of images
-            leftLabel.text = String(format: "%@ (%lld %@)", tag.tagName, nber,  NSLocalizedString("categoryTableView_photosCount", comment: "photos"))
         } else {
-            leftLabel.text = String(format: "%@ (%lld %@)", tag.tagName, nber, NSLocalizedString("categoryTableView_photoCount", comment: "photo"))
+            // Known number of images
+            let numberFormatter = NumberFormatter()
+            numberFormatter.numberStyle = .decimal
+            let nberPhotos = (numberFormatter.string(from: NSNumber(value: nber)) ?? "0") as String
+            let nberImages = nber > 1 ?
+                String(format: NSLocalizedString("severalImagesCount", comment: "%@ photos"), nberPhotos) :
+                String(format: NSLocalizedString("singleImageCount", comment: "%@ photo"), nberPhotos)
+            leftLabel.text = "\(tag.tagName) (\(nberImages))"
         }
         leftLabel.font = UIFont.piwigoFontNormal()
         leftLabel.textColor = UIColor.piwigoColorLeftLabel()

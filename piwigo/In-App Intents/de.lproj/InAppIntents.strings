@@ -12,9 +12,9 @@
 
 "OEvuBy" = "Fotos automatisch hochladen";
 
-"QlzJjd" = "Fügt die neuesten Fotos gemäß den Einstellungen für das automatische Hochladen an die Upload-Warteschlange im Hintergrund an.";
+"QlzJjd" = "Fügt die neuesten Fotos gemäß den Einstellungen für das automatische Hochladen an die Warteschlange für das Hochladen im Hintergrund an.";
 
-"Vz5KMD" = "Fügt die neuesten Fotos an die Upload-Warteschlange im Hintergrund an.";
+"Vz5KMD" = "Hängt die neuesten Fotos an die Warteschlange für das Hochladen im Hintergrund an.";
 
 "YtBidq" = "${photos} Foto(s) zur Upload-Warteschlange hinzugefügt.";
 

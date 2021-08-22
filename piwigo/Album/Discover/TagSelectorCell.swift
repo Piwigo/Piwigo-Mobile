@@ -27,11 +27,14 @@ class TagSelectorCell: UITableViewCell {
         if (nber == 0) || (nber == Int64.max) {
             // Unknown number of images
             tagLabel.text = tag.tagName
-        } else if nber > 1 {
-            // Known number of images
-            tagLabel.text = String(format: "%@ (%lld %@)", tag.tagName, nber,  NSLocalizedString("categoryTableView_photosCount", comment: "photos"))
         } else {
-            tagLabel.text = String(format: "%@ (%lld %@)", tag.tagName, nber, NSLocalizedString("categoryTableView_photoCount", comment: "photo"))
+            let numberFormatter = NumberFormatter()
+            numberFormatter.numberStyle = .decimal
+            let nberPhotos = (numberFormatter.string(from: NSNumber(value: nber)) ?? "0") as String
+            let nberImages = nber > 1 ?
+                String(format: NSLocalizedString("severalImagesCount", comment: "%@ photos"), nberPhotos) :
+                String(format: NSLocalizedString("singleImageCount", comment: "%@ photo"), nberPhotos)
+            tagLabel.text = "\(tag.tagName) (\(nberImages))"
         }
     }
     

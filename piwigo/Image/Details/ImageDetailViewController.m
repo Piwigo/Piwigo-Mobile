@@ -157,6 +157,20 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     self.navigationController.toolbar.barTintColor = [UIColor piwigoColorBackground];
     self.navigationController.toolbar.barStyle = AppVars.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
 
+//    if (@available(iOS 15.0, *)) {
+//        /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
+//        /// which by default produces a transparent background, to all navigation bars.
+//        UINavigationBarAppearance *barAppearance = [[UINavigationBarAppearance alloc] init];
+//        [barAppearance configureWithOpaqueBackground];
+//        [barAppearance setBackgroundColor:[UIColor piwigoColorBackground]];
+//        self.navigationController.navigationBar.standardAppearance = barAppearance;
+//        self.navigationController.navigationBar.scrollEdgeAppearance = self.navigationController.navigationBar.standardAppearance;
+//
+//        UIToolbarAppearance *toolbarAppearance = [[UIToolbarAppearance alloc] initWithBarAppearance:barAppearance];
+//        self.navigationController.toolbar.standardAppearance = toolbarAppearance;
+//        self.navigationController.toolbar.scrollEdgeAppearance = self.navigationController.toolbar.standardAppearance;
+//    }
+
     // Progress bar
     self.progressBar.progressTintColor = [UIColor piwigoColorOrange];
     self.progressBar.trackTintColor = [UIColor piwigoColorLeftLabel];
@@ -210,17 +224,6 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
 
     } else {
         // Fallback on earlier versions
-    }
-}
-
--(void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-    
-    // Scroll previewed image to visible area
-    if([self.imgDetailDelegate respondsToSelector:@selector(didFinishPreviewOfImageWithId:)])
-    {
-        [self.imgDetailDelegate didFinishPreviewOfImageWithId:self.imageData.imageId];
     }
 }
 
@@ -599,6 +602,12 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     if(self.imageData.isVideo)
     {
         self.progressBar.hidden = YES;
+    }
+    
+    // Scroll album collection view to keep the selected image centered on the screen
+    if ([self.imgDetailDelegate respondsToSelector:@selector(didSelectImageWithId:)])
+    {
+        [self.imgDetailDelegate didSelectImageWithId:self.imageData.imageId];
     }
 }
 

@@ -123,12 +123,14 @@
 // ===========================================================================
 // ==> ALBUMS
 // ===========================================================================
+// Generic
+"singleAlbumCount" = "%@ 相簿";
+"severalAlbumsCount" = "%@ albums";
+"singleSubAlbumCount" = "%@子相簿";
+"severalSubAlbumsCount" = "%@ sub-albums";
+
 // Albums view
 "categoryMainEmtpy" = "您的Piwigo没有相册。\n您可以尝试下拉刷新或重新登录。";
-"categoryTableView_photoCount" = "照片";
-"categoryTableView_photosCount" = "照片";
-"categoryTableView_subCategoryCount" = "子相册";
-"categoryTableView_subCategoriesCount" = "子相册";
 "categoryImageList_selectButton" = "选择";
 "categoryImageList_deselectButton" = "反选";
 "categoryImageList_noDataError" = "错误：没有数据";
@@ -272,9 +274,11 @@
 // ==> IMAGES
 // ===========================================================================
 "singleImage" = "照片";
+"singleImageCount" = "%@ photo";
 "singleVideo" = "视频";
 "singleAudio" = "音频";
 "severalImages" = "照片";
+"severalImagesCount" = "%@ photos";
 "All Photos" = "所有照片";
 "severalVideos" = "视频";
 "noImages" = "没有照片";
@@ -339,8 +343,10 @@
 
 // Image tags
 "none" = "无";
-"tags" = "标签";
 "tag" = "标签";
+"tags" = "标签";
+"singleTagCount" = "%@ tag";
+"severalTagsCount" = "%@ tags";
 "tagsTitle_selectOne" = "选择一个标签";
 "tagsHeader_selected" = "已选";
 "tagsHeader_notSelected" = "未选中";
@@ -718,6 +724,14 @@
 "settings_brightness" = "亮度";
 "settings_brightnessHelp" = "在环境亮度低的情况下，自动选项会使用暗色外观来使照片在黑暗背景下易于观看";
 
+// Settings - Administration
+"singleUserCount" = "%@ user";
+"severalUsersCount" = "%@ users";
+"singleGroupCount" = "%@ group";
+"severalGroupsCount" = "%@ groups";
+"singleCommentCount" = "%@ comment";
+"severalCommentsCount" = "%@ 評論";
+
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";
 "settingsHeader_about" = "信息";
@@ -732,8 +746,6 @@
 "settings_pwgForumURL" = "http://piwigo.org/forum";
 "settings_acknowledgements" = "致谢";
 "settings_privacy" = "隐私政策";
-"settings_users" = "用户";
-"settings_groups" = "群组";
 
 // Settings — Help
 "help01_header" = "多选";

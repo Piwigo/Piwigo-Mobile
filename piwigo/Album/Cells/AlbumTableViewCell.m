@@ -69,29 +69,33 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
     self.numberOfImages.font = [UIFont piwigoFontTiny];
     self.numberOfImages.textColor = [UIColor piwigoColorText];
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    [numberFormatter setPositiveFormat:@"#,##0"];
+    [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
     if (self.albumData.numberOfSubCategories == 0) {
-        
         // There are no sub-albums
-        self.numberOfImages.text = [NSString stringWithFormat:@"%@ %@",
-                                    [numberFormatter stringFromNumber:[NSNumber numberWithInteger:self.albumData.numberOfImages]],
-                                    self.albumData.numberOfImages > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
-        
-    } else if (self.albumData.totalNumberOfImages == 0) {
-        
+        NSString *nberImages = [numberFormatter stringFromNumber:[NSNumber numberWithInteger:self.albumData.numberOfImages]];
+        self.numberOfImages.text = self.albumData.numberOfImages > 1 ?
+            [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), nberImages] :
+            [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), nberImages];
+    }
+    else if (self.albumData.totalNumberOfImages == 0) {
         // There are no images but sub-albums
-        self.numberOfImages.text = [NSString stringWithFormat:@"%@ %@",
-                                    [numberFormatter stringFromNumber:[NSNumber numberWithInteger:self.albumData.numberOfSubCategories]],
-                                    self.albumData.numberOfSubCategories > 1 ? NSLocalizedString(@"categoryTableView_subCategoriesCount", @"sub-albums") : NSLocalizedString(@"categoryTableView_subCategoryCount", @"sub-album")];
-        
-    } else {
-        
+        NSString *nberAlbums = [numberFormatter stringFromNumber:[NSNumber numberWithInteger:self.albumData.numberOfSubCategories]];
+        self.numberOfImages.text = self.albumData.numberOfSubCategories > 1 ?
+            [NSString stringWithFormat:NSLocalizedString(@"severalSubAlbumsCount", @"%@ sub-albums"), nberAlbums] :
+            [NSString stringWithFormat:NSLocalizedString(@"singleSubAlbumCount", @"%@ sub-album"), nberAlbums];
+    }
+    else {
         // There are images and sub-albums
-        self.numberOfImages.text = [NSString stringWithFormat:@"%@ %@, %@ %@",
-                                    [numberFormatter stringFromNumber:[NSNumber numberWithInteger:self.albumData.totalNumberOfImages]],
-                                    self.albumData.totalNumberOfImages > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo"),
-                                    [numberFormatter stringFromNumber:[NSNumber numberWithInteger:self.albumData.numberOfSubCategories]],
-                                    self.albumData.numberOfSubCategories > 1 ? NSLocalizedString(@"categoryTableView_subCategoriesCount", @"sub-albums") : NSLocalizedString(@"categoryTableView_subCategoryCount", @"sub-album")];
+        NSString *nberImages = [numberFormatter stringFromNumber:[NSNumber numberWithInteger:self.albumData.totalNumberOfImages]];
+        NSMutableString *nberOfImages = [[NSMutableString alloc] initWithString: self.albumData.totalNumberOfImages > 1 ?
+            [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), nberImages] :
+            [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), nberImages]];
+        [nberOfImages appendString:@", "];
+        NSString *nberAlbums = [numberFormatter stringFromNumber:[NSNumber numberWithInteger:self.albumData.numberOfSubCategories]];
+        [nberOfImages appendString:self.albumData.numberOfSubCategories > 1 ?
+            [NSString stringWithFormat:NSLocalizedString(@"severalSubAlbumsCount", @"%@ sub-albums"), nberAlbums] :
+            [NSString stringWithFormat:NSLocalizedString(@"singleSubAlbumCount", @"%@ sub-album"), nberAlbums]];
+        self.numberOfImages.text = nberOfImages;
     }
     self.numberOfImages.font = [self.numberOfImages.font fontWithSize:[UIFont fontSizeForLabel:self.numberOfImages nberLines:1]];
 

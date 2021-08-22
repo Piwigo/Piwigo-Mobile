@@ -123,12 +123,14 @@
 // ===========================================================================
 // ==> ALBUMS
 // ===========================================================================
+// Generic
+"singleAlbumCount" = "%@ album";
+"severalAlbumsCount" = "%@ albums";
+"singleSubAlbumCount" = "%@ sub-album";
+"severalSubAlbumsCount" = "%@ sub-albums";
+
 // Albums view
 "categoryMainEmtpy" = "No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.";
-"categoryTableView_photoCount" = "photo";
-"categoryTableView_photosCount" = "photos";
-"categoryTableView_subCategoryCount" = "sub-album";
-"categoryTableView_subCategoriesCount" = "sub-albums";
 "categoryImageList_selectButton" = "Select";
 "categoryImageList_deselectButton" = "Deselect";
 "categoryImageList_noDataError" = "Error No Data";
@@ -272,9 +274,11 @@
 // ==> IMAGES
 // ===========================================================================
 "singleImage" = "Photo";
+"singleImageCount" = "%@ photo";
 "singleVideo" = "Video";
 "singleAudio" = "Audio";
 "severalImages" = "Photos";
+"severalImagesCount" = "%@ photos";
 "All Photos" = "All Photos";
 "severalVideos" = "Videos";
 "noImages" = "No Photos";
@@ -339,8 +343,10 @@
 
 // Image tags
 "none" = "none";
-"tags" = "Tags";
 "tag"  = "Tag";
+"tags" = "Tags";
+"singleTagCount" = "%@ tag";
+"severalTagsCount" = "%@ tags";
 "tagsTitle_selectOne" = "Select a Tag";
 "tagsHeader_selected" = "Selected";
 "tagsHeader_notSelected" = "Not Selected";
@@ -718,6 +724,14 @@
 "settings_brightness" = "Brightness";
 "settings_brightnessHelp" = "In low ambient brightness, the Automatic option uses a darker color palette to make photos stand out against darker backgrounds.";
 
+// Settings - Administration
+"singleUserCount" = "%@ user";
+"severalUsersCount" = "%@ users";
+"singleGroupCount" = "%@ group";
+"severalGroupsCount" = "%@ groups";
+"singleCommentCount" = "%@ comment";
+"severalCommentsCount" = "%@ comments";
+
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";
 "settingsHeader_about" = "Information";
@@ -732,8 +746,6 @@
 "settings_pwgForumURL" = "http://piwigo.org/forum";
 "settings_acknowledgements" = "Acknowledgements";
 "settings_privacy" = "Privacy Policy";
-"settings_users" = "Users";
-"settings_groups" = "Groups";
 
 // Settings — Help
 "help01_header" = "Multiple Selection";

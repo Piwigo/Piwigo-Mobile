@@ -605,8 +605,6 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         let allCategories: [PiwigoAlbumData] = CategoriesData.sharedInstance().allCategories
         let filteredCat = allCategories.filter({ NetworkVars.hasAdminRights ||
                                                 (NetworkVars.hasNormalRights && $0.hasUploadRights) })
-//            .filter({ $0.nearestUpperCategory == categoryData.albumId })
-//            .filter({ $0.albumId != categoryData.albumId })
         if filteredCat.count > 0 {
             buttonState = categoriesThatShowSubCategories.contains(categoryData.albumId) ? kPiwigoCategoryTableCellButtonStateHideSubAlbum : kPiwigoCategoryTableCellButtonStateShowSubAlbum
         }
@@ -1482,7 +1480,6 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Look for categories which are not already displayed
         /// - Non-admin Community users can only upload in specific albums
         /// - Only add sub-categories of tapped category
-        /// - Do not add the current category
         let filteredCat = allCategories
             .filter({ NetworkVars.hasAdminRights ||
                         (NetworkVars.hasNormalRights && $0.hasUploadRights) })
@@ -1494,26 +1491,28 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             }
         }
 
-        // Build list of categories to be displayed
-        for category in diff {
-            // Should we add sub-categories?
-            if category.upperCategories.count > 0 {
-                var indexOfParent = 0
-                for existingCategory in categories {
-                    if category.containsUpperCategory(existingCategory.albumId) {
-                        categories.insert(category, at: indexOfParent + 1)
-                        break
-                    }
-                    indexOfParent += 1
-                }
-            }
-        }
+        // Build new list of categories to be displayed
+        guard let indexOfParent = categories.firstIndex(where: { $0.albumId == categoryTapped.albumId }) else { return }
+        categories.insert(contentsOf: diff, at: indexOfParent + 1)
 
         // Add tapped category to list of categories having shown sub-categories
         categoriesThatShowSubCategories.insert(categoryTapped.albumId)
 
-        // Reload table view
-        categoriesTableView.reloadData()
+        // Get section in which sub-categories will be inserted
+        var section = 0
+        switch wantedAction {
+        case kPiwigoCategorySelectActionSetAlbumThumbnail:
+            section = 1
+        default:    // Present recent albums if any
+            section = (recentCategories.count > 0 ? 1 : 0)
+        }
+        
+        // Compile indexPaths of rows to insert
+        let indexPaths: [IndexPath] = (indexOfParent + 1...indexOfParent + diff.count)
+            .map { IndexPath(row: $0, section: section)}
+
+        // Insert sub-categories in table view
+        categoriesTableView.insertRows(at: indexPaths, with: .automatic)
     }
 
     func removeSubCategories(toCategoryID categoryTapped: PiwigoAlbumData) {
@@ -1529,16 +1528,33 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             }
         }
 
+        // Get section in which sub-categories will be inserted
+        var section = 0
+        switch wantedAction {
+        case kPiwigoCategorySelectActionSetAlbumThumbnail:
+            section = 1
+        default:    // Present recent albums if any
+            section = (recentCategories.count > 0 ? 1 : 0)
+        }
+        
+        // Compile indexPaths of rows to remove
+        var indexPaths = [IndexPath]()
+        for cat in diff {
+            if let row = categories.firstIndex(where: { $0.albumId == cat.albumId }) {
+                indexPaths.append(IndexPath(row: row, section: section))
+            }
+        }
+
         // Remove objects from displayed list
-        categories = categories.filter({ !diff.contains($0) })
+        categories.removeAll(where: { diff.contains($0) })
 
         // Remove tapped category from list of categories having shown sub-categories
         if categoriesThatShowSubCategories.contains(categoryTapped.albumId) {
             categoriesThatShowSubCategories.remove(categoryTapped.albumId)
         }
 
-        // Reload table view
-        categoriesTableView.reloadData()
+        // Remove sub-categories from table view
+        categoriesTableView.deleteRows(at: indexPaths, with: .automatic)
     }
 }
 

@@ -10,6 +10,7 @@
 
 import Foundation
 import CoreData
+import CoreLocation
 
 public class Location: NSManagedObject {
 

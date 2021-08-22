@@ -45,7 +45,7 @@
 
 "PiwigoServer_wrongJSONobject" = "Kunde inte smälta JSON-objekt som returneras av Piwigo server.";
 "PiwigoServer_invalidJSONobject" = "Piwigo-servern returnerade inte ett giltigt JSON-objekt.";
-"PiwigoServer_emptyJSONobject" = "Piwigo server did return an empty JSON object.";
+"PiwigoServer_emptyJSONobject" = "Piwigo-servern returnerade ett tomt JSON-objekt.";
 
 // ===========================================================================
 // ==> CORE DATA
@@ -123,12 +123,14 @@
 // ===========================================================================
 // ==> ALBUMS
 // ===========================================================================
+// Generic
+"singleAlbumCount" = "%@ album";
+"severalAlbumsCount" = "%@ album";
+"singleSubAlbumCount" = "%@ underalbum";
+"severalSubAlbumsCount" = "%@ underalbum";
+
 // Albums view
 "categoryMainEmtpy" = "Inga album i din Piwigo ännu.\nProva med att dra ner för att uppdatera, eller logga in igen.";
-"categoryTableView_photoCount" = "bild";
-"categoryTableView_photosCount" = "bilder";
-"categoryTableView_subCategoryCount" = "underalbum";
-"categoryTableView_subCategoriesCount" = "underalbum";
 "categoryImageList_selectButton" = "Välj";
 "categoryImageList_deselectButton" = "Avmarkera";
 "categoryImageList_noDataError" = "Fel inga Data";
@@ -164,10 +166,10 @@
 "categorySelection_title" = "Album";
 "categorySelection_titleSub" = "Underalbum";
 "categorySelection_root" = "Rotalbum";
-"categorySelection_root<375pt" = "Root";
+"categorySelection_root<375pt" = "Rot";
 "categorySelection_action" = "Välj en åtgärd för detta album";
 "categorySelectionHUD_label" = "Hämta albumdata…";
-"categorySelection_allAlbums" = "All Albums";
+"categorySelection_allAlbums" = "Alla album";
 
 // Album upload
 "categoryUpload_noSubAlbum" = "Det finns ingen underalbum att ladda upp bilder till";
@@ -188,7 +190,7 @@
 "categoryUpload_images" = "Ladda upp bilder";
 
 // Default album
-"setDefaultCategory_select" = "Please select an album or sub-album which will become the new root album.";
+"setDefaultCategory_select" = "Välj ett album eller underalbum som kommer att bli det nya rotalbumet.";
 "setDefaultCategory_title" = "Standardalbum";
 "setDefaultCategory_message" = "Är du säker att du vill sätta album \"%@\" som standardalbum?";
 
@@ -246,7 +248,7 @@
 
 // Album move
 "moveCategory" = "Flytta Album";
-"moveCategory_select" = "Please select an album or sub-album to move album \"%@\" into.";
+"moveCategory_select" = "Välj ett album eller underalbum för att flytta albumet \"%@\" in.";
 "moveCategory_message" = "Är du säker du vill flytta ”%@” in i album ”%@”?";
 "moveCategoryHUD_moving" = "Flyttar Album…";
 
@@ -255,7 +257,7 @@
 "moveCategoryError_message" = "Kunde inte flytta ditt album";
 
 // Album set photo thumbnail
-"categorySelection_setThumbnail" = "Please select the album which will use the photo \"%@\" as a thumbnail.";
+"categorySelection_setThumbnail" = "Välj det album som kommer att använda fotot \"%@\" som en miniatyrbild.";
 "categorySelection_current" = "Välj det aktuella albumet för denna bild";
 "categorySelection_one" = "Välj en av de album som innehåller den här bilden";
 "categorySelection_other" = "Eller välj ett annat album för detta foto";
@@ -272,9 +274,11 @@
 // ==> IMAGES
 // ===========================================================================
 "singleImage" = "Bild";
+"singleImageCount" = "%@ foto";
 "singleVideo" = "Video";
 "singleAudio" = "Ljud";
 "severalImages" = "Bilder";
+"severalImagesCount" = "%@ foton";
 "All Photos" = "Alla foton";
 "severalVideos" = "Videor";
 "noImages" = "Inga bilder";
@@ -339,8 +343,10 @@
 
 // Image tags
 "none" = "ingen";
-"tags" = "Etiketter";
 "tag" = "Etikett";
+"tags" = "Etiketter";
+"singleTagCount" = "%@ tagg";
+"severalTagsCount" = "%@ taggar";
 "tagsTitle_selectOne" = "Välj en Etikett";
 "tagsHeader_selected" = "Valda";
 "tagsHeader_notSelected" = "Inte markerad";
@@ -377,7 +383,7 @@
 "deleteSeveralImagesHUD_deleting" = "Raderar bilder…";
 "removeSingleImage_title" = "Ta bort från Album";
 "removeSingleImageHUD_removing" = "Ta bort bild…";
-"removeSeveralImagesHUD_removing" = "Removing Photos…";
+"removeSeveralImagesHUD_removing" = "Tar bort foton…";
 "deleteSingleImage_message" = "Är du säker på att du vill radera den här bilden? Åtgärden kan inte ångras!";
 "deleteSeveralImages_title" = "Radera %@ bilder";
 "deleteSeveralImages_message" = "Är du säker på att du vill radera de valda %@ bilderna? Åtgärden kan inte ångras!";
@@ -410,8 +416,8 @@
 
 // Image move
 "moveImage_title" = "Flytta till Album";
-"moveSingleImage_selectAlbum" = "Please, select the album in which you wish to move the photo \"%@\".";
-"moveSeveralImages_selectAlbum" = "Please, select the album in which you wish to copy the photos.";
+"moveSingleImage_selectAlbum" = "Välj det album där du vill flytta fotot \"%@\".";
+"moveSeveralImages_selectAlbum" = "Välj det album som du vill kopiera bilderna i.";
 "moveSingleImage_message" = "Är du säker på att du vill flytta bilden ”%@” till albumet ”%@”?";
 "moveSeveralImages_message" = "Är du säker på att du vill flytta bilderna till albumet ”%@”?";
 "moveSingleImageHUD_moving" = "Flyttar bild…";
@@ -420,12 +426,12 @@
 // Image move — Errors
 "moveImageError_title" = "Flytt misslyckades";
 "moveSingleImageError_message" = "Kunde inte flytta din bild";
-"moveSeveralImagesError_message" = "Failed to move some photos";
+"moveSeveralImagesError_message" = "Det gick inte att flytta några bilder";
 
 // Image copy
 "copyImage_title" = "Kopiera till Album";
-"copySingleImage_selectAlbum" = "Please, select the album in which you wish to copy the photo \"%@\".";
-"copySeveralImages_selectAlbum" = "Please, select the album in which you wish to copy the photos.";
+"copySingleImage_selectAlbum" = "Välj det album där du vill kopiera fotot \"%@\".";
+"copySeveralImages_selectAlbum" = "Välj det album som du vill kopiera bilderna i.";
 "copySingleImage_message" = "Är du säker att du vill kopiera bild ”%@” till albumet ”%@”?";
 "copySeveralImages_message" = "Är du säker att du vill kopiera bilderna till albumet ”%@”?";
 "copySingleImageHUD_copying" = "Kopierar bild…";
@@ -434,10 +440,10 @@
 // Image copy — Errors
 "copyImageError_title" = "Kopiering misslyckad";
 "copySingleImageError_message" = "Kunde inte kopiera din bild";
-"copySeveralImagesError_message" = "Failed to copy some photos";
+"copySeveralImagesError_message" = "Det gick inte att kopiera några bilder";
 
 // Images upload
-"imageUploadHeader" = "Please select the album or sub-album from which photos and videos of your device will be uploaded.";
+"imageUploadHeader" = "Välj det album eller underalbum från vilka foton och videor på din enhet kommer att laddas upp.";
 "imageUploadHeaderTitle_images" = "Parametrar för foton";
 "imageUploadHeaderText_images" = "Ställ in de parametrar som ska gälla för valet av bilder/videor";
 "imageUploadHeaderTitle_upload" = "Ladda upp inställningar";
@@ -675,30 +681,30 @@
 "settings_deleteImage" = "Radera efter uppladdning";
 
 // Settings — Auto-Upload
-"settings_autoUpload" = "Auto Upload";
-"settings_autoUpload>414px" = "Auto Upload Photos";
+"settings_autoUpload" = "Automatisk uppladdning";
+"settings_autoUpload>414px" = "Ladda upp foton automatiskt";
 "settings_autoUploadEnabled" = "On";
-"settings_autoUploadEnabledInfo" = "Photos will be automatically uploaded to your Piwigo.";
-"settings_autoUploadEnabledInfoAll" = "Photos and videos will be automatically uploaded to your Piwigo.";
+"settings_autoUploadEnabledInfo" = "Foton laddas automatiskt upp till din Piwigo.";
+"settings_autoUploadEnabledInfoAll" = "Foton och videor laddas automatiskt upp till din Piwigo.";
 "settings_autoUploadDisabled" = "Off";
-"settings_autoUploadDisabledInfo" = "Photos will not be automatically uploaded to your Piwigo.";
-"settings_autoUploadSource" = "Source";
-"settings_autoUploadSourceInvalid" = "Invalid source album";
-"settings_autoUploadSourceInfo" = "Please select the album or sub-album from which photos and videos of your device will be auto-uploaded.";
-"settings_autoUploadDestination" = "Destination";
-"settings_autoUploadDestinationInvalid" = "Invalid destination album";
-"settings_autoUploadDestinationInfo" = "Please select the album or sub-album into which photos and videos will be auto-uploaded.";
-"AutoUploadError_Disabled" = "The Auto-Upload option is disabled in the app settings.";
-"AutoUploadError_Failed" = "Several transfers failed and the upload queue is on hold. Please check in the app.";
+"settings_autoUploadDisabledInfo" = "Foton kommer inte att laddas upp automatiskt till din Piwigo.";
+"settings_autoUploadSource" = "Källa";
+"settings_autoUploadSourceInvalid" = "Ogiltigt källalbum";
+"settings_autoUploadSourceInfo" = "Välj det album eller underalbum från vilka foton och videor på din enhet automatiskt laddas upp.";
+"settings_autoUploadDestination" = "Mål";
+"settings_autoUploadDestinationInvalid" = "Ogiltigt målalbum";
+"settings_autoUploadDestinationInfo" = "Välj albumet eller underalbumet till vilka foton och videor automatiskt laddas upp.";
+"AutoUploadError_Disabled" = "Alternativet för automatisk uppladdning är inaktiverat i appinställningarna.";
+"AutoUploadError_Failed" = "Flera överföringar misslyckades och uppladdningskön är på plats. Kontrollera i appen.";
 
 // Settings — Upload Photo Size
-"UploadPhotoSize_title" = "Max Photo Size";
-"UploadPhotoSize_header" = "Please select the maximum size of the photos which will be uploaded.";
-"UploadPhotoSize_resolution" = "Built-in cameras maximum resolution:";
-"UploadVideoSize_title" = "Max Video Size";
-"UploadVideoSize_header" = "Please select the maximum size of the videos which will be uploaded.";
-"UploadVideoSize_resolution" = "Built-in cameras maximum specifications:";
-"UploadPhotoSize_original" = "No Downsizing";
+"UploadPhotoSize_title" = "Max bildstorlek";
+"UploadPhotoSize_header" = "Välj den maximala storleken på de bilder som kommer att laddas upp.";
+"UploadPhotoSize_resolution" = "Inbyggda kameror maximal upplösning:";
+"UploadVideoSize_title" = "Max videostorlek";
+"UploadVideoSize_header" = "Välj den maximala storleken på de videor som kommer att laddas upp.";
+"UploadVideoSize_resolution" = "Inbyggda kameror maximala specifikationer:";
+"UploadPhotoSize_original" = "Ingen neddimensionering";
 
 // Settings — Cache
 "settingsHeader_cache" = "Cache-inställningar (använd/totalt)";
@@ -718,6 +724,14 @@
 "settings_brightness" = "Ljusstyrka";
 "settings_brightnessHelp" = "I låg omgivande ljusstyrka, Automatiska alternativet använder en mörkare färgpalett för att göra bilder sticker ut mot mörkare bakgrunder.";
 
+// Settings - Administration
+"singleUserCount" = "%@ användare";
+"severalUsersCount" = "%@ användare";
+"singleGroupCount" = "%@ grupp";
+"severalGroupsCount" = "%@ grupper";
+"singleCommentCount" = "%@ kommentar";
+"severalCommentsCount" = "%@ kommentarer";
+
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";
 "settingsHeader_about" = "Information";
@@ -732,8 +746,6 @@
 "settings_pwgForumURL" = "http://Piwigo.org/forum";
 "settings_acknowledgements" = "Tack till och erkännanden";
 "settings_privacy" = "Integritetspolicy";
-"settings_users" = "Användare";
-"settings_groups" = "Grupper";
 
 // Settings — Help
 "help01_header" = "Multipla val";
@@ -750,5 +762,5 @@
 "help05_text2" = "Tryck på den grå knappen som visas i rotalbumet för att hantera uppladdningar.";
 "help06_header" = "Ladda upp hantering";
 "help06_text" = "Övervaka, avbryta och återuppta uppladdningsförfrågningar globalt eller individuellt.";
-"help07_header" = "Auto-Uploading";
-"help07_text" = "Select source and destination albums in Piwigo, create automations in Shortcuts.";
+"help07_header" = "Automatisk uppladdning";
+"help07_text" = "Välj källa och destination album i Piwigo, skapa automatisering i genvägar.";

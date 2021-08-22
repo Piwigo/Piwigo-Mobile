@@ -115,7 +115,7 @@
     // ==> Landscape
     CGFloat logoHeight = textFieldHeight + 36.0;
     CGFloat logoWidth = floorf(logoHeight * 4.02);
-    CGFloat landscapeSide = floorf([UIScreen mainScreen].bounds.size.width - logoWidth - side - textFieldWidth) / 2.0;
+    CGFloat landscapeSide = floorf(fmax([UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height) - logoWidth - side - textFieldWidth) / 2.0;
     metrics = @{
                 @"side" : @(landscapeSide),
                 @"gap"  : @(side),

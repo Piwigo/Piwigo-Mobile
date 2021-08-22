@@ -490,8 +490,10 @@
                 if ([visibleFooter isKindOfClass:[NberImagesFooterCollectionReusableView class]]) {
                     NberImagesFooterCollectionReusableView *footer = (NberImagesFooterCollectionReusableView *)visibleFooter;
                     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-                    [numberFormatter setPositiveFormat:@"#,##0"];
-                    footer.noImagesLabel.text = [NSString stringWithFormat:@"%@ %@", [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]], totalImageCount > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
+                    [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+                    footer.noImagesLabel.text = totalImageCount > 1 ?
+                        [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]] :
+                        [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
                 }
 
                 // Set navigation bar buttons
@@ -632,7 +634,11 @@
             }
         else {
             // Display number of images…
-            footer.noImagesLabel.text = [NSString stringWithFormat:@"%ld %@", (long)totalImageCount, (totalImageCount > 1) ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
+            NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+            [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+            footer.noImagesLabel.text = totalImageCount > 1 ?
+                [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]] :
+                [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
         }
 
         return footer;
@@ -667,7 +673,11 @@
     }
     else {
         // Display number of images…
-        footer = [NSString stringWithFormat:@"%ld %@", (long)totalImageCount, (totalImageCount > 1) ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
+        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+        [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+        footer = totalImageCount > 1 ?
+            [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]] :
+            [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
     }
 
     if ([footer length] > 0) {
@@ -1270,14 +1280,17 @@
 
 #pragma mark - ImageDetailDelegate Methods
 
--(void)didFinishPreviewOfImageWithId:(NSInteger)imageId
+-(void)didSelectImageWithId:(NSInteger)imageId
 {
     // Determine index of image
     NSInteger indexOfImage = [self.albumData.images indexOfObjectPassingTest:^BOOL(PiwigoImageData *image, NSUInteger index, BOOL * _Nonnull stop) {
      return image.imageId == imageId;
     }];
+    
+    // Scroll view to center image
     if (indexOfImage != NSNotFound) {
-        self.imageOfInterest = [NSIndexPath indexPathForItem:indexOfImage inSection:1];
+        self.imageOfInterest = [NSIndexPath indexPathForItem:indexOfImage inSection:0];
+        [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
     }
 }
 

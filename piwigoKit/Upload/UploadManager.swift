@@ -764,7 +764,8 @@ public class UploadManager: NSObject {
         }
     }
     
-    private func prepareImageInPhotoLibrary(for uploadID: NSManagedObjectID, with properties: UploadProperties) {
+    private func prepareImageInPhotoLibrary(for uploadID: NSManagedObjectID,
+                                            with properties: UploadProperties) {
         // Will update upload properties
         var uploadProperties = properties
 
@@ -798,13 +799,18 @@ public class UploadManager: NSObject {
         var resources = PHAssetResource.assetResources(for: originalAsset)
         let options = PHAssetResourceRequestOptions()
         options.isNetworkAccessAllowed = true
+        let edited = resources.first(where: { $0.type == .fullSizePhoto || $0.type == .fullSizeVideo })
+        let original = resources.first(where: { $0.type == .photo || $0.type == .video || $0.type == .audio })
+        let resource = edited ?? original ?? resources.first(where: { $0.type == .alternatePhoto})
+        let originalFilename = original?.originalFilename ?? ""
 
         // Priority to original media data
-        if let resource = resources.first(where: { $0.type == .photo || $0.type == .video || $0.type == .audio }) {
+        if let res = resource {
             // Store original data in file
-            PHAssetResourceManager.default().writeData(for: resource, toFile: uploadFileURL, options: options) { error in
+            PHAssetResourceManager.default().writeData(for: res, toFile: uploadFileURL,
+                                                       options: options) { error in
                 // Piwigo 2.10.2 supports the 3-byte UTF-8, not the standard UTF-8 (4 bytes)
-                var utf8mb3Filename = NetworkUtilities.utf8mb3String(from: resource.originalFilename)
+                var utf8mb3Filename = NetworkUtilities.utf8mb3String(from: originalFilename)
                 
                 // If encodedFileName is empty, build one from the current date
                 if utf8mb3Filename.count == 0 {
@@ -833,6 +839,13 @@ public class UploadManager: NSObject {
                 uploadProperties.fileName = utf8mb3Filename
                 self.dispatchImage(asset: originalAsset, atURL:uploadFileURL,
                                    for: uploadID, with: uploadProperties)
+            }
+        }
+        else {
+            // Asset not available… deleted?
+            uploadsProvider.updateStatusOfUpload(with: uploadID, to: .preparingFail, error: UploadError.missingAsset.errorDescription) { [unowned self] (_) in
+                // Investigate next upload request?
+                self.didEndPreparation()
             }
         }
         

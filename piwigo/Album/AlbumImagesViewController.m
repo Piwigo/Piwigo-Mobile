@@ -1407,7 +1407,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                          searchController.hidesNavigationBarDuringPresentation = YES;
                          searchController.searchResultsUpdater = self;
                          
-                         searchController.searchBar.tintColor = [UIColor piwigoColorOrange];
                          searchController.searchBar.searchBarStyle = UISearchBarStyleMinimal;
                          searchController.searchBar.translucent = NO;
                          searchController.searchBar.showsCancelButton = NO;
@@ -1508,8 +1507,10 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 if ([visibleFooter isKindOfClass:[NberImagesFooterCollectionReusableView class]]) {
                     NberImagesFooterCollectionReusableView *footer = (NberImagesFooterCollectionReusableView *)visibleFooter;
                     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-                    [numberFormatter setPositiveFormat:@"#,##0"];
-                    footer.noImagesLabel.text = [NSString stringWithFormat:@"%@ %@", [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]], totalImageCount > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
+                    [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+                    footer.noImagesLabel.text = totalImageCount > 1 ?
+                    [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]] :
+                    [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
                 }
 
                 // Set navigation bar buttons
@@ -1591,8 +1592,10 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 if ([visibleFooter isKindOfClass:[NberImagesFooterCollectionReusableView class]]) {
                     NberImagesFooterCollectionReusableView *footer = (NberImagesFooterCollectionReusableView *)visibleFooter;
                     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-                    [numberFormatter setPositiveFormat:@"#,##0"];
-                    footer.noImagesLabel.text = [NSString stringWithFormat:@"%@ %@", [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]], totalImageCount > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
+                    [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+                    footer.noImagesLabel.text = totalImageCount > 1 ?
+                    [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]] :
+                    [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
                 }
 
                 // Set navigation bar buttons
@@ -1667,8 +1670,10 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 if ([visibleFooter isKindOfClass:[NberImagesFooterCollectionReusableView class]]) {
                     NberImagesFooterCollectionReusableView *footer = (NberImagesFooterCollectionReusableView *)visibleFooter;
                     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-                    [numberFormatter setPositiveFormat:@"#,##0"];
-                    footer.noImagesLabel.text = [NSString stringWithFormat:@"%@ %@", [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]], totalImageCount > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
+                    [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+                    footer.noImagesLabel.text = totalImageCount > 1 ?
+                    [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]] :
+                    [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
                 }
 
                 // Set navigation bar buttons if the AlbumImagesViewController is visible
@@ -2745,10 +2750,11 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 footer.noImagesLabel.textColor = [UIColor piwigoColorHeader];
 
                 // Get number of images
-                NSInteger totalImageCount = 0;
+                NSInteger totalImageCount = NSNotFound;
                 if (self.categoryId == 0) {
                     // Only albums in Root Album => total number of images
-                    for (PiwigoAlbumData *albumData in [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId]) {
+                    for (PiwigoAlbumData *albumData in [[CategoriesData sharedInstance] getCategoriesForParentCategory:0]) {
+                        if (totalImageCount == NSNotFound) { totalImageCount = 0; }
                         totalImageCount += albumData.totalNumberOfImages;
                     }
                 } else {
@@ -2767,8 +2773,10 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 else {
                     // Display number of images…
                     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-                    [numberFormatter setPositiveFormat:@"#,##0"];
-                    footer.noImagesLabel.text = [NSString stringWithFormat:@"%@ %@", [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]], totalImageCount > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
+                    [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+                    footer.noImagesLabel.text = totalImageCount > 1 ?
+                    [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]] :
+                    [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
                 }
                 return footer;
             }
@@ -2821,7 +2829,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         {
             NSString *footer = @"";
             // Get number of images
-            NSInteger totalImageCount = 0;
+            NSInteger totalImageCount = NSNotFound;
             if (self.categoryId == 0) {
                 // Only albums in Root Album => total number of images
                 for (PiwigoAlbumData *albumData in [[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId]) {
@@ -2843,8 +2851,10 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             else {
                 // Display number of images…
                 NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-                [numberFormatter setPositiveFormat:@"#,##0"];
-                footer = [NSString stringWithFormat:@"%@ %@", [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]], totalImageCount > 1 ? NSLocalizedString(@"categoryTableView_photosCount", @"photos") : NSLocalizedString(@"categoryTableView_photoCount", @"photo")];
+                [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+                footer = totalImageCount > 1 ?
+                [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]] :
+                [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
             }
  
             if ([footer length] > 0) {
@@ -3130,14 +3140,17 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
 #pragma mark - ImageDetailDelegate Methods
 
--(void)didFinishPreviewOfImageWithId:(NSInteger)imageId
+-(void)didSelectImageWithId:(NSInteger)imageId
 {
     // Determine index of image
     NSInteger indexOfImage = [self.albumData.images indexOfObjectPassingTest:^BOOL(PiwigoImageData *image, NSUInteger index, BOOL * _Nonnull stop) {
      return image.imageId == imageId;
     }];
+    
+    // Scroll view to center image
     if (indexOfImage != NSNotFound) {
         self.imageOfInterest = [NSIndexPath indexPathForItem:indexOfImage inSection:1];
+        [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
     }
 }
 
