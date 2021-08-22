@@ -125,9 +125,9 @@
 // ===========================================================================
 // Generic
 "singleAlbumCount" = "%@ album";
-"severalAlbumsCount" = "%@ albums";
-"singleSubAlbumCount" = "%@ sub-album";
-"severalSubAlbumsCount" = "%@ sub-albums";
+"severalAlbumsCount" = "%@ albumów";
+"singleSubAlbumCount" = "%@ podalbum";
+"severalSubAlbumsCount" = "%@ podalbumy";
 
 // Albums view
 "categoryMainEmtpy" = "Nie ma jeszcze żadnych albumów w Twojej galerii Piwigo. Możesz przeciągnąć listę w dół by odświeżyć lub zalogować się ponownie.";
@@ -274,11 +274,11 @@
 // ==> IMAGES
 // ===========================================================================
 "singleImage" = "Zdjęcie";
-"singleImageCount" = "%@ photo";
+"singleImageCount" = "%@ zdjęcie";
 "singleVideo" = "Wideo";
 "singleAudio" = "Audio";
 "severalImages" = "Zdjęcia";
-"severalImagesCount" = "%@ photos";
+"severalImagesCount" = "%@ zdjęć";
 "All Photos" = "Wszystkie zdjęcia";
 "severalVideos" = "Filmy";
 "noImages" = "Brak zdjęć";
@@ -346,7 +346,7 @@
 "tag" = "Znacznik";
 "tags" = "Tagi";
 "singleTagCount" = "%@ tag";
-"severalTagsCount" = "%@ tags";
+"severalTagsCount" = "%@ tagów";
 "tagsTitle_selectOne" = "Wybierz znacznik";
 "tagsHeader_selected" = "Wybrane";
 "tagsHeader_notSelected" = "Nie wybrane";
@@ -725,12 +725,12 @@
 "settings_brightnessHelp" = "Przy niskiej jasności otoczenia opcja Automatycznie użyje ciemnej palety kolorów, aby zdjęcia wyróżniały się na ciemniejszym tle.";
 
 // Settings - Administration
-"singleUserCount" = "%@ user";
-"severalUsersCount" = "%@ users";
-"singleGroupCount" = "%@ group";
-"severalGroupsCount" = "%@ groups";
-"singleCommentCount" = "%@ comment";
-"severalCommentsCount" = "%@ comments";
+"singleUserCount" = "%@ użytkownik";
+"severalUsersCount" = "%@ użytkowników";
+"singleGroupCount" = "%@ grupa";
+"severalGroupsCount" = "%@ grup";
+"singleCommentCount" = "%@ komentarz";
+"severalCommentsCount" = "%@ komentarzy";
 
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";

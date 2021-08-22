@@ -45,7 +45,7 @@
 
 "PiwigoServer_wrongJSONobject" = "Piwigoサーバが返すJSONオブジェクトを要約できませんでした。";
 "PiwigoServer_invalidJSONobject" = "Piwigoサーバは有効なJSONオブジェクトを返しませんでした。";
-"PiwigoServer_emptyJSONobject" = "Piwigo server did return an empty JSON object.";
+"PiwigoServer_emptyJSONobject" = "Piwigoサーバーは空のJSONオブジェクトを返しました。";
 
 // ===========================================================================
 // ==> CORE DATA
@@ -124,10 +124,10 @@
 // ==> ALBUMS
 // ===========================================================================
 // Generic
-"singleAlbumCount" = "%@ album";
-"severalAlbumsCount" = "%@ albums";
-"singleSubAlbumCount" = "%@ sub-album";
-"severalSubAlbumsCount" = "%@ sub-albums";
+"singleAlbumCount" = "%@ アルバム";
+"severalAlbumsCount" = "%@ アルバム";
+"singleSubAlbumCount" = "%@ サブアルバム";
+"severalSubAlbumsCount" = "%@ サブアルバム";
 
 // Albums view
 "categoryMainEmtpy" = "まだPiwigoにアルバムがありません。\nプルダウンして更新するか、再ログインしてください。";
@@ -166,10 +166,10 @@
 "categorySelection_title" = "アルバム";
 "categorySelection_titleSub" = "サブアルバム";
 "categorySelection_root" = "ルートアルバム";
-"categorySelection_root<375pt" = "Root";
+"categorySelection_root<375pt" = "ルート";
 "categorySelection_action" = "このアルバムのためのアクションを選択します";
 "categorySelectionHUD_label" = "アルバムのデータを取得しています...";
-"categorySelection_allAlbums" = "All Albums";
+"categorySelection_allAlbums" = "すべてのアルバム";
 
 // Album upload
 "categoryUpload_noSubAlbum" = "写真をアップロードするサブアルバムがありません";
@@ -190,7 +190,7 @@
 "categoryUpload_images" = "写真をアップロードする";
 
 // Default album
-"setDefaultCategory_select" = "Please select an album or sub-album which will become the new root album.";
+"setDefaultCategory_select" = "新しいアルバムになるアルバムまたはサブアルバムを選択してください。";
 "setDefaultCategory_title" = "既定のアルバム";
 "setDefaultCategory_message" = "アルバム「%@」を規定のアルバムに設定してよろしいですか？";
 
@@ -248,7 +248,7 @@
 
 // Album move
 "moveCategory" = "アルバムを移動します";
-"moveCategory_select" = "Please select an album or sub-album to move album \"%@\" into.";
+"moveCategory_select" = "アルバムを移動するにはアルバムまたはサブアルバムを選択してください \"%@\" へ。";
 "moveCategory_message" = "「%@」をアルバム「%@」へ移動していいですか？";
 "moveCategoryHUD_moving" = "アルバムを移動中...";
 
@@ -257,7 +257,7 @@
 "moveCategoryError_message" = "アルバムを移動するのに失敗しました";
 
 // Album set photo thumbnail
-"categorySelection_setThumbnail" = "Please select the album which will use the photo \"%@\" as a thumbnail.";
+"categorySelection_setThumbnail" = "写真「%@」をサムネイルとして使用するアルバムを選択してください。";
 "categorySelection_current" = "この写真のためのアルバムを選択します";
 "categorySelection_one" = "この写真を含むアルバムを1つ選択して下さい";
 "categorySelection_other" = "または、この写真のために別のアルバムを選択します";
@@ -274,11 +274,11 @@
 // ==> IMAGES
 // ===========================================================================
 "singleImage" = "写真";
-"singleImageCount" = "%@ photo";
+"singleImageCount" = "%@ 写真";
 "singleVideo" = "動画";
 "singleAudio" = "音声";
 "severalImages" = "写真";
-"severalImagesCount" = "%@ photos";
+"severalImagesCount" = "%@ 枚の写真";
 "All Photos" = "すべての写真";
 "severalVideos" = "ビデオ";
 "noImages" = "写真がありません";
@@ -345,8 +345,8 @@
 "none" = "なし";
 "tag" = "タグ";
 "tags" = "タグ";
-"singleTagCount" = "%@ tag";
-"severalTagsCount" = "%@ tags";
+"singleTagCount" = "%@ タグ";
+"severalTagsCount" = "%@ タグ";
 "tagsTitle_selectOne" = "タグを選択";
 "tagsHeader_selected" = "選択済み";
 "tagsHeader_notSelected" = "選択されていません";
@@ -383,7 +383,7 @@
 "deleteSeveralImagesHUD_deleting" = "写真を削除しています...";
 "removeSingleImage_title" = "アルバムから削除する";
 "removeSingleImageHUD_removing" = "写真を削除しています...";
-"removeSeveralImagesHUD_removing" = "Removing Photos…";
+"removeSeveralImagesHUD_removing" = "写真を削除しています…";
 "deleteSingleImage_message" = "この写真を本当に削除しますか？この操作は元に戻せません。";
 "deleteSeveralImages_title" = "%@枚の写真を削除";
 "deleteSeveralImages_message" = "選択した%@枚の写真を本当に削除しますか？この操作は元に戻せません。";
@@ -416,8 +416,8 @@
 
 // Image move
 "moveImage_title" = "アルバムに移動する";
-"moveSingleImage_selectAlbum" = "Please, select the album in which you wish to move the photo \"%@\".";
-"moveSeveralImages_selectAlbum" = "Please, select the album in which you wish to copy the photos.";
+"moveSingleImage_selectAlbum" = "写真 \"%@ \" を移動したいアルバムを選択してください。";
+"moveSeveralImages_selectAlbum" = "写真をコピーしたいアルバムを選択してください。";
 "moveSingleImage_message" = "写真「%@」をアルバム「%@」へ移動していいですか？";
 "moveSeveralImages_message" = "写真をアルバム「%@」へ移動していいですか？";
 "moveSingleImageHUD_moving" = "写真を移動しています...";
@@ -426,12 +426,12 @@
 // Image move — Errors
 "moveImageError_title" = "移動に失敗しました";
 "moveSingleImageError_message" = "写真の移動に失敗しました。";
-"moveSeveralImagesError_message" = "Failed to move some photos";
+"moveSeveralImagesError_message" = "写真の移動に失敗しました";
 
 // Image copy
 "copyImage_title" = "アルバムにコピーする";
-"copySingleImage_selectAlbum" = "Please, select the album in which you wish to copy the photo \"%@\".";
-"copySeveralImages_selectAlbum" = "Please, select the album in which you wish to copy the photos.";
+"copySingleImage_selectAlbum" = "写真 \"%@ \" をコピーしたいアルバムを選択してください。";
+"copySeveralImages_selectAlbum" = "写真をコピーしたいアルバムを選択してください。";
 "copySingleImage_message" = "写真「%@」をアルバム「%@」へコピーしていいですか？";
 "copySeveralImages_message" = "写真をアルバム「%@」へコピーしていいですか？";
 "copySingleImageHUD_copying" = "写真をコピーしています...";
@@ -440,10 +440,10 @@
 // Image copy — Errors
 "copyImageError_title" = "コピーに失敗しました";
 "copySingleImageError_message" = "写真のコピーに失敗しました";
-"copySeveralImagesError_message" = "Failed to copy some photos";
+"copySeveralImagesError_message" = "写真のコピーに失敗しました";
 
 // Images upload
-"imageUploadHeader" = "Please select the album or sub-album from which photos and videos of your device will be uploaded.";
+"imageUploadHeader" = "デバイスの写真やビデオをアップロードするアルバムまたはサブアルバムを選択してください。";
 "imageUploadHeaderTitle_images" = "写真のパラメータ";
 "imageUploadHeaderText_images" = "写真/動画の選択に適用するパラメータを設定してください";
 "imageUploadHeaderTitle_upload" = "アップロード設定";
@@ -681,30 +681,30 @@
 "settings_deleteImage" = "アップロード後に削除します";
 
 // Settings — Auto-Upload
-"settings_autoUpload" = "Auto Upload";
-"settings_autoUpload>414px" = "Auto Upload Photos";
+"settings_autoUpload" = "自動アップロード";
+"settings_autoUpload>414px" = "写真を自動アップロード";
 "settings_autoUploadEnabled" = "On";
-"settings_autoUploadEnabledInfo" = "Photos will be automatically uploaded to your Piwigo.";
-"settings_autoUploadEnabledInfoAll" = "Photos and videos will be automatically uploaded to your Piwigo.";
+"settings_autoUploadEnabledInfo" = "写真は自動的にPiwigoにアップロードされます。";
+"settings_autoUploadEnabledInfoAll" = "写真とビデオは自動的にPiwigoにアップロードされます。";
 "settings_autoUploadDisabled" = "Off";
-"settings_autoUploadDisabledInfo" = "Photos will not be automatically uploaded to your Piwigo.";
-"settings_autoUploadSource" = "Source";
-"settings_autoUploadSourceInvalid" = "Invalid source album";
-"settings_autoUploadSourceInfo" = "Please select the album or sub-album from which photos and videos of your device will be auto-uploaded.";
-"settings_autoUploadDestination" = "Destination";
-"settings_autoUploadDestinationInvalid" = "Invalid destination album";
-"settings_autoUploadDestinationInfo" = "Please select the album or sub-album into which photos and videos will be auto-uploaded.";
-"AutoUploadError_Disabled" = "The Auto-Upload option is disabled in the app settings.";
-"AutoUploadError_Failed" = "Several transfers failed and the upload queue is on hold. Please check in the app.";
+"settings_autoUploadDisabledInfo" = "写真は自動的にPiwigoにアップロードされません。";
+"settings_autoUploadSource" = "ソース";
+"settings_autoUploadSourceInvalid" = "ソースアルバムが無効です";
+"settings_autoUploadSourceInfo" = "デバイスの写真やビデオを自動的にアップロードするアルバムまたはサブアルバムを選択してください。";
+"settings_autoUploadDestination" = "保存先";
+"settings_autoUploadDestinationInvalid" = "無効なアルバムです";
+"settings_autoUploadDestinationInfo" = "写真や動画を自動アップロードするアルバムまたはサブアルバムを選択してください。";
+"AutoUploadError_Disabled" = "アプリの設定で自動アップロードオプションが無効になっています。";
+"AutoUploadError_Failed" = "複数の転送に失敗し、アップロードキューが保留になっています。アプリで確認してください。";
 
 // Settings — Upload Photo Size
-"UploadPhotoSize_title" = "Max Photo Size";
-"UploadPhotoSize_header" = "Please select the maximum size of the photos which will be uploaded.";
-"UploadPhotoSize_resolution" = "Built-in cameras maximum resolution:";
-"UploadVideoSize_title" = "Max Video Size";
-"UploadVideoSize_header" = "Please select the maximum size of the videos which will be uploaded.";
-"UploadVideoSize_resolution" = "Built-in cameras maximum specifications:";
-"UploadPhotoSize_original" = "No Downsizing";
+"UploadPhotoSize_title" = "最大写真サイズ";
+"UploadPhotoSize_header" = "アップロードする写真の最大サイズを選択してください。";
+"UploadPhotoSize_resolution" = "内蔵カメラの最大解像度:";
+"UploadVideoSize_title" = "ビデオの最大サイズ";
+"UploadVideoSize_header" = "アップロードする動画の最大サイズを選択してください。";
+"UploadVideoSize_resolution" = "内蔵カメラの最大仕様:";
+"UploadPhotoSize_original" = "ダウンサイジングなし";
 
 // Settings — Cache
 "settingsHeader_cache" = "キャッシュ設定 (使用済み／総計)";
@@ -725,12 +725,12 @@
 "settings_brightnessHelp" = "環境光が暗い場合、自動オプションは暗いカラーパレットを使用して写真を暗い背景から目立たせます。";
 
 // Settings - Administration
-"singleUserCount" = "%@ user";
-"severalUsersCount" = "%@ users";
-"singleGroupCount" = "%@ group";
-"severalGroupsCount" = "%@ groups";
-"singleCommentCount" = "%@ comment";
-"severalCommentsCount" = "%@ comments";
+"singleUserCount" = "%@ ユーザー";
+"severalUsersCount" = "%@ ユーザー";
+"singleGroupCount" = "%@ グループ";
+"severalGroupsCount" = "%@ グループ";
+"singleCommentCount" = "%@ 件のコメント";
+"severalCommentsCount" = "%@ 件のコメント";
 
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";
@@ -762,5 +762,5 @@
 "help05_text2" = "アップロードを管理するには、ルートアルバムに表示されているグレーのボタンをタップします。";
 "help06_header" = "アップロード管理";
 "help06_text" = "監視、キャンセル、およびグローバルまたは個別にアップロードリクエストを再開します。";
-"help07_header" = "Auto-Uploading";
-"help07_text" = "Select source and destination albums in Piwigo, create automations in Shortcuts.";
+"help07_header" = "自動アップロード";
+"help07_text" = "Piwigoでソースアルバムとデスティネーションアルバムを選択し、ショートカットでオートメーションを作成します。";

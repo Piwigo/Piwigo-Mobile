@@ -125,9 +125,9 @@
 // ===========================================================================
 // Generic
 "singleAlbumCount" = "%@ album";
-"severalAlbumsCount" = "%@ albums";
-"singleSubAlbumCount" = "%@ sub-album";
-"severalSubAlbumsCount" = "%@ sub-albums";
+"severalAlbumsCount" = "%@ album";
+"singleSubAlbumCount" = "%@ alalbum";
+"severalSubAlbumsCount" = "%@ alalbum";
 
 // Albums view
 "categoryMainEmtpy" = "Még nincsenek albumok a Piwigoban.\nLefelé húzással frissítheted a képernyőt, illetve megpróbálhatsz újra bejelentkezni.";
@@ -274,11 +274,11 @@
 // ==> IMAGES
 // ===========================================================================
 "singleImage" = "Fotó";
-"singleImageCount" = "%@ photo";
+"singleImageCount" = "%@ fotó";
 "singleVideo" = "Videó";
 "singleAudio" = "Hang";
 "severalImages" = "Fotók";
-"severalImagesCount" = "%@ photos";
+"severalImagesCount" = "%@ fotó";
 "All Photos" = "Összes fotó";
 "severalVideos" = "Videók";
 "noImages" = "Összes videó";
@@ -345,8 +345,8 @@
 "none" = "semmi";
 "tag" = "Címke";
 "tags" = "Címkék";
-"singleTagCount" = "%@ tag";
-"severalTagsCount" = "%@ tags";
+"singleTagCount" = "%@ címke";
+"severalTagsCount" = "%@ címke";
 "tagsTitle_selectOne" = "Címke kiválasztása";
 "tagsHeader_selected" = "Kijelölt";
 "tagsHeader_notSelected" = "Nem kijelölt";
@@ -725,12 +725,12 @@
 "settings_brightnessHelp" = "Az automata opció használatával sötétebb színpaletta kerül alkalmazásra, amennyiben kevés a környezetből érkező fény. Így a fotók élénkebbnek tűnnek a sötétebb hátterek miatt.";
 
 // Settings - Administration
-"singleUserCount" = "%@ user";
-"severalUsersCount" = "%@ users";
-"singleGroupCount" = "%@ group";
-"severalGroupsCount" = "%@ groups";
-"singleCommentCount" = "%@ comment";
-"severalCommentsCount" = "%@ comments";
+"singleUserCount" = "%@ felhasználó";
+"severalUsersCount" = "%@ felhasználó";
+"singleGroupCount" = "%@ csoport";
+"severalGroupsCount" = "%@ csoport";
+"singleCommentCount" = "%@ megjegyzés";
+"severalCommentsCount" = "%@ megjegyzés";
 
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";

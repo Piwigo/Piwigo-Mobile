@@ -124,9 +124,9 @@
 // ==> ALBUMS
 // ===========================================================================
 // Generic
-"singleAlbumCount" = "%@ album";
+"singleAlbumCount" = "%@ 相簿";
 "severalAlbumsCount" = "%@ albums";
-"singleSubAlbumCount" = "%@ sub-album";
+"singleSubAlbumCount" = "%@子相簿";
 "severalSubAlbumsCount" = "%@ sub-albums";
 
 // Albums view
@@ -730,7 +730,7 @@
 "singleGroupCount" = "%@ group";
 "severalGroupsCount" = "%@ groups";
 "singleCommentCount" = "%@ comment";
-"severalCommentsCount" = "%@ comments";
+"severalCommentsCount" = "%@ 評論";
 
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";

@@ -124,10 +124,10 @@
 // ==> ALBUMS
 // ===========================================================================
 // Generic
-"singleAlbumCount" = "%@ album";
-"severalAlbumsCount" = "%@ albums";
-"singleSubAlbumCount" = "%@ sub-album";
-"severalSubAlbumsCount" = "%@ sub-albums";
+"singleAlbumCount" = "%@ альбом";
+"severalAlbumsCount" = "%@ альбомов";
+"singleSubAlbumCount" = "%@ подальбом";
+"severalSubAlbumsCount" = "%@ подальбомов";
 
 // Albums view
 "categoryMainEmtpy" = "В вашем Piwigo пока нет альбомов.\nВы можете потянуть вниз для обновления или повторного входа.";
@@ -274,11 +274,11 @@
 // ==> IMAGES
 // ===========================================================================
 "singleImage" = "Фото";
-"singleImageCount" = "%@ photo";
+"singleImageCount" = "%@ фото";
 "singleVideo" = "Видео";
 "singleAudio" = "Аудио";
 "severalImages" = "Фото";
-"severalImagesCount" = "%@ photos";
+"severalImagesCount" = "%@ фото";
 "All Photos" = "Все фото";
 "severalVideos" = "Видео";
 "noImages" = "Нет фото";
@@ -345,8 +345,8 @@
 "none" = "нет";
 "tag" = "Тег";
 "tags" = "Теги";
-"singleTagCount" = "%@ tag";
-"severalTagsCount" = "%@ tags";
+"singleTagCount" = "%@ тег";
+"severalTagsCount" = "%@ тегов";
 "tagsTitle_selectOne" = "Выберите тег";
 "tagsHeader_selected" = "Выбрано";
 "tagsHeader_notSelected" = "Не выбрано";
@@ -725,12 +725,12 @@
 "settings_brightnessHelp" = "При низкой яркости окружающей среды параметр «Автоматически» использует более темную цветовую палитру, чтобы фотографии выделялись на более темном фоне.";
 
 // Settings - Administration
-"singleUserCount" = "%@ user";
-"severalUsersCount" = "%@ users";
-"singleGroupCount" = "%@ group";
-"severalGroupsCount" = "%@ groups";
-"singleCommentCount" = "%@ comment";
-"severalCommentsCount" = "%@ comments";
+"singleUserCount" = "%@ пользователь";
+"severalUsersCount" = "%@ пользователей";
+"singleGroupCount" = "%@ группа";
+"severalGroupsCount" = "%@ группы";
+"singleCommentCount" = "%@ комментарий";
+"severalCommentsCount" = "%@ комментариев";
 
 // Settings — Information
 "settings_appName" = "Piwigo Mobile";
