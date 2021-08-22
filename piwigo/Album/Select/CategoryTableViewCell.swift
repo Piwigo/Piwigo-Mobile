@@ -24,6 +24,7 @@ class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
     @objc weak var delegate: CategoryCellDelegate?
     
     @IBOutlet weak var categoryLabel: UILabel!
+    @IBOutlet weak var leadingConstraint: NSLayoutConstraint!
     @IBOutlet weak var subCategoriesLabel: UILabel!
     @IBOutlet weak var showHideSubCategoriesImage: UIImageView!
     @IBOutlet weak var showHideSubCategoriesGestureArea: UIView!
@@ -43,17 +44,13 @@ class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
         // Is this a sub-category?
         categoryLabel.font = UIFont.piwigoFontNormal()
         categoryLabel.textColor = UIColor.piwigoColorLeftLabel()
+        categoryLabel.text = categoryData.name
         if depth == 0 {
             // Categories in root album or root album itself
-            categoryLabel.text = categoryData.name
+            leadingConstraint.constant = 20.0
         } else {
-            // Append "—" characters to sub-category names
-            let subAlbumPrefix = "".padding(toLength: depth, withPad: "…", startingAt: 0)
-            if AppVars.isAppLanguageRTL {
-                categoryLabel.text = String(format: "%@ %@", categoryData.name, subAlbumPrefix)
-            } else {
-                categoryLabel.text = String(format: "%@ %@", subAlbumPrefix, categoryData.name)
-            }
+            // Shift sub-category names to the right
+            leadingConstraint.constant = 20.0 + 12.0 * CGFloat(min(depth,4))
         }
         
         // Show open/close button (# sub-albums) if there are sub-categories
