@@ -88,10 +88,15 @@ class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
     @objc func tappedLoadView() {
         // Rotate icon
         let sign = buttonState == kPiwigoCategoryTableCellButtonStateShowSubAlbum ? +1.0 : -1.0
-        UIView.animate(withDuration: 0.25, delay: 0, options: .curveLinear) {
+        UIView.animate(withDuration: 0.25, delay: 0, options: .curveLinear) { [unowned self] in
+            // Rotate the chevron
             self.showHideSubCategoriesImage.transform = self.showHideSubCategoriesImage.transform.rotated(by: CGFloat(sign * .pi/2.0))
-            self.layoutIfNeeded()
-        } completion: { [unowned self] _ in
+            if self.buttonState == kPiwigoCategoryTableCellButtonStateHideSubAlbum {
+                self.buttonState = kPiwigoCategoryTableCellButtonStateShowSubAlbum
+            } else {
+                self.buttonState = kPiwigoCategoryTableCellButtonStateHideSubAlbum
+            }
+            
             // Add/remove sub-categories
             self.delegate?.tappedDisclosure(of: self.categoryData)
         }
