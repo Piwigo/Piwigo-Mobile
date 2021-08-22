@@ -1268,7 +1268,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                     cell.cellSelected = false
                 } else {
                     // Can we select this image?
-                    if queue.operationCount == 0 {
+                    if (queue.operationCount == 0) && (index < indexedUploadsInQueue.count) {
                         // Indexed uploads available
                         if indexedUploadsInQueue[index] != nil { return }
                     } else {
