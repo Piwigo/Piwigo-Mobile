@@ -1561,10 +1561,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                         break
                     }
                 }
-            } catch {
+            } catch let error as NSError {
                 // Data cannot be digested
                 #if DEBUG
-                printDebug(error)
+                debugPrint(error)
                 #endif
                 return
             }
