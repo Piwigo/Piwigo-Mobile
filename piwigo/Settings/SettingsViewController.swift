@@ -48,12 +48,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     private var tableViewBottomConstraint: NSLayoutConstraint?
     private var doneBarButton: UIBarButtonItem?
     private var helpBarButton: UIBarButtonItem?
-    private var nberCategories = ""
-    private var nberImages = ""
-    private var nberTags = ""
-    private var nberUsers = ""
-    private var nberGroups = ""
-    private var nberComments = ""
+    private var statistics = ""
 
 
     // MARK: - View Lifecycle
@@ -63,7 +58,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
         // Get Server Infos if possible
         if NetworkVars.hasAdminRights {
-            getInfos()
+            DispatchQueue.global(qos: .userInitiated).async {
+                self.getInfos()
+            }
         }
         
         // Title
@@ -1412,7 +1409,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(UploadVars.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
             }
         case SettingsSection.about.rawValue:
-            footer = getFooterText()
+            footer = statistics
         default:
             return 16.0
         }
@@ -1458,7 +1455,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 footerLabel.text = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(UploadVars.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
             }
         case SettingsSection.about.rawValue:
-            footerLabel.text = getFooterText()
+            footerLabel.text = statistics
         default:
             break
         }
@@ -1481,108 +1478,108 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         return footer
     }
     
-    private func getFooterText() -> String {
-        var footer = ""
-        
-        if !nberImages.isEmpty { footer.append(nberImages) }
-        if !nberCategories.isEmpty {
-            if footer.isEmpty { footer.append(nberCategories)
-            } else { footer.append(" | " + nberCategories) }
-        }
-        if !nberTags.isEmpty {
-            if footer.isEmpty { footer.append(nberTags)
-            } else { footer.append(" | " + nberTags) }
-        }
-        if !nberUsers.isEmpty {
-            if footer.isEmpty { footer.append(nberUsers)
-            } else { footer.append(" | " + nberUsers) }
-        }
-        if !nberGroups.isEmpty {
-            if footer.isEmpty { footer.append(nberGroups)
-            } else { footer.append(" | " + nberGroups) }
-        }
-        if !nberComments.isEmpty {
-            if footer.isEmpty { footer.append(nberComments)
-            } else { footer.append(" | " + nberComments) }
-        }
-        return footer
-    }
-
     private func getInfos() {
         // Initialisation
-        self.nberImages = ""
-        self.nberCategories = ""
-        self.nberTags = ""
-        self.nberUsers = ""
-        self.nberGroups = ""
-        self.nberComments = ""
+        statistics = ""
         
         // Collect stats from server
-        AlbumService.getInfosOnCompletion({ _, infos in
+        let JSONsession = PwgSession.shared
+        JSONsession.postRequest(withMethod: kPiwigoGetInfos, paramDict: [:],
+                                countOfBytesClientExpectsToReceive: 1000) { jsonData, error in
+            // Any error?
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            /// -> nothing presented in the footer
+            if error != nil { return }
+            
+            // Decode the JSON and collect statistics.
+            do {
+                // Decode the JSON into codable type TagJSON.
+                let decoder = JSONDecoder()
+                let uploadJSON = try decoder.decode(GetInfosJSON.self, from: jsonData)
 
-            // Check returned infos
-            guard let JSONdata: [Any] = infos else { return }
- 
-            // Update data
-            let numberFormatter = NumberFormatter()
-            numberFormatter.numberStyle = .decimal
-            for info in JSONdata {
-                guard let info = info as? [String : Any] else { continue }
-                switch info["name"] as? String {
-                case "nb_elements":
-                    if let value = info["value"] as? String, let nber = Int(value),
-                       let nberPhotos = numberFormatter.string(from: NSNumber(value: nber)) {
-                        self.nberImages = nber > 1 ?
-                            String(format: NSLocalizedString("severalImagesCount", comment: "%@ photos"), nberPhotos) :
-                            String(format: NSLocalizedString("singleImageCount", comment: "%@ photo"), nberPhotos)
-                    }
-                case "nb_categories":
-                    if let value = info["value"] as? String, let nber = Int(value),
-                       let nberCats = numberFormatter.string(from: NSNumber(value: nber)) {
-                        self.nberCategories = nber > 1 ?
-                            String(format: NSLocalizedString("severalAlbumsCount", comment: "%@ albums"), nberCats) :
-                            String(format: NSLocalizedString("singleAlbumCount", comment: "%@ album"), nberCats)
-                    }
-                case "nb_tags":
-                    if let value = info["value"] as? String, let nber = Int(value),
-                       let nberTags = numberFormatter.string(from: NSNumber(value: nber)) {
-                        self.nberTags = nber > 1 ?
-                            String(format: NSLocalizedString("severalTagsCount", comment: "%@ tags"), nberTags) :
-                            String(format: NSLocalizedString("singleTagCount", comment: "%@ tag"), nberTags)
-                    }
-                case "nb_users":
-                    if let value = info["value"] as? String, let nber = Int(value),
-                       let nberUsers = numberFormatter.string(from: NSNumber(value: nber)) {
-                        self.nberUsers = nber > 1 ?
-                            String(format: NSLocalizedString("severalUsersCount", comment: "%@ users"), nberUsers) :
-                            String(format: NSLocalizedString("singleUserCount", comment: "%@ user"), nberUsers)
-                    }
-                case "nb_groups":
-                    if let value = info["value"] as? String, let nber = Int(value),
-                       let nberGroups = numberFormatter.string(from: NSNumber(value: nber)) {
-                        self.nberGroups = nber > 1 ?
-                            String(format: NSLocalizedString("severalGroupsCount", comment: "%@ groups"), nberGroups) :
-                            String(format: NSLocalizedString("singleGroupCount", comment: "%@ group"), nberGroups)
-                    }
-                case "nb_comments":
-                    if let value = info["value"] as? String, let nber = Int(value),
-                       let nberComments = numberFormatter.string(from: NSNumber(value: nber)) {
-                        self.nberComments = nber > 1 ?
-                            String(format: NSLocalizedString("severalCommentsCount", comment: "%@ comments"), nberComments) :
-                            String(format: NSLocalizedString("singleCommentCount", comment: "%@ comment"), nberComments)
-                    }
-                default:
-                    break
+                // Piwigo error?
+                if (uploadJSON.errorCode != 0) {
+                    #if DEBUG
+                    let error = NSError(domain: "Piwigo", code: uploadJSON.errorCode,
+                                    userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
+                    debugPrint(error)
+                    #endif
+                    return
                 }
-            }
 
-            // Refresh table with infos
-            self.settingsTableView?.reloadData()
-        },
-        onFailure: { _, _ in })
+                // Collect statistics
+                let numberFormatter = NumberFormatter()
+                numberFormatter.numberStyle = .decimal
+                for info in uploadJSON.data {
+                    guard let value = info.value, let nber = Int(value) else { continue }
+                    switch info.name ?? "" {
+                    case "nb_elements":
+                        if let nberPhotos = numberFormatter.string(from: NSNumber(value: nber)) {
+                            let nberImages = nber > 1 ?
+                                String(format: NSLocalizedString("severalImagesCount", comment: "%@ photos"), nberPhotos) :
+                                String(format: NSLocalizedString("singleImageCount", comment: "%@ photo"), nberPhotos)
+                            if !nberImages.isEmpty { self.appendStats(nberImages) }
+                        }
+                    case "nb_categories":
+                        if let nberCats = numberFormatter.string(from: NSNumber(value: nber)) {
+                            let nberCategories = nber > 1 ?
+                                String(format: NSLocalizedString("severalAlbumsCount", comment: "%@ albums"), nberCats) :
+                                String(format: NSLocalizedString("singleAlbumCount", comment: "%@ album"), nberCats)
+                            if !nberCategories.isEmpty { self.appendStats(nberCategories) }
+                        }
+                    case "nb_tags":
+                        if let nberTags = numberFormatter.string(from: NSNumber(value: nber)) {
+                            let nberTags = nber > 1 ?
+                                String(format: NSLocalizedString("severalTagsCount", comment: "%@ tags"), nberTags) :
+                                String(format: NSLocalizedString("singleTagCount", comment: "%@ tag"), nberTags)
+                            if !nberTags.isEmpty { self.appendStats(nberTags) }
+                        }
+                    case "nb_users":
+                        if let nberUsers = numberFormatter.string(from: NSNumber(value: nber)) {
+                            let nberUsers = nber > 1 ?
+                                String(format: NSLocalizedString("severalUsersCount", comment: "%@ users"), nberUsers) :
+                                String(format: NSLocalizedString("singleUserCount", comment: "%@ user"), nberUsers)
+                            if !nberUsers.isEmpty { self.appendStats(nberUsers) }
+                        }
+                    case "nb_groups":
+                        if let nberGroups = numberFormatter.string(from: NSNumber(value: nber)) {
+                            let nberGroups = nber > 1 ?
+                                String(format: NSLocalizedString("severalGroupsCount", comment: "%@ groups"), nberGroups) :
+                                String(format: NSLocalizedString("singleGroupCount", comment: "%@ group"), nberGroups)
+                            if !nberGroups.isEmpty { self.appendStats(nberGroups) }
+                        }
+                    case "nb_comments":
+                        if let nberComments = numberFormatter.string(from: NSNumber(value: nber)) {
+                            let nberComments = nber > 1 ?
+                                String(format: NSLocalizedString("severalCommentsCount", comment: "%@ comments"), nberComments) :
+                                String(format: NSLocalizedString("singleCommentCount", comment: "%@ comment"), nberComments)
+                            if !nberComments.isEmpty { self.appendStats(nberComments) }
+                        }
+                    default:
+                        break
+                    }
+                }
+            } catch {
+                // Data cannot be digested
+                #if DEBUG
+                printDebug(error)
+                #endif
+                return
+            }
+        }
     }
 
+    private func appendStats(_ info: String) {
+        if statistics.isEmpty {
+            statistics.append(info)
+        } else {
+            statistics.append(" | " + info)
+        }
+    }
 
+    
     // MARK: - UITableViewDelegate Methods
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)

@@ -23,7 +23,6 @@ NSString * const kCommunitySessionGetStatus = @"format=json&method=community.ses
 NSString * const kPiwigoSessionGetPluginsList = @"format=json&method=pwg.plugins.getList";
 NSString * const kPiwigoSessionLogout = @"format=json&method=pwg.session.logout";
 
-NSString * const kPiwigoGetInfos = @"format=json&method=pwg.getInfos";
 NSString * const kPiwigoCategoriesGetList = @"format=json&method=pwg.categories.getList";
 NSString * const kCommunityCategoriesGetList = @"format=json&method=community.categories.getList";
 NSString * const kPiwigoCategoriesGetImages = @"format=json&method=pwg.categories.getImages";
@@ -34,8 +33,6 @@ NSString * const kPiwigoCategoriesMove = @"format=json&method=pwg.categories.mov
 NSString * const kPiwigoCategoriesSetRepresentative = @"format=json&method=pwg.categories.setRepresentative";
 NSString * const kPiwigoCategoriesRefreshRepresentative = @"format=json&method=pwg.categories.refreshRepresentative";
 
-//NSString * const kPiwigoImagesUpload = @"format=json&method=pwg.images.upload";
-//NSString * const kCommunityImagesUploadCompleted = @"format=json&method=community.images.uploadCompleted";
 NSString * const kPiwigoImagesGetInfo = @"format=json&method=pwg.images.getInfo";
 NSString * const kPiwigoImageSetInfo = @"format=json&method=pwg.images.setInfo";
 NSString * const kPiwigoImageDelete = @"format=json&method=pwg.images.delete";
