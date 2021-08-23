@@ -8,13 +8,13 @@
 
 import Foundation
 
-class PwgSession: NSObject {
+public class PwgSession: NSObject {
     
     // Singleton
-    static var shared = PwgSession()
+    public static var shared = PwgSession()
     
     // Create single instance
-    lazy var dataSession: URLSession = {
+    public lazy var dataSession: URLSession = {
         let config = URLSessionConfiguration.default
 
         // Additional headers that are added to all tasks
@@ -53,7 +53,7 @@ class PwgSession: NSObject {
     
 
     // MARK: - Session Methods
-    func postRequest(withMethod method: String, paramDict: [String: Any],
+    public func postRequest(withMethod method: String, paramDict: [String: Any],
                      countOfBytesClientExpectsToReceive:Int64,
                      completionHandler: @escaping (Data, Error?) -> Void) {
         // Create POST request
@@ -183,11 +183,11 @@ class PwgSession: NSObject {
 // MARK: - Session Delegate
 extension PwgSession: URLSessionDelegate {
 
-    func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
+    public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
         print("    > The data session has been invalidated")
     }
     
-    func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge,
+    public func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge,
                     completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
         print("    > Session-level authentication request from the remote server \(NetworkVars.domain)")
         
@@ -235,7 +235,7 @@ extension PwgSession: URLSessionDelegate {
 // MARK: - Session Task Delegate
 extension PwgSession: URLSessionDataDelegate {
         
-    func urlSession(_ session: URLSession, task: URLSessionTask, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+    public func urlSession(_ session: URLSession, task: URLSessionTask, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
         print("    > Task-level authentication request from the remote server")
 
         // Check authentication method
