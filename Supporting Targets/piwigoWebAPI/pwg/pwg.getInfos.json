@@ -1,0 +1,18 @@
+{
+    "stat":"ok",
+    "result":{
+        "infos": [{"name":"version","value":"11.5.0"},
+                  {"name":"nb_elements","value":"339"},
+                  {"name":"nb_categories","value":"28"},
+                  {"name":"nb_virtual","value":"28"},
+                  {"name":"nb_physical","value":"0"},
+                  {"name":"nb_image_category","value":"348"},
+                  {"name":"nb_tags","value":"11"},
+                  {"name":"nb_image_tag","value":"33"},
+                  {"name":"nb_users","value":"7"},
+                  {"name":"nb_groups","value":"1"},
+                  {"name":"nb_comments","value":"0"},
+                  {"name":"first_date","value":"2017-08-31 22:44:11"}
+        ]
+    }
+}
