@@ -21,13 +21,6 @@ class EditImageTextViewTableViewCell: UITableViewCell {
         super.awakeFromNib()
 
         label.text = NSLocalizedString("editImageDetails_description", comment: "Description")
-        label.font = UIFont.piwigoFontNormal()
-
-        textView.font = UIFont.piwigoFontNormal()
-        textView.keyboardType = .default
-        textView.autocapitalizationType = .sentences
-        textView.autocorrectionType = .yes
-        textView.returnKeyType = .default
         textView.layer.cornerRadius = 5.0
     }
 
