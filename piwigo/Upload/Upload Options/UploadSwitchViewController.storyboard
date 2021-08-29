@@ -142,7 +142,7 @@
                                     <outlet property="cellTextField" destination="YJh-jz-IHQ" id="YTX-2e-Xfq"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="privacy" rowHeight="78" id="yDT-0a-vck" customClass="EditImagePrivacyTableViewCell">
+                            <tableViewCell contentMode="scaleToFill" restorationIdentifier="EditImagePrivacyTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="privacy" rowHeight="78" id="yDT-0a-vck" customClass="EditImagePrivacyTableViewCell" customModule="piwigo" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="137.5" width="414" height="78"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" tableViewCell="yDT-0a-vck" id="QeA-ad-ry5">

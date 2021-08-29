@@ -8,7 +8,6 @@
 
 #import "EditImageDatePickerTableViewCell.h"
 #import "EditImageParamsViewController.h"
-#import "EditImagePrivacyTableViewCell.h"
 #import "EditImageShiftPickerTableViewCell.h"
 #import "EditImageTextFieldTableViewCell.h"
 #import "EditImageThumbCollectionViewCell.h"
@@ -589,8 +588,9 @@ typedef enum {
         case EditImageParamsOrderPrivacy:
 		{
 			EditImagePrivacyTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"privacy" forIndexPath:indexPath];
-			[cell setLeftLabelText:NSLocalizedString(@"editImageDetails_privacyLevel", @"Who can see this photo?")];
-            [cell setPrivacyLevel:self.commonParameters.privacyLevel inColor:self.shouldUpdatePrivacyLevel ? [UIColor piwigoColorOrange] : [UIColor piwigoColorRightLabel]];
+            [cell setLeftLabelWithText:NSLocalizedString(@"editImageDetails_privacyLevel", @"Who can see this photo?")];
+            [cell setPrivacyLevelWith:self.commonParameters.privacyLevel
+                              inColor:self.shouldUpdatePrivacyLevel ? [UIColor piwigoColorOrange] : [UIColor piwigoColorRightLabel]];
             tableViewCell = cell;
 			break;
 		}

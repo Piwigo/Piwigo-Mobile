@@ -202,9 +202,10 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
             print("Error: tableView.dequeueReusableCell does not return a EditImagePrivacyTableViewCell!")
             return EditImagePrivacyTableViewCell()
         }
-        cell.setLeftLabelText(NSLocalizedString("editImageDetails_privacyLevel", comment: "Who can see this photo?"))
+        cell.setLeftLabel(withText: NSLocalizedString("editImageDetails_privacyLevel", comment: "Who can see this photo?"))
         let privLevelObjc = kPiwigoPrivacyObjc(rawValue: Int32(commonPrivacyLevel?.rawValue ?? 0))
-        cell.setPrivacyLevel(privLevelObjc, in: shouldUpdatePrivacyLevel ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
+        cell.setPrivacyLevel(with: privLevelObjc,
+                             inColor: shouldUpdatePrivacyLevel ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
         tableViewCell = cell
 
         case .tags:

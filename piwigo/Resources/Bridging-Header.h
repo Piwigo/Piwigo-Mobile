@@ -15,7 +15,6 @@
 #import "CategoriesData.h"
 #import "EditImageParamsViewController.h"
 #import "EditImageTextFieldTableViewCell.h"
-#import "EditImagePrivacyTableViewCell.h"
 #import "ImageDetailViewController.h"
 #import "ImagesCollection.h"
 #import "ImageService.h"
