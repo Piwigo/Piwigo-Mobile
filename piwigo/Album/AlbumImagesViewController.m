@@ -1119,7 +1119,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     CGFloat yPos = self.addButton.frame.origin.y;
 
     // Unhide transparent CreateAlbum and UploadImages buttons
+    self.createAlbumButton.tintColor = [UIColor whiteColor];
     [self.createAlbumButton setHidden:NO];
+    self.uploadImagesButton.tintColor = [UIColor whiteColor];
     [self.uploadImagesButton setHidden:NO];
     
     // Show CreateAlbum and UploadImages buttons
