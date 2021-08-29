@@ -18,11 +18,11 @@ import piwigoKit
 }
 
 @objc
-class EditImageShiftPickerTableViewCell: UITableViewCell, UIPickerViewDelegate, UIPickerViewDataSource
+class EditImageShiftPickerTableViewCell: UITableViewCell
 {
     @objc weak var delegate: EditImageShiftPickerDelegate?
 
-    private var pickerRefDate: Date?
+    private var pickerRefDate = Date()
     @IBOutlet private weak var addRemoveTimeButton: UISegmentedControl!
     @IBOutlet private weak var shiftPicker: UIPickerView!
     
@@ -68,7 +68,6 @@ class EditImageShiftPickerTableViewCell: UITableViewCell, UIPickerViewDelegate, 
 
 
     // MARK: - Picker Methods
-    
     @objc
     func config(withDate date: Date?, animated: Bool)
     {
@@ -76,16 +75,21 @@ class EditImageShiftPickerTableViewCell: UITableViewCell, UIPickerViewDelegate, 
         if date == nil {
             pickerRefDate = Date()
         } else {
-            pickerRefDate = date
+            pickerRefDate = date!
         }
 
         // Start with zero date interval
         shiftPicker.selectRow(0, inComponent: PickerComponents.year.rawValue, animated: false)
-        shiftPicker.selectRow(kPiwigoPickerNberOfLoops * kPiwigoPickerMonthsPerYear / 2, inComponent: PickerComponents.month.rawValue, animated: false)
-        shiftPicker.selectRow(kPiwigoPickerNberOfLoops * kPiwigoPickerDaysPerMonth / 2, inComponent: PickerComponents.day.rawValue, animated: false)
-        shiftPicker.selectRow(kPiwigoPickerNberOfLoops * kPiwigoPickerHoursPerDay / 2, inComponent: PickerComponents.hour.rawValue, animated: false)
-        shiftPicker.selectRow(kPiwigoPickerNberOfLoops * kPiwigoPickerMinutesPerHour / 2, inComponent: PickerComponents.minute.rawValue, animated: false)
-        shiftPicker.selectRow(kPiwigoPickerNberOfLoops * kPiwigoPickerSecondsPerMinute / 2, inComponent: PickerComponents.second.rawValue, animated: false)
+        shiftPicker.selectRow(kPiwigoPickerNberOfLoops * kPiwigoPickerMonthsPerYear / 2,
+                              inComponent: PickerComponents.month.rawValue, animated: false)
+        shiftPicker.selectRow(kPiwigoPickerNberOfLoops * kPiwigoPickerDaysPerMonth / 2,
+                              inComponent: PickerComponents.day.rawValue, animated: false)
+        shiftPicker.selectRow(kPiwigoPickerNberOfLoops * kPiwigoPickerHoursPerDay / 2,
+                              inComponent: PickerComponents.hour.rawValue, animated: false)
+        shiftPicker.selectRow(kPiwigoPickerNberOfLoops * kPiwigoPickerMinutesPerHour / 2,
+                              inComponent: PickerComponents.minute.rawValue, animated: false)
+        shiftPicker.selectRow(kPiwigoPickerNberOfLoops * kPiwigoPickerSecondsPerMinute / 2,
+                              inComponent: PickerComponents.second.rawValue, animated: false)
 
         // Consider removing time
         addRemoveTimeButton.setEnabled(true, forSegmentAt: 0)
@@ -100,7 +104,7 @@ class EditImageShiftPickerTableViewCell: UITableViewCell, UIPickerViewDelegate, 
         let hours = shiftPicker.selectedRow(inComponent: PickerComponents.hour.rawValue) % kPiwigoPickerHoursPerDay
         let minutes = shiftPicker.selectedRow(inComponent: PickerComponents.minute.rawValue) % kPiwigoPickerMinutesPerHour
         let seconds = shiftPicker.selectedRow(inComponent: PickerComponents.second.rawValue) % kPiwigoPickerSecondsPerMinute
-        let daysInSeconds = pickerRefDate?.addingTimeInterval(TimeInterval(operationSign * (((days * 24 + hours) * 60 + minutes) * 60 + seconds)))
+        let daysInSeconds = pickerRefDate.addingTimeInterval(TimeInterval(operationSign * (((days * 24 + hours) * 60 + minutes) * 60 + seconds)))
 
         // Add months
         let gregorian = Calendar(identifier: .gregorian)
@@ -108,16 +112,26 @@ class EditImageShiftPickerTableViewCell: UITableViewCell, UIPickerViewDelegate, 
         comp.month = operationSign * shiftPicker.selectedRow(inComponent: PickerComponents.month.rawValue) % kPiwigoPickerMonthsPerYear
         comp.year = operationSign * shiftPicker.selectedRow(inComponent: PickerComponents.year.rawValue)
         var newDate: Date? = nil
-        if let daysInSeconds = daysInSeconds {
-            newDate = gregorian.date(byAdding: comp, to: daysInSeconds, wrappingComponents: false)
-        }
+        newDate = gregorian.date(byAdding: comp, to: daysInSeconds, wrappingComponents: false)
 
         return newDate
     }
-
     
-    // MARK: - UIPickerViewDataSource Methods
+    
+    // MARK: - Button Methods
+    @IBAction func changedMode(_ sender: Any)
+    {
+        // Change date in parent view
+        if delegate?.responds(to: #selector(EditImageShiftPickerDelegate.didSelectDate(withPicker:))) ?? false {
+            delegate?.didSelectDate(withPicker: getDateFromPicker())
+        }
+    }
+}
 
+
+// MARK: -
+extension EditImageShiftPickerTableViewCell: UIPickerViewDataSource
+{
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return PickerComponents.count.rawValue
     }
@@ -152,10 +166,11 @@ class EditImageShiftPickerTableViewCell: UITableViewCell, UIPickerViewDelegate, 
         }
         return nberOfRows
     }
-
-    
-    // MARK: - UIPickerViewDelegate Methods
-
+}
+ 
+// MARK: -
+extension EditImageShiftPickerTableViewCell: UIPickerViewDelegate
+{
     func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat
     {
         // Same height for all components
@@ -252,16 +267,6 @@ class EditImageShiftPickerTableViewCell: UITableViewCell, UIPickerViewDelegate, 
         }
         pickerView.selectRow(newRow, inComponent: component, animated: false)
 
-        // Change date in parent view
-        if delegate?.responds(to: #selector(EditImageShiftPickerDelegate.didSelectDate(withPicker:))) ?? false {
-            delegate?.didSelectDate(withPicker: getDateFromPicker())
-        }
-    }
-
-    // MARK: - Button Methods
-
-    @IBAction func changedMode(_ sender: Any)
-    {
         // Change date in parent view
         if delegate?.responds(to: #selector(EditImageShiftPickerDelegate.didSelectDate(withPicker:))) ?? false {
             delegate?.didSelectDate(withPicker: getDateFromPicker())
