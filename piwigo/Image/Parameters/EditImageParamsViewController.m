@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
 
-#import "EditImageDatePickerTableViewCell.h"
 #import "EditImageParamsViewController.h"
 #import "EditImageThumbCollectionViewCell.h"
 #import "EditImageThumbTableViewCell.h"
@@ -577,7 +576,7 @@ typedef enum {
             }
             else {
                 EditImageDatePickerTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kDatePickerTableCell_ID forIndexPath:indexPath];
-                [cell setDatePickerWithDate:self.commonParameters.dateCreated animated:NO];
+                [cell configWithDate:self.commonParameters.dateCreated animated:NO];
                 [cell setDatePickerButtons];
                 cell.delegate = self;
                 tableViewCell = cell;
