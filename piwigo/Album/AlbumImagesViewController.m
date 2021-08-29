@@ -801,6 +801,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         if (self.addButton.isHidden)
         {
             // Unhide transparent Add button
+            self.addButton.tintColor = [UIColor whiteColor];
             [self.addButton setHidden:NO];
 
             // Animate appearance of Add button
