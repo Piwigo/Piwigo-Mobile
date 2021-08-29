@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15702" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19158" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19141"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -31,8 +32,8 @@
                                     <constraint firstAttribute="height" constant="871" id="avd-IM-n1u"/>
                                 </constraints>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="EditImageThumbTableCell" rowHeight="170" translatesAutoresizingMaskIntoConstraints="NO" id="KmZ-y2-jIU" customClass="EditImageThumbTableViewCell">
-                                        <rect key="frame" x="0.0" y="28" width="414" height="170"/>
+                                    <tableViewCell contentMode="scaleToFill" misplaced="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="EditImageThumbTableCell" rowHeight="170" translatesAutoresizingMaskIntoConstraints="NO" id="KmZ-y2-jIU" customClass="EditImageThumbTableViewCell">
+                                        <rect key="frame" x="0.0" y="44.5" width="414" height="170"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="KmZ-y2-jIU" id="7YA-ae-wvJ">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="170"/>
@@ -40,7 +41,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="title" id="GhX-cy-KIv" customClass="EditImageTextFieldTableViewCell">
-                                        <rect key="frame" x="0.0" y="198" width="414" height="44"/>
+                                        <rect key="frame" x="0.0" y="214.5" width="414" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="GhX-cy-KIv" id="hOn-QS-kFy">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
@@ -56,7 +57,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textField autoresizesSubviews="NO" opaque="NO" contentMode="redraw" insetsLayoutMarginsFromSafeArea="NO" contentHorizontalAlignment="right" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="14" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="Afl-1t-r1a">
-                                                    <rect key="frame" x="62" y="10" width="332" height="24"/>
+                                                    <rect key="frame" x="62" y="9.5" width="332" height="25"/>
                                                     <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences" autocorrectionType="yes" spellCheckingType="yes"/>
                                                 </textField>
@@ -69,14 +70,14 @@
                                                 <constraint firstItem="DRW-X6-zj8" firstAttribute="centerY" secondItem="hOn-QS-kFy" secondAttribute="centerY" id="q8A-vC-Azz"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
+                                        <color key="backgroundColor" systemColor="tableCellGroupedBackgroundColor"/>
                                         <connections>
                                             <outlet property="cellLabel" destination="DRW-X6-zj8" id="90t-JI-lkA"/>
                                             <outlet property="cellTextField" destination="Afl-1t-r1a" id="HhU-Hn-lhm"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="author" id="BvW-dD-5Xr" customClass="EditImageTextFieldTableViewCell">
-                                        <rect key="frame" x="0.0" y="242" width="414" height="44"/>
+                                        <rect key="frame" x="0.0" y="258.5" width="414" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="BvW-dD-5Xr" id="X95-Gu-6wV">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
@@ -92,7 +93,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" contentHorizontalAlignment="right" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="14" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="4d1-B8-yYU">
-                                                    <rect key="frame" x="83" y="10" width="311" height="24"/>
+                                                    <rect key="frame" x="83" y="9.5" width="311" height="25"/>
                                                     <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences" autocorrectionType="yes" spellCheckingType="yes"/>
                                                 </textField>
@@ -105,14 +106,14 @@
                                                 <constraint firstItem="3st-Uz-4il" firstAttribute="centerY" secondItem="X95-Gu-6wV" secondAttribute="centerY" id="mgZ-MZ-JTH"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
+                                        <color key="backgroundColor" systemColor="tableCellGroupedBackgroundColor"/>
                                         <connections>
                                             <outlet property="cellLabel" destination="3st-Uz-4il" id="u9i-mj-glP"/>
                                             <outlet property="cellTextField" destination="4d1-B8-yYU" id="jj3-sg-bbs"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" restorationIdentifier="date" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="dateCreation" id="dkR-M1-hDt" customClass="EditImageTextFieldTableViewCell">
-                                        <rect key="frame" x="0.0" y="286" width="414" height="44"/>
+                                        <rect key="frame" x="0.0" y="302.5" width="414" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="top" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="dkR-M1-hDt" id="a03-UC-PjM">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
@@ -128,7 +129,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textField opaque="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" contentHorizontalAlignment="right" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="6IY-8W-9UR">
-                                                    <rect key="frame" x="137.5" y="10" width="256.5" height="24"/>
+                                                    <rect key="frame" x="137.5" y="9.5" width="256.5" height="25"/>
                                                     <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
                                                     <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
                                                 </textField>
@@ -147,21 +148,21 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="privacy" rowHeight="73" id="Nua-fo-VbO" customClass="EditImagePrivacyTableViewCell">
-                                        <rect key="frame" x="0.0" y="330" width="414" height="73"/>
+                                        <rect key="frame" x="0.0" y="346.5" width="414" height="73"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Nua-fo-VbO" id="i7D-VI-1cA">
-                                            <rect key="frame" x="0.0" y="0.0" width="383" height="73"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="384.5" height="73"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" insetsLayoutMarginsFromSafeArea="NO" text="Who can see this photo?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tP3-bz-PWE">
-                                                    <rect key="frame" x="20" y="11" width="355" height="23.5"/>
+                                                    <rect key="frame" x="20" y="11" width="356.5" height="23.5"/>
                                                     <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                     <size key="shadowOffset" width="0.0" height="0.0"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" insetsLayoutMarginsFromSafeArea="NO" text="none" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="14" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6MZ-9m-u1O">
-                                                    <rect key="frame" x="20" y="40.5" width="355" height="23.5"/>
+                                                    <rect key="frame" x="20" y="40.5" width="356.5" height="23.5"/>
                                                     <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -176,27 +177,27 @@
                                                 <constraint firstItem="6MZ-9m-u1O" firstAttribute="trailing" secondItem="i7D-VI-1cA" secondAttribute="trailingMargin" id="rj4-hP-sRm"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
+                                        <color key="backgroundColor" systemColor="tableCellGroupedBackgroundColor"/>
                                         <connections>
                                             <outlet property="label" destination="tP3-bz-PWE" id="yxs-Uf-pIr"/>
                                             <outlet property="list" destination="6MZ-9m-u1O" id="Vpk-hR-0f8"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="tags" rowHeight="73" id="daW-18-zRl" customClass="EditImageTagsTableViewCell">
-                                        <rect key="frame" x="0.0" y="403" width="414" height="73"/>
+                                        <rect key="frame" x="0.0" y="419.5" width="414" height="73"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="daW-18-zRl" id="v9N-hs-qE9">
-                                            <rect key="frame" x="0.0" y="0.0" width="383" height="73"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="384.5" height="73"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" insetsLayoutMarginsFromSafeArea="NO" text="Tags" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Isv-kh-FD3" userLabel="tagsLabel">
-                                                    <rect key="frame" x="20" y="11" width="355" height="23.5"/>
+                                                    <rect key="frame" x="20" y="11" width="356.5" height="23.5"/>
                                                     <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" insetsLayoutMarginsFromSafeArea="NO" text="none" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="14" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oKC-S2-125" userLabel="tagsList">
-                                                    <rect key="frame" x="20" y="40.5" width="355" height="23.5"/>
+                                                    <rect key="frame" x="20" y="40.5" width="356.5" height="23.5"/>
                                                     <fontDescription key="fontDescription" name="OpenSans" family="Open Sans" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -211,14 +212,14 @@
                                                 <constraint firstItem="Isv-kh-FD3" firstAttribute="trailing" secondItem="v9N-hs-qE9" secondAttribute="trailingMargin" id="jYY-Ec-04C"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
+                                        <color key="backgroundColor" systemColor="tableCellGroupedBackgroundColor"/>
                                         <connections>
                                             <outlet property="tagsLabel" destination="Isv-kh-FD3" id="ngr-qD-dBu"/>
                                             <outlet property="tagsList" destination="oKC-S2-125" id="s8W-s9-1S4"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="description" rowHeight="428" id="Bpu-ru-Cr7" customClass="EditImageTextViewTableViewCell">
-                                        <rect key="frame" x="0.0" y="476" width="414" height="428"/>
+                                    <tableViewCell contentMode="scaleToFill" restorationIdentifier="EditImageTextViewTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="description" rowHeight="428" id="Bpu-ru-Cr7" customClass="EditImageTextViewTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="492.5" width="414" height="428"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Bpu-ru-Cr7" id="IBt-8g-0eO">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="428"/>
@@ -232,7 +233,7 @@
                                                 </label>
                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="zMu-VQ-mu0">
                                                     <rect key="frame" x="20" y="42.5" width="374" height="374.5"/>
-                                                    <color key="textColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" systemColor="labelColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences" autocorrectionType="yes" spellCheckingType="yes"/>
                                                 </textView>
@@ -247,7 +248,7 @@
                                                 <constraint firstItem="djl-s5-5tA" firstAttribute="trailing" secondItem="IBt-8g-0eO" secondAttribute="trailingMargin" id="lp3-Md-IqO"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
+                                        <color key="backgroundColor" systemColor="tableCellGroupedBackgroundColor"/>
                                         <connections>
                                             <outlet property="label" destination="djl-s5-5tA" id="dgO-s1-gIn"/>
                                             <outlet property="textView" destination="zMu-VQ-mu0" id="msd-gq-A6p"/>
@@ -278,4 +279,12 @@
         </scene>
     </scenes>
     <color key="tintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+    <resources>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="tableCellGroupedBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
 </document>

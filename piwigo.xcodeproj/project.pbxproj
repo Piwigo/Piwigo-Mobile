@@ -11,6 +11,7 @@
 		8EBB87326DDBF0FA7A10C8FE /* libPods-piwigoGetPiwigo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F09C9ADFF1E09579418AB493 /* libPods-piwigoGetPiwigo.a */; };
 		91E6078914BDFB42EBBA866B /* libPods-piwigo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A19C73FF8142EEEBCD99AD87 /* libPods-piwigo.a */; };
 		AD074F6623F8498B00D6016A /* ClearCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD074F6523F8498A00D6016A /* ClearCache.swift */; };
+		AD07CAB626DBBD0A00BEAEFB /* EditImageTextViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD07CAB526DBBD0A00BEAEFB /* EditImageTextViewTableViewCell.swift */; };
 		AD084E4A2659A27100159FE1 /* piwigoKit.h in Headers */ = {isa = PBXBuildFile; fileRef = AD084E482659A27100159FE1 /* piwigoKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AD084E4D2659A27100159FE1 /* piwigoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; };
 		AD084E4E2659A27100159FE1 /* piwigoKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -271,7 +272,6 @@
 		D8D3F7651A7AF2A100AEA7F1 /* CategoriesData.m in Sources */ = {isa = PBXBuildFile; fileRef = D8D3F7641A7AF2A100AEA7F1 /* CategoriesData.m */; };
 		D8E4D6211ABE34DF0057EB95 /* LoginNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8E4D6201ABE34DF0057EB95 /* LoginNavigationController.m */; };
 		D8F325141A875A42007CBDAC /* EditImageTextFieldTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F325131A875A42007CBDAC /* EditImageTextFieldTableViewCell.m */; };
-		D8F325171A87F212007CBDAC /* EditImageTextViewTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F325161A87F212007CBDAC /* EditImageTextViewTableViewCell.m */; };
 		ED9A42B21ACACF4100EA4421 /* LoginViewController_iPhone.m in Sources */ = {isa = PBXBuildFile; fileRef = ED9A42B11ACACF4100EA4421 /* LoginViewController_iPhone.m */; };
 		ED9A42B51ACAD35300EA4421 /* LoginViewController_iPad.m in Sources */ = {isa = PBXBuildFile; fileRef = ED9A42B41ACAD35300EA4421 /* LoginViewController_iPad.m */; };
 /* End PBXBuildFile section */
@@ -341,6 +341,7 @@
 		AD074F6523F8498A00D6016A /* ClearCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearCache.swift; sourceTree = "<group>"; };
 		AD07A23325CF024A000EE016 /* URL+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+AppTools.swift"; sourceTree = "<group>"; };
 		AD07A23525CF07D8000EE016 /* Data+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+AppTools.swift"; sourceTree = "<group>"; };
+		AD07CAB526DBBD0A00BEAEFB /* EditImageTextViewTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditImageTextViewTableViewCell.swift; sourceTree = "<group>"; };
 		AD0822711FA06B090005AA12 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD0822721FA06B090005AA12 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/About.strings; sourceTree = "<group>"; };
 		AD0822731FA06B0A0005AA12 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
@@ -748,8 +749,6 @@
 		D8E4D6201ABE34DF0057EB95 /* LoginNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginNavigationController.m; sourceTree = "<group>"; };
 		D8F325121A875A42007CBDAC /* EditImageTextFieldTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditImageTextFieldTableViewCell.h; sourceTree = "<group>"; };
 		D8F325131A875A42007CBDAC /* EditImageTextFieldTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditImageTextFieldTableViewCell.m; sourceTree = "<group>"; };
-		D8F325151A87F212007CBDAC /* EditImageTextViewTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditImageTextViewTableViewCell.h; sourceTree = "<group>"; };
-		D8F325161A87F212007CBDAC /* EditImageTextViewTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditImageTextViewTableViewCell.m; sourceTree = "<group>"; };
 		ED9A42B01ACACF4100EA4421 /* LoginViewController_iPhone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController_iPhone.h; sourceTree = "<group>"; };
 		ED9A42B11ACACF4100EA4421 /* LoginViewController_iPhone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController_iPhone.m; sourceTree = "<group>"; };
 		ED9A42B31ACAD35300EA4421 /* LoginViewController_iPad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController_iPad.h; sourceTree = "<group>"; };
@@ -1078,8 +1077,7 @@
 				D8B04C631A92B1BB00695281 /* EditImagePrivacyTableViewCell.m */,
 				D89045BD1A950FF700A306FE /* EditImageTagsTableViewCell.h */,
 				D89045BE1A950FF700A306FE /* EditImageTagsTableViewCell.m */,
-				D8F325151A87F212007CBDAC /* EditImageTextViewTableViewCell.h */,
-				D8F325161A87F212007CBDAC /* EditImageTextViewTableViewCell.m */,
+				AD07CAB526DBBD0A00BEAEFB /* EditImageTextViewTableViewCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -2314,6 +2312,7 @@
 				D89045BF1A950FF700A306FE /* EditImageTagsTableViewCell.m in Sources */,
 				AD770FDA23B4CE79007DAD50 /* EditImageThumbCollectionViewCell.m in Sources */,
 				AD987634262606C600B964C5 /* UIViewController+AppTools.swift in Sources */,
+				AD07CAB626DBBD0A00BEAEFB /* EditImageTextViewTableViewCell.swift in Sources */,
 				ADD790E3265EDE5C00EA4DDB /* ImageVars.swift in Sources */,
 				ADE1AB90267F45B8001C1EEB /* AppDelegate.swift in Sources */,
 				AD767BD62680B4E200EBD6E8 /* KeychainUtilitiesObjc.swift in Sources */,
@@ -2338,7 +2337,6 @@
 				ADD741F62699974800B47056 /* UploadPhotoSizeViewController.swift in Sources */,
 				ADC80E4B23BDD2DD003A6960 /* EditImageThumbTableViewCell.m in Sources */,
 				D8D3F7241A785E1B00AEA7F1 /* ImageCollectionViewCell.m in Sources */,
-				D8F325171A87F212007CBDAC /* EditImageTextViewTableViewCell.m in Sources */,
 				AD770FD423B4BDA2007DAD50 /* EditImageParamsViewController.m in Sources */,
 				D818E9FB1A74C18500733991 /* AlbumService.m in Sources */,
 				ADAC5490261793F700301C1C /* CategoryTableViewCell.swift in Sources */,

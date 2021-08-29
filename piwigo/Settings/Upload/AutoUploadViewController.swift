@@ -328,7 +328,8 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a EditImageTextViewTableViewCell!")
                     return EditImageTextViewTableViewCell()
                 }
-                cell.setComment(UploadVars.autoUploadComments, in:UIColor.piwigoColorRightLabel())
+                cell.setDescription(withText: UploadVars.autoUploadComments,
+                                    inColor: UIColor.piwigoColorRightLabel())
                 cell.textView.delegate = self
                 tableViewCell = cell
 

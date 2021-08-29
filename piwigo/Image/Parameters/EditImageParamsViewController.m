@@ -12,7 +12,6 @@
 #import "EditImageShiftPickerTableViewCell.h"
 #import "EditImageTagsTableViewCell.h"
 #import "EditImageTextFieldTableViewCell.h"
-#import "EditImageTextViewTableViewCell.h"
 #import "EditImageThumbCollectionViewCell.h"
 #import "EditImageThumbTableViewCell.h"
 #import "ImageDetailViewController.h"
@@ -608,7 +607,8 @@ typedef enum {
         case EditImageParamsOrderDescription:
 		{
 			EditImageTextViewTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"description" forIndexPath:indexPath];
-            [cell setComment:self.commonParameters.comment inColor:self.shouldUpdateTags ? [UIColor piwigoColorOrange] : [UIColor piwigoColorRightLabel]];
+            [cell setDescriptionWithText:self.commonParameters.comment
+                                 inColor:self.shouldUpdateTags ? [UIColor piwigoColorOrange] : [UIColor piwigoColorRightLabel]];
             cell.textView.delegate = self;
             tableViewCell = cell;
 			break;

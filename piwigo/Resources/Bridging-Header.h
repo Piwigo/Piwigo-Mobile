@@ -17,7 +17,6 @@
 #import "EditImageTextFieldTableViewCell.h"
 #import "EditImagePrivacyTableViewCell.h"
 #import "EditImageTagsTableViewCell.h"
-#import "EditImageTextViewTableViewCell.h"
 #import "ImageDetailViewController.h"
 #import "ImagesCollection.h"
 #import "ImageService.h"
