@@ -569,23 +569,23 @@
     [self.albumData loadCategoryImageDataChunkWithSort:sortDesc
         forProgress:nil OnCompletion:^(BOOL completed) {
         // Did the load succeed?
-        if (!completed) {
+        if (completed) {
+            // Do we have all images?
+            if (self.albumData.imageList.count < self.albumData.numberOfImages) {
+                // No => Continue loading image data
+                [self getMissingImagesBeforeDeletingInMode:deletionMode withViewController:topViewController];
+                return;
+            }
+            
+            // Done => delete images and then the category containing them
+            [self deleteCategoryWithDeletionMode:deletionMode andViewController:topViewController];
+        }
+        else {
             // Did not succeed -> try to complete the job with missing images
             [topViewController hidePiwigoHUDWithCompletion:^{
                 [topViewController dismissPiwigoErrorWithTitle:NSLocalizedString(@"deleteCategoryError_title", @"Delete Fail") message:NSLocalizedString(@"deleteCategoryError_message", @"Failed to delete your album") errorMessage:@"" completion:^{ }];
             }];
-            return;;
         }
-        
-        // Do we have all images?
-        if (self.albumData.imageList.count < self.albumData.numberOfImages) {
-            // No => Continue loading image data
-            [self getMissingImagesBeforeDeletingInMode:deletionMode withViewController:topViewController];
-            return;
-        }
-        
-        // Done => delete images and then the category containing them
-        [self deleteCategoryWithDeletionMode:deletionMode andViewController:topViewController];
     }];
 }
 
