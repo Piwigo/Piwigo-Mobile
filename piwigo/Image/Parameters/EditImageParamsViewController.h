@@ -10,6 +10,9 @@
 
 #import "PiwigoImageData.h"
 
+FOUNDATION_EXPORT NSString * const kDatePickerTableCell_ID;
+FOUNDATION_EXPORT NSString * const kShiftPickerTableCell_ID;
+
 @class PiwigoImageData;
 
 @protocol EditImageParamsDelegate <NSObject>

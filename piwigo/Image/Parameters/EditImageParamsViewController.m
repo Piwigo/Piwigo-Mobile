@@ -8,7 +8,6 @@
 
 #import "EditImageDatePickerTableViewCell.h"
 #import "EditImageParamsViewController.h"
-#import "EditImageShiftPickerTableViewCell.h"
 #import "EditImageThumbCollectionViewCell.h"
 #import "EditImageThumbTableViewCell.h"
 #import "ImageDetailViewController.h"
@@ -19,6 +18,8 @@
 #import "TagsData.h"
 
 CGFloat const kEditImageParamsViewWidth = 512.0;
+NSString * const kDatePickerTableCell_ID = @"DatePickerTableCell";
+NSString * const kShiftPickerTableCell_ID = @"ShiftPickerTableCell";
 
 typedef enum {
     EditImageParamsOrderThumbnails,
@@ -570,7 +571,7 @@ typedef enum {
             // Which picker?
             if (self.images.count > 1) {
                 EditImageShiftPickerTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kShiftPickerTableCell_ID forIndexPath:indexPath];
-                [cell setShiftPickerWithDate:self.commonParameters.dateCreated animated:NO];
+                [cell configWithDate:self.commonParameters.dateCreated animated:NO];
                 cell.delegate = self;
                 tableViewCell = cell;
             }

@@ -8,8 +8,6 @@
 
 #import "EditImageDatePickerTableViewCell.h"
 
-NSString * const kDatePickerTableCell_ID = @"DatePickerTableCell";
-
 static NSString * const kPiwigoPickerMinDate = @"1922-01-01 00:00:00";     // UTC
 static NSString * const kPiwigoPickerMaxDate = @"2100-01-01 00:00:00";     // UTC
 static NSInteger const kPiwigoComponentWidthLimit = 375;         // i.e. larger than iPhones 6,7,8 screen width
@@ -243,12 +241,12 @@ typedef enum {
     const CGFloat separatorWidth = 5.0f;
 
     // Calculate left and right pane widths (for debugging)
-//    const CGFloat leftMargin = pickerView.superview.layoutMargins.left;
-//    const CGFloat rightMargin = pickerView.superview.layoutMargins.right;
-//    CGFloat leftPaneWidth = leftMargin + separatorWidth + dayWidth + separatorWidth + sepDay/2;
-//    CGFloat rightPaneWidth = sepDay/2 + 5 * separatorWidth + 3*time + 2*sepTime + !self.is24hFormat * (separatorWidth + ampm) + separatorWidth + rightMargin;
-//    CGFloat remainingSpace = pickerView.bounds.size.width - leftPaneWidth - rightPaneWidth;
-//    NSLog(@"=> left:%g, right:%g, width:%g (remaining:%g)", leftPaneWidth, rightPaneWidth, pickerView.bounds.size.width, remainingSpace);
+    const CGFloat leftMargin = pickerView.superview.layoutMargins.left;
+    const CGFloat rightMargin = pickerView.superview.layoutMargins.right;
+    CGFloat leftPaneWidth = leftMargin + separatorWidth + dayWidth + separatorWidth + sepDay/2;
+    CGFloat rightPaneWidth = sepDay/2 + 5 * separatorWidth + 3*time + 2*sepTime + !self.is24hFormat * (separatorWidth + ampm) + separatorWidth + rightMargin;
+    CGFloat remainingSpace = pickerView.bounds.size.width - leftPaneWidth - rightPaneWidth;
+    NSLog(@"=> left:%g, right:%g, width:%g (remaining:%g)", leftPaneWidth, rightPaneWidth, pickerView.bounds.size.width, remainingSpace);
     // iPhone SE, iOS 11 => left:136, right:179, width:318 (remaining:3)
     // iPhone Xs, iOS 12 => left:131, right:174, width:373 (remaining:68)
 

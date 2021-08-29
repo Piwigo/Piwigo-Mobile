@@ -10,8 +10,6 @@
 
 #import "PiwigoImageData.h"
 
-FOUNDATION_EXPORT NSString * const kDatePickerTableCell_ID;
-
 @protocol EditImageDatePickerDelegate <NSObject>
 
 -(void)didSelectDateWithPicker:(NSDate *)date;
