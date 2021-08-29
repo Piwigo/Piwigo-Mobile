@@ -14,7 +14,6 @@
 #import "AlbumTableViewCell.h"
 #import "CategoriesData.h"
 #import "EditImageParamsViewController.h"
-#import "EditImageTextFieldTableViewCell.h"
 #import "ImageDetailViewController.h"
 #import "ImagesCollection.h"
 #import "ImageService.h"

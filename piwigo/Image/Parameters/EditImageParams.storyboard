@@ -40,7 +40,7 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="title" id="GhX-cy-KIv" customClass="EditImageTextFieldTableViewCell">
+                                    <tableViewCell contentMode="scaleToFill" restorationIdentifier="title" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="title" id="GhX-cy-KIv" customClass="EditImageTextFieldTableViewCell" customModule="piwigo" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="214.5" width="414" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="GhX-cy-KIv" id="hOn-QS-kFy">
@@ -76,7 +76,7 @@
                                             <outlet property="cellTextField" destination="Afl-1t-r1a" id="HhU-Hn-lhm"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="author" id="BvW-dD-5Xr" customClass="EditImageTextFieldTableViewCell">
+                                    <tableViewCell contentMode="scaleToFill" restorationIdentifier="author" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="author" id="BvW-dD-5Xr" customClass="EditImageTextFieldTableViewCell" customModule="piwigo" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="258.5" width="414" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="BvW-dD-5Xr" id="X95-Gu-6wV">
@@ -112,7 +112,7 @@
                                             <outlet property="cellTextField" destination="4d1-B8-yYU" id="jj3-sg-bbs"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" restorationIdentifier="date" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="dateCreation" id="dkR-M1-hDt" customClass="EditImageTextFieldTableViewCell">
+                                    <tableViewCell contentMode="scaleToFill" restorationIdentifier="dateCreation" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="dateCreation" id="dkR-M1-hDt" customClass="EditImageTextFieldTableViewCell" customModule="piwigo" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="302.5" width="414" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="top" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="dkR-M1-hDt" id="a03-UC-PjM">

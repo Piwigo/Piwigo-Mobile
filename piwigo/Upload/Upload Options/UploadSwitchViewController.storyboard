@@ -70,7 +70,7 @@
                         <color key="backgroundColor" red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="tintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="title" id="PIq-iw-aJg" customClass="EditImageTextFieldTableViewCell">
+                            <tableViewCell contentMode="scaleToFill" restorationIdentifier="title" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="title" id="PIq-iw-aJg" customClass="EditImageTextFieldTableViewCell" customModule="piwigo" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="49.5" width="414" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" tableViewCell="PIq-iw-aJg" id="9jU-3l-Ozc">
@@ -106,7 +106,7 @@
                                     <outlet property="cellTextField" destination="3fQ-fE-f7n" id="XNw-g7-bFN"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="author" id="aUd-iS-rSs" customClass="EditImageTextFieldTableViewCell">
+                            <tableViewCell contentMode="scaleToFill" restorationIdentifier="author" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="author" id="aUd-iS-rSs" customClass="EditImageTextFieldTableViewCell" customModule="piwigo" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="93.5" width="414" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" tableViewCell="aUd-iS-rSs" id="KeX-Df-42r">

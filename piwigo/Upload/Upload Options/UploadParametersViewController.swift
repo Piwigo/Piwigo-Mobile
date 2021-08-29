@@ -176,9 +176,9 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
             print("Error: tableView.dequeueReusableCell does not return a EditImageTextFieldTableViewCell!")
             return EditImageTextFieldTableViewCell()
         }
-        cell.setup(withLabel: NSLocalizedString("editImageDetails_title", comment: "Title:"),
-                   placeHolder: NSLocalizedString("editImageDetails_titlePlaceholder", comment: "Title"),
-                   andImageDetail: commonTitle)
+        cell.config(withLabel: NSLocalizedString("editImageDetails_title", comment: "Title:"),
+                    placeHolder: NSLocalizedString("editImageDetails_titlePlaceholder", comment: "Title"),
+                    andImageDetail: commonTitle)
         cell.cellTextField.textColor = shouldUpdateTitle ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel()
         cell.cellTextField.tag = EditImageDetailsOrder.imageName.rawValue
         cell.cellTextField.delegate = self
@@ -189,9 +189,9 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
             print("Error: tableView.dequeueReusableCell does not return a EditImageTextFieldTableViewCell!")
             return EditImageTextFieldTableViewCell()
         }
-        cell.setup(withLabel: NSLocalizedString("editImageDetails_author", comment: "Author:"),
-                   placeHolder: NSLocalizedString("settings_defaultAuthorPlaceholder", comment: "Author Name"),
-                   andImageDetail: (commonAuthor == "NSNotFound") ? "" : commonAuthor)
+        cell.config(withLabel: NSLocalizedString("editImageDetails_author", comment: "Author:"),
+                    placeHolder: NSLocalizedString("settings_defaultAuthorPlaceholder", comment: "Author Name"),
+                    andImageDetail: (commonAuthor == "NSNotFound") ? "" : commonAuthor)
         cell.cellTextField.textColor = shouldUpdateAuthor ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel()
         cell.cellTextField.tag = EditImageDetailsOrder.author.rawValue
         cell.cellTextField.delegate = self

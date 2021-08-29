@@ -5,7 +5,7 @@
 //  Created by Spencer Baker on 2/8/15.
 //  Copyright (c) 2015 bakercrew. All rights reserved.
 //
-//  Converted to Swift 5.1 by Eddy Lelièvre-Berna on 29/08/2021.
+//  Converted to Swift 5.3 by Eddy Lelièvre-Berna on 29/08/2021.
 //
 
 import UIKit

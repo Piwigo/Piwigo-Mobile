@@ -9,7 +9,6 @@
 #import "EditImageDatePickerTableViewCell.h"
 #import "EditImageParamsViewController.h"
 #import "EditImageShiftPickerTableViewCell.h"
-#import "EditImageTextFieldTableViewCell.h"
 #import "EditImageThumbCollectionViewCell.h"
 #import "EditImageThumbTableViewCell.h"
 #import "ImageDetailViewController.h"
@@ -530,9 +529,9 @@ typedef enum {
         case EditImageParamsOrderImageName:
 		{
             EditImageTextFieldTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"title" forIndexPath:indexPath];
-            [cell setupWithLabel:NSLocalizedString(@"editImageDetails_title", @"Title")
-                     placeHolder:NSLocalizedString(@"editImageDetails_titlePlaceholder", @"Title")
-                  andImageDetail:self.commonParameters.imageTitle];
+            [cell configWithLabel:NSLocalizedString(@"editImageDetails_title", @"Title")
+                      placeHolder:NSLocalizedString(@"editImageDetails_titlePlaceholder", @"Title")
+                   andImageDetail:self.commonParameters.imageTitle];
             if (self.shouldUpdateTitle) cell.cellTextField.textColor = [UIColor piwigoColorOrange];
             cell.cellTextField.tag = EditImageParamsOrderImageName;
             cell.cellTextField.delegate = self;
@@ -543,9 +542,9 @@ typedef enum {
         case EditImageParamsOrderAuthor:
 		{
             EditImageTextFieldTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"author" forIndexPath:indexPath];
-            [cell setupWithLabel:NSLocalizedString(@"editImageDetails_author", @"Author")
-                     placeHolder:NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name")
-                  andImageDetail:[self.commonParameters.author isEqualToString:@"NSNotFound"] ? @"" : self.commonParameters.author];
+            [cell configWithLabel:NSLocalizedString(@"editImageDetails_author", @"Author")
+                      placeHolder:NSLocalizedString(@"settings_defaultAuthorPlaceholder", @"Author Name")
+                   andImageDetail:[self.commonParameters.author isEqualToString:@"NSNotFound"] ? @"" : self.commonParameters.author];
             if (self.shouldUpdateAuthor) cell.cellTextField.textColor = [UIColor piwigoColorOrange];
             cell.cellTextField.tag = EditImageParamsOrderAuthor;
             cell.cellTextField.delegate = self;
@@ -556,9 +555,9 @@ typedef enum {
         case EditImageParamsOrderDate:
         {
             EditImageTextFieldTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"dateCreation" forIndexPath:indexPath];
-            [cell setupWithLabel:NSLocalizedString(@"editImageDetails_dateCreation", @"Creation Date")
-                     placeHolder:@""
-                  andImageDetail:[self getStringFromDate:self.commonParameters.dateCreated]];
+            [cell configWithLabel:NSLocalizedString(@"editImageDetails_dateCreation", @"Creation Date")
+                      placeHolder:@""
+                   andImageDetail:[self getStringFromDate:self.commonParameters.dateCreated]];
             if (self.shouldUpdateDateCreated) cell.cellTextField.textColor = [UIColor piwigoColorOrange];
             cell.cellTextField.tag = EditImageParamsOrderDate;
             cell.cellTextField.delegate = self;
