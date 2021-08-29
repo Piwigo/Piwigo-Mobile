@@ -1497,8 +1497,10 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                         }
                     }
                 }
-                if (itemsToDelete.count > 0) {
-                    [self.imagesCollection deleteItemsAtIndexPaths:itemsToDelete];
+                for (NSIndexPath *indexPath in itemsToDelete) {
+                    if ([self.imagesCollection cellForItemAtIndexPath:indexPath] != nil) {
+                        [self.imagesCollection deleteItemsAtIndexPaths:@[indexPath]];
+                    }
                 }
 
                 // Update footer
