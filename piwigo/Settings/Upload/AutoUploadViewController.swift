@@ -320,7 +320,8 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                         tagList.append(newTag)
                     }
                 })
-                cell.setTagList(tagList, in: UIColor.piwigoColorRightLabel())
+                cell.setTagList(fromList: tagList,
+                                inColor: UIColor.piwigoColorRightLabel())
                 tableViewCell = cell
 
             case 1 /* Comments */ :

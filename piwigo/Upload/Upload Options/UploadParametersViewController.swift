@@ -222,7 +222,8 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
             newTag.numberOfImagesUnderTag = tag.numberOfImagesUnderTag
             tagList.append(newTag)
         }
-        cell.setTagList(tagList, in: shouldUpdateTags ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
+        cell.setTagList(fromList: tagList,
+                        inColor: shouldUpdateTags ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
         tableViewCell = cell
 
         case .comment:
