@@ -74,7 +74,14 @@ public class PwgSession: NSObject {
                     encPairs.append(String(format: "%@=%@", encKey, encVal))
                     continue
                 }
-            } else if let encKey = key.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
+            }
+            else if let val = value as? NSNumber,
+                let encKey = key.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
+                let encVal = val.stringValue
+                encPairs.append(String(format: "%@=%@", encKey, encVal))
+                continue
+            }
+            else if let encKey = key.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
                 encPairs.append(encKey)
             }
         }
