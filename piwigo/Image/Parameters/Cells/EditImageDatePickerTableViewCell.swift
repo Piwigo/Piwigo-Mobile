@@ -16,8 +16,6 @@ import piwigoKit
     func didUnsetImageCreationDate()
 }
 
-// let kDatePickerTableCell_ID = "DatePickerTableCell"
-
 @objc
 class EditImageDatePickerTableViewCell: UITableViewCell
 {

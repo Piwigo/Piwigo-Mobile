@@ -12,8 +12,6 @@ import Photos
 import UIKit
 import piwigoKit
 
-//let kEditImageThumbCollectionCell_ID = "EditImageThumbCollectionCell"
-
 @objc
 protocol EditImageThumbnailDelegate: NSObjectProtocol {
     func didDeselectImage(withId imageId: Int)

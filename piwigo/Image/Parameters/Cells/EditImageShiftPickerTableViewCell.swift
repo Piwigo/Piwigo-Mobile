@@ -11,8 +11,6 @@
 import UIKit
 import piwigoKit
 
-// let kShiftPickerTableCell_ID = "ShiftPickerTableCell"
-
 @objc protocol EditImageShiftPickerDelegate: NSObjectProtocol {
     func didSelectDate(withPicker date: Date?)
 }

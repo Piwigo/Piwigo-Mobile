@@ -7,7 +7,6 @@
 //
 
 #import "EditImageParamsViewController.h"
-#import "EditImageThumbTableViewCell.h"
 #import "ImageDetailViewController.h"
 #import "ImageService.h"
 #import "ImagesCollection.h"
@@ -16,8 +15,6 @@
 #import "TagsData.h"
 
 CGFloat const kEditImageParamsViewWidth = 512.0;
-NSString * const kDatePickerTableCell_ID = @"DatePickerTableCell";
-NSString * const kShiftPickerTableCell_ID = @"ShiftPickerTableCell";
 
 typedef enum {
     EditImageParamsOrderThumbnails,
@@ -107,14 +104,14 @@ typedef enum {
     [super viewDidLoad];
     
     // Register thumbnails cell
-    [self.editImageParamsTableView registerNib:[UINib nibWithNibName:@"EditImageThumbTableViewCell" bundle:nil] forCellReuseIdentifier:kEditImageThumbTableCell_ID];
+    [self.editImageParamsTableView registerNib:[UINib nibWithNibName:@"EditImageThumbTableViewCell" bundle:nil] forCellReuseIdentifier:@"EditImageThumbTableViewCell"];
 
     // Register date picker cell
-    [self.editImageParamsTableView registerNib:[UINib nibWithNibName:@"EditImageDatePickerTableViewCell" bundle:nil] forCellReuseIdentifier:kDatePickerTableCell_ID];
+    [self.editImageParamsTableView registerNib:[UINib nibWithNibName:@"EditImageDatePickerTableViewCell" bundle:nil] forCellReuseIdentifier:@"DatePickerTableCell"];
     self.hasDatePicker = NO;
 
     // Register date interval picker cell
-    [self.editImageParamsTableView registerNib:[UINib nibWithNibName:@"EditImageShiftPickerTableViewCell" bundle:nil] forCellReuseIdentifier:kShiftPickerTableCell_ID];
+    [self.editImageParamsTableView registerNib:[UINib nibWithNibName:@"EditImageShiftPickerTableViewCell" bundle:nil] forCellReuseIdentifier:@"ShiftPickerTableCell"];
 
     // Initialise common image properties, mostly from first supplied image
     self.commonParameters = [PiwigoImageData new];
@@ -518,8 +515,8 @@ typedef enum {
 	{
         case EditImageParamsOrderThumbnails:
         {
-            EditImageThumbTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kEditImageThumbTableCell_ID forIndexPath:indexPath];
-            [cell setupWithImages:self.images];
+            EditImageThumbTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"EditImageThumbTableViewCell" forIndexPath:indexPath];
+            [cell configWithImages:self.images];
             cell.delegate = self;
             tableViewCell = cell;
             break;
@@ -568,13 +565,13 @@ typedef enum {
         {
             // Which picker?
             if (self.images.count > 1) {
-                EditImageShiftPickerTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kShiftPickerTableCell_ID forIndexPath:indexPath];
+                EditImageShiftPickerTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ShiftPickerTableCell" forIndexPath:indexPath];
                 [cell configWithDate:self.commonParameters.dateCreated animated:NO];
                 cell.delegate = self;
                 tableViewCell = cell;
             }
             else {
-                EditImageDatePickerTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kDatePickerTableCell_ID forIndexPath:indexPath];
+                EditImageDatePickerTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DatePickerTableCell" forIndexPath:indexPath];
                 [cell configWithDate:self.commonParameters.dateCreated animated:NO];
                 [cell setDatePickerButtons];
                 cell.delegate = self;

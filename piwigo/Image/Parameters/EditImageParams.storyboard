@@ -32,7 +32,7 @@
                                     <constraint firstAttribute="height" constant="871" id="avd-IM-n1u"/>
                                 </constraints>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="EditImageThumbTableCell" rowHeight="170" translatesAutoresizingMaskIntoConstraints="NO" id="KmZ-y2-jIU" customClass="EditImageThumbTableViewCell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="EditImageThumbTableViewCell" rowHeight="170" translatesAutoresizingMaskIntoConstraints="NO" id="KmZ-y2-jIU" customClass="EditImageThumbTableViewCell">
                                         <rect key="frame" x="0.0" y="44.5" width="414" height="170"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="KmZ-y2-jIU" id="7YA-ae-wvJ">
