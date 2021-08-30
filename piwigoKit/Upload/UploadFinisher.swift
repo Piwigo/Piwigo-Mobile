@@ -61,9 +61,8 @@ extension UploadManager {
                 let uploadJSON = try decoder.decode(ImagesSetInfoJSON.self, from: jsonData)
 
                 // Piwigo error?
-                let error: NSError
                 if (uploadJSON.errorCode != 0) {
-                    error = NSError(domain: "Piwigo", code: uploadJSON.errorCode,
+                    let error = NSError(domain: "Piwigo", code: uploadJSON.errorCode,
                                     userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
                     self.didSetParameters(for: uploadID, error: error)
                     return

@@ -60,10 +60,9 @@ public class TagsProvider {
                     let tagJSON = try decoder.decode(TagJSON.self, from: jsonData)
 
                     // Piwigo error?
-                    let error: NSError
                     if (tagJSON.errorCode != 0) {
-                        error = NSError(domain: "Piwigo", code: tagJSON.errorCode,
-                                        userInfo: [NSLocalizedDescriptionKey : tagJSON.errorMessage])
+                        let error = NSError(domain: "Piwigo", code: tagJSON.errorCode,
+                                            userInfo: [NSLocalizedDescriptionKey : tagJSON.errorMessage])
                         completionHandler(error)
                         return
                     }
@@ -317,9 +316,8 @@ public class TagsProvider {
                 let tagJSON = try decoder.decode(TagAddJSON.self, from: jsonData)
 
                 // Piwigo error?
-                let error: NSError
                 if (tagJSON.errorCode != 0) {
-                    error = NSError(domain: "Piwigo", code: tagJSON.errorCode,
+                    let error = NSError(domain: "Piwigo", code: tagJSON.errorCode,
                                     userInfo: [NSLocalizedDescriptionKey : tagJSON.errorMessage])
                     completionHandler(error)
                     return
