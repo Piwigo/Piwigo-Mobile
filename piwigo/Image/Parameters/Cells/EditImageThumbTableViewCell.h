@@ -11,6 +11,7 @@
 #import "PiwigoImageData.h"
 
 FOUNDATION_EXPORT NSString * const kEditImageThumbTableCell_ID;
+FOUNDATION_EXPORT NSString * const kEditImageThumbCollectionCell_ID;
 
 @protocol EditImageThumbnailCellDelegate <NSObject>
 

@@ -7,7 +7,6 @@
 //
 
 #import "EditImageParamsViewController.h"
-#import "EditImageThumbCollectionViewCell.h"
 #import "EditImageThumbTableViewCell.h"
 #import "ImageDetailViewController.h"
 #import "ImageService.h"

@@ -1317,53 +1317,6 @@ NSString * const kGetImageOrderDescending = @"desc";
               }];
 }
 
-+(NSURLSessionTask*)setImageFileForImageWithId:(NSInteger)imageId
-                                  withFileName:(NSString*)fileName
-                                    onProgress:(void (^)(NSProgress *))progress
-                                  OnCompletion:(void (^)(NSURLSessionTask *task, id response))completion
-                                     onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
-{
-    NSURLSessionTask *request = [self post:kPiwigoImageSetInfo
-         URLParameters:nil
-            parameters:@{
-                         @"image_id" : @(imageId),
-                         @"file" : fileName,
-                         @"single_value_mode" : @"replace"
-                         }
-        sessionManager:NetworkVarsObjc.sessionManager
-              progress:progress
-               success:^(NSURLSessionTask *task, id responseObject) {
-                        if(completion) {
-                            if([[responseObject objectForKey:@"stat"] isEqualToString:@"ok"])
-                            {
-                                completion(task, responseObject);
-                            }
-                            else
-                            {
-                                // Display Piwigo error
-                                NSError *error = [NetworkHandler getPiwigoErrorFromResponse:responseObject
-                                                      path:kPiwigoImageSetInfo andURLparams:nil];
-                                if(completion) {
-                                    [NetworkHandler showPiwigoError:error withCompletion:^{
-                                        completion(task, nil);
-                                    }];
-                                } else {
-                                    [NetworkHandler showPiwigoError:error withCompletion:nil];
-                                }
-                            }
-                        }
-            } failure:^(NSURLSessionTask *task, NSError *error) {
-#if defined(DEBUG)
-                  NSLog(@"=> setImageFileForImageWithId — Fail: %@", [error description]);
-#endif
-                  if(fail) {
-                      fail(task, error);
-                  }
-              }];
-    
-    return request;
-}
-
 +(NSURLSessionTask*)setCategoriesForImageWithId:(NSInteger)imageId
                                  withCategories:(NSArray *)categoryIds
                                      onProgress:(void (^)(NSProgress *))progress

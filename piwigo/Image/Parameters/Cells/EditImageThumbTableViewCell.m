@@ -7,10 +7,10 @@
 //
 
 #import "EditImageThumbTableViewCell.h"
-#import "EditImageThumbCollectionViewCell.h"
 #import "ImagesCollection.h"
 
 NSString * const kEditImageThumbTableCell_ID = @"EditImageThumbTableCell";
+NSString * const kEditImageThumbCollectionCell_ID = @"EditImageThumbCollectionCell";
 
 @interface EditImageThumbTableViewCell() <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, EditImageThumbnailDelegate>
 
@@ -67,7 +67,7 @@ NSString * const kEditImageThumbTableCell_ID = @"EditImageThumbTableCell";
 -(UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     EditImageThumbCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kEditImageThumbCollectionCell_ID forIndexPath:indexPath];
-    [cell setupWithImage:self.images[indexPath.row] removeOption:(self.images.count > 1)];
+    [cell configWithImage:self.images[indexPath.row] removeOption:(self.images.count > 1)];
     cell.delegate = self;
     return cell;
 }
