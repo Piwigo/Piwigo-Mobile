@@ -184,18 +184,29 @@ NSString * const kEditImageThumbCollectionCell_ID = @"EditImageThumbCollectionCe
     {
         // Load album thumbnail
         __weak typeof(self) weakSelf = self;
+        [self.imageThumbnail layoutIfNeeded];
+        CGSize size = self.imageThumbnail.bounds.size;
+        CGFloat scale = fmax(1.0, self.imageThumbnail.traitCollection.displayScale);
         NSURL *URL = [NSURL URLWithString:thumbnailUrl];
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
+        [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
         [self.imageThumbnail setImageWithURLRequest:request
                                    placeholderImage:[UIImage imageNamed:@"placeholder"]
                                             success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
                                                 weakSelf.imageThumbnail.image = image;
-                                            }
-                                            failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+            CGSize imageSize = image.size;
+            if (fmax(imageSize.width, imageSize.height) > fmax(size.width, size.height) * scale) {
+                UIImage *thumbnailImage = [ImageUtilities downsampleWithImage:image to:size scale:scale];
+                weakSelf.imageThumbnail.image = thumbnailImage;
+            } else {
+                weakSelf.imageThumbnail.image = image;
+            }
+        }
+        failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 #if defined(DEBUG)
-                                                NSLog(@"setupWithImageData — Fail to get thumbnail for image at %@", thumbnailUrl);
+            NSLog(@"setupWithImageData — Fail to get thumbnail for image at %@", thumbnailUrl);
 #endif
-                                            }];
+        }];
     }
 }
 
