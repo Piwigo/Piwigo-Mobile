@@ -10,7 +10,6 @@
 #import "PiwigoImageData.h"
 #import "ImageScrollView.h"
 #import "ImageService.h"
-#import "VideoView.h"
 #import "NetworkHandler.h"
 
 @interface ImagePreviewViewController () <AVAssetResourceLoaderDelegate>
