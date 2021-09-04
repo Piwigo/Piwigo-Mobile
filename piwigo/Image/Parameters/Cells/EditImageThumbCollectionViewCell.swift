@@ -15,12 +15,12 @@ import piwigoKit
 @objc
 protocol EditImageThumbnailDelegate: NSObjectProtocol {
     func didDeselectImage(withId imageId: Int)
-    func didRenameFileOfImage(withId imageId: Int, andFilename fileName: String?)
+    func didRenameFileOfImage(withId imageId: Int, andFilename fileName: String)
 }
 
 class EditImageThumbCollectionViewCell: UICollectionViewCell
 {
-    @objc weak var delegate: EditImageThumbnailDelegate?
+    weak var delegate: EditImageThumbnailDelegate?
 
     @IBOutlet private weak var imageThumbnailView: UIView!
     @IBOutlet private weak var imageThumbnail: UIImageView!
@@ -71,7 +71,6 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         imageTime.textColor = UIColor.piwigoColorLeftLabel()
     }
 
-    @objc
     func config(withImage imageData: PiwigoImageData?, removeOption hasRemove: Bool) {
         // Colors
         applyColorPalette()
@@ -237,7 +236,8 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
             handler: { [unowned self] action in
                 // Rename album if possible
                 if let fileName = alert.textFields?.first?.text, fileName.count > 0 {
-                    renameImage(withName: fileName, andViewController: topViewController)
+                    renameImageFile(withName: fileName,
+                                    andViewController: topViewController)
                 }
             })
 
@@ -257,8 +257,8 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         }
     }
 
-    func renameImage(withName fileName: String,
-                     andViewController topViewController: UIViewController?) {
+    private func renameImageFile(withName fileName: String,
+                         andViewController topViewController: UIViewController?) {
         // Display HUD during the update
         topViewController?.showPiwigoHUD(withTitle: NSLocalizedString("renameImageHUD_label", comment: "Renaming Original File…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
 
@@ -353,7 +353,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
 }
 
 
-// MARK: -
+// MARK: - UITextFieldDelegate Methods
 extension EditImageThumbCollectionViewCell: UITextFieldDelegate
 {
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {

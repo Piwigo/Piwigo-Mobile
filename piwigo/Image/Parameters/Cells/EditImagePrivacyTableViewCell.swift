@@ -9,8 +9,8 @@
 //
 
 import UIKit
+import piwigoKit
 
-@objc
 class EditImagePrivacyTableViewCell: UITableViewCell {
     
     @IBOutlet private weak var label: UILabel!
@@ -21,15 +21,13 @@ class EditImagePrivacyTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
     }
 
-    @objc
     func setLeftLabel(withText text: String?) {
         label.text = text
         label.textColor = UIColor.piwigoColorLeftLabel()
     }
 
-    @objc
-    func setPrivacyLevel(with privacy: kPiwigoPrivacyObjc, inColor color: UIColor?) {
-        list.text = Model.sharedInstance().getNameForPrivacyLevel(privacy)
+    func setPrivacyLevel(with privacy: kPiwigoPrivacy, inColor color: UIColor?) {
+        list.text = privacy.name
         list.textColor = color
     }
 }

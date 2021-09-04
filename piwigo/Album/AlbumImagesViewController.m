@@ -15,7 +15,6 @@
 #import "CategoriesData.h"
 #import "CategoryCollectionViewCell.h"
 #import "DiscoverImagesViewController.h"
-#import "EditImageParamsViewController.h"
 #import "FavoritesImagesViewController.h"
 #import "ImageCollectionViewCell.h"
 #import "ImageDetailViewController.h"
@@ -2139,8 +2138,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         default:    // Several images
         {
             // Present EditImageParams view
-            UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageParams" bundle:nil];
-            EditImageParamsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageParams"];
+            UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageParamsViewController" bundle:nil];
+            EditImageParamsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageParamsViewController"];
             editImageVC.images = [self.selectedImagesToEdit copy];
             PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
             editImageVC.hasTagCreationRights = NetworkVarsObjc.hasAdminRights ||
@@ -3195,11 +3194,12 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
 -(void)didChangeParamsOfImage:(PiwigoImageData *)params
 {
-    // Were parameters updated?
-    if (params == nil) { return; }
-
     // Update image data
-    [self.albumData updateImage:params];
+    NSInteger indexOfUpdatedImage = [self.albumData updateImage:params];
+    if (indexOfUpdatedImage != NSNotFound) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfUpdatedImage inSection:1];
+        [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
+    }
 }
 
 -(void)didFinishEditingParameters

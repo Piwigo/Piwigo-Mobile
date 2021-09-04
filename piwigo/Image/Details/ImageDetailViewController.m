@@ -9,7 +9,6 @@
 #import <Photos/Photos.h>
 
 #import "CategoriesData.h"
-#import "EditImageParamsViewController.h"
 #import "ImageDetailViewController.h"
 #import "ImagePreviewViewController.h"
 #import "ImageService.h"
@@ -640,8 +639,8 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     [self setEnableStateOfButtons:NO];
 
     // Present EditImageDetails view
-    UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageParams" bundle:nil];
-    EditImageParamsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageParams"];
+    UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageParamsViewController" bundle:nil];
+    EditImageParamsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageParamsViewController"];
     editImageVC.images = @[self.imageData];
     PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
     editImageVC.hasTagCreationRights = NetworkVarsObjc.hasAdminRights ||
@@ -1199,33 +1198,22 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
 
 -(void)didChangeParamsOfImage:(PiwigoImageData *)params
 {
-    // Update image data
+    // Anything to do?
     if (params == nil) { return; }
-    
-    // Update list of images
-    NSInteger index = 0;
-    for(PiwigoImageData *image in self.images)
-    {
-        if(image.imageId == params.imageId) {
-            // Update image data
-            image.imageTitle = params.imageTitle;
-            image.author = params.author;
-            image.privacyLevel = params.privacyLevel;
-            if (params.comment)
-                image.comment = [NSString stringWithString:params.comment];
-            else
-                image.comment = @"";
-            image.tags = [params.tags copy];
-            
-            // Update list and currently viewed image
-            [self.images replaceObjectAtIndex:index withObject:image];
-            self.imageData = image;
 
-            // Update current view
-            [self setTitleViewFromImageData];
-            break;
-        }
-        index++;
+    // Determine index of updated image
+    NSInteger indexOfUpdatedImage = [self.images indexOfObjectPassingTest:^BOOL(PiwigoImageData *image, NSUInteger index, BOOL * _Nonnull stop) {
+     return image.imageId == params.imageId;
+    }];
+
+    // Update image data
+    if (indexOfUpdatedImage != NSNotFound) {
+        // Update list and currently viewed image
+        [self.images replaceObjectAtIndex:indexOfUpdatedImage withObject:params];
+        self.imageData = params;
+
+        // Update current view
+        [self setTitleViewFromImageData];
     }
 }
 

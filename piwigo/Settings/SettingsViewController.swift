@@ -824,8 +824,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a LabelTableViewCell!")
                     return LabelTableViewCell()
                 }
-                let defLevelObjc = kPiwigoPrivacyObjc(Int32(UploadVars.defaultPrivacyLevel))
-                let defaultLevel = Model.sharedInstance().getNameForPrivacyLevel(defLevelObjc)!
+                let defaultLevel = kPiwigoPrivacy(rawValue: UploadVars.defaultPrivacyLevel)!.name
                 // See https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
                 if view.bounds.size.width > 414 {
                     // i.e. larger than iPhones 6,7 Plus screen width

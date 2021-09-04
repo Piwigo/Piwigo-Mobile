@@ -10,7 +10,6 @@
 
 import UIKit
 
-@objc
 class EditImageTextViewTableViewCell: UITableViewCell {
     
     @IBOutlet weak var textView: UITextView!
@@ -24,8 +23,7 @@ class EditImageTextViewTableViewCell: UITableViewCell {
         textView.layer.cornerRadius = 5.0
     }
 
-    @objc
-    func setDescription(withText imageDetail: String?, inColor color: UIColor?) {
+    func config(withText imageDetail: String?, inColor color: UIColor?) {
         // Cell background
         backgroundColor = UIColor.piwigoColorBackground()
 

@@ -16,10 +16,9 @@ import piwigoKit
     func didUnsetImageCreationDate()
 }
 
-@objc
 class EditImageDatePickerTableViewCell: UITableViewCell
 {
-    @objc weak var delegate: EditImageDatePickerDelegate?
+    weak var delegate: EditImageDatePickerDelegate?
 
     private var is24hFormat = false
     private var formatterShort = DateFormatter()
@@ -117,7 +116,6 @@ class EditImageDatePickerTableViewCell: UITableViewCell
     }
 
     // MARK: - Picker Methods
-    @objc
     func config(withDate date: Date?, animated: Bool)
     {
         // Adopts current date if provided date is nil
@@ -188,7 +186,6 @@ class EditImageDatePickerTableViewCell: UITableViewCell
 
 
     // MARK: - Buttons Methods
-    @objc
     func setDatePickerButtons()
     {
         toolBarTop.barTintColor = UIColor.piwigoColorCellBackground()
@@ -304,7 +301,7 @@ class EditImageDatePickerTableViewCell: UITableViewCell
 }
 
 
-// MARK: -
+// MARK: - UIPickerViewDataSource Methods
 extension EditImageDatePickerTableViewCell: UIPickerViewDataSource
 {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -338,7 +335,7 @@ extension EditImageDatePickerTableViewCell: UIPickerViewDataSource
 }
 
 
-// MARK: -
+// MARK: - UIPickerViewDelegate Methods
 extension EditImageDatePickerTableViewCell: UIPickerViewDelegate
 {
     func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {

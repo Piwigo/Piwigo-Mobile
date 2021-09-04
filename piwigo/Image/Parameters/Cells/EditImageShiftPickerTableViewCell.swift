@@ -15,10 +15,9 @@ import piwigoKit
     func didSelectDate(withPicker date: Date?)
 }
 
-@objc
 class EditImageShiftPickerTableViewCell: UITableViewCell
 {
-    @objc weak var delegate: EditImageShiftPickerDelegate?
+    weak var delegate: EditImageShiftPickerDelegate?
 
     private var pickerRefDate = Date()
     @IBOutlet private weak var addRemoveTimeButton: UISegmentedControl!
@@ -66,7 +65,6 @@ class EditImageShiftPickerTableViewCell: UITableViewCell
 
 
     // MARK: - Picker Methods
-    @objc
     func config(withDate date: Date?, animated: Bool)
     {
         // Store starting date (now if provided date in nil)
@@ -127,7 +125,7 @@ class EditImageShiftPickerTableViewCell: UITableViewCell
 }
 
 
-// MARK: -
+// MARK: - UIPickerViewDataSource Methods
 extension EditImageShiftPickerTableViewCell: UIPickerViewDataSource
 {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -166,7 +164,7 @@ extension EditImageShiftPickerTableViewCell: UIPickerViewDataSource
     }
 }
  
-// MARK: -
+// MARK: - UIPickerViewDelegate Methods
 extension EditImageShiftPickerTableViewCell: UIPickerViewDelegate
 {
     func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat

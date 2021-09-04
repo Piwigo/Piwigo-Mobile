@@ -13,12 +13,12 @@ import piwigoKit
 
 @objc protocol EditImageThumbnailCellDelegate: NSObjectProtocol {
     func didDeselectImage(withId imageId: Int)
-    func didRenameFileOfImage(_ imageData: PiwigoImageData?)
+    func didRenameFileOfImage(_ imageData: PiwigoImageData)
 }
 
 class EditImageThumbTableViewCell: UITableViewCell, UICollectionViewDelegate
 {
-    @objc weak var delegate: EditImageThumbnailCellDelegate?
+    weak var delegate: EditImageThumbnailCellDelegate?
     
     @IBOutlet private var editImageThumbCollectionView: UICollectionView!
 
@@ -33,7 +33,6 @@ class EditImageThumbTableViewCell: UITableViewCell, UICollectionViewDelegate
             bundle: nil), forCellWithReuseIdentifier: "EditImageThumbCollectionViewCell")
     }
 
-    @objc
     func config(withImages imageSelection: [PiwigoImageData]?) {
         // Data
         images = imageSelection
@@ -51,7 +50,7 @@ class EditImageThumbTableViewCell: UITableViewCell, UICollectionViewDelegate
 }
 
     
-// MARK: -
+// MARK: - UICollectionViewDataSource Methods
 extension EditImageThumbTableViewCell: UICollectionViewDataSource
 {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -75,7 +74,7 @@ extension EditImageThumbTableViewCell: UICollectionViewDataSource
 }
 
 
-// MARK: -
+// MARK: - UICollectionViewDelegateFlowLayout Methods
 extension EditImageThumbTableViewCell: UICollectionViewDelegateFlowLayout
 {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
@@ -93,7 +92,7 @@ extension EditImageThumbTableViewCell: UICollectionViewDelegateFlowLayout
 }
 
 
-// MARK: -
+// MARK: - EditImageThumbnailDelegate Methods
 extension EditImageThumbTableViewCell: EditImageThumbnailDelegate
 {
     @objc
@@ -110,11 +109,10 @@ extension EditImageThumbTableViewCell: EditImageThumbnailDelegate
     }
 
     @objc
-    func didRenameFileOfImage(withId imageId: Int, andFilename fileName: String?) {
+    func didRenameFileOfImage(withId imageId: Int, andFilename fileName: String) {
         // Update data source
         if let indexOfImage = images?.firstIndex(where: { $0.imageId == imageId }),
-           let imageToUpdate: PiwigoImageData = images?[indexOfImage],
-           let fileName = fileName {
+           let imageToUpdate: PiwigoImageData = images?[indexOfImage] {
             imageToUpdate.fileName = fileName
             images?.replaceSubrange(indexOfImage...indexOfImage, with: [imageToUpdate])
 
@@ -127,7 +125,7 @@ extension EditImageThumbTableViewCell: EditImageThumbnailDelegate
 }
 
 
-// MARK: -
+// MARK: - UIScrollViewDelegate Methods
 extension EditImageThumbTableViewCell: UIScrollViewDelegate
 {
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {

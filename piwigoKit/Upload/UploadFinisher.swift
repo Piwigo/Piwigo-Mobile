@@ -75,7 +75,6 @@ extension UploadManager {
                 }
                 else {
                     // Could not set image parameters, upload still ready for finish
-                    print("••>> setImageInfoForImageWithId(): no successful")
                     let error = NSError(domain: "Piwigo", code: -1, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")])
                     self.didSetParameters(for: uploadID, error: error)
                     return

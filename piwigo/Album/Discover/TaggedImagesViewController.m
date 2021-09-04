@@ -10,7 +10,6 @@
 #import "AlbumService.h"
 #import "CategoriesData.h"
 #import "DiscoverImagesViewController.h"
-#import "EditImageParamsViewController.h"
 #import "ImageCollectionViewCell.h"
 #import "ImageDetailViewController.h"
 #import "ImageService.h"
@@ -900,8 +899,8 @@
         default:    // Several images
         {
             // Present EditImageParams view
-            UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageParams" bundle:nil];
-            EditImageParamsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageParams"];
+            UIStoryboard *editImageSB = [UIStoryboard storyboardWithName:@"EditImageParamsViewController" bundle:nil];
+            EditImageParamsViewController *editImageVC = [editImageSB instantiateViewControllerWithIdentifier:@"EditImageParamsViewController"];
             editImageVC.images = [self.selectedImagesToEdit copy];
             editImageVC.delegate = self;
             [self pushView:editImageVC];
@@ -1338,11 +1337,12 @@
 
 -(void)didChangeParamsOfImage:(PiwigoImageData *)params
 {
-    // Were parameters updated?
-    if (params == nil) { return; }
-
     // Update image data
-    [self.albumData updateImage:params];
+    NSInteger indexOfUpdatedImage = [self.albumData updateImage:params];
+    if (indexOfUpdatedImage != NSNotFound) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfUpdatedImage inSection:1];
+        [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
+    }
 }
 
 -(void)didFinishEditingParameters

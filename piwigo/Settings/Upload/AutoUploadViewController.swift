@@ -320,7 +320,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                         tagList.append(newTag)
                     }
                 })
-                cell.setTagList(fromList: tagList,
+                cell.config(withList: tagList,
                                 inColor: UIColor.piwigoColorRightLabel())
                 tableViewCell = cell
 
@@ -329,7 +329,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a EditImageTextViewTableViewCell!")
                     return EditImageTextViewTableViewCell()
                 }
-                cell.setDescription(withText: UploadVars.autoUploadComments,
+                cell.config(withText: UploadVars.autoUploadComments,
                                     inColor: UIColor.piwigoColorRightLabel())
                 cell.textView.delegate = self
                 tableViewCell = cell

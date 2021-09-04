@@ -10,14 +10,13 @@
 
 import UIKit
 
-@objc
 class EditImageTagsTableViewCell: UITableViewCell {
     
     @IBOutlet private weak var tagsLabel: UILabel!
     @IBOutlet private weak var tagsList: UILabel!
 
     private var _tagsString: String?
-    @objc var tagsString: String? {
+    var tagsString: String? {
         get {
             return _tagsString
         }
@@ -46,8 +45,7 @@ class EditImageTagsTableViewCell: UITableViewCell {
         tagsString = ""
     }
 
-    @objc
-    func setTagList(fromList tags: [PiwigoTagData]?, inColor color: UIColor?) {
+    func config(withList tags: [PiwigoTagData]?, inColor color: UIColor?) {
         tagsString = TagsData.sharedInstance().getTagsString(fromList: tags)
         tagsLabel.textColor = UIColor.piwigoColorLeftLabel()
         tagsList.textColor = color

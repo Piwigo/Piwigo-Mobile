@@ -10,13 +10,11 @@
 
 import UIKit
 
-@objc
 class EditImageTextFieldTableViewCell: UITableViewCell {
     
     @IBOutlet weak var cellTextField: UITextField!
     @IBOutlet private weak var cellLabel: UILabel!
 
-    @objc
     func config(withLabel label: String?, placeHolder: String?,
                andImageDetail imageDetail: String?) {
         // Cell background
