@@ -56,27 +56,6 @@ class EditImageParamsViewController: UIViewController
         case count
     }
 
-    override func awakeFromNib() {
-        super.awakeFromNib()
-
-        title = NSLocalizedString("imageDetailsView_title", comment: "Properties")
-
-        // Buttons
-        let cancel = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelEdit))
-        cancel.accessibilityIdentifier = "Cancel"
-        let done = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(doneEdit))
-        done.accessibilityIdentifier = "Done"
-
-        // Navigation bar
-        navigationController?.isNavigationBarHidden = false
-        navigationItem.leftBarButtonItem = cancel
-        navigationItem.rightBarButtonItem = done
-
-        // Register palette changes
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: PwgNotifications.paletteChanged, object: nil)
-    }
-
     
     // MARK: - View Lifecycle
 
@@ -106,6 +85,20 @@ class EditImageParamsViewController: UIViewController
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        // Title
+        title = NSLocalizedString("imageDetailsView_title", comment: "Properties")
+
+        // Buttons
+        let cancel = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelEdit))
+        cancel.accessibilityIdentifier = "Cancel"
+        let done = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(doneEdit))
+        done.accessibilityIdentifier = "Done"
+
+        // Navigation bar
+        navigationController?.isNavigationBarHidden = false
+        navigationItem.leftBarButtonItem = cancel
+        navigationItem.rightBarButtonItem = done
 
         // Register thumbnails cell
         editImageParamsTableView.register(UINib(nibName: "EditImageThumbTableViewCell", bundle: nil), forCellReuseIdentifier: "EditImageThumbTableViewCell")
@@ -186,6 +179,10 @@ class EditImageParamsViewController: UIViewController
 
         // Set colors, fonts, etc.
         applyColorPalette()
+
+        // Register palette changes
+        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
+                                               name: PwgNotifications.paletteChanged, object: nil)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -220,9 +217,8 @@ class EditImageParamsViewController: UIViewController
             // On iPad, the form is presented in a popover view
             if UIDevice.current.userInterfaceIdiom == .pad {
                 let mainScreenBounds = UIScreen.main.bounds
-                preferredContentSize = CGSize(
-                    width: kPiwigoPadSubViewWidth,
-                    height: ceil(mainScreenBounds.height * 2 / 3))
+                preferredContentSize = CGSize(width: kPiwigoPadSubViewWidth,
+                                              height: ceil(mainScreenBounds.height * 2 / 3))
                 editImageParamsTableView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: CGFloat(max(0.0, tableHeight + navBarHeight - size.height)), right: 0.0)
             } else {
                 let statBarHeight = UIApplication.shared.statusBarFrame.size.height
@@ -378,48 +374,6 @@ class EditImageParamsViewController: UIViewController
                 showUpdatePropertiesError(error)
             }
         }
-        
-//        ImageService.setProperties(ofImage: imagesToUpdate.last,
-//            onProgress: { progress in
-//                // Progress
-//            },
-//            onCompletion: { [self] task, response in
-//                if response?["stat"] == "ok" {
-//                    // Update image parameters in cache
-//                    if delegate?.responds(to: #selector(EditImageParamsDelegate.didChangeParamsOfImage(_:))) ?? false {
-//                        delegate?.didChangeParamsOfImage(imagesToUpdate.last)
-//                    }
-//
-//                    // Next image?
-//                    imagesToUpdate.removeLast()
-//                    if imagesToUpdate.count != 0 {
-//                        updatePiwigoHUD(withProgress: 1.0 - Float(imagesToUpdate.count) / Float(nberOfSelectedImages))
-//                        updateImageProperties()
-//                    } else {
-//                        // Done, hide HUD and dismiss controller
-//                        updatePiwigoHUDwithSuccess { [self] in
-//                            hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
-//                                // Return to image preview or album view
-//                                dismiss(animated: true)
-//                            }
-//                        }
-//                    }
-//                } else {
-//                    // Display Piwigo error in HUD
-//                    let error = NetworkHandler.getPiwigoError(fromResponse: response, path: kPiwigoImageSetInfo, andURLparams: nil)
-//                    hidePiwigoHUD{ [unowned self] in
-//                        guard let error = error as NSError? else { return }
-//                        showUpdatePropertiesError(error)
-//                    }
-//                }
-//            },
-//            onFailure: { [self] task, error in
-//                // Failed
-//                hidePiwigoHUD { [unowned self] in
-//                    guard let error = error as NSError? else { return }
-//                    showUpdatePropertiesError(error)
-//                }
-//            })
     }
 
     private func showUpdatePropertiesError(_ error: NSError) {
