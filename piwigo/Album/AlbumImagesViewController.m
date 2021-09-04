@@ -1500,7 +1500,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                     }
                 }
                 for (NSIndexPath *indexPath in itemsToDelete) {
-                    if ([self.imagesCollection cellForItemAtIndexPath:indexPath] != nil) {
+                    if ([self.imagesCollection.indexPathsForVisibleItems containsObject:indexPath]) {
                         [self.imagesCollection deleteItemsAtIndexPaths:@[indexPath]];
                     }
                 }
