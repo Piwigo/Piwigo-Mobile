@@ -358,7 +358,7 @@ public class UploadsProvider: NSObject {
         
         guard !uploadRequests.isEmpty else { return }
         
-        // Create a private queue context.
+        // Create the queue context.
         var taskContext: NSManagedObjectContext
         if Thread.isMainThread {
             taskContext = DataController.managedObjectContext
@@ -415,7 +415,10 @@ public class UploadsProvider: NSObject {
                 let uploadToDelete = taskContext.object(with: uploadID) as! Upload
                 let filenamePrefix = uploadToDelete.localIdentifier.replacingOccurrences(of: "/", with: "-")
                 if !filenamePrefix.isEmpty {
-                    UploadManager.shared.deleteFilesInUploadsDirectory(withPrefix: filenamePrefix)
+                    // Called from main or background thread
+                    UploadManager.shared.backgroundQueue.async {
+                        UploadManager.shared.deleteFilesInUploadsDirectory(withPrefix: filenamePrefix)
+                    }
                 }
 
                 // Append upload to delete
