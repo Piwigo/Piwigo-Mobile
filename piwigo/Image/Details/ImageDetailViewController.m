@@ -12,7 +12,6 @@
 #import "ImageDetailViewController.h"
 #import "ImagePreviewViewController.h"
 #import "ImageService.h"
-#import "ImageScrollView.h"
 #import "ImagesCollection.h"
 #import "MBProgressHUD.h"
 

@@ -109,6 +109,7 @@
 		AD7823072061BE7F00D5CA70 /* OpenSansRegular.TTF in Resources */ = {isa = PBXBuildFile; fileRef = AD7823062061BC0000D5CA70 /* OpenSansRegular.TTF */; };
 		AD7B4C1620E031B0003E403A /* AlbumTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D818EA011A74C7BA00733991 /* AlbumTableViewCell.m */; };
 		AD807EFB26E3844200008162 /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD807EFA26E3844200008162 /* VideoView.swift */; };
+		AD807EFF26E3A86B00008162 /* ImageScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD807EFE26E3A86B00008162 /* ImageScrollView.swift */; };
 		AD826AE026B550E9008A245B /* piwigoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; };
 		AD826AE126B550F4008A245B /* piwigoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; };
 		AD82C04C2433DB0E00F774BA /* SelectPrivacyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD82C04A2433D71C00F774BA /* SelectPrivacyViewController.swift */; };
@@ -261,7 +262,6 @@
 		D82B8D301A688512000E47CA /* PiwigoImageData.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8D2F1A688512000E47CA /* PiwigoImageData.m */; };
 		D82B8D331A688E8F000E47CA /* ImageDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8D321A688E8F000E47CA /* ImageDetailViewController.m */; };
 		D860440E1A99894C0067E5D1 /* ImagePreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D860440D1A99894C0067E5D1 /* ImagePreviewViewController.m */; };
-		D86044111A99922F0067E5D1 /* ImageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = D86044101A99922F0067E5D1 /* ImageScrollView.m */; };
 		D863EEBD1A6A440600C0A6E9 /* PiwigoButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D863EEBC1A6A440600C0A6E9 /* PiwigoButton.m */; };
 		D863EECA1A6A484C00C0A6E9 /* PiwigoTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D863EEC91A6A484C00C0A6E9 /* PiwigoTextField.m */; };
 		D863EECD1A6A495700C0A6E9 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D863EECC1A6A495700C0A6E9 /* LoginViewController.m */; };
@@ -489,6 +489,7 @@
 		AD7783B1267E4AB700317F36 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; name = Base; path = Base.lproj/Intents.intentdefinition; sourceTree = "<group>"; };
 		AD7823062061BC0000D5CA70 /* OpenSansRegular.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = OpenSansRegular.TTF; sourceTree = "<group>"; };
 		AD807EFA26E3844200008162 /* VideoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoView.swift; sourceTree = "<group>"; };
+		AD807EFE26E3A86B00008162 /* ImageScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageScrollView.swift; sourceTree = "<group>"; };
 		AD82C04A2433D71C00F774BA /* SelectPrivacyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectPrivacyViewController.swift; sourceTree = "<group>"; };
 		AD83385F1FE677970072104F /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD8338601FE677970072104F /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/About.strings; sourceTree = "<group>"; };
@@ -712,8 +713,6 @@
 		D82B8D321A688E8F000E47CA /* ImageDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageDetailViewController.m; sourceTree = "<group>"; };
 		D860440C1A99894C0067E5D1 /* ImagePreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImagePreviewViewController.h; sourceTree = "<group>"; };
 		D860440D1A99894C0067E5D1 /* ImagePreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagePreviewViewController.m; sourceTree = "<group>"; };
-		D860440F1A99922F0067E5D1 /* ImageScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageScrollView.h; sourceTree = "<group>"; };
-		D86044101A99922F0067E5D1 /* ImageScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageScrollView.m; sourceTree = "<group>"; };
 		D863EEBB1A6A440600C0A6E9 /* PiwigoButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiwigoButton.h; sourceTree = "<group>"; };
 		D863EEBC1A6A440600C0A6E9 /* PiwigoButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoButton.m; sourceTree = "<group>"; };
 		D863EEC81A6A484C00C0A6E9 /* PiwigoTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiwigoTextField.h; sourceTree = "<group>"; };
@@ -1425,8 +1424,7 @@
 				D82B8D321A688E8F000E47CA /* ImageDetailViewController.m */,
 				D860440C1A99894C0067E5D1 /* ImagePreviewViewController.h */,
 				D860440D1A99894C0067E5D1 /* ImagePreviewViewController.m */,
-				D860440F1A99922F0067E5D1 /* ImageScrollView.h */,
-				D86044101A99922F0067E5D1 /* ImageScrollView.m */,
+				AD807EFE26E3A86B00008162 /* ImageScrollView.swift */,
 				AD807EFA26E3844200008162 /* VideoView.swift */,
 			);
 			path = Details;
@@ -2296,7 +2294,7 @@
 				ADBED55426DEBAE300D1A41B /* EditImageParamsViewController.swift in Sources */,
 				D8D3F7651A7AF2A100AEA7F1 /* CategoriesData.m in Sources */,
 				D82B8D301A688512000E47CA /* PiwigoImageData.m in Sources */,
-				D86044111A99922F0067E5D1 /* ImageScrollView.m in Sources */,
+				AD807EFF26E3A86B00008162 /* ImageScrollView.swift in Sources */,
 				D863EEBD1A6A440600C0A6E9 /* PiwigoButton.m in Sources */,
 				AD987634262606C600B964C5 /* UIViewController+AppTools.swift in Sources */,
 				AD07CAB626DBBD0A00BEAEFB /* EditImageTextViewTableViewCell.swift in Sources */,

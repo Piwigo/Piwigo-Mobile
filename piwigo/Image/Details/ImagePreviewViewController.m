@@ -8,7 +8,6 @@
 
 #import "ImagePreviewViewController.h"
 #import "PiwigoImageData.h"
-#import "ImageScrollView.h"
 #import "ImageService.h"
 #import "NetworkHandler.h"
 
