@@ -10,7 +10,6 @@
 
 #import "CategoriesData.h"
 #import "ImageDetailViewController.h"
-#import "ImagePreviewViewController.h"
 #import "ImageService.h"
 #import "ImagesCollection.h"
 #import "MBProgressHUD.h"
@@ -105,7 +104,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
         ImagePreviewViewController *startingImage = [ImagePreviewViewController new];
         startingImage.imagePreviewDelegate = self;
         startingImage.imageIndex = imageIndex;
-        [startingImage setImageScrollViewWithImageData:self.imageData];
+        [startingImage setImageScrollViewWith:self.imageData];
         [self setViewControllers:@[startingImage]
                        direction:UIPageViewControllerNavigationDirectionForward
                         animated:NO
@@ -380,7 +379,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
                               // Right class ;-)
                               ImagePreviewViewController *previewVC = (ImagePreviewViewController *)childVC;
                               if (previewVC.imageIndex == index) {
-                                  [previewVC setImageScrollViewWithImageData:imageDataComplete];
+                                  [previewVC setImageScrollViewWith:imageDataComplete];
                               }
                           }
                       }
@@ -425,7 +424,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     if (self.imageData.isVideo) {
         // User wants to play/replay the video
         ImagePreviewViewController *playVideo = [ImagePreviewViewController new];
-        [playVideo startVideoPlayerViewWithImageData:self.imageData];
+        [playVideo startVideoPlayerViewWith:self.imageData];
     }
     else {
         // Display/hide the navigation bar
@@ -504,7 +503,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     nextImage.imageLoaded = NO;
     nextImage.imageIndex = currentIndex + 1;
 //    nextImage.imagePreviewDelegate = self;
-    [nextImage setImageScrollViewWithImageData:imageData];
+    [nextImage setImageScrollViewWith:imageData];
     return nextImage;
 }
 
@@ -543,7 +542,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
     prevImage.imageLoaded = NO;
     prevImage.imageIndex = currentIndex - 1;
 //    prevImage.imagePreviewDelegate = self;
-    [prevImage setImageScrollViewWithImageData:imageData];
+    [prevImage setImageScrollViewWith:imageData];
     return prevImage;
 }
 
@@ -1277,7 +1276,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
         ImagePreviewViewController *nextImage = [ImagePreviewViewController new];
         nextImage.imageLoaded = NO;
         nextImage.imageIndex = indexOfRemovedImage;
-        [nextImage setImageScrollViewWithImageData:imageData];
+        [nextImage setImageScrollViewWith:imageData];
         if (nextImage) {
             // This changes the View Controller
             // and calls the presentationIndexForPageViewController datasource method
@@ -1304,7 +1303,7 @@ NSString * const kPiwigoNotificationUpdateImageFileName = @"kPiwigoNotificationU
         ImagePreviewViewController *prevImage = [ImagePreviewViewController new];
         prevImage.imageLoaded = NO;
         prevImage.imageIndex = indexOfRemovedImage - 1;
-        [prevImage setImageScrollViewWithImageData:imageData];
+        [prevImage setImageScrollViewWith:imageData];
         if (prevImage) {
             // This changes the View Controller
             // and calls the presentationIndexForPageViewController datasource method
