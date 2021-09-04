@@ -1,10 +1,11 @@
-//  Converted to Swift 5.3 by Swiftify v5.3.28117 - https://swiftify.com/
 //
 //  VideoView.swift
 //  piwigo
 //
 //  Created by Eddy Lelièvre-Berna on 25/11/2017.
 //  Copyright © 2017 Piwigo.org. All rights reserved.
+//
+//  Converted to Swift 5.3 by Eddy Lelièvre-Berna on 04/09/2021.
 //
 
 import AVKit
