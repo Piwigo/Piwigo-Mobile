@@ -10,7 +10,7 @@
 
 import UIKit
 
-class ImageScrollView: UIScrollView, UIScrollViewDelegate
+class ImageScrollView: UIScrollView
 {
     @objc var imageView = UIImageView()
     @objc var playImage = UIImageView()
@@ -52,6 +52,14 @@ class ImageScrollView: UIScrollView, UIScrollViewDelegate
         return imageView
     }
 
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+}
+
+// MARK: - UIScrollViewDelegate Methods
+extension ImageScrollView: UIScrollViewDelegate
+{
     func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
         if (scale == 1.0) && (previousScale == 1.0) {
             // The user scaled down twice the image => back to collection of images
@@ -60,9 +68,5 @@ class ImageScrollView: UIScrollView, UIScrollViewDelegate
         } else {
             previousScale = scale
         }
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
     }
 }
