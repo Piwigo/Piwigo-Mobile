@@ -37,11 +37,11 @@ public struct ImagesSetInfoJSON: Decodable {
         
         // Status returned by Piwigo
         status = try rootContainer.decodeIfPresent(String.self, forKey: .status)
-        if (status == "ok")
+        if status == "ok"
         {
             success = true
         }
-        else if (status == "fail")
+        else if status == "fail"
         {
             do {
                 // Retrieve Piwigo server error

@@ -58,7 +58,7 @@ public struct ImagesUploadAsyncJSON: Decodable {
 
         // Status returned by Piwigo
         status = try rootContainer.decodeIfPresent(String.self, forKey: .status)
-        if (status == "ok")
+        if status == "ok"
         {
             // Decodes response from the data and store them in the array
             data = try? rootContainer.decode(ImagesGetInfo.self, forKey: .result)
@@ -195,7 +195,7 @@ public struct ImagesUploadAsyncJSON: Decodable {
                 }
             }
         }
-        else if (status == "fail")
+        else if status == "fail"
         {
             // Retrieve Piwigo server error
             do {

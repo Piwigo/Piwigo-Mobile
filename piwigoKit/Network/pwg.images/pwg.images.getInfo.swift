@@ -57,7 +57,7 @@ public struct ImagesGetInfoJSON: Decodable {
 
         // Status returned by Piwigo
         status = try rootContainer.decodeIfPresent(String.self, forKey: .status)
-        if (status == "ok")
+        if status == "ok"
         {
             // Image parameters
             data = try rootContainer.decode(ImagesGetInfo.self, forKey: .result)
@@ -185,7 +185,7 @@ public struct ImagesGetInfoJSON: Decodable {
                 }
             }
         }
-        else if (status == "fail")
+        else if status == "fail"
         {
             // Retrieve Piwigo server error
             do {
