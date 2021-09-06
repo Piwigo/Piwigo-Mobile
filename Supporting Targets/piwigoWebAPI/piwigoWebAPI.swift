@@ -86,6 +86,26 @@ class piwigoWebAPI: XCTestCase {
         XCTAssertEqual(result2.data.src, "https://.../20200628212043-0a9c6158-th.png")
     }
 
+    func testPwgImagesGetInfoDecoding() {
+        
+        // Case of a successful request
+        let bundle = Bundle(for: type(of: self))
+        guard let url = bundle.url(forResource: "pwg.images.getInfo", withExtension: "json"),
+            let data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(ImagesGetInfoJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertEqual(result.data.md5checksum, "7870f465dd76af3f0bd6d4f087afa5cd")
+    }
+
     func testPwgImagesSetInfoDecoding() {
         
         // Case of a successful request
