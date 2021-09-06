@@ -21,7 +21,7 @@ let kPiwigoNotificationUpdateImageFileName = "kPiwigoNotificationUpdateImageFile
     func needToLoadMoreImages()
 }
 
-class ImageDetailViewController: UIPageViewController, UIToolbarDelegate
+class ImageDetailViewController: UIPageViewController
 {
     @objc weak var imgDetailDelegate: ImageDetailDelegate?
     @objc var images = [PiwigoImageData]()
