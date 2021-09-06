@@ -111,6 +111,13 @@
 		AD807EFB26E3844200008162 /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD807EFA26E3844200008162 /* VideoView.swift */; };
 		AD807EFF26E3A86B00008162 /* ImageScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD807EFE26E3A86B00008162 /* ImageScrollView.swift */; };
 		AD807F0126E3AD1600008162 /* ImagePreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD807F0026E3AD1600008162 /* ImagePreviewViewController.swift */; };
+		AD807F0326E3BB1700008162 /* ImageDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD807F0226E3BB1700008162 /* ImageDetailViewController.swift */; };
+		AD807F0426E4BB4C00008162 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD778359267E34F800317F36 /* IntentHandler.swift */; };
+		AD807F0626E52B8D00008162 /* pwg.getInfos.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD807F0526E52B8D00008162 /* pwg.getInfos.swift */; };
+		AD807F0826E52F6F00008162 /* pwg.images.delete.json in Resources */ = {isa = PBXBuildFile; fileRef = AD807F0726E52F6F00008162 /* pwg.images.delete.json */; };
+		AD807F0A26E530ED00008162 /* pwg.images.delete.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD807F0926E530ED00008162 /* pwg.images.delete.swift */; };
+		AD807F1026E532F700008162 /* pwg.getInfos.json in Resources */ = {isa = PBXBuildFile; fileRef = AD807F0F26E532F700008162 /* pwg.getInfos.json */; };
+		AD807F1126E5331B00008162 /* pwg.images.delete.json in Resources */ = {isa = PBXBuildFile; fileRef = AD807F0726E52F6F00008162 /* pwg.images.delete.json */; };
 		AD826AE026B550E9008A245B /* piwigoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; };
 		AD826AE126B550F4008A245B /* piwigoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; };
 		AD82C04C2433DB0E00F774BA /* SelectPrivacyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD82C04A2433D71C00F774BA /* SelectPrivacyViewController.swift */; };
@@ -163,8 +170,7 @@
 		ADB27475267661980002DD09 /* ParseXMLData.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB27474267661980002DD09 /* ParseXMLData.swift */; };
 		ADBC08CE244604EB00BF82E8 /* NberImagesFooterCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBC08CD244604EB00BF82E8 /* NberImagesFooterCollectionReusableView.swift */; };
 		ADBC08D02446060700BF82E8 /* CategoryHeaderReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBC08CF2446060700BF82E8 /* CategoryHeaderReusableView.swift */; };
-		ADBCABDA26D4154E005D1BB2 /* pwg.getInfos.json in Resources */ = {isa = PBXBuildFile; fileRef = ADF232A026D40796002ACEC9 /* pwg.getInfos.json */; };
-		ADBCABDB26D41562005D1BB2 /* pwg.images.getinfo.json in Resources */ = {isa = PBXBuildFile; fileRef = ADE21700250E23EC003AE588 /* pwg.images.getinfo.json */; };
+		ADBCABDB26D41562005D1BB2 /* pwg.images.getInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = ADE21700250E23EC003AE588 /* pwg.images.getInfo.json */; };
 		ADBCABDC26D41562005D1BB2 /* pwg.images.setInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = AD38C04624AF72E100CDC765 /* pwg.images.setInfo.json */; };
 		ADBCABDD26D41562005D1BB2 /* pwg.images.upload.json in Resources */ = {isa = PBXBuildFile; fileRef = AD11E46824A9319C00C8876F /* pwg.images.upload.json */; };
 		ADBCABDE26D41563005D1BB2 /* pwg.images.upload2.json in Resources */ = {isa = PBXBuildFile; fileRef = ADD79A3F24A93B5600428C58 /* pwg.images.upload2.json */; };
@@ -189,7 +195,6 @@
 		ADC8FAAA244C7307006BDA6A /* LocalImagesFooterReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC8FAA9244C7307006BDA6A /* LocalImagesFooterReusableView.swift */; };
 		ADD063B726A04BFE002558D2 /* UploadVideoSizeViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADD063B626A04BFE002558D2 /* UploadVideoSizeViewController.storyboard */; };
 		ADD063B926A04C12002558D2 /* UploadVideoSizeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD063B826A04C12002558D2 /* UploadVideoSizeViewController.swift */; };
-		ADD063BB26A0895E002558D2 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD778359267E34F800317F36 /* IntentHandler.swift */; };
 		ADD063BC26A08961002558D2 /* UploadPhotosHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD778368267E384500317F36 /* UploadPhotosHandler.swift */; };
 		ADD063BD26A08973002558D2 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = AD7783B2267E4AB700317F36 /* Intents.intentdefinition */; };
 		ADD210412440CC7600DD79A6 /* SettingsViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADD210402440CC7600DD79A6 /* SettingsViewController.storyboard */; };
@@ -221,7 +226,6 @@
 		ADEFBD632074E19000DFAD26 /* CategoryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADEFBD622074E19000DFAD26 /* CategoryTableViewCell.xib */; };
 		ADF1CC75243D111600D75319 /* SelectCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF1CC74243D111600D75319 /* SelectCategoryViewController.swift */; };
 		ADF1CC77243D132100D75319 /* SelectCategoryViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADF1CC76243D132100D75319 /* SelectCategoryViewController.storyboard */; };
-		ADF2329E26D4064F002ACEC9 /* pwg.getInfos.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF2329D26D4064F002ACEC9 /* pwg.getInfos.swift */; };
 		ADF232A126D40EB0002ACEC9 /* piwigoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; };
 		ADF26FBB24C1FE830036E778 /* TagsData.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045B11A94662300A306FE /* TagsData.m */; };
 		ADF26FBC24C1FE860036E778 /* TagsService.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045B81A946A5B00A306FE /* TagsService.m */; };
@@ -261,7 +265,6 @@
 		D82B8CE61A678ED2000E47CA /* NetworkHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8CE51A678ED2000E47CA /* NetworkHandler.m */; };
 		D82B8D2B1A68832C000E47CA /* Model.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8D2A1A68832C000E47CA /* Model.m */; };
 		D82B8D301A688512000E47CA /* PiwigoImageData.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8D2F1A688512000E47CA /* PiwigoImageData.m */; };
-		D82B8D331A688E8F000E47CA /* ImageDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B8D321A688E8F000E47CA /* ImageDetailViewController.m */; };
 		D863EEBD1A6A440600C0A6E9 /* PiwigoButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D863EEBC1A6A440600C0A6E9 /* PiwigoButton.m */; };
 		D863EECA1A6A484C00C0A6E9 /* PiwigoTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = D863EEC91A6A484C00C0A6E9 /* PiwigoTextField.m */; };
 		D863EECD1A6A495700C0A6E9 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D863EECC1A6A495700C0A6E9 /* LoginViewController.m */; };
@@ -491,6 +494,11 @@
 		AD807EFA26E3844200008162 /* VideoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoView.swift; sourceTree = "<group>"; };
 		AD807EFE26E3A86B00008162 /* ImageScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageScrollView.swift; sourceTree = "<group>"; };
 		AD807F0026E3AD1600008162 /* ImagePreviewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePreviewViewController.swift; sourceTree = "<group>"; };
+		AD807F0226E3BB1700008162 /* ImageDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageDetailViewController.swift; sourceTree = "<group>"; };
+		AD807F0526E52B8D00008162 /* pwg.getInfos.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pwg.getInfos.swift; sourceTree = "<group>"; };
+		AD807F0726E52F6F00008162 /* pwg.images.delete.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.images.delete.json; sourceTree = "<group>"; };
+		AD807F0926E530ED00008162 /* pwg.images.delete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.images.delete.swift; sourceTree = "<group>"; };
+		AD807F0F26E532F700008162 /* pwg.getInfos.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pwg.getInfos.json; sourceTree = "<group>"; };
 		AD82C04A2433D71C00F774BA /* SelectPrivacyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectPrivacyViewController.swift; sourceTree = "<group>"; };
 		AD83385F1FE677970072104F /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD8338601FE677970072104F /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/About.strings; sourceTree = "<group>"; };
@@ -651,7 +659,7 @@
 		ADE1AB8F267F45B8001C1EEB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		ADE1AB91267FBF3E001C1EEB /* PwgNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PwgNotifications.swift; sourceTree = "<group>"; };
 		ADE216FD250E22F7003AE588 /* pwg.images.getInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.images.getInfo.swift; sourceTree = "<group>"; };
-		ADE21700250E23EC003AE588 /* pwg.images.getinfo.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pwg.images.getinfo.json; sourceTree = "<group>"; };
+		ADE21700250E23EC003AE588 /* pwg.images.getInfo.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pwg.images.getInfo.json; sourceTree = "<group>"; };
 		ADE250D4266FE99A00285978 /* PwgSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PwgSession.swift; sourceTree = "<group>"; };
 		ADE250D62670016900285978 /* NetworkUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkUtilities.swift; sourceTree = "<group>"; };
 		ADE250D826708DF600285978 /* KeychainUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainUtilities.swift; sourceTree = "<group>"; };
@@ -666,8 +674,6 @@
 		ADEFBD622074E19000DFAD26 /* CategoryTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CategoryTableViewCell.xib; sourceTree = "<group>"; };
 		ADF1CC74243D111600D75319 /* SelectCategoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectCategoryViewController.swift; sourceTree = "<group>"; };
 		ADF1CC76243D132100D75319 /* SelectCategoryViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SelectCategoryViewController.storyboard; sourceTree = "<group>"; };
-		ADF2329D26D4064F002ACEC9 /* pwg.getInfos.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.getInfos.swift; sourceTree = "<group>"; };
-		ADF232A026D40796002ACEC9 /* pwg.getInfos.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pwg.getInfos.json; sourceTree = "<group>"; };
 		ADF26FBD24C200040036E778 /* TagTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagTableViewCell.swift; sourceTree = "<group>"; };
 		ADF26FBE24C200040036E778 /* TagsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagsViewController.swift; sourceTree = "<group>"; };
 		ADF3B30F207F1EEE0082C384 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -710,8 +716,6 @@
 		D82B8D2A1A68832C000E47CA /* Model.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Model.m; sourceTree = "<group>"; };
 		D82B8D2E1A688512000E47CA /* PiwigoImageData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiwigoImageData.h; sourceTree = "<group>"; };
 		D82B8D2F1A688512000E47CA /* PiwigoImageData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoImageData.m; sourceTree = "<group>"; };
-		D82B8D311A688E8F000E47CA /* ImageDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageDetailViewController.h; sourceTree = "<group>"; };
-		D82B8D321A688E8F000E47CA /* ImageDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageDetailViewController.m; sourceTree = "<group>"; };
 		D863EEBB1A6A440600C0A6E9 /* PiwigoButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiwigoButton.h; sourceTree = "<group>"; };
 		D863EEBC1A6A440600C0A6E9 /* PiwigoButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PiwigoButton.m; sourceTree = "<group>"; };
 		D863EEC81A6A484C00C0A6E9 /* PiwigoTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PiwigoTextField.h; sourceTree = "<group>"; };
@@ -1202,6 +1206,7 @@
 				AD38C04324AF724100CDC765 /* pwg.images.setInfo.swift */,
 				ADD79A3C24A9352500428C58 /* pwg.images.upload.swift */,
 				AD6A128A24FAB56A00E3BBED /* pwg.images.uploadAsync.swift */,
+				AD807F0926E530ED00008162 /* pwg.images.delete.swift */,
 			);
 			path = pwg.images;
 			sourceTree = "<group>";
@@ -1302,10 +1307,11 @@
 		ADD79A4124A9424900428C58 /* pwg.images */ = {
 			isa = PBXGroup;
 			children = (
-				ADE21700250E23EC003AE588 /* pwg.images.getinfo.json */,
+				ADE21700250E23EC003AE588 /* pwg.images.getInfo.json */,
 				AD38C04624AF72E100CDC765 /* pwg.images.setInfo.json */,
 				AD11E46824A9319C00C8876F /* pwg.images.upload.json */,
 				ADD79A3F24A93B5600428C58 /* pwg.images.upload2.json */,
+				AD807F0726E52F6F00008162 /* pwg.images.delete.json */,
 			);
 			path = pwg.images;
 			sourceTree = "<group>";
@@ -1313,8 +1319,6 @@
 		ADE535901F65C01000372CBD /* Image */ = {
 			isa = PBXGroup;
 			children = (
-				D8083A531A7D66CD00A95605 /* ImageService.h */,
-				D8083A541A7D66CD00A95605 /* ImageService.m */,
 				ADD790E2265EDE5C00EA4DDB /* ImageVars.swift */,
 				AD8D214B26B0A4450008E907 /* ImageUtilities.swift */,
 				D818EA031A74D32100733991 /* Details */,
@@ -1340,7 +1344,7 @@
 		ADF2329C26D40619002ACEC9 /* pwg */ = {
 			isa = PBXGroup;
 			children = (
-				ADF2329D26D4064F002ACEC9 /* pwg.getInfos.swift */,
+				AD807F0526E52B8D00008162 /* pwg.getInfos.swift */,
 			);
 			path = pwg;
 			sourceTree = "<group>";
@@ -1348,7 +1352,7 @@
 		ADF2329F26D4072A002ACEC9 /* pwg */ = {
 			isa = PBXGroup;
 			children = (
-				ADF232A026D40796002ACEC9 /* pwg.getInfos.json */,
+				AD807F0F26E532F700008162 /* pwg.getInfos.json */,
 			);
 			path = pwg;
 			sourceTree = "<group>";
@@ -1406,6 +1410,8 @@
 		D818E9FC1A74C25900733991 /* Piwigo Data Wrappers */ = {
 			isa = PBXGroup;
 			children = (
+				D8083A531A7D66CD00A95605 /* ImageService.h */,
+				D8083A541A7D66CD00A95605 /* ImageService.m */,
 				D818E9FD1A74C2A000733991 /* PiwigoAlbumData.h */,
 				D818E9FE1A74C2A000733991 /* PiwigoAlbumData.m */,
 				D82B8D2E1A688512000E47CA /* PiwigoImageData.h */,
@@ -1419,8 +1425,7 @@
 		D818EA031A74D32100733991 /* Details */ = {
 			isa = PBXGroup;
 			children = (
-				D82B8D311A688E8F000E47CA /* ImageDetailViewController.h */,
-				D82B8D321A688E8F000E47CA /* ImageDetailViewController.m */,
+				AD807F0226E3BB1700008162 /* ImageDetailViewController.swift */,
 				AD807F0026E3AD1600008162 /* ImagePreviewViewController.swift */,
 				AD807EFE26E3A86B00008162 /* ImageScrollView.swift */,
 				AD807EFA26E3844200008162 /* VideoView.swift */,
@@ -1875,6 +1880,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AD807F0826E52F6F00008162 /* pwg.images.delete.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1882,11 +1888,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ADBCABDB26D41562005D1BB2 /* pwg.images.getinfo.json in Resources */,
+				AD807F1026E532F700008162 /* pwg.getInfos.json in Resources */,
+				ADBCABDB26D41562005D1BB2 /* pwg.images.getInfo.json in Resources */,
 				ADBCABDC26D41562005D1BB2 /* pwg.images.setInfo.json in Resources */,
 				ADBCABDD26D41562005D1BB2 /* pwg.images.upload.json in Resources */,
 				ADBCABDE26D41563005D1BB2 /* pwg.images.upload2.json in Resources */,
-				ADBCABDA26D4154E005D1BB2 /* pwg.getInfos.json in Resources */,
+				AD807F1126E5331B00008162 /* pwg.images.delete.json in Resources */,
 				AD5F64EB24C604EB00660BE3 /* pwg.tags.add.json in Resources */,
 				AD5F64F224C6088600660BE3 /* pwg.tags.getList.json in Resources */,
 				AD5F64F424C6091500660BE3 /* pwg.tags.getAdminList.json in Resources */,
@@ -2123,7 +2130,7 @@
 				AD0B6AD1268A21A5007DEE70 /* UploadVideo.swift in Sources */,
 				ADFFD44C268A29E6001F00E8 /* Location+CoreDataProperties.swift in Sources */,
 				AD94F640266D63AD00EFC6A9 /* CacheVars.swift in Sources */,
-				ADF2329E26D4064F002ACEC9 /* pwg.getInfos.swift in Sources */,
+				AD807F0626E52B8D00008162 /* pwg.getInfos.swift in Sources */,
 				ADF40021266D7352004352B9 /* pwg.tags.add.swift in Sources */,
 				ADB274732676480D0002DD09 /* PwgSessionErrors.swift in Sources */,
 				AD0B6ACF268A219B007DEE70 /* UploadImage.swift in Sources */,
@@ -2142,6 +2149,7 @@
 				ADF6264726B9ED410085A299 /* Tag+CoreDataClass.swift in Sources */,
 				AD62CC8526828D5E00CA66C5 /* URL+AppTools.swift in Sources */,
 				ADF72E9D2670D73E0027E2CC /* pwg.images.uploadAsync.swift in Sources */,
+				AD807F0A26E530ED00008162 /* pwg.images.delete.swift in Sources */,
 				ADF72E9B2670D7380027E2CC /* pwg.images.setInfo.swift in Sources */,
 				AD94F63B266D61AB00EFC6A9 /* DataController.swift in Sources */,
 				ADF72EA026712CA40027E2CC /* UploadProperties.swift in Sources */,
@@ -2190,7 +2198,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				ADD063BD26A08973002558D2 /* Intents.intentdefinition in Sources */,
-				ADD063BB26A0895E002558D2 /* IntentHandler.swift in Sources */,
+				AD807F0426E4BB4C00008162 /* IntentHandler.swift in Sources */,
 				ADD063BC26A08961002558D2 /* UploadPhotosHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2310,9 +2318,9 @@
 				ADF72EB7267336E70027E2CC /* UploadVarsObjc.swift in Sources */,
 				ADBCFE87235B7603001D6EE7 /* FavoritesImagesViewController.m in Sources */,
 				D8D3F7201A785DF800AEA7F1 /* AlbumImagesViewController.m in Sources */,
+				AD807F0326E3BB1700008162 /* ImageDetailViewController.swift in Sources */,
 				AD07CAB826DBD0CF00BEAEFB /* EditImageTagsTableViewCell.swift in Sources */,
 				D818E9FF1A74C2A000733991 /* PiwigoAlbumData.m in Sources */,
-				D82B8D331A688E8F000E47CA /* ImageDetailViewController.m in Sources */,
 				D8E4D6211ABE34DF0057EB95 /* LoginNavigationController.m in Sources */,
 				ADAA57D122DD00B700EB4EAA /* DiscoverImagesViewController.m in Sources */,
 				ADD741F62699974800B47056 /* UploadPhotoSizeViewController.swift in Sources */,

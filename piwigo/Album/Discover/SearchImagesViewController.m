@@ -10,7 +10,6 @@
 #import "AlbumService.h"
 #import "CategoriesData.h"
 #import "ImageCollectionViewCell.h"
-#import "ImageDetailViewController.h"
 #import "ImagesCollection.h"
 #import "SearchImagesViewController.h"
 
@@ -508,6 +507,5 @@
         [self.imagesCollection reloadData];
     }];
 }
-
 
 @end

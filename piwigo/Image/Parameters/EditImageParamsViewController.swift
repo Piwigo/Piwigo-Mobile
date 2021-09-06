@@ -349,29 +349,26 @@ class EditImageParamsViewController: UIViewController
         }
 
         // Update image info on server and in cache
-        setProperties(ofImage: imagesToUpdate.last!) { [unowned self] error in
-            guard let error = error else {
-                // Next image?
-                self.imagesToUpdate.removeLast()
-                if !self.imagesToUpdate.isEmpty {
-                    updatePiwigoHUD(withProgress: 1.0 - Float(imagesToUpdate.count) / Float(nberOfSelectedImages))
-                    updateImageProperties()
-                }
-                else {
-                    // Done, hide HUD and dismiss controller
-                    updatePiwigoHUDwithSuccess { [unowned self] in
-                        hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [self] in
-                            // Return to image preview or album view
-                            dismiss(animated: true)
-                        }
+        setProperties(ofImage: imagesToUpdate.last!) { [unowned self] in
+            // Next image?
+            self.imagesToUpdate.removeLast()
+            if !self.imagesToUpdate.isEmpty {
+                self.updatePiwigoHUD(withProgress: 1.0 - Float(imagesToUpdate.count) / Float(nberOfSelectedImages))
+                self.updateImageProperties()
+            }
+            else {
+                // Done, hide HUD and dismiss controller
+                self.updatePiwigoHUDwithSuccess { [unowned self] in
+                    self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) { [unowned self] in
+                        // Return to image preview or album view
+                        self.dismiss(animated: true)
                     }
                 }
-                return
             }
-            
+        } failure: { [unowned self] error in
             // Display error
-            hidePiwigoHUD {
-                showUpdatePropertiesError(error)
+            self.hidePiwigoHUD {
+                self.showUpdatePropertiesError(error)
             }
         }
     }
@@ -397,7 +394,8 @@ class EditImageParamsViewController: UIViewController
     }
     
     private func setProperties(ofImage imageData: PiwigoImageData,
-                               completionHandler: @escaping (NSError?) -> Void) {
+                               completion: @escaping () -> Void,
+                               failure: @escaping (NSError) -> Void) {
         // Image ID
         let imageId = "\(NSNumber(value: imageData.imageId))"
         
@@ -453,63 +451,25 @@ class EditImageParamsViewController: UIViewController
                                           "single_value_mode"   : "replace",
                                           "multiple_value_mode" : "replace"]
         
-        // Launch request
-        let JSONsession = PwgSession.shared
-        JSONsession.postRequest(withMethod: kPiwigoImagesSetInfo, paramDict: paramsDict,
-                                countOfBytesClientExpectsToReceive: 1000) { jsonData, error in
-            // Any error?
-            /// - Network communication errors
-            /// - Returned JSON data is empty
-            /// - Cannot decode data returned by Piwigo server
-            if let error = error as NSError? {
-                completionHandler(error)
-                return
+        // Send request to Piwigo server
+        ImageUtilities.setInfos(with: paramsDict) {
+            // Update image in cache
+            for cat in imageData.categoryIds {
+                CategoriesData.sharedInstance().getCategoryById(cat.intValue)
+                    .updateImage(afterEdit: imageData)
             }
-            
-            // Decode the JSON and import it into Core Data.
-            do {
-                // Decode the JSON into codable type TagJSON.
-                let decoder = JSONDecoder()
-                let uploadJSON = try decoder.decode(ImagesSetInfoJSON.self, from: jsonData)
 
-                // Piwigo error?
-                if (uploadJSON.errorCode != 0) {
-                    let error = NSError(domain: "Piwigo", code: uploadJSON.errorCode,
-                                    userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
-                    completionHandler(error)
-                    return
+            // Notify album/image view of modification
+            DispatchQueue.main.async {
+                if self.delegate?.responds(to: #selector(EditImageParamsDelegate.didChangeParamsOfImage(_:))) ?? false {
+                    self.delegate?.didChangeParamsOfImage(imageData)
                 }
-
-                // Successful?
-                if uploadJSON.success {
-                    // Update image in cache
-                    for cat in imageData.categoryIds {
-                        CategoriesData.sharedInstance().getCategoryById(cat.intValue)
-                            .updateImage(afterEdit: imageData)
-                    }
-
-                    // Notify album/image view of modification
-                    DispatchQueue.main.async {
-                        if self.delegate?.responds(to: #selector(EditImageParamsDelegate.didChangeParamsOfImage(_:))) ?? false {
-                            self.delegate?.didChangeParamsOfImage(imageData)
-                        }
-                    }
-
-                    // Image properties successfully updated
-                    completionHandler(nil)
-                }
-                else {
-                    // Could not set image parameters, upload still ready for finish
-                    let error = NSError(domain: "Piwigo", code: -1, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")])
-                    completionHandler(error)
-                    return
-                }
-            } catch {
-                // Data cannot be digested, upload still ready for finish
-                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongJSONobject.localizedDescription])
-                completionHandler(error)
-                return
             }
+
+            // Image properties successfully updated
+            completion()
+        } failure: { error in
+            failure(error)
         }
     }
 }

@@ -8,7 +8,6 @@
 
 #import "AlbumData.h"
 #import "PiwigoAlbumData.h"
-#import "ImageService.h"
 #import "CategoriesData.h"
 
 @interface AlbumData()

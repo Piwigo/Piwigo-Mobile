@@ -330,8 +330,8 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
                     return
                 }
             } catch {
-                // Data cannot be digested, upload still ready for finish
-                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongJSONobject.localizedDescription])
+                // Data cannot be digested
+                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : JsonError.wrongJSONobject.localizedDescription])
                 topViewController?.hidePiwigoHUD {
                     topViewController?.dismissPiwigoError(
                         withTitle: NSLocalizedString("renameCategoyError_title", comment: "Rename Fail"),

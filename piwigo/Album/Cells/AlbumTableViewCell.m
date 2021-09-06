@@ -9,7 +9,6 @@
 #import "AlbumService.h"
 #import "AlbumTableViewCell.h"
 #import "CategoriesData.h"
-#import "ImageService.h"
 #import "MBProgressHUD.h"
 #import "NetworkHandler.h"
 #import "PiwigoAlbumData.h"

@@ -13,7 +13,6 @@
 #import "AlbumService.h"
 #import "AlbumTableViewCell.h"
 #import "CategoriesData.h"
-#import "ImageDetailViewController.h"
 #import "ImagesCollection.h"
 #import "ImageService.h"
 #import "LoginNavigationController.h"
