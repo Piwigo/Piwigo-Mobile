@@ -11,7 +11,6 @@
 import AVKit
 import UIKit
 
-@objc
 class VideoView: UIView
 {
     var videoView: UIView?

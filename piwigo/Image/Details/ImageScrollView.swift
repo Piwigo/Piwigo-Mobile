@@ -12,8 +12,8 @@ import UIKit
 
 class ImageScrollView: UIScrollView
 {
-    @objc var imageView = UIImageView()
-    @objc var playImage = UIImageView()
+    var imageView = UIImageView()
+    var playImage = UIImageView()
     private var previousScale: CGFloat = 0.0
 
     override init(frame: CGRect) {

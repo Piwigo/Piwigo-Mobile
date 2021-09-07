@@ -20,8 +20,8 @@ class ImagePreviewViewController: UINavigationController
 {
     @objc weak var imagePreviewDelegate: ImagePreviewDelegate?
 
-    @objc var imageIndex = 0
-    @objc var imageLoaded = false
+    var imageIndex = 0
+    var imageLoaded = false
     var scrollView: ImageScrollView?
     var videoView: VideoView?
     var downloadTask: URLSessionDataTask?
