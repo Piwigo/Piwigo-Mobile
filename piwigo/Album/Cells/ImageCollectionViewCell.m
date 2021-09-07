@@ -166,8 +166,6 @@
         case kPiwigoImageSizeSquare:
             if (AlbumVars.hasSquareSizeImages && (self.imageData.SquarePath) && (self.imageData.SquarePath > 0)) {
                 [self setImageFromPath:self.imageData.SquarePath];
-//                NSURL *URL = [NSURL URLWithString:self.imageData.SquarePath];
-//                [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
@@ -176,12 +174,8 @@
         case kPiwigoImageSizeXXSmall:
             if (AlbumVars.hasXXSmallSizeImages && (self.imageData.XXSmallPath.length > 0)) {
                 [self setImageFromPath:self.imageData.XXSmallPath];
-//                NSURL *URL = [NSURL URLWithString:self.imageData.XXSmallPath];
-//                [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else if (AlbumVars.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
                 [self setImageFromPath:self.imageData.ThumbPath];
-//                NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
-//                [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
@@ -190,12 +184,8 @@
         case kPiwigoImageSizeXSmall:
             if (AlbumVars.hasXSmallSizeImages && (self.imageData.XSmallPath.length > 0)) {
                 [self setImageFromPath:self.imageData.XSmallPath];
-//                NSURL *URL = [NSURL URLWithString:self.imageData.XSmallPath];
-//                [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else if (AlbumVars.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
                 [self setImageFromPath:self.imageData.ThumbPath];
-//                NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
-//                [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
@@ -204,12 +194,8 @@
         case kPiwigoImageSizeSmall:
             if (AlbumVars.hasSmallSizeImages && (self.imageData.SmallPath.length > 0)) {
                 [self setImageFromPath:self.imageData.SmallPath];
-//                NSURL *URL = [NSURL URLWithString:self.imageData.SmallPath];
-//                [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else if (AlbumVars.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
                 [self setImageFromPath:self.imageData.ThumbPath];
-//                NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
-//                [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
@@ -218,12 +204,8 @@
         case kPiwigoImageSizeMedium:
             if (AlbumVars.hasMediumSizeImages && (self.imageData.MediumPath.length > 0)) {
                 [self setImageFromPath:self.imageData.MediumPath];
-//                NSURL *URL = [NSURL URLWithString:self.imageData.MediumPath];
-//                [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else if (AlbumVars.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
                 [self setImageFromPath:self.imageData.ThumbPath];
-//                NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
-//                [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
@@ -232,12 +214,8 @@
         case kPiwigoImageSizeLarge:
             if (AlbumVars.hasLargeSizeImages && (self.imageData.LargePath.length > 0)) {
                 [self setImageFromPath:self.imageData.LargePath];
-//                NSURL *URL = [NSURL URLWithString:self.imageData.LargePath];
-//                [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else if (AlbumVars.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
                 [self setImageFromPath:self.imageData.ThumbPath];
-//                NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
-//                [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
@@ -246,12 +224,8 @@
         case kPiwigoImageSizeXLarge:
             if (AlbumVars.hasXLargeSizeImages && (self.imageData.XLargePath.length > 0)) {
                 [self setImageFromPath:self.imageData.XLargePath];
-//                NSURL *URL = [NSURL URLWithString:self.imageData.XLargePath];
-//                [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else if (AlbumVars.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
                 [self setImageFromPath:self.imageData.ThumbPath];
-//                NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
-//                [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
@@ -260,13 +234,9 @@
         case kPiwigoImageSizeXXLarge:
             if (AlbumVars.hasXXLargeSizeImages && (self.imageData.XXLargePath.length > 0)) {
                 [self setImageFromPath:self.imageData.XXLargePath];
-//                NSURL *URL = [NSURL URLWithString:self.imageData.XXLargePath];
-//                [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             }
             else if (AlbumVars.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
                 [self setImageFromPath:self.imageData.ThumbPath];
-//                NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
-//                [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
@@ -277,8 +247,6 @@
         default:
             if (AlbumVars.hasThumbSizeImages && self.imageData.ThumbPath && (self.imageData.ThumbPath > 0)) {
                 [self setImageFromPath:self.imageData.ThumbPath];
-//                NSURL *URL = [NSURL URLWithString:self.imageData.ThumbPath];
-//                [self.cellImage setImageWithURL:URL placeholderImage:[UIImage imageNamed:@"placeholderImage"]];
             } else {
                 self.noDataLabel.hidden = NO;
                 return;
