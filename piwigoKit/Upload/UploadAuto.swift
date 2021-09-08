@@ -73,6 +73,11 @@ extension UploadManager {
         let fetchOptions = PHFetchOptions()
         fetchOptions.includeHiddenAssets = false
         fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        if UploadVars.serverFileTypes.contains("mp4") {
+            fetchOptions.predicate = NSPredicate(format: "(mediaType == %d) || (mediaType == %d)", PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue)
+        } else {
+            fetchOptions.predicate = NSPredicate(format: "mediaType == %d", PHAssetMediaType.image.rawValue)
+        }
         let fetchedImages = PHAsset.fetchAssets(in: collection, options: fetchOptions)
         if fetchedImages.count == 0 {
             // No new photos - Job done
