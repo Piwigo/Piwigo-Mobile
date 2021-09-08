@@ -1404,7 +1404,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // Any footer text?
         switch activeSection {
         case SettingsSection.logout.rawValue:
-            if (UploadVars.serverFileTypes.count > 0) {
+            if (!UploadVars.serverFileTypes.isEmpty) {
                 footer = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(UploadVars.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
             }
         case SettingsSection.about.rawValue:
@@ -1450,7 +1450,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // Footer text
         switch activeSection {
         case SettingsSection.logout.rawValue:
-            if UploadVars.serverFileTypes.count > 0 {
+            if !UploadVars.serverFileTypes.isEmpty {
                 footerLabel.text = "\(NSLocalizedString("settingsFooter_formats", comment: "The server accepts the following file formats")): \(UploadVars.serverFileTypes.replacingOccurrences(of: ",", with: ", "))."
             }
         case SettingsSection.about.rawValue:
