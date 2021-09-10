@@ -36,11 +36,11 @@
 @property (nonatomic, strong) NSMutableArray<NSString *> *touchedImageIds;
 
 @property (nonatomic, strong) NSMutableArray<NSString *> *selectedImageIdsToEdit;
-@property (nonatomic, strong) NSMutableArray<NSString *> *selectedImagesToEdit;
+@property (nonatomic, strong) NSMutableArray<PiwigoImageData *> *selectedImagesToEdit;
 @property (nonatomic, strong) NSMutableArray<NSString *> *selectedImageIdsToDelete;
-@property (nonatomic, strong) NSMutableArray<NSString *> *selectedImagesToDelete;
+@property (nonatomic, strong) NSMutableArray<PiwigoImageData *> *selectedImagesToDelete;
 @property (nonatomic, strong) NSMutableArray<NSString *> *selectedImageIdsToShare;
-@property (nonatomic, strong) NSMutableArray<NSString *> *selectedImagesToShare;
+@property (nonatomic, strong) NSMutableArray<PiwigoImageData *> *selectedImagesToShare;
 @property (nonatomic, strong) PiwigoImageData *selectedImage;
 
 @property (nonatomic, assign) kPiwigoSortObjc currentSortCategory;
@@ -1146,7 +1146,7 @@
     }
     
     // Image data are not complete when retrieved using pwg.categories.getImages
-    [ImageUtilities getInfosForID:[[self.selectedImagesToShare lastObject] integerValue]
+    [ImageUtilities getInfosForID:[[self.selectedImageIdsToShare lastObject] integerValue]
         completion:^(PiwigoImageData * _Nonnull imageData) {
             // Store image data
             [self.selectedImagesToShare insertObject:imageData atIndex:0];
