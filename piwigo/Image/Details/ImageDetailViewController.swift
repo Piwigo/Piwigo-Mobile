@@ -145,19 +145,19 @@ class ImageDetailViewController: UIPageViewController
         navigationController?.toolbar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.toolbar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
 
-        if #available(iOS 15.0, *) {
-            /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-            /// which by default produces a transparent background, to all navigation bars.
-            let barAppearance = UINavigationBarAppearance()
-            barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = UIColor.piwigoColorBackground()
-            navigationController?.navigationBar.standardAppearance = barAppearance
-            navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
-
-            let toolbarAppearance = UIToolbarAppearance(barAppearance: barAppearance)
-            navigationController?.toolbar.standardAppearance = toolbarAppearance
-            navigationController?.toolbar.scrollEdgeAppearance = navigationController?.toolbar.standardAppearance
-        }
+//        if #available(iOS 15.0, *) {
+//            /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
+//            /// which by default produces a transparent background, to all navigation bars.
+//            let barAppearance = UINavigationBarAppearance()
+//            barAppearance.configureWithOpaqueBackground()
+//            barAppearance.backgroundColor = UIColor.piwigoColorBackground()
+//            navigationController?.navigationBar.standardAppearance = barAppearance
+//            navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
+//
+//            let toolbarAppearance = UIToolbarAppearance(barAppearance: barAppearance)
+//            navigationController?.toolbar.standardAppearance = toolbarAppearance
+//            navigationController?.toolbar.scrollEdgeAppearance = navigationController?.toolbar.standardAppearance
+//        }
 
         // Progress bar
         progressBar.progressTintColor = UIColor.piwigoColorOrange()
