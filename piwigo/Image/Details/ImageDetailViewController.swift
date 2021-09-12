@@ -1041,7 +1041,7 @@ extension ImageDetailViewController: UIPageViewControllerDataSource
             fatalError("!!! Wrong View Controller Type !!!")
         }
         let currentIndex = pvc.imageIndex
-        if (currentIndex - 1 < 0) || (currentIndex >= images.count - 1) {
+        if currentIndex - 1 < 0 {
             // Reached the beginning the category
             return nil
         }
