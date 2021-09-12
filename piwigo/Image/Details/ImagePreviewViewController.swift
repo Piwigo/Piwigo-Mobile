@@ -184,9 +184,9 @@ class ImagePreviewViewController: UINavigationController
         loader?.setDelegate(self, queue: DispatchQueue(label: "Piwigo loader"))
 
         // Load the asset's "playable" key
-        asset?.loadValuesAsynchronously(forKeys: ["playable"], completionHandler: { [self] in
+        asset?.loadValuesAsynchronously(forKeys: ["playable"], completionHandler: { [unowned self] in
             DispatchQueue.main.async(
-                execute: { [self] in
+                execute: { [unowned self] in
                     // IMPORTANT: Must dispatch to main queue in order to operate on the AVPlayer and AVPlayerItem.
                     var error: NSError? = nil
                     let keyStatus = asset?.statusOfValue(forKey: "playable", error: &error)
@@ -244,27 +244,10 @@ class ImagePreviewViewController: UINavigationController
             topViewController = topViewController?.presentedViewController
         }
 
-        let alert = UIAlertController(
-            title: error?.localizedDescription,
-            message: (error as NSError?)?.localizedFailureReason,
-            preferredStyle: .alert)
-
-        let dismissAction = UIAlertAction(
-            title: NSLocalizedString("alertDismissButton", comment: "Dismiss"),
-            style: .cancel,
-            handler: { action in
-            })
-
-        alert.addAction(dismissAction)
-        alert.view.tintColor = UIColor.piwigoColorOrange()
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
-        } else {
-            // Fallback on earlier versions
-        }
-        topViewController?.present(alert, animated: true) {
-            // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange()
+        if let error = error as NSError? {
+            topViewController?.dismissPiwigoError(withTitle: error.localizedDescription, message: "",
+                                                  errorMessage: error.localizedFailureReason ?? "",
+                                                  completion: { })
         }
     }
 }
