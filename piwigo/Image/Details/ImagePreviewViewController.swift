@@ -184,9 +184,9 @@ class ImagePreviewViewController: UINavigationController
         loader?.setDelegate(self, queue: DispatchQueue(label: "Piwigo loader"))
 
         // Load the asset's "playable" key
-        asset?.loadValuesAsynchronously(forKeys: ["playable"], completionHandler: { [unowned self] in
+        asset?.loadValuesAsynchronously(forKeys: ["playable"], completionHandler: { [self] in
             DispatchQueue.main.async(
-                execute: { [unowned self] in
+                execute: { [self] in
                     // IMPORTANT: Must dispatch to main queue in order to operate on the AVPlayer and AVPlayerItem.
                     var error: NSError? = nil
                     let keyStatus = asset?.statusOfValue(forKey: "playable", error: &error)
