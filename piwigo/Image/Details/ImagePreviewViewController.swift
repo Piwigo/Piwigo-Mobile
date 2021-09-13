@@ -141,10 +141,6 @@ class ImagePreviewViewController: UINavigationController
             success: { task, image in
                 if let image = image as? UIImage {
                     weakSelf?.scrollView?.imageView.image = image
-                    // Update progress bar
-                    if weakSelf?.imagePreviewDelegate?.responds(to: #selector(ImagePreviewDelegate.downloadProgress(_:))) ?? false {
-                        weakSelf?.imagePreviewDelegate?.downloadProgress(1.0)
-                    }
                     // Hide progress bar
                     weakSelf?.imageLoaded = true
                     // Store image in cache
