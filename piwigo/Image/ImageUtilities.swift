@@ -66,8 +66,8 @@ class ImageUtilities: NSObject {
                     imageData.fileSize = data.fileSize ?? NSNotFound
                     imageData.md5checksum = data.md5checksum ?? ""
                     imageData.fileName = NetworkUtilities.utf8mb4String(from: data.fileName ?? "NoName.jpg")
-                    if let file = URL(string: imageData.fileName),
-                       let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, file.pathExtension as NSString, nil)?.takeRetainedValue() {
+                    let file = URL(fileURLWithPath: imageData.fileName)
+                    if let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, file.pathExtension as NSString, nil)?.takeRetainedValue() {
                         imageData.isVideo = UTTypeConformsTo(uti, kUTTypeMovie)
                     }
                     imageData.datePosted = dateFormatter.date(from: data.datePosted ?? "") ?? Date()
