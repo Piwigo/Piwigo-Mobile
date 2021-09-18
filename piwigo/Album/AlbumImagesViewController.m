@@ -3356,12 +3356,21 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar
 {
+    // Animates Cancel button appearance
     [searchBar setShowsCancelButton:YES animated:YES];
     return YES;
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
 {
+    // Title forgotten when searching immediately after launch
+    if (self.categoryId == 0) {
+        self.title = NSLocalizedString(@"tabBar_albums", @"Albums");
+    } else {
+        self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
+    }
+    
+    // Animates Cancel button disappearance
     [searchBar setShowsCancelButton:NO animated:YES];
 }
 
