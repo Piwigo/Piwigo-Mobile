@@ -6,6 +6,7 @@
 //  Copyright © 2021 Piwigo.org. All rights reserved.
 //
 
+import Vision
 import Foundation
 import ImageIO
 import MobileCoreServices
@@ -66,8 +67,8 @@ class ImageUtilities: NSObject {
                     imageData.fileSize = data.fileSize ?? NSNotFound
                     imageData.md5checksum = data.md5checksum ?? ""
                     imageData.fileName = NetworkUtilities.utf8mb4String(from: data.fileName ?? "NoName.jpg")
-                    let file = URL(fileURLWithPath: imageData.fileName)
-                    if let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, file.pathExtension as NSString, nil)?.takeRetainedValue() {
+                    let fileExt = URL(fileURLWithPath: imageData.fileName).pathExtension as NSString
+                    if let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExt, nil)?.takeRetainedValue() {
                         imageData.isVideo = UTTypeConformsTo(uti, kUTTypeMovie)
                     }
                     imageData.datePosted = dateFormatter.date(from: data.datePosted ?? "") ?? Date()
@@ -289,5 +290,73 @@ class ImageUtilities: NSObject {
 
         let downsampledImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, downsampleOptions)!
         return UIImage(cgImage: downsampledImage)
+    }
+    
+    
+    // MARK: - Saliency Analysis
+    @available(iOS 13.0, *) @objc
+    class func processSaliency(image: UIImage) -> UIImage? {
+        // Retrieve CGImage version
+        guard let cgImage = image.cgImage else { return nil }
+        
+        // Create request handler
+        let start = CFAbsoluteTimeGetCurrent()
+        let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+        
+        // Create attention based saliency request
+        let attentionRequest = VNGenerateAttentionBasedSaliencyImageRequest()
+        attentionRequest.revision = VNGenerateAttentionBasedSaliencyImageRequestRevision1
+
+        // Create objectness based saliency request
+        let objectnessRequest = VNGenerateObjectnessBasedSaliencyImageRequest()
+        objectnessRequest.revision = VNGenerateObjectnessBasedSaliencyImageRequestRevision1
+
+        // Search for regions of interest
+        try? requestHandler.perform([attentionRequest, objectnessRequest])
+
+        // Attention-based saliency requests return only one bounding box
+        var attentionConfidence:Float = 0.0
+        let attentionResult = attentionRequest.results?.first
+        let attentionObservation = attentionResult as VNSaliencyImageObservation?
+        let attentionObject = attentionObservation?.salientObjects?.first
+        attentionConfidence = attentionObject?.confidence ?? 0.0
+        
+        // Object-based saliency requests return up to three bounding boxes
+        var objectnessConfidence:Float = 0.0
+        let objectnessResult = objectnessRequest.results?.first
+        let objectnessObservation = objectnessResult as VNSaliencyImageObservation?
+        let objectnessObject = objectnessObservation?.salientObjects?
+            .sorted(by: { $0.confidence > $1.confidence }).first
+        objectnessConfidence = objectnessObject?.confidence ?? 0.0
+        
+        // Priority to attention-based saliency
+        if attentionConfidence > 0.7,
+           attentionConfidence > objectnessConfidence,
+           let salientObject = attentionObject,
+           salientObject.boundingBox.width > 0.3,
+           salientObject.boundingBox.height > 0.3 {
+            let salientRect = VNImageRectForNormalizedRect(salientObject.boundingBox,
+                                                           cgImage.width, cgImage.height)
+            // Crop image
+            guard let croppedImage = cgImage.cropping(to: salientRect) else { return nil }
+            let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+            print("   processed attention based saliency in \(round(diff*10)/10) ms")
+            return UIImage(cgImage:croppedImage)
+        }
+
+        // Objectness-based saliency
+        if objectnessConfidence > 0.7,
+            let salientObject = objectnessObject,
+            salientObject.boundingBox.width > 0.3,
+            salientObject.boundingBox.height > 0.3 {
+             let salientRect = VNImageRectForNormalizedRect(salientObject.boundingBox,
+                                                            cgImage.width, cgImage.height)
+             // Crop image
+             guard let croppedImage = cgImage.cropping(to: salientRect) else { return nil }
+             let diff = (CFAbsoluteTimeGetCurrent() - start)*1000
+             print("   processed objectness based saliency in \(round(diff*10)/10) ms")
+             return UIImage(cgImage:croppedImage)
+        }
+        return nil
     }
 }

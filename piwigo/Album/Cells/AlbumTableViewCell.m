@@ -150,15 +150,32 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
         [self.backgroundImage setImageWithURLRequest:request
                                     placeholderImage:[UIImage imageNamed:@"placeholder"]
                                              success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-            CGSize imageSize = image.size;
-            if (fmax(imageSize.width, imageSize.height) > fmax(size.width, size.height) * scale) {
-                UIImage *albumImage = [ImageUtilities downsampleWithImage:image to:size scale:scale];
-                albumData.categoryImage = albumImage;
-                weakSelf.backgroundImage.image = albumImage;
-            } else {
-                albumData.categoryImage = image;
-                weakSelf.backgroundImage.image = image;
-            }
+            dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^(void){
+                // Process saliency
+                UIImage *croppedImage;
+                if (@available(iOS 13.0, *)) {
+                    croppedImage = [ImageUtilities processSaliencyWithImage:image];
+                    if (croppedImage == nil) { croppedImage = image; }
+                } else {
+                    // Fallback on earlier versions
+                    croppedImage = image;
+                }
+
+                // Reduce size?
+                CGSize imageSize = croppedImage.size;
+                if (fmax(imageSize.width, imageSize.height) > fmax(size.width, size.height) * scale) {
+                    UIImage *albumImage = [ImageUtilities downsampleWithImage:croppedImage to:size scale:scale];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        albumData.categoryImage = albumImage;
+                        weakSelf.backgroundImage.image = albumImage;
+                    });
+                } else {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        albumData.categoryImage = croppedImage;
+                        weakSelf.backgroundImage.image = croppedImage;
+                    });
+                }
+            });
          }
          failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
 #if defined(DEBUG)
