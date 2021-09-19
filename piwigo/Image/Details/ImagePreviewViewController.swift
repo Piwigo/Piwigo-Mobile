@@ -68,19 +68,19 @@ class ImagePreviewViewController: UINavigationController
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
         isNavigationBarHidden = true
 
-//        if #available(iOS 15.0, *) {
-//            /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-//            /// which by default produces a transparent background, to all navigation bars.
-//            let barAppearance = UINavigationBarAppearance()
-//            barAppearance.configureWithOpaqueBackground()
-//            barAppearance.backgroundColor = UIColor.piwigoColorBackground()
-//            navigationController?.navigationBar.standardAppearance = barAppearance
-//            navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
-//
-//            let toolbarAppearance = UIToolbarAppearance(barAppearance: barAppearance)
-//            navigationController?.toolbar.standardAppearance = toolbarAppearance
-//            navigationController?.toolbar.scrollEdgeAppearance = navigationController?.toolbar.standardAppearance
-//        }
+        if #available(iOS 15.0, *) {
+            /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
+            /// which by default produces a transparent background, to all navigation bars.
+            let barAppearance = UINavigationBarAppearance()
+            barAppearance.configureWithOpaqueBackground()
+            barAppearance.backgroundColor = UIColor.piwigoColorBackground()
+            navigationController?.navigationBar.standardAppearance = barAppearance
+            navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
+
+            let toolbarAppearance = UIToolbarAppearance(barAppearance: barAppearance)
+            navigationController?.toolbar.standardAppearance = toolbarAppearance
+            navigationController?.toolbar.scrollEdgeAppearance = navigationController?.toolbar.standardAppearance
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -143,6 +143,9 @@ class ImagePreviewViewController: UINavigationController
                     weakSelf?.scrollView?.imageView.image = image
                     // Hide progress bar
                     weakSelf?.imageLoaded = true
+                    if weakSelf?.imagePreviewDelegate?.responds(to: #selector(ImagePreviewDelegate.downloadProgress(_:))) ?? false {
+                        weakSelf?.imagePreviewDelegate?.downloadProgress(1.0)
+                    }
                     // Store image in cache
                     var cachedResponse: CachedURLResponse? = nil
                     if let response = task.response,

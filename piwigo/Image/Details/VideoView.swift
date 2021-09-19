@@ -30,8 +30,3 @@ class VideoView: UIView
         super.init(coder: aDecoder)
     }
 }
-
-extension VideoView: AVPlayerViewControllerDelegate
-{
-    
-}
