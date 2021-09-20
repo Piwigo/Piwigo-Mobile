@@ -57,7 +57,7 @@ public struct ImagesGetInfoJSON: Decodable {
 
         // Status returned by Piwigo
         status = try rootContainer.decodeIfPresent(String.self, forKey: .status)
-        if (status == "ok")
+        if status == "ok"
         {
             // Image parameters
             data = try rootContainer.decode(ImagesGetInfo.self, forKey: .result)
@@ -185,7 +185,7 @@ public struct ImagesGetInfoJSON: Decodable {
                 }
             }
         }
-        else if (status == "fail")
+        else if status == "fail"
         {
             // Retrieve Piwigo server error
             do {
@@ -212,24 +212,25 @@ public struct ImagesGetInfoJSON: Decodable {
 // MARK: - Result
 public struct ImagesGetInfo: Decodable
 {
-    public let imageId: Int?                   // 1042
-    public let imageTitle: String?             // "Title"
-    public let comment: String?                // "No description"
-    public let visits: Int?                    // 0
-    public let fileName: String?               // Image.jpg
-    public let datePosted: String?             // "yyyy-MM-dd HH:mm:ss"
-    public let dateCreated: String?            // "yyyy-MM-dd HH:mm:ss"
-
-    public let fullResWidth: Int?              // 4092
-    public let fullResHeight: Int?             // 2048
-    public let fullResPath: String?            // "https://…image.jpg"
-    
-    public let author: String?                 // "Eddy"
-    public let privacyLevel: String?           // "0"
-    public let tags: [TagProperties]?          // See TagProperties
-    public let ratingScore: Float?             // 0.0
-    public let fileSize: Int?                  // 3025
-    public let md5checksum: String?            // 2141e377254a429be151900e4bedb520
+    public let imageId: Int?                    // 1042
+    public let imageTitle: String?              // "Title"
+    public let comment: String?                 // "No description"
+    public let visits: Int?                     // 0
+    public let fileName: String?                // Image.jpg
+    public let datePosted: String?              // "yyyy-MM-dd HH:mm:ss"
+    public let dateCreated: String?             // "yyyy-MM-dd HH:mm:ss"
+ 
+    public let fullResWidth: Int?               // 4092
+    public let fullResHeight: Int?              // 2048
+    public let fullResPath: String?             // "https://…image.jpg"
+     
+    public let author: String?                  // "Eddy"
+    public let privacyLevel: String?            // "0"
+    public let tags: [TagProperties]?           // See TagProperties
+    public let ratingScore: String?             // "1.0"
+    public let fileSize: Int?                   // 3025
+    public let md5checksum: String?             // 2141e377254a429be151900e4bedb520
+    public let categoryIds: [Album]?            // See Album below
 
     public enum CodingKeys: String, CodingKey {
         case imageId = "id"
@@ -250,6 +251,7 @@ public struct ImagesGetInfo: Decodable
         case ratingScore = "rating_score"
         case fileSize = "filesize"
         case md5checksum = "md5sum"
+        case categoryIds = "categories"
     }
 }
 
@@ -293,4 +295,19 @@ public struct DerivativeStr: Decodable {
     public let url: String?
     public let width: String?
     public let height: String?
+}
+
+
+// MARK: - Category
+public struct Album: Decodable
+{
+    public let id: Int?                     // 32
+
+    // The following data is not stored in image cache
+    public let name: String?                // "Insects & Spiders"
+    public let permalink: String?           // null
+    public let uppercats: String?           // "32"
+    public let global_rank: String?         // "1"
+    public let url: String?                 // "https:…"
+    public let page_url: String?            // "https:…"
 }

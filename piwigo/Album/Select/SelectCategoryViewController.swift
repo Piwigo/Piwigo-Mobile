@@ -10,6 +10,7 @@
 
 import UIKit
 import piwigoKit
+import CoreMedia
 
 //enum kPiwigoCategorySelectAction {
 //    case none
@@ -197,6 +198,16 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
 
+        if #available(iOS 15.0, *) {
+            /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
+            /// which by default produces a transparent background, to all navigation bars.
+            let barAppearance = UINavigationBarAppearance()
+            barAppearance.configureWithOpaqueBackground()
+            barAppearance.backgroundColor = UIColor.piwigoColorBackground()
+            navigationController?.navigationBar.standardAppearance = barAppearance
+            navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
+        }
+
         // Table view
         setTableViewMainHeader()
         categoriesTableView.separatorColor = UIColor.piwigoColorSeparator()
@@ -312,11 +323,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         
         // Image data are not complete when retrieved using pwg.categories.getImages
         // Required by Copy, Delete, Move actions (may also be used to show albums image belongs to)
-        ImageService.getImageInfo(byId: inputImageIds.last!) { _, result in
-            guard let imageData = result else {
-                self.couldNotRetrieveImageData()
-                return
-            }
+        ImageUtilities.getInfos(forID: inputImageIds.last!) { imageData in
             // Store image data
             self.inputImagesData.append(imageData)
             
@@ -334,13 +341,11 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             
             // Next image
             self.retrieveImageData()
-
-        } onFailure: { _, error in
-            guard let error = error as NSError? else {
-                self.couldNotRetrieveImageData()
-                return
+            
+        } failure: { error in
+            DispatchQueue.main.async {
+                self.couldNotRetrieveImageData(with: error.localizedDescription)
             }
-            self.couldNotRetrieveImageData(with: error.localizedDescription)
         }
     }
 
@@ -1215,9 +1220,14 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         }
         categoryIds.append(NSNumber(value: categoryData.albumId))
 
-        // Update image on server
-        ImageService.setCategoriesForImageWithId(imageData.imageId, withCategories: categoryIds) { _ in }
-          onCompletion: { _ in
+        // Prepare parameters for uploading image/video (filename key is kPiwigoImagesUploadParamFileName)
+        let newImageCategories = categoryIds.compactMap({ $0.stringValue }).joined(separator: ";")
+        let paramsDict: [String : Any] = ["image_id"            : imageData.imageId,
+                                          "categories"          : newImageCategories,
+                                          "multiple_value_mode" : "replace"]
+        
+        // Send request to Piwigo server
+        ImageUtilities.setInfos(with: paramsDict) { [unowned self] in
             imageData.categoryIds = categoryIds
             // Add image to selected category and update corresponding Album/Images collection
             CategoriesData.sharedInstance().addImage(imageData)
@@ -1227,9 +1237,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 self.imageCopiedDelegate?.didCopyImage(withData: imageData)
             }
             completion(true)
-        }
-            onFailure: { _, error in
-            fail(error as NSError?)
+        } failure: { error in
+            fail(error)
         }
     }
     
@@ -1334,9 +1343,14 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Remove current categoryId from image category list
         categoryIds.removeAll(where: {$0 == NSNumber(value: inputCategoryId)} )
 
-        // Update image on server
-        ImageService.setCategoriesForImageWithId(imageData.imageId, withCategories: categoryIds) { _ in }
-          onCompletion: { _ in
+        // Prepare parameters for uploading image/video (filename key is kPiwigoImagesUploadParamFileName)
+        let newImageCategories = categoryIds.compactMap({ $0.stringValue }).joined(separator: ";")
+        let paramsDict: [String : Any] = ["image_id"            : imageData.imageId,
+                                          "categories"          : newImageCategories,
+                                          "multiple_value_mode" : "replace"]
+        
+        // Send request to Piwigo server
+        ImageUtilities.setInfos(with: paramsDict) { [unowned self] in
             imageData.categoryIds = categoryIds
             // Add image to selected category
             CategoriesData.sharedInstance().addImage(imageData, toCategory: String(categoryData.albumId))
@@ -1349,8 +1363,8 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 self.imageRemovedDelegate?.didRemoveImage(withId: imageData.imageId)
             }
             completion(true)
-        } onFailure: { _, error in
-            fail(error as NSError?)
+        } failure: { error in
+            fail(error)
         }
     }
 

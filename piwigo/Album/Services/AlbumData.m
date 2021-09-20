@@ -8,7 +8,6 @@
 
 #import "AlbumData.h"
 #import "PiwigoAlbumData.h"
-#import "ImageService.h"
 #import "CategoriesData.h"
 
 @interface AlbumData()
@@ -136,40 +135,26 @@
 
 #pragma mark - Update images
 
--(void)updateImage:(PiwigoImageData *)params
+-(NSInteger)updateImage:(PiwigoImageData *)updatedImage
 {
     // Anything to do?
-    if (params == nil) return;
+    if (updatedImage == nil) return NSNotFound;
 
-    // Initialisation
-    NSInteger index = 0;
-    NSMutableArray *newImages = [self.images mutableCopy];
+    // Determine index of updated image
+    NSMutableArray<PiwigoImageData *> *newImages = [[NSMutableArray<PiwigoImageData *> alloc] initWithArray:self.images];
+    NSInteger indexOfUpdatedImage = [self.images indexOfObjectPassingTest:^BOOL(PiwigoImageData *image, NSUInteger index, BOOL * _Nonnull stop) {
+     return image.imageId == updatedImage.imageId;
+    }];
+
+    // Image found?
+    if (indexOfUpdatedImage == NSNotFound) { return NSNotFound; }
     
-    // Lopp over current images
-    for (PiwigoImageData *image in self.images)
-    {
-        if (image.imageId == params.imageId)
-        {
-            // Update image data
-            if (params.fileName) image.fileName = params.fileName;
-            image.imageTitle = params.imageTitle;
-            image.author = params.author;
-            image.privacyLevel = params.privacyLevel;
-            if (params.comment)
-                image.comment = [NSString stringWithString:params.comment];
-            else
-                image.comment = @"";
-            image.tags = [params.tags copy];
-            
-            // Update list and currently viewed image
-            [newImages replaceObjectAtIndex:index withObject:image];
-            break;
-        }
-        index++;
-    }
+    // Update image data
+    [newImages replaceObjectAtIndex:indexOfUpdatedImage withObject:updatedImage];
+    self.images = newImages;
     
-    // Update image list
-    self.images = [newImages copy];
+    // Return index of updated image
+    return indexOfUpdatedImage;
 }
 
 

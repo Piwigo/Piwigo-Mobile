@@ -40,6 +40,8 @@
 		[self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.tableView]];
     
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated:) name:kPiwigoNotificationChangedAlbumData object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(autoUploadUpdated:) name:PwgNotificationsObjc.autoUploadEnabled object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(autoUploadUpdated:) name:PwgNotificationsObjc.autoUploadDisabled object:nil];
 	}
 	return self;
 }
@@ -82,6 +84,12 @@
         [self.tableView reloadData];
     }
 }
+
+-(void)autoUploadUpdated:(NSNotification *)notification
+{
+    [self.tableView reloadData];
+}
+
 
 #pragma mark - UITableView Methods
 
@@ -569,23 +577,23 @@
     [self.albumData loadCategoryImageDataChunkWithSort:sortDesc
         forProgress:nil OnCompletion:^(BOOL completed) {
         // Did the load succeed?
-        if (!completed) {
+        if (completed) {
+            // Do we have all images?
+            if (self.albumData.imageList.count < self.albumData.numberOfImages) {
+                // No => Continue loading image data
+                [self getMissingImagesBeforeDeletingInMode:deletionMode withViewController:topViewController];
+                return;
+            }
+            
+            // Done => delete images and then the category containing them
+            [self deleteCategoryWithDeletionMode:deletionMode andViewController:topViewController];
+        }
+        else {
             // Did not succeed -> try to complete the job with missing images
             [topViewController hidePiwigoHUDWithCompletion:^{
                 [topViewController dismissPiwigoErrorWithTitle:NSLocalizedString(@"deleteCategoryError_title", @"Delete Fail") message:NSLocalizedString(@"deleteCategoryError_message", @"Failed to delete your album") errorMessage:@"" completion:^{ }];
             }];
-            return;;
         }
-        
-        // Do we have all images?
-        if (self.albumData.imageList.count < self.albumData.numberOfImages) {
-            // No => Continue loading image data
-            [self getMissingImagesBeforeDeletingInMode:deletionMode withViewController:topViewController];
-            return;
-        }
-        
-        // Done => delete images and then the category containing them
-        [self deleteCategoryWithDeletionMode:deletionMode andViewController:topViewController];
     }];
 }
 

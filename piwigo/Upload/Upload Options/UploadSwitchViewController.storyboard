@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19158" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19141"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -70,8 +70,8 @@
                         <color key="backgroundColor" red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="tintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="title" id="PIq-iw-aJg" customClass="EditImageTextFieldTableViewCell">
-                                <rect key="frame" x="0.0" y="55.5" width="414" height="44"/>
+                            <tableViewCell contentMode="scaleToFill" restorationIdentifier="title" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="title" id="PIq-iw-aJg" customClass="EditImageTextFieldTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="49.5" width="414" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" tableViewCell="PIq-iw-aJg" id="9jU-3l-Ozc">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
@@ -87,7 +87,7 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <textField autoresizesSubviews="NO" opaque="NO" contentMode="redraw" insetsLayoutMarginsFromSafeArea="NO" contentHorizontalAlignment="right" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="14" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="3fQ-fE-f7n">
-                                            <rect key="frame" x="108" y="11" width="286" height="22"/>
+                                            <rect key="frame" x="108" y="11.5" width="286" height="21"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <textInputTraits key="textInputTraits" autocapitalizationType="sentences" autocorrectionType="yes" spellCheckingType="yes"/>
                                         </textField>
@@ -106,15 +106,15 @@
                                     <outlet property="cellTextField" destination="3fQ-fE-f7n" id="XNw-g7-bFN"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="author" id="aUd-iS-rSs" customClass="EditImageTextFieldTableViewCell">
-                                <rect key="frame" x="0.0" y="99.5" width="414" height="44"/>
+                            <tableViewCell contentMode="scaleToFill" restorationIdentifier="author" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="author" id="aUd-iS-rSs" customClass="EditImageTextFieldTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="93.5" width="414" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" tableViewCell="aUd-iS-rSs" id="KeX-Df-42r">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <textField autoresizesSubviews="NO" opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="right" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="14" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="YJh-jz-IHQ">
-                                            <rect key="frame" x="108" y="11" width="286" height="22"/>
+                                            <rect key="frame" x="108" y="11.5" width="286" height="21"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <textInputTraits key="textInputTraits" autocapitalizationType="sentences" autocorrectionType="yes" spellCheckingType="yes"/>
                                         </textField>
@@ -142,22 +142,22 @@
                                     <outlet property="cellTextField" destination="YJh-jz-IHQ" id="YTX-2e-Xfq"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="privacy" rowHeight="78" id="yDT-0a-vck" customClass="EditImagePrivacyTableViewCell">
-                                <rect key="frame" x="0.0" y="143.5" width="414" height="78"/>
+                            <tableViewCell contentMode="scaleToFill" restorationIdentifier="EditImagePrivacyTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="privacy" rowHeight="78" id="yDT-0a-vck" customClass="EditImagePrivacyTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="137.5" width="414" height="78"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" tableViewCell="yDT-0a-vck" id="QeA-ad-ry5">
-                                    <rect key="frame" x="0.0" y="0.0" width="383" height="78"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="384.5" height="78"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Who can see this photo?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="14" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gJY-am-Djp">
-                                            <rect key="frame" x="20" y="11" width="355" height="21"/>
+                                            <rect key="frame" x="20" y="11" width="356.5" height="21"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                             <size key="shadowOffset" width="0.0" height="0.0"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="fNV-Gc-kF0">
-                                            <rect key="frame" x="20" y="46" width="355" height="21"/>
+                                            <rect key="frame" x="20" y="46" width="356.5" height="21"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="21" id="4SJ-WK-RiY"/>
                                             </constraints>
@@ -181,21 +181,21 @@
                                     <outlet property="list" destination="fNV-Gc-kF0" id="AS5-MT-Qeg"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="tags" rowHeight="78" id="n1R-2J-L3k" customClass="EditImageTagsTableViewCell">
-                                <rect key="frame" x="0.0" y="221.5" width="414" height="78"/>
+                            <tableViewCell contentMode="scaleToFill" restorationIdentifier="EditImageTagsTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="tags" rowHeight="78" id="n1R-2J-L3k" customClass="EditImageTagsTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="215.5" width="414" height="78"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" tableViewCell="n1R-2J-L3k" id="PER-1E-Gai">
-                                    <rect key="frame" x="0.0" y="0.0" width="383" height="78"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="384.5" height="78"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tags:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="Euq-aV-46G">
-                                            <rect key="frame" x="20" y="11" width="355" height="20.5"/>
+                                            <rect key="frame" x="20" y="11" width="356.5" height="20.5"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="SGb-Vo-ob1">
-                                            <rect key="frame" x="20" y="46" width="355" height="21"/>
+                                            <rect key="frame" x="20" y="46" width="356.5" height="21"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="21" id="UgK-L7-PXY"/>
                                             </constraints>
@@ -215,12 +215,12 @@
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" systemColor="tableCellGroupedBackgroundColor"/>
                                 <connections>
-                                    <outlet property="tagsLabel" destination="Euq-aV-46G" id="dAK-MS-cFP"/>
-                                    <outlet property="tagsList" destination="SGb-Vo-ob1" id="cb1-sG-WWb"/>
+                                    <outlet property="tagsLabel" destination="Euq-aV-46G" id="DmX-fX-jN5"/>
+                                    <outlet property="tagsList" destination="SGb-Vo-ob1" id="z5a-pr-TOt"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="comment" rowHeight="528" id="WPg-o4-rhx" customClass="EditImageTextViewTableViewCell">
-                                <rect key="frame" x="0.0" y="299.5" width="414" height="528"/>
+                            <tableViewCell contentMode="scaleToFill" restorationIdentifier="EditImageTextViewTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="comment" rowHeight="528" id="WPg-o4-rhx" customClass="EditImageTextViewTableViewCell" customModule="piwigo" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="293.5" width="414" height="528"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" tableViewCell="WPg-o4-rhx" id="0t5-im-vBh">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="528"/>
@@ -279,13 +279,13 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                         <view key="tableFooterView" contentMode="scaleToFill" id="XTI-pR-ZrJ">
-                            <rect key="frame" x="0.0" y="293.5" width="414" height="44"/>
+                            <rect key="frame" x="0.0" y="287.5" width="414" height="44"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         </view>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="LabelTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="LabelTableViewCell" id="NJz-p9-mF8" customClass="LabelTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="55.5" width="414" height="44"/>
+                                <rect key="frame" x="0.0" y="49.5" width="414" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="NJz-p9-mF8" id="nQ7-Of-Jik">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
@@ -322,7 +322,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="ButtonTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ButtonTableViewCell" id="a5S-Mp-fRz" customClass="ButtonTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="99.5" width="414" height="44"/>
+                                <rect key="frame" x="0.0" y="93.5" width="414" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="a5S-Mp-fRz" id="jkb-Fa-Fam">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
@@ -345,7 +345,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="SliderTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="SliderTableViewCell" id="0Lq-tI-OyR" customClass="SliderTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="143.5" width="414" height="44"/>
+                                <rect key="frame" x="0.0" y="137.5" width="414" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="0Lq-tI-OyR" id="LR1-GX-TY1">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
@@ -389,7 +389,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="SwitchTableViewCell" id="KhJ-Ke-KNQ" customClass="SwitchTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="187.5" width="414" height="44"/>
+                                <rect key="frame" x="0.0" y="181.5" width="414" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="KhJ-Ke-KNQ" id="Cf2-de-pF6">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
@@ -423,7 +423,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="TextFieldTableViewCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TextFieldTableViewCell" id="y5k-Ir-C6S" customClass="TextFieldTableViewCell" customModule="piwigo" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="231.5" width="414" height="44"/>
+                                <rect key="frame" x="0.0" y="225.5" width="414" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="y5k-Ir-C6S" id="9y0-j0-8em">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
@@ -474,18 +474,6 @@
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
-        <systemColor name="tableCellGroupedBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
-        <systemColor name="tableCellGroupedBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
-        <systemColor name="tableCellGroupedBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
-        <systemColor name="tableCellGroupedBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="tableCellGroupedBackgroundColor">

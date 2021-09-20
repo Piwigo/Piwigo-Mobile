@@ -12,6 +12,7 @@ public enum JsonError: Error {
     case networkUnavailable
     case emptyJSONobject
     case invalidJSONobject
+    case wrongJSONobject
 }
 
 extension JsonError: LocalizedError {
@@ -26,6 +27,9 @@ extension JsonError: LocalizedError {
         case .invalidJSONobject:
             return NSLocalizedString("PiwigoServer_invalidJSONobject",
                                      comment: "Piwigo server did not return a valid JSON object.")
+        case .wrongJSONobject:
+            return NSLocalizedString("PiwigoServer_wrongJSONobject",
+                                     comment: "Could not digest JSON object returned by Piwigo server.")
         }
     }
 }

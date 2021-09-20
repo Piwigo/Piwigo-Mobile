@@ -247,6 +247,16 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
 
+        if #available(iOS 15.0, *) {
+            /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
+            /// which by default produces a transparent background, to all navigation bars.
+            let barAppearance = UINavigationBarAppearance()
+            barAppearance.configureWithOpaqueBackground()
+            barAppearance.backgroundColor = UIColor.piwigoColorBackground()
+            navigationController?.navigationBar.standardAppearance = barAppearance
+            navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
+        }
+
         // Segmented control
         if #available(iOS 14, *) {
             // Toolbar

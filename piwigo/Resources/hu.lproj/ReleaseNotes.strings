@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.7.1_text" = "2.7.1-es verzió\n\n• Kisebb hibajavítások és fejlesztések a felületen\n• Továbbfejlesztett fordítások";
+"v2.7.2_text" = "2.7.2-es verzió\n\n• iOS 15 kompatibilitás\n• Kisebb hibajavítások és fejlesztések a felületen\n• Kódmodernizálás";
+
+"v2.7.1_text" = "2.7.1-es verzió\n2021 Szeptember 1\n\n• Kisebb hibajavítások és fejlesztések a felületen\n• Továbbfejlesztett fordítások";
 
 "v2.7.0_text" = "2.7-es verzió\n2020 Augusztus 12\n\n• Fotók és videók automatikus feltöltése\n• Fotó is videó méretcsökkentési lehetőségek továbbfejlesztése\n• Kisebb hibajavítások és fejlesztések a felületen\n• Kódmodernizálás";
 

@@ -15,21 +15,9 @@ protocol SelectPrivacyDelegate: NSObjectProtocol {
     func didSelectPrivacyLevel(_ privacy: kPiwigoPrivacy)
 }
 
-@objc
-protocol SelectPrivacyObjcDelegate: NSObjectProtocol {
-    func didSelectPrivacyLevel(_ privacy: kPiwigoPrivacyObjc)
-}
-
-@objc
 class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     weak var delegate: SelectPrivacyDelegate?
-    @objc weak var objcDelegate: SelectPrivacyObjcDelegate?
-
-    @objc
-    func setPrivacyObjc(_ privacy: kPiwigoPrivacyObjc) {
-        _privacy = kPiwigoPrivacy(rawValue: Int16(privacy.rawValue))
-    }
 
     @IBOutlet var privacyTableView: UITableView!
     
@@ -70,6 +58,16 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
 
+        if #available(iOS 15.0, *) {
+            /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
+            /// which by default produces a transparent background, to all navigation bars.
+            let barAppearance = UINavigationBarAppearance()
+            barAppearance.configureWithOpaqueBackground()
+            barAppearance.backgroundColor = UIColor.piwigoColorBackground()
+            navigationController?.navigationBar.standardAppearance = barAppearance
+            navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
+        }
+
         // Table view
         privacyTableView.separatorColor = UIColor.piwigoColorSeparator()
         privacyTableView.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
@@ -92,8 +90,6 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
 
         // Update cell of parent view
         delegate?.didSelectPrivacyLevel(privacy)
-        let privacyObjc = kPiwigoPrivacyObjc(Int32(privacy.rawValue))
-        objcDelegate?.didSelectPrivacyLevel(privacyObjc)
     }
 
     deinit {
@@ -191,8 +187,7 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
         cell.textLabel?.font = UIFont.piwigoFontNormal()
         cell.textLabel?.textColor = UIColor.piwigoColorLeftLabel()
         cell.textLabel?.adjustsFontSizeToFitWidth = false
-        let privacyLevelObjc = kPiwigoPrivacyObjc(Int32(privacyLevel.rawValue))
-        cell.textLabel?.text = Model.sharedInstance().getNameForPrivacyLevel(privacyLevelObjc)
+        cell.textLabel?.text = privacyLevel.name
         cell.tag = Int(privacyLevel.rawValue)
 
         return cell
@@ -220,25 +215,25 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
 }
 
 
-    // MARK: - Utilities
+// MARK: - Utilities
 
-    private func getPrivacyLevel(forRow row: Int) -> kPiwigoPrivacy {
-        var privacyLevel: kPiwigoPrivacy
-        switch row {
-            case 0:
-                privacyLevel = .everybody
-            case 1:
-                privacyLevel = .adminsFamilyFriendsContacts
-            case 2:
-                privacyLevel = .adminsFamilyFriends
-            case 3:
-                privacyLevel = .adminsFamily
-            case 4:
-                privacyLevel = .admins
-            default:
-                privacyLevel = .unknown
-                break
-        }
-
-        return privacyLevel
+private func getPrivacyLevel(forRow row: Int) -> kPiwigoPrivacy {
+    var privacyLevel: kPiwigoPrivacy
+    switch row {
+        case 0:
+            privacyLevel = .everybody
+        case 1:
+            privacyLevel = .adminsFamilyFriendsContacts
+        case 2:
+            privacyLevel = .adminsFamilyFriends
+        case 3:
+            privacyLevel = .adminsFamily
+        case 4:
+            privacyLevel = .admins
+        default:
+            privacyLevel = .unknown
+            break
     }
+
+    return privacyLevel
+}

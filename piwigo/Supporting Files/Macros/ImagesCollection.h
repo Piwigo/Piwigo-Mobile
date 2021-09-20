@@ -40,7 +40,7 @@ extern CGFloat const kImageDetailsMarginsSpacing;
 +(NSInteger)numberOfImagesPerPageForView:(UIView *)view imagesPerRowInPortrait:(NSInteger)imagesPerRowInPortrait;
 +(NSInteger)numberOfImagesPerPageForView:(UIView *)view imagesPerRowInPortrait:(NSInteger)imagesPerRowInPortrait collectionType:(kImageCollectionType)type;
 
-+(float)imageDetailsSizeForView:(UIView *)view;
++(CGFloat)imageDetailsSizeForView:(UIView *)view;
 
 +(float)numberOfAlbumsPerRowForViewInPortrait:(UIView *)view withMaxWidth:(float)maxWidth;
 +(float)albumSizeForView:(UIView *)view andNberOfAlbumsPerRowInPortrait:(NSInteger)albumsPerRowInPortrait;

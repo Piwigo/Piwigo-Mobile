@@ -51,6 +51,16 @@ class ReleaseNotesViewController: UIViewController {
         navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
         navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
 
+        if #available(iOS 15.0, *) {
+            /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
+            /// which by default produces a transparent background, to all navigation bars.
+            let barAppearance = UINavigationBarAppearance()
+            barAppearance.configureWithOpaqueBackground()
+            barAppearance.backgroundColor = UIColor.piwigoColorBackground()
+            navigationController?.navigationBar.standardAppearance = barAppearance
+            navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
+        }
+
         // Text color depdending on background color
         authorsLabel.textColor = UIColor.piwigoColorText()
         versionLabel.textColor = UIColor.piwigoColorText()
@@ -148,6 +158,16 @@ class ReleaseNotesViewController: UIViewController {
         let spacerAttributedString = NSMutableAttributedString(string: "\n\n\n")
         let spacerRange = NSRange(location: 0, length: spacerAttributedString.length)
         spacerAttributedString.addAttribute(.font, value: UIFont.piwigoFontTiny(), range: spacerRange)
+
+        // Release 2.7.2 — Bundle string
+        let v272String = NSLocalizedString("v2.7.2_text", tableName: "ReleaseNotes", bundle: Bundle.main, value: "", comment: "v2.7.2 Release Notes text")
+        let v272AttributedString = NSMutableAttributedString(string: v272String)
+        var v272Range = NSRange(location: 0, length: v272String.count)
+        v272AttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: v272Range)
+        v272Range = NSRange(location: 0, length: (v272String as NSString).range(of: "\n").location)
+        v272AttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: v272Range)
+        notesAttributedString.append(v272AttributedString)
+        notesAttributedString.append(spacerAttributedString)
 
         // Release 2.7.1 — Bundle string
         let v271String = NSLocalizedString("v2.7.1_text", tableName: "ReleaseNotes", bundle: Bundle.main, value: "", comment: "v2.7.1 Release Notes text")

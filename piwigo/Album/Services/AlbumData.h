@@ -23,7 +23,7 @@
 
 -(void)updateImageSort:(kPiwigoSortObjc)imageSort OnCompletion:(void (^)(void))completion;
 
--(void)updateImage:(PiwigoImageData *)params;
+-(NSInteger)updateImage:(PiwigoImageData *)updatedImage;
 
 -(void)removeImage:(PiwigoImageData*)image;
 -(void)removeImageWithId:(NSInteger)imageId;

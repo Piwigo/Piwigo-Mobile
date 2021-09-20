@@ -31,7 +31,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="subCategoriesLabel" textAlignment="right" lineBreakMode="clip" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DJY-mf-etU">
-                        <rect key="frame" x="302.5" y="10" width="150.5" height="23.5"/>
+                        <rect key="frame" x="299.5" y="10" width="150.5" height="23.5"/>
                         <fontDescription key="fontDescription" name="OpenSans-Light" family="Open Sans" pointSize="17"/>
                         <color key="textColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
@@ -44,7 +44,7 @@
                         </constraints>
                     </imageView>
                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Q74-gm-pPI">
-                        <rect key="frame" x="302.5" y="0.0" width="171.5" height="43"/>
+                        <rect key="frame" x="299.5" y="0.0" width="174.5" height="43"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </view>
@@ -56,7 +56,7 @@
                     <constraint firstItem="DJY-mf-etU" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="H4A-sH-yFL" secondAttribute="trailing" constant="10" id="JCK-2G-Ms2"/>
                     <constraint firstAttribute="trailing" secondItem="Zfo-EN-xzn" secondAttribute="trailing" constant="8" id="Oj9-uz-c9l"/>
                     <constraint firstAttribute="trailing" secondItem="Q74-gm-pPI" secondAttribute="trailing" id="b0d-XK-cz0"/>
-                    <constraint firstItem="Zfo-EN-xzn" firstAttribute="leading" secondItem="DJY-mf-etU" secondAttribute="trailing" id="fvY-xT-L6L"/>
+                    <constraint firstItem="Zfo-EN-xzn" firstAttribute="leading" secondItem="DJY-mf-etU" secondAttribute="trailing" constant="3" id="fvY-xT-L6L"/>
                     <constraint firstItem="H4A-sH-yFL" firstAttribute="leading" secondItem="NIn-Ig-Teh" secondAttribute="leading" constant="20" symbolic="YES" id="kgc-1K-pbi"/>
                     <constraint firstItem="H4A-sH-yFL" firstAttribute="centerY" secondItem="NIn-Ig-Teh" secondAttribute="centerY" id="pNO-tK-efH"/>
                     <constraint firstItem="Q74-gm-pPI" firstAttribute="leading" secondItem="DJY-mf-etU" secondAttribute="leading" id="u6a-6F-osm"/>
