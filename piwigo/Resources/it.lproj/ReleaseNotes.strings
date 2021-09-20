@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.7.2_text" = "Versione 2.7.2\n\n• Correzioni di bug minori e miglioramenti dell'interfaccia\n• Modernizzazione del codice";
+"v2.7.2_text" = "Versione 2.7.2\n\n• Compatibilità iOS 15\n• Correzioni di bug minori e miglioramenti dell'interfaccia\n• Modernizzazione del codice";
 
 "v2.7.1_text" = "Versione 2.7.1\n1 settembre 2021\n\n• Correzioni di bug minori e miglioramento dell'interfaccia\n• Migliora le traduzioni";
 
