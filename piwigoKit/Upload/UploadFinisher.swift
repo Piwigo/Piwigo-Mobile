@@ -40,17 +40,6 @@ extension UploadManager {
                                           "single_value_mode"   : "replace",
                                           "multiple_value_mode" : "replace"]
         
-//        @"image_id" : @(imageId),
-//        @"file" : [imageInfo objectForKey:kPiwigoImagesUploadParamFileName],
-//        @"name" : [imageInfo objectForKey:kPiwigoImagesUploadParamTitle],
-//        @"author" : author,
-//        @"date_creation" : [imageInfo objectForKey:kPiwigoImagesUploadParamCreationDate],
-//        @"level" : [imageInfo objectForKey:kPiwigoImagesUploadParamPrivacy],
-//        @"comment" : [imageInfo objectForKey:kPiwigoImagesUploadParamDescription],
-//        @"single_value_mode" : @"replace",
-//        @"tag_ids" : [imageInfo objectForKey:kPiwigoImagesUploadParamTags],
-//        @"multiple_value_mode" : @"replace"
-
         // Launch request
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoImagesSetInfo, paramDict: paramsDict,
@@ -72,9 +61,8 @@ extension UploadManager {
                 let uploadJSON = try decoder.decode(ImagesSetInfoJSON.self, from: jsonData)
 
                 // Piwigo error?
-                let error: NSError
                 if (uploadJSON.errorCode != 0) {
-                    error = NSError(domain: "Piwigo", code: uploadJSON.errorCode,
+                    let error = NSError(domain: "Piwigo", code: uploadJSON.errorCode,
                                     userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
                     self.didSetParameters(for: uploadID, error: error)
                     return
@@ -87,7 +75,6 @@ extension UploadManager {
                 }
                 else {
                     // Could not set image parameters, upload still ready for finish
-                    print("••>> setImageInfoForImageWithId(): no successful")
                     let error = NSError(domain: "Piwigo", code: -1, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")])
                     self.didSetParameters(for: uploadID, error: error)
                     return
@@ -99,86 +86,6 @@ extension UploadManager {
                 return
             }
         }
-//        let imageParameters: [String : String] = [
-//            kPiwigoImagesUploadParamFileName: upload.fileName,
-//            kPiwigoImagesUploadParamTitle: imageTitle,
-//            kPiwigoImagesUploadParamAuthor: author,
-//            kPiwigoImagesUploadParamCreationDate: creationDate,
-//            kPiwigoImagesUploadParamPrivacy: "\(NSNumber(value: upload.privacyLevel))",
-//            kPiwigoImagesUploadParamDescription: comment,
-//            kPiwigoImagesUploadParamTags: upload.tagIds,
-//        ]
-//
-//        ImageService.setImageInfoForImageWithId(Int(upload.imageId),
-//                                                information: imageParameters,
-//                                                sessionManager: sessionManager,
-//            onProgress:nil,
-//            onCompletion: { (task, jsonData) in
-//                // Continue in background queue!
-//                self.backgroundQueue.async {
-//                    // Check returned data
-//                    guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {
-//                        // Upload still ready for finish
-//                        let error = NSError(domain: "Piwigo", code: JsonError.invalidJSONobject.hashValue, userInfo: [NSLocalizedDescriptionKey : JsonError.invalidJSONobject.localizedDescription])
-//                        self.didSetParameters(for: uploadID, error: error)
-//                        return
-//                    }
-//
-//                    // Decode the JSON.
-//                    do {
-//                        // Decode the JSON into codable type ImageSetInfoJSON.
-//                        let uploadJSON = try self.decoder.decode(ImagesSetInfoJSON.self, from: data)
-//
-//                        // Piwigo error?
-//                        if (uploadJSON.errorCode != 0) {
-//                            let error = NSError(domain: "Piwigo", code: uploadJSON.errorCode, userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
-//                            self.didSetParameters(for: uploadID, error: error)
-//                            return
-//                        }
-//
-//                        // Successful?
-//                        if uploadJSON.success {
-//                            // Image successfully uploaded
-//                            self.didSetParameters(for: uploadID, error: nil)
-//                        }
-//                        else {
-//                            // Could not set image parameters, upload still ready for finish
-//                            print("••>> setImageInfoForImageWithId(): no successful")
-//                            let error = NSError(domain: "Piwigo", code: -1, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")])
-//                            self.didSetParameters(for: uploadID, error: error)
-//                            return
-//                        }
-//                    } catch {
-//                        // Data cannot be digested, upload still ready for finish
-//                        let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : UploadError.wrongJSONobject.localizedDescription])
-//                        self.didSetParameters(for: uploadID, error: error)
-//                        return
-//                    }
-//                }
-//            },
-//            onFailure: { (task, error) in
-//                // Continue in background queue!
-//                self.backgroundQueue.async {
-//                    if let error = error as NSError? {
-//                        // Try relogin if unauthorized
-//                        if let response = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? HTTPURLResponse,
-//                           response.statusCode == 401 {
-//                            // Try relogin
-//                            DispatchQueue.main.async {
-//                                let appDelegate = UIApplication.shared.delegate as? AppDelegate
-//                                appDelegate?.reloginAndRetry {        // Upload still ready for finish
-//                                    self.backgroundQueue.async {
-//                                        self.didSetParameters(for: uploadID, error: error)
-//                                    }
-//                                }
-//                            }
-//                        } else {
-//                            // Upload still ready for finish
-//                            self.didSetParameters(for: uploadID, error: error)
-//                        }
-//                    }
-//                }
-//            })
     }
 
     private func didSetParameters(for uploadID: NSManagedObjectID, error: Error?) {

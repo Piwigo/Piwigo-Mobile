@@ -127,7 +127,7 @@
 "singleAlbumCount" = "%@ album";
 "severalAlbumsCount" = "%@ albumów";
 "singleSubAlbumCount" = "%@ podalbum";
-"severalSubAlbumsCount" = "%@ podalbumy";
+"severalSubAlbumsCount" = "%@ podalbumów";
 
 // Albums view
 "categoryMainEmtpy" = "Nie ma jeszcze żadnych albumów w Twojej galerii Piwigo. Możesz przeciągnąć listę w dół by odświeżyć lub zalogować się ponownie.";

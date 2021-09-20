@@ -10,8 +10,34 @@
 
 import Foundation
 import XCTest
+import piwigoKit
 
 class piwigoWebAPI: XCTestCase {
+
+    // MARK: - pwg.…
+    func testPwgGetInfosDecoding() {
+        // Case of a successful request
+        let bundle = Bundle(for: type(of: self))
+        guard let url = bundle.url(forResource: "pwg.getInfos", withExtension: "json"),
+            let data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(GetInfosJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertEqual(result.errorCode, 0)
+        XCTAssertEqual(result.errorMessage, "")
+
+        XCTAssertEqual(result.data[0].name, "version")
+        XCTAssertEqual(result.data[0].value, "11.5.0")
+    }
+
 
     // MARK: - pwg.images…
     func testPwgImagesUploadDecoding() {
@@ -20,7 +46,8 @@ class piwigoWebAPI: XCTestCase {
         let bundle = Bundle(for: type(of: self))
         guard let url = bundle.url(forResource: "pwg.images.upload", withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
-                return
+            XCTFail("Could not load resource file")
+            return
         }
         
         let decoder = JSONDecoder()
@@ -59,13 +86,34 @@ class piwigoWebAPI: XCTestCase {
         XCTAssertEqual(result2.data.src, "https://.../20200628212043-0a9c6158-th.png")
     }
 
+    func testPwgImagesGetInfoDecoding() {
+        
+        // Case of a successful request
+        let bundle = Bundle(for: type(of: self))
+        guard let url = bundle.url(forResource: "pwg.images.getInfo", withExtension: "json"),
+            let data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(ImagesGetInfoJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertEqual(result.data.md5checksum, "7870f465dd76af3f0bd6d4f087afa5cd")
+    }
+
     func testPwgImagesSetInfoDecoding() {
         
         // Case of a successful request
         let bundle = Bundle(for: type(of: self))
         guard let url = bundle.url(forResource: "pwg.images.setInfo", withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
-                return
+            XCTFail("Could not load resource file")
+            return
         }
         
         let decoder = JSONDecoder()
@@ -78,6 +126,26 @@ class piwigoWebAPI: XCTestCase {
         XCTAssertTrue(result.success)
     }
 
+    func testPwgImagesDeleteDecoding() {
+        
+        // Case of a successful request
+        let bundle = Bundle(for: type(of: self))
+        guard let url = bundle.url(forResource: "pwg.images.delete", withExtension: "json"),
+            let data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(ImagesDeleteJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertEqual(result.result, 1)
+    }
+
     
     // MARK: - pwg.tags…
     func testPwgTagsGetListDecoding() {
@@ -86,7 +154,8 @@ class piwigoWebAPI: XCTestCase {
         let bundle = Bundle(for: type(of: self))
         guard let url = bundle.url(forResource: "pwg.tags.getList", withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
-                return
+            XCTFail("Could not load resource file")
+            return
         }
         
         let decoder = JSONDecoder()
@@ -106,7 +175,8 @@ class piwigoWebAPI: XCTestCase {
         let bundle = Bundle(for: type(of: self))
         guard let url = bundle.url(forResource: "pwg.tags.getAdminList", withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
-                return
+            XCTFail("Could not load resource file")
+            return
         }
         
         let decoder = JSONDecoder()
@@ -126,7 +196,8 @@ class piwigoWebAPI: XCTestCase {
         let bundle = Bundle(for: type(of: self))
         guard let url = bundle.url(forResource: "pwg.tags.add", withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
-                return
+            XCTFail("Could not load resource file")
+            return
         }
         
         let decoder = JSONDecoder()
@@ -146,7 +217,8 @@ class piwigoWebAPI: XCTestCase {
         let bundle = Bundle(for: type(of: self))
         guard let url = bundle.url(forResource: "community.images.uploadCompleted", withExtension: "json"),
             let data = try? Data(contentsOf: url) else {
-                return
+            XCTFail("Could not load resource file")
+            return
         }
         
         let decoder = JSONDecoder()

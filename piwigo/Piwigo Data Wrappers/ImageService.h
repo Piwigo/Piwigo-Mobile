@@ -59,38 +59,6 @@ FOUNDATION_EXPORT NSString * const kGetImageOrderDescending;
                                    ListOnCompletion:(void (^)(NSURLSessionTask *task, NSInteger count))completion
                                           onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
-+(NSURLSessionTask*)getImageInfoById:(NSInteger)imageId
-                        OnCompletion:(void (^)(NSURLSessionTask *task, PiwigoImageData *imageData))completion
-                           onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
-
-+(NSURLSessionTask*)deleteImages:(NSArray *)images
-                ListOnCompletion:(void (^)(NSURLSessionTask *task))completion
-                       onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
-
-+(NSURLSessionTask*)setImageProperties:(PiwigoImageData *)imageData
-                            onProgress:(void (^)(NSProgress *))progress
-                          OnCompletion:(void (^)(NSURLSessionTask *task, id response))completion
-                             onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
-
-+(NSURLSessionTask*)setImageInfoForImageWithId:(NSInteger)imageId
-                                   information:(NSDictionary*)imageInformation
-                                sessionManager:(AFHTTPSessionManager *)sessionManager
-                                    onProgress:(void (^)(NSProgress *))progress
-                                  OnCompletion:(void (^)(NSURLSessionTask *task, id response))completion
-                                     onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
-
-+(NSURLSessionTask*)setImageFileForImageWithId:(NSInteger)imageId
-                                  withFileName:(NSString*)fileName
-                                    onProgress:(void (^)(NSProgress *))progress
-                                  OnCompletion:(void (^)(NSURLSessionTask *task, id response))completion
-                                     onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
-
-+(NSURLSessionTask*)setCategoriesForImageWithId:(NSInteger)imageId
-                                 withCategories:(NSArray *)imageCategories
-                                     onProgress:(void (^)(NSProgress *))progress
-                                   OnCompletion:(void (^)(NSURLSessionTask *task))completion
-                                      onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
-
 +(NSURLSessionTask*)addToFavoritesImageWithId:(NSInteger)imageId
                                    onProgress:(void (^)(NSProgress *))progress
                                  OnCompletion:(void (^)(NSURLSessionTask *task, BOOL addedSuccessfully))completion

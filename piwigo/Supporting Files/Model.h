@@ -97,6 +97,5 @@ typedef enum {
 
 +(Model*)sharedInstance;
 -(void)readFromDisk;
--(NSString *)getNameForPrivacyLevel:(kPiwigoPrivacyObjc)privacyLevel;
 
 @end

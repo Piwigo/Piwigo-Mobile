@@ -30,4 +30,10 @@ class PwgNotificationsObjc: NSObject {
     
     /// - Update progress bars of upload requests
     @objc public static let uploadProgress = PwgNotifications.uploadProgress.rawValue
+
+    /// - Notifies that auto-uploading is enabled by user
+    @objc public static let autoUploadEnabled = PwgNotifications.autoUploadEnabled.rawValue
+
+    /// - Notifies that auto-uploading was disabled by appendAutoUploadRequests()
+    @objc public static let autoUploadDisabled = PwgNotifications.autoUploadDisabled.rawValue
 }

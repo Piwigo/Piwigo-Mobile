@@ -24,7 +24,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
     private var shouldUpdateTitle = false
     var commonAuthor = UploadVars.defaultAuthor
     private var shouldUpdateAuthor = false
-    var commonPrivacyLevel = kPiwigoPrivacy(rawValue: UploadVars.defaultPrivacyLevel)
+    var commonPrivacyLevel = kPiwigoPrivacy(rawValue: UploadVars.defaultPrivacyLevel) ?? .everybody
     private var shouldUpdatePrivacyLevel = false
     var commonTags = [Tag]()
     private var shouldUpdateTags = false
@@ -172,67 +172,69 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
         var tableViewCell = UITableViewCell()
         switch EditImageDetailsOrder(rawValue: row) {
         case .imageName:
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "title", for: indexPath) as? EditImageTextFieldTableViewCell else {
-            print("Error: tableView.dequeueReusableCell does not return a EditImageTextFieldTableViewCell!")
-            return EditImageTextFieldTableViewCell()
-        }
-        cell.setup(withLabel: NSLocalizedString("editImageDetails_title", comment: "Title:"),
-                   placeHolder: NSLocalizedString("editImageDetails_titlePlaceholder", comment: "Title"),
-                   andImageDetail: commonTitle)
-        cell.cellTextField.textColor = shouldUpdateTitle ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel()
-        cell.cellTextField.tag = EditImageDetailsOrder.imageName.rawValue
-        cell.cellTextField.delegate = self
-        tableViewCell = cell
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "title", for: indexPath) as? EditImageTextFieldTableViewCell else {
+                print("Error: tableView.dequeueReusableCell does not return a EditImageTextFieldTableViewCell!")
+                return EditImageTextFieldTableViewCell()
+            }
+            cell.config(withLabel: NSLocalizedString("editImageDetails_title", comment: "Title:"),
+                        placeHolder: NSLocalizedString("editImageDetails_titlePlaceholder", comment: "Title"),
+                        andImageDetail: commonTitle)
+            cell.cellTextField.textColor = shouldUpdateTitle ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel()
+            cell.cellTextField.tag = EditImageDetailsOrder.imageName.rawValue
+            cell.cellTextField.delegate = self
+            tableViewCell = cell
 
         case .author:
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "author", for: indexPath) as? EditImageTextFieldTableViewCell else {
-            print("Error: tableView.dequeueReusableCell does not return a EditImageTextFieldTableViewCell!")
-            return EditImageTextFieldTableViewCell()
-        }
-        cell.setup(withLabel: NSLocalizedString("editImageDetails_author", comment: "Author:"),
-                   placeHolder: NSLocalizedString("settings_defaultAuthorPlaceholder", comment: "Author Name"),
-                   andImageDetail: (commonAuthor == "NSNotFound") ? "" : commonAuthor)
-        cell.cellTextField.textColor = shouldUpdateAuthor ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel()
-        cell.cellTextField.tag = EditImageDetailsOrder.author.rawValue
-        cell.cellTextField.delegate = self
-        tableViewCell = cell
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "author", for: indexPath) as? EditImageTextFieldTableViewCell else {
+                print("Error: tableView.dequeueReusableCell does not return a EditImageTextFieldTableViewCell!")
+                return EditImageTextFieldTableViewCell()
+            }
+            cell.config(withLabel: NSLocalizedString("editImageDetails_author", comment: "Author:"),
+                        placeHolder: NSLocalizedString("settings_defaultAuthorPlaceholder", comment: "Author Name"),
+                        andImageDetail: (commonAuthor == "NSNotFound") ? "" : commonAuthor)
+            cell.cellTextField.textColor = shouldUpdateAuthor ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel()
+            cell.cellTextField.tag = EditImageDetailsOrder.author.rawValue
+            cell.cellTextField.delegate = self
+            tableViewCell = cell
 
         case .privacy:
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "privacy", for: indexPath) as? EditImagePrivacyTableViewCell else {
-            print("Error: tableView.dequeueReusableCell does not return a EditImagePrivacyTableViewCell!")
-            return EditImagePrivacyTableViewCell()
-        }
-        cell.setLeftLabelText(NSLocalizedString("editImageDetails_privacyLevel", comment: "Who can see this photo?"))
-        let privLevelObjc = kPiwigoPrivacyObjc(rawValue: Int32(commonPrivacyLevel?.rawValue ?? 0))
-        cell.setPrivacyLevel(privLevelObjc, in: shouldUpdatePrivacyLevel ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
-        tableViewCell = cell
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "privacy", for: indexPath) as? EditImagePrivacyTableViewCell else {
+                print("Error: tableView.dequeueReusableCell does not return a EditImagePrivacyTableViewCell!")
+                return EditImagePrivacyTableViewCell()
+            }
+            cell.setLeftLabel(withText: NSLocalizedString("editImageDetails_privacyLevel", comment: "Who can see this photo?"))
+            cell.setPrivacyLevel(with: commonPrivacyLevel,
+                                 inColor: shouldUpdatePrivacyLevel ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
+            tableViewCell = cell
 
         case .tags:
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "tags", for: indexPath) as? EditImageTagsTableViewCell else {
-            print("Error: tableView.dequeueReusableCell does not return a EditImageTagsTableViewCell!")
-            return EditImageTagsTableViewCell()
-        }
-        // Switch to old cache data format
-        var tagList = [PiwigoTagData]()
-        commonTags.forEach { (tag) in
-            let newTag = PiwigoTagData()
-            newTag.tagId = Int(tag.tagId)
-            newTag.tagName = tag.tagName
-            newTag.lastModified = tag.lastModified
-            newTag.numberOfImagesUnderTag = tag.numberOfImagesUnderTag
-            tagList.append(newTag)
-        }
-        cell.setTagList(tagList, in: shouldUpdateTags ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
-        tableViewCell = cell
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "tags", for: indexPath) as? EditImageTagsTableViewCell else {
+                print("Error: tableView.dequeueReusableCell does not return a EditImageTagsTableViewCell!")
+                return EditImageTagsTableViewCell()
+            }
+            // Switch to old cache data format
+            var tagList = [PiwigoTagData]()
+            commonTags.forEach { (tag) in
+                let newTag = PiwigoTagData()
+                newTag.tagId = Int(tag.tagId)
+                newTag.tagName = tag.tagName
+                newTag.lastModified = tag.lastModified
+                newTag.numberOfImagesUnderTag = tag.numberOfImagesUnderTag
+                tagList.append(newTag)
+            }
+            cell.config(withList: tagList,
+                            inColor: shouldUpdateTags ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
+            tableViewCell = cell
 
         case .comment:
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "comment", for: indexPath) as? EditImageTextViewTableViewCell else {
-            print("Error: tableView.dequeueReusableCell does not return a EditImageTextViewTableViewCell!")
-            return EditImageTextViewTableViewCell()
-        }
-        cell.setComment(commonComment, in: shouldUpdateComment ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
-        cell.textView.delegate = self
-        tableViewCell = cell
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "comment", for: indexPath) as? EditImageTextViewTableViewCell else {
+                print("Error: tableView.dequeueReusableCell does not return a EditImageTextViewTableViewCell!")
+                return EditImageTextViewTableViewCell()
+            }
+            cell.config(withText: commonComment,
+                                inColor: shouldUpdateComment ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
+            cell.textView.delegate = self
+            tableViewCell = cell
 
         default:
             break
@@ -254,35 +256,33 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
 
         switch EditImageDetailsOrder(rawValue: row) {
         case .author:
-        if (commonAuthor == "NSNotFound") {
-            // only update if not yet set, dont overwrite
-            if 0 < UploadVars.defaultAuthor.count {
-                // must know the default author
-                commonAuthor = UploadVars.defaultAuthor
-                tableView.reloadRows(at: [indexPath], with: .automatic)
+            if (commonAuthor == "NSNotFound") {
+                // only update if not yet set, dont overwrite
+                if 0 < UploadVars.defaultAuthor.count {
+                    // must know the default author
+                    commonAuthor = UploadVars.defaultAuthor
+                    tableView.reloadRows(at: [indexPath], with: .automatic)
+                }
             }
-        }
 
         case .privacy:
-        // Dismiss the keyboard
-        view.endEditing(true)
+            // Dismiss the keyboard
+            view.endEditing(true)
 
-        // Create view controller
-        let privacySB = UIStoryboard(name: "SelectPrivacyViewController", bundle: nil)
-        let privacyVC = privacySB.instantiateViewController(withIdentifier: "SelectPrivacyViewController") as? SelectPrivacyViewController
-        privacyVC?.delegate = self
-        privacyVC?.privacy = commonPrivacyLevel ?? .everybody
-        if let privacyVC = privacyVC {
+            // Create view controller
+            let privacySB = UIStoryboard(name: "SelectPrivacyViewController", bundle: nil)
+                guard let privacyVC = privacySB.instantiateViewController(withIdentifier: "SelectPrivacyViewController") as? SelectPrivacyViewController else { return }
+            privacyVC.delegate = self
+            privacyVC.privacy = commonPrivacyLevel
             navigationController?.pushViewController(privacyVC, animated: true)
-        }
 
         case .tags:
-        // Dismiss the keyboard
-        view.endEditing(true)
+            // Dismiss the keyboard
+            view.endEditing(true)
 
-        // Create view controller
-        let tagsSB = UIStoryboard(name: "TagsViewController", bundle: nil)
-        if let tagsVC = tagsSB.instantiateViewController(withIdentifier: "TagsViewController") as? TagsViewController {
+            // Create view controller
+            let tagsSB = UIStoryboard(name: "TagsViewController", bundle: nil)
+            guard let tagsVC = tagsSB.instantiateViewController(withIdentifier: "TagsViewController") as? TagsViewController else { return }
             tagsVC.delegate = self
             tagsVC.setPreselectedTagIds(commonTags.map({$0.tagId}))
             // Can we propose to create tags?
@@ -290,7 +290,6 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
                 tagsVC.setTagCreationRights(switchVC.hasTagCreationRights)
             }
             navigationController?.pushViewController(tagsVC, animated: true)
-        }
             
         default:
             return

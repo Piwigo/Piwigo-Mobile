@@ -259,33 +259,6 @@ NSInteger const kDelayPiwigoHUD = 500;
 	return instance;
 }
 
--(NSString *)getNameForPrivacyLevel:(kPiwigoPrivacyObjc)privacyLevel
-{
-	NSString *name = @"";
-	switch(privacyLevel)
-	{
-		case kPiwigoPrivacyObjcAdmins:
-			name = NSLocalizedString(@"privacyLevel_admin", @"Admins");
-			break;
-		case kPiwigoPrivacyObjcAdminsFamily:
-			name = NSLocalizedString(@"privacyLevel_adminFamily", @"Admins, Family");
-			break;
-		case kPiwigoPrivacyObjcAdminsFamilyFriends:
-			name = NSLocalizedString(@"privacyLevel_adminsFamilyFriends", @"Admins, Family, Friends");
-			break;
-		case kPiwigoPrivacyObjcAdminsFamilyFriendsContacts:
-			name = NSLocalizedString(@"privacyLevel_adminsFamilyFriendsContacts", @"Admins, Family, Friends, Contacts");
-			break;
-		case kPiwigoPrivacyObjcEverybody:
-			name = NSLocalizedString(@"privacyLevel_everybody", @"Everybody");
-			break;
-        default:
-			break;
-	}
-	
-	return name;
-}
-
 
 #pragma mark - Getter
 

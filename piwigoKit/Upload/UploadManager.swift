@@ -620,7 +620,7 @@ public class UploadManager: NSObject {
 
         // Check/update serverFileTypes if possible
         let fileTypes = UploadVars.serverFileTypes
-        if fileTypes.count > 0 {
+        if !fileTypes.isEmpty {
             uploadProperties.serverFileTypes = fileTypes
         }
 
@@ -868,7 +868,7 @@ public class UploadManager: NSObject {
         
         // Check/update serverFileTypes if possible
         let fileTypes = UploadVars.serverFileTypes
-        if fileTypes.count > 0 {
+        if !fileTypes.isEmpty {
             uploadProperties.serverFileTypes = fileTypes
         }
         

@@ -420,7 +420,7 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
         [self removeImage:image fromCategory:[NSString stringWithFormat:@"%ld", (long)kPiwigoFavoritesCategoryId]];
     }
 
-    // Notify the Upload database that the image was deleted
+    // Notify the Upload database that the image was deleted (background thread)
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate didDeletePiwigoImageWithID: image.imageId];
 }
@@ -436,17 +436,20 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     [imageCategory deincrementImageSizeByOne];
     [imageCategory removeImages:@[image]];
 
-    // Notify UI that an image has been deleted to refresh the collection view
-    NSDictionary *userInfo = @{@"albumId" : category, @"imageId" : @(image.imageId)};
-    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationRemovedImage object:nil userInfo:userInfo];
+    // Notify UI that...
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // ...an image has been deleted to refresh the collection view
+        NSDictionary *userInfo = @{@"albumId" : category, @"imageId" : @(image.imageId)};
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationRemovedImage object:nil userInfo:userInfo];
 
-    // Notify UI that the number of images has changed and that the thumbnail may have to be changed
-    for (NSString *catStr in imageCategory.upperCategories) {
-        userInfo = @{@"albumId" : catStr,
-                     @"thumbnailId" : @"0",
-                     @"thumbnailUrl" : @""};
-        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedAlbumData object:nil userInfo:userInfo];
-    }
+        // ...the number of images has changed and that the thumbnail may have to be changed
+        for (NSString *catStr in imageCategory.upperCategories) {
+            userInfo = @{@"albumId" : catStr,
+                         @"thumbnailId" : @"0",
+                         @"thumbnailUrl" : @""};
+            [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedAlbumData object:nil userInfo:userInfo];
+        }
+    });
 }
 
 

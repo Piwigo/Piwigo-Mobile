@@ -40,6 +40,8 @@
 		[self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.tableView]];
     
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated:) name:kPiwigoNotificationChangedAlbumData object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(autoUploadUpdated:) name:PwgNotificationsObjc.autoUploadEnabled object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(autoUploadUpdated:) name:PwgNotificationsObjc.autoUploadDisabled object:nil];
 	}
 	return self;
 }
@@ -82,6 +84,12 @@
         [self.tableView reloadData];
     }
 }
+
+-(void)autoUploadUpdated:(NSNotification *)notification
+{
+    [self.tableView reloadData];
+}
+
 
 #pragma mark - UITableView Methods
 

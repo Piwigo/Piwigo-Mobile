@@ -19,6 +19,26 @@ public enum kPiwigoPrivacy : Int16 {
     case unknown = -1
 }
 
+extension kPiwigoPrivacy {
+    public var name: String {
+        switch self {
+        case .everybody:
+            return NSLocalizedString("privacyLevel_everybody", comment: "Everybody")
+        case .adminsFamilyFriendsContacts:
+            return NSLocalizedString("privacyLevel_adminsFamilyFriendsContacts", comment: "Admins, Family, Friends, Contacts")
+        case .adminsFamilyFriends:
+            return NSLocalizedString("privacyLevel_adminsFamilyFriends", comment: "Admins, Family, Friends")
+        case .adminsFamily:
+            return NSLocalizedString("privacyLevel_adminFamily", comment: "Admins, Family")
+        case .admins:
+            return NSLocalizedString("privacyLevel_admin", comment: "Admins")
+        default:
+            return ""
+        }
+    }
+}
+
+
 // MARK: - Max Photo Sizes
 public enum pwgPhotoMaxSizes: Int16, CaseIterable {
     case fullResolution = 0, Retina5K, UHD4K, DCI2K, FullHD, HD, qHD, nHD

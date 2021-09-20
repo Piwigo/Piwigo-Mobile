@@ -152,7 +152,7 @@ CGFloat const kImageDetailsMarginsSpacing = 16;   // Left and right margins for 
 
 #pragma mark - Thumbnails
 
-+(float)imageDetailsSizeForView:(UIView *)view // andNberOfImageDetailsPerRowInPortrait:(NSInteger)detailsPerRowInPortrait
++(CGFloat)imageDetailsSizeForView:(UIView *)view // andNberOfImageDetailsPerRowInPortrait:(NSInteger)detailsPerRowInPortrait
 {
     // Size of view or screen
     CGSize cellSize = [self sizeOfPageForView:view];

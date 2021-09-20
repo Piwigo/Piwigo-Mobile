@@ -25,7 +25,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
-	<string>390</string>
+	<string>393</string>
 	<key>INIntentsSupported</key>
 	<array>
 		<string>AutoUploadIntent</string>
@@ -43,10 +43,6 @@
 	<string>so that it will be able to download images to Photos and upload images to your Piwigo.</string>
 	<key>NSSiriUsageDescription</key>
 	<string>so that Piwigo will be able to upload images with Siri.</string>
-	<key>NSUserActivityTypes</key>
-	<array>
-		<string>AutoUploadIntent</string>
-	</array>
 	<key>PHPhotoLibraryPreventAutomaticLimitedAccessAlert</key>
 	<true/>
 	<key>UIAppFonts</key>
