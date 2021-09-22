@@ -11,7 +11,6 @@ import piwigoKit
 
 class HelpViewController: UIViewController {
     
-    @IBOutlet weak var container: UIView!
     @IBOutlet weak var pageControl: UIPageControl!
     @IBOutlet weak var closeButton: UIButton!
     
@@ -50,7 +49,7 @@ class HelpViewController: UIViewController {
         pageControl.hidesForSinglePage = true
 
         // Initialise pageViewController
-        pageViewController = self.children[0] as? UIPageViewController
+        pageViewController = children[0] as? UIPageViewController
         pageViewController!.delegate = self
         pageViewController!.dataSource = self
         if #available(iOS 14.0, *) {
