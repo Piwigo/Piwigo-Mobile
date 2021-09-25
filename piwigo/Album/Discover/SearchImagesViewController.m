@@ -71,32 +71,47 @@
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoColorBackground];
 
-    // Navigation bar
+    // Navigation bar appearance
+    UINavigationBar *navigationBar = self.navigationController.navigationBar;
+    navigationBar.barStyle = AppVars.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    navigationBar.tintColor = [UIColor piwigoColorOrange];
+
+    // Toolbar appearance
+    UIToolbar *toolbar = self.navigationController.toolbar;
+    toolbar.barStyle = AppVars.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    toolbar.tintColor = [UIColor piwigoColorOrange];
+
     NSDictionary *attributes = @{
                                  NSForegroundColorAttributeName: [UIColor piwigoColorWhiteCream],
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
-    self.navigationController.navigationBar.titleTextAttributes = attributes;
-    if (@available(iOS 11.0, *)) {
-        self.navigationController.navigationBar.prefersLargeTitles = NO;
-    }
-    self.navigationController.navigationBar.barStyle = AppVars.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    self.navigationController.navigationBar.tintColor = [UIColor piwigoColorOrange];
-    self.navigationController.navigationBar.barTintColor = [UIColor piwigoColorBackground];
-    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoColorBackground];
+    navigationBar.titleTextAttributes = attributes;
 
-    if (@available(iOS 15.0, *)) {
-        /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-        /// which by default produces a transparent background, to all navigation bars.
-        UINavigationBarAppearance *barAppearance = [[UINavigationBarAppearance alloc] init];
-        [barAppearance configureWithOpaqueBackground];
-        barAppearance.backgroundColor = [UIColor piwigoColorBackground];
-        self.navigationController.navigationBar.standardAppearance = barAppearance;
-        self.navigationController.navigationBar.scrollEdgeAppearance = self.navigationController.navigationBar.standardAppearance;
-        
-        UIToolbarAppearance *toolbarAppearance = [[UIToolbarAppearance alloc] initWithBarAppearance:barAppearance];
-        self.navigationController.toolbar.standardAppearance = toolbarAppearance;
-        self.navigationController.toolbar.scrollEdgeAppearance = self.navigationController.toolbar.standardAppearance;
+    if (@available(iOS 11.0, *)) {
+        navigationBar.prefersLargeTitles = NO;
+
+        if (@available(iOS 13.0, *)) {
+            UINavigationBarAppearance *barAppearance = [[UINavigationBarAppearance alloc] init];
+            [barAppearance configureWithTransparentBackground];
+            barAppearance.backgroundColor = [[UIColor piwigoColorBackground] colorWithAlphaComponent:0.9];
+            barAppearance.titleTextAttributes = attributes;
+            barAppearance.shadowColor = AppVars.isDarkPaletteActive ? [UIColor colorWithWhite:1.0 alpha:0.15] : [UIColor colorWithWhite:0.0 alpha:0.3];
+            self.navigationItem.standardAppearance = barAppearance;
+            self.navigationItem.compactAppearance = barAppearance;   // For iPhone small navigation bar in landscape.
+            self.navigationItem.scrollEdgeAppearance = barAppearance;
+    
+            UIToolbarAppearance *toolbarAppearance = [[UIToolbarAppearance alloc] initWithBarAppearance:barAppearance];
+            toolbar.standardAppearance = toolbarAppearance;
+            if (@available(iOS 15.0, *)) {
+                /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
+                /// which by default produces a transparent background, to all navigation bars.
+                toolbar.scrollEdgeAppearance = toolbarAppearance;
+            }
+        }
+    }
+    else {
+        navigationBar.barTintColor = [[UIColor piwigoColorBackground] colorWithAlphaComponent:0.3];
+        toolbar.barTintColor = [[UIColor piwigoColorBackground] colorWithAlphaComponent:0.9];
     }
 
     // Collection view
@@ -480,7 +495,11 @@
 
     // Display full screen image
     if (@available(iOS 11.0, *)) {
-        self.imageDetailView = [[ImageDetailViewController alloc] initWithCategoryId:kPiwigoSearchCategoryId atImageIndex:indexPath.row withArray:[self.albumData.images copy]];
+        UIStoryboard *imageDetailSB = [UIStoryboard storyboardWithName:@"ImageDetailViewController" bundle:nil];
+        self.imageDetailView = [imageDetailSB instantiateViewControllerWithIdentifier:@"ImageDetailViewController"];
+        self.imageDetailView.imageIndex = indexPath.row;
+        self.imageDetailView.categoryId = kPiwigoSearchCategoryId;
+        self.imageDetailView.images = [self.albumData.images copy];
         self.imageDetailView.hidesBottomBarWhenPushed = YES;
         self.imageDetailView.imgDetailDelegate = self;
         [self.presentingViewController.navigationController pushViewController:self.imageDetailView animated:YES];

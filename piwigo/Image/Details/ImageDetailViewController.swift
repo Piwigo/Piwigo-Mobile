@@ -2,10 +2,8 @@
 //  ImageDetailViewController.swift
 //  piwigo
 //
-//  Created by Spencer Baker on 1/15/15.
-//  Copyright (c) 2015 bakercrew. All rights reserved.
-//
-//  Converted to Swift 5.3 by Eddy Lelièvre-Berna on 04/09/2021.
+//  Created by Eddy Lelièvre-Berna on 22/09/2021.
+//  Copyright © 2021 Piwigo.org. All rights reserved.
 //
 
 import Photos
@@ -21,12 +19,13 @@ let kPiwigoNotificationUpdateImageFileName = "kPiwigoNotificationUpdateImageFile
     func needToLoadMoreImages()
 }
 
-class ImageDetailViewController: UIPageViewController
-{
+class ImageDetailViewController: UIViewController {
+    
     @objc weak var imgDetailDelegate: ImageDetailDelegate?
     @objc var images = [PiwigoImageData]()
-
-    private var categoryId = 0
+    @objc var categoryId = 0
+    @objc var imageIndex = 0
+    
     private var imageData = PiwigoImageData()
     private var progressBar = UIProgressView()
     private var editBarButton: UIBarButtonItem?
@@ -34,23 +33,18 @@ class ImageDetailViewController: UIPageViewController
     private var shareBarButton: UIBarButtonItem?
     private var setThumbnailBarButton: UIBarButtonItem?
     private var moveBarButton: UIBarButtonItem?
-    //@property (nonatomic, strong) UIBarButtonItem *favoriteBarButton;
+    //private var favoriteBarButton: UIBarButtonItem?
     private var spaceBetweenButtons: UIBarButtonItem?
     private var isToolbarRequired = false
 
-    @objc
-    init(categoryId: Int, atImageIndex imageIndex: Int,
-         withArray arrayOfImages: [PiwigoImageData])
-    {
-        super.init(transitionStyle: .scroll,
-                   navigationOrientation: .horizontal, options: nil)
-        
-        // Current category and images data
-        self.categoryId = categoryId
-        images = arrayOfImages
+    private var pageViewController: UIPageViewController?
 
-        dataSource = self
-        delegate = self
+    
+    // MARK: - View Lifecycle
+    override func viewDidLoad() {
+        super.viewDidLoad()
+                
+//        navigationController?.navigationBar.isTranslucent = true
 
         // Progress bar
         progressBar.translatesAutoresizingMaskIntoConstraints = false
@@ -92,13 +86,20 @@ class ImageDetailViewController: UIPageViewController
         index = min(imageIndex, images.count - 1)
         imageData = images[index]
 
-        // Image preview view controller
-        let startingImage = ImagePreviewViewController()
-        startingImage.imagePreviewDelegate = self
-        startingImage.imageIndex = index
-        startingImage.setImageScrollViewWith(imageData)
-        setViewControllers( [startingImage], direction: .forward, animated: false)
+        // Initialise pageViewController
+        pageViewController = children[0] as? UIPageViewController
+        pageViewController!.delegate = self
+        pageViewController!.dataSource = self
 
+        // Load initial image preview view controller
+        if let startingImage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController {
+            startingImage.imagePreviewDelegate = self
+            startingImage.imageIndex = index
+            startingImage.imageData = imageData
+    //        startingImage.setImageScrollViewWith(imageData)
+            pageViewController!.setViewControllers( [startingImage], direction: .forward, animated: false)
+        }
+        
         // Retrieve complete image data if needed (buttons are greyed until job done)
         if imageData.fileSize == NSNotFound {
             retrieveCompleteImageDataOfImage(imageData)
@@ -117,51 +118,61 @@ class ImageDetailViewController: UIPageViewController
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: PwgNotifications.paletteChanged, object: nil)
     }
-
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
-
-
-    // MARK: - View Lifecycle
-
+    
     @objc func applyColorPalette() {
+        // Set background color according to navigation bar visibility
+        if navigationController?.isNavigationBarHidden ?? false {
+            view.backgroundColor = .black
+        } else {
+            view.backgroundColor = .piwigoColorBackground()
+        }
+
         // Navigation bar
-        setTitleViewFromImageData()
+        let navigationBar = navigationController?.navigationBar
+        navigationBar?.barStyle = AppVars.isDarkPaletteActive ? .black : .default
+        navigationBar?.tintColor = .piwigoColorOrange()
+
+        // Toolbar
+        let toolbar = navigationController?.toolbar
+        toolbar?.barStyle = AppVars.isDarkPaletteActive ? .black : .default
+        toolbar?.tintColor = .piwigoColorOrange()
+
         let attributes = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
             NSAttributedString.Key.font: UIFont.piwigoFontNormal()
         ]
-        navigationController?.navigationBar.titleTextAttributes = attributes
+        navigationBar?.titleTextAttributes = attributes
+        setTitleViewFromImageData()
         if #available(iOS 11.0, *) {
-            navigationController?.navigationBar.prefersLargeTitles = false
+            navigationBar?.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
 
-        // Toolbar
-        navigationController?.toolbar.barTintColor = UIColor.piwigoColorBackground()
-        navigationController?.toolbar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
-
-        if #available(iOS 15.0, *) {
-            /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-            /// which by default produces a transparent background, to all navigation bars.
+        if #available(iOS 13.0, *) {
             let barAppearance = UINavigationBarAppearance()
-            barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = UIColor.piwigoColorBackground()
-            navigationController?.navigationBar.standardAppearance = barAppearance
-            navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
+            barAppearance.configureWithTransparentBackground()
+            barAppearance.backgroundColor = .piwigoColorBackground().withAlphaComponent(0.9)
+            barAppearance.shadowColor = AppVars.isDarkPaletteActive ? .init(white: 1.0, alpha: 0.15) : .init(white: 0.0, alpha: 0.3)
+            navigationBar?.standardAppearance = barAppearance
+            navigationBar?.compactAppearance = barAppearance
+            navigationBar?.scrollEdgeAppearance = barAppearance
 
             let toolbarAppearance = UIToolbarAppearance(barAppearance: barAppearance)
-            navigationController?.toolbar.standardAppearance = toolbarAppearance
-            navigationController?.toolbar.scrollEdgeAppearance = navigationController?.toolbar.standardAppearance
+            toolbar?.barTintColor = .piwigoColorBackground().withAlphaComponent(0.9)
+            toolbar?.standardAppearance = toolbarAppearance
+            toolbar?.compactAppearance = toolbarAppearance
+            if #available(iOS 15.0, *) {
+                /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
+                /// which by default produces a transparent background, to all navigation bars.
+                toolbar?.scrollEdgeAppearance = toolbarAppearance
+            }
+        } else {
+            navigationBar?.barTintColor = .piwigoColorBackground().withAlphaComponent(0.3)
+            toolbar?.barTintColor = .piwigoColorBackground().withAlphaComponent(0.3)
         }
 
         // Progress bar
-        progressBar.progressTintColor = UIColor.piwigoColorOrange()
-        progressBar.trackTintColor = UIColor.piwigoColorRightLabel()
+        progressBar.progressTintColor = .piwigoColorOrange()
+        progressBar.trackTintColor = .piwigoColorRightLabel()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -178,9 +189,14 @@ class ImageDetailViewController: UIPageViewController
         applyColorPalette()
 
         // Scrolling
-        if self.responds(to: Selector(("automaticallyAdjustsScrollViewInsets"))) {
-            automaticallyAdjustsScrollViewInsets = false
-            edgesForExtendedLayout = []
+        if #available(iOS 12, *) {
+            // Safe area already excluded in storyboard
+        } else {
+            // The view controller should automatically adjust its scroll view insets
+            if self.responds(to: Selector(("automaticallyAdjustsScrollViewInsets"))) {
+                automaticallyAdjustsScrollViewInsets = false
+                edgesForExtendedLayout = []
+            }
         }
     }
 
@@ -209,16 +225,118 @@ class ImageDetailViewController: UIPageViewController
             // Fallback on earlier versions
         }
     }
+//    
+//    override func viewWillDisappear(_ animated: Bool) {
+//        super.viewWillDisappear(animated)
+//        
+//        // Reset navigation bars appearance
+//        let navigationBar = navigationController?.navigationBar
+//        if #available(iOS 13.0, *) {
+//            let barAppearance = UINavigationBarAppearance()
+//            barAppearance.configureWithTransparentBackground()
+//            barAppearance.backgroundColor = .piwigoColorBackground().withAlphaComponent(0.9)
+//            navigationBar?.standardAppearance = barAppearance
+//            navigationBar?.compactAppearance = barAppearance
+//            navigationBar?.scrollEdgeAppearance = barAppearance
+//
+//            let toolbar = navigationController?.toolbar
+//            let toolbarAppearance = UIToolbarAppearance(barAppearance: barAppearance)
+//            toolbar?.standardAppearance = toolbarAppearance
+//            toolbar?.compactAppearance = toolbarAppearance
+//            if #available(iOS 15.0, *) {
+//                /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
+//                /// which by default produces a transparent background, to all navigation bars.
+//                toolbar?.scrollEdgeAppearance = toolbarAppearance
+//            }
+//        } else {
+//            navigationBar?.barTintColor = .piwigoColorBackground().withAlphaComponent(0.3)
+//            navigationBar?.isTranslucent = true;
+//        }
+//    }
 
     deinit {
-        // Register image pinches
+        // Unregister image pinches
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kPiwigoNotificationPinchedImage), object: nil)
 
-        // Register image data updates
+        // Unregister image data updates
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kPiwigoNotificationUpdateImageFileName), object: nil)
 
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
+    }
+
+
+    // MARK: - Navigation Bar & Toolbar
+    func setTitleViewFromImageData() {
+        // Create label programmatically
+        let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        titleLabel.backgroundColor = UIColor.clear
+        titleLabel.textColor = UIColor.piwigoColorWhiteCream()
+        titleLabel.textAlignment = .center
+        titleLabel.numberOfLines = 1
+        titleLabel.font = UIFont.piwigoFontSmallSemiBold()
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.adjustsFontSizeToFitWidth = false
+        titleLabel.lineBreakMode = .byTruncatingTail
+        titleLabel.allowsDefaultTighteningForTruncation = true
+        if imageData.imageTitle.isEmpty {
+            // No title => Use file name
+            titleLabel.text = imageData.fileName
+        } else {
+            titleLabel.text = imageData.imageTitle
+        }
+        titleLabel.sizeToFit()
+
+        // There is no subtitle in landscape mode on iPhone or when the creation date is unknown
+        if ((UIDevice.current.userInterfaceIdiom == .phone) &&
+            (UIApplication.shared.statusBarOrientation.isLandscape)) ||
+            (imageData.dateCreated == imageData.datePosted) {
+            let titleWidth = CGFloat(fmin(Float(titleLabel.bounds.size.width),
+                                          Float(view.bounds.size.width * 0.4)))
+            titleLabel.sizeThatFits(CGSize(width: titleWidth, height: titleLabel.bounds.size.height))
+            let oneLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth), height: titleLabel.bounds.size.height))
+            navigationItem.titleView = oneLineTitleView
+
+            oneLineTitleView.addSubview(titleLabel)
+            oneLineTitleView.addConstraint(NSLayoutConstraint.constraintView(titleLabel, toWidth: titleWidth)!)
+            oneLineTitleView.addConstraints(NSLayoutConstraint.constraintCenter(titleLabel)!)
+        }
+        else {
+            let subTitleLabel = UILabel(frame: CGRect(x: 0, y: titleLabel.frame.size.height, width: 0, height: 0))
+            subTitleLabel.backgroundColor = UIColor.clear
+            subTitleLabel.textColor = UIColor.piwigoColorWhiteCream()
+            subTitleLabel.textAlignment = .center
+            subTitleLabel.numberOfLines = 1
+            subTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+            subTitleLabel.font = UIFont.piwigoFontTiny()
+            subTitleLabel.adjustsFontSizeToFitWidth = false
+            subTitleLabel.lineBreakMode = .byTruncatingTail
+            subTitleLabel.allowsDefaultTighteningForTruncation = true
+            if let dateCreated = imageData.dateCreated {
+                subTitleLabel.text = DateFormatter.localizedString(from: dateCreated,
+                                                                   dateStyle: .medium, timeStyle: .medium)
+            }
+            subTitleLabel.sizeToFit()
+
+            var titleWidth = fmax(CGFloat(subTitleLabel.bounds.size.width),
+                                  CGFloat(titleLabel.bounds.size.width))
+            titleWidth = fmin(titleWidth, CGFloat((navigationController?.view.bounds.size.width ?? 0.0) * 0.4))
+            let twoLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth),
+                height: titleLabel.bounds.size.height + subTitleLabel.bounds.size.height))
+            navigationItem.titleView = twoLineTitleView
+
+            twoLineTitleView.addSubview(titleLabel)
+            twoLineTitleView.addSubview(subTitleLabel)
+            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintView(titleLabel, toWidth: titleWidth)!)
+            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(titleLabel)!)
+            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(subTitleLabel)!)
+
+            let views = ["title": titleLabel,
+                         "subtitle": subTitleLabel]
+            twoLineTitleView.addConstraints(
+                NSLayoutConstraint.constraints(withVisualFormat: "V:|[title][subtitle]|",
+                    options: [], metrics: nil, views: views))
+        }
     }
 
     func updateNavBar() {
@@ -291,33 +409,8 @@ class ImageDetailViewController: UIPageViewController
         moveBarButton?.isEnabled = state
         setThumbnailBarButton?.isEnabled = state
         deleteBarButton?.isEnabled = state
-        //    self.favoriteBarButton.enabled = state;
+//        favoriteBarButton.enabled = state;
     }
-
-    
-    // MARK: - Image Data Updates
-    @objc
-    func updateImageFileName(_ notification: Notification?) {
-        // Extract notification user info
-        if let notification = notification,
-           let userInfo = notification.object as? [AnyHashable : Any] {
-
-            // Right image Id?
-            if let imageId = userInfo["imageId"] as? Int,
-               imageId != imageData.imageId { return }
-
-            // Update image data
-            if let fileName = userInfo["fileName"] as? String {
-                imageData.fileName = fileName
-            }
-
-            // Update title view
-            setTitleViewFromImageData()
-        }
-    }
-
-    
-    // MARK: - Retrieve Image Data
 
     private func retrieveCompleteImageDataOfImage(_ imageData: PiwigoImageData) {
         debugPrint("=> Retrieve complete image data for image \(imageData.imageId)")
@@ -342,7 +435,8 @@ class ImageDetailViewController: UIPageViewController
                         for childVC in self.children {
                             if let previewVC = childVC as? ImagePreviewViewController,
                                previewVC.imageIndex == index {
-                                previewVC.setImageScrollViewWith(self.imageData)
+                                previewVC.imageData = self.imageData
+//                                previewVC.setImageScrollViewWith(self.imageData)
                             }
                         }
                     }
@@ -365,6 +459,28 @@ class ImageDetailViewController: UIPageViewController
                     self.retrieveCompleteImageDataOfImage(self.imageData)
                 }
             })
+        }
+    }
+
+
+    // MARK: - Image Data Updates
+    @objc
+    func updateImageFileName(_ notification: Notification?) {
+        // Extract notification user info
+        if let notification = notification,
+           let userInfo = notification.object as? [AnyHashable : Any] {
+
+            // Right image Id?
+            if let imageId = userInfo["imageId"] as? Int,
+               imageId != imageData.imageId { return }
+
+            // Update image data
+            if let fileName = userInfo["fileName"] as? String {
+                imageData.fileName = fileName
+            }
+
+            // Update title view
+            setTitleViewFromImageData()
         }
     }
 
@@ -399,15 +515,10 @@ class ImageDetailViewController: UIPageViewController
             }
 
             // Set background color according to navigation bar visibility
-            let viewControllers = children
-            for viewController in viewControllers {
-                if viewController is ImagePreviewViewController {
-                    if navigationController?.isNavigationBarHidden ?? false {
-                        viewController.view.backgroundColor = UIColor.black
-                    } else {
-                        viewController.view.backgroundColor = UIColor.piwigoColorBackground()
-                    }
-                }
+            if navigationController?.isNavigationBarHidden ?? false {
+                view.backgroundColor = .black
+            } else {
+                view.backgroundColor = .clear
             }
         }
     }
@@ -423,12 +534,12 @@ class ImageDetailViewController: UIPageViewController
     }
 
     @objc func didPinchView() {
-        // Return to image collection (called by ImageScrollView)
+        // Return to image collection
         navigationController?.popViewController(animated: true)
     }
 
 
-    // MARK: - Edit Image
+    // MARK: - Edit, Remove, Delete Image
 
     @objc func editImage() {
         // Disable buttons during action
@@ -445,8 +556,6 @@ class ImageDetailViewController: UIPageViewController
         editImageVC.delegate = self
         pushView(editImageVC, forButton: editBarButton)
     }
-
-    // MARK: - Delete Image
 
     @objc func deleteImage() {
         // Disable buttons during action
@@ -716,7 +825,7 @@ class ImageDetailViewController: UIPageViewController
     }
 
     
-    // MARK: - Set as Album Image
+    // MARK: - Album Methods
 
     @objc func setAsAlbumImage() {
         // Disable buttons during action
@@ -729,9 +838,6 @@ class ImageDetailViewController: UIPageViewController
         setThumbVC.delegate = self
         pushView(setThumbVC, forButton: setThumbnailBarButton)
     }
-
-    
-    // MARK: - Move/Copy image to Category
 
     @objc func addImageToCategory() {
         // Disable buttons during action
@@ -804,7 +910,7 @@ class ImageDetailViewController: UIPageViewController
     }
 
     
-    // MARK: - Add to / remove from favorites
+    // MARK: - (Add to) / (remove from) favorites
 
     func addToFavoritesImageWithId() {
         // Disable buttons during action
@@ -870,81 +976,6 @@ class ImageDetailViewController: UIPageViewController
                 navController.modalTransitionStyle = .coverVertical
                 present(navController, animated: true)
             }
-        }
-    }
-
-    
-    // MARK: - Title and Subtitle
-
-    func setTitleViewFromImageData() {
-        // Create label programmatically
-        let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
-        titleLabel.backgroundColor = UIColor.clear
-        titleLabel.textColor = UIColor.piwigoColorWhiteCream()
-        titleLabel.textAlignment = .center
-        titleLabel.numberOfLines = 1
-        titleLabel.font = UIFont.piwigoFontSmallSemiBold()
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.adjustsFontSizeToFitWidth = false
-        titleLabel.lineBreakMode = .byTruncatingTail
-        titleLabel.allowsDefaultTighteningForTruncation = true
-        if imageData.imageTitle.isEmpty {
-            // No title => Use file name
-            titleLabel.text = imageData.fileName
-        } else {
-            titleLabel.text = imageData.imageTitle
-        }
-        titleLabel.sizeToFit()
-
-        // There is no subtitle in landscape mode on iPhone or when the creation date is unknown
-        if ((UIDevice.current.userInterfaceIdiom == .phone) &&
-            (UIApplication.shared.statusBarOrientation.isLandscape)) ||
-            (imageData.dateCreated == imageData.datePosted) {
-            let titleWidth = CGFloat(fmin(Float(titleLabel.bounds.size.width),
-                                          Float(view.bounds.size.width * 0.4)))
-            titleLabel.sizeThatFits(CGSize(width: titleWidth, height: titleLabel.bounds.size.height))
-            let oneLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth), height: titleLabel.bounds.size.height))
-            navigationItem.titleView = oneLineTitleView
-
-            oneLineTitleView.addSubview(titleLabel)
-            oneLineTitleView.addConstraint(NSLayoutConstraint.constraintView(titleLabel, toWidth: titleWidth)!)
-            oneLineTitleView.addConstraints(NSLayoutConstraint.constraintCenter(titleLabel)!)
-        }
-        else {
-            let subTitleLabel = UILabel(frame: CGRect(x: 0, y: titleLabel.frame.size.height, width: 0, height: 0))
-            subTitleLabel.backgroundColor = UIColor.clear
-            subTitleLabel.textColor = UIColor.piwigoColorWhiteCream()
-            subTitleLabel.textAlignment = .center
-            subTitleLabel.numberOfLines = 1
-            subTitleLabel.translatesAutoresizingMaskIntoConstraints = false
-            subTitleLabel.font = UIFont.piwigoFontTiny()
-            subTitleLabel.adjustsFontSizeToFitWidth = false
-            subTitleLabel.lineBreakMode = .byTruncatingTail
-            subTitleLabel.allowsDefaultTighteningForTruncation = true
-            if let dateCreated = imageData.dateCreated {
-                subTitleLabel.text = DateFormatter.localizedString(from: dateCreated,
-                                                                   dateStyle: .medium, timeStyle: .medium)
-            }
-            subTitleLabel.sizeToFit()
-
-            var titleWidth = fmax(CGFloat(subTitleLabel.bounds.size.width),
-                                  CGFloat(titleLabel.bounds.size.width))
-            titleWidth = fmin(titleWidth, CGFloat((navigationController?.view.bounds.size.width ?? 0.0) * 0.4))
-            let twoLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth),
-                height: titleLabel.bounds.size.height + subTitleLabel.bounds.size.height))
-            navigationItem.titleView = twoLineTitleView
-
-            twoLineTitleView.addSubview(titleLabel)
-            twoLineTitleView.addSubview(subTitleLabel)
-            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintView(titleLabel, toWidth: titleWidth)!)
-            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(titleLabel)!)
-            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(subTitleLabel)!)
-
-            let views = ["title": titleLabel,
-                         "subtitle": subTitleLabel]
-            twoLineTitleView.addConstraints(
-                NSLayoutConstraint.constraints(withVisualFormat: "V:|[title][subtitle]|",
-                    options: [], metrics: nil, views: views))
         }
     }
 }
@@ -1027,11 +1058,16 @@ extension ImageDetailViewController: UIPageViewControllerDataSource
 
         // Create view controller for presenting next image
         debugPrint("=> Create preview view controller for next image \(imageData.imageId)")
-        let nextImage = ImagePreviewViewController()
-        nextImage.imageLoaded = false
+        guard let nextImage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController else { return nil }
+        nextImage.imagePreviewDelegate = self
         nextImage.imageIndex = currentIndex + 1
-        nextImage.setImageScrollViewWith(imageData)
+        nextImage.imageData = imageData
+        nextImage.imageLoaded = false
         return nextImage
+//        let nextImage = ImagePreviewViewController()
+//        nextImage.imageLoaded = false
+//        nextImage.imageIndex = currentIndex + 1
+//        nextImage.setImageScrollViewWith(imageData)
     }
 
     // Returns the view controller before the given view controller
@@ -1051,29 +1087,26 @@ extension ImageDetailViewController: UIPageViewControllerDataSource
 
         // Create view controller
         debugPrint("=> Create preview view controller for previous image \(imageData.imageId)")
-        let prevImage = ImagePreviewViewController()
-        prevImage.imageLoaded = false
+        guard let prevImage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController else { return nil }
+        prevImage.imagePreviewDelegate = self
         prevImage.imageIndex = currentIndex - 1
-        prevImage.setImageScrollViewWith(imageData)
+        prevImage.imageData = imageData
+        prevImage.imageLoaded = false
         return prevImage
+//        let prevImage = ImagePreviewViewController()
+//        prevImage.imageLoaded = false
+//        prevImage.imageIndex = currentIndex - 1
+//        prevImage.setImageScrollViewWith(imageData)
+//        return prevImage
     }
 
     // Returns the index of the selected item to be reflected in the page indicator
     func presentationIndex(for pageViewController: UIPageViewController) -> Int {
-        return indexOfSelectedImage()
-    }
-
-    private func indexOfSelectedImage() -> Int {
-        var index = 0
-        for viewController in viewControllers ?? [] {
-            // Look for view controller of the right class!
-            if let imageViewCtrl = viewController as? ImagePreviewViewController {
-                // Return if exists
-                index = imageViewCtrl.imageIndex
-                break
-            }
+        if let imageViewCtrl = pageViewController.viewControllers?[0] as? ImagePreviewViewController {
+            // Return if exists
+            return imageViewCtrl.imageIndex
         }
-        return index
+        return NSNotFound
     }
 }
 
@@ -1176,14 +1209,19 @@ extension ImageDetailViewController: SelectCategoryImageRemovedDelegate
             let imageData = images[indexOfRemovedImage]
 
             // Create view controller for presenting next image
-            let nextImage = ImagePreviewViewController()
-            nextImage.imageLoaded = false
+            guard let nextImage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController else { return }
+            nextImage.imagePreviewDelegate = self
             nextImage.imageIndex = indexOfRemovedImage
-            nextImage.setImageScrollViewWith(imageData)
+            nextImage.imageData = imageData
+            nextImage.imageLoaded = false
+//            let nextImage = ImagePreviewViewController()
+//            nextImage.imageLoaded = false
+//            nextImage.imageIndex = indexOfRemovedImage
+//            nextImage.setImageScrollViewWith(imageData)
 
             // This changes the View Controller
             // and calls the presentationIndexForPageViewController datasource method
-            setViewControllers([nextImage], direction: .forward, animated: true) { [unowned self] finished in
+            pageViewController!.setViewControllers([nextImage], direction: .forward, animated: true) { [unowned self] finished in
                     // Update image data
                     self.imageData = self.images[indexOfRemovedImage]
                     // Re-enable buttons
@@ -1198,14 +1236,19 @@ extension ImageDetailViewController: SelectCategoryImageRemovedDelegate
             let imageData = images[indexOfRemovedImage - 1]
 
             // Create view controller for presenting next image
-            let prevImage = ImagePreviewViewController()
-            prevImage.imageLoaded = false
+            guard let prevImage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController else { return }
+            prevImage.imagePreviewDelegate = self
             prevImage.imageIndex = indexOfRemovedImage - 1
-            prevImage.setImageScrollViewWith(imageData)
+            prevImage.imageData = imageData
+            prevImage.imageLoaded = false
+//            let prevImage = ImagePreviewViewController()
+//            prevImage.imageLoaded = false
+//            prevImage.imageIndex = indexOfRemovedImage - 1
+//            prevImage.setImageScrollViewWith(imageData)
 
             // This changes the View Controller
             // and calls the presentationIndexForPageViewController datasource method
-            setViewControllers( [prevImage], direction: .reverse, animated: true) { [unowned self] finished in
+            pageViewController!.setViewControllers( [prevImage], direction: .reverse, animated: true) { [unowned self] finished in
                     // Update image data
                     self.imageData = self.images[indexOfRemovedImage - 1]
                     // Re-enable buttons

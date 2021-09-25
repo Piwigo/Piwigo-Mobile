@@ -36,7 +36,7 @@ NSString * const kPiwigoNotificationChangedAlbumData = @"kPiwigoNotificationChan
 NSString * const kPiwigoNotificationDidShare = @"kPiwigoNotificationDidShare";
 NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancelDownload";
 
-@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, UITextFieldDelegate, ImageDetailDelegate, EditImageParamsDelegate, CategoryCollectionViewCellDelegate, SelectCategoryDelegate, SelectCategoryImageCopiedDelegate, ShareImageActivityItemProviderDelegate, TagSelectorViewDelegate, ChangedSettingsDelegate>
+@interface AlbumImagesViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIGestureRecognizerDelegate, UIToolbarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate, UITextFieldDelegate, UIScrollViewDelegate, ImageDetailDelegate, EditImageParamsDelegate, CategoryCollectionViewCellDelegate, SelectCategoryDelegate, SelectCategoryImageCopiedDelegate, ShareImageActivityItemProviderDelegate, TagSelectorViewDelegate, ChangedSettingsDelegate>
 
 @property (nonatomic, strong) UICollectionView *imagesCollection;
 @property (nonatomic, strong) AlbumData *albumData;
@@ -118,6 +118,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 searchController.searchBar.translucent = NO;
                 searchController.searchBar.showsCancelButton = NO;
                 searchController.searchBar.showsSearchResultsButton = NO;
+                searchController.searchBar.tintColor = [UIColor piwigoColorOrange];
                 searchController.searchBar.delegate = self;        // Monitor when the search button is tapped.
                 self.definesPresentationContext = YES;
                 
@@ -370,59 +371,70 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         [self.homeAlbumButton.layer setShadowOffset:CGSizeMake(0.0, 0.5)];
     }
     
-    // Navigation bar appearence
+    // Navigation bar appearance
+    UINavigationBar *navigationBar = self.navigationController.navigationBar;
+    self.navigationController.view.backgroundColor = [UIColor piwigoColorBackground];
+    navigationBar.barStyle = AppVars.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    navigationBar.tintColor = [UIColor piwigoColorOrange];
+
+    // Toolbar appearance
+    UIToolbar *toolbar = self.navigationController.toolbar;
+    toolbar.barStyle = AppVars.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    toolbar.tintColor = [UIColor piwigoColorOrange];
+
     NSDictionary *attributes = @{
                                  NSForegroundColorAttributeName: [UIColor piwigoColorWhiteCream],
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
-    self.navigationController.navigationBar.titleTextAttributes = attributes;
+    NSDictionary *attributesLarge = @{
+                                      NSForegroundColorAttributeName: [UIColor piwigoColorWhiteCream],
+                                      NSFontAttributeName: [UIFont piwigoFontLargeTitle],
+                                      };
     if (@available(iOS 11.0, *)) {
         if (self.categoryId == AlbumVars.defaultCategory) {
             // Title
-            NSDictionary *attributesLarge = @{
-                                              NSForegroundColorAttributeName: [UIColor piwigoColorWhiteCream],
-                                              NSFontAttributeName: [UIFont piwigoFontLargeTitle],
-                                              };
-            self.navigationController.navigationBar.largeTitleTextAttributes = attributesLarge;
-            self.navigationController.navigationBar.prefersLargeTitles = YES;
+            navigationBar.largeTitleTextAttributes = attributesLarge;
+            navigationBar.prefersLargeTitles = YES;
 
             // Search bar
-            self.navigationItem.searchController.searchBar.barStyle = AppVars.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+            UISearchBar *searchBar = self.navigationItem.searchController.searchBar;
+            searchBar.barStyle = AppVars.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
             if (@available(iOS 13.0, *)) {
-                self.navigationItem.searchController.searchBar.searchTextField.textColor = [UIColor piwigoColorLeftLabel];
-                self.navigationItem.searchController.searchBar.searchTextField.keyboardAppearance = AppVars.isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceLight;
+                searchBar.searchTextField.textColor = [UIColor piwigoColorLeftLabel];
+                searchBar.searchTextField.keyboardAppearance = AppVars.isDarkPaletteActive ? UIKeyboardAppearanceDark : UIKeyboardAppearanceLight;
             }
         }
         else {
-            self.navigationController.navigationBar.prefersLargeTitles = NO;
+            navigationBar.titleTextAttributes = attributes;
+            navigationBar.prefersLargeTitles = NO;
         }
-    }
-    self.navigationController.navigationBar.barStyle = AppVars.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    self.navigationController.navigationBar.tintColor = [UIColor piwigoColorOrange];
-    self.navigationController.navigationBar.barTintColor = [UIColor piwigoColorBackground];
-    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoColorBackground];
-    [self.navigationController.navigationBar setAccessibilityIdentifier:@"AlbumImagesNav"];
 
-    // Toolbar
-    self.navigationController.toolbar.barTintColor =[UIColor piwigoColorBackground];
-    self.navigationController.toolbar.barStyle = AppVars.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+        if (@available(iOS 13.0, *)) {
+            UINavigationBarAppearance *barAppearance = [[UINavigationBarAppearance alloc] init];
+            [barAppearance configureWithTransparentBackground];
+            barAppearance.backgroundColor = [[UIColor piwigoColorBackground] colorWithAlphaComponent:0.9];
+            barAppearance.titleTextAttributes = attributes;
+            barAppearance.largeTitleTextAttributes = attributesLarge;
+            self.navigationItem.standardAppearance = barAppearance;
+            self.navigationItem.compactAppearance = barAppearance;   // For iPhone small navigation bar in landscape.
+            self.navigationItem.scrollEdgeAppearance = barAppearance;
     
-    if (@available(iOS 15.0, *)) {
-        /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-        /// which by default produces a transparent background, to all navigation bars.
-        UINavigationBarAppearance *barAppearance = [[UINavigationBarAppearance alloc] init];
-        [barAppearance configureWithOpaqueBackground];
-        barAppearance.backgroundColor = [UIColor piwigoColorBackground];
-        self.navigationController.navigationBar.standardAppearance = barAppearance;
-        self.navigationController.navigationBar.scrollEdgeAppearance = self.navigationController.navigationBar.standardAppearance;
-        
-        UIToolbarAppearance *toolbarAppearance = [[UIToolbarAppearance alloc] initWithBarAppearance:barAppearance];
-        self.navigationController.toolbar.standardAppearance = toolbarAppearance;
-        self.navigationController.toolbar.scrollEdgeAppearance = self.navigationController.toolbar.standardAppearance;
+            UIToolbarAppearance *toolbarAppearance = [[UIToolbarAppearance alloc] initWithBarAppearance:barAppearance];
+            toolbar.standardAppearance = toolbarAppearance;
+            if (@available(iOS 15.0, *)) {
+                /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
+                /// which by default produces a transparent background, to all navigation bars.
+                toolbar.scrollEdgeAppearance = toolbarAppearance;
+            }
+        }
+    } else {
+        navigationBar.titleTextAttributes = attributes;
+        navigationBar.barTintColor = [[UIColor piwigoColorBackground] colorWithAlphaComponent:0.3];
+        toolbar.barTintColor = [[UIColor piwigoColorBackground] colorWithAlphaComponent:0.9];
     }
 
     // Collection view
-    self.imagesCollection.backgroundColor = [UIColor piwigoColorBackground];
+    self.imagesCollection.backgroundColor = [UIColor clearColor];
     self.imagesCollection.indicatorStyle = AppVars.isDarkPaletteActive ? UIScrollViewIndicatorStyleWhite : UIScrollViewIndicatorStyleBlack;
     [self.imagesCollection reloadData];
 }
@@ -1424,6 +1436,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                          searchController.searchBar.searchBarStyle = UISearchBarStyleMinimal;
                          searchController.searchBar.translucent = NO;
                          searchController.searchBar.showsCancelButton = NO;
+                         searchController.searchBar.tintColor = [UIColor piwigoColorOrange];
                          searchController.searchBar.showsSearchResultsButton = NO;
                          searchController.searchBar.delegate = self;        // Monitor when the search button is tapped.
                          self.definesPresentationContext = YES;
@@ -3045,9 +3058,14 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 [[NSNotificationCenter defaultCenter] postNotificationName:[PwgNotificationsObjc addRecentAlbum] object:nil userInfo:userInfo];
 
                 // Selection mode not active => display full screen image
-                self.imageDetailView = [[ImageDetailViewController alloc] initWithCategoryId:self.categoryId atImageIndex:indexPath.row withArray:[self.albumData.images copy]];
+                UIStoryboard *imageDetailSB = [UIStoryboard storyboardWithName:@"ImageDetailViewController" bundle:nil];
+                self.imageDetailView = [imageDetailSB instantiateViewControllerWithIdentifier:@"ImageDetailViewController"];
+                self.imageDetailView.imageIndex = indexPath.row;
+                self.imageDetailView.categoryId = self.categoryId;
+                self.imageDetailView.images = [self.albumData.images copy];
                 self.imageDetailView.hidesBottomBarWhenPushed = YES;
                 self.imageDetailView.imgDetailDelegate = self;
+                self.imageDetailView.modalPresentationCapturesStatusBarAppearance = YES;
                 [self.navigationController pushViewController:self.imageDetailView animated:YES];
             }
             else
@@ -3363,6 +3381,38 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         // Close ActivityView
         [self.presentedViewController dismissViewControllerAnimated:YES completion:nil];
     }];
+}
+
+
+#pragma mark - UIScrollViewDelegate
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    CGFloat navBarHeight = self.navigationController.navigationBar.frame.origin.y + self.navigationController.navigationBar.frame.size.height;
+//    NSLog(@"==>> %f", scrollView.contentOffset.y + navBarHeight);
+    if ((roundf(scrollView.contentOffset.y + navBarHeight) > 1) ||
+        (self.categoryId != AlbumVars.defaultCategory)) {
+        // Show navigation bar border
+        if (@available(iOS 13.0, *)) {
+            UINavigationItem *navBar = self.navigationItem;
+            UINavigationBarAppearance *barAppearance = navBar.standardAppearance;
+            UIColor *shadowColor = AppVars.isDarkPaletteActive ? [UIColor colorWithWhite:1.0 alpha:0.15] : [UIColor colorWithWhite:0.0 alpha:0.3];
+            if (barAppearance.shadowColor != shadowColor) {
+                barAppearance.shadowColor = shadowColor;
+                navBar.scrollEdgeAppearance = barAppearance;
+            }
+        }
+    } else {
+        // Hide navigation bar border
+        if (@available(iOS 13.0, *)) {
+            UINavigationItem *navBar = self.navigationItem;
+            UINavigationBarAppearance *barAppearance = navBar.standardAppearance;
+            if (barAppearance.shadowColor != [UIColor clearColor]) {
+                barAppearance.shadowColor = [UIColor clearColor];
+                navBar.scrollEdgeAppearance = barAppearance;
+            }
+        }
+    }
 }
 
 

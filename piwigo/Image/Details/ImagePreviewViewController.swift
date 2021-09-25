@@ -16,89 +16,33 @@ import piwigoKit
     func downloadProgress(_ progress: CGFloat)
 }
 
-class ImagePreviewViewController: UINavigationController
+class ImagePreviewViewController: UIViewController
 {
     @objc weak var imagePreviewDelegate: ImagePreviewDelegate?
 
     var imageIndex = 0
     var imageLoaded = false
-    var scrollView: ImageScrollView?
-    var videoView: VideoView?
+    var imageData: PiwigoImageData!
     var downloadTask: URLSessionDataTask?
 
-    init() {
-        super.init(nibName: nil, bundle: nil)
-        
-        // Image
-        scrollView = ImageScrollView()
-        view = scrollView
-
-        // Video
-        videoView = VideoView()
-
-        // Register palette changes
-        NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
-                                               name: PwgNotifications.paletteChanged, object: nil)
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
+    @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var playImage: UIImageView!
+    @IBOutlet weak var videoView: UIView!
+    
+    private var previousScale: CGFloat = 0.0
 
 
     // MARK: - View Lifecycle
-
-    @objc func applyColorPalette() {
-        // Background color depends on the navigation bar visibility
-        if navigationController?.isNavigationBarHidden ?? false {
-            view.backgroundColor = UIColor.black
-        } else {
-            view.backgroundColor = UIColor.piwigoColorBackground()
-        }
-
-        // Navigation bar
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
-            NSAttributedString.Key.font: UIFont.piwigoFontNormal()
-        ]
-        navigationController?.navigationBar.titleTextAttributes = attributes
-        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
-        isNavigationBarHidden = true
-
-        if #available(iOS 15.0, *) {
-            /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-            /// which by default produces a transparent background, to all navigation bars.
-            let barAppearance = UINavigationBarAppearance()
-            barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = UIColor.piwigoColorBackground()
-            navigationController?.navigationBar.standardAppearance = barAppearance
-            navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
-
-            let toolbarAppearance = UIToolbarAppearance(barAppearance: barAppearance)
-            navigationController?.toolbar.standardAppearance = toolbarAppearance
-            navigationController?.toolbar.scrollEdgeAppearance = navigationController?.toolbar.standardAppearance
-        }
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        // Set colors, fonts, etc.
-        applyColorPalette()
-    }
-
-    deinit {
-        // Unregister palette changes
-        NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
-    }
-
-    @objc
-    func setImageScrollViewWith(_ imageData: PiwigoImageData) {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        // Scroll view
+        scrollView.decelerationRate = .fast
+        scrollView.delegate = self
+        
         // Display "play" button if video
-        scrollView?.playImage.isHidden = !imageData.isVideo
+        playImage.isHidden = !imageData.isVideo
 
         // Thumbnail image should be available in cache
         let thumbnailSize = kPiwigoImageSize(rawValue: AlbumVars.defaultThumbnailSize)
@@ -108,9 +52,12 @@ class ImagePreviewViewController: UINavigationController
         if let thumbnailURL = thumbnailURL {
             thumb.image = NetworkVarsObjc.thumbnailCache?.imageforRequest(URLRequest(url: thumbnailURL), withAdditionalIdentifier: nil)
         }
-        scrollView?.imageView.image = thumb.image ?? UIImage(named: "placeholderImage")
+        imageView.image = thumb.image ?? UIImage(named: "placeholderImage")
 
         // Previewed image
+        imageView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        imageView.contentMode = .scaleAspectFit
+        imageView.isUserInteractionEnabled = true
         let imagePreviewSize = kPiwigoImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize)
         var previewStr = imageData.getURLFromImageSizeType(imagePreviewSize)
         if previewStr == nil {
@@ -140,7 +87,7 @@ class ImagePreviewViewController: UINavigationController
             },
             success: { task, image in
                 if let image = image as? UIImage {
-                    weakSelf?.scrollView?.imageView.image = image
+                    weakSelf?.imageView.image = image
                     // Hide progress bar
                     weakSelf?.imageLoaded = true
                     if weakSelf?.imagePreviewDelegate?.responds(to: #selector(ImagePreviewDelegate.downloadProgress(_:))) ?? false {
@@ -168,7 +115,7 @@ class ImagePreviewViewController: UINavigationController
 
         downloadTask?.resume()
     }
-
+    
     @objc
     func startVideoPlayerView(with imageData: PiwigoImageData?) {
         // Set URL
@@ -233,6 +180,8 @@ class ImagePreviewViewController: UINavigationController
         while currentViewController?.presentedViewController != nil {
             currentViewController = currentViewController?.presentedViewController
         }
+        playerController.modalTransitionStyle = .crossDissolve
+        playerController.modalPresentationStyle = .overFullScreen
         currentViewController?.present(playerController, animated: true)
     }
 
@@ -282,5 +231,24 @@ extension ImagePreviewViewController: AVAssetResourceLoaderDelegate
             print("Other type: username password, client trust...")
         }
         return true
+    }
+}
+
+
+// MARK: - UIScrollViewDelegate Methods
+extension ImagePreviewViewController: UIScrollViewDelegate
+{
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return imageView
+    }
+
+    func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
+        if (scale == 1.0) && (previousScale == 1.0) {
+            // The user scaled down twice the image => back to collection of images
+            let name = NSNotification.Name(rawValue: kPiwigoNotificationPinchedImage)
+            NotificationCenter.default.post(name: name, object: nil)
+        } else {
+            previousScale = scale
+        }
     }
 }
