@@ -67,7 +67,14 @@
         self.tagName = tagName;
         self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:0];
         
-        self.albumData = [[AlbumData alloc] initWithCategoryId:kPiwigoTagsCategoryId andQuery:@""];
+        // Initialise album cache
+        NSString *query = [NSString stringWithFormat:@"%ld", (long)self.tagId];
+        PiwigoAlbumData *discoverAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoTagsCategoryId];
+        [[CategoriesData sharedInstance] updateCategories:@[discoverAlbum]];
+        discoverAlbum.query = query;
+
+        // Load, sort images and reload collection
+        self.albumData = [[AlbumData alloc] initWithCategoryId:kPiwigoTagsCategoryId andQuery:query];
         self.currentSortCategory = (kPiwigoSortObjc)AlbumVars.defaultSort;
         self.displayImageTitles = AlbumVars.displayImageTitles;
         
@@ -181,12 +188,7 @@
     // Set navigation bar buttons
     [self updateBarButtons];
 
-    // Initialise discover cache
-    PiwigoAlbumData *discoverAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoTagsCategoryId];
-    [[CategoriesData sharedInstance] updateCategories:@[discoverAlbum]];
-
     // Load, sort images and reload collection
-    discoverAlbum.query = [NSString stringWithFormat:@"%ld", (long)self.tagId];
     [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
         
         // Set navigation bar buttons
