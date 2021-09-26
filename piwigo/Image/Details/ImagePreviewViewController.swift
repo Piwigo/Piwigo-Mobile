@@ -71,7 +71,7 @@ class ImagePreviewViewController: UIViewController
         guard let previewURL = URL(string: previewStr ?? "") else {return }
         weak var weakSelf = self
 
-        //    NSLog(@"==> Start loading %@", previewURL.path);
+//        debugPrint("==> Start loading \(previewURL.path)")
         downloadTask = NetworkVarsObjc.imagesSessionManager?.get(
             previewURL.absoluteString,
             parameters: nil,

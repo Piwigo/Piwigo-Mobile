@@ -44,8 +44,6 @@ class ImageDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
                 
-//        navigationController?.navigationBar.isTranslucent = true
-
         // Progress bar
         progressBar.translatesAutoresizingMaskIntoConstraints = false
         progressBar.setProgress(0.0, animated: false)
@@ -225,34 +223,6 @@ class ImageDetailViewController: UIViewController {
             // Fallback on earlier versions
         }
     }
-//    
-//    override func viewWillDisappear(_ animated: Bool) {
-//        super.viewWillDisappear(animated)
-//        
-//        // Reset navigation bars appearance
-//        let navigationBar = navigationController?.navigationBar
-//        if #available(iOS 13.0, *) {
-//            let barAppearance = UINavigationBarAppearance()
-//            barAppearance.configureWithTransparentBackground()
-//            barAppearance.backgroundColor = .piwigoColorBackground().withAlphaComponent(0.9)
-//            navigationBar?.standardAppearance = barAppearance
-//            navigationBar?.compactAppearance = barAppearance
-//            navigationBar?.scrollEdgeAppearance = barAppearance
-//
-//            let toolbar = navigationController?.toolbar
-//            let toolbarAppearance = UIToolbarAppearance(barAppearance: barAppearance)
-//            toolbar?.standardAppearance = toolbarAppearance
-//            toolbar?.compactAppearance = toolbarAppearance
-//            if #available(iOS 15.0, *) {
-//                /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-//                /// which by default produces a transparent background, to all navigation bars.
-//                toolbar?.scrollEdgeAppearance = toolbarAppearance
-//            }
-//        } else {
-//            navigationBar?.barTintColor = .piwigoColorBackground().withAlphaComponent(0.3)
-//            navigationBar?.isTranslucent = true;
-//        }
-//    }
 
     deinit {
         // Unregister image pinches

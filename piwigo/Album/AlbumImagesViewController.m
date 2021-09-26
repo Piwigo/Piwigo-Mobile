@@ -415,6 +415,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             barAppearance.backgroundColor = [[UIColor piwigoColorBackground] colorWithAlphaComponent:0.9];
             barAppearance.titleTextAttributes = attributes;
             barAppearance.largeTitleTextAttributes = attributesLarge;
+            if (self.categoryId != AlbumVars.defaultCategory) {
+                barAppearance.shadowColor = AppVars.isDarkPaletteActive ? [UIColor colorWithWhite:1.0 alpha:0.15] : [UIColor colorWithWhite:0.0 alpha:0.3];
+            }
             self.navigationItem.standardAppearance = barAppearance;
             self.navigationItem.compactAppearance = barAppearance;   // For iPhone small navigation bar in landscape.
             self.navigationItem.scrollEdgeAppearance = barAppearance;
