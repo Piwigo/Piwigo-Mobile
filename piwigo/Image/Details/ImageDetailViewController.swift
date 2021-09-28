@@ -330,7 +330,8 @@ class ImageDetailViewController: UIViewController {
                 let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
                 navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
             }
-            else if NetworkVars.hasNormalRights && CategoriesData.sharedInstance().getCategoryById(categoryId).hasUploadRights {
+            else if NetworkVars.hasNormalRights &&
+                    CategoriesData.sharedInstance().getCategoryById(categoryId).hasUploadRights {
                 // WRONG =====> 'normal' user with upload access to the current category can edit images
                 // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by' values of images for checking rights
                 navigationItem.rightBarButtonItems = [editBarButton].compactMap { $0 }
@@ -349,7 +350,7 @@ class ImageDetailViewController: UIViewController {
                 navigationController?.setToolbarHidden(true, animated: false)
             }
         } else {
-            // iPad in landcsape mode: buttons in navigation bar -> Hide toolbar
+            // iPad in landscape mode: buttons in navigation bar -> Hide toolbar
             isToolbarRequired = false
             navigationController?.setToolbarHidden(true, animated: true)
 
@@ -360,8 +361,10 @@ class ImageDetailViewController: UIViewController {
                                                       setThumbnailBarButton, moveBarButton,
                                                       shareBarButton].compactMap { $0 }
             }
-            else if CategoriesData.sharedInstance().getCategoryById(categoryId).hasUploadRights {
-                // User with upload access to the current category can edit images
+            else if NetworkVars.hasNormalRights &&
+                    CategoriesData.sharedInstance().getCategoryById(categoryId).hasUploadRights {
+                // WRONG =====> 'normal' user with upload access to the current category can edit images
+                // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by' values of images for checking rights
                 navigationItem.rightBarButtonItems = [editBarButton, moveBarButton,
                                                       shareBarButton].compactMap { $0 }
             } else {
