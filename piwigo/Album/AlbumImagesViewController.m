@@ -3069,6 +3069,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 self.imageDetailView.hidesBottomBarWhenPushed = YES;
                 self.imageDetailView.imgDetailDelegate = self;
                 self.imageDetailView.modalPresentationCapturesStatusBarAppearance = YES;
+//                self.imageDetailView.transitioningDelegate = self;
+//                self.selectedCellImageViewSnapshot = [self.selectedCell.cellImage snapshotViewAfterScreenUpdates:NO];
                 [self.navigationController pushViewController:self.imageDetailView animated:YES];
             }
             else

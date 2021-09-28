@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ImageCollectionViewCell.h"
 
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationBackToDefaultAlbum;
 FOUNDATION_EXPORT NSString * const kPiwigoNotificationUploadedImage;
@@ -19,6 +20,11 @@ FOUNDATION_EXPORT NSString * const kPiwigoNotificationCancelDownload;
 @interface AlbumImagesViewController : UIViewController
 
 @property (nonatomic, assign) NSInteger categoryId;
+
+// See https://medium.com/@tungfam/custom-uiviewcontroller-transitions-in-swift-d1677e5aa0bf
+//@property (nonatomic, strong) ImageCollectionViewCell *selectedCell;    // Cell that was selected
+//@property (nonatomic, strong) UIView *selectedCellImageViewSnapshot;    // Snapshot of the image view
+//@property (nonatomic, strong) ImageAnimatedTransitioning *animator;     // Image cell animator
 
 -(instancetype)initWithAlbumId:(NSInteger)albumId inCache:(BOOL)isCached;
 
