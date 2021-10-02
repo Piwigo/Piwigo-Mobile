@@ -395,8 +395,13 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                         navigationItem.rightBarButtonItems = [actionBarButton, trashBarButton].compactMap { $0 }
                     } else {
                         trashBarButton.isEnabled = false
-                        if (UIDevice.current.orientation == .landscapeLeft) ||
-                            (UIDevice.current.orientation == .landscapeRight) {
+                        var orientation: UIInterfaceOrientation = .portrait
+                        if #available(iOS 13.0, *) {
+                            orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .portrait
+                        } else {
+                            orientation = UIApplication.shared.statusBarOrientation
+                        }
+                        if orientation.isLandscape {
                             navigationItem.rightBarButtonItems = [actionBarButton, trashBarButton].compactMap { $0 }
                         } else {
                             navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }

@@ -1210,14 +1210,21 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     [self.addButton setHidden:YES];
     [self.homeAlbumButton setHidden:YES];
 
+    // Device orientation
+    UIInterfaceOrientation orientation = UIInterfaceOrientationPortrait;
+    if (@available(iOS 13.0, *)) {
+        orientation = UIApplication.sharedApplication.windows.firstObject.windowScene.interfaceOrientation;
+    } else {
+        orientation = UIApplication.sharedApplication.statusBarOrientation;
+    }
+
     // User can delete images/videos if he/she has:
     // — admin rights
     if (NetworkVarsObjc.hasAdminRights)
     {
         // iPhone in portrait mode
-        if (([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) &&
-            (([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeLeft) &&
-             ([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeRight))) {
+        if ((UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPhone) &&
+            UIInterfaceOrientationIsPortrait(orientation)) {
     
             // Left side of navigation bar
             [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
@@ -1246,20 +1253,19 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     else if (NetworkVarsObjc.hasNormalRights && [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
     {
         // iPhone in portrait mode
-        if (([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) &&
-            (([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeLeft) &&
-             ([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeRight))) {
-                
-                // Left side of navigation bar
-                [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
+        if ((UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPhone) &&
+            UIInterfaceOrientationIsPortrait(orientation)) {
 
-                // Right side of navigation bar
-                [self.navigationItem setRightBarButtonItems:@[self.editBarButton] animated:YES];
+            // Left side of navigation bar
+            [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
 
-                // Present toolbar
-                [self.navigationController setToolbarHidden:NO animated:YES];
-                self.toolbarItems = @[self.shareBarButton, self.spaceBetweenButtons, self.moveBarButton];
-            }
+            // Right side of navigation bar
+            [self.navigationItem setRightBarButtonItems:@[self.editBarButton] animated:YES];
+
+            // Present toolbar
+            [self.navigationController setToolbarHidden:NO animated:YES];
+            self.toolbarItems = @[self.shareBarButton, self.spaceBetweenButtons, self.moveBarButton];
+        }
         else    // iPhone in landscape mode, iPad in any orientation
         {
             // Hide toolbar
@@ -1290,15 +1296,22 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
 -(void)updateButtonsInSelectionMode
 {
+    // Device orientation
+    UIInterfaceOrientation orientation = UIInterfaceOrientationPortrait;
+    if (@available(iOS 13.0, *)) {
+        orientation = UIApplication.sharedApplication.windows.firstObject.windowScene.interfaceOrientation;
+    } else {
+        orientation = UIApplication.sharedApplication.statusBarOrientation;
+    }
+
     // User can delete images/videos if he/she has:
     // — admin rights
     if (NetworkVarsObjc.hasAdminRights)
     {
         // iPhone in portrait mode
-        if (([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) &&
-            (([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeLeft) &&
-             ([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeRight))) {
-    
+        if ((UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPhone) &&
+            UIInterfaceOrientationIsPortrait(orientation)) {
+
             // Left side of navigation bar
             self.cancelBarButton.enabled = YES;
 
@@ -1327,10 +1340,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     else if (NetworkVarsObjc.hasNormalRights && [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] hasUploadRights])
     {
         // iPhone in portrait mode
-        if (([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) &&
-            (([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeLeft) &&
-             ([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeRight))) {
-                
+        if ((UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPhone) &&
+            UIInterfaceOrientationIsPortrait(orientation)) {
+
                 // Left side of navigation bar
                 self.cancelBarButton.enabled = YES;
 

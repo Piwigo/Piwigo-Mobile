@@ -129,8 +129,13 @@ class ReleaseNotesViewController: UIViewController {
         let authors2 = NSLocalizedString("authors2", tableName: "About", bundle: Bundle.main, value: "", comment: "and Eddy Lelièvre-Berna")
         
         // Change label according to orientation
-        if ((UIDevice.current.userInterfaceIdiom == .phone) &&
-            ((UIDevice.current.orientation != .landscapeLeft) && (UIDevice.current.orientation != .landscapeRight))) {
+        var orientation: UIInterfaceOrientation = .portrait
+        if #available(iOS 13.0, *) {
+            orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .portrait
+        } else {
+            orientation = UIApplication.shared.statusBarOrientation
+        }
+        if (UIDevice.current.userInterfaceIdiom == .phone) && orientation.isPortrait {
             // iPhone in portrait mode
             authorsLabel.text = "\(authors1)\r\(authors2)"
         }

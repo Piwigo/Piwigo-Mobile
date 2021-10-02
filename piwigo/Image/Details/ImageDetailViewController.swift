@@ -311,7 +311,14 @@ class ImageDetailViewController: UIViewController {
 
     func updateNavBar() {
         // Interface depends on device and orientation
-        if (UIDevice.current.userInterfaceIdiom == .phone) || (UIDevice.current.userInterfaceIdiom == .pad && UIDevice.current.orientation != .landscapeLeft && UIDevice.current.orientation != .landscapeRight) {
+        var orientation: UIInterfaceOrientation = .portrait
+        if #available(iOS 13.0, *) {
+            orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .portrait
+        } else {
+            orientation = UIApplication.shared.statusBarOrientation
+        }
+        if (UIDevice.current.userInterfaceIdiom == .phone) ||
+           (UIDevice.current.userInterfaceIdiom == .pad && orientation.isPortrait) {
 
             // iPhone or iPad in portrait mode
             if NetworkVarsObjc.hasAdminRights {

@@ -388,11 +388,18 @@
         // — admin rights
         if (NetworkVarsObjc.hasAdminRights)
         {
+            // Device orientation
+            UIInterfaceOrientation orientation = UIInterfaceOrientationPortrait;
+            if (@available(iOS 13.0, *)) {
+                orientation = UIApplication.sharedApplication.windows.firstObject.windowScene.interfaceOrientation;
+            } else {
+                orientation = UIApplication.sharedApplication.statusBarOrientation;
+            }
+            
             // Interface depends on device and orientation
-            if (([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) &&
-                (([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeLeft) &&
-                 ([[UIDevice currentDevice] orientation] != UIDeviceOrientationLandscapeRight))) {
-        
+            if ((UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPhone) &&
+                UIInterfaceOrientationIsPortrait(orientation)) {
+
                 // Left side of navigation bar
                 [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
                 self.cancelBarButton.enabled = YES;
