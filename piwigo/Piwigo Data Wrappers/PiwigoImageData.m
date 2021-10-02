@@ -13,38 +13,285 @@
 
 -(NSString*)getURLFromImageSizeType:(kPiwigoImageSize)imageSize
 {
-	NSString *url = @"";
-	
+	// ATTENTION: Some URLs may not be available!
+    // So we go through the list of URLs...
+    NSString *url = @"";
+    
 	switch(imageSize) {
 		case kPiwigoImageSizeSquare:
-			url = self.SquarePath;
+            if (AlbumVars.hasSquareSizeImages && (self.SquarePath) && (self.SquarePath > 0)) {
+			    url = self.SquarePath;
+            } else if (AlbumVars.hasThumbSizeImages && (self.ThumbPath) && (self.ThumbPath > 0)) {
+                url = self.ThumbPath;
+            } else if (AlbumVars.hasXXSmallSizeImages && (self.XXSmallPath) && (self.XXSmallPath.length > 0)) {
+                url = self.XXSmallPath;
+            } else if (AlbumVars.hasXSmallSizeImages && (self.XSmallPath) && (self.XSmallPath.length > 0)) {
+                url = self.XSmallPath;
+            } else if (AlbumVars.hasSmallSizeImages && (self.SmallPath) && (self.SmallPath.length > 0)) {
+                url = self.SmallPath;
+            } else if (AlbumVars.hasMediumSizeImages && (self.MediumPath) && (self.MediumPath.length > 0)) {
+                url = self.MediumPath;
+            } else if (AlbumVars.hasLargeSizeImages && (self.LargePath) && (self.LargePath.length > 0)) {
+                url = self.LargePath;
+            } else if (AlbumVars.hasXLargeSizeImages && (self.XLargePath) && (self.XLargePath.length > 0)) {
+                url = self.XLargePath;
+            } else if (AlbumVars.hasXXLargeSizeImages && (self.XXLargePath) && (self.XXLargePath.length > 0)) {
+                url = self.XXLargePath;
+            } else if ((self.fullResPath) && (self.fullResPath.length > 0)) {
+                url = self.fullResPath;
+            }
 			break;
 		case kPiwigoImageSizeThumb:
-			url = self.ThumbPath;
+            if (AlbumVars.hasSquareSizeImages && (self.SquarePath) && (self.SquarePath > 0)) {
+                url = self.SquarePath;
+            }
+            if (AlbumVars.hasThumbSizeImages && (self.ThumbPath) && (self.ThumbPath > 0)) {
+                url = self.ThumbPath;
+            } else if (AlbumVars.hasXXSmallSizeImages && (self.XXSmallPath) && (self.XXSmallPath.length > 0)) {
+                url = self.XXSmallPath;
+            } else if (AlbumVars.hasXSmallSizeImages && (self.XSmallPath) && (self.XSmallPath.length > 0)) {
+                url = self.XSmallPath;
+            } else if (AlbumVars.hasSmallSizeImages && (self.SmallPath) && (self.SmallPath.length > 0)) {
+                url = self.SmallPath;
+            } else if (AlbumVars.hasMediumSizeImages && (self.MediumPath) && (self.MediumPath.length > 0)) {
+                url = self.MediumPath;
+            } else if (AlbumVars.hasLargeSizeImages && (self.LargePath) && (self.LargePath.length > 0)) {
+                url = self.LargePath;
+            } else if (AlbumVars.hasXLargeSizeImages && (self.XLargePath) && (self.XLargePath.length > 0)) {
+                url = self.XLargePath;
+            } else if (AlbumVars.hasXXLargeSizeImages && (self.XXLargePath) && (self.XXLargePath.length > 0)) {
+                url = self.XXLargePath;
+            } else if ((self.fullResPath) && (self.fullResPath.length > 0)) {
+                url = self.fullResPath;
+            }
 			break;
 		case kPiwigoImageSizeXXSmall:
-			url = self.XXSmallPath;
+            if (AlbumVars.hasSquareSizeImages && (self.SquarePath) && (self.SquarePath > 0)) {
+                url = self.SquarePath;
+            }
+            if (AlbumVars.hasThumbSizeImages && (self.ThumbPath) && (self.ThumbPath > 0)) {
+                url = self.ThumbPath;
+            }
+            if (AlbumVars.hasXXSmallSizeImages && (self.XXSmallPath) && (self.XXSmallPath.length > 0)) {
+                url = self.XXSmallPath;
+            } else if (AlbumVars.hasXSmallSizeImages && (self.XSmallPath) && (self.XSmallPath.length > 0)) {
+                url = self.XSmallPath;
+            } else if (AlbumVars.hasSmallSizeImages && (self.SmallPath) && (self.SmallPath.length > 0)) {
+                url = self.SmallPath;
+            } else if (AlbumVars.hasMediumSizeImages && (self.MediumPath) && (self.MediumPath.length > 0)) {
+                url = self.MediumPath;
+            } else if (AlbumVars.hasLargeSizeImages && (self.LargePath) && (self.LargePath.length > 0)) {
+                url = self.LargePath;
+            } else if (AlbumVars.hasXLargeSizeImages && (self.XLargePath) && (self.XLargePath.length > 0)) {
+                url = self.XLargePath;
+            } else if (AlbumVars.hasXXLargeSizeImages && (self.XXLargePath) && (self.XXLargePath.length > 0)) {
+                url = self.XXLargePath;
+            } else if ((self.fullResPath) && (self.fullResPath.length > 0)) {
+                url = self.fullResPath;
+            }
 			break;
 		case kPiwigoImageSizeXSmall:
-			url = self.XSmallPath;
+            if (AlbumVars.hasSquareSizeImages && (self.SquarePath) && (self.SquarePath > 0)) {
+                url = self.SquarePath;
+            }
+            if (AlbumVars.hasThumbSizeImages && (self.ThumbPath) && (self.ThumbPath > 0)) {
+                url = self.ThumbPath;
+            }
+            if (AlbumVars.hasXXSmallSizeImages && (self.XXSmallPath) && (self.XXSmallPath.length > 0)) {
+                url = self.XXSmallPath;
+            }
+            if (AlbumVars.hasXSmallSizeImages && (self.XSmallPath) && (self.XSmallPath.length > 0)) {
+                url = self.XSmallPath;
+            } else if (AlbumVars.hasSmallSizeImages && (self.SmallPath) && (self.SmallPath.length > 0)) {
+                url = self.SmallPath;
+            } else if (AlbumVars.hasMediumSizeImages && (self.MediumPath) && (self.MediumPath.length > 0)) {
+                url = self.MediumPath;
+            } else if (AlbumVars.hasLargeSizeImages && (self.LargePath) && (self.LargePath.length > 0)) {
+                url = self.LargePath;
+            } else if (AlbumVars.hasXLargeSizeImages && (self.XLargePath) && (self.XLargePath.length > 0)) {
+                url = self.XLargePath;
+            } else if (AlbumVars.hasXXLargeSizeImages && (self.XXLargePath) && (self.XXLargePath.length > 0)) {
+                url = self.XXLargePath;
+            } else if ((self.fullResPath) && (self.fullResPath.length > 0)) {
+                url = self.fullResPath;
+            }
 			break;
 		case kPiwigoImageSizeSmall:
-			url = self.SmallPath;
+            if (AlbumVars.hasSquareSizeImages && (self.SquarePath) && (self.SquarePath > 0)) {
+                url = self.SquarePath;
+            }
+            if (AlbumVars.hasThumbSizeImages && (self.ThumbPath) && (self.ThumbPath > 0)) {
+                url = self.ThumbPath;
+            }
+            if (AlbumVars.hasXXSmallSizeImages && (self.XXSmallPath) && (self.XXSmallPath.length > 0)) {
+                url = self.XXSmallPath;
+            }
+            if (AlbumVars.hasXSmallSizeImages && (self.XSmallPath) && (self.XSmallPath.length > 0)) {
+                url = self.XSmallPath;
+            }
+            if (AlbumVars.hasSmallSizeImages && (self.SmallPath) && (self.SmallPath.length > 0)) {
+                url = self.SmallPath;
+            } else if (AlbumVars.hasMediumSizeImages && (self.MediumPath) && (self.MediumPath.length > 0)) {
+                url = self.MediumPath;
+            } else if (AlbumVars.hasLargeSizeImages && (self.LargePath) && (self.LargePath.length > 0)) {
+                url = self.LargePath;
+            } else if (AlbumVars.hasXLargeSizeImages && (self.XLargePath) && (self.XLargePath.length > 0)) {
+                url = self.XLargePath;
+            } else if (AlbumVars.hasXXLargeSizeImages && (self.XXLargePath) && (self.XXLargePath.length > 0)) {
+                url = self.XXLargePath;
+            } else if ((self.fullResPath) && (self.fullResPath.length > 0)) {
+                url = self.fullResPath;
+            }
 			break;
 		case kPiwigoImageSizeMedium:
-			url = self.MediumPath;
+            if (AlbumVars.hasSquareSizeImages && (self.SquarePath) && (self.SquarePath > 0)) {
+                url = self.SquarePath;
+            }
+            if (AlbumVars.hasThumbSizeImages && (self.ThumbPath) && (self.ThumbPath > 0)) {
+                url = self.ThumbPath;
+            }
+            if (AlbumVars.hasXXSmallSizeImages && (self.XXSmallPath) && (self.XXSmallPath.length > 0)) {
+                url = self.XXSmallPath;
+            }
+            if (AlbumVars.hasXSmallSizeImages && (self.XSmallPath) && (self.XSmallPath.length > 0)) {
+                url = self.XSmallPath;
+            }
+            if (AlbumVars.hasSmallSizeImages && (self.SmallPath) && (self.SmallPath.length > 0)) {
+                url = self.SmallPath;
+            }
+            if (AlbumVars.hasMediumSizeImages && (self.MediumPath) && (self.MediumPath.length > 0)) {
+                url = self.MediumPath;
+            } else if (AlbumVars.hasLargeSizeImages && (self.LargePath) && (self.LargePath.length > 0)) {
+                url = self.LargePath;
+            } else if (AlbumVars.hasXLargeSizeImages && (self.XLargePath) && (self.XLargePath.length > 0)) {
+                url = self.XLargePath;
+            } else if (AlbumVars.hasXXLargeSizeImages && (self.XXLargePath) && (self.XXLargePath.length > 0)) {
+                url = self.XXLargePath;
+            } else if ((self.fullResPath) && (self.fullResPath.length > 0)) {
+                url = self.fullResPath;
+            }
 			break;
 		case kPiwigoImageSizeLarge:
-			url = self.LargePath;
+            if (AlbumVars.hasSquareSizeImages && (self.SquarePath) && (self.SquarePath > 0)) {
+                url = self.SquarePath;
+            }
+            if (AlbumVars.hasThumbSizeImages && (self.ThumbPath) && (self.ThumbPath > 0)) {
+                url = self.ThumbPath;
+            }
+            if (AlbumVars.hasXXSmallSizeImages && (self.XXSmallPath) && (self.XXSmallPath.length > 0)) {
+                url = self.XXSmallPath;
+            }
+            if (AlbumVars.hasXSmallSizeImages && (self.XSmallPath) && (self.XSmallPath.length > 0)) {
+                url = self.XSmallPath;
+            }
+            if (AlbumVars.hasSmallSizeImages && (self.SmallPath) && (self.SmallPath.length > 0)) {
+                url = self.SmallPath;
+            }
+            if (AlbumVars.hasMediumSizeImages && (self.MediumPath) && (self.MediumPath.length > 0)) {
+                url = self.MediumPath;
+            }
+            if (AlbumVars.hasLargeSizeImages && (self.LargePath) && (self.LargePath.length > 0)) {
+                url = self.LargePath;
+            } else if (AlbumVars.hasXLargeSizeImages && (self.XLargePath) && (self.XLargePath.length > 0)) {
+                url = self.XLargePath;
+            } else if (AlbumVars.hasXXLargeSizeImages && (self.XXLargePath) && (self.XXLargePath.length > 0)) {
+                url = self.XXLargePath;
+            } else if ((self.fullResPath) && (self.fullResPath.length > 0)) {
+                url = self.fullResPath;
+            }
 			break;
 		case kPiwigoImageSizeXLarge:
-			url = self.XLargePath;
+            if (AlbumVars.hasSquareSizeImages && (self.SquarePath) && (self.SquarePath > 0)) {
+                url = self.SquarePath;
+            }
+            if (AlbumVars.hasThumbSizeImages && (self.ThumbPath) && (self.ThumbPath > 0)) {
+                url = self.ThumbPath;
+            }
+            if (AlbumVars.hasXXSmallSizeImages && (self.XXSmallPath) && (self.XXSmallPath.length > 0)) {
+                url = self.XXSmallPath;
+            }
+            if (AlbumVars.hasXSmallSizeImages && (self.XSmallPath) && (self.XSmallPath.length > 0)) {
+                url = self.XSmallPath;
+            }
+            if (AlbumVars.hasSmallSizeImages && (self.SmallPath) && (self.SmallPath.length > 0)) {
+                url = self.SmallPath;
+            }
+            if (AlbumVars.hasMediumSizeImages && (self.MediumPath) && (self.MediumPath.length > 0)) {
+                url = self.MediumPath;
+            }
+            if (AlbumVars.hasLargeSizeImages && (self.LargePath) && (self.LargePath.length > 0)) {
+                url = self.LargePath;
+            }
+            if (AlbumVars.hasXLargeSizeImages && (self.XLargePath) && (self.XLargePath.length > 0)) {
+                url = self.XLargePath;
+            } else if (AlbumVars.hasXXLargeSizeImages && (self.XXLargePath) && (self.XXLargePath.length > 0)) {
+                url = self.XXLargePath;
+            } else if ((self.fullResPath) && (self.fullResPath.length > 0)) {
+                url = self.fullResPath;
+            }
 			break;
 		case kPiwigoImageSizeXXLarge:
-			url = self.XXLargePath;
+            if (AlbumVars.hasSquareSizeImages && (self.SquarePath) && (self.SquarePath > 0)) {
+                url = self.SquarePath;
+            }
+            if (AlbumVars.hasThumbSizeImages && (self.ThumbPath) && (self.ThumbPath > 0)) {
+                url = self.ThumbPath;
+            }
+            if (AlbumVars.hasXXSmallSizeImages && (self.XXSmallPath) && (self.XXSmallPath.length > 0)) {
+                url = self.XXSmallPath;
+            }
+            if (AlbumVars.hasXSmallSizeImages && (self.XSmallPath) && (self.XSmallPath.length > 0)) {
+                url = self.XSmallPath;
+            }
+            if (AlbumVars.hasSmallSizeImages && (self.SmallPath) && (self.SmallPath.length > 0)) {
+                url = self.SmallPath;
+            }
+            if (AlbumVars.hasMediumSizeImages && (self.MediumPath) && (self.MediumPath.length > 0)) {
+                url = self.MediumPath;
+            }
+            if (AlbumVars.hasLargeSizeImages && (self.LargePath) && (self.LargePath.length > 0)) {
+                url = self.LargePath;
+            }
+            if (AlbumVars.hasXLargeSizeImages && (self.XLargePath) && (self.XLargePath.length > 0)) {
+                url = self.XLargePath;
+            }
+            if (AlbumVars.hasXXLargeSizeImages && (self.XXLargePath) && (self.XXLargePath.length > 0)) {
+                url = self.XXLargePath;
+            } else if ((self.fullResPath) && (self.fullResPath.length > 0)) {
+                url = self.fullResPath;
+            }
 			break;
 		case kPiwigoImageSizeFullRes:
-			url = self.fullResPath;
+            if (AlbumVars.hasSquareSizeImages && (self.SquarePath) && (self.SquarePath > 0)) {
+                url = self.SquarePath;
+            }
+            if (AlbumVars.hasThumbSizeImages && (self.ThumbPath) && (self.ThumbPath > 0)) {
+                url = self.ThumbPath;
+            }
+            if (AlbumVars.hasXXSmallSizeImages && (self.XXSmallPath) && (self.XXSmallPath.length > 0)) {
+                url = self.XXSmallPath;
+            }
+            if (AlbumVars.hasXSmallSizeImages && (self.XSmallPath) && (self.XSmallPath.length > 0)) {
+                url = self.XSmallPath;
+            }
+            if (AlbumVars.hasSmallSizeImages && (self.SmallPath) && (self.SmallPath.length > 0)) {
+                url = self.SmallPath;
+            }
+            if (AlbumVars.hasMediumSizeImages && (self.MediumPath) && (self.MediumPath.length > 0)) {
+                url = self.MediumPath;
+            }
+            if (AlbumVars.hasLargeSizeImages && (self.LargePath) && (self.LargePath.length > 0)) {
+                url = self.LargePath;
+            }
+            if (AlbumVars.hasXLargeSizeImages && (self.XLargePath) && (self.XLargePath.length > 0)) {
+                url = self.XLargePath;
+            }
+            if (AlbumVars.hasXXLargeSizeImages && (self.XXLargePath) && (self.XXLargePath.length > 0)) {
+                url = self.XXLargePath;
+            }
+            if ((self.fullResPath) && (self.fullResPath.length > 0)) {
+                url = self.fullResPath;
+            }
 			break;
 		default:
 			break;
