@@ -296,6 +296,10 @@ class ImageUtilities: NSObject {
     // MARK: - Saliency Analysis
     @available(iOS 13.0, *) @objc
     class func processSaliency(image: UIImage) -> UIImage? {
+        // Disabled when using simulator
+        #if targetEnvironment(simulator)
+        return nil
+        #else
         // Retrieve CGImage version
         guard let cgImage = image.cgImage else { return nil }
         
@@ -358,5 +362,6 @@ class ImageUtilities: NSObject {
              return UIImage(cgImage:croppedImage)
         }
         return nil
+        #endif
     }
 }
