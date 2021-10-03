@@ -1,6 +1,6 @@
 //
 //  pwg.getInfos.swift
-//  piwigo
+//  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 23/08/2021.
 //  Copyright © 2021 Piwigo.org. All rights reserved.
