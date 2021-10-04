@@ -715,7 +715,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         [self.imagesCollection reloadData];
         if (self.isSelect) {
-            [self updateButtonsInSelectionMode];
+            [self initButtonsInSelectionMode];
         } else {
             // Update position of buttons (recalculated after device rotation)
             CGFloat xPos = [UIScreen mainScreen].bounds.size.width - 3*kRadius;
@@ -1237,8 +1237,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             [self.navigationItem setRightBarButtonItems:@[self.editBarButton] animated:YES];
 
             // Toolbar
-            [self.navigationController setToolbarHidden:NO animated:YES];
             self.toolbarItems = @[self.shareBarButton, self.spaceBetweenButtons, self.moveBarButton, self.spaceBetweenButtons, self.deleteBarButton];
+            [self.navigationController setToolbarHidden:NO animated:YES];
         }
         else    // iPhone in landscape mode, iPad in any orientation
         {
