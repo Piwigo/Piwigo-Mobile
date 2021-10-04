@@ -21,6 +21,7 @@
 #import "LoginViewController_iPad.h"
 #import "Model.h"
 #import "NetworkHandler.h"
+#import "PiwigoAlbumData.h"
 #import "PiwigoImageData.h"
 #import "PiwigoTagData.h"
 #import "SessionService.h"
