@@ -20,7 +20,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 
 @interface PiwigoAlbumData()
 
-@property (nonatomic, strong) NSArray *imageList;
+@property (nonatomic, strong) NSArray<PiwigoImageData*> *imageList;
 @property (nonatomic, strong) NSMutableDictionary *imageIds;
 
 @property (nonatomic, assign) BOOL isLoadingMoreImages;
@@ -155,12 +155,17 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     return albumData;
 }
 
--(void)loadAllCategoryImageDataForProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
+-(void)loadAllCategoryImageDataWithSort:(kPiwigoSortObjc)sort
+                            forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
 							  OnCompletion:(void (^)(BOOL completed))completion
 {
 	self.onPage = 0;
     self.lastImageBulkCount = 0;
-	[self loopLoadImagesForSort:@""
+    
+    // Set sort string parameter from sort type
+    NSString *sortDesc = [CategoryImageSort getPiwigoSortObjcDescriptionFor:sort];
+
+    [self loopLoadImagesForSort:sortDesc
 				   withProgress:progress
                    onCompletion:^(BOOL completed) {
 		if(completion)
@@ -269,10 +274,10 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
      }];
 }
 
--(void)addImages:(NSArray*)images
+-(void)addImages:(NSArray<PiwigoImageData*> *)images
 {
     // Create new image list
-    NSMutableArray *newImageList = [NSMutableArray new];
+    NSMutableArray<PiwigoImageData*> *newImageList = [NSMutableArray new];
     if (self.imageList.count > 0) {
         [newImageList addObjectsFromArray:self.imageList];
     }
@@ -303,7 +308,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 -(void)addUploadedImage:(PiwigoImageData*)imageData
 {
     // Create new image list
-    NSMutableArray *newImageList = [NSMutableArray new];
+    NSMutableArray<PiwigoImageData*> *newImageList = [NSMutableArray new];
     if (self.imageList.count > 0) {
         [newImageList addObjectsFromArray:self.imageList];
     }
@@ -326,14 +331,14 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     self.imageList = newImageList;
 }
 
--(void)updateImages:(NSArray*)updatedImages
+-(void)updateImages:(NSArray<PiwigoImageData*> *)updatedImages
 {
     // Check that there is something to do
     if (updatedImages == nil) return;
     if (updatedImages.count < 1) return;
     
     // Create new image list
-    NSMutableArray *newImageList = [self.imageList mutableCopy];
+    NSMutableArray<PiwigoImageData*> *newImageList = [self.imageList mutableCopy];
     
     // Update image list
     for(NSInteger index = 0; index < self.imageList.count; index++)
@@ -368,7 +373,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     if (updatedImage == nil) return;
     
     // Create new image list
-    NSMutableArray *newImageList = [self.imageList mutableCopy];
+    NSMutableArray<PiwigoImageData*> *newImageList = [self.imageList mutableCopy];
     
     // Update image list
     for(NSInteger index = 0; index < self.imageList.count; index++)
@@ -398,7 +403,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 
 -(void)removeImages:(NSArray*)images
 {
-    NSMutableArray *newImageArray = [[NSMutableArray alloc] initWithArray:self.imageList];
+    NSMutableArray<PiwigoImageData*> *newImageArray = [[NSMutableArray alloc] initWithArray:self.imageList];
     for (PiwigoImageData *image in images) {
         if ([newImageArray containsObject:image]) {
             [newImageArray removeObject:image];
