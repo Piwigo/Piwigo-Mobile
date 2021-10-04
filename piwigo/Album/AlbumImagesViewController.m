@@ -519,6 +519,11 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 {
 	[super viewDidAppear:animated];
 	
+    // Display HUD while downloading albums data recursively
+    if (self.categoryId == 0) {
+        [self.navigationController showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
+    }
+    
     // Called after displaying SearchImagesViewController?
     if (@available(iOS 11.0, *)) {
         UIViewController *presentedViewController = [self presentedViewController];
@@ -1412,55 +1417,57 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                                usingCache:self.isCachedAtInit
                           inRecursiveMode:YES
      OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
-         self.isCachedAtInit = YES;
-         if (albums != nil) {
-             // Load, sort images and reload collection
-             if (self.categoryId != 0) {
-                 self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
-                 [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
+        self.isCachedAtInit = YES;
+        if (albums == nil) { return; }
 
-                     // Reset navigation bar buttons after image load
-                     [self updateButtonsInPreviewMode];
-                     [self.imagesCollection reloadData];
+        if (self.categoryId == 0) {
+            // Case of root album
+            self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
+            if ([[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count > 0) {
+                // This album exists in cache ;-)
+                [self.imagesCollection reloadData];
 
-                     // For iOS 11 and later: place search bar in navigation bar or root album
-                     if (@available(iOS 11.0, *)) {
-                         // Remove search bar
-                         self.navigationItem.searchController = nil;
-                     }
-                 }];
-             }
-             else {
-         #if defined(DEBUG_LIFECYCLE)
-                 NSLog(@"viewWillAppear  => reload albums table");
-         #endif
-                 self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
-                 if([[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count > 0) {
-                     [self.imagesCollection reloadData];
+                // For iOS 11 and later: place search bar in navigation bar of root album
+                if (@available(iOS 11.0, *)) {
+                    // Initialise search controller when displaying root album
+                    SearchImagesViewController *resultsCollectionController = [[SearchImagesViewController alloc] init];
+                    UISearchController *searchController = [[UISearchController alloc] initWithSearchResultsController:resultsCollectionController];
+                    searchController.delegate = self;
+                    searchController.hidesNavigationBarDuringPresentation = YES;
+                    searchController.searchResultsUpdater = self;
+                    
+                    searchController.searchBar.searchBarStyle = UISearchBarStyleMinimal;
+                    searchController.searchBar.translucent = NO;
+                    searchController.searchBar.showsCancelButton = NO;
+                    searchController.searchBar.tintColor = [UIColor piwigoColorOrange];
+                    searchController.searchBar.showsSearchResultsButton = NO;
+                    searchController.searchBar.delegate = self;        // Monitor when the search button is tapped.
+                    self.definesPresentationContext = YES;
+                    
+                    // Place the search bar in the navigation bar.
+                    self.navigationItem.searchController = searchController;
+                }
+            }
+            
+            // Hide HUD
+            [self.navigationController hidePiwigoHUDWithCompletion:^{ }];
+        }
+        else {
+            // Load, sort images and reload collection
+            self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
+            [self.albumData updateImageSort:self.currentSort OnCompletion:^{
 
-                     // For iOS 11 and later: place search bar in navigation bar or root album
-                     if (@available(iOS 11.0, *)) {
-                         // Initialise search controller when displaying root album
-                         SearchImagesViewController *resultsCollectionController = [[SearchImagesViewController alloc] init];
-                         UISearchController *searchController = [[UISearchController alloc] initWithSearchResultsController:resultsCollectionController];
-                         searchController.delegate = self;
-                         searchController.hidesNavigationBarDuringPresentation = YES;
-                         searchController.searchResultsUpdater = self;
-                         
-                         searchController.searchBar.searchBarStyle = UISearchBarStyleMinimal;
-                         searchController.searchBar.translucent = NO;
-                         searchController.searchBar.showsCancelButton = NO;
-                         searchController.searchBar.tintColor = [UIColor piwigoColorOrange];
-                         searchController.searchBar.showsSearchResultsButton = NO;
-                         searchController.searchBar.delegate = self;        // Monitor when the search button is tapped.
-                         self.definesPresentationContext = YES;
-                         
-                         // Place the search bar in the navigation bar.
-                         self.navigationItem.searchController = searchController;
-                     }
-                 }
-             }
-         }
+                // Reset navigation bar buttons after image load
+                [self updateButtonsInPreviewMode];
+                [self.imagesCollection reloadData];
+
+                // For iOS 11 and later: place search bar in navigation bar of root album only
+                if (@available(iOS 11.0, *)) {
+                    // Remove search bar
+                    self.navigationItem.searchController = nil;
+                }
+            }];
+        }
     }
         onFailure:^(NSURLSessionTask *task, NSError *error) {
 #if defined(DEBUG)
