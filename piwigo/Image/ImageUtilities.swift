@@ -38,7 +38,7 @@ class ImageUtilities: NSObject {
             
             // Decode the JSON and import it into Core Data.
             do {
-                // Decode the JSON into codable type TagJSON.
+                // Decode the JSON into codable type ImagesGetInfoJSON.
                 let decoder = JSONDecoder()
                 let imageJSON = try decoder.decode(ImagesGetInfoJSON.self, from: jsonData)
 
@@ -162,7 +162,7 @@ class ImageUtilities: NSObject {
             
             // Decode the JSON and import it into Core Data.
             do {
-                // Decode the JSON into codable type TagJSON.
+                // Decode the JSON into codable type ImagesSetInfoJSON.
                 let decoder = JSONDecoder()
                 let uploadJSON = try decoder.decode(ImagesSetInfoJSON.self, from: jsonData)
 
@@ -207,7 +207,7 @@ class ImageUtilities: NSObject {
 
         let JSONsession = PwgSession.shared
         JSONsession.postRequest(withMethod: kPiwigoImagesDelete, paramDict: paramsDict,
-                                countOfBytesClientExpectsToReceive: 600) { jsonData, error in
+                                countOfBytesClientExpectsToReceive: 1000) { jsonData, error in
             // Any error?
             /// - Network communication errors
             /// - Returned JSON data is empty
@@ -219,7 +219,7 @@ class ImageUtilities: NSObject {
             
             // Decode the JSON and import it into Core Data.
             do {
-                // Decode the JSON into codable type TagJSON.
+                // Decode the JSON into codable type ImagesDeleteJSON.
                 let decoder = JSONDecoder()
                 let uploadJSON = try decoder.decode(ImagesDeleteJSON.self, from: jsonData)
 
@@ -257,7 +257,117 @@ class ImageUtilities: NSObject {
             }
         }
     }
-    
+
+    class func addToFavorites(_ imageData: PiwigoImageData,
+                      completion: @escaping () -> Void,
+                      failure: @escaping (NSError) -> Void) {
+        // Prepare parameters for retrieving image/video infos
+        let paramsDict: [String : Any] = ["image_id"  : "\(imageData.imageId)"]
+
+        let JSONsession = PwgSession.shared
+        JSONsession.postRequest(withMethod: kPiwigoUsersFavoritesAdd, paramDict: paramsDict,
+                                countOfBytesClientExpectsToReceive: 1000) { jsonData, error in
+            // Any error?
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            if let error = error as NSError? {
+                failure(error)
+                return
+            }
+            
+            // Decode the JSON and import it into Core Data.
+            do {
+                // Decode the JSON into codable type FavoritesAddRemoveJSON.
+                let decoder = JSONDecoder()
+                let uploadJSON = try decoder.decode(FavoritesAddRemoveJSON.self, from: jsonData)
+
+                // Piwigo error?
+                if (uploadJSON.errorCode != 0) {
+                    let error = NSError(domain: "Piwigo", code: uploadJSON.errorCode,
+                                    userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
+                    failure(error)
+                    return
+                }
+
+                // Successful?
+                if uploadJSON.success {
+                    // Images successfully added to user's favorites
+                    // Add image to cache
+                    CategoriesData.sharedInstance()
+                        .addImage(imageData, toCategory: "\(kPiwigoFavoritesCategoryId)")
+                    completion()
+                }
+                else {
+                    // Could not delete images
+                    let error = NSError(domain: "Piwigo", code: -1, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")])
+                    failure(error)
+                    return
+                }
+            } catch {
+                // Data cannot be digested
+                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : JsonError.wrongJSONobject.localizedDescription])
+                failure(error)
+                return
+            }
+        }
+    }
+
+    class func removeFromFavorites(_ imageData: PiwigoImageData,
+                                   completion: @escaping () -> Void,
+                                   failure: @escaping (NSError) -> Void) {
+        // Prepare parameters for retrieving image/video infos
+        let paramsDict: [String : Any] = ["image_id"  : "\(imageData.imageId)"]
+
+        let JSONsession = PwgSession.shared
+        JSONsession.postRequest(withMethod: kPiwigoUsersFavoritesRemove, paramDict: paramsDict,
+                                countOfBytesClientExpectsToReceive: 1000) { jsonData, error in
+            // Any error?
+            /// - Network communication errors
+            /// - Returned JSON data is empty
+            /// - Cannot decode data returned by Piwigo server
+            if let error = error as NSError? {
+                failure(error)
+                return
+            }
+            
+            // Decode the JSON and import it into Core Data.
+            do {
+                // Decode the JSON into codable type FavoritesAddRemoveJSON.
+                let decoder = JSONDecoder()
+                let uploadJSON = try decoder.decode(FavoritesAddRemoveJSON.self, from: jsonData)
+
+                // Piwigo error?
+                if (uploadJSON.errorCode != 0) {
+                    let error = NSError(domain: "Piwigo", code: uploadJSON.errorCode,
+                                    userInfo: [NSLocalizedDescriptionKey : uploadJSON.errorMessage])
+                    failure(error)
+                    return
+                }
+
+                // Successful?
+                if uploadJSON.success {
+                    // Images successfully added to user's favorites
+                    // Remove image from cache
+                    CategoriesData.sharedInstance()
+                        .removeImage(imageData, fromCategory: "\(kPiwigoFavoritesCategoryId)")
+                    completion()
+                }
+                else {
+                    // Could not delete images
+                    let error = NSError(domain: "Piwigo", code: -1, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")])
+                    failure(error)
+                    return
+                }
+            } catch {
+                // Data cannot be digested
+                let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : JsonError.wrongJSONobject.localizedDescription])
+                failure(error)
+                return
+            }
+        }
+    }
+
     
     // MARK: - Image Downsampling
     // Downsampling large images for display at smaller size (WWDC 2018 - Session 219)
