@@ -204,6 +204,12 @@
 		ADD790E3265EDE5C00EA4DDB /* ImageVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD790E2265EDE5C00EA4DDB /* ImageVars.swift */; };
 		ADD79A3D24A9352500428C58 /* pwg.images.upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD79A3C24A9352500428C58 /* pwg.images.upload.swift */; };
 		ADDB397023BF574C00AB584B /* EditImageShiftPickerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADDB396D23BF4FAD00AB584B /* EditImageShiftPickerTableViewCell.xib */; };
+		ADDD2105270A0FA800CACFF2 /* pwg.users.favorites.addRemove.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDD2103270A0CBA00CACFF2 /* pwg.users.favorites.addRemove.swift */; };
+		ADDD2106270A0FB900CACFF2 /* pwg.users.favorites.addRemove.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDD2103270A0CBA00CACFF2 /* pwg.users.favorites.addRemove.swift */; };
+		ADDD2107270A139300CACFF2 /* pwg.images.delete.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD807F0926E530ED00008162 /* pwg.images.delete.swift */; };
+		ADDD2108270A13A100CACFF2 /* pwg.getInfos.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD807F0526E52B8D00008162 /* pwg.getInfos.swift */; };
+		ADDD2109270A13CB00CACFF2 /* community.images.uploadCompleted.json in Resources */ = {isa = PBXBuildFile; fileRef = AD38C04A24AF73E800CDC765 /* community.images.uploadCompleted.json */; };
+		ADDD210A270A13E300CACFF2 /* pwg.users.favorites.addRemove.json in Resources */ = {isa = PBXBuildFile; fileRef = ADDD2101270A0B6900CACFF2 /* pwg.users.favorites.addRemove.json */; };
 		ADE03D2E25FCBA4B002F5C7B /* ColorPaletteViewControllerOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE03D2D25FCBA4B002F5C7B /* ColorPaletteViewControllerOld.swift */; };
 		ADE03D3025FCC1B7002F5C7B /* ColorPaletteViewControllerOld.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADE03D2F25FCC1B7002F5C7B /* ColorPaletteViewControllerOld.storyboard */; };
 		ADE03F3023D4CC6C00F21ED9 /* PiwigoTagData.m in Sources */ = {isa = PBXBuildFile; fileRef = D89045AB1A94654D00A306FE /* PiwigoTagData.m */; };
@@ -651,6 +657,8 @@
 		ADD79A3C24A9352500428C58 /* pwg.images.upload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pwg.images.upload.swift; sourceTree = "<group>"; };
 		ADD79A3F24A93B5600428C58 /* pwg.images.upload2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.images.upload2.json; sourceTree = "<group>"; };
 		ADDB396D23BF4FAD00AB584B /* EditImageShiftPickerTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditImageShiftPickerTableViewCell.xib; sourceTree = "<group>"; };
+		ADDD2101270A0B6900CACFF2 /* pwg.users.favorites.addRemove.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pwg.users.favorites.addRemove.json; sourceTree = "<group>"; };
+		ADDD2103270A0CBA00CACFF2 /* pwg.users.favorites.addRemove.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.users.favorites.addRemove.swift; sourceTree = "<group>"; };
 		ADE03D2D25FCBA4B002F5C7B /* ColorPaletteViewControllerOld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPaletteViewControllerOld.swift; sourceTree = "<group>"; };
 		ADE03D2F25FCC1B7002F5C7B /* ColorPaletteViewControllerOld.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = ColorPaletteViewControllerOld.storyboard; sourceTree = "<group>"; };
 		ADE03F3223D4CF1D00F21ED9 /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
@@ -879,6 +887,7 @@
 				ADF2329F26D4072A002ACEC9 /* pwg */,
 				ADD79A4124A9424900428C58 /* pwg.images */,
 				AD5F64E624C601B500660BE3 /* pwg.tags */,
+				ADDD2100270A0B5200CACFF2 /* pwg.users */,
 				AD11E46224A930B000C8876F /* Info.plist */,
 			);
 			path = piwigoWebAPI;
@@ -930,8 +939,9 @@
 				ADB27474267661980002DD09 /* ParseXMLData.swift */,
 				AD9A1BE324E03AAF00D22C86 /* community */,
 				ADF2329C26D40619002ACEC9 /* pwg */,
-				AD9A1BE624E03BFF00D22C86 /* pwg.tags */,
 				AD9A1BE424E03AC700D22C86 /* pwg.images */,
+				AD9A1BE624E03BFF00D22C86 /* pwg.tags */,
+				ADDD2102270A0CAB00CACFF2 /* pwg.users */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -1314,6 +1324,22 @@
 				AD807F0726E52F6F00008162 /* pwg.images.delete.json */,
 			);
 			path = pwg.images;
+			sourceTree = "<group>";
+		};
+		ADDD2100270A0B5200CACFF2 /* pwg.users */ = {
+			isa = PBXGroup;
+			children = (
+				ADDD2101270A0B6900CACFF2 /* pwg.users.favorites.addRemove.json */,
+			);
+			path = pwg.users;
+			sourceTree = "<group>";
+		};
+		ADDD2102270A0CAB00CACFF2 /* pwg.users */ = {
+			isa = PBXGroup;
+			children = (
+				ADDD2103270A0CBA00CACFF2 /* pwg.users.favorites.addRemove.swift */,
+			);
+			path = pwg.users;
 			sourceTree = "<group>";
 		};
 		ADE535901F65C01000372CBD /* Image */ = {
@@ -1889,6 +1915,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ADDD2109270A13CB00CACFF2 /* community.images.uploadCompleted.json in Resources */,
 				AD807F1026E532F700008162 /* pwg.getInfos.json in Resources */,
 				ADBCABDB26D41562005D1BB2 /* pwg.images.getInfo.json in Resources */,
 				ADBCABDC26D41562005D1BB2 /* pwg.images.setInfo.json in Resources */,
@@ -1898,6 +1925,7 @@
 				AD5F64EB24C604EB00660BE3 /* pwg.tags.add.json in Resources */,
 				AD5F64F224C6088600660BE3 /* pwg.tags.getList.json in Resources */,
 				AD5F64F424C6091500660BE3 /* pwg.tags.getAdminList.json in Resources */,
+				ADDD210A270A13E300CACFF2 /* pwg.users.favorites.addRemove.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2158,6 +2186,7 @@
 				AD97CFB5265AFFD900719ED5 /* UserDefaults+AppGroups.swift in Sources */,
 				ADF72E9A2670D7340027E2CC /* community.images.uploadCompleted.swift in Sources */,
 				AD0B6AD7268A21C0007DEE70 /* UploadAuto.swift in Sources */,
+				ADDD2105270A0FA800CACFF2 /* pwg.users.favorites.addRemove.swift in Sources */,
 				ADE250D3266D767600285978 /* pwg.tags.getList.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2167,13 +2196,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				AD11E46124A930B000C8876F /* piwigoWebAPI.swift in Sources */,
-				AD38C04524AF724100CDC765 /* pwg.images.setInfo.swift in Sources */,
-				AD5F64EE24C607FC00660BE3 /* pwg.tags.getList.swift in Sources */,
-				AD6A128C24FAB57300E3BBED /* pwg.images.uploadAsync.swift in Sources */,
 				AD38C04D24AF746000CDC765 /* community.images.uploadCompleted.swift in Sources */,
-				ADD79A3D24A9352500428C58 /* pwg.images.upload.swift in Sources */,
-				AD5F64EA24C6024200660BE3 /* pwg.tags.add.swift in Sources */,
+				ADDD2108270A13A100CACFF2 /* pwg.getInfos.swift in Sources */,
 				ADE216FF250E23B0003AE588 /* pwg.images.getInfo.swift in Sources */,
+				AD38C04524AF724100CDC765 /* pwg.images.setInfo.swift in Sources */,
+				ADD79A3D24A9352500428C58 /* pwg.images.upload.swift in Sources */,
+				AD6A128C24FAB57300E3BBED /* pwg.images.uploadAsync.swift in Sources */,
+				ADDD2107270A139300CACFF2 /* pwg.images.delete.swift in Sources */,
+				AD5F64EA24C6024200660BE3 /* pwg.tags.add.swift in Sources */,
+				AD5F64EE24C607FC00660BE3 /* pwg.tags.getList.swift in Sources */,
+				ADDD2106270A0FB900CACFF2 /* pwg.users.favorites.addRemove.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
