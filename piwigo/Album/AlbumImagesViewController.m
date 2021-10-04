@@ -42,7 +42,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 @property (nonatomic, strong) AlbumData *albumData;
 @property (nonatomic, strong) NSIndexPath *imageOfInterest;
 @property (nonatomic, assign) BOOL isCachedAtInit;
-@property (nonatomic, strong) NSString *currentSort;
+@property (nonatomic, assign) kPiwigoSortObjc currentSort;
 @property (nonatomic, assign) BOOL displayImageTitles;
 
 @property (nonatomic, strong) UIBarButtonItem *settingsBarButton;
@@ -79,7 +79,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
 @property (nonatomic, strong) UIRefreshControl *refreshControl;     // iOS 9.x only
 
-@property (nonatomic, assign) kPiwigoSortObjc currentSortCategory;
 @property (nonatomic, strong) ImageDetailViewController *imageDetailView;
 
 @end
@@ -96,7 +95,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:1];
         
 		self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
-		self.currentSortCategory = (kPiwigoSortObjc)AlbumVars.defaultSort;
+		self.currentSort = (kPiwigoSortObjc)AlbumVars.defaultSort;
         self.displayImageTitles = AlbumVars.displayImageTitles;
 		
         // Initialise selection mode
@@ -483,7 +482,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 #if defined(DEBUG_LIFECYCLE)
         NSLog(@"viewWillAppear  => load images");
 #endif
-        [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
+        [self.albumData updateImageSort:self.currentSort OnCompletion:^{
             // Reset navigation bar buttons after image load
             [self updateButtonsInPreviewMode];
             [self.imagesCollection reloadData];
@@ -1502,7 +1501,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         [self.albumData loadAllImagesOnCompletion:^{
 
             // Sort images
-            [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
+            [self.albumData updateImageSort:self.currentSort OnCompletion:^{
 //                NSLog(@"=> categoriesUpdated… %ld now contains %ld images", (long)self.categoryId, (long)self.albumData.images.count);
                 if (oldImageList.count == self.albumData.images.count) {
                     [self.imagesCollection reloadData];     // Total number of images may have changed
@@ -1599,7 +1598,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         // Load new image (appended to cache) and sort images before updating UI
         [self.albumData loadMoreImagesOnCompletion:^{
             // Sort images
-            [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
+            [self.albumData updateImageSort:self.currentSort OnCompletion:^{
 
                 // The album title is not shown in backButtonItem to provide enough space
                 // for image title on devices of screen width <= 414 ==> Restore album title
@@ -1673,7 +1672,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         // Remove image (removed from cache) and sort images before updating UI
         [self.albumData loadMoreImagesOnCompletion:^{
             // Sort images
-            [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
+            [self.albumData updateImageSort:self.currentSort OnCompletion:^{
 
                 // The album title is not shown in backButtonItem to provide enough space
                 // for image title on devices of screen width <= 414 ==> Restore album title
@@ -3269,7 +3268,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
 //-(void)didSelectCategorySortType:(kPiwigoSortObjc)sortType
 //{
-//	self.currentSortCategory = sortType;
+//	self.currentSort = sortType;
 //    [self.albumData updateImageSort:sortType OnCompletion:^{
 ////        NSLog(@"didSelectCategorySortType:Sorting images…");
 //        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
