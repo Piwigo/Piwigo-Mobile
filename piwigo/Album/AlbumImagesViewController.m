@@ -520,7 +520,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 	[super viewDidAppear:animated];
 	
     // Display HUD while downloading albums data recursively
-    if (self.categoryId == 0) {
+    if ((self.categoryId == 0) && !self.isCachedAtInit) {
         [self.navigationController showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
     }
     
