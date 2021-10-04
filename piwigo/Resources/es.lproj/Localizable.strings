@@ -304,6 +304,7 @@
 // Image options (actions)
 "imageOptions_title" = "Opciones para la foto";
 "imageOptions_edit" = "Editar";
+"imageOptions_properties" = "Modify Properties";
 "imageOptions_download" = "Descargar";
 "imageOptions_setAlbumImage" = "Definir la miniatura del álbum";
 
@@ -373,6 +374,13 @@
 
 // Image rename — Errors
 "renameImageError_message" = "Error al cambiar el nombre del archivo";
+
+// Image in favorites
+"imageFavorites_title" = "Favorites";
+
+// Image in favorites — Error
+"imageFavoritesAddError_message" = "Failed to add this photo to your favorites.";
+"imageFavoritesRemoveError_message" = "Failed to remove this photo from your favorites.";
 
 // Image delete
 "deleteImage_delete" = "Eliminar";
@@ -483,7 +491,6 @@
 "imageUploadCompleted_title" = "Transferencia completada";
 "imageUploadCompleted_message" = "foto subida a su servidor Piwigo.";
 "imageUploadCompleted_message>1" = "fotos subidas a su servidor Piwigo.";
-
 
 // Image upload — Errors
 "uploadError_title" = "Error al subir";

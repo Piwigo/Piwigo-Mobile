@@ -304,6 +304,7 @@
 // Image options (actions)
 "imageOptions_title" = "写真オプション";
 "imageOptions_edit" = "編集";
+"imageOptions_properties" = "Modify Properties";
 "imageOptions_download" = "ダウンロード";
 "imageOptions_setAlbumImage" = "アルバムの画像に設定します";
 
@@ -373,6 +374,13 @@
 
 // Image rename — Errors
 "renameImageError_message" = "写真ファイルの名前変更に失敗しました";
+
+// Image in favorites
+"imageFavorites_title" = "Favorites";
+
+// Image in favorites — Error
+"imageFavoritesAddError_message" = "Failed to add this photo to your favorites.";
+"imageFavoritesRemoveError_message" = "Failed to remove this photo from your favorites.";
 
 // Image delete
 "deleteImage_delete" = "削除";
@@ -483,7 +491,6 @@
 "imageUploadCompleted_title" = "アップロードが完了しました";
 "imageUploadCompleted_message" = "写真／動画が、Piwigoサーバにアップロードされました。";
 "imageUploadCompleted_message>1" = "写真／動画が、Piwigoサーバにアップロードされました。";
-
 
 // Image upload — Errors
 "uploadError_title" = "アップロードエラー";

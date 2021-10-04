@@ -304,6 +304,7 @@
 // Image options (actions)
 "imageOptions_title" = "Foto-opties";
 "imageOptions_edit" = "Bewerken";
+"imageOptions_properties" = "Modify Properties";
 "imageOptions_download" = "Downloaden";
 "imageOptions_setAlbumImage" = "Instellen als albumfoto";
 
@@ -373,6 +374,13 @@
 
 // Image rename — Errors
 "renameImageError_message" = "Kan afbeeldingbestand niet hernoemen";
+
+// Image in favorites
+"imageFavorites_title" = "Favorites";
+
+// Image in favorites — Error
+"imageFavoritesAddError_message" = "Failed to add this photo to your favorites.";
+"imageFavoritesRemoveError_message" = "Failed to remove this photo from your favorites.";
 
 // Image delete
 "deleteImage_delete" = "Verwijderen";
@@ -483,7 +491,6 @@
 "imageUploadCompleted_title" = "Uploaden klaar";
 "imageUploadCompleted_message" = "foto/video die ge-upload zijn naar jouw Piwigo-server.";
 "imageUploadCompleted_message>1" = "afbeeldingen/video's geüpload naar uw server Piwigo.";
-
 
 // Image upload — Errors
 "uploadError_title" = "Upload-fout";

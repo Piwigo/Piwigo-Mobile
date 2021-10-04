@@ -304,6 +304,7 @@
 // Image options (actions)
 "imageOptions_title" = "照片选项";
 "imageOptions_edit" = "编辑";
+"imageOptions_properties" = "Modify Properties";
 "imageOptions_download" = "下载";
 "imageOptions_setAlbumImage" = "设为相册封面";
 
@@ -373,6 +374,13 @@
 
 // Image rename — Errors
 "renameImageError_message" = "无法重命名图片文件";
+
+// Image in favorites
+"imageFavorites_title" = "Favorites";
+
+// Image in favorites — Error
+"imageFavoritesAddError_message" = "Failed to add this photo to your favorites.";
+"imageFavoritesRemoveError_message" = "Failed to remove this photo from your favorites.";
 
 // Image delete
 "deleteImage_delete" = "删除";
@@ -483,7 +491,6 @@
 "imageUploadCompleted_title" = "上传完成";
 "imageUploadCompleted_message" = "照片成功上传到你的Piwigo服务器";
 "imageUploadCompleted_message>1" = "照片成功上传到你的Piwigo服务器";
-
 
 // Image upload — Errors
 "uploadError_title" = "上传错误";

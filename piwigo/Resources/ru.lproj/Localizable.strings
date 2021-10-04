@@ -304,6 +304,7 @@
 // Image options (actions)
 "imageOptions_title" = "Параметры фотографии";
 "imageOptions_edit" = "Редактировать";
+"imageOptions_properties" = "Modify Properties";
 "imageOptions_download" = "Скачать";
 "imageOptions_setAlbumImage" = "Установить как значок альбома";
 
@@ -373,6 +374,13 @@
 
 // Image rename — Errors
 "renameImageError_message" = "Не удалось переименовать файл фото";
+
+// Image in favorites
+"imageFavorites_title" = "Favorites";
+
+// Image in favorites — Error
+"imageFavoritesAddError_message" = "Failed to add this photo to your favorites.";
+"imageFavoritesRemoveError_message" = "Failed to remove this photo from your favorites.";
 
 // Image delete
 "deleteImage_delete" = "Удалить";
@@ -483,7 +491,6 @@
 "imageUploadCompleted_title" = "Загрузка завершена";
 "imageUploadCompleted_message" = "фото загружено на Ваш сервер Piwigo.";
 "imageUploadCompleted_message>1" = "фотографии загружены на Ваш сервер Piwigo.";
-
 
 // Image upload — Errors
 "uploadError_title" = "Ошибка загрузки";
