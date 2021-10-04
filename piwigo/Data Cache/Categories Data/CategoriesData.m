@@ -329,6 +329,21 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 
 # pragma mark - Get and remove images from cache
 
+-(BOOL)categoryWithId:(NSInteger)category containsImageWithId:(NSInteger)imageId
+{
+    PiwigoAlbumData *selectedCategory = [self getCategoryById:category];
+    if (selectedCategory == nil) { return NO; }
+    for(PiwigoImageData *img in selectedCategory.imageList)
+    {
+        if (imageId == img.imageId)
+        {
+            return YES;
+        }
+    }
+    
+    return NO;
+}
+
 -(PiwigoImageData*)getImageForCategory:(NSInteger)category andIndex:(NSInteger)index
 {
 	PiwigoAlbumData *selectedCategory = [self getCategoryById:category];
