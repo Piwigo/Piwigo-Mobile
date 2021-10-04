@@ -1483,9 +1483,16 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                                usingCache:NO
                           inRecursiveMode:YES
          OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
+            // Refresh current view
             [self.imagesCollection reloadData];
-            if (refreshControl) [refreshControl endRefreshing];
-         }
+
+            // Also refresh list of favorite images
+            PiwigoAlbumData *favoritesAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoFavoritesCategoryId];
+            [[CategoriesData sharedInstance] updateCategories:@[favoritesAlbum]];
+            [[[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:self.currentSort forProgress:nil OnCompletion:^(BOOL completed) {
+                    if (refreshControl) [refreshControl endRefreshing];
+            }];
+        }
         onFailure:^(NSURLSessionTask *task, NSError *error) {
              if (refreshControl) [refreshControl endRefreshing];
          }
