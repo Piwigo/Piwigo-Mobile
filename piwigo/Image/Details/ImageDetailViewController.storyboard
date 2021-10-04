@@ -15,7 +15,7 @@
                     <view key="view" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5EZ-qb-Rvc">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <subviews>
-                            <containerView opaque="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="B62-5V-S6J">
+                            <containerView opaque="NO" contentMode="scaleAspectFit" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="B62-5V-S6J">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                 <connections>
                                     <segue destination="QTe-RH-Ag2" kind="embed" id="JLK-6S-sot"/>
@@ -25,9 +25,9 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <color key="tintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="B62-5V-S6J" secondAttribute="trailing" id="LtR-QE-pbP"/>
+                            <constraint firstItem="B62-5V-S6J" firstAttribute="trailing" secondItem="5EZ-qb-Rvc" secondAttribute="trailing" id="LtR-QE-pbP"/>
                             <constraint firstItem="B62-5V-S6J" firstAttribute="bottom" secondItem="5EZ-qb-Rvc" secondAttribute="bottom" id="XwV-Q6-YAj"/>
-                            <constraint firstAttribute="top" secondItem="B62-5V-S6J" secondAttribute="top" id="puP-eG-YOg"/>
+                            <constraint firstItem="B62-5V-S6J" firstAttribute="top" secondItem="5EZ-qb-Rvc" secondAttribute="top" id="puP-eG-YOg"/>
                             <constraint firstItem="B62-5V-S6J" firstAttribute="leading" secondItem="5EZ-qb-Rvc" secondAttribute="leading" id="yee-cb-9TD"/>
                         </constraints>
                     </view>
@@ -51,20 +51,20 @@
                     <view key="view" opaque="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CkJ-ky-Kbn">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" restorationIdentifier="ImageScrollView" insetsLayoutMarginsFromSafeArea="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" canCancelContentTouches="NO" maximumZoomScale="5" translatesAutoresizingMaskIntoConstraints="NO" id="cGF-ek-t3W">
+                            <scrollView clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="ImageScrollView" insetsLayoutMarginsFromSafeArea="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" canCancelContentTouches="NO" maximumZoomScale="5" translatesAutoresizingMaskIntoConstraints="NO" id="cGF-ek-t3W">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                 <subviews>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" restorationIdentifier="imageView" translatesAutoresizingMaskIntoConstraints="NO" id="7gX-s9-oHd">
+                                    <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" restorationIdentifier="imageView" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7gX-s9-oHd">
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                     </imageView>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="height" secondItem="7gX-s9-oHd" secondAttribute="height" id="Ci5-tF-OqS"/>
-                                    <constraint firstItem="7gX-s9-oHd" firstAttribute="top" secondItem="cGF-ek-t3W" secondAttribute="top" id="SmZ-bM-c2c"/>
-                                    <constraint firstAttribute="bottom" secondItem="7gX-s9-oHd" secondAttribute="bottom" id="UsZ-JK-uBE"/>
-                                    <constraint firstAttribute="trailing" secondItem="7gX-s9-oHd" secondAttribute="trailing" id="eay-eX-4v1"/>
-                                    <constraint firstItem="7gX-s9-oHd" firstAttribute="leading" secondItem="cGF-ek-t3W" secondAttribute="leading" id="hqZ-Bz-j96"/>
-                                    <constraint firstAttribute="width" secondItem="7gX-s9-oHd" secondAttribute="width" id="pZO-hf-c4M"/>
+                                    <constraint firstItem="7gX-s9-oHd" firstAttribute="centerY" secondItem="cGF-ek-t3W" secondAttribute="centerY" id="IlS-N7-F02"/>
+                                    <constraint firstItem="7gX-s9-oHd" firstAttribute="trailing" secondItem="cGF-ek-t3W" secondAttribute="trailing" id="PGd-Hv-mLN"/>
+                                    <constraint firstItem="7gX-s9-oHd" firstAttribute="leading" secondItem="cGF-ek-t3W" secondAttribute="leading" id="YAb-zh-OuA"/>
+                                    <constraint firstItem="7gX-s9-oHd" firstAttribute="top" secondItem="cGF-ek-t3W" secondAttribute="top" id="aCA-SG-TaF"/>
+                                    <constraint firstItem="7gX-s9-oHd" firstAttribute="bottom" secondItem="cGF-ek-t3W" secondAttribute="bottom" id="mCl-Bk-z8Q"/>
+                                    <constraint firstItem="7gX-s9-oHd" firstAttribute="centerX" secondItem="cGF-ek-t3W" secondAttribute="centerX" id="o2Q-Zd-oim"/>
                                 </constraints>
                             </scrollView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" restorationIdentifier="playImage" insetsLayoutMarginsFromSafeArea="NO" image="videoPlay" translatesAutoresizingMaskIntoConstraints="NO" id="NAw-1Y-mdv">
@@ -83,16 +83,16 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="tintColor" red="1" green="0.47058823529999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="cGF-ek-t3W" firstAttribute="top" secondItem="CkJ-ky-Kbn" secondAttribute="top" id="6Cg-5X-L4a"/>
+                            <constraint firstItem="cGF-ek-t3W" firstAttribute="top" secondItem="CkJ-ky-Kbn" secondAttribute="top" id="0iR-qK-oCS"/>
+                            <constraint firstAttribute="bottom" secondItem="cGF-ek-t3W" secondAttribute="bottom" id="4Jv-wb-9eg"/>
                             <constraint firstItem="NAw-1Y-mdv" firstAttribute="centerX" secondItem="CkJ-ky-Kbn" secondAttribute="centerX" id="9R7-ma-jIc"/>
-                            <constraint firstAttribute="bottom" secondItem="cGF-ek-t3W" secondAttribute="bottom" id="9sv-zC-fIg"/>
                             <constraint firstAttribute="bottom" secondItem="rui-kE-FAb" secondAttribute="bottom" id="C8U-pi-3oj"/>
                             <constraint firstItem="rui-kE-FAb" firstAttribute="leading" secondItem="CkJ-ky-Kbn" secondAttribute="leading" id="TPs-AI-CFw"/>
                             <constraint firstItem="NAw-1Y-mdv" firstAttribute="centerY" secondItem="CkJ-ky-Kbn" secondAttribute="centerY" id="VZt-KI-TUJ"/>
+                            <constraint firstItem="cGF-ek-t3W" firstAttribute="leading" secondItem="CkJ-ky-Kbn" secondAttribute="leading" id="dei-Tb-UC9"/>
                             <constraint firstItem="rui-kE-FAb" firstAttribute="top" secondItem="CkJ-ky-Kbn" secondAttribute="top" id="h0J-W2-mki"/>
-                            <constraint firstAttribute="trailing" secondItem="cGF-ek-t3W" secondAttribute="trailing" id="ovy-kM-VGX"/>
+                            <constraint firstAttribute="trailing" secondItem="cGF-ek-t3W" secondAttribute="trailing" id="oPe-pi-tYY"/>
                             <constraint firstAttribute="trailing" secondItem="rui-kE-FAb" secondAttribute="trailing" id="qYz-ST-ieY"/>
-                            <constraint firstItem="cGF-ek-t3W" firstAttribute="leading" secondItem="CkJ-ky-Kbn" secondAttribute="leading" id="vpj-wp-bRd"/>
                         </constraints>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>

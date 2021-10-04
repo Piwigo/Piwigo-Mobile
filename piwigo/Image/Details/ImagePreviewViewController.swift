@@ -55,9 +55,6 @@ class ImagePreviewViewController: UIViewController
         imageView.image = thumb.image ?? UIImage(named: "placeholderImage")
 
         // Previewed image
-        imageView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        imageView.contentMode = .scaleAspectFit
-        imageView.isUserInteractionEnabled = true
         let imagePreviewSize = kPiwigoImageSize(rawValue: ImageVars.shared.defaultImagePreviewSize)
         var previewStr = imageData.getURLFromImageSizeType(imagePreviewSize)
         if previewStr == nil {
@@ -71,7 +68,6 @@ class ImagePreviewViewController: UIViewController
         guard let previewURL = URL(string: previewStr ?? "") else {return }
         weak var weakSelf = self
 
-//        debugPrint("==> Start loading \(previewURL.path)")
         downloadTask = NetworkVarsObjc.imagesSessionManager?.get(
             previewURL.absoluteString,
             parameters: nil,
@@ -104,12 +100,12 @@ class ImagePreviewViewController: UIViewController
                     }
                 } else {
                     // Keep thumbnail or placeholder if image could not be loaded
-                    print("setImageScrollViewWithImageData: loaded image is nil!")
+                    debugPrint("setImageScrollViewWithImageData: loaded image is nil!")
                 }
             },
             failure: { task, error in
                 if let error = error as NSError? {
-                    print("setImageScrollViewWithImageData/GET Error: \(error)")
+                    debugPrint("setImageScrollViewWithImageData/GET Error: \(error)")
                 }
             })
 
