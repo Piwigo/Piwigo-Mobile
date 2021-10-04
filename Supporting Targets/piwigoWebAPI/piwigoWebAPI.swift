@@ -210,6 +210,29 @@ class piwigoWebAPI: XCTestCase {
         XCTAssertEqual(result.data.id, 26)
     }
 
+    
+    // MARK: - pwg.users…
+    func testPwgUsersFavoritesAddDecoding() {
+        
+        // Case of a successful request
+        let bundle = Bundle(for: type(of: self))
+        guard let url = bundle.url(forResource: "pwg.users.favorites.addRemove", withExtension: "json"),
+            let data = try? Data(contentsOf: url) else {
+            XCTFail("Could not load resource file")
+            return
+        }
+        
+        let decoder = JSONDecoder()
+        guard let result = try? decoder.decode(FavoritesAddRemoveJSON.self, from: data) else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(result.status, "ok")
+        XCTAssertEqual(result.result, true)
+    }
+
+
     // MARK: - community
     func testCommunityImagesUploadCompletedDecoding() {
         
