@@ -304,7 +304,7 @@
 // Image options (actions)
 "imageOptions_title" = "Foto-opties";
 "imageOptions_edit" = "Bewerken";
-"imageOptions_properties" = "Modify Properties";
+"imageOptions_properties" = "Eigenschappen wijzigen";
 "imageOptions_download" = "Downloaden";
 "imageOptions_setAlbumImage" = "Instellen als albumfoto";
 
@@ -376,11 +376,11 @@
 "renameImageError_message" = "Kan afbeeldingbestand niet hernoemen";
 
 // Image in favorites
-"imageFavorites_title" = "Favorites";
+"imageFavorites_title" = "Favorieten";
 
 // Image in favorites — Error
-"imageFavoritesAddError_message" = "Failed to add this photo to your favorites.";
-"imageFavoritesRemoveError_message" = "Failed to remove this photo from your favorites.";
+"imageFavoritesAddError_message" = "Foto kan niet toegevoegd worden aan favorieten.";
+"imageFavoritesRemoveError_message" = "Fout bij het verwijderen van deze foto uit je favorieten.";
 
 // Image delete
 "deleteImage_delete" = "Verwijderen";
@@ -690,10 +690,10 @@
 // Settings — Auto-Upload
 "settings_autoUpload" = "Automatisch uploaden";
 "settings_autoUpload>414px" = "Automatisch foto's uploaden";
-"settings_autoUploadEnabled" = "On";
+"settings_autoUploadEnabled" = "Aan";
 "settings_autoUploadEnabledInfo" = "Foto's worden automatisch geüpload naar jouw Piwigo.";
 "settings_autoUploadEnabledInfoAll" = "Foto's en video's worden automatisch geüpload naar jouw Piwigo.";
-"settings_autoUploadDisabled" = "Off";
+"settings_autoUploadDisabled" = "Uit";
 "settings_autoUploadDisabledInfo" = "Foto's worden niet automatisch geüpload naar jouw Piwigo.";
 "settings_autoUploadSource" = "Bron";
 "settings_autoUploadSourceInvalid" = "Ongeldig bronalbum";

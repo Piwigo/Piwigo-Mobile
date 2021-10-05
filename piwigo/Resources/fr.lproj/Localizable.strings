@@ -304,7 +304,7 @@
 // Image options (actions)
 "imageOptions_title" = "Options";
 "imageOptions_edit" = "Editer";
-"imageOptions_properties" = "Modify Properties";
+"imageOptions_properties" = "Modifier les propriétés";
 "imageOptions_download" = "Télécharger";
 "imageOptions_setAlbumImage" = "Définir comme vignette d’album";
 
@@ -376,11 +376,11 @@
 "renameImageError_message" = "Échec lors du renommage du fichier";
 
 // Image in favorites
-"imageFavorites_title" = "Favorites";
+"imageFavorites_title" = "Favoris";
 
 // Image in favorites — Error
-"imageFavoritesAddError_message" = "Failed to add this photo to your favorites.";
-"imageFavoritesRemoveError_message" = "Failed to remove this photo from your favorites.";
+"imageFavoritesAddError_message" = "Echec de l'ajout de cette photo à vos favoris.";
+"imageFavoritesRemoveError_message" = "Echec de la suppression de cette photo de vos favoris.";
 
 // Image delete
 "deleteImage_delete" = "Supprimer";

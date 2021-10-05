@@ -6,9 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.8.0_text" = "Version 2.8.0\n\n• Add and remove photos and videos from your favorites\n• Minor bug fixes and improvements of the interface";
+"v2.8.0_text" = "Version 2.8\n\n• Add and remove photos and videos from your favorites\n• Minor bug fixes and improvements of the interface";
 
-"v2.7.2_text" = "Wersja 2.7.2\n\n• Kompatybilność z iOS 15\n• Poprawki drobnych błędów i ulepszenia interfejsu\n• Modernizacja kodu";
+"v2.7.2_text" = "Wersja 2.7.2\n20 września 2021\n\n• Kompatybilność z iOS 15\n• Poprawki drobnych błędów i ulepszenia interfejsu\n• Modernizacja kodu";
 
 "v2.7.1_text" = "Wersja 2.7.1\n1 września 2021\n\n• Poprawki drobnych błędów i ulepszenia interfejsu\n• Poprawki tłumaczenia";
 

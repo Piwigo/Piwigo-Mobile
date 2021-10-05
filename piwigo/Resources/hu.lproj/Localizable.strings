@@ -304,7 +304,7 @@
 // Image options (actions)
 "imageOptions_title" = "Fotó opciók";
 "imageOptions_edit" = "Módosítás";
-"imageOptions_properties" = "Modify Properties";
+"imageOptions_properties" = "Tulajdonságok módosítása";
 "imageOptions_download" = "Letöltés";
 "imageOptions_setAlbumImage" = "Album bélyegkép beállítása";
 
@@ -376,11 +376,11 @@
 "renameImageError_message" = "Nem sikerült átnevezni a fájlt";
 
 // Image in favorites
-"imageFavorites_title" = "Favorites";
+"imageFavorites_title" = "Kedvencek";
 
 // Image in favorites — Error
-"imageFavoritesAddError_message" = "Failed to add this photo to your favorites.";
-"imageFavoritesRemoveError_message" = "Failed to remove this photo from your favorites.";
+"imageFavoritesAddError_message" = "Nem sikerült felvenni a fotót a kedvencekhez.";
+"imageFavoritesRemoveError_message" = "Nem sikerült eltávolítani a fotót a kedvencekből.";
 
 // Image delete
 "deleteImage_delete" = "Törlés";
