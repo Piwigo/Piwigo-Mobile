@@ -206,7 +206,8 @@ class ImageDetailViewController: UIViewController {
         }
         
         // Did we already load the list of favorite images?
-        if NetworkVarsObjc.hasAdminRights ||
+        if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending,
+           NetworkVarsObjc.hasAdminRights ||
            (NetworkVars.hasNormalRights && CategoriesData.sharedInstance().getCategoryById(categoryId).hasUploadRights),
            CategoriesData.sharedInstance().getCategoryById(kPiwigoFavoritesCategoryId) == nil {
             // Show HUD during the download
