@@ -823,7 +823,7 @@
         UIStoryboard *imageDetailSB = [UIStoryboard storyboardWithName:@"ImageDetailViewController" bundle:nil];
         self.imageDetailView = [imageDetailSB instantiateViewControllerWithIdentifier:@"ImageDetailViewController"];
         self.imageDetailView.imageIndex = indexPath.row;
-        self.imageDetailView.categoryId = kPiwigoTagsCategoryId;
+        self.imageDetailView.categoryId = kPiwigoFavoritesCategoryId;
         self.imageDetailView.images = [self.albumData.images copy];
         self.imageDetailView.hidesBottomBarWhenPushed = YES;
         self.imageDetailView.imgDetailDelegate = self;
