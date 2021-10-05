@@ -689,7 +689,6 @@ class ImageDetailViewController: UIViewController {
                             if let previewVC = childVC as? ImagePreviewViewController,
                                previewVC.imageIndex == index {
                                 previewVC.imageData = self.imageData
-//                                previewVC.setImageScrollViewWith(self.imageData)
                             }
                         }
                     }
