@@ -214,6 +214,7 @@ class ImageDetailViewController: UIViewController {
             showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment:"Loading…"), inMode: .annularDeterminate)
             
             // Unknown list -> initialise album and download list
+            let nberImagesPerPage = ImagesCollection.numberOfImagesPerPage(for: nil, imagesPerRowInPortrait: AlbumVars.thumbnailsPerRowInPortrait)
             let favoritesAlbum: PiwigoAlbumData = PiwigoAlbumData.init(discoverAlbumForCategory: kPiwigoFavoritesCategoryId)
             CategoriesData.sharedInstance()
                 .updateCategories([favoritesAlbum])
@@ -221,8 +222,7 @@ class ImageDetailViewController: UIViewController {
                 .getCategoryById(kPiwigoFavoritesCategoryId)
                 .loadAllCategoryImageData(withSort: kPiwigoSortObjc(UInt32(AlbumVars.defaultSort)),
                                           forProgress: { [unowned self] onPage, outOf in
-                    debugPrint("==> onPage: \(onPage), outOf: \(outOf)")
-                    self.updatePiwigoHUD(withProgress: Float(onPage) / Float(outOf))
+                    self.updatePiwigoHUD(withProgress: Float(onPage * nberImagesPerPage) / Float(outOf))
                 }) { [unowned self] _ in
                     // Retrieve complete image data if needed (buttons are greyed until job done)
                     if self.imageData.fileSize == NSNotFound {
@@ -554,8 +554,6 @@ class ImageDetailViewController: UIViewController {
                 navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
             }
             else {
-                debugPrint("==> \(NetworkVars.hasNormalRights ? "Yes" : "No")")
-                debugPrint("==> \(CategoriesData.sharedInstance().getCategoryById(categoryId).hasUploadRights ? "Yes" : "No")")
                 // User without access rights can only share images
                 navigationItem.rightBarButtonItems = [shareBarButton].compactMap { $0 }
 
