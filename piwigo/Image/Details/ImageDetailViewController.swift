@@ -451,15 +451,10 @@ class ImageDetailViewController: UIViewController {
     }
     
     private func updateNavBar() {
-        // Interface depends on device and orientation
-        var orientation: UIInterfaceOrientation = .portrait
-        if #available(iOS 13.0, *) {
-            orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .portrait
-        } else {
-            orientation = UIApplication.shared.statusBarOrientation
-        }
-        
         if #available(iOS 14, *) {
+            // Interface depends on device and orientation
+            let orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .portrait
+            
             // User with admin rights can do everything
             if NetworkVarsObjc.hasAdminRights {
                 // The action button proposes:
