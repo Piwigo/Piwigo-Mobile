@@ -1248,7 +1248,13 @@ class ImageDetailViewController: UIViewController {
         // Send request to Piwigo server
         ImageUtilities.removeFromFavorites(imageData) {
             DispatchQueue.main.async {
-                self.setFavoriteBarButton(false)
+                if self.categoryId == kPiwigoFavoritesCategoryId {
+                    // Remove image from the album of favorites
+                    self.didRemoveImage(withId: self.imageData.imageId)
+                } else {
+                    // Update favorite button
+                    self.setFavoriteBarButton(false)
+                }
             }
         } failure: { error in
             DispatchQueue.main.async {
@@ -1526,19 +1532,22 @@ extension ImageDetailViewController: SelectCategoryImageRemovedDelegate
             nextImage.imageIndex = indexOfRemovedImage
             nextImage.imageData = imageData
             nextImage.imageLoaded = false
-//            let nextImage = ImagePreviewViewController()
-//            nextImage.imageLoaded = false
-//            nextImage.imageIndex = indexOfRemovedImage
-//            nextImage.setImageScrollViewWith(imageData)
 
             // This changes the View Controller
             // and calls the presentationIndexForPageViewController datasource method
             pageViewController!.setViewControllers([nextImage], direction: .forward, animated: true) { [unowned self] finished in
-                    // Update image data
-                    self.imageData = self.images[indexOfRemovedImage]
-                    // Re-enable buttons
-                    self.setEnableStateOfButtons(true)
+                // Update image data
+                self.imageData = self.images[indexOfRemovedImage]
+                // Re-enable buttons
+                self.setEnableStateOfButtons(true)
+                // Reset favorites button
+                // pwg.users.favorites… methods available from Piwigo version 2.10
+                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
+                    let isFavorite = CategoriesData.sharedInstance()
+                        .category(withId: kPiwigoFavoritesCategoryId, containsImageWithId: imageData.imageId)
+                    setFavoriteBarButton(isFavorite)
                 }
+            }
             return
         }
 
@@ -1553,19 +1562,21 @@ extension ImageDetailViewController: SelectCategoryImageRemovedDelegate
             prevImage.imageIndex = indexOfRemovedImage - 1
             prevImage.imageData = imageData
             prevImage.imageLoaded = false
-//            let prevImage = ImagePreviewViewController()
-//            prevImage.imageLoaded = false
-//            prevImage.imageIndex = indexOfRemovedImage - 1
-//            prevImage.setImageScrollViewWith(imageData)
 
             // This changes the View Controller
             // and calls the presentationIndexForPageViewController datasource method
             pageViewController!.setViewControllers( [prevImage], direction: .reverse, animated: true) { [unowned self] finished in
-                    // Update image data
-                    self.imageData = self.images[indexOfRemovedImage - 1]
-                    // Re-enable buttons
-                    self.setEnableStateOfButtons(true)
+                // Update image data
+                self.imageData = self.images[indexOfRemovedImage - 1]
+                // Re-enable buttons
+                self.setEnableStateOfButtons(true)
+                // Reset favorites button
+                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
+                    let isFavorite = CategoriesData.sharedInstance()
+                        .category(withId: kPiwigoFavoritesCategoryId, containsImageWithId: imageData.imageId)
+                    setFavoriteBarButton(isFavorite)
                 }
+            }
             return
         }
     }
