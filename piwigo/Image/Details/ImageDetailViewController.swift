@@ -30,7 +30,7 @@ class ImageDetailViewController: UIViewController {
     private var progressBar = UIProgressView()
     private var isToolbarRequired = false
     private var pageViewController: UIPageViewController?
-
+    private lazy var userHasUploadRights = false
     
     // MARK: - Navigation Bar & Toolbar Buttons
     private var actionBarButton: UIBarButtonItem!       // iPhone & iPad until iOS 13:
@@ -206,9 +206,9 @@ class ImageDetailViewController: UIViewController {
         }
         
         // Did we already load the list of favorite images?
+        userHasUploadRights = CategoriesData.sharedInstance().getCategoryById(categoryId).hasUploadRights
         if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending,
-           NetworkVarsObjc.hasAdminRights ||
-           (NetworkVars.hasNormalRights && CategoriesData.sharedInstance().getCategoryById(categoryId).hasUploadRights),
+           NetworkVarsObjc.hasAdminRights || (NetworkVars.hasNormalRights && userHasUploadRights),
            CategoriesData.sharedInstance().getCategoryById(kPiwigoFavoritesCategoryId) == nil {
             // Show HUD during the download
             showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment:"Loading…"), inMode: .annularDeterminate)
@@ -459,95 +459,142 @@ class ImageDetailViewController: UIViewController {
             orientation = UIApplication.shared.statusBarOrientation
         }
         
-        // iPad or iPhone in portrait orientation
-        if orientation.isPortrait
-        {
+        if #available(iOS 14, *) {
             // User with admin rights can do everything
             if NetworkVarsObjc.hasAdminRights {
-                var toolBarItems = [UIBarButtonItem]()
-                if #available(iOS 14, *) {
-                    // The action button proposes:
-                    /// - to copy or move images to other albums
-                    /// - to set the image as album thumbnail
-                    /// - to edit image parameters,
-                    let menu = UIMenu(title: "", children: [albumMenu, editMenu].compactMap({$0}))
-                    actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
-                    actionBarButton?.accessibilityIdentifier = "actions"
+                // The action button proposes:
+                /// - to copy or move images to other albums
+                /// - to set the image as album thumbnail
+                /// - to edit image parameters,
+                let menu = UIMenu(title: "", children: [albumMenu, editMenu].compactMap({$0}))
+                actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
+                actionBarButton?.accessibilityIdentifier = "actions"
 
-                    // Navigation toolbar
-                    toolBarItems = [shareBarButton, spaceBetweenButtons, deleteBarButton]
+                if orientation.isPortrait {
+                    // Action button in navigation bar
+                    navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
+
+                    // Remaining buttons in navigation toolbar
+                    var toolBarItems = [shareBarButton, spaceBetweenButtons, deleteBarButton]
                     // pwg.users.favorites… methods available from Piwigo version 2.10
                     if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
                         favoriteBarButton = getFavoriteBarButton()
                         toolBarItems.insert(contentsOf: [favoriteBarButton, spaceBetweenButtons], at: 2)
                     }
+                    isToolbarRequired = true
+                    let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
+                    setToolbarItems(toolBarItems.compactMap { $0 }, animated: false)
+                    navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
                 }
                 else {
-                    // The action menu is simply an Edit button
-                    actionBarButton = UIBarButtonItem(barButtonSystemItem: .edit,
-                                                      target: self, action: #selector(editImage))
-                    actionBarButton?.accessibilityIdentifier = "edit"
-                    
-                    // Navigation toolbar
-                    toolBarItems = [shareBarButton, spaceBetweenButtons, moveBarButton,
-                                    spaceBetweenButtons, setThumbnailBarButton,
-                                    spaceBetweenButtons, deleteBarButton]
+                    // All buttons in the navigation bar
+                    var rightBarButtonItems = [actionBarButton, deleteBarButton, shareBarButton]
                     // pwg.users.favorites… methods available from Piwigo version 2.10
                     if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
                         favoriteBarButton = getFavoriteBarButton()
-                        toolBarItems.insert(contentsOf: [favoriteBarButton, spaceBetweenButtons], at: 4)
+                        rightBarButtonItems.insert(favoriteBarButton, at: 2)
                     }
-                }
+                    navigationItem.setRightBarButtonItems(rightBarButtonItems.compactMap { $0 }, animated: true)
 
-                // Update navigation bar
+                    // No toolbar
+                    isToolbarRequired = false
+                    setToolbarItems([], animated: false)
+                    navigationController?.setToolbarHidden(true, animated: true)
+                }
+            }
+            else if NetworkVars.hasNormalRights && userHasUploadRights {
+                // WRONG =====> 'normal' user with upload access to the current category can edit images
+                // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by' values of images for checking rights
+                // The action button proposes:
+                /// - to copy or move images to other albums
+                /// - to edit image parameters,
+                let menu = UIMenu(title: "", children: [albumMenu, editMenu].compactMap({$0}))
+                actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
+                actionBarButton?.accessibilityIdentifier = "actions"
+                
+                if orientation.isPortrait {
+                    // Action button in navigation bar
+                    navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
+
+                    // Navigation toolbar
+                    var toolBarItems = [shareBarButton, spaceBetweenButtons, deleteBarButton]
+                    // pwg.users.favorites… methods available from Piwigo version 2.10
+                    if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
+                        favoriteBarButton = getFavoriteBarButton()
+                        toolBarItems.insert(contentsOf: [favoriteBarButton, spaceBetweenButtons], at: 2)
+                    }
+                    isToolbarRequired = true
+                    let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
+                    setToolbarItems(toolBarItems.compactMap { $0 }, animated: false)
+                    navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
+                }
+                else {
+                    // All buttons in the navigation bar
+                    var rightBarButtonItems = [actionBarButton, deleteBarButton, shareBarButton]
+                    // pwg.users.favorites… methods available from Piwigo version 2.10
+                    if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
+                        favoriteBarButton = getFavoriteBarButton()
+                        rightBarButtonItems.insert(favoriteBarButton, at: 2)
+                    }
+                    navigationItem.setRightBarButtonItems(rightBarButtonItems.compactMap { $0 }, animated: true)
+
+                    // No toolbar
+                    isToolbarRequired = false
+                    setToolbarItems([], animated: false)
+                    navigationController?.setToolbarHidden(true, animated: true)
+                }
+            }
+            else {
+                // User without access rights can only share images
+                navigationItem.rightBarButtonItems = [shareBarButton].compactMap { $0 }
+
+                // Hide navigation toolbar
+                isToolbarRequired = false
+                navigationController?.setToolbarHidden(true, animated: false)
+            }
+        }
+        else {
+            // Fallback on earlier versions
+            // User with admin rights can do everything
+            if NetworkVarsObjc.hasAdminRights {
+                // Navigation bar
+                // The action menu is simply an Edit button
+                actionBarButton = UIBarButtonItem(barButtonSystemItem: .edit,
+                                                  target: self, action: #selector(editImage))
+                actionBarButton?.accessibilityIdentifier = "edit"
                 navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
 
-                // Update and present toolbar
+                // Navigation toolbar
+                var toolBarItems = [shareBarButton, spaceBetweenButtons, moveBarButton,
+                                spaceBetweenButtons, setThumbnailBarButton,
+                                spaceBetweenButtons, deleteBarButton]
+                // pwg.users.favorites… methods available from Piwigo version 2.10
+                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
+                    favoriteBarButton = getFavoriteBarButton()
+                    toolBarItems.insert(contentsOf: [favoriteBarButton, spaceBetweenButtons], at: 4)
+                }
                 isToolbarRequired = true
                 let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
                 setToolbarItems(toolBarItems.compactMap { $0 }, animated: false)
                 navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
             }
-            else if NetworkVars.hasNormalRights &&
-                    CategoriesData.sharedInstance().getCategoryById(categoryId).hasUploadRights {
+            else if NetworkVars.hasNormalRights && userHasUploadRights {
                 // WRONG =====> 'normal' user with upload access to the current category can edit images
                 // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by' values of images for checking rights
-                var toolBarItems = [UIBarButtonItem]()
-                if #available(iOS 14, *) {
-                    // The action button proposes:
-                    /// - to copy or move images to other albums
-                    /// - to edit image parameters,
-                    let menu = UIMenu(title: "", children: [albumMenu, editMenu].compactMap({$0}))
-                    actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
-                    actionBarButton?.accessibilityIdentifier = "actions"
-
-                    // Navigation toolbar
-                    toolBarItems = [shareBarButton, spaceBetweenButtons, deleteBarButton]
-                    // pwg.users.favorites… methods available from Piwigo version 2.10
-                    if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
-                        favoriteBarButton = getFavoriteBarButton()
-                        toolBarItems.insert(contentsOf: [favoriteBarButton, spaceBetweenButtons], at: 2)
-                    }
-                }
-                else {
-                    // The action menu is simply an Edit button
-                    actionBarButton = UIBarButtonItem(barButtonSystemItem: .edit,
-                                                      target: self, action: #selector(editImage))
-                    actionBarButton?.accessibilityIdentifier = "edit"
-                    
-                    // Navigation toolbar
-                    toolBarItems = [shareBarButton, spaceBetweenButtons, moveBarButton]
-                    // pwg.users.favorites… methods available from Piwigo version 2.10
-                    if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
-                        favoriteBarButton = getFavoriteBarButton()
-                        toolBarItems.insert(contentsOf: [favoriteBarButton, spaceBetweenButtons], at: 2)
-                    }
-                }
-
-                // Update navigation bar
+                // Navigation bar
+                // The action menu is simply an Edit button
+                actionBarButton = UIBarButtonItem(barButtonSystemItem: .edit,
+                                                  target: self, action: #selector(editImage))
+                actionBarButton?.accessibilityIdentifier = "edit"
                 navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
 
-                // Update and present toolbar
+                // Navigation toolbar
+                var toolBarItems = [shareBarButton, spaceBetweenButtons, moveBarButton]
+                // pwg.users.favorites… methods available from Piwigo version 2.10
+                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
+                    favoriteBarButton = getFavoriteBarButton()
+                    toolBarItems.insert(contentsOf: [favoriteBarButton, spaceBetweenButtons], at: 2)
+                }
                 isToolbarRequired = true
                 let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
                 setToolbarItems(toolBarItems.compactMap { $0 }, animated: false)
@@ -560,90 +607,6 @@ class ImageDetailViewController: UIViewController {
                 // Hide navigation toolbar
                 isToolbarRequired = false
                 navigationController?.setToolbarHidden(true, animated: false)
-            }
-        }
-        else {
-            // iPad or iPhone in landscape orientation: buttons in navigation bar, toolbar hidden
-            isToolbarRequired = false
-            setToolbarItems([], animated: false)
-            navigationController?.setToolbarHidden(true, animated: true)
-
-            if NetworkVars.hasAdminRights {
-                // User with admin rights can edit, delete images and set as album image
-                var rightBarButtonItems = [UIBarButtonItem]()
-                if #available(iOS 14, *) {
-                    // The action button proposes:
-                    /// - to copy or move images to other albums
-                    /// - to set the image as album thumbnail
-                    /// - to edit image parameters,
-                    let menu = UIMenu(title: "", children: [albumMenu, editMenu].compactMap({$0}))
-                    actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
-                    rightBarButtonItems = [actionBarButton, deleteBarButton, shareBarButton]
-                    // pwg.users.favorites… methods available from Piwigo version 2.10
-                    if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
-                        favoriteBarButton = getFavoriteBarButton()
-                        rightBarButtonItems.insert(favoriteBarButton, at: 2)
-                    }
-                }
-                else {
-                    // The action menu is simply an Edit button
-                    actionBarButton = UIBarButtonItem(barButtonSystemItem: .edit,
-                                                      target: self, action: #selector(editImage))
-                    actionBarButton?.accessibilityIdentifier = "edit"
-                    
-                    // Buttons are gathered on the right side of the navigation bar
-                    rightBarButtonItems = [actionBarButton, deleteBarButton,
-                                           setThumbnailBarButton, moveBarButton,
-                                           shareBarButton]
-                    // pwg.users.favorites… methods available from Piwigo version 2.10
-                    if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
-                        favoriteBarButton = getFavoriteBarButton()
-                        rightBarButtonItems.insert(favoriteBarButton, at: 4)
-                    }
-                }
-                
-                // Update navigation bar
-                navigationItem.setRightBarButtonItems(rightBarButtonItems.compactMap { $0 }, animated: true)
-            }
-            else if NetworkVars.hasNormalRights &&
-                    CategoriesData.sharedInstance().getCategoryById(categoryId).hasUploadRights {
-                // WRONG =====> 'normal' user with upload access to the current category can edit images
-                // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by' values of images for checking rights
-                var rightBarButtonItems = [UIBarButtonItem]()
-                if #available(iOS 14, *) {
-                    // The action button proposes:
-                    /// - to copy or move images to other albums
-                    /// - to edit image parameters,
-                    let menu = UIMenu(title: "", children: [albumMenu, editMenu].compactMap({$0}))
-                    actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
-                    rightBarButtonItems = [actionBarButton, deleteBarButton, shareBarButton]
-                    // pwg.users.favorites… methods available from Piwigo version 2.10
-                    if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
-                        favoriteBarButton = getFavoriteBarButton()
-                        rightBarButtonItems.insert(favoriteBarButton, at: 2)
-                    }
-                }
-                else {
-                    // The action menu is simply an Edit button
-                    actionBarButton = UIBarButtonItem(barButtonSystemItem: .edit,
-                                                      target: self, action: #selector(editImage))
-                    actionBarButton?.accessibilityIdentifier = "edit"
-                    
-                    // Buttons are gathered on the right side of the navigation bar
-                    rightBarButtonItems = [actionBarButton, moveBarButton, shareBarButton]
-                    // pwg.users.favorites… methods available from Piwigo version 2.10
-                    if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
-                        favoriteBarButton = getFavoriteBarButton()
-                        rightBarButtonItems.insert(favoriteBarButton, at: 2)
-                    }
-                }
-                
-                // Update navigation bar
-                navigationItem.setRightBarButtonItems(rightBarButtonItems.compactMap { $0 }, animated: true)
-            }
-            else {
-                // User with no special access rights can only download images
-                navigationItem.rightBarButtonItems = [shareBarButton].compactMap { $0 }
             }
         }
     }
@@ -799,10 +762,8 @@ class ImageDetailViewController: UIViewController {
         let editImageSB = UIStoryboard(name: "EditImageParamsViewController", bundle: nil)
         guard let editImageVC = editImageSB.instantiateViewController(withIdentifier: "EditImageParamsViewController") as? EditImageParamsViewController else { return }
         editImageVC.images = [imageData]
-        let albumHasUploadRights = CategoriesData.sharedInstance()
-            .getCategoryById(categoryId).hasUploadRights
         editImageVC.hasTagCreationRights = NetworkVars.hasAdminRights ||
-                                           (NetworkVars.hasNormalRights && albumHasUploadRights)
+                                           (NetworkVars.hasNormalRights && userHasUploadRights)
         editImageVC.delegate = self
         pushView(editImageVC, forButton: actionBarButton)
     }
