@@ -811,8 +811,11 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
 -(void)updateButtonsInPreviewMode
 {
-    // Hide toolbar
-    [self.navigationController setToolbarHidden:YES animated:YES];
+    // Hide toolbar unless it is displaying the image detail view
+    UIViewController *displayedVC = self.navigationController.viewControllers.lastObject;
+    if (![displayedVC isKindOfClass:[ImageDetailViewController class]]) {
+        [self.navigationController setToolbarHidden:YES animated:YES];
+    }
 
     // Title is name of category
     if (self.categoryId == 0) {
