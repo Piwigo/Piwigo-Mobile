@@ -69,7 +69,8 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     albumData.numberOfImages = 0;
     albumData.totalNumberOfImages = 0;
     albumData.numberOfSubCategories = 0;
-        
+    albumData.categoryImage = [UIImage imageNamed:@"placeholder"];
+    
     // No upload rights
     albumData.hasUploadRights = parentAlbumData.hasUploadRights;
     
