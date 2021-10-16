@@ -16,6 +16,9 @@
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UIView *bottomLayer;
 @property (nonatomic, strong) UIImageView *selectedImage;
+@property (nonatomic, strong) UIImageView *favoriteImage;
+@property (nonatomic, strong) UIView *favoriteBckg;
+@property (nonatomic, strong) NSLayoutConstraint *favBckgConstraint;
 @property (nonatomic, strong) UIView *darkenView;
 @property (nonatomic, strong) UIImageView *playImage;
 @property (nonatomic, strong) UILabel *noDataLabel;
@@ -45,14 +48,6 @@
 		[self.contentView addSubview:self.cellImage];
         [self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.cellImage]];
 		
-		// Selected images are darker
-        self.darkenView = [UIView new];
-		self.darkenView.translatesAutoresizingMaskIntoConstraints = NO;
-		self.darkenView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.45];
-		self.darkenView.hidden = YES;
-		[self.contentView addSubview:self.darkenView];
-		[self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.darkenView]];
-		
         // Movie type
         self.playImage = [UIImageView new];
         UIImage *play = [UIImage imageNamed:@"video"];
@@ -61,45 +56,90 @@
         self.playImage.hidden = YES;
         self.playImage.translatesAutoresizingMaskIntoConstraints = NO;
         self.playImage.contentMode = UIViewContentModeScaleAspectFit;
-        [self.contentView addSubview:self.playImage];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintView:self.playImage to:CGSizeMake(25, 25)]];
-        [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromLeft:self.playImage amount:5]];
-        [self.contentView addConstraint:[NSLayoutConstraint constraintViewFromTop:self.playImage amount:5]];
+        [self.cellImage addSubview:self.playImage];
+        [self.cellImage addConstraints:[NSLayoutConstraint constraintView:self.playImage to:CGSizeMake(25, 25)]];
+        [self.cellImage addConstraint:[NSLayoutConstraint constraintViewFromLeft:self.playImage amount:5]];
+        [self.cellImage addConstraint:[NSLayoutConstraint constraintViewFromTop:self.playImage amount:5]];
+        
+        // Darker area below favorite icon
+        CGFloat width = self.contentView.bounds.size.width/2.0;
+        CGFloat height = self.contentView.bounds.size.height/2.0;
+        self.favoriteBckg = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, width, height)];
+        CAGradientLayer *gradient = [CAGradientLayer layer];
+        gradient.frame = self.favoriteBckg.bounds;
+        gradient.startPoint = CGPointMake(0,1);
+        gradient.endPoint = CGPointMake(0.4,0.4);
+        gradient.colors = @[(id)[UIColor colorWithWhite:0.2 alpha:1.0].CGColor,
+                            (id)[UIColor colorWithWhite:1.0 alpha:0.0].CGColor];
+        [self.favoriteBckg.layer insertSublayer:gradient atIndex:0];
+        self.favoriteBckg.translatesAutoresizingMaskIntoConstraints = NO;
+        self.favoriteBckg.hidden = YES;
+        [self.cellImage addSubview:self.favoriteBckg];
+        [self.cellImage addConstraint:[NSLayoutConstraint constraintView:self.favoriteBckg toWidth:width]];
+        [self.cellImage addConstraint:[NSLayoutConstraint constraintView:self.favoriteBckg toHeight:height]];
+        self.favBckgConstraint = [NSLayoutConstraint constraintViewFromBottom:self.favoriteBckg amount:0];
+        [self.cellImage addConstraint:self.favBckgConstraint];
+
+        // Favorite image
+        self.favoriteImage = [UIImageView new];
+        self.favoriteImage.translatesAutoresizingMaskIntoConstraints = NO;
+        self.favoriteImage.contentMode = UIViewContentModeScaleAspectFit;
+        UIImage *favorite;
+        if (@available(iOS 13.0, *)) {
+            favorite = [UIImage systemImageNamed:@"heart.fill"];
+        } else {
+            favorite = [UIImage imageNamed:@"imageFavorite"];
+        }
+        self.favoriteImage.image = [favorite imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        self.favoriteImage.tintColor = [UIColor whiteColor];
+        self.favoriteImage.hidden = YES;
+        [self.favoriteBckg addSubview:self.favoriteImage];
+        [self.favoriteBckg addConstraints:[NSLayoutConstraint constraintView:self.favoriteImage to:CGSizeMake(17, 17)]];
+        [self.favoriteBckg addConstraint:[NSLayoutConstraint constraintViewFromLeft:self.favoriteImage amount:3]];
+        [self.favoriteBckg addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.favoriteImage amount:3]];
+        
+        // Selected images are darker
+        self.darkenView = [UIView new];
+        self.darkenView.translatesAutoresizingMaskIntoConstraints = NO;
+        self.darkenView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.45];
+        self.darkenView.hidden = YES;
+        [self.cellImage addSubview:self.darkenView];
+        [self.cellImage addConstraints:[NSLayoutConstraint constraintFillSize:self.darkenView]];
 
         // Banners at bottom of thumbnails
 		self.bottomLayer = [UIView new];
 		self.bottomLayer.translatesAutoresizingMaskIntoConstraints = NO;
 		self.bottomLayer.alpha = 0.7;
-		[self.contentView addSubview:self.bottomLayer];
-		[self.contentView addConstraints:[NSLayoutConstraint constraintFillWidth:self.bottomLayer]];
-		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.bottomLayer amount:0]];
+		[self.cellImage addSubview:self.bottomLayer];
+		[self.cellImage addConstraints:[NSLayoutConstraint constraintFillWidth:self.bottomLayer]];
+		[self.cellImage addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.bottomLayer amount:0]];
 		
         // Title of images shown in banners
-		self.nameLabel = [UILabel new];
+        self.nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,0, self.contentView.bounds.size.width, CGFLOAT_MAX)];
 		self.nameLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		self.nameLabel.font = [UIFont piwigoFontTiny];
 		self.nameLabel.adjustsFontSizeToFitWidth = YES;
 		self.nameLabel.minimumScaleFactor = 0.7;
         self.nameLabel.numberOfLines = 1;
-		[self.contentView addSubview:self.nameLabel];
-		[self.contentView addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.nameLabel]];
-		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.nameLabel amount:1]];
-		[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.nameLabel
+		[self.bottomLayer addSubview:self.nameLabel];
+		[self.bottomLayer addConstraint:[NSLayoutConstraint constraintCenterVerticalView:self.nameLabel]];
+		[self.bottomLayer addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.nameLabel amount:1]];
+		[self.bottomLayer addConstraint:[NSLayoutConstraint constraintWithItem:self.nameLabel
 																	 attribute:NSLayoutAttributeLeft
 																	 relatedBy:NSLayoutRelationGreaterThanOrEqual
-																		toItem:self.contentView
+																		toItem:self.bottomLayer
 																	 attribute:NSLayoutAttributeLeft
 																	multiplier:1.0
 																	  constant:3]];
-		[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.nameLabel
+		[self.bottomLayer addConstraint:[NSLayoutConstraint constraintWithItem:self.nameLabel
 																	 attribute:NSLayoutAttributeRight
 																	 relatedBy:NSLayoutRelationLessThanOrEqual
-																		toItem:self.contentView
+																		toItem:self.bottomLayer
 																	 attribute:NSLayoutAttributeRight
 																	multiplier:1.0
 																	  constant:3]];
 		
-		[self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.bottomLayer
+		[self.cellImage addConstraint:[NSLayoutConstraint constraintWithItem:self.bottomLayer
 																	 attribute:NSLayoutAttributeCenterY
 																	 relatedBy:NSLayoutRelationEqual
 																		toItem:self.nameLabel
@@ -115,10 +155,10 @@
 		self.selectedImage.image = [checkMark imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 		self.selectedImage.tintColor = [UIColor piwigoColorOrange];
 		self.selectedImage.hidden = YES;
-		[self.contentView addSubview:self.selectedImage];
-		[self.contentView addConstraints:[NSLayoutConstraint constraintView:self.selectedImage to:CGSizeMake(25, 25)]];
-		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromRight:self.selectedImage amount:0]];
-		[self.contentView addConstraint:[NSLayoutConstraint constraintViewFromTop:self.selectedImage amount:5]];
+		[self.cellImage addSubview:self.selectedImage];
+		[self.cellImage addConstraints:[NSLayoutConstraint constraintView:self.selectedImage to:CGSizeMake(25, 25)]];
+		[self.cellImage addConstraint:[NSLayoutConstraint constraintViewFromRight:self.selectedImage amount:0]];
+		[self.cellImage addConstraint:[NSLayoutConstraint constraintViewFromTop:self.selectedImage amount:5]];
 		
         // Without data to show
 		self.noDataLabel = [UILabel new];
@@ -278,11 +318,7 @@
         self.nameLabel.hidden = YES;
     }
     
-	if(imageData.isVideo)
-	{
-//		self.darkenView.hidden = NO;
-		self.playImage.hidden = NO;
-	}
+	self.playImage.hidden = !imageData.isVideo;
 }
 
 -(void)setImageFromPath:(NSString *)imagePath
@@ -312,6 +348,7 @@
     [super prepareForReuse];
     self.cellImage.image = nil;
 	self.isSelected = NO;
+    self.isFavorite = NO;
 	self.playImage.hidden = YES;
 	self.noDataLabel.hidden = YES;
 }
@@ -322,6 +359,27 @@
 
 	self.selectedImage.hidden = !isSelected;
 	self.darkenView.hidden = !isSelected;
+}
+
+-(void)setIsFavorite:(BOOL)isFavorite
+{
+    _isFavorite = isFavorite;
+
+    if (self.bottomLayer.isHidden) {
+        // Place icon at the bottom
+        [self.cellImage removeConstraint:self.favBckgConstraint];
+        self.favBckgConstraint = [NSLayoutConstraint constraintViewFromBottom:self.favoriteBckg amount: 0];
+        [self.cellImage addConstraint:self.favBckgConstraint];
+    } else {
+        // Place icon above title
+        [self.nameLabel sizeToFit];
+        CGFloat height = self.nameLabel.bounds.size.height + 2;
+        [self.cellImage removeConstraint:self.favBckgConstraint];
+        self.favBckgConstraint = [NSLayoutConstraint constraintViewFromBottom:self.favoriteBckg amount: height];
+        [self.cellImage addConstraint:self.favBckgConstraint];
+    }
+    self.favoriteBckg.hidden = !isFavorite;
+    self.favoriteImage.hidden = !isFavorite;
 }
 
 -(void)highlightOnCompletion:(void (^)(void))completion
