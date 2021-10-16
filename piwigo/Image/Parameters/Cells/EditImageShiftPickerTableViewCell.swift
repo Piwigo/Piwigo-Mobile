@@ -201,7 +201,7 @@ extension EditImageShiftPickerTableViewCell: UIPickerViewDelegate
         if label == nil {
             label = UILabel()
             label?.font = UIFont.piwigoFontNormal()
-            label?.textColor = UIColor.piwigoColorLeftLabel()
+            label?.textColor = .piwigoColorLeftLabel()
         }
         switch PickerComponents(rawValue: component) {
         case .year:
