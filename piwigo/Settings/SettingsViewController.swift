@@ -97,7 +97,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = UIColor.piwigoColorBackground()
+        view.backgroundColor = .piwigoColorBackground()
 
         // Navigation bar
         let attributes = [
@@ -114,22 +114,22 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             navigationController?.navigationBar.prefersLargeTitles = true
         }
         navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
+        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
+        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
+        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
 
         if #available(iOS 15.0, *) {
             /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
             /// which by default produces a transparent background, to all navigation bars.
             let barAppearance = UINavigationBarAppearance()
             barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = UIColor.piwigoColorBackground()
+            barAppearance.backgroundColor = .piwigoColorBackground()
             navigationController?.navigationBar.standardAppearance = barAppearance
             navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
         }
 
         // Table view
-        settingsTableView?.separatorColor = UIColor.piwigoColorSeparator()
+        settingsTableView?.separatorColor = .piwigoColorSeparator()
         settingsTableView?.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
         settingsTableView?.reloadData()
     }
@@ -179,7 +179,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
                 alert.addAction(cancelAction)
                 alert.addAction(defaultAction)
-                alert.view.tintColor = UIColor.piwigoColorOrange()
+                alert.view.tintColor = .piwigoColorOrange()
                 if #available(iOS 13.0, *) {
                     alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
                 } else {
@@ -187,7 +187,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 }
                 present(alert, animated: true, completion: {
                     // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                    alert.view.tintColor = UIColor.piwigoColorOrange()
+                    alert.view.tintColor = .piwigoColorOrange()
                 })
             }
         }
@@ -401,7 +401,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         // Header label
         let headerLabel = UILabel()
         headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        headerLabel.textColor = UIColor.piwigoColorHeader()
+        headerLabel.textColor = .piwigoColorHeader()
         headerLabel.numberOfLines = 0
         headerLabel.adjustsFontSizeToFitWidth = false
         headerLabel.lineBreakMode = .byWordWrapping
@@ -1225,7 +1225,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.configure(with: NSLocalizedString("settings_contactUs", comment: "Contact Us"), detail: "")
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 if !MFMailComposeViewController.canSendMail() {
-                    cell.titleLabel.textColor = UIColor.piwigoColorRightLabel()
+                    cell.titleLabel.textColor = .piwigoColorRightLabel()
                 }
                 cell.accessibilityIdentifier = "mailContact"
                 tableViewCell = cell
@@ -1439,7 +1439,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         let footerLabel = UILabel()
         footerLabel.translatesAutoresizingMaskIntoConstraints = false
         footerLabel.font = UIFont.piwigoFontSmall()
-        footerLabel.textColor = UIColor.piwigoColorHeader()
+        footerLabel.textColor = .piwigoColorHeader()
         footerLabel.textAlignment = .center
         footerLabel.numberOfLines = 0
         footerLabel.adjustsFontSizeToFitWidth = false
@@ -1761,7 +1761,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let rectOfCellInTableView = settingsTableView?.rectForRow(at: rowAtIndexPath)
 
                 // Present list of actions
-                alert.view.tintColor = UIColor.piwigoColorOrange()
+                alert.view.tintColor = .piwigoColorOrange()
                 if #available(iOS 13.0, *) {
                     alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
                 } else {
@@ -1772,7 +1772,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 alert.popoverPresentationController?.sourceRect = rectOfCellInTableView ?? CGRect.zero
                 present(alert, animated: true, completion: {
                     // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                    alert.view.tintColor = UIColor.piwigoColorOrange()
+                    alert.view.tintColor = .piwigoColorOrange()
                 })
             default:
                 break
@@ -1897,7 +1897,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                         alert.addAction(dismissAction)
 
                         // Present list of actions
-                        alert.view.tintColor = UIColor.piwigoColorOrange()
+                        alert.view.tintColor = .piwigoColorOrange()
                         if #available(iOS 13.0, *) {
                             alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
                         } else {
@@ -1905,7 +1905,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                         }
                         self.present(alert, animated: true, completion: {
                             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                            alert.view.tintColor = UIColor.piwigoColorOrange()
+                            alert.view.tintColor = .piwigoColorOrange()
                         })
                     }
 
@@ -1923,7 +1923,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     alert.addAction(dismissAction)
 
                     // Present list of actions
-                    alert.view.tintColor = UIColor.piwigoColorOrange()
+                    alert.view.tintColor = .piwigoColorOrange()
                     if #available(iOS 13.0, *) {
                         alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
                     } else {
@@ -1931,7 +1931,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     }
                     self.present(alert, animated: true, completion: {
                         // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                        alert.view.tintColor = UIColor.piwigoColorOrange()
+                        alert.view.tintColor = .piwigoColorOrange()
                     })
                 })
             })
@@ -1945,7 +1945,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         let rectOfCellInTableView = settingsTableView?.rectForRow(at: rowAtIndexPath)
 
         // Present list of actions
-        alert.view.tintColor = UIColor.piwigoColorOrange()
+        alert.view.tintColor = .piwigoColorOrange()
         if #available(iOS 13.0, *) {
             alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
         } else {
@@ -1956,7 +1956,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         alert.popoverPresentationController?.sourceRect = rectOfCellInTableView ?? CGRect.zero
         present(alert, animated: true, completion: {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange()
+            alert.view.tintColor = .piwigoColorOrange()
         })
     }
 
