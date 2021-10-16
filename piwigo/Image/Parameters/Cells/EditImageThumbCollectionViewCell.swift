@@ -50,7 +50,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         editButtonView.layer.cornerRadius = 5
         removeButtonView.layer.cornerRadius = 15
 
-        editImageButton.tintColor = UIColor.piwigoColorOrange()
+        editImageButton.tintColor = .piwigoColorOrange()
 
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
@@ -59,16 +59,16 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
 
     @objc func applyColorPalette() {
         // Background
-        imageThumbnailView.backgroundColor = UIColor.piwigoColorBackground()
-        imageDetails.backgroundColor = UIColor.piwigoColorBackground()
-        editButtonView.backgroundColor = UIColor.piwigoColorBackground()
-        removeButtonView.backgroundColor = UIColor.piwigoColorCellBackground()
+        imageThumbnailView.backgroundColor = .piwigoColorBackground()
+        imageDetails.backgroundColor = .piwigoColorBackground()
+        editButtonView.backgroundColor = .piwigoColorBackground()
+        removeButtonView.backgroundColor = .piwigoColorCellBackground()
 
         // Image size, file name, date and time
-        imageSize.textColor = UIColor.piwigoColorLeftLabel()
-        imageFile.textColor = UIColor.piwigoColorLeftLabel()
-        imageDate.textColor = UIColor.piwigoColorLeftLabel()
-        imageTime.textColor = UIColor.piwigoColorLeftLabel()
+        imageSize.textColor = .piwigoColorLeftLabel()
+        imageFile.textColor = .piwigoColorLeftLabel()
+        imageDate.textColor = .piwigoColorLeftLabel()
+        imageTime.textColor = .piwigoColorLeftLabel()
     }
 
     func config(withImage imageData: PiwigoImageData?, removeOption hasRemove: Bool) {
@@ -245,7 +245,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         if let renameFileNameAction = renameFileNameAction {
             alert.addAction(renameFileNameAction)
         }
-        alert.view.tintColor = UIColor.piwigoColorOrange()
+        alert.view.tintColor = .piwigoColorOrange()
         if #available(iOS 13.0, *) {
             alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
         } else {
@@ -253,7 +253,7 @@ class EditImageThumbCollectionViewCell: UICollectionViewCell
         }
         topViewController?.present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange()
+            alert.view.tintColor = .piwigoColorOrange()
         }
     }
 
