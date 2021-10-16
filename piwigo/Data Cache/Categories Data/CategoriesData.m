@@ -15,8 +15,8 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 
 @interface CategoriesData()
 
-@property (nonatomic, strong) NSArray *allCategories;
-@property (nonatomic, strong) NSArray *communityCategoriesForUploadOnly;
+@property (nonatomic, strong) NSArray<PiwigoAlbumData *> *allCategories;
+@property (nonatomic, strong) NSArray<PiwigoAlbumData *> *communityCategoriesForUploadOnly;
 
 @end
 
@@ -154,7 +154,7 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 
 # pragma mark - Update cache
 
--(void)replaceAllCategories:(NSArray*)categories
+-(void)replaceAllCategories:(NSArray<PiwigoAlbumData *>*)categories
 {
     // Create new list of categories
     NSMutableArray *newCategories = [[NSMutableArray alloc] init];
@@ -191,7 +191,7 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
         [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
 }
 
--(void)updateCategories:(NSArray*)categories
+-(void)updateCategories:(NSArray<PiwigoAlbumData *>*)categories
 {
     // Known categories are updated if needed
     NSMutableArray *updatedCategories = [NSMutableArray new];
@@ -329,19 +329,30 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 
 # pragma mark - Get and remove images from cache
 
--(BOOL)categoryWithId:(NSInteger)category containsImageWithId:(NSInteger)imageId
+-(BOOL)categoryWithId:(NSInteger)category containsImagesWithId:(NSArray<NSNumber*>*)imageIds
 {
+    // Empty list of image IDs?
+    if (imageIds.count == 0) { return NO; }
+    
+    // Retrieve the album data
     PiwigoAlbumData *selectedCategory = [self getCategoryById:category];
     if (selectedCategory == nil) { return NO; }
-    for(PiwigoImageData *img in selectedCategory.imageList)
-    {
-        if (imageId == img.imageId)
-        {
-            return YES;
-        }
-    }
+    if (selectedCategory.imageList.count == 0) { return NO;}
     
-    return NO;
+    // Loop over the provided list of IDs
+    for (NSNumber *imageId in imageIds) {
+        NSInteger index = [selectedCategory.imageList indexOfObjectPassingTest:^BOOL(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            PiwigoImageData *image = (PiwigoImageData *)obj;
+            if (image.imageId == imageId.integerValue)
+                return YES;
+            else
+                return NO;
+        }];
+        
+        // At least an image could not be found.
+        if (index == NSNotFound) { return NO; }
+    }
+    return YES;
 }
 
 -(PiwigoImageData*)getImageForCategory:(NSInteger)category andIndex:(NSInteger)index
@@ -393,18 +404,29 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     PiwigoAlbumData *imageCategory = [self getCategoryById:[category integerValue]];
     [imageCategory addUploadedImage:image];
     [imageCategory incrementImageSizeByOne];
-
-    // Notify UI that an image has been uploaded and appended to cache
-    NSDictionary *userInfo = @{@"albumId" : category, @"imageId" : @(image.imageId)};
-    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationUploadedImage object:nil userInfo:userInfo];
     
-    // Notify UI that the number of images has changed and that the thumbnail may have to be changed
-    for (NSString *catStr in imageCategory.upperCategories) {
-        userInfo = @{@"albumId" : catStr,
-                     @"thumbnailId" : @(image.imageId),
-                     @"thumbnailUrl" : image.ThumbPath};
-        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedAlbumData object:nil userInfo:userInfo];
+    // Update category in cache
+    NSInteger index = [self indexOfCategoryWithId:category.integerValue inArray:self.allCategories];
+    if (index != NSNotFound) {
+        NSMutableArray<PiwigoAlbumData *> *newCatList = [self.allCategories mutableCopy];
+        [newCatList replaceObjectAtIndex:index withObject:imageCategory];
+        self.allCategories = newCatList;
     }
+
+    // Notify UI that...
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // ...an image has been uploaded and appended to cache
+        NSDictionary *userInfo = @{@"albumId" : category, @"imageId" : @(image.imageId)};
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationUploadedImage object:nil userInfo:userInfo];
+        
+        // ...the number of images has changed and that the thumbnail may have to be changed
+        for (NSString *catStr in imageCategory.upperCategories) {
+            userInfo = @{@"albumId" : catStr,
+                         @"thumbnailId" : @(image.imageId),
+                         @"thumbnailUrl" : image.ThumbPath};
+            [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationChangedAlbumData object:nil userInfo:userInfo];
+        }
+    });
 }
 
 -(void)deleteImage:(PiwigoImageData*)image
@@ -450,6 +472,14 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     PiwigoAlbumData *imageCategory = [self getCategoryById:[category integerValue]];
     [imageCategory deincrementImageSizeByOne];
     [imageCategory removeImages:@[image]];
+
+    // Update category in cache
+    NSInteger index = [self indexOfCategoryWithId:category.integerValue inArray:self.allCategories];
+    if (index != NSNotFound) {
+        NSMutableArray<PiwigoAlbumData *> *newImageList = [self.allCategories mutableCopy];
+        [newImageList replaceObjectAtIndex:index withObject:imageCategory];
+        self.allCategories = newImageList;
+    }
 
     // Notify UI that...
     dispatch_async(dispatch_get_main_queue(), ^{
