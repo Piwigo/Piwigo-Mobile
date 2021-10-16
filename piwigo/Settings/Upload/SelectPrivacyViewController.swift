@@ -42,7 +42,7 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
 
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = UIColor.piwigoColorBackground()
+        view.backgroundColor = .piwigoColorBackground()
 
         // Navigation bar
         let attributes = [
@@ -54,22 +54,22 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
             navigationController?.navigationBar.prefersLargeTitles = false
         }
         navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
+        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
+        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
+        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
 
         if #available(iOS 15.0, *) {
             /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
             /// which by default produces a transparent background, to all navigation bars.
             let barAppearance = UINavigationBarAppearance()
             barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = UIColor.piwigoColorBackground()
+            barAppearance.backgroundColor = .piwigoColorBackground()
             navigationController?.navigationBar.standardAppearance = barAppearance
             navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
         }
 
         // Table view
-        privacyTableView.separatorColor = UIColor.piwigoColorSeparator()
+        privacyTableView.separatorColor = .piwigoColorSeparator()
         privacyTableView.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
         privacyTableView.reloadData()
     }
@@ -137,7 +137,7 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
         // Header label
         let headerLabel = UILabel()
         headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        headerLabel.textColor = UIColor.piwigoColorHeader()
+        headerLabel.textColor = .piwigoColorHeader()
         headerLabel.numberOfLines = 0
         headerLabel.adjustsFontSizeToFitWidth = false
         headerLabel.lineBreakMode = .byWordWrapping
@@ -182,10 +182,10 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
             cell.accessoryType = .none
         }
 
-        cell.backgroundColor = UIColor.piwigoColorCellBackground()
-        cell.tintColor = UIColor.piwigoColorOrange()
+        cell.backgroundColor = .piwigoColorCellBackground()
+        cell.tintColor = .piwigoColorOrange()
         cell.textLabel?.font = UIFont.piwigoFontNormal()
-        cell.textLabel?.textColor = UIColor.piwigoColorLeftLabel()
+        cell.textLabel?.textColor = .piwigoColorLeftLabel()
         cell.textLabel?.adjustsFontSizeToFitWidth = false
         cell.textLabel?.text = privacyLevel.name
         cell.tag = Int(privacyLevel.rawValue)
