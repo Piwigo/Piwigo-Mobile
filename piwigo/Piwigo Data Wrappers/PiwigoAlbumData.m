@@ -438,10 +438,13 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 {
 	// Increment number of images in category
     self.numberOfImages++;
+    self.totalNumberOfImages++;
 	for(NSString *category in self.upperCategories)
 	{
-		[[CategoriesData sharedInstance] getCategoryById:[category integerValue]].totalNumberOfImages++;
-//        NSLog(@"•••> incrementImageSizeByOne: catId=%ld, nber:%ld, total:%ld", (long)[category integerValue], (long)self.numberOfImages, (long)self.totalNumberOfImages);
+        if (category.integerValue != self.albumId) {
+            [[CategoriesData sharedInstance] getCategoryById:[category integerValue]].totalNumberOfImages++;
+            NSLog(@"•••> incrementImageSizeByOne: catId=%ld, nber:%ld, total:%ld", (long)[category integerValue], (long)self.numberOfImages, (long)self.totalNumberOfImages);
+        }
 	}
 }
 
@@ -449,10 +452,13 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 {
 	// Decrement number of images in category
     self.numberOfImages--;
+    self.totalNumberOfImages--;
 	for(NSString *category in self.upperCategories)
 	{
-		[[CategoriesData sharedInstance] getCategoryById:[category integerValue]].totalNumberOfImages--;
-//        NSLog(@"•••> decrementImageSizeByOne: catId=%ld, nber:%ld, total:%ld", (long)[category integerValue], (long)self.numberOfImages, (long)self.totalNumberOfImages);
+        if (category.integerValue != self.albumId) {
+            [[CategoriesData sharedInstance] getCategoryById:[category integerValue]].totalNumberOfImages--;
+            NSLog(@"•••> decrementImageSizeByOne: catId=%ld, nber:%ld, total:%ld", (long)[category integerValue], (long)self.numberOfImages, (long)self.totalNumberOfImages);
+        }
 	}
 }
 
