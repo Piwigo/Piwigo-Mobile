@@ -19,7 +19,7 @@ let kPiwigoNotificationUpdateImageFileName = "kPiwigoNotificationUpdateImageFile
     func needToLoadMoreImages()
 }
 
-class ImageDetailViewController: UIViewController {
+@objc class ImageDetailViewController: UIViewController {
     
     @objc weak var imgDetailDelegate: ImageDetailDelegate?
     @objc var images = [PiwigoImageData]()
@@ -33,61 +33,19 @@ class ImageDetailViewController: UIViewController {
     private lazy var userHasUploadRights = false
     
     // MARK: - Navigation Bar & Toolbar Buttons
-    private var actionBarButton: UIBarButtonItem!       // iPhone & iPad until iOS 13:
+    private var actionBarButton: UIBarButtonItem?       // iPhone & iPad until iOS 13:
                                                         // - for editing image properties
                                                         // iPhone & iPad as from iOS 14:
                                                         // - for copying or moving images to other albums
                                                         // - for setting the image as album thumbnail
                                                         // - for editing image properties
-    private var favoriteBarButton: UIBarButtonItem!
+    private var favoriteBarButton: UIBarButtonItem?
+    private var shareBarButton: UIBarButtonItem?
+    private var setThumbnailBarButton: UIBarButtonItem?
+    private var moveBarButton: UIBarButtonItem?
+    private var deleteBarButton: UIBarButtonItem?
+    private var spaceBetweenButtons: UIBarButtonItem?
     
-    private lazy var shareBarButton: UIBarButtonItem = {
-        let button = UIBarButtonItem(barButtonSystemItem: .action,
-                                         target: self, action: #selector(shareImage))
-        button.tintColor = UIColor.piwigoColorOrange()
-        button.accessibilityIdentifier = "share"
-        return button
-    }()
-        
-    private lazy var setThumbnailBarButton: UIBarButtonItem = {
-        var button:UIBarButtonItem!
-        if #available(iOS 13.0, *) {
-            button = UIBarButtonItem(image: UIImage(systemName: "rectangle.and.paperclip"),
-                                     style: .plain, target: self,
-                                     action: #selector(setAsAlbumImage))
-        } else {
-            // Fallback on earlier versions
-            button = UIBarButtonItem(image: UIImage(named: "imagePaperclip"),
-                                     landscapeImagePhone: UIImage(named: "imagePaperclipCompact"),
-                                     style: .plain, target: self,
-                                     action: #selector(setAsAlbumImage))
-        }
-        button.tintColor = UIColor.piwigoColorOrange()
-        button.accessibilityIdentifier = "albumThumbnail"
-        return button
-    }()
-    
-    private lazy var moveBarButton: UIBarButtonItem = {
-        let button = UIBarButtonItem(barButtonSystemItem: .reply, target: self,
-                                     action: #selector(addImageToCategory))
-        button.tintColor = UIColor.piwigoColorOrange()
-        button.accessibilityIdentifier = "move"
-        return button
-    }()
-
-    private lazy var deleteBarButton: UIBarButtonItem = {
-        let button = UIBarButtonItem(barButtonSystemItem: .trash,
-                                     target: self, action: #selector(deleteImage))
-        button.tintColor = UIColor.red
-        button.accessibilityIdentifier = "delete"
-        return button
-    }()
-    
-    private lazy var spaceBetweenButtons: UIBarButtonItem = {
-        return UIBarButtonItem(barButtonSystemItem: .flexibleSpace,
-                               target: self, action: nil)
-    }()
-
     
     // MARK: - Albums related Actions & Menus
     @available(iOS 13.0, *)
@@ -208,7 +166,7 @@ class ImageDetailViewController: UIViewController {
         // Did we already load the list of favorite images?
         userHasUploadRights = CategoriesData.sharedInstance().getCategoryById(categoryId).hasUploadRights
         if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending,
-           NetworkVarsObjc.hasAdminRights || (NetworkVars.hasNormalRights && userHasUploadRights),
+           !NetworkVars.hasGuestRights,
            CategoriesData.sharedInstance().getCategoryById(kPiwigoFavoritesCategoryId) == nil {
             // Show HUD during the download
             showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment:"Loading…"), inMode: .annularDeterminate)
@@ -229,11 +187,9 @@ class ImageDetailViewController: UIViewController {
                         self.retrieveCompleteImageDataOfImage(self.imageData)
                     } else {
                         hidePiwigoHUD { [unowned self] in
-                            if self.favoriteBarButton != nil {
-                                let isFavorite = CategoriesData.sharedInstance()
-                                    .category(withId: kPiwigoFavoritesCategoryId, containsImageWithId: imageData.imageId)
-                                self.setFavoriteBarButton(isFavorite)
-                            }
+                            let isFavorite = CategoriesData.sharedInstance()
+                                .category(withId: kPiwigoFavoritesCategoryId, containsImagesWithId: [NSNumber(value: imageData.imageId)])
+                            self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
                         }
                     }
                 }
@@ -243,6 +199,14 @@ class ImageDetailViewController: UIViewController {
                 retrieveCompleteImageDataOfImage(imageData)
             }
         }
+
+        // Navigation bar
+        let navigationBar = navigationController?.navigationBar
+        navigationBar?.tintColor = .piwigoColorOrange()
+        
+        // Toolbar
+        let toolbar = navigationController?.toolbar
+        toolbar?.tintColor = .piwigoColorOrange()
 
         // Manage single taps
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapView)))
@@ -269,12 +233,10 @@ class ImageDetailViewController: UIViewController {
         // Navigation bar
         let navigationBar = navigationController?.navigationBar
         navigationBar?.barStyle = AppVars.isDarkPaletteActive ? .black : .default
-        navigationBar?.tintColor = .piwigoColorOrange()
 
         // Toolbar
         let toolbar = navigationController?.toolbar
         toolbar?.barStyle = AppVars.isDarkPaletteActive ? .black : .default
-        toolbar?.tintColor = .piwigoColorOrange()
 
         let attributes = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
@@ -451,12 +413,16 @@ class ImageDetailViewController: UIViewController {
     }
     
     private func updateNavBar() {
+        // Button displayed in all circumstances
+        shareBarButton = UIBarButtonItem.shareImageButton(self, action: #selector(ImageDetailViewController.shareImage))
+
         if #available(iOS 14, *) {
             // Interface depends on device and orientation
             let orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .portrait
             
-            // User with admin rights can do everything
-            if NetworkVarsObjc.hasAdminRights {
+            // User with admin or upload rights can do everything
+            if NetworkVars.hasAdminRights ||
+                (NetworkVars.hasNormalRights && userHasUploadRights) {
                 // The action button proposes:
                 /// - to copy or move images to other albums
                 /// - to set the image as album thumbnail
@@ -464,54 +430,14 @@ class ImageDetailViewController: UIViewController {
                 let menu = UIMenu(title: "", children: [albumMenu, editMenu].compactMap({$0}))
                 actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
                 actionBarButton?.accessibilityIdentifier = "actions"
-
-                if orientation.isPortrait {
-                    // Action button in navigation bar
-                    navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
-
-                    // Remaining buttons in navigation toolbar
-                    var toolBarItems = [shareBarButton, spaceBetweenButtons, deleteBarButton]
-                    // pwg.users.favorites… methods available from Piwigo version 2.10
-                    if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
-                        favoriteBarButton = getFavoriteBarButton()
-                        toolBarItems.insert(contentsOf: [favoriteBarButton, spaceBetweenButtons], at: 2)
-                    }
-                    isToolbarRequired = true
-                    let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
-                    setToolbarItems(toolBarItems.compactMap { $0 }, animated: false)
-                    navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
-                }
-                else {
-                    // All buttons in the navigation bar
-                    var rightBarButtonItems = [actionBarButton, deleteBarButton, shareBarButton]
-                    // pwg.users.favorites… methods available from Piwigo version 2.10
-                    if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
-                        favoriteBarButton = getFavoriteBarButton()
-                        rightBarButtonItems.insert(favoriteBarButton, at: 2)
-                    }
-                    navigationItem.setRightBarButtonItems(rightBarButtonItems.compactMap { $0 }, animated: true)
-
-                    // No toolbar
-                    isToolbarRequired = false
-                    setToolbarItems([], animated: false)
-                    navigationController?.setToolbarHidden(true, animated: true)
-                }
-            }
-            else if NetworkVars.hasNormalRights && userHasUploadRights {
-                // WRONG =====> 'normal' user with upload access to the current category can edit images
-                // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by' values of images for checking rights
-                // The action button proposes:
-                /// - to copy or move images to other albums
-                /// - to edit image parameters,
-                let menu = UIMenu(title: "", children: [albumMenu, editMenu].compactMap({$0}))
-                actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
-                actionBarButton?.accessibilityIdentifier = "actions"
+                deleteBarButton = UIBarButtonItem.deleteImageButton(self, action: #selector(deleteImage))
                 
                 if orientation.isPortrait {
                     // Action button in navigation bar
                     navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
 
-                    // Navigation toolbar
+                    // Remaining buttons in navigation toolbar
+                    spaceBetweenButtons = UIBarButtonItem.spaceBetweenButtons()
                     var toolBarItems = [shareBarButton, spaceBetweenButtons, deleteBarButton]
                     // pwg.users.favorites… methods available from Piwigo version 2.10
                     if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
@@ -529,7 +455,7 @@ class ImageDetailViewController: UIViewController {
                     // pwg.users.favorites… methods available from Piwigo version 2.10
                     if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
                         favoriteBarButton = getFavoriteBarButton()
-                        rightBarButtonItems.insert(favoriteBarButton, at: 2)
+                        rightBarButtonItems.insert(contentsOf: [favoriteBarButton], at: 2)
                     }
                     navigationItem.setRightBarButtonItems(rightBarButtonItems.compactMap { $0 }, animated: true)
 
@@ -540,8 +466,17 @@ class ImageDetailViewController: UIViewController {
                 }
             }
             else {
-                // User without access rights can only share images
-                navigationItem.rightBarButtonItems = [shareBarButton].compactMap { $0 }
+                // Right side of navigation bar
+                /// — guests can share photo of high-resolution or not (depends on user's account sttings)
+                /// — all non-guest users can set favorites
+                var rightBarButtonItems = [shareBarButton]
+                // pwg.users.favorites… methods available from Piwigo version 2.10
+                if !NetworkVars.hasGuestRights,
+                    "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
+                    favoriteBarButton = getFavoriteBarButton()
+                    rightBarButtonItems.insert(favoriteBarButton, at: 1)
+                }
+                navigationItem.setRightBarButtonItems(rightBarButtonItems.compactMap { $0 }, animated: true)
 
                 // Hide navigation toolbar
                 isToolbarRequired = false
@@ -551,7 +486,7 @@ class ImageDetailViewController: UIViewController {
         else {
             // Fallback on earlier versions
             // User with admin rights can do everything
-            if NetworkVarsObjc.hasAdminRights {
+            if NetworkVars.hasAdminRights {
                 // Navigation bar
                 // The action menu is simply an Edit button
                 actionBarButton = UIBarButtonItem(barButtonSystemItem: .edit,
@@ -560,13 +495,17 @@ class ImageDetailViewController: UIViewController {
                 navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
 
                 // Navigation toolbar
+                deleteBarButton = UIBarButtonItem.deleteImageButton(self, action: #selector(deleteImage))
+                moveBarButton = UIBarButtonItem.moveImageButton(self, action: #selector(addImageToCategory))
+                setThumbnailBarButton = UIBarButtonItem.setThumbnailButton(self, action: #selector(setAsAlbumImage))
+                spaceBetweenButtons = UIBarButtonItem.spaceBetweenButtons()
                 var toolBarItems = [shareBarButton, spaceBetweenButtons, moveBarButton,
-                                spaceBetweenButtons, setThumbnailBarButton,
-                                spaceBetweenButtons, deleteBarButton]
+                                    spaceBetweenButtons, setThumbnailBarButton,
+                                    spaceBetweenButtons, deleteBarButton].compactMap { $0 }
                 // pwg.users.favorites… methods available from Piwigo version 2.10
                 if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
                     favoriteBarButton = getFavoriteBarButton()
-                    toolBarItems.insert(contentsOf: [favoriteBarButton, spaceBetweenButtons], at: 4)
+                    toolBarItems.insert(contentsOf: [favoriteBarButton, spaceBetweenButtons].compactMap { $0 }, at: 4)
                 }
                 isToolbarRequired = true
                 let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
@@ -584,11 +523,14 @@ class ImageDetailViewController: UIViewController {
                 navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
 
                 // Navigation toolbar
-                var toolBarItems = [shareBarButton, spaceBetweenButtons, moveBarButton]
+                deleteBarButton = UIBarButtonItem.deleteImageButton(self, action: #selector(deleteImage))
+                moveBarButton = UIBarButtonItem.moveImageButton(self, action: #selector(addImageToCategory))
+                spaceBetweenButtons = UIBarButtonItem.spaceBetweenButtons()
+                var toolBarItems = [shareBarButton, spaceBetweenButtons, moveBarButton].compactMap { $0 }
                 // pwg.users.favorites… methods available from Piwigo version 2.10
                 if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
                     favoriteBarButton = getFavoriteBarButton()
-                    toolBarItems.insert(contentsOf: [favoriteBarButton, spaceBetweenButtons], at: 2)
+                    toolBarItems.insert(contentsOf: [favoriteBarButton, spaceBetweenButtons].compactMap { $0 }, at: 2)
                 }
                 isToolbarRequired = true
                 let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
@@ -596,8 +538,17 @@ class ImageDetailViewController: UIViewController {
                 navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
             }
             else {
-                // User without access rights can only share images
-                navigationItem.rightBarButtonItems = [shareBarButton].compactMap { $0 }
+                // Right side of navigation bar
+                /// — guests can share photo of high-resolution or not (depends on user's account sttings)
+                /// — all non-guest users can set favorites
+                var rightBarButtonItems = [shareBarButton]
+                // pwg.users.favorites… methods available from Piwigo version 2.10
+                if !NetworkVars.hasGuestRights,
+                    "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
+                    favoriteBarButton = getFavoriteBarButton()
+                    rightBarButtonItems.insert(favoriteBarButton, at: 1)
+                }
+                navigationItem.setRightBarButtonItems(rightBarButtonItems.compactMap { $0 }, animated: true)
 
                 // Hide navigation toolbar
                 isToolbarRequired = false
@@ -610,10 +561,11 @@ class ImageDetailViewController: UIViewController {
     // They are also disabled during an action
     private func setEnableStateOfButtons(_ state: Bool) {
         actionBarButton?.isEnabled = state
-        shareBarButton.isEnabled = state
-        moveBarButton.isEnabled = state
-        setThumbnailBarButton.isEnabled = state
-        deleteBarButton.isEnabled = state
+        shareBarButton?.isEnabled = state
+        moveBarButton?.isEnabled = state
+        setThumbnailBarButton?.isEnabled = state
+        deleteBarButton?.isEnabled = state
+        favoriteBarButton?.isEnabled = state
     }
 
     private func retrieveCompleteImageDataOfImage(_ imageData: PiwigoImageData) {
@@ -633,11 +585,10 @@ class ImageDetailViewController: UIViewController {
                     self.images[index] = self.imageData
                     
                     // Set favorite button
-                    if self.favoriteBarButton != nil {
-                        let isFavorite = CategoriesData.sharedInstance()
-                            .category(withId: kPiwigoFavoritesCategoryId, containsImageWithId: imageData.imageId)
-                        self.setFavoriteBarButton(isFavorite)
-                    }
+                    let isFavorite = CategoriesData.sharedInstance()
+                        .category(withId: kPiwigoFavoritesCategoryId,
+                                  containsImagesWithId: [NSNumber(value: imageData.imageId)])
+                    self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
 
                     // Refresh image if needed
                     if shouldUpdateImage {
@@ -1119,71 +1070,27 @@ class ImageDetailViewController: UIViewController {
     }
 
     
-    // MARK: - (Add to) / (remove from) favorites
+    // MARK: - Add/remove image from favorites
 
     private func getFavoriteBarButton() -> UIBarButtonItem {
         let isFavorite = CategoriesData.sharedInstance()
-            .category(withId: kPiwigoFavoritesCategoryId, containsImageWithId: imageData.imageId)
-        var button:UIBarButtonItem!
-        if #available(iOS 13.0, *) {
-            if isFavorite {
-                button = UIBarButtonItem(image: UIImage(systemName: "heart.fill"),
-                                         style: .plain, target: self,
-                                         action: #selector(removeFromFavorites))
-            } else {
-                button = UIBarButtonItem(image: UIImage(systemName: "heart"),
-                                         style: .plain, target: self,
-                                         action: #selector(addToFavorites))
-            }
-        } else {
-            // Fallback on earlier versions
-            if isFavorite {
-                button = UIBarButtonItem(image: UIImage(named: "imageFavorite"),
-                                         landscapeImagePhone: UIImage(named: "imageFavoriteCompact"),
-                                         style: .plain, target: self,
-                                         action: #selector(removeFromFavorites))
-            } else {
-                button = UIBarButtonItem(image: UIImage(named: "imageNotFavorite"),
-                                         landscapeImagePhone: UIImage(named: "imageNotFavoriteCompact"),
-                                         style: .plain, target: self,
-                                         action: #selector(addToFavorites))
-            }
-        }
-        button.tintColor = .piwigoColorOrange()
-        button.accessibilityIdentifier = "favorite"
+            .category(withId: kPiwigoFavoritesCategoryId, containsImagesWithId: [NSNumber(value: imageData.imageId)])
+        let button = UIBarButtonItem.favoriteImageButton(isFavorite, target: self)
+        button.action = isFavorite ? #selector(removeFromFavorites) : #selector(addToFavorites)
+        button.isEnabled = true
         return button
     }
     
-    private func setFavoriteBarButton(_ state:Bool) {
-        if state {
-            if #available(iOS 13.0, *) {
-                self.favoriteBarButton.image = UIImage(systemName: "heart.fill")
-            } else {
-                self.favoriteBarButton.image = UIImage(named: "imageFavorite")
-                self.favoriteBarButton.landscapeImagePhone = UIImage(named: "imageFavoriteCompact")
-            }
-            self.favoriteBarButton.action = #selector(self.removeFromFavorites)
-            self.favoriteBarButton?.isEnabled = true
-        } else {
-            if #available(iOS 13.0, *) {
-                self.favoriteBarButton.image = UIImage(systemName: "heart")
-            } else {
-                self.favoriteBarButton.image = UIImage(named: "imageNotFavorite")
-                self.favoriteBarButton.landscapeImagePhone = UIImage(named: "imageNotFavoriteCompact")
-            }
-            self.favoriteBarButton.action = #selector(self.addToFavorites)
-            self.favoriteBarButton?.isEnabled = true
-        }
-    }
-        
     @objc func addToFavorites() {
-        // Disable buttons during action
+        // Disable button during action
         favoriteBarButton?.isEnabled = false
 
         // Send request to Piwigo server
-        ImageUtilities.addToFavorites(imageData) {
+        ImageUtilities.addToFavorites(imageData) { [unowned self] in
             DispatchQueue.main.async {
-                self.setFavoriteBarButton(true)
+                self.favoriteBarButton?.setFavoriteImage(for: true)
+                self.favoriteBarButton?.action = #selector(self.removeFromFavorites)
+                self.favoriteBarButton?.isEnabled = true
             }
         } failure: { error in
             DispatchQueue.main.async {
@@ -1195,18 +1102,20 @@ class ImageDetailViewController: UIViewController {
     }
 
     @objc func removeFromFavorites() {
-        // Disable buttons during action
+        // Disable button during action
         favoriteBarButton?.isEnabled = false
 
         // Send request to Piwigo server
-        ImageUtilities.removeFromFavorites(imageData) {
+        ImageUtilities.removeFromFavorites(imageData) { [unowned self] in
             DispatchQueue.main.async {
                 if self.categoryId == kPiwigoFavoritesCategoryId {
                     // Remove image from the album of favorites
                     self.didRemoveImage(withId: self.imageData.imageId)
                 } else {
                     // Update favorite button
-                    self.setFavoriteBarButton(false)
+                    self.favoriteBarButton?.setFavoriteImage(for: false)
+                    self.favoriteBarButton?.action = #selector(addToFavorites)
+                    self.favoriteBarButton?.isEnabled = true
                 }
             }
         } failure: { error in
@@ -1497,8 +1406,9 @@ extension ImageDetailViewController: SelectCategoryImageRemovedDelegate
                 // pwg.users.favorites… methods available from Piwigo version 2.10
                 if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
                     let isFavorite = CategoriesData.sharedInstance()
-                        .category(withId: kPiwigoFavoritesCategoryId, containsImageWithId: imageData.imageId)
-                    setFavoriteBarButton(isFavorite)
+                        .category(withId: kPiwigoFavoritesCategoryId,
+                                  containsImagesWithId: [NSNumber(value: imageData.imageId)])
+                    self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
                 }
             }
             return
@@ -1526,8 +1436,9 @@ extension ImageDetailViewController: SelectCategoryImageRemovedDelegate
                 // Reset favorites button
                 if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
                     let isFavorite = CategoriesData.sharedInstance()
-                        .category(withId: kPiwigoFavoritesCategoryId, containsImageWithId: imageData.imageId)
-                    setFavoriteBarButton(isFavorite)
+                        .category(withId: kPiwigoFavoritesCategoryId,
+                                  containsImagesWithId: [NSNumber(value: imageData.imageId)])
+                    self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
                 }
             }
             return
