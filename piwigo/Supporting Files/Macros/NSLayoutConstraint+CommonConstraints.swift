@@ -9,12 +9,12 @@
 
 import UIKit
 
+@objc
 extension NSLayoutConstraint {
     // -------------------------- CENTERING --------------------------
     /// Centers the view vertically, this is left to right "|--here--|"
     /// \param view The view to be centered
     /// \returns A NSLayoutConstraint is returned
-    @objc
     class func constraintCenterVerticalView(_ view: UIView?) -> NSLayoutConstraint? {
         if let view = view {
             return NSLayoutConstraint(item: view, attribute: .centerX, relatedBy: .equal,
@@ -26,7 +26,6 @@ extension NSLayoutConstraint {
     /// Centers the view horizontally, this is top to bottom
     /// \param view The view to be centered
     /// \returns A NSLayoutConstraint is returned
-    @objc
     class func constraintCenterHorizontalView(_ view: UIView?) -> NSLayoutConstraint? {
         if let view = view {
             return NSLayoutConstraint(item: view, attribute: .centerY, relatedBy: .equal,
@@ -38,7 +37,6 @@ extension NSLayoutConstraint {
     /// Centers the view both horizontally and vertically
     /// \param view The view to be centered
     /// \returns An array of NSLayoutConstraints is returned
-    @objc
     class func constraintCenter(_ view: UIView?) -> [NSLayoutConstraint]? {
         return [
         NSLayoutConstraint.constraintCenterHorizontalView(view),
@@ -50,7 +48,6 @@ extension NSLayoutConstraint {
     /// Match the view's width of it's superview
     /// \param view The view to be matched
     /// \returns An array of NSLayoutConstraints is returned
-    @objc
     class func constraintFillWidth(_ view: UIView?) -> [NSLayoutConstraint]? {
         var left: NSLayoutConstraint? = nil
         if let view = view {
@@ -68,7 +65,6 @@ extension NSLayoutConstraint {
     /// Match the view's height of it's superview
     /// \param view The view to be matched
     /// \returns An array of NSLayoutConstraints is returned
-    @objc
     class func constraintFillHeight(_ view: UIView?) -> [NSLayoutConstraint]? {
         var top: NSLayoutConstraint? = nil
         if let view = view {
@@ -86,7 +82,6 @@ extension NSLayoutConstraint {
     /// Match the view's width and height of it's superview
     /// \param view The view to be matched in size
     /// \returns An array of NSLayoutConstraints is returned
-    @objc
     class func constraintFillSize(_ view: UIView?) -> [NSLayoutConstraint]? {
         var array: [NSLayoutConstraint] = []
         if let constraint = NSLayoutConstraint.constraintFillWidth(view) {
@@ -102,7 +97,6 @@ extension NSLayoutConstraint {
     /// \param view The view whose height is to be changed
     /// \param height The specific height wanted
     /// \returns A NSLayoutConstraint is returned
-    @objc
     class func constraintView(_ view: UIView?, toHeight height: CGFloat) -> NSLayoutConstraint? {
         if let view = view {
             return NSLayoutConstraint(item: view, attribute: .height, relatedBy: .equal,
@@ -115,7 +109,6 @@ extension NSLayoutConstraint {
     /// \param view The view whose width is to be changed
     /// \param width The specific width wanted
     /// \returns A NSLayoutConstraint is returned
-    @objc
     class func constraintView(_ view: UIView?, toWidth width: CGFloat) -> NSLayoutConstraint? {
         if let view = view {
             return NSLayoutConstraint(item: view, attribute: .width, relatedBy: .equal,
@@ -128,7 +121,6 @@ extension NSLayoutConstraint {
     /// \param view The view whose size is to be changed
     /// \param size The specific CGSize wanted
     /// \returns An array of NSLayoutConstraints is returned
-    @objc
     class func constraintView(_ view: UIView?, to size: CGSize) -> [NSLayoutConstraint]? {
         if let view = view {
             return [NSLayoutConstraint.constraintView(view, toHeight: size.height),
@@ -142,7 +134,6 @@ extension NSLayoutConstraint {
     /// \param view1 The view whose baseline is to be changed
     /// \param view2 The view whose baseline is to be used to set the other
     /// \returns A NSLayoutConstraint is returned
-    @objc
     class func constraintView(toSameBase view1: UIView?, equalTo view2: UIView?) -> NSLayoutConstraint? {
         if let view1 = view1 {
             if let view2 = view2 {
@@ -156,7 +147,6 @@ extension NSLayoutConstraint {
     /// Constrains a view's width to be equal to it's height
     /// \param view The view to be constrained
     /// \returns A NSLayoutConstraint is returned
-    @objc
     class func constraintViewWidth(toEqualHeight view: UIView?) -> NSLayoutConstraint? {
         if let view = view {
             return NSLayoutConstraint(item: view, attribute: .width, relatedBy: .equal,
@@ -168,7 +158,6 @@ extension NSLayoutConstraint {
     /// Constrains a view's height to be equal to it's width
     /// \param view The view to be constrained
     /// \returns A NSLayoutConstraint is returned
-    @objc
     class func constraintViewHeight(toEqualWidth view: UIView?) -> NSLayoutConstraint? {
         if let view = view {
             return NSLayoutConstraint(item: view, attribute: .height, relatedBy: .equal,
@@ -182,7 +171,6 @@ extension NSLayoutConstraint {
     /// \param view The view to be constrained
     /// \param leftAmount The specific amount of pixels for the view to be from the left
     /// \returns A NSLayoutConstraint is returned
-    @objc
     class func constraintView(fromLeft view: UIView?, amount leftAmount: CGFloat) -> NSLayoutConstraint? {
         if let view = view {
             return NSLayoutConstraint(item: view, attribute: .left, relatedBy: .equal,
@@ -195,7 +183,6 @@ extension NSLayoutConstraint {
     /// \param view The view to be constrained
     /// \param rightAmount The specific amount of pixels for the view to be from the right
     /// \returns A NSLayoutConstraint is returned
-    @objc
     class func constraintView(fromRight view: UIView?, amount rightAmount: CGFloat) -> NSLayoutConstraint? {
         if let view = view {
             return NSLayoutConstraint(item: view, attribute: .right, relatedBy: .equal,
@@ -208,7 +195,6 @@ extension NSLayoutConstraint {
     /// \param view The view to be constrained
     /// \param topAmount The specific amount of pixels for the view to be from the top
     /// \returns A NSLayoutConstraint is returned
-    @objc
     class func constraintView(fromTop view: UIView?, amount topAmount: CGFloat) -> NSLayoutConstraint? {
         if let view = view {
             return NSLayoutConstraint(item: view, attribute: .top, relatedBy: .equal,
@@ -221,7 +207,6 @@ extension NSLayoutConstraint {
     /// \param view The view to be constrained
     /// \param bottomAmount The specific amount of pixels for the view to be from the bottom
     /// \returns A NSLayoutConstraint is returned
-    @objc
     class func constraintView(fromBottom view: UIView?, amount bottomAmount: CGFloat) -> NSLayoutConstraint? {
         if let view = view {
             return NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal,
@@ -234,7 +219,6 @@ extension NSLayoutConstraint {
     /// \param view The view to be moved to the other
     /// \param copyView The view whose location is to be used
     /// \returns An array of NSLayoutConstraints is returned
-    @objc
     class func constraintView(toSameLocation view: UIView?, as copyView: UIView?) -> [NSLayoutConstraint]? {
         if let view = view {
             return [
