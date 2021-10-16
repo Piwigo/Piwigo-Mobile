@@ -149,7 +149,7 @@
 	return self;
 }
 
--(void)setupWithImageData:(PiwigoImageData*)imageData forCategoryId:(NSInteger)categoryId
+-(void)setupWithImageData:(PiwigoImageData*)imageData inCategoryId:(NSInteger)categoryId
 {
 	self.imageData = imageData;
     self.isAccessibilityElement = YES;

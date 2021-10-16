@@ -16,7 +16,7 @@
 @property (nonatomic, strong) PiwigoImageData *imageData;
 @property (nonatomic, assign) BOOL isSelected;
 
--(void)setupWithImageData:(PiwigoImageData*)imageData forCategoryId:(NSInteger)categoryId;
+-(void)setupWithImageData:(PiwigoImageData*)imageData inCategoryId:(NSInteger)categoryId;
 -(void)highlightOnCompletion:(void (^)(void))completion;
 
 @end
