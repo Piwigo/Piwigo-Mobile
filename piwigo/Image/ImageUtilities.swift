@@ -255,6 +255,7 @@ class ImageUtilities: NSObject {
         }
     }
 
+    @objc
     class func addToFavorites(_ imageData: PiwigoImageData,
                       completion: @escaping () -> Void,
                       failure: @escaping (NSError) -> Void) {
@@ -310,6 +311,7 @@ class ImageUtilities: NSObject {
         }
     }
 
+    @objc
     class func removeFromFavorites(_ imageData: PiwigoImageData,
                                    completion: @escaping () -> Void,
                                    failure: @escaping (NSError) -> Void) {
