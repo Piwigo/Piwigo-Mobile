@@ -463,7 +463,12 @@
     if (self.albumData.images.count > indexPath.row) {
         // Create cell from Piwigo data
         PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
-        [cell setupWithImageData:imageData forCategoryId:kPiwigoSearchCategoryId];
+        [cell setupWithImageData:imageData inCategoryId:kPiwigoSearchCategoryId];
+    
+        // pwg.users.favorites… methods available from Piwigo version 2.10
+        if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending)) {
+            cell.isFavorite = [CategoriesData.sharedInstance categoryWithId:kPiwigoFavoritesCategoryId containsImagesWithId:@[[NSNumber numberWithInteger:imageData.imageId]]];
+        }
     }
     
     // Calculate the number of thumbnails displayed per page

@@ -852,8 +852,13 @@
     if (self.albumData.images.count > indexPath.row) {
         // Create cell from Piwigo data
         PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
-        [cell setupWithImageData:imageData forCategoryId:self.categoryId];
+        [cell setupWithImageData:imageData inCategoryId:self.categoryId];
         cell.isSelected = [self.selectedImageIds containsObject:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]];
+        
+        // pwg.users.favorites… methods available from Piwigo version 2.10
+        if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending)) {
+            cell.isFavorite = [CategoriesData.sharedInstance categoryWithId:kPiwigoFavoritesCategoryId containsImagesWithId:@[[NSNumber numberWithInteger:imageData.imageId]]];
+        }
         
         // Add pan gesture recognition
         UIPanGestureRecognizer *imageSeriesRocognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(touchedImages:)];

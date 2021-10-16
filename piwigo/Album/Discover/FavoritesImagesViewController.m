@@ -775,8 +775,9 @@
     if (self.albumData.images.count > indexPath.row) {
         // Create cell from Piwigo data
         PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
-        [cell setupWithImageData:imageData forCategoryId:kPiwigoFavoritesCategoryId];
+        [cell setupWithImageData:imageData inCategoryId:kPiwigoFavoritesCategoryId];
         cell.isSelected = [self.selectedImageIds containsObject:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]];
+        cell.isFavorite = YES;
         
         // Add pan gesture recognition
         UIPanGestureRecognizer *imageSeriesRocognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(touchedImages:)];
