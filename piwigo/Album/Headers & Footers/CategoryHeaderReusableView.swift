@@ -22,7 +22,7 @@ class CategoryHeaderReusableView: UICollectionReusableView {
         commentLabel?.adjustsFontSizeToFitWidth = false
         commentLabel?.lineBreakMode = .byWordWrapping
         commentLabel?.textAlignment = .center
-        commentLabel?.font = UIFont.piwigoFontNormal()
+        commentLabel?.font = .piwigoFontNormal()
         commentLabel?.text = ""
 
         if let commentLabel = commentLabel {
