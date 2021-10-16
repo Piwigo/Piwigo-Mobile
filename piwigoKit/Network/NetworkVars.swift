@@ -97,6 +97,9 @@ public class NetworkVars: NSObject {
     /// - Remembers that the user cancelled login attempt
     public static var userCancelledCommunication = false
     
+    /// - Logged user has guest rigths, false by default
+    public static var hasGuestRights = false
+
     /// - Logged user has normal rigths, false by default
     public static var hasNormalRights = false
 
