@@ -128,7 +128,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
     func configure(with imageAsset: PHAsset, thumbnailSize: CGFloat) {
         
         // Background color and aspect
-        backgroundColor = UIColor.piwigoColorCellBackground()
+        backgroundColor = .piwigoColorCellBackground()
         waitingActivity.color = UIColor.white
         uploadingProgress.trackTintColor = UIColor.white
         localIdentifier = imageAsset.localIdentifier
