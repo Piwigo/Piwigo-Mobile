@@ -42,7 +42,7 @@ class CategoryTableViewCell: UITableViewCell, CAAnimationDelegate {
         categoryData = category
         
         // Is this a sub-category?
-        categoryLabel.font = UIFont.piwigoFontNormal()
+        categoryLabel.font = .piwigoFontNormal()
         categoryLabel.textColor = .piwigoColorLeftLabel()
         categoryLabel.text = categoryData.name
         if depth == 0 {
