@@ -46,11 +46,11 @@ class UploadImageTableViewCell: MGSwipeTableCell {
     func configure(with upload:Upload, availableWidth:Int) {
 
         // Background color and aspect
-        backgroundColor = UIColor.piwigoColorCellBackground()
+        backgroundColor = .piwigoColorCellBackground()
         localIdentifier = upload.localIdentifier
 
         // Upload info label
-        uploadInfoLabel.textColor = UIColor.piwigoColorLeftLabel()
+        uploadInfoLabel.textColor = .piwigoColorLeftLabel()
         uploadInfoLabel.text = upload.stateLabel
         
         // Uploading progress bar
@@ -66,18 +66,18 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         }
 
         // Right => Left swipe commands
-        swipeBackgroundColor = UIColor.piwigoColorCellBackground()
+        swipeBackgroundColor = .piwigoColorCellBackground()
         rightExpansion.buttonIndex = 0
         rightExpansion.threshold = 3.0
         rightExpansion.fillOnTrigger = true
-        rightExpansion.expansionColor = UIColor.piwigoColorBrown()
+        rightExpansion.expansionColor = .piwigoColorBrown()
         rightSwipeSettings.transition = .border
         switch upload.state {
         case .preparing, .prepared, .uploading, .uploaded, .finishing:
             rightButtons = [];
         case .preparingError, .uploadingError, .finishingError:
             rightButtons = [
-                MGSwipeButton(title: "", icon: UIImage(named: "swipeRetry.png"), backgroundColor: UIColor.piwigoColorOrange(), callback: { sender in
+                MGSwipeButton(title: "", icon: UIImage(named: "swipeRetry.png"), backgroundColor: .piwigoColorOrange(), callback: { sender in
                     UploadManager.shared.backgroundQueue.async {
                         UploadManager.shared.resume(failedUploads: [upload.objectID], completionHandler: { (_) in
                             UploadManager.shared.findNextImageToUpload()
@@ -85,26 +85,26 @@ class UploadImageTableViewCell: MGSwipeTableCell {
                     }
                     return true
                 }),
-                MGSwipeButton(title: "", icon: UIImage(named: "swipeCancel.png"), backgroundColor: UIColor.piwigoColorBrown(), callback: { sender in
+                MGSwipeButton(title: "", icon: UIImage(named: "swipeCancel.png"), backgroundColor: .piwigoColorBrown(), callback: { sender in
                     self.uploadsProvider.delete(uploadRequests: [upload.objectID]) { _ in }
                     return true
                 })]
         case .waiting, .deleted:
             rightButtons = [
-                MGSwipeButton(title: "", icon: UIImage(named: "swipeCancel.png"), backgroundColor: UIColor.piwigoColorBrown(), callback: { sender in
+                MGSwipeButton(title: "", icon: UIImage(named: "swipeCancel.png"), backgroundColor: .piwigoColorBrown(), callback: { sender in
                     self.uploadsProvider.delete(uploadRequests: [upload.objectID]) { _ in }
                     return true
                 })]
         case .preparingFail, .formatError, .uploadingFail, .finished, .moderated:
             rightButtons = [
-                MGSwipeButton(title: "", icon: UIImage(named: "swipeTrashSmall.png"), backgroundColor: UIColor.red, callback: { sender in
+                MGSwipeButton(title: "", icon: UIImage(named: "swipeTrashSmall.png"), backgroundColor: .red, callback: { sender in
                     self.uploadsProvider.delete(uploadRequests: [upload.objectID]) { _ in }
                     return true
                 })]
         }
 
         // Image info label
-        imageInfoLabel.textColor = UIColor.piwigoColorRightLabel()
+        imageInfoLabel.textColor = .piwigoColorRightLabel()
         
         // Determine from where the file comes from:
         // => Photo Library: use PHAsset local identifier
