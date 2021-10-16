@@ -244,7 +244,7 @@ extension TagSelectorViewController {
         // Footer label
         let footerLabel = UILabel()
         footerLabel.translatesAutoresizingMaskIntoConstraints = false
-        footerLabel.font = UIFont.piwigoFontLight()
+        footerLabel.font = .piwigoFontLight()
         footerLabel.textColor = .piwigoColorHeader()
         footerLabel.textAlignment = .center
         footerLabel.numberOfLines = 1
