@@ -36,11 +36,11 @@ class UploadImageHeaderView: UITableViewHeaderFooterView {
         headerAttributedString.append(titleAttributedString)
 
         // Header label
-        headerLabel.textColor = UIColor.piwigoColorHeader()
+        headerLabel.textColor = .piwigoColorHeader()
         headerLabel.attributedText = headerAttributedString
         
         // Header background
-        headerBckg.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.75)
+        headerBckg.backgroundColor = .piwigoColorBackground().withAlphaComponent(0.75)
 
         // Header view
         backgroundView = headerBckg
