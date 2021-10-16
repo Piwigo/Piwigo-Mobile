@@ -1296,7 +1296,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
             self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteSelection)];
 
-            if (UIInterfaceOrientationIsPortrait(orientation)) {
+            if (UIInterfaceOrientationIsPortrait(orientation) &&
+                (UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPhone)) {
                 // Left side of navigation bar
                 [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
 
@@ -1325,7 +1326,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 // pwg.users.favorites… methods available from Piwigo version 2.10
                 if ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending) {
                     self.favoriteBarButton = [self getFavoriteBarButton];
-                    [rightBarButtonItems insertObjects:@[self.favoriteBarButton] atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(2, 1)]];
+                    [rightBarButtonItems insertObjects:@[self.favoriteBarButton] atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(1, 1)]];
                 }
                 [self.navigationItem setRightBarButtonItems:rightBarButtonItems animated:YES];
 
@@ -1333,19 +1334,39 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 [self.navigationController setToolbarHidden:YES animated:YES];
             }
         }
-        else {
+        else if (!NetworkVarsObjc.hasGuestRights &&
+                 ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending)) {
+            self.favoriteBarButton = [self getFavoriteBarButton];
+
+            if (UIInterfaceOrientationIsPortrait(orientation) &&
+                (UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPhone)) {
+                // Left side of navigation bar
+                [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
+
+                // No button on the right
+                [self.navigationItem setRightBarButtonItems:@[] animated:YES];
+
+                // Remaining buttons in navigation toolbar
+                self.spaceBetweenButtons = [UIBarButtonItem spaceBetweenButtons];
+                [self.navigationController setToolbarHidden:NO animated:YES];
+                self.toolbarItems = @[self.shareBarButton, self.spaceBetweenButtons, self.favoriteBarButton];
+            }
+            else {
+                // Left side of navigation bar
+                [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
+
+                // All other buttons in navigation bar
+                [self.navigationItem setRightBarButtonItems:@[self.favoriteBarButton, self.shareBarButton] animated:YES];
+
+                // Hide navigation toolbar
+                [self.navigationController setToolbarHidden:YES animated:YES];
+            }
+        } else {
             // Left side of navigation bar
             [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
 
-            // Right side of navigation bar
-            /// — guests can share photo of high-resolution or not
-            /// — non-guest users can set favorites in addition
-            NSMutableArray<UIBarButtonItem *> *toolBarItems = [[NSMutableArray alloc] initWithObjects:self.shareBarButton, nil];
-            if (!NetworkVarsObjc.hasGuestRights && ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending)) {
-                self.favoriteBarButton = [self getFavoriteBarButton];
-                [toolBarItems addObject:self.favoriteBarButton];
-            }
-            [self.navigationItem setRightBarButtonItems:toolBarItems animated:YES];
+            // Guest can only share images
+            [self.navigationItem setRightBarButtonItems:@[self.shareBarButton] animated:YES];
 
             // Hide toolbar
             [self.navigationController setToolbarHidden:YES animated:YES];
@@ -1367,7 +1388,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteSelection)];
             self.moveBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply target:self action:@selector(addImagesToCategory)];
 
-            if (UIInterfaceOrientationIsPortrait(orientation)) {
+            if (UIInterfaceOrientationIsPortrait(orientation) &&
+                (UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPhone)) {
                 // Left side of navigation bar
                 [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
 
@@ -1396,7 +1418,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 // pwg.users.favorites… methods available from Piwigo version 2.10
                 if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending)) {
                     self.favoriteBarButton = [self getFavoriteBarButton];
-                    [rightBarButtonItems insertObjects:@[self.favoriteBarButton] atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(2, 1)]];
+                    [rightBarButtonItems insertObjects:@[self.favoriteBarButton] atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(1, 1)]];
                 }
                 [self.navigationItem setRightBarButtonItems:rightBarButtonItems animated:YES];
 
@@ -1404,19 +1426,39 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 [self.navigationController setToolbarHidden:YES animated:YES];
             }
         }
-        else {
+        else if (!NetworkVarsObjc.hasGuestRights &&
+                 ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending)) {
+            self.favoriteBarButton = [self getFavoriteBarButton];
+
+            if (UIInterfaceOrientationIsPortrait(orientation) &&
+                (UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPhone)) {
+                // Left side of navigation bar
+                [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
+
+                // No button on the right
+                [self.navigationItem setRightBarButtonItems:@[] animated:YES];
+
+                // Remaining buttons in navigation toolbar
+                self.spaceBetweenButtons = [UIBarButtonItem spaceBetweenButtons];
+                [self.navigationController setToolbarHidden:NO animated:YES];
+                self.toolbarItems = @[self.shareBarButton, self.spaceBetweenButtons, self.favoriteBarButton];
+            }
+            else {
+                // Left side of navigation bar
+                [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
+
+                // All other buttons in navigation bar
+                [self.navigationItem setRightBarButtonItems:@[self.favoriteBarButton, self.shareBarButton] animated:YES];
+
+                // Hide navigation toolbar
+                [self.navigationController setToolbarHidden:YES animated:YES];
+            }
+        } else {
             // Left side of navigation bar
             [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
 
-            // Right side of navigation bar
-            /// — guests can share photo of high-resolution or not (depends on user's account sttings)
-            /// — all non-guest users can set favorites
-            NSMutableArray<UIBarButtonItem *> *toolBarItems = [[NSMutableArray alloc] initWithObjects:self.shareBarButton, nil];
-            if (!NetworkVarsObjc.hasGuestRights && ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending)) {
-                self.favoriteBarButton = [self getFavoriteBarButton];
-                [toolBarItems addObject:self.favoriteBarButton];
-            }
-            [self.navigationItem setRightBarButtonItems:toolBarItems animated:YES];
+            // Guest can only share images
+            [self.navigationItem setRightBarButtonItems:@[self.shareBarButton] animated:YES];
 
             // Hide toolbar
             [self.navigationController setToolbarHidden:YES animated:YES];
