@@ -173,7 +173,7 @@ class DefaultImageThumbnailSizeViewController: UIViewController, UITableViewData
         // Appearance
         cell.backgroundColor = .piwigoColorCellBackground()
         cell.tintColor = .piwigoColorOrange()
-        cell.textLabel?.font = UIFont.piwigoFontNormal()
+        cell.textLabel?.font = .piwigoFontNormal()
         cell.textLabel?.textColor = .piwigoColorLeftLabel()
         cell.textLabel?.adjustsFontSizeToFitWidth = false
 
@@ -304,7 +304,7 @@ class DefaultImageThumbnailSizeViewController: UIViewController, UITableViewData
         // Footer label
         let footerLabel = UILabel()
         footerLabel.translatesAutoresizingMaskIntoConstraints = false
-        footerLabel.font = UIFont.piwigoFontSmall()
+        footerLabel.font = .piwigoFontSmall()
         footerLabel.textColor = .piwigoColorHeader()
         footerLabel.textAlignment = .center
         footerLabel.numberOfLines = 0
