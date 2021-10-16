@@ -61,7 +61,7 @@ class EditImageParamsViewController: UIViewController
 
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = UIColor.piwigoColorBackground()
+        view.backgroundColor = .piwigoColorBackground()
 
         // Navigation bar
         let attributes = [
@@ -73,13 +73,13 @@ class EditImageParamsViewController: UIViewController
             navigationController?.navigationBar.prefersLargeTitles = false
         }
         navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
+        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
+        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
+        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
 
         // Table view
-        editImageParamsTableView.separatorColor = UIColor.piwigoColorSeparator()
-        editImageParamsTableView.backgroundColor = UIColor.piwigoColorBackground()
+        editImageParamsTableView.separatorColor = .piwigoColorSeparator()
+        editImageParamsTableView.backgroundColor = .piwigoColorBackground()
         editImageParamsTableView.reloadData()
     }
 
@@ -538,7 +538,7 @@ extension EditImageParamsViewController: UITableViewDataSource
                 placeHolder: NSLocalizedString("editImageDetails_titlePlaceholder", comment: "Title"),
                 andImageDetail: commonParameters.imageTitle)
             if shouldUpdateTitle {
-                cell.cellTextField.textColor = UIColor.piwigoColorOrange()
+                cell.cellTextField.textColor = .piwigoColorOrange()
             }
             cell.cellTextField.tag = row
             cell.cellTextField.delegate = self
@@ -554,7 +554,7 @@ extension EditImageParamsViewController: UITableViewDataSource
                 placeHolder: NSLocalizedString("settings_defaultAuthorPlaceholder", comment: "Author Name"),
                 andImageDetail: (commonParameters.author == "NSNotFound") ? "" : commonParameters.author)
             if shouldUpdateAuthor {
-                cell.cellTextField.textColor = UIColor.piwigoColorOrange()
+                cell.cellTextField.textColor = .piwigoColorOrange()
             }
             cell.cellTextField.tag = row
             cell.cellTextField.delegate = self
@@ -570,7 +570,7 @@ extension EditImageParamsViewController: UITableViewDataSource
                 placeHolder: "",
                 andImageDetail: getStringFrom(commonParameters.dateCreated))
             if shouldUpdateDateCreated {
-                cell.cellTextField.textColor = UIColor.piwigoColorOrange()
+                cell.cellTextField.textColor = .piwigoColorOrange()
             }
             cell.cellTextField.tag = row
             cell.cellTextField.delegate = self
@@ -605,7 +605,7 @@ extension EditImageParamsViewController: UITableViewDataSource
             }
             cell.setLeftLabel(withText: NSLocalizedString("editImageDetails_privacyLevel", comment: "Who can see this photo?"))
             cell.setPrivacyLevel(with: kPiwigoPrivacy(rawValue: Int16(commonParameters.privacyLevel.rawValue)) ?? .everybody,
-                inColor: shouldUpdatePrivacyLevel ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
+                inColor: shouldUpdatePrivacyLevel ? .piwigoColorOrange() : .piwigoColorRightLabel())
             tableViewCell = cell
             
         case .tags:
@@ -614,7 +614,7 @@ extension EditImageParamsViewController: UITableViewDataSource
                 return EditImageTagsTableViewCell()
             }
             cell.config(withList: commonParameters.tags,
-                inColor: shouldUpdateTags ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
+                inColor: shouldUpdateTags ? .piwigoColorOrange() : .piwigoColorRightLabel())
             tableViewCell = cell
             
         case .desc:
@@ -623,7 +623,7 @@ extension EditImageParamsViewController: UITableViewDataSource
                 return EditImageTextViewTableViewCell()
             }
             cell.config(withText: commonParameters.comment,
-                inColor: shouldUpdateTags ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
+                inColor: shouldUpdateTags ? .piwigoColorOrange() : .piwigoColorRightLabel())
             cell.textView.delegate = self
             tableViewCell = cell
             
@@ -631,8 +631,8 @@ extension EditImageParamsViewController: UITableViewDataSource
             break
         }
 
-        tableViewCell.backgroundColor = UIColor.piwigoColorCellBackground()
-        tableViewCell.tintColor = UIColor.piwigoColorOrange()
+        tableViewCell.backgroundColor = .piwigoColorCellBackground()
+        tableViewCell.tintColor = .piwigoColorOrange()
         return tableViewCell
     }
 
@@ -770,11 +770,11 @@ extension EditImageParamsViewController: UITextFieldDelegate
             case .imageName:
                 // Title
                 shouldUpdateTitle = true
-                textField.textColor = UIColor.piwigoColorOrange()
+                textField.textColor = .piwigoColorOrange()
             case .author:
                 // Author
                 shouldUpdateAuthor = true
-                textField.textColor = UIColor.piwigoColorOrange()
+                textField.textColor = .piwigoColorOrange()
             default:
                 break
         }
@@ -843,7 +843,7 @@ extension EditImageParamsViewController: UITextViewDelegate
 {
     func textViewDidBeginEditing(_ textView: UITextView) {
         shouldUpdateComment = true
-        textView.textColor = UIColor.piwigoColorOrange()
+        textView.textColor = .piwigoColorOrange()
     }
 
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
