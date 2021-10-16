@@ -63,10 +63,10 @@ class Help04ViewController: UIViewController {
 
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = UIColor.piwigoColorBackground()
+        view.backgroundColor = .piwigoColorBackground()
         
         // Legend color
-        legend.textColor = UIColor.piwigoColorText()
+        legend.textColor = .piwigoColorText()
     }
     
     deinit {

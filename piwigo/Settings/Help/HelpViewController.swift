@@ -74,7 +74,7 @@ class HelpViewController: UIViewController {
 
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = UIColor.piwigoColorBackground()
+        view.backgroundColor = .piwigoColorBackground()
     }
 
     deinit {

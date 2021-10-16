@@ -90,11 +90,11 @@ class Help02ViewController: UIViewController {
 
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = UIColor.piwigoColorBackground()
+        view.backgroundColor = .piwigoColorBackground()
         
         // Legend color
-        legendTop.textColor = UIColor.piwigoColorText()
-        legendBot.textColor = UIColor.piwigoColorText()
+        legendTop.textColor = .piwigoColorText()
+        legendBot.textColor = .piwigoColorText()
     }
     
     deinit {
