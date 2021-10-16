@@ -410,15 +410,21 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 
 -(void)removeImages:(NSArray*)images
 {
-    NSMutableArray<PiwigoImageData*> *newImageArray = [[NSMutableArray alloc] initWithArray:self.imageList];
+    NSMutableArray<PiwigoImageData*> *newImageList = [NSMutableArray new];
+    if (self.imageList.count > 0) {
+        [newImageList addObjectsFromArray:self.imageList];
+    }
+
     for (PiwigoImageData *image in images) {
-        if ([newImageArray containsObject:image]) {
-            [newImageArray removeObject:image];
-            [self.imageIds removeObjectForKey:[NSString stringWithFormat:@"%ld", (long)image.imageId]];
-        }
+        NSInteger indexOfItem = [newImageList indexOfObjectPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            return obj.imageId == image.imageId;
+        }];
+        if (indexOfItem == NSNotFound) { continue; }
+        [newImageList removeObjectAtIndex:indexOfItem];
+        [self.imageIds removeObjectForKey:[NSString stringWithFormat:@"%ld", (long)image.imageId]];
     }
     
-    self.imageList = newImageArray;
+    self.imageList = newImageList;
 }
 
 -(NSInteger)getDepthOfCategory
