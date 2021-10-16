@@ -46,7 +46,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
 
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = UIColor.piwigoColorBackground()
+        view.backgroundColor = .piwigoColorBackground()
 
         // Navigation bar
         let attributes = [
@@ -58,22 +58,22 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
             navigationController?.navigationBar.prefersLargeTitles = false
         }
         navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
+        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
+        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
+        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
 
         if #available(iOS 15.0, *) {
             /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
             /// which by default produces a transparent background, to all navigation bars.
             let barAppearance = UINavigationBarAppearance()
             barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = UIColor.piwigoColorBackground()
+            barAppearance.backgroundColor = .piwigoColorBackground()
             navigationController?.navigationBar.standardAppearance = barAppearance
             navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
         }
 
         // Table view
-        autoUploadTableView.separatorColor = UIColor.piwigoColorSeparator()
+        autoUploadTableView.separatorColor = .piwigoColorSeparator()
         autoUploadTableView.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
         autoUploadTableView.reloadData()
     }
@@ -172,7 +172,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         // Header label
         let headerLabel = UILabel()
         headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        headerLabel.textColor = UIColor.piwigoColorHeader()
+        headerLabel.textColor = .piwigoColorHeader()
         headerLabel.numberOfLines = 0
         headerLabel.adjustsFontSizeToFitWidth = false
         headerLabel.lineBreakMode = .byWordWrapping
@@ -330,8 +330,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                         tagList.append(newTag)
                     }
                 })
-                cell.config(withList: tagList,
-                                inColor: UIColor.piwigoColorRightLabel())
+                cell.config(withList: tagList, inColor: .piwigoColorRightLabel())
                 tableViewCell = cell
 
             case 1 /* Comments */ :
@@ -339,8 +338,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
                     print("Error: tableView.dequeueReusableCell does not return a EditImageTextViewTableViewCell!")
                     return EditImageTextViewTableViewCell()
                 }
-                cell.config(withText: UploadVars.autoUploadComments,
-                                    inColor: UIColor.piwigoColorRightLabel())
+                cell.config(withText: UploadVars.autoUploadComments, inColor: .piwigoColorRightLabel())
                 cell.textView.delegate = self
                 tableViewCell = cell
 
@@ -352,8 +350,8 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
             break
         }
 
-        tableViewCell.backgroundColor = UIColor.piwigoColorCellBackground()
-        tableViewCell.tintColor = UIColor.piwigoColorOrange()
+        tableViewCell.backgroundColor = .piwigoColorCellBackground()
+        tableViewCell.tintColor = .piwigoColorOrange()
         return tableViewCell
     }
 
@@ -412,7 +410,7 @@ class AutoUploadViewController: UIViewController, UITableViewDelegate, UITableVi
         let footerLabel = UILabel()
         footerLabel.translatesAutoresizingMaskIntoConstraints = false
         footerLabel.font = UIFont.piwigoFontSmall()
-        footerLabel.textColor = UIColor.piwigoColorHeader()
+        footerLabel.textColor = .piwigoColorHeader()
         footerLabel.textAlignment = .center
         footerLabel.numberOfLines = 0
         footerLabel.adjustsFontSizeToFitWidth = false
