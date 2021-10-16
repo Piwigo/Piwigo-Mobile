@@ -465,19 +465,34 @@ let kPiwigoNotificationUpdateImageFileName = "kPiwigoNotificationUpdateImageFile
                     navigationController?.setToolbarHidden(true, animated: true)
                 }
             }
-            else {
-                // Right side of navigation bar
-                /// — guests can share photo of high-resolution or not (depends on user's account sttings)
-                /// — all non-guest users can set favorites
-                var rightBarButtonItems = [shareBarButton]
-                // pwg.users.favorites… methods available from Piwigo version 2.10
-                if !NetworkVars.hasGuestRights,
+            else if !NetworkVars.hasGuestRights,
                     "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
-                    favoriteBarButton = getFavoriteBarButton()
-                    rightBarButtonItems.insert(favoriteBarButton, at: 1)
-                }
-                navigationItem.setRightBarButtonItems(rightBarButtonItems.compactMap { $0 }, animated: true)
+                favoriteBarButton = getFavoriteBarButton()
 
+                if orientation.isPortrait, UIDevice.current.userInterfaceIdiom == .phone {
+                    // No button on the right
+                    navigationItem.rightBarButtonItems = []
+
+                    // Remaining buttons in navigation toolbar
+                    spaceBetweenButtons = UIBarButtonItem.spaceBetweenButtons()
+                    isToolbarRequired = true
+                    let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
+                    setToolbarItems([shareBarButton, spaceBetweenButtons,
+                                     favoriteBarButton].compactMap { $0 }, animated: false)
+                    navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
+                }
+                else {
+                    // All buttons in navigation bar
+                    navigationItem.setRightBarButtonItems([favoriteBarButton, shareBarButton].compactMap { $0 }, animated: true)
+
+                    // Hide navigation toolbar
+                    isToolbarRequired = false
+                    navigationController?.setToolbarHidden(true, animated: false)
+                }
+            } else {
+                // Guest can only share images
+                navigationItem.setRightBarButtonItems([shareBarButton].compactMap { $0 }, animated: true)
+                
                 // Hide navigation toolbar
                 isToolbarRequired = false
                 navigationController?.setToolbarHidden(true, animated: false)
@@ -485,6 +500,9 @@ let kPiwigoNotificationUpdateImageFileName = "kPiwigoNotificationUpdateImageFile
         }
         else {
             // Fallback on earlier versions
+            // Interface depends on device and orientation
+            let orientation = UIApplication.shared.statusBarOrientation;
+            
             // User with admin rights can do everything
             if NetworkVars.hasAdminRights {
                 // Navigation bar
@@ -537,18 +555,31 @@ let kPiwigoNotificationUpdateImageFileName = "kPiwigoNotificationUpdateImageFile
                 setToolbarItems(toolBarItems.compactMap { $0 }, animated: false)
                 navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
             }
-            else {
-                // Right side of navigation bar
-                /// — guests can share photo of high-resolution or not (depends on user's account sttings)
-                /// — all non-guest users can set favorites
-                var rightBarButtonItems = [shareBarButton]
-                // pwg.users.favorites… methods available from Piwigo version 2.10
-                if !NetworkVars.hasGuestRights,
+            else if !NetworkVars.hasGuestRights,
                     "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
-                    favoriteBarButton = getFavoriteBarButton()
-                    rightBarButtonItems.insert(favoriteBarButton, at: 1)
+                favoriteBarButton = getFavoriteBarButton()
+
+                if orientation.isPortrait {
+                    // No button on the right
+                    navigationItem.rightBarButtonItems = []
+
+                    // Remaining buttons in navigation toolbar
+                    spaceBetweenButtons = UIBarButtonItem.spaceBetweenButtons()
+                    isToolbarRequired = true
+                    let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
+                    setToolbarItems([shareBarButton, spaceBetweenButtons,
+                                     favoriteBarButton].compactMap { $0 }, animated: false)
+                    navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
+                } else {
+                    navigationItem.setRightBarButtonItems([favoriteBarButton, shareBarButton].compactMap { $0 }, animated: true)
+
+                    // Hide navigation toolbar
+                    isToolbarRequired = false
+                    navigationController?.setToolbarHidden(true, animated: false)
                 }
-                navigationItem.setRightBarButtonItems(rightBarButtonItems.compactMap { $0 }, animated: true)
+            } else {
+                // Guest can only share images
+                navigationItem.setRightBarButtonItems([shareBarButton].compactMap { $0 }, animated: true)
 
                 // Hide navigation toolbar
                 isToolbarRequired = false
