@@ -26,7 +26,7 @@ class TagTableViewCell: UITableViewCell {
         // General settings
         backgroundColor = .piwigoColorCellBackground()
         tintColor = .piwigoColorOrange()
-        textLabel?.font = UIFont.piwigoFontNormal()
+        textLabel?.font = .piwigoFontNormal()
 
         // => pwg.tags.getList returns in addition: counter, url
         let nber = tag.numberOfImagesUnderTag
@@ -43,7 +43,7 @@ class TagTableViewCell: UITableViewCell {
                 String(format: NSLocalizedString("singleImageCount", comment: "%@ photo"), nberPhotos)
             leftLabel.text = "\(tag.tagName) (\(nberImages))"
         }
-        leftLabel.font = UIFont.piwigoFontNormal()
+        leftLabel.font = .piwigoFontNormal()
         leftLabel.textColor = .piwigoColorLeftLabel()
 
         // Change image according to state

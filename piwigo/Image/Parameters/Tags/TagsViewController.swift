@@ -193,7 +193,7 @@ extension TagsViewController {
         // Header label
         let headerLabel = UILabel()
         headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        headerLabel.font = UIFont.piwigoFontBold()
+        headerLabel.font = .piwigoFontBold()
         headerLabel.textColor = .piwigoColorHeader()
         headerLabel.numberOfLines = 0
         headerLabel.adjustsFontSizeToFitWidth = false
