@@ -49,14 +49,14 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         dateLabel.numberOfLines = 1
         dateLabel.adjustsFontSizeToFitWidth = false
-        dateLabel.font = UIFont.piwigoFontSmall()
+        dateLabel.font = .piwigoFontSmall()
         dateLabel.textColor = .piwigoColorRightLabel()
 
         // Place name of location
         placeLabel.translatesAutoresizingMaskIntoConstraints = false
         placeLabel.numberOfLines = 1
         placeLabel.adjustsFontSizeToFitWidth = false
-        placeLabel.font = UIFont.piwigoFontSemiBold()
+        placeLabel.font = .piwigoFontSemiBold()
         placeLabel.textColor = .piwigoColorLeftLabel()
 
         // Get date labels from images in section
