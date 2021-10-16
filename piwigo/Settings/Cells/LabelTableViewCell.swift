@@ -21,12 +21,12 @@ class LabelTableViewCell: UITableViewCell {
         backgroundColor = .piwigoColorCellBackground()
 
         // Left side: title
-        titleLabel.font = UIFont.piwigoFontNormal()
+        titleLabel.font = .piwigoFontNormal()
         titleLabel.textColor = .piwigoColorLeftLabel()
         titleLabel.text = title
         
         // Right side: detail
-        detailLabel.font = UIFont.piwigoFontNormal()
+        detailLabel.font = .piwigoFontNormal()
         detailLabel.textColor = .piwigoColorRightLabel()
         detailLabel.text = detail
     }

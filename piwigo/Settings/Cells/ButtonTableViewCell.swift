@@ -20,7 +20,7 @@ class ButtonTableViewCell: UITableViewCell {
         backgroundColor = .piwigoColorCellBackground()
 
         // Button title
-        buttonLabel.font = UIFont.piwigoFontButton()
+        buttonLabel.font = .piwigoFontButton()
         buttonLabel.textColor = .piwigoColorOrange()
         buttonLabel.text = title
     }

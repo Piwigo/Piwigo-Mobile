@@ -34,7 +34,7 @@ class SliderTableViewCell: UITableViewCell {
         backgroundColor = .piwigoColorCellBackground()
 
         // Slider title
-        sliderName.font = UIFont.piwigoFontNormal()
+        sliderName.font = .piwigoFontNormal()
         sliderName.textColor = .piwigoColorLeftLabel()
         sliderName.text = title
 
@@ -47,7 +47,7 @@ class SliderTableViewCell: UITableViewCell {
         slider.thumbTintColor = .piwigoColorThumb()
 
         // Slider value
-        sliderValue.font = UIFont.piwigoFontNormal()
+        sliderValue.font = .piwigoFontNormal()
         sliderValue.textColor = .piwigoColorRightLabel()
         valuePrefix = prefix
         valueSuffix = suffix

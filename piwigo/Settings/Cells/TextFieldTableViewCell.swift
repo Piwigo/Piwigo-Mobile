@@ -22,12 +22,12 @@ class TextFieldTableViewCell: UITableViewCell {
         backgroundColor = .piwigoColorCellBackground()
 
         // Text field name
-        leftLabel.font = UIFont.piwigoFontNormal()
+        leftLabel.font = .piwigoFontNormal()
         leftLabel.textColor = .piwigoColorLeftLabel()
         leftLabel.text = name
 
         // Text field
-        rightTextField.font = UIFont.piwigoFontNormal()
+        rightTextField.font = .piwigoFontNormal()
         rightTextField.textColor = .piwigoColorRightLabel()
         rightTextField.text = input
         rightTextField.keyboardAppearance = AppVars.isDarkPaletteActive ? .dark : .default
