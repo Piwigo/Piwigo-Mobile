@@ -125,8 +125,8 @@ class EditImageDatePickerTableViewCell: UITableViewCell
         }
         
         // Set colours
-        datePicker.backgroundColor = UIColor.piwigoColorCellBackground()
-        datePicker.tintColor = UIColor.piwigoColorLeftLabel()
+        datePicker.backgroundColor = .piwigoColorCellBackground()
+        datePicker.tintColor = .piwigoColorLeftLabel()
 
         let calendar = Calendar.current
         var daysInSec = pickerDate.timeIntervalSince(pickerRefDate)
@@ -188,15 +188,15 @@ class EditImageDatePickerTableViewCell: UITableViewCell
     // MARK: - Buttons Methods
     func setDatePickerButtons()
     {
-        toolBarTop.barTintColor = UIColor.piwigoColorCellBackground()
-        unsetDateButton.tintColor = UIColor.red
-        incrementMonthButton.tintColor = UIColor.piwigoColorRightLabel()
-        decrementMonthButton.tintColor = UIColor.piwigoColorRightLabel()
+        toolBarTop.barTintColor = .piwigoColorCellBackground()
+        unsetDateButton.tintColor = .red
+        incrementMonthButton.tintColor = .piwigoColorRightLabel()
+        decrementMonthButton.tintColor = .piwigoColorRightLabel()
 
-        toolBarBottom.barTintColor = UIColor.piwigoColorCellBackground()
-        todayDateButton.tintColor = UIColor.piwigoColorRightLabel()
-        incrementYearButton.tintColor = UIColor.piwigoColorRightLabel()
-        decrementYearButton.tintColor = UIColor.piwigoColorRightLabel()
+        toolBarBottom.barTintColor = .piwigoColorCellBackground()
+        todayDateButton.tintColor = .piwigoColorRightLabel()
+        incrementYearButton.tintColor = .piwigoColorRightLabel()
+        decrementYearButton.tintColor = .piwigoColorRightLabel()
     }
 
     @IBAction func unsetDate(_ sender: Any) {
@@ -387,7 +387,7 @@ extension EditImageDatePickerTableViewCell: UIPickerViewDelegate
         if label == nil {
             label = UILabel()
             label?.font = UIFont.piwigoFontNormal()
-            label?.textColor = UIColor.piwigoColorLeftLabel()
+            label?.textColor = .piwigoColorLeftLabel()
         }
         switch PickerComponents(rawValue: component) {
             case .day:
