@@ -242,6 +242,7 @@
                               NSString *userStatus = [result objectForKey:@"status"];
                               NetworkVarsObjc.hasAdminRights = ([userStatus isEqualToString:@"admin"] || [userStatus isEqualToString:@"webmaster"]);
                               NetworkVarsObjc.hasNormalRights = [userStatus isEqualToString:@"normal"];
+                              NetworkVarsObjc.hasGuestRights = [userStatus isEqualToString:@"guest"];
                           }
                           
                           // Collect the list of available sizes
@@ -519,7 +520,7 @@
                           NSString *userStatus = [[responseObject objectForKey:@"result" ] objectForKey:@"real_user_status"];
                           NetworkVarsObjc.hasAdminRights = ([userStatus isEqualToString:@"admin"] || [userStatus isEqualToString:@"webmaster"]);
                           NetworkVarsObjc.hasNormalRights = [userStatus isEqualToString:@"normal"];
-
+                          NetworkVarsObjc.hasGuestRights = [userStatus isEqualToString:@"guest"];
                           completion([responseObject objectForKey:@"result"]);
                       }
                       else
