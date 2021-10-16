@@ -83,7 +83,7 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
     @objc
     func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = UIColor.piwigoColorBackground()
+        view.backgroundColor = .piwigoColorBackground()
 
         // Navigation bar
         let attributes = [
@@ -95,22 +95,22 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
             navigationController?.navigationBar.prefersLargeTitles = false
         }
         navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
+        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
+        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
+        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
 
         if #available(iOS 15.0, *) {
             /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
             /// which by default produces a transparent background, to all navigation bars.
             let barAppearance = UINavigationBarAppearance()
             barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = UIColor.piwigoColorBackground()
+            barAppearance.backgroundColor = .piwigoColorBackground()
             navigationController?.navigationBar.standardAppearance = barAppearance
             navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
         }
 
         // Table view
-        sortSelectTableView.separatorColor = UIColor.piwigoColorSeparator()
+        sortSelectTableView.separatorColor = .piwigoColorSeparator()
         sortSelectTableView.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
         sortSelectTableView.reloadData()
     }
@@ -175,7 +175,7 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
         // Header label
         let headerLabel = UILabel()
         headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        headerLabel.textColor = UIColor.piwigoColorHeader()
+        headerLabel.textColor = .piwigoColorHeader()
         headerLabel.numberOfLines = 0
         headerLabel.adjustsFontSizeToFitWidth = false
         headerLabel.lineBreakMode = .byWordWrapping
@@ -211,10 +211,10 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         let sortChoice = kPiwigoSort(rawValue: Int16(indexPath.row))
 
-        cell.backgroundColor = UIColor.piwigoColorCellBackground()
-        cell.tintColor = UIColor.piwigoColorOrange()
+        cell.backgroundColor = .piwigoColorCellBackground()
+        cell.tintColor = .piwigoColorOrange()
         cell.textLabel?.font = UIFont.piwigoFontNormal()
-        cell.textLabel?.textColor = UIColor.piwigoColorLeftLabel()
+        cell.textLabel?.textColor = .piwigoColorLeftLabel()
         cell.textLabel?.text = CategorySortViewController.getNameForCategorySortType(sortChoice!)
         cell.textLabel?.minimumScaleFactor = 0.5
         cell.textLabel?.adjustsFontSizeToFitWidth = true
