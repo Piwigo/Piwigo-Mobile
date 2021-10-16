@@ -131,7 +131,7 @@ class PasteboardImageCollectionViewCell: UICollectionViewCell {
     func configure(with image: UIImage, identifier: String, thumbnailSize: CGFloat) {
         
         // Background color and aspect
-        backgroundColor = UIColor.piwigoColorCellBackground()
+        backgroundColor = .piwigoColorCellBackground()
         waitingActivity.color = UIColor.white
         uploadingProgress.trackTintColor = UIColor.white
         localIdentifier = identifier
