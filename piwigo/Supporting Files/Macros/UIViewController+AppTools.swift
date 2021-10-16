@@ -29,10 +29,10 @@ extension UIViewController {
                 hud?.animationType = MBProgressHUDAnimation.fade
                 hud?.backgroundView.style = MBProgressHUDBackgroundStyle.solidColor
                 hud?.backgroundView.color = UIColor(white: 0.0, alpha: 0.5)
-                hud?.contentColor = UIColor.piwigoColorText()
-                hud?.bezelView.color = UIColor.piwigoColorText()
+                hud?.contentColor = .piwigoColorText()
+                hud?.bezelView.color = .piwigoColorText()
                 hud?.bezelView.style = MBProgressHUDBackgroundStyle.solidColor
-                hud?.bezelView.backgroundColor = UIColor.piwigoColorCellBackground()
+                hud?.bezelView.backgroundColor = .piwigoColorCellBackground()
 
                 // Will look best, if we set a minimum size.
                 hud?.minSize = CGSize(width: 200.0, height: 100.0)
@@ -169,7 +169,7 @@ extension UIViewController {
             }
             
             // Present alert
-            alert.view.tintColor = UIColor.piwigoColorOrange()
+            alert.view.tintColor = .piwigoColorOrange()
             if #available(iOS 13.0, *) {
                 alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
             } else {
@@ -177,7 +177,7 @@ extension UIViewController {
             }
             self.present(alert, animated: true) {
                 // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                alert.view.tintColor = UIColor.piwigoColorOrange()
+                alert.view.tintColor = .piwigoColorOrange()
             }
         }
     }
