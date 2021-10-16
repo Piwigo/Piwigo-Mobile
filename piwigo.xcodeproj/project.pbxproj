@@ -96,6 +96,7 @@
 		AD62CC8526828D5E00CA66C5 /* URL+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD07A23325CF024A000EE016 /* URL+AppTools.swift */; };
 		AD62CC8626828DC100CA66C5 /* ImageMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD3DD5825A9D53C00FD377F /* ImageMetadata.swift */; };
 		AD62CC8726828DC100CA66C5 /* VideoMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2FEA5725AFA1470072596A /* VideoMetadata.swift */; };
+		AD69739B271885D10015303E /* UIBarButtonItem+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD69739A271885D10015303E /* UIBarButtonItem+AppTools.swift */; };
 		AD6A128C24FAB57300E3BBED /* pwg.images.uploadAsync.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6A128A24FAB56A00E3BBED /* pwg.images.uploadAsync.swift */; };
 		AD6B2E731F0930B40040EAD9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E751F0930B40040EAD9 /* Localizable.strings */; };
 		AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD6B2E781F0930CE0040EAD9 /* About.strings */; };
@@ -481,6 +482,7 @@
 		AD5FCE2122EC629D00F37B1E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AD61D2F92571555A00B8DEA0 /* HelpViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = HelpViewController.storyboard; path = "../New Group/HelpViewController.storyboard"; sourceTree = "<group>"; };
 		AD61D3132571598000B8DEA0 /* HelpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpViewController.swift; sourceTree = "<group>"; };
+		AD69739A271885D10015303E /* UIBarButtonItem+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIBarButtonItem+AppTools.swift"; sourceTree = "<group>"; };
 		AD6A128A24FAB56A00E3BBED /* pwg.images.uploadAsync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.images.uploadAsync.swift; sourceTree = "<group>"; };
 		AD6B2E791F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AD6B2E7A1F0930FD0040EAD9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/About.strings; sourceTree = "<group>"; };
@@ -1537,6 +1539,7 @@
 				AD870CD61F54AE110015BFA1 /* ImagesCollection.m */,
 				ADF3EC0B2516515500379E53 /* DeviceUtilities.swift */,
 				AD35A16A2444C2680031904C /* NSLayoutConstraint+CommonConstraints.swift */,
+				AD69739A271885D10015303E /* UIBarButtonItem+AppTools.swift */,
 				AD1F60012402B1B70099E5E5 /* UIColor+AppColors.swift */,
 				ADFC3A4D2401DA4E004CD337 /* UIFont+AppFonts.swift */,
 				AD987633262606C600B964C5 /* UIViewController+AppTools.swift */,
@@ -2342,6 +2345,7 @@
 				ADE1AB90267F45B8001C1EEB /* AppDelegate.swift in Sources */,
 				AD767BD62680B4E200EBD6E8 /* KeychainUtilitiesObjc.swift in Sources */,
 				AD870CD71F54AE110015BFA1 /* ImagesCollection.m in Sources */,
+				AD69739B271885D10015303E /* UIBarButtonItem+AppTools.swift in Sources */,
 				AD7B4C1620E031B0003E403A /* AlbumTableViewCell.m in Sources */,
 				ED9A42B51ACAD35300EA4421 /* LoginViewController_iPad.m in Sources */,
 				D863EECA1A6A484C00C0A6E9 /* PiwigoTextField.m in Sources */,
