@@ -28,7 +28,7 @@ extension UIBarButtonItem {
     
     class func moveImageButton(_ target: Any?, action: Selector?) -> UIBarButtonItem {
         let button = UIBarButtonItem(barButtonSystemItem: .reply,
-                                     target: self, action: action)
+                                     target: target, action: action)
         button.tintColor = .piwigoColorOrange()
         button.accessibilityIdentifier = "move"
         return button
