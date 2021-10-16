@@ -33,10 +33,10 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
 
     @objc func applyColorPalette() {
         // Background color of the views
-        view.backgroundColor = UIColor.piwigoColorBackground()
+        view.backgroundColor = .piwigoColorBackground()
 
         // Table view
-        settingsTableView.separatorColor = UIColor.piwigoColorSeparator()
+        settingsTableView.separatorColor = .piwigoColorSeparator()
         settingsTableView.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
         settingsTableView.reloadData()
     }
@@ -104,7 +104,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
         // Header label
         let headerLabel = UILabel()
         headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        headerLabel.textColor = UIColor.piwigoColorHeader()
+        headerLabel.textColor = .piwigoColorHeader()
         headerLabel.numberOfLines = 0
         headerLabel.adjustsFontSizeToFitWidth = false
         headerLabel.lineBreakMode = .byWordWrapping
@@ -316,7 +316,7 @@ class UploadSettingsViewController: UITableViewController, UITextFieldDelegate {
             cell.configure(with: title, input: input, placeHolder: placeHolder)
             cell.rightTextField.delegate = self
             cell.rightTextField.tag = kImageUploadSetting.prefix.rawValue
-            cell.rightTextField.textColor = shouldUpdateDefaultPrefix ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel()
+            cell.rightTextField.textColor = shouldUpdateDefaultPrefix ? .piwigoColorOrange() : .piwigoColorRightLabel()
             cell.accessibilityIdentifier = "prefixFileName"
             tableViewCell = cell
             
