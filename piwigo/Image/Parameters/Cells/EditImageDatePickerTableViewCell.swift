@@ -386,7 +386,7 @@ extension EditImageDatePickerTableViewCell: UIPickerViewDelegate
         var label = view as? UILabel
         if label == nil {
             label = UILabel()
-            label?.font = UIFont.piwigoFontNormal()
+            label?.font = .piwigoFontNormal()
             label?.textColor = .piwigoColorLeftLabel()
         }
         switch PickerComponents(rawValue: component) {
