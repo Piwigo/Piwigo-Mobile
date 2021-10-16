@@ -36,7 +36,7 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
 
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = UIColor.piwigoColorBackground()
+        view.backgroundColor = .piwigoColorBackground()
 
         // Navigation bar
         let attributes = [
@@ -48,22 +48,22 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
             navigationController?.navigationBar.prefersLargeTitles = false
         }
         navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
+        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
+        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
+        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
 
         if #available(iOS 15.0, *) {
             /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
             /// which by default produces a transparent background, to all navigation bars.
             let barAppearance = UINavigationBarAppearance()
             barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = UIColor.piwigoColorBackground()
+            barAppearance.backgroundColor = .piwigoColorBackground()
             navigationController?.navigationBar.standardAppearance = barAppearance
             navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
         }
 
         // Table view
-        tableView.separatorColor = UIColor.piwigoColorSeparator()
+        tableView.separatorColor = .piwigoColorSeparator()
         tableView.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
         tableView.reloadData()
     }
@@ -129,7 +129,7 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
         // Header label
         let headerLabel = UILabel()
         headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        headerLabel.textColor = UIColor.piwigoColorHeader()
+        headerLabel.textColor = .piwigoColorHeader()
         headerLabel.numberOfLines = 0
         headerLabel.adjustsFontSizeToFitWidth = false
         headerLabel.lineBreakMode = .byWordWrapping
@@ -170,10 +170,10 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
         let imageSize = kPiwigoImageSize(UInt32(indexPath.row))
 
         // Name of the image size
-        cell.backgroundColor = UIColor.piwigoColorCellBackground()
-        cell.tintColor = UIColor.piwigoColorOrange()
+        cell.backgroundColor = .piwigoColorCellBackground()
+        cell.tintColor = .piwigoColorOrange()
         cell.textLabel?.font = UIFont.piwigoFontNormal()
-        cell.textLabel?.textColor = UIColor.piwigoColorLeftLabel()
+        cell.textLabel?.textColor = .piwigoColorLeftLabel()
         cell.textLabel?.adjustsFontSizeToFitWidth = false
 
         // Add checkmark in front of selected item
@@ -187,7 +187,7 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
         switch imageSize {
             case kPiwigoImageSizeSquare:
                 cell.isUserInteractionEnabled = false
-                cell.textLabel?.textColor = UIColor.piwigoColorRightLabel()
+                cell.textLabel?.textColor = .piwigoColorRightLabel()
                 if !AlbumVars.hasSquareSizeImages {
                     cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: false)
                     cell.textLabel?.text = cell.textLabel?.text ?? "" + (NSLocalizedString("defaultSize_disabled", comment: " (disabled on server)"))
@@ -196,7 +196,7 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
                 }
             case kPiwigoImageSizeThumb:
                 cell.isUserInteractionEnabled = false
-                cell.textLabel?.textColor = UIColor.piwigoColorRightLabel()
+                cell.textLabel?.textColor = .piwigoColorRightLabel()
                 if !AlbumVars.hasThumbSizeImages {
                     cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: false)
                     cell.textLabel?.text = cell.textLabel?.text ?? "" + (NSLocalizedString("defaultSize_disabled", comment: " (disabled on server)"))
@@ -205,7 +205,7 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
                 }
             case kPiwigoImageSizeXXSmall:
                 cell.isUserInteractionEnabled = false
-                cell.textLabel?.textColor = UIColor.piwigoColorRightLabel()
+                cell.textLabel?.textColor = .piwigoColorRightLabel()
                 if !AlbumVars.hasXXSmallSizeImages {
                     cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: false)
                     cell.textLabel?.text = cell.textLabel?.text ?? "" + (NSLocalizedString("defaultSize_disabled", comment: " (disabled on server)"))
@@ -214,7 +214,7 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
                 }
             case kPiwigoImageSizeXSmall:
                 cell.isUserInteractionEnabled = false
-                cell.textLabel?.textColor = UIColor.piwigoColorRightLabel()
+                cell.textLabel?.textColor = .piwigoColorRightLabel()
                 if !AlbumVars.hasXSmallSizeImages {
                     cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: false)
                     cell.textLabel?.text = cell.textLabel?.text ?? "" + (NSLocalizedString("defaultSize_disabled", comment: " (disabled on server)"))
@@ -223,7 +223,7 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
                 }
             case kPiwigoImageSizeSmall:
                 cell.isUserInteractionEnabled = false
-                cell.textLabel?.textColor = UIColor.piwigoColorRightLabel()
+                cell.textLabel?.textColor = .piwigoColorRightLabel()
                 if !AlbumVars.hasSmallSizeImages {
                     cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: false)
                     cell.textLabel?.text = cell.textLabel?.text ?? "" + (NSLocalizedString("defaultSize_disabled", comment: " (disabled on server)"))
@@ -236,7 +236,7 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
                     cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: true)
                 } else {
                     cell.isUserInteractionEnabled = false
-                    cell.textLabel?.textColor = UIColor.piwigoColorRightLabel()
+                    cell.textLabel?.textColor = .piwigoColorRightLabel()
                     cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: false)
                     cell.textLabel?.text = cell.textLabel?.text ?? "" + (NSLocalizedString("defaultSize_disabled", comment: " (disabled on server)"))
                 }
@@ -246,7 +246,7 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
                     cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: true)
                 } else {
                     cell.isUserInteractionEnabled = false
-                    cell.textLabel?.textColor = UIColor.piwigoColorRightLabel()
+                    cell.textLabel?.textColor = .piwigoColorRightLabel()
                     cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: false)
                     cell.textLabel?.text = cell.textLabel?.text ?? "" + (NSLocalizedString("defaultSize_disabled", comment: " (disabled on server)"))
                 }
@@ -256,7 +256,7 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
                     cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: true)
                 } else {
                     cell.isUserInteractionEnabled = false
-                    cell.textLabel?.textColor = UIColor.piwigoColorRightLabel()
+                    cell.textLabel?.textColor = .piwigoColorRightLabel()
                     cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: false)
                     cell.textLabel?.text = cell.textLabel?.text ?? "" + (NSLocalizedString("defaultSize_disabled", comment: " (disabled on server)"))
                 }
@@ -266,7 +266,7 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
                     cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: true)
                 } else {
                     cell.isUserInteractionEnabled = false
-                    cell.textLabel?.textColor = UIColor.piwigoColorRightLabel()
+                    cell.textLabel?.textColor = .piwigoColorRightLabel()
                     cell.textLabel?.text = PiwigoImageData.name(forImageSizeType: imageSize, withInfo: false)
                     cell.textLabel?.text = cell.textLabel?.text ?? "" + (NSLocalizedString("defaultSize_disabled", comment: " (disabled on server)"))
                 }
@@ -301,7 +301,7 @@ class DefaultImageSizeViewController: UIViewController, UITableViewDataSource, U
         let footerLabel = UILabel()
         footerLabel.translatesAutoresizingMaskIntoConstraints = false
         footerLabel.font = UIFont.piwigoFontSmall()
-        footerLabel.textColor = UIColor.piwigoColorHeader()
+        footerLabel.textColor = .piwigoColorHeader()
         footerLabel.textAlignment = .center
         footerLabel.numberOfLines = 0
         footerLabel.text = NSLocalizedString("defaultSizeFooter", comment: "Greyed sizes are not advised or not available on Piwigo server.")
