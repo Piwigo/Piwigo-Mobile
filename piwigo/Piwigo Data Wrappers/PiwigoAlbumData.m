@@ -339,7 +339,10 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     if (updatedImages.count < 1) return;
     
     // Create new image list
-    NSMutableArray<PiwigoImageData*> *newImageList = [self.imageList mutableCopy];
+    NSMutableArray<PiwigoImageData*> *newImageList = [NSMutableArray new];
+    if (self.imageList.count > 0) {
+        [newImageList addObjectsFromArray:self.imageList];
+    }
     
     // Update image list
     for(NSInteger index = 0; index < self.imageList.count; index++)
@@ -374,8 +377,11 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     if (updatedImage == nil) return;
     
     // Create new image list
-    NSMutableArray<PiwigoImageData*> *newImageList = [self.imageList mutableCopy];
-    
+    NSMutableArray<PiwigoImageData*> *newImageList = [NSMutableArray new];
+    if (self.imageList.count > 0) {
+        [newImageList addObjectsFromArray:self.imageList];
+    }
+
     // Update image list
     for(NSInteger index = 0; index < self.imageList.count; index++)
     {
