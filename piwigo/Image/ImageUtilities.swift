@@ -139,7 +139,6 @@ class ImageUtilities: NSObject {
                 // Data cannot be digested
                 let error = error as NSError
                 failure(error)
-                return
             }
         }
     }
@@ -183,13 +182,11 @@ class ImageUtilities: NSObject {
                     // Could not set image parameters
                     let error = NSError(domain: "Piwigo", code: -1, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")])
                     failure(error)
-                    return
                 }
             } catch {
                 // Data cannot be digested
                 let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : JsonError.wrongJSONobject.localizedDescription])
                 failure(error)
-                return
             }
         }
     }
@@ -247,13 +244,11 @@ class ImageUtilities: NSObject {
                     // Could not delete images
                     let error = NSError(domain: "Piwigo", code: -1, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")])
                     failure(error)
-                    return
                 }
             } catch {
                 // Data cannot be digested
                 let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : JsonError.wrongJSONobject.localizedDescription])
                 failure(error)
-                return
             }
         }
     }
@@ -302,13 +297,11 @@ class ImageUtilities: NSObject {
                     // Could not delete images
                     let error = NSError(domain: "Piwigo", code: -1, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")])
                     failure(error)
-                    return
                 }
             } catch {
                 // Data cannot be digested
                 let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : JsonError.wrongJSONobject.localizedDescription])
                 failure(error)
-                return
             }
         }
     }
@@ -357,13 +350,11 @@ class ImageUtilities: NSObject {
                     // Could not delete images
                     let error = NSError(domain: "Piwigo", code: -1, userInfo: [NSLocalizedDescriptionKey : NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")])
                     failure(error)
-                    return
                 }
             } catch {
                 // Data cannot be digested
                 let error = NSError(domain: "Piwigo", code: 0, userInfo: [NSLocalizedDescriptionKey : JsonError.wrongJSONobject.localizedDescription])
                 failure(error)
-                return
             }
         }
     }
