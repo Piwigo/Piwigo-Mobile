@@ -22,7 +22,7 @@ class NberImagesFooterCollectionReusableView: UICollectionReusableView {
         noImagesLabel?.adjustsFontSizeToFitWidth = false
         noImagesLabel?.lineBreakMode = .byWordWrapping
         noImagesLabel?.textAlignment = .center
-        noImagesLabel?.font = UIFont.piwigoFontLight()
+        noImagesLabel?.font = .piwigoFontLight()
         noImagesLabel?.text = NSLocalizedString("categoryMainEmtpy", comment: "No albums in your Piwigo yet.\rYou may pull down to refresh or re-login.")
 
         if let noImagesLabel = noImagesLabel {
