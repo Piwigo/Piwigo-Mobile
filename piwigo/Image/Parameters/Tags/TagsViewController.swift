@@ -82,7 +82,7 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
     
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = UIColor.piwigoColorBackground()
+        view.backgroundColor = .piwigoColorBackground()
 
         // Navigation bar
         let attributes = [
@@ -94,12 +94,12 @@ class TagsViewController: UITableViewController, UITextFieldDelegate {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
         navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
+        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
+        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
+        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
 
         // Table view
-        tagsTableView?.separatorColor = UIColor.piwigoColorSeparator()
+        tagsTableView?.separatorColor = .piwigoColorSeparator()
         tagsTableView?.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
         tagsTableView?.reloadData()
     }
@@ -194,7 +194,7 @@ extension TagsViewController {
         let headerLabel = UILabel()
         headerLabel.translatesAutoresizingMaskIntoConstraints = false
         headerLabel.font = UIFont.piwigoFontBold()
-        headerLabel.textColor = UIColor.piwigoColorHeader()
+        headerLabel.textColor = .piwigoColorHeader()
         headerLabel.numberOfLines = 0
         headerLabel.adjustsFontSizeToFitWidth = false
         headerLabel.lineBreakMode = .byWordWrapping
@@ -351,7 +351,7 @@ extension TagsViewController {
         if let addAction = addAction {
             alert.addAction(addAction)
         }
-        alert.view.tintColor = UIColor.piwigoColorOrange()
+        alert.view.tintColor = .piwigoColorOrange()
         if #available(iOS 13.0, *) {
             alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
         } else {
@@ -359,7 +359,7 @@ extension TagsViewController {
         }
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange()
+            alert.view.tintColor = .piwigoColorOrange()
         }
     }
 
