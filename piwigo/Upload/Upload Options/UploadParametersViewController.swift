@@ -42,10 +42,10 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
 
     @objc func applyColorPalette() {
         // Background color of the views
-        view.backgroundColor = UIColor.piwigoColorBackground()
+        view.backgroundColor = .piwigoColorBackground()
 
         // Table view
-        paramsTableView.separatorColor = UIColor.piwigoColorSeparator()
+        paramsTableView.separatorColor = .piwigoColorSeparator()
         paramsTableView.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
         paramsTableView.reloadData()
     }
@@ -105,7 +105,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
         // Header label
         let headerLabel = UILabel()
         headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        headerLabel.textColor = UIColor.piwigoColorHeader()
+        headerLabel.textColor = .piwigoColorHeader()
         headerLabel.numberOfLines = 0
         headerLabel.adjustsFontSizeToFitWidth = false
         headerLabel.lineBreakMode = .byWordWrapping
@@ -179,7 +179,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
             cell.config(withLabel: NSLocalizedString("editImageDetails_title", comment: "Title:"),
                         placeHolder: NSLocalizedString("editImageDetails_titlePlaceholder", comment: "Title"),
                         andImageDetail: commonTitle)
-            cell.cellTextField.textColor = shouldUpdateTitle ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel()
+            cell.cellTextField.textColor = shouldUpdateTitle ? .piwigoColorOrange() : .piwigoColorRightLabel()
             cell.cellTextField.tag = EditImageDetailsOrder.imageName.rawValue
             cell.cellTextField.delegate = self
             tableViewCell = cell
@@ -192,7 +192,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
             cell.config(withLabel: NSLocalizedString("editImageDetails_author", comment: "Author:"),
                         placeHolder: NSLocalizedString("settings_defaultAuthorPlaceholder", comment: "Author Name"),
                         andImageDetail: (commonAuthor == "NSNotFound") ? "" : commonAuthor)
-            cell.cellTextField.textColor = shouldUpdateAuthor ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel()
+            cell.cellTextField.textColor = shouldUpdateAuthor ? .piwigoColorOrange() : .piwigoColorRightLabel()
             cell.cellTextField.tag = EditImageDetailsOrder.author.rawValue
             cell.cellTextField.delegate = self
             tableViewCell = cell
@@ -204,7 +204,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
             }
             cell.setLeftLabel(withText: NSLocalizedString("editImageDetails_privacyLevel", comment: "Who can see this photo?"))
             cell.setPrivacyLevel(with: commonPrivacyLevel,
-                                 inColor: shouldUpdatePrivacyLevel ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
+                                 inColor: shouldUpdatePrivacyLevel ? .piwigoColorOrange() : .piwigoColorRightLabel())
             tableViewCell = cell
 
         case .tags:
@@ -223,7 +223,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
                 tagList.append(newTag)
             }
             cell.config(withList: tagList,
-                            inColor: shouldUpdateTags ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
+                            inColor: shouldUpdateTags ? .piwigoColorOrange() : .piwigoColorRightLabel())
             tableViewCell = cell
 
         case .comment:
@@ -232,7 +232,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
                 return EditImageTextViewTableViewCell()
             }
             cell.config(withText: commonComment,
-                                inColor: shouldUpdateComment ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
+                                inColor: shouldUpdateComment ? .piwigoColorOrange() : .piwigoColorRightLabel())
             cell.textView.delegate = self
             tableViewCell = cell
 
@@ -240,8 +240,8 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
             break
         }
 
-        tableViewCell.backgroundColor = UIColor.piwigoColorCellBackground()
-        tableViewCell.tintColor = UIColor.piwigoColorOrange()
+        tableViewCell.backgroundColor = .piwigoColorCellBackground()
+        tableViewCell.tintColor = .piwigoColorOrange()
         return tableViewCell
     }
 
@@ -390,7 +390,7 @@ class UploadParametersViewController: UITableViewController, UITextFieldDelegate
 
     func textViewDidBeginEditing(_ textView: UITextView) {
         shouldUpdateComment = true
-        textView.textColor = UIColor.piwigoColorOrange()
+        textView.textColor = .piwigoColorOrange()
     }
 
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
