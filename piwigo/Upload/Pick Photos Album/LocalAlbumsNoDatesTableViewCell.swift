@@ -20,12 +20,12 @@ class LocalAlbumsNoDatesTableViewCell: UITableViewCell {
         tintColor = .piwigoColorOrange()
 
         // Title
-        titleLabel.font = UIFont.piwigoFontNormal()
+        titleLabel.font = .piwigoFontNormal()
         titleLabel.textColor = .piwigoColorLeftLabel()
         titleLabel.text = title
         
         // Number of photos
-        numberLabel.font = UIFont.piwigoFontSmall()
+        numberLabel.font = .piwigoFontSmall()
         numberLabel.textColor = .piwigoColorRightLabel()
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal

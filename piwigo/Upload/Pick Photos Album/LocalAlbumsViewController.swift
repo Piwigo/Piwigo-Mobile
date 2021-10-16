@@ -583,7 +583,7 @@ class LocalAlbumsViewController: UIViewController, UITableViewDelegate, UITableV
         // Footer label
         let footerLabel = UILabel()
         footerLabel.translatesAutoresizingMaskIntoConstraints = false
-        footerLabel.font = UIFont.piwigoFontSmall()
+        footerLabel.font = .piwigoFontSmall()
         footerLabel.textColor = .piwigoColorHeader()
         footerLabel.textAlignment = .center
         footerLabel.numberOfLines = 0
