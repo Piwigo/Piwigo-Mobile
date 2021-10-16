@@ -12,7 +12,6 @@ import UIKit
 extension UIColor {
 
     // MARK: - Text Color
-    @objc
     class func piwigoColorText() -> UIColor {
         if AppVars.isDarkPaletteActive {
             return UIColor.lightText
@@ -22,7 +21,6 @@ extension UIColor {
     }
 
     // Background Color of Views
-    @objc
     class func piwigoColorBackground() -> UIColor {
         if AppVars.isDarkPaletteActive {
             return UIColor(red: 23 / 255.0, green: 23 / 255.0, blue: 23 / 255.0, alpha: 1.0)
@@ -32,7 +30,6 @@ extension UIColor {
     }
 
     // Shadow Color of Buttons
-    @objc
     class func piwigoColorShadow() -> UIColor {
         if AppVars.isDarkPaletteActive {
             return UIColor.white
@@ -42,29 +39,24 @@ extension UIColor {
     }
 
     // MARK: - Piwigo Logo Colors
-    @objc
     class func piwigoColorBrown() -> UIColor {
         return UIColor(red: 78 / 255.0, green: 78 / 255.0, blue: 78 / 255.0, alpha: 1.0)
     }
 
-    @objc
     class func piwigoColorOrange() -> UIColor {
         return UIColor(red: 255 / 255.0, green: 119 / 255.0, blue: 1 / 255.0, alpha: 1.0)
     }
 
-    @objc
     class func piwigoColorOrangeLight() -> UIColor {
         return UIColor(red: 251 / 255.0, green: 97 / 255.0, blue: 11 / 255.0, alpha: 1.0)
     }
 
-    @objc
     class func piwigoColorOrangeSelected() -> UIColor {
         return UIColor(red: 198 / 255.0, green: 92 / 255.0, blue: 0 / 255.0, alpha: 1.0)
     }
 
 
     // MARK: - Color of Table Views
-    @objc
     class func piwigoColorHeader() -> UIColor {
         if AppVars.isDarkPaletteActive {
             return UIColor(red: 200 / 255.0, green: 200 / 255.0, blue: 200 / 255.0, alpha: 1.0)
@@ -75,7 +67,6 @@ extension UIColor {
         }
     }
 
-    @objc
     class func piwigoColorSeparator() -> UIColor {
         if AppVars.isDarkPaletteActive {
             return UIColor(red: 62 / 255.0, green: 62 / 255.0, blue: 65 / 255.0, alpha: 1.0)
@@ -84,7 +75,6 @@ extension UIColor {
         }
     }
 
-    @objc
     class func piwigoColorCellBackground() -> UIColor {
         if AppVars.isDarkPaletteActive {
             return UIColor(red: 42 / 255.0, green: 42 / 255.0, blue: 45 / 255.0, alpha: 1.0)
@@ -93,7 +83,6 @@ extension UIColor {
         }
     }
 
-    @objc
     class func piwigoColorLeftLabel() -> UIColor {
         if AppVars.isDarkPaletteActive {
             return UIColor(red: 200 / 255.0, green: 200 / 255.0, blue: 200 / 255.0, alpha: 1)
@@ -102,7 +91,6 @@ extension UIColor {
         }
     }
 
-    @objc
     class func piwigoColorRightLabel() -> UIColor {
         if AppVars.isDarkPaletteActive {
             return UIColor(red: 128 / 255.0, green: 128 / 255.0, blue: 128 / 255.0, alpha: 1.0)
@@ -111,7 +99,6 @@ extension UIColor {
         }
     }
 
-    @objc
     class func piwigoColorPlaceHolder() -> UIColor {
         if AppVars.isDarkPaletteActive {
             return UIColor(red: 80 / 255.0, green: 80 / 255.0, blue: 80 / 255.0, alpha: 1.0)
@@ -120,7 +107,6 @@ extension UIColor {
         }
     }
 
-    @objc
     class func piwigoColorThumb() -> UIColor {
         if AppVars.isDarkPaletteActive {
             return UIColor(red: 200 / 255.0, green: 200 / 255.0, blue: 200 / 255.0, alpha: 1)
@@ -130,7 +116,6 @@ extension UIColor {
     }
 
     // MARK: - Color of lines under fields
-    @objc
     class func piwigoColorUnderline() -> UIColor {
         if AppVars.isDarkPaletteActive {
             return UIColor(red: 51 / 255.0, green: 51 / 255.0, blue: 53 / 255.0, alpha: 1.0)
@@ -140,7 +125,6 @@ extension UIColor {
     }
 
     // MARK: - Old colors
-    @objc
     class func piwigoColorGray() -> UIColor {
         if AppVars.isDarkPaletteActive {
             return UIColor(red: 23 / 255.0, green: 23 / 255.0, blue: 23 / 255.0, alpha: 1.0)
@@ -149,7 +133,6 @@ extension UIColor {
         }
     }
 
-    @objc
     class func piwigoColorWhiteCream() -> UIColor {
         if AppVars.isDarkPaletteActive {
             return UIColor(red: 200 / 255.0, green: 200 / 255.0, blue: 200 / 255.0, alpha: 1)
