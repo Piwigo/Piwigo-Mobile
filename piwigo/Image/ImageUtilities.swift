@@ -233,10 +233,12 @@ class ImageUtilities: NSObject {
                     // Images deleted successfully
                     /// We may check here that the number returned matches the number of images to delete
                     /// and return an error to the user.
-                    // Remove image from cache, update UI and Upload database
-                    for image in images {
+                    DispatchQueue.global(qos: .userInteractive).async {
                         // Remove image from cache, update UI and Upload database
-                        CategoriesData.sharedInstance().deleteImage(image)
+                        for image in images {
+                            // Remove image from cache, update UI and Upload database
+                            CategoriesData.sharedInstance().deleteImage(image)
+                        }
                     }
                     completion()
                 }
