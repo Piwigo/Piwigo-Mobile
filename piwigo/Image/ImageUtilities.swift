@@ -290,9 +290,11 @@ class ImageUtilities: NSObject {
                 // Successful?
                 if uploadJSON.success {
                     // Images successfully added to user's favorites
-                    // Add image to cache
-                    CategoriesData.sharedInstance()
-                        .addImage(imageData, toCategory: "\(kPiwigoFavoritesCategoryId)")
+                    DispatchQueue.global(qos: .userInteractive).async {
+                        // Add image to cache
+                        CategoriesData.sharedInstance()
+                            .addImage(imageData, toCategory: "\(kPiwigoFavoritesCategoryId)")
+                    }
                     completion()
                 }
                 else {
@@ -343,9 +345,11 @@ class ImageUtilities: NSObject {
                 // Successful?
                 if uploadJSON.success {
                     // Images successfully added to user's favorites
-                    // Remove image from cache
-                    CategoriesData.sharedInstance()
-                        .removeImage(imageData, fromCategory: "\(kPiwigoFavoritesCategoryId)")
+                    DispatchQueue.global(qos: .userInteractive).async {
+                        // Remove image from cache
+                        CategoriesData.sharedInstance()
+                            .removeImage(imageData, fromCategory: "\(kPiwigoFavoritesCategoryId)")
+                    }
                     completion()
                 }
                 else {
