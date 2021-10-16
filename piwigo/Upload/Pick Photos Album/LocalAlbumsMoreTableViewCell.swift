@@ -14,7 +14,7 @@ class LocalAlbumsMoreTableViewCell: UITableViewCell {
     
     func configure() {
         // Background color and aspect
-        backgroundColor = UIColor.piwigoColorCellBackground()
-        moreImage.tintColor = UIColor.piwigoColorRightLabel()
+        backgroundColor = .piwigoColorCellBackground()
+        moreImage.tintColor = .piwigoColorRightLabel()
     }
 }
