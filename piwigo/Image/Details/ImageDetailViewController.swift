@@ -382,7 +382,7 @@ class ImageDetailViewController: UIViewController {
         // Create label programmatically
         let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
         titleLabel.backgroundColor = UIColor.clear
-        titleLabel.textColor = UIColor.piwigoColorWhiteCream()
+        titleLabel.textColor = .piwigoColorWhiteCream()
         titleLabel.textAlignment = .center
         titleLabel.numberOfLines = 1
         titleLabel.font = UIFont.piwigoFontSmallSemiBold()
@@ -415,7 +415,7 @@ class ImageDetailViewController: UIViewController {
         else {
             let subTitleLabel = UILabel(frame: CGRect(x: 0, y: titleLabel.frame.size.height, width: 0, height: 0))
             subTitleLabel.backgroundColor = UIColor.clear
-            subTitleLabel.textColor = UIColor.piwigoColorWhiteCream()
+            subTitleLabel.textColor = .piwigoColorWhiteCream()
             subTitleLabel.textAlignment = .center
             subTitleLabel.numberOfLines = 1
             subTitleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -800,7 +800,7 @@ class ImageDetailViewController: UIViewController {
         }
 
         // Present list of actions
-        alert.view.tintColor = UIColor.piwigoColorOrange()
+        alert.view.tintColor = .piwigoColorOrange()
         if #available(iOS 13.0, *) {
             alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
         } else {
@@ -809,7 +809,7 @@ class ImageDetailViewController: UIViewController {
         alert.popoverPresentationController?.barButtonItem = deleteBarButton
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange()
+            alert.view.tintColor = .piwigoColorOrange()
         }
     }
 
@@ -1105,7 +1105,7 @@ class ImageDetailViewController: UIViewController {
         alert.addAction(moveAction)
 
         // Present list of actions
-        alert.view.tintColor = UIColor.piwigoColorOrange()
+        alert.view.tintColor = .piwigoColorOrange()
         if #available(iOS 13.0, *) {
             alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
         } else {
@@ -1114,7 +1114,7 @@ class ImageDetailViewController: UIViewController {
         alert.popoverPresentationController?.barButtonItem = moveBarButton
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange()
+            alert.view.tintColor = .piwigoColorOrange()
         }
     }
 
