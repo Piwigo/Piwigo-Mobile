@@ -15,7 +15,7 @@ class LocalImagesFooterReusableView: UICollectionReusableView {
     func configure(with nberOfImages: Int) -> Void {
         
         // Appearance
-        nberOfImagesLabel.textColor = UIColor.piwigoColorHeader()
+        nberOfImagesLabel.textColor = .piwigoColorHeader()
         nberOfImagesLabel.font = UIFont.piwigoFontLight()
         
         // Number of images
