@@ -19,7 +19,7 @@ class TagSelectorCell: UITableViewCell {
         // General settings
         backgroundColor = .piwigoColorCellBackground()
         tintColor = .piwigoColorOrange()
-        tagLabel.font = UIFont.piwigoFontNormal()
+        tagLabel.font = .piwigoFontNormal()
         tagLabel.textColor = .piwigoColorLeftLabel()
 
         // => pwg.tags.getList returns in addition: counter, url
