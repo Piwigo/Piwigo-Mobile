@@ -99,23 +99,23 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
         case kPiwigoCategorySelectActionCopyImages:
             guard let array = parameter as? [Any],
-                  let imageIds = array[0] as? [String],
+                  let imageIds = array[0] as? [NSNumber],
                   let categoryId = array[1] as? Int else {
                 fatalError("Input parameter expected to be of type [[String], Int]")
             }
             // Image IDs of the category ID which will be copied to the selected album
-            inputImageIds = imageIds.map({Int($0) ?? NSNotFound})
+            inputImageIds = imageIds.map({$0.intValue}).filter({ $0 != NSNotFound})
             inputImageData = CategoriesData.sharedInstance().getImageForCategory(categoryId, andId: inputImageIds[0])
             inputCategoryId = categoryId
 
         case kPiwigoCategorySelectActionMoveImages:
             guard let array = parameter as? [Any],
-                  let imageIds = array[0] as? [String],
+                  let imageIds = array[0] as? [NSNumber],
                   let categoryId = array[1] as? Int else {
                 fatalError("Input parameter expected to be of type [[String], Int]")
             }
             // Image IDs of the category ID which will be moved to the selected album
-            inputImageIds = imageIds.map({Int($0) ?? NSNotFound}).filter({ $0 != NSNotFound})
+            inputImageIds = imageIds.map({$0.intValue}).filter({ $0 != NSNotFound})
             inputImageData = CategoriesData.sharedInstance().getImageForCategory(categoryId, andId: inputImageIds[0])
             inputCategoryId = categoryId
 
