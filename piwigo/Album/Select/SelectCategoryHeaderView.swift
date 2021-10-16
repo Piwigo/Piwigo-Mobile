@@ -44,7 +44,7 @@ class SelectCategoryHeaderView: UIView {
         titleRect.size.height += 16
         self.frame = titleRect
         label.text = text
-        label.textColor = UIColor.piwigoColorLeftLabel()
+        label.textColor = .piwigoColorLeftLabel()
     }
 
     required init?(coder aDecoder: NSCoder) {
