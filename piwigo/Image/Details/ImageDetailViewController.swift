@@ -1006,7 +1006,11 @@ let kPiwigoNotificationUpdateImageFileName = "kPiwigoNotificationUpdateImageFile
         let parameter = [imageData, NSNumber(value: categoryId)]
         copyVC.setInput(parameter: parameter, for: action)
         copyVC.delegate = self // To re-enable toolbar
-        copyVC.imageCopiedDelegate = self // To update image data after copy
+        if action == kPiwigoCategorySelectActionCopyImage {
+            copyVC.imageCopiedDelegate = self   // To update image data after copy
+        } else {
+            copyVC.imageRemovedDelegate = self  // To remove image after move
+        }
         if #available(iOS 14.0, *) {
             pushView(copyVC, forButton: actionBarButton)
         } else {
