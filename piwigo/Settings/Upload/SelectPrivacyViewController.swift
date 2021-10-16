@@ -184,7 +184,7 @@ class SelectPrivacyViewController: UIViewController, UITableViewDelegate, UITabl
 
         cell.backgroundColor = .piwigoColorCellBackground()
         cell.tintColor = .piwigoColorOrange()
-        cell.textLabel?.font = UIFont.piwigoFontNormal()
+        cell.textLabel?.font = .piwigoFontNormal()
         cell.textLabel?.textColor = .piwigoColorLeftLabel()
         cell.textLabel?.adjustsFontSizeToFitWidth = false
         cell.textLabel?.text = privacyLevel.name

@@ -183,7 +183,7 @@ class UploadVideoSizeViewController: UIViewController, UITableViewDataSource, UI
         // Name of the image size
         cell.backgroundColor = .piwigoColorCellBackground()
         cell.tintColor = .piwigoColorOrange()
-        cell.textLabel?.font = UIFont.piwigoFontNormal()
+        cell.textLabel?.font = .piwigoFontNormal()
         cell.textLabel?.textColor = .piwigoColorLeftLabel()
         cell.textLabel?.adjustsFontSizeToFitWidth = false
         cell.textLabel?.text = indexPath.row == 0 ? pwgVideoMaxSizes(rawValue: Int16(indexPath.row))!.name  : String(format: "%@ | <= %ld px", pwgVideoMaxSizes(rawValue: Int16(indexPath.row))!.name, pwgVideoMaxSizes(rawValue: Int16(indexPath.row))!.pixels)
@@ -232,7 +232,7 @@ class UploadVideoSizeViewController: UIViewController, UITableViewDataSource, UI
         // Footer label
         let footerLabel = UILabel()
         footerLabel.translatesAutoresizingMaskIntoConstraints = false
-        footerLabel.font = UIFont.piwigoFontSmall()
+        footerLabel.font = .piwigoFontSmall()
         footerLabel.textColor = .piwigoColorHeader()
         footerLabel.textAlignment = .center
         footerLabel.numberOfLines = 0

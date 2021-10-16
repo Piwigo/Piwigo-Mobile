@@ -182,7 +182,7 @@ class UploadPhotoSizeViewController: UIViewController, UITableViewDataSource, UI
         // Name of the image size
         cell.backgroundColor = .piwigoColorCellBackground()
         cell.tintColor = .piwigoColorOrange()
-        cell.textLabel?.font = UIFont.piwigoFontNormal()
+        cell.textLabel?.font = .piwigoFontNormal()
         cell.textLabel?.textColor = .piwigoColorLeftLabel()
         cell.textLabel?.adjustsFontSizeToFitWidth = false
         cell.textLabel?.text = indexPath.row == 0 ? pwgPhotoMaxSizes(rawValue: Int16(indexPath.row))!.name  : String(format: "%@ | <= %ld px", pwgPhotoMaxSizes(rawValue: Int16(indexPath.row))!.name, pwgPhotoMaxSizes(rawValue: Int16(indexPath.row))!.pixels)
@@ -231,7 +231,7 @@ class UploadPhotoSizeViewController: UIViewController, UITableViewDataSource, UI
         // Footer label
         let footerLabel = UILabel()
         footerLabel.translatesAutoresizingMaskIntoConstraints = false
-        footerLabel.font = UIFont.piwigoFontSmall()
+        footerLabel.font = .piwigoFontSmall()
         footerLabel.textColor = .piwigoColorHeader()
         footerLabel.textAlignment = .center
         footerLabel.numberOfLines = 0
