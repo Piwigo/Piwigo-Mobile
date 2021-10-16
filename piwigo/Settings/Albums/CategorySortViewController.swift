@@ -213,7 +213,7 @@ class CategorySortViewController: UIViewController, UITableViewDelegate, UITable
 
         cell.backgroundColor = .piwigoColorCellBackground()
         cell.tintColor = .piwigoColorOrange()
-        cell.textLabel?.font = UIFont.piwigoFontNormal()
+        cell.textLabel?.font = .piwigoFontNormal()
         cell.textLabel?.textColor = .piwigoColorLeftLabel()
         cell.textLabel?.text = CategorySortViewController.getNameForCategorySortType(sortChoice!)
         cell.textLabel?.minimumScaleFactor = 0.5
