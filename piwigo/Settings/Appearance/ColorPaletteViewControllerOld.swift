@@ -24,7 +24,7 @@ class ColorPaletteViewControllerOld: UIViewController, UITableViewDataSource, UI
 
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = UIColor.piwigoColorBackground()
+        view.backgroundColor = .piwigoColorBackground()
 
         // Navigation bar
         let attributes = [
@@ -36,12 +36,12 @@ class ColorPaletteViewControllerOld: UIViewController, UITableViewDataSource, UI
             navigationController?.navigationBar.prefersLargeTitles = false
         }
         navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
+        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
+        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
+        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
 
         // Table view
-        tableView.separatorColor = UIColor.piwigoColorSeparator()
+        tableView.separatorColor = .piwigoColorSeparator()
         tableView.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
         tableView.reloadData()
     }
@@ -86,7 +86,7 @@ class ColorPaletteViewControllerOld: UIViewController, UITableViewDataSource, UI
         // Header label
         let headerLabel = UILabel()
         headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        headerLabel.textColor = UIColor.piwigoColorHeader()
+        headerLabel.textColor = .piwigoColorHeader()
         headerLabel.numberOfLines = 0
         headerLabel.adjustsFontSizeToFitWidth = false
         headerLabel.lineBreakMode = .byWordWrapping
@@ -206,8 +206,8 @@ class ColorPaletteViewControllerOld: UIViewController, UITableViewDataSource, UI
         }
 
         // Appearance
-        tableViewCell.backgroundColor = UIColor.piwigoColorCellBackground()
-        tableViewCell.tintColor = UIColor.piwigoColorOrange()
+        tableViewCell.backgroundColor = .piwigoColorCellBackground()
+        tableViewCell.tintColor = .piwigoColorOrange()
 
         return tableViewCell
     }
@@ -243,7 +243,7 @@ class ColorPaletteViewControllerOld: UIViewController, UITableViewDataSource, UI
             let footerLabel = UILabel()
             footerLabel.translatesAutoresizingMaskIntoConstraints = false
             footerLabel.font = UIFont.piwigoFontSmall()
-            footerLabel.textColor = UIColor.piwigoColorHeader()
+            footerLabel.textColor = .piwigoColorHeader()
             footerLabel.textAlignment = .center
             footerLabel.numberOfLines = 0
             footerLabel.text = NSLocalizedString("settings_brightnessHelp", comment: "In low ambient brightness, the Ambient Brightness option uses a darker color palette to make photos stand out against darker backgrounds.")
