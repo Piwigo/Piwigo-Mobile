@@ -14,6 +14,7 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
 
 @objc protocol ImageDetailDelegate: NSObjectProtocol {
     func didSelectImage(withId imageId: Int)
+    func didUpdateImage(withData imageData: PiwigoImageData)
     func didDeleteImage(_ image: PiwigoImageData?, atIndex index: Int)
     func needToLoadMoreImages()
 }
@@ -1317,25 +1318,27 @@ extension ImageDetailViewController: EditImageParamsDelegate
         // Should never be called when the properties of a single image are edited
     }
 
-    func didRenameFileOfImage(_ imageData: PiwigoImageData) {
-        // Update image data
-        if let fileName = imageData.fileName {
-            self.imageData.fileName = fileName
-        }
+    func didChangeImageParameters(_ params: PiwigoImageData) {
+        // Determine index of updated image
+        guard let indexOfUpdatedImage = images.firstIndex(where: { $0.imageId == params.imageId }) else { return }
+        
+        // Update list and currently viewed image
+        imageData = params
+        images[indexOfUpdatedImage] = params
 
         // Update title view
         setTitleViewFromImageData()
-    }
+        
+        // Update cached image data
+        /// Note: the current category might be a smart album.
+        let mergedCatIds = Array(Set(imageData.categoryIds.map({$0.intValue}) + [categoryId]))
+        for catId in  mergedCatIds {
+            CategoriesData.sharedInstance().getCategoryById(catId)?.updateImage(afterEdit: params)
+        }
 
-    func didChangeParamsOfImage(_ params: PiwigoImageData) {
-        // Determine index of updated image
-        if let indexOfUpdatedImage = images.firstIndex(where: { $0.imageId == params.imageId }) {
-            // Update list and currently viewed image
-            images[indexOfUpdatedImage] = params
-            imageData = params
-
-            // Update current view
-            setTitleViewFromImageData()
+        // Update banner of item in collection view (in case of empty title)
+        if imgDetailDelegate?.responds(to: #selector(ImageDetailDelegate.didUpdateImage(withData:))) ?? false {
+            imgDetailDelegate?.didUpdateImage(withData: imageData)
         }
     }
 

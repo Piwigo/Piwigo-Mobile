@@ -528,6 +528,21 @@
     }
 }
 
+-(void)didUpdateImageWithData:(PiwigoImageData *)imageData
+{
+    // Check updated image
+    if (imageData == nil) { return; }
+    
+    // Update data source
+    NSInteger indexOfImage = [self.albumData updateImage:imageData];
+    
+    // Refresh image banner
+    if (indexOfImage != NSNotFound) {
+        NSIndexPath *updatedImage = [NSIndexPath indexPathForItem:indexOfImage inSection:0];
+        [self.imagesCollection reloadItemsAtIndexPaths:@[updatedImage]];
+    }
+}
+
 -(void)didDeleteImage:(PiwigoImageData *)image atIndex:(NSInteger)index
 {
     index = MAX(0, index-1);                                    // index must be > 0

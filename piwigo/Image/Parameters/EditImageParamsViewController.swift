@@ -13,8 +13,7 @@ import piwigoKit
 
 @objc protocol EditImageParamsDelegate: NSObjectProtocol {
     func didDeselectImage(withId imageId: Int)
-    func didRenameFileOfImage(_ imageData: PiwigoImageData)
-    func didChangeParamsOfImage(_ params: PiwigoImageData)
+    func didChangeImageParameters(_ imageData: PiwigoImageData)
     func didFinishEditingParameters()
 }
 
@@ -348,7 +347,8 @@ class EditImageParamsViewController: UIViewController
             showPiwigoHUD(withTitle: NSLocalizedString("editImageDetailsHUD_updatingSingle", comment: "Updating Photo…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
         }
 
-        // Update image info on server and in cache
+        // Update image info on server
+        /// The cache will be updated by the parent view controller.
         setProperties(ofImage: imagesToUpdate.last!) { [unowned self] in
             // Next image?
             self.imagesToUpdate.removeLast()
@@ -453,16 +453,10 @@ class EditImageParamsViewController: UIViewController
         
         // Send request to Piwigo server
         ImageUtilities.setInfos(with: paramsDict) {
-            // Update image in cache
-            for cat in imageData.categoryIds {
-                CategoriesData.sharedInstance().getCategoryById(cat.intValue)
-                    .updateImage(afterEdit: imageData)
-            }
-
             // Notify album/image view of modification
             DispatchQueue.main.async {
-                if self.delegate?.responds(to: #selector(EditImageParamsDelegate.didChangeParamsOfImage(_:))) ?? false {
-                    self.delegate?.didChangeParamsOfImage(imageData)
+                if self.delegate?.responds(to: #selector(EditImageParamsDelegate.didChangeImageParameters(_:))) ?? false {
+                    self.delegate?.didChangeImageParameters(imageData)
                 }
             }
 
@@ -920,8 +914,8 @@ extension EditImageParamsViewController: EditImageThumbnailCellDelegate
         }
 
         // Update parent image view
-        if delegate?.responds(to: #selector(EditImageParamsDelegate.didRenameFileOfImage(_:))) ?? false {
-            delegate?.didRenameFileOfImage(imageData)
+        if delegate?.responds(to: #selector(EditImageParamsDelegate.didChangeImageParameters(_:))) ?? false {
+            delegate?.didChangeImageParameters(imageData)
         }
     }
 }

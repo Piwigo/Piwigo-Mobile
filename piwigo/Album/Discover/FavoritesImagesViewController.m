@@ -1299,6 +1299,21 @@
     }
 }
 
+-(void)didUpdateImageWithData:(PiwigoImageData *)imageData
+{
+    // Check updated image
+    if (imageData == nil) { return; }
+    
+    // Update data source
+    NSInteger indexOfImage = [self.albumData updateImage:imageData];
+    
+    // Refresh image banner
+    if (indexOfImage != NSNotFound) {
+        NSIndexPath *updatedImage = [NSIndexPath indexPathForItem:indexOfImage inSection:0];
+        [self.imagesCollection reloadItemsAtIndexPaths:@[updatedImage]];
+    }
+}
+
 -(void)didDeleteImage:(PiwigoImageData *)image atIndex:(NSInteger)index
 {
     index = MAX(0, index-1);                                    // index must be > 0
@@ -1327,20 +1342,21 @@
     [self.imagesCollection reloadData];
 }
 
--(void)didRenameFileOfImage:(PiwigoImageData *)imageData
+-(void)didChangeImageParameters:(PiwigoImageData *)params
 {
-    // Update image data
-    [self.albumData updateImage:imageData];
-}
-
--(void)didChangeParamsOfImage:(PiwigoImageData *)params
-{
-    // Update image data
-    NSInteger indexOfUpdatedImage = [self.albumData updateImage:params];
-    if (indexOfUpdatedImage != NSNotFound) {
-        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfUpdatedImage inSection:1];
-        [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
+    // Update cached image data
+    /// Note: the current category cannot be a smart album.
+    for (NSNumber *catId in params.categoryIds) {
+        [[CategoriesData.sharedInstance getCategoryById:catId.intValue] updateImageAfterEdit:params];
     }
+
+    // Update data source
+    NSInteger indexOfUpdatedImage = [self.albumData updateImage:params];
+    if (indexOfUpdatedImage == NSNotFound) { return; }
+    
+    // Refresh image cell
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfUpdatedImage inSection:1];
+    [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
 }
 
 -(void)didFinishEditingParameters
