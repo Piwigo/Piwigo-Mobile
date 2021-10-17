@@ -32,14 +32,14 @@
 
 @property (nonatomic, assign) BOOL isSelect;
 @property (nonatomic, assign) NSInteger totalNumberOfImages;
-@property (nonatomic, strong) NSMutableArray<NSString *> *selectedImageIds;
-@property (nonatomic, strong) NSMutableArray<NSString *> *touchedImageIds;
+@property (nonatomic, strong) NSMutableArray<NSNumber *> *selectedImageIds;
+@property (nonatomic, strong) NSMutableArray<NSNumber *> *touchedImageIds;
 
-@property (nonatomic, strong) NSMutableArray<NSString *> *selectedImageIdsToEdit;
+@property (nonatomic, strong) NSMutableArray<NSNumber *> *selectedImageIdsToEdit;
 @property (nonatomic, strong) NSMutableArray<PiwigoImageData *> *selectedImagesToEdit;
-@property (nonatomic, strong) NSMutableArray<NSString *> *selectedImageIdsToDelete;
+@property (nonatomic, strong) NSMutableArray<NSNumber *> *selectedImageIdsToDelete;
 @property (nonatomic, strong) NSMutableArray<PiwigoImageData *> *selectedImagesToDelete;
-@property (nonatomic, strong) NSMutableArray<NSString *> *selectedImageIdsToShare;
+@property (nonatomic, strong) NSMutableArray<NSNumber *> *selectedImageIdsToShare;
 @property (nonatomic, strong) NSMutableArray<PiwigoImageData *> *selectedImagesToShare;
 @property (nonatomic, strong) PiwigoImageData *selectedImage;
 
@@ -584,7 +584,7 @@
                     }];
                     if (indexOfExistingItem == NSNotFound) {
                         [itemsToDelete addObject:[NSIndexPath indexPathForItem:index inSection:0]];
-                        NSString *imageIdObject = [NSString stringWithFormat:@"%ld", (long)imageData.imageId];
+                        NSNumber *imageIdObject = [NSNumber numberWithInteger:imageData.imageId];
                         if ([self.selectedImageIds containsObject:imageIdObject]) {
                             [self.selectedImageIds removeObject:imageIdObject];
                         }
@@ -694,7 +694,7 @@
             ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
             
             // Update the selection if not already done
-            NSString *imageIdObject = [NSString stringWithFormat:@"%ld", (long)imageCell.imageData.imageId];
+            NSNumber *imageIdObject = [NSNumber numberWithInteger:imageCell.imageData.imageId];
             if (![self.touchedImageIds containsObject:imageIdObject]) {
                 
                 // Store that the user touched this cell during this gesture
@@ -853,7 +853,7 @@
         // Create cell from Piwigo data
         PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
         [cell setupWithImageData:imageData inCategoryId:self.categoryId];
-        cell.isSelected = [self.selectedImageIds containsObject:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]];
+        cell.isSelected = [self.selectedImageIds containsObject:[NSNumber numberWithInteger:imageData.imageId]];
         
         // pwg.users.favorites… methods available from Piwigo version 2.10
         if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending)) {
@@ -914,7 +914,7 @@
     else
     {
         // Selection mode active => add/remove image from selection
-        NSString *imageIdObject = [NSString stringWithFormat:@"%ld", (long)selectedCell.imageData.imageId];
+        NSNumber *imageIdObject = [NSNumber numberWithInteger:selectedCell.imageData.imageId];
         if(![self.selectedImageIds containsObject:imageIdObject]) {
             [self.selectedImageIds addObject:imageIdObject];
             selectedCell.isSelected = YES;

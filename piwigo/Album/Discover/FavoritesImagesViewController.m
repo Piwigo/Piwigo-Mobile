@@ -32,15 +32,15 @@
 
 @property (nonatomic, assign) BOOL isSelect;
 @property (nonatomic, assign) NSInteger totalNumberOfImages;
-@property (nonatomic, strong) NSMutableArray *selectedImageIds;
-@property (nonatomic, strong) NSMutableArray *touchedImageIds;
+@property (nonatomic, strong) NSMutableArray<NSNumber *> *selectedImageIds;
+@property (nonatomic, strong) NSMutableArray<NSNumber *> *touchedImageIds;
 
-@property (nonatomic, strong) NSMutableArray *selectedImageIdsToEdit;
-@property (nonatomic, strong) NSMutableArray *selectedImagesToEdit;
-@property (nonatomic, strong) NSMutableArray *selectedImageIdsToDelete;
-@property (nonatomic, strong) NSMutableArray *selectedImagesToDelete;
-@property (nonatomic, strong) NSMutableArray *selectedImageIdsToShare;
-@property (nonatomic, strong) NSMutableArray *selectedImagesToShare;
+@property (nonatomic, strong) NSMutableArray<NSNumber *> *selectedImageIdsToEdit;
+@property (nonatomic, strong) NSMutableArray<PiwigoImageData *> *selectedImagesToEdit;
+@property (nonatomic, strong) NSMutableArray<NSNumber *> *selectedImageIdsToDelete;
+@property (nonatomic, strong) NSMutableArray<PiwigoImageData *> *selectedImagesToDelete;
+@property (nonatomic, strong) NSMutableArray<NSNumber *> *selectedImageIdsToShare;
+@property (nonatomic, strong) NSMutableArray<PiwigoImageData *> *selectedImagesToShare;
 @property (nonatomic, strong) PiwigoImageData *selectedImage;
 
 @property (nonatomic, assign) kPiwigoSortObjc currentSortCategory;
@@ -507,7 +507,7 @@
                     }];
                     if (indexOfExistingItem == NSNotFound) {
                         [itemsToDelete addObject:[NSIndexPath indexPathForItem:index inSection:0]];
-                        NSString *imageIdObject = [NSString stringWithFormat:@"%ld", (long)imageData.imageId];
+                        NSNumber *imageIdObject = [NSNumber numberWithInteger:imageData.imageId];
                         if ([self.selectedImageIds containsObject:imageIdObject]) {
                             [self.selectedImageIds removeObject:imageIdObject];
                         }
@@ -617,7 +617,7 @@
             ImageCollectionViewCell *imageCell = (ImageCollectionViewCell *)cell;
             
             // Update the selection if not already done
-            NSString *imageIdObject = [NSString stringWithFormat:@"%ld", (long)imageCell.imageData.imageId];
+            NSNumber *imageIdObject = [NSNumber numberWithInteger:imageCell.imageData.imageId];
             if (![self.touchedImageIds containsObject:imageIdObject]) {
                 
                 // Store that the user touched this cell during this gesture
@@ -776,7 +776,7 @@
         // Create cell from Piwigo data
         PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
         [cell setupWithImageData:imageData inCategoryId:kPiwigoFavoritesCategoryId];
-        cell.isSelected = [self.selectedImageIds containsObject:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]];
+        cell.isSelected = [self.selectedImageIds containsObject:[NSNumber numberWithInteger:imageData.imageId]];
         cell.isFavorite = YES;
         
         // Add pan gesture recognition
@@ -833,7 +833,7 @@
     else
     {
         // Selection mode active => add/remove image from selection
-        NSString *imageIdObject = [NSString stringWithFormat:@"%ld", (long)selectedCell.imageData.imageId];
+        NSNumber *imageIdObject = [NSNumber numberWithInteger:selectedCell.imageData.imageId];
         if(![self.selectedImageIds containsObject:imageIdObject]) {
             [self.selectedImageIds addObject:imageIdObject];
             selectedCell.isSelected = YES;
@@ -1323,7 +1323,7 @@
 -(void)didDeselectImageWithId:(NSInteger)imageId
 {
     // Deselect image
-    [self.selectedImageIds removeObject:[NSString stringWithFormat:@"%ld", (long)imageId]];
+    [self.selectedImageIds removeObject:[NSNumber numberWithInteger:imageId]];
     [self.imagesCollection reloadData];
 }
 
@@ -1398,7 +1398,7 @@
 -(void)imageActivityItemProviderPreprocessingDidEnd:(UIActivityItemProvider *)imageActivityItemProvider withImageId:(NSInteger)imageId
 {
     // Close HUD
-    NSString *imageIdObject = [NSString stringWithFormat:@"%ld", (long)imageId];
+    NSNumber *imageIdObject = [NSNumber numberWithInteger:imageId];
     if ([imageActivityItemProvider isCancelled]) {
         [self.presentedViewController hidePiwigoHUDWithCompletion:^{ }];
     } else {
