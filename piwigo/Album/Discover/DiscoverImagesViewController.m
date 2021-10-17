@@ -1407,7 +1407,7 @@
 -(void)didDeselectImageWithId:(NSInteger)imageId
 {
     // Deselect image
-    [self.selectedImageIds removeObject:[NSString stringWithFormat:@"%ld", (long)imageId]];
+    [self.selectedImageIds removeObject:[NSNumber numberWithInteger:imageId]];
     [self.imagesCollection reloadData];
 }
 
@@ -1481,7 +1481,7 @@
 -(void)imageActivityItemProviderPreprocessingDidEnd:(UIActivityItemProvider *)imageActivityItemProvider withImageId:(NSInteger)imageId
 {
     // Close HUD
-    NSString *imageIdObject = [NSString stringWithFormat:@"%ld", (long)imageId];
+    NSNumber *imageIdObject = [NSNumber numberWithInteger:imageId];
     if ([imageActivityItemProvider isCancelled]) {
         [self.presentedViewController hidePiwigoHUDWithCompletion:^{ }];
     } else {
