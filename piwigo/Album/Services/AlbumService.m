@@ -127,7 +127,7 @@ NSString * const kCategoryDeletionModeAll = @"force_delete";
                           [[CategoriesData sharedInstance] replaceAllCategories:albums];
                       }
                       else {
-                          [[CategoriesData sharedInstance] updateCategories:albums];
+                          [[CategoriesData sharedInstance] updateCategories:albums andUpdateUI:YES];
                       }
                       
                       // Update albums if Community extension installed (not needed for admins)

@@ -1679,10 +1679,13 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 // There exists album in cache ;-)
                 [self.imagesCollection reloadData];
                 
-                // Load favorites in the background before loading image data
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^(void){
-                    [self loadFavorites];
-                });
+                // Load favorites in the background before loading image data if needed
+                if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending) && (!NetworkVarsObjc.hasGuestRights))
+                {
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^(void){
+                        [self loadFavorites];
+                    });
+                }
 
                 // For iOS 11 and later: place search bar in navigation bar of root album
                 if (@available(iOS 11.0, *)) {
@@ -1743,12 +1746,15 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             // Refresh current view
             [self.imagesCollection reloadData];
 
-            // Also refresh list of favorite images
-            PiwigoAlbumData *favoritesAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoFavoritesCategoryId];
-            [[CategoriesData sharedInstance] updateCategories:@[favoritesAlbum]];
-            [[[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:self.currentSort forProgress:nil OnCompletion:^(BOOL completed) {
-                    if (refreshControl) [refreshControl endRefreshing];
-            }];
+//            // Load favorites in the background before loading image data if needed
+//            if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending) && (!NetworkVarsObjc.hasGuestRights))
+//            {
+//                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^(void){
+//                    [self loadFavorites];
+//                });
+//            }
+
+            if (refreshControl) [refreshControl endRefreshing];
         }
         onFailure:^(NSURLSessionTask *task, NSError *error) {
              if (refreshControl) [refreshControl endRefreshing];
@@ -1837,16 +1843,16 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         }];
     }
     else {
-         // The album title is not shown in backButtonItem to provide enough space
-         // for image title on devices of screen width <= 414 ==> Restore album title
-         self.title = NSLocalizedString(@"tabBar_albums", @"Albums");
+        // The album title is not shown in backButtonItem to provide enough space
+        // for image title on devices of screen width <= 414 ==> Restore album title
+        self.title = NSLocalizedString(@"tabBar_albums", @"Albums");
 
-         // Set navigation bar buttons
-         [self updateButtonsInPreviewMode];
+        // Set navigation bar buttons
+        [self updateButtonsInPreviewMode];
 
-         // Reload collection view
-         [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
-     }
+        // Reload collection view
+        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
+    }
 }
 
 -(void)addImageToCategory:(NSNotification *)notification
@@ -3031,28 +3037,20 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
 -(void)loadFavorites
 {
-    // Should we load the favorites album?
-    // pwg.users.favorites… methods available from Piwigo version 2.10
-    if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending) &&
-        (!NetworkVarsObjc.hasGuestRights) &&
-        ([CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] == nil))
-    {
-        // Perform this load in the background
-        NSLog(@"==> Loading favorites in the background...");
-        // Unknown list -> initialise album and download list
-        PiwigoAlbumData *favoritesAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoFavoritesCategoryId];
-        [CategoriesData.sharedInstance updateCategories:@[favoritesAlbum]];
-        [[CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:self.currentSort
-            forProgress:nil
-           OnCompletion:^(BOOL completed) {
-                // Reload image collection
-                NSLog(@"==> Favorites loaded ;-)");
+    NSLog(@"==> Loading favorites in the background...");
+    // Initialise favorites album and download list
+    PiwigoAlbumData *favoritesAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoFavoritesCategoryId];
+    [CategoriesData.sharedInstance updateCategories:@[favoritesAlbum] andUpdateUI:NO];
+    [[CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:self.currentSort
+        forProgress:nil
+       OnCompletion:^(BOOL completed) {
+            // Reload image collection
+            NSLog(@"==> Favorites loaded ;-)");
 //                dispatch_async(dispatch_get_main_queue(), ^(void){
 //                    [self.imagesCollection reloadData];
 //                });
-            }
-        ];
-    }
+        }
+    ];
 }
 
 -(UIBarButtonItem *)getFavoriteBarButton {
@@ -3999,7 +3997,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             
             // Initialise search cache
             PiwigoAlbumData *searchAlbum = [[PiwigoAlbumData alloc] initSearchAlbumForQuery:searchString];
-            [[CategoriesData sharedInstance] updateCategories:@[searchAlbum]];
+            [[CategoriesData sharedInstance] updateCategories:@[searchAlbum] andUpdateUI:true];
             
             // Resfresh image collection
             resultsController.searchQuery = searchString;

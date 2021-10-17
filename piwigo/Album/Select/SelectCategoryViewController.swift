@@ -1059,7 +1059,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                     catToUpdate.append(self.inputCategoryData)
 
                     // Update cache (will refresh album/images view)
-                    CategoriesData.sharedInstance().updateCategories(catToUpdate)
+                    CategoriesData.sharedInstance().updateCategories(catToUpdate, andUpdateUI: true)
                     self.updatePiwigoHUDwithSuccess() {
                         self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
                             self.dismiss(animated: true)

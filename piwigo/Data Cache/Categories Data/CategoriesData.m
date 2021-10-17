@@ -54,7 +54,7 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     PiwigoAlbumData *newCategory = [[PiwigoAlbumData alloc] initWithId:categoryId andParameters:parameters];
     
     // Add new category to cache
-    [[CategoriesData sharedInstance] updateCategories:@[newCategory]];
+    [[CategoriesData sharedInstance] updateCategories:@[newCategory] andUpdateUI:NO];
     
     // Get list of parent categories
     NSMutableArray *upperCategories = [newCategory.upperCategories mutableCopy];
@@ -191,7 +191,7 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
         [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
 }
 
--(void)updateCategories:(NSArray<PiwigoAlbumData *>*)categories
+-(void)updateCategories:(NSArray<PiwigoAlbumData *>*)categories andUpdateUI:(BOOL)updateUI
 {
     // Known categories are updated if needed
     NSMutableArray *updatedCategories = [NSMutableArray new];
@@ -237,7 +237,7 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     self.allCategories = newCategories;
     
     // Post to the app that the category data has been updated (if necessary)
-    if (self.allCategories.count > 0) {
+    if (updateUI && (self.allCategories.count > 0)) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
         });

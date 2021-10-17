@@ -169,7 +169,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     [self loopLoadImagesForSort:sortDesc
 				   withProgress:progress
                    onCompletion:^(BOOL completed) {
-		if(completion)
+		if (completion && self.albumId != kPiwigoFavoritesCategoryId)
 		{
 			completion(YES);
 		}

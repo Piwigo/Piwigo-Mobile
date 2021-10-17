@@ -226,7 +226,7 @@
     
     // Initialise discover cache
     PiwigoAlbumData *discoverAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoFavoritesCategoryId];
-    [[CategoriesData sharedInstance] updateCategories:@[discoverAlbum]];
+    [[CategoriesData sharedInstance] updateCategories:@[discoverAlbum] andUpdateUI:NO];
 
     // Load, sort images and reload collection
     [self.albumData updateImageSort:self.currentSort OnCompletion:^{
@@ -1460,32 +1460,6 @@
 
 
 #pragma mark - Add/remove image from favorites
-
--(void)loadFavorites
-{
-    // Should we load the favorites album?
-    // pwg.users.favorites… methods available from Piwigo version 2.10
-    if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending) &&
-        (!NetworkVarsObjc.hasGuestRights) &&
-        ([CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] == nil))
-    {
-        // Perform this load in the background
-        NSLog(@"==> Loading favorites in the background...");
-        // Unknown list -> initialise album and download list
-        PiwigoAlbumData *favoritesAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoFavoritesCategoryId];
-        [CategoriesData.sharedInstance updateCategories:@[favoritesAlbum]];
-        [[CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:self.currentSort
-            forProgress:nil
-           OnCompletion:^(BOOL completed) {
-                // Reload image collection
-                NSLog(@"==> Favorites loaded ;-)");
-//                dispatch_async(dispatch_get_main_queue(), ^(void){
-//                    [self.imagesCollection reloadData];
-//                });
-            }
-        ];
-    }
-}
 
 -(UIBarButtonItem *)getFavoriteBarButton {
     BOOL areFavorite = [CategoriesData.sharedInstance categoryWithId:kPiwigoFavoritesCategoryId containsImagesWithId:self.selectedImageIds];

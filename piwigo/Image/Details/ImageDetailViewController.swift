@@ -175,7 +175,7 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
             let nberImagesPerPage = ImagesCollection.numberOfImagesPerPage(for: nil, imagesPerRowInPortrait: AlbumVars.thumbnailsPerRowInPortrait)
             let favoritesAlbum: PiwigoAlbumData = PiwigoAlbumData.init(discoverAlbumForCategory: kPiwigoFavoritesCategoryId)
             CategoriesData.sharedInstance()
-                .updateCategories([favoritesAlbum])
+                .updateCategories([favoritesAlbum], andUpdateUI: false)
             CategoriesData.sharedInstance()
                 .getCategoryById(kPiwigoFavoritesCategoryId)
                 .loadAllCategoryImageData(withSort: kPiwigoSortObjc(UInt32(AlbumVars.defaultSort)),
