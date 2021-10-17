@@ -237,8 +237,11 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     self.allCategories = newCategories;
     
     // Post to the app that the category data has been updated (if necessary)
-    if (self.allCategories.count > 0)
-        [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+    if (self.allCategories.count > 0) {
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+        });
+    }
 }
 
 -(void)addCommunityCategoryWithUploadRights:(PiwigoAlbumData *)category;
