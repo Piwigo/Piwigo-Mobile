@@ -149,16 +149,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         self.cancelBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelect)];
         [self.cancelBarButton setAccessibilityIdentifier:@"Cancel"];
         
-        // Toolbar
+        // Hide toolbar
         self.navigationController.toolbarHidden = YES;
-//        self.spaceBetweenButtons = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
-//        self.editBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editSelection)];
-//        [self.editBarButton setAccessibilityIdentifier:@"edit"];
-//        self.deleteBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteSelection)];
-//        self.shareBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(shareSelection)];
-//        self.shareBarButton.tintColor = [UIColor piwigoColorOrange];
-        self.moveBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemReply target:self action:@selector(addImagesToCategory)];
-        self.moveBarButton.tintColor = [UIColor piwigoColorOrange];
         
         // Albums related Actions & Menus
         if (@available(iOS 14.0, *)) {
@@ -1496,7 +1488,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             self.moveBarButton.enabled = hasImagesSelected;
         }
     }
-    else      // No rights => No toolbar, only download button
+    else      // Case of guest, generic or normal user
     {
         // Left side of navigation bar
         self.cancelBarButton.enabled = YES;
@@ -1884,6 +1876,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 // Set navigation bar buttons if the AlbumImagesViewController is visible
                 UIViewController *visibleViewController = self.navigationController.visibleViewController;
                 if ([visibleViewController isKindOfClass:[AlbumImagesViewController class]]) {
+                    // Update navigation bar buttons
                     if (self.isSelect == YES) {
                         [self updateButtonsInSelectionMode];
                     } else {
@@ -2143,7 +2136,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     if (!numberOfImageCells)
         [self.imagesCollection scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1] atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
     
-    // Update navigation bar and toolbar
+    // Initialisae navigation bar and toolbar
     [self initButtonsInSelectionMode];
 }
 
@@ -2304,7 +2297,16 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                     [self updateButtonsInSelectionMode];
                 }];
             } retry:^{
-                [self retrieveImageDataBeforeEdit];
+                // Try relogin if unauthorized
+                if (error.code == 401) {        // Unauthorized
+                    // Try relogin
+                    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                    [appDelegate reloginAndRetryWithCompletion:^{
+                        [self retrieveImageDataBeforeEdit];
+                    }];
+                } else {
+                    [self retrieveImageDataBeforeEdit];
+                }
             }];
         }
     ];
@@ -2401,7 +2403,16 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                     [self updateButtonsInSelectionMode];
                 }];
             } retry:^{
-                [self retrieveImageDataBeforeDelete];
+                // Try relogin if unauthorized
+                if (error.code == 401) {        // Unauthorized
+                    // Try relogin
+                    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                    [appDelegate reloginAndRetryWithCompletion:^{
+                        [self retrieveImageDataBeforeDelete];
+                    }];
+                } else {
+                    [self retrieveImageDataBeforeDelete];
+                }
             }];
         }
     ];
@@ -2676,7 +2687,16 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                     [self updateButtonsInSelectionMode];
                 }];
             } retry:^{
-                [self retrieveImageDataBeforeShare];
+                // Try relogin if unauthorized
+                if (error.code == 401) {        // Unauthorized
+                    // Try relogin
+                    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                    [appDelegate reloginAndRetryWithCompletion:^{
+                        [self retrieveImageDataBeforeShare];
+                    }];
+                } else {
+                    [self retrieveImageDataBeforeShare];
+                }
             }];
         }
     ];
@@ -2984,7 +3004,16 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 [self updateButtonsInSelectionMode];
             }];
         } retry:^{
-            [self addImageToFavorites];
+            // Try relogin if unauthorized
+            if (error.code == 401) {        // Unauthorized
+                // Try relogin
+                AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                [appDelegate reloginAndRetryWithCompletion:^{
+                    [self addImageToFavorites];
+                }];
+            } else {
+                [self addImageToFavorites];
+            }
         }];
     }];
 }
@@ -3034,7 +3063,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     // Get image data
     PiwigoImageData *imageData = [[CategoriesData sharedInstance] getImageForCategory:self.categoryId andId:[[self.selectedImageIds lastObject] integerValue]];
     
-    // Add image to favorites
+    // Remove image to favorites
     [ImageUtilities removeFromFavorites:imageData completion:^{
         // Update HUD
         [self.navigationController updatePiwigoHUDWithProgress:1.0 - (float)self.selectedImageIds.count / (float)self.totalNumberOfImages];
@@ -3052,7 +3081,16 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 [self updateButtonsInSelectionMode];
             }];
         } retry:^{
-            [self removeImageFromFavorites];
+            // Try relogin if unauthorized
+            if (error.code == 401) {        // Unauthorized
+                // Try relogin
+                AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                [appDelegate reloginAndRetryWithCompletion:^{
+                    [self removeImageFromFavorites];
+                }];
+            } else {
+                [self removeImageFromFavorites];
+            }
         }];
     }];
 }
