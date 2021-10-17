@@ -11,7 +11,6 @@ import UIKit
 import piwigoKit
 
 let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
-let kPiwigoNotificationUpdateImageFileName = "kPiwigoNotificationUpdateImageFileName"
 
 @objc protocol ImageDetailDelegate: NSObjectProtocol {
     func didSelectImage(withId imageId: Int)
@@ -214,9 +213,6 @@ let kPiwigoNotificationUpdateImageFileName = "kPiwigoNotificationUpdateImageFile
         // Register image pinches
         NotificationCenter.default.addObserver(self, selector: #selector(didPinchView), name: NSNotification.Name(kPiwigoNotificationPinchedImage), object: nil)
 
-        // Register image data updates
-        NotificationCenter.default.addObserver(self, selector: #selector(updateImageFileName(_:)), name: NSNotification.Name(kPiwigoNotificationUpdateImageFileName), object: nil)
-
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: PwgNotifications.paletteChanged, object: nil)
@@ -330,9 +326,6 @@ let kPiwigoNotificationUpdateImageFileName = "kPiwigoNotificationUpdateImageFile
     deinit {
         // Unregister image pinches
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kPiwigoNotificationPinchedImage), object: nil)
-
-        // Unregister image data updates
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kPiwigoNotificationUpdateImageFileName), object: nil)
 
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
@@ -649,28 +642,6 @@ let kPiwigoNotificationUpdateImageFileName = "kPiwigoNotificationUpdateImageFile
                     self.retrieveCompleteImageDataOfImage(self.imageData)
                 }
             })
-        }
-    }
-
-
-    // MARK: - Image Data Updates
-    @objc
-    func updateImageFileName(_ notification: Notification?) {
-        // Extract notification user info
-        if let notification = notification,
-           let userInfo = notification.object as? [AnyHashable : Any] {
-
-            // Right image Id?
-            if let imageId = userInfo["imageId"] as? Int,
-               imageId != imageData.imageId { return }
-
-            // Update image data
-            if let fileName = userInfo["fileName"] as? String {
-                imageData.fileName = fileName
-            }
-
-            // Update title view
-            setTitleViewFromImageData()
         }
     }
 
