@@ -131,9 +131,9 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     } else if (categoryId == kPiwigoRecentCategoryId) {
         albumData.name = NSLocalizedString(@"categoryDiscoverRecent_title", @"Recent photos");
     } else if (categoryId == kPiwigoTagsCategoryId) {
-        albumData.name = NSLocalizedString(@"editImageDetails_tags", @"Tags:");
+        albumData.name = NSLocalizedString(@"categoryDiscoverTagged_title", @"Tagged");
     } else if (categoryId == kPiwigoFavoritesCategoryId) {
-        albumData.name = NSLocalizedString(@"categoryDiscoverFavorites_title", @"Your favorites");
+        albumData.name = NSLocalizedString(@"categoryDiscoverFavorites_title", @"My Favorites");
     } else {
         albumData.name = NSLocalizedString(@"categoryImageList_noDataError", @"Error No Data");
     }

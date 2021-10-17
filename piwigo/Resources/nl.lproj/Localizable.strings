@@ -137,6 +137,7 @@
 
 // Albums "Discover"
 "categoryDiscover_title" = "Ontdek";
+"categoryDiscoverTagged_title" = "Getagd";
 "categoryDiscoverVisits_title" = "Meest bezocht";
 "categoryDiscoverVisits_legend" = "hits";
 "categoryDiscoverBest_title" = "Best gewaardeerd";

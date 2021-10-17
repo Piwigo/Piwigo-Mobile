@@ -137,11 +137,12 @@
 
 // Albums "Discover"
 "categoryDiscover_title" = "Discover";
+"categoryDiscoverTagged_title" = "Tagged";
 "categoryDiscoverVisits_title" = "Most visited";
 "categoryDiscoverVisits_legend" = "hits";
 "categoryDiscoverBest_title" = "Best rated";
 "categoryDiscoverRecent_title" = "Recent photos";
-"categoryDiscoverFavorites_title" = "Your favorites";
+"categoryDiscoverFavorites_title" = "مفضلتك";
 
 // Albums sort
 "categorySort_nameAscending" = "عنوان الصورة، A → Z";
@@ -376,11 +377,11 @@
 "renameImageError_message" = "Failed to rename photo file";
 
 // Image in favorites
-"imageFavorites_title" = "Favorites";
+"imageFavorites_title" = "المفضلة";
 
 // Image in favorites — Error
-"imageFavoritesAddError_message" = "Failed to add this photo to your favorites.";
-"imageFavoritesRemoveError_message" = "Failed to remove this photo from your favorites.";
+"imageFavoritesAddError_message" = "فشل في إضافة هذه الصورة إلى المفضلة لديك.";
+"imageFavoritesRemoveError_message" = "فشل في إزالة هذه الصورة من المفضلة لديك.";
 
 // Image delete
 "deleteImage_delete" = "حذف";

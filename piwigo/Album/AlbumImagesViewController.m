@@ -63,6 +63,13 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 @property (nonatomic, strong) UIMenu *imagesMenu                API_AVAILABLE(ios(14.0));
 @property (nonatomic, strong) UIAction *editParamsAction        API_AVAILABLE(ios(14.0));
 
+@property (nonatomic, strong) UIMenu *discoverMenu              API_AVAILABLE(ios(14.0));
+@property (nonatomic, strong) UIAction *favoritesAction         API_AVAILABLE(ios(14.0));
+@property (nonatomic, strong) UIAction *taggedAction            API_AVAILABLE(ios(14.0));
+@property (nonatomic, strong) UIAction *mostVisitedAction       API_AVAILABLE(ios(14.0));
+@property (nonatomic, strong) UIAction *bestRatedAction         API_AVAILABLE(ios(14.0));
+@property (nonatomic, strong) UIAction *recentAction            API_AVAILABLE(ios(14.0));
+
 @property (nonatomic, strong) UIButton *addButton;
 @property (nonatomic, strong) UIButton *createAlbumButton;
 @property (nonatomic, strong) UIButton *uploadImagesButton;
@@ -141,8 +148,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         // Navigation bar and toolbar buttons
         self.settingsBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"settings"] landscapeImagePhone:[UIImage imageNamed:@"settingsCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(didTapPreferencesButton)];
         [self.settingsBarButton setAccessibilityIdentifier:@"settings"];
-        self.discoverBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"action"] landscapeImagePhone:[UIImage imageNamed:@"actionCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(discoverImages)];
-        [self.discoverBarButton setAccessibilityIdentifier:@"discover"];
 
         self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"categoryImageList_selectButton", @"Select") style:UIBarButtonItemStylePlain target:self action:@selector(didTapSelect)];
         [self.selectBarButton setAccessibilityIdentifier:@"Select"];
@@ -152,41 +157,63 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         // Hide toolbar
         self.navigationController.toolbarHidden = YES;
         
+        // Discover menu
+        if (@available(iOS 14.0, *)) {
+            // Display favorites
+            self.favoritesAction = [UIAction actionWithTitle:NSLocalizedString(@"categoryDiscoverFavorites_title", @"My Favorites") image:[UIImage systemImageNamed:@"heart"] identifier:@"Favorites" handler:^(__kindof UIAction * _Nonnull action) {
+                    [self discoverFavoritesImages];
+            }];
+            
+            // Display tagged images
+            self.taggedAction = [UIAction actionWithTitle:NSLocalizedString(@"categoryDiscoverTagged_title", @"Tagged") image:[UIImage systemImageNamed:@"tag"] identifier:@"Tagged" handler:^(__kindof UIAction * _Nonnull action) {
+                    [self discoverImagesByTag];
+            }];
+
+            // Display most visited images
+            self.mostVisitedAction = [UIAction actionWithTitle:NSLocalizedString(@"categoryDiscoverVisits_title", @"Most visited") image:[UIImage systemImageNamed:@"rectangle.inset.filled.and.person.filled"] identifier:@"Most visited" handler:^(__kindof UIAction * _Nonnull action) {
+                    [self discoverImagesInCategoryId:kPiwigoVisitsCategoryId];
+            }];
+
+            // Display best rated images
+            self.bestRatedAction = [UIAction actionWithTitle:NSLocalizedString(@"categoryDiscoverBest_title", @"Best rated") image:[UIImage systemImageNamed:@"star.leadinghalf.filled"] identifier:@"Best rated" handler:^(__kindof UIAction * _Nonnull action) {
+                    [self discoverImagesInCategoryId:kPiwigoBestCategoryId];
+            }];
+
+            // Display recent images
+            self.recentAction = [UIAction actionWithTitle:NSLocalizedString(@"categoryDiscoverRecent_title", @"Recent photos") image:[UIImage systemImageNamed:@"clock"] identifier:@"Recent" handler:^(__kindof UIAction * _Nonnull action) {
+                    [self discoverImagesInCategoryId:kPiwigoRecentCategoryId];
+            }];
+
+            // Menu
+            self.discoverMenu = [UIMenu menuWithTitle:@"" image:nil identifier:@"org.piwigo.piwigoImage.discover" options:UIMenuOptionsDisplayInline children:@[self.favoritesAction, self.taggedAction, self.mostVisitedAction, self.bestRatedAction, self.recentAction]];
+            self.discoverBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage systemImageNamed:@"ellipsis.circle"] menu:self.discoverMenu];
+        }
+        else {
+            // Fallback on earlier versions
+            self.discoverBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"action"] landscapeImagePhone:[UIImage imageNamed:@"actionCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(discoverImages)];
+            [self.discoverBarButton setAccessibilityIdentifier:@"discover"];
+        }
+
         // Albums related Actions & Menus
         if (@available(iOS 14.0, *)) {
             // Copy images to album
             self.imagesCopyAction = [UIAction actionWithTitle:NSLocalizedString(@"copyImage_title", @"Copy to Album") image:[UIImage systemImageNamed:@"rectangle.stack.badge.plus"] identifier:@"Copy" handler:^(__kindof UIAction * _Nonnull action) {
-                
-                // Disable buttons during action
-                [self setEnableStateOfButtons:NO];
-                
-                // Present album selector for copying image
-                UIStoryboard *copySB = [UIStoryboard storyboardWithName:@"SelectCategoryViewController" bundle:nil];
-                SelectCategoryViewController *copyVC = [copySB instantiateViewControllerWithIdentifier:@"SelectCategoryViewController"];
-                NSArray<id> *parameter = [[NSArray<id> alloc] initWithObjects:self.selectedImageIds, @(self.categoryId), nil];
-                [copyVC setInputWithParameter:parameter for:kPiwigoCategorySelectActionCopyImages];
-                copyVC.delegate = self;                 // To re-enable toolbar
-                copyVC.imageCopiedDelegate = self;      // To update image data after copy
-                [self pushView:copyVC];
+                    // Disable buttons during action
+                    [self setEnableStateOfButtons:NO];
+                    // Present album selector for copying image
+                    [self copyImageToAlbum];
             }];
 
             // Move images to album
             self.imagesMoveAction = [UIAction actionWithTitle:NSLocalizedString(@"moveImage_title", @"Move to Album") image:[UIImage systemImageNamed:@"arrowshape.turn.up.right"] identifier:@"Move" handler:^(__kindof UIAction * _Nonnull action) {
-                // Disable buttons during action
-                [self setEnableStateOfButtons:NO];
-                
-                // Present album selector for copying image
-                UIStoryboard *moveSB = [UIStoryboard storyboardWithName:@"SelectCategoryViewController" bundle:nil];
-                SelectCategoryViewController *moveVC = [moveSB instantiateViewControllerWithIdentifier:@"SelectCategoryViewController"];
-                NSArray<id> *parameter = [[NSArray<id> alloc] initWithObjects:self.selectedImageIds, @(self.categoryId), nil];
-                [moveVC setInputWithParameter:parameter for:kPiwigoCategorySelectActionMoveImages];
-                moveVC.delegate = self;         // To re-enable toolbar
-                [self pushView:moveVC];
+                    // Disable buttons during action
+                    [self setEnableStateOfButtons:NO];
+                    // Present album selector for moving image
+                    [self moveImageToAlbum];
             }];
 
             // Menu
             self.albumMenu = [UIMenu menuWithTitle:@"" image:nil identifier:@"org.piwigo.piwigoImage.album" options:UIMenuOptionsDisplayInline children:@[self.imagesCopyAction, self.imagesMoveAction]];
-            } else {
         }
         
         // Images related Actions & Menus
@@ -854,6 +881,96 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
     // Unregister upload progress
     [[NSNotificationCenter defaultCenter] removeObserver:self name:[PwgNotificationsObjc uploadProgress] object:nil];
+}
+
+
+#pragma mark - Discover images
+
+// Create Discover images view i.e. Most visited, Best rated, etc.
+-(void)discoverImages
+{
+    // Do we really want to delete these images?
+    UIAlertController* alert = [UIAlertController
+        alertControllerWithTitle:nil
+        message:NSLocalizedString(@"categoryDiscover_title", @"Discover")
+        preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction* cancelAction = [UIAlertAction
+       actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+       style:UIAlertActionStyleCancel
+       handler:^(UIAlertAction * action) {}];
+
+    UIAlertAction* favoritesSelectorAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"categoryDiscoverFavorites_title", @"My Favorites")
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * action) { [self discoverFavoritesImages]; }];
+    
+    UIAlertAction* tagSelectorAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"tags", @"Tags")
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * action) { [self discoverImagesByTag]; }];
+    
+    UIAlertAction* mostVisitedAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"categoryDiscoverVisits_title", @"Most visited")
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * action) { [self discoverImagesInCategoryId:kPiwigoVisitsCategoryId]; }];
+    
+    UIAlertAction* bestRatedAction = [UIAlertAction
+          actionWithTitle:NSLocalizedString(@"categoryDiscoverBest_title", @"Best rated")
+          style:UIAlertActionStyleDefault
+          handler:^(UIAlertAction * action) { [self discoverImagesInCategoryId:kPiwigoBestCategoryId]; }];
+
+    UIAlertAction* recentAction = [UIAlertAction
+        actionWithTitle:NSLocalizedString(@"categoryDiscoverRecent_title", @"Recent Photos")
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * action) { [self discoverImagesInCategoryId:kPiwigoRecentCategoryId]; }];
+    
+    // Add actions
+    [alert addAction:cancelAction];
+    if ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending)
+    {
+        [alert addAction:favoritesSelectorAction];
+    }
+    [alert addAction:tagSelectorAction];
+    [alert addAction:mostVisitedAction];
+    [alert addAction:bestRatedAction];
+    [alert addAction:recentAction];
+    
+    // Present list of Discover views
+    alert.view.tintColor = UIColor.piwigoColorOrange;
+    if (@available(iOS 13.0, *)) {
+        alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+    } else {
+        // Fallback on earlier versions
+    }
+    alert.popoverPresentationController.barButtonItem = self.discoverBarButton;
+    [self presentViewController:alert animated:YES completion:^{
+        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+        alert.view.tintColor = UIColor.piwigoColorOrange;
+    }];
+}
+
+-(void)discoverImagesInCategoryId:(NSInteger)categoryId
+{
+    // Create Discover view
+    DiscoverImagesViewController *discoverController = [[DiscoverImagesViewController alloc] initWithCategoryId:categoryId];
+    [self pushView:discoverController];
+}
+
+-(void)discoverImagesByTag
+{
+    // Push tag select view
+    UIStoryboard *tagSelectorSB = [UIStoryboard storyboardWithName:@"TagSelectorViewController" bundle:nil];
+    TagSelectorViewController *tagSelectorVC = [tagSelectorSB instantiateViewControllerWithIdentifier:@"TagSelectorViewController"];
+    tagSelectorVC.tagSelectedDelegate = self;
+    [self pushView:tagSelectorVC];
+}
+
+-(void)discoverFavoritesImages
+{
+    // Create Discover view
+    FavoritesImagesViewController *discoverController = [[FavoritesImagesViewController alloc] init];
+    [self pushView:discoverController];
 }
 
 
@@ -2851,40 +2968,23 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     
     // Present alert to user
     UIAlertController* alert = [UIAlertController
-                                alertControllerWithTitle:nil message:nil
-                                preferredStyle:UIAlertControllerStyleActionSheet];
+        alertControllerWithTitle:nil message:nil
+        preferredStyle:UIAlertControllerStyleActionSheet];
     
     UIAlertAction* cancelAction = [UIAlertAction
-                                   actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-                                   style:UIAlertActionStyleCancel
-                                   handler:^(UIAlertAction * action) {
-                                        [self setEnableStateOfButtons:YES];
-                                   }];
+        actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
+        style:UIAlertActionStyleCancel
+        handler:^(UIAlertAction * action) { [self setEnableStateOfButtons:YES]; }];
     
     UIAlertAction* copyAction = [UIAlertAction
-                                 actionWithTitle:NSLocalizedString(@"copyImage_title", @"Copy to Album")
-                                 style:UIAlertActionStyleDefault
-                                 handler:^(UIAlertAction * action) {
-        UIStoryboard *copySB = [UIStoryboard storyboardWithName:@"SelectCategoryViewController" bundle:nil];
-        SelectCategoryViewController *copyVC = [copySB instantiateViewControllerWithIdentifier:@"SelectCategoryViewController"];
-        NSArray<id> *parameter = [[NSArray<id> alloc] initWithObjects:self.selectedImageIds, @(self.categoryId), nil];
-        [copyVC setInputWithParameter:parameter for:kPiwigoCategorySelectActionCopyImages];
-        copyVC.delegate = self;                 // To re-enable toolbar
-        copyVC.imageCopiedDelegate = self;      // To update image data after copy
-        [self pushView:copyVC];
-    }];
+        actionWithTitle:NSLocalizedString(@"copyImage_title", @"Copy to Album")
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * action) { [self copyImageToAlbum]; }];
     
     UIAlertAction* moveAction = [UIAlertAction
-                                 actionWithTitle:NSLocalizedString(@"moveImage_title", @"Move to Album")
-                                 style:UIAlertActionStyleDefault
-                                 handler:^(UIAlertAction * action) {
-        UIStoryboard *moveSB = [UIStoryboard storyboardWithName:@"SelectCategoryViewController" bundle:nil];
-        SelectCategoryViewController *moveVC = [moveSB instantiateViewControllerWithIdentifier:@"SelectCategoryViewController"];
-        NSArray<id> *parameter = [[NSArray<id> alloc] initWithObjects:self.selectedImageIds, @(self.categoryId), nil];
-        [moveVC setInputWithParameter:parameter for:kPiwigoCategorySelectActionMoveImages];
-        moveVC.delegate = self;         // To re-enable toolbar
-        [self pushView:moveVC];
-    }];
+        actionWithTitle:NSLocalizedString(@"moveImage_title", @"Move to Album")
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * action) { [self moveImageToAlbum]; }];
     
     // Add actions
     [alert addAction:cancelAction];
@@ -2903,6 +3003,27 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         // Bugfix: iOS9 - Tint not fully Applied without Reapplying
         alert.view.tintColor = UIColor.piwigoColorOrange;
     }];
+}
+
+-(void)copyImageToAlbum
+{
+    UIStoryboard *copySB = [UIStoryboard storyboardWithName:@"SelectCategoryViewController" bundle:nil];
+    SelectCategoryViewController *copyVC = [copySB instantiateViewControllerWithIdentifier:@"SelectCategoryViewController"];
+    NSArray<id> *parameter = [[NSArray<id> alloc] initWithObjects:self.selectedImageIds, @(self.categoryId), nil];
+    [copyVC setInputWithParameter:parameter for:kPiwigoCategorySelectActionCopyImages];
+    copyVC.delegate = self;                 // To re-enable toolbar
+    copyVC.imageCopiedDelegate = self;      // To update image data after copy
+    [self pushView:copyVC];
+}
+
+-(void)moveImageToAlbum
+{
+    UIStoryboard *moveSB = [UIStoryboard storyboardWithName:@"SelectCategoryViewController" bundle:nil];
+    SelectCategoryViewController *moveVC = [moveSB instantiateViewControllerWithIdentifier:@"SelectCategoryViewController"];
+    NSArray<id> *parameter = [[NSArray<id> alloc] initWithObjects:self.selectedImageIds, @(self.categoryId), nil];
+    [moveVC setInputWithParameter:parameter for:kPiwigoCategorySelectActionMoveImages];
+    moveVC.delegate = self;         // To re-enable toolbar
+    [self pushView:moveVC];
 }
 
 
@@ -3887,110 +4008,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     }
 }
 
-
-#pragma mark - Discover images
-
-// Create Discover images view i.e. Most visited, Best rated, etc.
--(void)discoverImages
-{
-    // Do we really want to delete these images?
-    UIAlertController* alert = [UIAlertController
-        alertControllerWithTitle:nil
-        message:NSLocalizedString(@"categoryDiscover_title", @"Discover")
-        preferredStyle:UIAlertControllerStyleActionSheet];
-    
-    UIAlertAction* cancelAction = [UIAlertAction
-       actionWithTitle:NSLocalizedString(@"alertCancelButton", @"Cancel")
-       style:UIAlertActionStyleCancel
-       handler:^(UIAlertAction * action) {}];
-
-    UIAlertAction* favoritesSelectorAction = [UIAlertAction
-        actionWithTitle:NSLocalizedString(@"categoryDiscoverFavorites_title", @"Your favorites")
-        style:UIAlertActionStyleDefault
-        handler:^(UIAlertAction * action) {
-            // Show tags for selecting images
-            [self discoverFavoritesImages];
-         }];
-    
-    UIAlertAction* tagSelectorAction = [UIAlertAction
-        actionWithTitle:NSLocalizedString(@"tags", @"Tags")
-        style:UIAlertActionStyleDefault
-        handler:^(UIAlertAction * action) {
-            // Show tags for selecting images
-            [self discoverImagesByTag];
-         }];
-    
-    UIAlertAction* mostVisitedAction = [UIAlertAction
-        actionWithTitle:NSLocalizedString(@"categoryDiscoverVisits_title", @"Most visited")
-        style:UIAlertActionStyleDefault
-        handler:^(UIAlertAction * action) {
-            // Show most visited images
-            [self discoverImagesInCategoryId:kPiwigoVisitsCategoryId];
-         }];
-    
-    UIAlertAction* bestRatedAction = [UIAlertAction
-          actionWithTitle:NSLocalizedString(@"categoryDiscoverBest_title", @"Best rated")
-          style:UIAlertActionStyleDefault
-          handler:^(UIAlertAction * action) {
-              // Show best rated images
-              [self discoverImagesInCategoryId:kPiwigoBestCategoryId];
-          }];
-
-    UIAlertAction* recentAction = [UIAlertAction
-        actionWithTitle:NSLocalizedString(@"categoryDiscoverRecent_title", @"Recent photos")
-        style:UIAlertActionStyleDefault
-        handler:^(UIAlertAction * action) {
-          // Show best rated images
-          [self discoverImagesInCategoryId:kPiwigoRecentCategoryId];
-        }];
-    
-    // Add actions
-    [alert addAction:cancelAction];
-    if ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending)
-    {
-        [alert addAction:favoritesSelectorAction];
-    }
-    [alert addAction:tagSelectorAction];
-    [alert addAction:mostVisitedAction];
-    [alert addAction:bestRatedAction];
-    [alert addAction:recentAction];
-    
-    // Present list of Discover views
-    alert.view.tintColor = UIColor.piwigoColorOrange;
-    if (@available(iOS 13.0, *)) {
-        alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
-    } else {
-        // Fallback on earlier versions
-    }
-    alert.popoverPresentationController.barButtonItem = self.discoverBarButton;
-    [self presentViewController:alert animated:YES completion:^{
-        // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-        alert.view.tintColor = UIColor.piwigoColorOrange;
-    }];
-}
-
--(void)discoverImagesInCategoryId:(NSInteger)categoryId
-{
-    // Create Discover view
-    DiscoverImagesViewController *discoverController = [[DiscoverImagesViewController alloc] initWithCategoryId:categoryId];
-    [self pushView:discoverController];
-}
-
--(void)discoverImagesByTag
-{
-    // Push tag select view
-    UIStoryboard *tagSelectorSB = [UIStoryboard storyboardWithName:@"TagSelectorViewController" bundle:nil];
-    TagSelectorViewController *tagSelectorVC = [tagSelectorSB instantiateViewControllerWithIdentifier:@"TagSelectorViewController"];
-    tagSelectorVC.tagSelectedDelegate = self;
-    [self pushView:tagSelectorVC];
-}
-
--(void)discoverFavoritesImages
-{
-    // Create Discover view
-    FavoritesImagesViewController *discoverController = [[FavoritesImagesViewController alloc] init];
-    [self pushView:discoverController];
-}
 
 #pragma mark - TagSelectViewDelegate Methods
 

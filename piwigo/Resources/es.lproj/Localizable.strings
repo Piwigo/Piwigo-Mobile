@@ -137,6 +137,7 @@
 
 // Albums "Discover"
 "categoryDiscover_title" = "Descubre";
+"categoryDiscoverTagged_title" = "Etiquetado";
 "categoryDiscoverVisits_title" = "Lo más visto";
 "categoryDiscoverVisits_legend" = "peticiones";
 "categoryDiscoverBest_title" = "Mejor valoración";
@@ -304,7 +305,7 @@
 // Image options (actions)
 "imageOptions_title" = "Opciones para la foto";
 "imageOptions_edit" = "Editar";
-"imageOptions_properties" = "Modify Properties";
+"imageOptions_properties" = "Modificar las propiedades";
 "imageOptions_download" = "Descargar";
 "imageOptions_setAlbumImage" = "Definir la miniatura del álbum";
 
@@ -376,11 +377,11 @@
 "renameImageError_message" = "Error al cambiar el nombre del archivo";
 
 // Image in favorites
-"imageFavorites_title" = "Favorites";
+"imageFavorites_title" = "Favoritos";
 
 // Image in favorites — Error
-"imageFavoritesAddError_message" = "Failed to add this photo to your favorites.";
-"imageFavoritesRemoveError_message" = "Failed to remove this photo from your favorites.";
+"imageFavoritesAddError_message" = "No se ha podido añadir esta foto a tus favoritos.";
+"imageFavoritesRemoveError_message" = "No se ha podido eliminar esta foto de tus favoritos.";
 
 // Image delete
 "deleteImage_delete" = "Eliminar";

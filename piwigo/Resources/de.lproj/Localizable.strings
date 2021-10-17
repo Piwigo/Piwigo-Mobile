@@ -137,6 +137,7 @@
 
 // Albums "Discover"
 "categoryDiscover_title" = "Entdecken";
+"categoryDiscoverTagged_title" = "Tagged";
 "categoryDiscoverVisits_title" = "Am häufigsten angesehen";
 "categoryDiscoverVisits_legend" = "Aufrufe";
 "categoryDiscoverBest_title" = "Am besten bewertet";
@@ -379,8 +380,8 @@
 "imageFavorites_title" = "Favoriten";
 
 // Image in favorites — Error
-"imageFavoritesAddError_message" = "Fehler beim Hinzufügen des Fotos zu deinen Favoriten.";
-"imageFavoritesRemoveError_message" = "Fehler beim Entfernen des Fotos von deinen Favoriten.";
+"imageFavoritesAddError_message" = "Fehler beim Hinzufügen des Fotos zu ihren Favoriten.";
+"imageFavoritesRemoveError_message" = "Fehler beim Entfernen des Fotos von ihren Favoriten.";
 
 // Image delete
 "deleteImage_delete" = "Löschen";

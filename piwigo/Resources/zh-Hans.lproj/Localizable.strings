@@ -125,9 +125,9 @@
 // ===========================================================================
 // Generic
 "singleAlbumCount" = "%@ 相簿";
-"severalAlbumsCount" = "%@ albums";
+"severalAlbumsCount" = "%@ 张专辑";
 "singleSubAlbumCount" = "%@子相簿";
-"severalSubAlbumsCount" = "%@ sub-albums";
+"severalSubAlbumsCount" = "%@ 个子相册";
 
 // Albums view
 "categoryMainEmtpy" = "您的Piwigo没有相册。\n您可以尝试下拉刷新或重新登录。";
@@ -137,6 +137,7 @@
 
 // Albums "Discover"
 "categoryDiscover_title" = "探索";
+"categoryDiscoverTagged_title" = "标记的";
 "categoryDiscoverVisits_title" = "最多点击";
 "categoryDiscoverVisits_legend" = "次观看";
 "categoryDiscoverBest_title" = "评分最高";
@@ -274,11 +275,11 @@
 // ==> IMAGES
 // ===========================================================================
 "singleImage" = "照片";
-"singleImageCount" = "%@ photo";
+"singleImageCount" = "%@ 张照片";
 "singleVideo" = "视频";
 "singleAudio" = "音频";
 "severalImages" = "照片";
-"severalImagesCount" = "%@ photos";
+"severalImagesCount" = "%@ 张照片";
 "All Photos" = "所有照片";
 "severalVideos" = "视频";
 "noImages" = "没有照片";
@@ -304,7 +305,7 @@
 // Image options (actions)
 "imageOptions_title" = "照片选项";
 "imageOptions_edit" = "编辑";
-"imageOptions_properties" = "Modify Properties";
+"imageOptions_properties" = "修改属性";
 "imageOptions_download" = "下载";
 "imageOptions_setAlbumImage" = "设为相册封面";
 
@@ -346,8 +347,8 @@
 "none" = "无";
 "tag" = "标签";
 "tags" = "标签";
-"singleTagCount" = "%@ tag";
-"severalTagsCount" = "%@ tags";
+"singleTagCount" = "%@ 个标签";
+"severalTagsCount" = "%@ 个标签";
 "tagsTitle_selectOne" = "选择一个标签";
 "tagsHeader_selected" = "已选";
 "tagsHeader_notSelected" = "未选中";
@@ -376,11 +377,11 @@
 "renameImageError_message" = "无法重命名图片文件";
 
 // Image in favorites
-"imageFavorites_title" = "Favorites";
+"imageFavorites_title" = "收藏夹";
 
 // Image in favorites — Error
-"imageFavoritesAddError_message" = "Failed to add this photo to your favorites.";
-"imageFavoritesRemoveError_message" = "Failed to remove this photo from your favorites.";
+"imageFavoritesAddError_message" = "无法将此照片添加到您的收藏夹。";
+"imageFavoritesRemoveError_message" = "从您的收藏夹中删除此照片失败。";
 
 // Image delete
 "deleteImage_delete" = "删除";
@@ -732,11 +733,11 @@
 "settings_brightnessHelp" = "在环境亮度低的情况下，自动选项会使用暗色外观来使照片在黑暗背景下易于观看";
 
 // Settings - Administration
-"singleUserCount" = "%@ user";
-"severalUsersCount" = "%@ users";
-"singleGroupCount" = "%@ group";
-"severalGroupsCount" = "%@ groups";
-"singleCommentCount" = "%@ comment";
+"singleUserCount" = "%@ 个用户";
+"severalUsersCount" = "%@ 位用户";
+"singleGroupCount" = "%@ 个组";
+"severalGroupsCount" = "%@ 个组";
+"singleCommentCount" = "%@ 条评论";
 "severalCommentsCount" = "%@ 評論";
 
 // Settings — Information

@@ -137,6 +137,7 @@
 
 // Albums "Discover"
 "categoryDiscover_title" = "Обзор";
+"categoryDiscoverTagged_title" = "Метка";
 "categoryDiscoverVisits_title" = "Наиболее просматриваемые";
 "categoryDiscoverVisits_legend" = "просмотры";
 "categoryDiscoverBest_title" = "С наивысшим рейтингом";
