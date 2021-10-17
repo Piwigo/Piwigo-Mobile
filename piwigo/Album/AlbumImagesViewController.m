@@ -1552,51 +1552,28 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
           (long)self.categoryId, self.isCachedAtInit ? @"Yes" : @"No");
 #endif
     
-    // Load category data
+    // Load category data in recursive mode
     [AlbumService getAlbumListForCategory:self.categoryId
                                usingCache:self.isCachedAtInit
                           inRecursiveMode:YES
      OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
         self.isCachedAtInit = YES;
+        
         if (albums == nil) {
             // Album data already in cache
             self.userHasUploadRights = [[CategoriesData.sharedInstance getCategoryById:self.categoryId] hasUploadRights];
-
-            // Should we load the favorites album?
-            // pwg.users.favorites… methods available from Piwigo version 2.10
-            if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending) &&
-                (!NetworkVarsObjc.hasGuestRights) &&
-                ([CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] == nil))
-            {
-                // Show HUD during the download
-                [self showPiwigoHUDWithTitle:NSLocalizedString(@"loadingHUD_label", @"Loading…") detail:@"" buttonTitle:@"" buttonTarget:nil buttonSelector:nil inMode:MBProgressHUDModeIndeterminate];
-                
-                // Unknown list -> initialise album and download list
-                NSInteger nberImagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
-                PiwigoAlbumData *favoritesAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoFavoritesCategoryId];
-                [CategoriesData.sharedInstance updateCategories:@[favoritesAlbum]];
-                [[CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:self.currentSort
-                    forProgress:^(NSInteger onPage, NSInteger outOf) {
-                        CGFloat progress = (CGFloat)(onPage * nberImagesPerPage) / (CGFloat)outOf;
-                        [self updatePiwigoHUDWithProgress:progress];
-                    } OnCompletion:^(BOOL completed) {
-                        // Hide HUD
-                        [self.navigationController hidePiwigoHUDWithCompletion:^{
-                            [self.imagesCollection reloadData];
-                            return;
-                        }];
-                    }
-                ];
-            }
-            return;
         }
-
-        if (self.categoryId == 0) {
-            // Case of root album
+        else if (self.categoryId == 0) {
+            // Album data freshly loaded in recursive mode
             self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
             if ([[CategoriesData sharedInstance] getCategoriesForParentCategory:self.categoryId].count > 0) {
                 // There exists album in cache ;-)
                 [self.imagesCollection reloadData];
+                
+                // Load favorites in the background before loading image data
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^(void){
+                    [self loadFavorites];
+                });
 
                 // For iOS 11 and later: place search bar in navigation bar of root album
                 if (@available(iOS 11.0, *)) {
@@ -1620,11 +1597,11 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 }
             }
             
-            // Hide HUD
+            // Hide HUD if needed
             [self.navigationController hidePiwigoHUDWithCompletion:^{ }];
         }
         else {
-            // Load, sort images and reload collection
+            // Load, sort images and reload collection (should never reach this line)
             self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
             [self.albumData updateImageSort:self.currentSort OnCompletion:^{
 
@@ -2910,6 +2887,32 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
 
 #pragma mark - Add/remove image from favorites
+
+-(void)loadFavorites
+{
+    // Should we load the favorites album?
+    // pwg.users.favorites… methods available from Piwigo version 2.10
+    if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending) &&
+        (!NetworkVarsObjc.hasGuestRights) &&
+        ([CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] == nil))
+    {
+        // Perform this load in the background
+        NSLog(@"==> Loading favorites in the background...");
+        // Unknown list -> initialise album and download list
+        PiwigoAlbumData *favoritesAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoFavoritesCategoryId];
+        [CategoriesData.sharedInstance updateCategories:@[favoritesAlbum]];
+        [[CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:self.currentSort
+            forProgress:nil
+           OnCompletion:^(BOOL completed) {
+                // Reload image collection
+                NSLog(@"==> Favorites loaded ;-)");
+//                dispatch_async(dispatch_get_main_queue(), ^(void){
+//                    [self.imagesCollection reloadData];
+//                });
+            }
+        ];
+    }
+}
 
 -(UIBarButtonItem *)getFavoriteBarButton {
     BOOL areFavorite = [CategoriesData.sharedInstance categoryWithId:self.categoryId containsImagesWithId:self.selectedImageIds];
