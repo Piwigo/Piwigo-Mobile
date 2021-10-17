@@ -47,7 +47,7 @@
 
 @property (nonatomic, strong) UIBarButtonItem *tagSelectBarButton;
 
-@property (nonatomic, assign) kPiwigoSortObjc currentSortCategory;
+@property (nonatomic, assign) kPiwigoSortObjc currentSort;
 @property (nonatomic, strong) ImageDetailViewController *imageDetailView;
 
 @end
@@ -75,7 +75,7 @@
 
         // Load, sort images and reload collection
         self.albumData = [[AlbumData alloc] initWithCategoryId:kPiwigoTagsCategoryId andQuery:query];
-        self.currentSortCategory = (kPiwigoSortObjc)AlbumVars.defaultSort;
+        self.currentSort = (kPiwigoSortObjc)AlbumVars.defaultSort;
         self.displayImageTitles = AlbumVars.displayImageTitles;
         
         // Initialise selection mode
@@ -189,7 +189,7 @@
     [self updateBarButtons];
 
     // Load, sort images and reload collection
-    [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
+    [self.albumData updateImageSort:self.currentSort OnCompletion:^{
         
         // Set navigation bar buttons
         [self updateBarButtons];
@@ -276,6 +276,11 @@
     // Register category data updates
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeImageFromCategory:) name:kPiwigoNotificationRemovedImage object:nil];
+
+    // Load favorites in the background if needed
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^(void){
+        [self loadFavorites];
+    });
 }
 
 -(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
@@ -462,10 +467,33 @@
 
 #pragma mark - Category Data
 
+-(void)loadFavorites
+{
+    // Should we load the favorites album?
+    // pwg.users.favorites… methods available from Piwigo version 2.10
+    if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending) &&
+        (!NetworkVarsObjc.hasGuestRights) &&
+        ([CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] == nil))
+    {
+        // Unknown list -> initialise album and download list
+        PiwigoAlbumData *favoritesAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoFavoritesCategoryId];
+        [CategoriesData.sharedInstance updateCategories:@[favoritesAlbum]];
+        [[CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:self.currentSort
+            forProgress:nil
+           OnCompletion:^(BOOL completed) {
+                // Reload image collection
+                dispatch_async(dispatch_get_main_queue(), ^(void){
+                    [self.imagesCollection reloadData];
+                });
+            }
+        ];
+    }
+}
+
 -(void)categoryUpdated
 {
     // Load, sort images and reload collection
-    [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
+    [self.albumData updateImageSort:self.currentSort OnCompletion:^{
 
         // Set navigation bar buttons
         [self updateBarButtons];
@@ -494,7 +522,7 @@
         // Load new image (appended to cache) and sort images before updating UI
         [self.albumData loadMoreImagesOnCompletion:^{
             // Sort images
-            [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
+            [self.albumData updateImageSort:self.currentSort OnCompletion:^{
 
                 // The album title is not shown in backButtonItem to provide enough space
                 // for image title on devices of screen width <= 414 ==> Restore album title

@@ -22,7 +22,7 @@
 
 @property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
 
-@property (nonatomic, assign) kPiwigoSortObjc currentSortCategory;
+@property (nonatomic, assign) kPiwigoSortObjc currentSort;
 @property (nonatomic, strong) ImageDetailViewController *imageDetailView;
 
 @end
@@ -37,7 +37,7 @@
         self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:0];
         
         self.albumData = [[AlbumData alloc] initWithCategoryId:kPiwigoSearchCategoryId andQuery:@""];
-        self.currentSortCategory = (kPiwigoSortObjc)AlbumVars.defaultSort;
+        self.currentSort = (kPiwigoSortObjc)AlbumVars.defaultSort;
         self.displayImageTitles = AlbumVars.displayImageTitles;
         
         // Collection of images
@@ -269,7 +269,7 @@
 {
     // Load, sort images and reload collection
     self.albumData.searchQuery = self.searchQuery;
-    [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
+    [self.albumData updateImageSort:self.currentSort OnCompletion:^{
         [self.imagesCollection reloadData];
     }];
 }
@@ -294,7 +294,7 @@
         // Load new image (appended to cache) and sort images before updating UI
         [self.albumData loadMoreImagesOnCompletion:^{
             // Sort images
-            [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
+            [self.albumData updateImageSort:self.currentSort OnCompletion:^{
 
                 // Refresh collection view if needed
                 NSLog(@"=> category %ld now contains %ld images", (long)kPiwigoSearchCategoryId, (long)self.albumData.images.count);

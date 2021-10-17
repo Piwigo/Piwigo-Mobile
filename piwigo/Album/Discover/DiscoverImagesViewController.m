@@ -43,7 +43,7 @@
 @property (nonatomic, strong) NSMutableArray<PiwigoImageData *> *selectedImagesToShare;
 @property (nonatomic, strong) PiwigoImageData *selectedImage;
 
-@property (nonatomic, assign) kPiwigoSortObjc currentSortCategory;
+@property (nonatomic, assign) kPiwigoSortObjc currentSort;
 @property (nonatomic, strong) ImageDetailViewController *imageDetailView;
 
 @end
@@ -65,13 +65,13 @@
         self.albumData = [[AlbumData alloc] initWithCategoryId:categoryId andQuery:@""];
         self.displayImageTitles = AlbumVars.displayImageTitles;
         if (categoryId == kPiwigoVisitsCategoryId) {
-            self.currentSortCategory = kPiwigoSortObjcVisitsDescending;
+            self.currentSort = kPiwigoSortObjcVisitsDescending;
         } else if (categoryId == kPiwigoBestCategoryId) {
-            self.currentSortCategory = kPiwigoSortObjcRatingScoreDescending;
+            self.currentSort = kPiwigoSortObjcRatingScoreDescending;
         } else if (categoryId == kPiwigoRecentCategoryId) {
-            self.currentSortCategory = kPiwigoSortObjcDatePostedDescending;
+            self.currentSort = kPiwigoSortObjcDatePostedDescending;
         } else {
-            self.currentSortCategory = (kPiwigoSortObjc)AlbumVars.defaultSort;
+            self.currentSort = (kPiwigoSortObjc)AlbumVars.defaultSort;
         }
 
         // Initialise selection mode
@@ -190,7 +190,7 @@
     [[CategoriesData sharedInstance] updateCategories:@[discoverAlbum]];
 
     // Load, sort images and reload collection
-    [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
+    [self.albumData updateImageSort:self.currentSort OnCompletion:^{
 
         // Set navigation bar buttons
         [self updateBarButtons];
@@ -468,7 +468,7 @@
 -(void)categoryUpdated
 {
     // Load, sort images and reload collection
-    [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
+    [self.albumData updateImageSort:self.currentSort OnCompletion:^{
 
         // Set navigation bar buttons
         [self updateBarButtons];
@@ -497,7 +497,7 @@
         // Load new image (appended to cache) and sort images before updating UI
         [self.albumData loadMoreImagesOnCompletion:^{
             // Sort images
-            [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
+            [self.albumData updateImageSort:self.currentSort OnCompletion:^{
 
                 // The album title is not shown in backButtonItem to provide enough space
                 // for image title on devices of screen width <= 414 ==> Restore album title
@@ -563,7 +563,7 @@
         // Load new image (appended to cache) and sort images before updating UI
         [self.albumData loadMoreImagesOnCompletion:^{
             // Sort images
-            [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
+            [self.albumData updateImageSort:self.currentSort OnCompletion:^{
 
                 // The album title is not shown in backButtonItem to provide enough space
                 // for image title on devices of screen width <= 414 ==> Restore album title
