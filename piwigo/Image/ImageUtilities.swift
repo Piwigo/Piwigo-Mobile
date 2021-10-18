@@ -128,6 +128,12 @@ class ImageUtilities: NSObject {
                     imageData.xxLargeHeight = derivatives.xxLargeImage?.height ?? 1
                 }
 
+                for attribute in (["SquarePath", "ThumbPath", "MediumPath", "XXSmallPath",
+                                   "XSmallPath","SmallPath","MediumPath","LargePath","XLargePath","XXLargePath"]) {
+                    let s=imageData.value(forKey: attribute) as! String
+                    imageData.setValue( s.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlPathAllowed), forKey: attribute )
+                }
+                
                 // Update cache
                 for catId in imageData.categoryIds {
                     CategoriesData.sharedInstance().getCategoryById(catId.intValue)
