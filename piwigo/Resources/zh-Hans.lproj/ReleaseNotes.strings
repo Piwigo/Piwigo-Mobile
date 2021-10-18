@@ -6,7 +6,7 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.8.0_text" = "Version 2.8\n\n• Add and remove photos and videos from your favorites\n• Minor bug fixes and improvements of the interface";
+"v2.8.0_text" = "2.8\n\n• 从您的收藏夹中添加和删除照片和视频\n• 小错误修复和界面改进";
 
 "v2.7.2_text" = "版本 2.7.2\n2021年9月20日\n\n• 支持iOS 15\n• 小错误修复和界面改进\n• 代码重构";
 
