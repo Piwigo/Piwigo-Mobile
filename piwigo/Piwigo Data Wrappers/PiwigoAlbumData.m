@@ -169,7 +169,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     [self loopLoadImagesForSort:sortDesc
 				   withProgress:progress
                    onCompletion:^(BOOL completed) {
-		if (completion && self.albumId != kPiwigoFavoritesCategoryId)
+		if (completion)
 		{
 			completion(YES);
 		}
@@ -237,7 +237,8 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
      } onFailure:^(NSURLSessionTask *task, NSError *error) {
 									 
          // Don't return an error is the task was cancelled
-         if (error && (task || (task.state == NSURLSessionTaskStateCanceling)))
+         if (error && self.albumId != kPiwigoFavoritesCategoryId &&
+             (task.state != NSURLSessionTaskStateCanceling))
          {
              // Determine the present view controller
              UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;

@@ -159,11 +159,24 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     // Create new list of categories
     NSMutableArray *newCategories = [[NSMutableArray alloc] init];
 
+    // Did we load favorites at start or did user request a refresh?
+    if (!NetworkVarsObjc.hasGuestRights &&
+        ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending))
+    {
+        // Keep cached favorites
+        NSInteger indexOfFavorites = [self indexOfCategoryWithId:kPiwigoFavoritesCategoryId
+                                                         inArray:self.allCategories];
+        if (indexOfFavorites != NSNotFound) {
+            [newCategories addObject:[self.allCategories objectAtIndex:indexOfFavorites]];
+        }
+    }
+
     // Loop on freshly retrieved categories
     for(PiwigoAlbumData *categoryData in categories)
     {
         // Is this a known category?
-        NSInteger index = [self indexOfCategoryWithId:categoryData.albumId inArray:self.allCategories];
+        NSInteger index = [self indexOfCategoryWithId:categoryData.albumId
+                                              inArray:self.allCategories];
         
         // Reuse some data if possible
         if (index != NSNotFound)
