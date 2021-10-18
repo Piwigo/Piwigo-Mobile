@@ -1244,17 +1244,13 @@ extension ImageDetailViewController: UIPageViewControllerDataSource
         let imageData = images[currentIndex + 1]
 
         // Create view controller for presenting next image
-        debugPrint("=> Create preview view controller for next image \(imageData.imageId)")
+//        debugPrint("=> Create preview view controller for next image \(imageData.imageId)")
         guard let nextImage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController else { return nil }
         nextImage.imagePreviewDelegate = self
         nextImage.imageIndex = currentIndex + 1
         nextImage.imageData = imageData
         nextImage.imageLoaded = false
         return nextImage
-//        let nextImage = ImagePreviewViewController()
-//        nextImage.imageLoaded = false
-//        nextImage.imageIndex = currentIndex + 1
-//        nextImage.setImageScrollViewWith(imageData)
     }
 
     // Returns the view controller before the given view controller
@@ -1273,18 +1269,13 @@ extension ImageDetailViewController: UIPageViewControllerDataSource
         let imageData = images[currentIndex - 1]
 
         // Create view controller
-        debugPrint("=> Create preview view controller for previous image \(imageData.imageId)")
+//        debugPrint("=> Create preview view controller for previous image \(imageData.imageId)")
         guard let prevImage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController else { return nil }
         prevImage.imagePreviewDelegate = self
         prevImage.imageIndex = currentIndex - 1
         prevImage.imageData = imageData
         prevImage.imageLoaded = false
         return prevImage
-//        let prevImage = ImagePreviewViewController()
-//        prevImage.imageLoaded = false
-//        prevImage.imageIndex = currentIndex - 1
-//        prevImage.setImageScrollViewWith(imageData)
-//        return prevImage
     }
 
     // Returns the index of the selected item to be reflected in the page indicator
