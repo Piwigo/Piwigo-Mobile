@@ -146,7 +146,11 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         }
 
         // Navigation bar and toolbar buttons
-        self.settingsBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"settings"] landscapeImagePhone:[UIImage imageNamed:@"settingsCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(didTapPreferencesButton)];
+        if (@available(iOS 14.0, *)) {
+            self.settingsBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage systemImageNamed:@"gear"] style:UIBarButtonItemStylePlain target:self action:@selector(didTapPreferencesButton)];
+        } else {
+            self.settingsBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"settings"] landscapeImagePhone:[UIImage imageNamed:@"settingsCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(didTapPreferencesButton)];
+        }
         [self.settingsBarButton setAccessibilityIdentifier:@"settings"];
 
         self.selectBarButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"categoryImageList_selectButton", @"Select") style:UIBarButtonItemStylePlain target:self action:@selector(didTapSelect)];
