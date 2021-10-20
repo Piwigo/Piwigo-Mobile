@@ -18,7 +18,9 @@
 @property (nonatomic, strong) UIImageView *selectedImage;
 @property (nonatomic, strong) UIImageView *favoriteImage;
 @property (nonatomic, strong) UIView *favoriteBckg;
-@property (nonatomic, strong) NSLayoutConstraint *favBckgConstraint;
+@property (nonatomic, strong) NSLayoutConstraint *favBckgLeft;
+@property (nonatomic, assign) CGFloat favBckgPosY;
+@property (nonatomic, strong) NSLayoutConstraint *favBckgBottom;
 @property (nonatomic, strong) UIView *darkenView;
 @property (nonatomic, strong) UIImageView *playImage;
 @property (nonatomic, strong) UILabel *noDataLabel;
@@ -77,8 +79,9 @@
         [self.cellImage addSubview:self.favoriteBckg];
         [self.cellImage addConstraint:[NSLayoutConstraint constraintView:self.favoriteBckg toWidth:width]];
         [self.cellImage addConstraint:[NSLayoutConstraint constraintView:self.favoriteBckg toHeight:height]];
-        self.favBckgConstraint = [NSLayoutConstraint constraintViewFromBottom:self.favoriteBckg amount:0];
-        [self.cellImage addConstraint:self.favBckgConstraint];
+        self.favBckgLeft = [NSLayoutConstraint constraintViewFromLeft:self.favoriteBckg amount:0];
+        self.favBckgBottom = [NSLayoutConstraint constraintViewFromBottom:self.favoriteBckg amount:0];
+        [self.cellImage addConstraints:@[self.favBckgLeft, self.favBckgBottom]];
 
         // Favorite image
         self.favoriteImage = [UIImageView new];
@@ -333,12 +336,34 @@
     [self.cellImage setImageWithURLRequest:request
                           placeholderImage:[UIImage imageNamed:@"placeholderImage"]
                                    success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
-        CGSize imageSize = image.size;
-        if (fmax(imageSize.width, imageSize.height) > fmax(size.width, size.height) * scale) {
-            UIImage *albumImage = [ImageUtilities downsampleWithImage:image to:size scale:scale];
-            weakSelf.cellImage.image = albumImage;
+        // Downsample image (or scale it up)
+        UIImage *displayedImage = [ImageUtilities downsampleWithImage:image to:size scale:scale];
+        weakSelf.cellImage.image = displayedImage;
+        
+        // Horizontal correction?
+        CGFloat imageWidth = displayedImage.size.width;
+        CGFloat cellWidth = size.width * scale;
+        if (imageWidth < cellWidth) {
+            // The favorite image must be displaced horizontally
+            [weakSelf.cellImage removeConstraint:weakSelf.favBckgLeft];
+            CGFloat favBckgPosX = (cellWidth - imageWidth) / 2.0 / scale;
+            weakSelf.favBckgLeft = [NSLayoutConstraint constraintViewFromLeft:weakSelf.favoriteBckg
+                                                                       amount:favBckgPosX];
+            [weakSelf.cellImage addConstraint:weakSelf.favBckgLeft];
+        }
+
+        // Vertical correction?
+        CGFloat imageHeight = displayedImage.size.height;
+        CGFloat cellHeight = size.height * scale;
+        if (imageHeight < cellHeight) {
+            // The Favorite image must be displaced vertically
+            [weakSelf.cellImage removeConstraint:weakSelf.favBckgBottom];
+            weakSelf.favBckgPosY = (cellHeight - imageHeight) / 2.0 / scale;
+            weakSelf.favBckgBottom = [NSLayoutConstraint constraintViewFromBottom:weakSelf.favoriteBckg
+                                                                           amount:weakSelf.favBckgPosY];
+            [weakSelf.cellImage addConstraint:weakSelf.favBckgBottom];
         } else {
-            weakSelf.cellImage.image = image;
+            weakSelf.favBckgPosY = 0;
         }
     } failure:nil];
 }
@@ -367,16 +392,16 @@
 
     if (self.bottomLayer.isHidden) {
         // Place icon at the bottom
-        [self.cellImage removeConstraint:self.favBckgConstraint];
-        self.favBckgConstraint = [NSLayoutConstraint constraintViewFromBottom:self.favoriteBckg amount: 0];
-        [self.cellImage addConstraint:self.favBckgConstraint];
+        [self.cellImage removeConstraint:self.favBckgBottom];
+        self.favBckgBottom = [NSLayoutConstraint constraintViewFromBottom:self.favoriteBckg amount:self.favBckgPosY];
+        [self.cellImage addConstraint:self.favBckgBottom];
     } else {
         // Place icon above title
         [self.nameLabel sizeToFit];
-        CGFloat height = self.nameLabel.bounds.size.height + 2;
-        [self.cellImage removeConstraint:self.favBckgConstraint];
-        self.favBckgConstraint = [NSLayoutConstraint constraintViewFromBottom:self.favoriteBckg amount: height];
-        [self.cellImage addConstraint:self.favBckgConstraint];
+        CGFloat height = fmax(self.nameLabel.bounds.size.height + 2, self.favBckgPosY);
+        [self.cellImage removeConstraint:self.favBckgBottom];
+        self.favBckgBottom = [NSLayoutConstraint constraintViewFromBottom:self.favoriteBckg amount:height];
+        [self.cellImage addConstraint:self.favBckgBottom];
     }
     self.favoriteBckg.hidden = !isFavorite;
     self.favoriteImage.hidden = !isFavorite;
