@@ -229,10 +229,12 @@
     [[CategoriesData sharedInstance] updateCategories:@[discoverAlbum] andUpdateUI:NO];
 
     // Load, sort images and reload collection
-    [self.albumData updateImageSort:self.currentSort OnCompletion:^{
+    [self.albumData updateImageSort:self.currentSort onCompletion:^{
         // Reset navigation bar buttons after image load
         [self updateButtonsInPreviewMode];
         [self.imagesCollection reloadData];
+    } onFailure:^(NSURLSessionTask *task, NSError *error) {
+        [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
     }];
 }
 
@@ -293,7 +295,7 @@
 //                    NSLog(@"=> Discover|Load more images…");
                     [self.albumData loadMoreImagesOnCompletion:^{
                         [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
-                    }];
+                    } onFailure:nil];
                 }
             } else {
                 // No yet loaded => load more images
@@ -302,7 +304,7 @@
 //                    NSLog(@"=> Discover|Load more images…");
                     [self.albumData loadMoreImagesOnCompletion:^{
                         [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
-                    }];
+                    } onFailure:nil];
                 }
             }
         }
@@ -786,7 +788,7 @@
 -(void)categoryUpdated
 {
     // Load, sort images and reload collection
-    [self.albumData updateImageSort:self.currentSort OnCompletion:^{
+    [self.albumData updateImageSort:self.currentSort onCompletion:^{
         // Set navigation bar buttons
         if (self.isSelect == YES) {
             [self updateButtonsInSelectionMode];
@@ -794,6 +796,8 @@
             [self updateButtonsInPreviewMode];
         }
         [self.imagesCollection reloadData];
+    } onFailure:^(NSURLSessionTask *task, NSError *error) {
+        [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
     }];
 }
 
@@ -817,7 +821,7 @@
         // Load new image (appended to cache) and sort images before updating UI
         [self.albumData loadMoreImagesOnCompletion:^{
             // Sort images
-            [self.albumData updateImageSort:self.currentSort OnCompletion:^{
+            [self.albumData updateImageSort:self.currentSort onCompletion:^{
 
                 // The album title is not shown in backButtonItem to provide enough space
                 // for image title on devices of screen width <= 414 ==> Restore album title
@@ -866,8 +870,10 @@
                 } else {
                     [self updateButtonsInPreviewMode];
                 }
+            } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
             }];
-        }];
+        } onFailure:nil];
     }
 }
 
@@ -1775,7 +1781,7 @@
     {
         [self.albumData loadMoreImagesOnCompletion:^{
             [self.imagesCollection reloadData];
-        }];
+        } onFailure:nil];
     }
     
     return cell;
@@ -1872,7 +1878,7 @@
             self.imageDetailView.images = [self.albumData.images mutableCopy];
         }
         [self.imagesCollection reloadData];
-    }];
+    } onFailure:nil];
 }
 
 

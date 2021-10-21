@@ -196,7 +196,7 @@
 //                    NSLog(@"=> Discover|Load more images…");
                     [self.albumData loadMoreImagesOnCompletion:^{
                         [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
-                    }];
+                    } onFailure:nil];
                 }
             } else {
                 // No yet loaded => load more images
@@ -205,7 +205,7 @@
 //                    NSLog(@"=> Discover|Load more images…");
                     [self.albumData loadMoreImagesOnCompletion:^{
                         [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
-                    }];
+                    } onFailure:nil];
                 }
             }
         }
@@ -269,8 +269,10 @@
 {
     // Load, sort images and reload collection
     self.albumData.searchQuery = self.searchQuery;
-    [self.albumData updateImageSort:self.currentSort OnCompletion:^{
+    [self.albumData updateImageSort:self.currentSort onCompletion:^{
         [self.imagesCollection reloadData];
+    } onFailure:^(NSURLSessionTask *task, NSError *error) {
+        [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
     }];
 }
 
@@ -294,7 +296,7 @@
         // Load new image (appended to cache) and sort images before updating UI
         [self.albumData loadMoreImagesOnCompletion:^{
             // Sort images
-            [self.albumData updateImageSort:self.currentSort OnCompletion:^{
+            [self.albumData updateImageSort:self.currentSort onCompletion:^{
 
                 // Refresh collection view if needed
                 NSLog(@"=> category %ld now contains %ld images", (long)kPiwigoSearchCategoryId, (long)self.albumData.images.count);
@@ -328,8 +330,10 @@
                         [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]] :
                         [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
                 }
+            } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
             }];
-        }];
+        } onFailure:nil];
     }
 }
 
@@ -481,7 +485,7 @@
     {
         [self.albumData loadMoreImagesOnCompletion:^{
             [self.imagesCollection reloadData];
-        }];
+        } onFailure:nil];
     }
     
     return cell;
@@ -558,7 +562,7 @@
             self.imageDetailView.images = [self.albumData.images mutableCopy];
         }
         [self.imagesCollection reloadData];
-    }];
+    } onFailure:nil];
 }
 
 @end

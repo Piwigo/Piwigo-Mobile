@@ -38,14 +38,23 @@
 #pragma mark - Load image data
 
 -(void)reloadAlbumOnCompletion:(void (^)(void))completion
+                     onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
     NSInteger currentPage = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].onPage;
     [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] resetData];
     
-    [self loadImagePageUntil:currentPage onPage:0 onCompletion:completion];
+    [self loadImagePageUntil:currentPage onPage:0
+                onCompletion:completion
+                   onFailure:^(NSURLSessionTask *task, NSError *error) {
+        if (fail) {
+            fail(task, error);
+        }
+    }];
 }
 
--(void)loadImagePageUntil:(NSInteger)page onPage:(NSInteger)onPage onCompletion:(void (^)(void))completion
+-(void)loadImagePageUntil:(NSInteger)page onPage:(NSInteger)onPage
+             onCompletion:(void (^)(void))completion
+                onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
     if((onPage != 0) && (onPage >= page))
     {
@@ -54,11 +63,22 @@
     }
     
     [self loadMoreImagesOnCompletion:^{
-        [self loadImagePageUntil:page onPage:onPage + 1 onCompletion:completion];
+        [self loadImagePageUntil:page onPage:onPage + 1
+                    onCompletion:completion
+                       onFailure:^(NSURLSessionTask *task, NSError *error) {
+            if (fail) {
+                fail(task, error);
+            }
+        }];
+    } onFailure:^(NSURLSessionTask *task, NSError *error) {
+        if (fail) {
+            fail(task, error);
+        }
     }];
 }
 
 -(void)loadMoreImagesOnCompletion:(void (^)(void))completion
+                        onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
 	NSInteger downloadedImageDataCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;
 	NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].numberOfImages;
@@ -82,26 +102,38 @@
     // Load more category image data
 	[[[CategoriesData sharedInstance] getCategoryById:self.categoryId]
                    loadCategoryImageDataChunkWithSort:sortDesc forProgress:nil
-                                         OnCompletion:^(BOOL completed)
+                                         onCompletion:^(BOOL completed)
     {
-		if(!completed) { return; }
+		if (!completed) { return; }
+        
         // We have all the image data, just manually sort it (uploaded images are appended to cache)
         self.images = [CategoryImageSort sortObjcImages:[[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList for:self.sortType];
-		if(completion) { completion(); }
-	}];
+		if (completion) {
+            completion();
+        }
+    } onFailure:^(NSURLSessionTask *task, NSError *error) {
+        if (fail) {
+            fail(task, error);
+        }
+    }];
 }
 
 -(void)loadAllImagesOnCompletion:(void (^)(void))completion
+                       onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
     [[[CategoriesData sharedInstance] getCategoryById:self.categoryId]
-     loadAllCategoryImageDataWithSort:self.sortType forProgress:nil OnCompletion:^(BOOL completed) {
+                     loadAllCategoryImageDataWithSort:self.sortType forProgress:nil
+                                         onCompletion:^(BOOL completed) {
          if (completed) {
             self.images = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
-            if(completion)
-            {
+            if(completion) {
                 completion();
             }
          }
+    } onFailure:^(NSURLSessionTask *task, NSError *error) {
+        if (fail) {
+            fail(task, error);
+        }
     }];
 }
 
@@ -109,7 +141,8 @@
 #pragma mark - Image sorting
 
 -(void)updateImageSort:(kPiwigoSortObjc)imageSort
-          OnCompletion:(void (^)(void))completion
+          onCompletion:(void (^)(void))completion
+             onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
 	NSInteger downloadedImageDataCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList.count;
 	NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].numberOfImages;
@@ -127,9 +160,12 @@
 	}
 	
     self.sortType = imageSort;
-//	self.images = [NSArray new];
-//	[[[CategoriesData sharedInstance] getCategoryById:self.categoryId] resetData];
-	[self loadMoreImagesOnCompletion:completion];
+	[self loadMoreImagesOnCompletion:completion
+                           onFailure:^(NSURLSessionTask *task, NSError *error) {
+        if (fail) {
+            fail(task, error);
+        }
+    }];
 }
 
 

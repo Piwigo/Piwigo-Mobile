@@ -207,6 +207,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                     // Present album selector for copying image
                     [self copyImageToAlbum];
             }];
+            self.imagesCopyAction.accessibilityIdentifier = @"copy";
 
             // Move images to album
             self.imagesMoveAction = [UIAction actionWithTitle:NSLocalizedString(@"moveImage_title", @"Move to Album") image:[UIImage systemImageNamed:@"arrowshape.turn.up.right"] identifier:@"Move" handler:^(__kindof UIAction * _Nonnull action) {
@@ -215,6 +216,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                     // Present album selector for moving image
                     [self moveImageToAlbum];
             }];
+            self.imagesMoveAction.accessibilityIdentifier = @"move";
 
             // Menu
             self.albumMenu = [UIMenu menuWithTitle:@"" image:nil identifier:@"org.piwigo.piwigoImage.album" options:UIMenuOptionsDisplayInline children:@[self.imagesCopyAction, self.imagesMoveAction]];
@@ -563,10 +565,12 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 #if defined(DEBUG_LIFECYCLE)
         NSLog(@"viewWillAppear  => load images");
 #endif
-        [self.albumData updateImageSort:self.currentSort OnCompletion:^{
+        [self.albumData updateImageSort:self.currentSort onCompletion:^{
             // Reset navigation bar buttons after image load
             [self updateButtonsInPreviewMode];
             [self.imagesCollection reloadData];
+        } onFailure:^(NSURLSessionTask *task, NSError *error) {
+            [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
         }];
     }
     else {
@@ -584,7 +588,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         if (self.categoryId != 0) {
             [self.albumData reloadAlbumOnCompletion:^{
                 [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
-            }];
+            } onFailure:nil];
         }
     }
 
@@ -684,7 +688,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 //                    NSLog(@"=> Load more images…");
                     [self.albumData loadMoreImagesOnCompletion:^{
                         [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
-                    }];
+                    } onFailure:nil];
                 }
             } else {
                 // No yet loaded => load more images
@@ -693,7 +697,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 //                    NSLog(@"=> Load more images…");
                     [self.albumData loadMoreImagesOnCompletion:^{
                         [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
-                    }];
+                    } onFailure:nil];
                 }
             }
         }
@@ -1711,7 +1715,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         else {
             // Load, sort images and reload collection (should never reach this line)
             self.albumData = [[AlbumData alloc] initWithCategoryId:self.categoryId andQuery:@""];
-            [self.albumData updateImageSort:self.currentSort OnCompletion:^{
+            [self.albumData updateImageSort:self.currentSort onCompletion:^{
 
                 // Reset navigation bar buttons after image load
                 [self updateButtonsInPreviewMode];
@@ -1722,6 +1726,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                     // Remove search bar
                     self.navigationItem.searchController = nil;
                 }
+            } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
             }];
         }
     }
@@ -1774,7 +1780,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         [self.albumData loadAllImagesOnCompletion:^{
 
             // Sort images
-            [self.albumData updateImageSort:self.currentSort OnCompletion:^{
+            [self.albumData updateImageSort:self.currentSort onCompletion:^{
 //                NSLog(@"=> categoriesUpdated… %ld now contains %ld images", (long)self.categoryId, (long)self.albumData.images.count);
                 if (oldImageList.count == self.albumData.images.count) {
                     [self.imagesCollection reloadData];     // Total number of images may have changed
@@ -1835,8 +1841,10 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 } else {
                     [self updateButtonsInPreviewMode];
                 }
+            } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
             }];
-        }];
+        } onFailure:nil];
     }
     else {
         // The album title is not shown in backButtonItem to provide enough space
@@ -1871,7 +1879,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         // Load new image (appended to cache) and sort images before updating UI
         [self.albumData loadMoreImagesOnCompletion:^{
             // Sort images
-            [self.albumData updateImageSort:self.currentSort OnCompletion:^{
+            [self.albumData updateImageSort:self.currentSort onCompletion:^{
 
                 // The album title is not shown in backButtonItem to provide enough space
                 // for image title on devices of screen width <= 414 ==> Restore album title
@@ -1920,8 +1928,10 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 } else {
                     [self updateButtonsInPreviewMode];
                 }
+            } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
             }];
-        }];
+        } onFailure:nil];
     }
 }
 
@@ -1945,7 +1955,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         // Remove image (removed from cache) and sort images before updating UI
         [self.albumData loadMoreImagesOnCompletion:^{
             // Sort images
-            [self.albumData updateImageSort:self.currentSort OnCompletion:^{
+            [self.albumData updateImageSort:self.currentSort onCompletion:^{
 
                 // The album title is not shown in backButtonItem to provide enough space
                 // for image title on devices of screen width <= 414 ==> Restore album title
@@ -2002,8 +2012,10 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                         [self updateButtonsInPreviewMode];
                     }
                 }
+            } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
             }];
-        }];
+        } onFailure:nil];
     }
 }
 
@@ -3512,7 +3524,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             {
                 [self.albumData loadMoreImagesOnCompletion:^{
                     [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
-                }];
+                } onFailure:nil];
             }
             
             return cell;
@@ -3669,7 +3681,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             self.imageDetailView.images = [self.albumData.images mutableCopy];
         }
         [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
-    }];
+    } onFailure:nil];
 }
 
 

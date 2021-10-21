@@ -17,11 +17,16 @@
 
 -(instancetype)initWithCategoryId:(NSInteger)categoryId andQuery:(NSString *)query;
 
--(void)reloadAlbumOnCompletion:(void (^)(void))completion;
--(void)loadMoreImagesOnCompletion:(void (^)(void))completion;
--(void)loadAllImagesOnCompletion:(void (^)(void))completion;
+-(void)reloadAlbumOnCompletion:(void (^)(void))completion
+                     onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
+-(void)loadMoreImagesOnCompletion:(void (^)(void))completion
+                        onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
+-(void)loadAllImagesOnCompletion:(void (^)(void))completion
+                       onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
--(void)updateImageSort:(kPiwigoSortObjc)imageSort OnCompletion:(void (^)(void))completion;
+-(void)updateImageSort:(kPiwigoSortObjc)imageSort
+          onCompletion:(void (^)(void))completion
+             onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
 -(NSInteger)updateImage:(PiwigoImageData *)updatedImage;
 

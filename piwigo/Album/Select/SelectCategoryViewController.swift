@@ -143,7 +143,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         
         // Button for returning to albums/images collections
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelSelect))
-        cancelBarButton?.accessibilityIdentifier = "Cancel"
+        cancelBarButton?.accessibilityIdentifier = "CancelSelect"
 
         // Register CategoryTableViewCell
         categoriesTableView.register(UINib(nibName: "CategoryTableViewCell", bundle: nil),

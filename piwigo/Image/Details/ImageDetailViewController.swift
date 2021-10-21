@@ -192,7 +192,7 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
                             self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
                         }
                     }
-                }
+                } onFailure: { _, _ in }
         } else {
             // Retrieve complete image data if needed (buttons are greyed until job done)
             if imageData.fileSize == NSNotFound {

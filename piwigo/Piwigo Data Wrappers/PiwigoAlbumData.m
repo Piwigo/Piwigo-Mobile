@@ -158,7 +158,8 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
 
 -(void)loadAllCategoryImageDataWithSort:(kPiwigoSortObjc)sort
                             forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
-							  OnCompletion:(void (^)(BOOL completed))completion
+                            onCompletion:(void (^)(BOOL completed))completion
+                              onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
 	self.onPage = 0;
     self.lastImageBulkCount = 0;
@@ -169,40 +170,49 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     [self loopLoadImagesForSort:sortDesc
 				   withProgress:progress
                    onCompletion:^(BOOL completed) {
-		if (completion)
-		{
+		if (completion) {
 			completion(YES);
 		}
-	}];
+    } onFailure:^(NSURLSessionTask *task, NSError *error) {
+        if (fail) {
+            fail(task, error);
+        }
+    }];
 }
 
 -(void)loopLoadImagesForSort:(NSString*)sort
 				withProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
-					onCompletion:(void (^)(BOOL completed))completion
+                onCompletion:(void (^)(BOOL completed))completion
+                   onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
 	[self loadCategoryImageDataChunkWithSort:sort
 								 forProgress:progress
-                                OnCompletion:^(BOOL completed) {
+                                onCompletion:^(BOOL completed) {
         NSLog(@"loopLoadImagesForSort: %ld, %ld, %ld", (long)self.lastImageBulkCount, (long)self.imageList.count, (long)self.numberOfImages);
-        if(completed && self.lastImageBulkCount && self.imageList.count != self.numberOfImages)
+        if (completed && self.lastImageBulkCount && self.imageList.count != self.numberOfImages)
 		{
 			[self loopLoadImagesForSort:sort
 						   withProgress:progress
-                           onCompletion:completion];
+                           onCompletion:completion
+                              onFailure:fail];
 		}
 		else
-		{
-			if(completion)
-			{
+        {
+			if (completion) {
 				completion(YES);
 			}
 		}
-	}];
+	} onFailure:^(NSURLSessionTask *task, NSError *error) {
+        if (fail) {
+            fail(task, error);
+        }
+    }];
 }
 
 -(void)loadCategoryImageDataChunkWithSort:(NSString*)sort
 							  forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
-                             OnCompletion:(void (^)(BOOL completed))completion
+                             onCompletion:(void (^)(BOOL completed))completion
+                                onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail
 {
     if (self.isLoadingMoreImages) {
         return;
@@ -237,41 +247,40 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
      } onFailure:^(NSURLSessionTask *task, NSError *error) {
 									 
          // Don't return an error is the task was cancelled
-         if (error && self.albumId != kPiwigoFavoritesCategoryId &&
-             (task.state != NSURLSessionTaskStateCanceling))
-         {
-             // Determine the present view controller
-             UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-             while (topViewController.presentedViewController) {
-                 topViewController = topViewController.presentedViewController;
-             }
-             
-             UIAlertController* alert = [UIAlertController
-                 alertControllerWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error")
-                 message:[NSString stringWithFormat:@"%@\n%@", NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)"), [error localizedDescription]]
-                 preferredStyle:UIAlertControllerStyleAlert];
-             
-             UIAlertAction* defaultAction = [UIAlertAction
-                 actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
-                 style:UIAlertActionStyleDefault
-                 handler:^(UIAlertAction * action) {}];
-             
-             [alert addAction:defaultAction];
-             alert.view.tintColor = UIColor.piwigoColorOrange;
-             if (@available(iOS 13.0, *)) {
-                 alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
-             } else {
-                 // Fallback on earlier versions
-             }
-             [topViewController presentViewController:alert animated:YES completion:^{
-                 // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                 alert.view.tintColor = UIColor.piwigoColorOrange;
-             }];
-         }
+//         if (error && self.albumId != kPiwigoFavoritesCategoryId &&
+//             (task.state != NSURLSessionTaskStateCanceling))
+//         {
+//             // Determine the present view controller
+//             UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+//             while (topViewController.presentedViewController) {
+//                 topViewController = topViewController.presentedViewController;
+//             }
+//
+//             UIAlertController* alert = [UIAlertController
+//                 alertControllerWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error")
+//                 message:[NSString stringWithFormat:@"%@\n%@", NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)"), [error localizedDescription]]
+//                 preferredStyle:UIAlertControllerStyleAlert];
+//
+//             UIAlertAction* defaultAction = [UIAlertAction
+//                 actionWithTitle:NSLocalizedString(@"alertDismissButton", @"Dismiss")
+//                 style:UIAlertActionStyleDefault
+//                 handler:^(UIAlertAction * action) {}];
+//
+//             [alert addAction:defaultAction];
+//             alert.view.tintColor = UIColor.piwigoColorOrange;
+//             if (@available(iOS 13.0, *)) {
+//                 alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? UIUserInterfaceStyleDark : UIUserInterfaceStyleLight;
+//             } else {
+//                 // Fallback on earlier versions
+//             }
+//             [topViewController presentViewController:alert animated:YES completion:^{
+//                 // Bugfix: iOS9 - Tint not fully Applied without Reapplying
+//                 alert.view.tintColor = UIColor.piwigoColorOrange;
+//             }];
+//         }
          self.isLoadingMoreImages = NO;
-         if(completion)
-         {
-             completion(NO);
+         if (fail) {
+             fail(task, error);
          }
      }];
 }

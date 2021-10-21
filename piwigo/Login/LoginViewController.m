@@ -800,19 +800,18 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
             // Download favorites
             [[CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:(kPiwigoSortObjc)AlbumVars.defaultSort
                 forProgress:nil
-               OnCompletion:^(BOOL completed) {
-//                    if (completed) {
-                        // Present Album/Images view and resume uploads
-                        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                        [appDelegate loadNavigation];
-//                    } else {
-//                        // Present Album/Images view and resume uploads
-//                        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-//                        [appDelegate loadNavigation];
-//                        return;
-//                    }
+            onCompletion:^(BOOL completed) {
+                // Present Album/Images view and resume uploads
+                AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                [appDelegate loadNavigation];
+            }
+            onFailure:^(NSURLSessionTask *task, NSError *error) {
+                NetworkVarsObjc.hadOpenedSession = NO;
+                self.isAlreadyTryingToLogin = NO;
+                // Display error message
+                [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
             }];
-            return;;
+            return;
         } else {
             // Present Album/Images view and resume uploads
             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];

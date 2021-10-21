@@ -580,7 +580,7 @@
 		ADA6F18D21CA924C006C9DD5 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/AppStore.strings; sourceTree = "<group>"; };
 		ADA6F18E21CA924D006C9DD5 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		ADA6F18F21CA924D006C9DD5 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/PrivacyPolicy.strings; sourceTree = "<group>"; };
-		ADA6F19321CA99F7006C9DD5 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		ADA6F19321CA99F7006C9DD5 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = piwigo/Info.plist; sourceTree = SOURCE_ROOT; };
 		ADAA57CF22DD006C00EB4EAA /* DiscoverImagesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DiscoverImagesViewController.h; sourceTree = "<group>"; };
 		ADAA57D022DD00B700EB4EAA /* DiscoverImagesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DiscoverImagesViewController.m; sourceTree = "<group>"; };
 		ADAC548B26170B1200301C1C /* SelectCategoryHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectCategoryHeaderView.swift; sourceTree = "<group>"; };
@@ -1513,6 +1513,7 @@
 				D863EEC51A6A45E800C0A6E9 /* Resources */,
 				D82B8CBE1A67820A000E47CA /* Supporting Files */,
 				ADA6DA4621B2AD9900F941F1 /* Settings.bundle */,
+				ADA6F19321CA99F7006C9DD5 /* Info.plist */,
 			);
 			path = piwigo;
 			sourceTree = SOURCE_ROOT;
@@ -1579,7 +1580,6 @@
 		D863EEC51A6A45E800C0A6E9 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				ADA6F19321CA99F7006C9DD5 /* Info.plist */,
 				D82B8CEE1A6790BF000E47CA /* Prefix.pch */,
 				ADE03F3223D4CF1D00F21ED9 /* Bridging-Header.h */,
 				AD97CFB3265A50EE00719ED5 /* debug.entitlements */,
@@ -3109,7 +3109,7 @@
 					"\"${PODS_ROOT}/Headers/Public\"",
 					"\"${PODS_ROOT}/Headers/Public/AFNetworking\"",
 				);
-				INFOPLIST_FILE = piwigo/Resources/Info.plist;
+				INFOPLIST_FILE = piwigo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3140,7 +3140,7 @@
 					"\"UIKit\"",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = "net.lelievre-berna.piwigo";
+				PRODUCT_BUNDLE_IDENTIFIER = org.piwigo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "21fe80f9-851b-4da9-93bc-779c033d04e7";
 				PROVISIONING_PROFILE_SPECIFIER = "Dev profile for Piwigo App";
@@ -3171,7 +3171,7 @@
 					"\"${PODS_ROOT}/Headers/Public\"",
 					"\"${PODS_ROOT}/Headers/Public/AFNetworking\"",
 				);
-				INFOPLIST_FILE = piwigo/Resources/Info.plist;
+				INFOPLIST_FILE = piwigo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
