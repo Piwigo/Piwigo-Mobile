@@ -27,6 +27,7 @@ Piwigo Mobile is a native iOS Application for [Piwigo](http://piwigo.org).
 - Create, delete, move and rename albums,
 - Search, edit, download and delete photos and videos,
 - Copy and move photos and videos between albums,
+- Add and remove photos and videos from your favorites,
 - Set a photo as album image,
 - Upload photos and videos:
    - of modifiable size and quality,
