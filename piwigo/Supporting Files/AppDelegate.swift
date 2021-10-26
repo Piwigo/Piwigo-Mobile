@@ -663,13 +663,13 @@ import piwigoKit
         }
         
         // Tint colour
-        UIView.appearance().tintColor = UIColor.piwigoColorOrange()
+        UIView.appearance().tintColor = .piwigoColorOrange()
         
         // Activity indicator
-        UIActivityIndicatorView.appearance().color = UIColor.piwigoColorOrange()
+        UIActivityIndicatorView.appearance().color = .piwigoColorOrange()
 
         // Tab bars
-        UITabBar.appearance().barTintColor = UIColor.piwigoColorBackground()
+        UITabBar.appearance().barTintColor = .piwigoColorBackground()
 
         // Styles
         if AppVars.isDarkPaletteActive

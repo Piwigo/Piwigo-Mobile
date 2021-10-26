@@ -18,11 +18,11 @@ class EditImageTextFieldTableViewCell: UITableViewCell {
     func config(withLabel label: String?, placeHolder: String?,
                andImageDetail imageDetail: String?) {
         // Cell background
-        backgroundColor = UIColor.piwigoColorBackground()
+        backgroundColor = .piwigoColorBackground()
 
         // Cell label
         cellLabel.text = label
-        cellLabel.textColor = UIColor.piwigoColorLeftLabel()
+        cellLabel.textColor = .piwigoColorLeftLabel()
 
         // Cell text field
         if let detail = imageDetail {
@@ -30,7 +30,7 @@ class EditImageTextFieldTableViewCell: UITableViewCell {
         } else {
             cellTextField.text = ""
         }
-        cellTextField.textColor = UIColor.piwigoColorRightLabel()
+        cellTextField.textColor = .piwigoColorRightLabel()
         if (placeHolder?.count ?? 0) > 0 {
             cellTextField.attributedPlaceholder = NSAttributedString(string: placeHolder ?? "", attributes: [
                 NSAttributedString.Key.foregroundColor: UIColor.piwigoColorPlaceHolder()

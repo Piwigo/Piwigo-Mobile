@@ -1,6 +1,6 @@
 //
 //  NetworkVars.swift
-//  piwigo
+//  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 24/05/2021.
 //  Copyright © 2021 Piwigo.org. All rights reserved.
@@ -97,6 +97,9 @@ public class NetworkVars: NSObject {
     /// - Remembers that the user cancelled login attempt
     public static var userCancelledCommunication = false
     
+    /// - Logged user has guest rigths, false by default
+    public static var hasGuestRights = false
+
     /// - Logged user has normal rigths, false by default
     public static var hasNormalRights = false
 

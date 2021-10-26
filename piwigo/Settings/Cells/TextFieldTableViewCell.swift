@@ -19,16 +19,16 @@ class TextFieldTableViewCell: UITableViewCell {
     func configure(with name:String, input:String, placeHolder:String) {
 
         // Background color and aspect
-        backgroundColor = UIColor.piwigoColorCellBackground()
+        backgroundColor = .piwigoColorCellBackground()
 
         // Text field name
-        leftLabel.font = UIFont.piwigoFontNormal()
-        leftLabel.textColor = UIColor.piwigoColorLeftLabel()
+        leftLabel.font = .piwigoFontNormal()
+        leftLabel.textColor = .piwigoColorLeftLabel()
         leftLabel.text = name
 
         // Text field
-        rightTextField.font = UIFont.piwigoFontNormal()
-        rightTextField.textColor = UIColor.piwigoColorRightLabel()
+        rightTextField.font = .piwigoFontNormal()
+        rightTextField.textColor = .piwigoColorRightLabel()
         rightTextField.text = input
         rightTextField.keyboardAppearance = AppVars.isDarkPaletteActive ? .dark : .default
         rightTextField.attributedPlaceholder = NSAttributedString(string: placeHolder, attributes: [

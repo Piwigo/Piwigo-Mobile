@@ -2,10 +2,8 @@
 //  ImageDetailViewController.swift
 //  piwigo
 //
-//  Created by Spencer Baker on 1/15/15.
-//  Copyright (c) 2015 bakercrew. All rights reserved.
-//
-//  Converted to Swift 5.3 by Eddy Lelièvre-Berna on 04/09/2021.
+//  Created by Eddy Lelièvre-Berna on 22/09/2021.
+//  Copyright © 2021 Piwigo.org. All rights reserved.
 //
 
 import Photos
@@ -13,45 +11,130 @@ import UIKit
 import piwigoKit
 
 let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
-let kPiwigoNotificationUpdateImageFileName = "kPiwigoNotificationUpdateImageFileName"
 
 @objc protocol ImageDetailDelegate: NSObjectProtocol {
     func didSelectImage(withId imageId: Int)
+    func didUpdateImage(withData imageData: PiwigoImageData)
     func didDeleteImage(_ image: PiwigoImageData?, atIndex index: Int)
     func needToLoadMoreImages()
 }
 
-class ImageDetailViewController: UIPageViewController
-{
+@objc class ImageDetailViewController: UIViewController {
+    
     @objc weak var imgDetailDelegate: ImageDetailDelegate?
     @objc var images = [PiwigoImageData]()
-
-    private var categoryId = 0
+    @objc var categoryId = 0
+    @objc var imageIndex = 0
+    
     private var imageData = PiwigoImageData()
     private var progressBar = UIProgressView()
-    private var editBarButton: UIBarButtonItem?
-    private var deleteBarButton: UIBarButtonItem?
+    private var isToolbarRequired = false
+    private var pageViewController: UIPageViewController?
+    private lazy var userHasUploadRights = false
+    
+    // MARK: - Navigation Bar & Toolbar Buttons
+    private var actionBarButton: UIBarButtonItem?       // iPhone & iPad until iOS 13:
+                                                        // - for editing image properties
+                                                        // iPhone & iPad as from iOS 14:
+                                                        // - for copying or moving images to other albums
+                                                        // - for setting the image as album thumbnail
+                                                        // - for editing image properties
+    private var favoriteBarButton: UIBarButtonItem?
     private var shareBarButton: UIBarButtonItem?
     private var setThumbnailBarButton: UIBarButtonItem?
     private var moveBarButton: UIBarButtonItem?
-    //@property (nonatomic, strong) UIBarButtonItem *favoriteBarButton;
+    private var deleteBarButton: UIBarButtonItem?
     private var spaceBetweenButtons: UIBarButtonItem?
-    private var isToolbarRequired = false
+    
+    
+    // MARK: - Albums related Actions & Menus
+    @available(iOS 13.0, *)
+    private lazy var copyAction: UIAction = {
+        // Copy image to album
+        let action = UIAction(title: NSLocalizedString("copyImage_title", comment: "Copy to Album"),
+                              image: UIImage(systemName: "rectangle.stack.badge.plus"),
+                              handler: { [unowned self] _ in
+            // Disable buttons during action
+            setEnableStateOfButtons(false)
+            // Present album selector for copying image
+            self.selectCategory(withAction: kPiwigoCategorySelectActionCopyImage)
+        })
+        action.accessibilityIdentifier = "Copy"
+        return action
+    }()
+    
+    @available(iOS 13.0, *)
+    private lazy var moveAction: UIAction = {
+        let action = UIAction(title: NSLocalizedString("moveImage_title", comment: "Move to Album"),
+                              image: UIImage(systemName: "arrowshape.turn.up.right"),
+                              handler: { [unowned self] _ in
+            // Disable buttons during action
+            setEnableStateOfButtons(false)
 
-    @objc
-    init(categoryId: Int, atImageIndex imageIndex: Int,
-         withArray arrayOfImages: [PiwigoImageData])
-    {
-        super.init(transitionStyle: .scroll,
-                   navigationOrientation: .horizontal, options: nil)
-        
-        // Current category and images data
-        self.categoryId = categoryId
-        images = arrayOfImages
+            // Present album selector for moving image
+            self.selectCategory(withAction: kPiwigoCategorySelectActionMoveImage)
+        })
+        action.accessibilityIdentifier = "Move"
+        return action
+    }()
+    
+    @available(iOS 13.0, *)
+    private lazy var setAsThumbnailAction: UIAction = {
+        let action = UIAction(title: NSLocalizedString("imageOptions_setAlbumImage",
+                                                       comment:"Set as Album Thumbnail"),
+                              image: UIImage(systemName: "rectangle.and.paperclip"),
+                              handler: { [unowned self] _ in
+            // Present album selector for setting album thumbnail
+            self.setAsAlbumImage()
+        })
+        action.accessibilityIdentifier = "SetThumbnail"
+        return action
+    }()
+    
+    @available(iOS 13.0, *)
+    private lazy var albumMenu: UIMenu = {
+        if NetworkVars.hasAdminRights {
+            return UIMenu(title: "", image: nil,
+                          identifier: UIMenu.Identifier("org.piwigo.piwigoImage.album"),
+                          options: .displayInline,
+                          children: [copyAction, moveAction, setAsThumbnailAction])
+        } else {
+            return UIMenu(title: "", image: nil,
+                          identifier: UIMenu.Identifier("org.piwigo.piwigoImage.album"),
+                          options: .displayInline,
+                          children: [copyAction, moveAction])
+        }
+    }()
+    
 
-        dataSource = self
-        delegate = self
+    // MARK: - Images related Actions & Menus
+    @available(iOS 13.0, *)
+    private lazy var editParamsAction: UIAction = {
+        // Edit image parameters
+        let action = UIAction(title: NSLocalizedString("imageOptions_properties",
+                                                       comment: "Modify Information"),
+                              image: UIImage(systemName: "pencil"),
+                              handler: { _ in
+            // Edit image informations
+            self.editImage()
+        })
+        action.accessibilityIdentifier = "Edit Parameters"
+        return action
+    }()
 
+    @available(iOS 13.0, *)
+    private lazy var editMenu: UIMenu = {
+        return UIMenu(title: "", image: nil,
+                      identifier: UIMenu.Identifier("org.piwigo.piwigoImage.edit"),
+                      options: .displayInline,
+                      children: [editParamsAction])
+    }()
+
+    
+    // MARK: - View Lifecycle
+    override func viewDidLoad() {
+        super.viewDidLoad()
+                
         // Progress bar
         progressBar.translatesAutoresizingMaskIntoConstraints = false
         progressBar.setProgress(0.0, animated: false)
@@ -62,106 +145,132 @@ class ImageDetailViewController: UIPageViewController
         view.addConstraint(NSLayoutConstraint(item: progressBar, attribute: .top,
                                               relatedBy: .equal, toItem: view,
                                               attribute: .top, multiplier: 1.0, constant: 0))
-        // Bar buttons
-        editBarButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editImage))
-        editBarButton?.accessibilityIdentifier = "edit"
-        deleteBarButton = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(deleteImage))
-        deleteBarButton?.tintColor = UIColor.red
-        deleteBarButton?.accessibilityIdentifier = "delete"
-        shareBarButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareImage))
-        shareBarButton?.tintColor = UIColor.piwigoColorOrange()
-        shareBarButton?.accessibilityIdentifier = "share"
-        if #available(iOS 13.0, *) {
-            setThumbnailBarButton = UIBarButtonItem(image: UIImage(systemName: "rectangle.and.paperclip"), style: .plain, target: self, action: #selector(setAsAlbumImage))
-        } else {
-            // Fallback on earlier versions
-            setThumbnailBarButton = UIBarButtonItem(image: UIImage(named: "imagePaperclip"), landscapeImagePhone: UIImage(named: "imagePaperclipCompact"), style: .plain, target: self, action: #selector(setAsAlbumImage))
-        }
-        setThumbnailBarButton?.tintColor = UIColor.piwigoColorOrange()
-        setThumbnailBarButton?.accessibilityIdentifier = "albumThumbnail"
-        moveBarButton = UIBarButtonItem(barButtonSystemItem: .reply, target: self, action: #selector(addImageToCategory))
-        moveBarButton?.tintColor = UIColor.piwigoColorOrange()
-        moveBarButton?.accessibilityIdentifier = "move"
-//        self.favoriteBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"imageNotFavorite"] landscapeImagePhone:[UIImage imageNamed:@"imageNotFavoriteCompact"] style:UIBarButtonItemStylePlain target:self action:@selector(addToFavoritesImageWithId)];
-//        self.favoriteBarButton.tintColor = [UIColor piwigoColorOrange];
-//        [self.favoriteBarButton setAccessibilityIdentifier:@"favorite"];
-        spaceBetweenButtons = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
-
         // Current image
         var index = max(0, imageIndex)
         index = min(imageIndex, images.count - 1)
         imageData = images[index]
 
-        // Image preview view controller
-        let startingImage = ImagePreviewViewController()
-        startingImage.imagePreviewDelegate = self
-        startingImage.imageIndex = index
-        startingImage.setImageScrollViewWith(imageData)
-        setViewControllers( [startingImage], direction: .forward, animated: false)
+        // Initialise pageViewController
+        pageViewController = children[0] as? UIPageViewController
+        pageViewController!.delegate = self
+        pageViewController!.dataSource = self
 
-        // Retrieve complete image data if needed (buttons are greyed until job done)
-        if imageData.fileSize == NSNotFound {
-            retrieveCompleteImageDataOfImage(imageData)
+        // Load initial image preview view controller
+        if let startingImage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController {
+            startingImage.imagePreviewDelegate = self
+            startingImage.imageIndex = index
+            startingImage.imageData = imageData
+            pageViewController!.setViewControllers( [startingImage], direction: .forward, animated: false)
+        }
+        
+        // Did we already load the list of favorite images?
+        userHasUploadRights = CategoriesData.sharedInstance().getCategoryById(categoryId).hasUploadRights
+        if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending,
+           !NetworkVars.hasGuestRights,
+           CategoriesData.sharedInstance().getCategoryById(kPiwigoFavoritesCategoryId) == nil {
+            // Show HUD during the download
+            showPiwigoHUD(withTitle: NSLocalizedString("loadingHUD_label", comment:"Loading…"), inMode: .annularDeterminate)
+            
+            // Unknown list -> initialise album and download list
+            let nberImagesPerPage = ImagesCollection.numberOfImagesPerPage(for: nil, imagesPerRowInPortrait: AlbumVars.thumbnailsPerRowInPortrait)
+            let favoritesAlbum: PiwigoAlbumData = PiwigoAlbumData.init(discoverAlbumForCategory: kPiwigoFavoritesCategoryId)
+            CategoriesData.sharedInstance()
+                .updateCategories([favoritesAlbum], andUpdateUI: false)
+            CategoriesData.sharedInstance()
+                .getCategoryById(kPiwigoFavoritesCategoryId)
+                .loadAllCategoryImageData(withSort: kPiwigoSortObjc(UInt32(AlbumVars.defaultSort)),
+                                          forProgress: { [unowned self] onPage, outOf in
+                    self.updatePiwigoHUD(withProgress: Float(onPage * nberImagesPerPage) / Float(outOf))
+                }) { [unowned self] _ in
+                    // Retrieve complete image data if needed (buttons are greyed until job done)
+                    if self.imageData.fileSize == NSNotFound {
+                        self.retrieveCompleteImageDataOfImage(self.imageData)
+                    } else {
+                        hidePiwigoHUD { [unowned self] in
+                            let isFavorite = CategoriesData.sharedInstance()
+                                .category(withId: kPiwigoFavoritesCategoryId, containsImagesWithId: [NSNumber(value: imageData.imageId)])
+                            self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
+                        }
+                    }
+                } onFailure: { _, _ in }
+        } else {
+            // Retrieve complete image data if needed (buttons are greyed until job done)
+            if imageData.fileSize == NSNotFound {
+                retrieveCompleteImageDataOfImage(imageData)
+            }
         }
 
-        // For managing taps
+        // Navigation bar
+        let navigationBar = navigationController?.navigationBar
+        navigationBar?.tintColor = .piwigoColorOrange()
+        
+        // Toolbar
+        let toolbar = navigationController?.toolbar
+        toolbar?.tintColor = .piwigoColorOrange()
+
+        // Manage single taps
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapView)))
 
         // Register image pinches
         NotificationCenter.default.addObserver(self, selector: #selector(didPinchView), name: NSNotification.Name(kPiwigoNotificationPinchedImage), object: nil)
 
-        // Register image data updates
-        NotificationCenter.default.addObserver(self, selector: #selector(updateImageFileName(_:)), name: NSNotification.Name(kPiwigoNotificationUpdateImageFileName), object: nil)
-
         // Register palette changes
         NotificationCenter.default.addObserver(self, selector: #selector(applyColorPalette),
                                                name: PwgNotifications.paletteChanged, object: nil)
     }
-
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
-
-
-    // MARK: - View Lifecycle
-
+    
     @objc func applyColorPalette() {
+        // Set background color according to navigation bar visibility
+        if navigationController?.isNavigationBarHidden ?? false {
+            view.backgroundColor = .black
+        } else {
+            view.backgroundColor = .piwigoColorBackground()
+        }
+
         // Navigation bar
-        setTitleViewFromImageData()
+        let navigationBar = navigationController?.navigationBar
+        navigationBar?.barStyle = AppVars.isDarkPaletteActive ? .black : .default
+
+        // Toolbar
+        let toolbar = navigationController?.toolbar
+        toolbar?.barStyle = AppVars.isDarkPaletteActive ? .black : .default
+
         let attributes = [
             NSAttributedString.Key.foregroundColor: UIColor.piwigoColorWhiteCream(),
             NSAttributedString.Key.font: UIFont.piwigoFontNormal()
         ]
-        navigationController?.navigationBar.titleTextAttributes = attributes
+        navigationBar?.titleTextAttributes = attributes
+        setTitleViewFromImageData()
         if #available(iOS 11.0, *) {
-            navigationController?.navigationBar.prefersLargeTitles = false
+            navigationBar?.prefersLargeTitles = false
         }
-        navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
 
-        // Toolbar
-        navigationController?.toolbar.barTintColor = UIColor.piwigoColorBackground()
-        navigationController?.toolbar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
-
-        if #available(iOS 15.0, *) {
-            /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-            /// which by default produces a transparent background, to all navigation bars.
+        if #available(iOS 13.0, *) {
             let barAppearance = UINavigationBarAppearance()
-            barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = UIColor.piwigoColorBackground()
-            navigationController?.navigationBar.standardAppearance = barAppearance
-            navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
+            barAppearance.configureWithTransparentBackground()
+            barAppearance.backgroundColor = .piwigoColorBackground().withAlphaComponent(0.9)
+            barAppearance.shadowColor = AppVars.isDarkPaletteActive ? .init(white: 1.0, alpha: 0.15) : .init(white: 0.0, alpha: 0.3)
+            navigationBar?.standardAppearance = barAppearance
+            navigationBar?.compactAppearance = barAppearance
+            navigationBar?.scrollEdgeAppearance = barAppearance
 
             let toolbarAppearance = UIToolbarAppearance(barAppearance: barAppearance)
-            navigationController?.toolbar.standardAppearance = toolbarAppearance
-            navigationController?.toolbar.scrollEdgeAppearance = navigationController?.toolbar.standardAppearance
+            toolbar?.barTintColor = .piwigoColorBackground().withAlphaComponent(0.9)
+            toolbar?.standardAppearance = toolbarAppearance
+            toolbar?.compactAppearance = toolbarAppearance
+            if #available(iOS 15.0, *) {
+                /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
+                /// which by default produces a transparent background, to all navigation bars.
+                toolbar?.scrollEdgeAppearance = toolbarAppearance
+            }
+        } else {
+            navigationBar?.barTintColor = .piwigoColorBackground().withAlphaComponent(0.3)
+            toolbar?.barTintColor = .piwigoColorBackground().withAlphaComponent(0.3)
         }
 
         // Progress bar
-        progressBar.progressTintColor = UIColor.piwigoColorOrange()
-        progressBar.trackTintColor = UIColor.piwigoColorRightLabel()
+        progressBar.progressTintColor = .piwigoColorOrange()
+        progressBar.trackTintColor = .piwigoColorRightLabel()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -171,16 +280,21 @@ class ImageDetailViewController: UIPageViewController
         // and never present video poster in full screen
         navigationController?.setNavigationBarHidden(false, animated: true)
 
-        // Image options buttons
-        updateNavBar()
-
         // Set colors, fonts, etc.
         applyColorPalette()
 
+        // Image options buttons
+        updateNavBar()
+
         // Scrolling
-        if self.responds(to: Selector(("automaticallyAdjustsScrollViewInsets"))) {
-            automaticallyAdjustsScrollViewInsets = false
-            edgesForExtendedLayout = []
+        if #available(iOS 12, *) {
+            // Safe area already excluded in storyboard
+        } else {
+            // The view controller should automatically adjust its scroll view insets
+            if self.responds(to: Selector(("automaticallyAdjustsScrollViewInsets"))) {
+                automaticallyAdjustsScrollViewInsets = false
+                edgesForExtendedLayout = []
+            }
         }
     }
 
@@ -211,117 +325,275 @@ class ImageDetailViewController: UIPageViewController
     }
 
     deinit {
-        // Register image pinches
+        // Unregister image pinches
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kPiwigoNotificationPinchedImage), object: nil)
-
-        // Register image data updates
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(kPiwigoNotificationUpdateImageFileName), object: nil)
 
         // Unregister palette changes
         NotificationCenter.default.removeObserver(self, name: PwgNotifications.paletteChanged, object: nil)
     }
 
-    func updateNavBar() {
-        // Interface depends on device and orientation
-        if (UIDevice.current.userInterfaceIdiom == .phone) || (UIDevice.current.userInterfaceIdiom == .pad && UIDevice.current.orientation != .landscapeLeft && UIDevice.current.orientation != .landscapeRight) {
 
-            // iPhone or iPad in portrait mode
-            if NetworkVarsObjc.hasAdminRights {
-                // User with admin rights can move, edit, delete images and set as album image
-                navigationItem.rightBarButtonItems = [editBarButton].compactMap { $0 }
-//                if ([@"2.10.0" compare:AppVars.version options:NSNumericSearch] == NSOrderedDescending) {
-                toolbarItems = [shareBarButton, spaceBetweenButtons, moveBarButton,
-                                spaceBetweenButtons, setThumbnailBarButton, spaceBetweenButtons,
-                                deleteBarButton].compactMap { $0 }
-//                } else {
-//                    self.toolbarItems = @[self.shareBarButton, self.spaceBetweenButtons, self.moveBarButton, self.spaceBetweenButtons, self.favoriteBarButton, self.spaceBetweenButtons, self.setThumbnailBarButton, self.spaceBetweenButtons, self.deleteBarButton];
-//                }
+    // MARK: - Navigation Bar & Toolbar
+    func setTitleViewFromImageData() {
+        // Create label programmatically
+        let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        titleLabel.backgroundColor = UIColor.clear
+        titleLabel.textColor = .piwigoColorWhiteCream()
+        titleLabel.textAlignment = .center
+        titleLabel.numberOfLines = 1
+        titleLabel.font = UIFont.piwigoFontSmallSemiBold()
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.adjustsFontSizeToFitWidth = false
+        titleLabel.lineBreakMode = .byTruncatingTail
+        titleLabel.allowsDefaultTighteningForTruncation = true
+        if imageData.imageTitle.isEmpty {
+            // No title => Use file name
+            titleLabel.text = imageData.fileName
+        } else {
+            titleLabel.text = imageData.imageTitle
+        }
+        titleLabel.sizeToFit()
 
-                // Present toolbar if needed
-                isToolbarRequired = true
-                let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
-                navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
+        // There is no subtitle in landscape mode on iPhone or when the creation date is unknown
+        if ((UIDevice.current.userInterfaceIdiom == .phone) &&
+            (UIApplication.shared.statusBarOrientation.isLandscape)) ||
+            (imageData.dateCreated == imageData.datePosted) {
+            let titleWidth = CGFloat(fmin(Float(titleLabel.bounds.size.width),
+                                          Float(view.bounds.size.width * 0.4)))
+            titleLabel.sizeThatFits(CGSize(width: titleWidth, height: titleLabel.bounds.size.height))
+            let oneLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth), height: titleLabel.bounds.size.height))
+            navigationItem.titleView = oneLineTitleView
+
+            oneLineTitleView.addSubview(titleLabel)
+            oneLineTitleView.addConstraint(NSLayoutConstraint.constraintView(titleLabel, toWidth: titleWidth)!)
+            oneLineTitleView.addConstraints(NSLayoutConstraint.constraintCenter(titleLabel)!)
+        }
+        else {
+            let subTitleLabel = UILabel(frame: CGRect(x: 0, y: titleLabel.frame.size.height, width: 0, height: 0))
+            subTitleLabel.backgroundColor = UIColor.clear
+            subTitleLabel.textColor = .piwigoColorWhiteCream()
+            subTitleLabel.textAlignment = .center
+            subTitleLabel.numberOfLines = 1
+            subTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+            subTitleLabel.font = .piwigoFontTiny()
+            subTitleLabel.adjustsFontSizeToFitWidth = false
+            subTitleLabel.lineBreakMode = .byTruncatingTail
+            subTitleLabel.allowsDefaultTighteningForTruncation = true
+            if let dateCreated = imageData.dateCreated {
+                subTitleLabel.text = DateFormatter.localizedString(from: dateCreated,
+                                                                   dateStyle: .medium, timeStyle: .medium)
             }
-            else if NetworkVars.hasNormalRights && CategoriesData.sharedInstance().getCategoryById(categoryId).hasUploadRights {
-                // WRONG =====> 'normal' user with upload access to the current category can edit images
-                // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by' values of images for checking rights
-                navigationItem.rightBarButtonItems = [editBarButton].compactMap { $0 }
-                toolbarItems = [shareBarButton, spaceBetweenButtons, moveBarButton].compactMap { $0 }
+            subTitleLabel.sizeToFit()
 
-                // Present toolbar if needed
-                isToolbarRequired = true
-                let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
-                navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
+            var titleWidth = fmax(CGFloat(subTitleLabel.bounds.size.width),
+                                  CGFloat(titleLabel.bounds.size.width))
+            titleWidth = fmin(titleWidth, CGFloat((navigationController?.view.bounds.size.width ?? 0.0) * 0.4))
+            let twoLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth),
+                height: titleLabel.bounds.size.height + subTitleLabel.bounds.size.height))
+            navigationItem.titleView = twoLineTitleView
+
+            twoLineTitleView.addSubview(titleLabel)
+            twoLineTitleView.addSubview(subTitleLabel)
+            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintView(titleLabel, toWidth: titleWidth)!)
+            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(titleLabel)!)
+            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(subTitleLabel)!)
+
+            let views = ["title": titleLabel,
+                         "subtitle": subTitleLabel]
+            twoLineTitleView.addConstraints(
+                NSLayoutConstraint.constraints(withVisualFormat: "V:|[title][subtitle]|",
+                    options: [], metrics: nil, views: views))
+        }
+    }
+    
+    private func updateNavBar() {
+        // Button displayed in all circumstances
+        shareBarButton = UIBarButtonItem.shareImageButton(self, action: #selector(ImageDetailViewController.shareImage))
+
+        if #available(iOS 14, *) {
+            // Interface depends on device and orientation
+            let orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .portrait
+            
+            // User with admin or upload rights can do everything
+            if NetworkVars.hasAdminRights ||
+                (NetworkVars.hasNormalRights && userHasUploadRights) {
+                // The action button proposes:
+                /// - to copy or move images to other albums
+                /// - to set the image as album thumbnail
+                /// - to edit image parameters,
+                let menu = UIMenu(title: "", children: [albumMenu, editMenu].compactMap({$0}))
+                actionBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: menu)
+                actionBarButton?.accessibilityIdentifier = "actions"
+                deleteBarButton = UIBarButtonItem.deleteImageButton(self, action: #selector(deleteImage))
+                
+                if orientation.isPortrait {
+                    // Action button in navigation bar
+                    navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
+
+                    // Remaining buttons in navigation toolbar
+                    spaceBetweenButtons = UIBarButtonItem.spaceBetweenButtons()
+                    var toolBarItems = [shareBarButton, spaceBetweenButtons, deleteBarButton]
+                    // pwg.users.favorites… methods available from Piwigo version 2.10
+                    if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
+                        favoriteBarButton = getFavoriteBarButton()
+                        toolBarItems.insert(contentsOf: [favoriteBarButton, spaceBetweenButtons], at: 2)
+                    }
+                    isToolbarRequired = true
+                    let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
+                    setToolbarItems(toolBarItems.compactMap { $0 }, animated: false)
+                    navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
+                }
+                else {
+                    // All buttons in the navigation bar
+                    var rightBarButtonItems = [actionBarButton, deleteBarButton, shareBarButton]
+                    // pwg.users.favorites… methods available from Piwigo version 2.10
+                    if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
+                        favoriteBarButton = getFavoriteBarButton()
+                        rightBarButtonItems.insert(contentsOf: [favoriteBarButton], at: 2)
+                    }
+                    navigationItem.setRightBarButtonItems(rightBarButtonItems.compactMap { $0 }, animated: true)
+
+                    // No toolbar
+                    isToolbarRequired = false
+                    setToolbarItems([], animated: false)
+                    navigationController?.setToolbarHidden(true, animated: true)
+                }
+            }
+            else if !NetworkVars.hasGuestRights,
+                    "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
+                favoriteBarButton = getFavoriteBarButton()
+
+                if orientation.isPortrait, UIDevice.current.userInterfaceIdiom == .phone {
+                    // No button on the right
+                    navigationItem.rightBarButtonItems = []
+
+                    // Remaining buttons in navigation toolbar
+                    spaceBetweenButtons = UIBarButtonItem.spaceBetweenButtons()
+                    isToolbarRequired = true
+                    let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
+                    setToolbarItems([shareBarButton, spaceBetweenButtons,
+                                     favoriteBarButton].compactMap { $0 }, animated: false)
+                    navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
+                }
+                else {
+                    // All buttons in navigation bar
+                    navigationItem.setRightBarButtonItems([favoriteBarButton, shareBarButton].compactMap { $0 }, animated: true)
+
+                    // Hide navigation toolbar
+                    isToolbarRequired = false
+                    navigationController?.setToolbarHidden(true, animated: false)
+                }
             } else {
-                // User with no special access rights can only download images
-                navigationItem.rightBarButtonItems = [shareBarButton].compactMap { $0 }
-
-                // Hide toolbar
+                // Guest can only share images
+                navigationItem.setRightBarButtonItems([shareBarButton].compactMap { $0 }, animated: true)
+                
+                // Hide navigation toolbar
                 isToolbarRequired = false
                 navigationController?.setToolbarHidden(true, animated: false)
             }
-        } else {
-            // iPad in landcsape mode: buttons in navigation bar -> Hide toolbar
-            isToolbarRequired = false
-            navigationController?.setToolbarHidden(true, animated: true)
-
+        }
+        else {
+            // Fallback on earlier versions
+            // Interface depends on device and orientation
+            let orientation = UIApplication.shared.statusBarOrientation;
+            
+            // User with admin rights can do everything
             if NetworkVars.hasAdminRights {
-                // User with admin rights can edit, delete images and set as album image
-                deleteBarButton?.tintColor = UIColor.red
-                navigationItem.rightBarButtonItems = [editBarButton, deleteBarButton,
-                                                      setThumbnailBarButton, moveBarButton,
-                                                      shareBarButton].compactMap { $0 }
+                // Navigation bar
+                // The action menu is simply an Edit button
+                actionBarButton = UIBarButtonItem(barButtonSystemItem: .edit,
+                                                  target: self, action: #selector(editImage))
+                actionBarButton?.accessibilityIdentifier = "edit"
+                navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
+
+                // Navigation toolbar
+                deleteBarButton = UIBarButtonItem.deleteImageButton(self, action: #selector(deleteImage))
+                moveBarButton = UIBarButtonItem.moveImageButton(self, action: #selector(addImageToCategory))
+                setThumbnailBarButton = UIBarButtonItem.setThumbnailButton(self, action: #selector(setAsAlbumImage))
+                spaceBetweenButtons = UIBarButtonItem.spaceBetweenButtons()
+                var toolBarItems = [shareBarButton, spaceBetweenButtons, moveBarButton,
+                                    spaceBetweenButtons, setThumbnailBarButton,
+                                    spaceBetweenButtons, deleteBarButton].compactMap { $0 }
+                // pwg.users.favorites… methods available from Piwigo version 2.10
+                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
+                    favoriteBarButton = getFavoriteBarButton()
+                    toolBarItems.insert(contentsOf: [favoriteBarButton, spaceBetweenButtons].compactMap { $0 }, at: 4)
+                }
+                isToolbarRequired = true
+                let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
+                setToolbarItems(toolBarItems.compactMap { $0 }, animated: false)
+                navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
             }
-            else if CategoriesData.sharedInstance().getCategoryById(categoryId).hasUploadRights {
-                // User with upload access to the current category can edit images
-                navigationItem.rightBarButtonItems = [editBarButton, moveBarButton,
-                                                      shareBarButton].compactMap { $0 }
+            else if NetworkVars.hasNormalRights && userHasUploadRights {
+                // WRONG =====> 'normal' user with upload access to the current category can edit images
+                // SHOULD BE => 'normal' user having uploaded images can edit them. This requires 'user_id' and 'added_by' values of images for checking rights
+                // Navigation bar
+                // The action menu is simply an Edit button
+                actionBarButton = UIBarButtonItem(barButtonSystemItem: .edit,
+                                                  target: self, action: #selector(editImage))
+                actionBarButton?.accessibilityIdentifier = "edit"
+                navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
+
+                // Navigation toolbar
+                deleteBarButton = UIBarButtonItem.deleteImageButton(self, action: #selector(deleteImage))
+                moveBarButton = UIBarButtonItem.moveImageButton(self, action: #selector(addImageToCategory))
+                spaceBetweenButtons = UIBarButtonItem.spaceBetweenButtons()
+                var toolBarItems = [shareBarButton, spaceBetweenButtons, moveBarButton].compactMap { $0 }
+                // pwg.users.favorites… methods available from Piwigo version 2.10
+                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
+                    favoriteBarButton = getFavoriteBarButton()
+                    toolBarItems.insert(contentsOf: [favoriteBarButton, spaceBetweenButtons].compactMap { $0 }, at: 2)
+                }
+                isToolbarRequired = true
+                let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
+                setToolbarItems(toolBarItems.compactMap { $0 }, animated: false)
+                navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
+            }
+            else if !NetworkVars.hasGuestRights,
+                    "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
+                favoriteBarButton = getFavoriteBarButton()
+
+                if orientation.isPortrait {
+                    // No button on the right
+                    navigationItem.rightBarButtonItems = []
+
+                    // Remaining buttons in navigation toolbar
+                    spaceBetweenButtons = UIBarButtonItem.spaceBetweenButtons()
+                    isToolbarRequired = true
+                    let isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
+                    setToolbarItems([shareBarButton, spaceBetweenButtons,
+                                     favoriteBarButton].compactMap { $0 }, animated: false)
+                    navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
+                } else {
+                    navigationItem.setRightBarButtonItems([favoriteBarButton, shareBarButton].compactMap { $0 }, animated: true)
+
+                    // Hide navigation toolbar
+                    isToolbarRequired = false
+                    navigationController?.setToolbarHidden(true, animated: false)
+                }
             } else {
-                // User with no special access rights can only download images
-                navigationItem.rightBarButtonItems = [shareBarButton].compactMap { $0 }
+                // Guest can only share images
+                navigationItem.setRightBarButtonItems([shareBarButton].compactMap { $0 }, animated: true)
+
+                // Hide navigation toolbar
+                isToolbarRequired = false
+                navigationController?.setToolbarHidden(true, animated: false)
             }
         }
     }
-
+    
     // Buttons are disabled (greyed) when retrieving image data
     // They are also disabled during an action
-    func setEnableStateOfButtons(_ state: Bool) {
-        editBarButton?.isEnabled = state
+    private func setEnableStateOfButtons(_ state: Bool) {
+        actionBarButton?.isEnabled = state
         shareBarButton?.isEnabled = state
         moveBarButton?.isEnabled = state
         setThumbnailBarButton?.isEnabled = state
         deleteBarButton?.isEnabled = state
-        //    self.favoriteBarButton.enabled = state;
+        favoriteBarButton?.isEnabled = state
     }
-
-    
-    // MARK: - Image Data Updates
-    @objc
-    func updateImageFileName(_ notification: Notification?) {
-        // Extract notification user info
-        if let notification = notification,
-           let userInfo = notification.object as? [AnyHashable : Any] {
-
-            // Right image Id?
-            if let imageId = userInfo["imageId"] as? Int,
-               imageId != imageData.imageId { return }
-
-            // Update image data
-            if let fileName = userInfo["fileName"] as? String {
-                imageData.fileName = fileName
-            }
-
-            // Update title view
-            setTitleViewFromImageData()
-        }
-    }
-
-    
-    // MARK: - Retrieve Image Data
 
     private func retrieveCompleteImageDataOfImage(_ imageData: PiwigoImageData) {
-        debugPrint("=> Retrieve complete image data for image \(imageData.imageId)")
-
         // Image data is not complete when retrieved using pwg.categories.getImages
         setEnableStateOfButtons(false)
 
@@ -332,17 +604,23 @@ class ImageDetailViewController: UIPageViewController
         // Retrieve image/video infos
         ImageUtilities.getInfos(forID: imageData.imageId) { [unowned self] retrievedData in
             self.imageData = retrievedData
-
-            DispatchQueue.main.async {
+            // Disable HUD if needed
+            self.hidePiwigoHUD {
                 if let index = self.images.firstIndex(where: { $0.imageId == self.imageData.imageId }) {
                     self.images[index] = self.imageData
+                    
+                    // Set favorite button
+                    let isFavorite = CategoriesData.sharedInstance()
+                        .category(withId: kPiwigoFavoritesCategoryId,
+                                  containsImagesWithId: [NSNumber(value: imageData.imageId)])
+                    self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
 
                     // Refresh image if needed
                     if shouldUpdateImage {
                         for childVC in self.children {
                             if let previewVC = childVC as? ImagePreviewViewController,
                                previewVC.imageIndex == index {
-                                previewVC.setImageScrollViewWith(self.imageData)
+                                previewVC.imageData = self.imageData
                             }
                         }
                     }
@@ -399,15 +677,10 @@ class ImageDetailViewController: UIPageViewController
             }
 
             // Set background color according to navigation bar visibility
-            let viewControllers = children
-            for viewController in viewControllers {
-                if viewController is ImagePreviewViewController {
-                    if navigationController?.isNavigationBarHidden ?? false {
-                        viewController.view.backgroundColor = UIColor.black
-                    } else {
-                        viewController.view.backgroundColor = UIColor.piwigoColorBackground()
-                    }
-                }
+            if navigationController?.isNavigationBarHidden ?? false {
+                view.backgroundColor = .black
+            } else {
+                view.backgroundColor = .clear
             }
         }
     }
@@ -423,12 +696,12 @@ class ImageDetailViewController: UIPageViewController
     }
 
     @objc func didPinchView() {
-        // Return to image collection (called by ImageScrollView)
+        // Return to image collection
         navigationController?.popViewController(animated: true)
     }
 
 
-    // MARK: - Edit Image
+    // MARK: - Edit, Remove, Delete Image
 
     @objc func editImage() {
         // Disable buttons during action
@@ -438,15 +711,11 @@ class ImageDetailViewController: UIPageViewController
         let editImageSB = UIStoryboard(name: "EditImageParamsViewController", bundle: nil)
         guard let editImageVC = editImageSB.instantiateViewController(withIdentifier: "EditImageParamsViewController") as? EditImageParamsViewController else { return }
         editImageVC.images = [imageData]
-        let albumHasUploadRights = CategoriesData.sharedInstance()
-            .getCategoryById(categoryId).hasUploadRights
         editImageVC.hasTagCreationRights = NetworkVars.hasAdminRights ||
-                                           (NetworkVars.hasNormalRights && albumHasUploadRights)
+                                           (NetworkVars.hasNormalRights && userHasUploadRights)
         editImageVC.delegate = self
-        pushView(editImageVC, forButton: editBarButton)
+        pushView(editImageVC, forButton: actionBarButton)
     }
-
-    // MARK: - Delete Image
 
     @objc func deleteImage() {
         // Disable buttons during action
@@ -485,7 +754,7 @@ class ImageDetailViewController: UIPageViewController
         }
 
         // Present list of actions
-        alert.view.tintColor = UIColor.piwigoColorOrange()
+        alert.view.tintColor = .piwigoColorOrange()
         if #available(iOS 13.0, *) {
             alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
         } else {
@@ -494,7 +763,7 @@ class ImageDetailViewController: UIPageViewController
         alert.popoverPresentationController?.barButtonItem = deleteBarButton
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange()
+            alert.view.tintColor = .piwigoColorOrange()
         }
     }
 
@@ -716,7 +985,7 @@ class ImageDetailViewController: UIPageViewController
     }
 
     
-    // MARK: - Set as Album Image
+    // MARK: - Album Methods
 
     @objc func setAsAlbumImage() {
         // Disable buttons during action
@@ -727,25 +996,39 @@ class ImageDetailViewController: UIPageViewController
         guard let setThumbVC = setThumbSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
         setThumbVC.setInput(parameter:imageData, for: kPiwigoCategorySelectActionSetAlbumThumbnail)
         setThumbVC.delegate = self
-        pushView(setThumbVC, forButton: setThumbnailBarButton)
+        if #available(iOS 14.0, *) {
+            pushView(setThumbVC, forButton: actionBarButton)
+        } else {
+            pushView(setThumbVC, forButton: setThumbnailBarButton)
+        }
     }
 
+    private func selectCategory(withAction action: kPiwigoCategorySelectAction) {
+        let copySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
+        guard let copyVC = copySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
+        let parameter = [imageData, NSNumber(value: categoryId)]
+        copyVC.setInput(parameter: parameter, for: action)
+        copyVC.delegate = self // To re-enable toolbar
+        if action == kPiwigoCategorySelectActionCopyImage {
+            copyVC.imageCopiedDelegate = self   // To update image data after copy
+        } else {
+            copyVC.imageRemovedDelegate = self  // To remove image after move
+        }
+        if #available(iOS 14.0, *) {
+            pushView(copyVC, forButton: actionBarButton)
+        } else {
+            pushView(copyVC, forButton: moveBarButton)
+        }
+    }
     
-    // MARK: - Move/Copy image to Category
-
     @objc func addImageToCategory() {
         // Disable buttons during action
         setEnableStateOfButtons(false)
 
         // If image selected from Search, immediatley propose to copy it
         if categoryId == kPiwigoSearchCategoryId {
-            let copySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
-            guard let copyVC = copySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
-            let parameter = [imageData, NSNumber(value: categoryId)]
-            copyVC.setInput(parameter: parameter, for: kPiwigoCategorySelectActionCopyImage)
-            copyVC.delegate = self // To re-enable toolbar
-            copyVC.imageCopiedDelegate = self // To update image data after copy
-            pushView(copyVC, forButton: moveBarButton)
+            // Present album selector for copying image
+            self.selectCategory(withAction: kPiwigoCategorySelectActionCopyImage)
             return
         }
 
@@ -763,25 +1046,15 @@ class ImageDetailViewController: UIPageViewController
         let copyAction = UIAlertAction(
             title: NSLocalizedString("copyImage_title", comment: "Copy to Album"),
             style: .default, handler: { [self] action in
-                let copySB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
-                guard let copyVC = copySB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
-                let parameter = [imageData, NSNumber(value: categoryId)]
-                copyVC.setInput(parameter: parameter, for: kPiwigoCategorySelectActionCopyImage)
-                copyVC.delegate = self // To re-enable toolbar
-                copyVC.imageCopiedDelegate = self // To update image data after copy
-                pushView(copyVC, forButton: moveBarButton)
+                // Present album selector for copying image
+                self.selectCategory(withAction: kPiwigoCategorySelectActionCopyImage)
             })
 
         let moveAction = UIAlertAction(
             title: NSLocalizedString("moveImage_title", comment: "Move to Album"),
             style: .default, handler: { [self] action in
-                let moveSB = UIStoryboard(name: "SelectCategoryViewController", bundle: nil)
-                guard let moveVC = moveSB.instantiateViewController(withIdentifier: "SelectCategoryViewController") as? SelectCategoryViewController else { return }
-                let parameter = [imageData, NSNumber(value: categoryId)]
-                moveVC.setInput(parameter: parameter, for: kPiwigoCategorySelectActionMoveImage)
-                moveVC.delegate = self // To re-enable toolbar
-                moveVC.imageRemovedDelegate = self // To remove image after move
-                pushView(moveVC, forButton: moveBarButton)
+                // Present album selector for moving image
+                self.selectCategory(withAction: kPiwigoCategorySelectActionMoveImage)
             })
 
         // Add actions
@@ -790,7 +1063,7 @@ class ImageDetailViewController: UIPageViewController
         alert.addAction(moveAction)
 
         // Present list of actions
-        alert.view.tintColor = UIColor.piwigoColorOrange()
+        alert.view.tintColor = .piwigoColorOrange()
         if #available(iOS 13.0, *) {
             alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
         } else {
@@ -799,47 +1072,66 @@ class ImageDetailViewController: UIPageViewController
         alert.popoverPresentationController?.barButtonItem = moveBarButton
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange()
+            alert.view.tintColor = .piwigoColorOrange()
         }
     }
 
     
-    // MARK: - Add to / remove from favorites
+    // MARK: - Add/remove image from favorites
 
-    func addToFavoritesImageWithId() {
-        // Disable buttons during action
-        setEnableStateOfButtons(false)
+    private func getFavoriteBarButton() -> UIBarButtonItem {
+        let isFavorite = CategoriesData.sharedInstance()
+            .category(withId: kPiwigoFavoritesCategoryId, containsImagesWithId: [NSNumber(value: imageData.imageId)])
+        let button = UIBarButtonItem.favoriteImageButton(isFavorite, target: self)
+        button.action = isFavorite ? #selector(removeFromFavorites) : #selector(addToFavorites)
+        button.isEnabled = true
+        return button
+    }
+    
+    @objc func addToFavorites() {
+        // Disable button during action
+        favoriteBarButton?.isEnabled = false
 
         // Send request to Piwigo server
-//        ImageService.addToFavoritesImage(
-//            withId: imageData.imageId,
-//            onProgress: nil,
-//            onCompletion: { [self] task, addedSuccessfully in
-//                // Enable buttons during action
-//                setEnableStateOfButtons(true)
-//            },
-//            onFailure: { [self] task, error in
-//                // Enable buttons during action
-//                setEnableStateOfButtons(true)
-//            })
+        ImageUtilities.addToFavorites(imageData) { [unowned self] in
+            DispatchQueue.main.async {
+                self.favoriteBarButton?.setFavoriteImage(for: true)
+                self.favoriteBarButton?.action = #selector(self.removeFromFavorites)
+                self.favoriteBarButton?.isEnabled = true
+            }
+        } failure: { error in
+            DispatchQueue.main.async {
+                self.dismissPiwigoError(withTitle: NSLocalizedString("imageFavorites_title", comment: "Favorites"), message: NSLocalizedString("imageFavoritesAddError_message", comment: "Failed to add this photo to your favorites."), errorMessage: error.localizedDescription) {
+                    self.favoriteBarButton?.isEnabled = true
+                }
+            }
+        }
     }
 
-    func removeImageFromFavorites() {
-        // Disable buttons during action
-        setEnableStateOfButtons(false)
+    @objc func removeFromFavorites() {
+        // Disable button during action
+        favoriteBarButton?.isEnabled = false
 
         // Send request to Piwigo server
-//        ImageService.removeImage(
-//            fromFavorites: imageData,
-//            onProgress: nil,
-//            onCompletion: { [self] task, removedSuccessfully in
-//                // Enable buttons during action
-//                setEnableStateOfButtons(true)
-//            },
-//            onFailure: { [self] task, error in
-//                // Enable buttons during action
-//                setEnableStateOfButtons(true)
-//            })
+        ImageUtilities.removeFromFavorites(imageData) { [unowned self] in
+            DispatchQueue.main.async {
+                if self.categoryId == kPiwigoFavoritesCategoryId {
+                    // Remove image from the album of favorites
+                    self.didRemoveImage(withId: self.imageData.imageId)
+                } else {
+                    // Update favorite button
+                    self.favoriteBarButton?.setFavoriteImage(for: false)
+                    self.favoriteBarButton?.action = #selector(addToFavorites)
+                    self.favoriteBarButton?.isEnabled = true
+                }
+            }
+        } failure: { error in
+            DispatchQueue.main.async {
+                self.dismissPiwigoError(withTitle: NSLocalizedString("imageFavorites_title", comment: "Favorites"), message: NSLocalizedString("imageFavoritesRemoveError_message", comment: "Failed to remove this photo from your favorites."), errorMessage: error.localizedDescription) {
+                    self.favoriteBarButton?.isEnabled = true
+                }
+            }
+        }
     }
 
     
@@ -870,81 +1162,6 @@ class ImageDetailViewController: UIPageViewController
                 navController.modalTransitionStyle = .coverVertical
                 present(navController, animated: true)
             }
-        }
-    }
-
-    
-    // MARK: - Title and Subtitle
-
-    func setTitleViewFromImageData() {
-        // Create label programmatically
-        let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
-        titleLabel.backgroundColor = UIColor.clear
-        titleLabel.textColor = UIColor.piwigoColorWhiteCream()
-        titleLabel.textAlignment = .center
-        titleLabel.numberOfLines = 1
-        titleLabel.font = UIFont.piwigoFontSmallSemiBold()
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.adjustsFontSizeToFitWidth = false
-        titleLabel.lineBreakMode = .byTruncatingTail
-        titleLabel.allowsDefaultTighteningForTruncation = true
-        if imageData.imageTitle.isEmpty {
-            // No title => Use file name
-            titleLabel.text = imageData.fileName
-        } else {
-            titleLabel.text = imageData.imageTitle
-        }
-        titleLabel.sizeToFit()
-
-        // There is no subtitle in landscape mode on iPhone or when the creation date is unknown
-        if ((UIDevice.current.userInterfaceIdiom == .phone) &&
-            (UIApplication.shared.statusBarOrientation.isLandscape)) ||
-            (imageData.dateCreated == imageData.datePosted) {
-            let titleWidth = CGFloat(fmin(Float(titleLabel.bounds.size.width),
-                                          Float(view.bounds.size.width * 0.4)))
-            titleLabel.sizeThatFits(CGSize(width: titleWidth, height: titleLabel.bounds.size.height))
-            let oneLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth), height: titleLabel.bounds.size.height))
-            navigationItem.titleView = oneLineTitleView
-
-            oneLineTitleView.addSubview(titleLabel)
-            oneLineTitleView.addConstraint(NSLayoutConstraint.constraintView(titleLabel, toWidth: titleWidth)!)
-            oneLineTitleView.addConstraints(NSLayoutConstraint.constraintCenter(titleLabel)!)
-        }
-        else {
-            let subTitleLabel = UILabel(frame: CGRect(x: 0, y: titleLabel.frame.size.height, width: 0, height: 0))
-            subTitleLabel.backgroundColor = UIColor.clear
-            subTitleLabel.textColor = UIColor.piwigoColorWhiteCream()
-            subTitleLabel.textAlignment = .center
-            subTitleLabel.numberOfLines = 1
-            subTitleLabel.translatesAutoresizingMaskIntoConstraints = false
-            subTitleLabel.font = UIFont.piwigoFontTiny()
-            subTitleLabel.adjustsFontSizeToFitWidth = false
-            subTitleLabel.lineBreakMode = .byTruncatingTail
-            subTitleLabel.allowsDefaultTighteningForTruncation = true
-            if let dateCreated = imageData.dateCreated {
-                subTitleLabel.text = DateFormatter.localizedString(from: dateCreated,
-                                                                   dateStyle: .medium, timeStyle: .medium)
-            }
-            subTitleLabel.sizeToFit()
-
-            var titleWidth = fmax(CGFloat(subTitleLabel.bounds.size.width),
-                                  CGFloat(titleLabel.bounds.size.width))
-            titleWidth = fmin(titleWidth, CGFloat((navigationController?.view.bounds.size.width ?? 0.0) * 0.4))
-            let twoLineTitleView = UIView(frame: CGRect(x: 0, y: 0, width: CGFloat(titleWidth),
-                height: titleLabel.bounds.size.height + subTitleLabel.bounds.size.height))
-            navigationItem.titleView = twoLineTitleView
-
-            twoLineTitleView.addSubview(titleLabel)
-            twoLineTitleView.addSubview(subTitleLabel)
-            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintView(titleLabel, toWidth: titleWidth)!)
-            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(titleLabel)!)
-            twoLineTitleView.addConstraint(NSLayoutConstraint.constraintCenterVerticalView(subTitleLabel)!)
-
-            let views = ["title": titleLabel,
-                         "subtitle": subTitleLabel]
-            twoLineTitleView.addConstraints(
-                NSLayoutConstraint.constraints(withVisualFormat: "V:|[title][subtitle]|",
-                    options: [], metrics: nil, views: views))
         }
     }
 }
@@ -989,6 +1206,7 @@ extension ImageDetailViewController: UIPageViewControllerDelegate
         progressBar.isHidden = pvc.imageLoaded || imageData.isVideo
         imageData = images[currentIndex]
         setTitleViewFromImageData()
+        updateNavBar()
 
         // Scroll album collection view to keep the selected image centered on the screen
         if imgDetailDelegate?.responds(to: #selector(ImageDetailDelegate.didSelectImage(withId:))) ?? false {
@@ -1026,11 +1244,12 @@ extension ImageDetailViewController: UIPageViewControllerDataSource
         let imageData = images[currentIndex + 1]
 
         // Create view controller for presenting next image
-        debugPrint("=> Create preview view controller for next image \(imageData.imageId)")
-        let nextImage = ImagePreviewViewController()
-        nextImage.imageLoaded = false
+//        debugPrint("=> Create preview view controller for next image \(imageData.imageId)")
+        guard let nextImage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController else { return nil }
+        nextImage.imagePreviewDelegate = self
         nextImage.imageIndex = currentIndex + 1
-        nextImage.setImageScrollViewWith(imageData)
+        nextImage.imageData = imageData
+        nextImage.imageLoaded = false
         return nextImage
     }
 
@@ -1050,30 +1269,22 @@ extension ImageDetailViewController: UIPageViewControllerDataSource
         let imageData = images[currentIndex - 1]
 
         // Create view controller
-        debugPrint("=> Create preview view controller for previous image \(imageData.imageId)")
-        let prevImage = ImagePreviewViewController()
-        prevImage.imageLoaded = false
+//        debugPrint("=> Create preview view controller for previous image \(imageData.imageId)")
+        guard let prevImage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController else { return nil }
+        prevImage.imagePreviewDelegate = self
         prevImage.imageIndex = currentIndex - 1
-        prevImage.setImageScrollViewWith(imageData)
+        prevImage.imageData = imageData
+        prevImage.imageLoaded = false
         return prevImage
     }
 
     // Returns the index of the selected item to be reflected in the page indicator
     func presentationIndex(for pageViewController: UIPageViewController) -> Int {
-        return indexOfSelectedImage()
-    }
-
-    private func indexOfSelectedImage() -> Int {
-        var index = 0
-        for viewController in viewControllers ?? [] {
-            // Look for view controller of the right class!
-            if let imageViewCtrl = viewController as? ImagePreviewViewController {
-                // Return if exists
-                index = imageViewCtrl.imageIndex
-                break
-            }
+        if let imageViewCtrl = pageViewController.viewControllers?[0] as? ImagePreviewViewController {
+            // Return if exists
+            return imageViewCtrl.imageIndex
         }
-        return index
+        return NSNotFound
     }
 }
 
@@ -1098,25 +1309,27 @@ extension ImageDetailViewController: EditImageParamsDelegate
         // Should never be called when the properties of a single image are edited
     }
 
-    func didRenameFileOfImage(_ imageData: PiwigoImageData) {
-        // Update image data
-        if let fileName = imageData.fileName {
-            self.imageData.fileName = fileName
-        }
+    func didChangeImageParameters(_ params: PiwigoImageData) {
+        // Determine index of updated image
+        guard let indexOfUpdatedImage = images.firstIndex(where: { $0.imageId == params.imageId }) else { return }
+        
+        // Update list and currently viewed image
+        imageData = params
+        images[indexOfUpdatedImage] = params
 
         // Update title view
         setTitleViewFromImageData()
-    }
+        
+        // Update cached image data
+        /// Note: the current category might be a smart album.
+        let mergedCatIds = Array(Set(imageData.categoryIds.map({$0.intValue}) + [categoryId]))
+        for catId in  mergedCatIds {
+            CategoriesData.sharedInstance().getCategoryById(catId)?.updateImage(afterEdit: params)
+        }
 
-    func didChangeParamsOfImage(_ params: PiwigoImageData) {
-        // Determine index of updated image
-        if let indexOfUpdatedImage = images.firstIndex(where: { $0.imageId == params.imageId }) {
-            // Update list and currently viewed image
-            images[indexOfUpdatedImage] = params
-            imageData = params
-
-            // Update current view
-            setTitleViewFromImageData()
+        // Update banner of item in collection view (in case of empty title)
+        if imgDetailDelegate?.responds(to: #selector(ImageDetailDelegate.didUpdateImage(withData:))) ?? false {
+            imgDetailDelegate?.didUpdateImage(withData: imageData)
         }
     }
 
@@ -1176,19 +1389,28 @@ extension ImageDetailViewController: SelectCategoryImageRemovedDelegate
             let imageData = images[indexOfRemovedImage]
 
             // Create view controller for presenting next image
-            let nextImage = ImagePreviewViewController()
-            nextImage.imageLoaded = false
+            guard let nextImage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController else { return }
+            nextImage.imagePreviewDelegate = self
             nextImage.imageIndex = indexOfRemovedImage
-            nextImage.setImageScrollViewWith(imageData)
+            nextImage.imageData = imageData
+            nextImage.imageLoaded = false
 
             // This changes the View Controller
             // and calls the presentationIndexForPageViewController datasource method
-            setViewControllers([nextImage], direction: .forward, animated: true) { [unowned self] finished in
-                    // Update image data
-                    self.imageData = self.images[indexOfRemovedImage]
-                    // Re-enable buttons
-                    self.setEnableStateOfButtons(true)
+            pageViewController!.setViewControllers([nextImage], direction: .forward, animated: true) { [unowned self] finished in
+                // Update image data
+                self.imageData = self.images[indexOfRemovedImage]
+                // Re-enable buttons
+                self.setEnableStateOfButtons(true)
+                // Reset favorites button
+                // pwg.users.favorites… methods available from Piwigo version 2.10
+                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
+                    let isFavorite = CategoriesData.sharedInstance()
+                        .category(withId: kPiwigoFavoritesCategoryId,
+                                  containsImagesWithId: [NSNumber(value: imageData.imageId)])
+                    self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
                 }
+            }
             return
         }
 
@@ -1198,19 +1420,27 @@ extension ImageDetailViewController: SelectCategoryImageRemovedDelegate
             let imageData = images[indexOfRemovedImage - 1]
 
             // Create view controller for presenting next image
-            let prevImage = ImagePreviewViewController()
-            prevImage.imageLoaded = false
+            guard let prevImage = storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as? ImagePreviewViewController else { return }
+            prevImage.imagePreviewDelegate = self
             prevImage.imageIndex = indexOfRemovedImage - 1
-            prevImage.setImageScrollViewWith(imageData)
+            prevImage.imageData = imageData
+            prevImage.imageLoaded = false
 
             // This changes the View Controller
             // and calls the presentationIndexForPageViewController datasource method
-            setViewControllers( [prevImage], direction: .reverse, animated: true) { [unowned self] finished in
-                    // Update image data
-                    self.imageData = self.images[indexOfRemovedImage - 1]
-                    // Re-enable buttons
-                    self.setEnableStateOfButtons(true)
+            pageViewController!.setViewControllers( [prevImage], direction: .reverse, animated: true) { [unowned self] finished in
+                // Update image data
+                self.imageData = self.images[indexOfRemovedImage - 1]
+                // Re-enable buttons
+                self.setEnableStateOfButtons(true)
+                // Reset favorites button
+                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
+                    let isFavorite = CategoriesData.sharedInstance()
+                        .category(withId: kPiwigoFavoritesCategoryId,
+                                  containsImagesWithId: [NSNumber(value: imageData.imageId)])
+                    self.favoriteBarButton?.setFavoriteImage(for: isFavorite)
                 }
+            }
             return
         }
     }

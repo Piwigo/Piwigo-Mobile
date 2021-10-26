@@ -28,9 +28,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        if let userActivity = connectionOptions.userActivities.first {
-            debugPrint(userActivity)
-        }
+        
+        // TO DO when all data will be cached in Core Data database: Scene management 
+//        if let userActivity = connectionOptions.userActivities.first {
+//            debugPrint(userActivity)
+//        }
 
         guard let _ = (scene as? UIWindowScene) else { return }
         if let windowScene = scene as? UIWindowScene {
@@ -101,7 +103,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
            let _ = rootVC.children.first as? AlbumImagesViewController {
             // Determine for how long the session is opened
             let timeSinceLastLogin = NetworkVars.dateOfLastLogin.timeIntervalSinceNow
-            if timeSinceLastLogin < TimeInterval(-900) { // i.e. 15 minutes (Piwigo 11 session duration defaults to an hour)
+            if timeSinceLastLogin < TimeInterval(-3600) { // Piwigo 11 session duration defaults to an hour
                 /// - Perform relogin
                 /// - Resume upload operations in background queue
                 ///   and update badge, upload button of album navigator

@@ -19,7 +19,7 @@ class SelectCategoryHeaderView: UIView {
         backgroundColor = UIColor.clear
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
-        label.font = UIFont.piwigoFontSmall()
+        label.font = .piwigoFontSmall()
         label.baselineAdjustment = .alignCenters
         label.lineBreakMode = .byWordWrapping
         label.textAlignment = .center
@@ -44,7 +44,7 @@ class SelectCategoryHeaderView: UIView {
         titleRect.size.height += 16
         self.frame = titleRect
         label.text = text
-        label.textColor = UIColor.piwigoColorLeftLabel()
+        label.textColor = .piwigoColorLeftLabel()
     }
 
     required init?(coder aDecoder: NSCoder) {

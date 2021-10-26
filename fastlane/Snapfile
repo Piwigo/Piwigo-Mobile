@@ -3,18 +3,29 @@
 ###################
 # Installation:
 #	cd '/Users/lelievre/Privé - GitHub/Piwigo-Mobile'
-#	sudo gem install fastlane -NV
-#	fastlane init
-#   fastlane init swift
-#	
+#
+# Set up a complete Ruby web development environment
+# https://github.com/monfresh/laptop
+#	bash <(curl -s https://raw.githubusercontent.com/monfresh/laptop/master/laptop)
+#
+# Add GEM to PATH (in .zshrc)
+#	export PATH=$PATH:/Users/lelievre/.gem/ruby/2.7.0/bin
+# and:
 #	export LC_ALL=en_US.UTF-8
 #	export LANG=en_US.UTF-8
-# 	Create a ./Gemfile in the root directory of your project
-#	sudo /usr/bin/bundle update
-#	sudo /usr/bin/bundle install
+#	chruby ruby-2.7.3
 #
+# Install fastlane
+#	gem install bundler
+#	bundle update --bundler
+#	bundle update (bundle version 2.2.29 blocked in Gemfile.lock)
+#	gem install fastlane -NV
+#
+#	/Users/lelievre/.gem/ruby/2.7.0/bin/fastlane init
+#   /Users/lelievre/.gem/ruby/2.7.0/bin/fastlane init swift
+#	
 # To update fastlane:
-#	sudo /usr/bin/bundle update fastlane
+#	bundle update fastlane
 #
 # To launch fastlane:
 #	bundle exec fastlane snapshot --number_of_retries 1 --skip_open_summary
@@ -29,27 +40,27 @@ devices([
 #  "iPhone 8 Plus",									# 5.5-inch
 #  "iPhone 11 Pro",									# 5.8-inch
 #  "iPhone 11 Pro Max",								# 6.5-inch
-#  "iPad Pro (9.7-inch)",							# 9.7-inch
-#  "iPad Pro (10.5-inch)",							# 10.5-inch
-#  "iPad Pro (12.9-inch) (2nd generation)",			# 12.9-inch
-#  "iPad Pro (11-inch) (3rd generation)",			# 11-inch
+  "iPad Pro (9.7-inch)",							# 9.7-inch
+  "iPad Pro (10.5-inch)",							# 10.5-inch
+  "iPad Pro (12.9-inch) (2nd generation)",			# 12.9-inch
+  "iPad Pro (11-inch) (3rd generation)",			# 11-inch
   "iPad Pro (12.9-inch) (3rd generation)"			# 12.9-inch
 ])
 
 #   ["pt", "pt_BR"] # Portuguese with Brazilian locale
 languages([
-#   "da",
-#   "de-DE",
+   "da",
+   "de-DE",
 #   "en-US",
-#   "es-ES",
-#   "fr-FR",
-#   "hu",
-#   "it",
-#   "ja",
-#   "nl-NL",
-#   "pl",
-#   "ru",
-#   "sv",
+   "es-ES",
+   "fr-FR",
+   "hu",
+   "it",
+   "ja",
+   "nl-NL",
+   "pl",
+   "ru",
+   "sv",
    "zh-Hans"
 ])
 

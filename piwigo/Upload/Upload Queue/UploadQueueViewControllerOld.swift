@@ -94,7 +94,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
     
     private func applyColorPaletteToInitialViews() {
         // Background color of the view
-        view.backgroundColor = UIColor.piwigoColorBackground()
+        view.backgroundColor = .piwigoColorBackground()
 
         // Navigation bar
         let attributes = [
@@ -106,12 +106,12 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
             navigationController?.navigationBar.prefersLargeTitles = false
         }
         navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
+        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
+        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
+        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
 
         // Table view
-        queueTableView.separatorColor = UIColor.piwigoColorSeparator()
+        queueTableView.separatorColor = .piwigoColorSeparator()
         queueTableView.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
     }
     
@@ -122,15 +122,15 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         // Table view items
         let visibleCells = queueTableView.visibleCells as? [UploadImageTableViewCell] ?? []
         visibleCells.forEach { (cell) in
-            cell.backgroundColor = UIColor.piwigoColorCellBackground()
-            cell.uploadInfoLabel.textColor = UIColor.piwigoColorLeftLabel()
-            cell.swipeBackgroundColor = UIColor.piwigoColorCellBackground()
-            cell.imageInfoLabel.textColor = UIColor.piwigoColorRightLabel()
+            cell.backgroundColor = .piwigoColorCellBackground()
+            cell.uploadInfoLabel.textColor = .piwigoColorLeftLabel()
+            cell.swipeBackgroundColor = .piwigoColorCellBackground()
+            cell.imageInfoLabel.textColor = .piwigoColorRightLabel()
         }
         for section in 0..<queueTableView.numberOfSections {
             let header = queueTableView.headerView(forSection: section) as? UploadImageHeaderView
-            header?.headerLabel.textColor = UIColor.piwigoColorHeader()
-            header?.headerBckg.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.75)
+            header?.headerLabel.textColor = .piwigoColorHeader()
+            header?.headerBckg.backgroundColor = .piwigoColorBackground().withAlphaComponent(0.75)
         }
     }
 
@@ -215,7 +215,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
 								let cancelAction = UIAlertAction(title: NSLocalizedString("alertDismissButton", comment: "Dismiss"), style: .destructive, handler: { action in
 									})
 								alert.addAction(cancelAction)
-								alert.view.tintColor = UIColor.piwigoColorOrange()
+								alert.view.tintColor = .piwigoColorOrange()
 								if #available(iOS 13.0, *) {
 									alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
 								} else {
@@ -223,7 +223,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
 								}
 								self.present(alert, animated: true, completion: {
 									// Bugfix: iOS9 - Tint not fully Applied without Reapplying
-									alert.view.tintColor = UIColor.piwigoColorOrange()
+									alert.view.tintColor = .piwigoColorOrange()
 								})
 							} else {
 								// Relaunch uploads
@@ -268,7 +268,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         }
 
         // Present list of actions
-        alert.view.tintColor = UIColor.piwigoColorOrange()
+        alert.view.tintColor = .piwigoColorOrange()
         if #available(iOS 13.0, *) {
             alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
         } else {
@@ -277,7 +277,7 @@ class UploadQueueViewControllerOld: UIViewController, UITableViewDelegate, UITab
         alert.popoverPresentationController?.barButtonItem = actionBarButton
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange()
+            alert.view.tintColor = .piwigoColorOrange()
         }
     }
     

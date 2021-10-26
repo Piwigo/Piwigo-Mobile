@@ -575,7 +575,7 @@
 {
     NSString *sortDesc = [CategoryImageSort getPiwigoSortObjcDescriptionFor:(kPiwigoSortObjc)AlbumVars.defaultSort];
     [self.albumData loadCategoryImageDataChunkWithSort:sortDesc
-        forProgress:nil OnCompletion:^(BOOL completed) {
+        forProgress:nil onCompletion:^(BOOL completed) {
         // Did the load succeed?
         if (completed) {
             // Do we have all images?
@@ -594,6 +594,11 @@
                 [topViewController dismissPiwigoErrorWithTitle:NSLocalizedString(@"deleteCategoryError_title", @"Delete Fail") message:NSLocalizedString(@"deleteCategoryError_message", @"Failed to delete your album") errorMessage:@"" completion:^{ }];
             }];
         }
+    } onFailure:^(NSURLSessionTask *task, NSError *error) {
+        // Did not succeed -> try to complete the job with missing images
+        [topViewController hidePiwigoHUDWithCompletion:^{
+            [topViewController dismissPiwigoErrorWithTitle:NSLocalizedString(@"deleteCategoryError_title", @"Delete Fail") message:NSLocalizedString(@"deleteCategoryError_message", @"Failed to delete your album") errorMessage:error.localizedDescription completion:^{ }];
+        }];
     }];
 }
 

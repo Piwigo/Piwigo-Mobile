@@ -137,6 +137,7 @@
 
 // Albums "Discover"
 "categoryDiscover_title" = "Opdag";
+"categoryDiscoverTagged_title" = "Mærket";
 "categoryDiscoverVisits_title" = "Mest sete";
 "categoryDiscoverVisits_legend" = "visninger";
 "categoryDiscoverBest_title" = "Bedst bedømte";
@@ -304,6 +305,7 @@
 // Image options (actions)
 "imageOptions_title" = "Billed Valgmuligheder";
 "imageOptions_edit" = "Redigér";
+"imageOptions_properties" = "Ændr Egenskaber";
 "imageOptions_download" = "Hent";
 "imageOptions_setAlbumImage" = "Angiv som Albumbillede";
 
@@ -373,6 +375,13 @@
 
 // Image rename — Errors
 "renameImageError_message" = "Kunne ikke omdøbe billedfil";
+
+// Image in favorites
+"imageFavorites_title" = "Favoritter";
+
+// Image in favorites — Error
+"imageFavoritesAddError_message" = "Kunne ikke tilføje dette foto til dine favoritter.";
+"imageFavoritesRemoveError_message" = "Kunne ikke fjerne dette foto fra dine favoritter.";
 
 // Image delete
 "deleteImage_delete" = "Slet";
@@ -483,7 +492,6 @@
 "imageUploadCompleted_title" = "Upload Fuldført";
 "imageUploadCompleted_message" = "billede/video uploadet til Piwigo server.";
 "imageUploadCompleted_message>1" = "billeder/videoer uploadet til Piwigo server.";
-
 
 // Image upload — Errors
 "uploadError_title" = "Fejl under upload";
@@ -683,10 +691,10 @@
 // Settings — Auto-Upload
 "settings_autoUpload" = "Automatisk Upload";
 "settings_autoUpload>414px" = "Auto Upload Fotos";
-"settings_autoUploadEnabled" = "On";
+"settings_autoUploadEnabled" = "Til";
 "settings_autoUploadEnabledInfo" = "Fotos vil automatisk blive uploadet til din Piwigo.";
 "settings_autoUploadEnabledInfoAll" = "Fotos og videoer vil automatisk blive uploadet til din Piwigo.";
-"settings_autoUploadDisabled" = "Off";
+"settings_autoUploadDisabled" = "Fra";
 "settings_autoUploadDisabledInfo" = "Fotos vil ikke automatisk blive uploadet til din Piwigo.";
 "settings_autoUploadSource" = "Kilde";
 "settings_autoUploadSourceInvalid" = "Ugyldigt kildealbum";

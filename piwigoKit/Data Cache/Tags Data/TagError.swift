@@ -1,6 +1,6 @@
 //
 //  TagError.swift
-//  piwigo
+//  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 19/01/2020.
 //  Copyright © 2020 Piwigo.org. All rights reserved.

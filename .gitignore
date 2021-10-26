@@ -14,7 +14,8 @@ build/
 ### xcuserdata
 *.xccheckout
 *.moved-aside
-DerivedData
+**/DerivedData/
+**/screenshots/
 *.hmap
 *.ipa
 *.xcuserstate

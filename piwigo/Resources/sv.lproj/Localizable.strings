@@ -137,6 +137,7 @@
 
 // Albums "Discover"
 "categoryDiscover_title" = "Upptäck";
+"categoryDiscoverTagged_title" = "Taggad";
 "categoryDiscoverVisits_title" = "Mest besökta";
 "categoryDiscoverVisits_legend" = "träffar";
 "categoryDiscoverBest_title" = "Högst betygsatta";
@@ -304,6 +305,7 @@
 // Image options (actions)
 "imageOptions_title" = "Bildalternativ";
 "imageOptions_edit" = "Redigera";
+"imageOptions_properties" = "Ändra egenskaper";
 "imageOptions_download" = "Hämta";
 "imageOptions_setAlbumImage" = "Ange som albumbild";
 
@@ -373,6 +375,13 @@
 
 // Image rename — Errors
 "renameImageError_message" = "Det gick inte att byta namn på bildfil";
+
+// Image in favorites
+"imageFavorites_title" = "Favoriter";
+
+// Image in favorites — Error
+"imageFavoritesAddError_message" = "Det gick inte att lägga till detta foto till dina favoriter.";
+"imageFavoritesRemoveError_message" = "Det gick inte att ta bort detta foto från dina favoriter.";
 
 // Image delete
 "deleteImage_delete" = "Radera";
@@ -483,7 +492,6 @@
 "imageUploadCompleted_title" = "Uppladdning Slutförd";
 "imageUploadCompleted_message" = "bilder/videor laddades upp till din Piwigoserver.";
 "imageUploadCompleted_message>1" = "bilder/videor laddades upp till din Piwigoserver.";
-
 
 // Image upload — Errors
 "uploadError_title" = "Uppladdningsfel";
@@ -683,10 +691,10 @@
 // Settings — Auto-Upload
 "settings_autoUpload" = "Automatisk uppladdning";
 "settings_autoUpload>414px" = "Ladda upp foton automatiskt";
-"settings_autoUploadEnabled" = "On";
+"settings_autoUploadEnabled" = "På";
 "settings_autoUploadEnabledInfo" = "Foton laddas automatiskt upp till din Piwigo.";
 "settings_autoUploadEnabledInfoAll" = "Foton och videor laddas automatiskt upp till din Piwigo.";
-"settings_autoUploadDisabled" = "Off";
+"settings_autoUploadDisabled" = "Av";
 "settings_autoUploadDisabledInfo" = "Foton kommer inte att laddas upp automatiskt till din Piwigo.";
 "settings_autoUploadSource" = "Källa";
 "settings_autoUploadSourceInvalid" = "Ogiltigt källalbum";

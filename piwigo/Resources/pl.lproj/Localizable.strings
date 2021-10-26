@@ -137,6 +137,7 @@
 
 // Albums "Discover"
 "categoryDiscover_title" = "Odkrywaj";
+"categoryDiscoverTagged_title" = "Oznaczone";
 "categoryDiscoverVisits_title" = "Najczęściej odwiedzane";
 "categoryDiscoverVisits_legend" = "wejść";
 "categoryDiscoverBest_title" = "Najwyżej oceniane";
@@ -304,6 +305,7 @@
 // Image options (actions)
 "imageOptions_title" = "Opcje zdjęcia";
 "imageOptions_edit" = "Edytuj";
+"imageOptions_properties" = "Modyfikuj właściwości";
 "imageOptions_download" = "Pobierz";
 "imageOptions_setAlbumImage" = "Ustaw jako zdjęcie albumu";
 
@@ -373,6 +375,13 @@
 
 // Image rename — Errors
 "renameImageError_message" = "Nie udało się zmienić nazwy pliku zdjęcia";
+
+// Image in favorites
+"imageFavorites_title" = "Ulubione";
+
+// Image in favorites — Error
+"imageFavoritesAddError_message" = "Nie udało się dodać tego zdjęcia do ulubionych.";
+"imageFavoritesRemoveError_message" = "Nie udało się usunąć tego zdjęcia z ulubionych.";
 
 // Image delete
 "deleteImage_delete" = "Usuń";
@@ -483,7 +492,6 @@
 "imageUploadCompleted_title" = "Przesyłanie Zakończone";
 "imageUploadCompleted_message" = "zdjęcie/film zostało przesłane do Twojego serwera Piwigo.";
 "imageUploadCompleted_message>1" = "zdjęcia/filmy zostały przesłane do Twojego serwera Piwigo.";
-
 
 // Image upload — Errors
 "uploadError_title" = "Błąd przesyłania";

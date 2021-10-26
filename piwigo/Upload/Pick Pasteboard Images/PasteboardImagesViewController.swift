@@ -133,7 +133,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         localImagesCollection.accessibilityIdentifier = "Pasteboard"
         
         // Navigation bar
-        navigationController?.toolbar.tintColor = UIColor.piwigoColorOrange()
+        navigationController?.toolbar.tintColor = .piwigoColorOrange()
         navigationController?.navigationBar.accessibilityIdentifier = "PasteboardImagesNav"
 
         // The cancel button is used to cancel the selection of images to upload
@@ -171,7 +171,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
 
     @objc func applyColorPalette() {
         // Background color of the views
-        view.backgroundColor = UIColor.piwigoColorBackground()
+        view.backgroundColor = .piwigoColorBackground()
 
         // Navigation bar
         let attributes = [
@@ -183,16 +183,16 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
             navigationController?.navigationBar.prefersLargeTitles = false
         }
         navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
+        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
+        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
+        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
 
         if #available(iOS 15.0, *) {
             /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
             /// which by default produces a transparent background, to all navigation bars.
             let barAppearance = UINavigationBarAppearance()
             barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = UIColor.piwigoColorBackground()
+            barAppearance.backgroundColor = .piwigoColorBackground()
             navigationController?.navigationBar.standardAppearance = barAppearance
             navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
         }
@@ -200,10 +200,10 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         // Case of an iPhone
         if #available(iOS 14, *) {
             // Toolbar
-            legendLabel.textColor = UIColor.piwigoColorText()
+            legendLabel.textColor = .piwigoColorText()
             legendBarItem = UIBarButtonItem(customView: legendLabel)
             toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
-            navigationController?.toolbar.barTintColor = UIColor.piwigoColorBackground()
+            navigationController?.toolbar.barTintColor = .piwigoColorBackground()
             navigationController?.toolbar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
         }
         else {
@@ -520,7 +520,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
         }
         
         // Present list of actions
-        alert.view.tintColor = UIColor.piwigoColorOrange()
+        alert.view.tintColor = .piwigoColorOrange()
         if #available(iOS 13.0, *) {
             alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
         } else {
@@ -529,7 +529,7 @@ class PasteboardImagesViewController: UIViewController, UICollectionViewDataSour
 //        alert.popoverPresentationController?.barButtonItem = actionBarButton
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange()
+            alert.view.tintColor = .piwigoColorOrange()
         }
     }
 

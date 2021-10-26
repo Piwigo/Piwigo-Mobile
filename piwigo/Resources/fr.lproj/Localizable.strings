@@ -137,6 +137,7 @@
 
 // Albums "Discover"
 "categoryDiscover_title" = "Découvrir";
+"categoryDiscoverTagged_title" = "Taguées";
 "categoryDiscoverVisits_title" = "Plus vues";
 "categoryDiscoverVisits_legend" = "vues";
 "categoryDiscoverBest_title" = "Mieux notées";
@@ -304,6 +305,7 @@
 // Image options (actions)
 "imageOptions_title" = "Options";
 "imageOptions_edit" = "Editer";
+"imageOptions_properties" = "Modifier les propriétés";
 "imageOptions_download" = "Télécharger";
 "imageOptions_setAlbumImage" = "Définir comme vignette d’album";
 
@@ -373,6 +375,13 @@
 
 // Image rename — Errors
 "renameImageError_message" = "Échec lors du renommage du fichier";
+
+// Image in favorites
+"imageFavorites_title" = "Favoris";
+
+// Image in favorites — Error
+"imageFavoritesAddError_message" = "Echec de l'ajout de cette photo à vos favoris.";
+"imageFavoritesRemoveError_message" = "Echec de la suppression de cette photo de vos favoris.";
 
 // Image delete
 "deleteImage_delete" = "Supprimer";
@@ -483,7 +492,6 @@
 "imageUploadCompleted_title" = "Téléchargement Terminé";
 "imageUploadCompleted_message" = "photo envoyée à votre serveur Piwigo.";
 "imageUploadCompleted_message>1" = "photos envoyées à votre serveur Piwigo.";
-
 
 // Image upload — Errors
 "uploadError_title" = "Echec du Téléchargement";

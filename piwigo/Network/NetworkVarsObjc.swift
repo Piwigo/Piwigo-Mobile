@@ -118,6 +118,12 @@ class NetworkVarsObjc: NSObject {
         set (value) { NetworkVars.userCancelledCommunication = value }
     }
     
+    /// - Logged user has guest rigths, false by default
+    @objc static var hasGuestRights: Bool {
+        get { return NetworkVars.hasGuestRights }
+        set (value) { NetworkVars.hasGuestRights = value }
+    }
+
     /// - Logged user has normal rigths, false by default
     @objc static var hasNormalRights: Bool {
         get { return NetworkVars.hasNormalRights }

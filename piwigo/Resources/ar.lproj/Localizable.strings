@@ -137,11 +137,12 @@
 
 // Albums "Discover"
 "categoryDiscover_title" = "Discover";
+"categoryDiscoverTagged_title" = "Tagged";
 "categoryDiscoverVisits_title" = "Most visited";
 "categoryDiscoverVisits_legend" = "hits";
 "categoryDiscoverBest_title" = "Best rated";
 "categoryDiscoverRecent_title" = "Recent photos";
-"categoryDiscoverFavorites_title" = "Your favorites";
+"categoryDiscoverFavorites_title" = "مفضلتك";
 
 // Albums sort
 "categorySort_nameAscending" = "عنوان الصورة، A → Z";
@@ -304,6 +305,7 @@
 // Image options (actions)
 "imageOptions_title" = "خيارات الصورة";
 "imageOptions_edit" = "تعديل";
+"imageOptions_properties" = "Modify Properties";
 "imageOptions_download" = "تنزيل";
 "imageOptions_setAlbumImage" = "تعيين كصورة الألبوم";
 
@@ -373,6 +375,13 @@
 
 // Image rename — Errors
 "renameImageError_message" = "Failed to rename photo file";
+
+// Image in favorites
+"imageFavorites_title" = "المفضلة";
+
+// Image in favorites — Error
+"imageFavoritesAddError_message" = "فشل في إضافة هذه الصورة إلى المفضلة لديك.";
+"imageFavoritesRemoveError_message" = "فشل في إزالة هذه الصورة من المفضلة لديك.";
 
 // Image delete
 "deleteImage_delete" = "حذف";
@@ -483,7 +492,6 @@
 "imageUploadCompleted_title" = "اكتمل التحميل";
 "imageUploadCompleted_message" = "صورة / فيديو تم تحميلها إلى خادم Piwigo الخاص بك.";
 "imageUploadCompleted_message>1" = "صور / فيديوهات تم تحميلها إلى خادم Piwigo الخاص بك.";
-
 
 // Image upload — Errors
 "uploadError_title" = "خطأ في التحميل";

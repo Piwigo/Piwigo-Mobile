@@ -13,8 +13,7 @@ import piwigoKit
 
 @objc protocol EditImageParamsDelegate: NSObjectProtocol {
     func didDeselectImage(withId imageId: Int)
-    func didRenameFileOfImage(_ imageData: PiwigoImageData)
-    func didChangeParamsOfImage(_ params: PiwigoImageData)
+    func didChangeImageParameters(_ imageData: PiwigoImageData)
     func didFinishEditingParameters()
 }
 
@@ -61,7 +60,7 @@ class EditImageParamsViewController: UIViewController
 
     @objc func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = UIColor.piwigoColorBackground()
+        view.backgroundColor = .piwigoColorBackground()
 
         // Navigation bar
         let attributes = [
@@ -73,13 +72,13 @@ class EditImageParamsViewController: UIViewController
             navigationController?.navigationBar.prefersLargeTitles = false
         }
         navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
+        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
+        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
+        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
 
         // Table view
-        editImageParamsTableView.separatorColor = UIColor.piwigoColorSeparator()
-        editImageParamsTableView.backgroundColor = UIColor.piwigoColorBackground()
+        editImageParamsTableView.separatorColor = .piwigoColorSeparator()
+        editImageParamsTableView.backgroundColor = .piwigoColorBackground()
         editImageParamsTableView.reloadData()
     }
 
@@ -348,7 +347,8 @@ class EditImageParamsViewController: UIViewController
             showPiwigoHUD(withTitle: NSLocalizedString("editImageDetailsHUD_updatingSingle", comment: "Updating Photo…"), detail: "", buttonTitle: "", buttonTarget: nil, buttonSelector: nil, inMode: .indeterminate)
         }
 
-        // Update image info on server and in cache
+        // Update image info on server
+        /// The cache will be updated by the parent view controller.
         setProperties(ofImage: imagesToUpdate.last!) { [unowned self] in
             // Next image?
             self.imagesToUpdate.removeLast()
@@ -453,16 +453,10 @@ class EditImageParamsViewController: UIViewController
         
         // Send request to Piwigo server
         ImageUtilities.setInfos(with: paramsDict) {
-            // Update image in cache
-            for cat in imageData.categoryIds {
-                CategoriesData.sharedInstance().getCategoryById(cat.intValue)
-                    .updateImage(afterEdit: imageData)
-            }
-
             // Notify album/image view of modification
             DispatchQueue.main.async {
-                if self.delegate?.responds(to: #selector(EditImageParamsDelegate.didChangeParamsOfImage(_:))) ?? false {
-                    self.delegate?.didChangeParamsOfImage(imageData)
+                if self.delegate?.responds(to: #selector(EditImageParamsDelegate.didChangeImageParameters(_:))) ?? false {
+                    self.delegate?.didChangeImageParameters(imageData)
                 }
             }
 
@@ -538,7 +532,7 @@ extension EditImageParamsViewController: UITableViewDataSource
                 placeHolder: NSLocalizedString("editImageDetails_titlePlaceholder", comment: "Title"),
                 andImageDetail: commonParameters.imageTitle)
             if shouldUpdateTitle {
-                cell.cellTextField.textColor = UIColor.piwigoColorOrange()
+                cell.cellTextField.textColor = .piwigoColorOrange()
             }
             cell.cellTextField.tag = row
             cell.cellTextField.delegate = self
@@ -554,7 +548,7 @@ extension EditImageParamsViewController: UITableViewDataSource
                 placeHolder: NSLocalizedString("settings_defaultAuthorPlaceholder", comment: "Author Name"),
                 andImageDetail: (commonParameters.author == "NSNotFound") ? "" : commonParameters.author)
             if shouldUpdateAuthor {
-                cell.cellTextField.textColor = UIColor.piwigoColorOrange()
+                cell.cellTextField.textColor = .piwigoColorOrange()
             }
             cell.cellTextField.tag = row
             cell.cellTextField.delegate = self
@@ -570,7 +564,7 @@ extension EditImageParamsViewController: UITableViewDataSource
                 placeHolder: "",
                 andImageDetail: getStringFrom(commonParameters.dateCreated))
             if shouldUpdateDateCreated {
-                cell.cellTextField.textColor = UIColor.piwigoColorOrange()
+                cell.cellTextField.textColor = .piwigoColorOrange()
             }
             cell.cellTextField.tag = row
             cell.cellTextField.delegate = self
@@ -605,7 +599,7 @@ extension EditImageParamsViewController: UITableViewDataSource
             }
             cell.setLeftLabel(withText: NSLocalizedString("editImageDetails_privacyLevel", comment: "Who can see this photo?"))
             cell.setPrivacyLevel(with: kPiwigoPrivacy(rawValue: Int16(commonParameters.privacyLevel.rawValue)) ?? .everybody,
-                inColor: shouldUpdatePrivacyLevel ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
+                inColor: shouldUpdatePrivacyLevel ? .piwigoColorOrange() : .piwigoColorRightLabel())
             tableViewCell = cell
             
         case .tags:
@@ -614,7 +608,7 @@ extension EditImageParamsViewController: UITableViewDataSource
                 return EditImageTagsTableViewCell()
             }
             cell.config(withList: commonParameters.tags,
-                inColor: shouldUpdateTags ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
+                inColor: shouldUpdateTags ? .piwigoColorOrange() : .piwigoColorRightLabel())
             tableViewCell = cell
             
         case .desc:
@@ -623,7 +617,7 @@ extension EditImageParamsViewController: UITableViewDataSource
                 return EditImageTextViewTableViewCell()
             }
             cell.config(withText: commonParameters.comment,
-                inColor: shouldUpdateTags ? UIColor.piwigoColorOrange() : UIColor.piwigoColorRightLabel())
+                inColor: shouldUpdateTags ? .piwigoColorOrange() : .piwigoColorRightLabel())
             cell.textView.delegate = self
             tableViewCell = cell
             
@@ -631,8 +625,8 @@ extension EditImageParamsViewController: UITableViewDataSource
             break
         }
 
-        tableViewCell.backgroundColor = UIColor.piwigoColorCellBackground()
-        tableViewCell.tintColor = UIColor.piwigoColorOrange()
+        tableViewCell.backgroundColor = .piwigoColorCellBackground()
+        tableViewCell.tintColor = .piwigoColorOrange()
         return tableViewCell
     }
 
@@ -770,11 +764,11 @@ extension EditImageParamsViewController: UITextFieldDelegate
             case .imageName:
                 // Title
                 shouldUpdateTitle = true
-                textField.textColor = UIColor.piwigoColorOrange()
+                textField.textColor = .piwigoColorOrange()
             case .author:
                 // Author
                 shouldUpdateAuthor = true
-                textField.textColor = UIColor.piwigoColorOrange()
+                textField.textColor = .piwigoColorOrange()
             default:
                 break
         }
@@ -843,7 +837,7 @@ extension EditImageParamsViewController: UITextViewDelegate
 {
     func textViewDidBeginEditing(_ textView: UITextView) {
         shouldUpdateComment = true
-        textView.textColor = UIColor.piwigoColorOrange()
+        textView.textColor = .piwigoColorOrange()
     }
 
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
@@ -920,8 +914,8 @@ extension EditImageParamsViewController: EditImageThumbnailCellDelegate
         }
 
         // Update parent image view
-        if delegate?.responds(to: #selector(EditImageParamsDelegate.didRenameFileOfImage(_:))) ?? false {
-            delegate?.didRenameFileOfImage(imageData)
+        if delegate?.responds(to: #selector(EditImageParamsDelegate.didChangeImageParameters(_:))) ?? false {
+            delegate?.didChangeImageParameters(imageData)
         }
     }
 }

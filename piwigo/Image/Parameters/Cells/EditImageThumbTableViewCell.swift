@@ -38,7 +38,7 @@ class EditImageThumbTableViewCell: UITableViewCell, UICollectionViewDelegate
         images = imageSelection
 
         // Collection of images
-        backgroundColor = UIColor.piwigoColorCellBackground()
+        backgroundColor = .piwigoColorCellBackground()
         if editImageThumbCollectionView == nil {
             editImageThumbCollectionView = UICollectionView(frame: CGRect.zero,
                                                             collectionViewLayout: UICollectionViewFlowLayout())
@@ -110,16 +110,19 @@ extension EditImageThumbTableViewCell: EditImageThumbnailDelegate
 
     @objc
     func didRenameFileOfImage(withId imageId: Int, andFilename fileName: String) {
+        // Check accessible data
+        guard let indexOfImage = images?.firstIndex(where: { $0.imageId == imageId }),
+              let imageToUpdate: PiwigoImageData = images?[indexOfImage] else { return }
+        
         // Update data source
-        if let indexOfImage = images?.firstIndex(where: { $0.imageId == imageId }),
-           let imageToUpdate: PiwigoImageData = images?[indexOfImage] {
-            imageToUpdate.fileName = fileName
-            images?.replaceSubrange(indexOfImage...indexOfImage, with: [imageToUpdate])
+        /// Cached data cannot be updated as we may not have downloaded image data.
+        /// This happens for example if the user used the search tool right after launching the app.
+        imageToUpdate.fileName = fileName
+        images?.replaceSubrange(indexOfImage...indexOfImage, with: [imageToUpdate])
 
-            // Update parent image view
-            if delegate?.responds(to: #selector(EditImageThumbnailCellDelegate.didRenameFileOfImage(_:))) ?? false {
-                delegate?.didRenameFileOfImage(imageToUpdate)
-            }
+        // Update parent image view
+        if delegate?.responds(to: #selector(EditImageThumbnailCellDelegate.didRenameFileOfImage(_:))) ?? false {
+            delegate?.didRenameFileOfImage(imageToUpdate)
         }
     }
 }

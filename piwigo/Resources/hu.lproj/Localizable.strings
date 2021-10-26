@@ -137,6 +137,7 @@
 
 // Albums "Discover"
 "categoryDiscover_title" = "Felfedezés";
+"categoryDiscoverTagged_title" = "Megjelölt";
 "categoryDiscoverVisits_title" = "Legtöbbet látogatott";
 "categoryDiscoverVisits_legend" = "megtekintés";
 "categoryDiscoverBest_title" = "Legjobbra értékelt";
@@ -304,6 +305,7 @@
 // Image options (actions)
 "imageOptions_title" = "Fotó opciók";
 "imageOptions_edit" = "Módosítás";
+"imageOptions_properties" = "Tulajdonságok módosítása";
 "imageOptions_download" = "Letöltés";
 "imageOptions_setAlbumImage" = "Album bélyegkép beállítása";
 
@@ -373,6 +375,13 @@
 
 // Image rename — Errors
 "renameImageError_message" = "Nem sikerült átnevezni a fájlt";
+
+// Image in favorites
+"imageFavorites_title" = "Kedvencek";
+
+// Image in favorites — Error
+"imageFavoritesAddError_message" = "Nem sikerült felvenni a fotót a kedvencekhez.";
+"imageFavoritesRemoveError_message" = "Nem sikerült eltávolítani a fotót a kedvencekből.";
 
 // Image delete
 "deleteImage_delete" = "Törlés";
@@ -483,7 +492,6 @@
 "imageUploadCompleted_title" = "A feltöltés befejeződött";
 "imageUploadCompleted_message" = "fotó feltöltve a Piwigo szerveredre.";
 "imageUploadCompleted_message>1" = "fotók feltöltve a Piwigo szerveredre.";
-
 
 // Image upload — Errors
 "uploadError_title" = "Feltöltési hiba";

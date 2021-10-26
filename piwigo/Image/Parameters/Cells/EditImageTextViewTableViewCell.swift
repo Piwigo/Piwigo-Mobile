@@ -25,15 +25,15 @@ class EditImageTextViewTableViewCell: UITableViewCell {
 
     func config(withText imageDetail: String?, inColor color: UIColor?) {
         // Cell background
-        backgroundColor = UIColor.piwigoColorBackground()
+        backgroundColor = .piwigoColorBackground()
 
         // Cell label
-        label.textColor = UIColor.piwigoColorLeftLabel()
+        label.textColor = .piwigoColorLeftLabel()
 
         // Cell text view
         textView.text = imageDetail
         textView.textColor = color
-        textView.backgroundColor = UIColor.piwigoColorBackground()
+        textView.backgroundColor = .piwigoColorBackground()
         textView.keyboardAppearance = AppVars.isDarkPaletteActive ? .dark : .default
     }
 

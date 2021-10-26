@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.7.2_text" = "Versie 2.7.2\n\n• iOS 15-compatibiliteit\n• Kleine foutjes hersteld en verbetering van de interface\n• Code modernisering";
+"v2.8.0_text" = "Versie 2.8\n\n• Foto's toevoegen aan en verwijderen uit favorieten\n• Bugfixes en verbeteringen van de interface";
+
+"v2.7.2_text" = "Versie 2.7.2\n20 September 2021\n\n• iOS 15-compatibiliteit\n• Kleine foutjes hersteld en verbetering van de interface\n• Code modernisering";
 
 "v2.7.1_text" = "Versie 2.7.1\n1 September 2021\n\n• Kleine foutjes verbeterd en verbetering van de interface\n• Betere vertalingen";
 

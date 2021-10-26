@@ -16,10 +16,10 @@ class UploadQueueHeaderView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        backgroundColor = UIColor.piwigoColorOrange()
+        backgroundColor = .piwigoColorOrange()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
-        label.font = UIFont.piwigoFontSemiBold()
+        label.font = .piwigoFontSemiBold()
         label.baselineAdjustment = .alignCenters
         label.lineBreakMode = .byWordWrapping
         label.textAlignment = .center

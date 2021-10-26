@@ -137,6 +137,7 @@
 
 // Albums "Discover"
 "categoryDiscover_title" = "Discover";
+"categoryDiscoverTagged_title" = "Tagged";
 "categoryDiscoverVisits_title" = "Most visited";
 "categoryDiscoverVisits_legend" = "hits";
 "categoryDiscoverBest_title" = "Best rated";
@@ -304,8 +305,9 @@
 // Image options (actions)
 "imageOptions_title" = "Photo Options";
 "imageOptions_edit" = "Edit";
+"imageOptions_properties" = "Modify Properties";
 "imageOptions_download" = "Download";
-"imageOptions_setAlbumImage" = "Set Album Thumbnail";
+"imageOptions_setAlbumImage" = "Set as Album Thumbnail";
 
 // Image details
 "imageDetailsView_title" = "Properties";
@@ -373,6 +375,13 @@
 
 // Image rename — Errors
 "renameImageError_message" = "Failed to rename photo file";
+
+// Image in favorites
+"imageFavorites_title" = "Favorites";
+
+// Image in favorites — Error
+"imageFavoritesAddError_message" = "Failed to add this photo to your favorites.";
+"imageFavoritesRemoveError_message" = "Failed to remove this photo from your favorites.";
 
 // Image delete
 "deleteImage_delete" = "Delete";
@@ -483,7 +492,6 @@
 "imageUploadCompleted_title" = "Upload Completed";
 "imageUploadCompleted_message" = "photo uploaded to your Piwigo server.";
 "imageUploadCompleted_message>1" = "photos uploaded to your Piwigo server.";
-
 
 // Image upload — Errors
 "uploadError_title" = "Upload Error";

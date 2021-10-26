@@ -22,7 +22,7 @@
 
 @property (nonatomic, strong) UIBarButtonItem *cancelBarButton;
 
-@property (nonatomic, assign) kPiwigoSortObjc currentSortCategory;
+@property (nonatomic, assign) kPiwigoSortObjc currentSort;
 @property (nonatomic, strong) ImageDetailViewController *imageDetailView;
 
 @end
@@ -37,7 +37,7 @@
         self.imageOfInterest = [NSIndexPath indexPathForItem:0 inSection:0];
         
         self.albumData = [[AlbumData alloc] initWithCategoryId:kPiwigoSearchCategoryId andQuery:@""];
-        self.currentSortCategory = (kPiwigoSortObjc)AlbumVars.defaultSort;
+        self.currentSort = (kPiwigoSortObjc)AlbumVars.defaultSort;
         self.displayImageTitles = AlbumVars.displayImageTitles;
         
         // Collection of images
@@ -71,32 +71,47 @@
     // Background color of the view
     self.view.backgroundColor = [UIColor piwigoColorBackground];
 
-    // Navigation bar
+    // Navigation bar appearance
+    UINavigationBar *navigationBar = self.navigationController.navigationBar;
+    navigationBar.barStyle = AppVars.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    navigationBar.tintColor = [UIColor piwigoColorOrange];
+
+    // Toolbar appearance
+    UIToolbar *toolbar = self.navigationController.toolbar;
+    toolbar.barStyle = AppVars.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
+    toolbar.tintColor = [UIColor piwigoColorOrange];
+
     NSDictionary *attributes = @{
                                  NSForegroundColorAttributeName: [UIColor piwigoColorWhiteCream],
                                  NSFontAttributeName: [UIFont piwigoFontNormal],
                                  };
-    self.navigationController.navigationBar.titleTextAttributes = attributes;
-    if (@available(iOS 11.0, *)) {
-        self.navigationController.navigationBar.prefersLargeTitles = NO;
-    }
-    self.navigationController.navigationBar.barStyle = AppVars.isDarkPaletteActive ? UIBarStyleBlack : UIBarStyleDefault;
-    self.navigationController.navigationBar.tintColor = [UIColor piwigoColorOrange];
-    self.navigationController.navigationBar.barTintColor = [UIColor piwigoColorBackground];
-    self.navigationController.navigationBar.backgroundColor = [UIColor piwigoColorBackground];
+    navigationBar.titleTextAttributes = attributes;
 
-    if (@available(iOS 15.0, *)) {
-        /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
-        /// which by default produces a transparent background, to all navigation bars.
-        UINavigationBarAppearance *barAppearance = [[UINavigationBarAppearance alloc] init];
-        [barAppearance configureWithOpaqueBackground];
-        barAppearance.backgroundColor = [UIColor piwigoColorBackground];
-        self.navigationController.navigationBar.standardAppearance = barAppearance;
-        self.navigationController.navigationBar.scrollEdgeAppearance = self.navigationController.navigationBar.standardAppearance;
-        
-        UIToolbarAppearance *toolbarAppearance = [[UIToolbarAppearance alloc] initWithBarAppearance:barAppearance];
-        self.navigationController.toolbar.standardAppearance = toolbarAppearance;
-        self.navigationController.toolbar.scrollEdgeAppearance = self.navigationController.toolbar.standardAppearance;
+    if (@available(iOS 11.0, *)) {
+        navigationBar.prefersLargeTitles = NO;
+
+        if (@available(iOS 13.0, *)) {
+            UINavigationBarAppearance *barAppearance = [[UINavigationBarAppearance alloc] init];
+            [barAppearance configureWithTransparentBackground];
+            barAppearance.backgroundColor = [[UIColor piwigoColorBackground] colorWithAlphaComponent:0.9];
+            barAppearance.titleTextAttributes = attributes;
+            barAppearance.shadowColor = AppVars.isDarkPaletteActive ? [UIColor colorWithWhite:1.0 alpha:0.15] : [UIColor colorWithWhite:0.0 alpha:0.3];
+            self.navigationItem.standardAppearance = barAppearance;
+            self.navigationItem.compactAppearance = barAppearance;   // For iPhone small navigation bar in landscape.
+            self.navigationItem.scrollEdgeAppearance = barAppearance;
+    
+            UIToolbarAppearance *toolbarAppearance = [[UIToolbarAppearance alloc] initWithBarAppearance:barAppearance];
+            toolbar.standardAppearance = toolbarAppearance;
+            if (@available(iOS 15.0, *)) {
+                /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
+                /// which by default produces a transparent background, to all navigation bars.
+                toolbar.scrollEdgeAppearance = toolbarAppearance;
+            }
+        }
+    }
+    else {
+        navigationBar.barTintColor = [[UIColor piwigoColorBackground] colorWithAlphaComponent:0.3];
+        toolbar.barTintColor = [[UIColor piwigoColorBackground] colorWithAlphaComponent:0.9];
     }
 
     // Collection view
@@ -181,7 +196,7 @@
 //                    NSLog(@"=> Discover|Load more images…");
                     [self.albumData loadMoreImagesOnCompletion:^{
                         [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
-                    }];
+                    } onFailure:nil];
                 }
             } else {
                 // No yet loaded => load more images
@@ -190,7 +205,7 @@
 //                    NSLog(@"=> Discover|Load more images…");
                     [self.albumData loadMoreImagesOnCompletion:^{
                         [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
-                    }];
+                    } onFailure:nil];
                 }
             }
         }
@@ -254,8 +269,10 @@
 {
     // Load, sort images and reload collection
     self.albumData.searchQuery = self.searchQuery;
-    [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
+    [self.albumData updateImageSort:self.currentSort onCompletion:^{
         [self.imagesCollection reloadData];
+    } onFailure:^(NSURLSessionTask *task, NSError *error) {
+        [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
     }];
 }
 
@@ -279,7 +296,7 @@
         // Load new image (appended to cache) and sort images before updating UI
         [self.albumData loadMoreImagesOnCompletion:^{
             // Sort images
-            [self.albumData updateImageSort:self.currentSortCategory OnCompletion:^{
+            [self.albumData updateImageSort:self.currentSort onCompletion:^{
 
                 // Refresh collection view if needed
                 NSLog(@"=> category %ld now contains %ld images", (long)kPiwigoSearchCategoryId, (long)self.albumData.images.count);
@@ -313,8 +330,10 @@
                         [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]] :
                         [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
                 }
+            } onFailure:^(NSURLSessionTask *task, NSError *error) {
+                [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
             }];
-        }];
+        } onFailure:nil];
     }
 }
 
@@ -448,7 +467,12 @@
     if (self.albumData.images.count > indexPath.row) {
         // Create cell from Piwigo data
         PiwigoImageData *imageData = [self.albumData.images objectAtIndex:indexPath.row];
-        [cell setupWithImageData:imageData forCategoryId:kPiwigoSearchCategoryId];
+        [cell setupWithImageData:imageData inCategoryId:kPiwigoSearchCategoryId];
+    
+        // pwg.users.favorites… methods available from Piwigo version 2.10
+        if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending)) {
+            cell.isFavorite = [CategoriesData.sharedInstance categoryWithId:kPiwigoFavoritesCategoryId containsImagesWithId:@[[NSNumber numberWithInteger:imageData.imageId]]];
+        }
     }
     
     // Calculate the number of thumbnails displayed per page
@@ -461,7 +485,7 @@
     {
         [self.albumData loadMoreImagesOnCompletion:^{
             [self.imagesCollection reloadData];
-        }];
+        } onFailure:nil];
     }
     
     return cell;
@@ -480,7 +504,11 @@
 
     // Display full screen image
     if (@available(iOS 11.0, *)) {
-        self.imageDetailView = [[ImageDetailViewController alloc] initWithCategoryId:kPiwigoSearchCategoryId atImageIndex:indexPath.row withArray:[self.albumData.images copy]];
+        UIStoryboard *imageDetailSB = [UIStoryboard storyboardWithName:@"ImageDetailViewController" bundle:nil];
+        self.imageDetailView = [imageDetailSB instantiateViewControllerWithIdentifier:@"ImageDetailViewController"];
+        self.imageDetailView.imageIndex = indexPath.row;
+        self.imageDetailView.categoryId = kPiwigoSearchCategoryId;
+        self.imageDetailView.images = [self.albumData.images copy];
         self.imageDetailView.hidesBottomBarWhenPushed = YES;
         self.imageDetailView.imgDetailDelegate = self;
         [self.presentingViewController.navigationController pushViewController:self.imageDetailView animated:YES];
@@ -504,6 +532,21 @@
     }
 }
 
+-(void)didUpdateImageWithData:(PiwigoImageData *)imageData
+{
+    // Check updated image
+    if (imageData == nil) { return; }
+    
+    // Update data source
+    NSInteger indexOfImage = [self.albumData updateImage:imageData];
+    
+    // Refresh image banner
+    if (indexOfImage != NSNotFound) {
+        NSIndexPath *updatedImage = [NSIndexPath indexPathForItem:indexOfImage inSection:0];
+        [self.imagesCollection reloadItemsAtIndexPaths:@[updatedImage]];
+    }
+}
+
 -(void)didDeleteImage:(PiwigoImageData *)image atIndex:(NSInteger)index
 {
     index = MAX(0, index-1);                                    // index must be > 0
@@ -519,7 +562,7 @@
             self.imageDetailView.images = [self.albumData.images mutableCopy];
         }
         [self.imagesCollection reloadData];
-    }];
+    } onFailure:nil];
 }
 
 @end

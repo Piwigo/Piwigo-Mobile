@@ -41,35 +41,35 @@ class PhoneTableViewCell: UITableViewCell {
 
         // Labels
         lightLabel.setTitle(NSLocalizedString("settings_lightColor", comment: "Light"), for: .normal)
-        lightLabel.setTitleColor(UIColor.piwigoColorLeftLabel(), for: .normal)
+        lightLabel.setTitleColor(.piwigoColorLeftLabel(), for: .normal)
         darkLabel.setTitle(NSLocalizedString("settings_darkColor", comment: "Dark"), for: .normal)
-        darkLabel.setTitleColor(UIColor.piwigoColorLeftLabel(), for: .normal)
+        darkLabel.setTitleColor(.piwigoColorLeftLabel(), for: .normal)
         
         // Buttons
         if #available(iOS 13.0, *) {
             if AppVars.isDarkPaletteActive {
                 lightButton.setImage(UIImage(systemName: "circle"), for: .normal)
-                lightButton.tintColor = UIColor.piwigoColorRightLabel()
+                lightButton.tintColor = .piwigoColorRightLabel()
                 darkButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
-                darkButton.tintColor = UIColor.piwigoColorOrange()
+                darkButton.tintColor = .piwigoColorOrange()
             } else {
                 lightButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
-                lightButton.tintColor = UIColor.piwigoColorOrange()
+                lightButton.tintColor = .piwigoColorOrange()
                 darkButton.setImage(UIImage(systemName: "circle"), for: .normal)
-                darkButton.tintColor = UIColor.piwigoColorRightLabel()
+                darkButton.tintColor = .piwigoColorRightLabel()
             }
         } else {
             // Fallback on earlier versions
             if AppVars.isDarkPaletteActive {
                 lightButton.setImage(UIImage(named: "circle"), for: .normal)
-                lightButton.tintColor = UIColor.piwigoColorRightLabel()
+                lightButton.tintColor = .piwigoColorRightLabel()
                 darkButton.setImage(UIImage(named: "checkmark.circle.fill"), for: .normal)
-                darkButton.tintColor = UIColor.piwigoColorOrange()
+                darkButton.tintColor = .piwigoColorOrange()
             } else {
                 lightButton.setImage(UIImage(named: "checkmark.circle.fill"), for: .normal)
-                lightButton.tintColor = UIColor.piwigoColorOrange()
+                lightButton.tintColor = .piwigoColorOrange()
                 darkButton.setImage(UIImage(named: "circle"), for: .normal)
-                darkButton.tintColor = UIColor.piwigoColorRightLabel()
+                darkButton.tintColor = .piwigoColorRightLabel()
             }
         }
     }

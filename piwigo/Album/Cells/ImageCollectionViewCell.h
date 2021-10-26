@@ -15,8 +15,9 @@
 @property (nonatomic, strong) UIImageView *cellImage;
 @property (nonatomic, strong) PiwigoImageData *imageData;
 @property (nonatomic, assign) BOOL isSelected;
+@property (nonatomic, assign) BOOL isFavorite;
 
--(void)setupWithImageData:(PiwigoImageData*)imageData forCategoryId:(NSInteger)categoryId;
+-(void)setupWithImageData:(PiwigoImageData*)imageData inCategoryId:(NSInteger)categoryId;
 -(void)highlightOnCompletion:(void (^)(void))completion;
 
 @end

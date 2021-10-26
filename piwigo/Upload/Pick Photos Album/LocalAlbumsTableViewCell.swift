@@ -17,17 +17,17 @@ class LocalAlbumsTableViewCell: UITableViewCell {
     func configure(with title: String, nberPhotos: Int, startDate: Date?, endDate: Date?) -> Void {
 
         // Background color and aspect
-        backgroundColor = UIColor.piwigoColorCellBackground()
-        tintColor = UIColor.piwigoColorOrange()
+        backgroundColor = .piwigoColorCellBackground()
+        tintColor = .piwigoColorOrange()
 
         // Title
-        titleLabel.font = UIFont.piwigoFontNormal()
-        titleLabel.textColor = UIColor.piwigoColorLeftLabel()
+        titleLabel.font = .piwigoFontNormal()
+        titleLabel.textColor = .piwigoColorLeftLabel()
         titleLabel.text = title
         
         // Number of photos
-        numberLabel.font = UIFont.piwigoFontSmall()
-        numberLabel.textColor = UIColor.piwigoColorRightLabel()
+        numberLabel.font = .piwigoFontSmall()
+        numberLabel.textColor = .piwigoColorRightLabel()
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal
         if nberPhotos != NSNotFound {
@@ -116,8 +116,8 @@ class LocalAlbumsTableViewCell: UITableViewCell {
                 subtitle.append(String(format: "%@", startString))
             }
         }
-        subtitleLabel.font = UIFont.piwigoFontSmall()
-        subtitleLabel.textColor = UIColor.piwigoColorLeftLabel()
+        subtitleLabel.font = .piwigoFontSmall()
+        subtitleLabel.textColor = .piwigoColorLeftLabel()
         subtitleLabel.text = subtitle
     }
 

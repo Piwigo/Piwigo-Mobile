@@ -17,11 +17,11 @@ class ButtonTableViewCell: UITableViewCell {
     func configure(with title: String) {
 
         // Background color and aspect
-        backgroundColor = UIColor.piwigoColorCellBackground()
+        backgroundColor = .piwigoColorCellBackground()
 
         // Button title
-        buttonLabel.font = UIFont.piwigoFontButton()
-        buttonLabel.textColor = UIColor.piwigoColorOrange()
+        buttonLabel.font = .piwigoFontButton()
+        buttonLabel.textColor = .piwigoColorOrange()
         buttonLabel.text = title
     }
 

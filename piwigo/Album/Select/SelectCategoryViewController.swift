@@ -99,23 +99,23 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
         case kPiwigoCategorySelectActionCopyImages:
             guard let array = parameter as? [Any],
-                  let imageIds = array[0] as? [String],
+                  let imageIds = array[0] as? [NSNumber],
                   let categoryId = array[1] as? Int else {
                 fatalError("Input parameter expected to be of type [[String], Int]")
             }
             // Image IDs of the category ID which will be copied to the selected album
-            inputImageIds = imageIds.map({Int($0) ?? NSNotFound})
+            inputImageIds = imageIds.map({$0.intValue}).filter({ $0 != NSNotFound})
             inputImageData = CategoriesData.sharedInstance().getImageForCategory(categoryId, andId: inputImageIds[0])
             inputCategoryId = categoryId
 
         case kPiwigoCategorySelectActionMoveImages:
             guard let array = parameter as? [Any],
-                  let imageIds = array[0] as? [String],
+                  let imageIds = array[0] as? [NSNumber],
                   let categoryId = array[1] as? Int else {
                 fatalError("Input parameter expected to be of type [[String], Int]")
             }
             // Image IDs of the category ID which will be moved to the selected album
-            inputImageIds = imageIds.map({Int($0) ?? NSNotFound}).filter({ $0 != NSNotFound})
+            inputImageIds = imageIds.map({$0.intValue}).filter({ $0 != NSNotFound})
             inputImageData = CategoriesData.sharedInstance().getImageForCategory(categoryId, andId: inputImageIds[0])
             inputCategoryId = categoryId
 
@@ -143,7 +143,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         
         // Button for returning to albums/images collections
         cancelBarButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelSelect))
-        cancelBarButton?.accessibilityIdentifier = "Cancel"
+        cancelBarButton?.accessibilityIdentifier = "CancelSelect"
 
         // Register CategoryTableViewCell
         categoriesTableView.register(UINib(nibName: "CategoryTableViewCell", bundle: nil),
@@ -182,7 +182,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
     @objc
     func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = UIColor.piwigoColorBackground()
+        view.backgroundColor = .piwigoColorBackground()
 
         // Navigation bar
         let attributes = [
@@ -194,9 +194,9 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             navigationController?.navigationBar.prefersLargeTitles = false
         }
         navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
+        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
+        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
+        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
 
         if #available(iOS 15.0, *) {
             /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
@@ -210,7 +210,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
 
         // Table view
         setTableViewMainHeader()
-        categoriesTableView.separatorColor = UIColor.piwigoColorSeparator()
+        categoriesTableView.separatorColor = .piwigoColorSeparator()
         categoriesTableView.indicatorStyle = AppVars.isDarkPaletteActive ? .white : .black
         buildCategoryArray(usingCache: true, untilCompletion: { result in
             // Build complete list
@@ -366,7 +366,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         }
         alert.addAction(retryAction)
         alert.addAction(dismissAction)
-        alert.view.tintColor = UIColor.piwigoColorOrange()
+        alert.view.tintColor = .piwigoColorOrange()
         if #available(iOS 13.0, *) {
             alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
         } else {
@@ -374,7 +374,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         }
         present(alert, animated: true) {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange()
+            alert.view.tintColor = .piwigoColorOrange()
         }
     }
     
@@ -528,7 +528,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         // Header label
         let headerLabel = UILabel()
         headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        headerLabel.textColor = UIColor.piwigoColorHeader()
+        headerLabel.textColor = .piwigoColorHeader()
         headerLabel.numberOfLines = 0
         headerLabel.adjustsFontSizeToFitWidth = false
         headerLabel.lineBreakMode = .byWordWrapping
@@ -621,7 +621,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             // The current default category is not selectable
             if categoryData.albumId == inputCategoryId {
                 cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
-                cell.categoryLabel.textColor = UIColor.piwigoColorRightLabel()
+                cell.categoryLabel.textColor = .piwigoColorRightLabel()
             } else {
                 // Don't present sub-albums in Recent Albums section
                 if (recentCategories.count > 0) && (indexPath.section == 0) {
@@ -638,7 +638,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 // Is the root album parent of the input album?
                 if inputCategoryData.parentAlbumId == 0 {
                     // Yes => Change text colour
-                    cell.categoryLabel.textColor = UIColor.piwigoColorRightLabel()
+                    cell.categoryLabel.textColor = .piwigoColorRightLabel()
                 }
             }
             else if (recentCategories.count > 0) && (indexPath.section == 0) {
@@ -648,12 +648,12 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             else if categoryData.albumId == inputCategoryData.parentAlbumId {
                 // This album is the parent of the input album => Change text colour
                 cell.configure(with: categoryData, atDepth: depth, andButtonState: buttonState)
-                cell.categoryLabel.textColor = UIColor.piwigoColorRightLabel()
+                cell.categoryLabel.textColor = .piwigoColorRightLabel()
             }
             else if categoryData.upperCategories.contains(String(inputCategoryId)) {
                 // This album is a sub-album of the input album => No button
                 cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
-                cell.categoryLabel.textColor = UIColor.piwigoColorRightLabel()
+                cell.categoryLabel.textColor = .piwigoColorRightLabel()
             } else {
                 // Not a parent of a sub-album of the input album
                 cell.configure(with: categoryData, atDepth: depth, andButtonState: buttonState)
@@ -666,13 +666,13 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 cell.configure(with: categoryData, atDepth: depth, andButtonState: buttonState)
             }
             if categoryData.albumId == 0 {
-                cell.categoryLabel.textColor = UIColor.piwigoColorRightLabel()
+                cell.categoryLabel.textColor = .piwigoColorRightLabel()
             }
         case kPiwigoCategorySelectActionSetAutoUploadAlbum:
             // The root album is not selectable (should not be presented but in case…)
             if categoryData.albumId == 0 {
                 cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
-                cell.categoryLabel.textColor = UIColor.piwigoColorRightLabel()
+                cell.categoryLabel.textColor = .piwigoColorRightLabel()
             } else {
                 // Don't present sub-albums in Recent Albums section
                 if (recentCategories.count > 0) && (indexPath.section == 0) {
@@ -688,7 +688,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
             // User cannot copy/move the image to the root album or in albums it already belongs to
             if categoryData.albumId == 0 {  // Should not be presented but in case…
                 cell.configure(with: categoryData, atDepth: depth, andButtonState: kPiwigoCategoryTableCellButtonStateNone)
-                cell.categoryLabel.textColor = UIColor.piwigoColorRightLabel()
+                cell.categoryLabel.textColor = .piwigoColorRightLabel()
             } else {
                 // Don't present sub-albums in Recent Albums section
                 if (recentCategories.count > 0) && (indexPath.section == 0) {
@@ -698,7 +698,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                 }
                 // Albums containing the image are not selectable
                 if inputImageData.categoryIds.contains(NSNumber(value: categoryData.albumId)) {
-                    cell.categoryLabel.textColor = UIColor.piwigoColorRightLabel()
+                    cell.categoryLabel.textColor = .piwigoColorRightLabel()
                 }
             }
 
@@ -940,7 +940,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         alert.addAction(performAction)
 
         // Present popover view
-        alert.view.tintColor = UIColor.piwigoColorOrange()
+        alert.view.tintColor = .piwigoColorOrange()
         if #available(iOS 13.0, *) {
             alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
         } else {
@@ -951,7 +951,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
         alert.popoverPresentationController?.permittedArrowDirections = [.left, .right]
         present(alert, animated: true, completion: {
             // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-            alert.view.tintColor = UIColor.piwigoColorOrange()
+            alert.view.tintColor = .piwigoColorOrange()
         })
     }
 
@@ -1059,7 +1059,7 @@ class SelectCategoryViewController: UIViewController, UITableViewDataSource, UIT
                     catToUpdate.append(self.inputCategoryData)
 
                     // Update cache (will refresh album/images view)
-                    CategoriesData.sharedInstance().updateCategories(catToUpdate)
+                    CategoriesData.sharedInstance().updateCategories(catToUpdate, andUpdateUI: true)
                     self.updatePiwigoHUDwithSuccess() {
                         self.hidePiwigoHUD(afterDelay: kDelayPiwigoHUD) {
                             self.dismiss(animated: true)

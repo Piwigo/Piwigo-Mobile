@@ -35,7 +35,7 @@ class AboutViewController: UIViewController, UITextViewDelegate {
     @objc
     func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = UIColor.piwigoColorBackground()
+        view.backgroundColor = .piwigoColorBackground()
 
         // Navigation bar
         let attributes = [
@@ -47,25 +47,25 @@ class AboutViewController: UIViewController, UITextViewDelegate {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
         navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
+        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
+        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
+        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
 
         if #available(iOS 15.0, *) {
             /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
             /// which by default produces a transparent background, to all navigation bars.
             let barAppearance = UINavigationBarAppearance()
             barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = UIColor.piwigoColorBackground()
+            barAppearance.backgroundColor = .piwigoColorBackground()
             navigationController?.navigationBar.standardAppearance = barAppearance
             navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
         }
 
         // Text color depdending on background color
-        authorsLabel.textColor = UIColor.piwigoColorText()
-        versionLabel.textColor = UIColor.piwigoColorText()
-        textView.textColor = UIColor.piwigoColorText()
-        textView.backgroundColor = UIColor.piwigoColorBackground()
+        authorsLabel.textColor = .piwigoColorText()
+        versionLabel.textColor = .piwigoColorText()
+        textView.textColor = .piwigoColorText()
+        textView.backgroundColor = .piwigoColorBackground()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -129,8 +129,13 @@ class AboutViewController: UIViewController, UITextViewDelegate {
         let authors2 = NSLocalizedString("authors2", tableName: "About", bundle: Bundle.main, value: "", comment: "and Eddy Lelièvre-Berna")
         
         // Change label according to orientation
-        if ((UIDevice.current.userInterfaceIdiom == .phone) &&
-            ((UIDevice.current.orientation != .landscapeLeft) && (UIDevice.current.orientation != .landscapeRight))) {
+        var orientation: UIInterfaceOrientation = .portrait
+        if #available(iOS 13.0, *) {
+            orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .portrait
+        } else {
+            orientation = UIApplication.shared.statusBarOrientation
+        }
+        if (UIDevice.current.userInterfaceIdiom == .phone) && orientation.isPortrait {
             // iPhone in portrait mode
             authorsLabel.text = "\(authors1)\r\(authors2)"
         }

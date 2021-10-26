@@ -25,10 +25,10 @@ class PasteboardImagesHeaderReusableView: UICollectionReusableView {
     func configure(with selectState: SelectButtonState) {
         
         // General settings
-        backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.75)
+        backgroundColor = .piwigoColorBackground().withAlphaComponent(0.75)
 
         // Data label used when place name known
-        headerLabel.textColor = UIColor.piwigoColorHeader()
+        headerLabel.textColor = .piwigoColorHeader()
         headerLabel.text = NSLocalizedString("categoryUpload_pasteboard", comment: "Clipboard")
 
         // Select/deselect button
@@ -46,7 +46,7 @@ class PasteboardImagesHeaderReusableView: UICollectionReusableView {
 
         headerLabel.text = ""
         selectButton.setTitle("", for: .normal)
-        selectButton.backgroundColor = UIColor.piwigoColorBackground()
+        selectButton.backgroundColor = .piwigoColorBackground()
     }
 
 
@@ -57,16 +57,16 @@ class PasteboardImagesHeaderReusableView: UICollectionReusableView {
         switch state {
         case .select:
             title = String(format: "  %@  ", NSLocalizedString("selectAll", comment: "Select All"))
-            bckgColor = UIColor.piwigoColorCellBackground()
+            bckgColor = .piwigoColorCellBackground()
         case .deselect:
             title = String(format: "  %@  ", NSLocalizedString("categoryImageList_deselectButton", comment: "Deselect"))
-            bckgColor = UIColor.piwigoColorCellBackground()
+            bckgColor = .piwigoColorCellBackground()
         case .none:
             title = ""
-            bckgColor = UIColor.clear
+            bckgColor = .clear
         }
         selectButton.backgroundColor = bckgColor
         selectButton.setTitle(title, for: .normal)
-        selectButton.setTitleColor(UIColor.piwigoColorWhiteCream(), for: .normal)
+        selectButton.setTitleColor(.piwigoColorWhiteCream(), for: .normal)
     }
 }

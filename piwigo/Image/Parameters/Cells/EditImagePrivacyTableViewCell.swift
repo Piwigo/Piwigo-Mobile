@@ -23,7 +23,7 @@ class EditImagePrivacyTableViewCell: UITableViewCell {
 
     func setLeftLabel(withText text: String?) {
         label.text = text
-        label.textColor = UIColor.piwigoColorLeftLabel()
+        label.textColor = .piwigoColorLeftLabel()
     }
 
     func setPrivacyLevel(with privacy: kPiwigoPrivacy, inColor color: UIColor?) {

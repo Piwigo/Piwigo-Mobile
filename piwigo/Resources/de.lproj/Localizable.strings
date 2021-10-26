@@ -137,6 +137,7 @@
 
 // Albums "Discover"
 "categoryDiscover_title" = "Entdecken";
+"categoryDiscoverTagged_title" = "Markiert";
 "categoryDiscoverVisits_title" = "Am häufigsten angesehen";
 "categoryDiscoverVisits_legend" = "Aufrufe";
 "categoryDiscoverBest_title" = "Am besten bewertet";
@@ -304,6 +305,7 @@
 // Image options (actions)
 "imageOptions_title" = "Fotooptionen";
 "imageOptions_edit" = "Bearbeiten";
+"imageOptions_properties" = "Eigenschaften bearbeiten";
 "imageOptions_download" = "Herunterladen";
 "imageOptions_setAlbumImage" = "Als Album-Titelfoto festlegen";
 
@@ -373,6 +375,13 @@
 
 // Image rename — Errors
 "renameImageError_message" = "Fehler beim Umbenennen der Fotodatei";
+
+// Image in favorites
+"imageFavorites_title" = "Favoriten";
+
+// Image in favorites — Error
+"imageFavoritesAddError_message" = "Fehler beim Hinzufügen des Fotos zu ihren Favoriten.";
+"imageFavoritesRemoveError_message" = "Fehler beim Entfernen des Fotos von ihren Favoriten.";
 
 // Image delete
 "deleteImage_delete" = "Löschen";
@@ -483,7 +492,6 @@
 "imageUploadCompleted_title" = "Erfolgreich hochgeladen";
 "imageUploadCompleted_message" = "Fotos/Videos wurden auf Ihren Piwigo-Server hochgeladen.";
 "imageUploadCompleted_message>1" = "Fotos/Videos auf Ihren Piwigo-Server hochgeladen.";
-
 
 // Image upload — Errors
 "uploadError_title" = "Fehler beim Hochladen";

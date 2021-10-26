@@ -35,7 +35,7 @@ class ReleaseNotesViewController: UIViewController {
     @objc
     func applyColorPalette() {
         // Background color of the view
-        view.backgroundColor = UIColor.piwigoColorBackground()
+        view.backgroundColor = .piwigoColorBackground()
 
         // Navigation bar
         let attributes = [
@@ -47,25 +47,25 @@ class ReleaseNotesViewController: UIViewController {
             navigationController?.navigationBar.prefersLargeTitles = false
         }
         navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
+        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
+        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
+        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
 
         if #available(iOS 15.0, *) {
             /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
             /// which by default produces a transparent background, to all navigation bars.
             let barAppearance = UINavigationBarAppearance()
             barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = UIColor.piwigoColorBackground()
+            barAppearance.backgroundColor = .piwigoColorBackground()
             navigationController?.navigationBar.standardAppearance = barAppearance
             navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
         }
 
         // Text color depdending on background color
-        authorsLabel.textColor = UIColor.piwigoColorText()
-        versionLabel.textColor = UIColor.piwigoColorText()
-        textView.textColor = UIColor.piwigoColorText()
-        textView.backgroundColor = UIColor.piwigoColorBackground()
+        authorsLabel.textColor = .piwigoColorText()
+        versionLabel.textColor = .piwigoColorText()
+        textView.textColor = .piwigoColorText()
+        textView.backgroundColor = .piwigoColorBackground()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -129,8 +129,13 @@ class ReleaseNotesViewController: UIViewController {
         let authors2 = NSLocalizedString("authors2", tableName: "About", bundle: Bundle.main, value: "", comment: "and Eddy Lelièvre-Berna")
         
         // Change label according to orientation
-        if ((UIDevice.current.userInterfaceIdiom == .phone) &&
-            ((UIDevice.current.orientation != .landscapeLeft) && (UIDevice.current.orientation != .landscapeRight))) {
+        var orientation: UIInterfaceOrientation = .portrait
+        if #available(iOS 13.0, *) {
+            orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .portrait
+        } else {
+            orientation = UIApplication.shared.statusBarOrientation
+        }
+        if (UIDevice.current.userInterfaceIdiom == .phone) && orientation.isPortrait {
             // iPhone in portrait mode
             authorsLabel.text = "\(authors1)\r\(authors2)"
         }
@@ -158,6 +163,16 @@ class ReleaseNotesViewController: UIViewController {
         let spacerAttributedString = NSMutableAttributedString(string: "\n\n\n")
         let spacerRange = NSRange(location: 0, length: spacerAttributedString.length)
         spacerAttributedString.addAttribute(.font, value: UIFont.piwigoFontTiny(), range: spacerRange)
+
+        // Release 2.8.0 — Bundle string
+        let v280String = NSLocalizedString("v2.8.0_text", tableName: "ReleaseNotes", bundle: Bundle.main, value: "", comment: "v2.8.0 Release Notes text")
+        let v280AttributedString = NSMutableAttributedString(string: v280String)
+        var v280Range = NSRange(location: 0, length: v280String.count)
+        v280AttributedString.addAttribute(.font, value: UIFont.piwigoFontSmall(), range: v280Range)
+        v280Range = NSRange(location: 0, length: (v280String as NSString).range(of: "\n").location)
+        v280AttributedString.addAttribute(.font, value: UIFont.piwigoFontBold(), range: v280Range)
+        notesAttributedString.append(v280AttributedString)
+        notesAttributedString.append(spacerAttributedString)
 
         // Release 2.7.2 — Bundle string
         let v272String = NSLocalizedString("v2.7.2_text", tableName: "ReleaseNotes", bundle: Bundle.main, value: "", comment: "v2.7.2 Release Notes text")

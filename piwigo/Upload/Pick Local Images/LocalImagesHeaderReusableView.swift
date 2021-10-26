@@ -40,7 +40,7 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
     func configure(with images: [PHAsset], section: Int, selectState: SelectButtonState) {
         
         // General settings
-        backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.75)
+        backgroundColor = .piwigoColorBackground().withAlphaComponent(0.75)
 
         // Keep section for future use
         self.section = section
@@ -49,15 +49,15 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         dateLabel.numberOfLines = 1
         dateLabel.adjustsFontSizeToFitWidth = false
-        dateLabel.font = UIFont.piwigoFontSmall()
-        dateLabel.textColor = UIColor.piwigoColorRightLabel()
+        dateLabel.font = .piwigoFontSmall()
+        dateLabel.textColor = .piwigoColorRightLabel()
 
         // Place name of location
         placeLabel.translatesAutoresizingMaskIntoConstraints = false
         placeLabel.numberOfLines = 1
         placeLabel.adjustsFontSizeToFitWidth = false
-        placeLabel.font = UIFont.piwigoFontSemiBold()
-        placeLabel.textColor = UIColor.piwigoColorLeftLabel()
+        placeLabel.font = .piwigoFontSemiBold()
+        placeLabel.textColor = .piwigoColorLeftLabel()
 
         // Get date labels from images in section
         (dateLabelText, optionalDateLabelText) = getDateLabels(of: images)
@@ -84,7 +84,7 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         dateLabel.text = ""
         placeLabel.text = ""
         selectButton.setTitle("", for: .normal)
-        selectButton.backgroundColor = UIColor.piwigoColorBackground()
+        selectButton.backgroundColor = .piwigoColorBackground()
     }
 
     
@@ -95,17 +95,17 @@ class LocalImagesHeaderReusableView: UICollectionReusableView {
         switch state {
         case .select:
             title = String(format: "  %@  ", NSLocalizedString("selectAll", comment: "Select All"))
-            bckgColor = UIColor.piwigoColorCellBackground()
+            bckgColor = .piwigoColorCellBackground()
         case .deselect:
             title = String(format: "  %@  ", NSLocalizedString("categoryImageList_deselectButton", comment: "Deselect"))
-            bckgColor = UIColor.piwigoColorCellBackground()
+            bckgColor = .piwigoColorCellBackground()
         case .none:
             title = ""
-            bckgColor = UIColor.clear
+            bckgColor = .clear
         }
         selectButton.backgroundColor = bckgColor
         selectButton.setTitle(title, for: .normal)
-        selectButton.setTitleColor(UIColor.piwigoColorWhiteCream(), for: .normal)
+        selectButton.setTitleColor(.piwigoColorWhiteCream(), for: .normal)
     }
 
     @objc private func setLabelsFromDatesAndLocation(location: CLLocation) {

@@ -24,9 +24,9 @@ class TagTableViewCell: UITableViewCell {
 
     func configure(with tag: Tag, andEditOption option: kPiwigoEditOption) {
         // General settings
-        backgroundColor = UIColor.piwigoColorCellBackground()
-        tintColor = UIColor.piwigoColorOrange()
-        textLabel?.font = UIFont.piwigoFontNormal()
+        backgroundColor = .piwigoColorCellBackground()
+        tintColor = .piwigoColorOrange()
+        textLabel?.font = .piwigoFontNormal()
 
         // => pwg.tags.getList returns in addition: counter, url
         let nber = tag.numberOfImagesUnderTag
@@ -43,8 +43,8 @@ class TagTableViewCell: UITableViewCell {
                 String(format: NSLocalizedString("singleImageCount", comment: "%@ photo"), nberPhotos)
             leftLabel.text = "\(tag.tagName) (\(nberImages))"
         }
-        leftLabel.font = UIFont.piwigoFontNormal()
-        leftLabel.textColor = UIColor.piwigoColorLeftLabel()
+        leftLabel.font = .piwigoFontNormal()
+        leftLabel.textColor = .piwigoColorLeftLabel()
 
         // Change image according to state
         switch option {

@@ -51,17 +51,20 @@ typedef enum {
 -(PiwigoAlbumData *)initSearchAlbumForQuery:(NSString *)query;
 -(PiwigoAlbumData *)initDiscoverAlbumForCategory:(NSInteger)categoryId;
 
--(void)loadAllCategoryImageDataForProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
-                              OnCompletion:(void (^)(BOOL completed))completion;
+-(void)loadAllCategoryImageDataWithSort:(kPiwigoSortObjc)sort
+                            forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
+                           onCompletion:(void (^)(BOOL completed))completion
+                              onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 -(void)loadCategoryImageDataChunkWithSort:(NSString*)sort
 							  forProgress:(void (^)(NSInteger onPage, NSInteger outOf))progress
-								OnCompletion:(void (^)(BOOL completed))completion;
+                             onCompletion:(void (^)(BOOL completed))completion
+                                onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
--(void)addImages:(NSArray*)images;
+-(void)addImages:(NSArray<PiwigoImageData*> *)images;
 -(void)addUploadedImage:(PiwigoImageData*)imageData;
--(void)updateImages:(NSArray*)updatedImages;
+-(void)updateImages:(NSArray<PiwigoImageData*> *)updatedImages;
 -(void)updateImageAfterEdit:(PiwigoImageData *)uploadedImage;
--(void)removeImages:(NSArray*)images;
+-(void)removeImages:(NSArray<PiwigoImageData*> *)images;
 -(NSInteger)getDepthOfCategory;
 -(BOOL)containsUpperCategory:(NSInteger)category;
 -(void)resetData;

@@ -31,11 +31,11 @@ class SliderTableViewCell: UITableViewCell {
     func configure(with title:String, value:Float, increment:Float, minValue:Float, maxValue:Float, prefix:String, suffix:String) {
 
         // Background color and aspect
-        backgroundColor = UIColor.piwigoColorCellBackground()
+        backgroundColor = .piwigoColorCellBackground()
 
         // Slider title
-        sliderName.font = UIFont.piwigoFontNormal()
-        sliderName.textColor = UIColor.piwigoColorLeftLabel()
+        sliderName.font = .piwigoFontNormal()
+        sliderName.textColor = .piwigoColorLeftLabel()
         sliderName.text = title
 
         // Slider
@@ -43,12 +43,12 @@ class SliderTableViewCell: UITableViewCell {
         incrementSliderBy = increment
         slider.minimumValue = minValue
         slider.maximumValue = maxValue
-        slider.tintColor = UIColor.piwigoColorOrange()
-        slider.thumbTintColor = UIColor.piwigoColorThumb()
+        slider.tintColor = .piwigoColorOrange()
+        slider.thumbTintColor = .piwigoColorThumb()
 
         // Slider value
-        sliderValue.font = UIFont.piwigoFontNormal()
-        sliderValue.textColor = UIColor.piwigoColorRightLabel()
+        sliderValue.font = .piwigoFontNormal()
+        sliderValue.textColor = .piwigoColorRightLabel()
         valuePrefix = prefix
         valueSuffix = suffix
         updateDisplayedValue(value)

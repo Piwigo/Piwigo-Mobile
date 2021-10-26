@@ -137,6 +137,7 @@
 
 // Albums "Discover"
 "categoryDiscover_title" = "Scoprire";
+"categoryDiscoverTagged_title" = "Etichettato";
 "categoryDiscoverVisits_title" = "Le più viste";
 "categoryDiscoverVisits_legend" = "visualizzazioni";
 "categoryDiscoverBest_title" = "I più votati";
@@ -304,6 +305,7 @@
 // Image options (actions)
 "imageOptions_title" = "Opzioni dell'immagine";
 "imageOptions_edit" = "Modifica";
+"imageOptions_properties" = "Modifica Proprietà";
 "imageOptions_download" = "Scarica";
 "imageOptions_setAlbumImage" = "Impostare come immagine dell'Album";
 
@@ -373,6 +375,13 @@
 
 // Image rename — Errors
 "renameImageError_message" = "Impossibile rinominare file";
+
+// Image in favorites
+"imageFavorites_title" = "Preferite";
+
+// Image in favorites — Error
+"imageFavoritesAddError_message" = "Impossibile aggiungere questa foto ai tuoi preferiti.";
+"imageFavoritesRemoveError_message" = "Impossibile rimuovere questa foto dai tuoi preferiti.";
 
 // Image delete
 "deleteImage_delete" = "Elimina";
@@ -483,7 +492,6 @@
 "imageUploadCompleted_title" = "Caricamento Completato";
 "imageUploadCompleted_message" = "immagine/video caricati sul server di Piwigo.";
 "imageUploadCompleted_message>1" = "immagini/video caricati sul server di Piwigo.";
-
 
 // Image upload — Errors
 "uploadError_title" = "Errore di caricamento";
@@ -683,10 +691,10 @@
 // Settings — Auto-Upload
 "settings_autoUpload" = "Caricamento Automatico";
 "settings_autoUpload>414px" = "Caricamento Automatico Delle Foto";
-"settings_autoUploadEnabled" = "On";
+"settings_autoUploadEnabled" = "Attiva";
 "settings_autoUploadEnabledInfo" = "Le foto verranno caricate automaticamente sul tuo Piwigo.";
 "settings_autoUploadEnabledInfoAll" = "Foto e video saranno caricati automaticamente sul tuo Piwigo.";
-"settings_autoUploadDisabled" = "Off";
+"settings_autoUploadDisabled" = "Non attivo";
 "settings_autoUploadDisabledInfo" = "Le foto non verranno caricate automaticamente sul tuo Piwigo.";
 "settings_autoUploadSource" = "Sorgente";
 "settings_autoUploadSourceInvalid" = "Album sorgente non valido";

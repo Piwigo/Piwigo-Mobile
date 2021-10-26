@@ -1,6 +1,6 @@
 //
 //  UploadAuto.swift
-//  piwigo
+//  piwigoKit
 //
 //  Created by Eddy Lelièvre-Berna on 10/04/2021.
 //  Copyright © 2021 Piwigo.org. All rights reserved.

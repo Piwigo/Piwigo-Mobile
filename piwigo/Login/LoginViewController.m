@@ -662,8 +662,8 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
             {
                 // Check Piwigo version, get token, available sizes, etc.
                 [self getSessionStatusAtLogin:YES andFirstLogin:isFirstLogin withReloginCompletion:reloginCompletion];
-            
-            } else {
+            }
+            else {
                 // Inform user that server failed to retrieve Community parameters
                 NetworkVarsObjc.hadOpenedSession = NO;
                 NSError *error = [NSError errorWithDomain:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath] code:-1 userInfo:@{NSLocalizedDescriptionKey : NSLocalizedString(@"serverCommunityError_message", @"Failed to get Community extension parameters.\nTry logging in again.")}];
@@ -784,10 +784,40 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 
     // Load navigation if needed
     if (isFirstLogin) {
-        // Present Album/Images view and resume uploads
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        [appDelegate loadNavigation];
-        return;
+        // Load favorites in the background before loading image data if needed
+        if (!NetworkVarsObjc.hasGuestRights &&
+            ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending))
+        {
+            // Update HUD during login
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self showLoadingWithSubtitle:NSLocalizedString(@"imageFavorites_title", @"Favorites")];
+            });
+
+            // Initialise favorites album
+            PiwigoAlbumData *favoritesAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoFavoritesCategoryId];
+            [CategoriesData.sharedInstance updateCategories:@[favoritesAlbum] andUpdateUI:NO];
+            
+            // Download favorites
+            [[CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:(kPiwigoSortObjc)AlbumVars.defaultSort
+                forProgress:nil
+            onCompletion:^(BOOL completed) {
+                // Present Album/Images view and resume uploads
+                AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                [appDelegate loadNavigation];
+            }
+            onFailure:^(NSURLSessionTask *task, NSError *error) {
+                NetworkVarsObjc.hadOpenedSession = NO;
+                self.isAlreadyTryingToLogin = NO;
+                // Display error message
+                [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
+            }];
+            return;
+        } else {
+            // Present Album/Images view and resume uploads
+            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            [appDelegate loadNavigation];
+            return;
+        }
     }
 
     // Resume upload operations

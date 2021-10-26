@@ -148,7 +148,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         localImagesCollection.accessibilityIdentifier = "CameraRoll"
         
         // Navigation bar
-        navigationController?.toolbar.tintColor = UIColor.piwigoColorOrange()
+        navigationController?.toolbar.tintColor = .piwigoColorOrange()
         navigationController?.navigationBar.accessibilityIdentifier = "LocalImagesNav"
 
         // The cancel button is used to cancel the selection of images to upload
@@ -211,9 +211,9 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             // The sort options are presented in a segmented bar on iPhone & iPad.
             // Segmented control (choice for presenting images by month, week, day or in a single collection)
             if #available(iOS 13.0, *) {
-                segmentedControl.selectedSegmentTintColor = UIColor.piwigoColorOrange()
+                segmentedControl.selectedSegmentTintColor = .piwigoColorOrange()
             } else {
-                segmentedControl.tintColor = UIColor.piwigoColorOrange()
+                segmentedControl.tintColor = .piwigoColorOrange()
             }
             segmentedControl.selectedSegmentIndex = Int(sortType.rawValue)
             segmentedControl.setEnabled(false, forSegmentAt: SectionType.month.rawValue)
@@ -230,8 +230,8 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
 
     @objc func applyColorPalette() {
         // Background color of the views
-        view.backgroundColor = UIColor.piwigoColorBackground()
-        sortOptionsView.backgroundColor = UIColor.piwigoColorBackground()
+        view.backgroundColor = .piwigoColorBackground()
+        sortOptionsView.backgroundColor = .piwigoColorBackground()
 
         // Navigation bar
         let attributes = [
@@ -243,16 +243,16 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
             navigationController?.navigationBar.prefersLargeTitles = false
         }
         navigationController?.navigationBar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
-        navigationController?.navigationBar.tintColor = UIColor.piwigoColorOrange()
-        navigationController?.navigationBar.barTintColor = UIColor.piwigoColorBackground()
-        navigationController?.navigationBar.backgroundColor = UIColor.piwigoColorBackground()
+        navigationController?.navigationBar.tintColor = .piwigoColorOrange()
+        navigationController?.navigationBar.barTintColor = .piwigoColorBackground()
+        navigationController?.navigationBar.backgroundColor = .piwigoColorBackground()
 
         if #available(iOS 15.0, *) {
             /// In iOS 15, UIKit has extended the usage of the scrollEdgeAppearance,
             /// which by default produces a transparent background, to all navigation bars.
             let barAppearance = UINavigationBarAppearance()
             barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = UIColor.piwigoColorBackground()
+            barAppearance.backgroundColor = .piwigoColorBackground()
             navigationController?.navigationBar.standardAppearance = barAppearance
             navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
         }
@@ -260,16 +260,16 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
         // Segmented control
         if #available(iOS 14, *) {
             // Toolbar
-            legendLabel.textColor = UIColor.piwigoColorText()
+            legendLabel.textColor = .piwigoColorText()
             legendBarItem = UIBarButtonItem(customView: legendLabel)
             toolbarItems = [legendBarItem, .flexibleSpace(), uploadBarButton]
-            navigationController?.toolbar.barTintColor = UIColor.piwigoColorBackground()
+            navigationController?.toolbar.barTintColor = .piwigoColorBackground()
             navigationController?.toolbar.barStyle = AppVars.isDarkPaletteActive ? .black : .default
         }
         else {
             // Fallback on earlier versions
             // Segmented control
-            segmentedControl.superview?.backgroundColor = UIColor.piwigoColorBackground().withAlphaComponent(0.8)
+            segmentedControl.superview?.backgroundColor = .piwigoColorBackground().withAlphaComponent(0.8)
             if #available(iOS 13.0, *) {
                 // Keep standard background color
                 segmentedControl.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
@@ -395,8 +395,13 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                         navigationItem.rightBarButtonItems = [actionBarButton, trashBarButton].compactMap { $0 }
                     } else {
                         trashBarButton.isEnabled = false
-                        if (UIDevice.current.orientation == .landscapeLeft) ||
-                            (UIDevice.current.orientation == .landscapeRight) {
+                        var orientation: UIInterfaceOrientation = .portrait
+                        if #available(iOS 13.0, *) {
+                            orientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .portrait
+                        } else {
+                            orientation = UIApplication.shared.statusBarOrientation
+                        }
+                        if orientation.isLandscape {
                             navigationItem.rightBarButtonItems = [actionBarButton, trashBarButton].compactMap { $0 }
                         } else {
                             navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
@@ -1151,7 +1156,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 })
                 alert.addAction(defaultAction)
                 alert.addAction(deleteAction)
-                alert.view.tintColor = UIColor.piwigoColorOrange()
+                alert.view.tintColor = .piwigoColorOrange()
                 if #available(iOS 13.0, *) {
                     alert.overrideUserInterfaceStyle = AppVars.isDarkPaletteActive ? .dark : .light
                 } else {
@@ -1159,7 +1164,7 @@ class LocalImagesViewController: UIViewController, UICollectionViewDataSource, U
                 }
                 self.present(alert, animated: true) {
                     // Bugfix: iOS9 - Tint not fully Applied without Reapplying
-                    alert.view.tintColor = UIColor.piwigoColorOrange()
+                    alert.view.tintColor = .piwigoColorOrange()
                 }
             }
         }
