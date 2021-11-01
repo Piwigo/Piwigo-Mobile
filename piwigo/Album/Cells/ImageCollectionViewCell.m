@@ -17,10 +17,8 @@
 @property (nonatomic, strong) UIView *bottomLayer;
 @property (nonatomic, strong) UIImageView *selectedImage;
 @property (nonatomic, strong) UIImageView *favoriteImage;
-@property (nonatomic, strong) UIView *favoriteBckg;
-@property (nonatomic, strong) NSLayoutConstraint *favBckgLeft;
-@property (nonatomic, assign) CGFloat favBckgPosY;
-@property (nonatomic, strong) NSLayoutConstraint *favBckgBottom;
+@property (nonatomic, assign) CGFloat favoriteDeltaX, favoriteDeltaY;
+@property (nonatomic, strong) NSLayoutConstraint *favoriteLeft, *favoriteBottom;
 @property (nonatomic, strong) UIView *darkenView;
 @property (nonatomic, strong) UIImageView *playImage;
 @property (nonatomic, strong) UILabel *noDataLabel;
@@ -63,26 +61,6 @@
         [self.cellImage addConstraint:[NSLayoutConstraint constraintViewFromLeft:self.playImage amount:5]];
         [self.cellImage addConstraint:[NSLayoutConstraint constraintViewFromTop:self.playImage amount:5]];
         
-        // Darker area below favorite icon
-        CGFloat width = self.contentView.bounds.size.width/2.0;
-        CGFloat height = self.contentView.bounds.size.height/2.0;
-        self.favoriteBckg = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, width, height)];
-        CAGradientLayer *gradient = [CAGradientLayer layer];
-        gradient.frame = self.favoriteBckg.bounds;
-        gradient.startPoint = CGPointMake(0,1);
-        gradient.endPoint = CGPointMake(0.4,0.4);
-        gradient.colors = @[(id)[UIColor colorWithWhite:0.2 alpha:1.0].CGColor,
-                            (id)[UIColor colorWithWhite:1.0 alpha:0.0].CGColor];
-        [self.favoriteBckg.layer insertSublayer:gradient atIndex:0];
-        self.favoriteBckg.translatesAutoresizingMaskIntoConstraints = NO;
-        self.favoriteBckg.hidden = YES;
-        [self.cellImage addSubview:self.favoriteBckg];
-        [self.cellImage addConstraint:[NSLayoutConstraint constraintView:self.favoriteBckg toWidth:width]];
-        [self.cellImage addConstraint:[NSLayoutConstraint constraintView:self.favoriteBckg toHeight:height]];
-        self.favBckgLeft = [NSLayoutConstraint constraintViewFromLeft:self.favoriteBckg amount:0];
-        self.favBckgBottom = [NSLayoutConstraint constraintViewFromBottom:self.favoriteBckg amount:0];
-        [self.cellImage addConstraints:@[self.favBckgLeft, self.favBckgBottom]];
-
         // Favorite image
         self.favoriteImage = [UIImageView new];
         self.favoriteImage.translatesAutoresizingMaskIntoConstraints = NO;
@@ -96,10 +74,14 @@
         self.favoriteImage.image = [favorite imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         self.favoriteImage.tintColor = [UIColor whiteColor];
         self.favoriteImage.hidden = YES;
-        [self.favoriteBckg addSubview:self.favoriteImage];
-        [self.favoriteBckg addConstraints:[NSLayoutConstraint constraintView:self.favoriteImage to:CGSizeMake(17, 17)]];
-        [self.favoriteBckg addConstraint:[NSLayoutConstraint constraintViewFromLeft:self.favoriteImage amount:3]];
-        [self.favoriteBckg addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.favoriteImage amount:3]];
+        [self.cellImage addSubview:self.favoriteImage];
+        [self.cellImage addConstraints:[NSLayoutConstraint constraintView:self.favoriteImage to:CGSizeMake(17, 17)]];
+        self.favoriteDeltaX = 3.0; self.favoriteDeltaY = 3;
+        self.favoriteLeft = [NSLayoutConstraint constraintViewFromLeft:self.favoriteImage
+                                                                amount:self.favoriteDeltaX];
+        self.favoriteBottom = [NSLayoutConstraint constraintViewFromBottom:self.favoriteImage
+                                                                    amount:- self.favoriteDeltaY];
+        [self.cellImage addConstraints:@[self.favoriteLeft, self.favoriteBottom]];
         
         // Selected images are darker
         self.darkenView = [UIView new];
@@ -339,31 +321,48 @@
         // Downsample image (or scale it up)
         UIImage *displayedImage = [ImageUtilities downsampleWithImage:image to:size scale:scale];
         weakSelf.cellImage.image = displayedImage;
+        [weakSelf.cellImage sizeToFit];
         
-        // Horizontal correction?
-        CGFloat imageWidth = displayedImage.size.width;
-        CGFloat cellWidth = size.width * scale;
-        if (imageWidth < cellWidth) {
-            // The favorite image must be displaced horizontally
-            [weakSelf.cellImage removeConstraint:weakSelf.favBckgLeft];
-            CGFloat favBckgPosX = (cellWidth - imageWidth) / 2.0 / scale;
-            weakSelf.favBckgLeft = [NSLayoutConstraint constraintViewFromLeft:weakSelf.favoriteBckg
-                                                                       amount:favBckgPosX];
-            [weakSelf.cellImage addConstraint:weakSelf.favBckgLeft];
+        // Favorite image position depends on device
+        NSLayoutConstraint *oldConstraint = weakSelf.favoriteLeft;
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+            // Case of an iPhone: squared thumbnails
+            weakSelf.favoriteDeltaX = 3.0;
+            weakSelf.favoriteDeltaY = 3.0;
         }
+        else {
+            // Case of an iPad: respect aspect ratio
+            // Horizontal correction?
+            CGFloat imageWidth = displayedImage.size.width / scale;
+            CGFloat cellWidth = size.width;
+            weakSelf.favoriteDeltaX = 3.0;
+            if (imageWidth < cellWidth) {
+                // The image does not fill the cell horizontally
+                weakSelf.favoriteDeltaX = 3.0 + (cellWidth - imageWidth) / 2.0;
+            }
 
-        // Vertical correction?
-        CGFloat imageHeight = displayedImage.size.height;
-        CGFloat cellHeight = size.height * scale;
-        if (imageHeight < cellHeight) {
-            // The Favorite image must be displaced vertically
-            [weakSelf.cellImage removeConstraint:weakSelf.favBckgBottom];
-            weakSelf.favBckgPosY = (cellHeight - imageHeight) / 2.0 / scale;
-            weakSelf.favBckgBottom = [NSLayoutConstraint constraintViewFromBottom:weakSelf.favoriteBckg
-                                                                           amount:weakSelf.favBckgPosY];
-            [weakSelf.cellImage addConstraint:weakSelf.favBckgBottom];
+            // Vertical correction?
+            CGFloat imageHeight = displayedImage.size.height / scale;
+            CGFloat cellHeight = size.height;
+            oldConstraint = weakSelf.favoriteBottom;
+            if (imageHeight < cellHeight) {
+                // The image does not fill the cell vertically
+                weakSelf.favoriteDeltaY = 3.0 + (cellHeight - imageHeight) / 2.0;
+            }
+        }
+        
+        // Set horizontal constraint
+        weakSelf.favoriteLeft.constant = weakSelf.favoriteDeltaX;
+
+        // Set vertical constraint
+        if (weakSelf.bottomLayer.isHidden) {
+            // The title is not displayed
+            weakSelf.favoriteBottom.constant = - weakSelf.favoriteDeltaY;
         } else {
-            weakSelf.favBckgPosY = 0;
+            // The title is displayed
+            [weakSelf.nameLabel sizeToFit];
+            CGFloat deltaY = fmax(self.bottomLayer.bounds.size.height + 3.0, weakSelf.favoriteDeltaY);
+            weakSelf.favoriteBottom.constant = - deltaY;
         }
     } failure:nil];
 }
@@ -372,6 +371,7 @@
 {
     [super prepareForReuse];
     self.cellImage.image = nil;
+    self.favoriteDeltaX = 3.0; self.favoriteDeltaY = 3.0;
 	self.isSelected = NO;
     self.isFavorite = NO;
 	self.playImage.hidden = YES;
@@ -390,20 +390,19 @@
 {
     _isFavorite = isFavorite;
 
+    // Update the vertical constraint
     if (self.bottomLayer.isHidden) {
         // Place icon at the bottom
-        [self.cellImage removeConstraint:self.favBckgBottom];
-        self.favBckgBottom = [NSLayoutConstraint constraintViewFromBottom:self.favoriteBckg amount:self.favBckgPosY];
-        [self.cellImage addConstraint:self.favBckgBottom];
-    } else {
-        // Place icon above title
-        [self.nameLabel sizeToFit];
-        CGFloat height = fmax(self.nameLabel.bounds.size.height + 2, self.favBckgPosY);
-        [self.cellImage removeConstraint:self.favBckgBottom];
-        self.favBckgBottom = [NSLayoutConstraint constraintViewFromBottom:self.favoriteBckg amount:height];
-        [self.cellImage addConstraint:self.favBckgBottom];
+        self.favoriteBottom.constant = - self.favoriteDeltaY;
     }
-    self.favoriteBckg.hidden = !isFavorite;
+    else {
+        // Place icon at the bottom but above the title
+        [self.nameLabel sizeToFit];
+        CGFloat height = fmax(self.bottomLayer.bounds.size.height + 3.0, self.favoriteDeltaY);
+        self.favoriteBottom.constant = - height;
+    }
+    
+    // Display/hide the favorite icon
     self.favoriteImage.hidden = !isFavorite;
 }
 
