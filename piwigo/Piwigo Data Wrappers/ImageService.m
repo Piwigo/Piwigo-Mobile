@@ -44,7 +44,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     // Compile parameters
     NSDictionary *parameters = @{
                                  @"cat_id"   : @(albumId),
-                                 @"per_page" : @(imagesPerPage),
+                                 @"per_page" : @(imagesPerPage * 2),
                                  @"page"     : @(page),
                                  @"order"    : order     // Percent-encoded should not be used here!
                                  };
@@ -115,7 +115,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     // Compile parameters
     NSDictionary *parameters = @{
                                  @"query"    : query,
-                                 @"per_page" : @(imagesPerPage),
+                                 @"per_page" : @(imagesPerPage * 2),
                                  @"page"     : @(page),
                                  @"order"    : order     // Percent-encoded should not be used here!
                                  };
@@ -205,7 +205,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     if (categoryId == kPiwigoVisitsCategoryId) {
         parameters = @{
                        @"recursive"             : @"true",
-                       @"per_page"              : @(imagesPerPage),
+                       @"per_page"              : @(imagesPerPage * 2),
                        @"page"                  : @(page),
                        @"order"                 : order,     // Percent-encoded should not be used here!
                        @"f_min_hit"             : @"1"
@@ -213,7 +213,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     } else if (categoryId == kPiwigoBestCategoryId) {
         parameters = @{
                        @"recursive"             : @"true",
-                       @"per_page"              : @(imagesPerPage),
+                       @"per_page"              : @(imagesPerPage * 2),
                        @"page"                  : @(page),
                        @"order"                 : order,     // Percent-encoded should not be used here!
                        @"f_min_rate"            : @"1"
@@ -225,7 +225,7 @@ NSString * const kGetImageOrderDescending = @"desc";
         NSString *dateAvailableString = [dateFormatter stringFromDate:threeMonthsAgo];
         parameters = @{
                        @"recursive"             : @"true",
-                       @"per_page"              : @(imagesPerPage),
+                       @"per_page"              : @(imagesPerPage * 2),
                        @"page"                  : @(page),
                        @"order"                 : order,     // Percent-encoded should not be used here!
                        @"f_min_date_available"  : dateAvailableString
@@ -325,7 +325,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     
     // Compile parameters
     NSDictionary *parameters = @{@"tag_id"         : @(tagId),
-                                 @"per_page"       : @(imagesPerPage),
+                                 @"per_page"       : @(imagesPerPage * 2),
                                  @"page"           : @(page),
                                  @"order"          : @"rank asc, id desc"
                                   };
@@ -417,7 +417,7 @@ NSString * const kGetImageOrderDescending = @"desc";
     NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
     
     // Compile parameters
-    NSDictionary *parameters = @{@"per_page"       : @(imagesPerPage),
+    NSDictionary *parameters = @{@"per_page"       : @(imagesPerPage * 2),
                                  @"page"           : @(page),
                                  @"order"          : order
                                  };
@@ -504,10 +504,9 @@ NSString * const kGetImageOrderDescending = @"desc";
     NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:categoryId].numberOfImages;
 //    NSLog(@"loadImageChunkForLastChunkCount: %ld / %ld images", (long)downloadedImageDataCount, (long)totalImageCount);
     if (downloadedImageDataCount >= totalImageCount)
-    {    // done. don't need anymore
-        if(fail)
-        {
-            fail(nil, nil);
+    {    // Done. Don't need anymore
+        if (completion) {
+            completion(nil, 0);
         }
         return nil;
     }
@@ -625,8 +624,8 @@ NSString * const kGetImageOrderDescending = @"desc";
 #if defined(DEBUG)
                                        NSLog(@"loadImageChunkForLastChunkCount — Fail: %@", [error description]);
 #endif
-                                       if(fail) {
-                                           fail(nil, error);
+                                       if (fail) {
+                                           fail(task, error);
                                        }
                                    }];
     }
