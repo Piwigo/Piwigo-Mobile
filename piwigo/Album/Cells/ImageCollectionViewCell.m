@@ -15,13 +15,15 @@
 
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UIView *bottomLayer;
+@property (nonatomic, assign) CGFloat deltaX, deltaY;
 @property (nonatomic, strong) UIImageView *selectedImage;
+@property (nonatomic, strong) NSLayoutConstraint *selImgRight, *selImgTop;
 @property (nonatomic, strong) UIImageView *favoriteImage;
-@property (nonatomic, assign) CGFloat favDeltaX, favDeltaY;
 @property (nonatomic, strong) NSLayoutConstraint *favImgLeft, *favImgBottom;
 @property (nonatomic, strong) UIImageView *favoriteBckgImage;
 @property (nonatomic, strong) NSLayoutConstraint *favBckgImgLeft, *favBckgImgBottom;
 @property (nonatomic, strong) UIView *darkenView;
+@property (nonatomic, strong) NSLayoutConstraint *darkImgWidth, *darkImgHeight;
 @property (nonatomic, strong) UIImageView *playImage;
 @property (nonatomic, strong) UILabel *noDataLabel;
 
@@ -79,11 +81,11 @@
         [self.cellImage addSubview:self.favoriteBckgImage];
         [self.cellImage addConstraints:[NSLayoutConstraint constraintView:self.favoriteBckgImage
                                                                        to:CGSizeMake(23, 23)]];
-        self.favDeltaX = 0.0; self.favDeltaY = 0.0;
+        self.deltaX = 0.0; self.deltaY = 0.0;
         self.favBckgImgLeft = [NSLayoutConstraint constraintViewFromLeft:self.favoriteBckgImage
-                                                                    amount:self.favDeltaX];
+                                                                    amount:self.deltaX];
         self.favBckgImgBottom = [NSLayoutConstraint constraintViewFromBottom:self.favoriteBckgImage
-                                                                        amount:-self.favDeltaY];
+                                                                        amount:-self.deltaY];
         [self.cellImage addConstraints:@[self.favBckgImgLeft, self.favBckgImgBottom]];
 
         self.favoriteImage = [UIImageView new];
@@ -96,9 +98,9 @@
         [self.cellImage addConstraints:[NSLayoutConstraint constraintView:self.favoriteImage
                                                                        to:CGSizeMake(17, 17)]];
         self.favImgLeft = [NSLayoutConstraint constraintViewFromLeft:self.favoriteImage
-                                                              amount:self.favDeltaX + 3.0];
+                                                              amount:self.deltaX + 3.0];
         self.favImgBottom = [NSLayoutConstraint constraintViewFromBottom:self.favoriteImage
-                                                                  amount:-(self.favDeltaY + 3.0)];
+                                                                  amount:-(self.deltaY + 3.0)];
         [self.cellImage addConstraints:@[self.favImgLeft, self.favImgBottom]];
 
         // Selected images are darker
@@ -107,7 +109,12 @@
         self.darkenView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.45];
         self.darkenView.hidden = YES;
         [self.cellImage addSubview:self.darkenView];
-        [self.cellImage addConstraints:[NSLayoutConstraint constraintFillSize:self.darkenView]];
+        self.darkImgWidth = [NSLayoutConstraint constraintView:self.darkenView
+                                                       toWidth:CGFLOAT_MAX];
+        self.darkImgHeight = [NSLayoutConstraint constraintView:self.darkenView
+                                                        toHeight:CGFLOAT_MAX];
+        [self.cellImage addConstraints:@[self.darkImgWidth, self.darkImgHeight]];
+        [self.cellImage addConstraints:[NSLayoutConstraint constraintCenter:self.darkenView]];
 
         // Banners at bottom of thumbnails
 		self.bottomLayer = [UIView new];
@@ -116,6 +123,7 @@
 		[self.cellImage addSubview:self.bottomLayer];
 		[self.cellImage addConstraints:[NSLayoutConstraint constraintFillWidth:self.bottomLayer]];
 		[self.cellImage addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.bottomLayer amount:0]];
+        [self.cellImage addConstraint:[NSLayoutConstraint constraintView:self.bottomLayer toHeight:16.0]];
 		
         // Title of images shown in banners
         self.nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,0, self.contentView.bounds.size.width, CGFLOAT_MAX)];
@@ -160,8 +168,11 @@
 		self.selectedImage.hidden = YES;
 		[self.cellImage addSubview:self.selectedImage];
 		[self.cellImage addConstraints:[NSLayoutConstraint constraintView:self.selectedImage to:CGSizeMake(25, 25)]];
-		[self.cellImage addConstraint:[NSLayoutConstraint constraintViewFromRight:self.selectedImage amount:0]];
-		[self.cellImage addConstraint:[NSLayoutConstraint constraintViewFromTop:self.selectedImage amount:5]];
+        self.selImgRight = [NSLayoutConstraint constraintViewFromRight:self.selectedImage
+                                                                amount: 0.0];
+        self.selImgTop = [NSLayoutConstraint constraintViewFromTop:self.selectedImage
+                                                            amount: 5.0];
+        [self.cellImage addConstraints:@[self.selImgRight, self.selImgTop]];
 		
         // Without data to show
 		self.noDataLabel = [UILabel new];
@@ -198,12 +209,38 @@
     self.isAccessibilityElement = YES;
 
     // Do we have any info on that image ?
-	if(!self.imageData)
-	{
+	if (!self.imageData) {
 		self.noDataLabel.hidden = NO;
 		return;
 	}
 	
+    // Play button
+    self.playImage.hidden = !imageData.isVideo;
+
+    // Title
+    if ((AlbumVars.displayImageTitles) ||
+        (categoryId == kPiwigoVisitsCategoryId)     ||
+        (categoryId == kPiwigoBestCategoryId)       ||
+        (categoryId == kPiwigoRecentCategoryId)) {
+        self.bottomLayer.hidden = NO;
+        self.bottomLayer.backgroundColor = [UIColor piwigoColorBackground];
+        self.nameLabel.hidden = NO;
+        self.nameLabel.textColor = [UIColor piwigoColorLeftLabel];
+        if (categoryId == kPiwigoVisitsCategoryId) {
+            self.nameLabel.text = [NSString stringWithFormat:@"%ld %@", (long)imageData.visits, NSLocalizedString(@"categoryDiscoverVisits_legend", @"hits")];
+        } else if (categoryId == kPiwigoBestCategoryId) {
+//            self.nameLabel.text = [NSString stringWithFormat:@"(%.2f) %@", imageData.ratingScore, imageData.name];
+            self.nameLabel.text = imageData.imageTitle.length ? imageData.imageTitle : imageData.fileName;
+        } else if (categoryId == kPiwigoRecentCategoryId) {
+            self.nameLabel.text = [NSDateFormatter localizedStringFromDate:imageData.dateCreated dateStyle:NSDateFormatterMediumStyle timeStyle:NSDateFormatterNoStyle];
+        } else {
+            self.nameLabel.text = imageData.imageTitle.length ? imageData.imageTitle : imageData.fileName;
+        }
+    } else {
+        self.bottomLayer.hidden = YES;
+        self.nameLabel.hidden = YES;
+    }
+    
     // Download the image of the requested resolution (or get it from the cache)
     switch (AlbumVars.defaultThumbnailSize) {
         case kPiwigoImageSizeSquare:
@@ -296,32 +333,6 @@
             }
             break;
     }
-
-    // Title
-    if ((AlbumVars.displayImageTitles) ||
-        (categoryId == kPiwigoVisitsCategoryId)     ||
-        (categoryId == kPiwigoBestCategoryId)       ||
-        (categoryId == kPiwigoRecentCategoryId)) {
-        self.bottomLayer.hidden = NO;
-        self.bottomLayer.backgroundColor = [UIColor piwigoColorBackground];
-        self.nameLabel.hidden = NO;
-        self.nameLabel.textColor = [UIColor piwigoColorLeftLabel];
-        if (categoryId == kPiwigoVisitsCategoryId) {
-            self.nameLabel.text = [NSString stringWithFormat:@"%ld %@", (long)imageData.visits, NSLocalizedString(@"categoryDiscoverVisits_legend", @"hits")];
-        } else if (categoryId == kPiwigoBestCategoryId) {
-//            self.nameLabel.text = [NSString stringWithFormat:@"(%.2f) %@", imageData.ratingScore, imageData.name];
-            self.nameLabel.text = imageData.imageTitle.length ? imageData.imageTitle : imageData.fileName;
-        } else if (categoryId == kPiwigoRecentCategoryId) {
-            self.nameLabel.text = [NSDateFormatter localizedStringFromDate:imageData.dateCreated dateStyle:NSDateFormatterMediumStyle timeStyle:NSDateFormatterNoStyle];
-        } else {
-            self.nameLabel.text = imageData.imageTitle.length ? imageData.imageTitle : imageData.fileName;
-        }
-    } else {
-        self.bottomLayer.hidden = YES;
-        self.nameLabel.hidden = YES;
-    }
-    
-	self.playImage.hidden = !imageData.isVideo;
 }
 
 -(void)setImageFromPath:(NSString *)imagePath
@@ -342,39 +353,46 @@
         [weakSelf.cellImage sizeToFit];
         
         // Favorite image position depends on device
-        weakSelf.favDeltaX = 0.0; weakSelf.favDeltaY = 0.0;
+        weakSelf.deltaX = 0.0; weakSelf.deltaY = 0.0;
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
             // Case of an iPad: respect aspect ratio
-            // Horizontal correction?
+            // Image width…
             CGFloat imageWidth = displayedImage.size.width / scale;
+            weakSelf.darkImgWidth.constant = imageWidth;
+
+            // Horizontal correction?
             CGFloat cellWidth = size.width;
             if (imageWidth < cellWidth) {
                 // The image does not fill the cell horizontally
-                weakSelf.favDeltaX += (cellWidth - imageWidth) / 2.0;
+                weakSelf.deltaX += (cellWidth - imageWidth) / 2.0;
             }
 
-            // Vertical correction?
+            // Image height…
             CGFloat imageHeight = displayedImage.size.height / scale;
+            weakSelf.darkImgHeight.constant = imageHeight;
+
+            // Vertical correction?
             CGFloat cellHeight = size.height;
             if (imageHeight < cellHeight) {
                 // The image does not fill the cell vertically
-                weakSelf.favDeltaY += (cellHeight - imageHeight) / 2.0;
+                weakSelf.deltaY += (cellHeight - imageHeight) / 2.0;
             }
         }
         
-        // Set horizontal constraint
-        weakSelf.favImgLeft.constant = weakSelf.favDeltaX + 3.0;
-        weakSelf.favBckgImgLeft.constant = weakSelf.favDeltaX;
+        // Update horizontal constraints
+        weakSelf.selImgRight.constant = -weakSelf.deltaX;
+        weakSelf.favImgLeft.constant = weakSelf.deltaX + 3.0;
+        weakSelf.favBckgImgLeft.constant = weakSelf.deltaX;
 
-        // Set vertical constraint
-        if (weakSelf.noDataLabel.isHidden) {
+        // Update vertical constraints
+        weakSelf.selImgTop.constant = weakSelf.deltaY + 5.0;
+        if (weakSelf.bottomLayer.isHidden) {
             // The title is not displayed
-            weakSelf.favImgBottom.constant = - (weakSelf.favDeltaY + 3.0);
-            weakSelf.favBckgImgBottom.constant = -weakSelf.favDeltaY;
+            weakSelf.favImgBottom.constant = - (weakSelf.deltaY + 3.0);
+            weakSelf.favBckgImgBottom.constant = -weakSelf.deltaY;
         } else {
             // The title is displayed
-            [weakSelf.nameLabel sizeToFit];
-            CGFloat deltaY = fmax(weakSelf.bottomLayer.bounds.size.height, weakSelf.favDeltaY);
+            CGFloat deltaY = fmax(16.0, weakSelf.deltaY);
             weakSelf.favImgBottom.constant = - (deltaY + 3.0);
             weakSelf.favBckgImgBottom.constant = - deltaY;
         }
@@ -385,7 +403,7 @@
 {
     [super prepareForReuse];
     self.cellImage.image = nil;
-    self.favDeltaX = 0.0; self.favDeltaY = 0.0;
+    self.deltaX = 0.0; self.deltaY = 0.0;
 	self.isSelected = NO;
     self.isFavorite = NO;
 	self.playImage.hidden = YES;
@@ -407,13 +425,12 @@
     // Update the vertical constraint
     if (self.bottomLayer.isHidden) {
         // Place icon at the bottom
-        self.favImgBottom.constant = - (self.favDeltaY + 3.0);
-        self.favBckgImgBottom.constant = - self.favDeltaY;
+        self.favImgBottom.constant = - (self.deltaY + 3.0);
+        self.favBckgImgBottom.constant = - self.deltaY;
     }
     else {
         // Place icon at the bottom but above the title
-        [self.nameLabel sizeToFit];
-        CGFloat height = fmax(self.bottomLayer.bounds.size.height, self.favDeltaY);
+        CGFloat height = fmax(16.0, self.deltaY);
         self.favImgBottom.constant = - (height + 3.0);
         self.favBckgImgBottom.constant = - height;
     }
