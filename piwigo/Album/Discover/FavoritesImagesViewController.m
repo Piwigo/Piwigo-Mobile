@@ -224,9 +224,11 @@
     // Set colors, fonts, etc.
     [self applyColorPalette];
     
-    // Initialise discover cache
-    PiwigoAlbumData *discoverAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoFavoritesCategoryId];
-    [[CategoriesData sharedInstance] updateCategories:@[discoverAlbum] andUpdateUI:NO];
+    // Initialise discover cache if needed
+    if ([[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId] == nil) {
+        PiwigoAlbumData *discoverAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoFavoritesCategoryId];
+        [[CategoriesData sharedInstance] updateCategories:@[discoverAlbum] andUpdateUI:NO];
+    }
 
     // Load, sort images and reload collection
     [self.albumData updateImageSort:self.currentSort onCompletion:^{
