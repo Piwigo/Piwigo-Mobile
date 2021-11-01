@@ -751,10 +751,8 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                     }];
                 } else {
                     // Their version is Ok. Close HUD.
-                    [self hideLoadingWithCompletion:^{
-                        [self launchAppAtFirstLogin:isFirstLogin
-                              withReloginCompletion:reloginCompletion];
-                    }];
+                    [self launchAppAtFirstLogin:isFirstLogin
+                          withReloginCompletion:reloginCompletion];
                 }
             } else {
                 // Inform user that we could not authenticate with server
@@ -797,26 +795,51 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
             PiwigoAlbumData *favoritesAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoFavoritesCategoryId];
             [CategoriesData.sharedInstance updateCategories:@[favoritesAlbum] andUpdateUI:NO];
             
+            // Calculate the number of thumbnails displayed per page
+            NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
+            
             // Download favorites
             [[CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:(kPiwigoSortObjc)AlbumVars.defaultSort
-                forProgress:nil
+                forProgress:^(NSInteger onPage, NSInteger outOf) {
+                // Should we present progresse details?
+                NSInteger downloaded = imagesPerPage * 2 * onPage;
+                if (outOf > imagesPerPage * 2 * 2) {
+                    // Update HUD during login if needed
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        NSString *detail = [NSString stringWithFormat:@"%@ (%ld/%ld)", NSLocalizedString(@"imageFavorites_title", @"Favorites"), (long)downloaded, (long)outOf];
+                        [self showLoadingWithSubtitle:detail];
+                    });
+                }
+            }
             onCompletion:^(BOOL completed) {
-                // Present Album/Images view and resume uploads
-                AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                [appDelegate loadNavigation];
+                NSInteger downloaded = [[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId].numberOfImages;
+                // Update HUD during login if needed
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSString *detail = [NSString stringWithFormat:@"%@ (%ld/%ld)", NSLocalizedString(@"imageFavorites_title", @"Favorites"), (long)downloaded, (long)downloaded];
+                    [self showLoadingWithSubtitle:detail];
+                    [self hideLoadingWithCompletion:^{
+                        // Present Album/Images view and resume uploads
+                        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                        [appDelegate loadNavigation];
+                    }];
+                });
             }
             onFailure:^(NSURLSessionTask *task, NSError *error) {
-                NetworkVarsObjc.hadOpenedSession = NO;
-                self.isAlreadyTryingToLogin = NO;
-                // Display error message
-                [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
+                // Logged in but could not upload all favorites data
+                [self hideLoadingWithCompletion:^{
+                    // Present Album/Images view and resume uploads
+                    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                    [appDelegate loadNavigation];
+                }];
             }];
             return;
         } else {
-            // Present Album/Images view and resume uploads
-            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-            [appDelegate loadNavigation];
-            return;
+            [self hideLoadingWithCompletion:^{
+                // Present Album/Images view and resume uploads
+                AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                [appDelegate loadNavigation];
+                return;
+            }];
         }
     }
 
@@ -826,7 +849,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     [appDelegate resumeAll];
     
     // Was it a relogin after encountering an arror?
-    reloginCompletion();
+    if (reloginCompletion) { reloginCompletion(); }
 }
 
 -(void)performReloginWithCompletion:(void (^)(void))reloginCompletion
