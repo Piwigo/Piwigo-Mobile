@@ -425,18 +425,18 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
     if (AppVars.isDarkPaletteActive) {
         [self.addButton.layer setShadowRadius:1.0];
-        [self.addButton.layer setShadowOffset:CGSizeMake(0.0, 0.0)];
+        [self.addButton.layer setShadowOffset:CGSizeZero];
 
         [self.createAlbumButton.layer setShadowRadius:1.0];
-        [self.createAlbumButton.layer setShadowOffset:CGSizeMake(0.0, 0.0)];
+        [self.createAlbumButton.layer setShadowOffset:CGSizeZero];
         [self.uploadImagesButton.layer setShadowRadius:1.0];
-        [self.uploadImagesButton.layer setShadowOffset:CGSizeMake(0.0, 0.0)];
+        [self.uploadImagesButton.layer setShadowOffset:CGSizeZero];
 
         [self.uploadQueueButton.layer setShadowRadius:1.0];
-        [self.uploadQueueButton.layer setShadowOffset:CGSizeMake(0.0, 0.0)];
+        [self.uploadQueueButton.layer setShadowOffset:CGSizeZero];
 
         [self.homeAlbumButton.layer setShadowRadius:1.0];
-        [self.homeAlbumButton.layer setShadowOffset:CGSizeMake(0.0, 0.0)];
+        [self.homeAlbumButton.layer setShadowOffset:CGSizeZero];
     } else {
         [self.addButton.layer setShadowRadius:3.0];
         [self.addButton.layer setShadowOffset:CGSizeMake(0.0, 0.5)];
