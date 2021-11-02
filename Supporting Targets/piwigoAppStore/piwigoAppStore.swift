@@ -29,6 +29,7 @@ public enum Model : String {
     iPad6              = "iPad 6", //aka iPad 2018
     iPad7              = "iPad 7", //aka iPad 2019
     iPad8              = "iPad (8th generation)",
+    iPad9              = "iPad (9th generation)",
     iPadAir4           = "iPad Air 4",
     //iPad mini
     iPadMini           = "iPad Mini",
@@ -36,6 +37,7 @@ public enum Model : String {
     iPadMini3          = "iPad Mini 3",
     iPadMini4          = "iPad Mini 4",
     iPadMini5          = "iPad mini (5th generation)",
+    iPadMini6          = "iPad mini (6th generation)",
     //iPad pro
     iPadPro9_7         = "iPad Pro 9.7\"",
     iPadPro10_5        = "iPad Pro 10.5\"",
@@ -122,11 +124,6 @@ public extension UIDevice {
             "iPad3,4"   : .iPad4,
             "iPad3,5"   : .iPad4,
             "iPad3,6"   : .iPad4,
-            "iPad4,1"   : .iPadAir,
-            "iPad4,2"   : .iPadAir,
-            "iPad4,3"   : .iPadAir,
-            "iPad5,3"   : .iPadAir2,
-            "iPad5,4"   : .iPadAir2,
             "iPad6,11"  : .iPad5, //aka iPad 2017
             "iPad6,12"  : .iPad5,
             "iPad7,5"   : .iPad6, //aka iPad 2018
@@ -135,8 +132,8 @@ public extension UIDevice {
             "iPad7,12"  : .iPad7,
             "iPad11,6"  : .iPad8,
             "iPad11,7"  : .iPad8,
-            "iPad13,1"  : .iPadAir4,
-            "iPad13,2"  : .iPadAir4,
+            "iPad12,1"  : .iPad9,
+            "iPad12,2"  : .iPad9,
             //iPad mini
             "iPad2,5"   : .iPadMini,
             "iPad2,6"   : .iPadMini,
@@ -151,6 +148,16 @@ public extension UIDevice {
             "iPad5,2"   : .iPadMini4,
             "iPad11,1"  : .iPadMini5,
             "iPad11,2"  : .iPadMini5,
+            "iPad14,1"  : .iPadMini6,
+            "iPad14,2"  : .iPadMini6,
+            //iPad Air
+            "iPad4,1"   : .iPadAir,
+            "iPad4,2"   : .iPadAir,
+            "iPad4,3"   : .iPadAir,
+            "iPad5,3"   : .iPadAir2,
+            "iPad5,4"   : .iPadAir2,
+            "iPad13,1"  : .iPadAir4,
+            "iPad13,2"  : .iPadAir4,
             //iPad Pro
             "iPad6,3"   : .iPadPro9_7,
             "iPad6,4"   : .iPadPro9_7,

@@ -140,6 +140,10 @@ class DeviceUtilities: NSObject {
             return "iPad (8th generation) (Wi-Fi)"
         case "iPad11,7":
             return "iPad (8th generation) (Wi-Fi + Cellular)"
+        case "iPad12,1":
+            return "iPad (9th generation) (Wi-Fi)"
+        case "iPad12,2":
+            return "iPad (9th generation) (Wi-Fi + Cellular)"
         default:
             break
         }
@@ -240,6 +244,10 @@ class DeviceUtilities: NSObject {
             return "iPad mini (5th generation) (Wi-Fi)"
         case "iPad11,2":
             return "iPad mini (5th generation) (Wi-Fi + Cellular)"
+        case "iPad14,1":
+            return "iPad mini (6th generation) (Wi-Fi)"
+        case "iPad14,2":
+            return "iPad mini (6th generation) (Wi-Fi + Cellular)"
         default:
             break
         }
@@ -318,6 +326,8 @@ class DeviceUtilities: NSObject {
              "iPad7,5", "iPad7,6", "iPad7,11", "iPad7,12",
              "iPad11,6", "iPad11,7":
             return "8 Mpx"
+        case "iPad12,1", "iPad12,2":
+            return "12 Mpx"
         default:
             break
         }
@@ -356,6 +366,8 @@ class DeviceUtilities: NSObject {
             return "5 Mpx"
         case "iPad5,1", "iPad5,2", "iPad11,1", "iPad11,2":
             return "8 Mpx"
+        case "iPad14,1", "iPad14,2":
+            return "12 Mpx"
         default:
             break
         }
@@ -430,6 +442,8 @@ class DeviceUtilities: NSObject {
              "iPad7,5", "iPad7,6", "iPad7,11", "iPad7,12",
              "iPad11,6", "iPad11,7":
             return "Full HD, 30 fps"
+        case "iPad12,1", "iPad12,2":
+            return "4K, 30 fps"
         default:
             break
         }
@@ -473,6 +487,8 @@ class DeviceUtilities: NSObject {
         case "iPad5,1", "iPad5,2",
              "iPad11,1", "iPad11,2":
             return "Full HD, 30 fps"
+        case "iPad14,1", "iPad14,2":
+            return "4K, 30 fps"
         default:
             break
         }
