@@ -470,9 +470,11 @@ public class UploadsProvider: NSObject {
             // Create a fetch request for the Upload entity sorted by localIdentifier
             let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
             
-            // Predicate
-            var sortDescriptors = [NSSortDescriptor(key: "requestDate", ascending: true)]
-            
+            // Priority to uploads requested manually, oldest ones first
+            var sortDescriptors = [NSSortDescriptor(key: "markedForAutoUpload", ascending: true)]
+            sortDescriptors.append(NSSortDescriptor(key: "requestDate", ascending: true))
+            fetchRequest.sortDescriptors = sortDescriptors
+
             // OR subpredicates
             var orSubpredicates = [NSPredicate]()
             states.forEach { (state) in
@@ -483,20 +485,14 @@ public class UploadsProvider: NSObject {
             // AND subpredicates
             var andSubpredicates:[NSPredicate] = [statesPredicate]
             andSubpredicates.append(NSPredicate(format: "serverPath == %@", NetworkVars.serverPath))
-            if !UploadVars.isAutoUploadActive {
-                // User disabled auto-upload mode
-                andSubpredicates.append(NSPredicate(format: "markedForAutoUpload == NO"))
-            } else if markedForAutoUpload {
-                // Auto-upload mode enabled and only auto-upload requests are wanted
+            if markedForAutoUpload {
+                // Only auto-upload requests are wanted
                 andSubpredicates.append(NSPredicate(format: "markedForAutoUpload == YES"))
-            } else {
-                // Priority to uploads requested manually
-                sortDescriptors.append(NSSortDescriptor(key: "markedForAutoUpload", ascending: true))
             }
             if markedForDeletion {
+                // Only image marked for deletion are wanted
                 andSubpredicates.append(NSPredicate(format: "deleteImageAfterUpload == YES"))
             }
-            fetchRequest.sortDescriptors = sortDescriptors
             fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: andSubpredicates)
 
             // Create a fetched results controller and set its fetch request, context, and delegate.
@@ -660,9 +656,11 @@ public class UploadsProvider: NSObject {
         fetchRequest.fetchBatchSize = 20
 
         // Sort upload requests by state and date
-        let firstSortDescriptor = NSSortDescriptor(key: "requestSectionKey", ascending: true)
-        let secondSortDescriptor = NSSortDescriptor(key: "requestDate", ascending: true)
-        fetchRequest.sortDescriptors = [firstSortDescriptor, secondSortDescriptor]
+        // Priority to uploads requested manually, oldest ones first
+        var sortDescriptors = [NSSortDescriptor(key: "requestSectionKey", ascending: true)]
+        sortDescriptors.append(NSSortDescriptor(key: "markedForAutoUpload", ascending: true))
+        sortDescriptors.append(NSSortDescriptor(key: "requestDate", ascending: true))
+        fetchRequest.sortDescriptors = sortDescriptors
         
         // Select upload requests:
         /// — which are not completed
