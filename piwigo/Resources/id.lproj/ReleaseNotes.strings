@@ -6,7 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.8.0_text" = "Version 2.8\n\n• Add and remove photos and videos from your favorites\n• Minor bug fixes and improvements of the interface";
+"v2.8.1_text" = "Version 2.8.1\n\n• Bug fixes";
+
+"v2.8.0_text" = "Version 2.8\nOctober 23, 2021\n\n• Add and remove photos and videos from your favorites\n• Minor bug fixes and improvements of the interface";
 
 "v2.7.2_text" = "Version 2.7.2\nSeptember 20, 2021\n\n• iOS 15 compatibility\n• Minor bug fixes and improvements of the interface\n• Code modernization";
 
