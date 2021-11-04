@@ -3661,7 +3661,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     
     // Refresh image banner
     if (indexOfImage != NSNotFound) {
-        NSIndexPath *updatedImage = [NSIndexPath indexPathForItem:indexOfImage inSection:0];
+        NSIndexPath *updatedImage = [NSIndexPath indexPathForItem:indexOfImage inSection:1];
         [self.imagesCollection reloadItemsAtIndexPaths:@[updatedImage]];
     }
 }
