@@ -255,8 +255,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 
     @objc func updateAutoUpload(_ notification: Notification) {
         // NOP if the option is not available
-        if !NetworkVars.usesUploadAsync { return }
-        
+        if !(NetworkVars.hasAdminRights ||
+             (NetworkVars.hasNormalRights && NetworkVars.usesCommunityPluginV29)) { return }
+
         // Reload section instead of row because user's rights may have changed after logout/login
         settingsTableView?.reloadSections(IndexSet(integer: SettingsSection.imageUpload.rawValue), with: .automatic)
         
