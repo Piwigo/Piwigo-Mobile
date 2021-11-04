@@ -170,17 +170,17 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
 
         PHImageManager.default().requestImage(for: imageAsset, targetSize: retinaSquare, contentMode: .aspectFit, options: cropToSquare, resultHandler: { [unowned self] result, info in
             DispatchQueue.main.async(execute: {
-                if (info?[PHImageErrorKey] != nil) || (result == nil) {
-                    let error = info?[PHImageErrorKey] as? Error
-                    if let description = error?.localizedDescription {
-                        print("=> Error : \(description)")
+                guard let image = result else {
+                    if let error = info?[PHImageErrorKey] as? Error {
+                        debugPrint("=> Error : \(error.localizedDescription)")
                     }
                     self.cellImage.image = UIImage(named: "placeholder")
-                } else {
-                    self.cellImage.image = result
-                    if imageAsset.mediaType == .video {
-                        self.playImage?.isHidden = false
-                    }
+                    return
+                }
+                
+                self.cellImage.image = image
+                if imageAsset.mediaType == .video {
+                    self.playImage?.isHidden = false
                 }
             })
         })
