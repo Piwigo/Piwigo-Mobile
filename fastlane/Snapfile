@@ -51,7 +51,7 @@ devices([
 languages([
    "da",
    "de-DE",
-#   "en-US",
+   "en-US",
    "es-ES",
    "fr-FR",
    "hu",

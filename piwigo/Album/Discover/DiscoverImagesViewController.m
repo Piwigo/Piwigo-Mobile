@@ -1503,7 +1503,7 @@
         // Update HUD
         [self.navigationController updatePiwigoHUDWithProgress:1.0 - (float)self.selectedImageIds.count / (float)self.totalNumberOfImages];
 
-        // Image info retrieved
+        // Image added to favorites
         [self.selectedImageIds removeLastObject];
 
         // Next image
@@ -1571,7 +1571,7 @@
         // Update HUD
         [self.navigationController updatePiwigoHUDWithProgress:1.0 - (float)self.selectedImageIds.count / (float)self.totalNumberOfImages];
 
-        // Image info retrieved
+        // Image removed from the favorites
         [self.selectedImageIds removeLastObject];
 
         // Next image

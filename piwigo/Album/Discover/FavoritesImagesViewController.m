@@ -1475,6 +1475,7 @@
                 self.favoriteBarButton.action = @selector(addToFavorites);
                 // Deselect images
                 [self cancelSelect];
+                // Remove favorites from collection
                 // Hide favorite icons
                 for (UICollectionViewCell *cell in self.imagesCollection.visibleCells) {
                     if ([cell isKindOfClass:[ImageCollectionViewCell class]]) {
@@ -1495,7 +1496,7 @@
         // Update HUD
         [self.navigationController updatePiwigoHUDWithProgress:1.0 - (float)self.selectedImageIds.count / (float)self.totalNumberOfImages];
 
-        // Image info retrieved
+        // Image removed from the favorites
         [self.selectedImageIds removeLastObject];
 
         // Next image
