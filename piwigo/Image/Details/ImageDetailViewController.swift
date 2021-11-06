@@ -426,7 +426,7 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
                 actionBarButton?.accessibilityIdentifier = "actions"
                 deleteBarButton = UIBarButtonItem.deleteImageButton(self, action: #selector(deleteImage))
                 
-                if orientation.isPortrait {
+                if orientation.isPortrait, view.bounds.size.width < 768 {
                     // Action button in navigation bar
                     navigationItem.rightBarButtonItems = [actionBarButton].compactMap { $0 }
 
