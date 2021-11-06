@@ -77,7 +77,8 @@ CGFloat const favScale = 0.12;
         } else {
             favorite = [UIImage imageNamed:@"imageFavorite"];
         }
-        CGFloat dim = fmax(frame.size.width * favScale, 8);
+        CGFloat scale = fmax(1.0, self.traitCollection.displayScale);
+        CGFloat dim = frame.size.width * favScale + (scale - 1);
         CGSize favImgSize = CGSizeMake(dim, dim);
         CGSize favBckgSize = CGSizeMake(dim + 2*favOffset, dim + 2*favOffset);
         self.favoriteBckgImage = [UIImageView new];
@@ -348,7 +349,7 @@ CGFloat const favScale = 0.12;
     __weak typeof(self) weakSelf = self;
     [self.cellImage layoutIfNeeded];
     CGSize size = self.cellImage.bounds.size;
-    CGFloat scale = fmax(1.0, self.cellImage.traitCollection.displayScale);
+    CGFloat scale = fmax(1.0, self.traitCollection.displayScale);
     NSURL *URL = [NSURL URLWithString:imagePath];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
     [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
