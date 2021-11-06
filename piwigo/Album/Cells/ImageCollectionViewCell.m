@@ -37,6 +37,7 @@
 	if(self)
 	{
 		self.backgroundColor = [UIColor clearColor];
+        self.clipsToBounds = YES;
 		self.isSelected = NO;
 		
         // Thumbnails
