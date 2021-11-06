@@ -1747,15 +1747,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
          OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
             // Refresh current view
             [self.imagesCollection reloadData];
-
-//            // Load favorites in the background before loading image data if needed
-//            if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending) && (!NetworkVarsObjc.hasGuestRights))
-//            {
-//                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^(void){
-//                    [self loadFavorites];
-//                });
-//            }
-
             if (refreshControl) [refreshControl endRefreshing];
         }
         onFailure:^(NSURLSessionTask *task, NSError *error) {
@@ -3524,11 +3515,13 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             if ((indexPath.row > fmaxf(roundf(2 * imagesPerPage / 3.0), [collectionView numberOfItemsInSection:1] - roundf(imagesPerPage / 3.0))) &&
                 (self.albumData.images.count < [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
             {
+                // Continue loading album image data
                 [self.albumData loadMoreImagesOnCompletion:^{
-                    [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
+                    });
                 } onFailure:nil];
             }
-            
             return cell;
         }
     }
