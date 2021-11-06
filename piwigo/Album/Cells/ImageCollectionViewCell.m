@@ -14,6 +14,7 @@
 CGFloat const favMargin = 1.0;
 CGFloat const favOffset = 1.0;
 CGFloat const favScale = 0.12;
+CGFloat const selectScale = 0.2;
 
 @interface ImageCollectionViewCell()
 
@@ -78,8 +79,8 @@ CGFloat const favScale = 0.12;
         }
         CGFloat scale = fmax(1.0, self.traitCollection.displayScale);
         CGFloat dim = frame.size.width * favScale + (scale - 1);
-        CGSize favImgSize = CGSizeMake(dim, dim);
-        CGSize favBckgSize = CGSizeMake(dim + 2*favOffset, dim + 2*favOffset);
+        CGSize imgSize = CGSizeMake(dim, dim);
+        CGSize bckgSize = CGSizeMake(dim + 2*favOffset, dim + 2*favOffset);
         self.favoriteBckgImage = [UIImageView new];
         self.favoriteBckgImage.translatesAutoresizingMaskIntoConstraints = NO;
         self.favoriteBckgImage.contentMode = UIViewContentModeScaleAspectFit;
@@ -88,7 +89,7 @@ CGFloat const favScale = 0.12;
         self.favoriteBckgImage.hidden = YES;
         [self.cellImage addSubview:self.favoriteBckgImage];
         [self.cellImage addConstraints:[NSLayoutConstraint constraintView:self.favoriteBckgImage
-                                                                       to:favBckgSize]];
+                                                                       to:bckgSize]];
         self.deltaX = favMargin; self.deltaY = favMargin;
         self.favBckgImgLeft = [NSLayoutConstraint constraintViewFromLeft:self.favoriteBckgImage
                                                                     amount:self.deltaX];
@@ -104,7 +105,7 @@ CGFloat const favScale = 0.12;
         self.favoriteImage.hidden = YES;
         [self.cellImage addSubview:self.favoriteImage];
         [self.cellImage addConstraints:[NSLayoutConstraint constraintView:self.favoriteImage
-                                                                       to:favImgSize]];
+                                                                       to:imgSize]];
         self.favImgLeft = [NSLayoutConstraint constraintViewFromLeft:self.favoriteImage
                                                               amount:self.deltaX + favOffset];
         self.favImgBottom = [NSLayoutConstraint constraintViewFromBottom:self.favoriteImage
@@ -175,7 +176,10 @@ CGFloat const favScale = 0.12;
 		self.selectedImage.tintColor = [UIColor piwigoColorOrange];
 		self.selectedImage.hidden = YES;
 		[self.cellImage addSubview:self.selectedImage];
-		[self.cellImage addConstraints:[NSLayoutConstraint constraintView:self.selectedImage to:CGSizeMake(25, 25)]];
+        dim = frame.size.width * selectScale + (scale - 1);
+        imgSize = CGSizeMake(dim, dim);
+		[self.cellImage addConstraints:[NSLayoutConstraint constraintView:self.selectedImage
+                                                                       to:imgSize]];
         self.selImgRight = [NSLayoutConstraint constraintViewFromRight:self.selectedImage
                                                                 amount: 0.0];
         self.selImgTop = [NSLayoutConstraint constraintViewFromTop:self.selectedImage
