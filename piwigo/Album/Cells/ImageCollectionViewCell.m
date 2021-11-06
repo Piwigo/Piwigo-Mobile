@@ -11,6 +11,10 @@
 #import "PiwigoAlbumData.h"
 #import "NetworkHandler.h"
 
+CGFloat const favMargin = 1.0;
+CGFloat const favOffset = 1.0;
+CGFloat const favScale = 0.12;
+
 @interface ImageCollectionViewCell()
 
 @property (nonatomic, strong) UILabel *nameLabel;
@@ -48,10 +52,10 @@
         } else {
             self.cellImage.contentMode = UIViewContentModeScaleAspectFit;
         }
-		self.cellImage.clipsToBounds = YES;
 		self.cellImage.image = [UIImage imageNamed:@"placeholderImage"];
 		[self.contentView addSubview:self.cellImage];
         [self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.cellImage]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintCenter:self.cellImage]];
 		
         // Movie type
         self.playImage = [UIImageView new];
@@ -73,6 +77,9 @@
         } else {
             favorite = [UIImage imageNamed:@"imageFavorite"];
         }
+        CGFloat dim = fmax(frame.size.width * favScale, 8);
+        CGSize favImgSize = CGSizeMake(dim, dim);
+        CGSize favBckgSize = CGSizeMake(dim + 2*favOffset, dim + 2*favOffset);
         self.favoriteBckgImage = [UIImageView new];
         self.favoriteBckgImage.translatesAutoresizingMaskIntoConstraints = NO;
         self.favoriteBckgImage.contentMode = UIViewContentModeScaleAspectFit;
@@ -81,8 +88,8 @@
         self.favoriteBckgImage.hidden = YES;
         [self.cellImage addSubview:self.favoriteBckgImage];
         [self.cellImage addConstraints:[NSLayoutConstraint constraintView:self.favoriteBckgImage
-                                                                       to:CGSizeMake(23, 23)]];
-        self.deltaX = 0.0; self.deltaY = 0.0;
+                                                                       to:favBckgSize]];
+        self.deltaX = favMargin; self.deltaY = favMargin;
         self.favBckgImgLeft = [NSLayoutConstraint constraintViewFromLeft:self.favoriteBckgImage
                                                                     amount:self.deltaX];
         self.favBckgImgBottom = [NSLayoutConstraint constraintViewFromBottom:self.favoriteBckgImage
@@ -97,11 +104,11 @@
         self.favoriteImage.hidden = YES;
         [self.cellImage addSubview:self.favoriteImage];
         [self.cellImage addConstraints:[NSLayoutConstraint constraintView:self.favoriteImage
-                                                                       to:CGSizeMake(17, 17)]];
+                                                                       to:favImgSize]];
         self.favImgLeft = [NSLayoutConstraint constraintViewFromLeft:self.favoriteImage
-                                                              amount:self.deltaX + 3.0];
+                                                              amount:self.deltaX + favOffset];
         self.favImgBottom = [NSLayoutConstraint constraintViewFromBottom:self.favoriteImage
-                                                                  amount:-(self.deltaY + 3.0)];
+                                                                  amount:-(self.deltaY + favOffset)];
         [self.cellImage addConstraints:@[self.favImgLeft, self.favImgBottom]];
 
         // Selected images are darker
@@ -351,10 +358,10 @@
         // Downsample image (or scale it up)
         UIImage *displayedImage = [ImageUtilities downsampleWithImage:image to:size scale:scale];
         weakSelf.cellImage.image = displayedImage;
-        [weakSelf.cellImage sizeToFit];
+        [weakSelf.cellImage layoutIfNeeded];
         
         // Favorite image position depends on device
-        weakSelf.deltaX = 0.0; weakSelf.deltaY = 0.0;
+        weakSelf.deltaX = favMargin; weakSelf.deltaY = favMargin;
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
             // Case of an iPad: respect aspect ratio
             // Image width…
@@ -382,19 +389,19 @@
         
         // Update horizontal constraints
         weakSelf.selImgRight.constant = -weakSelf.deltaX;
-        weakSelf.favImgLeft.constant = weakSelf.deltaX + 3.0;
+        weakSelf.favImgLeft.constant = weakSelf.deltaX + favOffset;
         weakSelf.favBckgImgLeft.constant = weakSelf.deltaX;
 
         // Update vertical constraints
         weakSelf.selImgTop.constant = weakSelf.deltaY + 5.0;
         if (weakSelf.bottomLayer.isHidden) {
             // The title is not displayed
-            weakSelf.favImgBottom.constant = - (weakSelf.deltaY + 3.0);
+            weakSelf.favImgBottom.constant = - (weakSelf.deltaY + favOffset);
             weakSelf.favBckgImgBottom.constant = -weakSelf.deltaY;
         } else {
             // The title is displayed
             CGFloat deltaY = fmax(16.0, weakSelf.deltaY);
-            weakSelf.favImgBottom.constant = - (deltaY + 3.0);
+            weakSelf.favImgBottom.constant = - (deltaY + favOffset);
             weakSelf.favBckgImgBottom.constant = - deltaY;
         }
     } failure:nil];
@@ -404,7 +411,7 @@
 {
     [super prepareForReuse];
     self.cellImage.image = nil;
-    self.deltaX = 0.0; self.deltaY = 0.0;
+    self.deltaX = favMargin; self.deltaY = favMargin;
 	self.isSelected = NO;
     self.isFavorite = NO;
 	self.playImage.hidden = YES;
@@ -426,13 +433,13 @@
     // Update the vertical constraint
     if (self.bottomLayer.isHidden) {
         // Place icon at the bottom
-        self.favImgBottom.constant = - (self.deltaY + 3.0);
+        self.favImgBottom.constant = - (self.deltaY + favOffset);
         self.favBckgImgBottom.constant = - self.deltaY;
     }
     else {
         // Place icon at the bottom but above the title
         CGFloat height = fmax(16.0, self.deltaY);
-        self.favImgBottom.constant = - (height + 3.0);
+        self.favImgBottom.constant = - (height + favOffset);
         self.favBckgImgBottom.constant = - height;
     }
     
