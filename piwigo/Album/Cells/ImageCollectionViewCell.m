@@ -55,7 +55,6 @@ CGFloat const favScale = 0.12;
 		self.cellImage.image = [UIImage imageNamed:@"placeholderImage"];
 		[self.contentView addSubview:self.cellImage];
         [self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.cellImage]];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintCenter:self.cellImage]];
 		
         // Movie type
         self.playImage = [UIImageView new];
