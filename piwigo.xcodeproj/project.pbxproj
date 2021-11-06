@@ -179,6 +179,7 @@
 		ADBDD9392441AFCF00F19DFC /* ButtonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBDD9382441AFCF00F19DFC /* ButtonTableViewCell.swift */; };
 		ADBE45272449969C00AE0001 /* PhotosFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE45262449969C00AE0001 /* PhotosFetch.swift */; };
 		ADBED55426DEBAE300D1A41B /* EditImageParamsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBED55326DEBAE300D1A41B /* EditImageParamsViewController.swift */; };
+		ADBF55712736E1990014E74A /* UIImage+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBF55702736E1990014E74A /* UIImage+AppTools.swift */; };
 		ADC019742471A70F00532A81 /* UploadQueueViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADC019732471A70F00532A81 /* UploadQueueViewController.storyboard */; };
 		ADC019762471AA5200532A81 /* UploadImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC019752471AA5200532A81 /* UploadImageTableViewCell.swift */; };
 		ADC019782471ABA000532A81 /* UploadQueueViewControllerOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC019772471ABA000532A81 /* UploadQueueViewControllerOld.swift */; };
@@ -619,6 +620,7 @@
 		ADBE452A244A1AF400AE0001 /* LocationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationError.swift; sourceTree = "<group>"; };
 		ADBE452C244A1F0000AE0001 /* LocationsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsProvider.swift; sourceTree = "<group>"; };
 		ADBED55326DEBAE300D1A41B /* EditImageParamsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditImageParamsViewController.swift; sourceTree = "<group>"; };
+		ADBF55702736E1990014E74A /* UIImage+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+AppTools.swift"; sourceTree = "<group>"; };
 		ADC019732471A70F00532A81 /* UploadQueueViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = UploadQueueViewController.storyboard; sourceTree = "<group>"; };
 		ADC019752471AA5200532A81 /* UploadImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadImageTableViewCell.swift; sourceTree = "<group>"; };
 		ADC019772471ABA000532A81 /* UploadQueueViewControllerOld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadQueueViewControllerOld.swift; sourceTree = "<group>"; };
@@ -1543,6 +1545,7 @@
 				AD69739A271885D10015303E /* UIBarButtonItem+AppTools.swift */,
 				AD1F60012402B1B70099E5E5 /* UIColor+AppColors.swift */,
 				ADFC3A4D2401DA4E004CD337 /* UIFont+AppFonts.swift */,
+				ADBF55702736E1990014E74A /* UIImage+AppTools.swift */,
 				AD987633262606C600B964C5 /* UIViewController+AppTools.swift */,
 			);
 			path = Macros;
@@ -2314,6 +2317,7 @@
 				AD3335432666B6D4000A1487 /* AppVars.swift in Sources */,
 				ADC019762471AA5200532A81 /* UploadImageTableViewCell.swift in Sources */,
 				AD9A1BE824E04F0000D22C86 /* UploadQueueHeaderView.swift in Sources */,
+				ADBF55712736E1990014E74A /* UIImage+AppTools.swift in Sources */,
 				AD8D214A26B094DC0008E907 /* Help07ViewController.swift in Sources */,
 				AD5B498124E5C02300BDF5B4 /* UploadQueueViewController.swift in Sources */,
 				AD97CFBD265D1AF800719ED5 /* AlbumVars.swift in Sources */,

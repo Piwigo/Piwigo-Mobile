@@ -1114,10 +1114,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                         forControlEvents:UIControlEventTouchUpInside];
             [self.addButton addTarget:self action:@selector(didCancelTapAddButton)
                    forControlEvents:UIControlEventTouchUpInside];
-            [UIView animateWithDuration:0.2 animations:^{
-                self.addButton.backgroundColor = [UIColor grayColor];
-                self.addButton.tintColor = [UIColor whiteColor];
-            }];
         }];
     } else {
         // Hide Home Album button
@@ -1131,10 +1127,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                             forControlEvents:UIControlEventTouchUpInside];
                 [self.addButton addTarget:self action:@selector(didCancelTapAddButton)
                        forControlEvents:UIControlEventTouchUpInside];
-                [UIView animateWithDuration:0.2 animations:^{
-                    self.addButton.backgroundColor = [UIColor grayColor];
-                    self.addButton.tintColor = [UIColor whiteColor];
-                }];
             }];
         }];
     }
@@ -1340,10 +1332,20 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         [self.uploadImagesButton.layer setOpacity:0.9];
         
         // Move buttons together
-        self.createAlbumButton.frame = CGRectMake(xPos - 3*kRadius*cos(15*kDeg2Rad), yPos - 3*kRadius*sin(15*kDeg2Rad), 1.72*kRadius, 1.72*kRadius);
-        self.uploadImagesButton.frame = CGRectMake(xPos - 3*kRadius*cos(75*kDeg2Rad), yPos - 3*kRadius*sin(75*kDeg2Rad), 1.72*kRadius, 1.72*kRadius);
+        self.createAlbumButton.frame = CGRectMake(xPos - 3*kRadius*cos(15*kDeg2Rad),
+                                                  yPos - 3*kRadius*sin(15*kDeg2Rad),
+                                                  1.72*kRadius, 1.72*kRadius);
+        self.uploadImagesButton.frame = CGRectMake(xPos - 3*kRadius*cos(75*kDeg2Rad),
+                                                   yPos - 3*kRadius*sin(75*kDeg2Rad),
+                                                   1.72*kRadius, 1.72*kRadius);
     
-    } completion:^(BOOL finished) {
+        // Rotate cross and change colour
+        UIImage *rotatedImage = [[UIImage imageNamed:@"add"] rotatedBy:M_PI_4];
+        [self.addButton setImage:rotatedImage forState:UIControlStateNormal];
+        self.addButton.backgroundColor = [UIColor grayColor];
+        self.addButton.tintColor = [UIColor whiteColor];
+    }
+    completion:^(BOOL finished) {
         // Execute block
         if (completion) {
             completion();
@@ -1367,7 +1369,12 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         self.createAlbumButton.frame = CGRectMake(xPos, yPos, 1.72*kRadius, 1.72*kRadius);
         self.uploadImagesButton.frame = CGRectMake(xPos, yPos, 1.72*kRadius, 1.72*kRadius);
 
-    } completion:^(BOOL finished) {
+        // Rotate cross and change colour
+        [self.addButton setImage:[UIImage imageNamed:@"add"] forState:UIControlStateNormal];
+        self.addButton.backgroundColor = [UIColor grayColor];
+        self.addButton.tintColor = [UIColor whiteColor];
+    }
+    completion:^(BOOL finished) {
         // Hide transparent CreateAlbum and UploadImages buttons
         [self.createAlbumButton setHidden:YES];
         [self.uploadImagesButton setHidden:YES];
