@@ -264,6 +264,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 
     // Create permanent session managers for retrieving data and downloading images
     [NetworkHandler createJSONdataSessionManager];      // 30s timeout, 4 connections max
+    [NetworkHandler createFavoritesDataSessionManager]; // 30s timeout, 1 connection max
     [NetworkHandler createImagesSessionManager];        // 60s timeout, 4 connections max
     
     // Collect list of methods supplied by Piwigo server
@@ -795,42 +796,25 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
             PiwigoAlbumData *favoritesAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoFavoritesCategoryId];
             [CategoriesData.sharedInstance updateCategories:@[favoritesAlbum] andUpdateUI:NO];
             
-            // Calculate the number of thumbnails displayed per page
-            NSInteger imagesPerPage = [ImagesCollection numberOfImagesPerPageForView:nil imagesPerRowInPortrait:AlbumVars.thumbnailsPerRowInPortrait];
-            
-            // Download favorites
-            [[CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:(kPiwigoSortObjc)AlbumVars.defaultSort
-                forProgress:^(NSInteger onPage, NSInteger outOf) {
-                // Should we present progresse details?
-                NSInteger downloaded = imagesPerPage * 2 * onPage;
-                if (outOf > imagesPerPage * 2 * 2) {
-                    // Update HUD during login if needed
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        NSString *detail = [NSString stringWithFormat:@"%@ (%ld/%ld)", NSLocalizedString(@"imageFavorites_title", @"Favorites"), (long)downloaded, (long)outOf];
-                        [self showLoadingWithSubtitle:detail];
-                    });
+            // Load favorites data in the background with dedicated URL session
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),^{
+                [[CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:(kPiwigoSortObjc)AlbumVars.defaultSort
+                forProgress:^(NSInteger onPage, NSInteger outOf){
+                    // Post to the app that favorites data are loaded
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
                 }
-            }
-            onCompletion:^(BOOL completed) {
-                NSInteger downloaded = [[CategoriesData sharedInstance] getCategoryById:kPiwigoFavoritesCategoryId].numberOfImages;
-                // Update HUD during login if needed
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    NSString *detail = [NSString stringWithFormat:@"%@ (%ld/%ld)", NSLocalizedString(@"imageFavorites_title", @"Favorites"), (long)downloaded, (long)downloaded];
-                    [self showLoadingWithSubtitle:detail];
-                    [self hideLoadingWithCompletion:^{
-                        // Present Album/Images view and resume uploads
-                        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                        [appDelegate loadNavigation];
-                    }];
-                });
-            }
-            onFailure:^(NSURLSessionTask *task, NSError *error) {
-                // Logged in but could not upload all favorites data
-                [self hideLoadingWithCompletion:^{
-                    // Present Album/Images view and resume uploads
-                    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                    [appDelegate loadNavigation];
-                }];
+                onCompletion:^(BOOL completed) {
+                    // Post to the app that favorites data are loaded
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+                }
+                onFailure:nil];
+            });
+
+            [self hideLoadingWithCompletion:^{
+                // Present Album/Images view and resume uploads
+                AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                [appDelegate loadNavigation];
+                return;
             }];
             return;
         } else {

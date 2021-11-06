@@ -69,6 +69,7 @@ FOUNDATION_EXPORT NSInteger const loadingViewTag;
 @interface NetworkHandler : NSObject
 
 +(void)createJSONdataSessionManager;
++(void)createFavoritesDataSessionManager;
 +(void)createImagesSessionManager;
 +(AFHTTPSessionManager *)createUploadSessionManager;
 

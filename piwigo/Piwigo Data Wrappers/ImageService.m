@@ -422,23 +422,11 @@ NSString * const kGetImageOrderDescending = @"desc";
                                  @"order"          : order
                                  };
     
-    // Cancel active Search request if any
-    NSArray <NSURLSessionTask *> *searchTasks = [NetworkVarsObjc.sessionManager tasks];
-    for (NSURLSessionTask *task in searchTasks) {
-        [task cancel];
-    }
-    
-    // Cancel active image downloads if any
-    NSArray <NSURLSessionTask *> *downloadTasks = [NetworkVarsObjc.imagesSessionManager tasks];
-    for (NSURLSessionTask *task in downloadTasks) {
-        [task cancel];
-    }
-    
     // Send request
     return [self post:kPiwigoUserFavoritesGetList
         URLParameters:nil
            parameters:parameters
-       sessionManager:NetworkVarsObjc.sessionManager
+       sessionManager:NetworkVarsObjc.favoritesManager
              progress:nil
               success:^(NSURLSessionTask *task, id responseObject) {
                   
