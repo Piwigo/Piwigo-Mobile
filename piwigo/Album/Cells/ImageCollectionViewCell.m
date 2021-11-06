@@ -15,6 +15,7 @@ CGFloat const favMargin = 1.0;
 CGFloat const favOffset = 1.0;
 CGFloat const favScale = 0.12;
 CGFloat const selectScale = 0.2;
+CGFloat const playScale = 0.15;
 
 @interface ImageCollectionViewCell()
 
@@ -58,15 +59,23 @@ CGFloat const selectScale = 0.2;
         [self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.cellImage]];
 		
         // Movie type
+        UIImage *play;
+        if (@available(iOS 13.0, *)) {
+            play = [UIImage systemImageNamed:@"play.square.fill"];
+        } else {
+            play = [UIImage imageNamed:@"video"];
+        }
         self.playImage = [UIImageView new];
-        UIImage *play = [UIImage imageNamed:@"video"];
         self.playImage.image = [play imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         self.playImage.tintColor = [UIColor piwigoColorOrange];
         self.playImage.hidden = YES;
         self.playImage.translatesAutoresizingMaskIntoConstraints = NO;
         self.playImage.contentMode = UIViewContentModeScaleAspectFit;
+        CGFloat scale = fmax(1.0, self.traitCollection.displayScale);
+        CGFloat dim = frame.size.width * playScale + (scale - 1);
+        CGSize imgSize = CGSizeMake(dim, dim);
         [self.cellImage addSubview:self.playImage];
-        [self.cellImage addConstraints:[NSLayoutConstraint constraintView:self.playImage to:CGSizeMake(25, 25)]];
+        [self.cellImage addConstraints:[NSLayoutConstraint constraintView:self.playImage to:imgSize]];
         [self.cellImage addConstraint:[NSLayoutConstraint constraintViewFromLeft:self.playImage amount:5]];
         [self.cellImage addConstraint:[NSLayoutConstraint constraintViewFromTop:self.playImage amount:5]];
         
@@ -77,9 +86,8 @@ CGFloat const selectScale = 0.2;
         } else {
             favorite = [UIImage imageNamed:@"imageFavorite"];
         }
-        CGFloat scale = fmax(1.0, self.traitCollection.displayScale);
-        CGFloat dim = frame.size.width * favScale + (scale - 1);
-        CGSize imgSize = CGSizeMake(dim, dim);
+        dim = frame.size.width * favScale + (scale - 1);
+        imgSize = CGSizeMake(dim, dim);
         CGSize bckgSize = CGSizeMake(dim + 2*favOffset, dim + 2*favOffset);
         self.favoriteBckgImage = [UIImageView new];
         self.favoriteBckgImage.translatesAutoresizingMaskIntoConstraints = NO;
