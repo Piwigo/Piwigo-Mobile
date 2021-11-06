@@ -118,9 +118,9 @@ CGFloat const favScale = 0.12;
         self.darkenView.hidden = YES;
         [self.cellImage addSubview:self.darkenView];
         self.darkImgWidth = [NSLayoutConstraint constraintView:self.darkenView
-                                                       toWidth:CGFLOAT_MAX];
+                                                       toWidth:frame.size.width];
         self.darkImgHeight = [NSLayoutConstraint constraintView:self.darkenView
-                                                        toHeight:CGFLOAT_MAX];
+                                                        toHeight:frame.size.height];
         [self.cellImage addConstraints:@[self.darkImgWidth, self.darkImgHeight]];
         [self.cellImage addConstraints:[NSLayoutConstraint constraintCenter:self.darkenView]];
 
