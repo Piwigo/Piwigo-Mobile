@@ -1775,7 +1775,7 @@
     if (indexOfUpdatedImage == NSNotFound) { return; }
     
     // Refresh image cell
-    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfUpdatedImage inSection:1];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfUpdatedImage inSection:0];
     [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
 }
 
