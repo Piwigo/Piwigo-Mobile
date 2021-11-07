@@ -1776,18 +1776,32 @@
 -(void)didChangeImageParameters:(PiwigoImageData *)params
 {
     // Update cached image data
-    [[CategoriesData.sharedInstance getCategoryById:kPiwigoTagsCategoryId] updateImageAfterEdit:params];
     for (NSNumber *catId in params.categoryIds) {
         [[CategoriesData.sharedInstance getCategoryById:catId.intValue] updateImageAfterEdit:params];
     }
 
     // Update data source
-    NSInteger indexOfUpdatedImage = [self.albumData updateImage:params];
-    if (indexOfUpdatedImage == NSNotFound) { return; }
+    NSInteger indexOfImage = [self.albumData updateImage:params];
+    if (indexOfImage == NSNotFound) { return; }
     
-    // Refresh image cell
-    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfUpdatedImage inSection:1];
-    [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
+    // Did the user remove the tag associated with this smart album?
+    NSInteger indexOfTag = [params.tags indexOfObjectPassingTest:^BOOL(PiwigoTagData *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+     return obj.tagId == self.albumData.searchQuery.integerValue;
+    }];
+    if (indexOfTag == NSNotFound) {
+        // Remove image from cached smart album and collection
+        NSString *catStr = [NSString stringWithFormat:@"%ld", kPiwigoTagsCategoryId];
+        [CategoriesData.sharedInstance removeImage:params fromCategory:catStr];
+        return;
+    }
+    else {
+        // Update image in cached smart album
+        [[CategoriesData.sharedInstance getCategoryById:kPiwigoTagsCategoryId] updateImageAfterEdit:params];
+
+        // Refresh image cell
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfImage inSection:0];
+        [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
+    }
 }
 
 -(void)didFinishEditingParameters
