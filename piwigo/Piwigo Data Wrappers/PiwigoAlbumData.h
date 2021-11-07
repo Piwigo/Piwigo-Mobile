@@ -60,7 +60,7 @@ typedef enum {
                              onCompletion:(void (^)(BOOL completed))completion
                                 onFailure:(void (^)(NSURLSessionTask *task, NSError *error))fail;
 
--(void)addImages:(NSArray<PiwigoImageData*> *)images;
+-(NSInteger)addImages:(NSArray<PiwigoImageData*> *)images;
 -(void)addUploadedImage:(PiwigoImageData*)imageData;
 -(void)updateImages:(NSArray<PiwigoImageData*> *)updatedImages;
 -(void)updateImageAfterEdit:(PiwigoImageData *)uploadedImage;

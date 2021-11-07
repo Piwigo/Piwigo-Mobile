@@ -252,7 +252,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     }];
 }
 
--(void)addImages:(NSArray<PiwigoImageData*> *)images
+-(NSInteger)addImages:(NSArray<PiwigoImageData*> *)images
 {
     // Create new image list
     NSMutableArray<PiwigoImageData*> *newImageList = [NSMutableArray new];
@@ -261,6 +261,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     }
 	
     // Append new images
+    NSInteger count = 0;
     for(PiwigoImageData *imageData in images)
     {
         // API pwg.categories.getList returns:
@@ -272,6 +273,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
             return obj.imageId == imageData.imageId;
         }];
         if (indexOfExistingItem == NSNotFound) {
+            count++;
             [newImageList addObject:imageData];
             [self.imageIds setValue:@(0) forKey:[NSString stringWithFormat:@"%ld", (long)imageData.imageId]];
         } else {
@@ -281,6 +283,7 @@ NSInteger const kPiwigoFavoritesCategoryId  = -6;           // Favorites
     
     // Store updated list
 	self.imageList = newImageList;
+    return count;
 }
 
 -(void)addUploadedImage:(PiwigoImageData*)imageData
