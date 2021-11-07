@@ -1323,8 +1323,20 @@ extension ImageDetailViewController: EditImageParamsDelegate
         // Update cached image data
         /// Note: the current category might be a smart album.
         let mergedCatIds = Array(Set(imageData.categoryIds.map({$0.intValue}) + [categoryId]))
-        for catId in  mergedCatIds {
+        for catId in mergedCatIds {
             CategoriesData.sharedInstance().getCategoryById(catId)?.updateImage(afterEdit: params)
+        }
+        
+        // If the current category presents tagged images and the user
+        // removed the associated tag, delete the image from the smart album.
+        if categoryId == kPiwigoTagsCategoryId,
+           let albumData = CategoriesData.sharedInstance().getCategoryById(kPiwigoTagsCategoryId),
+           let tagId = Int(albumData.query), !params.tags.contains(where: { $0.tagId == tagId}) {
+            // Delete this image from the category and the parent colelction
+            CategoriesData.sharedInstance().removeImage(params, fromCategory: String(kPiwigoTagsCategoryId))
+            // … and delete it from this data source
+            didRemoveImage(withId: params.imageId)
+            return
         }
 
         // Update banner of item in collection view (in case of empty title)
