@@ -1859,7 +1859,7 @@
 -(void)didChangeImageParameters:(PiwigoImageData *)params
 {
     // Update cached image data
-    /// Note: the current category cannot be a smart album.
+    [[CategoriesData.sharedInstance getCategoryById:self.categoryId] updateImageAfterEdit:params];
     for (NSNumber *catId in params.categoryIds) {
         [[CategoriesData.sharedInstance getCategoryById:catId.intValue] updateImageAfterEdit:params];
     }
