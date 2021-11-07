@@ -11,27 +11,35 @@
 #import "PiwigoAlbumData.h"
 #import "NetworkHandler.h"
 
-CGFloat const favMargin = 1.0;
-CGFloat const favOffset = 1.0;
+CGFloat const margin = 1.0;
+CGFloat const offset = 1.0;
 CGFloat const favScale = 0.12;
 CGFloat const selectScale = 0.2;
-CGFloat const playScale = 0.15;
+CGFloat const playScale = 0.12;
 
 @interface ImageCollectionViewCell()
 
+// On iPad, thumbnails are presented with native aspect ratio
+@property (nonatomic, assign) CGFloat deltaX, deltaY;
+
+// Image title
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UIView *bottomLayer;
-@property (nonatomic, assign) CGFloat deltaX, deltaY;
-@property (nonatomic, strong) UIImageView *selectedImage;
+@property (nonatomic, strong) UILabel *noDataLabel;
+
+// Icon showing that it is a favorite
+@property (nonatomic, strong) UIImageView *favImg, *favBckg;
+@property (nonatomic, strong) NSLayoutConstraint *favLeft, *favBottom;
+
+// Icon showing that it is a movie
+@property (nonatomic, strong) UIImageView *playImg, *playBckg;
+@property (nonatomic, strong) NSLayoutConstraint *playLeft, *playTop;
+
+// Selected images are darkened
+@property (nonatomic, strong) UIImageView *selectedImg;
 @property (nonatomic, strong) NSLayoutConstraint *selImgRight, *selImgTop;
-@property (nonatomic, strong) UIImageView *favoriteImage;
-@property (nonatomic, strong) NSLayoutConstraint *favImgLeft, *favImgBottom;
-@property (nonatomic, strong) UIImageView *favoriteBckgImage;
-@property (nonatomic, strong) NSLayoutConstraint *favBckgImgLeft, *favBckgImgBottom;
 @property (nonatomic, strong) UIView *darkenView;
 @property (nonatomic, strong) NSLayoutConstraint *darkImgWidth, *darkImgHeight;
-@property (nonatomic, strong) UIImageView *playImage;
-@property (nonatomic, strong) UILabel *noDataLabel;
 
 @end
 
@@ -61,23 +69,36 @@ CGFloat const playScale = 0.15;
         // Movie type
         UIImage *play;
         if (@available(iOS 13.0, *)) {
-            play = [UIImage systemImageNamed:@"play.square.fill"];
+            play = [UIImage systemImageNamed:@"play.rectangle.fill"];
         } else {
             play = [UIImage imageNamed:@"video"];
         }
-        self.playImage = [UIImageView new];
-        self.playImage.image = [play imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        self.playImage.tintColor = [UIColor piwigoColorOrange];
-        self.playImage.hidden = YES;
-        self.playImage.translatesAutoresizingMaskIntoConstraints = NO;
-        self.playImage.contentMode = UIViewContentModeScaleAspectFit;
+        self.playBckg = [UIImageView new];
+        self.playBckg.hidden = YES;
+        self.playBckg.translatesAutoresizingMaskIntoConstraints = NO;
+        self.playBckg.contentMode = UIViewContentModeScaleAspectFit;
+        self.playBckg.image = [play imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        self.playBckg.tintColor = [UIColor colorWithWhite:0.0 alpha:0.15];
+
         CGFloat scale = fmax(1.0, self.traitCollection.displayScale);
         CGFloat dim = frame.size.width * playScale + (scale - 1);
         CGSize imgSize = CGSizeMake(dim, dim);
-        [self.cellImage addSubview:self.playImage];
-        [self.cellImage addConstraints:[NSLayoutConstraint constraintView:self.playImage to:imgSize]];
-        [self.cellImage addConstraint:[NSLayoutConstraint constraintViewFromLeft:self.playImage amount:5]];
-        [self.cellImage addConstraint:[NSLayoutConstraint constraintViewFromTop:self.playImage amount:5]];
+        CGSize bckgSize = CGSizeMake(dim + 2*offset, dim + 2*offset);
+        [self.cellImage addSubview:self.playBckg];
+        [self.cellImage addConstraints:[NSLayoutConstraint constraintView:self.playBckg to:bckgSize]];
+        self.playLeft = [NSLayoutConstraint constraintViewFromLeft:self.playBckg amount:margin];
+        self.playTop = [NSLayoutConstraint constraintViewFromTop:self.playBckg amount:margin];
+        [self.cellImage addConstraints:@[self.playLeft, self.playTop]];
+        
+        self.playImg = [UIImageView new];
+        self.playImg.hidden = YES;
+        self.playImg.translatesAutoresizingMaskIntoConstraints = NO;
+        self.playImg.contentMode = UIViewContentModeScaleAspectFit;
+        self.playImg.image = [play imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        self.playImg.tintColor = [UIColor whiteColor];
+        [self.playBckg addSubview:self.playImg];
+        [self.playBckg addConstraints:[NSLayoutConstraint constraintCenter:self.playImg]];
+        [self.cellImage addConstraints:[NSLayoutConstraint constraintView:self.playImg to:imgSize]];
         
         // Favorite image
         UIImage *favorite;
@@ -86,39 +107,31 @@ CGFloat const playScale = 0.15;
         } else {
             favorite = [UIImage imageNamed:@"imageFavorite"];
         }
+        self.favBckg = [UIImageView new];
+        self.favBckg.hidden = YES;
+        self.favBckg.translatesAutoresizingMaskIntoConstraints = NO;
+        self.favBckg.contentMode = UIViewContentModeScaleAspectFit;
+        self.favBckg.image = [favorite imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        self.favBckg.tintColor = [UIColor colorWithWhite:0.0 alpha:0.15];
+
         dim = frame.size.width * favScale + (scale - 1);
         imgSize = CGSizeMake(dim, dim);
-        CGSize bckgSize = CGSizeMake(dim + 2*favOffset, dim + 2*favOffset);
-        self.favoriteBckgImage = [UIImageView new];
-        self.favoriteBckgImage.translatesAutoresizingMaskIntoConstraints = NO;
-        self.favoriteBckgImage.contentMode = UIViewContentModeScaleAspectFit;
-        self.favoriteBckgImage.image = [favorite imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        self.favoriteBckgImage.tintColor = [UIColor colorWithWhite:0.0 alpha:0.1];
-        self.favoriteBckgImage.hidden = YES;
-        [self.cellImage addSubview:self.favoriteBckgImage];
-        [self.cellImage addConstraints:[NSLayoutConstraint constraintView:self.favoriteBckgImage
-                                                                       to:bckgSize]];
-        self.deltaX = favMargin; self.deltaY = favMargin;
-        self.favBckgImgLeft = [NSLayoutConstraint constraintViewFromLeft:self.favoriteBckgImage
-                                                                    amount:self.deltaX];
-        self.favBckgImgBottom = [NSLayoutConstraint constraintViewFromBottom:self.favoriteBckgImage
-                                                                        amount:-self.deltaY];
-        [self.cellImage addConstraints:@[self.favBckgImgLeft, self.favBckgImgBottom]];
+        bckgSize = CGSizeMake(dim + 2*offset, dim + 2*offset);
+        [self.cellImage addSubview:self.favBckg];
+        [self.cellImage addConstraints:[NSLayoutConstraint constraintView:self.favBckg to:bckgSize]];
+        self.favLeft = [NSLayoutConstraint constraintViewFromLeft:self.favBckg amount:margin];
+        self.favBottom = [NSLayoutConstraint constraintViewFromBottom:self.favBckg amount:-margin];
+        [self.cellImage addConstraints:@[self.favLeft, self.favBottom]];
 
-        self.favoriteImage = [UIImageView new];
-        self.favoriteImage.translatesAutoresizingMaskIntoConstraints = NO;
-        self.favoriteImage.contentMode = UIViewContentModeScaleAspectFit;
-        self.favoriteImage.image = [favorite imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        self.favoriteImage.tintColor = [UIColor whiteColor];
-        self.favoriteImage.hidden = YES;
-        [self.cellImage addSubview:self.favoriteImage];
-        [self.cellImage addConstraints:[NSLayoutConstraint constraintView:self.favoriteImage
-                                                                       to:imgSize]];
-        self.favImgLeft = [NSLayoutConstraint constraintViewFromLeft:self.favoriteImage
-                                                              amount:self.deltaX + favOffset];
-        self.favImgBottom = [NSLayoutConstraint constraintViewFromBottom:self.favoriteImage
-                                                                  amount:-(self.deltaY + favOffset)];
-        [self.cellImage addConstraints:@[self.favImgLeft, self.favImgBottom]];
+        self.favImg = [UIImageView new];
+        self.favImg.hidden = YES;
+        self.favImg.translatesAutoresizingMaskIntoConstraints = NO;
+        self.favImg.contentMode = UIViewContentModeScaleAspectFit;
+        self.favImg.image = [favorite imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        self.favImg.tintColor = [UIColor whiteColor];
+        [self.favBckg addSubview:self.favImg];
+        [self.favBckg addConstraints:[NSLayoutConstraint constraintView:self.favImg to:imgSize]];
+        [self.favBckg addConstraints:[NSLayoutConstraint constraintCenter:self.favImg]];
 
         // Selected images are darker
         self.darkenView = [UIView new];
@@ -143,7 +156,7 @@ CGFloat const playScale = 0.15;
         [self.cellImage addConstraint:[NSLayoutConstraint constraintView:self.bottomLayer toHeight:16.0]];
 		
         // Title of images shown in banners
-        self.nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,0, self.contentView.bounds.size.width, CGFLOAT_MAX)];
+        self.nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,0, self.contentView.bounds.size.width, frame.size.height)];
 		self.nameLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		self.nameLabel.font = [UIFont piwigoFontTiny];
 		self.nameLabel.adjustsFontSizeToFitWidth = YES;
@@ -176,22 +189,19 @@ CGFloat const playScale = 0.15;
 																	  constant:0]];
 		
         // Selected image thumbnails
-        self.selectedImage = [UIImageView new];
-		self.selectedImage.translatesAutoresizingMaskIntoConstraints = NO;
-		self.selectedImage.contentMode = UIViewContentModeScaleAspectFit;
+        self.selectedImg = [UIImageView new];
+		self.selectedImg.translatesAutoresizingMaskIntoConstraints = NO;
+		self.selectedImg.contentMode = UIViewContentModeScaleAspectFit;
 		UIImage *checkMark = [UIImage imageNamed:@"checkMark"];
-		self.selectedImage.image = [checkMark imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-		self.selectedImage.tintColor = [UIColor piwigoColorOrange];
-		self.selectedImage.hidden = YES;
-		[self.cellImage addSubview:self.selectedImage];
+		self.selectedImg.image = [checkMark imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+		self.selectedImg.tintColor = [UIColor piwigoColorOrange];
+		self.selectedImg.hidden = YES;
+		[self.cellImage addSubview:self.selectedImg];
         dim = frame.size.width * selectScale + (scale - 1);
         imgSize = CGSizeMake(dim, dim);
-		[self.cellImage addConstraints:[NSLayoutConstraint constraintView:self.selectedImage
-                                                                       to:imgSize]];
-        self.selImgRight = [NSLayoutConstraint constraintViewFromRight:self.selectedImage
-                                                                amount: 0.0];
-        self.selImgTop = [NSLayoutConstraint constraintViewFromTop:self.selectedImage
-                                                            amount: 5.0];
+		[self.cellImage addConstraints:[NSLayoutConstraint constraintView:self.selectedImg to:imgSize]];
+        self.selImgRight = [NSLayoutConstraint constraintViewFromRight:self.selectedImg amount: 0.0];
+        self.selImgTop = [NSLayoutConstraint constraintViewFromTop:self.selectedImg amount: 2*margin];
         [self.cellImage addConstraints:@[self.selImgRight, self.selImgTop]];
 		
         // Without data to show
@@ -235,7 +245,8 @@ CGFloat const playScale = 0.15;
 	}
 	
     // Play button
-    self.playImage.hidden = !imageData.isVideo;
+    self.playImg.hidden = !imageData.isVideo;
+    self.playBckg.hidden = !imageData.isVideo;
 
     // Title
     if ((AlbumVars.displayImageTitles) ||
@@ -373,7 +384,7 @@ CGFloat const playScale = 0.15;
         [weakSelf.cellImage layoutIfNeeded];
         
         // Favorite image position depends on device
-        weakSelf.deltaX = favMargin; weakSelf.deltaY = favMargin;
+        weakSelf.deltaX = margin; weakSelf.deltaY = margin;
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
             // Case of an iPad: respect aspect ratio
             // Image width…
@@ -401,20 +412,19 @@ CGFloat const playScale = 0.15;
         
         // Update horizontal constraints
         weakSelf.selImgRight.constant = -weakSelf.deltaX;
-        weakSelf.favImgLeft.constant = weakSelf.deltaX + favOffset;
-        weakSelf.favBckgImgLeft.constant = weakSelf.deltaX;
+        weakSelf.favLeft.constant = weakSelf.deltaX;
+        weakSelf.playLeft.constant = weakSelf.deltaX;
 
         // Update vertical constraints
-        weakSelf.selImgTop.constant = weakSelf.deltaY + 5.0;
+        weakSelf.selImgTop.constant = weakSelf.deltaY + 2*margin;
+        weakSelf.playTop.constant = weakSelf.deltaY + offset;
         if (weakSelf.bottomLayer.isHidden) {
             // The title is not displayed
-            weakSelf.favImgBottom.constant = - (weakSelf.deltaY + favOffset);
-            weakSelf.favBckgImgBottom.constant = -weakSelf.deltaY;
+            weakSelf.favBottom.constant = - weakSelf.deltaY;
         } else {
             // The title is displayed
             CGFloat deltaY = fmax(16.0, weakSelf.deltaY);
-            weakSelf.favImgBottom.constant = - (deltaY + favOffset);
-            weakSelf.favBckgImgBottom.constant = - deltaY;
+            weakSelf.favBottom.constant = - deltaY;
         }
     } failure:nil];
 }
@@ -423,10 +433,10 @@ CGFloat const playScale = 0.15;
 {
     [super prepareForReuse];
     self.cellImage.image = nil;
-    self.deltaX = favMargin; self.deltaY = favMargin;
+    self.deltaX = margin; self.deltaY = margin;
 	self.isSelected = NO;
     self.isFavorite = NO;
-	self.playImage.hidden = YES;
+	self.playImg.hidden = YES;
 	self.noDataLabel.hidden = YES;
 }
 
@@ -434,7 +444,7 @@ CGFloat const playScale = 0.15;
 {
 	_isSelected = isSelected;
 
-	self.selectedImage.hidden = !isSelected;
+	self.selectedImg.hidden = !isSelected;
 	self.darkenView.hidden = !isSelected;
 }
 
@@ -445,19 +455,17 @@ CGFloat const playScale = 0.15;
     // Update the vertical constraint
     if (self.bottomLayer.isHidden) {
         // Place icon at the bottom
-        self.favImgBottom.constant = - (self.deltaY + favOffset);
-        self.favBckgImgBottom.constant = - self.deltaY;
+        self.favBottom.constant = - self.deltaY;
     }
     else {
         // Place icon at the bottom but above the title
         CGFloat height = fmax(16.0, self.deltaY);
-        self.favImgBottom.constant = - (height + favOffset);
-        self.favBckgImgBottom.constant = - height;
+        self.favBottom.constant = - height;
     }
     
     // Display/hide the favorite icon
-    self.favoriteBckgImage.hidden = !isFavorite;
-    self.favoriteImage.hidden = !isFavorite;
+    self.favBckg.hidden = !isFavorite;
+    self.favImg.hidden = !isFavorite;
 }
 
 -(void)highlightOnCompletion:(void (^)(void))completion
