@@ -137,7 +137,7 @@
 
 // Albums "Discover"
 "categoryDiscover_title" = "Felfedezés";
-"categoryDiscoverTagged_title" = "Megjelölt";
+"categoryDiscoverTagged_title" = "Címkézett";
 "categoryDiscoverVisits_title" = "Legtöbbet látogatott";
 "categoryDiscoverVisits_legend" = "megtekintés";
 "categoryDiscoverBest_title" = "Legjobbra értékelt";
