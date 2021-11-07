@@ -1790,7 +1790,7 @@
     }];
     if (indexOfTag == NSNotFound) {
         // Remove image from cached smart album and collection
-        NSString *catStr = [NSString stringWithFormat:@"%ld", kPiwigoTagsCategoryId];
+        NSString *catStr = [NSString stringWithFormat:@"%ld", (long)kPiwigoTagsCategoryId];
         [CategoriesData.sharedInstance removeImage:params fromCategory:catStr];
         return;
     }
