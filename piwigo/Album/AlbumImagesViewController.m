@@ -3292,7 +3292,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         {
             // Header height?
             PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
-            if ([albumData.comment length] > 0) {
+            if (([albumData.comment length] > 0) && (collectionView.frame.size.width - 30.0 > 0)) {
                 NSString *header = albumData.comment;
                 NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
                 NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
@@ -3346,7 +3346,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
             }
  
-            if ([footer length] > 0) {
+            if (([footer length] > 0) && (collectionView.frame.size.width - 30.0 > 0)) {
                 NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontLight]};
                 NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
                 context.minimumScaleFactor = 1.0;
