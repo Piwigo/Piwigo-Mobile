@@ -19,7 +19,6 @@
 		AD07CAC026DBF13800BEAEFB /* EditImageDatePickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD07CABF26DBF13700BEAEFB /* EditImageDatePickerTableViewCell.swift */; };
 		AD07CAC226DD4B4100BEAEFB /* EditImageThumbCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD07CAC126DD4B4100BEAEFB /* EditImageThumbCollectionViewCell.swift */; };
 		AD07CAC426DD701600BEAEFB /* EditImageThumbTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD07CAC326DD701600BEAEFB /* EditImageThumbTableViewCell.swift */; };
-		AD084E4A2659A27100159FE1 /* piwigoKit.h in Headers */ = {isa = PBXBuildFile; fileRef = AD084E482659A27100159FE1 /* piwigoKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AD084E4D2659A27100159FE1 /* piwigoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; };
 		AD084E4E2659A27100159FE1 /* piwigoKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AD084E462659A27100159FE1 /* piwigoKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AD0B6AC726887EC8007DEE70 /* UploadUtilitiesObjc.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0B6AC626887EC8007DEE70 /* UploadUtilitiesObjc.swift */; };
@@ -365,8 +364,6 @@
 		AD0822741FA06B0A0005AA12 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/AppStore.strings; sourceTree = "<group>"; };
 		AD0822751FA06B0A0005AA12 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AD084E462659A27100159FE1 /* piwigoKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = piwigoKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		AD084E482659A27100159FE1 /* piwigoKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = piwigoKit.h; sourceTree = "<group>"; };
-		AD084E492659A27100159FE1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AD0B6AC626887EC8007DEE70 /* UploadUtilitiesObjc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadUtilitiesObjc.swift; sourceTree = "<group>"; };
 		AD0B6AC8268A2166007DEE70 /* UploadUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadUtilities.swift; sourceTree = "<group>"; };
 		AD0B6ACA268A2187007DEE70 /* UploadSessions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadSessions.swift; sourceTree = "<group>"; };
@@ -567,6 +564,8 @@
 		AD98762E2626014500B964C5 /* UploadProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadProperties.swift; sourceTree = "<group>"; };
 		AD987633262606C600B964C5 /* UIViewController+AppTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+AppTools.swift"; sourceTree = "<group>"; };
 		AD9A1BE724E04F0000D22C86 /* UploadQueueHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadQueueHeaderView.swift; sourceTree = "<group>"; };
+		ADA0049C2739C036006FE8ED /* piwigoKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = piwigoKit.h; sourceTree = "<group>"; };
+		ADA0049D2739C038006FE8ED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ADA24DAE243A68FA00864D1F /* DefaultImageThumbnailSizeViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = DefaultImageThumbnailSizeViewController.storyboard; sourceTree = "<group>"; };
 		ADA24DB0243A692200864D1F /* DefaultImageThumbnailSizeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultImageThumbnailSizeViewController.swift; sourceTree = "<group>"; };
 		ADA24DB5243A74C200864D1F /* DefaultImageSizeViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = DefaultImageSizeViewController.storyboard; sourceTree = "<group>"; };
@@ -867,8 +866,8 @@
 		AD084E472659A27100159FE1 /* piwigoKit */ = {
 			isa = PBXGroup;
 			children = (
-				AD084E482659A27100159FE1 /* piwigoKit.h */,
-				AD084E492659A27100159FE1 /* Info.plist */,
+				ADA0049C2739C036006FE8ED /* piwigoKit.h */,
+				ADA0049D2739C038006FE8ED /* Info.plist */,
 			);
 			path = piwigoKit;
 			sourceTree = "<group>";
@@ -1696,7 +1695,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AD084E4A2659A27100159FE1 /* piwigoKit.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
