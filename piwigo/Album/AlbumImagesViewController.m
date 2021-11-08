@@ -1369,8 +1369,12 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         self.createAlbumButton.frame = CGRectMake(xPos, yPos, 1.72*kRadius, 1.72*kRadius);
         self.uploadImagesButton.frame = CGRectMake(xPos, yPos, 1.72*kRadius, 1.72*kRadius);
 
-        // Rotate cross and change colour
-        [self.addButton setImage:[UIImage imageNamed:@"add"] forState:UIControlStateNormal];
+        // Rotate cross if not in root and change colour
+        if (self.categoryId == 0) {
+            [self.addButton setImage:[UIImage imageNamed:@"createLarge"] forState:UIControlStateNormal];
+        } else {
+            [self.addButton setImage:[UIImage imageNamed:@"add"] forState:UIControlStateNormal];
+        }
         self.addButton.backgroundColor = [UIColor grayColor];
         self.addButton.tintColor = [UIColor whiteColor];
     }
