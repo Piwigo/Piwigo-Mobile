@@ -34,6 +34,7 @@
 		AD0ED1022441CEC200C69178 /* SwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED1012441CEC200C69178 /* SwitchTableViewCell.swift */; };
 		AD0ED1042441F65B00C69178 /* TextFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0ED1032441F65B00C69178 /* TextFieldTableViewCell.swift */; };
 		AD0FF9B821316ECE0094B907 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0FF9B721316ECE0094B907 /* SnapshotHelper.swift */; };
+		AD11AC4C273B17A100433038 /* help01.png in Resources */ = {isa = PBXBuildFile; fileRef = AD11AC4B273B17A100433038 /* help01.png */; };
 		AD11BDA22402C7E7003347BE /* UIColor+AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1F60012402B1B70099E5E5 /* UIColor+AppColors.swift */; };
 		AD11E46124A930B000C8876F /* piwigoWebAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD11E46024A930B000C8876F /* piwigoWebAPI.swift */; };
 		AD196AA12438D2D6006C492A /* ShareMetadataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD196AA02438D2D5006C492A /* ShareMetadataViewController.swift */; };
@@ -128,7 +129,6 @@
 		AD8D217A26B0B16A0008E907 /* help02-bot.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D217126B0B1690008E907 /* help02-bot.png */; };
 		AD8D217B26B0B16A0008E907 /* help04.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D217226B0B1690008E907 /* help04.png */; };
 		AD8D217C26B0B16A0008E907 /* help02-top.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D217326B0B1690008E907 /* help02-top.png */; };
-		AD8D217D26B0B16A0008E907 /* help01.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D217426B0B1690008E907 /* help01.png */; };
 		AD8D217E26B0B16A0008E907 /* help06.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D217526B0B1690008E907 /* help06.png */; };
 		AD8D217F26B0B16A0008E907 /* help05-bot.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D217626B0B16A0008E907 /* help05-bot.png */; };
 		AD8D218026B0B16A0008E907 /* help07-top.png in Resources */ = {isa = PBXBuildFile; fileRef = AD8D217726B0B16A0008E907 /* help07-top.png */; };
@@ -378,6 +378,7 @@
 		AD0ED1032441F65B00C69178 /* TextFieldTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFieldTableViewCell.swift; sourceTree = "<group>"; };
 		AD0FF9B721316ECE0094B907 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotHelper.swift; path = fastlane/SnapshotHelper.swift; sourceTree = SOURCE_ROOT; };
 		AD1092EA23D4E4D0006627B0 /* TagsProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagsProvider.swift; sourceTree = "<group>"; };
+		AD11AC4B273B17A100433038 /* help01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = help01.png; path = Assets/Screenshots/Help/help01.png; sourceTree = SOURCE_ROOT; };
 		AD11E45E24A930B000C8876F /* piwigoWebAPI.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = piwigoWebAPI.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD11E46024A930B000C8876F /* piwigoWebAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = piwigoWebAPI.swift; sourceTree = "<group>"; };
 		AD11E46224A930B000C8876F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -544,7 +545,6 @@
 		AD8D217126B0B1690008E907 /* help02-bot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help02-bot.png"; sourceTree = "<group>"; };
 		AD8D217226B0B1690008E907 /* help04.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = help04.png; sourceTree = "<group>"; };
 		AD8D217326B0B1690008E907 /* help02-top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help02-top.png"; sourceTree = "<group>"; };
-		AD8D217426B0B1690008E907 /* help01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = help01.png; sourceTree = "<group>"; };
 		AD8D217526B0B1690008E907 /* help06.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = help06.png; sourceTree = "<group>"; };
 		AD8D217626B0B16A0008E907 /* help05-bot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help05-bot.png"; sourceTree = "<group>"; };
 		AD8D217726B0B16A0008E907 /* help07-top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help07-top.png"; sourceTree = "<group>"; };
@@ -1165,7 +1165,7 @@
 				AD8D218226B0B46A0008E907 /* darkPhone.png */,
 				AD8D218326B0B46A0008E907 /* lightPad.png */,
 				AD8D218526B0B46A0008E907 /* lightPhone.png */,
-				AD8D217426B0B1690008E907 /* help01.png */,
+				AD11AC4B273B17A100433038 /* help01.png */,
 				AD8D217126B0B1690008E907 /* help02-bot.png */,
 				AD8D217326B0B1690008E907 /* help02-top.png */,
 				AD8D217026B0B1690008E907 /* help03.png */,
@@ -2000,7 +2000,7 @@
 				ADD741F82699976100B47056 /* UploadPhotoSizeViewController.storyboard in Resources */,
 				AD6FD1FA24BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard in Resources */,
 				ADC019742471A70F00532A81 /* UploadQueueViewController.storyboard in Resources */,
-				AD8D217D26B0B16A0008E907 /* help01.png in Resources */,
+				AD11AC4C273B17A100433038 /* help01.png in Resources */,
 				AD8F4B8B23F04B8C009483B6 /* TagSelectorViewController.storyboard in Resources */,
 				AD4902E324C2142800A96066 /* TagsViewController.storyboard in Resources */,
 				ADAEED8822E2665000CB1B12 /* LaunchScreen.storyboard in Resources */,
