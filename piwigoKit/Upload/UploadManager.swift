@@ -161,7 +161,7 @@ public class UploadManager: NSObject {
 
         // Update app badge and Upload button in root/default album
         // Considers only uploads to the server to which the user is logged in
-        let states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
+        var states: [kPiwigoUploadState] = [.waiting, .preparing, .preparingError,
                                             .preparingFail, .formatError, .prepared,
                                             .uploading, .uploadingError, .uploadingFail, .uploaded,
                                             .finishing, .finishingError]
@@ -184,7 +184,7 @@ public class UploadManager: NSObject {
             return
         }
 
-        // Interrupted work shoulds be set as if an error was encountered
+        // Interrupted work should be set as if an error was encountered
         /// - case of finishes
         let finishingIDs = uploadsProvider.getRequests(inStates: [.finishing]).1
         if !isFinishing {
@@ -288,8 +288,11 @@ public class UploadManager: NSObject {
             return
         }
 
-        // Suggest to delete images from Photo Library if user wanted it
-        // The deletion will only be suggested once and after completion of all uploads
+        // Suggest to delete images from the Photo Library if the user wanted it.
+        // The deletion is suggested when there is no more upload to perform.
+        // Note that some uploads may have failed and waiting a user decision.
+        states = [.waiting, .preparing, .prepared,
+                  .uploading, .uploaded, .finishing]
         if uploadsProvider.getRequests(inStates: states).0.count > 0 { return }
         
         // Upload requests are completed
@@ -1283,12 +1286,12 @@ public class UploadManager: NSObject {
             self.disableAutoUpload()
         }
         
-        // Propose to delete uploaded image of the photo Library once a day maximum (at least 10)
+        // Propose to delete uploaded image of the photo Library once a day maximum
         if Date().timeIntervalSinceReferenceDate > UploadVars.dateOfLastPhotoLibraryDeletion + UploadVars.kPiwigoOneDay {
             // Are there images to delete from the Photo Library?
             let (imageIDs, uploadIDs) = uploadsProvider.getRequests(inStates: [.finished, .moderated],
                                                                     markedForDeletion: true)
-            if imageIDs.count > 9, uploadIDs.count > 9 {
+            if imageIDs.count > 0 {
                 // Store date of last deletion
                 UploadVars.dateOfLastPhotoLibraryDeletion = Date().timeIntervalSinceReferenceDate
 

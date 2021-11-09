@@ -425,18 +425,18 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
     if (AppVars.isDarkPaletteActive) {
         [self.addButton.layer setShadowRadius:1.0];
-        [self.addButton.layer setShadowOffset:CGSizeMake(0.0, 0.0)];
+        [self.addButton.layer setShadowOffset:CGSizeZero];
 
         [self.createAlbumButton.layer setShadowRadius:1.0];
-        [self.createAlbumButton.layer setShadowOffset:CGSizeMake(0.0, 0.0)];
+        [self.createAlbumButton.layer setShadowOffset:CGSizeZero];
         [self.uploadImagesButton.layer setShadowRadius:1.0];
-        [self.uploadImagesButton.layer setShadowOffset:CGSizeMake(0.0, 0.0)];
+        [self.uploadImagesButton.layer setShadowOffset:CGSizeZero];
 
         [self.uploadQueueButton.layer setShadowRadius:1.0];
-        [self.uploadQueueButton.layer setShadowOffset:CGSizeMake(0.0, 0.0)];
+        [self.uploadQueueButton.layer setShadowOffset:CGSizeZero];
 
         [self.homeAlbumButton.layer setShadowRadius:1.0];
-        [self.homeAlbumButton.layer setShadowOffset:CGSizeMake(0.0, 0.0)];
+        [self.homeAlbumButton.layer setShadowOffset:CGSizeZero];
     } else {
         [self.addButton.layer setShadowRadius:3.0];
         [self.addButton.layer setShadowOffset:CGSizeMake(0.0, 0.5)];
@@ -1114,10 +1114,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                         forControlEvents:UIControlEventTouchUpInside];
             [self.addButton addTarget:self action:@selector(didCancelTapAddButton)
                    forControlEvents:UIControlEventTouchUpInside];
-            [UIView animateWithDuration:0.2 animations:^{
-                self.addButton.backgroundColor = [UIColor grayColor];
-                self.addButton.tintColor = [UIColor whiteColor];
-            }];
         }];
     } else {
         // Hide Home Album button
@@ -1131,10 +1127,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                             forControlEvents:UIControlEventTouchUpInside];
                 [self.addButton addTarget:self action:@selector(didCancelTapAddButton)
                        forControlEvents:UIControlEventTouchUpInside];
-                [UIView animateWithDuration:0.2 animations:^{
-                    self.addButton.backgroundColor = [UIColor grayColor];
-                    self.addButton.tintColor = [UIColor whiteColor];
-                }];
             }];
         }];
     }
@@ -1340,10 +1332,20 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         [self.uploadImagesButton.layer setOpacity:0.9];
         
         // Move buttons together
-        self.createAlbumButton.frame = CGRectMake(xPos - 3*kRadius*cos(15*kDeg2Rad), yPos - 3*kRadius*sin(15*kDeg2Rad), 1.72*kRadius, 1.72*kRadius);
-        self.uploadImagesButton.frame = CGRectMake(xPos - 3*kRadius*cos(75*kDeg2Rad), yPos - 3*kRadius*sin(75*kDeg2Rad), 1.72*kRadius, 1.72*kRadius);
+        self.createAlbumButton.frame = CGRectMake(xPos - 3*kRadius*cos(15*kDeg2Rad),
+                                                  yPos - 3*kRadius*sin(15*kDeg2Rad),
+                                                  1.72*kRadius, 1.72*kRadius);
+        self.uploadImagesButton.frame = CGRectMake(xPos - 3*kRadius*cos(75*kDeg2Rad),
+                                                   yPos - 3*kRadius*sin(75*kDeg2Rad),
+                                                   1.72*kRadius, 1.72*kRadius);
     
-    } completion:^(BOOL finished) {
+        // Rotate cross and change colour
+        UIImage *rotatedImage = [[UIImage imageNamed:@"add"] rotatedBy:M_PI_4];
+        [self.addButton setImage:rotatedImage forState:UIControlStateNormal];
+        self.addButton.backgroundColor = [UIColor grayColor];
+        self.addButton.tintColor = [UIColor whiteColor];
+    }
+    completion:^(BOOL finished) {
         // Execute block
         if (completion) {
             completion();
@@ -1367,7 +1369,16 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         self.createAlbumButton.frame = CGRectMake(xPos, yPos, 1.72*kRadius, 1.72*kRadius);
         self.uploadImagesButton.frame = CGRectMake(xPos, yPos, 1.72*kRadius, 1.72*kRadius);
 
-    } completion:^(BOOL finished) {
+        // Rotate cross if not in root and change colour
+        if (self.categoryId == 0) {
+            [self.addButton setImage:[UIImage imageNamed:@"createLarge"] forState:UIControlStateNormal];
+        } else {
+            [self.addButton setImage:[UIImage imageNamed:@"add"] forState:UIControlStateNormal];
+        }
+        self.addButton.backgroundColor = [UIColor grayColor];
+        self.addButton.tintColor = [UIColor whiteColor];
+    }
+    completion:^(BOOL finished) {
         // Hide transparent CreateAlbum and UploadImages buttons
         [self.createAlbumButton setHidden:YES];
         [self.uploadImagesButton setHidden:YES];
@@ -1747,15 +1758,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
          OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
             // Refresh current view
             [self.imagesCollection reloadData];
-
-//            // Load favorites in the background before loading image data if needed
-//            if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending) && (!NetworkVarsObjc.hasGuestRights))
-//            {
-//                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^(void){
-//                    [self loadFavorites];
-//                });
-//            }
-
             if (refreshControl) [refreshControl endRefreshing];
         }
         onFailure:^(NSURLSessionTask *task, NSError *error) {
@@ -1854,8 +1856,10 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         // Set navigation bar buttons
         [self updateButtonsInPreviewMode];
 
-        // Reload collection view
-        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
+        // Reload collection view if needed
+        if ([[CategoriesData sharedInstance] getCategoryById:self.categoryId].totalNumberOfImages > 0) {
+            [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
+        }
     }
 }
 
@@ -3100,7 +3104,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         // Update HUD
         [self.navigationController updatePiwigoHUDWithProgress:1.0 - (float)self.selectedImageIds.count / (float)self.totalNumberOfImages];
 
-        // Image info retrieved
+        // Image added to favorites
         [self.selectedImageIds removeLastObject];
 
         // Next image
@@ -3177,7 +3181,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         // Update HUD
         [self.navigationController updatePiwigoHUDWithProgress:1.0 - (float)self.selectedImageIds.count / (float)self.totalNumberOfImages];
 
-        // Image info retrieved
+        // Image removed from the favorites
         [self.selectedImageIds removeLastObject];
 
         // Next image
@@ -3288,7 +3292,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         {
             // Header height?
             PiwigoAlbumData *albumData = [[CategoriesData sharedInstance] getCategoryById:self.categoryId];
-            if ([albumData.comment length] > 0) {
+            if (([albumData.comment length] > 0) && (collectionView.frame.size.width - 30.0 > 0)) {
                 NSString *header = albumData.comment;
                 NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontNormal]};
                 NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
@@ -3342,7 +3346,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
             }
  
-            if ([footer length] > 0) {
+            if (([footer length] > 0) && (collectionView.frame.size.width - 30.0 > 0)) {
                 NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontLight]};
                 NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
                 context.minimumScaleFactor = 1.0;
@@ -3522,11 +3526,13 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             if ((indexPath.row > fmaxf(roundf(2 * imagesPerPage / 3.0), [collectionView numberOfItemsInSection:1] - roundf(imagesPerPage / 3.0))) &&
                 (self.albumData.images.count < [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] numberOfImages]))
             {
+                // Continue loading album image data
                 [self.albumData loadMoreImagesOnCompletion:^{
-                    [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:1]];
+                    });
                 } onFailure:nil];
             }
-            
             return cell;
         }
     }
@@ -3661,7 +3667,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     
     // Refresh image banner
     if (indexOfImage != NSNotFound) {
-        NSIndexPath *updatedImage = [NSIndexPath indexPathForItem:indexOfImage inSection:0];
+        NSIndexPath *updatedImage = [NSIndexPath indexPathForItem:indexOfImage inSection:1];
         [self.imagesCollection reloadItemsAtIndexPaths:@[updatedImage]];
     }
 }

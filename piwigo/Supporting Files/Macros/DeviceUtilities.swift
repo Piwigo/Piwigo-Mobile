@@ -92,6 +92,14 @@ class DeviceUtilities: NSObject {
             return "iPhone 12 Pro"
         case "iPhone13,4":
             return "iPhone 12 Pro Max"
+        case "iPhone14,2":
+            return "iPhone 13 Pro"
+        case "iPhone14,3":
+            return "iPhone 13 Pro Max"
+        case "iPhone14,4":
+            return "iPhone 13 mini"
+        case "iPhone14,5":
+            return "iPhone 13"
         default:
             break
         }
@@ -132,6 +140,10 @@ class DeviceUtilities: NSObject {
             return "iPad (8th generation) (Wi-Fi)"
         case "iPad11,7":
             return "iPad (8th generation) (Wi-Fi + Cellular)"
+        case "iPad12,1":
+            return "iPad (9th generation) (Wi-Fi)"
+        case "iPad12,2":
+            return "iPad (9th generation) (Wi-Fi + Cellular)"
         default:
             break
         }
@@ -232,6 +244,10 @@ class DeviceUtilities: NSObject {
             return "iPad mini (5th generation) (Wi-Fi)"
         case "iPad11,2":
             return "iPad mini (5th generation) (Wi-Fi + Cellular)"
+        case "iPad14,1":
+            return "iPad mini (6th generation) (Wi-Fi)"
+        case "iPad14,2":
+            return "iPad mini (6th generation) (Wi-Fi + Cellular)"
         default:
             break
         }
@@ -291,7 +307,8 @@ class DeviceUtilities: NSObject {
              "iPhone10,1", "iPhone10,2", "iPhone10,3", "iPhone10,4", "iPhone10,5", "iPhone10,6",
              "iPhone11,2", "iPhone11,6", "iPhone11,8",
              "iPhone12,1", "iPhone12,3", "iPhone12,5", "iPhone12,8",
-             "iPhone13,1", "iPhone13,2", "iPhone13,3", "iPhone13,4":
+             "iPhone13,1", "iPhone13,2", "iPhone13,3", "iPhone13,4",
+             "iPhone14,2", "iPhone14,3", "iPhone14,4", "iPhone14,5":
             return "12 Mpx"
         default:
             break
@@ -309,6 +326,8 @@ class DeviceUtilities: NSObject {
              "iPad7,5", "iPad7,6", "iPad7,11", "iPad7,12",
              "iPad11,6", "iPad11,7":
             return "8 Mpx"
+        case "iPad12,1", "iPad12,2":
+            return "12 Mpx"
         default:
             break
         }
@@ -347,6 +366,8 @@ class DeviceUtilities: NSObject {
             return "5 Mpx"
         case "iPad5,1", "iPad5,2", "iPad11,1", "iPad11,2":
             return "8 Mpx"
+        case "iPad14,1", "iPad14,2":
+            return "12 Mpx"
         default:
             break
         }
@@ -400,7 +421,8 @@ class DeviceUtilities: NSObject {
         case "iPhone10,1", "iPhone10,2", "iPhone10,3", "iPhone10,4", "iPhone10,5", "iPhone10,6",
              "iPhone11,2", "iPhone11,6", "iPhone11,8",
              "iPhone12,1", "iPhone12,3", "iPhone12,5", "iPhone12,8",
-             "iPhone13,1", "iPhone13,2":
+             "iPhone13,1", "iPhone13,2",
+             "iPhone14,2", "iPhone14,3", "iPhone14,4", "iPhone14,5":
             return "4K, 60 fps"
         case "iPhone13,3", "iPhone13,4":
             return "4K, 120 fps"
@@ -420,6 +442,8 @@ class DeviceUtilities: NSObject {
              "iPad7,5", "iPad7,6", "iPad7,11", "iPad7,12",
              "iPad11,6", "iPad11,7":
             return "Full HD, 30 fps"
+        case "iPad12,1", "iPad12,2":
+            return "4K, 30 fps"
         default:
             break
         }
@@ -463,6 +487,8 @@ class DeviceUtilities: NSObject {
         case "iPad5,1", "iPad5,2",
              "iPad11,1", "iPad11,2":
             return "Full HD, 30 fps"
+        case "iPad14,1", "iPad14,2":
+            return "4K, 30 fps"
         default:
             break
         }

@@ -667,113 +667,6 @@
         }
     }
 }
-//-(void)updateBarButtons
-//{
-//    // Selection mode active ?
-//    if(!self.isSelect) {    // Image selection mode inactive
-//
-//        // Title
-//        self.title = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"tag" , @"Tag"), self.tagName];
-//
-//        // Hide toolbar
-//        [self.navigationController setToolbarHidden:YES animated:YES];
-//
-//        // Left side of navigation bar
-//        [self.navigationItem setLeftBarButtonItems:@[] animated:YES];
-//        [self.navigationItem setHidesBackButton:NO];
-//
-//        // Right side of navigation bar
-//        if (self.albumData.images.count > 0) {
-//            // Button for activating the selection mode
-//            [self.navigationItem setRightBarButtonItems:@[self.selectBarButton] animated:YES];
-//        } else {
-//            // No button
-//            [self.navigationItem setRightBarButtonItems:@[] animated:YES];
-//        }
-//    }
-//    else {         // Image selection mode active
-//
-//        // Update title
-//        switch (self.selectedImageIds.count) {
-//            case 0:
-//                self.title = NSLocalizedString(@"selectImages", @"Select Photos");
-//                break;
-//
-//            case 1:
-//                self.title = NSLocalizedString(@"selectImageSelected", @"1 Photo Selected");
-//                break;
-//
-//            default:
-//                self.title = [NSString stringWithFormat:NSLocalizedString(@"selectImagesSelected", @"%@ Photos Selected"), @(self.selectedImageIds.count)];
-//                break;
-//        }
-//
-//        // Hide back button
-//        [self.navigationItem setHidesBackButton:YES];
-//
-//        // User can delete images/videos if he/she has:
-//        // — admin rights
-//        if (NetworkVarsObjc.hasAdminRights)
-//        {
-//            // Device orientation
-//            UIInterfaceOrientation orientation = UIInterfaceOrientationPortrait;
-//            if (@available(iOS 13.0, *)) {
-//                orientation = UIApplication.sharedApplication.windows.firstObject.windowScene.interfaceOrientation;
-//            } else {
-//                orientation = UIApplication.sharedApplication.statusBarOrientation;
-//            }
-//
-//            // Interface depends on device and orientation
-//            if ((UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPhone) &&
-//                UIInterfaceOrientationIsPortrait(orientation)) {
-//
-//                // Left side of navigation bar
-//                [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
-//                self.cancelBarButton.enabled = YES;
-//
-//                // Right side of navigation bar
-//                [self.navigationItem setRightBarButtonItems:@[self.actionBarButton] animated:YES];
-//                self.actionBarButton.enabled = (self.selectedImageIds.count > 0);
-//
-//                // Toolbar
-//                [self.navigationController setToolbarHidden:NO animated:YES];
-//                self.toolbarItems = @[self.shareBarButton, self.spaceBetweenButtons, self.moveBarButton, self.spaceBetweenButtons, self.deleteBarButton];
-//                self.shareBarButton.enabled = (self.selectedImageIds.count > 0);
-//                self.moveBarButton.enabled = (self.selectedImageIds.count > 0);
-//                self.deleteBarButton.enabled = (self.selectedImageIds.count > 0);
-//            }
-//            else    // iPhone in landscape mode, iPad in any orientation
-//            {
-//                // Hide toolbar
-//                [self.navigationController setToolbarHidden:YES animated:YES];
-//
-//                // Left side of navigation bar
-//                [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton, self.deleteBarButton] animated:YES];
-//                self.cancelBarButton.enabled = YES;
-//                self.deleteBarButton.enabled = (self.selectedImageIds.count > 0);
-//
-//                // Right side of navigation bar
-//                [self.navigationItem setRightBarButtonItems:@[self.actionBarButton, self.moveBarButton, self.shareBarButton] animated:YES];
-//                self.shareBarButton.enabled = (self.selectedImageIds.count > 0);
-//                self.moveBarButton.enabled = (self.selectedImageIds.count > 0);
-//                self.actionBarButton.enabled = (self.selectedImageIds.count > 0);
-//          }
-//        }
-//        else    // No rights => No toolbar, only download button
-//        {
-//            // Hide toolbar
-//            [self.navigationController setToolbarHidden:YES animated:YES];
-//
-//            // Left side of navigation bar
-//            [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
-//            self.cancelBarButton.enabled = YES;
-//
-//            // Right side of navigation bar
-//            [self.navigationItem setRightBarButtonItems:@[self.shareBarButton] animated:YES];
-//            self.shareBarButton.enabled = (self.selectedImageIds.count > 0);
-//        }
-//    }
-//}
 
 // Buttons are disabled (greyed) when retrieving image data
 // They are also disabled during an action
@@ -811,77 +704,53 @@
 
 -(void)removeImageFromCategory:(NSNotification *)notification
 {
-    if (notification != nil) {
-        NSDictionary *userInfo = notification.userInfo;
+    if (notification == nil) { return; }
+    NSDictionary *userInfo = notification.userInfo;
 
-        // Right category Id?
-        NSInteger catId = [[userInfo objectForKey:@"albumId"] integerValue];
-        if (catId != kPiwigoTagsCategoryId) return;
-        
-        // Image Id?
-//        NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
-//        NSLog(@"=> removeImage %ld to Category %ld", (long)imageId, (long)catId);
-        
-        // Store current image list
-        NSArray *oldImageList = self.albumData.images;
-//        NSLog(@"=> category %ld contained %ld images", (long)kPiwigoTagsCategoryId, (long)oldImageList.count);
+    // Right category Id?
+    NSInteger catId = [[userInfo objectForKey:@"albumId"] integerValue];
+    if (catId != kPiwigoTagsCategoryId) return;
+    
+    // Get ID of deleted image
+    NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
+    NSLog(@"=> removeImage %ld from Category %ld", (long)imageId, (long)catId);
+    
+    // Remove image from the selection
+    NSNumber *imageIdObject = [NSNumber numberWithInteger:imageId];
+    if ([self.selectedImageIds containsObject:imageIdObject]) {
+        [self.selectedImageIds removeObject:imageIdObject];
+    }
 
-        // Load new image (appended to cache) and sort images before updating UI
-        [self.albumData loadMoreImagesOnCompletion:^{
-            // Sort images
-            [self.albumData updateImageSort:self.currentSort onCompletion:^{
+    // Get index of deleted image
+    NSInteger indexOfExistingItem = [self.albumData.images indexOfObjectPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger oldIdx, BOOL * _Nonnull stop) {
+     return obj.imageId == imageId;
+    }];
+    if (indexOfExistingItem != NSNotFound) {
+        // Delete image from data source and corresponding cell
+        NSMutableArray<PiwigoImageData *> *imageList = [self.albumData.images mutableCopy];
+        [imageList removeObjectAtIndex:indexOfExistingItem];
+        self.albumData.images = imageList;
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfExistingItem inSection:0];
+        [self.imagesCollection deleteItemsAtIndexPaths:@[indexPath]];
+    }
 
-                // The album title is not shown in backButtonItem to provide enough space
-                // for image title on devices of screen width <= 414 ==> Restore album title
-                self.title = [[[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId] name];
+    // Update footer
+    UICollectionReusableView *visibleFooter = [[self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter] firstObject];
+    NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId].totalNumberOfImages;
+    if ([visibleFooter isKindOfClass:[NberImagesFooterCollectionReusableView class]]) {
+        NberImagesFooterCollectionReusableView *footer = (NberImagesFooterCollectionReusableView *)visibleFooter;
+        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+        [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+        footer.noImagesLabel.text = totalImageCount > 1 ?
+            [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]] :
+            [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
+    }
 
-                // Refresh collection view if needed
-                NSLog(@"=> category %ld now contains %ld images", (long)kPiwigoTagsCategoryId, (long)self.albumData.images.count);
-                if (oldImageList.count == self.albumData.images.count) {
-                    return;
-                }
-
-                // Delete cells of deleted images, and remove them from selection
-                NSMutableArray<NSIndexPath *> *itemsToDelete = [NSMutableArray new];
-                for (NSInteger index = 0; index < oldImageList.count; index++) {
-                    PiwigoImageData *imageData = [oldImageList objectAtIndex:index];
-                    NSInteger indexOfExistingItem = [self.albumData.images indexOfObjectPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger oldIdx, BOOL * _Nonnull stop) {
-                     return obj.imageId == imageData.imageId;
-                    }];
-                    if (indexOfExistingItem == NSNotFound) {
-                        [itemsToDelete addObject:[NSIndexPath indexPathForItem:index inSection:0]];
-                        NSNumber *imageIdObject = [NSNumber numberWithInteger:imageData.imageId];
-                        if ([self.selectedImageIds containsObject:imageIdObject]) {
-                            [self.selectedImageIds removeObject:imageIdObject];
-                        }
-                    }
-                }
-                if (itemsToDelete.count > 0) {
-                    [self.imagesCollection deleteItemsAtIndexPaths:itemsToDelete];
-                }
-
-                // Update footer
-                UICollectionReusableView *visibleFooter = [[self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter] firstObject];
-                NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:kPiwigoTagsCategoryId].totalNumberOfImages;
-                if ([visibleFooter isKindOfClass:[NberImagesFooterCollectionReusableView class]]) {
-                    NberImagesFooterCollectionReusableView *footer = (NberImagesFooterCollectionReusableView *)visibleFooter;
-                    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-                    [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
-                    footer.noImagesLabel.text = totalImageCount > 1 ?
-                        [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]] :
-                        [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
-                }
-
-                // Update navigation bar buttons
-                if (self.isSelect == YES) {
-                    [self updateButtonsInSelectionMode];
-                } else {
-                    [self updateButtonsInPreviewMode];
-                }
-            } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
-            }];
-        } onFailure:nil];
+    // Update navigation bar buttons
+    if (self.isSelect == YES) {
+        [self updateButtonsInSelectionMode];
+    } else {
+        [self updateButtonsInPreviewMode];
     }
 }
 
@@ -1533,7 +1402,7 @@
         // Update HUD
         [self.navigationController updatePiwigoHUDWithProgress:1.0 - (float)self.selectedImageIds.count / (float)self.totalNumberOfImages];
 
-        // Image info retrieved
+        // Image added to favorites
         [self.selectedImageIds removeLastObject];
 
         // Next image
@@ -1610,7 +1479,7 @@
         // Update HUD
         [self.navigationController updatePiwigoHUDWithProgress:1.0 - (float)self.selectedImageIds.count / (float)self.totalNumberOfImages];
 
-        // Image info retrieved
+        // Image removed from the favorites
         [self.selectedImageIds removeLastObject];
 
         // Next image
@@ -1705,7 +1574,7 @@
             [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
     }
 
-    if ([footer length] > 0) {
+    if (([footer length] > 0) && (collectionView.frame.size.width - 30.0 > 0)) {
         NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontLight]};
         NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
         context.minimumScaleFactor = 1.0;
@@ -1907,18 +1776,32 @@
 -(void)didChangeImageParameters:(PiwigoImageData *)params
 {
     // Update cached image data
-    /// Note: the current category cannot be a smart album.
     for (NSNumber *catId in params.categoryIds) {
         [[CategoriesData.sharedInstance getCategoryById:catId.intValue] updateImageAfterEdit:params];
     }
 
     // Update data source
-    NSInteger indexOfUpdatedImage = [self.albumData updateImage:params];
-    if (indexOfUpdatedImage == NSNotFound) { return; }
+    NSInteger indexOfImage = [self.albumData updateImage:params];
+    if (indexOfImage == NSNotFound) { return; }
     
-    // Refresh image cell
-    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfUpdatedImage inSection:1];
-    [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
+    // Did the user remove the tag associated with this smart album?
+    NSInteger indexOfTag = [params.tags indexOfObjectPassingTest:^BOOL(PiwigoTagData *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+     return obj.tagId == self.albumData.searchQuery.integerValue;
+    }];
+    if (indexOfTag == NSNotFound) {
+        // Remove image from cached smart album and collection
+        NSString *catStr = [NSString stringWithFormat:@"%ld", (long)kPiwigoTagsCategoryId];
+        [CategoriesData.sharedInstance removeImage:params fromCategory:catStr];
+        return;
+    }
+    else {
+        // Update image in cached smart album
+        [[CategoriesData.sharedInstance getCategoryById:kPiwigoTagsCategoryId] updateImageAfterEdit:params];
+
+        // Refresh image cell
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfImage inSection:0];
+        [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
+    }
 }
 
 -(void)didFinishEditingParameters

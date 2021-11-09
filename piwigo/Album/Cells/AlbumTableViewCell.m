@@ -155,7 +155,7 @@ NSString * const kAlbumTableCell_ID = @"AlbumTableViewCell";
                 // Process saliency
                 UIImage *croppedImage;
                 if (@available(iOS 13.0, *)) {
-                    croppedImage = [ImageUtilities processSaliencyWithImage:image];
+                    croppedImage = [image processSaliency];
                     if (croppedImage == nil) { croppedImage = image; }
                 } else {
                     // Fallback on earlier versions

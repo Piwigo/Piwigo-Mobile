@@ -150,6 +150,73 @@ NSInteger const loadingViewTag = 899;
     }];
 }
 
++(void)createFavoritesDataSessionManager
+{
+    // Configuration
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    config.allowsCellularAccess = YES;
+    config.timeoutIntervalForRequest = 30;          // 60 seconds is the advised default value
+    config.HTTPMaximumConnectionsPerHost = 1;       // 1 is the advised default value
+    config.HTTPShouldSetCookies = YES;
+    config.HTTPCookieAcceptPolicy = NSHTTPCookieAcceptPolicyAlways;
+    if (@available(iOS 11.0, *)) {
+        config.multipathServiceType = NSURLSessionMultipathServiceTypeHandover;
+    } else {
+        // Fallback on earlier versions
+    }
+    
+    // Create session manager
+    NetworkVarsObjc.favoritesManager = [[AFHTTPSessionManager manager] initWithBaseURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", NetworkVarsObjc.serverProtocol, NetworkVarsObjc.serverPath]] sessionConfiguration:config];
+        
+    // Security policy
+    AFSecurityPolicy *policy = [AFSecurityPolicy defaultPolicy];
+    [NetworkVarsObjc.favoritesManager setSecurityPolicy:policy];
+    
+    // Add "text/plain" to response serializer
+    AFJSONResponseSerializer *serializer = [AFJSONResponseSerializer serializer];
+    serializer.acceptableContentTypes = [serializer.acceptableContentTypes setByAddingObject:@"text/plain"];
+    NetworkVarsObjc.favoritesManager.responseSerializer = serializer;
+
+    // Session-Wide Authentication Challenges
+    // Perform server trust authentication (certificate validation)
+    [NetworkVarsObjc.favoritesManager setSessionDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession * _Nonnull session, NSURLAuthenticationChallenge * _Nonnull challenge, NSURLCredential * _Nullable __autoreleasing * _Nullable credential) {
+        
+#if defined(DEBUG_SESSION)
+        NSLog(@"===>> didReceiveAuthenticationChallenge: %@", challenge.protectionSpace);
+#endif
+        if (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust)
+        {
+            NSURLCredential *credentialForTrust = [self didRequestServerTrust:challenge withPolicy:policy];
+            if (credentialForTrust != nil) {
+                *credential = credentialForTrust;
+                return NSURLSessionAuthChallengeUseCredential;
+            }
+            return NSURLSessionAuthChallengeRejectProtectionSpace;
+        }
+        
+        return NSURLSessionAuthChallengeRejectProtectionSpace;
+    }];
+
+    // Task-Specific Authentication Challenges
+    // For servers performing HTTP Basic/Digest Authentication
+    [NetworkVarsObjc.favoritesManager setAuthenticationChallengeHandler:^id _Nonnull(NSURLSession * _Nonnull session, NSURLSessionTask * _Nonnull task, NSURLAuthenticationChallenge * _Nonnull challenge, void (^ _Nonnull completionHandler)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable)) {
+        
+#if defined(DEBUG_SESSION)
+        NSLog(@"===>> didReceiveAuthenticationChallenge: %@", challenge.protectionSpace);
+#endif
+        if ((challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPBasic) ||
+            (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodHTTPDigest))
+        {
+            NSURLCredential *credential = [self didRequestHTTPBasicAuthentication:challenge];
+            if (credential != nil) {
+                return credential;
+            }
+            return @(NSURLSessionAuthChallengeRejectProtectionSpace);
+        }
+        return @(NSURLSessionAuthChallengeRejectProtectionSpace);
+    }];
+}
+
 +(void)createImagesSessionManager
 {
     // AFNetworking only uses a memory cache so we store thumbnails in it and

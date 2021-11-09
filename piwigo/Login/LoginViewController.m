@@ -264,6 +264,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
 
     // Create permanent session managers for retrieving data and downloading images
     [NetworkHandler createJSONdataSessionManager];      // 30s timeout, 4 connections max
+    [NetworkHandler createFavoritesDataSessionManager]; // 30s timeout, 1 connection max
     [NetworkHandler createImagesSessionManager];        // 60s timeout, 4 connections max
     
     // Collect list of methods supplied by Piwigo server
@@ -751,10 +752,8 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                     }];
                 } else {
                     // Their version is Ok. Close HUD.
-                    [self hideLoadingWithCompletion:^{
-                        [self launchAppAtFirstLogin:isFirstLogin
-                              withReloginCompletion:reloginCompletion];
-                    }];
+                    [self launchAppAtFirstLogin:isFirstLogin
+                          withReloginCompletion:reloginCompletion];
                 }
             } else {
                 // Inform user that we could not authenticate with server
@@ -797,26 +796,34 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
             PiwigoAlbumData *favoritesAlbum = [[PiwigoAlbumData alloc] initDiscoverAlbumForCategory:kPiwigoFavoritesCategoryId];
             [CategoriesData.sharedInstance updateCategories:@[favoritesAlbum] andUpdateUI:NO];
             
-            // Download favorites
-            [[CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:(kPiwigoSortObjc)AlbumVars.defaultSort
-                forProgress:nil
-            onCompletion:^(BOOL completed) {
+            // Load favorites data in the background with dedicated URL session
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),^{
+                [[CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:(kPiwigoSortObjc)AlbumVars.defaultSort
+                forProgress:^(NSInteger onPage, NSInteger outOf){
+                    // Post to the app that favorites data are loaded
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+                }
+                onCompletion:^(BOOL completed) {
+                    // Post to the app that favorites data are loaded
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+                }
+                onFailure:nil];
+            });
+
+            [self hideLoadingWithCompletion:^{
                 // Present Album/Images view and resume uploads
                 AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
                 [appDelegate loadNavigation];
-            }
-            onFailure:^(NSURLSessionTask *task, NSError *error) {
-                NetworkVarsObjc.hadOpenedSession = NO;
-                self.isAlreadyTryingToLogin = NO;
-                // Display error message
-                [self loggingInConnectionError:(NetworkVarsObjc.userCancelledCommunication ? nil : error)];
+                return;
             }];
             return;
         } else {
-            // Present Album/Images view and resume uploads
-            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-            [appDelegate loadNavigation];
-            return;
+            [self hideLoadingWithCompletion:^{
+                // Present Album/Images view and resume uploads
+                AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                [appDelegate loadNavigation];
+                return;
+            }];
         }
     }
 
@@ -826,7 +833,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     [appDelegate resumeAll];
     
     // Was it a relogin after encountering an arror?
-    reloginCompletion();
+    if (reloginCompletion) { reloginCompletion(); }
 }
 
 -(void)performReloginWithCompletion:(void (^)(void))reloginCompletion

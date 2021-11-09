@@ -69,6 +69,9 @@ class NetworkVarsObjc: NSObject {
     /// - Session manager used to communicate with the Piwigo server
     @objc static var sessionManager: AFHTTPSessionManager?
     
+    /// - Session manager used to download favorites data in the background
+    @objc static var favoritesManager: AFHTTPSessionManager?
+
     /// - Session manager used to download images
     @objc static var imagesSessionManager: AFHTTPSessionManager?
     

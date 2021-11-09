@@ -54,8 +54,10 @@ class CategoryImageSort: NSObject {
         case .visitsDescending:       // Visits, low → high
             sortDesc = String(format: "%@ %@", kGetImageOrderVisits, kGetImageOrderDescending)
             
+        case .random:                 // Random order
+            sortDesc = kGetImageOrderRandom
+            
         case .manual,                 // Manual order
-             .random,                 // Random order
              .count:
             fallthrough
         default:

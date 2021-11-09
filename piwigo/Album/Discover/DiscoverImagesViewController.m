@@ -672,114 +672,6 @@
     }
 }
 
-//-(void)updateBarButtons
-//{
-//    // Selection mode active ?
-//    if(!self.isSelect) {    // Image selection mode inactive
-//        
-//        // Title is name of the category
-//        self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
-//
-//        // Hide toolbar
-//        [self.navigationController setToolbarHidden:YES animated:YES];
-//        
-//        // Left side of navigation bar
-//        [self.navigationItem setLeftBarButtonItems:@[] animated:YES];
-//        [self.navigationItem setHidesBackButton:NO];
-//        
-//        // Right side of navigation bar
-//        if (self.albumData.images.count > 0) {
-//            // Button for activating the selection mode
-//            [self.navigationItem setRightBarButtonItems:@[self.selectBarButton] animated:YES];
-//        } else {
-//            // No button
-//            [self.navigationItem setRightBarButtonItems:@[] animated:YES];
-//        }
-//    }
-//    else {         // Image selection mode active
-//        
-//        // Update title
-//        switch (self.selectedImageIds.count) {
-//            case 0:
-//                self.title = NSLocalizedString(@"selectImages", @"Select Photos");
-//                break;
-//                
-//            case 1:
-//                self.title = NSLocalizedString(@"selectImageSelected", @"1 Photo Selected");
-//                break;
-//                
-//            default:
-//                self.title = [NSString stringWithFormat:NSLocalizedString(@"selectImagesSelected", @"%@ Photos Selected"), @(self.selectedImageIds.count)];
-//                break;
-//        }
-//        
-//        // Hide back button
-//        [self.navigationItem setHidesBackButton:YES];
-//
-//        // User can delete images/videos if he/she has:
-//        // — admin rights
-//        if (NetworkVarsObjc.hasAdminRights)
-//        {
-//            // Device orientation
-//            UIInterfaceOrientation orientation = UIInterfaceOrientationPortrait;
-//            if (@available(iOS 13.0, *)) {
-//                orientation = UIApplication.sharedApplication.windows.firstObject.windowScene.interfaceOrientation;
-//            } else {
-//                orientation = UIApplication.sharedApplication.statusBarOrientation;
-//            }
-//            
-//            // Interface depends on device and orientation
-//            if ((UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPhone) &&
-//                UIInterfaceOrientationIsPortrait(orientation)) {
-//
-//                // Left side of navigation bar
-//                [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
-//                self.cancelBarButton.enabled = YES;
-//
-//                // Right side of navigation bar
-//                [self.navigationItem setRightBarButtonItems:@[self.actionBarButton] animated:YES];
-//                self.actionBarButton.enabled = (self.selectedImageIds.count > 0);
-//
-//                // Toolbar
-//                [self.navigationController setToolbarHidden:NO animated:YES];
-//                self.toolbarItems = @[self.shareBarButton, self.spaceBetweenButtons, self.moveBarButton, self.spaceBetweenButtons, self.deleteBarButton];
-//                self.shareBarButton.enabled = (self.selectedImageIds.count > 0);
-//                self.moveBarButton.enabled = (self.selectedImageIds.count > 0);
-//                self.deleteBarButton.enabled = (self.selectedImageIds.count > 0);
-//            }
-//            else    // iPhone in landscape mode, iPad in any orientation
-//            {
-//                // Hide toolbar
-//                [self.navigationController setToolbarHidden:YES animated:YES];
-//
-//                // Left side of navigation bar
-//                [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton, self.deleteBarButton] animated:YES];
-//                self.cancelBarButton.enabled = YES;
-//                self.deleteBarButton.enabled = (self.selectedImageIds.count > 0);
-//
-//                // Right side of navigation bar
-//                [self.navigationItem setRightBarButtonItems:@[self.actionBarButton, self.moveBarButton, self.shareBarButton] animated:YES];
-//                self.shareBarButton.enabled = (self.selectedImageIds.count > 0);
-//                self.moveBarButton.enabled = (self.selectedImageIds.count > 0);
-//                self.actionBarButton.enabled = (self.selectedImageIds.count > 0);
-//          }
-//        }
-//        else    // No rights => No toolbar, only download button
-//        {
-//            // Hide toolbar
-//            [self.navigationController setToolbarHidden:YES animated:YES];
-//
-//            // Left side of navigation bar
-//            [self.navigationItem setLeftBarButtonItems:@[self.cancelBarButton] animated:YES];
-//            self.cancelBarButton.enabled = YES;
-//
-//            // Right side of navigation bar
-//            [self.navigationItem setRightBarButtonItems:@[self.shareBarButton] animated:YES];
-//            self.shareBarButton.enabled = (self.selectedImageIds.count > 0);
-//        }
-//    }
-//}
-
 // Buttons are disabled (greyed) when retrieving image data
 // They are also disabled during an action
 -(void)setEnableStateOfButtons:(BOOL)state
@@ -1611,7 +1503,7 @@
         // Update HUD
         [self.navigationController updatePiwigoHUDWithProgress:1.0 - (float)self.selectedImageIds.count / (float)self.totalNumberOfImages];
 
-        // Image info retrieved
+        // Image added to favorites
         [self.selectedImageIds removeLastObject];
 
         // Next image
@@ -1679,7 +1571,7 @@
         // Update HUD
         [self.navigationController updatePiwigoHUDWithProgress:1.0 - (float)self.selectedImageIds.count / (float)self.totalNumberOfImages];
 
-        // Image info retrieved
+        // Image removed from the favorites
         [self.selectedImageIds removeLastObject];
 
         // Next image
@@ -1765,7 +1657,7 @@
             [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
     }
 
-    if ([footer length] > 0) {
+    if (([footer length] > 0) && (collectionView.frame.size.width - 30.0 > 0)) {
         NSDictionary *attributes = @{NSFontAttributeName: [UIFont piwigoFontLight]};
         NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
         context.minimumScaleFactor = 1.0;
@@ -1967,7 +1859,7 @@
 -(void)didChangeImageParameters:(PiwigoImageData *)params
 {
     // Update cached image data
-    /// Note: the current category cannot be a smart album.
+    [[CategoriesData.sharedInstance getCategoryById:self.categoryId] updateImageAfterEdit:params];
     for (NSNumber *catId in params.categoryIds) {
         [[CategoriesData.sharedInstance getCategoryById:catId.intValue] updateImageAfterEdit:params];
     }
@@ -1977,7 +1869,7 @@
     if (indexOfUpdatedImage == NSNotFound) { return; }
     
     // Refresh image cell
-    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfUpdatedImage inSection:1];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfUpdatedImage inSection:0];
     [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
 }
 

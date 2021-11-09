@@ -29,6 +29,7 @@ public enum Model : String {
     iPad6              = "iPad 6", //aka iPad 2018
     iPad7              = "iPad 7", //aka iPad 2019
     iPad8              = "iPad (8th generation)",
+    iPad9              = "iPad (9th generation)",
     iPadAir4           = "iPad Air 4",
     //iPad mini
     iPadMini           = "iPad Mini",
@@ -36,6 +37,7 @@ public enum Model : String {
     iPadMini3          = "iPad Mini 3",
     iPadMini4          = "iPad Mini 4",
     iPadMini5          = "iPad mini (5th generation)",
+    iPadMini6          = "iPad mini (6th generation)",
     //iPad pro
     iPadPro9_7         = "iPad Pro 9.7\"",
     iPadPro10_5        = "iPad Pro 10.5\"",
@@ -74,6 +76,10 @@ public enum Model : String {
     iPhone12           = "iPhone 12",
     iPhone12Pro        = "iPhone 12 Pro",
     iPhone12ProMax     = "iPhone 12 Pro Max",
+    iPhone13mini       = "iPhone 13 mini",
+    iPhone13           = "iPhone 13",
+    iPhone13Pro        = "iPhone 13 Pro",
+    iPhone13ProMax     = "iPhone 13 Pro Max",
 
     //Apple TV
     AppleTV            = "Apple TV",
@@ -118,11 +124,6 @@ public extension UIDevice {
             "iPad3,4"   : .iPad4,
             "iPad3,5"   : .iPad4,
             "iPad3,6"   : .iPad4,
-            "iPad4,1"   : .iPadAir,
-            "iPad4,2"   : .iPadAir,
-            "iPad4,3"   : .iPadAir,
-            "iPad5,3"   : .iPadAir2,
-            "iPad5,4"   : .iPadAir2,
             "iPad6,11"  : .iPad5, //aka iPad 2017
             "iPad6,12"  : .iPad5,
             "iPad7,5"   : .iPad6, //aka iPad 2018
@@ -131,8 +132,8 @@ public extension UIDevice {
             "iPad7,12"  : .iPad7,
             "iPad11,6"  : .iPad8,
             "iPad11,7"  : .iPad8,
-            "iPad13,1"  : .iPadAir4,
-            "iPad13,2"  : .iPadAir4,
+            "iPad12,1"  : .iPad9,
+            "iPad12,2"  : .iPad9,
             //iPad mini
             "iPad2,5"   : .iPadMini,
             "iPad2,6"   : .iPadMini,
@@ -147,6 +148,16 @@ public extension UIDevice {
             "iPad5,2"   : .iPadMini4,
             "iPad11,1"  : .iPadMini5,
             "iPad11,2"  : .iPadMini5,
+            "iPad14,1"  : .iPadMini6,
+            "iPad14,2"  : .iPadMini6,
+            //iPad Air
+            "iPad4,1"   : .iPadAir,
+            "iPad4,2"   : .iPadAir,
+            "iPad4,3"   : .iPadAir,
+            "iPad5,3"   : .iPadAir2,
+            "iPad5,4"   : .iPadAir2,
+            "iPad13,1"  : .iPadAir4,
+            "iPad13,2"  : .iPadAir4,
             //iPad Pro
             "iPad6,3"   : .iPadPro9_7,
             "iPad6,4"   : .iPadPro9_7,
@@ -214,6 +225,10 @@ public extension UIDevice {
             "iPhone13,2" : .iPhone12,
             "iPhone13,3" : .iPhone12Pro,
             "iPhone13,4" : .iPhone12ProMax,
+            "iPhone14,2" : .iPhone13Pro,
+            "iPhone14,3" : .iPhone13ProMax,
+            "iPhone14,4" : .iPhone13mini,
+            "iPhone14,5" : .iPhone13,
             //AppleTV
             "AppleTV5,3" : .AppleTV,
             "AppleTV6,2" : .AppleTV_4K
@@ -266,42 +281,42 @@ class piwigoAppStore: XCTestCase {
         sleep(5);
         
         // Select Photos Title A->Z sort order
-        app.navigationBars.element(boundBy: 0).buttons["settings"].tap()
-        sleep(1);
-        app.tables["settings"].cells["defaultSort"].tap()
-        app.tables["sortSelect"].cells.element(boundBy: 0).tap()
-        app.navigationBars["CategorySortBar"].buttons.element(boundBy: 0).tap()
-        app.navigationBars.buttons["Done"].tap()
+//        app.navigationBars.element(boundBy: 0).buttons["settings"].tap()
+//        sleep(1);
+//        app.tables["settings"].cells["defaultSort"].tap()
+//        app.tables["sortSelect"].cells.element(boundBy: 0).tap()
+//        app.navigationBars["CategorySortBar"].buttons.element(boundBy: 0).tap()
+//        app.navigationBars.buttons["Done"].tap()
 
         // Screenshot #1: swipe left and reveal album actions
-        var index = 1
-        if deviceType.hasPrefix("iPad") {
-            index = 7
-        }
-        let collectionCell = app.collectionViews.children(matching: .cell).element(boundBy: index)
-        let tableQuery = collectionCell.children(matching: .other).element.tables.element(boundBy: 0)
-        sleep(4);
-        tableQuery/*@START_MENU_TOKEN@*/.staticTexts["comment"]/*[[".cells[\"albumName, comment, nberImages\"].staticTexts[\"comment\"]",".staticTexts[\"comment\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.swipeLeft()
-        snapshot("Image01")
+//        var index = 1
+//        if deviceType.hasPrefix("iPad") {
+//            index = 7
+//        }
+//        let collectionCell = app.collectionViews.children(matching: .cell).element(boundBy: index)
+//        let tableQuery = collectionCell.children(matching: .other).element.tables.element(boundBy: 0)
+//        sleep(4);
+//        tableQuery/*@START_MENU_TOKEN@*/.staticTexts["comment"]/*[[".cells[\"albumName, comment, nberImages\"].staticTexts[\"comment\"]",".staticTexts[\"comment\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.swipeLeft()
+//        snapshot("Image01")
         
         // Screenshot #2: collection of images with titles
-        app.collectionViews.children(matching: .cell).element(boundBy: 2).tap()
-        sleep(2);
-        if deviceType.hasPrefix("iPhone") {
-            app.collectionViews.children(matching: .cell).element(boundBy: 0).swipeUp()
-            sleep(2);
-        }
-        snapshot("Image02")
+//        app.collectionViews.children(matching: .cell).element(boundBy: 2).tap()
+//        sleep(2);
+//        if deviceType.hasPrefix("iPhone") {
+//            app.collectionViews.children(matching: .cell).element(boundBy: 0).swipeUp()
+//            sleep(2);
+//        }
+//        snapshot("Image02")
         
         // Screenshot #3: collection with selected images
-        app.buttons["rootAlbum"].tap()
-        app.buttons["settings"].tap()
-        sleep(2);
-        app.tables["settings"].cells["server"].swipeUp()
-        sleep(2);
-        app.tables["settings"].cells["displayImageTitles"].switches["switchImageTitles"].tap()
-        app.navigationBars.buttons["Done"].tap()
-        sleep(1);
+//        app.buttons["rootAlbum"].tap()
+//        app.buttons["settings"].tap()
+//        sleep(2);
+//        app.tables["settings"].cells["server"].swipeUp()
+//        sleep(2);
+//        app.tables["settings"].cells["displayImageTitles"].switches["switchImageTitles"].tap()
+//        app.navigationBars.buttons["Done"].tap()
+//        sleep(1);
         app.collectionViews.children(matching: .cell).element(boundBy: 2).tap()
         sleep(1);
         if deviceType.hasPrefix("iPhone") {
@@ -314,94 +329,94 @@ class piwigoAppStore: XCTestCase {
         }
         app.collectionViews.children(matching: .cell).element(boundBy: 6).swipeUp(velocity: 50)
         sleep(3);
-        app.navigationBars.buttons["Select"].tap()
-        if deviceType.hasPrefix("iPhone") {
-            app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
-            app.collectionViews.children(matching: .cell).element(boundBy: 21).tap()
-            app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
-            app.collectionViews.children(matching: .cell).element(boundBy: 19).tap()
-            app.collectionViews.children(matching: .cell).element(boundBy: 17).tap()
-        } else {
-            if (deviceType == "iPad Pro 9.7\"") {
-                app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
-                app.collectionViews.children(matching: .cell).element(boundBy: 24).tap()
-                app.collectionViews.children(matching: .cell).element(boundBy: 23).tap()
-                app.collectionViews.children(matching: .cell).element(boundBy: 22).tap()
-                app.collectionViews.children(matching: .cell).element(boundBy: 21).tap()
-                app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
-            } else {
-                app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
-                app.collectionViews.children(matching: .cell).element(boundBy: 21).tap()
-                app.collectionViews.children(matching: .cell).element(boundBy: 22).tap()
-                app.collectionViews.children(matching: .cell).element(boundBy: 31).tap()
-                app.collectionViews.children(matching: .cell).element(boundBy: 30).tap()
-                app.collectionViews.children(matching: .cell).element(boundBy: 29).tap()
-                app.collectionViews.children(matching: .cell).element(boundBy: 28).tap()
-            }
-        }
-        snapshot("Image03")
+//        app.navigationBars.buttons["Select"].tap()
+//        if deviceType.hasPrefix("iPhone") {
+//            app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
+//            app.collectionViews.children(matching: .cell).element(boundBy: 21).tap()
+//            app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
+//            app.collectionViews.children(matching: .cell).element(boundBy: 19).tap()
+//            app.collectionViews.children(matching: .cell).element(boundBy: 17).tap()
+//        } else {
+//            if (deviceType == "iPad Pro 9.7\"") {
+//                app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
+//                app.collectionViews.children(matching: .cell).element(boundBy: 24).tap()
+//                app.collectionViews.children(matching: .cell).element(boundBy: 23).tap()
+//                app.collectionViews.children(matching: .cell).element(boundBy: 22).tap()
+//                app.collectionViews.children(matching: .cell).element(boundBy: 21).tap()
+//                app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
+//            } else {
+//                app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
+//                app.collectionViews.children(matching: .cell).element(boundBy: 21).tap()
+//                app.collectionViews.children(matching: .cell).element(boundBy: 22).tap()
+//                app.collectionViews.children(matching: .cell).element(boundBy: 31).tap()
+//                app.collectionViews.children(matching: .cell).element(boundBy: 30).tap()
+//                app.collectionViews.children(matching: .cell).element(boundBy: 29).tap()
+//                app.collectionViews.children(matching: .cell).element(boundBy: 28).tap()
+//            }
+//        }
+//        snapshot("Image03")
 
         // Screenshot #4: image previewed
-        app.navigationBars.buttons["Cancel"].tap()
-        sleep(1);
-        if deviceType.contains("iPhone SE") {
-            app.collectionViews.children(matching: .cell).element(boundBy: 19).tap()
-            sleep(2)
-            app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
-            app.images.element(boundBy: 0).pinch(withScale: 0.6, velocity: -2.0)
-        }
-        else if deviceType == "iPhone 8" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 19).tap()
-            sleep(2)
-            app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
-            app.images.element(boundBy: 0).pinch(withScale: 0.52, velocity: -2.0)
-        }
-        else if deviceType == "iPhone 8 Plus" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 19).tap()
-            sleep(2)
-            app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
-            app.images.element(boundBy: 0).pinch(withScale: 0.59, velocity: -2.0)
-        }
-        else if deviceType == "iPhone 11 Pro" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 19).tap()
-            sleep(2)
-            app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
-            app.images.element(boundBy: 0).pinch(withScale: 0.733, velocity: -2.0)
-        }
-        else if deviceType == "iPhone 11 Pro Max" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 19).tap()
-            sleep(2)
-            app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
-            app.images.element(boundBy: 0).pinch(withScale: 0.675, velocity: -2.0)
-        }
-        else if deviceType == "iPad Pro 9.7\"" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 26).tap()
-            sleep(2)
-            app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
-        }
-        else if deviceType == "iPad Pro 10.5\"" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 26).tap()
-            sleep(2)
-            app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
-        }
-        else if deviceType == "iPad Pro 3 11\"" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 26).tap()
-            sleep(2)
-            app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
-        }
-        else if deviceType == "iPad Pro 2 12.9\"" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
-            sleep(2)
-            app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
-        }
-        else if deviceType == "iPad Pro 3 12.9\"" {
-            app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
-            sleep(2)
-            app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
-        }
-        sleep(2)                        // Leave time for animation
-        app.buttons["actions"].tap()
-        snapshot("Image04")
+//        app.navigationBars.buttons["Cancel"].tap()
+//        sleep(1);
+//        if deviceType.contains("iPhone SE") {
+//            app.collectionViews.children(matching: .cell).element(boundBy: 19).tap()
+//            sleep(2)
+//            app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
+//            app.images.element(boundBy: 0).pinch(withScale: 0.6, velocity: -2.0)
+//        }
+//        else if deviceType == "iPhone 8" {
+//            app.collectionViews.children(matching: .cell).element(boundBy: 19).tap()
+//            sleep(2)
+//            app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
+//            app.images.element(boundBy: 0).pinch(withScale: 0.52, velocity: -2.0)
+//        }
+//        else if deviceType == "iPhone 8 Plus" {
+//            app.collectionViews.children(matching: .cell).element(boundBy: 19).tap()
+//            sleep(2)
+//            app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
+//            app.images.element(boundBy: 0).pinch(withScale: 0.59, velocity: -2.0)
+//        }
+//        else if deviceType == "iPhone 11 Pro" {
+//            app.collectionViews.children(matching: .cell).element(boundBy: 19).tap()
+//            sleep(2)
+//            app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
+//            app.images.element(boundBy: 0).pinch(withScale: 0.733, velocity: -2.0)
+//        }
+//        else if deviceType == "iPhone 11 Pro Max" {
+//            app.collectionViews.children(matching: .cell).element(boundBy: 19).tap()
+//            sleep(2)
+//            app.images.element(boundBy: 0).pinch(withScale: 1.1, velocity: 2.0)
+//            app.images.element(boundBy: 0).pinch(withScale: 0.675, velocity: -2.0)
+//        }
+//        else if deviceType == "iPad Pro 9.7\"" {
+//            app.collectionViews.children(matching: .cell).element(boundBy: 26).tap()
+//            sleep(2)
+//            app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
+//        }
+//        else if deviceType == "iPad Pro 10.5\"" {
+//            app.collectionViews.children(matching: .cell).element(boundBy: 26).tap()
+//            sleep(2)
+//            app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
+//        }
+//        else if deviceType == "iPad Pro 3 11\"" {
+//            app.collectionViews.children(matching: .cell).element(boundBy: 26).tap()
+//            sleep(2)
+//            app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
+//        }
+//        else if deviceType == "iPad Pro 2 12.9\"" {
+//            app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
+//            sleep(2)
+//            app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
+//        }
+//        else if deviceType == "iPad Pro 3 12.9\"" {
+//            app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
+//            sleep(2)
+//            app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
+//        }
+//        sleep(2)                        // Leave time for animation
+//        app.buttons["actions"].tap()
+//        snapshot("Image04")
         
         // Screenshot #5: Edit parameters
 //        app.collectionViews.buttons["Copy"].tap()
@@ -424,27 +439,27 @@ class piwigoAppStore: XCTestCase {
 //            app.collectionViews.children(matching: .cell).element(boundBy: 6).tap()
 //        }
 //        else if deviceType == "iPad Pro 9.7\"" {
-//            app.collectionViews.children(matching: .cell).element(boundBy: 18).tap()
+//            app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
 //            sleep(2)
 //            app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
 //        }
 //        else if deviceType == "iPad Pro 10.5\"" {
-//            app.collectionViews.children(matching: .cell).element(boundBy: 18).tap()
+//            app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
 //            sleep(2)
 //            app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
 //        }
 //        else if deviceType == "iPad Pro 3 11\"" {
-//            app.collectionViews.children(matching: .cell).element(boundBy: 18).tap()
+//            app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
 //            sleep(2)
 //            app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
 //        }
 //        else if deviceType == "iPad Pro 2 12.9\"" {
-//            app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
+//            app.collectionViews.children(matching: .cell).element(boundBy: 6).tap()
 //            sleep(2)
 //            app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
 //        }
 //        else if deviceType == "iPad Pro 3 12.9\"" {
-//            app.collectionViews.children(matching: .cell).element(boundBy: 12).tap()
+//            app.collectionViews.children(matching: .cell).element(boundBy: 6).tap()
 //            sleep(2)
 //            app.images.element(boundBy: 0).pinch(withScale: 1.17, velocity: 2.0)
 //        }
@@ -453,18 +468,18 @@ class piwigoAppStore: XCTestCase {
 //        app.collectionViews.buttons["Edit Parameters"].tap()
 //        sleep(2)                        // Leave time for animation
 //        snapshot("Image05")
-//
-//        // Screenshot #6: create album & add image buttons
+
+        // Screenshot #6: create album & add image buttons
 //        app.buttons["Cancel"].tap()
 //        sleep(2)                        // Leave time for animation
 //        app.navigationBars.buttons.element(boundBy: 0).tap()
 //        sleep(2)                        // Leave time for animation
-//        app.collectionViews.children(matching: .cell).element(boundBy: 10).swipeUp()
-//        app.collectionViews.children(matching: .cell).element(boundBy: 10).swipeUp()
-//        app.buttons["add"].tap()
-//        sleep(2)                        // Leave time for animation
-//        snapshot("Image06")
-//
+        app.collectionViews.children(matching: .cell).element(boundBy: 10).swipeUp()
+        app.collectionViews.children(matching: .cell).element(boundBy: 10).swipeUp()
+        app.buttons["add"].tap()
+        sleep(2)                        // Leave time for animation
+        snapshot("Image06")
+
 //        // Screenshot #7: local images
 //        app.buttons["addImages"].tap()
 //        sleep(1)                        // Leave time for animation
