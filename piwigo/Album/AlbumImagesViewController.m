@@ -1856,10 +1856,8 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         // Set navigation bar buttons
         [self updateButtonsInPreviewMode];
 
-        // Reload collection view if needed
-        if ([[CategoriesData sharedInstance] getCategoryById:self.categoryId].totalNumberOfImages > 0) {
-            [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
-        }
+        // Reload collection view
+        [self.imagesCollection reloadSections:[NSIndexSet indexSetWithIndex:0]];
     }
 }
 
