@@ -742,10 +742,13 @@
     }
 
     // Update navigation bar buttons
-    if (self.isSelect == YES) {
-        [self updateButtonsInSelectionMode];
-    } else {
-        [self updateButtonsInPreviewMode];
+    UIViewController *visibleViewController = self.navigationController.visibleViewController;
+    if ([visibleViewController isKindOfClass:[FavoritesImagesViewController class]]) {
+        if (self.isSelect == YES) {
+            [self updateButtonsInSelectionMode];
+        } else {
+            [self updateButtonsInPreviewMode];
+        }
     }
 }
 
