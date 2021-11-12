@@ -1161,34 +1161,50 @@ public class UploadManager: NSObject {
     private func moderate(completedRequests : [NSManagedObjectID]) -> Void {
         
         // Get completed upload requests
-        let taskContext = DataController.privateManagedObjectContext
-        var uploadedImages = [Upload]()
-        completedRequests.forEach { (objectId) in
-            uploadedImages.append(taskContext.object(with: objectId) as! Upload)
+        var uploadedImages = [(NSManagedObjectID, UploadProperties)]()
+        completedRequests.forEach { (uploadID) in
+            // Retrieve upload request properties
+            var uploadProperties: UploadProperties!
+            let taskContext = DataController.privateManagedObjectContext
+            do {
+                let upload = try taskContext.existingObject(with: uploadID)
+                if upload.isFault {
+                    // The upload request is not fired yet.
+                    upload.willAccessValue(forKey: nil)
+                    uploadProperties = (upload as! Upload).getProperties()
+                    upload.didAccessValue(forKey: nil)
+                } else {
+                    uploadProperties = (upload as! Upload).getProperties()
+                }
+                uploadedImages.append((uploadID, uploadProperties))
+            }
+            catch {
+                debugPrint("\(debugFormatter.string(from: Date())) > missing Core Data object \(uploadID.uriRepresentation())!") // Will retry later…
+                return
+            }
         }
 
         // Get list of categories
-        let categories = IndexSet(uploadedImages.map({Int($0.category)}))
+        let categories = IndexSet(uploadedImages.map({Int($0.1.category)}))
         
         // Moderate images by category
         for categoryId in categories {
             // Set list of images to moderate in that category
-            let categoryImages = uploadedImages.filter({ $0.category == categoryId})
-            let imageIds = categoryImages.map( { String(format: "%ld,", $0.imageId) } ).reduce("", +)
+            let categoryImages = uploadedImages.filter({ $0.1.category == categoryId})
+            let imageIds = categoryImages.map( { String(format: "%ld,", $0.1.imageId) } )
+                .reduce("", +).dropLast()
             
             // Moderate uploaded images
-            moderateImages(withIds: imageIds, inCategory: categoryId) { (success) in
+            moderateImages(withIds: String(imageIds), inCategory: categoryId) { (success) in
                 if success {
-                    // Update upload resquests to remember that the moderation was requested
-                    var uploadsProperties = [UploadProperties]()
+                    // Update upload requests to remember that the moderation was requested
                     categoryImages.forEach { (moderatedUpload) in
-                        uploadsProperties.append(moderatedUpload.getProperties(with: .moderated, error: ""))
-                    }
-                    self.uploadsProvider.importUploads(from: uploadsProperties) { [unowned self] (error) in
-                        guard let _ = error else {
-                            return  // Will retry later
+                        self.uploadsProvider.updateStatusOfUpload(with: moderatedUpload.0, to: .moderated, error: "") { error in
+                            guard let _ = error else {
+                                return  // Will retry later
+                            }
+                            self.findNextImageToUpload()    // Might still have to delete images
                         }
-                        self.findNextImageToUpload()    // Might still have to delete images
                     }
                 } else {
                     return  // Will try later
