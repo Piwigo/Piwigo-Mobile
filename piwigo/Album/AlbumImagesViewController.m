@@ -1438,7 +1438,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 self.spaceBetweenButtons = [UIBarButtonItem spaceBetweenButtons];
                 NSMutableArray<UIBarButtonItem *> *toolBarItems = [[NSMutableArray alloc] initWithObjects:self.shareBarButton, self.spaceBetweenButtons, self.deleteBarButton, nil];
                 // pwg.users.favorites… methods available from Piwigo version 2.10
-                if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending)) {
+                if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending)) {
                     self.favoriteBarButton = [self getFavoriteBarButton];
                     [toolBarItems insertObjects:@[self.favoriteBarButton, self.spaceBetweenButtons] atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(2, 2)]];
                 }
@@ -1452,7 +1452,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 // Right side of navigation bar
                 NSMutableArray<UIBarButtonItem *> *rightBarButtonItems = [[NSMutableArray alloc] initWithObjects:self.actionBarButton, self.shareBarButton, nil];
                 // pwg.users.favorites… methods available from Piwigo version 2.10
-                if ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending) {
+                if ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending) {
                     self.favoriteBarButton = [self getFavoriteBarButton];
                     [rightBarButtonItems insertObjects:@[self.favoriteBarButton] atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(1, 1)]];
                 }
@@ -1463,7 +1463,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             }
         }
         else if (!NetworkVarsObjc.hasGuestRights &&
-                 ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending)) {
+                 ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending)) {
             self.favoriteBarButton = [self getFavoriteBarButton];
 
             if (UIInterfaceOrientationIsPortrait(orientation) &&
@@ -1530,7 +1530,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 self.spaceBetweenButtons = [UIBarButtonItem spaceBetweenButtons];
                 NSMutableArray<UIBarButtonItem *> *toolBarItems = [[NSMutableArray alloc] initWithObjects:self.shareBarButton, self.spaceBetweenButtons, self.moveBarButton, self.spaceBetweenButtons, self.deleteBarButton, nil];
                 // pwg.users.favorites… methods available from Piwigo version 2.10
-                if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending)) {
+                if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending)) {
                     self.favoriteBarButton = [self getFavoriteBarButton];
                     [toolBarItems insertObjects:@[self.favoriteBarButton, self.spaceBetweenButtons] atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(4, 2)]];
                 }
@@ -1544,7 +1544,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 // Right side of navigation bar
                 NSMutableArray<UIBarButtonItem *> *rightBarButtonItems = [[NSMutableArray alloc] initWithObjects:self.actionBarButton, self.shareBarButton, nil];
                 // pwg.users.favorites… methods available from Piwigo version 2.10
-                if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending)) {
+                if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending)) {
                     self.favoriteBarButton = [self getFavoriteBarButton];
                     [rightBarButtonItems insertObjects:@[self.favoriteBarButton] atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(1, 1)]];
                 }
@@ -1555,7 +1555,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
             }
         }
         else if (!NetworkVarsObjc.hasGuestRights &&
-                 ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending)) {
+                 ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending)) {
             self.favoriteBarButton = [self getFavoriteBarButton];
 
             if (UIInterfaceOrientationIsPortrait(orientation) &&
@@ -1612,7 +1612,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         self.shareBarButton.enabled = hasImagesSelected;
         self.deleteBarButton.enabled = hasImagesSelected;
         // pwg.users.favorites… methods available from Piwigo version 2.10
-        if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending)) {
+        if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending)) {
             self.favoriteBarButton.enabled = hasImagesSelected;
             BOOL areFavorites = [CategoriesData.sharedInstance categoryWithId:kPiwigoFavoritesCategoryId containsImagesWithId:self.selectedImageIds];
             [self.favoriteBarButton setFavoriteImageFor:areFavorites];
@@ -1633,7 +1633,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         /// — guests can share photo of high-resolution or not
         /// — non-guest users can set favorites in addition
         self.shareBarButton.enabled = hasImagesSelected;
-        if (!NetworkVarsObjc.hasGuestRights && ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending)) {
+        if (!NetworkVarsObjc.hasGuestRights && ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending)) {
             self.favoriteBarButton.enabled = hasImagesSelected;
             BOOL areFavorites = [CategoriesData.sharedInstance categoryWithId:kPiwigoFavoritesCategoryId containsImagesWithId:self.selectedImageIds];
             [self.favoriteBarButton setFavoriteImageFor:areFavorites];
@@ -1652,7 +1652,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     self.moveBarButton.enabled = state;
     self.shareBarButton.enabled = state;
     // pwg.users.favorites… methods available from Piwigo version 2.10
-    if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending)) {
+    if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending)) {
         self.favoriteBarButton.enabled = state;
     }
 }
@@ -3503,7 +3503,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                 cell.isSelected = [self.selectedImageIds containsObject:[NSNumber numberWithInteger:imageData.imageId]];
 
                 // pwg.users.favorites… methods available from Piwigo version 2.10
-                if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending)) {
+                if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending)) {
                     cell.isFavorite = [CategoriesData.sharedInstance categoryWithId:kPiwigoFavoritesCategoryId containsImagesWithId:@[[NSNumber numberWithInteger:imageData.imageId]]];
                 }
                 

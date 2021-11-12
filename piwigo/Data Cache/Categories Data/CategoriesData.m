@@ -161,7 +161,7 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
 
     // Did we load favorites at start or did user request a refresh?
     if (!NetworkVarsObjc.hasGuestRights &&
-        ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending))
+        ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending))
     {
         // Keep cached favorites
         NSInteger indexOfFavorites = [self indexOfCategoryWithId:kPiwigoFavoritesCategoryId

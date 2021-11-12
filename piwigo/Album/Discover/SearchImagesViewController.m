@@ -470,7 +470,7 @@
         [cell setupWithImageData:imageData inCategoryId:kPiwigoSearchCategoryId];
     
         // pwg.users.favorites… methods available from Piwigo version 2.10
-        if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending)) {
+        if (([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending)) {
             cell.isFavorite = [CategoriesData.sharedInstance categoryWithId:kPiwigoFavoritesCategoryId containsImagesWithId:@[[NSNumber numberWithInteger:imageData.imageId]]];
         }
     }

@@ -785,7 +785,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
     if (isFirstLogin) {
         // Load favorites in the background before loading image data if needed
         if (!NetworkVarsObjc.hasGuestRights &&
-            ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedAscending))
+            ([@"2.10.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedDescending))
         {
             // Update HUD during login
             dispatch_async(dispatch_get_main_queue(), ^{
