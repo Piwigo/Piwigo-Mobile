@@ -724,7 +724,9 @@
         [imageList removeObjectAtIndex:indexOfExistingItem];
         self.albumData.images = imageList;
         NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfExistingItem inSection:0];
-        [self.imagesCollection deleteItemsAtIndexPaths:@[indexPath]];
+        if ([self.imagesCollection.indexPathsForVisibleItems containsObject:indexPath]) {
+            [self.imagesCollection deleteItemsAtIndexPaths:@[indexPath]];
+        }
     }
 
     // Update footer
