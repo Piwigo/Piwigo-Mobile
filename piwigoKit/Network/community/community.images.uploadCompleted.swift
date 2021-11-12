@@ -14,7 +14,7 @@ public let kCommunityImagesUploadCompleted = "format=json&method=community.image
 public struct CommunityImagesUploadCompletedJSON: Decodable {
     
     public var status: String?
-    public var success = false
+    public var data = [ComImageProperties]()
     public var errorCode = 0
     public var errorMessage = ""
 
@@ -25,6 +25,10 @@ public struct CommunityImagesUploadCompletedJSON: Decodable {
         case errorMessage = "message"
     }
 
+    private enum ResultCodingKeys: String, CodingKey {
+        case pending
+    }
+    
     private enum ErrorCodingKeys: String, CodingKey {
         case code = "code"
         case message = "msg"
@@ -39,7 +43,18 @@ public struct CommunityImagesUploadCompletedJSON: Decodable {
         status = try rootContainer.decodeIfPresent(String.self, forKey: .status)
         if (status == "ok")
         {
-            success = true
+            // Result container keyed by ResultCodingKeys
+            let resultContainer = try rootContainer.nestedContainer(keyedBy: ResultCodingKeys.self, forKey: .data)
+            dump(resultContainer)
+            
+            // Decodes pending properties from the data and store them in the array
+            do {
+                // Use ComImageProperties struct
+                try data = resultContainer.decode([ComImageProperties].self, forKey: .pending)
+            }
+            catch {
+                // Returns an empty array => No pending images
+            }
         }
         else if (status == "fail")
         {
@@ -62,4 +77,19 @@ public struct CommunityImagesUploadCompletedJSON: Decodable {
             errorMessage = NSLocalizedString("serverUnknownError_message", comment: "Unexpected error encountered while calling server method with provided parameters.")
         }
     }
+}
+
+/**
+ A struct for decoding JSON returned by kCommunityImagesUploadCompleted:
+ All members are optional in case they are missing from the data.
+*/
+public struct ComImageProperties: Decodable
+{
+    public let id: String?                  // 1
+    public let state: String?               // "moderation_pending" or "validated"
+
+    // The following data is not stored in cache
+    public let level: String?               // "16"
+    public let added_by: String?            // "4"
+    public let notified_on: String?         // ??
 }

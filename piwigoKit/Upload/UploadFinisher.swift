@@ -116,7 +116,7 @@ extension UploadManager {
      */
     func moderateImages(withIds imageIds: String,
                         inCategory categoryId: Int,
-                        completionHandler: @escaping (Bool) -> Void) -> (Void) {
+                        completionHandler: @escaping (Bool, [String]) -> Void) -> (Void) {
         
         print("\(debugFormatter.string(from: Date())) > moderateImages() in", queueName())
         // Check that we have a token
@@ -124,7 +124,7 @@ extension UploadManager {
             // // We shall retry later —> Continue in background queue!
             self.backgroundQueue.async {
                 // Will retry later
-                completionHandler(false)
+                completionHandler(false, [])
                 return
             }
             return
@@ -143,7 +143,7 @@ extension UploadManager {
             /// - Returned JSON data is empty
             /// - Cannot decode data returned by Piwigo server
             if let _ = error {
-                completionHandler(false)
+                completionHandler(false, [])
                 return
             }
             
@@ -156,99 +156,25 @@ extension UploadManager {
                 // Piwigo error?
                 if (uploadJSON.errorCode != 0) {
                     // Will retry later
-                    print("••>> moderateUploadedImages(): Piwigo error \(uploadJSON.errorCode) - \(uploadJSON.errorMessage)")
-                    completionHandler(false)
+                    debugPrint("••>> moderateUploadedImages(): Piwigo error \(uploadJSON.errorCode) - \(uploadJSON.errorMessage)")
+                    completionHandler(false, [])
                     return
                 }
 
-                // Successful?
-                if uploadJSON.success {
-                    // Images successfully moderated, delete them if wanted by users
-                    completionHandler(true)
+                // Return pending images
+                var pendingIds = [String]()
+                uploadJSON.data.forEach { (pendingData) in
+                    if let imageId = pendingData.id {
+                        pendingIds.append(imageId)
+                    }
                 }
-                else {
-                    // Will retry later
-                    completionHandler(false)
-                    return
-                }
-            } catch {
+                completionHandler(true, pendingIds)
+            }
+            catch {
                 // Will retry later
-                completionHandler(false)
+                completionHandler(false, [])
                 return
             }
         }
     }
-        
-
-//        getUploadedImageStatus(byId: imageIds, inCategory: categoryId,
-//            onCompletion: { (task, jsonData) in
-//                // Continue in background queue!
-//                self.backgroundQueue.async {
-//                    // Check returned data
-//                    guard let data = try? JSONSerialization.data(withJSONObject:jsonData ?? "") else {
-//                        // Will retry later
-//                        return
-//                    }
-//                    // Decode the JSON.
-//                    do {
-//                        // Decode the JSON into codable type CommunityUploadCompletedJSON.
-//                        let decoder = JSONDecoder()
-//                        let uploadJSON = try decoder.decode(CommunityImagesUploadCompletedJSON.self, from: data)
-//
-//                        // Piwigo error?
-//                        if (uploadJSON.errorCode != 0) {
-//                            // Will retry later
-//                            print("••>> moderateUploadedImages(): Piwigo error \(uploadJSON.errorCode) - \(uploadJSON.errorMessage)")
-//                            completionHandler(false)
-//                            return
-//                        }
-//
-//                        // Successful?
-//                        if uploadJSON.success {
-//                            // Images successfully moderated, delete them if wanted by users
-//                            completionHandler(true)
-//                        } else {
-//                            // Will retry later
-//                            completionHandler(false)
-//                            return
-//                        }
-//                    } catch {
-//                        // Will retry later
-//                        completionHandler(false)
-//                        return
-//                    }
-//                }
-//        }, onFailure: { (task, error) in
-//            // Continue in background queue!
-//            self.backgroundQueue.async {
-//                // Will retry later
-//                completionHandler(false)
-//                return
-//            }
-//        })
-//    }
-
-//    private func getUploadedImageStatus(byId imageId: String?, inCategory categoryId: Int,
-//            onCompletion completion: @escaping (_ task: URLSessionTask?, _ response: Any?) -> Void,
-//            onFailure fail: @escaping (_ task: URLSessionTask?, _ error: Error?) -> Void) -> (Void) {
-//        
-//        // Check that we have a token
-//        guard !NetworkVars.pwgToken.isEmpty else {
-//            fail(nil, JsonError.networkUnavailable)
-//            return
-//        }
-//        
-//        // Post request
-//        NetworkHandler.post(kCommunityImagesUploadCompleted,
-//                urlParameters: nil,
-//                parameters: [
-//                    "pwg_token": NetworkVars.pwgToken,
-//                    "image_id": imageId ?? "",
-//                    "category_id": NSNumber(value: categoryId)
-//                    ],
-//                sessionManager: sessionManager,
-//                progress: nil,
-//                success: completion,
-//                failure: fail)
-//    }
 }

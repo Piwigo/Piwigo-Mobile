@@ -251,6 +251,6 @@ class piwigoWebAPI: XCTestCase {
         }
         
         XCTAssertEqual(result.status, "ok")
-        XCTAssertTrue(result.success)
+        XCTAssertTrue(result.data.contains(where: { $0.id == "51768" }))
     }
 }

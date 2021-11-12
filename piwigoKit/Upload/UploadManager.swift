@@ -1191,14 +1191,14 @@ public class UploadManager: NSObject {
         for categoryId in categories {
             // Set list of images to moderate in that category
             let categoryImages = uploadedImages.filter({ $0.1.category == categoryId})
-            let imageIds = categoryImages.map( { String(format: "%ld,", $0.1.imageId) } )
-                .reduce("", +).dropLast()
+            let imageIds = String(categoryImages.map( { "\($0.1.imageId)," } )
+                .reduce("", +).dropLast())
             
             // Moderate uploaded images
-            moderateImages(withIds: String(imageIds), inCategory: categoryId) { (success) in
+            moderateImages(withIds: imageIds, inCategory: categoryId) { (success, _) in
                 if success {
-                    // Update upload requests to remember that the moderation was requested
                     categoryImages.forEach { (moderatedUpload) in
+                        // Update upload requests to remember that the moderation was requested
                         self.uploadsProvider.updateStatusOfUpload(with: moderatedUpload.0, to: .moderated, error: "") { error in
                             guard let _ = error else {
                                 return  // Will retry later
