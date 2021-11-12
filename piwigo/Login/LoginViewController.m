@@ -709,7 +709,7 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                                   OnCompletion:^(NSDictionary *responseObject) {
             if(responseObject)
             {
-                if([@"2.8.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] == NSOrderedDescending)
+                if([@"2.8.0" compare:NetworkVarsObjc.pwgVersion options:NSNumericSearch] != NSOrderedAscending)
                 {
                     // They need to update, ask user what to do
                     // Close loading or re-login view and ask what to do
