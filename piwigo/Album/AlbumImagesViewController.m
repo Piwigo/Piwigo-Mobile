@@ -1867,77 +1867,52 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
 -(void)addImageToCategory:(NSNotification *)notification
 {
-    if (notification != nil) {
-        NSDictionary *userInfo = notification.userInfo;
+    if (notification == nil) { return; }
+    NSDictionary *userInfo = notification.userInfo;
 
-        // Right category Id?
-        NSInteger catId = [[userInfo objectForKey:@"albumId"] integerValue];
-        if (catId != self.categoryId) return;
-        
-        // Image Id?
-//        NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
-//        NSLog(@"=> addImage %ld to Category %ld", (long)imageId, (long)catId);
-        
-        // Store current image list
-        NSArray *oldImageList = self.albumData.images;
-//        NSLog(@"=> category %ld contained %ld images", (long)self.categoryId, (long)oldImageList.count);
+    // Right category Id?
+    NSInteger catId = [[userInfo objectForKey:@"albumId"] integerValue];
+    if (catId != self.categoryId) return;
+    
+    // Get ID of added image
+    NSInteger imageId = [[userInfo objectForKey:@"imageId"] integerValue];
+    NSLog(@"=> addImage %ld to Category %ld", (long)imageId, (long)catId);
 
-        // Load new image (appended to cache) and sort images before updating UI
-        [self.albumData loadMoreImagesOnCompletion:^{
-            // Sort images
-            [self.albumData updateImageSort:self.currentSort onCompletion:^{
+    // Retrieve images from cache
+    NSArray <PiwigoImageData *> *newImages = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].imageList;
+    
+    // Get index of added image
+    NSInteger indexOfNewItem = [newImages indexOfObjectPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger oldIdx, BOOL * _Nonnull stop) {
+     return obj.imageId == imageId;
+    }];
+    if (indexOfNewItem != NSNotFound) {
+        // Add image to data source and corresponding cell
+        self.albumData.images = newImages;
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfNewItem inSection:1];
+        [self.imagesCollection insertItemsAtIndexPaths:@[indexPath]];
+    }
 
-                // The album title is not shown in backButtonItem to provide enough space
-                // for image title on devices of screen width <= 414 ==> Restore album title
-                self.title = [[[CategoriesData sharedInstance] getCategoryById:self.categoryId] name];
+    // Update footer
+    UICollectionReusableView *visibleFooter = [[self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter] firstObject];
+    NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].totalNumberOfImages;
+    if ([visibleFooter isKindOfClass:[NberImagesFooterCollectionReusableView class]]) {
+        NberImagesFooterCollectionReusableView *footer = (NberImagesFooterCollectionReusableView *)visibleFooter;
+        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+        [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+        footer.noImagesLabel.text = totalImageCount > 1 ?
+        [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]] :
+        [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
+    }
 
-                // Refresh collection view if needed
-//                NSLog(@"=> category %ld now contains %ld images", (long)self.categoryId, (long)self.albumData.images.count);
-                if (oldImageList.count == self.albumData.images.count) {
-                    return;
-                }
-
-                // Insert cells of added images
-                NSMutableArray<NSIndexPath *> *itemsToInsert = [NSMutableArray new];
-                for (NSInteger index = 0; index < self.albumData.images.count; index++) {
-                    PiwigoImageData *image = [self.albumData.images objectAtIndex:index];
-                    NSInteger indexOfExistingItem = [oldImageList indexOfObjectPassingTest:^BOOL(PiwigoImageData *oldObj, NSUInteger oldIdx, BOOL * _Nonnull stop) {
-                     return oldObj.imageId == image.imageId;
-                    }];
-                    if (indexOfExistingItem == NSNotFound) {
-                     [itemsToInsert addObject:[NSIndexPath indexPathForItem:index inSection:1]];
-                    }
-                }
-                if (itemsToInsert.count > 0) {
-                    if ([self.imagesCollection numberOfItemsInSection:1] == self.albumData.images.count - itemsToInsert.count) {
-                        [self.imagesCollection insertItemsAtIndexPaths:itemsToInsert];
-                    } else {
-                        [self.imagesCollection reloadData];
-                    }
-                }
-
-                // Update footer
-                UICollectionReusableView *visibleFooter = [[self.imagesCollection visibleSupplementaryViewsOfKind:UICollectionElementKindSectionFooter] firstObject];
-                NSInteger totalImageCount = [[CategoriesData sharedInstance] getCategoryById:self.categoryId].totalNumberOfImages;
-                if ([visibleFooter isKindOfClass:[NberImagesFooterCollectionReusableView class]]) {
-                    NberImagesFooterCollectionReusableView *footer = (NberImagesFooterCollectionReusableView *)visibleFooter;
-                    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-                    [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
-                    footer.noImagesLabel.text = totalImageCount > 1 ?
-                    [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]] :
-                    [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
-                }
-
-                // Set navigation bar buttons
-                if (self.isSelect == YES) {
-                    [self updateButtonsInSelectionMode];
-                } else {
-                    [self updateButtonsInPreviewMode];
-                }
-            } onFailure:^(NSURLSessionTask *task, NSError *error) {
-                [self.navigationController dismissPiwigoErrorWithTitle:NSLocalizedString(@"albumPhotoError_title", @"Get Album Photos Error") message:NSLocalizedString(@"albumPhotoError_message", @"Failed to get album photos (corrupt image in your album?)") errorMessage:error.localizedDescription completion:^{}];
-            }];
-        } onFailure:nil];
+    // Set navigation bar buttons if the AlbumImagesViewController is visible
+    UIViewController *visibleViewController = self.navigationController.visibleViewController;
+    if ([visibleViewController isKindOfClass:[AlbumImagesViewController class]]) {
+        // Set navigation bar buttons
+        if (self.isSelect == YES) {
+            [self updateButtonsInSelectionMode];
+        } else {
+            [self updateButtonsInPreviewMode];
+        }
     }
 }
 
