@@ -774,13 +774,15 @@ NSInteger const loadingViewTag = 899;
                               parameters:parameters headers:nil
                               progress:progress
                               success:^(NSURLSessionTask *task, id responseObject) {
-//        NSLog(@"==> post request URL: %@", task.originalRequest.URL);
-//        NSLog(@"==> post request HTTP headers: %@", task.originalRequest.allHTTPHeaderFields);
-//        NSLog(@"==> post request HttpBody: %@ i.e. \"%@\"", task.originalRequest.HTTPBody, [[NSString alloc] initWithData:task.originalRequest.HTTPBody encoding:NSUTF8StringEncoding]);
-//        
-//        NSLog(@"==> post response URL: %@", task.response.URL);
-//        NSLog(@"==> post response MIME: %@", task.response.MIMEType);
-//        NSLog(@"==> post response Encoding: %@", task.response.textEncodingName);
+#if defined(DEBUG_SESSION)
+        NSLog(@"==> post request URL: %@", task.originalRequest.URL);
+        NSLog(@"==> post request HTTP headers: %@", task.originalRequest.allHTTPHeaderFields);
+        NSLog(@"==> post request HttpBody: %@ i.e. \"%@\"", task.originalRequest.HTTPBody, [[NSString alloc] initWithData:task.originalRequest.HTTPBody encoding:NSUTF8StringEncoding]);
+        
+        NSLog(@"==> post response URL: %@", task.response.URL);
+        NSLog(@"==> post response MIME: %@", task.response.MIMEType);
+        NSLog(@"==> post response Encoding: %@", task.response.textEncodingName);
+#endif
                                    if (success) {
                                        success(task, responseObject);
                                    }
