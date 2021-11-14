@@ -165,7 +165,7 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
         
         // Did we already load the list of favorite images?
         userHasUploadRights = CategoriesData.sharedInstance().getCategoryById(categoryId).hasUploadRights
-        if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending,
+        if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending,
            !NetworkVars.hasGuestRights,
            CategoriesData.sharedInstance().getCategoryById(kPiwigoFavoritesCategoryId) == nil {
             // Show HUD during the download
@@ -434,7 +434,7 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
                     spaceBetweenButtons = UIBarButtonItem.spaceBetweenButtons()
                     var toolBarItems = [shareBarButton, spaceBetweenButtons, deleteBarButton]
                     // pwg.users.favorites… methods available from Piwigo version 2.10
-                    if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
+                    if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                         favoriteBarButton = getFavoriteBarButton()
                         toolBarItems.insert(contentsOf: [favoriteBarButton, spaceBetweenButtons], at: 2)
                     }
@@ -447,7 +447,7 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
                     // All buttons in the navigation bar
                     var rightBarButtonItems = [actionBarButton, deleteBarButton, shareBarButton]
                     // pwg.users.favorites… methods available from Piwigo version 2.10
-                    if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
+                    if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                         favoriteBarButton = getFavoriteBarButton()
                         rightBarButtonItems.insert(contentsOf: [favoriteBarButton], at: 2)
                     }
@@ -460,7 +460,7 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
                 }
             }
             else if !NetworkVars.hasGuestRights,
-                    "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
+                    "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                 favoriteBarButton = getFavoriteBarButton()
 
                 if orientation.isPortrait, UIDevice.current.userInterfaceIdiom == .phone {
@@ -515,7 +515,7 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
                                     spaceBetweenButtons, setThumbnailBarButton,
                                     spaceBetweenButtons, deleteBarButton].compactMap { $0 }
                 // pwg.users.favorites… methods available from Piwigo version 2.10
-                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
+                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                     favoriteBarButton = getFavoriteBarButton()
                     toolBarItems.insert(contentsOf: [favoriteBarButton, spaceBetweenButtons].compactMap { $0 }, at: 4)
                 }
@@ -540,7 +540,7 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
                 spaceBetweenButtons = UIBarButtonItem.spaceBetweenButtons()
                 var toolBarItems = [shareBarButton, spaceBetweenButtons, moveBarButton].compactMap { $0 }
                 // pwg.users.favorites… methods available from Piwigo version 2.10
-                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
+                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                     favoriteBarButton = getFavoriteBarButton()
                     toolBarItems.insert(contentsOf: [favoriteBarButton, spaceBetweenButtons].compactMap { $0 }, at: 2)
                 }
@@ -550,7 +550,7 @@ let kPiwigoNotificationPinchedImage = "kPiwigoNotificationPinchedImage"
                 navigationController?.setToolbarHidden(isNavigationBarHidden, animated: true)
             }
             else if !NetworkVars.hasGuestRights,
-                    "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
+                    "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                 favoriteBarButton = getFavoriteBarButton()
 
                 if orientation.isPortrait {
@@ -1416,7 +1416,7 @@ extension ImageDetailViewController: SelectCategoryImageRemovedDelegate
                 self.setEnableStateOfButtons(true)
                 // Reset favorites button
                 // pwg.users.favorites… methods available from Piwigo version 2.10
-                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
+                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                     let isFavorite = CategoriesData.sharedInstance()
                         .category(withId: kPiwigoFavoritesCategoryId,
                                   containsImagesWithId: [NSNumber(value: imageData.imageId)])
@@ -1446,7 +1446,7 @@ extension ImageDetailViewController: SelectCategoryImageRemovedDelegate
                 // Re-enable buttons
                 self.setEnableStateOfButtons(true)
                 // Reset favorites button
-                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) == .orderedAscending {
+                if "2.10.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
                     let isFavorite = CategoriesData.sharedInstance()
                         .category(withId: kPiwigoFavoritesCategoryId,
                                   containsImagesWithId: [NSNumber(value: imageData.imageId)])

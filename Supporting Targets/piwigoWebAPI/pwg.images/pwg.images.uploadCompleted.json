@@ -1,0 +1,11 @@
+{
+    "stat": "ok",
+    "result": {
+        "moved_from_lounge": [],
+        "category": {
+            "id": 430,
+            "nb_photos": "3",
+            "label": "Test"
+        }
+    }
+}
