@@ -6,6 +6,8 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
+"v2.8.2_text" = "Version 2.8.1\n\n• Enables Community users to upload in the background and auto-upload photos and videos\n• Fixes a compatibility issue with Piwigo 12\n• Minor bug fixes and improvements of the interface";
+
 "v2.8.1_text" = "バージョン 2.8.1\n\n• バグの修正";
 
 "v2.8.0_text" = "バージョン 2.8\n2021年10月23日\n\n• お気に入りから写真やビデオを追加して削除する\n•マイナーなバグ修正とインターフェイスの改善";
