@@ -799,16 +799,6 @@
             [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]] :
             [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
     }
-
-    // Update navigation bar buttons
-    UIViewController *visibleViewController = self.navigationController.visibleViewController;
-    if ([visibleViewController isKindOfClass:[DiscoverImagesViewController class]]) {
-        if (self.isSelect == YES) {
-            [self updateButtonsInSelectionMode];
-        } else {
-            [self updateButtonsInPreviewMode];
-        }
-    }
 }
 
 

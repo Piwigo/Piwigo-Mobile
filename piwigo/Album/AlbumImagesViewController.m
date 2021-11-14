@@ -1964,17 +1964,6 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         [NSString stringWithFormat:NSLocalizedString(@"severalImagesCount", @"%@ photos"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]] :
         [NSString stringWithFormat:NSLocalizedString(@"singleImageCount", @"%@ photo"), [numberFormatter stringFromNumber:[NSNumber numberWithInteger:totalImageCount]]];
     }
-
-    // Set navigation bar buttons if the AlbumImagesViewController is visible
-    UIViewController *visibleViewController = self.navigationController.visibleViewController;
-    if ([visibleViewController isKindOfClass:[AlbumImagesViewController class]]) {
-        // Update navigation bar buttons
-        if (self.isSelect == YES) {
-            [self updateButtonsInSelectionMode];
-        } else {
-            [self updateButtonsInPreviewMode];
-        }
-    }
 }
 
 
