@@ -1760,8 +1760,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
                                usingCache:NO
                           inRecursiveMode:YES
          OnCompletion:^(NSURLSessionTask *task, NSArray *albums) {
-            // Refresh current view
-            [self.imagesCollection reloadData];
+            // View will be refreshed in categoriesUpdated()
             if (refreshControl) [refreshControl endRefreshing];
         }
         onFailure:^(NSURLSessionTask *task, NSError *error) {
@@ -1790,6 +1789,13 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 //                NSLog(@"=> categoriesUpdated… %ld now contains %ld images", (long)self.categoryId, (long)self.albumData.images.count);
                 if (oldImageList.count == self.albumData.images.count) {
                     [self.imagesCollection reloadData];     // Total number of images may have changed
+
+                    // Set navigation bar buttons
+                    if (self.isSelect == YES) {
+                        [self initButtonsInSelectionMode];
+                    } else {
+                        [self updateButtonsInPreviewMode];
+                    }
                     return;
                 }
 
