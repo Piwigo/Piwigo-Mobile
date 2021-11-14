@@ -1885,7 +1885,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     NSInteger indexOfNewItem = [newImages indexOfObjectPassingTest:^BOOL(PiwigoImageData *obj, NSUInteger oldIdx, BOOL * _Nonnull stop) {
      return obj.imageId == imageId;
     }];
-    if (indexOfNewItem != NSNotFound) {
+    if ((indexOfNewItem != NSNotFound) && (newImages.count > self.albumData.images.count)) {
         // Add image to data source and corresponding cell
         self.albumData.images = newImages;
         NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfNewItem inSection:1];
