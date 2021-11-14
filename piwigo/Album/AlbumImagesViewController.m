@@ -1849,7 +1849,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
                 // Set navigation bar buttons
                 if (self.isSelect == YES) {
-                    [self updateButtonsInSelectionMode];
+                    [self initButtonsInSelectionMode];
                 } else {
                     [self updateButtonsInPreviewMode];
                 }
