@@ -777,8 +777,15 @@ extension UploadManager {
             deleteFilesInUploadsDirectory(withPrefix: imageFile)
 
             // Update state of upload
+            /// Since version 12, one must empty the lounge.
             var newUploadProperties = uploadProperties
-            newUploadProperties.requestState = .finished
+            if "12.0.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
+                // Uploading with pwg.images.uploadAsync since version 12
+                newUploadProperties.requestState = .uploaded
+            } else {
+                // Uploading with pwg.images.uploadAsync before version 12
+                newUploadProperties.requestState = .finished
+            }
             newUploadProperties.requestError = ""
             self.didEndTransfer(for: uploadID, with: newUploadProperties)
             return

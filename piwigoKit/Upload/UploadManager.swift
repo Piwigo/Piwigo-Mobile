@@ -229,21 +229,17 @@ public class UploadManager: NSObject {
         if failedUploads >= maxNberOfFailedUploads { return }
 
         // Not finishing and upload request to finish?
-        // Only called when uploading with the pwg.images.upload method
-        // because the title cannot be set during the upload.
+        /// Called when:
+        /// - uploading with pwg.images.upload because the title cannot be set during the upload.
+        /// - uploading with pwg.images.uploadAsync to empty the lounge as from the version 12 of the Piwigo server.
         if !isFinishing,
            let uploadID = uploadsProvider.getRequests(inStates: [.uploaded]).1.first {
             
             // Pause upload manager if the app is not in the foreground anymore
             if isPaused { return }
             
-            // Update state of upload resquest and finish upload
-            uploadsProvider.updateStatusOfUpload(with: uploadID, to: .finishing, error: "") {
-                [unowned self] (_) in
-                // Finish the job by setting image parameters…
-                self.isFinishing = true
-                self.setImageParameters(for: uploadID)
-            }
+            // Upload file ready, so we start the transfer
+            self.finishTransfer(of: uploadID)
             return
         }
 
@@ -268,7 +264,6 @@ public class UploadManager: NSObject {
             if isPaused { return }
 
             // Prepare the next upload
-            isPreparing = true
             self.prepare(for: uploadID)
             return
         }
@@ -482,6 +477,9 @@ public class UploadManager: NSObject {
 
     func prepare(for uploadID: NSManagedObjectID) -> Void {
         print("\(debugFormatter.string(from: Date())) >> prepare \(uploadID.uriRepresentation())")
+
+        // Update upload status
+        isPreparing = true
 
         // Retrieve upload request properties
         var uploadProperties: UploadProperties!
@@ -1003,8 +1001,9 @@ public class UploadManager: NSObject {
             }
         } else {
             // In foreground, always consider next file
-            if isUploading.count <= maxNberOfTransfers,
-               !isFinishing { findNextImageToUpload() }
+            if isUploading.count <= maxNberOfTransfers, !isFinishing {
+                findNextImageToUpload()
+            }
         }
     }
 
@@ -1041,8 +1040,11 @@ public class UploadManager: NSObject {
         }
         catch {
             print("\(debugFormatter.string(from: Date())) > missing Core Data object \(uploadID.uriRepresentation())!")
-            // Investigate next upload request?
-            self.didEndTransfer(for: uploadID)
+            // Request not available…!?
+            uploadsProvider.updateStatusOfUpload(with: uploadID, to: .uploadingFail, error: UploadError.missingData.errorDescription) { [unowned self] (_) in
+                // Investigate next upload request?
+                self.didEndTransfer(for: uploadID)
+            }
             return
         }
 
@@ -1057,7 +1059,9 @@ public class UploadManager: NSObject {
                        photoMaxSize: nil, progress: Float(0), errorMsg: nil)
         }
 
-        // Choose recent method if possible
+        // Choose recent method when called by:
+        /// - admins as from Piwigo server 11 or previous versions with the uploadAsync plugin installed.
+        /// - Community users as from Piwigo 12.
         if NetworkVars.usesUploadAsync || isExecutingBackgroundUploadTask {
             // Prepare transfer
             self.transferInBackgroundImage(for: uploadID, with: uploadProperties)
@@ -1132,8 +1136,9 @@ public class UploadManager: NSObject {
             }
         } else {
             // In foreground, always consider next file
-            if !isPreparing, isUploading.count <= maxNberOfTransfers,
-               !isFinishing { findNextImageToUpload() }
+            if !isPreparing, isUploading.count <= maxNberOfTransfers, !isFinishing {
+                findNextImageToUpload()
+            }
         }
     }
 
@@ -1150,16 +1155,128 @@ public class UploadManager: NSObject {
         }
     }
 
-    func didSetParameters() {
-        _isFinishing = false
-        if !isPreparing, isUploading.count <= maxNberOfTransfers { findNextImageToUpload() }
+    private func finishTransfer(of uploadID: NSManagedObjectID) {
+        print("\(debugFormatter.string(from: Date())) >> finish transfers of \(uploadID.uriRepresentation())")
+
+        // Update upload status
+        isFinishing = true
+        
+        // Retrieve upload request properties
+        var uploadProperties: UploadProperties!
+        let taskContext = DataController.privateManagedObjectContext
+        do {
+            let upload = try taskContext.existingObject(with: uploadID)
+            if upload.isFault {
+                // The upload request is not fired yet.
+                upload.willAccessValue(forKey: nil)
+                uploadProperties = (upload as! Upload).getProperties()
+                upload.didAccessValue(forKey: nil)
+            } else {
+                uploadProperties = (upload as! Upload).getProperties()
+            }
+        }
+        catch {
+            print("\(debugFormatter.string(from: Date())) > missing Core Data object \(uploadID)!")
+            // Request not available…!?
+            uploadsProvider.updateStatusOfUpload(with: uploadID, to: .finishingFail, error: UploadError.missingData.errorDescription) { [unowned self] (_) in
+                // Investigate next upload request?
+                self.didFinishTransfer()
+            }
+            return
+        }
+
+        // Update UI
+        if !isExecutingBackgroundUploadTask {
+            updateCell(with: uploadProperties.localIdentifier,
+                       stateLabel: kPiwigoUploadState.finishing.stateInfo,
+                       photoMaxSize: Int16(uploadProperties.photoMaxSize),
+                       progress: nil, errorMsg: "")
+        }
+        
+        // Update state of upload resquest and finish upload
+        uploadsProvider.updateStatusOfUpload(with: uploadID, to: .finishing, error: "") {
+            [unowned self] (_) in
+            // Work depends on Piwigo server version
+            if "12.0.0".compare(NetworkVars.pwgVersion, options: .numeric) != .orderedDescending {
+                // Uploaded with pwg.images.uploadAsync -> Empty the lounge
+                self.emptyLounge(for: uploadID, with: uploadProperties)
+            } else {
+                // Uploaded with pwg.images.upload -> Set image title.
+                self.setImageParameters(for: uploadID, with: uploadProperties)
+            }
+        }
     }
 
-    
+    func didFinishTransfer() {
+        _isFinishing = false
+        if !isPreparing, isUploading.count <= maxNberOfTransfers {
+            findNextImageToUpload()
+        }
+    }
+
+
     // MARK: - Uploaded Images Management
     
-    private func moderate(completedRequests : [NSManagedObjectID]) -> Void {
-        
+//    private func emptyLounge(for requests: [NSManagedObjectID]) -> Void
+//    {
+//        // Get upload requests of uploaded images
+//        var uploadedImages = [(NSManagedObjectID, UploadProperties)]()
+//        requests.forEach { (uploadID) in
+//            // Retrieve upload request properties
+//            var uploadProperties: UploadProperties!
+//            let taskContext = DataController.privateManagedObjectContext
+//            do {
+//                let upload = try taskContext.existingObject(with: uploadID)
+//                if upload.isFault {
+//                    // The upload request is not fired yet.
+//                    upload.willAccessValue(forKey: nil)
+//                    uploadProperties = (upload as! Upload).getProperties()
+//                    upload.didAccessValue(forKey: nil)
+//                } else {
+//                    uploadProperties = (upload as! Upload).getProperties()
+//                }
+//                uploadedImages.append((uploadID, uploadProperties))
+//            }
+//            catch {
+//                debugPrint("\(debugFormatter.string(from: Date())) > missing Core Data object \(uploadID.uriRepresentation())!") // Will retry later…
+//                return
+//            }
+//        }
+//
+//        // Get list of categories
+//        let categories = IndexSet(uploadedImages.map({Int($0.1.category)}))
+//
+//        // Process images by category
+//        for categoryId in categories {
+//            // Set list of images to moderate in that category
+//            let categoryImages = uploadedImages.filter({ $0.1.category == categoryId})
+//            let imageIds = String(categoryImages.map( { "\($0.1.imageId)," } )
+//                .reduce("", +).dropLast())
+//
+//            // Moderate uploaded images
+//            processImages(withIds: imageIds, inCategory: categoryId) { success in
+//                if !success { return }    // Will retry later
+//
+//                // Update state of upload requests
+//                var count = 0
+//                categoryImages.forEach { (uploadRequest) in
+//                    // Update upload requests to remember that the moderation was requested
+//                    self.uploadsProvider.updateStatusOfUpload(with: uploadRequest.0,
+//                                                              to: .finished, error: "") { _ in
+//                        // Did we update all requests?
+//                        count += 1
+//                        if count == categoryImages.count {
+//                            // We still have to moderate and delete images
+//                            self.findNextImageToUpload()
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+    
+    private func moderate(completedRequests: [NSManagedObjectID]) -> Void
+    {
         // Get completed upload requests
         var uploadedImages = [(NSManagedObjectID, UploadProperties)]()
         completedRequests.forEach { (uploadID) in
@@ -1196,18 +1313,21 @@ public class UploadManager: NSObject {
             
             // Moderate uploaded images
             moderateImages(withIds: imageIds, inCategory: categoryId) { (success, _) in
-                if success {
-                    categoryImages.forEach { (moderatedUpload) in
-                        // Update upload requests to remember that the moderation was requested
-                        self.uploadsProvider.updateStatusOfUpload(with: moderatedUpload.0, to: .moderated, error: "") { error in
-                            guard let _ = error else {
-                                return  // Will retry later
-                            }
-                            self.findNextImageToUpload()    // Might still have to delete images
+                if !success { return }    // Will retry later
+
+                // Update state of upload requests
+                var count = 0
+                categoryImages.forEach { (moderatedUpload) in
+                    // Update upload requests to remember that the moderation was requested
+                    self.uploadsProvider.updateStatusOfUpload(with: moderatedUpload.0,
+                                                              to: .moderated, error: "") { _ in
+                        // Did we update all requests?
+                        count += 1
+                        if count == categoryImages.count {
+                            // We might still have to delete images
+                            self.findNextImageToUpload()
                         }
                     }
-                } else {
-                    return  // Will try later
                 }
             }
         }

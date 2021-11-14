@@ -95,7 +95,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
                     self.uploadsProvider.delete(uploadRequests: [upload.objectID]) { _ in }
                     return true
                 })]
-        case .preparingFail, .formatError, .uploadingFail, .finished, .moderated:
+        case .preparingFail, .formatError, .uploadingFail, .finishingFail,.finished, .moderated:
             rightButtons = [
                 MGSwipeButton(title: "", icon: UIImage(named: "swipeTrashSmall.png"), backgroundColor: .red, callback: { sender in
                     self.uploadsProvider.delete(uploadRequests: [upload.objectID]) { _ in }
