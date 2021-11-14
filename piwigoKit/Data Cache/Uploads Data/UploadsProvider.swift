@@ -612,8 +612,10 @@ public class UploadsProvider: NSObject {
         // Create a fetch request for the Upload entity sorted by request date.
         let fetchRequest = NSFetchRequest<Upload>(entityName: "Upload")
 
-        // Sort upload requests by date
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "requestDate", ascending: true)]
+        // Priority to uploads requested manually, oldest ones first
+        var sortDescriptors = [NSSortDescriptor(key: "markedForAutoUpload", ascending: true)]
+        sortDescriptors.append(NSSortDescriptor(key: "requestDate", ascending: true))
+        fetchRequest.sortDescriptors = sortDescriptors
         
         // Select upload requests:
         /// — whose image has not been deleted from the Piwigo server
