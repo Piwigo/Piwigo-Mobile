@@ -112,7 +112,6 @@
 		AD807F0126E3AD1600008162 /* ImagePreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD807F0026E3AD1600008162 /* ImagePreviewViewController.swift */; };
 		AD807F0426E4BB4C00008162 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD778359267E34F800317F36 /* IntentHandler.swift */; };
 		AD807F0626E52B8D00008162 /* pwg.getInfos.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD807F0526E52B8D00008162 /* pwg.getInfos.swift */; };
-		AD807F0826E52F6F00008162 /* pwg.images.delete.json in Resources */ = {isa = PBXBuildFile; fileRef = AD807F0726E52F6F00008162 /* pwg.images.delete.json */; };
 		AD807F0A26E530ED00008162 /* pwg.images.delete.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD807F0926E530ED00008162 /* pwg.images.delete.swift */; };
 		AD807F1026E532F700008162 /* pwg.getInfos.json in Resources */ = {isa = PBXBuildFile; fileRef = AD807F0F26E532F700008162 /* pwg.getInfos.json */; };
 		AD807F1126E5331B00008162 /* pwg.images.delete.json in Resources */ = {isa = PBXBuildFile; fileRef = AD807F0726E52F6F00008162 /* pwg.images.delete.json */; };
@@ -257,8 +256,10 @@
 		ADF88E792066DA9600D1CE26 /* OpenSansExtraBold.TTF in Resources */ = {isa = PBXBuildFile; fileRef = ADF88E782066DA9500D1CE26 /* OpenSansExtraBold.TTF */; };
 		ADF88E7B2066DAE700D1CE26 /* OpenSansLight.TTF in Resources */ = {isa = PBXBuildFile; fileRef = ADF88E7A2066DAE600D1CE26 /* OpenSansLight.TTF */; };
 		ADF8AE7A24A8A6EB00F86515 /* CategoryImageSort.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADF8AE7924A8A6EB00F86515 /* CategoryImageSort.swift */; };
+		ADFA2BD227411E8200CC60BF /* pwg.images.uploadCompleted.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFA2BD127411E8200CC60BF /* pwg.images.uploadCompleted.swift */; };
 		ADFA89042438CF4500F73F0F /* ShareMetadataViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADFA89032438CF4400F73F0F /* ShareMetadataViewController.storyboard */; };
 		ADFA89052438CFD800F73F0F /* ShareMetadataCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD5A90782438C60500F8DAE6 /* ShareMetadataCell.swift */; };
+		ADFC233627415DE0003A07BC /* pwg.images.uploadCompleted.json in Resources */ = {isa = PBXBuildFile; fileRef = ADFC233427415832003A07BC /* pwg.images.uploadCompleted.json */; };
 		ADFC3A4C2401D704004CD337 /* PrivacyPolicyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFC3A4B2401D704004CD337 /* PrivacyPolicyViewController.swift */; };
 		ADFC3A4E2401DA4F004CD337 /* UIFont+AppFonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFC3A4D2401DA4E004CD337 /* UIFont+AppFonts.swift */; };
 		ADFFD447268A2953001F00E8 /* Upload+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFFD445268A2952001F00E8 /* Upload+CoreDataProperties.swift */; };
@@ -700,7 +701,9 @@
 		ADF88E782066DA9500D1CE26 /* OpenSansExtraBold.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = OpenSansExtraBold.TTF; sourceTree = "<group>"; };
 		ADF88E7A2066DAE600D1CE26 /* OpenSansLight.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = OpenSansLight.TTF; sourceTree = "<group>"; };
 		ADF8AE7924A8A6EB00F86515 /* CategoryImageSort.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryImageSort.swift; sourceTree = "<group>"; };
+		ADFA2BD127411E8200CC60BF /* pwg.images.uploadCompleted.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pwg.images.uploadCompleted.swift; sourceTree = "<group>"; };
 		ADFA89032438CF4400F73F0F /* ShareMetadataViewController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = ShareMetadataViewController.storyboard; sourceTree = "<group>"; };
+		ADFC233427415832003A07BC /* pwg.images.uploadCompleted.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pwg.images.uploadCompleted.json; sourceTree = "<group>"; };
 		ADFC3A4B2401D704004CD337 /* PrivacyPolicyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivacyPolicyViewController.swift; sourceTree = "<group>"; };
 		ADFC3A4D2401DA4E004CD337 /* UIFont+AppFonts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIFont+AppFonts.swift"; sourceTree = "<group>"; };
 		ADFD9B3B22F981F3008FE480 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -1219,6 +1222,7 @@
 				AD38C04324AF724100CDC765 /* pwg.images.setInfo.swift */,
 				ADD79A3C24A9352500428C58 /* pwg.images.upload.swift */,
 				AD6A128A24FAB56A00E3BBED /* pwg.images.uploadAsync.swift */,
+				ADFA2BD127411E8200CC60BF /* pwg.images.uploadCompleted.swift */,
 				AD807F0926E530ED00008162 /* pwg.images.delete.swift */,
 			);
 			path = pwg.images;
@@ -1324,6 +1328,7 @@
 				AD38C04624AF72E100CDC765 /* pwg.images.setInfo.json */,
 				AD11E46824A9319C00C8876F /* pwg.images.upload.json */,
 				ADD79A3F24A93B5600428C58 /* pwg.images.upload2.json */,
+				ADFC233427415832003A07BC /* pwg.images.uploadCompleted.json */,
 				AD807F0726E52F6F00008162 /* pwg.images.delete.json */,
 			);
 			path = pwg.images;
@@ -1911,7 +1916,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AD807F0826E52F6F00008162 /* pwg.images.delete.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1925,6 +1929,7 @@
 				ADBCABDC26D41562005D1BB2 /* pwg.images.setInfo.json in Resources */,
 				ADBCABDD26D41562005D1BB2 /* pwg.images.upload.json in Resources */,
 				ADBCABDE26D41563005D1BB2 /* pwg.images.upload2.json in Resources */,
+				ADFC233627415DE0003A07BC /* pwg.images.uploadCompleted.json in Resources */,
 				AD807F1126E5331B00008162 /* pwg.images.delete.json in Resources */,
 				AD5F64EB24C604EB00660BE3 /* pwg.tags.add.json in Resources */,
 				AD5F64F224C6088600660BE3 /* pwg.tags.getList.json in Resources */,
@@ -1958,20 +1963,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AD8D217C26B0B16A0008E907 /* help02-top.png in Resources */,
 				ADA6DA4721B2AD9900F941F1 /* Settings.bundle in Resources */,
 				AD563B44260945DC00B6EF93 /* LocalAlbumsViewControllerGrouped.storyboard in Resources */,
 				AD21145A2122D3E4004FFC8C /* AlbumTableViewCell.xib in Resources */,
 				ADE46684242F978F002FEDE5 /* AboutViewController.storyboard in Resources */,
 				AD2B0A1B243D086000AF1FEE /* CategorySortViewController.storyboard in Resources */,
-				AD8D218626B0B46A0008E907 /* darkPhone.png in Resources */,
 				AD61D2FA2571555A00B8DEA0 /* HelpViewController.storyboard in Resources */,
 				ADEFBD632074E19000DFAD26 /* CategoryTableViewCell.xib in Resources */,
 				AD2B0A15243D001A00AF1FEE /* DefaultAlbumThumbnailSizeViewController.storyboard in Resources */,
 				ADF1CC77243D132100D75319 /* SelectCategoryViewController.storyboard in Resources */,
-				AD8D217926B0B16A0008E907 /* help03.png in Resources */,
 				ADA24DB6243A74C200864D1F /* DefaultImageSizeViewController.storyboard in Resources */,
-				AD8D218826B0B46A0008E907 /* darkPad.png in Resources */,
 				ADA24DAF243A68FA00864D1F /* DefaultImageThumbnailSizeViewController.storyboard in Resources */,
 				AD84E60523BB7E34008BA126 /* EditImageDatePickerTableViewCell.xib in Resources */,
 				AD770FD623B4BDB5007DAD50 /* EditImageParamsViewController.storyboard in Resources */,
@@ -1982,7 +1983,6 @@
 				ADE03D3025FCC1B7002F5C7B /* ColorPaletteViewControllerOld.storyboard in Resources */,
 				ADC8167D244B5FA800650223 /* LocalImagesViewController.storyboard in Resources */,
 				ADAC548E26178BF500301C1C /* SelectCategoryViewControllerGrouped.storyboard in Resources */,
-				AD8D218026B0B16A0008E907 /* help07-top.png in Resources */,
 				AD3207E9240AD93900F00FEB /* PrivacyPolicyViewController.storyboard in Resources */,
 				AD5B498724E6FCF000BDF5B4 /* UploadQueueViewControllerOld.storyboard in Resources */,
 				ADD063B726A04BFE002558D2 /* UploadVideoSizeViewController.storyboard in Resources */,
@@ -1990,29 +1990,34 @@
 				AD2A21FE24310E65006B1A8A /* SelectPrivacyViewController.storyboard in Resources */,
 				AD27A16F24C44EEC000AD203 /* EditImageThumbTableViewCell.xib in Resources */,
 				ADD210412440CC7600DD79A6 /* SettingsViewController.storyboard in Resources */,
-				AD8D218926B0B46A0008E907 /* lightPhone.png in Resources */,
-				AD8D217A26B0B16A0008E907 /* help02-bot.png in Resources */,
 				AD563B422603FCE800B6EF93 /* AutoUploadViewController.storyboard in Resources */,
-				AD8D218126B0B16A0008E907 /* help05-top.png in Resources */,
 				ADEAFB8F25F8198800EEDB1D /* ColorPaletteViewController.storyboard in Resources */,
-				AD8D218726B0B46A0008E907 /* lightPad.png in Resources */,
 				ADFA89042438CF4500F73F0F /* ShareMetadataViewController.storyboard in Resources */,
 				ADD741F82699976100B47056 /* UploadPhotoSizeViewController.storyboard in Resources */,
 				AD6FD1FA24BEFFAA009AA3B7 /* UploadSwitchViewController.storyboard in Resources */,
 				ADC019742471A70F00532A81 /* UploadQueueViewController.storyboard in Resources */,
-				AD11AC4C273B17A100433038 /* help01.png in Resources */,
 				AD8F4B8B23F04B8C009483B6 /* TagSelectorViewController.storyboard in Resources */,
 				AD4902E324C2142800A96066 /* TagsViewController.storyboard in Resources */,
+				AD4AAFB725A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard in Resources */,
 				ADAEED8822E2665000CB1B12 /* LaunchScreen.storyboard in Resources */,
 				AD35CA3A1E9C1EBC00E3B897 /* Images.xcassets in Resources */,
-				AD4AAFB725A0A1E4007DCD54 /* PasteboardImagesViewController.storyboard in Resources */,
+				AD8D218626B0B46A0008E907 /* darkPhone.png in Resources */,
+				AD8D218826B0B46A0008E907 /* darkPad.png in Resources */,
+				AD8D218926B0B46A0008E907 /* lightPhone.png in Resources */,
+				AD8D218726B0B46A0008E907 /* lightPad.png in Resources */,
+				AD11AC4C273B17A100433038 /* help01.png in Resources */,
+				AD8D217C26B0B16A0008E907 /* help02-top.png in Resources */,
+				AD8D217A26B0B16A0008E907 /* help02-bot.png in Resources */,
+				AD8D217926B0B16A0008E907 /* help03.png in Resources */,
+				AD8D217B26B0B16A0008E907 /* help04.png in Resources */,
+				AD8D218126B0B16A0008E907 /* help05-top.png in Resources */,
+				AD8D217F26B0B16A0008E907 /* help05-bot.png in Resources */,
+				AD8D217E26B0B16A0008E907 /* help06.png in Resources */,
+				AD8D218026B0B16A0008E907 /* help07-top.png in Resources */,
 				ADF88E7B2066DAE700D1CE26 /* OpenSansLight.TTF in Resources */,
 				AD7823072061BE7F00D5CA70 /* OpenSansRegular.TTF in Resources */,
-				AD8D217E26B0B16A0008E907 /* help06.png in Resources */,
-				ADA36E0F21D777DA00133708 /* OpenSansSemiBold.TTF in Resources */,
-				AD8D217F26B0B16A0008E907 /* help05-bot.png in Resources */,
-				AD8D217B26B0B16A0008E907 /* help04.png in Resources */,
 				ADF88E772066D04600D1CE26 /* OpenSansBold.TTF in Resources */,
+				ADA36E0F21D777DA00133708 /* OpenSansSemiBold.TTF in Resources */,
 				ADF88E792066DA9600D1CE26 /* OpenSansExtraBold.TTF in Resources */,
 				AD6B2E761F0930CE0040EAD9 /* About.strings in Resources */,
 				ADC06AE11F40B15E0081B4FA /* InfoPlist.strings in Resources */,
@@ -2154,6 +2159,7 @@
 				AD0B6ACB268A2187007DEE70 /* UploadSessions.swift in Sources */,
 				ADFFD44B268A29E6001F00E8 /* Location+CoreDataClass.swift in Sources */,
 				AD3FF5F42682908000D2F52A /* UIImage+AppTools.swift in Sources */,
+				ADFA2BD227411E8200CC60BF /* pwg.images.uploadCompleted.swift in Sources */,
 				AD0B6AD5268A21B7007DEE70 /* UploadFinisher.swift in Sources */,
 				ADE250D926708DF600285978 /* KeychainUtilities.swift in Sources */,
 				ADF72EA326712DA50027E2CC /* UploadVars.swift in Sources */,
