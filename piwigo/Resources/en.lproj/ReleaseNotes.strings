@@ -8,7 +8,7 @@
 
 "v2.8.2_text" = "Version 2.8.1\n\n• Enables Community users to upload in the background and auto-upload photos and videos\n• Fixes a compatibility issue with Piwigo 12\n• Minor bug fixes and improvements of the interface";
 
-"v2.8.1_text" = "Version 2.8.1\n\n• Bug fixes";
+"v2.8.1_text" = "Version 2.8.1\nNovember 9, 2021\n• Bug fixes";
 
 "v2.8.0_text" = "Version 2.8\nOctober 23, 2021\n\n• Add and remove photos and videos from your favorites\n• Minor bug fixes and improvements of the interface";
 
