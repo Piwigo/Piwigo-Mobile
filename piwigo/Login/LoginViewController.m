@@ -801,11 +801,15 @@ NSString * const kPiwigoSupport = @"— iOS@piwigo.org —";
                 [[CategoriesData.sharedInstance getCategoryById:kPiwigoFavoritesCategoryId] loadAllCategoryImageDataWithSort:(kPiwigoSortObjc)AlbumVars.defaultSort
                 forProgress:^(NSInteger onPage, NSInteger outOf){
                     // Post to the app that favorites data are loaded
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+                    NSDictionary *userInfo = @{@"albumId" : @(kPiwigoFavoritesCategoryId)};
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated
+                                                                        object:nil userInfo:userInfo];
                 }
                 onCompletion:^(BOOL completed) {
                     // Post to the app that favorites data are loaded
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated object:nil];
+                    NSDictionary *userInfo = @{@"albumId" : @(kPiwigoFavoritesCategoryId)};
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kPiwigoNotificationCategoryDataUpdated
+                                                                        object:nil userInfo:userInfo];
                 }
                 onFailure:nil];
             });

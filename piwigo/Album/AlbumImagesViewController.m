@@ -770,7 +770,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     
     // Register category data updates
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getCategoryData:) name:kPiwigoNotificationGetCategoryData object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated:) name:kPiwigoNotificationCategoryDataUpdated object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addImageToCategory:) name:kPiwigoNotificationUploadedImage object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeImageFromCategory:) name:kPiwigoNotificationRemovedImage object:nil];
 }
@@ -1769,8 +1769,14 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
      ];
 }
 
--(void)categoriesUpdated
+-(void)categoriesUpdated:(NSNotification *)notification
 {
+    if (notification == nil) { return; }
+    NSDictionary *userInfo = notification.userInfo;
+
+    // Right category Id?
+    NSInteger catId = [[userInfo objectForKey:@"albumId"] integerValue];
+    if ((catId != self.categoryId) && (catId != NSIntegerMax)) return;
 #if defined(DEBUG_LIFECYCLE)
     NSLog(@"=> categoriesUpdated… %ld", (long)self.categoryId);
 #endif
@@ -3918,7 +3924,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 - (void)didDismissSearchController:(UISearchController *)searchController
 {
     // Register category data updates
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoriesUpdated:) name:kPiwigoNotificationCategoryDataUpdated object:nil];
 }
 
 

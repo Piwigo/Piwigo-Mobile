@@ -316,7 +316,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyColorPalette) name:[PwgNotificationsObjc paletteChanged] object:nil];
 
     // Register category data updates
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryUpdated) name:kPiwigoNotificationCategoryDataUpdated object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(categoryUpdated:) name:kPiwigoNotificationCategoryDataUpdated object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeImageFromCategory:) name:kPiwigoNotificationRemovedImage object:nil];
 }
 
@@ -679,8 +679,15 @@
 
 #pragma mark - Category Data
 
--(void)categoryUpdated
+-(void)categoryUpdated:(NSNotification *)notification
 {
+    if (notification == nil) { return; }
+    NSDictionary *userInfo = notification.userInfo;
+
+    // Right category Id?
+    NSInteger catId = [[userInfo objectForKey:@"albumId"] integerValue];
+    if (catId != kPiwigoFavoritesCategoryId) return;
+    
     // Load, sort images and reload collection
     [self.albumData updateImageSort:self.currentSort onCompletion:^{
         // Set navigation bar buttons
