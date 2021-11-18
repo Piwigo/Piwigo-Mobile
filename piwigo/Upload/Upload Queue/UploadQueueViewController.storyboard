@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18092"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -42,9 +42,10 @@
                                                     </constraints>
                                                 </imageView>
                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="video" translatesAutoresizingMaskIntoConstraints="NO" id="AE1-nk-RlX">
-                                                    <rect key="frame" x="9" y="6" width="25" height="16"/>
+                                                    <rect key="frame" x="6" y="3" width="25" height="19"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" secondItem="AE1-nk-RlX" secondAttribute="height" multiplier="25:16" id="77h-cS-IAd"/>
+                                                        <constraint firstAttribute="width" constant="25" id="UoP-43-h0d"/>
+                                                        <constraint firstAttribute="height" constant="19" id="cv3-Xw-ZTp"/>
                                                     </constraints>
                                                 </imageView>
                                                 <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="O9O-5W-5gQ">
@@ -68,11 +69,11 @@
                                                 <constraint firstItem="lZk-jx-7Go" firstAttribute="leading" secondItem="hDM-1S-cbv" secondAttribute="leading" constant="4" id="2e7-bQ-NeH"/>
                                                 <constraint firstItem="mBc-tg-fEn" firstAttribute="bottom" secondItem="lZk-jx-7Go" secondAttribute="bottom" id="7Jg-Ki-rwQ"/>
                                                 <constraint firstAttribute="trailing" secondItem="O9O-5W-5gQ" secondAttribute="trailing" constant="20" id="7rI-0C-Pe2"/>
-                                                <constraint firstItem="lZk-jx-7Go" firstAttribute="top" secondItem="AE1-nk-RlX" secondAttribute="top" constant="-5" id="Aab-Tu-l12"/>
+                                                <constraint firstItem="lZk-jx-7Go" firstAttribute="top" secondItem="AE1-nk-RlX" secondAttribute="top" constant="-2" id="Aab-Tu-l12"/>
                                                 <constraint firstItem="mBc-tg-fEn" firstAttribute="top" secondItem="O9O-5W-5gQ" secondAttribute="bottom" constant="1" id="Ffh-nb-huF"/>
                                                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="hI6-46-Use" secondAttribute="trailing" constant="20" symbolic="YES" id="PzH-R0-8kt"/>
                                                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="mBc-tg-fEn" secondAttribute="trailing" constant="20" symbolic="YES" id="Ryt-pa-UFF"/>
-                                                <constraint firstItem="AE1-nk-RlX" firstAttribute="leading" secondItem="lZk-jx-7Go" secondAttribute="leading" constant="5" id="aMl-NV-Bow"/>
+                                                <constraint firstItem="AE1-nk-RlX" firstAttribute="leading" secondItem="lZk-jx-7Go" secondAttribute="leading" constant="2" id="aMl-NV-Bow"/>
                                                 <constraint firstItem="hI6-46-Use" firstAttribute="leading" secondItem="lZk-jx-7Go" secondAttribute="trailing" constant="8" id="dca-jb-Zal"/>
                                                 <constraint firstItem="mBc-tg-fEn" firstAttribute="leading" secondItem="lZk-jx-7Go" secondAttribute="trailing" constant="8" id="hBi-zw-V8Z"/>
                                                 <constraint firstItem="lZk-jx-7Go" firstAttribute="centerY" secondItem="hDM-1S-cbv" secondAttribute="centerY" id="jk0-Pt-W3L"/>
@@ -83,7 +84,9 @@
                                         <connections>
                                             <outlet property="cellImage" destination="lZk-jx-7Go" id="3gR-9O-VY5"/>
                                             <outlet property="imageInfoLabel" destination="mBc-tg-fEn" id="Wn0-Xk-fco"/>
-                                            <outlet property="playImage" destination="AE1-nk-RlX" id="dce-lT-1wX"/>
+                                            <outlet property="playBckg" destination="AE1-nk-RlX" id="VNi-MX-usI"/>
+                                            <outlet property="playBckgHeight" destination="cv3-Xw-ZTp" id="Tfv-wm-JOt"/>
+                                            <outlet property="playBckgWidth" destination="UoP-43-h0d" id="GZk-fR-DEE"/>
                                             <outlet property="uploadInfoLabel" destination="hI6-46-Use" id="Nkh-Hx-Wkj"/>
                                             <outlet property="uploadingProgress" destination="O9O-5W-5gQ" id="iha-Zv-7Mx"/>
                                         </connections>
@@ -109,7 +112,7 @@
     </scenes>
     <color key="tintColor" red="1" green="0.46666666670000001" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
     <resources>
-        <image name="video" width="25" height="16"/>
+        <image name="video" width="25" height="19"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

@@ -13,9 +13,11 @@
 
 CGFloat const margin = 1.0;
 CGFloat const offset = 1.0;
+CGFloat const bannerHeight = 16.0;
 CGFloat const favScale = 0.12;
 CGFloat const selectScale = 0.2;
-CGFloat const playScale = 0.12;
+CGFloat const playScale = 0.19;
+CGFloat const playRatio = 0.7733;
 
 @interface ImageCollectionViewCell()
 
@@ -67,71 +69,45 @@ CGFloat const playScale = 0.12;
         [self.contentView addConstraints:[NSLayoutConstraint constraintFillSize:self.cellImage]];
 		
         // Movie type
-        UIImage *play;
-        if (@available(iOS 13.0, *)) {
-            play = [UIImage systemImageNamed:@"play.rectangle.fill"];
-        } else {
-            play = [UIImage imageNamed:@"video"];
-        }
         self.playBckg = [UIImageView new];
-        self.playBckg.hidden = YES;
-        self.playBckg.translatesAutoresizingMaskIntoConstraints = NO;
-        self.playBckg.contentMode = UIViewContentModeScaleAspectFit;
-        self.playBckg.image = [play imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        self.playBckg.tintColor = [UIColor colorWithWhite:0.0 alpha:0.15];
-
+        [self.playBckg setMovieImageInBackground:YES];
         CGFloat scale = fmax(1.0, self.traitCollection.displayScale);
-        CGFloat dim = frame.size.width * playScale + (scale - 1);
-        CGSize imgSize = CGSizeMake(dim, dim);
-        CGSize bckgSize = CGSizeMake(dim + 2*offset, dim + 2*offset);
+        CGFloat width = frame.size.width * playScale + (scale - 1);
         [self.cellImage addSubview:self.playBckg];
-        [self.cellImage addConstraints:[NSLayoutConstraint constraintView:self.playBckg to:bckgSize]];
+        NSLayoutConstraint *iconWidth = [NSLayoutConstraint constraintView:self.playBckg
+                                                                   toWidth:width + 2*offset];
+        NSLayoutConstraint *iconHeight = [NSLayoutConstraint constraintView:self.playBckg
+                                                                   toHeight:width*playRatio + 2*offset];
         self.playLeft = [NSLayoutConstraint constraintViewFromLeft:self.playBckg amount:margin];
         self.playTop = [NSLayoutConstraint constraintViewFromTop:self.playBckg amount:margin];
-        [self.cellImage addConstraints:@[self.playLeft, self.playTop]];
+        [self.cellImage addConstraints:@[iconWidth, iconHeight, self.playLeft, self.playTop]];
         
         self.playImg = [UIImageView new];
-        self.playImg.hidden = YES;
-        self.playImg.translatesAutoresizingMaskIntoConstraints = NO;
-        self.playImg.contentMode = UIViewContentModeScaleAspectFit;
-        self.playImg.image = [play imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        self.playImg.tintColor = [UIColor whiteColor];
+        [self.playImg setMovieImageInBackground:NO];
         [self.playBckg addSubview:self.playImg];
         [self.playBckg addConstraints:[NSLayoutConstraint constraintCenter:self.playImg]];
-        [self.cellImage addConstraints:[NSLayoutConstraint constraintView:self.playImg to:imgSize]];
+        [self.cellImage addConstraint:[NSLayoutConstraint constraintView:self.playImg toWidth:width]];
+        [self.cellImage addConstraint:[NSLayoutConstraint constraintView:self.playImg toHeight:width*playRatio]];
         
         // Favorite image
-        UIImage *favorite;
-        if (@available(iOS 13.0, *)) {
-            favorite = [UIImage systemImageNamed:@"heart.fill"];
-        } else {
-            favorite = [UIImage imageNamed:@"imageFavorite"];
-        }
         self.favBckg = [UIImageView new];
-        self.favBckg.hidden = YES;
-        self.favBckg.translatesAutoresizingMaskIntoConstraints = NO;
-        self.favBckg.contentMode = UIViewContentModeScaleAspectFit;
-        self.favBckg.image = [favorite imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        self.favBckg.tintColor = [UIColor colorWithWhite:0.0 alpha:0.15];
-
-        dim = frame.size.width * favScale + (scale - 1);
-        imgSize = CGSizeMake(dim, dim);
-        bckgSize = CGSizeMake(dim + 2*offset, dim + 2*offset);
+        [self.favBckg setFavoriteImageInBackground:YES];
+        width = frame.size.width * favScale + (scale - 1);
         [self.cellImage addSubview:self.favBckg];
-        [self.cellImage addConstraints:[NSLayoutConstraint constraintView:self.favBckg to:bckgSize]];
+        iconWidth = [NSLayoutConstraint constraintView:self.favBckg
+                                               toWidth:width + 2*offset];
+        iconHeight = [NSLayoutConstraint constraintView:self.favBckg
+                                               toHeight:width*playRatio + 2*offset];
         self.favLeft = [NSLayoutConstraint constraintViewFromLeft:self.favBckg amount:margin];
         self.favBottom = [NSLayoutConstraint constraintViewFromBottom:self.favBckg amount:-margin];
-        [self.cellImage addConstraints:@[self.favLeft, self.favBottom]];
+        [self.cellImage addConstraints:@[iconWidth, iconHeight, self.favLeft, self.favBottom]];
 
         self.favImg = [UIImageView new];
-        self.favImg.hidden = YES;
-        self.favImg.translatesAutoresizingMaskIntoConstraints = NO;
-        self.favImg.contentMode = UIViewContentModeScaleAspectFit;
-        self.favImg.image = [favorite imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        self.favImg.tintColor = [UIColor whiteColor];
+        [self.favImg setFavoriteImageInBackground:NO];
         [self.favBckg addSubview:self.favImg];
-        [self.favBckg addConstraints:[NSLayoutConstraint constraintView:self.favImg to:imgSize]];
         [self.favBckg addConstraints:[NSLayoutConstraint constraintCenter:self.favImg]];
+        [self.favBckg addConstraint:[NSLayoutConstraint constraintView:self.favImg toWidth:width]];
+        [self.favBckg addConstraint:[NSLayoutConstraint constraintView:self.favImg toHeight:width + 2*offset]];
 
         // Selected images are darker
         self.darkenView = [UIView new];
@@ -153,7 +129,7 @@ CGFloat const playScale = 0.12;
 		[self.cellImage addSubview:self.bottomLayer];
 		[self.cellImage addConstraints:[NSLayoutConstraint constraintFillWidth:self.bottomLayer]];
 		[self.cellImage addConstraint:[NSLayoutConstraint constraintViewFromBottom:self.bottomLayer amount:0]];
-        [self.cellImage addConstraint:[NSLayoutConstraint constraintView:self.bottomLayer toHeight:16.0]];
+        [self.cellImage addConstraint:[NSLayoutConstraint constraintView:self.bottomLayer toHeight:bannerHeight]];
 		
         // Title of images shown in banners
         self.nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,0, self.contentView.bounds.size.width, frame.size.height)];
@@ -197,9 +173,8 @@ CGFloat const playScale = 0.12;
 		self.selectedImg.tintColor = [UIColor piwigoColorOrange];
 		self.selectedImg.hidden = YES;
 		[self.cellImage addSubview:self.selectedImg];
-        dim = frame.size.width * selectScale + (scale - 1);
-        imgSize = CGSizeMake(dim, dim);
-		[self.cellImage addConstraints:[NSLayoutConstraint constraintView:self.selectedImg to:imgSize]];
+        width = frame.size.width * selectScale + (scale - 1);
+		[self.cellImage addConstraint:[NSLayoutConstraint constraintView:self.selectedImg toHeight:width]];
         self.selImgRight = [NSLayoutConstraint constraintViewFromRight:self.selectedImg amount: 0.0];
         self.selImgTop = [NSLayoutConstraint constraintViewFromTop:self.selectedImg amount: 2*margin];
         [self.cellImage addConstraints:@[self.selImgRight, self.selImgTop]];
@@ -420,10 +395,10 @@ CGFloat const playScale = 0.12;
         weakSelf.playTop.constant = weakSelf.deltaY + offset;
         if (weakSelf.bottomLayer.isHidden) {
             // The title is not displayed
-            weakSelf.favBottom.constant = - weakSelf.deltaY;
+            weakSelf.favBottom.constant = - (weakSelf.deltaY +2);
         } else {
             // The title is displayed
-            CGFloat deltaY = fmax(16.0, weakSelf.deltaY);
+            CGFloat deltaY = fmax(bannerHeight + margin, weakSelf.deltaY + 2);
             weakSelf.favBottom.constant = - deltaY;
         }
     } failure:nil];
@@ -455,11 +430,11 @@ CGFloat const playScale = 0.12;
     // Update the vertical constraint
     if (self.bottomLayer.isHidden) {
         // Place icon at the bottom
-        self.favBottom.constant = - self.deltaY;
+        self.favBottom.constant = - (self.deltaY + 2);
     }
     else {
         // Place icon at the bottom but above the title
-        CGFloat height = fmax(16.0, self.deltaY);
+        CGFloat height = fmax(bannerHeight + margin, self.deltaY + 2);
         self.favBottom.constant = - height;
     }
     
