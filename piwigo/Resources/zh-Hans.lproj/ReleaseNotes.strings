@@ -6,9 +6,9 @@
  Copyright © 2017 Piwigo.org. All rights reserved.
  */
 
-"v2.8.2_text" = "Version 2.8.1\n\n• Enables Community users to upload in the background and auto-upload photos and videos\n• Fixes a compatibility issue with Piwigo 12\n• Minor bug fixes and improvements of the interface";
+"v2.8.2_text" = "版本2.8.2\n\n• 允许社区用户在后台上传并自动上传照片和视频\n• 修复与 Piwigo 12的兼容性问题\n• 小错误修复和界面改进";
 
-"v2.8.1_text" = "版本 2.8.1\n\n• 错误修复";
+"v2.8.1_text" = "版本 2.8.1\n2021年11月9日\n\n• 错误修复";
 
 "v2.8.0_text" = "版本 2.8\n2021年10月23日\n\n• 从您的收藏夹中添加和删除照片和视频\n• 小错误修复和界面改进";
 
