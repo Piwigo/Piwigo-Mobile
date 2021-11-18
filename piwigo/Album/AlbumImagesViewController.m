@@ -1190,6 +1190,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
 -(void)updateNberOfUploads:(NSNotification *)notification
 {
+    if ((self.categoryId != 0) && (self.categoryId != AlbumVars.defaultCategory)) { return; }
     if (notification == nil) { return; }
     NSDictionary *userInfo = notification.userInfo;
     
@@ -1198,8 +1199,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
         NSInteger nberOfUploads = [[userInfo objectForKey:@"nberOfUploadsToComplete"] integerValue];
 
         // Only presented in the root or default album
-        if ((nberOfUploads > 0) &&
-            ((self.categoryId == 0) || (self.categoryId == AlbumVars.defaultCategory))) {
+        if (nberOfUploads > 0) {
             // Set number of uploads
             NSString *nber = [NSString stringWithFormat:@"%lu", (unsigned long)nberOfUploads];
             if ([nber compare:self.nberOfUploadsLabel.text] == NSOrderedSame && !self.uploadQueueButton.hidden) {
@@ -1266,6 +1266,7 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
 
 -(void)updateUploadQueueButtonWithProgress:(NSNotification *)notification
 {
+    if ((self.categoryId != 0) || (self.categoryId != AlbumVars.defaultCategory)) { return; }
     if (notification == nil) { return; }
     NSDictionary *userInfo = notification.userInfo;
 
