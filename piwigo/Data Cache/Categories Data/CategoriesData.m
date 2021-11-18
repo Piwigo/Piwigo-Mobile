@@ -155,6 +155,9 @@ NSString * const kPiwigoNotificationChangedCurrentCategory = @"kPiwigoNotificati
     self.allCategories = newCategories;
 
     // Post to the app that category data have changed
+    if (![upperCategories containsObject:@"0"]) {
+        [upperCategories addObject:@"0"];
+    }
     for (NSString *upperCategoryId in upperCategories)
     {
         dispatch_async(dispatch_get_main_queue(), ^(void){
