@@ -159,7 +159,7 @@ extension UIViewController {
     }
 
     func presentPiwigoAlert(withTitle title:String, message:String, actions:[UIAlertAction]) {
-        DispatchQueue.main.async { [unowned self] in
+        DispatchQueue.main.async {
             // Create alert view controller
             let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
 
