@@ -181,7 +181,7 @@ class LocalImageCollectionViewCell: UICollectionViewCell {
         let cropRect = square.applying(CGAffineTransform(scaleX: CGFloat(1.0 / Float(imageAsset.pixelWidth)), y: CGFloat(1.0 / Float(imageAsset.pixelHeight))))
         cropToSquare.normalizedCropRect = cropRect
 
-        PHImageManager.default().requestImage(for: imageAsset, targetSize: retinaSquare, contentMode: .aspectFit, options: cropToSquare, resultHandler: { [unowned self] result, info in
+        PHImageManager.default().requestImage(for: imageAsset, targetSize: retinaSquare, contentMode: .aspectFit, options: cropToSquare, resultHandler: { result, info in
             DispatchQueue.main.async(execute: {
                 guard let image = result else {
                     if let error = info?[PHImageErrorKey] as? Error {
