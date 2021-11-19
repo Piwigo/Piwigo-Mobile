@@ -3599,11 +3599,13 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     NSInteger indexOfImage = [self.albumData.images indexOfObjectPassingTest:^BOOL(PiwigoImageData *image, NSUInteger index, BOOL * _Nonnull stop) {
      return image.imageId == imageId;
     }];
-    
+    if (indexOfImage == NSNotFound) { return; }
+
     // Scroll view to center image
-    if (indexOfImage != NSNotFound) {
-        self.imageOfInterest = [NSIndexPath indexPathForItem:indexOfImage inSection:1];
-        [self.imagesCollection scrollToItemAtIndexPath:self.imageOfInterest atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfImage inSection:1];
+    if ([self.imagesCollection.indexPathsForVisibleItems containsObject:indexPath]) {
+        self.imageOfInterest = indexPath;
+        [self.imagesCollection scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
     }
 }
 
@@ -3614,11 +3616,12 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     
     // Update data source
     NSInteger indexOfImage = [self.albumData updateImage:imageData];
-    
+    if (indexOfImage == NSNotFound) { return; }
+
     // Refresh image banner
-    if (indexOfImage != NSNotFound) {
-        NSIndexPath *updatedImage = [NSIndexPath indexPathForItem:indexOfImage inSection:1];
-        [self.imagesCollection reloadItemsAtIndexPaths:@[updatedImage]];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfImage inSection:1];
+    if ([self.imagesCollection.indexPathsForVisibleItems containsObject:indexPath]) {
+        [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
     }
 }
 
@@ -3664,7 +3667,9 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     
     // Refresh image cell
     NSIndexPath *indexPath = [NSIndexPath indexPathForItem:indexOfUpdatedImage inSection:1];
-    [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
+    if ([self.imagesCollection.indexPathsForVisibleItems containsObject:indexPath]) {
+        [self.imagesCollection reloadItemsAtIndexPaths:@[indexPath]];
+    }
 }
 
 -(void)didFinishEditingParameters
@@ -3694,12 +3699,11 @@ NSString * const kPiwigoNotificationCancelDownload = @"kPiwigoNotificationCancel
     NSInteger indexOfUpdatedImage = [newImages indexOfObjectPassingTest:^BOOL(PiwigoImageData *image, NSUInteger index, BOOL * _Nonnull stop) {
      return image.imageId == imageData.imageId;
     }];
+    if (indexOfUpdatedImage == NSNotFound) { return; }
 
     // Update image data
-    if (indexOfUpdatedImage != NSNotFound) {
-        [newImages replaceObjectAtIndex:indexOfUpdatedImage withObject:imageData];
-        self.albumData.images = newImages;
-    }
+    [newImages replaceObjectAtIndex:indexOfUpdatedImage withObject:imageData];
+    self.albumData.images = newImages;
 }
 
 
