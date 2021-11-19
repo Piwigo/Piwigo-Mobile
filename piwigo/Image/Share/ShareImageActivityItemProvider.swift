@@ -55,7 +55,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
         let alreadyLoadedSize = kPiwigoImageSize(AlbumVars.defaultThumbnailSize)
         guard let thumbnailURL = URL(string: imageData.getURLFromImageSizeType(alreadyLoadedSize)) else {
             imageFileData = Data()
-            imageFileURL = URL(string: "")!
+            imageFileURL = Bundle.main.url(forResource: "piwigo", withExtension: "png")!
             super.init(placeholderItem: UIImage(named: "AppIconShare")!)
             return
         }
@@ -70,7 +70,7 @@ class ShareImageActivityItemProvider: UIActivityItemProvider {
             super.init(placeholderItem: thumbnailImage)
         } else {
             imageFileData = Data()
-            imageFileURL = URL(string: "")!
+            imageFileURL = Bundle.main.url(forResource: "piwigo", withExtension: "png")!
             super.init(placeholderItem: UIImage(named: "AppIconShare")!)
         }
 

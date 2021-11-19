@@ -146,6 +146,7 @@
 		AD94F640266D63AD00EFC6A9 /* CacheVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD94F63F266D63AD00EFC6A9 /* CacheVars.swift */; };
 		AD94F643266D6E1D00EFC6A9 /* LocationsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE452C244A1F0000AE0001 /* LocationsProvider.swift */; };
 		AD94F644266D6E2100EFC6A9 /* LocationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBE452A244A1AF400AE0001 /* LocationError.swift */; };
+		AD96F4302748601D004C8DFF /* piwigo.png in Resources */ = {isa = PBXBuildFile; fileRef = AD96F42F2748601D004C8DFF /* piwigo.png */; };
 		AD97CFB5265AFFD900719ED5 /* UserDefaults+AppGroups.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD97CFB4265AFFD900719ED5 /* UserDefaults+AppGroups.swift */; };
 		AD97CFBD265D1AF800719ED5 /* AlbumVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD97CFBC265D1AF800719ED5 /* AlbumVars.swift */; };
 		AD987634262606C600B964C5 /* UIViewController+AppTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD987633262606C600B964C5 /* UIViewController+AppTools.swift */; };
@@ -560,6 +561,7 @@
 		AD92B9011F200092006E5B63 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/ReleaseNotes.strings; sourceTree = "<group>"; };
 		AD94F63D266D637D00EFC6A9 /* CacheVarsObjc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheVarsObjc.swift; sourceTree = "<group>"; };
 		AD94F63F266D63AD00EFC6A9 /* CacheVars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheVars.swift; sourceTree = "<group>"; };
+		AD96F42F2748601D004C8DFF /* piwigo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = piwigo.png; path = Assets/Icons/piwigo/piwigo.png; sourceTree = SOURCE_ROOT; };
 		AD97CFB3265A50EE00719ED5 /* debug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = debug.entitlements; sourceTree = "<group>"; };
 		AD97CFB4265AFFD900719ED5 /* UserDefaults+AppGroups.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+AppGroups.swift"; sourceTree = "<group>"; };
 		AD97CFB7265B0DBE00719ED5 /* NetworkVars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkVars.swift; sourceTree = "<group>"; };
@@ -1179,6 +1181,7 @@
 				AD8D217826B0B16A0008E907 /* help05-top.png */,
 				AD8D217526B0B1690008E907 /* help06.png */,
 				AD8D217726B0B16A0008E907 /* help07-top.png */,
+				AD96F42F2748601D004C8DFF /* piwigo.png */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -2006,6 +2009,7 @@
 				AD35CA3A1E9C1EBC00E3B897 /* Images.xcassets in Resources */,
 				AD8D218626B0B46A0008E907 /* darkPhone.png in Resources */,
 				AD8D218826B0B46A0008E907 /* darkPad.png in Resources */,
+				AD96F4302748601D004C8DFF /* piwigo.png in Resources */,
 				AD8D218926B0B46A0008E907 /* lightPhone.png in Resources */,
 				AD8D218726B0B46A0008E907 /* lightPad.png in Resources */,
 				AD11AC4C273B17A100433038 /* help01.png in Resources */,
