@@ -1337,6 +1337,7 @@ public class UploadManager: NSObject {
 
         // Get image assets of images to delete
         let assetsToDelete = PHAsset.fetchAssets(withLocalIdentifiers: uploadedImages, options: nil)
+        if assetsToDelete.count == 0 { return }
         
         // Delete images from Photo Library
         DispatchQueue.main.async(execute: {
