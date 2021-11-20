@@ -45,7 +45,7 @@ public struct CommunityImagesUploadCompletedJSON: Decodable {
         {
             // Result container keyed by ResultCodingKeys
             let resultContainer = try rootContainer.nestedContainer(keyedBy: ResultCodingKeys.self, forKey: .data)
-            dump(resultContainer)
+//            dump(resultContainer)
             
             // Decodes pending properties from the data and store them in the array
             do {
