@@ -37,15 +37,15 @@ public struct ImagesUploadJSON: Decodable {
             guard let rootContainer = try? decoder.container(keyedBy: RootCodingKeys.self) else {
                 return
             }
-    //        dump(rootContainer)
+//            dump(rootContainer)
 
             // Status returned by Piwigo
             status = try rootContainer.decodeIfPresent(String.self, forKey: .status)
             if status == "ok"
             {
                 // Decodes response from the data and store them in the array
-                data = try rootContainer.decode(ImagesUpload.self, forKey: .data)
-    //            dump(data)
+                data = try rootContainer.decodeIfPresent(ImagesUpload.self, forKey: .data) ?? ImagesUpload(image_id: NSNotFound, square_src: "", src: "", category: nil, name: "")
+//                dump(data)
             }
             else if status == "fail"
             {
