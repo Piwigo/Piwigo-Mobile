@@ -280,9 +280,12 @@ class UploadImageTableViewCell: MGSwipeTableCell {
             })
         })
         
-        // Video icon
+        // Video icon?
         if imageAsset.mediaType == .video {
             addMovieIcon()
+        } else {
+            playBckg.isHidden = true
+            playImg.isHidden = true
         }
     }
     
