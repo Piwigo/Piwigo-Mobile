@@ -11,7 +11,7 @@ import Foundation
 import UIKit
 
 // Constants
-let playRatio: CGFloat = 58/75
+let playRatio: CGFloat = 0.9 // was 58/75
 
 @objc
 extension UIImageView {
@@ -29,7 +29,7 @@ extension UIImageView {
         self.contentMode = .scaleAspectFit
         self.isHidden = true
         if inBackground {
-            self.tintColor = .init(white: 0, alpha: 0.15)
+            self.tintColor = .init(white: 0, alpha: 0.3)
         } else {
             self.tintColor = .white
         }
@@ -49,7 +49,7 @@ extension UIImageView {
         self.contentMode = .scaleAspectFit
         self.isHidden = true
         if inBackground {
-            self.tintColor = .init(white: 0, alpha: 0.15)
+            self.tintColor = .init(white: 0, alpha: 0.3)
         } else {
             self.tintColor = .white
         }

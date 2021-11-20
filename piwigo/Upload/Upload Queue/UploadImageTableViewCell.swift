@@ -395,7 +395,7 @@ class UploadImageTableViewCell: MGSwipeTableCell {
         let width = cellImage.frame.size.width * playScale + (scale - 1)
         playBckg.setMovieImage(inBackground: true)
         playBckgWidth.constant = width + 2*offset
-        playBckgHeight.constant = width * playRatio + 2*offset
+        playBckgHeight.constant = playBckgWidth.constant * playRatio
         playImg.setMovieImage(inBackground: false)
         playBckg.addSubview(playImg)
         playBckg.addConstraints(NSLayoutConstraint.constraintCenter(playImg)!)

@@ -15,9 +15,10 @@ CGFloat const margin = 1.0;
 CGFloat const offset = 1.0;
 CGFloat const bannerHeight = 16.0;
 CGFloat const favScale = 0.12;
+CGFloat const favRatio = 1.0;
 CGFloat const selectScale = 0.2;
-CGFloat const playScale = 0.19;
-CGFloat const playRatio = 0.7733;
+CGFloat const playScale = 0.17;
+CGFloat const playRatio = 0.9; // was 58/75 = 0.7733;
 
 @interface ImageCollectionViewCell()
 
@@ -77,7 +78,7 @@ CGFloat const playRatio = 0.7733;
         NSLayoutConstraint *iconWidth = [NSLayoutConstraint constraintView:self.playBckg
                                                                    toWidth:width + 2*offset];
         NSLayoutConstraint *iconHeight = [NSLayoutConstraint constraintView:self.playBckg
-                                                                   toHeight:width*playRatio + 2*offset];
+                                                                   toHeight:iconWidth.constant*playRatio];
         self.playLeft = [NSLayoutConstraint constraintViewFromLeft:self.playBckg amount:margin];
         self.playTop = [NSLayoutConstraint constraintViewFromTop:self.playBckg amount:margin];
         [self.cellImage addConstraints:@[iconWidth, iconHeight, self.playLeft, self.playTop]];
@@ -86,8 +87,8 @@ CGFloat const playRatio = 0.7733;
         [self.playImg setMovieImageInBackground:NO];
         [self.playBckg addSubview:self.playImg];
         [self.playBckg addConstraints:[NSLayoutConstraint constraintCenter:self.playImg]];
-        [self.cellImage addConstraint:[NSLayoutConstraint constraintView:self.playImg toWidth:width]];
-        [self.cellImage addConstraint:[NSLayoutConstraint constraintView:self.playImg toHeight:width*playRatio]];
+        [self.playBckg addConstraint:[NSLayoutConstraint constraintView:self.playImg toWidth:width]];
+        [self.playBckg addConstraint:[NSLayoutConstraint constraintView:self.playImg toHeight:width*playRatio]];
         
         // Favorite image
         self.favBckg = [UIImageView new];
@@ -97,7 +98,7 @@ CGFloat const playRatio = 0.7733;
         iconWidth = [NSLayoutConstraint constraintView:self.favBckg
                                                toWidth:width + 2*offset];
         iconHeight = [NSLayoutConstraint constraintView:self.favBckg
-                                               toHeight:width*playRatio + 2*offset];
+                                               toHeight:iconWidth.constant*favRatio];
         self.favLeft = [NSLayoutConstraint constraintViewFromLeft:self.favBckg amount:margin];
         self.favBottom = [NSLayoutConstraint constraintViewFromBottom:self.favBckg amount:-margin];
         [self.cellImage addConstraints:@[iconWidth, iconHeight, self.favLeft, self.favBottom]];
@@ -107,7 +108,7 @@ CGFloat const playRatio = 0.7733;
         [self.favBckg addSubview:self.favImg];
         [self.favBckg addConstraints:[NSLayoutConstraint constraintCenter:self.favImg]];
         [self.favBckg addConstraint:[NSLayoutConstraint constraintView:self.favImg toWidth:width]];
-        [self.favBckg addConstraint:[NSLayoutConstraint constraintView:self.favImg toHeight:width + 2*offset]];
+        [self.favBckg addConstraint:[NSLayoutConstraint constraintView:self.favImg toHeight:width*favRatio]];
 
         // Selected images are darker
         self.darkenView = [UIView new];
@@ -392,13 +393,13 @@ CGFloat const playRatio = 0.7733;
 
         // Update vertical constraints
         weakSelf.selImgTop.constant = weakSelf.deltaY + 2*margin;
-        weakSelf.playTop.constant = weakSelf.deltaY + offset;
+        weakSelf.playTop.constant = weakSelf.deltaY;
         if (weakSelf.bottomLayer.isHidden) {
             // The title is not displayed
-            weakSelf.favBottom.constant = - (weakSelf.deltaY +2);
+            weakSelf.favBottom.constant = - (weakSelf.deltaY);
         } else {
             // The title is displayed
-            CGFloat deltaY = fmax(bannerHeight + margin, weakSelf.deltaY + 2);
+            CGFloat deltaY = fmax(bannerHeight + margin, weakSelf.deltaY);
             weakSelf.favBottom.constant = - deltaY;
         }
     } failure:nil];
@@ -430,11 +431,11 @@ CGFloat const playRatio = 0.7733;
     // Update the vertical constraint
     if (self.bottomLayer.isHidden) {
         // Place icon at the bottom
-        self.favBottom.constant = - (self.deltaY + 2);
+        self.favBottom.constant = - self.deltaY;
     }
     else {
         // Place icon at the bottom but above the title
-        CGFloat height = fmax(bannerHeight + margin, self.deltaY + 2);
+        CGFloat height = fmax(bannerHeight + margin, self.deltaY);
         self.favBottom.constant = - height;
     }
     
