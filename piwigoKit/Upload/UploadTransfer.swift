@@ -671,17 +671,21 @@ extension UploadManager {
             }
             
             // Upload completed?
-            if let _ = uploadJSON.chunks, let _ = uploadJSON.chunks.message {
+            if let chunks = uploadJSON.chunks, let message = chunks.message {
                 // Upload not completed
-//                let nberOfUploadedChunks = message.dropFirst(18).components(separatedBy: ",").count
-//                print("\(debugFormatter.string(from: Date())) > \(md5sum) | \(nberOfUploadedChunks) chunks downloaded")
+                let chunkList = message.dropFirst(18).components(separatedBy: ",")
+                debugPrint("\(debugFormatter.string(from: Date())) > \(md5sum) | \(chunkList.count) chunks downloaded")
+                // Cancel tasks of chunks already uploaded
+//                UploadSessions.shared.cancelTasksOfUpload(witID: objectURIstr,
+//                                                          alreadyUploadedChunks: chunkList,
+//                                                          exceptedTaskID: task.taskIdentifier)
                 return
             }
             
             // Upload completed
             // Cancel other tasks related with this request if any
             UploadSessions.shared.cancelTasksOfUpload(withID: objectURIstr,
-                                                      exceptedTaskIdentifier: task.taskIdentifier)
+                                                      exceptedTaskID: task.taskIdentifier)
 
             // Clear byte counter of progress bars
             UploadSessions.shared.removeCounter(withID: identifier)
@@ -812,7 +816,7 @@ extension UploadManager {
             if taskID != Int.max {
                 let objectURIstr = uploadID.uriRepresentation().absoluteString
                 UploadSessions.shared.cancelTasksOfUpload(withID: objectURIstr,
-                                                          exceptedTaskIdentifier: taskID
+                                                          exceptedTaskID: taskID
                 )
             }
 

@@ -116,12 +116,13 @@ public class UploadSessions: NSObject {
     
 
     // MARK: - Cancel Tasks Related to a Specific Upload Request
-    func cancelTasksOfUpload(withID uploadIDStr:String, exceptedTaskIdentifier: Int) -> Void {
+    /// This method cancels the remaining tasks when the upload is completed.
+    func cancelTasksOfUpload(withID uploadIDStr:String, exceptedTaskID: Int) -> Void {
         // Loop over all tasks
         bckgSession.getAllTasks { uploadTasks in
             // Select remaining tasks related with this request if any
             let tasksToCancel = uploadTasks.filter({ $0.originalRequest?.value(forHTTPHeaderField: "uploadID") == uploadIDStr })
-                                           .filter({ $0.taskIdentifier != exceptedTaskIdentifier})
+                                           .filter({ $0.taskIdentifier != exceptedTaskID})
             // Cancel remaining tasks related with this completed upload request
             tasksToCancel.forEach({
                 print("\(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) > Cancel upload task \($0.taskIdentifier)")
@@ -129,6 +130,30 @@ public class UploadSessions: NSObject {
             })
         }
     }
+    
+    /// This method cancels the tasks of chunks which are already uploaded.
+//    func cancelTasksOfUpload(witID uploadIDStr:String, alreadyUploadedChunks: [String],
+//                             exceptedTaskID: Int) -> Void {
+//        // Loop over all tasks
+//        bckgSession.getAllTasks { uploadTasks in
+//            // Select remaining tasks of chunks already uploaded
+//            if uploadTasks.count == 0 { return }
+//
+//            let tasksToCancel = uploadTasks.filter({ $0.originalRequest?.value(forHTTPHeaderField: "uploadID") == uploadIDStr})
+//            if tasksToCancel.count > 0 {
+//                let firstTask = tasksToCancel.first
+//                let chunk = firstTask?.originalRequest?.value(forHTTPHeaderField: "chunk") ?? ""
+//                debugPrint("==> \(chunk) compared to \(alreadyUploadedChunks)?")
+//            }
+//            let tasksToCancel = uploadTasks.filter({ $0.originalRequest?.value(forHTTPHeaderField: "uploadID") == uploadIDStr})
+//                .filter({ alreadyUploadedChunks.contains($0.originalRequest?.value(forHTTPHeaderField: "chunk") ?? "")})
+//            // Cancel queued tasks which are useless
+//            tasksToCancel.forEach({
+//                print("\(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) > Cancel upload task \($0.taskIdentifier)")
+//                $0.cancel()
+//            })
+//        }
+//    }
 }
 
 
@@ -335,6 +360,11 @@ extension UploadSessions: URLSessionDataDelegate {
 //                return
 //        }
 //        print("    > Upload task \(dataTask.taskIdentifier) of chunk \(chunk+1)/\(chunks) did receive some data at \(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .medium)) [\(md5sum)]")
+        
+        #if DEBUG
+        let dataStr = String(decoding: data, as: UTF8.self)
+        print(" > JSON: \(dataStr.debugDescription)")
+        #endif
         
         switch dataTask.taskDescription {
         case uploadSessionIdentifier:
