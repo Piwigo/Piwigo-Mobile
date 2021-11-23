@@ -33,7 +33,7 @@
 "errorHUD_label" = "Fehler";
 
 // Upload rights
-"uploadRights_title" = "Erforderliche Rechte zum Hochladen benötigt";
+"uploadRights_title" = "Rechte zum Hochladen benötigt";
 "uploadRights_message" = "Sie benötigen Rechte zum Hochladen von oder Videos.";
 
 // Errors
