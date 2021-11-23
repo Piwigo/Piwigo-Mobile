@@ -272,7 +272,7 @@ class piwigoAppStore: XCTestCase {
         super.tearDown()
     }
     
-    func testScreenshots() {
+    func testScreenshots() { // k7ji}wx[bCcsihd@fg23
         // Use recording to get started writing UI tests.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
 
@@ -281,12 +281,12 @@ class piwigoAppStore: XCTestCase {
         sleep(5);
         
         // Select Photos Title A->Z sort order
-//        app.navigationBars.element(boundBy: 0).buttons["settings"].tap()
-//        sleep(1);
-//        app.tables["settings"].cells["defaultSort"].tap()
-//        app.tables["sortSelect"].cells.element(boundBy: 0).tap()
-//        app.navigationBars["CategorySortBar"].buttons.element(boundBy: 0).tap()
-//        app.navigationBars.buttons["Done"].tap()
+        app.navigationBars.element(boundBy: 0).buttons["settings"].tap()
+        sleep(1);
+        app.tables["settings"].cells["defaultSort"].tap()
+        app.tables["sortSelect"].cells.element(boundBy: 0).tap()
+        app.navigationBars["CategorySortBar"].buttons.element(boundBy: 0).tap()
+        app.navigationBars.buttons["Done"].tap()
 
         // Screenshot #1: swipe left and reveal album actions
 //        var index = 1
@@ -300,23 +300,23 @@ class piwigoAppStore: XCTestCase {
 //        snapshot("Image01")
         
         // Screenshot #2: collection of images with titles
-//        app.collectionViews.children(matching: .cell).element(boundBy: 2).tap()
-//        sleep(2);
-//        if deviceType.hasPrefix("iPhone") {
-//            app.collectionViews.children(matching: .cell).element(boundBy: 0).swipeUp()
-//            sleep(2);
-//        }
-//        snapshot("Image02")
+        app.collectionViews.children(matching: .cell).element(boundBy: 2).tap()
+        sleep(2);
+        if deviceType.hasPrefix("iPhone") {
+            app.collectionViews.children(matching: .cell).element(boundBy: 0).swipeUp()
+            sleep(2);
+        }
+        snapshot("Image02")
         
         // Screenshot #3: collection with selected images
-//        app.buttons["rootAlbum"].tap()
-//        app.buttons["settings"].tap()
-//        sleep(2);
-//        app.tables["settings"].cells["server"].swipeUp()
-//        sleep(2);
-//        app.tables["settings"].cells["displayImageTitles"].switches["switchImageTitles"].tap()
-//        app.navigationBars.buttons["Done"].tap()
-//        sleep(1);
+        app.buttons["rootAlbum"].tap()
+        app.buttons["settings"].tap()
+        sleep(2);
+        app.tables["settings"].cells["server"].swipeUp()
+        sleep(2);
+        app.tables["settings"].cells["displayImageTitles"].switches["switchImageTitles"].tap()
+        app.navigationBars.buttons["Done"].tap()
+        sleep(1);
         app.collectionViews.children(matching: .cell).element(boundBy: 2).tap()
         sleep(1);
         if deviceType.hasPrefix("iPhone") {
@@ -329,32 +329,32 @@ class piwigoAppStore: XCTestCase {
         }
         app.collectionViews.children(matching: .cell).element(boundBy: 6).swipeUp(velocity: 50)
         sleep(3);
-//        app.navigationBars.buttons["Select"].tap()
-//        if deviceType.hasPrefix("iPhone") {
-//            app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
-//            app.collectionViews.children(matching: .cell).element(boundBy: 21).tap()
-//            app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
-//            app.collectionViews.children(matching: .cell).element(boundBy: 19).tap()
-//            app.collectionViews.children(matching: .cell).element(boundBy: 17).tap()
-//        } else {
-//            if (deviceType == "iPad Pro 9.7\"") {
-//                app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
-//                app.collectionViews.children(matching: .cell).element(boundBy: 24).tap()
-//                app.collectionViews.children(matching: .cell).element(boundBy: 23).tap()
-//                app.collectionViews.children(matching: .cell).element(boundBy: 22).tap()
-//                app.collectionViews.children(matching: .cell).element(boundBy: 21).tap()
-//                app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
-//            } else {
-//                app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
-//                app.collectionViews.children(matching: .cell).element(boundBy: 21).tap()
-//                app.collectionViews.children(matching: .cell).element(boundBy: 22).tap()
-//                app.collectionViews.children(matching: .cell).element(boundBy: 31).tap()
-//                app.collectionViews.children(matching: .cell).element(boundBy: 30).tap()
-//                app.collectionViews.children(matching: .cell).element(boundBy: 29).tap()
-//                app.collectionViews.children(matching: .cell).element(boundBy: 28).tap()
-//            }
-//        }
-//        snapshot("Image03")
+        app.navigationBars.buttons["Select"].tap()
+        if deviceType.hasPrefix("iPhone") {
+            app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 21).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 19).tap()
+            app.collectionViews.children(matching: .cell).element(boundBy: 17).tap()
+        } else {
+            if (deviceType == "iPad Pro 9.7\"") {
+                app.collectionViews.children(matching: .cell).element(boundBy: 16).tap()
+                app.collectionViews.children(matching: .cell).element(boundBy: 24).tap()
+                app.collectionViews.children(matching: .cell).element(boundBy: 23).tap()
+                app.collectionViews.children(matching: .cell).element(boundBy: 22).tap()
+                app.collectionViews.children(matching: .cell).element(boundBy: 21).tap()
+                app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
+            } else {
+                app.collectionViews.children(matching: .cell).element(boundBy: 20).tap()
+                app.collectionViews.children(matching: .cell).element(boundBy: 21).tap()
+                app.collectionViews.children(matching: .cell).element(boundBy: 22).tap()
+                app.collectionViews.children(matching: .cell).element(boundBy: 31).tap()
+                app.collectionViews.children(matching: .cell).element(boundBy: 30).tap()
+                app.collectionViews.children(matching: .cell).element(boundBy: 29).tap()
+                app.collectionViews.children(matching: .cell).element(boundBy: 28).tap()
+            }
+        }
+        snapshot("Image03")
 
         // Screenshot #4: image previewed
 //        app.navigationBars.buttons["Cancel"].tap()
@@ -470,8 +470,8 @@ class piwigoAppStore: XCTestCase {
 //        snapshot("Image05")
 
         // Screenshot #6: create album & add image buttons
-//        app.buttons["Cancel"].tap()
-//        sleep(2)                        // Leave time for animation
+        app.buttons["Cancel"].tap()
+        sleep(2)                        // Leave time for animation
 //        app.navigationBars.buttons.element(boundBy: 0).tap()
 //        sleep(2)                        // Leave time for animation
         app.collectionViews.children(matching: .cell).element(boundBy: 10).swipeUp()
@@ -479,6 +479,9 @@ class piwigoAppStore: XCTestCase {
         app.buttons["add"].tap()
         sleep(2)                        // Leave time for animation
         snapshot("Image06")
+
+        app.navigationBars.buttons.element(boundBy: 0).tap()
+        sleep(2)                        // Leave time for animation
 
 //        // Screenshot #7: local images
 //        app.buttons["addImages"].tap()
@@ -527,11 +530,11 @@ class piwigoAppStore: XCTestCase {
 //        app.navigationBars["LocalAlbumsNav"].buttons["Cancel"].tap()
 //        app.buttons["rootAlbum"].tap()
 //        sleep(1)                        // Leave time for animation
-//        app.buttons["settings"].tap()
-//        sleep(1)                        // Leave time for animation
-//        app.tables["settings"].cells["server"].swipeUp()
-//        sleep(2)                        // Leave time for animation
-//        app.tables["settings"].cells["displayImageTitles"].switches["switchImageTitles"].tap()
+        app.buttons["settings"].tap()
+        sleep(1)                        // Leave time for animation
+        app.tables["settings"].cells["server"].swipeUp()
+        sleep(2)                        // Leave time for animation
+        app.tables["settings"].cells["displayImageTitles"].switches["switchImageTitles"].tap()
 //        snapshot("Image10")
     }
 }
